@@ -6417,6 +6417,10 @@
         "en": "Abandoned Mine",
         "ru": "Заброшенная шахта"
       },
+      "lore": {
+        "en": "A twisting network of abandoned tunnels carved into bedrock by a mining operation that met a disastrous end.",
+        "ru": "Извилистая сеть заброшенных туннелей, прорубленных в коренной породе шахтёрским предприятием, которое постигла катастрофа."
+      },
       "impulses": {
         "en": [
           "Poison the party with deadly gasses",
@@ -6506,7 +6510,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "alchemists-abandoned-workshop",
@@ -6516,6 +6521,10 @@
       "name": {
         "en": "Alchemist's Abandoned Workshop",
         "ru": "Заброшенная мастерская алхимика"
+      },
+      "lore": {
+        "en": "A laboratory powered by lightning, built by a scientist searching for the secret of immortality.",
+        "ru": "Лаборатория, питаемая молниями, построенная учёным, искавшим секрет бессмертия."
       },
       "impulses": {
         "en": [
@@ -6602,7 +6611,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "corrupted-swamp",
@@ -6612,6 +6622,10 @@
       "name": {
         "en": "Corrupted Swamp",
         "ru": "Осквернённое болото"
+      },
+      "lore": {
+        "en": "A miserable expanse of slimy water, poisonous creatures, and decay.",
+        "ru": "Унылые просторы илистой воды, ядовитых тварей и тлена."
       },
       "impulses": {
         "en": [
@@ -6706,7 +6720,8 @@
       "builtin": true,
       "biomes": [
         "wetland"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "cursed-graveyard",
@@ -6716,6 +6731,10 @@
       "name": {
         "en": "Cursed Graveyard",
         "ru": "Проклятое кладбище"
+      },
+      "lore": {
+        "en": "A vast cemetery of crumbling graves, twisted trees possessed by the dead, and crypts overgrown with moss and ivy.",
+        "ru": "Обширное кладбище с осыпающимися могилами, искорёженными деревьями, одержимыми мёртвыми, и склепами, заросшими мхом и плющом."
       },
       "impulses": {
         "en": [
@@ -6821,7 +6840,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "grand-feast",
@@ -6831,6 +6851,10 @@
       "name": {
         "en": "Grand Feast",
         "ru": "Великий пир"
+      },
+      "lore": {
+        "en": "A celebration for the whole community, overflowing with food, drink, and revelry.",
+        "ru": "Празднество для всей общины, изобилующее едой, напитками и весельем."
       },
       "impulses": {
         "en": [
@@ -6927,7 +6951,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "hold-the-line",
@@ -6937,6 +6962,10 @@
       "name": {
         "en": "Hold the Line",
         "ru": "Держать Оборону"
+      },
+      "lore": {
+        "en": "A defensive situation in which the party must withstand successive waves of enemies while an ally completes an important objective.",
+        "ru": "Оборонительная ситуация, в которой отряд должен выдерживать последовательные волны врагов, пока союзник выполняет важную задачу."
       },
       "impulses": {
         "en": [
@@ -7031,7 +7060,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "local-festival",
@@ -7041,6 +7071,10 @@
       "name": {
         "en": "Local Festival",
         "ru": "Местный фестиваль"
+      },
+      "lore": {
+        "en": "A week-long celebration drawing commoners and nobles from the surrounding region.",
+        "ru": "Недельное празднество, привлекающее простолюдинов и знать со всей округи."
       },
       "impulses": {
         "en": [
@@ -7131,7 +7165,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "raiding-party",
@@ -7141,6 +7176,10 @@
       "name": {
         "en": "Raiding Party",
         "ru": "Отряд налётчиков"
+      },
+      "lore": {
+        "en": "Pirates land at a port town or coastal village to loot it and carry away whatever they can.",
+        "ru": "Пираты высаживаются в портовом городе или прибрежной деревне, чтобы разграбить их и унести всё, что смогут."
       },
       "impulses": {
         "en": [
@@ -7228,7 +7267,8 @@
       "biomes": [
         "settlement",
         "aquatic"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "beach-day",
@@ -7238,6 +7278,10 @@
       "name": {
         "en": "Beach Day",
         "ru": "День на пляже"
+      },
+      "lore": {
+        "en": "The party pauses its adventures for rest and relaxation in a seaside settlement.",
+        "ru": "Отряд прерывает свои приключения ради отдыха и релаксации в приморском поселении."
       },
       "impulses": {
         "en": [
@@ -7325,7 +7369,8 @@
       "biomes": [
         "aquatic",
         "settlement"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "deadly-dungeon",
@@ -7335,6 +7380,10 @@
       "name": {
         "en": "Deadly Dungeon",
         "ru": "Смертоносное подземелье"
+      },
+      "lore": {
+        "en": "A dim underground maze of tunnels and chambers filled with monsters, traps, and treasure.",
+        "ru": "Тёмный подземный лабиринт туннелей и залов, полный чудовищ, ловушек и сокровищ."
       },
       "impulses": {
         "en": [
@@ -7427,7 +7476,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "duel",
@@ -7440,6 +7490,10 @@
       "name": {
         "en": "Duel",
         "ru": "Дуэль"
+      },
+      "lore": {
+        "en": "An adversary challenges one PC to single combat while the rest of the party assists from the sidelines.",
+        "ru": "Противник вызывает одного персонажа на поединок, пока остальной отряд помогает со стороны."
       },
       "impulses": {
         "en": [
@@ -7528,7 +7582,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "heist",
@@ -7538,6 +7593,10 @@
       "name": {
         "en": "Heist",
         "ru": "Ограбление"
+      },
+      "lore": {
+        "en": "The party must infiltrate a hidden or heavily protected location to obtain the information or objects stored there.",
+        "ru": "Отряд должен проникнуть в скрытое или хорошо охраняемое место, чтобы добыть хранящиеся там сведения или предметы."
       },
       "impulses": {
         "en": [
@@ -7649,7 +7708,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "masquerade-ball",
@@ -7659,6 +7719,10 @@
       "name": {
         "en": "Masquerade Ball",
         "ru": "Маскарадный бал"
+      },
+      "lore": {
+        "en": "A high-society gala where masked guests exchange secrets, favors, and influence.",
+        "ru": "Великосветский бал, где гости в масках обмениваются секретами, услугами и влиянием."
       },
       "impulses": {
         "en": [
@@ -7749,7 +7813,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "ocean-voyage",
@@ -7759,6 +7824,10 @@
       "name": {
         "en": "Ocean Voyage",
         "ru": "Морское путешествие"
+      },
+      "lore": {
+        "en": "The PCs travel toward a distant destination by working aboard a ship in exchange for passage.",
+        "ru": "Персонажи направляются к далёкой цели, работая на борту корабля в обмен на проезд."
       },
       "impulses": {
         "en": [
@@ -7864,7 +7933,8 @@
       "builtin": true,
       "biomes": [
         "aquatic"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "vast-desert",
@@ -7874,6 +7944,10 @@
       "name": {
         "en": "Vast Desert",
         "ru": "Бескрайняя пустыня"
+      },
+      "lore": {
+        "en": "A dry, barren landscape of sand dunes, salt flats, and wind-carved rock formations.",
+        "ru": "Сухой, бесплодный пейзаж из песчаных дюн, солончаков и выточенных ветром скальных образований."
       },
       "impulses": {
         "en": [
@@ -7981,7 +8055,8 @@
       "builtin": true,
       "biomes": [
         "drylands"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "witchs-hut",
@@ -7991,6 +8066,10 @@
       "name": {
         "en": "Witch's Hut",
         "ru": "Избушка на курьих ножках"
+      },
+      "lore": {
+        "en": "A rustic, windowless hut standing on top of two enormous chicken legs.",
+        "ru": "Грубая, лишённая окон хижина, стоящая на двух огромных куриных ногах."
       },
       "impulses": {
         "en": [
@@ -8087,7 +8166,8 @@
       "builtin": true,
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "archmages-tower",
@@ -8097,6 +8177,10 @@
       "name": {
         "en": "Archmage's Tower",
         "ru": "Башня архимага"
+      },
+      "lore": {
+        "en": "An impossibly tall tower reaching into the heavens and resonating with immense magical power.",
+        "ru": "Невероятно высокая башня, устремлённая в небеса и резонирующая огромной магической мощью."
       },
       "impulses": {
         "en": [
@@ -8172,7 +8256,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "astral-realm",
@@ -8182,6 +8267,10 @@
       "name": {
         "en": "Astral Realm",
         "ru": "Астральное царство"
+      },
+      "lore": {
+        "en": "A psychic realm shaped by energy and emotion, where strong-willed beings can alter reality itself.",
+        "ru": "Психический план, сформированный энергией и эмоциями, где волевые существа способны изменять саму реальность."
       },
       "impulses": {
         "en": [
@@ -8274,7 +8363,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "crystal-wasteland",
@@ -8284,6 +8374,10 @@
       "name": {
         "en": "Crystal Wasteland",
         "ru": "Кристальная пустошь"
+      },
+      "lore": {
+        "en": "A harsh, alien region dominated by towering formations of brilliant crystal.",
+        "ru": "Суровый, чуждый край, где властвуют высокие образования сверкающих кристаллов."
       },
       "impulses": {
         "en": [
@@ -8393,7 +8487,8 @@
       "builtin": true,
       "biomes": [
         "badlands"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "dragons-lair",
@@ -8403,6 +8498,10 @@
       "name": {
         "en": "Dragon's Lair",
         "ru": "Логово дракона"
+      },
+      "lore": {
+        "en": "A vast hoard of gold, jewels, and artifacts lying within an active volcano.",
+        "ru": "Огромные залежи золота, самоцветов и артефактов, покоящиеся внутри действующего вулкана."
       },
       "impulses": {
         "en": [
@@ -8494,7 +8593,8 @@
       "biomes": [
         "mountain",
         "underground"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "megastorm",
@@ -8504,6 +8604,10 @@
       "name": {
         "en": "Megastorm",
         "ru": "Мегашторм"
+      },
+      "lore": {
+        "en": "A sudden, extreme weather catastrophe that forces the party to weigh their own survival against protecting others.",
+        "ru": "Внезапная, экстремальная погодная катастрофа, вынуждающая отряд выбирать между собственным выживанием и защитой других."
       },
       "impulses": {
         "en": [
@@ -8613,7 +8717,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "sunken-citadel",
@@ -8623,6 +8728,10 @@
       "name": {
         "en": "Sunken Citadel",
         "ru": "Затонувшая цитадель"
+      },
+      "lore": {
+        "en": "The submerged ruins of a lost civilization, filled with ancient technology and dangerous magic.",
+        "ru": "Затопленные руины исчезнувшей цивилизации, полные древних технологий и опасной магии."
       },
       "impulses": {
         "en": [
@@ -8713,7 +8822,8 @@
       "builtin": true,
       "biomes": [
         "aquatic"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "upscale-casino",
@@ -8723,6 +8833,10 @@
       "name": {
         "en": "Upscale Casino",
         "ru": "Роскошное казино"
+      },
+      "lore": {
+        "en": "A dazzling gambling establishment where wealthy merchants and nobles come to risk their fortunes.",
+        "ru": "Ослепительное игорное заведение, куда богатые торговцы и знать приходят рисковать своими состояниями."
       },
       "impulses": {
         "en": [
@@ -8826,7 +8940,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "volcanic-eruption",
@@ -8836,6 +8951,10 @@
       "name": {
         "en": "Volcanic Eruption",
         "ru": "Извержение вулкана"
+      },
+      "lore": {
+        "en": "A violent eruption of heat and molten rock that leaves the surrounding landscape scorched and devastated.",
+        "ru": "Неистовое извержение жара и раскалённой породы, оставляющее окрестный пейзаж выжженным и опустошённым."
       },
       "impulses": {
         "en": [
@@ -8915,7 +9034,8 @@
       "builtin": true,
       "biomes": [
         "badlands"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "convergence-city-of-portals",
@@ -8925,6 +9045,10 @@
       "name": {
         "en": "Convergence, City of Portals",
         "ru": "Конвергенция, Город Порталов"
+      },
+      "lore": {
+        "en": "A vast metropolis at a nexus of creation where powerful beings from many different realms come together.",
+        "ru": "Огромный мегаполис на пересечении мироздания, куда стекаются могущественные существа из множества разных миров."
       },
       "impulses": {
         "en": [
@@ -9028,7 +9152,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "moon-kingdom",
@@ -9038,6 +9163,10 @@
       "name": {
         "en": "Moon Kingdom",
         "ru": "Лунное королевство"
+      },
+      "lore": {
+        "en": "Mysterious, luminous ruins of a forgotten lunar kingdom, isolated from the world and saturated with ancient magic and technology.",
+        "ru": "Таинственные, светящиеся руины забытого лунного королевства, отрезанного от мира и пропитанного древней магией и технологиями."
       },
       "impulses": {
         "en": [
@@ -9128,7 +9257,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "realm-of-the-dead",
@@ -9138,6 +9268,10 @@
       "name": {
         "en": "Realm of the Dead",
         "ru": "Царство мёртвых"
+      },
+      "lore": {
+        "en": "An apparently endless stretch of still, colorless water devoid of laughter or life.",
+        "ru": "Кажущаяся бескрайней гладь неподвижной, бесцветной воды, лишённая смеха и жизни."
       },
       "impulses": {
         "en": [
@@ -9239,7 +9373,8 @@
       "builtin": true,
       "biomes": [
         "aquatic"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "time-court",
@@ -9249,6 +9384,10 @@
       "name": {
         "en": "Time Court",
         "ru": "Суд времени"
+      },
+      "lore": {
+        "en": "One or more PCs are forcibly removed from the timeline and placed on trial for crimes against the continuity of history.",
+        "ru": "Одного или нескольких персонажей насильно вырывают из хода времени и предают суду за преступления против целостности истории."
       },
       "impulses": {
         "en": [
@@ -9354,7 +9493,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Daggerheart: Hope & Fear"
     },
     {
       "id": "alcon-maw",
