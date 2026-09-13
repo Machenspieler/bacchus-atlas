@@ -27744,6 +27744,122 @@
         "underground"
       ],
       "source": "Resting Dagger"
+    },
+    {
+      "id": "resting-dagger-inn",
+      "tier": 1,
+      "type": "social",
+      "difficulty": 11,
+      "name": {
+        "en": "Resting Dagger Inn",
+        "ru": "Трактир «Отдыхающий кинжал»"
+      },
+      "lore": {
+        "en": "A bustling inn along a busy street.",
+        "ru": "Оживлённый трактир на людной улице."
+      },
+      "impulses": {
+        "en": [
+          "Entertain guests",
+          "offer a good night's rest"
+        ],
+        "ru": [
+          "Развлекать гостей",
+          "дарить хороший ночной отдых"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Merchant",
+          "Guard (Bladed, Archer, Captain)"
+        ],
+        "ru": [
+          "Торговец",
+          "Стражник (Стражник-Мечник, Стражник-Лучник, Капитан Стражи)"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Place of Personality",
+            "ru": "Личное обаяние"
+          },
+          "description": {
+            "en": "While here, PCs gain Advantage on Presence Rolls—they more easily project and share themselves here.",
+            "ru": "Пока персонажи здесь, они совершают Броски на Влияние с Преимуществом — здесь им легче раскрыться и показать себя."
+          },
+          "prompt": {
+            "en": "Is this a result of the social environment, or is magic at play?",
+            "ru": "Это результат общительной атмосферы этого места, или тут замешана магия?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Play For Your Stay",
+            "ru": "Сыграй за постой"
+          },
+          "description": {
+            "en": "The inn's stage is welcoming: the PCs may present their musical or otherwise entertaining talents, making a Group Presence Roll with the following result:\n- **Critical Success:** they all get a bag full of gold and a free week's stay.\n- **Success with Hope:** they all get a handful of gold and a free night's stay.\n- **Success with Fear:** they get heckled, but a free night's stay.\n- **Any Failure:** free night's stay if they mark a Stress.",
+            "ru": "Сцена трактира приветлива: персонажи могут показать свои музыкальные или иные развлекательные таланты, совершив Групповой бросок на Влияние со следующим результатом:\n- **Критический успех:** все получают мешок золота и бесплатную неделю проживания.\n- **Успех с Надеждой:** все получают горсть золота и одну бесплатную ночь проживания.\n- **Успех со Страхом:** их освистывают, но всё равно дают бесплатную ночь проживания.\n- **Любая неудача:** бесплатная ночь проживания, если они отмечают Стресс."
+          },
+          "prompt": {
+            "en": "How common are musical acts here? Do the people of the Resting Dagger Inn have a taste for stand-up routines? Who performed before the party, and who went after?",
+            "ru": "Насколько часто здесь выступают музыканты? Питают ли посетители «Отдыхающего кинжала» слабость к стендап-номерам? Кто выступал перед отрядом, а кто после?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Wait, I Know You",
+            "ru": "Погоди, я тебя знаю"
+          },
+          "description": {
+            "en": "Spend a Fear to have a rival adventuring party recognize the PCs—they hold a grievance related to a past quest the PCs may not even realize, but they demand satisfaction. If it turns to violence, they act as 1 Guard Captain, 3 Bladed Guards, and 1 Guard Archer.",
+            "ru": "Потратьте Страх, чтобы отряд соперников узнал персонажей — у них есть претензии, связанные с прошлым заданием, о котором персонажи могут даже не подозревать, но они требуют сатисфакции. Если дело доходит до насилия, они действуют как 1 Капитан Стражи, 3 Стражника-Мечника и 1 Стражник-Лучник."
+          },
+          "prompt": {
+            "en": "Is the grievance legitimate or concocted? Did the PCs' success ensure their rivals' quest's failure, or were they beaten to the punch on the same job?",
+            "ru": "Их претензия обоснована или выдумана? Успех персонажей обернулся провалом задания соперников, или тех просто опередили в том же деле?"
+          }
+        }
+      ],
+      "story_seeds": [
+        {
+          "title": {
+            "en": "Highly Recommended",
+            "ru": "Настоятельная рекомендация"
+          },
+          "body": {
+            "en": "On their last romp through dangerous dungeons and rugged wilderness, the party met a fellow traveler—who sang the praises of the Resting Dagger Inn. They say it's a wonderful place to relax and enjoy a bit of entertainment between adventures. What's more, they're certain someone there mentioned your names, but they're not sure who...",
+            "ru": "Во время последнего похода по опасным подземельям и суровой глуши отряд встретил попутчика, который расхваливал «Отдыхающий кинжал». По его словам, это чудесное место, чтобы отдохнуть и немного развлечься между приключениями. Более того, он уверен, что там кто-то упоминал ваши имена, но не может вспомнить, кто именно..."
+          },
+          "prompt": {
+            "en": "Is this a connection looking for the PCs, or are there rivals already there looking for them?",
+            "ru": "Это союзник, который ищет персонажей, или там уже поджидают соперники?"
+          }
+        },
+        {
+          "title": {
+            "en": "Dance by the Fire in the Sky",
+            "ru": "Танец под небесным огнём"
+          },
+          "body": {
+            "en": "A performer here perfectly matches a character from a PC's dreams.",
+            "ru": "Здешний исполнитель — точное подобие персонажа из снов одного из героев."
+          },
+          "prompt": {
+            "en": "What magic is afoot here?",
+            "ru": "Какая магия здесь замешана?"
+          }
+        }
+      ],
+      "builtin": true,
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Resting Dagger"
     }
   ]
 }

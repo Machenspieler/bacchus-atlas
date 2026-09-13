@@ -319,13 +319,21 @@ const ADVERSARY_GROUP_NAME_PREFIXES = {
  * Archer, Bladed)" names its members with the role first and "Guard" dropped,
  * so neither leaving the text alone nor prepending a prefix produces the
  * FreshCutGrass name ("Head Guard", not "Head" or "Guards Head"). Those need
- * an explicit member-by-member alias instead of a prefix or suffix rule. */
+ * an explicit member-by-member alias instead of a prefix or suffix rule.
+ * "Captain" is an alias some source text uses for the same role as "Head" —
+ * both map to the FreshCutGrass entry "Head Guard", since "Guard Captain"
+ * isn't a bestiary entry of its own. The singular "Guard (...)" label (used
+ * when a card lists only one guard-type group) shares the same member map as
+ * the plural "Guards (...)". */
+const GUARD_GROUP_MEMBER_ALIASES = {
+  Head: 'Head Guard',
+  Captain: 'Head Guard',
+  Archer: 'Archer Guard',
+  Bladed: 'Bladed Guard',
+};
 const ADVERSARY_GROUP_MEMBER_ALIASES = {
-  Guards: {
-    Head: 'Head Guard',
-    Archer: 'Archer Guard',
-    Bladed: 'Bladed Guard',
-  },
+  Guards: GUARD_GROUP_MEMBER_ALIASES,
+  Guard: GUARD_GROUP_MEMBER_ALIASES,
 };
 
 /** The FreshCutGrass-recognizable name for one member of a Potential
@@ -443,7 +451,7 @@ function potentialAdversaryEntryHtml(localizedText, englishText) {
 /* Cache buster for the JSON under data/. index.html versions the stylesheet and
    this script the same way; the data files are fetched from here instead, so
    bump this whenever anything in data/ changes or browsers serve stale copies. */
-const DATA_VERSION = 54;
+const DATA_VERSION = 55;
 
 function getJSON(path) {
   return fetch(path).then(r => {
