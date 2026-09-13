@@ -9,6 +9,10 @@
         "en": "Harsh Desert",
         "ru": "Суровая пустыня"
       },
+      "lore": {
+        "en": "Scorching heat and burning sands during the day give way to freezing nights and little to eat or drink.",
+        "ru": "Испепеляющий зной и раскалённые пески днём сменяются морозными ночами, а еды и питья катастрофически не хватает."
+      },
       "impulses": {
         "en": [
           "Overcome the unprepared",
@@ -132,7 +136,8 @@
       "builtin": true,
       "biomes": [
         "drylands"
-      ]
+      ],
+      "source": "Shalassa Desert"
     },
     {
       "id": "port-city",
@@ -142,6 +147,10 @@
       "name": {
         "en": "Port City",
         "ru": "Портовый город"
+      },
+      "lore": {
+        "en": "A port city full of trade, food, art and commerce.",
+        "ru": "Портовый город, полный торговли, еды, искусства и коммерции."
       },
       "impulses": {
         "en": [
@@ -254,7 +263,8 @@
       "biomes": [
         "settlement",
         "aquatic"
-      ]
+      ],
+      "source": "Shalassa Desert"
     },
     {
       "id": "moonlight-temple",
@@ -264,6 +274,10 @@
       "name": {
         "en": "Moonlight Temple",
         "ru": "Храм лунного света"
+      },
+      "lore": {
+        "en": "A Hierophant is leveraging the disgruntled people of a nearby city and turning them into Jackalweres to take revenge.",
+        "ru": "Иерофант использует недовольных жителей соседнего города, превращая их в шакалвиров, чтобы свершить месть."
       },
       "impulses": {
         "en": [
@@ -339,7 +353,8 @@
       "builtin": true,
       "biomes": [
         "drylands"
-      ]
+      ],
+      "source": "Shalassa Desert"
     },
     {
       "id": "ancient-tomb",
@@ -349,6 +364,10 @@
       "name": {
         "en": "Ancient Tomb",
         "ru": "Древняя гробница"
+      },
+      "lore": {
+        "en": "An ancient sepulchral space, filled with sand and skeletal warriors.",
+        "ru": "Древняя усыпальница, заполненная песком и скелетами-воинами."
       },
       "impulses": {
         "en": [
@@ -441,7 +460,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Shalassa Desert"
     },
     {
       "id": "underground-chasm",
@@ -451,6 +471,10 @@
       "name": {
         "en": "Underground Chasm",
         "ru": "Подземная расселина"
+      },
+      "lore": {
+        "en": "A wide scar deep beneath the mountain that crawls with mutated monsters. Above the gaping maw hangs the corpse of an enormous infernal being, wrapped in chains, viscera still dripping from its thousands of wounds.",
+        "ru": "Широкий разлом глубоко под горой, кишащий мутировавшими чудовищами. Над зияющей пастью расселины висит труп огромного инфернального существа, закованного в цепи, — из тысяч ран всё ещё сочатся внутренности."
       },
       "impulses": {
         "en": [
@@ -558,7 +582,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Shalassa Desert"
     },
     {
       "id": "magic-city",
@@ -568,6 +593,10 @@
       "name": {
         "en": "Magic City",
         "ru": "Магический город"
+      },
+      "lore": {
+        "en": "A beautiful city where magic is mundane and its people accustomed to opulence and ease.",
+        "ru": "Прекрасный город, где магия — обыденность, а его жители привыкли к роскоши и лёгкой жизни."
       },
       "impulses": {
         "en": [
@@ -685,7 +714,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Shalassa Desert"
     },
     {
       "id": "ruined-castle",
@@ -695,6 +725,10 @@
       "name": {
         "en": "Ruined Castle",
         "ru": "Разрушенный замок"
+      },
+      "lore": {
+        "en": "A castle that has fallen into disrepair, covered in vines and left to the elements.",
+        "ru": "Замок, пришедший в упадок, оплетённый лозами и брошенный на волю стихий."
       },
       "impulses": {
         "en": [
@@ -795,7 +829,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Shalassa Desert"
     },
     {
       "id": "arcane-magic-shop",
