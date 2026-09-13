@@ -637,8 +637,13 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
 .card-impulses {
   font-size: var(--fs-card-copy); line-height: 1.5;
   color: var(--parchment-dim); font-style: normal;
+  display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;
 }
-.card-lore { margin: 0; }
+/* Lore is the enticing flavour text, so it gets more room than the impulse
+ * list before the card clips it — both numbers keep a mixed-length grid row
+ * from being stretched tall by one outlier card. */
+.card-lore { margin: 0; -webkit-line-clamp: 3; }
+.card-impulses { -webkit-line-clamp: 2; }
 .card-impulses-label {
   font-family: var(--font-display); font-style: normal; font-weight: 400;
   color: var(--parchment);
