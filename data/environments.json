@@ -3682,6 +3682,173 @@
       "source": "Dread GM Toolbox"
     },
     {
+      "id": "green-doom-tangle",
+      "tier": 4,
+      "type": "traversal",
+      "difficulty": 18,
+      "name": {
+        "en": "Green Doom Tangle",
+        "ru": "Чаща Зелёной Гибели"
+      },
+      "lore": {
+        "en": "A walking forest dripping with slime under a perpetual cloud. It is hiding an emerald obelisk in its center. PCs must traverse the woodlands to move from one segment to another. Flying over 100 feet up moves the PC into the Clouds.",
+        "ru": "Шагающий лес, сочащийся слизью под непрекращающимся облаком. В его центре скрыт изумрудный обелиск. Персонажи должны пробираться через лесные заросли, чтобы перейти от одного участка к другому. Полёт выше 100 футов переносит персонажа в Облака."
+      },
+      "impulses": {
+        "en": [
+          "Consume",
+          "obscure",
+          "protect"
+        ],
+        "ru": [
+          "Поглощать",
+          "скрывать",
+          "защищать"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Fallen Sorcerer",
+          "Dread Naga",
+          "Slime Dragon",
+          "Oozes",
+          "Outer Realms Abomination",
+          "Outer Realms Corrupter",
+          "Outer Realms Thrall"
+        ],
+        "ru": [
+          "Падший Чародей",
+          "Ужасная Нага",
+          "Слизистый Дракон",
+          "Слизни",
+          "Мерзость Внешних Пределов",
+          "Осквернитель Внешних Пределов",
+          "Раб Внешних Пределов"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Trackless Vegetation",
+            "ru": "Бездорожная Растительность"
+          },
+          "description": {
+            "en": "When the party enters the forest or jungle (the Green Doom takes the form of the biome it was born in), activate a Dynamic Progress Countdown (6) to get to the next segment. Describe the woodland each step of the way, and allow party members to use Reaction Rolls using any traits and experiences that make sense to help their navigator make their navigate roll. When the countdown is triggered, they reach their target segment and each PC gains a Hope.",
+            "ru": "Когда группа входит в лес или джунгли (Зелёная Гибель принимает форму того биома, в котором она зародилась), активируйте Динамический Счётчик Прогресса (6) для перехода к следующему участку. Описывайте лесную местность на каждом шагу пути и позвольте участникам группы совершать Броски Реакции, используя любые черты и опыт, подходящие для помощи штурману в его броске навигации. Когда отсчёт срабатывает, они достигают целевого участка, и каждый персонаж получает Надежду."
+          },
+          "prompt": {
+            "en": "What tells your character that you are making progress?",
+            "ru": "Что подсказывает вашему персонажу, что вы продвигаетесь вперёд?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Slime Eruption",
+            "ru": "Извержение Слизи"
+          },
+          "description": {
+            "en": "Pick a point and everyone within Close Range of it is hit with an explosion of acidic green slime. Everyone affected must make an Agility Reaction Roll or take 4d8+8 magical damage. On a success, the PC takes half damage.",
+            "ru": "Выберите точку — все, кто находится в пределах Близкой дистанции от неё, поражаются взрывом едкой зелёной слизи. Все затронутые должны совершить Бросок Реакции на Проворность или получить 4d8+8 магического урона. При успехе персонаж получает половину урона."
+          },
+          "prompt": {
+            "en": "You took half damage. What did you notice that helped you dodge the full effect of the acid? Should this give you advantage on similar attacks in the future?",
+            "ru": "Вы получили половину урона. Что вы заметили, что помогло вам увернуться от полного действия кислоты? Должно ли это дать вам преимущество на похожие атаки в будущем?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Stressed Out",
+            "ru": "На Взводе"
+          },
+          "description": {
+            "en": "If a PC fails with Fear on an Action roll, they mark a Stress.",
+            "ru": "Если персонаж проваливает бросок Действия со Страхом, он отмечает Стресс."
+          },
+          "prompt": {
+            "en": "What is it about this place that stresses you out?",
+            "ru": "Что в этом месте так выматывает вам нервы?"
+          }
+        }
+      ],
+      "builtin": true,
+      "biomes": [
+        "forest"
+      ],
+      "source": "Dread GM Toolbox"
+    },
+    {
+      "id": "green-doom-skies",
+      "tier": 4,
+      "type": "traversal",
+      "difficulty": 18,
+      "name": {
+        "en": "Green Doom Skies",
+        "ru": "Небеса Зелёной Гибели"
+      },
+      "lore": {
+        "en": "A perpetual storm with thunder and crimson lightning, as gale force winds that fight fliers, but don't affect Slime Dragons.",
+        "ru": "Нескончаемая буря с громом и багровыми молниями, где штормовой ветер противостоит летящим, но не действует на Слизистых Драконов."
+      },
+      "impulses": {
+        "en": [
+          "Obstruct",
+          "rage"
+        ],
+        "ru": [
+          "Препятствовать",
+          "бушевать"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Slime Dragon"
+        ],
+        "ru": [
+          "Слизистый Дракон"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "The Maelstrom",
+            "ru": "Мальстрём"
+          },
+          "description": {
+            "en": "When the party enters the Clouds, activate a Dynamic Progress Countdown (8) to get to the next segment. Describe the buffeting storm each flap of the wing, and allow party members to use Reaction Rolls using any traits and experiences that make sense to help their navigator make their navigate roll. When the countdown is triggered, they reach their target segment and each PC gains a Hope.",
+            "ru": "Когда группа входит в Облака, активируйте Динамический Счётчик Прогресса (8) для перехода к следующему участку. Описывайте швыряющую из стороны в сторону бурю на каждом взмахе крыльев и позвольте участникам группы совершать Броски Реакции, используя любые черты и опыт, подходящие для помощи штурману в его броске навигации. Когда отсчёт срабатывает, они достигают целевого участка, и каждый персонаж получает Надежду."
+          },
+          "prompt": {
+            "en": "Are you making progress through the storm? How can you tell?",
+            "ru": "Продвигаетесь ли вы сквозь бурю? Как вы это понимаете?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Hammer of the Gods",
+            "ru": "Молот Богов"
+          },
+          "description": {
+            "en": "Spend a Fear to bring deafening thunder causing all the PCs to attempt a Strength Reaction Roll. A failure causes PCs to take 4d10+10 magical damage and to mark a Stress. A success causes half damage.",
+            "ru": "Потратьте Страх, чтобы обрушить оглушительный гром, заставляющий всех персонажей совершить Бросок Реакции на Силу. При неудаче персонажи получают 4d10+10 магического урона и отмечают Стресс. При успехе они получают половину урона."
+          },
+          "prompt": {
+            "en": "What other time have you heard such thunder?",
+            "ru": "Когда ещё вы слышали такой гром?"
+          }
+        }
+      ],
+      "builtin": true,
+      "biomes": [
+        "universal"
+      ],
+      "source": "Dread GM Toolbox"
+    },
+    {
       "id": "acid-burrows",
       "tier": 1,
       "type": "exploration",

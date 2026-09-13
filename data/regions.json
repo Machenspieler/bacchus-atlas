@@ -106,7 +106,9 @@
       "name": { "en": "The Devouring Green", "ru": "Пожирающая Зелень" },
       "environments": [
         "devouring-green",
-        "devouring-green-ritual"
+        "devouring-green-ritual",
+        "green-doom-tangle",
+        "green-doom-skies"
       ]
     }
   ]
