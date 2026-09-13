@@ -841,6 +841,10 @@
         "en": "Arcane Magic Shop",
         "ru": "Магическая Лавка"
       },
+      "lore": {
+        "en": "A place for adventurers and the wealthy to buy and sell magic items. Often attached to a wizard's residence.",
+        "ru": "Место, где искатели приключений и богачи покупают и продают магические предметы. Часто соседствует с резиденцией волшебника."
+      },
       "impulses": {
         "en": [
           "Buy low, and sell high",
@@ -934,7 +938,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "jungle-path",
@@ -944,6 +949,10 @@
       "name": {
         "en": "Jungle Path",
         "ru": "Тропа через Джунгли"
+      },
+      "lore": {
+        "en": "As soon as you leave the river with its farms and villages, the hills rise wild with jungle and swamp.",
+        "ru": "Стоит покинуть реку с её фермами и деревнями, как начинаются дикие холмы, поросшие джунглями и болотами."
       },
       "impulses": {
         "en": [
@@ -1038,7 +1047,8 @@
       "builtin": true,
       "biomes": [
         "tropical"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "lizardfolk-village",
@@ -1048,6 +1058,10 @@
       "name": {
         "en": "Lizardfolk Village",
         "ru": "Деревня Ящеролюдов"
+      },
+      "lore": {
+        "en": "A small village of lizardfolk in a swamp, jungle, or both.",
+        "ru": "Небольшая деревня ящеролюдов в болоте, джунглях или там и там сразу."
       },
       "impulses": {
         "en": [
@@ -1136,7 +1150,8 @@
         "settlement",
         "wetland",
         "tropical"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "civic-library",
@@ -1265,6 +1280,10 @@
         "en": "The Devouring Green",
         "ru": "Пожирающая Зелень"
       },
+      "lore": {
+        "en": "The PCs enter a deep part of the forest or jungle and feel the malice directed at them. This swath of dense vegetation is hungry for meat. Once normal plants have turned into dangerous predators. A healing ritual must be learned and performed to heal the Green. See the Devouring Green Ritual.",
+        "ru": "Персонажи входят вглубь леса или джунглей и чувствуют направленную на них злобу. Эта полоса густой растительности жаждет мяса. Некогда обычные растения превратились в опасных хищников. Чтобы исцелить Зелень, нужно узнать и провести ритуал исцеления. См. «Ритуал Пожирающей Зелени»."
+      },
       "impulses": {
         "en": [
           "Eat",
@@ -1346,7 +1365,8 @@
       "biomes": [
         "forest",
         "tropical"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "devouring-green-ritual",
@@ -1356,6 +1376,10 @@
       "name": {
         "en": "Devouring Green Ritual",
         "ru": "Ритуал Пожирающей Зелени"
+      },
+      "lore": {
+        "en": "In this environment within an environment, the PCs try to complete a ritual while the forces of the Devouring Green try to stop them.",
+        "ru": "В этом окружении, вложенном в другое окружение, персонажи пытаются завершить ритуал, пока силы Пожирающей Зелени пытаются им помешать."
       },
       "impulses": {
         "en": [
@@ -1451,7 +1475,8 @@
       "biomes": [
         "forest",
         "tropical"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "domain-of-dinosaurs",
@@ -1461,6 +1486,10 @@
       "name": {
         "en": "Domain of Dinosaurs",
         "ru": "Владения Динозавров"
+      },
+      "lore": {
+        "en": "Wilderness dominated by dinosaurs that will resist outsiders entering uninvited.",
+        "ru": "Дикие земли, где властвуют динозавры, готовые дать отпор чужакам, вторгшимся без приглашения."
       },
       "impulses": {
         "en": [
@@ -1532,7 +1561,8 @@
       "builtin": true,
       "biomes": [
         "tropical"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "forgotten-temple-of-the-serpent",
@@ -1542,6 +1572,10 @@
       "name": {
         "en": "Forgotten Temple of the Serpent",
         "ru": "Забытый Храм Змея"
+      },
+      "lore": {
+        "en": "Overgrown ruins hide new threats and old. New owners (Giants work well) have claimed the ruins, but hide until they are ready to spring into action.",
+        "ru": "Заросшие руины таят в себе новые и старые угрозы. Новые хозяева (хорошо подойдут Великаны) заявили права на руины, но скрываются, пока не будут готовы перейти к действию."
       },
       "impulses": {
         "en": [
@@ -1632,7 +1666,8 @@
       "builtin": true,
       "biomes": [
         "tropical"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "jungle-trek",
@@ -1642,6 +1677,10 @@
       "name": {
         "en": "Jungle Trek",
         "ru": "Переход через Джунгли"
+      },
+      "lore": {
+        "en": "Travel through the jungle is never an easy task.",
+        "ru": "Путешествие через джунгли никогда не бывает лёгкой задачей."
       },
       "impulses": {
         "en": [
@@ -1755,7 +1794,8 @@
       "builtin": true,
       "biomes": [
         "tropical"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "tower-of-slime",
@@ -1765,6 +1805,10 @@
       "name": {
         "en": "Tower of Slime",
         "ru": "Башня Слизи"
+      },
+      "lore": {
+        "en": "A tower with doors, arrow slits, and everything. Only made of ever-dripping slime. Tower guards, servants, and others come and go. And they are all made of slime.",
+        "ru": "Башня как башня — с дверями, бойницами и всем прочим. Только вся она сделана из вечно капающей слизи. Стражники башни, слуги и прочие обитатели снуют туда-сюда. И все они тоже сделаны из слизи."
       },
       "impulses": {
         "en": [
@@ -1868,7 +1912,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "court-of-cats",
@@ -1878,6 +1923,10 @@
       "name": {
         "en": "Court of Cats",
         "ru": "Кошачий Двор"
+      },
+      "lore": {
+        "en": "A fey woodland with wondrous towers, bridges, meadows all around. While it has lots and lots of cats, lots of other creatures live here. Even a few half-humans! While not everyone is a cat, there certainly a lot of catty folk.",
+        "ru": "Фейский лесной край с чудесными башнями, мостами и лугами повсюду. Здесь очень и очень много кошек, но живут и другие существа — даже несколько полулюдей! Не все здесь коты, но кошачьего люда определённо хватает."
       },
       "impulses": {
         "en": [
@@ -2020,7 +2069,8 @@
       "builtin": true,
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "court-of-hounds",
@@ -2030,6 +2080,10 @@
       "name": {
         "en": "Court of Hounds",
         "ru": "Псиный Двор"
+      },
+      "lore": {
+        "en": "A Fey realm of imposing castles, dark forest, wild heaths, rolling hills, and long lakes. Where the day is short, the night is long, the hounds are howling, and the wind is blowing.",
+        "ru": "Фейское царство величественных замков, тёмного леса, диких пустошей, пологих холмов и длинных озёр. Где день короток, ночь длинна, воют гончие и дует ветер."
       },
       "impulses": {
         "en": [
@@ -2140,7 +2194,8 @@
       "builtin": true,
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "deserted-moor",
@@ -2150,6 +2205,10 @@
       "name": {
         "en": "Deserted Moor",
         "ru": "Пустынная Пустошь"
+      },
+      "lore": {
+        "en": "A lonely moor with curious plants and the haunting howl of wolves.",
+        "ru": "Одинокая пустошь с диковинными растениями и жутким волчьим воем."
       },
       "impulses": {
         "en": [
@@ -2246,7 +2305,8 @@
       "builtin": true,
       "biomes": [
         "rolling"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "fey-lands",
@@ -2256,6 +2316,10 @@
       "name": {
         "en": "Fey Lands",
         "ru": "Фейские Земли"
+      },
+      "lore": {
+        "en": "A realm of magic, wonder, and danger. Emotions run high here, and logic takes a back seat to feelings. In these lands, you may find the Court of Cats and the Court of Hounds, and any other Fey courts you care to add. The Fey courts are a part of the Fey lands, and anything in this environment can happen in the courts.",
+        "ru": "Владения магии, чудес и опасности. Здесь эмоции берут верх, а логика уступает место чувствам. В этих землях можно найти Кошачий Двор и Псиный Двор, а также любые другие Фейские дворы, какие пожелаете добавить. Фейские дворы — часть Фейских земель, и всё, что происходит в этом окружении, может произойти и в них."
       },
       "impulses": {
         "en": [
@@ -2370,7 +2434,8 @@
       "builtin": true,
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "haunted-mountain-pass",
@@ -2380,6 +2445,10 @@
       "name": {
         "en": "Haunted Mountain Pass",
         "ru": "Призрачный Горный Перевал"
+      },
+      "lore": {
+        "en": "A choke point on the way to an important and dangerous place, steep cliffs up and down, roaring mountain rivers, impenetrable mists, and tall trees blocking the sun all make this a forbidding place to navigate. The pass has fallen under a dark spell.",
+        "ru": "Узкий проход на пути к важному и опасному месту: крутые обрывы вверх и вниз, ревущие горные реки, непроглядные туманы и высокие деревья, заслоняющие солнце, — всё это делает путь через перевал пугающе трудным. Перевал пал под тёмными чарами."
       },
       "impulses": {
         "en": [
@@ -2469,7 +2538,8 @@
       "biomes": [
         "mountain",
         "forest"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "mystic-ring",
@@ -2479,6 +2549,10 @@
       "name": {
         "en": "Mystic Ring",
         "ru": "Мистическое Кольцо"
+      },
+      "lore": {
+        "en": "A circle of massive standing stones holds secrets.",
+        "ru": "Круг из массивных менгиров хранит тайны."
       },
       "impulses": {
         "en": [
@@ -2554,7 +2628,8 @@
       "builtin": true,
       "biomes": [
         "rolling"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "scorching-dungeon",
@@ -2564,6 +2639,10 @@
       "name": {
         "en": "Scorching Dungeon",
         "ru": "Раскалённое Подземелье"
+      },
+      "lore": {
+        "en": "Lava, steam, giant furnaces, and magic makes this dungeon hot and dangerous. The creatures here are those bred for this environment.",
+        "ru": "Лава, пар, гигантские печи и магия делают это подземелье горячим и опасным. Существа здесь — те, кто был выведен именно для этой среды."
       },
       "impulses": {
         "en": [
@@ -2763,7 +2842,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "shadowfen",
@@ -2773,6 +2853,10 @@
       "name": {
         "en": "Shadowfen",
         "ru": "Сумрачная Топь"
+      },
+      "lore": {
+        "en": "A fog-shrouded marsh with things gleaming through the murk of the cold waters.",
+        "ru": "Окутанное туманом болото, в мутной толще холодных вод которого что-то поблёскивает."
       },
       "impulses": {
         "en": [
@@ -2852,7 +2936,8 @@
       "builtin": true,
       "biomes": [
         "wetland"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "unhallowed-ground",
@@ -2862,6 +2947,10 @@
       "name": {
         "en": "Unhallowed Ground",
         "ru": "Оскверненная Земля"
+      },
+      "lore": {
+        "en": "Once a holy place, now a place of shadows and evil, with new owners. It looks abandoned, but hides a dark secret. Example: Carfax Abbey from Dracula by Bram Stoker.",
+        "ru": "Некогда святое место, теперь — обитель теней и зла с новыми хозяевами. Выглядит заброшенным, но скрывает мрачную тайну. Пример: аббатство Карфакс из «Дракулы» Брэма Стокера."
       },
       "impulses": {
         "en": [
@@ -2973,7 +3062,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "vampires-castle",
@@ -2983,6 +3073,10 @@
       "name": {
         "en": "Vampire's Castle",
         "ru": "Замок Вампира"
+      },
+      "lore": {
+        "en": "High up a haunted mountain pass, with views down to a river in a steep ravine, this Gothic castle is built to impress. Outside, bats fly and wolves howl in the night and screams are heard from inside the castle.",
+        "ru": "Высоко в призрачном горном перевале, откуда открывается вид на реку в глубоком ущелье, стоит этот готический замок, построенный, чтобы производить впечатление. Снаружи по ночам летают летучие мыши и воют волки, а изнутри замка доносятся крики."
       },
       "impulses": {
         "en": [
@@ -3094,7 +3188,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "wispy-wasteland",
@@ -3104,6 +3199,10 @@
       "name": {
         "en": "Wispy Wasteland",
         "ru": "Туманная Пустошь"
+      },
+      "lore": {
+        "en": "Moors, swamps, grasslands and the occasional forest haunted by Wisps. These wisps can't be fought, can barely interact with PCs, but can provide clues to your larger campaign. When playing Against the Dying of the Light, use Starchild for the Faction encountered here. Otherwise use your own helpful faction.",
+        "ru": "Пустоши, болота, луга и редкие леса, населённые Духами. С этими духами нельзя сражаться, они едва ли способны взаимодействовать с персонажами, но могут дать подсказки для вашей большой кампании. Если вы играете в «Against the Dying of the Light», используйте здесь фракцию Starchild. В противном случае используйте свою собственную дружественную фракцию."
       },
       "impulses": {
         "en": [
@@ -3177,7 +3276,8 @@
       "builtin": true,
       "biomes": [
         "badlands"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "city-out-of-time",
@@ -3187,6 +3287,10 @@
       "name": {
         "en": "City Out of Time",
         "ru": "Город Вне Времени"
+      },
+      "lore": {
+        "en": "Years ago, a character had a bizarre experience while exploring an ancient ruin. Their mind was swapped with those of a Yithian who lived ages ago. The character's mind was abruptly stuffed into the body of the Yithian, and the Yithian took over the character's body. The Yithian used the body to explore the world and delve into occult mysteries, then they both returned to their original bodies. The character had no memory of this time. Now memories of being trapped in a Yithian's body are returning during nightmares. The character is drawn to the ancient ruins, where this all began. If the character is a PC, make sure they don't mind this addition to their backstory. The ruins are filled with spiraling ramps, massive shafts, and cyclopean galleries.",
+        "ru": "Много лет назад один из персонажей пережил странное происшествие, исследуя древние руины. Его разум поменялся местами с разумом йитианина, жившего в незапамятные времена. Разум персонажа был внезапно втиснут в тело йитианина, а йитианин завладел телом персонажа. Йитианин использовал это тело, чтобы исследовать мир и постигать оккультные тайны, после чего оба вернулись в свои исходные тела. У персонажа не осталось воспоминаний об этом времени. Теперь во снах к нему возвращаются воспоминания о том, как он был заперт в теле йитианина. Персонажа тянет к древним руинам, где всё это началось. Если это персонаж игрока, убедитесь, что он не против такого дополнения к своей предыстории. Руины заполнены спиральными пандусами, огромными шахтами и циклопическими галереями."
       },
       "impulses": {
         "en": [
@@ -3343,7 +3447,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "deep-one-city",
@@ -3353,6 +3458,10 @@
       "name": {
         "en": "Deep One City",
         "ru": "Город Глубоководных"
+      },
+      "lore": {
+        "en": "Just off a dangerous reef lies an undersea city grown from coral. It is one of the homes of Mother Hydra, and thousands of Deep Ones live here. Undersea life is rich, and local people who worship Mother Hydra fish these waters while Deep Ones drive fish into their nets.",
+        "ru": "Неподалёку от опасного рифа лежит подводный город, выросший из кораллов. Это одна из обителей Матери Гидры, и здесь живут тысячи Глубоководных. Подводная жизнь здесь богата: местные жители, поклоняющиеся Матери Гидре, рыбачат в этих водах, а Глубоководные загоняют рыбу в их сети."
       },
       "impulses": {
         "en": [
@@ -3448,7 +3557,8 @@
       "biomes": [
         "aquatic",
         "settlement"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "dreamlands",
@@ -3458,6 +3568,10 @@
       "name": {
         "en": "Dreamlands",
         "ru": "Страна Снов"
+      },
+      "lore": {
+        "en": "A world where cats speak their own language and can leap from gabled roofs to the moon. Where shining cities trade with flying ships with unspeakable crews. A world of breathtaking beauty and relentless horror. Where people from the waking world can enter during their dreams or where people can use artifacts, such as the Silver Key, to enter physically while awake. Ghoul burrows often connect the two worlds, and magic gates are known to exist.",
+        "ru": "Мир, где кошки говорят на собственном языке и могут прыгать с двускатных крыш прямо на луну. Где сияющие города торгуют с летающими кораблями с неописуемыми экипажами. Мир захватывающей красоты и неослабевающего ужаса. Куда люди из мира бодрствования могут попасть во сне, а могут — с помощью артефактов, таких как Серебряный Ключ, — проникнуть туда наяву, во плоти. Два мира часто соединяют норы гулей, и, как известно, существуют и магические врата."
       },
       "impulses": {
         "en": [
@@ -3564,7 +3678,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Dread GM Toolbox"
     },
     {
       "id": "acid-burrows",
