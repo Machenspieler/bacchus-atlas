@@ -311,8 +311,18 @@ function looksLikeAdversaryName(name) {
  * Glass Snake)", so it's passed through unchanged. */
 const ADVERSARY_GROUP_NAME_PREFIXES = {
   'Jagged Knife Bandits': 'Jagged Knife',
+  'Jagged Knife': 'Jagged Knife',
   'Outer Realms Monstrosities': 'Outer Realms',
   'Outer Realms': 'Outer Realms',
+  Skeletons: 'Skeleton',
+  Spectral: 'Spectral',
+  'Spectral Warriors': 'Spectral',
+  Pirates: 'Pirate',
+  Cultists: 'Cult',
+  Demons: 'Demon of',
+  'Vault Guardians': 'Vault Guardian',
+  Hallowed: 'Hallowed',
+  Fallen: 'Fallen',
 };
 
 /** A few groups don't follow the prefix pattern above at all — "Guards (Head,
@@ -334,6 +344,24 @@ const GUARD_GROUP_MEMBER_ALIASES = {
 const ADVERSARY_GROUP_MEMBER_ALIASES = {
   Guards: GUARD_GROUP_MEMBER_ALIASES,
   Guard: GUARD_GROUP_MEMBER_ALIASES,
+  /* "Assassins" doesn't follow one uniform prefix or suffix: Apprentice and
+   * Master take "Assassin" as a suffix, but Poisoner takes it as a prefix
+   * ("Assassin Poisoner", not "Poisoner Assassin") — confirmed against
+   * FreshCutGrass's own adversary list, which has no plain "Poisoner". */
+  Assassins: {
+    Apprentice: 'Apprentice Assassin',
+    Master: 'Master Assassin',
+    Poisoner: 'Assassin Poisoner',
+  },
+  /* "Sundry Ne'er-Do-Wells (Jagged Knife Bandit, Lackey)" already spells its
+   * first member out in full; only "Lackey" is bare and needs disambiguating
+   * to the "Jagged Knife Lackey" bestiary entry. */
+  "Sundry Ne'er-Do-Wells": { Lackey: 'Jagged Knife Lackey' },
+  /* Elemental groups wrap the bare member on both sides ("Minor" + member +
+   * "Elemental"), which fullAdversaryName's single prefix can't express. */
+  Elementals: { 'Greater Earth': 'Greater Earth Elemental' },
+  'Greater Elementals': { Earth: 'Greater Earth Elemental', Water: 'Greater Water Elemental' },
+  'Minor Elementals': { Fire: 'Minor Fire Elemental', Chaos: 'Minor Chaos Elemental' },
 };
 
 /** The FreshCutGrass-recognizable name for one member of a Potential
