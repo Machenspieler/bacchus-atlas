@@ -1183,6 +1183,10 @@ function sourcesTriggerLabel(sources) {
 }
 
 function renderToolbar() {
+  // The toolbar is about to be torn down and rebuilt; any open dropdown's
+  // listeners would otherwise reference DOM nodes this innerHTML replace is
+  // just about to detach.
+  closeActiveMultiSelect();
   const el = document.getElementById('toolbar');
   const envs = currentEnvs();
   /* Every group offers only what the environments in front of you actually
@@ -1254,36 +1258,48 @@ function renderToolbar() {
         ${types.length || showRegionPill ? `
         <div class="field ms-field" id="f-types-field">
           <button type="button" class="ms-trigger field-control" id="f-types-btn"
-                  aria-haspopup="listbox" aria-expanded="false">
+                  aria-expanded="false" aria-controls="f-types-panel">
             <span class="ms-trigger-label">${typesTriggerLabel(types)}</span>
           </button>
-          <div class="ms-panel" id="f-types-panel" role="listbox" aria-multiselectable="true" hidden>
-            ${types.map(type => `<div class="ms-row ${state.filters.types.has(type) ? 'selected' : ''}"
-                 role="option" aria-selected="${state.filters.types.has(type)}" data-type="${type}">${t('type_' + type)}</div>`).join('')}
-            ${showRegionPill ? `<div class="ms-row ${state.filters.regionOnly ? 'selected' : ''}"
-                 role="option" aria-selected="${state.filters.regionOnly}" id="f-region" data-type="region">${t('region_label')}</div>` : ''}
+          <div class="ms-panel" id="f-types-panel" role="group" aria-label="${t('filter_type')}" hidden>
+            ${types.map(type => `
+            <label class="ms-row">
+              <input type="checkbox" class="ms-checkbox sr-only" data-type="${type}" ${state.filters.types.has(type) ? 'checked' : ''}>
+              <span class="ms-row-label">${t('type_' + type)}</span>
+            </label>`).join('')}
+            ${showRegionPill ? `
+            <label class="ms-row">
+              <input type="checkbox" class="ms-checkbox sr-only" data-type="region" ${state.filters.regionOnly ? 'checked' : ''}>
+              <span class="ms-row-label">${t('region_label')}</span>
+            </label>` : ''}
           </div>
         </div>` : ''}
         ${usedBiomes.length ? `
         <div class="field ms-field" id="f-biomes-field">
           <button type="button" class="ms-trigger field-control" id="f-biomes-btn"
-                  aria-haspopup="listbox" aria-expanded="false">
+                  aria-expanded="false" aria-controls="f-biomes-panel">
             <span class="ms-trigger-label">${biomesTriggerLabel(usedBiomes)}</span>
           </button>
-          <div class="ms-panel" id="f-biomes-panel" role="listbox" aria-multiselectable="true" hidden>
-            ${usedBiomes.map(biome => `<div class="ms-row ${state.filters.biomes.has(biome) ? 'selected' : ''}"
-                 role="option" aria-selected="${state.filters.biomes.has(biome)}" data-biome="${biome}">${t('biome_' + biome)}</div>`).join('')}
+          <div class="ms-panel" id="f-biomes-panel" role="group" aria-label="${t('filter_biome')}" hidden>
+            ${usedBiomes.map(biome => `
+            <label class="ms-row">
+              <input type="checkbox" class="ms-checkbox sr-only" data-biome="${biome}" ${state.filters.biomes.has(biome) ? 'checked' : ''}>
+              <span class="ms-row-label">${t('biome_' + biome)}</span>
+            </label>`).join('')}
           </div>
         </div>` : ''}
         ${usedSources.length ? `
         <div class="field ms-field" id="f-sources-field">
           <button type="button" class="ms-trigger field-control" id="f-sources-btn"
-                  aria-haspopup="listbox" aria-expanded="false">
+                  aria-expanded="false" aria-controls="f-sources-panel">
             <span class="ms-trigger-label">${sourcesTriggerLabel(usedSources)}</span>
           </button>
-          <div class="ms-panel" id="f-sources-panel" role="listbox" aria-multiselectable="true" hidden>
-            ${usedSources.map(source => `<div class="ms-row ${state.filters.sources.has(source) ? 'selected' : ''}"
-                 role="option" aria-selected="${state.filters.sources.has(source)}" data-source="${escapeAttr(source)}">${escapeHtml(source)}</div>`).join('')}
+          <div class="ms-panel" id="f-sources-panel" role="group" aria-label="${t('filter_source')}" hidden>
+            ${usedSources.map(source => `
+            <label class="ms-row">
+              <input type="checkbox" class="ms-checkbox sr-only" data-source="${escapeAttr(source)}" ${state.filters.sources.has(source) ? 'checked' : ''}>
+              <span class="ms-row-label">${escapeHtml(source)}</span>
+            </label>`).join('')}
           </div>
         </div>` : ''}
       </div>
@@ -1321,99 +1337,112 @@ function renderToolbar() {
   }));
   const typesField = document.getElementById('f-types-field');
   if (typesField) {
-    const typesBtn = document.getElementById('f-types-btn');
-    const typesPanel = document.getElementById('f-types-panel');
-    function outsideClose(e) {
-      if (!typesField.contains(e.target)) closePanel();
-    }
-    function closePanel() {
-      typesPanel.hidden = true;
-      typesBtn.setAttribute('aria-expanded', 'false');
-      document.removeEventListener('click', outsideClose);
-    }
-    typesBtn.addEventListener('click', () => {
-      const open = typesPanel.hidden;
-      typesPanel.hidden = !open;
-      typesBtn.setAttribute('aria-expanded', String(open));
-      if (open) document.addEventListener('click', outsideClose);
-      else document.removeEventListener('click', outsideClose);
+    bindMultiSelectField({
+      field: typesField,
+      trigger: document.getElementById('f-types-btn'),
+      panel: document.getElementById('f-types-panel'),
+      onToggle(cb) {
+        if (cb.dataset.type === 'region') state.filters.regionOnly = cb.checked;
+        else setSetValue(state.filters.types, cb.dataset.type, cb.checked);
+      },
+      updateLabel(trigger) { trigger.querySelector('.ms-trigger-label').textContent = typesTriggerLabel(types); },
     });
-    typesPanel.querySelectorAll('.ms-row').forEach(row => row.addEventListener('click', () => {
-      let selected;
-      if (row.id === 'f-region') { state.filters.regionOnly = !state.filters.regionOnly; selected = state.filters.regionOnly; }
-      else { toggleSetValue(state.filters.types, row.dataset.type); selected = state.filters.types.has(row.dataset.type); }
-      row.classList.toggle('selected', selected);
-      row.setAttribute('aria-selected', String(selected));
-      typesBtn.querySelector('.ms-trigger-label').textContent = typesTriggerLabel(types);
-      renderGrid();
-      // Picking something is a complete action and closes the panel;
-      // unpicking is refinement, so the panel stays open for the next pick.
-      if (selected) closePanel();
-    }));
-  }
-  const sourcesField = document.getElementById('f-sources-field');
-  if (sourcesField) {
-    const sourcesBtn = document.getElementById('f-sources-btn');
-    const sourcesPanel = document.getElementById('f-sources-panel');
-    function outsideCloseSources(e) {
-      if (!sourcesField.contains(e.target)) closeSourcesPanel();
-    }
-    function closeSourcesPanel() {
-      sourcesPanel.hidden = true;
-      sourcesBtn.setAttribute('aria-expanded', 'false');
-      document.removeEventListener('click', outsideCloseSources);
-    }
-    sourcesBtn.addEventListener('click', () => {
-      const open = sourcesPanel.hidden;
-      sourcesPanel.hidden = !open;
-      sourcesBtn.setAttribute('aria-expanded', String(open));
-      if (open) document.addEventListener('click', outsideCloseSources);
-      else document.removeEventListener('click', outsideCloseSources);
-    });
-    sourcesPanel.querySelectorAll('.ms-row').forEach(row => row.addEventListener('click', () => {
-      toggleSetValue(state.filters.sources, row.dataset.source);
-      const selected = state.filters.sources.has(row.dataset.source);
-      row.classList.toggle('selected', selected);
-      row.setAttribute('aria-selected', String(selected));
-      sourcesBtn.querySelector('.ms-trigger-label').textContent = sourcesTriggerLabel(usedSources);
-      renderGrid();
-      if (selected) closeSourcesPanel();
-    }));
   }
   const biomesField = document.getElementById('f-biomes-field');
   if (biomesField) {
-    const biomesBtn = document.getElementById('f-biomes-btn');
-    const biomesPanel = document.getElementById('f-biomes-panel');
-    function outsideCloseBiomes(e) {
-      if (!biomesField.contains(e.target)) closeBiomesPanel();
-    }
-    function closeBiomesPanel() {
-      biomesPanel.hidden = true;
-      biomesBtn.setAttribute('aria-expanded', 'false');
-      document.removeEventListener('click', outsideCloseBiomes);
-    }
-    biomesBtn.addEventListener('click', () => {
-      const open = biomesPanel.hidden;
-      biomesPanel.hidden = !open;
-      biomesBtn.setAttribute('aria-expanded', String(open));
-      if (open) document.addEventListener('click', outsideCloseBiomes);
-      else document.removeEventListener('click', outsideCloseBiomes);
+    bindMultiSelectField({
+      field: biomesField,
+      trigger: document.getElementById('f-biomes-btn'),
+      panel: document.getElementById('f-biomes-panel'),
+      onToggle(cb) { setSetValue(state.filters.biomes, cb.dataset.biome, cb.checked); },
+      updateLabel(trigger) { trigger.querySelector('.ms-trigger-label').textContent = biomesTriggerLabel(usedBiomes); },
     });
-    biomesPanel.querySelectorAll('.ms-row').forEach(row => row.addEventListener('click', () => {
-      toggleSetValue(state.filters.biomes, row.dataset.biome);
-      const selected = state.filters.biomes.has(row.dataset.biome);
-      row.classList.toggle('selected', selected);
-      row.setAttribute('aria-selected', String(selected));
-      biomesBtn.querySelector('.ms-trigger-label').textContent = biomesTriggerLabel(usedBiomes);
-      renderGrid();
-      if (selected) closeBiomesPanel();
-    }));
+  }
+  const sourcesField = document.getElementById('f-sources-field');
+  if (sourcesField) {
+    bindMultiSelectField({
+      field: sourcesField,
+      trigger: document.getElementById('f-sources-btn'),
+      panel: document.getElementById('f-sources-panel'),
+      onToggle(cb) { setSetValue(state.filters.sources, cb.dataset.source, cb.checked); },
+      updateLabel(trigger) { trigger.querySelector('.ms-trigger-label').textContent = sourcesTriggerLabel(usedSources); },
+    });
   }
   const backBtn = document.getElementById('btn-back-to-lists');
   if (backBtn) backBtn.addEventListener('click', () => navigate('#/lists'));
 }
 
 function toggleSetValue(set, value) { set.has(value) ? set.delete(value) : set.add(value); }
+
+// A checkbox's `checked` after a user interaction already IS the wanted
+// membership, so the multiselect dropdowns sync directly instead of toggling.
+function setSetValue(set, value, on) { on ? set.add(value) : set.delete(value); }
+
+// At most one Type/Biome/Source dropdown is open at a time; this holds its
+// controller so opening another (or rebuilding the toolbar) can close it and
+// tear down the document-level listeners it added, instead of leaking them.
+let activeMultiSelect = null;
+function closeActiveMultiSelect() {
+  if (activeMultiSelect) activeMultiSelect.close();
+}
+
+/* Shared behavior behind the Type, Biome and Source dropdowns: instant
+ * checkbox filtering that never auto-closes on its own, closing only on an
+ * explicit exit (trigger re-click, outside click, Escape, focus leaving the
+ * field, another dropdown opening, or the toolbar being rebuilt).
+ *
+ * `onToggle(checkbox)` applies one changed checkbox to state.filters;
+ * `updateLabel(trigger)` recomputes that trigger's "Label (n)" text from
+ * state.filters afterwards. Both run before renderGrid() so the trigger label
+ * and the grid never fall out of sync with each other. */
+function bindMultiSelectField({ field, trigger, panel, onToggle, updateLabel }) {
+  const controller = { close, isOpen: () => !panel.hidden };
+
+  function open() {
+    closeActiveMultiSelect();
+    panel.hidden = false;
+    trigger.setAttribute('aria-expanded', 'true');
+    document.addEventListener('click', onDocClick);
+    document.addEventListener('keydown', onDocKeydown);
+    activeMultiSelect = controller;
+  }
+  function close(returnFocus) {
+    panel.hidden = true;
+    trigger.setAttribute('aria-expanded', 'false');
+    document.removeEventListener('click', onDocClick);
+    document.removeEventListener('keydown', onDocKeydown);
+    if (activeMultiSelect === controller) activeMultiSelect = null;
+    if (returnFocus) trigger.focus();
+  }
+  function onDocClick(e) { if (!field.contains(e.target)) close(); }
+  function onDocKeydown(e) { if (e.key === 'Escape') close(true); }
+
+  trigger.addEventListener('click', () => { controller.isOpen() ? close() : open(); });
+  // Delegated: one listener for every checkbox in the panel, native Space/click
+  // toggling included, rather than one per row.
+  panel.addEventListener('change', e => {
+    const cb = e.target.closest('input[type="checkbox"]');
+    if (!cb) return;
+    onToggle(cb);
+    updateLabel(trigger);
+    renderGrid();
+  });
+  // Tab/Shift+Tab off the end of the field closes it. Checked on a deferred
+  // tick rather than off e.relatedTarget: clicking a row's label text (as
+  // opposed to the checkbox square itself) blurs the trigger to nothing
+  // *before* the label's own click forwards to and focuses its checkbox, so
+  // an immediate check here would see relatedTarget go null and close the
+  // panel out from under that same click. Deferring lets the browser finish
+  // moving focus to the checkbox first. A click leaving the field entirely is
+  // already handled by onDocClick above, and this is a no-op then.
+  field.addEventListener('focusout', () => {
+    setTimeout(() => {
+      if (controller.isOpen() && !field.contains(document.activeElement)) close();
+    }, 0);
+  });
+
+  return controller;
+}
 
 // Searching any term in a group also searches every other term in the group,
 // so "магазин" finds Магическая Лавка and "tavern" finds Магический город.
