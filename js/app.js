@@ -1427,15 +1427,20 @@ function bindMultiSelectField({ field, trigger, panel, onToggle, updateLabel }) 
     updateLabel(trigger);
     renderGrid();
   });
-  // Tab/Shift+Tab off the end of the field closes it. Checked on a deferred
-  // tick rather than off e.relatedTarget: clicking a row's label text (as
-  // opposed to the checkbox square itself) blurs the trigger to nothing
-  // *before* the label's own click forwards to and focuses its checkbox, so
-  // an immediate check here would see relatedTarget go null and close the
-  // panel out from under that same click. Deferring lets the browser finish
-  // moving focus to the checkbox first. A click leaving the field entirely is
-  // already handled by onDocClick above, and this is a no-op then.
-  field.addEventListener('focusout', () => {
+  // Tab/Shift+Tab off the end of the field closes it — checked only on an
+  // actual Tab keydown, never on a generic focusout. A mouse click on
+  // anything non-focusable inside the row (the row's own padding, a native
+  // scrollbar thumb) blurs whatever last had focus *before* that click's own
+  // effect (forwarding to the checkbox, or just scrolling) plays out, and a
+  // real mouse gesture leaves tens of milliseconds between that blur and the
+  // matching click — plenty of time for a deferred focusout check to run
+  // first and close the panel out from under the click it was reacting to.
+  // Gating on Tab avoids that: only a real Tab keypress reaches here, and its
+  // own focus move is already synchronous with the keydown, so a same-tick
+  // deferred check is safe. A click leaving the field entirely is handled by
+  // onDocClick above regardless.
+  field.addEventListener('keydown', e => {
+    if (e.key !== 'Tab') return;
     setTimeout(() => {
       if (controller.isOpen() && !field.contains(document.activeElement)) close();
     }, 0);
