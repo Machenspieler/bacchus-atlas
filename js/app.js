@@ -3467,6 +3467,9 @@ function findCountdownMatches(text) {
  *  - "Difficulty 16", "Difficulty of 15", "(Difficulty 16 for Commander
  *    Kaine)", "Сложность 20", "(Сложность 12)" / named directly, with no roll
  *    word at all
+ *  - "Roll 17 to hang on", "бросок Силы 17, чтобы удержаться" / no
+ *    parentheses either, told apart from the book's other bare numbers near
+ *    "Roll"/"Бросок" by the purpose clause that follows a DC and nothing else
  * Countdown parens (matched above, and never reached here since they consume
  * the keyword first) are the one parenthesized number that never scales. */
 const CHECK_DC_ROLL_KEYWORD_RE = /(?<!\p{L})(?:Roll(?!\p{L})|Брос(?:ок(?!\p{L})|к\p{L}*))/giu;
@@ -3492,6 +3495,16 @@ const CHECK_DC_TOTAL_IDIOM_RE = /(?<!\p{L})общ\p{L}*\s*$/iu;
  * state, not with tier — a number immediately followed by +/- is a formula's
  * base, not a flat DC, so it's left alone. */
 const CHECK_DC_FORMULA_RE = /^\s*[+-]/;
+/* "group Strength or Agility Roll 17 to hang on" / "бросок Силы или
+ * Проворности 17, чтобы удержаться" name a DC with no parentheses at all — but
+ * a bare number after "Roll"/"Бросок" is dangerous to match on its own: most
+ * of the book's other bare numbers near those words are damage ("roll or take
+ * 2d12 damage"), a raw die result ("on a roll of 1"), or a margin ("fail their
+ * roll by 3 or more"). The purpose clause that follows a DC — "N to <verb>",
+ * "N, чтобы …" — is what tells the two apart, so only that shape counts; a
+ * clause like "adding 1 to the Difficulty" is a modifier rather than a DC and
+ * is excluded by requiring a verb (not "the"/"a"/"an") right after "to". */
+const CHECK_DC_BARE_PURPOSE_RE = /(?<=(?<!\p{L})(?:Roll(?!\p{L})|Брос(?:ок(?!\p{L})|к\p{L}*))[^.!?\n(]{0,30}?)\b(\d+)\b(?=\s*(?:,\s*чтобы(?!\p{L})|to\s+(?!the\b|a\b|an\b)\p{L}))/giu;
 
 function findCheckDCMatches(text) {
   const raw = [];
@@ -3522,6 +3535,11 @@ function findCheckDCMatches(text) {
     const after = text.slice(start + dm[1].length, start + dm[1].length + 3);
     if (CHECK_DC_FORMULA_RE.test(after)) continue;
     raw.push({ start, end: start + dm[1].length, value: parseInt(dm[1], 10) });
+  }
+  CHECK_DC_BARE_PURPOSE_RE.lastIndex = 0;
+  let bm;
+  while ((bm = CHECK_DC_BARE_PURPOSE_RE.exec(text))) {
+    raw.push({ start: bm.index, end: bm.index + bm[0].length, value: parseInt(bm[0], 10) });
   }
   raw.sort((a, b) => a.start - b.start);
   const matches = [];
