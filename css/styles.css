@@ -956,9 +956,6 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 .modal.retiered { border-color: rgba(217,164,65,0.5); box-shadow: var(--e-4), 0 0 0 1px rgba(217,164,65,0.28); }
 .modal.retiered .modal-header { border-bottom-color: rgba(217,164,65,0.35); }
 .dice-btn-retiered { border-color: rgba(217,164,65,0.55); }
-.check-dc-retiered {
-  color: var(--hope-soft); border-bottom: 1px dotted rgba(217,164,65,0.55); cursor: help;
-}
 
 /* ---------- detail card footer ---------- */
 .detail-footer {

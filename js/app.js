@@ -3711,9 +3711,7 @@ function renderSpans(container, text, retier) {
       container.appendChild(makeItemButton(match.id, match.label));
     } else if (match.type === 'check-dc') {
       const scaled = retier ? retierValue(match.value, retier.from, retier.to) : match.value;
-      container.appendChild(scaled !== match.value
-        ? makeRetieredTextSpan(`(${scaled})`, String(match.value))
-        : document.createTextNode(match.label));
+      container.appendChild(document.createTextNode(`(${scaled})`));
     } else {
       container.appendChild(makeCountdownButton(match.value, match.label));
     }
@@ -3821,17 +3819,6 @@ function makeDiceButton(count, sides, mod, label, originalLabel) {
 
 function diceIconSVG() {
   return `<svg viewBox="0 0 24 24" fill="none"><polygon points="12,2 21,8 21,16 12,22 3,16 3,8" stroke="currentColor" stroke-width="1.6"/></svg>`;
-}
-
-/** A plain value read at another tier — a check's DC, not a die to roll — so it
- * gets the same amber "this changed" treatment as a retiered dice button
- * without being a button itself. */
-function makeRetieredTextSpan(label, originalLabel) {
-  const span = document.createElement('span');
-  span.className = 'check-dc-retiered';
-  span.dataset.tip = t('retier_original').replace('{v}', originalLabel);
-  span.textContent = label;
-  return span;
 }
 
 /* ---------------- countdown tracker ---------------- */
