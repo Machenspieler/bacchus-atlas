@@ -2583,15 +2583,20 @@ const DIE_SIZES = [3, 4, 6, 8, 10, 12, 20, 100];
 
 function diceAvg(count, sides, mod) { return count * (sides + 1) / 2 + mod; }
 
-/** Environments deviate from the printed difficulty by −2…+3 and that deviation
- * is authored tuning, so it is carried over instead of showing the flat table
- * value: a tier 2 environment at 13 (one below the table) reads 16 at tier 3.
- * Descriptive difficulties ("Special (see Relative Strength)") never scale. */
+/** A number tuned for `fromTier` (a difficulty, or a single check's DC), read at
+ * `toTier`. The deviation from the tier's own printed difficulty is authored
+ * tuning and is carried over rather than snapping to the flat table value: a
+ * tier 2 number one below the table reads one below the table at tier 3 too. */
+function retierValue(value, fromTier, toTier) {
+  if (toTier === fromTier) return value;
+  const shifted = value + TIER_TABLE[toTier].difficulty - TIER_TABLE[fromTier].difficulty;
+  return Math.min(DIFFICULTY_CEIL, Math.max(DIFFICULTY_FLOOR, shifted));
+}
+
+/** Descriptive difficulties ("Special (see Relative Strength)") never scale. */
 function retierDifficulty(env, tier) {
   if (typeof env.difficulty !== 'number') return envDifficulty(env);
-  if (tier === env.tier) return env.difficulty;
-  const shifted = env.difficulty + TIER_TABLE[tier].difficulty - TIER_TABLE[env.tier].difficulty;
-  return Math.min(DIFFICULTY_CEIL, Math.max(DIFFICULTY_FLOOR, shifted));
+  return retierValue(env.difficulty, env.tier, tier);
 }
 
 const damageLadderCache = new Map();
@@ -3007,14 +3012,15 @@ function openDetailOverlay(envId, carry = null) {
   }
 
   // Renders dice- and countdown-enabled text, with bullet-list support. On a
-  // tier switch only blocks that actually hold a damage roll are rebuilt, so a
-  // countdown tracker opened elsewhere in the card survives the switch.
+  // tier switch only blocks that actually hold a damage roll or a check DC are
+  // rebuilt, so a countdown tracker opened elsewhere in the card survives the
+  // switch.
   function renderRichBlocks() {
     const retier = viewTier === env.tier ? null : { from: env.tier, to: viewTier };
     overlay.querySelectorAll('[data-rich-block]').forEach(node => {
       const text = decodeURIComponent(node.getAttribute('data-rich-block'));
       if (node._renderedTier === viewTier) return;
-      if (node._renderedTier !== undefined && !hasDamageRoll(text)) return;
+      if (node._renderedTier !== undefined && !hasDamageRoll(text) && !hasCheckDC(text)) return;
       node._renderedTier = viewTier;
       renderFeatureBody(node, text, retier);
     });
@@ -3446,6 +3452,40 @@ function findCountdownMatches(text) {
   return matches;
 }
 
+/* A skill check's DC sits in parentheses right after the word that names the
+ * roll — "Strength Roll (11)", "Presence Reaction Roll (19)" — or, in Russian,
+ * some distance after it, since the trait comes between "Бросок" and the
+ * parens: "Бросок Реакции на Силу (11)". Either way it is the same number the
+ * card's own difficulty is tuned against, so it follows the card to another
+ * tier exactly like the difficulty does — only the countdown parens (matched
+ * above, and never reached here since they consume the keyword first) do not. */
+const CHECK_DC_KEYWORD_RE = /(?<!\p{L})(?:Roll|Бросок)(?!\p{L})/giu;
+const CHECK_DC_PAREN_RE = /\((\d+)\)/;
+const CHECK_DC_STOP_RE = /[.!?\n]/;
+const CHECK_DC_SCAN_CHARS = 60;
+
+function findCheckDCMatches(text) {
+  const matches = [];
+  CHECK_DC_KEYWORD_RE.lastIndex = 0;
+  let km;
+  while ((km = CHECK_DC_KEYWORD_RE.exec(text))) {
+    const searchStart = km.index + km[0].length;
+    let window = text.slice(searchStart, searchStart + CHECK_DC_SCAN_CHARS);
+    const stop = window.search(CHECK_DC_STOP_RE);
+    if (stop !== -1) window = window.slice(0, stop);
+    const pm = CHECK_DC_PAREN_RE.exec(window);
+    if (!pm) continue;
+    const start = searchStart + pm.index;
+    const end = start + pm[0].length;
+    matches.push({ start, end, type: 'check-dc', value: parseInt(pm[1], 10), label: text.slice(start, end) });
+  }
+  return matches;
+}
+
+function hasCheckDC(text) {
+  return findCheckDCMatches(text).length > 0;
+}
+
 /* A roll counts as damage only when a damage word follows it in the same clause:
  * "3d8 physical damage", "3d8 магического урона". Everything else is left as
  * authored — "summon 2d4+2 Rotted Zombies", "roll 1d4 or choose a trap",
@@ -3625,8 +3665,8 @@ function findConditionMatches(text) {
 const BOLD_RE = /\*\*([\s\S]+?)\*\*/g;
 
 /** `retier` is `{ from, to }` while the card is being read at another tier, or
- * null at the environment's own tier. Only damage rolls follow it; countdowns
- * and every other roll in the text are left exactly as written. */
+ * null at the environment's own tier. Only damage rolls and check DCs follow
+ * it; countdowns and every other roll in the text are left exactly as written. */
 function renderRichText(container, text, retier) {
   container.textContent = '';
   let lastIndex = 0;
@@ -3646,7 +3686,7 @@ function renderRichText(container, text, retier) {
  * the cost of a Fear, the conditions — turned into buttons, bold and italics. */
 function renderSpans(container, text, retier) {
   const matches = [
-    ...findDiceMatches(text), ...findCountdownMatches(text),
+    ...findDiceMatches(text), ...findCountdownMatches(text), ...findCheckDCMatches(text),
     ...findFearCostMatches(text), ...findConditionMatches(text), ...findItemMatches(text),
   ].sort((a, b) => a.start - b.start);
 
@@ -3669,6 +3709,11 @@ function renderSpans(container, text, retier) {
       container.appendChild(em);
     } else if (match.type === 'item') {
       container.appendChild(makeItemButton(match.id, match.label));
+    } else if (match.type === 'check-dc') {
+      const scaled = retier ? retierValue(match.value, retier.from, retier.to) : match.value;
+      container.appendChild(scaled !== match.value
+        ? makeRetieredTextSpan(`(${scaled})`, String(match.value))
+        : document.createTextNode(match.label));
     } else {
       container.appendChild(makeCountdownButton(match.value, match.label));
     }
@@ -3776,6 +3821,17 @@ function makeDiceButton(count, sides, mod, label, originalLabel) {
 
 function diceIconSVG() {
   return `<svg viewBox="0 0 24 24" fill="none"><polygon points="12,2 21,8 21,16 12,22 3,16 3,8" stroke="currentColor" stroke-width="1.6"/></svg>`;
+}
+
+/** A plain value read at another tier — a check's DC, not a die to roll — so it
+ * gets the same amber "this changed" treatment as a retiered dice button
+ * without being a button itself. */
+function makeRetieredTextSpan(label, originalLabel) {
+  const span = document.createElement('span');
+  span.className = 'check-dc-retiered';
+  span.dataset.tip = t('retier_original').replace('{v}', originalLabel);
+  span.textContent = label;
+  return span;
 }
 
 /* ---------------- countdown tracker ---------------- */
