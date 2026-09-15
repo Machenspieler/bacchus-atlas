@@ -9947,6 +9947,10 @@
         "en": "Alcon Maw",
         "ru": "Пасть Алкона"
       },
+      "lore": {
+        "en": "Crystal treasures abound in these volcanic passages, but the clock to the next eruption is ticking.",
+        "ru": "В этих вулканических проходах в изобилии хрустальные сокровища, но часы до следующего извержения уже тикают."
+      },
       "impulses": {
         "en": [
           "Reward the speedy",
@@ -10035,7 +10039,8 @@
       "biomes": [
         "underground",
         "badlands"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "arcanists-laboratory",
@@ -10045,6 +10050,10 @@
       "name": {
         "en": "Arcanist's Laboratory",
         "ru": "Лаборатория чародея"
+      },
+      "lore": {
+        "en": "An abandoned mage’s complex filled with strange designs and twisted experiments.",
+        "ru": "Заброшенный комплекс мага, полный странных чертежей и извращённых экспериментов."
       },
       "impulses": {
         "en": [
@@ -10139,7 +10148,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "astral-mound",
@@ -10149,6 +10159,10 @@
       "name": {
         "en": "Astral Mound",
         "ru": "Астральный термитник"
+      },
+      "lore": {
+        "en": "A nest of tunnels that lead to unexplored and dangerous planes across the multiverse. The insectoid residents don’t take kindly to intruders.",
+        "ru": "Гнездо туннелей, ведущих к неисследованным и опасным планам через весь мультивёрс. Насекомоподобные обитатели не жалуют незваных гостей."
       },
       "impulses": {
         "en": [
@@ -10245,7 +10259,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "beelzebufo-bog",
@@ -10255,6 +10270,10 @@
       "name": {
         "en": "Beelzebufo Bog",
         "ru": "Топь Вельзебуфо"
+      },
+      "lore": {
+        "en": "Deep in the jungle the taint of the abyssal realms has infiltrated the swamps and bogs. Dark water and corrupting air present a danger to all.",
+        "ru": "Глубоко в джунглях скверна бездонных пределов проникла в трясины и топи. Тёмная вода и растлевающий воздух опасны для всех."
       },
       "impulses": {
         "en": [
@@ -10365,7 +10384,8 @@
       "biomes": [
         "wetland",
         "tropical"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "boreal-glacier",
@@ -10375,6 +10395,10 @@
       "name": {
         "en": "Boreal Glacier",
         "ru": "Бореальный ледник"
+      },
+      "lore": {
+        "en": "In the frozen tundra stands an ancient tree, grown atop a font of icy elemental power.",
+        "ru": "Посреди замёрзшей тундры стоит древнее дерево, выросшее над источником ледяной элементальной силы."
       },
       "impulses": {
         "en": [
@@ -10471,7 +10495,8 @@
       "builtin": true,
       "biomes": [
         "frozen"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "bubblys-bottom",
@@ -10481,6 +10506,10 @@
       "name": {
         "en": "Bubbly's Bottom",
         "ru": "Лощина Пузырика"
+      },
+      "lore": {
+        "en": "An abandoned carnival haunted by the ghost of its greatest clown.",
+        "ru": "Заброшенный карнавал, где обитает призрак его величайшего клоуна."
       },
       "impulses": {
         "en": [
@@ -10567,7 +10596,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "castle-of-wails",
@@ -10577,6 +10607,10 @@
       "name": {
         "en": "Castle Of Wails",
         "ru": "Замок стенаний"
+      },
+      "lore": {
+        "en": "A shattered watchtower haunted by a lamenting soul.",
+        "ru": "Разрушенная сторожевая башня, населённая скорбящей душой."
       },
       "impulses": {
         "en": [
@@ -10666,7 +10700,8 @@
       "biomes": [
         "settlement",
         "aquatic"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "chthon-verlies",
@@ -10676,6 +10711,10 @@
       "name": {
         "en": "Chthon Verlies",
         "ru": "Хтонский Верлис"
+      },
+      "lore": {
+        "en": "An extensive underground dungeon fashioned from magic-resistant gravity-defying crystals, that holds political prisoners.",
+        "ru": "Обширное подземное узилище, высеченное из устойчивых к магии кристаллов, бросающих вызов гравитации, где держат политических узников."
       },
       "impulses": {
         "en": [
@@ -10768,7 +10807,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "darkened-temple",
@@ -10778,6 +10818,10 @@
       "name": {
         "en": "Darkened Temple",
         "ru": "Затемнённый храм"
+      },
+      "lore": {
+        "en": "A former holy site corrupted by encroaching darkness that induces fear and madness.",
+        "ru": "Некогда святое место, осквернённое наступающей тьмой, что вызывает страх и безумие."
       },
       "impulses": {
         "en": [
@@ -10883,7 +10927,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "the-endless-song",
@@ -10893,6 +10938,10 @@
       "name": {
         "en": "The Endless Song",
         "ru": "Бесконечная песнь"
+      },
+      "lore": {
+        "en": "A subterranean complex ringing with a constant, ever-changing harmony of echoing voices.",
+        "ru": "Подземный комплекс, наполненный непрестанной, вечно меняющейся гармонией отзывающихся голосов."
       },
       "impulses": {
         "en": [
@@ -10998,7 +11047,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "eternal-observatory",
@@ -11008,6 +11058,10 @@
       "name": {
         "en": "Eternal Observatory",
         "ru": "Вечная обсерватория"
+      },
+      "lore": {
+        "en": "A dilapidated magical observatory taken over by the warping powers of presences between the stars in the outer realms.",
+        "ru": "Полуразрушенная магическая обсерватория, захваченная искажающей силой присутствий, обитающих меж звёзд во внешних пределах."
       },
       "impulses": {
         "en": [
@@ -11102,7 +11156,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "fairwell-casino",
@@ -11112,6 +11167,10 @@
       "name": {
         "en": "Fairwell Casino",
         "ru": "Казино «Фэйрвелл»"
+      },
+      "lore": {
+        "en": "A gaming establishment where chaos magic sends the odds skyrocketing.",
+        "ru": "Игорное заведение, где магия хаоса взвинчивает шансы до небес."
       },
       "impulses": {
         "en": [
@@ -11206,7 +11265,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "fathomless-baths-surface",
@@ -11216,6 +11276,10 @@
       "name": {
         "en": "Fathomless Baths - Surface",
         "ru": "Бездонные купальни — поверхность"
+      },
+      "lore": {
+        "en": "A perfectly pleasant outdoor swim with friends at the extradimensional rift.",
+        "ru": "Совершенно приятное купание на свежем воздухе с друзьями у межпространственного разлома."
       },
       "impulses": {
         "en": [
@@ -11275,7 +11339,8 @@
       "biomes": [
         "aquatic",
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "fathomless-baths-deeps",
@@ -11285,6 +11350,10 @@
       "name": {
         "en": "Fathomless Baths - Deeps",
         "ru": "Бездонные купальни — глубины"
+      },
+      "lore": {
+        "en": "A dive into an endless column of breathable “water”.",
+        "ru": "Погружение в бесконечный столб пригодной для дыхания «воды»."
       },
       "impulses": {
         "en": [
@@ -11345,7 +11414,8 @@
       "builtin": true,
       "biomes": [
         "aquatic"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "forum-between-worlds",
@@ -11355,6 +11425,10 @@
       "name": {
         "en": "Forum Between Worlds",
         "ru": "Форум между мирами"
+      },
+      "lore": {
+        "en": "A demiplane between worlds where scholars and philosophers share deep thoughts and esoteric knowledge of the multiverse.",
+        "ru": "Полуплан меж мирами, где учёные и философы делятся глубокими мыслями и эзотерическим знанием о мультивёрсе."
       },
       "impulses": {
         "en": [
@@ -11466,7 +11540,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "horizon-lake",
@@ -11476,6 +11551,10 @@
       "name": {
         "en": "Horizon Lake",
         "ru": "Озеро Горизонт"
+      },
+      "lore": {
+        "en": "An endless, bottomless lake full of dangerous sea monsters and perilous islands.",
+        "ru": "Бескрайнее, бездонное озеро, полное опасных морских чудовищ и коварных островов."
       },
       "impulses": {
         "en": [
@@ -11589,7 +11668,8 @@
       "builtin": true,
       "biomes": [
         "aquatic"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "infernal-railyard",
@@ -11599,6 +11679,10 @@
       "name": {
         "en": "Infernal Railyard",
         "ru": "Адское депо"
+      },
+      "lore": {
+        "en": "A factory of steel, steam, and souls that creates and maintains terrifying trains that scream across the many layers of Hell.",
+        "ru": "Фабрика стали, пара и душ, создающая и обслуживающая ужасающие поезда, что с воплями мчатся сквозь многочисленные слои Ада."
       },
       "impulses": {
         "en": [
@@ -11691,7 +11775,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "library-of-the-dusk-tree",
@@ -11701,6 +11786,10 @@
       "name": {
         "en": "Library Of The Dusk Tree",
         "ru": "Библиотека Сумеречного Древа"
+      },
+      "lore": {
+        "en": "An impressive library full of the stories and histories of an entire city’s populace over the centuries and generations.",
+        "ru": "Впечатляющая библиотека, полная историй и хроник всего населения города, накопленных за века и поколения."
       },
       "impulses": {
         "en": [
@@ -11795,7 +11884,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "martyrs-rest",
@@ -11805,6 +11895,10 @@
       "name": {
         "en": "Martyr's Rest",
         "ru": "Покой мученика"
+      },
+      "lore": {
+        "en": "A beautiful secluded burial mound surrounded by grasslands, providing a final resting place for all.",
+        "ru": "Прекрасный уединённый курган, окружённый равнинами, что дарует последний покой всем и каждому."
       },
       "impulses": {
         "en": [
@@ -11914,7 +12008,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "museum-of-lost-realities",
@@ -11924,6 +12019,10 @@
       "name": {
         "en": "Museum Of Lost Realities",
         "ru": "Музей утраченных реальностей"
+      },
+      "lore": {
+        "en": "A repository of alternative realities, captured for posterity.",
+        "ru": "Хранилище альтернативных реальностей, запечатлённых для потомков."
       },
       "impulses": {
         "en": [
@@ -11999,7 +12098,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "para-lichs-archive",
@@ -12009,6 +12109,10 @@
       "name": {
         "en": "Para-Lich's Archive",
         "ru": "Архив Пара-Лича"
+      },
+      "lore": {
+        "en": "A long-forgotten archmage’s library, buried deep beneath the earth and sealed for centuries.",
+        "ru": "Давно забытая библиотека архимага, погребённая глубоко под землёй и запечатанная на века."
       },
       "impulses": {
         "en": [
@@ -12114,7 +12218,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "the-shifting-city",
@@ -12124,6 +12229,10 @@
       "name": {
         "en": "The Shifting City",
         "ru": "Меняющийся город"
+      },
+      "lore": {
+        "en": "A cube-shaped city made of smaller, constantly rearranging cube-shaped chambers.",
+        "ru": "Кубический город, состоящий из меньших кубических палат, что беспрестанно перестраиваются."
       },
       "impulses": {
         "en": [
@@ -12217,7 +12326,8 @@
       "biomes": [
         "settlement",
         "universal"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "throne-of-three",
@@ -12227,6 +12337,10 @@
       "name": {
         "en": "Throne Of Three",
         "ru": "Трон троих"
+      },
+      "lore": {
+        "en": "An ancient seat of wisdom that offers guidance, truth, and beauty to those that need it.",
+        "ru": "Древний престол мудрости, дарующий наставление, истину и красоту всем, кто в них нуждается."
       },
       "impulses": {
         "en": [
@@ -12321,7 +12435,8 @@
       "builtin": true,
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "titan-boneyard",
@@ -12331,6 +12446,10 @@
       "name": {
         "en": "Titan Boneyard",
         "ru": "Кладбище титанов"
+      },
+      "lore": {
+        "en": "A ancient burial site for the worlds largest monsters, stony canyons are filled with the skeletal remains of terrifying creatures.",
+        "ru": "Древнее место упокоения крупнейших чудовищ мира — каменные каньоны заполнены скелетными останками ужасающих созданий."
       },
       "impulses": {
         "en": [
@@ -12423,7 +12542,8 @@
       "builtin": true,
       "biomes": [
         "badlands"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "unbound-arcanostorm",
@@ -12433,6 +12553,10 @@
       "name": {
         "en": "Unbound Arcanostorm",
         "ru": "Освобождённый Аркашторм"
+      },
+      "lore": {
+        "en": "A storm made of chaotic magic, formed from a failed grand ritual of arcane power, it roams the world by its own untethered whim.",
+        "ru": "Буря из хаотичной магии, порождённая провалившимся великим ритуалом чародейской силы; она скитается по миру по собственной необузданной прихоти."
       },
       "impulses": {
         "en": [
@@ -12525,7 +12649,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "valley-of-ruination",
@@ -12535,6 +12660,10 @@
       "name": {
         "en": "Valley Of Ruination",
         "ru": "Долина разорения"
+      },
+      "lore": {
+        "en": "This battle-scarred valley is all that remains of a celestial conflict, leaving the land devastated and hungry for any essence of life that wanders in.",
+        "ru": "Эта израненная битвами долина — всё, что осталось от небесного противостояния; земля опустошена и жаждет любой искры жизни, что забредёт сюда."
       },
       "impulses": {
         "en": [
@@ -12640,7 +12769,8 @@
       "builtin": true,
       "biomes": [
         "badlands"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "waterfalls-of-light-and-dark",
@@ -12650,6 +12780,10 @@
       "name": {
         "en": "Waterfalls Of Light & Dark",
         "ru": "Водопады света и тьмы"
+      },
+      "lore": {
+        "en": "A magical waterfall where water made of life energy cascades into a bottomless pit of aging and death.",
+        "ru": "Магический водопад, где вода, сотканная из энергии жизни, низвергается в бездонную пропасть старения и смерти."
       },
       "impulses": {
         "en": [
@@ -12757,7 +12891,8 @@
       "builtin": true,
       "biomes": [
         "aquatic"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "yifangs-blackened-sands",
@@ -12767,6 +12902,10 @@
       "name": {
         "en": "Yifang's Blackened Sands",
         "ru": "Почерневшие пески Ифанга"
+      },
+      "lore": {
+        "en": "Deep in the burning heart of the Yifang Pass are massive stretches of gray-black sand that are extremely volatile.",
+        "ru": "Глубоко в пылающем сердце перевала Ифанг раскинулись огромные полосы серо-чёрного песка, крайне нестабильного."
       },
       "impulses": {
         "en": [
@@ -12874,7 +13013,8 @@
       "builtin": true,
       "biomes": [
         "drylands"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "haunted-oratorium",
@@ -12884,6 +13024,10 @@
       "name": {
         "en": "Haunted Oratorium",
         "ru": "Призрачный ораториум"
+      },
+      "lore": {
+        "en": "This ruined lecture hall now only contains echoes of the great minds who inhabited it. The spirits may have advice, but at what cost?",
+        "ru": "В этом разрушенном лекционном зале ныне остались лишь отголоски великих умов, некогда обитавших здесь. Духи могут дать совет, но какой ценой?"
       },
       "impulses": {
         "en": [
@@ -12959,7 +13103,8 @@
       "builtin": true,
       "biomes": [
         "badlands"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "ruined-mage-tower",
@@ -12969,6 +13114,10 @@
       "name": {
         "en": "Ruined Mage Tower",
         "ru": "Разрушенная башня мага"
+      },
+      "lore": {
+        "en": "The remains of a place of advanced arcane study. Perhaps something useful lies hidden amongst the detritus?",
+        "ru": "Останки места, где некогда велось углублённое изучение чародейства. Быть может, среди руин скрыто что-то полезное?"
       },
       "impulses": {
         "en": [
@@ -13061,7 +13210,8 @@
       "builtin": true,
       "biomes": [
         "badlands"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "heal-the-land",
@@ -13071,6 +13221,10 @@
       "name": {
         "en": "Heal The Land",
         "ru": "Исцелить землю"
+      },
+      "lore": {
+        "en": "With the knowledge and relics you found, you may be able to reverse a small amount of the scarring of this land. But what will rise up to stop you?",
+        "ru": "С помощью найденных знаний и реликвий вы, возможно, сумеете хоть немного исцелить шрамы этой земли. Но что восстанет, чтобы остановить вас?"
       },
       "impulses": {
         "en": [
@@ -13163,7 +13317,8 @@
       "builtin": true,
       "biomes": [
         "badlands"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "snow-squall",
@@ -13173,6 +13328,10 @@
       "name": {
         "en": "Snow Squall",
         "ru": "Снежный шквал"
+      },
+      "lore": {
+        "en": "A sudden blizzard rises unexpectedly while traveling the Frozen Wastes.",
+        "ru": "Внезапная метель поднимается без предупреждения во время странствия по Мёрзлым Пустошам."
       },
       "impulses": {
         "en": [
@@ -13250,7 +13409,8 @@
       "builtin": true,
       "biomes": [
         "frozen"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "prehistoric-valley",
@@ -13260,6 +13420,10 @@
       "name": {
         "en": "Prehistoric Valley",
         "ru": "Доисторическая долина"
+      },
+      "lore": {
+        "en": "Surrounded by icy wastes, a prehistoric jungle thrives in relative warmth.",
+        "ru": "Окружённые ледяными пустошами, доисторические джунгли процветают в относительном тепле."
       },
       "impulses": {
         "en": [
@@ -13351,7 +13515,8 @@
       "biomes": [
         "tropical",
         "frozen"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "frozen-lake",
@@ -13361,6 +13526,10 @@
       "name": {
         "en": "Frozen Lake",
         "ru": "Замёрзшее озеро"
+      },
+      "lore": {
+        "en": "A frozen water feature provides a tempting, if treacherous, short cut.",
+        "ru": "Замёрзший водоём сулит заманчивый, но коварный короткий путь."
       },
       "impulses": {
         "en": [
@@ -13450,7 +13619,8 @@
       "biomes": [
         "frozen",
         "aquatic"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "chronon-pools",
@@ -13460,6 +13630,10 @@
       "name": {
         "en": "Chronon Pools",
         "ru": "Хрононовые заводи"
+      },
+      "lore": {
+        "en": "This pool sits heavy with time-altering chronons. Crossing could take a moment, or the rest of your life.",
+        "ru": "Эта заводь насыщена искажающими время хрононами. Пересечь её можно за мгновение — или за всю оставшуюся жизнь."
       },
       "impulses": {
         "en": [
@@ -13522,7 +13696,8 @@
       "builtin": true,
       "biomes": [
         "wetland"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "flickerstorm",
@@ -13532,6 +13707,10 @@
       "name": {
         "en": "Flickerstorm",
         "ru": "Мерцающая буря"
+      },
+      "lore": {
+        "en": "A time-glitching storm has rolled in, causing time to skip and repeat. Attempt to survive as your actions are repeated or skipped entirely.",
+        "ru": "Налетела буря, искажающая время: оно то и дело пропускает мгновения и повторяется вновь. Постарайтесь выжить, пока ваши действия повторяются или пропускаются целиком."
       },
       "impulses": {
         "en": [
@@ -13624,7 +13803,8 @@
       "builtin": true,
       "biomes": [
         "wetland"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "swamp-ruins",
@@ -13634,6 +13814,10 @@
       "name": {
         "en": "Swamp Ruins",
         "ru": "Болотные руины"
+      },
+      "lore": {
+        "en": "Below the surface sits an abandoned ruin. It may be full of valuable resources, but is it truly unoccupied?",
+        "ru": "Под поверхностью болота покоятся заброшенные руины. Они могут таить ценные ресурсы, но действительно ли они необитаемы?"
       },
       "impulses": {
         "en": [
@@ -13724,7 +13908,8 @@
       "builtin": true,
       "biomes": [
         "wetland"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "webbed-terrain",
@@ -13734,6 +13919,10 @@
       "name": {
         "en": "Webbed Terrain",
         "ru": "Земли, затянутые паутиной"
+      },
+      "lore": {
+        "en": "Thick webs blanket this area, making travel a challenge. The owner doesn’t appear to be home, but what could be lurking in the shadows?",
+        "ru": "Густая паутина окутывает эти земли, превращая передвижение в испытание. Хозяин, кажется, отсутствует — но что может таиться в тенях?"
       },
       "impulses": {
         "en": [
@@ -13826,7 +14015,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "escape-the-swarm",
@@ -13836,6 +14026,10 @@
       "name": {
         "en": "Escape The Swarm",
         "ru": "Спастись от роя"
+      },
+      "lore": {
+        "en": "The Hivelands have identified an intruder and seek to eliminate it.",
+        "ru": "Ульевые Земли обнаружили незваного гостя и стремятся его уничтожить."
       },
       "impulses": {
         "en": [
@@ -13941,7 +14135,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "thrumming-hives",
@@ -13951,6 +14146,10 @@
       "name": {
         "en": "Thrumming Hives",
         "ru": "Гудящие ульи"
+      },
+      "lore": {
+        "en": "The giant hives of this area seem to buzz with activity. The cavities could contain useful items…or more danger.",
+        "ru": "Гигантские ульи этой местности так и гудят от бурной деятельности. В их полостях могут скрываться полезные предметы… или ещё большая опасность."
       },
       "impulses": {
         "en": [
@@ -14043,7 +14242,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "shard-field",
@@ -14053,6 +14253,10 @@
       "name": {
         "en": "Shard Field",
         "ru": "Поле осколков"
+      },
+      "lore": {
+        "en": "This field of debris detects warm bodies and attempts to burrow into them. Victims may find something new in the back of their minds.",
+        "ru": "Это поле обломков распознаёт тёплые тела и пытается зарыться в них. Жертвы могут обнаружить нечто новое в глубинах своего разума."
       },
       "impulses": {
         "en": [
@@ -14143,7 +14347,8 @@
       "builtin": true,
       "biomes": [
         "badlands"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "rewritten-grove",
@@ -14153,6 +14358,10 @@
       "name": {
         "en": "Rewritten Grove",
         "ru": "Переписанная роща"
+      },
+      "lore": {
+        "en": "Once a calm and pleasant grove, the outer influence has warped everything into corrupted mockeries of life.",
+        "ru": "Некогда тихая и приятная роща теперь искажена внешним влиянием до неузнаваемости — во всём здесь видны осквернённые пародии на жизнь."
       },
       "impulses": {
         "en": [
@@ -14228,7 +14437,8 @@
       "builtin": true,
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "stop-the-collapse-of-reality",
@@ -14238,6 +14448,10 @@
       "name": {
         "en": "Stop The Collapse Of Reality",
         "ru": "Остановить обрушение реальности"
+      },
+      "lore": {
+        "en": "Space and time in this area is so unstable it threatens to totally break down. Stop this catastrophe or this may trigger even worse disasters.",
+        "ru": "Пространство и время в этой области настолько нестабильны, что грозят полностью рухнуть. Остановите катастрофу, иначе она может повлечь за собой ещё худшие бедствия."
       },
       "impulses": {
         "en": [
@@ -14358,7 +14572,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "neverhome-corridors",
@@ -14368,6 +14583,10 @@
       "name": {
         "en": "Neverhome Corridors",
         "ru": "Коридоры Неверхоума"
+      },
+      "lore": {
+        "en": "The winding passages of Neverhome Manor seem almost malicious in their difficulty to be navigated.",
+        "ru": "Извилистые переходы особняка Неверхоум, кажется, нарочно устроены так, чтобы сбивать с пути."
       },
       "impulses": {
         "en": [
@@ -14443,7 +14662,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "neverhome-library",
@@ -14453,6 +14673,10 @@
       "name": {
         "en": "Neverhome Library",
         "ru": "Библиотека Неверхоума"
+      },
+      "lore": {
+        "en": "A sprawling library full of dark texts. They may provide what you need, but what do they take in return?",
+        "ru": "Огромная библиотека, полная тёмных текстов. Они могут дать вам то, что нужно, — но что потребуют взамен?"
       },
       "impulses": {
         "en": [
@@ -14530,7 +14754,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "shatter-the-heart",
@@ -14540,6 +14765,10 @@
       "name": {
         "en": "Shatter The Heart",
         "ru": "Разбить сердце"
+      },
+      "lore": {
+        "en": "The beating heart, keeping the Manor living. Defeat it to escape, before the Manor fights back.",
+        "ru": "Бьющееся сердце, поддерживающее жизнь особняка. Уничтожьте его, чтобы сбежать, прежде чем особняк начнёт защищаться."
       },
       "impulses": {
         "en": [
@@ -14645,7 +14874,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "forced-penance",
@@ -14655,6 +14885,10 @@
       "name": {
         "en": "Forced Penance",
         "ru": "Вынужденное покаяние"
+      },
+      "lore": {
+        "en": "An area of overwhelming guilt and confession left over from the judged dead.",
+        "ru": "Место гнетущей вины и исповеди, оставленное осуждёнными мертвецами."
       },
       "impulses": {
         "en": [
@@ -14730,7 +14964,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "humble-altar",
@@ -14740,6 +14975,10 @@
       "name": {
         "en": "Humble Altar",
         "ru": "Смиренный алтарь"
+      },
+      "lore": {
+        "en": "An ancient Cathartoid stands in silent stillness draped in scrolls & incense",
+        "ru": "Древний Катартоид застыл в безмолвной неподвижности, увешанный свитками и благовониями."
       },
       "impulses": {
         "en": [
@@ -14830,7 +15069,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "endless-catacombs",
@@ -14840,6 +15080,10 @@
       "name": {
         "en": "Endless Catacombs",
         "ru": "Бесконечные катакомбы"
+      },
+      "lore": {
+        "en": "A maze of tunnels beneath the Sanctum Mortalis, walled with bones and skulls.",
+        "ru": "Лабиринт туннелей под Санктум Морталис, чьи стены сложены из костей и черепов."
       },
       "impulses": {
         "en": [
@@ -14930,7 +15174,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "aetherstone-grove",
@@ -14940,6 +15185,10 @@
       "name": {
         "en": "Aetherstone Grove",
         "ru": "Роща Эфирита"
+      },
+      "lore": {
+        "en": "This spot of verdant growth is an oasis in the dark. But beware, even this seemingly safe land is touched by the pollution of the area",
+        "ru": "Этот клочок пышной зелени — оазис среди тьмы. Но будьте осторожны: даже эта, казалось бы, безопасная земля тронута скверной здешних мест."
       },
       "impulses": {
         "en": [
@@ -15019,7 +15268,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "divert-the-river",
@@ -15029,6 +15279,10 @@
       "name": {
         "en": "Divert The River",
         "ru": "Отведите реку"
+      },
+      "lore": {
+        "en": "A river full of mining run-off is threatening to overflow into the nearby caves. Divert the flow before it breaches its banks, or the area may be impassable.",
+        "ru": "Река, полная стоков с рудников, грозит хлынуть в соседние пещеры. Отведите поток, прежде чем он прорвёт берега, иначе местность станет непроходимой."
       },
       "impulses": {
         "en": [
@@ -15120,7 +15374,8 @@
       "biomes": [
         "underground",
         "aquatic"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "corridor-of-flammable-air",
@@ -15130,6 +15385,10 @@
       "name": {
         "en": "Corridor Of Flammable Air",
         "ru": "Коридор горючего воздуха"
+      },
+      "lore": {
+        "en": "Gases in this area have made it both hard to breathe and sensitive to magical and nonmagical flame. Proceed with caution, for any spark could spell disaster.",
+        "ru": "Газы в этой местности затрудняют дыхание и делают воздух чувствительным к магическому и обычному пламени. Действуйте осторожно — любая искра может обернуться катастрофой."
       },
       "impulses": {
         "en": [
@@ -15220,7 +15479,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "umbral-basin",
@@ -15230,6 +15490,10 @@
       "name": {
         "en": "Umbral Basin",
         "ru": "Сумеречная котловина"
+      },
+      "lore": {
+        "en": "The heart of the Umbral Sea, dark and foreboding. But filled with resources for anyone brave enough.",
+        "ru": "Сердце Сумеречного Моря — тёмное и зловещее. Но полное ресурсов для тех, кто достаточно смел."
       },
       "impulses": {
         "en": [
@@ -15322,7 +15586,8 @@
       "builtin": true,
       "biomes": [
         "aquatic"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "pool-of-pure-darkness",
@@ -15332,6 +15597,10 @@
       "name": {
         "en": "Pool Of Pure Darkness",
         "ru": "Пруд чистой тьмы"
+      },
+      "lore": {
+        "en": "The Umbral Sea is full of pools of concentrated darkness. One wrong step can lead to being swallowed by shadow.",
+        "ru": "Сумеречное Море полно заводей сгущённой тьмы. Один неверный шаг — и тень поглотит вас."
       },
       "impulses": {
         "en": [
@@ -15422,7 +15691,8 @@
       "builtin": true,
       "biomes": [
         "aquatic"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "shadow-surge",
@@ -15432,6 +15702,10 @@
       "name": {
         "en": "Shadow Surge",
         "ru": "Всплеск тени"
+      },
+      "lore": {
+        "en": "In the Umbral Sea, darkness pools like water. Sometimes it will build up and surge, endangering any who are caught in the wake.",
+        "ru": "В Сумеречном Море тьма скапливается, точно вода. Порой она копится и внезапно вырывается наружу, угрожая всем, кто окажется на её пути."
       },
       "impulses": {
         "en": [
@@ -15507,7 +15781,8 @@
       "builtin": true,
       "biomes": [
         "aquatic"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "sentient-ink-marsh",
@@ -15517,6 +15792,10 @@
       "name": {
         "en": "Sentient Ink Marsh",
         "ru": "Разумное чернильное болото"
+      },
+      "lore": {
+        "en": "A field of iridescent ink that sparkles with a mind of its own. The remnants of lost books and scrolls, crossing this could rob you of your knowledge.",
+        "ru": "Поле переливающихся чернил, что искрится собственным разумом. Останки утраченных книг и свитков — пересечь его значит рискнуть лишиться собственных знаний."
       },
       "impulses": {
         "en": [
@@ -15607,7 +15886,8 @@
       "builtin": true,
       "biomes": [
         "wetland"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "mistfield-of-possibility",
@@ -15617,6 +15897,10 @@
       "name": {
         "en": "Mistfield Of Possibility",
         "ru": "Туманное поле возможностей"
+      },
+      "lore": {
+        "en": "Thick mists drift through the ruins, carrying whispers of forgotten knowledge and half-formed truths. Some find the murmurs insightful, while others find them disorienting.",
+        "ru": "Густые туманы плывут меж руин, неся шёпот забытых знаний и полусформированных истин. Одним этот ропот кажется прозрением, других же он лишь сбивает с толку."
       },
       "impulses": {
         "en": [
@@ -15707,7 +15991,8 @@
       "builtin": true,
       "biomes": [
         "wetland"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "the-waking-archives",
@@ -15717,6 +16002,10 @@
       "name": {
         "en": "The Waking Archives",
         "ru": "Пробуждающиеся архивы"
+      },
+      "lore": {
+        "en": "Skeletal shelves of dusty books serve as the corpse of what must have been a great repository of knowledge. Secrets wait for those who seek it, but the foolish may become the next entry in this tomb.",
+        "ru": "Скелетообразные стеллажи, уставленные пыльными книгами, — останки того, что некогда было великим хранилищем знаний. Тайны ждут тех, кто их ищет, но неосторожный рискует сам стать новой записью в этой гробнице."
       },
       "impulses": {
         "en": [
@@ -15794,7 +16083,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "ouroborean-pass",
@@ -15804,6 +16094,10 @@
       "name": {
         "en": "Ouroborean Pass",
         "ru": "Уроборический перевал"
+      },
+      "lore": {
+        "en": "In the Witches’ Cauldera, paths will wrap back on themselves. Only the most skilled (or lucky) can get out of such traps.",
+        "ru": "В Каулдере Ведьм тропы сворачиваются в петлю сами на себя. Выбраться из подобных ловушек под силу лишь самым искусным (или удачливым)."
       },
       "impulses": {
         "en": [
@@ -15896,7 +16190,8 @@
       "builtin": true,
       "biomes": [
         "mountain"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "cauldera-valley",
@@ -15906,6 +16201,10 @@
       "name": {
         "en": "Cauldera Valley",
         "ru": "Долина Каулдера"
+      },
+      "lore": {
+        "en": "The heart of the Witches Cauldera, this valley overflows with life adapted to it.",
+        "ru": "Сердце Каулдеры Ведьм — эта долина изобилует жизнью, приспособившейся к её условиям."
       },
       "impulses": {
         "en": [
@@ -15995,7 +16294,8 @@
       "biomes": [
         "forest",
         "mountain"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "field-of-dreams",
@@ -16005,6 +16305,10 @@
       "name": {
         "en": "Field Of Dreams",
         "ru": "Поле грёз"
+      },
+      "lore": {
+        "en": "These manifestations of the Crone herself allow creatures to revisit past mistakes.",
+        "ru": "Эти проявления самой Карги позволяют существам заново пережить свои прошлые ошибки."
       },
       "impulses": {
         "en": [
@@ -16080,7 +16384,8 @@
       "builtin": true,
       "biomes": [
         "grassland"
-      ]
+      ],
+      "source": "Wondrous Environments"
     },
     {
       "id": "raging-river",
