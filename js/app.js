@@ -3452,32 +3452,82 @@ function findCountdownMatches(text) {
   return matches;
 }
 
-/* A skill check's DC sits in parentheses right after the word that names the
- * roll — "Strength Roll (11)", "Presence Reaction Roll (19)" — or, in Russian,
- * some distance after it, since the trait comes between "Бросок" and the
- * parens: "Бросок Реакции на Силу (11)". Either way it is the same number the
- * card's own difficulty is tuned against, so it follows the card to another
- * tier exactly like the difficulty does — only the countdown parens (matched
- * above, and never reached here since they consume the keyword first) do not. */
-const CHECK_DC_KEYWORD_RE = /(?<!\p{L})(?:Roll|Бросок)(?!\p{L})/giu;
-const CHECK_DC_PAREN_RE = /\((\d+)\)/;
+/* A skill check's DC is the same number the card's own difficulty is tuned
+ * against, so it follows the card to another tier exactly like the difficulty
+ * does. The book spells it out in more shapes than the difficulty stat itself
+ * does, so this only ever touches the bare digits — whatever parentheses,
+ * "difficulty"/"сложность", or trailing words surround them are left exactly
+ * as written:
+ *  - "Strength Roll (11)" / english, right after the word that names the roll
+ *  - "Бросок Реакции на Силу (11)" / russian always names the roll first, but
+ *    the trait sits between "Бросок" and the parens, and "бросок" declines
+ *    ("в броске", "броском", …), dropping the fleeting vowel it has in this
+ *    nominative spelling
+ *  - "Instinct (16) roll" / a handful of english entries put the number first
+ *  - "Difficulty 16", "Difficulty of 15", "(Difficulty 16 for Commander
+ *    Kaine)", "Сложность 20", "(Сложность 12)" / named directly, with no roll
+ *    word at all
+ * Countdown parens (matched above, and never reached here since they consume
+ * the keyword first) are the one parenthesized number that never scales. */
+const CHECK_DC_ROLL_KEYWORD_RE = /(?<!\p{L})(?:Roll(?!\p{L})|Брос(?:ок(?!\p{L})|к\p{L}*))/giu;
+const CHECK_DC_BARE_PAREN_RE = /\((\d+)\)/;
 const CHECK_DC_STOP_RE = /[.!?\n]/;
 const CHECK_DC_SCAN_CHARS = 60;
+/* "Instinct (16) roll" / "Знание (12) бросок" never actually happens in
+ * Russian — the trait always follows "бросок" there — but the reverse does in
+ * English, often enough to be worth its own pass. */
+const CHECK_DC_NUMBER_BEFORE_ROLL_RE = /\((\d+)\)\s*roll\b/gi;
+/* "Difficulty 16 for Commander Kaine", "difficulty 18 throw", "Difficulty of
+ * 15", "Сложность до 19" name a DC directly. "of"/"to"/"до" is the one word
+ * allowed between the keyword and the number — enough to skip "Difficulty of
+ * 15" and "bump the Difficulty to 19" without also matching a relative
+ * modifier like "Difficulty of the Environment equals" or "reduce their
+ * Difficulty by 1", which put a different word (or nothing) there instead. */
+const CHECK_DC_DIFFICULTY_RE = /(?:difficulty|сложност\p{L}*)\s+(?:of\s+|to\s+|до\s+)?(\d+)/giu;
+/* "…отмечен в общей сложности 3 Стресса" is the Russian idiom for "a total
+ * of 3", not a difficulty — "сложност" only reads as the mechanic here when
+ * "общей"/"общем" isn't the word right before it. */
+const CHECK_DC_TOTAL_IDIOM_RE = /(?<!\p{L})общ\p{L}*\s*$/iu;
+/* "a difficulty equal to 5 + the party's total Tab Tokens" scales with game
+ * state, not with tier — a number immediately followed by +/- is a formula's
+ * base, not a flat DC, so it's left alone. */
+const CHECK_DC_FORMULA_RE = /^\s*[+-]/;
 
 function findCheckDCMatches(text) {
-  const matches = [];
-  CHECK_DC_KEYWORD_RE.lastIndex = 0;
+  const raw = [];
+  CHECK_DC_ROLL_KEYWORD_RE.lastIndex = 0;
   let km;
-  while ((km = CHECK_DC_KEYWORD_RE.exec(text))) {
+  while ((km = CHECK_DC_ROLL_KEYWORD_RE.exec(text))) {
     const searchStart = km.index + km[0].length;
     let window = text.slice(searchStart, searchStart + CHECK_DC_SCAN_CHARS);
     const stop = window.search(CHECK_DC_STOP_RE);
     if (stop !== -1) window = window.slice(0, stop);
-    const pm = CHECK_DC_PAREN_RE.exec(window);
+    const pm = CHECK_DC_BARE_PAREN_RE.exec(window);
     if (!pm) continue;
-    const start = searchStart + pm.index;
-    const end = start + pm[0].length;
-    matches.push({ start, end, type: 'check-dc', value: parseInt(pm[1], 10), label: text.slice(start, end) });
+    const start = searchStart + pm.index + 1; // + 1 to land past the "("
+    raw.push({ start, end: start + pm[1].length, value: parseInt(pm[1], 10) });
+  }
+  CHECK_DC_NUMBER_BEFORE_ROLL_RE.lastIndex = 0;
+  let nm;
+  while ((nm = CHECK_DC_NUMBER_BEFORE_ROLL_RE.exec(text))) {
+    const start = nm.index + 1;
+    raw.push({ start, end: start + nm[1].length, value: parseInt(nm[1], 10) });
+  }
+  CHECK_DC_DIFFICULTY_RE.lastIndex = 0;
+  let dm;
+  while ((dm = CHECK_DC_DIFFICULTY_RE.exec(text))) {
+    const before = text.slice(Math.max(0, dm.index - 12), dm.index);
+    if (CHECK_DC_TOTAL_IDIOM_RE.test(before)) continue;
+    const start = dm.index + dm[0].length - dm[1].length;
+    const after = text.slice(start + dm[1].length, start + dm[1].length + 3);
+    if (CHECK_DC_FORMULA_RE.test(after)) continue;
+    raw.push({ start, end: start + dm[1].length, value: parseInt(dm[1], 10) });
+  }
+  raw.sort((a, b) => a.start - b.start);
+  const matches = [];
+  for (const m of raw) {
+    if (matches.length && matches[matches.length - 1].end > m.start) continue; // same digits, found twice
+    matches.push({ ...m, type: 'check-dc', label: text.slice(m.start, m.end) });
   }
   return matches;
 }
@@ -3711,7 +3761,7 @@ function renderSpans(container, text, retier) {
       container.appendChild(makeItemButton(match.id, match.label));
     } else if (match.type === 'check-dc') {
       const scaled = retier ? retierValue(match.value, retier.from, retier.to) : match.value;
-      container.appendChild(document.createTextNode(`(${scaled})`));
+      container.appendChild(document.createTextNode(String(scaled)));
     } else {
       container.appendChild(makeCountdownButton(match.value, match.label));
     }
