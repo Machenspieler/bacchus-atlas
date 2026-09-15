@@ -3857,6 +3857,10 @@
         "en": "Acid Burrows",
         "ru": "Кислотные норы"
       },
+      "lore": {
+        "en": "An underground warren of criss-crossing tunnels, with tunnels into the earth filled with pools of acid.",
+        "ru": "Подземный лабиринт из пересекающихся туннелей, уходящих вглубь земли и заполненных кислотными лужами."
+      },
       "impulses": {
         "en": [
           "Dissolve in acid",
@@ -3961,7 +3965,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "fighting-arena",
@@ -3974,6 +3979,10 @@
       "name": {
         "en": "Fighting Arena",
         "ru": "Бойцовская арена"
+      },
+      "lore": {
+        "en": "A one-on-one fight between seasoned fighters in front of roaring crowds.",
+        "ru": "Поединок один на один между закалёнными бойцами перед ревущей толпой."
       },
       "impulses": {
         "en": [
@@ -4066,7 +4075,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "gang-hideout",
@@ -4076,6 +4086,10 @@
       "name": {
         "en": "Gang Hideout",
         "ru": "Логово банды"
+      },
+      "lore": {
+        "en": "A gathering point used by a gang as a base of operations and to shift goods, often attached to a legitimate business.",
+        "ru": "Место сбора, которое банда использует как базу для операций и сбыта товара, часто прикрытое легальным заведением."
       },
       "impulses": {
         "en": [
@@ -4172,7 +4186,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "racetrack",
@@ -4182,6 +4197,10 @@
       "name": {
         "en": "Racetrack",
         "ru": "Гоночная трасса"
+      },
+      "lore": {
+        "en": "A winding course suitable for holding a vehicle race.",
+        "ru": "Извилистая трасса, подходящая для проведения гонок на транспорте."
       },
       "impulses": {
         "en": [
@@ -4305,7 +4324,8 @@
       "biomes": [
         "settlement",
         "rolling"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "blood-marsh",
@@ -4315,6 +4335,10 @@
       "name": {
         "en": "Blood Marsh",
         "ru": "Кровавая трясина"
+      },
+      "lore": {
+        "en": "A large bog with dark and bubbling red water, releasing steam that forms a red haze.",
+        "ru": "Обширное болото с тёмной бурлящей алой водой, испускающей пар, который образует багровую дымку."
       },
       "impulses": {
         "en": [
@@ -4415,7 +4439,8 @@
       "builtin": true,
       "biomes": [
         "wetland"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "body",
@@ -4425,6 +4450,10 @@
       "name": {
         "en": "Body",
         "ru": "Тело"
+      },
+      "lore": {
+        "en": "The inside of a body, traversed by those shrunk down to size. A maze of wet passageways with large rooms for organs.",
+        "ru": "Нутро тела, где передвигаются уменьшившиеся до крошечных размеров путники, — лабиринт влажных проходов с обширными залами-органами."
       },
       "impulses": {
         "en": [
@@ -4510,7 +4539,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "desert",
@@ -4520,6 +4550,10 @@
       "name": {
         "en": "Desert",
         "ru": "Пустыня"
+      },
+      "lore": {
+        "en": "Endless sand dunes and rock baked under a scorching sun.",
+        "ru": "Бескрайние песчаные дюны и камни, раскалённые под палящим солнцем."
       },
       "impulses": {
         "en": [
@@ -4618,7 +4652,8 @@
       "builtin": true,
       "biomes": [
         "drylands"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "magical-storm",
@@ -4628,6 +4663,10 @@
       "name": {
         "en": "Magical Storm",
         "ru": "Магическая буря"
+      },
+      "lore": {
+        "en": "An unpredictable storm fuelled by magical energy.",
+        "ru": "Непредсказуемая буря, питаемая магической энергией."
       },
       "impulses": {
         "en": [
@@ -4732,7 +4771,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "masquerade-party",
@@ -4742,6 +4782,10 @@
       "name": {
         "en": "Masquerade Party",
         "ru": "Бал-маскарад"
+      },
+      "lore": {
+        "en": "A lavish party held in a noble's manor, with guests in ballgowns and faces hidden behind elaborate masks.",
+        "ru": "Пышный приём в особняке аристократа, где гости облачены в бальные наряды, а их лица скрыты замысловатыми масками."
       },
       "impulses": {
         "en": [
@@ -4893,7 +4937,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "obstacle-course",
@@ -4903,6 +4948,10 @@
       "name": {
         "en": "Obstacle Course",
         "ru": "Полоса препятствий"
+      },
+      "lore": {
+        "en": "A race with obstacles that must be overcome to progress.",
+        "ru": "Гонка с препятствиями, которые нужно преодолеть, чтобы продвинуться вперёд."
       },
       "impulses": {
         "en": [
@@ -4991,7 +5040,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "quickdraw",
@@ -5001,6 +5051,10 @@
       "name": {
         "en": "Quickdraw",
         "ru": "Молниеносная дуэль"
+      },
+      "lore": {
+        "en": "A formal duel between two ranged fighters to settle a dispute.",
+        "ru": "Формальная дуэль между двумя стрелками, призванная разрешить спор."
       },
       "impulses": {
         "en": [
@@ -5063,7 +5117,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "rooftop-chase",
@@ -5073,6 +5128,10 @@
       "name": {
         "en": "Rooftop Chase",
         "ru": "Погоня по крышам"
+      },
+      "lore": {
+        "en": "A chase along rooftops in a densely packed settlement.",
+        "ru": "Погоня по крышам в плотно застроенном поселении."
       },
       "impulses": {
         "en": [
@@ -5171,7 +5230,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "street-chase",
@@ -5181,6 +5241,10 @@
       "name": {
         "en": "Street Chase",
         "ru": "Погоня по улицам"
+      },
+      "lore": {
+        "en": "A chase through the winding streets of a settlement.",
+        "ru": "Погоня по извилистым улицам поселения."
       },
       "impulses": {
         "en": [
@@ -5296,7 +5360,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "arctic",
@@ -5306,6 +5371,10 @@
       "name": {
         "en": "Arctic",
         "ru": "Арктика"
+      },
+      "lore": {
+        "en": "A desolate land of ice far from civilization, where few have ventured before.",
+        "ru": "Пустынная ледяная земля вдали от цивилизации, куда прежде отваживались забредать немногие."
       },
       "impulses": {
         "en": [
@@ -5427,7 +5496,8 @@
       "builtin": true,
       "biomes": [
         "frozen"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "bank-heist",
@@ -5437,6 +5507,10 @@
       "name": {
         "en": "Bank Heist",
         "ru": "Ограбление банка"
+      },
+      "lore": {
+        "en": "A daring heist into a secure location to retrieve a valuable item.",
+        "ru": "Дерзкое ограбление хорошо охраняемого места с целью добыть ценный предмет."
       },
       "impulses": {
         "en": [
@@ -5544,7 +5618,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "circles-below-dis",
@@ -5554,6 +5629,10 @@
       "name": {
         "en": "Circles Below: Dis",
         "ru": "Нижние круги: Дис"
+      },
+      "lore": {
+        "en": "A city in the Circles Below populated with demons.",
+        "ru": "Город в Нижних Кругах, населённый демонами."
       },
       "impulses": {
         "en": [
@@ -5661,7 +5740,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "cloudy-sky",
@@ -5671,6 +5751,10 @@
       "name": {
         "en": "Cloudy Sky",
         "ru": "Облачное небо"
+      },
+      "lore": {
+        "en": "A journey by skyship enters a region of thick cloud, where patches of solid cloud provide homes for flying creatures.",
+        "ru": "Путешествие на небесном корабле входит в область плотных облаков, где островки плотного облака служат домом летающим существам."
       },
       "impulses": {
         "en": [
@@ -5769,7 +5853,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "dripping-caverns",
@@ -5779,6 +5864,10 @@
       "name": {
         "en": "Dripping Caverns",
         "ru": "Капающие пещеры"
+      },
+      "lore": {
+        "en": "A series of twisting tunnels with damp walls and dripping ceilings extending deep into the earth.",
+        "ru": "Ряд извилистых туннелей с влажными стенами и капающими сводами, уходящих глубоко в землю."
       },
       "impulses": {
         "en": [
@@ -5894,7 +5983,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "jungle",
@@ -5904,6 +5994,10 @@
       "name": {
         "en": "Jungle",
         "ru": "Джунгли"
+      },
+      "lore": {
+        "en": "A thick jungle full of verdant plant life that towers overhead blocking out much of the sky.",
+        "ru": "Густые джунгли, полные пышной растительности, возвышающейся над головой и скрывающей большую часть неба."
       },
       "impulses": {
         "en": [
@@ -6004,7 +6098,8 @@
       "builtin": true,
       "biomes": [
         "tropical"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "murder-mystery",
@@ -6014,6 +6109,10 @@
       "name": {
         "en": "Murder Mystery",
         "ru": "Загадочное Убийство"
+      },
+      "lore": {
+        "en": "An ally of the PCs was murdered, and it is up to the PCs to find the culprit.",
+        "ru": "Союзника персонажей убили, и теперь именно персонажам предстоит найти виновного."
       },
       "impulses": {
         "en": [
@@ -6126,7 +6225,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "valley-of-death",
@@ -6136,6 +6236,10 @@
       "name": {
         "en": "Valley of Death",
         "ru": "Долина смерти"
+      },
+      "lore": {
+        "en": "The land beyond the Veil where souls journey to their final resting place.",
+        "ru": "Земля за Завесой, куда души держат путь к своему последнему пристанищу."
       },
       "impulses": {
         "en": [
@@ -6230,7 +6334,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "fortress",
@@ -6240,6 +6345,10 @@
       "name": {
         "en": "Fortress",
         "ru": "Крепость"
+      },
+      "lore": {
+        "en": "An imposing fortress built in a strategic location and housing an army.",
+        "ru": "Внушительная крепость, возведённая в стратегически важном месте и служащая пристанищем для армии."
       },
       "impulses": {
         "en": [
@@ -6347,7 +6456,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "lunar-surface",
@@ -6357,6 +6467,10 @@
       "name": {
         "en": "Lunar Surface",
         "ru": "Лунная поверхность"
+      },
+      "lore": {
+        "en": "The surface of the moon, desolate and relatively undisturbed.",
+        "ru": "Поверхность луны — пустынная и почти нетронутая."
       },
       "impulses": {
         "en": [
@@ -6468,7 +6582,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "terror-of-the-deep",
@@ -6478,6 +6593,10 @@
       "name": {
         "en": "Terror of the Deep",
         "ru": "Ужас глубин"
+      },
+      "lore": {
+        "en": "A large body of water that only the bravest choose to sail through, home to a powerful sea monster.",
+        "ru": "Обширный водоём, через который решаются плыть лишь самые смелые, — обитель могущественного морского чудовища."
       },
       "impulses": {
         "en": [
@@ -6587,7 +6706,8 @@
       "builtin": true,
       "biomes": [
         "aquatic"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "time-loop",
@@ -6597,6 +6717,10 @@
       "name": {
         "en": "Time Loop",
         "ru": "Временная петля"
+      },
+      "lore": {
+        "en": "An isolated region caught in a time loop where the day resets at midnight.",
+        "ru": "Изолированная область, застрявшая во временной петле, где день сбрасывается в полночь."
       },
       "impulses": {
         "en": [
@@ -6723,7 +6847,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Archibald's Almanac of Adversaries"
     },
     {
       "id": "abandoned-mine",
