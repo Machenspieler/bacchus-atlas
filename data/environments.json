@@ -17942,6 +17942,10 @@
         "en": "Laboratory",
         "ru": "Лаборатория"
       },
+      "lore": {
+        "en": "The many halls of a mad mage whose experiments have created unnatural monstrosities.",
+        "ru": "Многочисленные залы безумного мага, чьи эксперименты породили противоестественных чудовищ."
+      },
       "impulses": {
         "en": [
           "Create new life",
@@ -18043,7 +18047,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "gloaming-forest",
@@ -18053,6 +18058,10 @@
       "name": {
         "en": "Gloaming Forest",
         "ru": "Сумеречный Лес"
+      },
+      "lore": {
+        "en": "A forest that has overtaken a village, seemingly overnight. It is wrought with alluring flowers and hidden marshes but hides resentment beneath the boughs of its twisted, humanoid-shaped trees.",
+        "ru": "Лес, который, казалось бы, за одну ночь поглотил деревню. Он полон манящих цветов и скрытых топей, но под кронами его искривлённых, похожих на людей деревьев таится затаённая злоба."
       },
       "impulses": {
         "en": [
@@ -18145,7 +18154,8 @@
       "builtin": true,
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "possessed-abode",
@@ -18155,6 +18165,10 @@
       "name": {
         "en": "Possessed Abode",
         "ru": "Одержимое Жилище"
+      },
+      "lore": {
+        "en": "A dwelling that has taken on the personality of a former owner or entity currently residing in it.",
+        "ru": "Жилище, обретшее нрав прежнего владельца или существа, обитающего в нём ныне."
       },
       "impulses": {
         "en": [
@@ -18266,7 +18280,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "chaotic-marketplace",
@@ -18276,6 +18291,10 @@
       "name": {
         "en": "Chaotic Marketplace",
         "ru": "Хаотичный Рынок"
+      },
+      "lore": {
+        "en": "Something has happened—a skirmish with guards, a fire, or other incident—which has caused the Shoppers and Merchants to panic and flee for their lives.",
+        "ru": "Что-то произошло — стычка со стражей, пожар или иное происшествие — и покупатели с торговцами в панике бегут, спасая свои жизни."
       },
       "impulses": {
         "en": [
@@ -18357,7 +18376,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "shadow-well",
@@ -18367,6 +18387,10 @@
       "name": {
         "en": "Shadow Well",
         "ru": "Теневой Колодец"
+      },
+      "lore": {
+        "en": "A realm of shadow, smoke, and terror has carved an opening to our world.",
+        "ru": "Царство тьмы, дыма и ужаса прорезало проход в наш мир."
       },
       "impulses": {
         "en": [
@@ -18455,7 +18479,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "deep-underground-cave",
@@ -18465,6 +18490,10 @@
       "name": {
         "en": "Deep Underground Cave",
         "ru": "Глубокая Подземная Пещера"
+      },
+      "lore": {
+        "en": "A damp cave with narrow passages, freezing temperatures, and cavernous spaces.",
+        "ru": "Сырая пещера с узкими проходами, ледяным холодом и огромными полостями."
       },
       "impulses": {
         "en": [
@@ -18571,7 +18600,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "forest-wildfire",
@@ -18581,6 +18611,10 @@
       "name": {
         "en": "Forest Wildfire",
         "ru": "Лесной Пожар"
+      },
+      "lore": {
+        "en": "An orange glow in the distance precedes a fire which rages out of control through a parched forest.",
+        "ru": "Оранжевое зарево вдали предвещает пожар, который бушует, не зная удержу, по иссохшему лесу."
       },
       "impulses": {
         "en": [
@@ -18694,7 +18728,8 @@
       "builtin": true,
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "rain-ritual",
@@ -18704,6 +18739,10 @@
       "name": {
         "en": "Rain Ritual",
         "ru": "Ритуал Дождя"
+      },
+      "lore": {
+        "en": "A ritual has begun to bring rain to a charred region, but the fire continues to rage.",
+        "ru": "Начат ритуал, призванный принести дождь выжженному краю, но огонь продолжает бушевать."
       },
       "impulses": {
         "en": [
@@ -18800,7 +18839,8 @@
       "builtin": true,
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "wishmaker-glade",
@@ -18810,6 +18850,10 @@
       "name": {
         "en": "Wishmaker Glade",
         "ru": "Поляна Желаний"
+      },
+      "lore": {
+        "en": "A blessed glade hosting a large twisting tree with purple leaves. The nearby community hangs wish tokens from the branches, which are now heavily-laden as tourists swarm the glade to make their own wishes. The grass is trodden and worn down from heavy foot traffic.",
+        "ru": "Благословенная поляна с большим извилистым деревом с лиловой листвой. Живущая неподалёку община развешивает на его ветвях жетоны желаний, и теперь ветви буквально ломятся от них, ведь толпы туристов стекаются на поляну, чтобы загадать своё желание. Трава здесь вытоптана и истёрта от постоянного потока людей."
       },
       "impulses": {
         "en": [
@@ -18949,7 +18993,8 @@
       "builtin": true,
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "unsettling-forest",
@@ -18959,6 +19004,10 @@
       "name": {
         "en": "Unsettling Forest",
         "ru": "Тревожный Лес"
+      },
+      "lore": {
+        "en": "A creepy forest twisted by the presence of a terrible hag who steals children from nearby towns and villages.",
+        "ru": "Жуткий лес, искажённый присутствием ужасной ведьмы, что похищает детей из окрестных городов и деревень."
       },
       "impulses": {
         "en": [
@@ -19053,7 +19102,8 @@
       "builtin": true,
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "hags-hut",
@@ -19063,6 +19113,10 @@
       "name": {
         "en": "Hag’s Hut",
         "ru": "Хижина Ведьмы"
+      },
+      "lore": {
+        "en": "A hag's lair that is filled with putrid reagents and animated objects. Deals are struck and words are twisted within its walls.",
+        "ru": "Логово ведьмы, полное зловонных реагентов и одушевлённых предметов. В этих стенах заключаются сделки, а слова искажаются и обращаются против сказавшего."
       },
       "impulses": {
         "en": [
@@ -19155,7 +19209,8 @@
       "builtin": true,
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "hakturi-ambush",
@@ -19165,6 +19220,10 @@
       "name": {
         "en": "Hakturi Ambush",
         "ru": "Засада Хактури"
+      },
+      "lore": {
+        "en": "An ambush set by a Hakturi Mother in their lair.",
+        "ru": "Засада, устроенная Матерью Хактури в её логове."
       },
       "impulses": {
         "en": [
@@ -19223,7 +19282,8 @@
       "builtin": true,
       "biomes": [
         "tropical"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "undersea-trench",
@@ -19233,6 +19293,10 @@
       "name": {
         "en": "Undersea Trench",
         "ru": "Подводная Впадина"
+      },
+      "lore": {
+        "en": "Beneath the waves, monsters congregate.",
+        "ru": "Под толщей волн собираются чудовища."
       },
       "impulses": {
         "en": [
@@ -19325,7 +19389,8 @@
       "builtin": true,
       "biomes": [
         "aquatic"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "rimefouled-wastes",
@@ -19335,6 +19400,10 @@
       "name": {
         "en": "Rimefouled Wastes",
         "ru": "Иневлаженные Пустоши"
+      },
+      "lore": {
+        "en": "A frozen tundra steeped in cursed magical energy that chills to the very bone.",
+        "ru": "Промёрзшая тундра, пропитанная проклятой магической энергией, что пробирает до самых костей."
       },
       "impulses": {
         "en": [
@@ -19406,7 +19475,8 @@
       "builtin": true,
       "biomes": [
         "frozen"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "ancient-power-conduit",
@@ -19416,6 +19486,10 @@
       "name": {
         "en": "Ancient Power Conduit",
         "ru": "Древний Проводник Силы"
+      },
+      "lore": {
+        "en": "A ruin that housed great knowledge and power about the old world.",
+        "ru": "Руины, некогда хранившие великие знания и могущество древнего мира."
       },
       "impulses": {
         "en": [
@@ -19504,7 +19578,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "almara-forest",
@@ -19514,6 +19589,10 @@
       "name": {
         "en": "Almara Forest",
         "ru": "Лес Альмара"
+      },
+      "lore": {
+        "en": "A boreal forest grown upon the back of a colossal spider that hides a temple above Almara's Heart.",
+        "ru": "Северный лес, выросший на спине колоссального паука, скрывающий храм над Сердцем Алмары."
       },
       "impulses": {
         "en": [
@@ -19587,7 +19666,8 @@
       "builtin": true,
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "dread-mire",
@@ -19597,6 +19677,10 @@
       "name": {
         "en": "Dread Mire",
         "ru": "Гиблая Топь"
+      },
+      "lore": {
+        "en": "The deepest parts of the swamp hold their secrets tight, and interlopers even tighter.",
+        "ru": "Глубочайшие уголки болота крепко хранят свои тайны — и ещё крепче держат непрошеных гостей."
       },
       "impulses": {
         "en": [
@@ -19735,7 +19819,8 @@
       "builtin": true,
       "biomes": [
         "wetland"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "heart-of-the-mire",
@@ -19745,6 +19830,10 @@
       "name": {
         "en": "Heart of the Mire",
         "ru": "Сердце Топи"
+      },
+      "lore": {
+        "en": "Surrounded by a group of ancient, standing stones, the Heart has been broken and corrupted by an unknown evil for a very long time.",
+        "ru": "Окружённое кольцом древних менгиров, Сердце уже долгое время сломлено и осквернено неведомым злом."
       },
       "impulses": {
         "en": [
@@ -19864,7 +19953,8 @@
       "builtin": true,
       "biomes": [
         "wetland"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "droughtlands",
@@ -19874,6 +19964,10 @@
       "name": {
         "en": "Droughtlands",
         "ru": "Засушливые Земли"
+      },
+      "lore": {
+        "en": "Dry grass crunches underfoot and barren trees and bushes litter the parched ground while dust devils swirl in the air.",
+        "ru": "Сухая трава хрустит под ногами, иссохшие деревья и кусты усеивают потрескавшуюся землю, а в воздухе кружат пыльные вихри."
       },
       "impulses": {
         "en": [
@@ -19970,7 +20064,8 @@
       "builtin": true,
       "biomes": [
         "drylands"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "demonic-abyss",
@@ -19980,6 +20075,10 @@
       "name": {
         "en": "Demonic Abyss",
         "ru": "Демоническая Бездна"
+      },
+      "lore": {
+        "en": "A wide scar deep beneath a mountain that crawls with mutated monsters. Above the gaping maw hangs the corpse of an enormous infernal being, wrapped in chains, viscera still dripping from its thousands of wounds.",
+        "ru": "Широкий разлом глубоко под горой, кишащий мутировавшими чудовищами. Над зияющей пастью разлома висит труп исполинского инфернального существа, закованный в цепи, и из тысяч его ран всё ещё капают внутренности."
       },
       "impulses": {
         "en": [
@@ -20087,7 +20186,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "extraplanar-breach",
@@ -20097,6 +20197,10 @@
       "name": {
         "en": "Extraplanar Breach",
         "ru": "Внепланарный Разлом"
+      },
+      "lore": {
+        "en": "A portal has opened in an ancient ruin and unwanted visitors are staking a claim on your home.",
+        "ru": "В древних руинах открылся портал, и незваные гости заявляют права на ваш дом."
       },
       "impulses": {
         "en": [
@@ -20200,7 +20304,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "prison-city-pyrrhexis",
@@ -20210,6 +20315,10 @@
       "name": {
         "en": "Prison City Pyrrhexis",
         "ru": "Тюремный Город Пиррексис"
+      },
+      "lore": {
+        "en": "This city of burning ash and iron bars in the center of the Circle of the Burned is home to the souls of the damned.",
+        "ru": "Этот город из горящего пепла и железных решёток в центре Круга Сожжённых — обитель душ проклятых."
       },
       "impulses": {
         "en": [
@@ -20301,7 +20410,8 @@
       "biomes": [
         "settlement",
         "badlands"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "the-metal-throne-of-sin",
@@ -20311,6 +20421,10 @@
       "name": {
         "en": "The Metal Throne of Sin",
         "ru": "Железный Трон Греха"
+      },
+      "lore": {
+        "en": "The evil heart at the center of the Circle of the Burned, the Throne of Sin.",
+        "ru": "Порочное сердце в центре Круга Сожжённых — Трон Греха."
       },
       "impulses": {
         "en": [
@@ -20399,7 +20513,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "the-profane-ascendancy",
@@ -20409,6 +20524,10 @@
       "name": {
         "en": "The Profane Ascendancy",
         "ru": "Нечестивое Восхождение"
+      },
+      "lore": {
+        "en": "A shadow-touched being reaches for once-holy power to corrupt it, fueled by infested congregants.",
+        "ru": "Существо, тронутое тьмой, тянется к некогда священной силе, чтобы осквернить её, питаясь одержимыми прихожанами."
       },
       "impulses": {
         "en": [
@@ -20499,7 +20618,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Incredible Creatures"
     },
     {
       "id": "death-butterfly-grove",
