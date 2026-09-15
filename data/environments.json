@@ -28867,6 +28867,200 @@
         "settlement"
       ],
       "source": "Resting Dagger"
+    },
+    {
+      "id": "buzzing-swamp",
+      "tier": 1,
+      "type": "traversal",
+      "difficulty": 11,
+      "name": {
+        "en": "Buzzing Swamp",
+        "ru": "Гудящее Болото"
+      },
+      "lore": {
+        "en": "A bubbling swamp overrun with Witherwild growth, deep enough to trap wagon wheels and feet alike. The buzz of insects reverberates in your ears.",
+        "ru": "Бурлящее болото, заросшее порослью Проклятия Дикоцвета, — оно достаточно глубоко, чтобы застревали и колёса телег, и ноги путников. Гудение насекомых отдаётся эхом в ушах."
+      },
+      "impulses": {
+        "en": [
+          "Bar crossing",
+          "trap the unready in mire",
+          "conceal what lies under the mud"
+        ],
+        "ru": [
+          "Преграждать путь",
+          "заманивать неосторожных в трясину",
+          "скрывать то, что таится под илом"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Giant Mosquitoes"
+        ],
+        "ru": [
+          "Гигантские Комары"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Bog Slog",
+            "ru": "Топкий Путь"
+          },
+          "description": {
+            "en": "Wading through the swamp uses a Progress Countdown (6). A PC who rolls a failure with Fear is immediately targeted by Bursting Bubble without requiring a Fear to be spent.",
+            "ru": "Переход через болото отслеживается Отсчётом Продвижения (6). Персонаж, выбросивший провал со Страхом, немедленно становится целью «Лопающегося Пузыря» без необходимости тратить Страх."
+          },
+          "prompt": {
+            "en": "What is strange about the mud here? How is the plant life slowly overtaking this swamp?",
+            "ru": "Что странного в здешней грязи? Как растительность постепенно захватывает это болото?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Bursting Bubble",
+            "ru": "Лопающийся Пузырь"
+          },
+          "description": {
+            "en": "Spend a Fear to burst a mud bubble near a PC. They must make a Strength Reaction Roll (11). On a failure, they take 1d6 physical damage. On a success, they mark a Stress.",
+            "ru": "Потратьте Страх, чтобы лопнуть грязевой пузырь рядом с персонажем. Он должен совершить Бросок Реакции на Силу (11). При провале он получает 1d6 физического урона. При успехе он отмечает Стресс."
+          },
+          "prompt": {
+            "en": "What foul smell does a swamp bubble produce when it bursts?",
+            "ru": "Какой мерзкий запах источает болотный пузырь, когда лопается?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Hungry",
+            "ru": "Голод"
+          },
+          "description": {
+            "en": "Spend a Fear to summon a swarm of Giant Mosquitoes within Close range of a chosen PC. They appear in or near the water and immediately take the spotlight.",
+            "ru": "Потратьте Страх, чтобы призвать рой Гигантских Комаров в Близкой дистанции от выбранного персонажа. Они появляются в воде или рядом с ней и немедленно получают Активацию."
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Example Skill Checks: The Swamp",
+            "ru": "Примеры Проверок: Болото"
+          },
+          "description": {
+            "en": "\n- **Strength Roll (11):** Keep footing in deep bog when the ground gives way without warning — hold your ground.\n- **Instinct Roll (12):** Sense which patches of ground are solid enough to bear weight before committing to them — perceive, navigate.\n- **Knowledge Roll (11):** Identify which plants can be used as rudimentary poles or stepping stones based on their root structure — recall, analyze.",
+            "ru": "\n- **Бросок Силы (11):** Удержаться на ногах в глубокой трясине, когда земля внезапно уходит из-под ног — не сдавать позиции.\n- **Бросок Инстинкта (12):** Почувствовать, какие участки земли достаточно твёрды, чтобы выдержать вес, прежде чем ступить на них — восприятие, ориентирование.\n- **Бросок Знания (11):** Определить по строению корней, какие растения можно использовать как примитивные шесты или опоры для ног — вспомнить, проанализировать."
+          }
+        }
+      ],
+      "builtin": true,
+      "biomes": [
+        "wetland"
+      ],
+      "source": "The Witherwild"
+    },
+    {
+      "id": "moonlight-bastion",
+      "tier": 1,
+      "type": "social",
+      "difficulty": 11,
+      "name": {
+        "en": "Moonlight Bastion",
+        "ru": "Лунный Бастион"
+      },
+      "lore": {
+        "en": "A Haven field-hospital and research outpost encircled by a protective moonlit ward. Compassion is channeled through discipline here.",
+        "ru": "Полевой госпиталь и исследовательский форпост Эдема, окружённый защитным лунным барьером. Здесь сострадание проявляется через дисциплину."
+      },
+      "impulses": {
+        "en": [
+          "Safeguard the afflicted",
+          "uncover hidden truths",
+          "uphold strict protocols"
+        ],
+        "ru": [
+          "Защищать поражённых",
+          "раскрывать скрытые истины",
+          "соблюдать строгие протоколы"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Corrupted Beasts (Dire Wolf, Glass Snake)",
+          "Rogue Zealots (Jagged Knife Hexer)",
+          "Overzealous Guards (Weaponmaster)"
+        ],
+        "ru": [
+          "Заражённые Звери (Лютоволк, Стеклянная Змея)",
+          "Мятежные Фанатики (Колдун из «Зазубренного ножа»)",
+          "Ретивые Стражи (Мастер Оружия)"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Lunar Insight",
+            "ru": "Лунное Прозрение"
+          },
+          "description": {
+            "en": "A PC in the ward's light may roll Knowledge with Hope. On success, reveal two facts about the Witherwild corruption or its cure; on failure, reveal one (mark 1 Stress to learn a fact and gain advantage on the next Knowledge or Medicine roll).",
+            "ru": "Персонаж в свете барьера может совершить бросок Знания с Надеждой. При успехе раскройте два факта о заражении Проклятием Дикоцвета или способе его лечения; при провале — один (отметьте 1 Стресс, чтобы узнать факт и получить преимущество на следующий бросок Знания или Медицины)."
+          },
+          "prompt": {
+            "en": "What insight glimmers in your memory as the moon's light steadies your thoughts?",
+            "ru": "Какое озарение вспыхивает в вашей памяти, пока лунный свет успокаивает ваши мысли?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Moonlight Pulse",
+            "ru": "Лунный Импульс"
+          },
+          "description": {
+            "en": "Once each night at midnight, the barrier flares in a 30-foot radius. All enemies in Very Close range must succeed on a Strength Reaction roll or be pushed to Far range and gain 2 Fear as ghostly ward energy sweeps them back.",
+            "ru": "Раз за ночь, ровно в полночь, барьер вспыхивает в радиусе 30 футов. Все враги в Очень Близкой дистанции должны преуспеть в Броске Реакции на Силу, иначе призрачная энергия барьера отбрасывает их на Дальнюю дистанцию, а они получают 2 Страха."
+          },
+          "prompt": {
+            "en": "What vivid sensation strikes you as the barrier's pulse radiates outward?",
+            "ru": "Какое яркое ощущение поражает вас, когда импульс барьера расходится наружу?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Vigilant Barrier",
+            "ru": "Бдительный Барьер"
+          },
+          "description": {
+            "en": "The ward heightens the senses. Whenever a stealthy foe enters Very Close range of the camp, any PC may roll Instinct (Difficulty 12). On a success, they immediately spot the intruder before it can act.",
+            "ru": "Барьер обостряет чувства. Всякий раз, когда скрытный враг входит в Очень Близкую дистанцию от лагеря, любой персонаж может совершить бросок Инстинкта (Сложность 12). При успехе он немедленно замечает незваного гостя до того, как тот успевает действовать."
+          },
+          "prompt": {
+            "en": "How does the threat reveal itself under the moon's watchful glow?",
+            "ru": "Как угроза выдаёт себя в свете бдительной луны?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Example Skill Checks: The Bastion",
+            "ru": "Примеры Проверок: Бастион"
+          },
+          "description": {
+            "en": "\n- **Presence Roll (12):** Convince the gate guards the party has legitimate business at the camp — plead a case, deceive, perform a role.\n- **Knowledge Roll (11):** Recognize the ward structure as Wickling-adjacent plant-magic despite Haven's colors on everything — analyze, recall.\n- **Finesse Roll (12):** Move through the medical compound without drawing attention to the more questionable things in the party's packs — hide, escape notice.",
+            "ru": "\n- **Бросок Влияния (12):** Убедить стражу у ворот, что у отряда есть законное дело в лагере — отстоять свою правоту, обмануть, сыграть роль.\n- **Бросок Знания (11):** Распознать в структуре барьера растительную магию, близкую к ведальской, несмотря на цвета Эдема повсюду — проанализировать, вспомнить.\n- **Бросок Искусности (12):** Пройти через медицинский комплекс, не привлекая внимания к более сомнительному содержимому заплечных мешков отряда — спрятаться, остаться незамеченным."
+          }
+        }
+      ],
+      "builtin": true,
+      "biomes": [
+        "settlement"
+      ],
+      "source": "The Witherwild"
     }
   ]
 }
