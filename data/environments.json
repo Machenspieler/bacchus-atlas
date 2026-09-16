@@ -22480,6 +22480,10 @@
         "en": "Asteroid Chase",
         "ru": "Погоня в Астероидах"
       },
+      "lore": {
+        "en": "A desperate pursuit through a cluttered asteroid field.",
+        "ru": "Отчаянная погоня сквозь захламлённое астероидное поле."
+      },
       "impulses": {
         "en": [
           "Present hazards",
@@ -22573,7 +22577,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "den-of-vice-and-violence",
@@ -22583,6 +22588,10 @@
       "name": {
         "en": "Den of Vice and Violence",
         "ru": "Логово Порока и Насилия"
+      },
+      "lore": {
+        "en": "A social spot packed with seedy characters and dangerous criminals.",
+        "ru": "Злачное место, битком набитое сомнительными типами и опасными преступниками."
       },
       "impulses": {
         "en": [
@@ -22690,7 +22699,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "planetary-blockade",
@@ -22700,6 +22710,10 @@
       "name": {
         "en": "Planetary Blockade",
         "ru": "Планетарная Блокада"
+      },
+      "lore": {
+        "en": "Hostile ships swarm in orbit, allowing only those with the right credentials, contacts, or a small fortune in Denarii on or off planet.",
+        "ru": "Вражеские корабли роятся на орбите, пропуская на планету и с неё только тех, у кого есть нужные документы, связи или небольшое состояние в денариях."
       },
       "impulses": {
         "en": [
@@ -22781,7 +22795,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "sand-sea",
@@ -22791,6 +22806,10 @@
       "name": {
         "en": "Sand Sea",
         "ru": "Песчаное Море"
+      },
+      "lore": {
+        "en": "A desolate, sand-filled wasteland teeming with threats.",
+        "ru": "Безлюдная, засыпанная песком пустошь, кишащая опасностями."
       },
       "impulses": {
         "en": [
@@ -22900,7 +22919,8 @@
       "builtin": true,
       "biomes": [
         "drylands"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "stream-fold",
@@ -22910,6 +22930,10 @@
       "name": {
         "en": "Stream Fold",
         "ru": "Складка Потока"
+      },
+      "lore": {
+        "en": "Entering and successfully traversing the Stream Fold requires precise calculations, a strong nerve, and just a bit of luck.",
+        "ru": "Чтобы войти в Складку Потока и благополучно пройти сквозь неё, нужны точные расчёты, крепкие нервы и капля удачи."
       },
       "impulses": {
         "en": [
@@ -22989,7 +23013,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "sovereignty-entanglements",
@@ -22999,6 +23024,10 @@
       "name": {
         "en": "Sovereignty Entanglements",
         "ru": "Столкновение с Суверенитетом"
+      },
+      "lore": {
+        "en": "The ships attacking you are too powerful, too many, or both. You can’t hope to win, but you still might secure another kind of victory…",
+        "ru": "Атакующие вас корабли слишком сильны, слишком многочисленны — или и то, и другое сразу. Победить в этом бою вам не светит, но, возможно, вас ждёт победа иного рода…"
       },
       "impulses": {
         "en": [
@@ -23078,7 +23107,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "canyon-dogfight",
@@ -23088,6 +23118,10 @@
       "name": {
         "en": "Canyon Dogfight",
         "ru": "Воздушный Бой в Каньоне"
+      },
+      "lore": {
+        "en": "A desperate air duel amidst narrow, twisting canyons.",
+        "ru": "Отчаянный воздушный поединок среди узких, извилистых каньонов."
       },
       "impulses": {
         "en": [
@@ -23195,7 +23229,8 @@
       "builtin": true,
       "biomes": [
         "drylands"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "deadly-jungle",
@@ -23205,6 +23240,10 @@
       "name": {
         "en": "Deadly Jungle",
         "ru": "Смертоносные Джунгли"
+      },
+      "lore": {
+        "en": "A wild and dangerous jungle where everything seems out to kill you.",
+        "ru": "Дикие и опасные джунгли, где, кажется, всё живое желает вашей смерти."
       },
       "impulses": {
         "en": [
@@ -23342,7 +23381,8 @@
       "builtin": true,
       "biomes": [
         "tropical"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "endless-forest",
@@ -23352,6 +23392,10 @@
       "name": {
         "en": "Endless Forest",
         "ru": "Бескрайний Лес"
+      },
+      "lore": {
+        "en": "A forest of impossibly tall trees, where each level of the canopy forms its own ecosystem.",
+        "ru": "Лес из невероятно высоких деревьев, где каждый ярус кроны образует собственную экосистему."
       },
       "impulses": {
         "en": [
@@ -23457,7 +23501,8 @@
       "builtin": true,
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "floating-mountains",
@@ -23467,6 +23512,10 @@
       "name": {
         "en": "Floating Mountains",
         "ru": "Парящие Горы"
+      },
+      "lore": {
+        "en": "Immense and majestic floating mountains connected by a network of massive vines.",
+        "ru": "Огромные и величественные парящие горы, соединённые сетью массивных лиан."
       },
       "impulses": {
         "en": [
@@ -23561,7 +23610,8 @@
       "builtin": true,
       "biomes": [
         "mountain"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "epic-duel",
@@ -23574,6 +23624,10 @@
       "name": {
         "en": "Epic Duel",
         "ru": "Эпическая Дуэль"
+      },
+      "lore": {
+        "en": "An epic showdown between skilled warriors that is emblematic of the story’s larger themes and conflicts.",
+        "ru": "Эпическое противостояние искусных воинов, воплощающее главные темы и конфликты истории."
       },
       "impulses": {
         "en": [
@@ -23717,7 +23771,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "sovereignty-outpost",
@@ -23727,6 +23782,10 @@
       "name": {
         "en": "Sovereignty Outpost",
         "ru": "Форпост Суверенитета"
+      },
+      "lore": {
+        "en": "A remote Sovereignty outpost manned by soldiers who wish they were stationed anywhere else.",
+        "ru": "Отдалённый форпост Суверенитета, укомплектованный солдатами, которые предпочли бы служить где угодно, только не здесь."
       },
       "impulses": {
         "en": [
@@ -23836,7 +23895,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "capital-ship-assault",
@@ -23846,6 +23906,10 @@
       "name": {
         "en": "Capital Ship Assault",
         "ru": "Штурм Линкора"
+      },
+      "lore": {
+        "en": "A massive warship under siege by an invading force.",
+        "ru": "Огромный военный корабль, осаждённый силами вторжения."
       },
       "impulses": {
         "en": [
@@ -23983,7 +24047,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "capital-ship-high-alert",
@@ -23993,6 +24058,10 @@
       "name": {
         "en": "Capital Ship High Alert",
         "ru": "Линкор на Боевой Тревоге"
+      },
+      "lore": {
+        "en": "A heavily secured warship on total lockdown, with security forces scouring every deck and the entire ship braced for intruders.",
+        "ru": "Тщательно охраняемый военный корабль на полной блокировке: силы безопасности прочёсывают каждую палубу, а весь экипаж готов к появлению незваных гостей."
       },
       "impulses": {
         "en": [
@@ -24100,7 +24169,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "capital-ship-infiltration",
@@ -24110,6 +24180,10 @@
       "name": {
         "en": "Capital Ship Infiltration",
         "ru": "Проникновение на Линкор"
+      },
+      "lore": {
+        "en": "A heavily secured warship crawling with enemies. What’s so important aboard that the PCs would risk sneaking inside?",
+        "ru": "Тщательно охраняемый военный корабль, кишащий врагами. Что настолько важное находится на борту, ради чего персонажи готовы рискнуть и пробраться внутрь?"
       },
       "impulses": {
         "en": [
@@ -24215,7 +24289,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "conclave-hall",
@@ -24225,6 +24300,10 @@
       "name": {
         "en": "Conclave Hall",
         "ru": "Зал Конклава"
+      },
+      "lore": {
+        "en": "The supposed governing body of the Sovereignty is less a parliament and more a nest of vipers, where ambition and betrayal rule the day.",
+        "ru": "Номинально правящий орган Суверенитета на деле — не столько парламент, сколько змеиное гнездо, где царят амбиции и предательство."
       },
       "impulses": {
         "en": [
@@ -24385,7 +24464,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "operations-center",
@@ -24395,6 +24475,10 @@
       "name": {
         "en": "Operations Center",
         "ru": "Оперативный Центр"
+      },
+      "lore": {
+        "en": "Command and control nodes coordinate the Sovereignty’s efforts across the galaxy.",
+        "ru": "Узлы командования и управления координируют действия Суверенитета по всей галактике."
       },
       "impulses": {
         "en": [
@@ -24506,7 +24590,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "sovereignty-base",
@@ -24516,6 +24601,10 @@
       "name": {
         "en": "Sovereignty Base",
         "ru": "База Суверенитета"
+      },
+      "lore": {
+        "en": "A heavily secured warship, teeming with enemies. What is so important about it that the PCs would risk sneaking aboard.",
+        "ru": "Тщательно охраняемый военный корабль, кишащий врагами. Что в нём настолько важное, ради чего персонажи готовы рискнуть и пробраться на борт?"
       },
       "impulses": {
         "en": [
@@ -24621,7 +24710,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "archons-throne-room",
@@ -24631,6 +24721,10 @@
       "name": {
         "en": "Archon’s Throne Room",
         "ru": "Тронный Зал Архонта"
+      },
+      "lore": {
+        "en": "The Room from which the Archon’s dark power emanates across the Sovereignty.",
+        "ru": "Зал, из которого тёмная сила Архонта расходится по всему Суверенитету."
       },
       "impulses": {
         "en": [
@@ -24753,7 +24847,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "korathi-temple",
@@ -24763,6 +24858,10 @@
       "name": {
         "en": "Korathi Temple",
         "ru": "Кoратский Храм"
+      },
+      "lore": {
+        "en": "An ancient temple holding untold secrets, haunted by the Shadow essence of long dead Korath and guarded by deadly automated defenses.",
+        "ru": "Древний храм, хранящий неисчислимые тайны; в нём обитает Теневая сущность давно погибшего Корат, а стерегут его смертоносные автоматические системы защиты."
       },
       "impulses": {
         "en": [
@@ -24876,7 +24975,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "planetary-invasion",
@@ -24886,6 +24986,10 @@
       "name": {
         "en": "Planetary Invasion",
         "ru": "Планетарное Вторжение"
+      },
+      "lore": {
+        "en": "The overwhelming might of the Sovereignty’s forces descend on a world.",
+        "ru": "Подавляющая мощь сил Суверенитета обрушивается на планету."
       },
       "impulses": {
         "en": [
@@ -25016,7 +25120,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "StarHeart"
     },
     {
       "id": "root-rush-rescue",
