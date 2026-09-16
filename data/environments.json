@@ -23617,10 +23617,6 @@
       "id": "epic-duel",
       "tier": 2,
       "type": "event",
-      "difficulty": {
-        "en": "Adversary Duelist’s Difficulty",
-        "ru": "Как у противника-Дуэлянта"
-      },
       "name": {
         "en": "Epic Duel",
         "ru": "Эпическая Дуэль"

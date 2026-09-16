@@ -227,7 +227,7 @@ function envDifficulty(env) {
 /** A descriptive difficulty that only points at one of the environment's own
  * features — "Special (see “Relative Strength”)" — carries no value of its own;
  * the Features block below prints the rule in full. One that names a value
- * instead ("Adversary Duelist’s Difficulty") still says something. */
+ * instead still says something. */
 function difficultyDefersToFeature(env) {
   const d = env.difficulty;
   if (!d || typeof d !== 'object') return false;
@@ -479,7 +479,7 @@ function potentialAdversaryEntryHtml(localizedText, englishText) {
 /* Cache buster for the JSON under data/. index.html versions the stylesheet and
    this script the same way; the data files are fetched from here instead, so
    bump this whenever anything in data/ changes or browsers serve stale copies. */
-const DATA_VERSION = 66;
+const DATA_VERSION = 67;
 
 function getJSON(path) {
   return fetch(path).then(r => {
