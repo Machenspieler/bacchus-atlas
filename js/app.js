@@ -446,14 +446,27 @@ const ADVERSARY_FAMILY_MEMBERS = {
   Cult: ['Cult Adept', 'Cult Fang', 'Cult Initiate'],
 };
 
-/** The family name to look up in ADVERSARY_FAMILY_MEMBERS for an "any X" (or
- * "any X member"/"any X being") phrase — "any Cult member" -> "Cult", "any
- * Jagged Knife" -> "Jagged Knife". Returns null for text that isn't an "any
- * …" phrase at all. */
+/** The text named by an "any X" (or "any X member"/"any X being") phrase —
+ * "any Cult member" -> "Cult", "any Jagged Knife" -> "Jagged Knife", "any
+ * Jagged Knife Bandit" -> "Jagged Knife Bandit". Returns null for text that
+ * isn't an "any …" phrase at all. This is the raw named text, not
+ * necessarily a family key by itself — see familyForAnyPhrase. */
 function anyAdversaryFamily(text) {
   const match = String(text).trim().match(/^any\s+(.+)$/i);
   if (!match) return null;
   return match[1].trim().replace(/\s+(members?|beings?)$/i, '').trim();
+}
+
+/** The ADVERSARY_FAMILY_MEMBERS key an "any X" phrase's named text refers
+ * to. Usually X is the family name outright ("any Jagged Knife"), but
+ * source text sometimes names one of the family's own members as a
+ * stand-in for the whole family — "Hired goons (any Jagged Knife Bandit)"
+ * means any Jagged Knife-gang member, not literally just the "Bandit" rank
+ * — so a phrase that starts with a known family name still counts, even
+ * with extra words after it. */
+function familyForAnyPhrase(phrase) {
+  if (ADVERSARY_FAMILY_MEMBERS[phrase]) return phrase;
+  return Object.keys(ADVERSARY_FAMILY_MEMBERS).find(family => phrase.startsWith(`${family} `)) || null;
 }
 
 /** Every FreshCutGrass-recognizable name a single Potential Adversaries
@@ -467,11 +480,11 @@ function anyAdversaryFamily(text) {
  * lookup purposes, same idea as "any X" naming a family instead of a member,
  * just for a single already-complete name instead of a whole roster. */
 function resolveAdversaryNames(groupLabel, memberName) {
-  const family = anyAdversaryFamily(memberName);
-  if (family != null) {
-    const roster = ADVERSARY_FAMILY_MEMBERS[family];
-    if (roster) return roster;
-    return looksLikeAdversaryName(family) ? [family] : [];
+  const phrase = anyAdversaryFamily(memberName);
+  if (phrase != null) {
+    const familyKey = familyForAnyPhrase(phrase);
+    if (familyKey) return ADVERSARY_FAMILY_MEMBERS[familyKey];
+    return looksLikeAdversaryName(phrase) ? [phrase] : [];
   }
   const includingMatch = String(memberName).trim().match(/^including\s+(.+)$/i);
   const nameToResolve = includingMatch ? includingMatch[1].trim() : memberName;
