@@ -406,6 +406,11 @@ const ADVERSARY_GROUP_MEMBER_ALIASES = {
   Elementals: { 'Greater Earth': 'Greater Earth Elemental' },
   'Greater Elementals': { Earth: 'Greater Earth Elemental', Water: 'Greater Water Elemental' },
   'Minor Elementals': { Fire: 'Minor Fire Elemental', Chaos: 'Minor Chaos Elemental' },
+  /* "Fallen (Shock Troop, Sorcerer, Warlord)" — bare "Warlord" doesn't
+   * prefix cleanly since the bestiary has no plain "Fallen Warlord", only
+   * subtitled variants. Confirmed this environment (Fortress) means the
+   * "Realm-Breaker" one specifically. */
+  Fallen: { Warlord: 'Fallen Warlord: Realm-Breaker' },
 };
 
 /** The FreshCutGrass-recognizable name for one member of a Potential
