@@ -280,7 +280,31 @@ function parsePotentialAdversaryEntry(entry) {
   const text = String(entry || '').trim();
   const match = text.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
   if (!match) return { label: text, members: text ? [text] : [], isGroup: false };
-  return { label: match[1].trim(), members: match[2].split(',').map(s => s.trim()).filter(Boolean), isGroup: true };
+  return { label: match[1].trim(), members: splitAdversaryMembers(match[2]), isGroup: true };
+}
+
+/** Splits a group's parenthetical member list on commas, same as always —
+ * except for the rare list that uses "or" before its last item instead of a
+ * comma ("Green or Red Ooze", RU "Зелёная или Красная Слизь"). English (and
+ * Russian) drop the shared trailing noun from every item but the last one, so
+ * a plain split leaves the first item short a word ("Green" instead of
+ * "Green Ooze"). When "or"/"или" is present, the last item's trailing words
+ * (everything after its first word) are treated as that shared noun and
+ * appended to any earlier item that doesn't already end with it. Plain
+ * comma lists never hit this path, so multi-word distinct names in an
+ * ordinary list ("Gobstalker, Green Ooze, Ravenous Mockery, Rust Eater")
+ * are untouched. */
+function splitAdversaryMembers(text) {
+  /* \b doesn't mark a boundary around Cyrillic letters in JS regex (\w is
+   * ASCII-only), so "или" is matched by surrounding whitespace instead —
+   * the same pattern the split below uses. */
+  if (!/\s(?:or|или)\s/i.test(text)) return text.split(',').map(s => s.trim()).filter(Boolean);
+  const parts = text.split(/\s*,\s*|\s+(?:or|или)\s+/i).map(s => s.trim()).filter(Boolean);
+  const last = parts[parts.length - 1];
+  const lastWords = last.split(/\s+/);
+  if (lastWords.length < 2) return parts;
+  const suffix = lastWords.slice(1).join(' ');
+  return parts.map((p, i) => (i === parts.length - 1 || p.toLowerCase().endsWith(suffix.toLowerCase())) ? p : `${p} ${suffix}`);
 }
 
 /* A handful of Potential Adversaries entries don't name an adversary at all:
@@ -374,6 +398,50 @@ function fullAdversaryName(groupLabel, memberName) {
   return prefix ? `${prefix} ${memberName}` : memberName;
 }
 
+/** A handful of Potential Adversaries entries — grouped or standalone — don't
+ * enumerate their members at all, instead naming a family and leaving the GM
+ * to pick any of it: "Criminals (any Jagged Knife)", or the bare entry "any
+ * Cult member". FreshCutGrass has no notion of "any", so these expand to the
+ * family's full roster, taken from the same wording spelled out in full
+ * elsewhere in this file — e.g. "Jagged Knife Bandits (Bandit, Hexer,
+ * Kneebreaker, Lackey, Lieutenant, Shadow, Sniper)" and "Cultists (Adept,
+ * Fang, Initiate)". Both the singular and plural family name are listed
+ * since source text uses either ("any Vault Guardian" / "any Vault
+ * Guardians"). */
+const ADVERSARY_FAMILY_MEMBERS = {
+  'Jagged Knife': ['Jagged Knife Bandit', 'Jagged Knife Hexer', 'Jagged Knife Kneebreaker', 'Jagged Knife Lackey', 'Jagged Knife Lieutenant', 'Jagged Knife Shadow', 'Jagged Knife Sniper'],
+  'Vault Guardian': ['Vault Guardian Gaoler', 'Vault Guardian Sentinel', 'Vault Guardian Turret'],
+  'Vault Guardians': ['Vault Guardian Gaoler', 'Vault Guardian Sentinel', 'Vault Guardian Turret'],
+  'Outer Realms': ['Outer Realms Abomination', 'Outer Realms Corrupter', 'Outer Realms Thrall'],
+  Cult: ['Cult Adept', 'Cult Fang', 'Cult Initiate'],
+};
+
+/** The family name to look up in ADVERSARY_FAMILY_MEMBERS for an "any X" (or
+ * "any X member"/"any X being") phrase — "any Cult member" -> "Cult", "any
+ * Jagged Knife" -> "Jagged Knife". Returns null for text that isn't an "any
+ * …" phrase at all. */
+function anyAdversaryFamily(text) {
+  const match = String(text).trim().match(/^any\s+(.+)$/i);
+  if (!match) return null;
+  return match[1].trim().replace(/\s+(members?|beings?)$/i, '').trim();
+}
+
+/** Every FreshCutGrass-recognizable name a single Potential Adversaries
+ * member (or, for a bare non-group entry, the whole entry) resolves to —
+ * almost always exactly one, but an "any Jagged Knife" style family phrase
+ * expands to every member of that family, and a name FreshCutGrass has
+ * nothing to look up for ("Any", a "see …" citation) resolves to none.
+ * groupLabel is null for a bare non-group entry, where no prefix applies. */
+function resolveAdversaryNames(groupLabel, memberName) {
+  const family = anyAdversaryFamily(memberName);
+  if (family != null) {
+    const roster = ADVERSARY_FAMILY_MEMBERS[family];
+    if (roster) return roster;
+    return looksLikeAdversaryName(family) ? [family] : [];
+  }
+  return looksLikeAdversaryName(memberName) ? [fullAdversaryName(groupLabel, memberName)] : [];
+}
+
 /** Every adversary named anywhere in an environment's Potential Adversaries
  * text, in English — FreshCutGrass has no notion of the site's other
  * languages — deduplicated but kept in the order they first appear. */
@@ -382,8 +450,9 @@ function envAdversaryNames(env) {
   const seen = new Set();
   entries.forEach(entry => {
     const parsed = parsePotentialAdversaryEntry(entry);
-    parsed.members.filter(looksLikeAdversaryName).forEach(name => {
-      seen.add(parsed.isGroup ? fullAdversaryName(parsed.label, name) : name);
+    const groupLabel = parsed.isGroup ? parsed.label : null;
+    parsed.members.forEach(name => {
+      resolveAdversaryNames(groupLabel, name).forEach(n => seen.add(n));
     });
   });
   return [...seen];
@@ -460,16 +529,19 @@ function potentialAdversaryLinkHtml(visibleLabel, encounterName, adversaryNames)
 function potentialAdversaryEntryHtml(localizedText, englishText) {
   const shown = parsePotentialAdversaryEntry(localizedText);
   const canonical = parsePotentialAdversaryEntry(englishText);
-  const canonicalNames = canonical.isGroup ? [canonical.label, ...canonical.members] : [canonical.label];
-  if (!canonicalNames.every(looksLikeAdversaryName)) return escapeHtml(localizedText);
-  if (!shown.isGroup) {
-    return potentialAdversaryLinkHtml(shown.label, canonical.label, [canonical.label]);
+  if (!canonical.isGroup) {
+    const names = resolveAdversaryNames(null, canonical.label);
+    if (!names.length) return escapeHtml(localizedText);
+    return potentialAdversaryLinkHtml(shown.label, anyAdversaryFamily(canonical.label) || canonical.label, names);
   }
-  const fullMemberNames = canonical.members.map(name => fullAdversaryName(canonical.label, name));
-  const groupLink = potentialAdversaryLinkHtml(shown.label, canonical.label, fullMemberNames);
+  if (!looksLikeAdversaryName(canonical.label)) return escapeHtml(localizedText);
+  const memberNameLists = canonical.members.map(name => resolveAdversaryNames(canonical.label, name));
+  if (memberNameLists.some(names => !names.length)) return escapeHtml(localizedText);
+  const groupLink = potentialAdversaryLinkHtml(shown.label, canonical.label, memberNameLists.flat());
   const memberLinks = shown.members.map((memberLabel, i) => {
-    const englishName = fullMemberNames[i] || memberLabel;
-    return potentialAdversaryLinkHtml(memberLabel, englishName, [englishName]);
+    const names = memberNameLists[i];
+    const encounterName = anyAdversaryFamily(canonical.members[i]) || names[0];
+    return potentialAdversaryLinkHtml(memberLabel, encounterName, names);
   }).join(', ');
   return `${groupLink} (${memberLinks})`;
 }
