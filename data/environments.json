@@ -21582,6 +21582,10 @@
         "en": "City Streets",
         "ru": "Городские Улицы"
       },
+      "lore": {
+        "en": "A busy street with traffic, toxic smog and peddlers.",
+        "ru": "Оживлённая улица с движением, ядовитым смогом и торговцами."
+      },
       "impulses": {
         "en": [
           "Stifle the hero's efforts",
@@ -21673,7 +21677,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "City of the Black Rose"
     },
     {
       "id": "jazz-speakeasy",
@@ -21683,6 +21688,10 @@
       "name": {
         "en": "Jazz Speakeasy",
         "ru": "Джазовый Спикизи"
+      },
+      "lore": {
+        "en": "A secret, late-night music club run by criminals.",
+        "ru": "Тайный ночной музыкальный клуб, которым заправляют преступники."
       },
       "impulses": {
         "en": [
@@ -21756,7 +21765,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "City of the Black Rose"
     },
     {
       "id": "spooky-forest",
@@ -21766,6 +21776,10 @@
       "name": {
         "en": "Spooky Forest",
         "ru": "Жуткий Лес"
+      },
+      "lore": {
+        "en": "An overgrown wood with shadowy trees where it's easy to get lost.",
+        "ru": "Заросший лес с тенистыми деревьями, где легко заблудиться."
       },
       "impulses": {
         "en": [
@@ -21828,7 +21842,8 @@
       "builtin": true,
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "City of the Black Rose"
     },
     {
       "id": "abandoned-building",
@@ -21838,6 +21853,10 @@
       "name": {
         "en": "Abandoned Building",
         "ru": "Заброшенное Здание"
+      },
+      "lore": {
+        "en": "A multistorey building that's rumoured to be cursed.",
+        "ru": "Многоэтажное здание, о котором ходят слухи, что оно проклято."
       },
       "impulses": {
         "en": [
@@ -21898,7 +21917,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "City of the Black Rose"
     },
     {
       "id": "fighting-pit",
@@ -21908,6 +21928,10 @@
       "name": {
         "en": "Fighting Pit",
         "ru": "Бойцовская Яма"
+      },
+      "lore": {
+        "en": "A legally dubious fighting ring with raucous crowds.",
+        "ru": "Сомнительный с точки зрения закона бойцовский ринг с буйной толпой."
       },
       "impulses": {
         "en": [
@@ -21976,7 +22000,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "City of the Black Rose"
     },
     {
       "id": "catacomb-tunnels",
@@ -21986,6 +22011,10 @@
       "name": {
         "en": "Catacomb Tunnels",
         "ru": "Туннели Катакомб"
+      },
+      "lore": {
+        "en": "Miles of musty tunnels beneath the city.",
+        "ru": "Мили затхлых туннелей под городом."
       },
       "impulses": {
         "en": [
@@ -22044,7 +22073,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "City of the Black Rose"
     },
     {
       "id": "industrial-mine",
@@ -22054,6 +22084,10 @@
       "name": {
         "en": "Industrial Mine",
         "ru": "Промышленный Рудник"
+      },
+      "lore": {
+        "en": "A working site where unstable magical ore is mined.",
+        "ru": "Действующий рудник, где добывают нестабильную магическую руду."
       },
       "impulses": {
         "en": [
@@ -22161,7 +22195,8 @@
       "builtin": true,
       "biomes": [
         "underground"
-      ]
+      ],
+      "source": "City of the Black Rose"
     },
     {
       "id": "arcane-laboratory",
@@ -22171,6 +22206,10 @@
       "name": {
         "en": "Arcane Laboratory",
         "ru": "Тайная Лаборатория"
+      },
+      "lore": {
+        "en": "Bubbling vials, odd devices, half-finished creatures.",
+        "ru": "Булькающие колбы, странные приборы, недоделанные создания."
       },
       "impulses": {
         "en": [
@@ -22276,7 +22315,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "City of the Black Rose"
     },
     {
       "id": "city-travel",
@@ -22286,6 +22326,10 @@
       "name": {
         "en": "City Travel",
         "ru": "Городское Передвижение"
+      },
+      "lore": {
+        "en": "Busy roads and skies throughout a magical metropolis.",
+        "ru": "Оживлённые дороги и небо по всему магическому мегаполису."
       },
       "impulses": {
         "en": [
@@ -22380,7 +22424,8 @@
       "builtin": true,
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "City of the Black Rose"
     },
     {
       "id": "interdimensional-building",
@@ -22390,6 +22435,10 @@
       "name": {
         "en": "Interdimensional Building",
         "ru": "Межпространственное Здание"
+      },
+      "lore": {
+        "en": "A curious, enchanted building full of planar portals.",
+        "ru": "Причудливое зачарованное здание, полное планарных порталов."
       },
       "impulses": {
         "en": [
@@ -22469,7 +22518,8 @@
       "builtin": true,
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "City of the Black Rose"
     },
     {
       "id": "asteroid-chase",
