@@ -276,11 +276,31 @@ function bilingual(field) { return field?.[state.lang] || field?.en || field?.ru
  * Parsing that text, rather than hand-listing monster names per environment,
  * is what lets the encounter builder below stay generic: it reads the same
  * data the "Potential Adversaries" line already renders from. */
+/** Two more Potential Adversaries shapes fall outside the ordinary "Label
+ * (Member, Member)" form, and neither needs the SRD to parse correctly —
+ * both are pure punctuation, not creature names:
+ *
+ * - A whole entry can be "Tier N: Name, Name" (RU "Ранг N: …") instead of a
+ *   single string with parens — the encounter table for a tiered event like
+ *   a fighting arena. The names after the colon are already complete, so
+ *   this parses exactly like a parenthetical group, just with ": " instead
+ *   of " (" ... ")" as the wrapping punctuation (see `style` below).
+ * - A parenthetical can hold a tier/role annotation instead of members —
+ *   "Bandits (tier 2)", "Barbara Yaga, Barkeep (Tier 4 Solo)". That's
+ *   metadata about the one adversary named before it, not a list of
+ *   adversaries to look up, so it's kept for display (as `annotation`) but
+ *   never treated as a member to resolve or link. */
 function parsePotentialAdversaryEntry(entry) {
   const text = String(entry || '').trim();
+  const tierMatch = text.match(/^((?:Tier|Ранг)\s+\d+):\s*(.+)$/i);
+  if (tierMatch) return { label: tierMatch[1].trim(), members: splitAdversaryMembers(tierMatch[2]), isGroup: true, style: 'tier' };
   const match = text.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
   if (!match) return { label: text, members: text ? [text] : [], isGroup: false };
-  return { label: match[1].trim(), members: splitAdversaryMembers(match[2]), isGroup: true };
+  if (/^(?:tier|ранг)\s*\d+/i.test(match[2].trim())) {
+    const label = match[1].trim();
+    return { label, members: label ? [label] : [], isGroup: false, annotation: match[2].trim() };
+  }
+  return { label: match[1].trim(), members: splitAdversaryMembers(match[2]), isGroup: true, style: 'paren' };
 }
 
 /** Splits a group's parenthetical member list on commas, same as always —
@@ -525,14 +545,20 @@ function potentialAdversaryLinkHtml(visibleLabel, encounterName, adversaryNames)
  * 'ghostly versions of other adversaries (see "Ghostly Form")' — falls back to
  * the plain text it would have been without this feature, same as an
  * environment that hasn't opted in at all: a name FreshCutGrass can't use is
- * not worth a link, whole or half. */
+ * not worth a link, whole or half. A "Tier N: Name, Name" entry (see
+ * parsePotentialAdversaryEntry's `style`) renders the same way but joined
+ * with ": " instead of wrapped in parens. A parenthetical tier/role
+ * annotation ("Bandits (tier 2)") isn't a group at all — the single link
+ * covers just the name before it, with the annotation kept as plain text
+ * after it. */
 function potentialAdversaryEntryHtml(localizedText, englishText) {
   const shown = parsePotentialAdversaryEntry(localizedText);
   const canonical = parsePotentialAdversaryEntry(englishText);
   if (!canonical.isGroup) {
     const names = resolveAdversaryNames(null, canonical.label);
     if (!names.length) return escapeHtml(localizedText);
-    return potentialAdversaryLinkHtml(shown.label, anyAdversaryFamily(canonical.label) || canonical.label, names);
+    const link = potentialAdversaryLinkHtml(shown.label, anyAdversaryFamily(canonical.label) || canonical.label, names);
+    return shown.annotation ? `${link} (${escapeHtml(shown.annotation)})` : link;
   }
   if (!looksLikeAdversaryName(canonical.label)) return escapeHtml(localizedText);
   const memberNameLists = canonical.members.map(name => resolveAdversaryNames(canonical.label, name));
@@ -543,7 +569,7 @@ function potentialAdversaryEntryHtml(localizedText, englishText) {
     const encounterName = anyAdversaryFamily(canonical.members[i]) || names[0];
     return potentialAdversaryLinkHtml(memberLabel, encounterName, names);
   }).join(', ');
-  return `${groupLink} (${memberLinks})`;
+  return canonical.style === 'tier' ? `${groupLink}: ${memberLinks}` : `${groupLink} (${memberLinks})`;
 }
 
 /* ---------------- init ---------------- */
