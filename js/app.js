@@ -328,17 +328,17 @@ function splitAdversaryMembers(text) {
 }
 
 /* A handful of Potential Adversaries entries don't name an adversary at all:
- * "Any" (the GM picks whatever fits) or a citation like
+ * "Any"/"All" (the GM picks whatever fits) or a citation like
  * 'ghostly versions of other adversaries (see "Ghostly Form")' pointing at a
  * feature instead of naming a creature. Neither is something FreshCutGrass's
  * bestiary can look up, so both are filtered out here rather than becoming a
  * broken link or a fake entry in the whole-environment payload. Checked only
- * on the section's own text ("see …", quote marks, the bare word "any"), so
- * it holds for any environment's data rather than one hand-picked id. */
+ * on the section's own text ("see …", quote marks, the bare word "any"/"all"),
+ * so it holds for any environment's data rather than one hand-picked id. */
 function looksLikeAdversaryName(name) {
   const text = String(name || '').trim();
   if (!text) return false;
-  if (/^any$/i.test(text)) return false;
+  if (/^(?:any|all)$/i.test(text)) return false;
   if (/[“”"]/.test(text)) return false;
   if (/\bsee\b/i.test(text)) return false;
   return true;
@@ -410,12 +410,17 @@ const ADVERSARY_GROUP_MEMBER_ALIASES = {
 
 /** The FreshCutGrass-recognizable name for one member of a Potential
  * Adversaries group — see ADVERSARY_GROUP_MEMBER_ALIASES and
- * ADVERSARY_GROUP_NAME_PREFIXES above. */
+ * ADVERSARY_GROUP_NAME_PREFIXES above. A member that's already spelled out in
+ * full ("Cultists (Cult Adept, Cult Fang, Cult Initiate)") is left alone
+ * rather than getting the prefix prepended a second time ("Cult Cult
+ * Adept") — some environments mix bare roles and full names in the same
+ * group, e.g. "Sundry Ne'er-Do-Wells (Jagged Knife Bandit, Lackey)". */
 function fullAdversaryName(groupLabel, memberName) {
   const alias = ADVERSARY_GROUP_MEMBER_ALIASES[groupLabel]?.[memberName];
   if (alias) return alias;
   const prefix = ADVERSARY_GROUP_NAME_PREFIXES[groupLabel];
-  return prefix ? `${prefix} ${memberName}` : memberName;
+  if (!prefix) return memberName;
+  return memberName === prefix || memberName.startsWith(`${prefix} `) ? memberName : `${prefix} ${memberName}`;
 }
 
 /** A handful of Potential Adversaries entries — grouped or standalone — don't
@@ -451,7 +456,11 @@ function anyAdversaryFamily(text) {
  * almost always exactly one, but an "any Jagged Knife" style family phrase
  * expands to every member of that family, and a name FreshCutGrass has
  * nothing to look up for ("Any", a "see …" citation) resolves to none.
- * groupLabel is null for a bare non-group entry, where no prefix applies. */
+ * groupLabel is null for a bare non-group entry, where no prefix applies.
+ * "Vampires (all, including Lamia)" names one adversary through a citation
+ * rather than stating it plainly — "including Lamia" means "Lamia" for
+ * lookup purposes, same idea as "any X" naming a family instead of a member,
+ * just for a single already-complete name instead of a whole roster. */
 function resolveAdversaryNames(groupLabel, memberName) {
   const family = anyAdversaryFamily(memberName);
   if (family != null) {
@@ -459,7 +468,9 @@ function resolveAdversaryNames(groupLabel, memberName) {
     if (roster) return roster;
     return looksLikeAdversaryName(family) ? [family] : [];
   }
-  return looksLikeAdversaryName(memberName) ? [fullAdversaryName(groupLabel, memberName)] : [];
+  const includingMatch = String(memberName).trim().match(/^including\s+(.+)$/i);
+  const nameToResolve = includingMatch ? includingMatch[1].trim() : memberName;
+  return looksLikeAdversaryName(nameToResolve) ? [fullAdversaryName(groupLabel, nameToResolve)] : [];
 }
 
 /** Every adversary named anywhere in an environment's Potential Adversaries
