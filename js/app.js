@@ -444,6 +444,8 @@ const ADVERSARY_FAMILY_MEMBERS = {
   'Vault Guardians': ['Vault Guardian Gaoler', 'Vault Guardian Sentinel', 'Vault Guardian Turret'],
   'Outer Realms': ['Outer Realms Abomination', 'Outer Realms Corrupter', 'Outer Realms Thrall'],
   Cult: ['Cult Adept', 'Cult Fang', 'Cult Initiate'],
+  Pirate: ['Pirate Captain', 'Pirate Raiders', 'Pirate Tough'],
+  Pirates: ['Pirate Captain', 'Pirate Raiders', 'Pirate Tough'],
 };
 
 /** The text named by an "any X" (or "any X member"/"any X being") phrase —
@@ -478,13 +480,26 @@ function familyForAnyPhrase(phrase) {
  * "Vampires (all, including Lamia)" names one adversary through a citation
  * rather than stating it plainly — "including Lamia" means "Lamia" for
  * lookup purposes, same idea as "any X" naming a family instead of a member,
- * just for a single already-complete name instead of a whole roster. */
+ * just for a single already-complete name instead of a whole roster. A bare
+ * (non-grouped) entry that's itself a family name — "Pirates", no "any" and
+ * no parenthetical members — means the whole family too: the SRD's "Pirates"
+ * potential-adversary entry covers Pirate Captain/Raiders/Tough, not a single
+ * bestiary entry called "Pirates". This only fires for bare entries
+ * (groupLabel === null) and only on an exact family-key match, not the
+ * startsWith fuzzy match familyForAnyPhrase does for "any X member" text —
+ * that fuzzy match is safe there because "any" already signals "pick from
+ * this family", but a bare full name like "Vault Guardian Turret" names one
+ * specific adversary and must not expand to its whole family. */
 function resolveAdversaryNames(groupLabel, memberName) {
   const phrase = anyAdversaryFamily(memberName);
   if (phrase != null) {
     const familyKey = familyForAnyPhrase(phrase);
     if (familyKey) return ADVERSARY_FAMILY_MEMBERS[familyKey];
     return looksLikeAdversaryName(phrase) ? [phrase] : [];
+  }
+  if (groupLabel == null) {
+    const bareFamily = ADVERSARY_FAMILY_MEMBERS[String(memberName).trim()];
+    if (bareFamily) return bareFamily;
   }
   const includingMatch = String(memberName).trim().match(/^including\s+(.+)$/i);
   const nameToResolve = includingMatch ? includingMatch[1].trim() : memberName;
