@@ -29212,6 +29212,187 @@
         "settlement"
       ],
       "source": "The Witherwild"
+    },
+    {
+      "id": "empty-cliffside-village",
+      "tier": 1,
+      "type": "exploration",
+      "difficulty": 11,
+      "name": {
+        "en": "Empty Cliffside Village",
+        "ru": "Опустевшая Деревня на Утёсе"
+      },
+      "lore": {
+        "en": "An abandoned community carved or built behind a waterfall on the side of a cliff face, stalked by entities who abhor light and feed off the very essence of the living.",
+        "ru": "Покинутое поселение, высеченное или возведённое позади водопада на склоне утёса, где рыщут существа, ненавидящие свет и питающиеся самой сущностью живых."
+      },
+      "impulses": {
+        "en": [
+          "Echo",
+          "misdirect",
+          "hide the path"
+        ],
+        "ru": [
+          "Отдаваться эхом",
+          "сбивать со следа",
+          "скрывать путь"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Shrikes",
+          "Vengeful Dread: Spirits"
+        ],
+        "ru": [
+          "Сорокопуты",
+          "Мстительный Ужас: Духи"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Comprehending the Warren",
+            "ru": "Постижение Лабиринта"
+          },
+          "description": {
+            "en": "The tunnels and chambers within the cliff twist and turn in ways which seem chaotic to anyone who didn’t grow up here. When the PCs arrive, they must make a group Instinct or Knowledge roll to get their bearings. They gain +3 to the final roll if they spoke with Ninal Reed Dancer or Wyston Nimbleglide in the camp above.\n- **Success with Hope:** They feel confident in their ability to navigate the town. They hear either a shout or puppy’s bark (GM’s choice).\n- **Success with Fear:** They feel reasonably certain they can move through the town without getting lost. Upon finishing their assessment, they see a light wink out and a momentary chill passes through the air along with a ghastly wail. Each PC must mark a Stress.\n- **Failure:** They can’t seem to make sense of the random openings and winding passages and find sounds impossible to track. Initiate the “Nesting Shrikes” action twice immediately without spending the additional Fear.",
+            "ru": "Туннели и залы внутри утёса извиваются и петляют так, что кажутся хаотичными всем, кроме тех, кто вырос здесь. Когда персонажи прибывают, они должны совершить групповой бросок Инстинкта или Знания, чтобы сориентироваться. Они получают +3 к итоговому броску, если говорили с Нинал Камышовой Плясуньей или Уистоном Ловкокрылом в лагере наверху.\n- **Успех с Надеждой:** Персонажи уверены, что смогут ориентироваться в посёлке. Они слышат либо крик, либо щенячий лай (на выбор Ведущего).\n- **Успех со Страхом:** Персонажи достаточно уверены, что смогут пройти через посёлок, не потерявшись. Завершив осмотр, они видят, как гаснет огонёк, и по воздуху проходит мимолётный холод вместе с жутким воем. Каждый персонаж должен отметить Стресс.\n- **Провал:** Персонажи не могут разобраться в беспорядочных проходах и извилистых коридорах, а звуки невозможно отследить. Немедленно запустите действие «Гнездящиеся Сорокопуты» два раза, не тратя на это дополнительный Страх."
+          },
+          "prompt": {
+            "en": "Has a Spirit found Dorn Brightway? Can the PCs lure Bouncer the Puppy to them?",
+            "ru": "Нашёл ли Дух Дорна Светлый Путь? Могут ли персонажи приманить к себе щенка Баунсера?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Nesting Shrikes",
+            "ru": "Гнездящиеся Сорокопуты"
+          },
+          "description": {
+            "en": "A pair of Shrikes who have decided to nest in one of the outward facing rooms attacks the PCs to defend their new territory. If you use this action additional times, spend a Fear to do so.",
+            "ru": "Пара Сорокопутов, решивших устроить гнездо в одной из комнат, обращённых наружу, атакует персонажей, защищая свою новую территорию. Если вы используете это действие снова, потратьте Страх."
+          },
+          "prompt": {
+            "en": "How determined are the Shrikes? Can the PCs scare them off as an alternative to fighting?",
+            "ru": "Насколько решительно настроены Сорокопуты? Могут ли персонажи отпугнуть их вместо боя?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Lost and Found",
+            "ru": "Найден Пропавший"
+          },
+          "description": {
+            "en": "The PCs discover one of the missing faeries (Dorn Brightway). One PC must make a straight duality roll (no ability modifiers). If the party spent time learning to use the personal gliders, the Hope die becomes a d8. On a critical, or roll with Hope, Dorn is alive, but fading fast and the entire party gains a Hope if they can stabilize the injured faerie. On a roll with Fear, Dorn recently succumbed to their injuries and the PCs must mark a Stress. If desired, Bouncer the Puppy is also here, guarding Dorn.",
+            "ru": "Персонажи находят одного из пропавших фейри (Дорна Светлый Путь). Один персонаж должен совершить простой бросок Костей Дуальности (без модификаторов характеристик). Если отряд потратил время на обучение использованию личных планеров, Кость Надежды становится d8. При критическом успехе или успехе с Надеждой Дорн жив, но быстро угасает, и весь отряд получает Надежду, если сможет стабилизировать раненого фейри. При броске со Страхом Дорн недавно скончался от полученных ран, и персонажи должны отметить Стресс. При желании здесь же находится щенок Баунсер, охраняющий Дорна."
+          },
+          "prompt": {
+            "en": "What do the PCs do with Dorn, regardless of his condition? Can Bouncer help track down the other missing faerie?",
+            "ru": "Что персонажи делают с Дорном, независимо от его состояния? Может ли Баунсер помочь отыскать второго пропавшего фейри?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Snuff the Light",
+            "ru": "Погасить Свет"
+          },
+          "description": {
+            "en": "When a PC activates a light source, or enters a room with a working one on, begin a Countdown (number of PCs). When the countdown triggers, a Vengeful Dread: Spirit uses its Snuff Light action against a PC who is holding a light source, or attacks a random one if none are.",
+            "ru": "Когда персонаж включает источник света или входит в комнату с уже горящим источником, начните Отсчёт (равный числу персонажей). Когда отсчёт срабатывает, Мстительный Ужас: Дух использует своё действие «Погасить Свет» против персонажа, держащего источник света, либо атакует случайного персонажа, если ни у кого его нет."
+          },
+          "prompt": {
+            "en": "What can the PCs do to negate the Spirit’s advantages? How long will the Spirit try to press its advantage?",
+            "ru": "Что могут сделать персонажи, чтобы свести на нет преимущества Духа? Как долго Дух будет пытаться удержать своё преимущество?"
+          }
+        }
+      ],
+      "builtin": true,
+      "biomes": [
+        "mountain",
+        "aquatic"
+      ],
+      "source": "Fractus, the Broken World: Free Preview"
+    },
+    {
+      "id": "collapsing-floor",
+      "tier": 1,
+      "type": "event",
+      "difficulty": 11,
+      "name": {
+        "en": "Collapsing Floor",
+        "ru": "Обваливающийся Пол"
+      },
+      "lore": {
+        "en": "An ancient chamber with an unstable floor and an endless expanse of air below.",
+        "ru": "Древний зал с неустойчивым полом и бескрайней пропастью воздуха под ним."
+      },
+      "impulses": {
+        "en": [
+          "Unsteady footing",
+          "pelt with stones",
+          "instill fear"
+        ],
+        "ru": [
+          "Шаткая опора под ногами",
+          "забрасывать камнями",
+          "внушать страх"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Pirates",
+          "Undead",
+          "Vengeful Dread",
+          "Yujao"
+        ],
+        "ru": [
+          "Пираты",
+          "Нежить",
+          "Мстительный Ужас",
+          "Юджао"
+        ]
+      },
+      "features": [
+        {
+          "type": "action",
+          "name": {
+            "en": "Dinnertime",
+            "ru": "Время Обеда"
+          },
+          "description": {
+            "en": "Spend a Fear to have a Yujao slam into the floor from underneath, gnashing at the rock and stone with its dozens of dorsal mouths. Roll a d4 for each PC:\n- **1.** The PC must succeed on an Agility Reaction Roll or fall prone if they are not flying. On a failure, they are Vulnerable until they next act.\n- **2.** The PC must succeed on an Agility Reaction Roll or be hit by stones falling from the ceiling, taking 1d6+2 physical damage on a failure.\n- **3.** The PC must succeed on an Agility Reaction Roll or fall into a newly-created 5-foot hole in the floor if they are not flying. They catch themselves on the edge, but must succeed on a Strength Roll to climb out. Place a token on the map to indicate where the hole is.\n- **4.** Nothing happens to this PC.\nRoll one more d4 to determine how many adversaries are also subjected to an affect. Decide which of the three outcomes they suffer and note the consequences.",
+            "ru": "Потратьте Страх, чтобы Юджао ударил по полу снизу, вгрызаясь в камень десятками спинных ртов. Бросьте d4 за каждого персонажа:\n- **1.** Персонаж должен совершить успешный Бросок Реакции на Проворность, иначе падает, если не летит. При провале персонаж становится Уязвим до своего следующего действия.\n- **2.** Персонаж должен совершить успешный Бросок Реакции на Проворность, иначе получает удар упавшими с потолка камнями, получая 1d6+2 физического урона при провале.\n- **3.** Персонаж должен совершить успешный Бросок Реакции на Проворность, иначе падает в новообразовавшуюся дыру шириной 5 футов в полу, если не летит. Он успевает зацепиться за край, но должен совершить успешный Бросок Силы, чтобы выбраться. Отметьте на карте место, где образовалась дыра.\n- **4.** С этим персонажем ничего не происходит.\nБросьте ещё один d4, чтобы определить, сколько противников также подвергается воздействию. Решите, какой из трёх исходов они получают, и учтите последствия."
+          },
+          "prompt": {
+            "en": "Does this affect the morale of the adversaries? Can the Yujao be enticed or frightened to go elsewhere?",
+            "ru": "Влияет ли это на боевой дух противников? Можно ли выманить или отпугнуть Юджао, чтобы он ушёл в другое место?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Hostage Situation",
+            "ru": "Ситуация с Заложницей"
+          },
+          "description": {
+            "en": "Yanna Cloudstep is tied up somewhere within the two main chambers. When the PCs enter the area, activate a Countdown (4) which ticks down each time you use the “Dinnertime” action above or a Vengeful Dread takes the spotlight. When it triggers, Yanna is subject to one of the effects of “Dinnertime” or an attack by a Vengeful Dread.",
+            "ru": "Янна Облакоступ связана где-то в пределах двух главных залов. Когда персонажи входят в эту зону, запустите Отсчёт (4), который уменьшается каждый раз, когда вы используете действие «Время Обеда» выше или Мстительный Ужас получает Активацию. Когда он срабатывает, Янна подвергается одному из эффектов «Время Обеда» либо атаке Мстительного Ужаса."
+          },
+          "prompt": {
+            "en": "Is Yanna in a place where the PCs will see her easily? Is Yanna conscious that she could cry out for help?",
+            "ru": "Находится ли Янна в месте, где персонажи легко её заметят? В сознании ли Янна, чтобы позвать на помощь?"
+          }
+        }
+      ],
+      "builtin": true,
+      "biomes": [
+        "underground"
+      ],
+      "source": "Fractus, the Broken World: Free Preview"
     }
   ]
 }
