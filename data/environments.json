@@ -556,7 +556,7 @@
           },
           "description": {
             "en": "Spend a Fear to ambush the party. Two Scythicant Sentinels burst from the walls in close range of the PCs and immediately take the spotlight. Start a Countdown (4). If the countdown reaches 0 before the scene ends, summon two Cilrathi Queensguard riding Waspwyrms who appear at Far range.",
-            "ru": "Потратьте Страх, чтобы устроить засаду на отряд. Два Часовых-Косокрыла вырываются из стен на Близкой дистанции от персонажей и немедленно берут инициативу. Начните Отсчёт (4). Если отсчёт достигает 0 до конца сцены, призовите двух Стражниц Королевы Цилрати, скачущих на Осодраках, которые появляются на Дальней дистанции."
+            "ru": "Потратьте Страх, чтобы устроить засаду на отряд. Два Часовых-Косокрыла вырываются из стен на Средней дистанции от персонажей и немедленно берут инициативу. Начните Отсчёт (4). Если отсчёт достигает 0 до конца сцены, призовите двух Стражниц Королевы Цилрати, скачущих на Осодраках, которые появляются на Дальней дистанции."
           },
           "prompt": {
             "en": "Where might this ambush take place? What environmental hazards might also be found?",
@@ -1006,7 +1006,7 @@
           },
           "description": {
             "en": "Pick a point within the jungle. All targets within Close range of that point must succeed on an Agility Reaction Roll or take 1d8+3 physical damage and become Restrained by vines. Restrained creatures can't move until they're freed with a successful Finesse or Strength roll or by dealing at least 6 damage to the vines. Spend a Fear to make all restrained targets mark a Stress.",
-            "ru": "Выберите точку в джунглях. Все цели в пределах Близкой дистанции от этой точки должны совершить Бросок Реакции на Проворность или получить 1d8+3 физического урона и стать Обездвиженными лозами. Обездвиженные существа не могут двигаться, пока не освободятся успешным броском Искусности или Силы, либо нанеся лозам не менее 6 урона. Потратьте Страх, чтобы заставить всех обездвиженных целей отметить Стресс."
+            "ru": "Выберите точку в джунглях. Все цели в пределах Средней дистанции от этой точки должны совершить Бросок Реакции на Проворность или получить 1d8+3 физического урона и стать Обездвиженными лозами. Обездвиженные существа не могут двигаться, пока не освободятся успешным броском Искусности или Силы, либо нанеся лозам не менее 6 урона. Потратьте Страх, чтобы заставить всех обездвиженных целей отметить Стресс."
           },
           "prompt": {
             "en": "How many vines are there? Where do they grab you? Do they pull you down or lift you off the ground? Does the vine attack trigger a potential adversary attack?",
@@ -1122,7 +1122,7 @@
           },
           "description": {
             "en": "At night, or when the party is alone, you can spend a Fear to introduce a group of lizardfolk who try to rob them. The thieves appear at Close range of a chosen PC and include a Lizardfolk Commander, as many Lizardfolk Bashers as there are PCs, and a few Lizardfolk Hunters. For a larger party, add a Carnotaurus or Deinonychus.",
-            "ru": "Ночью или когда группа остаётся одна, вы можете потратить Страх, чтобы ввести группу ящеролюдов, пытающихся их ограбить. Грабители появляются в пределах Близкой дистанции от выбранного персонажа и включают ящеролюда-командира, столько же ящеролюдов-громил, сколько персонажей в группе, и несколько ящеролюдов-охотников. Для более крупной группы добавьте карнотавра или дейнониха."
+            "ru": "Ночью или когда группа остаётся одна, вы можете потратить Страх, чтобы ввести группу ящеролюдов, пытающихся их ограбить. Грабители появляются в пределах Средней дистанции от выбранного персонажа и включают ящеролюда-командира, столько же ящеролюдов-громил, сколько персонажей в группе, и несколько ящеролюдов-охотников. Для более крупной группы добавьте карнотавра или дейнониха."
           },
           "prompt": {
             "en": "What details show the party that these lizardfolk are desperate?",
@@ -2279,7 +2279,7 @@
           },
           "description": {
             "en": "A dense fog rolls hid obscuring vision beyond Close range. Beyond this range, strange colored lights appear, move, and vanish. PCs who stand still are visited by a light, and must make a Knowledge Reaction Roll. A success reveals a safe way out of the moor and the PC gains a Hope. A failure causes the PC to mark a Stress as they feel something alien touching their mind. PCs who move in the fog are in danger of slipping into a watery bog. The lead PC makes an Instinct Reaction Roll. On a success, they find a safe way out of the moor. On a failure, they lead the party into the bog and they are stuck in deep mud until they succeed on a Strength roll. Each failure on the Strength roll causes them to mark a Stress.",
-            "ru": "Плотный туман наплывает, скрывая видимость за пределами Близкой дистанции. За этой дистанцией появляются, движутся и исчезают странные цветные огоньки. Персонажей, стоящих неподвижно, посещает огонёк, и они должны совершить Бросок Реакции на Знание. Успех раскрывает безопасный путь из пустоши, и персонаж получает Надежду. Неудача заставляет персонажа отметить Стресс, поскольку он чувствует, как нечто чужеродное касается его разума. Персонажи, двигающиеся в тумане, рискуют соскользнуть в топкое болото. Ведущий персонаж совершает Бросок Реакции на Инстинкт. При успехе он находит безопасный путь из пустоши. При неудаче он ведёт группу в болото, и они застревают в глубокой грязи, пока не преуспеют в броске Силы. Каждая неудача в броске Силы заставляет их отметить Стресс."
+            "ru": "Плотный туман наплывает, скрывая видимость за пределами Средней дистанции. За этой дистанцией появляются, движутся и исчезают странные цветные огоньки. Персонажей, стоящих неподвижно, посещает огонёк, и они должны совершить Бросок Реакции на Знание. Успех раскрывает безопасный путь из пустоши, и персонаж получает Надежду. Неудача заставляет персонажа отметить Стресс, поскольку он чувствует, как нечто чужеродное касается его разума. Персонажи, двигающиеся в тумане, рискуют соскользнуть в топкое болото. Ведущий персонаж совершает Бросок Реакции на Инстинкт. При успехе он находит безопасный путь из пустоши. При неудаче он ведёт группу в болото, и они застревают в глубокой грязи, пока не преуспеют в броске Силы. Каждая неудача в броске Силы заставляет их отметить Стресс."
           },
           "prompt": {
             "en": "How do you know the fog is magical and dangerous?",
@@ -2526,7 +2526,7 @@
           },
           "description": {
             "en": "Dense mists roll in, obscuring vision beyond Close range. Spend a Fear to have the party hear whispering and moaning, and then from out of the fog attack them with a Spectral Necromancer and/or a Spectral Apothecary and some Spectral Archers and Guardians.",
-            "ru": "Наплывают густые туманы, скрывая видимость за пределами Близкой дистанции. Потратьте Страх, чтобы группа услышала шёпот и стоны, а затем из тумана на них нападут Призрачный Некромант и/или Призрачный Аптекарь с несколькими Призрачными Лучниками и Стражами."
+            "ru": "Наплывают густые туманы, скрывая видимость за пределами Средней дистанции. Потратьте Страх, чтобы группа услышала шёпот и стоны, а затем из тумана на них нападут Призрачный Некромант и/или Призрачный Аптекарь с несколькими Призрачными Лучниками и Стражами."
           },
           "prompt": {
             "en": "Why did the specters call your name?",
@@ -3750,7 +3750,7 @@
           },
           "description": {
             "en": "Pick a point and everyone within Close Range of it is hit with an explosion of acidic green slime. Everyone affected must make an Agility Reaction Roll or take 4d8+8 magical damage. On a success, the PC takes half damage.",
-            "ru": "Выберите точку — все, кто находится в пределах Близкой дистанции от неё, поражаются взрывом едкой зелёной слизи. Все затронутые должны совершить Бросок Реакции на Проворность или получить 4d8+8 магического урона. При успехе персонаж получает половину урона."
+            "ru": "Выберите точку — все, кто находится в пределах Средней дистанции от неё, поражаются взрывом едкой зелёной слизи. Все затронутые должны совершить Бросок Реакции на Проворность или получить 4d8+8 магического урона. При успехе персонаж получает половину урона."
           },
           "prompt": {
             "en": "You took half damage. What did you notice that helped you dodge the full effect of the acid? Should this give you advantage on similar attacks in the future?",
@@ -3909,7 +3909,7 @@
           },
           "description": {
             "en": "Summon 1d6 Acid Burrower Hatchlings (Rotted Zombies) within Close range of the Acid Burrower.",
-            "ru": "Призовите 1d6 детёнышей Кислотного Землекопа (Гнилых Зомби) в пределах Близкой дистанции от Кислотного Землекопа."
+            "ru": "Призовите 1d6 детёнышей Кислотного Землекопа (Гнилых Зомби) в пределах Средней дистанции от Кислотного Землекопа."
           },
           "prompt": {
             "en": "Do the hatchlings emerge from eggs or the acid pits?",
@@ -4745,7 +4745,7 @@
           },
           "description": {
             "en": "The storm builds up and releases elemental energy. Roll a d4 to determine what kind of energy from the options below. 1. Lightning Strikes. Countdown (2). When the countdown triggers, lightning strikes all targets with metal weapons or armor, dealing 2d6 direct magic damage. 2. Fire Tornado. Countdown (3). When the countdown triggers, all exposed targets take 2d8+3 magic damage and must make a Strength Reaction Roll. On a failure, they are moved up to Close range in the direction the fire tornado is spinning. 3. Acid Downpour. Countdown (2). When the countdown triggers, all exposed PCs must mark an Armor Slot. If they cannot mark an Armor Slot, they must mark a HP. 4. Blizzard. Countdown (3). When the countdown triggers, any PC not adapted to the cold takes 2d6 magic damage.",
-            "ru": "Буря нарастает и высвобождает стихийную энергию. Бросьте d4, чтобы определить тип энергии из вариантов ниже. 1. Удары Молний. Отсчёт (2). Когда отсчёт срабатывает, молния бьёт по всем целям с металлическим оружием или бронёй, нанося 2d6 прямого магического урона. 2. Огненный Торнадо. Отсчёт (3). Когда отсчёт срабатывает, все незащищённые цели получают 2d8+3 магического урона и должны совершить Бросок Реакции на Силу. При неудаче их перемещает на дистанцию до Близкой в направлении вращения огненного торнадо. 3. Кислотный Ливень. Отсчёт (2). Когда отсчёт срабатывает, все незащищённые персонажи должны отметить Ячейку Брони. Если они не могут отметить Ячейку Брони, они должны отметить Рану. 4. Метель. Отсчёт (3). Когда отсчёт срабатывает, любой персонаж, не приспособленный к холоду, получает 2d6 магического урона."
+            "ru": "Буря нарастает и высвобождает стихийную энергию. Бросьте d4, чтобы определить тип энергии из вариантов ниже. 1. Удары Молний. Отсчёт (2). Когда отсчёт срабатывает, молния бьёт по всем целям с металлическим оружием или бронёй, нанося 2d6 прямого магического урона. 2. Огненный Торнадо. Отсчёт (3). Когда отсчёт срабатывает, все незащищённые цели получают 2d8+3 магического урона и должны совершить Бросок Реакции на Силу. При неудаче их перемещает на дистанцию до Средней в направлении вращения огненного торнадо. 3. Кислотный Ливень. Отсчёт (2). Когда отсчёт срабатывает, все незащищённые персонажи должны отметить Ячейку Брони. Если они не могут отметить Ячейку Брони, они должны отметить Рану. 4. Метель. Отсчёт (3). Когда отсчёт срабатывает, любой персонаж, не приспособленный к холоду, получает 2d6 магического урона."
           },
           "prompt": {
             "en": "What damage does the storm do to the surrounding environment?",
@@ -6650,7 +6650,7 @@
           },
           "description": {
             "en": "Countdown (1). Spend a Fear to create a large wave of Close width that builds in size approaching the battlefield. Activate the countdown. When it triggers, the wave crosses the battlefield. If a ship is side-on to the wave it takes 4d8+5 physical damage, and occupants of the ship on deck must succeed on an Agility Reaction Roll or be thrown overboard. If a ship is end-on it takes half damage. Creatures in the water affected by the wave must mark 2 Stress.",
-            "ru": "Отсчёт (1). Потратьте Страх, чтобы создать крупную волну шириной с Близкую дистанцию, нарастающую по мере приближения к полю боя. Активируйте отсчёт. Когда он срабатывает, волна проходит через поле боя. Если корабль обращён к волне бортом, он получает 4d8+5 физического урона, а находящиеся на палубе должны преуспеть в Броске Реакции на Проворность, иначе их смоет за борт. Если корабль обращён к волне носом или кормой, он получает половину урона. Существа в воде, затронутые волной, должны отметить 2 Стресса."
+            "ru": "Отсчёт (1). Потратьте Страх, чтобы создать крупную волну шириной с Среднюю дистанцию, нарастающую по мере приближения к полю боя. Активируйте отсчёт. Когда он срабатывает, волна проходит через поле боя. Если корабль обращён к волне бортом, он получает 4d8+5 физического урона, а находящиеся на палубе должны преуспеть в Броске Реакции на Проворность, иначе их смоет за борт. Если корабль обращён к волне носом или кормой, он получает половину урона. Существа в воде, затронутые волной, должны отметить 2 Стресса."
           },
           "prompt": {
             "en": "How does the wave affect the ship's occupants?",
@@ -6926,7 +6926,7 @@
           },
           "description": {
             "en": "Spend a Fear to summon a Darkweave Queen inside her gossamer-strewn lair. She drops from the ceiling within Close range of a PC and immediately takes the spotlight.",
-            "ru": "Потратьте Страх, чтобы призвать Паутинную Королеву в её оплетённом паутиной логове. Она падает с потолка в пределах Близкой дистанции от персонажа и немедленно получает Активацию."
+            "ru": "Потратьте Страх, чтобы призвать Паутинную Королеву в её оплетённом паутиной логове. Она падает с потолка в пределах Средней дистанции от персонажа и немедленно получает Активацию."
           },
           "prompt": {
             "en": "How does the Darkweave Queen use her lair to her advantage? What remnants of her past meals can the party find here?",
@@ -7027,7 +7027,7 @@
           },
           "description": {
             "en": "Consequence Countdown (6). A thunderstorm gathers overhead, threatening to jolt the lightning rod assembly installed atop the workshop. Activate the countdown and narrate how the storm's power increases each time it ticks down when a PC makes an action roll. When it triggers, lightning strikes the rod assembly and overloads the workshop machinery, which explodes after resurrecting one of the alchemist's abandoned projects. Each target within Close range of the machinery must succeed on an Agility Reaction Roll or take 1d10 magic damage. Summon a Failed Experiment at a location within the workshop and gain a Fear for each PC within Very Close range of it.",
-            "ru": "Отсчёт Последствий (6). Над головой собирается гроза, грозящая ударить в громоотвод, установленный на крыше мастерской. Активируйте отсчёт и опишите, как мощь бури нарастает каждый раз, когда он уменьшается при броске действия персонажа. Когда он срабатывает, молния бьёт в громоотвод и перегружает механизмы мастерской, которые взрываются после того, как воскрешают один из заброшенных проектов алхимика. Каждая цель в пределах Близкой дистанции от механизмов должна преуспеть в Броске Реакции на Проворность, иначе получает 1d10 магического урона. Призовите Неудачный Эксперимент где-то в мастерской и получите Страх за каждого персонажа в пределах Очень Близкой дистанции от него."
+            "ru": "Отсчёт Последствий (6). Над головой собирается гроза, грозящая ударить в громоотвод, установленный на крыше мастерской. Активируйте отсчёт и опишите, как мощь бури нарастает каждый раз, когда он уменьшается при броске действия персонажа. Когда он срабатывает, молния бьёт в громоотвод и перегружает механизмы мастерской, которые взрываются после того, как воскрешают один из заброшенных проектов алхимика. Каждая цель в пределах Средней дистанции от механизмов должна преуспеть в Броске Реакции на Проворность, иначе получает 1d10 магического урона. Призовите Неудачный Эксперимент где-то в мастерской и получите Страх за каждого персонажа в пределах Очень Близкой дистанции от него."
           },
           "prompt": {
             "en": "What was the alchemist trying to achieve with this experiment? Where did they get the materials for it?",
@@ -7211,7 +7211,7 @@
           },
           "description": {
             "en": "If a PC marks their last HP while in the graveyard, they become a Specter instead of making a death move. While a Specter, a PC can communicate with the living but can't interact with the physical world, and they must stay within Close range of their corpse or cross through the veil of death. This condition is cleared when the PC clears a HP.",
-            "ru": "Если персонаж отмечает своё последнее очко здоровья, находясь на кладбище, он становится Призраком вместо того, чтобы совершать предсмертный ход. Будучи Призраком, персонаж может общаться с живыми, но не может взаимодействовать с физическим миром, и должен оставаться в пределах Близкой дистанции от своего тела или пересечь завесу смерти. Это состояние снимается, когда персонаж снимает Рану."
+            "ru": "Если персонаж отмечает своё последнее очко здоровья, находясь на кладбище, он становится Призраком вместо того, чтобы совершать предсмертный ход. Будучи Призраком, персонаж может общаться с живыми, но не может взаимодействовать с физическим миром, и должен оставаться в пределах Средней дистанции от своего тела или пересечь завесу смерти. Это состояние снимается, когда персонаж снимает Рану."
           },
           "prompt": {
             "en": "What new information or experience does a PC gain from becoming a specter? How can the party reunite the PC's spirit with their flesh? What happens if their ritual goes wrong?",
@@ -7682,7 +7682,7 @@
           },
           "description": {
             "en": "Spend up to 3 Fear to have the pirate ship fire its cannons into the combat. For each Fear spent, choose a point anywhere on the battlefield. Each PC within Close range of one or more of those points must make an Agility Reaction Roll. Targets who fail take 1d8+3 physical damage. Targets who succeed must mark a Stress or take half damage.",
-            "ru": "Потратьте до 3 Страха, чтобы пиратский корабль открыл огонь из пушек по бою. За каждую потраченную единицу Страха выберите точку в любом месте поля боя. Каждый персонаж в пределах Близкой дистанции от одной или нескольких из этих точек должен совершить Бросок Реакции на Проворность. Цели, провалившие бросок, получают 1d8+3 физического урона. Цели, преуспевшие в броске, должны отметить Стресс или получить половину урона."
+            "ru": "Потратьте до 3 Страха, чтобы пиратский корабль открыл огонь из пушек по бою. За каждую потраченную единицу Страха выберите точку в любом месте поля боя. Каждый персонаж в пределах Средней дистанции от одной или нескольких из этих точек должен совершить Бросок Реакции на Проворность. Цели, провалившие бросок, получают 1d8+3 физического урона. Цели, преуспевшие в броске, должны отметить Стресс или получить половину урона."
           },
           "prompt": {
             "en": "What collateral damage do these cannonballs cause? Whose lives do they wantonly endanger?",
@@ -8334,7 +8334,7 @@
           },
           "description": {
             "en": "Spend a Fear to have a crewmember in the crow's nest spy black sails on the horizon! Start a Consequence Countdown (4). If it triggers before the party reaches their destination, the pirates catch up to the ship and board it. Gain a Fear, then summon one Pirate Captain and three Hordes of Pirate Raiders within Close range of the party.",
-            "ru": "Потратьте Страх, чтобы член команды в вороньем гнезде заметил чёрные паруса на горизонте! Начните Отсчёт Последствий (4). Если он срабатывает прежде, чем отряд достигнет пункта назначения, пираты нагоняют корабль и берут его на абордаж. Получите Страх, затем призовите одного Капитана Пиратов и три Орды Пиратов Налётчиков в пределах Близкой дистанции от отряда."
+            "ru": "Потратьте Страх, чтобы член команды в вороньем гнезде заметил чёрные паруса на горизонте! Начните Отсчёт Последствий (4). Если он срабатывает прежде, чем отряд достигнет пункта назначения, пираты нагоняют корабль и берут его на абордаж. Получите Страх, затем призовите одного Капитана Пиратов и три Орды Пиратов Налётчиков в пределах Средней дистанции от отряда."
           },
           "prompt": {
             "en": "Does the captain recognize the ship that's giving chase? What ungentlemanly practices are the pirates in this area famous for?",
@@ -8687,7 +8687,7 @@
           },
           "description": {
             "en": "Spend a Fear to summon two adversaries within Close range of a PC. Each adversary can use the other's features as if they were their own.",
-            "ru": "Потратьте Страх, чтобы призвать двух противников в пределах Близкой дистанции от персонажа. Каждый противник может использовать свойства другого, как если бы они были его собственными."
+            "ru": "Потратьте Страх, чтобы призвать двух противников в пределах Средней дистанции от персонажа. Каждый противник может использовать свойства другого, как если бы они были его собственными."
           },
           "prompt": {
             "en": "Which creatures has the archmage chosen to combine? What do they hope to learn in doing so?",
@@ -8873,7 +8873,7 @@
           },
           "description": {
             "en": "Strange, localized phenomena dot the landscape, warping distance and direction. Spend a Fear to alter the gravity at a chosen point. Each target within Close range of that point must make a Knowledge Reaction Roll to calculate their new trajectories. Targets who fail take 3d8+4 physical damage as they are thrown up and away. Targets who succeed must mark a Stress or take half damage.",
-            "ru": "По ландшафту рассеяны странные локализованные явления, искажающие расстояние и направление. Потратьте Страх, чтобы изменить гравитацию в выбранной точке. Каждая цель в пределах Близкой дистанции от этой точки должна совершить Бросок Реакции на Знание, чтобы рассчитать свою новую траекторию. Цели, провалившие бросок, получают 3d8+4 физического урона, будучи подброшенными вверх и отброшенными прочь. Цели, преуспевшие в броске, должны отметить Стресс или получить половину урона."
+            "ru": "По ландшафту рассеяны странные локализованные явления, искажающие расстояние и направление. Потратьте Страх, чтобы изменить гравитацию в выбранной точке. Каждая цель в пределах Средней дистанции от этой точки должна совершить Бросок Реакции на Знание, чтобы рассчитать свою новую траекторию. Цели, провалившие бросок, получают 3d8+4 физического урона, будучи подброшенными вверх и отброшенными прочь. Цели, преуспевшие в броске, должны отметить Стресс или получить половину урона."
           },
           "prompt": {
             "en": "What does it feel like as your body and mind fight to reestablish equilibrium? Is there any way to use this to your advantage?",
@@ -9023,7 +9023,7 @@
           },
           "description": {
             "en": "When a PC fails a roll to navigate the lair, you can spend a Fear to summon 1d6 Drakes and up to two Wyverns, who appear within Close range of a PC and are immediately spotlighted.",
-            "ru": "Когда персонаж проваливает бросок для навигации по логову, вы можете потратить Страх, чтобы призвать 1d6 Дрейков и до двух Виверн в пределах Близкой дистанции от персонажа, которые немедленно получают Активацию."
+            "ru": "Когда персонаж проваливает бросок для навигации по логову, вы можете потратить Страх, чтобы призвать 1d6 Дрейков и до двух Виверн в пределах Средней дистанции от персонажа, которые немедленно получают Активацию."
           },
           "prompt": {
             "en": "Why do these creatures serve the slumbering dragon? What signs does the party find that foreshadow their presence?",
@@ -9118,7 +9118,7 @@
           },
           "description": {
             "en": "Spend a Fear to summon an extreme weather event, such as a thunderstorm or tornado, at a point of your choice. Each target within Close range of that point must succeed on a reaction roll using a trait you choose to avoid being pummeled by hail, thrown into the air, blasted by lightning, or a similar effect. Targets who fail take 2d10+2 damage of a type you choose.",
-            "ru": "Потратьте Страх, чтобы призвать экстремальное погодное явление, например, грозу или торнадо, в выбранной вами точке. Каждая цель в пределах Близкой дистанции от этой точки должна преуспеть в броске реакции с использованием выбранной вами черты, иначе её забьёт градом, подбросит в воздух, ударит молнией или произойдёт похожий эффект. Цели, провалившие бросок, получают 2d10+2 урона выбранного вами типа."
+            "ru": "Потратьте Страх, чтобы призвать экстремальное погодное явление, например, грозу или торнадо, в выбранной вами точке. Каждая цель в пределах Средней дистанции от этой точки должна преуспеть в броске реакции с использованием выбранной вами черты, иначе её забьёт градом, подбросит в воздух, ударит молнией или произойдёт похожий эффект. Цели, провалившие бросок, получают 2d10+2 урона выбранного вами типа."
           },
           "prompt": {
             "en": "Is this the worst weather any of the PCs have experienced? What in the immediate area can the PCs use to protect themselves?",
@@ -9253,7 +9253,7 @@
           },
           "description": {
             "en": "Spend a Fear to summon up to two Deep Dwellers and 1d6 Cursed Merfolk who try to bind the PCs to their will. These adversaries appear at Close range of a PC, then one immediately takes the spotlight.",
-            "ru": "Потратьте Страх, чтобы призвать до двух Глубинных Обитателей и 1d6 Проклятых Русалок, пытающихся подчинить персонажей своей воле. Эти противники появляются в пределах Близкой дистанции от персонажа, после чего один из них немедленно получает Активацию."
+            "ru": "Потратьте Страх, чтобы призвать до двух Глубинных Обитателей и 1d6 Проклятых Русалок, пытающихся подчинить персонажей своей воле. Эти противники появляются в пределах Средней дистанции от персонажа, после чего один из них немедленно получает Активацию."
           },
           "prompt": {
             "en": "Why do these creatures stay here among the ruins? Are they unwilling or unable to resurrect this once-prosperous civilization?",
@@ -9371,7 +9371,7 @@
           },
           "description": {
             "en": "If the PCs defeat the casino's automated security or try to leave with stolen winnings, you can spend an amount of Fear equal to the number of PCs to summon the casino's true owner, a Demon of Avarice, within Close range of a PC. The Demon is immediately spotlighted and bars the party's exit at all costs.",
-            "ru": "Если персонажи побеждают автоматизированную охрану казино или пытаются уйти с украденным выигрышем, вы можете потратить количество Страха, равное числу персонажей, чтобы призвать истинного владельца казино — Демона Алчности — в пределах Близкой дистанции от персонажа. Демон немедленно получает Активацию и любой ценой преграждает отряду выход."
+            "ru": "Если персонажи побеждают автоматизированную охрану казино или пытаются уйти с украденным выигрышем, вы можете потратить количество Страха, равное числу персонажей, чтобы призвать истинного владельца казино — Демона Алчности — в пределах Средней дистанции от персонажа. Демон немедленно получает Активацию и любой ценой преграждает отряду выход."
           },
           "prompt": {
             "en": "How did the demon mask their influence until now? How does the casino itself change to reveal its true nature?",
@@ -9450,7 +9450,7 @@
           },
           "description": {
             "en": "Spend a Fear to have the ground erupt at a point of your choice, spewing lava into the air and spreading it along the ground. All targets within Very Close range of that point lose a Hope and take 3d8+3 physical damage. The area within Very Close range of the eruption point becomes lava until the end of the scene. A creature who moves into or through the lava takes 3d8+3 physical damage. Until the end of the scene, you can spend a Fear to expand the lava area by one step (such as Very Close to Close or Close to Far).",
-            "ru": "Потратьте Страх, чтобы земля извергалась в выбранной вами точке, выбрасывая лаву в воздух и растекаясь по земле. Все цели в пределах Очень Близкой дистанции от этой точки теряют Надежду и получают 3d8+3 физического урона. Область в пределах Очень Близкой дистанции от точки извержения становится лавой до конца сцены. Существо, перемещающееся в лаву или через неё, получает 3d8+3 физического урона. До конца сцены вы можете потратить Страх, чтобы расширить область лавы на один шаг (например, с Очень Близкой до Близкой или с Близкой до Дальней)."
+            "ru": "Потратьте Страх, чтобы земля извергалась в выбранной вами точке, выбрасывая лаву в воздух и растекаясь по земле. Все цели в пределах Очень Близкой дистанции от этой точки теряют Надежду и получают 3d8+3 физического урона. Область в пределах Очень Близкой дистанции от точки извержения становится лавой до конца сцены. Существо, перемещающееся в лаву или через неё, получает 3d8+3 физического урона. До конца сцены вы можете потратить Страх, чтобы расширить область лавы на один шаг (например, с Очень Близкой до Средней или с Средней до Дальней)."
           },
           "prompt": {
             "en": "What makes the lava seem alive? How can the PCs predict its behavior?",
@@ -9924,7 +9924,7 @@
           },
           "description": {
             "en": "When the PCs attempt to escape or end the trial through force, summon a number of Temporal Enforcers equal to the number of PCs in the scene within Close range and immediately spotlight one.",
-            "ru": "Когда персонажи пытаются сбежать или силой прекратить судебное разбирательство, призовите число Временных Стражей, равное числу персонажей в сцене, в пределах Близкой дистанции, и немедленно дайте Активацию одному из них."
+            "ru": "Когда персонажи пытаются сбежать или силой прекратить судебное разбирательство, призовите число Временных Стражей, равное числу персонажей в сцене, в пределах Средней дистанции, и немедленно дайте Активацию одному из них."
           },
           "prompt": {
             "en": "Is this court's authority worthy of respect? What besides the might of the Time Council and its enforcers justifies their control over the timeline?",
@@ -10012,7 +10012,7 @@
           },
           "description": {
             "en": "A blast of fire erupts from a nearby lava flow. PCs within Close range must make an Agility Reaction Roll. On a failure, they take Xd6 physical damage where X is the number of tokens on the stat block. On a success, they take half as much damage.",
-            "ru": "Из ближайшего потока лавы вырывается вспышка огня. Персонажи в Близкой дистанции должны совершить Бросок Реакции на Проворность. При неудаче они получают Xd6 физического урона, где X — число жетонов на статблоке. При успехе урон уменьшается вдвое."
+            "ru": "Из ближайшего потока лавы вырывается вспышка огня. Персонажи в Средней дистанции должны совершить Бросок Реакции на Проворность. При неудаче они получают Xd6 физического урона, где X — число жетонов на статблоке. При успехе урон уменьшается вдвое."
           },
           "prompt": {
             "en": "Do any flammable items catch fire? How do the sulfurous fumes affect your breathing?",
@@ -10555,7 +10555,7 @@
           },
           "description": {
             "en": "Oozes that appear here are formed of ghostly material. They have resistance to physical damage, emit a dim light, and can mark a Stress to move up to Close range through solid objects.",
-            "ru": "Слизи, появляющиеся здесь, состоят из призрачного вещества. Они обладают сопротивлением физическому урону, испускают тусклый свет и могут отметить Стресс, чтобы переместиться на Близкую дистанцию сквозь твёрдые объекты."
+            "ru": "Слизи, появляющиеся здесь, состоят из призрачного вещества. Они обладают сопротивлением физическому урону, испускают тусклый свет и могут отметить Стресс, чтобы переместиться на Среднюю дистанцию сквозь твёрдые объекты."
           },
           "prompt": {
             "en": "How do the ectoplasmic Oozes manifest? What kinds of protections and rituals might drive them away?",
@@ -10688,7 +10688,7 @@
           },
           "description": {
             "en": "Spend a Fear to raise the passion of the song. Each PC must succeed on a Presence Reaction Roll or become Sea- called. While Sea-called, when they are within Close range of the sea, you can end the condition as a GM move and cause them to leap into the water.",
-            "ru": "Потратьте Страх, чтобы усилить страсть песни. Каждый персонаж должен преуспеть в Броске Реакции на Влияние, иначе станет Зачарован Морем. Пока персонаж Зачарован Морем, когда он оказывается в Близкой дистанции от моря, вы можете снять это состояние как ход Мастера и заставить его броситься в воду."
+            "ru": "Потратьте Страх, чтобы усилить страсть песни. Каждый персонаж должен преуспеть в Броске Реакции на Влияние, иначе станет Зачарован Морем. Пока персонаж Зачарован Морем, когда он оказывается в Средней дистанции от моря, вы можете снять это состояние как ход Мастера и заставить его броситься в воду."
           },
           "prompt": {
             "en": "What dreams do the sea-called PCs experience? What mark does it leave on them once the call is gone?",
@@ -10916,7 +10916,7 @@
           },
           "description": {
             "en": "Spend 2 Fear when a light source is lit to have 1d4+2 Cackling Shadows appear within Close range of the edge of the light. One of them immediately takes the spotlight, seeking to extinguish the light and claim it for themselves.",
-            "ru": "Потратьте 2 Страха, когда зажигается источник света, чтобы призвать 1d4+2 Хохочущих Теней на Близкой дистанции от края света. Одна из них немедленно получает Активацию, стремясь погасить свет и завладеть им."
+            "ru": "Потратьте 2 Страха, когда зажигается источник света, чтобы призвать 1d4+2 Хохочущих Теней на Средней дистанции от края света. Одна из них немедленно получает Активацию, стремясь погасить свет и завладеть им."
           },
           "prompt": {
             "en": "What does the laughter sound like as it gathers in the darkness? How do the shadows bicker deciding which of them will get the light?",
@@ -11021,7 +11021,7 @@
           },
           "description": {
             "en": "Spend a Fear to summon a Sacred Choir within Close range. The Choir immediately takes the spotlight to use their “Persuasive Song” action without spending a Fear.",
-            "ru": "Потратьте Страх, чтобы призвать Священный Хор на Близкой дистанции. Хор немедленно получает Активацию, чтобы использовать своё действие «Убедительная песнь» без траты Страха."
+            "ru": "Потратьте Страх, чтобы призвать Священный Хор на Средней дистанции. Хор немедленно получает Активацию, чтобы использовать своё действие «Убедительная песнь» без траты Страха."
           },
           "prompt": {
             "en": "What are the singers trying to induce you to believe? Why are you sceptical?",
@@ -11239,7 +11239,7 @@
           },
           "description": {
             "en": "When the Casino has 5 or more tokens, you can remove 1 or more tokens and turn that many devices within Close range of the PCs into Feral Slot Machines.",
-            "ru": "Когда у Казино 5 или больше жетонов, вы можете убрать 1 или более жетонов и превратить столько же устройств в Близкой дистанции от персонажей в Одичавшие Игровые Автоматы."
+            "ru": "Когда у Казино 5 или больше жетонов, вы можете убрать 1 или более жетонов и превратить столько же устройств в Средней дистанции от персонажей в Одичавшие Игровые Автоматы."
           },
           "prompt": {
             "en": "Will the house reward the PCs for getting the rogue machines under control, or blame them for causing the chaos in the first place?",
@@ -11529,7 +11529,7 @@
           },
           "description": {
             "en": "Once per scene, each PC can mark a Stress to add their Tier to a roll, potentially turning a failure into a success. What additional points do you raise to further inform others? How does the exhaustion affect your mood once the debate ends? Um, Actually… - Reaction: When the PCs have made an incorrect point, are mistaken, or try to intentionally mislead, you can spend a Fear to have a Planar Philosopher appear within Close range to point out their error and explain why they are wrong. The first roll each PC makes after this is made with disadvantage as they are caught off guard.",
-            "ru": "Раз за сцену каждый персонаж может отметить Стресс, чтобы добавить свой Ранг к броску, потенциально превратив неудачу в успех. Какие ещё доводы вы приводите, чтобы поглубже просветить остальных? Как усталость сказывается на вашем настроении после того, как спор заканчивается? » — Реакция: Когда персонажи высказывают неверное утверждение, ошибаются или намеренно пытаются ввести в заблуждение, вы можете потратить Страх, чтобы в Близкой дистанции появился Планарный Философ и указал на их ошибку, объяснив, почему они неправы. Первый бросок, который каждый персонаж делает после этого, совершается с помехой, поскольку они застигнуты врасплох."
+            "ru": "Раз за сцену каждый персонаж может отметить Стресс, чтобы добавить свой Ранг к броску, потенциально превратив неудачу в успех. Какие ещё доводы вы приводите, чтобы поглубже просветить остальных? Как усталость сказывается на вашем настроении после того, как спор заканчивается? » — Реакция: Когда персонажи высказывают неверное утверждение, ошибаются или намеренно пытаются ввести в заблуждение, вы можете потратить Страх, чтобы в Средней дистанции появился Планарный Философ и указал на их ошибку, объяснив, почему они неправы. Первый бросок, который каждый персонаж делает после этого, совершается с помехой, поскольку они застигнуты врасплох."
           },
           "prompt": {
             "en": "How smug is the philosopher? Where did you originally hear the incorrect information?",
@@ -12177,7 +12177,7 @@
           },
           "description": {
             "en": "The archive is eeriely quiet. All noise is suppressed to a whisper and can only be heard within Close range.",
-            "ru": "В архиве стоит жуткая тишина. Все звуки приглушаются до шёпота и слышны только на Близкой дистанции."
+            "ru": "В архиве стоит жуткая тишина. Все звуки приглушаются до шёпота и слышны только на Средней дистанции."
           },
           "prompt": {
             "en": "What whispered secrets do the muffled sounds utter? What shapes do the shadows take?",
@@ -12314,7 +12314,7 @@
           },
           "description": {
             "en": "If the PCs cause trouble within the city, you can Spend a Fear to summon 1d4 Spectral Guardians and a Spectral Captain within Close range of a chosen PC. A Guardian immediately takes the spotlight.",
-            "ru": "Если персонажи создают проблемы в городе, вы можете потратить Страх, чтобы призвать 1d4 Призрачных Стражей и одного Призрачного Командующего на Близкой дистанции от выбранного персонажа. Один Страж немедленно получает Активацию."
+            "ru": "Если персонажи создают проблемы в городе, вы можете потратить Страх, чтобы призвать 1d4 Призрачных Стражей и одного Призрачного Командующего на Средней дистанции от выбранного персонажа. Один Страж немедленно получает Активацию."
           },
           "prompt": {
             "en": "What insignia do the spectral force wear? What gestures do they make to indicate their intentions?",
@@ -12424,7 +12424,7 @@
           },
           "description": {
             "en": "If the PCs begin to overextend their welcome, asking too much of the goddess, you can spend a Fear to summon an Ancient Druid and 2d4 Minor Treants within Close range of the throne room to encourage the PCs to leave.",
-            "ru": "Если персонажи начинают злоупотреблять гостеприимством, требуя от богини слишком многого, вы можете потратить Страх, чтобы призвать Древнего Друида и 2d4 Малых Древеней на Близкой дистанции от тронного зала, дабы побудить персонажей уйти."
+            "ru": "Если персонажи начинают злоупотреблять гостеприимством, требуя от богини слишком многого, вы можете потратить Страх, чтобы призвать Древнего Друида и 2d4 Малых Древеней на Средней дистанции от тронного зала, дабы побудить персонажей уйти."
           },
           "prompt": {
             "en": "What form do these treants take? What words of warning are issued prior to this taking place?",
@@ -12516,7 +12516,7 @@
           },
           "description": {
             "en": "Spend a Fear to have a kaiju arrive at the boneyard and begin to wreak havoc. Start a Consequence Countdown (6) as the party prepares for the creature's rampage. When a PC rolls with Fear, they and everyone within Close range of them must make an Agility Reaction Roll. On a failure they take 4d10+5 physical damage as the approaching monster causes the earth to rend assunder. When the countdown triggers, the titan appears at Very Far range and takes the spotlight.",
-            "ru": "Потратьте Страх, чтобы к кладбищу прибыл кайдзю и начал сеять разрушения. Запустите Отсчёт Последствий (6), пока группа готовится к неистовству существа. Когда персонаж выбрасывает результат со Страхом, он и все находящиеся в его Близкой дистанции должны совершить Бросок Реакции на Проворность. При неудаче они получают 4d10+5 физического урона, поскольку приближающееся чудовище раскалывает землю надвое. Когда отсчёт срабатывает, титан появляется на Очень Дальней дистанции и получает Активацию."
+            "ru": "Потратьте Страх, чтобы к кладбищу прибыл кайдзю и начал сеять разрушения. Запустите Отсчёт Последствий (6), пока группа готовится к неистовству существа. Когда персонаж выбрасывает результат со Страхом, он и все находящиеся в его Средней дистанции должны совершить Бросок Реакции на Проворность. При неудаче они получают 4d10+5 физического урона, поскольку приближающееся чудовище раскалывает землю надвое. Когда отсчёт срабатывает, титан появляется на Очень Дальней дистанции и получает Активацию."
           },
           "prompt": {
             "en": "What terrifying impossible form does the kaiju take on the horizon? How are the local scavengers responding to the approaching danger?",
@@ -12638,7 +12638,7 @@
           },
           "description": {
             "en": "Countdown (Loop 4). Start the countdown when the environment is first spotlighted. When it triggers, add 1d4 tokens to the Arcanostorm, then roll 1d12. If the result is equal to or below the number of tokens on the Arcanostorm, remove that many tokens to strike a point in the scene with a bolt of prismatic lightning. All PCs within Close range must make an Agility Reaction Roll. Targets who fail take Xd10+10 magic damage where X is the value on the d12. Targets who succeed take half damage instead.",
-            "ru": "Отсчёт (Цикл 4). Запустите отсчёт, когда окружение впервые получает Активацию. Когда он срабатывает, добавьте 1d4 жетона на Аркашторм, затем бросьте 1d12. Если результат равен числу жетонов на Аркашторме или меньше него, уберите столько же жетонов, чтобы ударить по точке сцены разрядом призматической молнии. Все персонажи на Близкой дистанции должны совершить Бросок Реакции на Проворность. Цели, потерпевшие неудачу, получают Xd10+10 магического урона, где X — значение, выпавшее на d12. Цели, добившиеся успеха, получают вместо этого половину урона."
+            "ru": "Отсчёт (Цикл 4). Запустите отсчёт, когда окружение впервые получает Активацию. Когда он срабатывает, добавьте 1d4 жетона на Аркашторм, затем бросьте 1d12. Если результат равен числу жетонов на Аркашторме или меньше него, уберите столько же жетонов, чтобы ударить по точке сцены разрядом призматической молнии. Все персонажи на Средней дистанции должны совершить Бросок Реакции на Проворность. Цели, потерпевшие неудачу, получают Xd10+10 магического урона, где X — значение, выпавшее на d12. Цели, добившиеся успеха, получают вместо этого половину урона."
           },
           "prompt": {
             "en": "What magical effect does the lightning induce? What effect does the lightning have on the land it strikes?",
@@ -12713,7 +12713,7 @@
           },
           "description": {
             "en": "A wave of energy erupts from a point in the scene. Each PC within Close range must make a Strength Reaction Roll. On a failure, they take 3d8+3 physical damage and gain a Fatigue token. On a success, they take half as much damage. PCs gain a –1 penalty to rolls on their Duality Dice for every Fatigue token they have. Whenever a PC clears one or more Stress, they can also remove one Fatigue token.",
-            "ru": "Волна энергии вырывается из точки на сцене. Каждый персонаж на Близкой дистанции должен совершить Бросок Реакции на Силу. При неудаче он получает 3d8+3 физического урона и получает жетон Усталости. При успехе он получает лишь половину урона. Персонажи получают штраф –1 к броскам Костей Двойственности за каждый имеющийся у них жетон Усталости. Всякий раз, когда персонаж снимает один или более Стресс, он также может убрать один жетон Усталости."
+            "ru": "Волна энергии вырывается из точки на сцене. Каждый персонаж на Средней дистанции должен совершить Бросок Реакции на Силу. При неудаче он получает 3d8+3 физического урона и получает жетон Усталости. При успехе он получает лишь половину урона. Персонажи получают штраф –1 к броскам Костей Двойственности за каждый имеющийся у них жетон Усталости. Всякий раз, когда персонаж снимает один или более Стресс, он также может убрать один жетон Усталости."
           },
           "prompt": {
             "en": "How does it feel to have your life energy draining out of you? Do you recall a time when you felt this exhausted?",
@@ -12865,7 +12865,7 @@
           },
           "description": {
             "en": "Countdown (Loop 1d6). Activate the countdown when a creature first enters or disturbs the waters. When it triggers, each creature within Close range of the water must succeed on an Agility Reaction Roll or be temporarily Blinded and Vulnerable and fall into the water.",
-            "ru": "Отсчёт (Цикл 1d6). Активируйте отсчёт, когда существо впервые входит в воды или тревожит их. Когда он срабатывает, каждое существо на Близкой дистанции от воды должно преуспеть в Броске Реакции на Проворность, иначе временно становится Ослеплённым и Уязвимым и падает в воду."
+            "ru": "Отсчёт (Цикл 1d6). Активируйте отсчёт, когда существо впервые входит в воды или тревожит их. Когда он срабатывает, каждое существо на Средней дистанции от воды должно преуспеть в Броске Реакции на Проворность, иначе временно становится Ослеплённым и Уязвимым и падает в воду."
           },
           "prompt": {
             "en": "What impossible colors flash from the waters? What causes the waters to burst in light?",
@@ -12987,7 +12987,7 @@
           },
           "description": {
             "en": "Spend a Fear to summon 1d4 Sparking Dust Devils at Close range of a chosen PC. Immediately spotlight one of these adversaries, and you can spend an additional Fear to automatically succeed on that adversary's standard attack. Any PC affected by the Sparking Dust Devils' “Scourge” feature gains a Charge token.",
-            "ru": "Потратьте Страх, чтобы призвать 1d4 Искрящихся Пылевых Вихря на Близкой дистанции от выбранного персонажа. Немедленно дайте Активацию одному из этих противников, и вы можете потратить дополнительный Страх, чтобы автоматически преуспеть в стандартной атаке этого противника. Любой персонаж, подвергшийся особенности Искрящихся Пылевых Вихрей «Бич», получает жетон Заряда."
+            "ru": "Потратьте Страх, чтобы призвать 1d4 Искрящихся Пылевых Вихря на Средней дистанции от выбранного персонажа. Немедленно дайте Активацию одному из этих противников, и вы можете потратить дополнительный Страх, чтобы автоматически преуспеть в стандартной атаке этого противника. Любой персонаж, подвергшийся особенности Искрящихся Пылевых Вихрей «Бич», получает жетон Заряда."
           },
           "prompt": {
             "en": "What predatory faces do you see in the Dust Devils? What kind of memories do the howling storms bring up?",
@@ -13002,7 +13002,7 @@
           },
           "description": {
             "en": "When a PC takes Major or Severe damage from “Static Charge”, the Blackened Sands ignite. All PCs within Close range must make an Agility Reaction Roll. On a failure they take 4d10+10 magic damage.",
-            "ru": "Когда персонаж получает Ощутимый или Тяжёлый урон от «Статического заряда», Почерневшие Пески воспламеняются. Все персонажи на Близкой дистанции должны совершить Бросок Реакции на Проворность. При неудаче они получают 4d10+10 магического урона."
+            "ru": "Когда персонаж получает Ощутимый или Тяжёлый урон от «Статического заряда», Почерневшие Пески воспламеняются. Все персонажи на Средней дистанции должны совершить Бросок Реакции на Проворность. При неудаче они получают 4d10+10 магического урона."
           },
           "prompt": {
             "en": "What creatures are drawn by the explosion in hope of carrion? What ancient bones are revealed beneath the sands?",
@@ -13092,7 +13092,7 @@
           },
           "description": {
             "en": "If a PC fails when casting a spell, you can spend a Fear to have 1d6 Fallen Orators appear within Close range of the PC. One of the Orators immediately takes the spotlight and uses their “Compulsion” action on the PC.",
-            "ru": "Если персонаж терпит неудачу при произнесении заклинания, вы можете потратить Страх, чтобы на Близкой дистанции от персонажа появились 1d6 Падших Ораторов. Один из Ораторов немедленно получает Активацию и использует своё действие «Принуждение» против персонажа."
+            "ru": "Если персонаж терпит неудачу при произнесении заклинания, вы можете потратить Страх, чтобы на Средней дистанции от персонажа появились 1d6 Падших Ораторов. Один из Ораторов немедленно получает Активацию и использует своё действие «Принуждение» против персонажа."
           },
           "prompt": {
             "en": "How did your words upset the spirit? How does their spectral form change to reflect their heated emotions?",
@@ -13199,7 +13199,7 @@
           },
           "description": {
             "en": "Spend a Fear to summon a Huge Green Ooze within Close range of a chosen PC. The Ooze immediately takes the spotlight.",
-            "ru": "Потратьте Страх, чтобы призвать Огромную Зелёную Слизь на Близкой дистанции от выбранного персонажа. Слизь немедленно получает Активацию."
+            "ru": "Потратьте Страх, чтобы призвать Огромную Зелёную Слизь на Средней дистанции от выбранного персонажа. Слизь немедленно получает Активацию."
           },
           "prompt": {
             "en": "What rumors or tales have you heard of such amorphous creatures? How are these magic-hungry specimens different from the norm?",
@@ -13306,7 +13306,7 @@
           },
           "description": {
             "en": "When the Energy Dispersal Countdown ticks down you can spend a Fear to have 2d6 Elemental Sparks or a Greater Earth Elemental appear within Close range of the PCs. One of the creatures immediately takes the spotlight.",
-            "ru": "Когда Отсчёт Рассеивания Энергии уменьшается, вы можете потратить Страх, чтобы призвать 2d6 Стихийных Искр или Великого Земляного Элементаля в Близкой дистанции от персонажей. Одно из существ немедленно получает Активацию."
+            "ru": "Когда Отсчёт Рассеивания Энергии уменьшается, вы можете потратить Страх, чтобы призвать 2d6 Стихийных Искр или Великого Земляного Элементаля в Средней дистанции от персонажей. Одно из существ немедленно получает Активацию."
           },
           "prompt": {
             "en": "What about these Elementals appears wrong and strange? How do they react as they reverse the ritual by feeding on the energy?",
@@ -13368,7 +13368,7 @@
           },
           "description": {
             "en": "Any creature further than Close range is Hidden. For creatures with natural snow camouflage, this range reduces to Very Close.",
-            "ru": "Любое существо, находящееся дальше Близкой дистанции, считается Скрытым. Для существ с естественной снежной маскировкой эта дистанция сокращается до Очень Близкой."
+            "ru": "Любое существо, находящееся дальше Средней дистанции, считается Скрытым. Для существ с естественной снежной маскировкой эта дистанция сокращается до Очень Близкой."
           },
           "prompt": {
             "en": "What precautions do you take to avoid becoming separated? How do you maintain your sense of direction?",
@@ -13503,7 +13503,7 @@
           },
           "description": {
             "en": "Spend a Fear to have the PCs come across a nest of eggs as big as they are. Start a Consequence Countdown (3). When it triggers, two Stonewraiths appear within Close range of the nest. One of them immediately uses its “Avalanche Roar” without needing to spend a Fear.",
-            "ru": "Потратьте Страх, чтобы персонажи наткнулись на гнездо с яйцами размером с них самих. Запустите Отсчёт Последствий (3). Когда он сработает, в Близкой дистанции от гнезда появятся два Каменных Призрака. Один из них немедленно использует «Рёв Лавины», не тратя Страх."
+            "ru": "Потратьте Страх, чтобы персонажи наткнулись на гнездо с яйцами размером с них самих. Запустите Отсчёт Последствий (3). Когда он сработает, в Средней дистанции от гнезда появятся два Каменных Призрака. Один из них немедленно использует «Рёв Лавины», не тратя Страх."
           },
           "prompt": {
             "en": "What drives you to steal the eggs from this nest? What fabled magical properties have you heard they have?",
@@ -13592,7 +13592,7 @@
           },
           "description": {
             "en": "Spend a Fear to have the ice break beneath a PC's feet. They must make an Agility Reaction Roll. On a failure, they fall beneath the ice and are swept to a point within Close range. Start a Countdown (6). Each time it ticks down, the PC takes 1d4+1 direct physical damage, and must succeed on a Strength Reaction Roll or mark a Stress. When the countdown triggers or the PC can't mark a Stress, they drown and must make a death move. If rescued, the PC is Soaked Through until they can dry off. While Soaked Through, the PC has disadvantage on all Duality Dice rolls and must mark a Stress each time they roll with Fear.",
-            "ru": "Потратьте Страх, чтобы лёд треснул под ногами персонажа. Он должен совершить Бросок Реакции на Проворность. При неудаче он проваливается под лёд, и течение уносит его в точку в Близкой дистанции. Запустите Отсчёт (6). Каждый раз, когда он уменьшается, персонаж получает 1d4+1 прямого физического урона и должен преуспеть в Броске Реакции на Силу либо отметить Стресс. Когда отсчёт срабатывает или персонаж не может отметить Стресс, он тонет и должен совершить предсмертный ход. Если его спасли, персонаж становится Насквозь Промокшим, пока не обсохнет. Пока персонаж Насквозь Промокший, он совершает все броски Костей Двойственности с помехой и должен отмечать Стресс каждый раз, когда выпадает бросок со Страхом."
+            "ru": "Потратьте Страх, чтобы лёд треснул под ногами персонажа. Он должен совершить Бросок Реакции на Проворность. При неудаче он проваливается под лёд, и течение уносит его в точку в Средней дистанции. Запустите Отсчёт (6). Каждый раз, когда он уменьшается, персонаж получает 1d4+1 прямого физического урона и должен преуспеть в Броске Реакции на Силу либо отметить Стресс. Когда отсчёт срабатывает или персонаж не может отметить Стресс, он тонет и должен совершить предсмертный ход. Если его спасли, персонаж становится Насквозь Промокшим, пока не обсохнет. Пока персонаж Насквозь Промокший, он совершает все броски Костей Двойственности с помехой и должен отмечать Стресс каждый раз, когда выпадает бросок со Страхом."
           },
           "prompt": {
             "en": "What regrets do you have while drowning? How will the experience stay with you after you recover?",
@@ -13607,7 +13607,7 @@
           },
           "description": {
             "en": "When a PC moves to a point further than Close range during an action, roll 1d6. On a roll of 1–2, they are targeted by the “Fracture” action without requiring a Fear to be spent on the feature.",
-            "ru": "Когда персонаж перемещается в точку дальше Близкой дистанции в рамках действия, бросьте 1d6. При результате 1–2 он становится целью действия «Трещина», причём Страх на эту особенность тратить не нужно."
+            "ru": "Когда персонаж перемещается в точку дальше Средней дистанции в рамках действия, бросьте 1d6. При результате 1–2 он становится целью действия «Трещина», причём Страх на эту особенность тратить не нужно."
           },
           "prompt": {
             "en": "What last words do you scream as you plunge beneath the ice?",
@@ -13777,7 +13777,7 @@
           },
           "description": {
             "en": "Choose a spot in the scene. All creatures within Very Close range must succeed on an Agility Reaction Roll or take 3d8+3 physical damage. Creatures who fail their roll by 3 or more become temporarily Restrained. You can spend a Fear to increase the range to Close.",
-            "ru": "Выберите точку в сцене. Все существа в Очень Близкой дистанции должны преуспеть в Броске Реакции на Проворность, иначе получают 3d8+3 физического урона. Существа, провалившие бросок на 3 или больше, временно становятся Обездвижены. Вы можете потратить Страх, чтобы увеличить дистанцию до Близкой."
+            "ru": "Выберите точку в сцене. Все существа в Очень Близкой дистанции должны преуспеть в Броске Реакции на Проворность, иначе получают 3d8+3 физического урона. Существа, провалившие бросок на 3 или больше, временно становятся Обездвижены. Вы можете потратить Страх, чтобы увеличить дистанцию до Средней."
           },
           "prompt": {
             "en": "How does this lightning look and react differently than normal lightning? How does it feel to be temporally locked?",
@@ -13792,7 +13792,7 @@
           },
           "description": {
             "en": "When a PC makes an attack roll with Fear, you can spend a Fear to have time skip in ways they struggle to perceive. Choose one of the following effects: Time freezes for them, and they become Vulnerable until they clear the condition with a successful Strength Roll. They move farther than intended. Move the PC to a space within Far range of their current location. They miss their target and hit a random PC within Close range.",
-            "ru": "Когда персонаж совершает Бросок атаки со Страхом, вы можете потратить Страх, чтобы время дало сбой так, что персонаж с трудом это осознаёт. Выберите один из следующих эффектов: время застывает для него, и он становится Уязвим(а), пока не снимет состояние успешным Броском на Силу. Он перемещается дальше, чем намеревался — переместите персонажа в точку в Дальней дистанции от его текущего местоположения. Он промахивается мимо цели и попадает по случайному персонажу в Близкой дистанции."
+            "ru": "Когда персонаж совершает Бросок атаки со Страхом, вы можете потратить Страх, чтобы время дало сбой так, что персонаж с трудом это осознаёт. Выберите один из следующих эффектов: время застывает для него, и он становится Уязвим(а), пока не снимет состояние успешным Броском на Силу. Он перемещается дальше, чем намеревался — переместите персонажа в точку в Дальней дистанции от его текущего местоположения. Он промахивается мимо цели и попадает по случайному персонажу в Средней дистанции."
           },
           "prompt": {
             "en": "What is your first thought when your intent does not match your action? How do you apologise for attacking your allies by mistake?",
@@ -13989,7 +13989,7 @@
           },
           "description": {
             "en": "Spend a Fear to have a nearby egg sac hatch, coating any PCs within Close range with angry, biting insects. PCs must succeed on an Agility Reaction Roll or take 2d6+3 physical damage.",
-            "ru": "Потратьте Страх, чтобы поблизости вылупился кокон с яйцами, покрывая всех персонажей в Близкой дистанции злыми кусачими насекомыми. Персонажи должны преуспеть в Броске Реакции на Проворность, иначе получают 2d6+3 физического урона."
+            "ru": "Потратьте Страх, чтобы поблизости вылупился кокон с яйцами, покрывая всех персонажей в Средней дистанции злыми кусачими насекомыми. Персонажи должны преуспеть в Броске Реакции на Проворность, иначе получают 2d6+3 физического урона."
           },
           "prompt": {
             "en": "What sounds do you hear before the eggs burst? How do you scrape the biting bugs from your clothes and skin?",
@@ -14004,7 +14004,7 @@
           },
           "description": {
             "en": "When a PC fails an Agility Roll with Fear, summon a Spider Swarm within Close range of them. The Swarm immediately takes the spotlight.",
-            "ru": "Когда персонаж проваливает Бросок на Проворность со Страхом, призовите Паучий Рой в Близкой дистанции от него. Рой немедленно получает Активацию."
+            "ru": "Когда персонаж проваливает Бросок на Проворность со Страхом, призовите Паучий Рой в Средней дистанции от него. Рой немедленно получает Активацию."
           },
           "prompt": {
             "en": "Do you have any knowledge about giant spiders? What memories about normal-sized arachnids are brought up from this?",
@@ -14079,7 +14079,7 @@
           },
           "description": {
             "en": "Choose a PC with no allies within Close range. They must make an Agility Reaction Roll. Upon a failure, they take 2d10+2 physical damage and become Vulnerable as the swarm descends on them. A PC that is not Restrained can end this condition by succeeding on a Strength Roll.",
-            "ru": "Выберите персонажа, у которого нет союзников в Близкой дистанции. Он должен совершить Бросок Реакции на Проворность. При неудаче он получает 2d10+2 физического урона и становится Уязвим(а), когда рой обрушивается на него. Персонаж, который не Обездвижен(а), может снять это состояние, преуспев в Броске на Силу. Он может совершить этот бросок с преимуществом, если бросит на землю случайный предмет из своего инвентаря."
+            "ru": "Выберите персонажа, у которого нет союзников в Средней дистанции. Он должен совершить Бросок Реакции на Проворность. При неудаче он получает 2d10+2 физического урона и становится Уязвим(а), когда рой обрушивается на него. Персонаж, который не Обездвижен(а), может снять это состояние, преуспев в Броске на Силу. Он может совершить этот бросок с преимуществом, если бросит на землю случайный предмет из своего инвентаря."
           },
           "prompt": {
             "en": "They can make this roll with advantage if they drop a random item from their inventory How do you respond to the biting, swarming insects? What do you throw down to trade for your safety?",
@@ -14109,7 +14109,7 @@
           },
           "description": {
             "en": "Choose a point in the scene. All PCs within Close range of this point must succeed on an Instinct Reaction Roll or move to Far range of it and become temporarily Frightened. While Frightened, they can't move within Close range of the target spot.",
-            "ru": "Выберите точку в сцене. Все персонажи в Близкой дистанции от этой точки должны преуспеть в Броске Реакции на Инстинкт, иначе перемещаются в Дальнюю дистанцию от неё и временно становятся Напуганы. Пока персонаж Напуган, он не может подойти ближе, чем на Близкую дистанцию, к этой точке."
+            "ru": "Выберите точку в сцене. Все персонажи в Средней дистанции от этой точки должны преуспеть в Броске Реакции на Инстинкт, иначе перемещаются в Дальнюю дистанцию от неё и временно становятся Напуганы. Пока персонаж Напуган, он не может подойти ближе, чем на Среднюю дистанцию, к этой точке."
           },
           "prompt": {
             "en": "How do the swarming insects cause this wave of fear? What do you do once you realize you have been separated from your allies?",
@@ -14728,7 +14728,7 @@
           },
           "description": {
             "en": "Spend a Fear to cause the room to shake. Start a Countdown (1d4). When the countdown triggers, summon a Neverhome Horror within Close range of as many PCs as possible. It immediately takes the spotlight to use its “Jump Scare” action.",
-            "ru": "Потратьте Страх, чтобы комната содрогнулась. Запустите Отсчёт (1d4). Когда отсчёт срабатывает, призовите Ужас Неверхоума на Близкой дистанции от как можно большего числа персонажей. Он немедленно получает Активацию, чтобы использовать своё действие «Внезапный испуг»."
+            "ru": "Потратьте Страх, чтобы комната содрогнулась. Запустите Отсчёт (1d4). Когда отсчёт срабатывает, призовите Ужас Неверхоума на Средней дистанции от как можно большего числа персонажей. Он немедленно получает Активацию, чтобы использовать своё действие «Внезапный испуг»."
           },
           "prompt": {
             "en": "How do you realize your pursuer is almost upon you? What do you do to evade capture?",
@@ -14833,7 +14833,7 @@
           },
           "description": {
             "en": "The heart lets out a deafening pulse. All PCs in the scene must make a Strength Reaction Roll. On a failure they take 3d8 physical damage. In addition, if they are within Close range of the Heart, they are moved to Far range and mark a Stress.",
-            "ru": "Сердце издаёт оглушительный импульс. Все персонажи на сцене должны сделать Бросок Реакции на Силу. При неудаче они получают 3d8 физического урона. Кроме того, если они находятся на Близкой дистанции от Сердца, их отбрасывает на Дальнюю дистанцию, и они отмечают Стресс."
+            "ru": "Сердце издаёт оглушительный импульс. Все персонажи на сцене должны сделать Бросок Реакции на Силу. При неудаче они получают 3d8 физического урона. Кроме того, если они находятся на Средней дистанции от Сердца, их отбрасывает на Дальнюю дистанцию, и они отмечают Стресс."
           },
           "prompt": {
             "en": "What damage does the pulse deal to objects around you and in your possession? How do you protect fragile bottles and flasks?",
@@ -14848,7 +14848,7 @@
           },
           "description": {
             "en": "Countdown (Loop 6). When the PCs enter the scene, start the countdown. When it triggers, all creatures within Close range of the Heart must succeed on an Agility Reaction Roll or become Restrained and take 3d10+1 physical damage. For each PC that fails, the Heart clears 1 HP. PCs can clear the Restrained condition by succeeding on a Strength roll.",
-            "ru": "Отсчёт (Цикл 6). Когда персонажи входят в сцену, запустите отсчёт. Когда он срабатывает, все существа на Близкой дистанции от Сердца должны преуспеть в Броске Реакции на Проворность, иначе становятся Обездвижены и получают 3d10+1 физического урона. За каждого провалившего бросок персонажа Сердце снимает 1 Рану. Персонажи могут снять состояние Обездвижен, преуспев в Броске на Силу."
+            "ru": "Отсчёт (Цикл 6). Когда персонажи входят в сцену, запустите отсчёт. Когда он срабатывает, все существа на Средней дистанции от Сердца должны преуспеть в Броске Реакции на Проворность, иначе становятся Обездвижены и получают 3d10+1 физического урона. За каждого провалившего бросок персонажа Сердце снимает 1 Рану. Персонажи могут снять состояние Обездвижен, преуспев в Броске на Силу."
           },
           "prompt": {
             "en": "How do you brace yourself when you sense the wave is coming? What sounds does the Heart emit as it feeds?",
@@ -14863,7 +14863,7 @@
           },
           "description": {
             "en": "When the Heart marks a third HP, you can spend a Fear to summon 1d6+1 Failed Experiments within Close range of one or more PCs. One of the Experiments immediately takes the spotlight.",
-            "ru": "Когда Сердце отмечает третью Рану, вы можете потратить Страх, чтобы призвать 1d6+1 Неудачных Экспериментов на Близкой дистанции от одного или нескольких персонажей. Один из Экспериментов немедленно получает Активацию."
+            "ru": "Когда Сердце отмечает третью Рану, вы можете потратить Страх, чтобы призвать 1d6+1 Неудачных Экспериментов на Средней дистанции от одного или нескольких персонажей. Один из Экспериментов немедленно получает Активацию."
           },
           "prompt": {
             "en": "What marks of their creation in the Manor do the creatures bear? How do they act to protect the Heart?",
@@ -15058,7 +15058,7 @@
           },
           "description": {
             "en": "When a PC disturbs or disrespects the Altar the Mortuary Priest awakens and summons 1d4 Temple Guardians (Elite Soldier) within Close range to reprimand the PC, and tell them to leave or be taken before the Choir of Retribution.",
-            "ru": "Когда персонаж нарушает покой или проявляет неуважение к Алтарю, Жрец Усыпальницы пробуждается и призывает 1d4 Храмовых Стражей (Элитный Солдат) на Близкой дистанции, чтобы отчитать персонажа и потребовать, чтобы он ушёл, — или же его приведут перед Хором Возмездия."
+            "ru": "Когда персонаж нарушает покой или проявляет неуважение к Алтарю, Жрец Усыпальницы пробуждается и призывает 1d4 Храмовых Стражей (Элитный Солдат) на Средней дистанции, чтобы отчитать персонажа и потребовать, чтобы он ушёл, — или же его приведут перед Хором Возмездия."
           },
           "prompt": {
             "en": "What is the Choir of Retribution? What material are the temple guardians constructed from?",
@@ -15148,7 +15148,7 @@
           },
           "description": {
             "en": "Spend a Fear to have a number of the interred dead rise from their graves to assault the trespassers. A Skeleton Knight, 2 Skeleton Warriors, and a number of Skeleton Dredges equal to the number of PCs rise within Close range of the PCs and surround the party. The Dredges immediately take the spotlight and make a group attack.",
-            "ru": "Потратьте Страх, чтобы несколько похороненных мертвецов восстали из могил и напали на непрошеных гостей. Скелет-Рыцарь, 2 Скелета-Воина и столько Скелетов-Гнилей, сколько персонажей в группе, поднимаются на Близкой дистанции от персонажей и окружают группу. Гнили немедленно получают Активацию и совершают групповую атаку."
+            "ru": "Потратьте Страх, чтобы несколько похороненных мертвецов восстали из могил и напали на непрошеных гостей. Скелет-Рыцарь, 2 Скелета-Воина и столько Скелетов-Гнилей, сколько персонажей в группе, поднимаются на Средней дистанции от персонажей и окружают группу. Гнили немедленно получают Активацию и совершают групповую атаку."
           },
           "prompt": {
             "en": "What shared aspect do these skeletons have? What action caused them to awake now?",
@@ -15362,7 +15362,7 @@
           },
           "description": {
             "en": "When a PC fails with Fear on the Progress Countdown, you can spray a jet of polluted water from the levee into their face. They must make an Agility Reaction Roll. On a failure, they take 2d8+3 physical damage and are moved to Close range.",
-            "ru": "Когда Игрок терпит Неудачу со Страхом при Отсчёте Прогресса, вы можете брызнуть струёй загрязнённой воды с дамбы ему в лицо. Он должен совершить Бросок Реакции на Проворность. При провале он получает 2d8+3 физического урона и перемещается на Близкую дистанцию."
+            "ru": "Когда Игрок терпит Неудачу со Страхом при Отсчёте Прогресса, вы можете брызнуть струёй загрязнённой воды с дамбы ему в лицо. Он должен совершить Бросок Реакции на Проворность. При провале он получает 2d8+3 физического урона и перемещается на Среднюю дистанцию."
           },
           "prompt": {
             "en": "What weak spot of the dam breaks open? How can you shore it up to prevent it from expanding?",
@@ -15468,7 +15468,7 @@
           },
           "description": {
             "en": "The gas in the corridor is dangerously flammable. Whenever a PC creates a spark or fire, they must succeed on a Finesse Reaction Roll or ignite the gas in the area. All PCs and creatures within Close range of the trigger take 2d10+2 physical damage. You can also spend a Fear to move the PCs to Far range of each other.",
-            "ru": "Газ в коридоре опасно горюч. Каждый раз, когда Игрок создаёт искру или огонь, он должен преуспеть в Броске Реакции на Искусность, иначе воспламенит газ в округе. Все Игроки и существа в Близкой дистанции от источника получают 2d10+2 физического урона. Вы также можете потратить Страх, чтобы переместить Игроков на Дальнюю дистанцию друг от друга."
+            "ru": "Газ в коридоре опасно горюч. Каждый раз, когда Игрок создаёт искру или огонь, он должен преуспеть в Броске Реакции на Искусность, иначе воспламенит газ в округе. Все Игроки и существа в Средней дистанции от источника получают 2d10+2 физического урона. Вы также можете потратить Страх, чтобы переместить Игроков на Дальнюю дистанцию друг от друга."
           },
           "prompt": {
             "en": "What signs of the gases' volatility are visible? What inquisitive creatures are drawn by the noise?",
@@ -15680,7 +15680,7 @@
           },
           "description": {
             "en": "Spend a Fear to summon 1d4 Demons of Despair within Close range of a chosen PC. A Demon immediately takes the spotlight and uses their “Your Struggle is Pointless” action without spending a Fear.",
-            "ru": "Потратьте Страх, чтобы призвать 1d4 Демонов Уныния в Близкой дистанции от выбранного Игрока. Один Демон немедленно получает Активацию и использует своё действие «Твоя борьба бессмысленна» без траты Страха."
+            "ru": "Потратьте Страх, чтобы призвать 1d4 Демонов Уныния в Средней дистанции от выбранного Игрока. Один Демон немедленно получает Активацию и использует своё действие «Твоя борьба бессмысленна» без траты Страха."
           },
           "prompt": {
             "en": "What dark emotions are the Demons drawn to? What core hopes do you cling to in the assault of despair?",
@@ -15845,7 +15845,7 @@
           },
           "description": {
             "en": "Spend a Fear to have inky tendrils reach out and attempt to snare a PC. They must succed on an Agility Reaction Roll or take 1d8+4 physical damage and become Restrained and Vulnerable until they break free, clearing both conditions, with a successful Finesse or Strength Roll. When a PC fails, you can spend an additional Fear to summon a Chaos Skull within Close range of the PC, and spotlight them immediately.",
-            "ru": "Потратьте Страх, чтобы чернильные щупальца потянулись и попытались схватить Игрока. Он должен преуспеть в Броске Реакции на Проворность, иначе получит 1d8+4 физического урона и получит состояния Обездвижен(а) и Уязвим(а), пока не вырвется, сняв оба состояния успешным Броском на Искусность или Силу. Если Игрок терпит неудачу, вы можете потратить дополнительный Страх, чтобы призвать Черепа Хаоса в Близкой дистанции от Игрока, и немедленно дать ему Активацию."
+            "ru": "Потратьте Страх, чтобы чернильные щупальца потянулись и попытались схватить Игрока. Он должен преуспеть в Броске Реакции на Проворность, иначе получит 1d8+4 физического урона и получит состояния Обездвижен(а) и Уязвим(а), пока не вырвется, сняв оба состояния успешным Броском на Искусность или Силу. Если Игрок терпит неудачу, вы можете потратить дополнительный Страх, чтобы призвать Черепа Хаоса в Средней дистанции от Игрока, и немедленно дать ему Активацию."
           },
           "prompt": {
             "en": "How does the ink feel to the PC as they are pulled in? What fears might the tendril conjure up?",
@@ -16057,7 +16057,7 @@
           },
           "description": {
             "en": "Summon a Riddling Eye to a spot within Close range of at least one PC. The Riddling Eye asks a PC 3 questions using its “Riddle Me This” feature without spending Fear. Those questions are riddles or trivia questions unless the PC has any Watched tokens, in which case they are personal questions or concerning secrets of theirs.\n- If a PC lies about their secrets, the Riddling Eye can uncover the truth by taking a Watched token. The PC marks a Stress.\n- If a revealed secret causes conflict in the party, the affected PCs can't collaborate on the “Prepare” downtime move until the conflict is resolved.",
-            "ru": "Призовите Око Загадок в точке в Близкой дистанции от хотя бы одного Игрока. Око Загадок задаёт Игроку 3 вопроса, используя свою особенность «Загадай мне» без траты Страха. Эти вопросы являются загадками или вопросами на эрудицию, если только у Игрока нет жетонов Наблюдения — в этом случае они становятся личными вопросами или касаются его тайн.\n- Если Игрок лжёт о своих тайнах, Око Загадок может раскрыть правду, получив жетон Наблюдения. Игрок отмечает Стресс.\n- Если раскрытая тайна вызывает конфликт в отряде, затронутые Игроки не могут сотрудничать в Ходе Отдыха «Подготовка», пока конфликт не будет разрешён."
+            "ru": "Призовите Око Загадок в точке в Средней дистанции от хотя бы одного Игрока. Око Загадок задаёт Игроку 3 вопроса, используя свою особенность «Загадай мне» без траты Страха. Эти вопросы являются загадками или вопросами на эрудицию, если только у Игрока нет жетонов Наблюдения — в этом случае они становятся личными вопросами или касаются его тайн.\n- Если Игрок лжёт о своих тайнах, Око Загадок может раскрыть правду, получив жетон Наблюдения. Игрок отмечает Стресс.\n- Если раскрытая тайна вызывает конфликт в отряде, затронутые Игроки не могут сотрудничать в Ходе Отдыха «Подготовка», пока конфликт не будет разрешён."
           },
           "prompt": {
             "en": "How do you feel to have your secrets pried into? Why do you want this information to remain hidden? What does it feel like to be caught in a lie?",
@@ -16267,7 +16267,7 @@
           },
           "description": {
             "en": "Pick a point within the Valley. All PCs within Close range must succeed on a Strength Reaction Roll or take 2d8+2 physical damage and be Restrained until they clear the condition with a successful Strength Roll. While Restrained, they must mark a Stress each time they roll with Fear.",
-            "ru": "Выберите точку в пределах Долины. Все Игроки в Близкой дистанции должны преуспеть в Броске Реакции на Силу, иначе получат 2d8+2 физического урона и состояние Обездвижен(а), пока не снимут его успешным Броском на Силу. Пока Игрок Обездвижен, он должен отмечать Стресс каждый раз, когда совершает бросок со Страхом."
+            "ru": "Выберите точку в пределах Долины. Все Игроки в Средней дистанции должны преуспеть в Броске Реакции на Силу, иначе получат 2d8+2 физического урона и состояние Обездвижен(а), пока не снимут его успешным Броском на Силу. Пока Игрок Обездвижен, он должен отмечать Стресс каждый раз, когда совершает бросок со Страхом."
           },
           "prompt": {
             "en": "How does the sudden wave of exhaustion feel to you? What motivates you to push through it?",
@@ -18466,7 +18466,7 @@
           },
           "description": {
             "en": "Sparks of lightning from a device strike down on a point of your choice. All targets within Melee range of that point must succeed on an Agility Reaction Roll or take 1d10+2 magic damage.",
-            "ru": "Искры молний от устройства бьют в выбранную вами точку. Все цели в пределах Дистанции Ближнего Боя от этой точки должны совершить успешный Бросок Реакции на Проворность или получить 1d10+2 магического урона."
+            "ru": "Искры молний от устройства бьют в выбранную вами точку. Все цели Вплотную к этой точке должны совершить успешный Бросок Реакции на Проворность или получить 1d10+2 магического урона."
           },
           "prompt": {
             "en": "What is the purpose of these devices? Is there a way to power them down?",
@@ -18543,7 +18543,7 @@
           },
           "description": {
             "en": "Flowers bloom within Melee range of a PC who must immediately succeed on a Knowledge Reaction Roll (12). On a failure, their scent causes the PC to feel as if they are walking through a half-formed dream that dulls their senses and their thresholds are reduced by 2 until their next rest outside of this environment.",
-            "ru": "В пределах Дистанции Ближнего Боя от персонажа расцветают цветы, и он должен немедленно совершить успешный Бросок Реакции на Знание (12). При неудаче их аромат заставляет персонажа почувствовать, будто он бредёт сквозь полусформированный сон, притупляющий чувства, и его пороги урона уменьшаются на 2 до следующего отдыха за пределами этого окружения."
+            "ru": "Вплотную к персонажу расцветают цветы, и он должен немедленно совершить успешный Бросок Реакции на Знание (12). При неудаче их аромат заставляет персонажа почувствовать, будто он бредёт сквозь полусформированный сон, притупляющий чувства, и его пороги урона уменьшаются на 2 до следующего отдыха за пределами этого окружения."
           },
           "prompt": {
             "en": "What illusions do these flowers create? Where might the dreams lead them?",
@@ -18669,7 +18669,7 @@
           },
           "description": {
             "en": "Send loose objects flying at all targets within Close range of a chosen point. All targets within the area must make an Agility Reaction Roll. On a failure, the target takes 2d6 physical damage and loses a Hope. On a success the target takes half damage.",
-            "ru": "Незакреплённые предметы летят во все цели в пределах Близкой дистанции от выбранной точки. Все цели в этой области должны совершить Бросок Реакции на Проворность. При неудаче цель получает 2d6 физического урона и теряет Надежду. При успехе цель получает половину урона."
+            "ru": "Незакреплённые предметы летят во все цели в пределах Средней дистанции от выбранной точки. Все цели в этой области должны совершить Бросок Реакции на Проворность. При неудаче цель получает 2d6 физического урона и теряет Надежду. При успехе цель получает половину урона."
           },
           "prompt": {
             "en": "What objects are in the room? Does one of them offer a clue to a secret of the dwelling?",
@@ -18795,7 +18795,7 @@
           },
           "description": {
             "en": "Spend a Fear to pick a point in the scene. All Merchants and Shoppers within Close range of that point move as a group up to Far range in a single direction. Any targets in their path must mark a Stress and make an Agility or Instinct Reaction Roll. Targets who fail take 1d6+4 physical damage. Targets who succeed take half damage.",
-            "ru": "Потратьте Страх, чтобы выбрать точку на сцене. Все Торговцы и Покупатели в пределах Близкой дистанции от этой точки перемещаются группой на Дальнюю дистанцию в одном направлении. Любые цели на их пути должны отметить Стресс и совершить Бросок Реакции на Проворность или Инстинкт. Цели, провалившие бросок, получают 1d6+4 физического урона. Цели, прошедшие бросок, получают половину урона."
+            "ru": "Потратьте Страх, чтобы выбрать точку на сцене. Все Торговцы и Покупатели в пределах Средней дистанции от этой точки перемещаются группой на Дальнюю дистанцию в одном направлении. Любые цели на их пути должны отметить Стресс и совершить Бросок Реакции на Проворность или Инстинкт. Цели, провалившие бросок, получают 1d6+4 физического урона. Цели, прошедшие бросок, получают половину урона."
           },
           "prompt": {
             "en": "Can the PCs do anything to calm the crowd? What obstacles might make things even more difficult to navigate through the area?",
@@ -18868,7 +18868,7 @@
           },
           "description": {
             "en": "PCs who enter within Close range of the Well can make a Knowledge Roll to try to determine a way to close it.\n• On a Success. They know light is the key. The party must create a number of light sources equal to three times the number of PCs simultaneously within Close range of the Well. A torch counts as one. A magical light source from an item or class feature counts as two. A light source from a domain ability counts as two per level of the card.\n• On a Failure. They know they need light, but how much of it is uncertain. The PC can mark a Stress to repeat the roll with Advantage. If they fail a second time, they must mark another Stress and cannot attempt again.",
-            "ru": "Персонажи, вошедшие в пределы Близкой дистанции от Колодца, могут совершить бросок Знания, чтобы попытаться определить способ его закрыть.\n• **При успехе:** они узнают, что ключ — это свет. Группа должна создать число источников света, равное утроенному числу персонажей, одновременно находящихся в пределах Близкой дистанции от Колодца. Факел считается за один. Магический источник света от предмета или свойства класса считается за два. Источник света от способности карты домена считается за два за каждый уровень карты.\n• **При неудаче:** они узнают, что нужен свет, но неясно, сколько именно. Персонаж может отметить Стресс, чтобы повторить бросок с Преимуществом. Если он проваливает его во второй раз, он должен отметить ещё один Стресс и не может повторить попытку снова."
+            "ru": "Персонажи, вошедшие в пределы Средней дистанции от Колодца, могут совершить бросок Знания, чтобы попытаться определить способ его закрыть.\n• **При успехе:** они узнают, что ключ — это свет. Группа должна создать число источников света, равное утроенному числу персонажей, одновременно находящихся в пределах Средней дистанции от Колодца. Факел считается за один. Магический источник света от предмета или свойства класса считается за два. Источник света от способности карты домена считается за два за каждый уровень карты.\n• **При неудаче:** они узнают, что нужен свет, но неясно, сколько именно. Персонаж может отметить Стресс, чтобы повторить бросок с Преимуществом. Если он проваливает его во второй раз, он должен отметить ещё один Стресс и не может повторить попытку снова."
           },
           "prompt": {
             "en": "Where does the PC’s knowledge come from? Can the Well feel the PC’s attempt to probe its secrets?",
@@ -18883,7 +18883,7 @@
           },
           "description": {
             "en": "Spend 2 Fear to emanate a rolling wave of hopelessness from the Well. 2d4 Shadowspawn appear within Close range of the well and are immediately spotlighted. The Well’s “Mounting Fear” Reaction is also triggered and all non-magical light sources within Far range are extinguished.",
-            "ru": "Потратьте 2 Страха, чтобы от Колодца разошлась накатывающая волна безнадёжности. 2d4 Порождения Тени появляются в пределах Близкой дистанции от колодца и немедленно получают Активацию. Реакция Колодца «Растущий Страх» также срабатывает, и все немагические источники света в пределах Дальней дистанции гаснут."
+            "ru": "Потратьте 2 Страха, чтобы от Колодца разошлась накатывающая волна безнадёжности. 2d4 Порождения Тени появляются в пределах Средней дистанции от колодца и немедленно получают Активацию. Реакция Колодца «Растущий Страх» также срабатывает, и все немагические источники света в пределах Дальней дистанции гаснут."
           },
           "prompt": {
             "en": "What do the PCs think of as this moment of despair washes over them? How will this darkness spread if it isn’t quelled?",
@@ -18989,7 +18989,7 @@
           },
           "description": {
             "en": "Light sources in the cave only reach to a Close range. Any action roll that would require sight is made at disadvantage if the target or the PC are outside of a lit area.",
-            "ru": "Источники света в пещере достигают лишь Близкой дистанции. Любой бросок действия, требующий зрения, совершается с помехой, если цель или персонаж находятся вне освещённой области."
+            "ru": "Источники света в пещере достигают лишь Средней дистанции. Любой бросок действия, требующий зрения, совершается с помехой, если цель или персонаж находятся вне освещённой области."
           },
           "prompt": {
             "en": "Do the PCs have a way to see? Are there traps laid to make use of the lack of light?",
@@ -19117,7 +19117,7 @@
           },
           "description": {
             "en": "A stampede of woodland creatures rush through the area away from the blaze. All targets within Close range of their path must make a Strength or Agility Reaction Roll. Targets who fail take 2d12+2 physical damage. Those who succeed must mark a Stress.",
-            "ru": "Стадо лесных существ мчится через местность прочь от пожара. Все цели в пределах Близкой дистанции от их пути должны совершить Бросок Реакции на Силу или Проворность. Цели, провалившие бросок, получают 2d12+2 физического урона. Преуспевшие должны отметить Стресс."
+            "ru": "Стадо лесных существ мчится через местность прочь от пожара. Все цели в пределах Средней дистанции от их пути должны совершить Бросок Реакции на Силу или Проворность. Цели, провалившие бросок, получают 2d12+2 физического урона. Преуспевшие должны отметить Стресс."
           },
           "prompt": {
             "en": "What creatures are a part of this group? Can the PCs take cover to avoid the onslaught?",
@@ -19213,7 +19213,7 @@
           },
           "description": {
             "en": "The fire begins the event at Very Far range in a direction of the GM’s choosing. When the Grove Guardian begins the ritual, the party must complete a Progress Countdown (8), but only rolls within Close range of the Guardian count toward the progress. When the countdown triggers, heavy clouds roll in and begin to shower substantial rain in the area.",
-            "ru": "Пожар начинает событие на Очень Дальней дистанции в направлении, выбранном Мастером. Когда Страж Рощи начинает ритуал, группа должна завершить Отсчёт Прогресса (8), но только броски в пределах Близкой дистанции от Стража засчитываются в прогресс. Когда отсчёт срабатывает, надвигаются тяжёлые тучи и начинают проливать в этой области обильный дождь."
+            "ru": "Пожар начинает событие на Очень Дальней дистанции в направлении, выбранном Мастером. Когда Страж Рощи начинает ритуал, группа должна завершить Отсчёт Прогресса (8), но только броски в пределах Средней дистанции от Стража засчитываются в прогресс. Когда отсчёт срабатывает, надвигаются тяжёлые тучи и начинают проливать в этой области обильный дождь."
           },
           "prompt": {
             "en": "What does the Guardian say or do to encourage the PCs to remain close? How do the skies change while the ritual is being performed?",
@@ -19382,7 +19382,7 @@
           },
           "description": {
             "en": "Spend a Fear to introduce a Wish Spirit Knot, which appears at Close distance and takes the spotlight.",
-            "ru": "Потратьте Страх, чтобы ввести Узел Духов Желаний, который появляется на Близкой дистанции и получает Активацию."
+            "ru": "Потратьте Страх, чтобы ввести Узел Духов Желаний, который появляется на Средней дистанции и получает Активацию."
           },
           "prompt": {
             "en": "What contradictory wishes attracted the Wish Spirit Knot? How can you tell that the cluster of spirits is confused?",
@@ -19397,7 +19397,7 @@
           },
           "description": {
             "en": "When a PC makes a wish and hangs a token on the tree, introduce a Wish Spirit, which appears within Close distance and takes the spotlight.",
-            "ru": "Когда персонаж загадывает желание и вешает жетон на дерево, введите Духа Желаний, который появляется на Близкой дистанции и получает Активацию."
+            "ru": "Когда персонаж загадывает желание и вешает жетон на дерево, введите Духа Желаний, который появляется на Средней дистанции и получает Активацию."
           },
           "prompt": {
             "en": "How does it approach the token? How does the glade react to the appearance of the spirit? Does wind cause the branches and leaves to ripple? Does the air grow cool yet comforting?",
@@ -19491,7 +19491,7 @@
           },
           "description": {
             "en": "The Forest is filled with magic that turns even the most mundane thing into a twisted effigy of the hag’s predilections. Spend a Fear and choose the appropriate manifestation of the hag’s totem and narrate the discovery of it. All targets within Close range of the totem must succeed on a Presence Reaction Roll. Targets that fail mark a Stress.",
-            "ru": "Лес наполнен магией, превращающей даже самую обыденную вещь в искажённое изваяние прихотей ведьмы. Потратьте Страх и выберите подходящее воплощение тотема ведьмы, затем опишите его обнаружение. Все цели в пределах Близкой дистанции от тотема должны совершить успешный Бросок Реакции на Влияние. Провалившие его цели отмечают Стресс."
+            "ru": "Лес наполнен магией, превращающей даже самую обыденную вещь в искажённое изваяние прихотей ведьмы. Потратьте Страх и выберите подходящее воплощение тотема ведьмы, затем опишите его обнаружение. Все цели в пределах Средней дистанции от тотема должны совершить успешный Бросок Реакции на Влияние. Провалившие его цели отмечают Стресс."
           },
           "prompt": {
             "en": "What shape do these totems take? What fears might the totems uncover in the PCs?",
@@ -19506,7 +19506,7 @@
           },
           "description": {
             "en": "Spend a Fear to summon a Dullahan, Lindwyrm, or similar Tier 2 adversary that appears within Close range of the PCs and immediately takes the spotlight. This creature may be a guardian or a warning to the party.",
-            "ru": "Потратьте Страх, чтобы призвать Дуллахана, Линдвирма или похожего противника 2 ранга, который появляется в пределах Близкой дистанции от персонажей и немедленно получает Активацию. Это существо может быть стражем или предостережением для группы."
+            "ru": "Потратьте Страх, чтобы призвать Дуллахана, Линдвирма или похожего противника 2 ранга, который появляется в пределах Средней дистанции от персонажей и немедленно получает Активацию. Это существо может быть стражем или предостережением для группы."
           },
           "prompt": {
             "en": "What messages might the spirit convey? How are they representative of the hag?",
@@ -19628,7 +19628,7 @@
           },
           "description": {
             "en": "Spend a Fear to make a life changing offer to a PC within Close range. A PC who accepts the deal gains a version of the deal that is twisted in some way that may not be immediately apparent. The Hag summons a Totem of Fear, designating the PC as the doppelganger. A PC who refuses the deal must succeed on a Presence Reaction Roll or mark 2 Stress.",
-            "ru": "Потратьте Страх, чтобы сделать персонажу в пределах Близкой дистанции судьбоносное предложение. Персонаж, принявший сделку, получает версию сделки, искажённую каким-то не сразу заметным образом. Ведьма призывает Тотем Страха, назначая персонажа двойником. Персонаж, отказавшийся от сделки, должен совершить успешный Бросок Реакции на Влияние или отметить 2 Стресса."
+            "ru": "Потратьте Страх, чтобы сделать персонажу в пределах Средней дистанции судьбоносное предложение. Персонаж, принявший сделку, получает версию сделки, искажённую каким-то не сразу заметным образом. Ведьма призывает Тотем Страха, назначая персонажа двойником. Персонаж, отказавшийся от сделки, должен совершить успешный Бросок Реакции на Влияние или отметить 2 Стресса."
           },
           "prompt": {
             "en": "What way does the hag twist the deal? What do they take from the PC that makes it?",
@@ -19997,7 +19997,7 @@
           },
           "description": {
             "en": "Countdown (6). When the PCs enter the scene, activate the countdown. It ticks down as described in the features above. When it triggers, all PCs in the scene lose a Hope. Summon an EREN and two Hover turrets within Close range of the triggering PC.",
-            "ru": "Отсчёт (6). Когда персонажи входят на сцену, активируйте отсчёт. Он уменьшается, как описано в свойствах выше. Когда он срабатывает, все персонажи на сцене теряют Надежду. Призовите ЭРЕНа и двух Турелей Парения в пределах Близкой дистанции от спровоцировавшего это персонажа."
+            "ru": "Отсчёт (6). Когда персонажи входят на сцену, активируйте отсчёт. Он уменьшается, как описано в свойствах выше. Когда он срабатывает, все персонажи на сцене теряют Надежду. Призовите ЭРЕНа и двух Турелей Парения в пределах Средней дистанции от спровоцировавшего это персонажа."
           },
           "prompt": {
             "en": "What sorts of defense systems are there in the Conduit? How many of them are still fully operational?",
@@ -20070,7 +20070,7 @@
           },
           "description": {
             "en": "Spend a Fear to send a frozen blast of ice through a point of your choice. All targets within Close range must succeed on a Strength Reaction Roll or take 3d4 direct magical damage.",
-            "ru": "Потратьте Страх, чтобы послать замороженный ледяной порыв через выбранную вами точку. Все цели в пределах Близкой дистанции должны совершить успешный Бросок Реакции на Силу или получить 3d4 прямого магического урона."
+            "ru": "Потратьте Страх, чтобы послать замороженный ледяной порыв через выбранную вами точку. Все цели в пределах Средней дистанции должны совершить успешный Бросок Реакции на Силу или получить 3d4 прямого магического урона."
           },
           "prompt": {
             "en": "Where is the wind originating from? Is there a way for the PCs to shield themselves from it?",
@@ -20590,7 +20590,7 @@
           },
           "description": {
             "en": "Spend a Fear to ambush the party. Two Scythicant Sentinels burst from the walls in Close range of the PCs and immediately take the spotlight. Start a Countdown (8). If the countdown reaches 0 before the scene ends, summon two Cilrathi Queensguard riding Waspwyrms who appear at Far range.",
-            "ru": "Потратьте Страх, чтобы устроить засаду на группу. Два Часовых-Косокрыла вырываются из стен в пределах Близкой дистанции от персонажей и немедленно получают Активацию. Начните Отсчёт (8). Если отсчёт достигает 0 до конца сцены, призовите двух Стражниц Королевы Цилрати, скачущих на Осодраках, которые появляются на Дальней дистанции."
+            "ru": "Потратьте Страх, чтобы устроить засаду на группу. Два Часовых-Косокрыла вырываются из стен в пределах Средней дистанции от персонажей и немедленно получают Активацию. Начните Отсчёт (8). Если отсчёт достигает 0 до конца сцены, призовите двух Стражниц Королевы Цилрати, скачущих на Осодраках, которые появляются на Дальней дистанции."
           },
           "prompt": {
             "en": "Where might this ambush take place? What environmental hazards might also be found?",
@@ -20708,7 +20708,7 @@
           },
           "description": {
             "en": "Spend a Fear to summon 1d4 Xeralyth Dragoons who appear within Melee range of the portal. PCs within Far range either mark a Stress or lose a Hope.",
-            "ru": "Потратьте Страх, чтобы призвать 1d4 Драгунов Ксералитов, которые появляются в пределах Дистанции Ближнего Боя от портала. Персонажи в пределах Дальней дистанции либо отмечают Стресс, либо теряют Надежду."
+            "ru": "Потратьте Страх, чтобы призвать 1d4 Драгунов Ксералитов, которые появляются Вплотную к порталу. Персонажи в пределах Дальней дистанции либо отмечают Стресс, либо теряют Надежду."
           },
           "prompt": {
             "en": "How do the PCs feel upon seeing more adversaries appear on the battlefield?",
@@ -20723,7 +20723,7 @@
           },
           "description": {
             "en": "When the Queen takes Major or greater damage, waves of floating, explosive, tentacled blobs fly out from the portal toward all targets within Close range. Targets must make an Agility Reaction Roll, taking 3d8 physical damage on a failure. Targets who succeed take half damage.",
-            "ru": "Когда Королева получает Ощутимый или больший урон, волны парящих, взрывающихся, щупальцевых сгустков вылетают из портала во все цели в пределах Близкой дистанции. Цели должны совершить Бросок Реакции на Проворность, получая при неудаче 3d8 физического урона. Преуспевшие цели получают половину урона."
+            "ru": "Когда Королева получает Ощутимый или больший урон, волны парящих, взрывающихся, щупальцевых сгустков вылетают из портала во все цели в пределах Средней дистанции. Цели должны совершить Бросок Реакции на Проворность, получая при неудаче 3d8 физического урона. Преуспевшие цели получают половину урона."
           },
           "prompt": {
             "en": "What do the jelly bombs look like? What happens when they explode?",
@@ -21119,7 +21119,7 @@
           },
           "description": {
             "en": "The characters might find a cache of 1d6 sandalwood logs on the edge of the grove, which the butterflies do not touch. The swarm doesn’t enter Melee range with a character holding or standing next to a burning log.",
-            "ru": "Персонажи могут найти на краю рощи тайник из 1d6 сандаловых брёвен, которых бабочки не касаются. Рой не входит в Дистанцию Ближнего Боя с персонажем, держащим горящее бревно или стоящим рядом с ним."
+            "ru": "Персонажи могут найти на краю рощи тайник из 1d6 сандаловых брёвен, которых бабочки не касаются. Рой не приближается Вплотную к персонажу, держащему горящее бревно или стоящему рядом с ним."
           },
           "prompt": {
             "en": "How hidden is this cache? Are any fey hunters in the area who might come to the characters’ aid or witness them harming the butterflies?",
@@ -21417,7 +21417,7 @@
           },
           "description": {
             "en": "Start a Mounted Pursuit Countdown (6). This die ticks down whenever a PC succeeds on an action roll to catch the train. When the countdown is above 3, the PCs are considered to be at Very Far range for the purposes of attack and spellcast rolls. When the countdown is 3 or lower, the PCs can choose to be anywhere from Far to Close range of the train. If this countdown triggers before the Getaway Train Countdown, the PCs must succeed on a Strength Reaction Roll or they mark a Stress, as they leap onto the train… and likely into a gunfight with these outlaws.",
-            "ru": "Начните Отсчёт Погони Верхом (6). Эта кость уменьшается каждый раз, когда персонаж преуспевает в броске действия, чтобы догнать поезд. Пока отсчёт выше 3, персонажи считаются находящимися на Очень Дальней дистанции для целей бросков атаки и заклинания. Когда отсчёт равен 3 или ниже, персонажи могут выбрать любую дистанцию от Дальней до Близкой от поезда. Если этот отсчёт срабатывает раньше Отсчёта Поезда Беглецов, персонажи должны совершить успешный Бросок Реакции на Силу или отметить Стресс, запрыгивая на поезд… и, вероятно, попадая в перестрелку с этими разбойниками."
+            "ru": "Начните Отсчёт Погони Верхом (6). Эта кость уменьшается каждый раз, когда персонаж преуспевает в броске действия, чтобы догнать поезд. Пока отсчёт выше 3, персонажи считаются находящимися на Очень Дальней дистанции для целей бросков атаки и заклинания. Когда отсчёт равен 3 или ниже, персонажи могут выбрать любую дистанцию от Дальней до Средней от поезда. Если этот отсчёт срабатывает раньше Отсчёта Поезда Беглецов, персонажи должны совершить успешный Бросок Реакции на Силу или отметить Стресс, запрыгивая на поезд… и, вероятно, попадая в перестрелку с этими разбойниками."
           },
           "prompt": {
             "en": "What landscape surrounds the train tracks? What environmental tools might the PCs employ along the way to get an edge on the outlaws?",
@@ -22154,7 +22154,7 @@
           },
           "description": {
             "en": "Spend a Fear to make all PCs with a Spellcast trait make a Reaction Roll using that trait. On a failure, they roll a d4 and trigger one of these effects depending on their result:\n- **1.** They take 3d6+3 magic damage.\n- **2.** They cannot use any spells until they leave this environment.\n- **3.** A Minor Chaos Elemental appears and attacks.\n- **4.** They become a conduit, and every creature within Close range takes 3d6+3 magic damage.",
-            "ru": "Потратьте Страх, чтобы все персонажи с чертой Заклинателя совершили Бросок Реакции этой чертой. При неудаче они бросают d4 и запускают один из следующих эффектов в зависимости от результата:\n- **1.** Они получают 3d6+3 магического урона.\n- **2.** Они не могут использовать никакие заклинания, пока не покинут это окружение.\n- **3.** Появляется Малый Элементаль Хаоса и атакует.\n- **4.** Они становятся проводником, и каждое существо в пределах Близкой дистанции получает 3d6+3 магического урона."
+            "ru": "Потратьте Страх, чтобы все персонажи с чертой Заклинателя совершили Бросок Реакции этой чертой. При неудаче они бросают d4 и запускают один из следующих эффектов в зависимости от результата:\n- **1.** Они получают 3d6+3 магического урона.\n- **2.** Они не могут использовать никакие заклинания, пока не покинут это окружение.\n- **3.** Появляется Малый Элементаль Хаоса и атакует.\n- **4.** Они становятся проводником, и каждое существо в пределах Средней дистанции получает 3d6+3 магического урона."
           },
           "prompt": {
             "en": "",
@@ -23116,7 +23116,7 @@
           },
           "description": {
             "en": "Summon 3 SKY Fighters that appear within Close Range of a PC vehicle. Spotlight one of them.",
-            "ru": "Призовите 3 Небесных Истребителя, которые появляются в пределах Близкой дистанции от транспорта персонажа. Дайте Активацию одному из них."
+            "ru": "Призовите 3 Небесных Истребителя, которые появляются в пределах Средней дистанции от транспорта персонажа. Дайте Активацию одному из них."
           },
           "prompt": {
             "en": "Where did these fighters come from?",
@@ -23495,7 +23495,7 @@
           },
           "description": {
             "en": "When a character (PC or adversary) makes a successful attack, they may Mark a Stress to force the target to make a Reaction Roll (14) or fall. Roll 1d3 to determine the result: the target suffers 2d8, 3d8, or 4d8 additional damage respectively, falling a corresponding distance (Very Close, Close, or Far).",
-            "ru": "Когда персонаж (игровой или противник) совершает успешную атаку, он может отметить Стресс, чтобы заставить цель совершить Бросок Реакции (14), иначе упасть. Бросьте 1d3, чтобы определить результат: цель получает дополнительно 2d8, 3d8 или 4d8 урона соответственно, падая на соответствующее расстояние (Очень Близкое, Близкое или Дальнее)."
+            "ru": "Когда персонаж (игровой или противник) совершает успешную атаку, он может отметить Стресс, чтобы заставить цель совершить Бросок Реакции (14), иначе упасть. Бросьте 1d3, чтобы определить результат: цель получает дополнительно 2d8, 3d8 или 4d8 урона соответственно, падая на соответствующее расстояние (Очень Близкое, Среднее или Дальнее)."
           },
           "prompt": {
             "en": "What stops their fall? Does the change in level help them—or put them in a compromised position?",
@@ -24700,7 +24700,7 @@
           },
           "description": {
             "en": "The base is a tight maze, unless inside the Armor Depot, characters cannot see each other (except on a camera) at farther than Close Range. Unless the PCs have a map or schematic, the GM can spend a Fear when the PCs move through the base to have them arrive at an inconvenient location.",
-            "ru": "База — это тесный лабиринт: за исключением Оружейного Склада, персонажи не видят друг друга (кроме как по камере) дальше Близкой дистанции. Если у персонажей нет карты или схемы, Мастер может потратить Страх, когда персонажи перемещаются по базе, чтобы они оказались в неудобном месте."
+            "ru": "База — это тесный лабиринт: за исключением Оружейного Склада, персонажи не видят друг друга (кроме как по камере) дальше Средней дистанции. Если у персонажей нет карты или схемы, Мастер может потратить Страх, когда персонажи перемещаются по базе, чтобы они оказались в неудобном месте."
           },
           "prompt": {
             "en": "How might the PCs acquire a map or schematic? What kinds of inconvenient locations might the PCs find themselves in?",
@@ -24980,7 +24980,7 @@
           },
           "description": {
             "en": "Spend a Fear to summon a number of Mark IV Battle Bots equal to the number of PCs, a Tac-Bot, a Shot- Bot, and an Interdiction Bot. These appear at Close range of a chosen PC. The Tac-Bot immediately gains the spotlight.",
-            "ru": "Потратьте Страх, чтобы призвать число Боевых Ботов Марк IV, равное числу персонажей, а также Так-Бота, Бот-Стрелка и Бот-Перехватчика. Они появляются в пределах Близкой дистанции от выбранного персонажа. Так-Бот немедленно получает Активацию."
+            "ru": "Потратьте Страх, чтобы призвать число Боевых Ботов Марк IV, равное числу персонажей, а также Так-Бота, Бот-Стрелка и Бот-Перехватчика. Они появляются в пределах Средней дистанции от выбранного персонажа. Так-Бот немедленно получает Активацию."
           },
           "prompt": {
             "en": "Do these bots appear in familiar form, or is their design, ancient, alien, or both? How do the bots arrive? Do trap doors open around the PCs? Do secret doors open in the walls? Are the PCs dropped into a battle arena?",
@@ -25452,7 +25452,7 @@
           },
           "description": {
             "en": "There are many ways that characters can gain a height advantage or reposition during a battle on the ship. Any character can escape to a Close distance vertically with an Agility (14) roll. All attacks made from the rigging or from height gained by climbing around the ship are made with advantage.",
-            "ru": "Есть много способов, которыми персонажи могут получить преимущество по высоте или сменить позицию во время боя на корабле. Любой персонаж может подняться на Близкую дистанцию по вертикали броском на Проворность (14). Все атаки, совершённые с такелажа или с высоты, набранной при лазании по кораблю, совершаются с преимуществом."
+            "ru": "Есть много способов, которыми персонажи могут получить преимущество по высоте или сменить позицию во время боя на корабле. Любой персонаж может подняться на Среднюю дистанцию по вертикали броском на Проворность (14). Все атаки, совершённые с такелажа или с высоты, набранной при лазании по кораблю, совершаются с преимуществом."
           },
           "prompt": {
             "en": "What are the sailors in the tops doing during the fight? What is there to climb on and swing from?",
@@ -26256,7 +26256,7 @@
           },
           "description": {
             "en": "Make an attack against a target within Close range. On a success, deal 1d8+4 phy damage and pull the target into melee.",
-            "ru": "Совершите атаку по цели в Ближней дистанции. При успехе нанесите 1d8+4 физ. урона и притяните цель в ближний бой."
+            "ru": "Совершите атаку по цели в Средней дистанции. При успехе нанесите 1d8+4 физ. урона и притяните цель в ближний бой."
           },
           "prompt": {
             "en": "How would the bandits notice the brambles have been disturbed? How did the wall get there—do they have a druid or ranger among their number?",
@@ -26570,7 +26570,7 @@
           },
           "description": {
             "en": "The Tavern holds the last morsels of the World Before. These strange wares can temporarily alter mortals who consume them, for better or worse. Each time the party visits the bar, they may open a Party Tab, and each character may choose one item from the list below:\n- **The Crypt Sleeper:** This icy liquid, when consumed, causes a mist to appear within Close range. All undead who enter this mist temporarily fall asleep until freed. This effect lasts until the drinker takes a Downtime Move.\n- **The Rusty Blade:** This primordial stew, when consumed, causes all non-magical blades that strike the drinker to become Rusty (2). While Rusty, each subsequent attack with that blade causes the countdown to decrease. At 0, the blade is useless until repaired.\n- **The Lucky Bastard:** This golden liquid, when consumed, grants the drinker an additional Hope Feature: Spend 3 Hope to turn a failed roll into a success. However, the next roll made by the party is made with Disadvantage. You retain this feature until the GM says, \"Drinks on Me.\"\n- **The Triple Threat:** This trio of appetizers can be shared among up to three characters. When consumed, those players grant each other a +1 bonus to Action Rolls and Evasion while in Very Close range of one another. This boon lasts until any of the consumers takes a Downtime Move.",
-            "ru": "Таверна хранит последние крохи Старого Мира. Эти странные яства способны временно изменять смертных, которые их отведают, — как в лучшую, так и в худшую сторону. Каждый раз, когда отряд посещает бар, участники могут открыть Общий счёт, и каждый персонаж может выбрать один пункт из списка ниже:\n- **Спящий в склепе:** Этот ледяной напиток при употреблении вызывает туман в Ближней дистанции. Вся нежить, вошедшая в этот туман, временно «засыпает», пока её не освободят. Эффект длится, пока пьющий не совершит Ход Отдыха.\n- **Ржавый клинок:** Это первобытное рагу при употреблении делает так, что немагическое оружие, поразившее пьющего, становится Ржавым (2). Пока клинок Ржавый, каждая последующая атака им уменьшает отсчёт. При 0 клинок бесполезен, пока его не отремонтируют.\n- **Везучий ублюдок:** Этот золотистый напиток при употреблении даёт пьющему дополнительную способность Надежды: потратьте 3 Надежды, чтобы превратить провальный бросок в успешный. Однако следующий бросок отряда совершается с помехой. Способность сохраняется, пока Мастер не скажет: «Всем налито за мой счёт».\n- **Тройная угроза:** Это трио закусок можно разделить между тремя персонажами. Употребив их, эти игроки дают друг другу бонус +1 к броскам действия и Уклонению, пока находятся в Очень близкой дистанции друг от друга. Этот эффект длится, пока кто-то из них не совершит Ход Отдыха."
+            "ru": "Таверна хранит последние крохи Старого Мира. Эти странные яства способны временно изменять смертных, которые их отведают, — как в лучшую, так и в худшую сторону. Каждый раз, когда отряд посещает бар, участники могут открыть Общий счёт, и каждый персонаж может выбрать один пункт из списка ниже:\n- **Спящий в склепе:** Этот ледяной напиток при употреблении вызывает туман в Средней дистанции. Вся нежить, вошедшая в этот туман, временно «засыпает», пока её не освободят. Эффект длится, пока пьющий не совершит Ход Отдыха.\n- **Ржавый клинок:** Это первобытное рагу при употреблении делает так, что немагическое оружие, поразившее пьющего, становится Ржавым (2). Пока клинок Ржавый, каждая последующая атака им уменьшает отсчёт. При 0 клинок бесполезен, пока его не отремонтируют.\n- **Везучий ублюдок:** Этот золотистый напиток при употреблении даёт пьющему дополнительную способность Надежды: потратьте 3 Надежды, чтобы превратить провальный бросок в успешный. Однако следующий бросок отряда совершается с помехой. Способность сохраняется, пока Мастер не скажет: «Всем налито за мой счёт».\n- **Тройная угроза:** Это трио закусок можно разделить между тремя персонажами. Употребив их, эти игроки дают друг другу бонус +1 к броскам действия и Уклонению, пока находятся в Очень Близкой дистанции друг от друга. Этот эффект длится, пока кто-то из них не совершит Ход Отдыха."
           },
           "prompt": {
             "en": "What strange delicacy catches the party's eye tonight? What do they give up to indulge?",
@@ -27135,7 +27135,7 @@
           },
           "description": {
             "en": "Any time a Greater Water Elemental uses High Tide while another Greater Water Elemental is within Close of it, the knockback effect can extend to any distance within Close of any Greater Water Elemental. This can chain multiple times; only 1 in the chain marks Stress.",
-            "ru": "Каждый раз, когда Великий Водный Элементаль использует «Высокий Прилив», пока другой Великий Водный Элементаль находится в пределах Близкой дистанции от него, эффект отбрасывания может распространиться на любое расстояние в пределах Близкой дистанции от любого Великого Водного Элементаля. Это может повторяться цепочкой несколько раз; только один участник цепочки отмечает Стресс."
+            "ru": "Каждый раз, когда Великий Водный Элементаль использует «Высокий Прилив», пока другой Великий Водный Элементаль находится в пределах Средней дистанции от него, эффект отбрасывания может распространиться на любое расстояние в пределах Средней дистанции от любого Великого Водного Элементаля. Это может повторяться цепочкой несколько раз; только один участник цепочки отмечает Стресс."
           }
         },
         {
@@ -27520,7 +27520,7 @@
           },
           "description": {
             "en": "Spend a Fear to have a cackling, winged Minor Demon materialize within Close of the furthest ahead PC. They make cryptic allusions to the party’s secrets, especially those kept from one another, and attempt to egg them on into conflict between one another. It keeps going until it’s clearly unsuccessful or something delectable fraught has happened between the PCs, at which point it attacks.",
-            "ru": "Потратьте Страх, чтобы хохочущий крылатый Малый Демон материализовался в пределах Близкой дистанции от персонажа, идущего дальше всех вперёд. Он делает загадочные намёки на секреты отряда, особенно те, что скрыты друг от друга, и пытается стравить их между собой. Он продолжает, пока это явно не терпит неудачи или между персонажами не произойдёт что-то воистину пикантное, после чего он нападает."
+            "ru": "Потратьте Страх, чтобы хохочущий крылатый Малый Демон материализовался в пределах Средней дистанции от персонажа, идущего дальше всех вперёд. Он делает загадочные намёки на секреты отряда, особенно те, что скрыты друг от друга, и пытается стравить их между собой. Он продолжает, пока это явно не терпит неудачи или между персонажами не произойдёт что-то воистину пикантное, после чего он нападает."
           },
           "prompt": {
             "en": "What does it know about the PCs, and how? Is it here as a challenge or acting on its own?",
@@ -28873,7 +28873,7 @@
           },
           "description": {
             "en": "When any party member is away from the main market tents of Undermarket, you can spend a Fear to introduce a hit squad of bandits that are trying to take them out—either kidnapping or killing one or more PCs. The killers should appear around a corner (Close range); select a mix of Jagged Knife Bandits for the encounter, and consider leaving a Sniper across a canal gap from the party’s position.",
-            "ru": "Когда кто-то из отряда отдаляется от главных торговых шатров Подрынка, вы можете потратить Страх, чтобы ввести отряд убийц, пытающихся устранить их — похитив или убив одного или нескольких персонажей. Убийцы должны появиться из-за угла (на Близкой дистанции); выберите смесь Бандитов из «Зазубренного ножа» для этой встречи, и подумайте о том, чтобы оставить Снайпера на другой стороне канала от позиции отряда."
+            "ru": "Когда кто-то из отряда отдаляется от главных торговых шатров Подрынка, вы можете потратить Страх, чтобы ввести отряд убийц, пытающихся устранить их — похитив или убив одного или нескольких персонажей. Убийцы должны появиться из-за угла (на Средней дистанции); выберите смесь Бандитов из «Зазубренного ножа» для этой встречи, и подумайте о том, чтобы оставить Снайпера на другой стороне канала от позиции отряда."
           },
           "prompt": {
             "en": "Who hired these killers, and why? And is there any way for the party to collect the reward... on themselves?",
@@ -29091,7 +29091,7 @@
           },
           "description": {
             "en": "Spend a Fear to summon a swarm of Giant Mosquitoes within Close range of a chosen PC. They appear in or near the water and immediately take the spotlight.",
-            "ru": "Потратьте Страх, чтобы призвать рой Гигантских Комаров в Близкой дистанции от выбранного персонажа. Они появляются в воде или рядом с ней и немедленно получают Активацию."
+            "ru": "Потратьте Страх, чтобы призвать рой Гигантских Комаров в Средней дистанции от выбранного персонажа. Они появляются в воде или рядом с ней и немедленно получают Активацию."
           }
         },
         {
@@ -29438,7 +29438,7 @@
           },
           "description": {
             "en": "All Agility Reaction Rolls, and Agility Rolls to move further than Close, are at Disadvantage.",
-            "ru": "Все Броски Реакции на Проворность, а также Броски Проворности для перемещения дальше Близкой дистанции, совершаются с Помехой."
+            "ru": "Все Броски Реакции на Проворность, а также Броски Проворности для перемещения дальше Средней дистанции, совершаются с Помехой."
           },
           "prompt": {
             "en": "Does this terrain impede certain types of abilities and movement? Is the weather a major factor? Can either be circumvented?",
