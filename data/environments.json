@@ -29393,6 +29393,125 @@
         "underground"
       ],
       "source": "Fractus, the Broken World: Free Preview"
+    },
+    {
+      "id": "perilous-cliff",
+      "tier": 3,
+      "type": "traversal",
+      "difficulty": 16,
+      "name": {
+        "en": "Perilous Cliff",
+        "ru": "Опасный Утёс"
+      },
+      "lore": {
+        "en": "A windswept cliff high above jagged rocks and frigid waters.",
+        "ru": "Продуваемый ветром утёс высоко над зазубренными скалами и ледяными водами."
+      },
+      "impulses": {
+        "en": [
+          "toss off",
+          "hold up",
+          "lead along"
+        ],
+        "ru": [
+          "сбрасывать",
+          "задерживать",
+          "заманивать"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Adult Flickerfly",
+          "Demons (Hubris, Avarice, Despair, Wrath, Jealousy)"
+        ],
+        "ru": [
+          "Взрослая Мерцекрылка",
+          "Демоны (Гордыня, Алчность, Уныние, Гнев, Зависть)"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Perilous Slope",
+            "ru": "Опасный Склон"
+          },
+          "description": {
+            "en": "All Agility Reaction Rolls, and Agility Rolls to move further than Close, are at Disadvantage.",
+            "ru": "Все Броски Реакции на Проворность, а также Броски Проворности для перемещения дальше Близкой дистанции, совершаются с Помехой."
+          },
+          "prompt": {
+            "en": "Does this terrain impede certain types of abilities and movement? Is the weather a major factor? Can either be circumvented?",
+            "ru": "Мешает ли эта местность определённым видам способностей и передвижению? Является ли погода важным фактором? Можно ли обойти то или другое?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Storm Surge",
+            "ru": "Штормовой Прилив"
+          },
+          "description": {
+            "en": "Countdown (Loop 1d4). Activate the countdown. When it triggers, all PCs must succeed on a Strength or Agility Reaction Roll or be knocked to the edge of the cliff and become Vulnerable. A successful Strength Roll is necessary to hoist them back up and end the condition. If anything causes them to mark a Hit Point while still Vulnerable, they plummet to the waters below—taking 4d10 direct physical damage against the rocks below.",
+            "ru": "Отсчёт (Цикл 1d4). Активируйте отсчёт. Когда он срабатывает, все персонажи должны преуспеть в Броске Реакции на Силу или Проворность, иначе их сбивает к краю утёса, и они становятся Уязвимы. Чтобы поднять их обратно и снять это состояние, необходим успешный Бросок Силы. Если что-либо вынуждает их отметить Рану, пока они всё ещё Уязвимы, они срываются вниз к воде, получая 4d10 прямого физического урона о камни внизу."
+          },
+          "prompt": {
+            "en": "Is this a natural storm, or driven by some unseen force?",
+            "ru": "Это естественная буря, или её вызывает некая незримая сила?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Predator Above",
+            "ru": "Хищник Сверху"
+          },
+          "description": {
+            "en": "Spend a Fear to summon an Adult Flickerfly; it pursues the PCs as its prey.",
+            "ru": "Потратьте Страх, чтобы призвать Взрослую Мерцекрылку; она преследует персонажей как свою добычу."
+          },
+          "prompt": {
+            "en": "Does the wind buffet it back, or can it ride the storm to move swifter? How did it find the PCs?",
+            "ru": "Отбрасывает ли её ветер назад, или она может оседлать бурю, чтобы двигаться быстрее? Как она нашла персонажей?"
+          }
+        }
+      ],
+      "story_seeds": [
+        {
+          "title": {
+            "en": "Demon at the Edge",
+            "ru": "Демон на Краю"
+          },
+          "body": {
+            "en": "The party's dreams are haunted by visions of demons on a cliff. After comparing details and local maps, they realize all their dreams match up with one remote cliff...",
+            "ru": "Отряду снятся видения демонов на утёсе. Сравнив детали снов и местные карты, они понимают, что все их сны сходятся на одном отдалённом утёсе..."
+          },
+          "prompt": {
+            "en": "Are they summoned specifically, or have many been drawn here? What befell those who came first?",
+            "ru": "Их призвали намеренно, или сюда стянулось множество демонов? Что случилось с теми, кто пришёл первым?"
+          }
+        },
+        {
+          "title": {
+            "en": "Perilous Hunt",
+            "ru": "Опасная Охота"
+          },
+          "body": {
+            "en": "A terrible creature has been sighted: an Adult Flickerfly. A creature imbued with rare reagents and a vicious temperament, it is a significant blight upon the region and impacts safe travel. Local authorities have posted a bounty to hunt this monster: 1 bag of gold for each PC on a successful kill, 2 bags for a successful capture—a local alchemist believes that they can divine a more efficient way to deter and fight the beasts with a live specimen to experiment upon.",
+            "ru": "Замечено ужасное существо — Взрослая Мерцекрылка. Наделённая редкими реагентами и свирепым нравом, она стала серьёзным бедствием для региона и мешает безопасным путешествиям. Местные власти назначили награду за охоту на это чудовище: 1 мешок золота за каждого персонажа при успешном убийстве, 2 мешка — при успешном захвате живьём. Местный алхимик уверен, что сможет найти более действенный способ отпугивать этих тварей и сражаться с ними, если получит живой экземпляр для опытов."
+          },
+          "prompt": {
+            "en": "Who is this alchemist, and do they truly have pure intentions? What items could the party make with the reagents if they kept the corpse for themselves? Is the party in the good graces of the authority and offered this job before anyone else, or are they trying to get back into their good graces with a dangerous slog job?",
+            "ru": "Кто этот алхимик, и вправду ли его намерения чисты? Какие предметы отряд мог бы изготовить из реагентов, если оставит труп себе? Пользуется ли отряд расположением властей и получил это задание первым, или же пытается вернуть их расположение, взявшись за опасную, изнурительную работу?"
+          }
+        }
+      ],
+      "builtin": true,
+      "biomes": [
+        "mountain",
+        "aquatic"
+      ],
+      "source": "Resting Dagger"
     }
   ]
 }

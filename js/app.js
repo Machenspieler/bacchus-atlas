@@ -621,7 +621,7 @@ function potentialAdversaryEntryHtml(localizedText, englishText) {
 /* Cache buster for the JSON under data/. index.html versions the stylesheet and
    this script the same way; the data files are fetched from here instead, so
    bump this whenever anything in data/ changes or browsers serve stale copies. */
-const DATA_VERSION = 69;
+const DATA_VERSION = 70;
 
 function getJSON(path) {
   return fetch(path).then(r => {
