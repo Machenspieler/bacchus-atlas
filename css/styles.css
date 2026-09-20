@@ -657,6 +657,9 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
 .card-open {
   all: unset; cursor: pointer; display: inline;
 }
+/* `all: unset` only resets the base state — the global a:hover rule still
+ * wins on hover unless it's overridden here too. */
+.card-open:hover { text-decoration: none; }
 .card-open::after { content: ""; position: absolute; inset: 0; z-index: 1; }
 .card-open:focus-visible { outline: none; }
 
