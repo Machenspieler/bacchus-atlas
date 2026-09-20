@@ -26118,6 +26118,10 @@
         "en": "Bastion",
         "ru": "Бастион"
       },
+      "lore": {
+        "en": "The Bastion is a rare refuge behind the Wall, where travelers can find food, shelter, and safety before venturing back into the Dark Forest. But the ranks of the Wallwatchers are thinning, and the Doomsinger warns that the Wall's fall is inevitable.",
+        "ru": "Бастион — редкое убежище за Стеной, где путники могут найти пищу, кров и безопасность, прежде чем вновь отправиться в Тёмный лес. Но ряды Стражей Стены редеют, а Певец Рока предупреждает, что падение Стены неизбежно."
+      },
       "impulses": {
         "en": [
           "Offer shelter to those willing to help",
@@ -26216,7 +26220,8 @@
       "biomes": [
         "settlement",
         "forest"
-      ]
+      ],
+      "source": "The DarkHeart Forest"
     },
     {
       "id": "bandit-hideout",
@@ -26540,6 +26545,10 @@
       "name": {
         "en": "The Wandering Tavern",
         "ru": "Бродячая таверна"
+      },
+      "lore": {
+        "en": "The Wandering Tavern is the last remnant of an Old World domain, a non-Euclidean inn ruled by Barbara Yaga, an ageless barkeep whose will is law. Behind its doors await impossible delicacies, forgotten wonders, and debts payable only in favors or memories.",
+        "ru": "Странствующая таверна — последний осколок владений Старого Мира, неевклидовый трактир под властью Барбары Яги, неподвластной времени хозяйки, чья воля здесь является законом. За его дверями гостей ждут невозможные угощения, забытые чудеса и долги, которые можно оплатить лишь услугами или воспоминаниями."
       },
       "impulses": {
         "en": [
