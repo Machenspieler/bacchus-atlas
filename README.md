@@ -181,8 +181,9 @@ pending» — перевод уже встроен.
 }
 ```
 
-`role`, `range` и `damage_type` — языконезависимые ключи (`solo`, `close`/`far`,
-`physical`/`magic`), переводятся через `i18n.json`, как `type`/`features[].type`
+`role`, `range` и `damage_type` — языконезависимые ключи (`solo`, `melee`/`very_close`/
+`close`/`far`/`very_far`, `physical`/`magic`), переводятся через `i18n.json`, как
+`type`/`features[].type`
 у окружений. `damage` — обычная строка с костями (`"3d10"`) и проходит через
 тот же кликабельный бросок кубиков, что и весь остальной текст сайта; отдельного
 броска для противников не заводилось. Числа вроде `attack_modifier` и
