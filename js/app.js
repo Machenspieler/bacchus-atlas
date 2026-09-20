@@ -2423,7 +2423,7 @@ function deleteJourneyEntry(kind, id) {
  * is opened along with it: on a phone the filter that did this would otherwise
  * be hidden, leaving a short catalog with no visible reason for being short. */
 function showBiomeInCatalog(biome) {
-  state.filters = { search: '', tiers: new Set(), types: new Set(), biomes: new Set([biome]), regionOnly: false };
+  state.filters = { search: '', tiers: new Set(), types: new Set(), sources: new Set(), biomes: new Set([biome]), regionOnly: false };
   state.filtersOpen = true;
   navigate('');
 }
