@@ -653,7 +653,7 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
   color: var(--parchment); margin: 0; min-width: 0; text-wrap: balance;
 }
 /* The whole card opens the stat block, but the tab stop and the accessible
- * name live on one real button rather than on a div with a click listener. */
+ * name live on one real anchor rather than on a div with a click listener. */
 .card-open {
   all: unset; cursor: pointer; display: inline;
 }

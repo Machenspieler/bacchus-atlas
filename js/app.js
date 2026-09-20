@@ -1748,7 +1748,13 @@ function bindGridDelegation(el) {
     const add = e.target.closest('[data-add-to-list]');
     if (add) { e.preventDefault(); openAddToListPopup(add.dataset.addToList); return; }
     const open = e.target.closest('[data-open-env]');
-    if (open) { e.preventDefault(); showEnv(open.dataset.openEnv); return; }
+    if (open) {
+      // A plain left click drives the in-page router; ctrl/cmd/shift-click and
+      // middle-click fall through to the anchor's own href so the browser can
+      // open the card in a new tab or window as normal.
+      if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+      e.preventDefault(); showEnv(open.dataset.openEnv); return;
+    }
     const clear = e.target.closest('[data-clear-filters]');
     if (clear) clearAllFilters();
   });
@@ -1823,15 +1829,16 @@ function cardHtml(env) {
     isTranslated(env) ? '' : `<span class="badge pending">${t('untranslated_badge')}</span>`,
   ].join('');
   // The whole card is still the click target — the stretched ::after on
-  // .card-open covers it — but the tab stop and the accessible name now sit on
-  // one real button, so the catalog is reachable from the keyboard.
+  // .card-open covers it — but the tab stop and the accessible name sit on a
+  // real anchor with a real href, so the catalog is reachable from the
+  // keyboard and a card opens in a new tab on a middle-click or ctrl-click.
   return `
     <article class="card" data-id="${env.id}">
       <span class="rank-icon rank-icon-sm active card-tier-badge" role="img" aria-label="${t('tier_label')} ${env.tier}" data-tip="${t('tier_label')} ${env.tier}"><span aria-hidden="true">${env.tier}</span></span>
       ${biomeArtHtml(env)}
       <div class="card-body">
         <div class="card-top">
-          <h3 class="card-title"><button type="button" class="card-open" data-open-env="${env.id}">${escapeHtml(envName(env))}</button></h3>
+          <h3 class="card-title"><a class="card-open" href="${envHash(env.id)}" data-open-env="${env.id}">${escapeHtml(envName(env))}</a></h3>
           <button
             type="button"
             class="card-add-btn card-add-btn--catalog"
