@@ -15,3 +15,7 @@ img/logo_tr.png
 # Claude Code's per-machine config: launch.json and settings.local.json describe
 # this checkout, not the project.
 .claude/
+
+# Build output of scripts/prerender.js — .github/workflows/deploy.yml generates
+# this fresh on every deploy; it's never meant to be committed.
+dist/

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://machenspieler.github.io/daggerheart-codex/sitemap.xml

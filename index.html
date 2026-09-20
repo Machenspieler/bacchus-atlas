@@ -8,6 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#14110f">
+<meta name="description" content="Атлас Daggerheart — двуязычный (RU/EN) каталог окружений, биомов и регионов для настольной ролевой игры Daggerheart, со сложностью, импульсами и потенциальными противниками.">
 <title>Daggerheart Atlas</title>
 <link rel="icon" href="favicon.ico?v=3" sizes="any">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=3">
@@ -21,13 +22,25 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Forum&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
 <link rel="stylesheet" href="css/styles.css?v=90">
+<!-- Filled at deploy time by scripts/prerender.js with structured data
+     describing the catalog, so a client that never runs js/app.js (most
+     search and AI crawling tools) still finds real content in the HTML
+     response. See CLAUDE.md and .github/workflows/deploy.yml. -->
+<!--PRERENDER:JSONLD-->
 </head>
 <body>
-  <header class="site-header" id="header"></header>
+  <!-- Static fallback for the same reason as the JSON-LD above: real markup
+       for a client that can't run js/app.js. renderHeader() overwrites this
+       on first render for anyone who can. -->
+  <header class="site-header" id="header">
+    <h1>Атлас Daggerheart</h1>
+    <p>Справочник сцен и опасностей мира</p>
+  </header>
   <main class="shell" id="main" tabindex="-1">
     <div id="toolbar"></div>
     <div class="result-count" id="result-count" role="status"></div>
-    <div class="grid" id="grid-wrap"></div>
+    <!-- Filled at deploy time by scripts/prerender.js from data/environments.json. -->
+    <div class="grid" id="grid-wrap"><!--PRERENDER:CATALOG--></div>
   </main>
   <footer class="site-footer" id="footer"></footer>
   <script src="js/app.js?v=151"></script>
