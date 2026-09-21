@@ -1841,8 +1841,9 @@ function cardHtml(env) {
           <h3 class="card-title"><a class="card-open" href="${envHash(env.id)}" data-open-env="${env.id}">${escapeHtml(envName(env))}</a></h3>
           <button
             type="button"
-            class="card-add-btn card-add-btn--catalog"
+            class="card-add-btn card-add-btn--catalog${isEnvInAnyList(env.id) ? ' is-listed' : ''}"
             data-add-to-list="${env.id}"
+            data-env-list-indicator="${env.id}"
             aria-label="${escapeAttr(t('add_to_list'))}"
             data-tip="${escapeAttr(t('add_to_list'))}"
             aria-haspopup="dialog"
@@ -1902,6 +1903,20 @@ function renderFooter() {
 function setEnvLists(envId, listIds) {
   if (listIds.length) state.envLists[envId] = listIds;
   else delete state.envLists[envId];
+  syncEnvListIndicators(envId);
+}
+
+function isEnvInAnyList(envId) {
+  return (state.envLists[envId] || []).length > 0;
+}
+
+/* Keeps the catalog card bookmark and the detail-overlay title bookmark in
+ * step without a catalog re-render, which would throw away the focus
+ * teardown the add-to-list popup relies on. */
+function syncEnvListIndicators(envId) {
+  const listed = isEnvInAnyList(envId);
+  document.querySelectorAll(`[data-env-list-indicator="${CSS.escape(envId)}"]`)
+    .forEach(button => button.classList.toggle('is-listed', listed));
 }
 
 function listEnvCount(listId) {
@@ -3082,7 +3097,7 @@ function openDetailOverlay(envId, carry = null) {
       <div class="modal-header">
         <div class="modal-title-row">
           <h2 id="detail-title">${escapeHtml(envName(env))}</h2>
-          <button type="button" class="card-add-btn" id="detail-add-to-list" aria-label="${t('add_to_list')}" data-tip="${t('add_to_list')}">${ICON_BOOKMARK}</button>
+          <button type="button" class="card-add-btn${isEnvInAnyList(env.id) ? ' is-listed' : ''}" id="detail-add-to-list" data-env-list-indicator="${env.id}" aria-label="${t('add_to_list')}" data-tip="${t('add_to_list')}">${ICON_BOOKMARK}</button>
         </div>
         <div class="rank-pills detail-tier-pills" id="detail-tier-pills" role="group" aria-label="${t('view_as_tier')}">${tierPillsHtml}</div>
         <button type="button" class="modal-close" aria-label="${t('close')}">&times;</button>

@@ -680,6 +680,12 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
  * affordance, not a catalog one. Hover keeps the shared gold treatment. */
 .card-add-btn--catalog { border-color: transparent; }
 
+/* Aggregated across all lists — filled once an environment is saved to any
+ * of them, not just the one the popup happens to be showing. */
+.card-add-btn.is-listed { color: var(--hope); }
+.card-add-btn.is-listed svg path { fill: currentColor; }
+.card-add-btn.is-listed:hover { color: var(--hope-soft); }
+
 .card-lore,
 .card-impulses {
   font-size: var(--fs-card-copy); line-height: 1.5;
