@@ -73,8 +73,8 @@ You send me a new Environment stat block in English, in chat. I:
 - add the finished bilingual entry to `data/environments.json`;
 - hand you back the updated file (or the whole site archive).
 
-These entries are marked `"builtin": true` and carry no "RU pending" badge —
-the translation is already baked in.
+These entries carry no "RU pending" badge — the Russian name is already
+filled in, so `isTranslated()` in `js/app.js` never flags them.
 
 ## Environment data format
 
@@ -103,7 +103,6 @@ the translation is already baked in.
       "prompt": { "en": "...", "ru": "..." }
     }
   ],
-  "builtin": true,
   "biomes": ["drylands"],
   "source": "Shalassa Desert"
 }
