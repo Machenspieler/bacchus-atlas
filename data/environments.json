@@ -29253,6 +29253,193 @@
         "aquatic"
       ],
       "source": "Resting Dagger"
+    },
+    {
+      "id": "the-dungeoneer",
+      "tier": 2,
+      "type": "social",
+      "difficulty": 14,
+      "name": {
+        "en": "The Dungeoneer",
+        "ru": "Подземельщик"
+      },
+      "lore": {
+        "en": "Rowdy conversation echoes through this low-ceilinged subterranean tavern, where a polished stone bar, a small hearth, and cramped private snugs welcome the monsters and scoundrels who patrol the surrounding dungeon. Off the clock, old foes trade rumors, trophies, and strong ale—until the next shift or brawl begins.",
+        "ru": "Шумные разговоры эхом разносятся по этой подземной таверне с низким потолком, где полированный каменный бар, небольшой очаг и тесные отдельные комнаты принимают чудовищ и негодяев, патрулирующих окрестное подземелье. После смены вчерашние враги обмениваются слухами, трофеями и крепким элем — пока не начнётся новая смена или очередная драка."
+      },
+      "impulses": {
+        "en": [
+          "Turn enemies into drinking companions",
+          "trade secrets over strong ale",
+          "let revelry spill into violence",
+          "hide routes through the dungeon"
+        ],
+        "ru": [
+          "Превращать врагов в собутыльников",
+          "обменивать тайны за кружкой крепкого эля",
+          "позволять веселью перерастать в насилие",
+          "скрывать пути через подземелье"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Dungeon Regulars (Cave Ogre, Bugboar, Common Ruffian, Giant Brawler, Giant Recruit)",
+          "Jagged Knife Bandits (Bandit, Hexer, Kneebreaker, Lackey, Lieutenant, Shadow, Sniper)",
+          "Pirates (Pirate Captain, Pirate Raiders, Pirate Tough)",
+          "Ravenous Mockery",
+          "War Wizard",
+          "Valdenhax"
+        ],
+        "ru": [
+          "Завсегдатаи подземелья (Пещерный Огр, Багбор, Обычный Головорез, Великан-Драчун, Великан-Новобранец)",
+          "Бандиты Зазубренного Ножа (Бандит, Проклинатель, Костолом, Прихвостень, Лейтенант, Тень, Снайпер)",
+          "Пираты (Капитан Пиратов, Пираты-Налётчики, Пират-Громила)",
+          "Ненасытная Насмешка",
+          "Боевой Волшебник",
+          "Вальденхакс"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Off the Clock",
+            "ru": "Смена окончена"
+          },
+          "description": {
+            "en": "The patrons are dungeon guards, raiders, predators, and spellcasters enjoying the end of their shift. They are not automatically hostile to strangers. Unless the PCs attack, threaten the staff, or are recognized as enemies, they can interact with the patrons as part of a social scene. A PC who convincingly poses as another dungeon worker has advantage on Presence Rolls made to blend in. On a failure with Fear, a patron demands proof that they belong or recognizes something suspicious.",
+            "ru": "Посетители — стражи подземелья, налётчики, хищники и заклинатели, отдыхающие после смены. Они не становятся враждебными к незнакомцам автоматически. Пока персонажи не нападают, не угрожают персоналу и не оказываются узнанными как враги, с посетителями можно взаимодействовать в рамках социальной сцены. Персонаж, убедительно выдающий себя за другого работника подземелья, получает преимущество на Броски Присутствия, чтобы сойти за своего. При провале со Страхом кто-то требует доказать, что персонаж здесь свой, или замечает нечто подозрительное."
+          },
+          "prompt": {
+            "en": "Which patron has crossed paths with the party before? What house rule does nobody dare break?",
+            "ru": "Кто из посетителей уже пересекался с отрядом? Какое правило заведения никто не осмеливается нарушать?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Tonight at the Dungeoneer",
+            "ru": "Сегодня в «Подземельщике»"
+          },
+          "description": {
+            "en": "Roll 1d4 or choose the tavern's current state:\n- **1 — Packed:** The room is crammed with patrons who only want to celebrate the end of a shift. The noise makes private conversations easy to conceal.\n- **2 — Deep in Their Cups:** The tavern is moderately busy, and nearly every patron is heavily intoxicated. PCs have advantage on action rolls made to deceive, distract, or slip past them. If violence begins, the patrons' attack rolls have disadvantage.\n- **3 — Eerily Empty:** Only a lone bartender is present. They insist the tavern opens in a few minutes and the regulars always arrive on time. Start a Countdown (3); when it triggers, activate **Unexpected Patrons** without spending Fear.\n- **4 — Brawl in Progress:** A sprawling fight fills the room. The patrons barely notice the party until a PC interferes or rolls with Fear.",
+            "ru": "Бросьте 1d4 или выберите текущее состояние таверны:\n- **1 — Битком:** Зал переполнен посетителями, которые хотят лишь отпраздновать конец смены. В этом гомоне легко скрыть частный разговор.\n- **2 — Уже навеселе:** В таверне умеренно людно, и почти все посетители сильно пьяны. Персонажи получают преимущество на броски действия, чтобы обмануть, отвлечь или незаметно проскользнуть мимо них. Если начинается драка, броски атак посетителей совершаются с помехой.\n- **3 — Зловеще пусто:** Внутри только одинокий бармен. Он уверяет, что таверна откроется через несколько минут, а завсегдатаи всегда приходят вовремя. Запустите Отсчёт (3); когда он сработает, активируйте **Неожиданных посетителей**, не тратя Страх.\n- **4 — Драка в разгаре:** Весь зал охвачен массовой потасовкой. Посетители почти не замечают отряд, пока персонаж не вмешается или не совершит бросок со Страхом."
+          },
+          "prompt": {
+            "en": "What ended the patrons' last shift? Who is buying the next round, and what do they want in return?",
+            "ru": "Чем закончилась последняя смена посетителей? Кто оплачивает следующую выпивку и чего хочет взамен?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "The Dungeoneer's Ale",
+            "ru": "Эль «Подземельщика»"
+          },
+          "description": {
+            "en": "Once per rest, a PC who drinks a mug of the tavern's exceptionally strong ale must make a Strength Roll. On a success, they clear 1 Stress and become **Fortified**: the next time they would mark HP from physical damage before the scene ends, they mark 1 fewer HP, then clear this condition. On a failure, they mark 1 Stress and become **Intoxicated**; while Intoxicated, they have disadvantage on all action and reaction rolls until the scene ends.",
+            "ru": "Один раз за отдых персонаж, выпивший кружку исключительно крепкого местного эля, должен совершить Бросок Силы. При успехе он снимает 1 Стресс и становится **Закалённым**: в следующий раз, когда до конца сцены он должен отметить ОЗ из-за физического урона, он отмечает на 1 ОЗ меньше, после чего снимает это состояние. При провале персонаж отмечает 1 Стресс и становится **Опьяневшим**; пока он Опьянён, все его броски действия и реакции совершаются с помехой до конца сцены."
+          },
+          "prompt": {
+            "en": "What gives the ale its unnatural strength? Who holds the tavern's drinking record?",
+            "ru": "Что придаёт элю его неестественную крепость? Кому принадлежит рекорд таверны по выпивке?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Flying Barrel",
+            "ru": "Летящая бочка"
+          },
+          "description": {
+            "en": "Spend a Fear to have a bartender or patron hurl a full ale barrel at a point within Close range. Every creature within Very Close range of that point must make an Agility Reaction Roll. Targets who fail take 2d6+3 physical damage and are knocked back within Very Close range; targets who succeed take half damage. The ground in that area becomes slick with ale until the scene ends. A creature who moves through it must succeed on an Agility Reaction Roll or become Vulnerable until they leave the slick area. A PC can activate this feature without spending Fear by succeeding on a Strength Roll to lift and throw an intact barrel.",
+            "ru": "Потратьте Страх, чтобы бармен или посетитель метнул полную бочку эля в точку на Близкой дистанции. Каждое существо на Очень Близкой дистанции от этой точки должно совершить Бросок Реакции на Проворность. Провалившие цели получают 2d6+3 физического урона и отбрасываются в пределах Очень Близкой дистанции; преуспевшие получают половину урона. До конца сцены земля в этой области становится скользкой от эля. Существо, проходящее через неё, должно успешно совершить Бросок Реакции на Проворность, иначе становится Уязвимым, пока не покинет скользкую область. Персонаж может активировать это свойство без траты Страха, успешно совершив Бросок Силы, чтобы поднять и метнуть целую бочку."
+          },
+          "prompt": {
+            "en": "Who taught the staff to throw barrels this well? What valuable object is swept away in the flood of ale?",
+            "ru": "Кто научил персонал так метко бросать бочки? Какой ценный предмет уносит потоком разлившегося эля?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Hidden Kitchen Passage",
+            "ru": "Тайный проход на кухне"
+          },
+          "description": {
+            "en": "The kitchen contains an impressive collection of knives but almost no food, cookware, or signs that meals are prepared here. A PC who searches the room can make a Knowledge or Instinct Roll. On a success, they notice a cold draft behind an empty cupboard and can slide it aside to reveal a tunnel leading to another part of the dungeon. On a critical success, they also discover signs revealing who used the passage most recently. On a failure with Fear, something begins approaching from the other side.",
+            "ru": "На кухне хранится впечатляющая коллекция ножей, но почти нет еды, посуды или следов приготовления блюд. Персонаж, обыскивающий помещение, может совершить Бросок Знаний или Инстинкта. При успехе он замечает холодный сквозняк за пустым шкафом и может отодвинуть его, открыв туннель в другую часть подземелья. При критическом успехе он также находит признаки того, кто последним пользовался проходом. При провале со Страхом с другой стороны начинает что-то приближаться."
+          },
+          "prompt": {
+            "en": "Where does the tunnel emerge? Who relies on this route without the bartender's permission?",
+            "ru": "Куда выходит туннель? Кто пользуется этим путём без разрешения бармена?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Unexpected Patrons",
+            "ru": "Неожиданные посетители"
+          },
+          "description": {
+            "en": "Spend a Fear, or activate this feature when the regulars' Countdown triggers, then roll 1d6 or choose an encounter. These visitors begin neutral unless the fiction suggests otherwise; if violence erupts, represent them with tier-appropriate adversaries rather than treating every listed individual as a combatant.\n- **1:** A cluster of goblin guards complain that the east wing desperately needs more troops.\n- **2:** A crew of orc pirates on shore leave were told this was the realm's most exciting place for a date. They were badly misinformed.\n- **3:** Acrobatic bandits wearing separate pieces of a dragon costume rehearse how to assemble into a convincing dragon.\n- **4:** A group of hobgoblin soldiers realizes that two of the tables they chose are Ravenous Mockeries.\n- **5:** A devious war wizard uses minor illusions to cheat in a drinking contest against a surly crew of bugboars.\n- **6:** Three hags read fortunes for the other patrons in exchange for vital organs.",
+            "ru": "Потратьте Страх или активируйте это свойство, когда сработает Отсчёт прибытия завсегдатаев, затем бросьте 1d6 или выберите встречу. Эти посетители изначально нейтральны, если повествование не указывает обратного; если вспыхивает насилие, используйте противников подходящего Ранга, а не считайте каждого перечисленного участника отдельным бойцом.\n- **1:** Группа гоблинов-стражников жалуется, что восточному крылу отчаянно не хватает подкреплений.\n- **2:** Компания орков-пиратов в увольнении услышала, будто это самое модное место королевства для свиданий. Их жестоко дезинформировали.\n- **3:** Акробаты-бандиты в отдельных частях костюма дракона репетируют, как сложиться в убедительного дракона.\n- **4:** Группа хобгоблинов-солдат понимает, что два выбранных ими стола на самом деле являются Ненасытными Насмешками.\n- **5:** Коварный боевой волшебник использует малые иллюзии, чтобы жульничать на состязании по выпивке против угрюмой компании багборов.\n- **6:** Три карги гадают остальным посетителям в обмен на жизненно важные органы."
+          },
+          "prompt": {
+            "en": "Which group possesses information the PCs need? What can the party gain by helping before weapons are drawn?",
+            "ru": "У какой группы есть нужная персонажам информация? Что отряд может получить, если поможет до того, как в ход пойдёт оружие?"
+          }
+        }
+      ],
+      "story_seeds": [
+        {
+          "title": {
+            "en": "The East Wing Needs Reinforcements",
+            "ru": "Восточному крылу нужны подкрепления"
+          },
+          "body": {
+            "en": "The complaining guards reveal that the east wing is undermanned because something there frightened away even the regular patrols. The bartender will open the hidden passage for the PCs if they solve the problem without bringing it back to the tavern.",
+            "ru": "Жалующиеся стражники проговариваются, что восточное крыло осталось почти без охраны: нечто напугало даже постоянные патрули. Бармен откроет персонажам тайный проход, если они решат проблему и не приведут её за собой в таверну."
+          },
+          "prompt": {
+            "en": "What drove the patrols away? Why can the dungeon's rulers not learn how vulnerable the wing has become?",
+            "ru": "Что прогнало патрули? Почему хозяева подземелья не должны узнать, насколько уязвимым стало это крыло?"
+          }
+        },
+        {
+          "title": {
+            "en": "A Table with Teeth",
+            "ru": "Стол с зубами"
+          },
+          "body": {
+            "en": "The tavern's two tame Ravenous Mockeries have been fed scraps and secrets for years. One has vanished into the hidden tunnel after learning to imitate the voice of a beloved regular.",
+            "ru": "Двух приручённых Ненасытных Насмешек годами кормили объедками и тайнами. Одна из них исчезла в скрытом туннеле, научившись подражать голосу любимого завсегдатая."
+          },
+          "prompt": {
+            "en": "Whose voice did it steal? What secret did it overhear before escaping?",
+            "ru": "Чей голос оно украло? Какую тайну оно подслушало перед побегом?"
+          }
+        },
+        {
+          "title": {
+            "en": "The Price of a Prophecy",
+            "ru": "Цена пророчества"
+          },
+          "body": {
+            "en": "The hags offer the party a precise warning about the dungeon's master, but their price is an organ taken from a creature that still has need of it. They may accept a clever substitute, a future favor, or a secret of equal value.",
+            "ru": "Карги предлагают отряду точное предупреждение о хозяине подземелья, но требуют орган существа, которому тот всё ещё нужен. Возможно, их устроит хитрая замена, услуга в будущем или тайна равной ценности."
+          },
+          "prompt": {
+            "en": "Is the prophecy genuine? What loophole in the bargain could let everyone leave intact?",
+            "ru": "Правдиво ли пророчество? Какая лазейка в сделке позволит всем уйти целыми?"
+          }
+        }
+      ],
+      "biomes": [
+        "underground",
+        "settlement"
+      ],
+      "source": "The Game Master's Book of Traps, Puzzles and Dungeons, p. 181"
     }
   ]
 }
