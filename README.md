@@ -29,8 +29,7 @@ publish it as-is on GitHub Pages.
 ```
 
 User data (lists, which environments are in them, the chosen language) lives
-in the browser's `localStorage` and never touches files on disk. The "Reset
-custom data" button in the site footer only clears that — it never changes
+in the browser's `localStorage` and never touches files on disk or
 `environments.json`.
 
 ## Running locally

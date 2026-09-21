@@ -714,7 +714,6 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
   font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase;
   border: 1px dashed var(--line); color: var(--muted);
 }
-.badge.custom { border-color: var(--teal); color: var(--teal-soft); }
 .badge.pending { border-color: var(--fear); color: var(--fear-soft); }
 
 /* ---------- empty / error / loading states ---------- */

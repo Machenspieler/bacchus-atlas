@@ -1,14 +1,12 @@
 /* ============================================================
    Daggerheart Atlas — app.js
    Vanilla JS, no build step. All state persisted to localStorage
-   except the bundled builtin environment data (data/environments.json)
-   which stays read-only on disk; user edits layer on top of it.
+   except the environment data (data/environments.json), which stays
+   read-only on disk.
    ============================================================ */
 
 const LS_KEYS = {
   lang: 'dhcodex_lang',
-  customEnvs: 'dhcodex_custom_envs',
-  hiddenBuiltin: 'dhcodex_hidden_builtin',
   lists: 'dhcodex_lists',
   envLists: 'dhcodex_env_lists',
   storageNoticeDismissed: 'dhcodex_storage_notice_dismissed',
@@ -51,8 +49,6 @@ const state = {
    * an unsaved roll is a suggestion the GM is still looking at, and it should
    * not outlive the visit the way a saved one does. */
   journeyDraft: { region: null, sanctuary: null },
-  customEnvs: JSON.parse(localStorage.getItem(LS_KEYS.customEnvs) || '[]'),
-  hiddenBuiltin: JSON.parse(localStorage.getItem(LS_KEYS.hiddenBuiltin) || '[]'),
   lists: JSON.parse(localStorage.getItem(LS_KEYS.lists) || '[]'),
   envLists: JSON.parse(localStorage.getItem(LS_KEYS.envLists) || '{}'),
   storageNoticeDismissed: localStorage.getItem(LS_KEYS.storageNoticeDismissed) === '1',
@@ -119,8 +115,7 @@ function t(key) {
 }
 
 function allEnvs() {
-  const builtin = state.builtinEnvs.filter(e => !state.hiddenBuiltin.includes(e.id));
-  return [...builtin, ...state.customEnvs];
+  return state.builtinEnvs;
 }
 
 /* The members of a list, in catalog order. Taken off the catalog rather than off
@@ -156,8 +151,8 @@ function regionOfEnv(envId) {
 function regionName(region) {
   return region.name?.[state.lang] || region.name?.en || region.name?.ru || '';
 }
-/** Region members that actually exist right now (a hidden or removed builtin
- * environment drops out of the button row rather than rendering a dead button). */
+/** Region members that actually exist right now (a removed environment drops
+ * out of the button row rather than rendering a dead button). */
 function regionMembers(region) {
   const byId = new Map(allEnvs().map(e => [e.id, e]));
   return (region.environments || []).map(id => byId.get(id)).filter(Boolean);
@@ -621,7 +616,7 @@ function potentialAdversaryEntryHtml(localizedText, englishText) {
 /* Cache buster for the JSON under data/. index.html versions the stylesheet and
    this script the same way; the data files are fetched from here instead, so
    bump this whenever anything in data/ changes or browsers serve stale copies. */
-const DATA_VERSION = 74;
+const DATA_VERSION = 75;
 
 function getJSON(path) {
   return fetch(path).then(r => {
@@ -1825,7 +1820,6 @@ function cardHtml(env) {
     ? `<span class="region-chip" data-tip="${t('region_label')}"><span class="sr-only">${t('region_label')}: </span>${escapeHtml(regionName(region))}</span>`
     : '';
   const badges = [
-    env.builtin ? '' : `<span class="badge custom">${t('custom_badge')}</span>`,
     isTranslated(env) ? '' : `<span class="badge pending">${t('untranslated_badge')}</span>`,
   ].join('');
   // The whole card is still the click target — the stretched ::after on
@@ -1875,24 +1869,12 @@ const SOURCES = [
 
 function renderFooter() {
   const el = document.getElementById('footer');
-  const showReset = state.route.name === 'lists';
   // The note carries a {sources} slot rather than a finished sentence, so each
   // language can put the link wherever its own grammar wants it.
   const [before, after = ''] = t('footer_note').split('{sources}');
   el.innerHTML = `
-    <span>${before}<button type="button" class="link-btn" id="btn-sources">${t('sources_link')}</button>${after}</span>
-    ${showReset ? `<button type="button" class="btn btn-sm btn-ghost" id="btn-reset">${t('reset_data')}</button>` : ''}`;
+    <span>${before}<button type="button" class="link-btn" id="btn-sources">${t('sources_link')}</button>${after}</span>`;
   document.getElementById('btn-sources').addEventListener('click', openSourcesPopup);
-  if (showReset) {
-    document.getElementById('btn-reset').addEventListener('click', () => {
-      if (confirm(t('reset_confirm'))) {
-        localStorage.removeItem(LS_KEYS.customEnvs);
-        localStorage.removeItem(LS_KEYS.hiddenBuiltin);
-        state.customEnvs = []; state.hiddenBuiltin = [];
-        render();
-      }
-    });
-  }
 }
 
 /* ---------------- lists ---------------- */
