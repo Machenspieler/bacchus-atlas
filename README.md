@@ -1,95 +1,83 @@
-# Daggerheart Atlas — помощник по Daggerheart
+# Daggerheart Atlas
 
-Статический сайт-справочник по Environment stat blocks для Daggerheart:
-поиск, фильтры, теги, переключатель RU/EN и кликабельные
-кубики прямо в тексте свойств.
+A static reference site for Daggerheart Environment stat blocks: search,
+filters, an RU/EN language toggle, and clickable dice right inside property
+text.
 
-Сайт **не требует сборки** — это чистые HTML/CSS/JS-файлы. Его можно
-открыть локально или выложить на GitHub Pages как есть.
+The site is **build-free** — plain HTML/CSS/JS files. Open it locally or
+publish it as-is on GitHub Pages.
 
-## Структура проекта
+## Project layout
 
 ```
-site/
-├── index.html            — точка входа
-├── css/styles.css        — вся вёрстка и тема
-├── js/app.js             — вся логика (рендер, фильтры, кубики, формы)
+.
+├── index.html            — entry point
+├── css/styles.css        — all layout and theming
+├── js/app.js             — all logic (rendering, filters, dice, lists)
+├── scripts/prerender.js  — CI-only: bakes the catalog into index.html (see Deploy below)
+├── llms.txt, robots.txt, sitemap.xml — SEO / AI-crawler hints
 ├── img/
-│   ├── biomes/           — иконки биомов для карточек каталога
-│   └── env/              — фоновые картинки под карточками окружений
+│   ├── biomes/           — biome icons for catalog cards
+│   └── env/              — background art shown behind environment cards
 └── data/
-    ├── environments.json — окружения (билингва EN/RU), "официальные" данные
-    ├── adversaries.json  — статблоки "ключевых противников", встраиваемых в карточку окружения
-    ├── regions.json      — регионы: группы связанных окружений
-    ├── items.json        — карточки предметов из генератора лута (билингва)
-    ├── journey.json      — таблицы генераторов Journey to Horizon (билингва)
-    └── i18n.json          — словарь интерфейса (EN/RU)
+    ├── environments.json — environments (EN/RU bilingual), the "official" data
+    ├── adversaries.json  — stat blocks for "featured adversaries" embedded in an environment card
+    ├── regions.json      — regions: groups of related environments
+    ├── items.json        — item cards from the loot generator (bilingual)
+    ├── journey.json       — Journey to Horizon generator tables (bilingual)
+    └── i18n.json          — interface dictionary (EN/RU)
 ```
 
-Пользовательские данные (свои окружения, теги, привязка тегов к
-окружениям, выбранный язык) хранятся в `localStorage` браузера и не
-трогают файлы на диске. Кнопка «Сбросить пользовательские данные» в
-подвале сайта чистит только их — билд `environments.json` не меняется.
+User data (lists, which environments are in them, the chosen language) lives
+in the browser's `localStorage` and never touches files on disk. The "Reset
+custom data" button in the site footer only clears that — it never changes
+`environments.json`.
 
-## Запуск локально
+## Running locally
 
-Нужен только любой статический HTTP-сервер (открытие `index.html`
-прямо файлом через `file://` не будет работать из-за `fetch()`).
+Any static HTTP server will do (opening `index.html` directly via `file://`
+won't work, because of `fetch()`).
 
 ```bash
-cd site
 python3 -m http.server 8080
-# затем открыть http://localhost:8080
+# then open http://localhost:8080
 ```
 
-или через Node:
+or with Node:
 
 ```bash
-npx serve site
+npx serve .
 ```
 
-## Деплой на GitHub Pages
+## Deploying to GitHub Pages
 
-1. Создайте репозиторий (например, в `github.com/Machenspieler/...`).
-2. Скопируйте содержимое папки `site/` в корень репозитория (или в
-   папку `docs/`, если удобнее — тогда в настройках Pages укажите её
-   как источник).
-3. В репозитории: **Settings → Pages → Source** → выберите ветку
-   (`main`) и папку (`/root` или `/docs`).
-4. Через пару минут сайт будет доступен по адресу вида
-   `https://machenspieler.github.io/<repo>/`.
+Deployment is automatic: [.github/workflows/deploy.yml](.github/workflows/deploy.yml)
+runs on every push to `main`. It runs `node scripts/prerender.js`, which
+copies the repo into `dist/` and bakes a server-rendered Russian-language
+catalog (plus a schema.org `ItemList`) into `dist/index.html`, replacing the
+`<!--PRERENDER:CATALOG-->` / `<!--PRERENDER:JSONLD-->` markers — so search
+engines and AI crawlers that never run `js/app.js` still see the full catalog.
+`dist/` is then published to GitHub Pages via
+`actions/upload-pages-artifact` + `actions/deploy-pages`.
 
-Файл `.nojekyll` уже включён, чтобы GitHub Pages не пытался
-обработать сайт через Jekyll (это иначе может сломать пути к файлам,
-начинающимся с `_`, хотя у нас таких нет — но лишним не будет).
+There's nothing to trigger by hand beyond pushing to `main`. `.nojekyll` is
+already in place so GitHub Pages doesn't try to run the site through Jekyll
+(which would otherwise mangle paths starting with `_` — we don't have any
+today, but it costs nothing to be safe).
 
-## Как добавлять новые окружения
+## How new environments get added
 
-Два способа, можно сочетать:
+You send me a new Environment stat block in English, in chat. I:
+- translate it to Russian using daggerheart.su's terminology (Rank,
+  Difficulty, Impulses, Potential Adversaries, Environment Features,
+  Passive/Action/Reaction, trait rolls, etc.);
+- add the finished bilingual entry to `data/environments.json`;
+- hand you back the updated file (or the whole site archive).
 
-### 1. Через меня (Claude) — рекомендуется для «официальных» карточек
-Вы присылаете мне новый Environment stat block на английском в чате.
-Я:
-- перевожу его на русский, используя терминологию daggerheart.su
-  (Ранг, Сложность, Импульсы, Потенциальные Противники, Свойства
-  Окружения, Пассивно/Действие/Реакция, броски по чертам и т.д.);
-- добавляю готовую двуязычную запись в `data/environments.json`;
-- отдаю вам обновлённый файл (или весь архив сайта).
+These entries are marked `"builtin": true` and carry no "RU pending" badge —
+the translation is already baked in.
 
-Такие записи помечаются `"builtin": true` и не имеют бейджа «RU
-pending» — перевод уже встроен.
-
-### 2. Через кнопку «Добавить окружение» на сайте
-Быстрый способ занести окружение самостоятельно, без ожидания
-перевода: форма принимает название на EN/RU, ранг, тип, сложность,
-импульсы, противников и сырой текст статблока (в него тоже можно
-вставлять `1d4`, `2d12` и т.п. — кубики распознаются автоматически).
-Такие записи хранятся локально в браузере (не попадают в
-`environments.json`) и помечены бейджем «Своё». Если поле RU-названия
-пустое — карточка получает бейдж «RU pending», напоминающий, что
-перевод ещё не сделан.
-
-## Формат данных окружения
+## Environment data format
 
 ```json
 {
@@ -109,24 +97,40 @@ pending» — перевод уже встроен.
       "prompt": { "en": "...", "ru": "..." }
     }
   ],
+  "story_seeds": [
+    {
+      "title": { "en": "...", "ru": "..." },
+      "body": { "en": "...", "ru": "..." },
+      "prompt": { "en": "...", "ru": "..." }
+    }
+  ],
   "builtin": true,
-  "tags": []
+  "biomes": ["drylands"],
+  "source": "Shalassa Desert"
 }
 ```
 
-`type` — один из `traversal | social | event | exploration`.
-`features[].type` — один из `passive | action | reaction`.
-`lore` — необязательная фраза-подводка из первоисточника (одно-два предложения
-под названием окружения на карточке), не механика. У многих старых записей
-её нет — поле не обязательно.
+`type` is one of `traversal | social | event | exploration`.
+`features[].type` is one of `passive | action | reaction`.
+`lore` is an optional flavor lead-in from the source book (one or two
+sentences shown under the environment's title on the card), not mechanics.
+Many older entries don't have it — the field is optional.
+`story_seeds` are optional GM hooks, see [Story seeds](#story-seeds-story_seeds)
+below.
+`biomes` is an array of the eleven terrain biomes (see `CLAUDE.md`), most to
+least characteristic; falls back to `settlement` or `universal` when none
+fit.
+`source` is an optional string attributing the source book; many older
+entries don't have it.
 
-## Ключевые противники (data/adversaries.json)
+## Featured adversaries (data/adversaries.json)
 
-Некоторые окружения нельзя нормально провести без конкретного противника —
-например, Логово Разума-Прародителя не работает без самого Разума-Прародителя:
-на нём завязаны название, описание, «Потенциальные противники» и свойство
-«Миазмы Разума». Для таких случаев полный статблок противника хранится один
-раз в `data/adversaries.json`, а окружение лишь ссылается на него по `id`:
+Some environments can't really be run without a specific adversary — the
+Progenitor Mind's Lair doesn't work without the Progenitor Mind itself: its
+name, description, "Potential Adversaries", and the "Miasma of Mind" feature
+all depend on it. For cases like this, the adversary's full stat block is
+stored once in `data/adversaries.json`, and the environment just references
+it by `id`:
 
 ```json
 {
@@ -136,27 +140,27 @@ pending» — перевод уже встроен.
 }
 ```
 
-Поле необязательное; у окружений без него ничего не меняется. Один и тот же
-файл поддерживает больше одного противника на окружение — просто добавьте
-вторую запись в массив. Неизвестный `id` (опечатка, ещё не добавленный
-противник) тихо пропускается — карточка окружения рендерится как обычно, без
-этой секции.
+The field is optional; environments without it are unaffected. The same file
+supports more than one adversary per environment — just add a second entry to
+the array. An unknown `id` (a typo, or an adversary not added yet) is quietly
+skipped — the environment card renders normally, without that section.
 
-`display` пока не на что влиять, кроме `"inline"` (противник встроен прямо в
-карточку) — поле зарезервировано под другие варианты показа на будущее.
-`expanded: true` — статблок открыт по умолчанию (как у Разума-Прародителя,
-без которого сцену не провести); без этого поля или при `false` он свёрнут.
+`display` currently only supports `"inline"` (the adversary is embedded right
+in the card) — the field is reserved for other display modes in the future.
+`expanded: true` means the stat block is open by default (as with the
+Progenitor Mind, without which the scene can't be run); without this field,
+or with `false`, it's collapsed.
 
-Это **не замена** `potential_adversaries` — то поле остаётся как есть и по
-прежнему отвечает за отображение, поиск и фильтрацию списком имён.
-`featured_adversaries` — только про полный встроенный статблок. Если имя в
-`potential_adversaries` совпадает (без учёта регистра) с именем противника из
-`featured_adversaries` этого же окружения, оно становится кликабельной
-кнопкой: клик разворачивает нужный статблок ниже на карточке и прокручивает к
-нему. Имена без соответствия остаются обычным текстом — общего каталога
-противников сайт не строит.
+This is **not a replacement** for `potential_adversaries` — that field stays
+as-is and still drives display, search, and filtering by a plain list of
+names. `featured_adversaries` is only about the full embedded stat block. If a
+name in `potential_adversaries` matches (case-insensitively) an adversary's
+name from this same environment's `featured_adversaries`, it turns into a
+clickable button: clicking it expands the matching stat block further down
+the card and scrolls to it. Names with no match stay plain text — the site
+doesn't build a general adversary catalog.
 
-Схема записи в `data/adversaries.json`:
+Schema of an entry in `data/adversaries.json`:
 
 ```json
 {
@@ -181,25 +185,26 @@ pending» — перевод уже встроен.
 }
 ```
 
-`role`, `range` и `damage_type` — языконезависимые ключи (`solo`, `melee`/`very_close`/
-`close`/`far`/`very_far`, `physical`/`magic`), переводятся через `i18n.json`, как
-`type`/`features[].type`
-у окружений. `damage` — обычная строка с костями (`"3d10"`) и проходит через
-тот же кликабельный бросок кубиков, что и весь остальной текст сайта; отдельного
-броска для противников не заводилось. Числа вроде `attack_modifier` и
-`modifier` у опыта выводятся как есть (`+4`, `+2`) и в кости не превращаются.
+`role`, `range`, and `damage_type` are language-independent keys (`solo`,
+`melee`/`very_close`/`close`/`far`/`very_far`, `physical`/`magic`), translated
+through `i18n.json`, same as `type`/`features[].type` on environments.
+`damage` is a plain dice-notation string (`"3d10"`) and goes through the same
+clickable dice roll as the rest of the site's text — no separate roll type
+was built for adversaries. Numbers like `attack_modifier` and an
+experience's `modifier` are shown as-is (`+4`, `+2`) and never turn into dice.
 
-На карточке противник рендерится между «Свойствами окружения» и подвалом
-(источник/регион), под заголовком «КЛЮЧЕВОЙ ПРОТИВНИК», в отдельной панели с
-собственной рамкой и фоном — чтобы его характеристики и свойства не читались
-как часть свойств самого окружения. Каждый противник — свой `<details>`:
-свёрнут или развёрнут согласно `expanded`, с именем, рангом и ролью в шапке.
+On the card, the adversary renders between "Environment Features" and the
+footer (source/region), under a "FEATURED ADVERSARY" heading, in its own
+panel with its own border and background — so its stats and features don't
+read as part of the environment's own features. Each adversary is its own
+`<details>`: collapsed or expanded per `expanded`, with name, tier, and role
+in the header.
 
-## Завязки сюжетов (story_seeds)
+## Story seeds (story_seeds)
 
-Необязательные вбросы для Ведущего — не механика окружения и не квесты,
-просто зацепки на будущее. Хранятся в окружении отдельно от `features` и не
-участвуют в каталоге, поиске или фильтрах:
+Optional hooks for the GM — not environment mechanics and not quests, just
+leads for later. Stored on the environment separate from `features`, and
+excluded from the catalog, search, and filters:
 
 ```json
 {
@@ -213,18 +218,19 @@ pending» — перевод уже встроен.
 }
 ```
 
-Поле необязательное. На карточке они собраны в один `<details>` внизу — после
-свойств окружения и ключевого противника, перед источником и блоком региона —
-свёрнутый по умолчанию, с заголовком вида «ЗАВЯЗКИ СЮЖЕТОВ (2)» (число — сколько
-зацепок внутри). Открытие показывает все зацепки сразу, в порядке массива:
-название жирным, текст обычным абзацем, `prompt` — отдельным курсивом с той же
-ромбовидной пометкой, что и вопросы в свойствах окружения.
+The field is optional. On the card they're collected into one `<details>` at
+the bottom — after the environment's features and featured adversary, before
+the source and region blocks — collapsed by default, with a heading like
+"STORY SEEDS (2)" (the number is how many are inside). Opening it shows all
+seeds at once, in array order: the title in bold, the body as a plain
+paragraph, and `prompt` as a separate italic line with the same diamond
+marker used for questions in environment features.
 
-## Регионы
+## Regions
 
-Некоторые окружения связаны друг с другом и образуют один регион (например,
-поместье Неверхоума — коридоры, библиотека и финальная сцена). Такие связи
-описываются в `data/regions.json`:
+Some environments are connected to each other and form a single region (for
+example, Neverhome Manor — corridors, library, and final scene). These
+relationships are described in `data/regions.json`:
 
 ```json
 {
@@ -238,47 +244,51 @@ pending» — перевод уже встроен.
 }
 ```
 
-Внизу карточки окружения, входящего в регион, появляется блок «Регион» с
-названием региона и кнопками всех его окружений. Текущее окружение показано
-кнопкой в активном состоянии и не нажимается, остальные кнопки открывают
-соответствующую карточку. Порядок кнопок — порядок массива `environments`.
+At the bottom of the card of an environment that belongs to a region, a
+"Region" block appears with the region's name and buttons for all its
+environments. The current environment shows as an active, unclickable button;
+the rest open their respective cards. Button order follows the
+`environments` array's order.
 
-Одно окружение может входить не более чем в один регион; неизвестные `id`
-игнорируются. Если из региона видно меньше двух окружений, блок не рисуется.
+An environment can belong to at most one region; unknown `id`s are ignored.
+If fewer than two of a region's environments are visible, the block isn't
+drawn.
 
-## Journey to Horizon (генераторы карты)
+## Journey to Horizon (map generators)
 
-Кнопка «Странствие» в шапке рядом со «Списками» открывает `#/journey` —
-страницу с двумя генераторами из книги Journey to Horizon:
+The "Journey" button in the header, next to "Lists", opens `#/journey` — a
+page with two generators from the Journey to Horizon book:
 
-* слева **«Гексы диких земель»** — регион: среда обитания (d20), размер в
-  гексах (d12), встреча (d8+d6), местность и дни пути (d4), слух (d100);
-* справа **«Убежища»** — торговля (d20), особенность (d12), кризис (d10),
-  стремление (d10), политический строй (d8), размер (d6), население (d4)
-  и название по таблице элементов (d100 × 2).
+* on the left, **"Wilderness Hexes"** — a region: habitat (d20), size in
+  hexes (d12), encounter (d8+d6), terrain and travel days (d4), rumor (d100);
+* on the right, **"Sanctuaries"** — trade (d20), feature (d12), crisis (d10),
+  aspiration (d10), government (d8), size (d6), population (d4), and a name
+  built from the element table (d100 × 2).
 
-Все таблицы лежат в `data/journey.json`. Особые строки книги реализованы:
+All the tables live in `data/journey.json`. The book's special rows are
+implemented:
 
-| строка | поведение |
+| row | behavior |
 | --- | --- |
-| среда обитания, 1 | «Теневая порча»: бросается вторая среда, которую она поразила. Две единицы подряд — регион полностью захвачен, среды под порчей нет |
-| встреча, 2 | бросок дважды по той же таблице, результаты объединяются (вложенные 2 тоже разворачиваются) |
-| политический строй, 8 | два строя объединяются; каждый строй в наборе всегда разный |
+| habitat, 1 | "Shadow Blight": a second habitat is rolled, the one it struck. Two 1s in a row means the region is fully consumed — no habitat left unblighted |
+| encounter, 2 | rolled twice on the same table, results combined (a nested 2 also expands) |
+| government, 8 | two governments combined; each government in the set is always different |
 
-Таблица среды обитания — это те же одиннадцать биомов, что у каталога, поэтому
-у результата стоит кликабельный чип биома: он открывает каталог с этим биомом в
-фильтре.
+The habitat table is the same eleven biomes as the catalog, so the result
+carries a clickable biome chip: it opens the catalog with that biome set as
+the filter.
 
-Кнопка «↻» справа от строки перебрасывает **только** эту строку. Кнопка кубика
-у названия генерирует новое название. Название можно и просто ввести руками.
+The "↻" button to the right of a row rerolls **only** that row. The die
+button by the name generates a new name. The name can also just be typed by
+hand.
 
-### Как хранятся результаты
+### How results are stored
 
-Кнопка «Сохранить» кладёт запись в `localStorage`
-(`dhcodex_journey_regions`, `dhcodex_journey_sanctuaries`). Несохранённый бросок
-живёт только до перехода на другую страницу.
+The "Save" button puts an entry in `localStorage`
+(`dhcodex_journey_regions`, `dhcodex_journey_sanctuaries`). An unsaved roll
+only lives until you navigate to another page.
 
-В записи хранятся **выпавшие числа, а не текст**:
+What's stored is **the rolled numbers, not the text**:
 
 ```json
 { "id": "reg-msx3…", "name": "Ashenmoor", "habitat": { "rolls": [1, 7] },
@@ -286,62 +296,67 @@ pending» — перевод уже встроен.
   "terrain": 2, "rumor": 15 }
 ```
 
-Поэтому одна и та же сохранённая карта читается на любом языке и сама подхватит
-русский текст, как только он появится в `journey.json` (две записи — это ~280
-байт, так что карта на сотню гексов ничего не весит).
+So the same saved map reads correctly in any language, and will pick up
+Russian text on its own once it exists in `journey.json` (two entries are
+about ~280 bytes, so a hundred-hex map weighs nothing).
 
-### Что ещё не переведено
+### What's still untranslated
 
-Поля `ru` в `data/journey.json` пока пустые — интерфейс страницы русский, а сами
-таблицы (100 слухов, встречи, местность, семь таблиц убежища) отдаются
-по-английски через фолбэк `jText()`. Названия биомов приходят из `i18n.json` и
-уже русские.
+The `ru` fields in `data/journey.json` are still empty — the page's interface
+is in Russian, but the tables themselves (100 rumors, encounters, terrain,
+the sanctuary's seven tables) are served in English via the `jText()`
+fallback. Biome names come from `i18n.json` and are already in Russian.
 
-Таблицу `nameElements` переводить **не нужно**: это англоязычные
-морфемы для сборки топонимов (`Ash`, `Thorn(e)`, `H(e)aven`), а не проза — то же
-правило, что и для записи кубиков.
+The `nameElements` table does **not** need translating: it's English
+morphemes for building place names (`Ash`, `Thorn(e)`, `H(e)aven`), not
+prose — the same rule as for dice notation.
 
-## Картинка-фон под карточкой окружения
+## Background art behind an environment card
 
-У окружения может быть своя картинка: она разворачивается на весь экран за
-раскрытой карточкой, слегка размытая и притемнённая. Всё, с чем можно
-взаимодействовать, остаётся перед ней — сама карточка, плавающий переключатель
-языка, всплывашка кубика, отсчёты, тосты, окно «Добавить в список».
+An environment can have its own art: it expands to fill the screen behind
+the open card, lightly blurred and darkened. Everything interactive stays in
+front of it — the card itself, the floating language switch, the dice
+popover, countdowns, toasts, the "Add to list" window.
 
-Чтобы добавить картинку ещё одному окружению:
+To add art for another environment:
 
-1. Положите оригинал (PNG) в `img/env/src/`, перекодируйте его в JPEG рядом, в
-   `img/env/`, и назовите по `id` окружения: `img/env/<id>.jpg`. Требования к
-   самой картинке и команда для перекодирования — ниже.
-2. Добавьте этот `id` в набор `ENV_ART` в `js/app.js`.
-3. Поднимите `?v=` у `js/app.js` в `index.html`.
+1. Put the original (PNG) in `img/env/src/`, re-encode it to JPEG alongside,
+   in `img/env/`, and name it after the environment's `id`:
+   `img/env/<id>.jpg`. Requirements for the image itself and the re-encode
+   command are below.
+2. Add that `id` to the `ENV_ART` set in `js/app.js`.
+3. Bump `?v=` for `js/app.js` in `index.html`.
 
-Набор перечислен руками, а не проверяется запросом: у большинства окружений
-картинки нет, и ни одно из них не должно узнавать об этом через 404.
+The set is listed by hand rather than probed with a request: most
+environments have no art, and none of them should have to find that out via
+a 404.
 
-Картинка должна быть **горизонтальной**, 1536 × 1024. Это единственное
-требование, которое нельзя обойти: слой разворачивается на весь экран через
-`object-fit: cover`, а экран горизонтальный, так что вертикальную картинку
-пришлось бы тянуть по ширине — 1024 px в ширину на экране 1920 это апскейл в
-1.9 раза, и при этом за кадром сверху и снизу остаётся около 60% высоты, то
-есть как раз то, ради чего картинка рисовалась. Не перепутайте с картинками
-биомов (`img/biomes/src/`): те как раз вертикальные, 1024 × 1536, потому что их
-режут в узкое окно на рейке карточки.
+The image must be **landscape**, 1536 × 1024. This is the one requirement
+that can't be worked around: the layer expands to fill the screen via
+`object-fit: cover`, and the screen is landscape, so a portrait image would
+have to stretch to width — 1024 px wide on a 1920 px screen is a 1.9×
+upscale, and it would still crop off roughly 60% of the height top and
+bottom, which is exactly what the image was drawn for in the first place.
+Don't confuse this with biome art (`img/biomes/src/`): that's portrait,
+1024 × 1536, because it gets cropped into a narrow strip on the card's
+banner.
 
-Композиция идёт от карточки: она 720 px по центру экрана, поэтому середину
-картинки лучше держать спокойной, а всё, что должно быть видно, выносить в
-боковые трети — там оно остаётся за краями карточки.
+Composition is built around the card: it's 720 px wide, centered on screen,
+so keep the middle of the image calm and put anything that needs to be seen
+in the side thirds — that stays outside the card's edges.
 
-Размер файла имеет значение — это полноэкранная картинка. Размытие слабое
-(2 px), поэтому растягивать маленькую картинку нельзя — мылу нечем прикрыться:
-кладите её в той ширине, в которой она нарисована, и не апскейльте. JPEG на
-качестве 88: `ouroborean-pass` — около 340 KB, `cauldera-valley` и
-`field-of-dreams` — 387 и 415 KB (цветы до края кадра жмутся хуже тумана).
-Оригиналы (PNG по ~3 MB) лежат в `img/env/src/` и в git не попадают.
+File size matters — this is a full-screen image. The blur is light (2 px),
+so a small image can't be stretched to cover for it — there's nothing to
+hide the smear behind: keep it at the width it was drawn in, don't upscale.
+JPEG at quality 88: `ouroborean-pass` comes out around 340 KB,
+`cauldera-valley` and `field-of-dreams` are 387 and 415 KB (flowers all the
+way to the frame edge compress worse than fog). Originals (PNG, ~3 MB each)
+live in `img/env/src/` and aren't committed to git.
 
-Ни ImageMagick, ни Python в проекте нет, но JPEG умеет кодировать .NET, а он
-есть в Windows PowerShell из коробки. Ширину менять не надо — оригинал уже
-лежит в той, в которой отдаётся, — так что это просто перекодирование:
+Neither ImageMagick nor Python is in this project, but .NET can encode JPEG,
+and it ships with Windows PowerShell out of the box. No need to change the
+width — the original is already at the width it's served at — so this is
+just re-encoding:
 
 ```powershell
 Add-Type -AssemblyName System.Drawing
@@ -355,48 +370,69 @@ $img.Save("$PWD\img\env\<id>.jpg", $codec, $p)
 $img.Dispose()
 ```
 
-Ширина экрана меньше 641 px — карточка занимает весь экран, за ней уже ничего не
-видно, поэтому на телефоне картинка вообще не загружается.
+Under a 641 px screen width, the card fills the whole screen and nothing
+behind it is visible anyway, so the image doesn't load at all on phones.
 
-Две ручки настройки лежат в `css/styles.css`: `--bd-blur` в `.env-backdrop`
-(сила размытия) и `--ink-overlay-art` в `:root` (насколько картинка притемнена
-под карточкой; у карточек без картинки затемнение своё — `--ink-overlay`, 0.80,
-там оно вычищает каталог из-под карточки).
+Two knobs live in `css/styles.css`: `--bd-blur` on `.env-backdrop` (blur
+strength) and `--ink-overlay-art` on `:root` (how much the image is
+darkened under the card; cards without art use their own darkening,
+`--ink-overlay`, 0.80, which is what clears the catalog out from under the
+card).
 
-## Предметы в списках свойств
+## Lists
 
-Некоторые свойства перечисляют добычу маркированным списком — растения,
-которые партия может собрать. Если пункт списка называет предмет из
-[генератора лута](https://artex-x.github.io/daggerheart-loot/), он
-превращается в кнопку: клик открывает карточку предмета поверх карточки
-окружения — арт, номер броска, тип, текст (с кнопками кубиков) и цепочка
-крафта. Кнопка «Открыть в генераторе лута» ведёт на страницу предмета
-на исходном сайте.
+The bookmark icon on a card (and inside the open card) opens a checkbox
+popup letting you file that environment into one or more named lists, or
+create a new one on the spot. The "Lists" button in the header opens
+`#/lists`, a page of list cards — each showing a cover made from up to three
+of its environments' background art, a rename field, and an open/delete
+control. The bookmark fills in solid whenever the environment is in at least
+one list.
 
-Карточку можно унести с собой — теми же четырьмя способами, что и на
-генераторе лута:
+Lists are pure browser state: `state.lists` (the lists themselves) and
+`state.envLists` (which lists each environment id belongs to), both
+persisted to `localStorage` (`dhcodex_lists`, `dhcodex_env_lists`). They
+don't touch `environments.json` and don't sync anywhere — a banner on the
+Lists page reminds you that clearing site data or switching browser/device
+loses them.
 
-* иконка цепочки рядом с названием кладёт в буфер ссылку на предмет
-  (`…/daggerheart-loot/i/w14.html` — статичная страница с Open Graph, так что
-  в Telegram или Discord она разворачивается в арт, название и текст);
-* **Отправить** открывает системное окно «Поделиться» и прикладывает к нему
-  картинку, если браузер умеет отдавать файлы; если Share API нет вовсе —
-  копирует ссылку;
-* **Картинка** кладёт арт в буфер (WebP в буфер не принимают, поэтому он идёт
-  через canvas и выходит PNG); там, где буфер не берёт картинки, файл
-  скачивается;
-* **Текст** кладёт название жирным (у расходника — с пометкой «(расходник)»)
-  и описание. Богатый и простой варианты пишутся в буфер одновременно:
-  Word и Google Docs возьмут жирный, чат — чистый текст без звёздочек.
-  Кнопки кубиков вставляются как нотация, которую показывают.
+## Items in feature lists
 
-Карточка скопирована с генератора лута один в один. Его палитра, шрифты,
-скругления и отступы объявлены внутри `.loot-overlay` в `css/styles.css` и
-наружу не протекают: пергаментная тема вокруг остаётся нетронутой. Стык
-намеренный — всё внутри карточки принадлежит тому сайту.
+Some features list loot as a bulleted list — plants the party can gather. If
+a list item names an item from the
+[loot generator](https://artex-x.github.io/daggerheart-loot/), it turns into
+a button: clicking it opens an item card over the environment card — art,
+roll number, type, text (with dice buttons), and the crafting chain. An
+"Open in the loot generator" button links to the item's page on the source
+site.
 
-Данные лежат в `data/items.json` и целиком взяты из `data.json` генератора
-лута — обе локализации оттуда же. Файл состоит из двух частей:
+The card can be taken along, the same four ways as on the loot generator
+itself:
+
+* the chain-link icon next to the name copies a link to the item to the
+  clipboard (`…/daggerheart-loot/i/w14.html` — a static page with Open
+  Graph tags, so it unfurls into art, name, and text in Telegram or Discord);
+* **Share** opens the system "Share" sheet and attaches the art if the
+  browser can hand over files; if there's no Share API at all, it copies the
+  link instead;
+* **Image** copies the art to the clipboard (WebP isn't accepted by the
+  clipboard, so it goes through a canvas and comes out as PNG); where the
+  clipboard won't take images, the file downloads instead;
+* **Text** copies the name in bold (with a "(consumable)" note for
+  consumables) and the description. Rich and plain variants are written to
+  the clipboard at the same time: Word and Google Docs pick up the bold
+  version, chat apps get plain text with no asterisks. Dice buttons are
+  inserted as the notation they display.
+
+The card is copied from the loot generator one-to-one. Its palette, fonts,
+corner radii, and spacing are declared inside `.loot-overlay` in
+`css/styles.css` and don't leak outward: the parchment theme around it stays
+untouched. The seam is deliberate — everything inside the card belongs to
+that other site.
+
+The data lives in `data/items.json` and comes entirely from the loot
+generator's `data.json` — both localizations included. The file has two
+parts:
 
 ```json
 {
@@ -411,40 +447,36 @@ $img.Dispose()
 }
 ```
 
-Статблок называет растение (`Nursewood`), а в каталоге лежит то, что из него
-получают (`Nursewood Sap`), — за это и отвечает `aliases`. Сопоставление идёт
-без учёта регистра, пунктуации и пробелов, и требует, чтобы имя занимало весь
-пункт списка (или стояло до двоеточия/тире) — упоминание внутри предложения
-ссылкой не становится. Собственные названия предметов из `items` работают и
-без алиаса. Необязательное поле `craft` — id того, во что предмет улучшается;
-обратное направление («Получается из») выводится само.
+A stat block names the plant (`Nursewood`), while the catalog holds what you
+get from it (`Nursewood Sap`) — that's what `aliases` is for. Matching is
+case-, punctuation-, and whitespace-insensitive, and requires the name to
+take up the whole list item (or stand before a colon/dash) — a mention
+inside a sentence doesn't turn into a link. Items' own catalog names work
+without an alias. The optional `craft` field is the id of what the item
+upgrades into; the reverse direction ("Crafted from") is derived
+automatically.
 
-Пункт, для которого записи нет, остаётся обычным текстом. Арт грузится с
-сайта генератора лута и при недоступности просто исчезает из карточки.
+A list item with no matching entry stays plain text. Art loads from the loot
+generator site and simply disappears from the card if it's unavailable.
 
-Русские названия растений в статблоках держатся терминологии генератора лута:
-пункт списка и карточка, которую он открывает, делят один корень — «Тенелилия»
-открывает «Лепестки Тенелилии», «Вянущий Корень» — «Ихор Вянущего Корня», ровно
-как в оригинале «Umbra Lily» открывает «Umbra Lily Petals». При переводе нового
-окружения название растения берётся из RU-имени его предмета в генераторе, а не
-переводится заново.
+Russian plant names in stat blocks follow the loot generator's terminology:
+the list item and the card it opens share one root — "Тенелилия" opens
+"Лепестки Тенелилии", "Вянущий Корень" opens "Ихор Вянущего Корня", exactly
+as in the original where "Umbra Lily" opens "Umbra Lily Petals". When
+translating a new environment, a plant's name is taken from its item's RU
+name in the generator, not translated fresh.
 
-## Кубики в тексте
+## Dice in text
 
-Любое вхождение вида `1d4`, `2d12`, `3d8`, `d20`, `100` и т.п. в
-описаниях свойств (`description`) и в сыром тексте (`rawText`)
-автоматически превращается в маленькую кнопку. Клик запускает
-анимацию броска и показывает итоговый результат (с раскладкой по
-кубикам, если их несколько). Распознаются размеры d4, d6, d8, d10,
-d12, d20, d100 — этого достаточно для всех стандартных костей
-Daggerheart.
+Any occurrence of the form `1d4`, `2d12`, `3d8`, `d20`, `100`, etc. in feature
+descriptions (`description`) and in raw text (`rawText`) automatically turns
+into a small button. Clicking it plays a roll animation and shows the final
+result (broken down by individual die, if there's more than one). Die sizes
+d4, d6, d8, d10, d12, d20, d100 are recognized — enough for every standard
+Daggerheart die.
 
-## Известные ограничения / что можно улучшить дальше
+## Known limitations / possible future work
 
-- Форма «Добавить окружение» не разбирает фичи (Features) по
-  отдельным блокам — только общий сырой текст. Полный парсер под
-  произвольный формат статблока можно добавить позже, если понадобится.
-- Фильтр по тегам — одиночный выбор (можно расширить до мультивыбора).
-- Нет экспорта/импорта JSON через UI (сейчас это делается через меня
-  в чате) — можно добавить кнопки «Экспортировать/Импортировать» для
-  переноса данных между браузерами.
+- There's no JSON export/import through the UI (that's currently done
+  through me, in chat) — "Export/Import" buttons could be added to move data
+  between browsers.
