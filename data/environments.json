@@ -20939,7 +20939,8 @@
       ],
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "Court & Shadow"
     },
     {
       "id": "tower-of-the-moon",
@@ -21053,7 +21054,8 @@
       ],
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Court & Shadow"
     },
     {
       "id": "rifle-canyon-run",
@@ -21169,7 +21171,8 @@
       ],
       "biomes": [
         "drylands"
-      ]
+      ],
+      "source": "Pistolheart"
     },
     {
       "id": "mounted-train-chase",
@@ -21264,7 +21267,8 @@
       ],
       "biomes": [
         "drylands"
-      ]
+      ],
+      "source": "Pistolheart"
     },
     {
       "id": "drakkenheim-outer-city",
@@ -21376,7 +21380,8 @@
       ],
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Dungeons of Drakkenheim (beta)"
     },
     {
       "id": "city-streets",
@@ -25021,7 +25026,8 @@
       ],
       "biomes": [
         "forest"
-      ]
+      ],
+      "source": "The Sablewood Messengers"
     },
     {
       "id": "orphanmaker-river",
@@ -25116,7 +25122,8 @@
       ],
       "biomes": [
         "aquatic"
-      ]
+      ],
+      "source": "The Sablewood Messengers"
     },
     {
       "id": "the-ritual-of-renewal",
@@ -25183,7 +25190,8 @@
       ],
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "The Sablewood Messengers"
     },
     {
       "id": "the-skyship-windfall",
@@ -25233,7 +25241,8 @@
       ],
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "The Marauders of Windfall"
     },
     {
       "id": "the-commanders-dinner",
@@ -25328,7 +25337,8 @@
       ],
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "The Marauders of Windfall"
     },
     {
       "id": "bankburgh-chase",
@@ -25412,7 +25422,8 @@
       ],
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "The Wish Thief"
     },
     {
       "id": "keep-away",
@@ -25479,7 +25490,8 @@
       ],
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "The Wish Thief"
     },
     {
       "id": "the-fortress",
@@ -25546,7 +25558,8 @@
       ],
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Age of Umbra - Road to Nowhere"
     },
     {
       "id": "the-garden",
@@ -25611,7 +25624,8 @@
       ],
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Age of Umbra - Road to Nowhere"
     },
     {
       "id": "the-garage",
@@ -25706,7 +25720,8 @@
       ],
       "biomes": [
         "settlement"
-      ]
+      ],
+      "source": "Age of Umbra - Road to Nowhere"
     },
     {
       "id": "deathrace",
@@ -25804,7 +25819,8 @@
       ],
       "biomes": [
         "drylands"
-      ]
+      ],
+      "source": "Age of Umbra - Road to Nowhere"
     },
     {
       "id": "digestive-tract",
@@ -25869,7 +25885,8 @@
       ],
       "biomes": [
         "universal"
-      ]
+      ],
+      "source": "Age of Umbra - Road to Nowhere"
     },
     {
       "id": "bastion",
