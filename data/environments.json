@@ -20870,6 +20870,10 @@
         "en": "Death Butterfly Grove",
         "ru": "Роща Бабочек Смерти"
       },
+      "lore": {
+        "en": "Spiral firs have taken over a clearing or corridor, their needles dense with seemingly docile, black-and-white checkered butterflies. Dense groundcover of moss and ferns hides the shattered, skeletal remains of the swarms’ previous victims.",
+        "ru": "Спиральные пихты заполонили просеку или коридор — их иглы густо усыпаны с виду безобидными чёрно-белыми клетчатыми бабочками. Плотный ковёр из мха и папоротника скрывает изломанные, обглоданные до костей останки прежних жертв роя."
+      },
       "impulses": {
         "en": [
           "Consume Intruders",
@@ -20950,6 +20954,10 @@
       "name": {
         "en": "Tower of the Moon",
         "ru": "Башня Луны"
+      },
+      "lore": {
+        "en": "A multi-level tower covered in a moonlike façade, where the Moonlit King and his loyal creatures lurk.",
+        "ru": "Многоярусная башня, облицованная фасадом, напоминающим лунную поверхность, где таится Лунный Король со своими верными тварями."
       },
       "impulses": {
         "en": [
@@ -21065,6 +21073,10 @@
       "name": {
         "en": "Rifle Canyon Run",
         "ru": "Пробег по Ружейному Каньону"
+      },
+      "lore": {
+        "en": "A deep and narrow canyon filled with high vantage points, perfect for snipers.",
+        "ru": "Глубокий и узкий каньон, изобилующий высокими точками обзора — идеальное место для снайперов."
       },
       "impulses": {
         "en": [
@@ -21183,6 +21195,10 @@
         "en": "Mounted Train Chase",
         "ru": "Погоня за Поездом Верхом"
       },
+      "lore": {
+        "en": "Outlaws have stolen a train full of gold! Mount up and board it before they hit the tunnel!",
+        "ru": "Разбойники украли поезд, набитый золотом! По коням — и на борт, пока они не скрылись в тоннеле!"
+      },
       "impulses": {
         "en": [
           "Keep them busy",
@@ -21278,6 +21294,10 @@
       "name": {
         "en": "Drakkenheim: Outer City",
         "ru": "Драккенхайм: Внешний Город"
+      },
+      "lore": {
+        "en": "A ramshackle slum consisting of crumbling tenements, wattle and daub cottages, and fieldstone shacks.",
+        "ru": "Обветшалые трущобы: осыпающиеся многоквартирные дома, мазанки из прутьев и глины и хижины из бутового камня."
       },
       "impulses": {
         "en": [
@@ -25202,6 +25222,10 @@
         "en": "The Skyship Windfall",
         "ru": "Небесный Корабль «Внезапная Удача»"
       },
+      "lore": {
+        "en": "A brand-new freighter of the royal navy with three masts at the top and one each on the sides.",
+        "ru": "Совершенно новое грузовое судно королевского флота — три мачты наверху и по одной с каждого борта."
+      },
       "impulses": {
         "en": [
           "Show off naval might",
@@ -25252,6 +25276,10 @@
       "name": {
         "en": "The Commander's Dinner",
         "ru": "Ужин у Командора"
+      },
+      "lore": {
+        "en": "A spacious officer's quarters bathed in warm magical light, dominated by a wooden table set filled by a fine dinner spread.",
+        "ru": "Просторная офицерская каюта, залитая тёплым магическим светом; в центре — деревянный стол, накрытый изысканным ужином."
       },
       "impulses": {
         "en": [
@@ -25349,6 +25377,10 @@
         "en": "Bankburgh Chase",
         "ru": "Погоня по Банкбургу"
       },
+      "lore": {
+        "en": "Pursuing the Wish Thief through Bankburgh during Gerdi’s birthday festival.",
+        "ru": "Погоня за Похитительницей Желаний по Банкбургу во время праздника в честь дня рождения Герди."
+      },
       "impulses": {
         "en": [
           "Disorient and distract",
@@ -25434,6 +25466,10 @@
         "en": "Keep-Away",
         "ru": "Не Отдам"
       },
+      "lore": {
+        "en": "Keeping the tiara out of the party’s hands while they battle the Wish Thief.",
+        "ru": "Не дать тиаре попасть в руки персонажей, пока они сражаются с Похитительницей Желаний."
+      },
       "impulses": {
         "en": [
           "Misdirect attention",
@@ -25501,6 +25537,10 @@
       "name": {
         "en": "The Fortress",
         "ru": "Дорожная Крепость"
+      },
+      "lore": {
+        "en": "The main convoy and headquarters of the Roadwarden, Ramrodicus, and his Motor-Cult. Various oversized rigs connected by Mechanus Chains, tow a massive metal tower where he sits in his life-sustaining \"Driver's Seat.\" Only members of the cult come and go freely here – although sometimes a hitcher might catch his eye and be permitted an audience with the One True God-King of the Road. Anyone caught trespassing in this district is captured and sent to Dr. Killjoy's lab for experimentation and \"processing.\"",
+        "ru": "Главный конвой и штаб-квартира Дорожного Владыки Рамродикуса и его Мотор-Культа. Огромные риги, соединённые Механус-Цепями, тащат массивную металлическую башню, где он сидит в своём жизнеобеспечивающем «Водительском Кресле». Свободно приходить и уходить здесь могут только члены культа — хотя иногда странник может привлечь его взгляд и получить аудиенцию у Единственного Истинного Бога-Короля Дороги. Любой, кто попался на вторжении в этот район, схвачен и отправлен в лабораторию Доктора Килджоя для экспериментов и «обработки»."
       },
       "impulses": {
         "en": [
@@ -25570,6 +25610,10 @@
         "en": "The Garden",
         "ru": "Сад"
       },
+      "lore": {
+        "en": "A series of floating platforms – built from the wreckage of crashed airships, their sails stretched into a massive canopy. The garden is a market and farming district all at once. On any given day, upwards of a hundred traders and laborers – \"hitchers,\" as the cult refers to them – huddle there, hiding from the Umbra. The bazaar stays calm. The Highwaymen enforce a zero-tolerance policy; Any trouble, and ALL parties answer for it – usually with death. Which, for most, is still better than Killjoy's workshop.",
+        "ru": "Череда плавучих платформ, построенных из обломков разбившихся воздушных кораблей, чьи паруса натянуты в огромный полог. Сад — это одновременно рынок и сельскохозяйственный район. В любой день здесь укрывается от Умбры до сотни торговцев и работников — «странников», как их называет культ. Базар остаётся спокойным: Дорожные Разбойники проводят политику нулевой терпимости — при любых неприятностях отвечают ВСЕ стороны, обычно смертью. Впрочем, для большинства это всё же лучше, чем мастерская Килджоя."
+      },
       "impulses": {
         "en": [
           "Keep the peace by force",
@@ -25635,6 +25679,10 @@
       "name": {
         "en": "The Garage",
         "ru": "Гараж"
+      },
+      "lore": {
+        "en": "A multilevel mega-structure – part workshop, part prison. Dr. Senestor Killjoy, the city's Chief Machinist, oversees the Roadwarden's fleet of infernal machines from here. Most of the structure is open workshop, holding cells bolted to the walls. Catwalks crisscross above The Pit – the heart of the massive vehicle. A hungry, horrible machine. It consumes anything it touches, warps it, fuses it with metal slag and asphalt – the excrement of the great ROADWURM – to forge the replacement parts that keep the fleet moving.",
+        "ru": "Многоуровневое мега-сооружение — наполовину мастерская, наполовину тюрьма. Доктор Сенестор Килджой, главный механик города, отсюда наблюдает за флотом адских машин Дорожного Владыки. Большая часть строения — открытая мастерская с камерами, прикованными к стенам. Мостки пересекаются над Ямой — сердцем этой громадной машины. Голодное, чудовищное устройство. Оно поглощает всё, чего касается, искажает и сплавляет с металлическим шлаком и асфальтом — экскрементами великого ДОРОЖНОГО ЧЕРВЯ — чтобы выковать запасные части, которые держат флот на ходу."
       },
       "impulses": {
         "en": [
@@ -26010,6 +26058,10 @@
         "en": "Bandit Hideout",
         "ru": "Логово Бандитов"
       },
+      "lore": {
+        "en": "A shabby but well-defended hideout nestled among the brambles of the Sablewood.",
+        "ru": "Обветшалое, но хорошо защищённое укрытие, притаившееся среди зарослей ежевики Соболиного Леса."
+      },
       "impulses": {
         "en": [
           "Keep Out Intruders",
@@ -26121,6 +26173,10 @@
         "en": "Underroot Tunnels",
         "ru": "Подкоренные Туннели"
       },
+      "lore": {
+        "en": "Fortified and well-kept tunnels leading to underborne communities within the great forest.",
+        "ru": "Укреплённые и ухоженные туннели, ведущие к подземным поселениям в глубине великого леса."
+      },
       "impulses": {
         "en": [
           "Confound Travelers",
@@ -26221,6 +26277,10 @@
       "name": {
         "en": "The Village of Hush",
         "ru": "Деревня Хаш"
+      },
+      "lore": {
+        "en": "A small but friendly village nestled into the heart of the Sablewood.",
+        "ru": "Маленькая, но приветливая деревня, укрывшаяся в самом сердце Соболиного Леса."
       },
       "impulses": {
         "en": [
@@ -26435,6 +26495,10 @@
       "name": {
         "en": "Progenitor Mind’s Lair",
         "ru": "Логово Разума-Прародителя"
+      },
+      "lore": {
+        "en": "A pulsating teal labyrinth of too-smooth vines and worn away rocks—the Progenitor Mind awaiting within.",
+        "ru": "Пульсирующий бирюзовый лабиринт из неестественно гладких лоз и стёртых камней — внутри поджидает Разум-Прародитель."
       },
       "impulses": {
         "en": [
