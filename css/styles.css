@@ -229,7 +229,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
  * contain a heading, and the heading is the page's only h1. Same arrangement
  * as .card-title / .card-open below. */
 .brand {
-  position: relative;
+  position: relative; min-width: 0;
   display: flex; align-items: center; gap: var(--s-3);
   border-radius: var(--r-sm);
 }
@@ -240,28 +240,34 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
   outline: var(--focus-ring); outline-offset: var(--focus-offset);
 }
 .brand-mark {
-  width: auto; height: 42px; flex: none;
+  width: auto; height: 52px; flex: none;
   display: block; object-fit: contain;
 }
 /* Uppercase inscriptional caps gain presence from tracking, not weight —
  * Forum has no bold face to reach for. */
+.brand-text { min-width: 0; }
 .brand-text h1 {
   font-family: var(--font-display); font-weight: 400;
   font-size: var(--fs-lg); line-height: var(--lh-lg); letter-spacing: 0.06em;
   margin: 0; color: var(--parchment); text-transform: uppercase;
+  /* Truncates rather than wraps to a second line on a narrow phone — losing a
+   * few letters off the end reads better than the brand block growing a third
+   * row, and the accessible name on the button inside is untouched. */
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.brand-text p {
-  margin: 2px 0 0; font-size: var(--fs-xs); line-height: var(--lh-xs);
-  color: var(--muted); font-style: italic;
+/* One compact metadata line under the title: shortened subtitle, a muted
+ * middle dot, then the compatibility statement — plain secondary text, not a
+ * badge. The compatibility statement is never a brand name, so it stays
+ * visually subordinate to the title above it. */
+.brand-meta {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--s-1);
+  margin-top: var(--s-1); font-size: var(--fs-xs); line-height: 1.2;
+  color: var(--muted);
 }
-/* Compatibility statement, not a brand name: kept visually subordinate to the
- * title and subtitle above it — smaller, upright, boxed rather than italic. */
-.brand-text p.compat-badge {
-  display: inline-block; margin-top: var(--s-1);
-  padding: 1px var(--s-2); font-size: var(--fs-micro); font-style: normal;
-  letter-spacing: 0.03em; color: var(--muted);
-  border: 1px solid var(--line); border-radius: var(--r-pill);
-}
+/* Each piece may drop to its own line when space is short, but never breaks
+ * mid-phrase — "Daggerheart™ Compatible" wrapping after the trademark sign
+ * would turn the one compact row into two. */
+.brand-subtitle, .brand-separator, .compat-label { color: var(--muted); white-space: nowrap; }
 .header-actions { display: flex; gap: var(--s-3); align-items: center; flex-wrap: wrap; }
 .header-nav { display: flex; gap: var(--s-2); align-items: center; }
 /* The header cluster runs one size down from the page controls: a 40px button
@@ -1831,20 +1837,25 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
   body { font-size: 15px; }
   .shell { padding: 0 var(--s-4) var(--s-9); }
 
-  /* 56px of sticky header instead of 153px. The logo shrinks, the subtitle
-   * goes, and the actions stay on the same line as the wordmark. */
+  /* The logo shrinks and the shortened subtitle goes. flex-wrap stays at its
+   * default (wrap): the actions ride the same line as the wordmark whenever
+   * there is room, and only drop to a row of their own on the narrowest
+   * phones — trading a taller header for a title that never truncates. */
   .header-inner {
-    flex-direction: row; align-items: center; flex-wrap: nowrap;
+    flex-direction: row; align-items: center;
     gap: var(--s-3); padding: var(--s-2) var(--s-4);
   }
   .brand { gap: var(--s-2); min-width: 0; }
-  /* With the subtitle gone the brand is barely taller than the mark itself,
-   * short of the 44px a thumb expects. Grow the tap target past the artwork
-   * rather than the artwork past the header. */
-  #brand-home::after { inset: -8px -6px; }
-  .brand-mark { height: 28px; }
+  /* The tap target still needs to clear the 44px a thumb expects even once the
+   * mark itself shrinks. Grow it past the artwork rather than the artwork past
+   * the header. */
+  #brand-home::after { inset: -6px -6px; }
+  .brand-mark { height: 42px; }
   .brand-text h1 { font-size: var(--fs-md); letter-spacing: 0.04em; }
-  .brand-text p, .brand-text p.compat-badge { display: none; }
+  /* The shortened subtitle and its separator are the first things to go —
+   * the title and the compatibility statement stay, so the brand never drops
+   * to a single unlabeled row. */
+  .brand-subtitle, .brand-separator { display: none; }
   .header-actions { gap: var(--s-2); flex-wrap: nowrap; }
   .header-actions .btn { padding: 0 var(--s-3); }
 
@@ -1937,24 +1948,6 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
  * generator sits under the wilderness one. */
 @media (max-width: 760px) {
   .journey-cols { grid-template-columns: 1fr; gap: var(--s-7); }
-}
-
-/* Below this the wordmark wraps to two lines and pushes the header past the
- * single row it exists to hold. The mark carries the brand on its own; the h1
- * stays in the accessibility tree as the page heading.
- *
- * It is hidden without position: absolute on purpose. #brand-home::after is the
- * tap target for the whole brand, and it sizes against the nearest positioned
- * ancestor — an absolute h1 became that ancestor and shrank the target into its
- * own clipped 1px box, which left the logo untappable on a phone. Kept static,
- * the target resolves against .brand again, and the h1's overflow cannot clip a
- * box whose containing block sits outside it. */
-@media (max-width: 520px) {
-  .brand-text h1 {
-    width: 1px; height: 1px; padding: 0; margin: 0;
-    overflow: hidden; white-space: nowrap;
-  }
-  .brand-mark { height: 32px; }
 }
 
 /* Two nav labels plus the language switch no longer fit beside the logo here —

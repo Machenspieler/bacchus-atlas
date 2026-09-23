@@ -2,6 +2,7 @@
   "en": {
     "app_title": "Bacchus's Atlas",
     "app_subtitle": "A field guide to environments, journeys, and perils",
+    "app_subtitle_compact": "Environments, journeys & perils",
     "browser_title": "Bacchus's Atlas — Environments, Journeys & Perils",
     "compatibility_label": "Daggerheart™ Compatible",
     "search_placeholder": "Name or impulse…",
@@ -172,6 +173,7 @@
   "ru": {
     "app_title": "Атлас Бахуса",
     "app_subtitle": "Полевой справочник по окружениям, путешествиям и опасностям",
+    "app_subtitle_compact": "Окружения, путешествия и опасности",
     "browser_title": "Атлас Бахуса — окружения, путешествия и опасности",
     "compatibility_label": "Daggerheart™ Compatible",
     "search_placeholder": "Название или импульс…",

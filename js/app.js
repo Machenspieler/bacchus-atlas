@@ -616,7 +616,7 @@ function potentialAdversaryEntryHtml(localizedText, englishText) {
 /* Cache buster for the JSON under data/. index.html versions the stylesheet and
    this script the same way; the data files are fetched from here instead, so
    bump this whenever anything in data/ changes or browsers serve stale copies. */
-const DATA_VERSION = 85;
+const DATA_VERSION = 86;
 
 function getJSON(path) {
   return fetch(path).then(r => {
@@ -1263,8 +1263,11 @@ function renderHeader() {
         <img class="brand-mark" src="img/brand-logo.png?v=2" alt="" aria-hidden="true">
         <span class="brand-text">
           <h1><button type="button" id="brand-home">${t('app_title')}</button></h1>
-          <p>${t('app_subtitle')}</p>
-          <p class="compat-badge">${t('compatibility_label')}</p>
+          <span class="brand-meta">
+            <span class="brand-subtitle">${t('app_subtitle_compact')}</span>
+            <span class="brand-separator" aria-hidden="true">·</span>
+            <span class="compat-label">${t('compatibility_label')}</span>
+          </span>
         </span>
       </div>
       <div class="header-actions">

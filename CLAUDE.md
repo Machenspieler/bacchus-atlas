@@ -7,11 +7,14 @@ and `js/app.js` directly; content lives in `data/environments.json` and `data/i1
 
 The project name is "Bacchus's Atlas" in English and "Атлас Бахуса" in Russian —
 both stored in `data/i18n.json` as `app_title`/`app_subtitle` and rendered via
-`renderHeader()` in `js/app.js`. "Daggerheart™ Compatible" (`compatibility_label`
-in `data/i18n.json`) is a separate compatibility statement, not part of the
-project name: it is never translated, never placed inside the `<h1>` or the
-logo's accessible name, and always stays visually secondary to the title and
-subtitle (see `.compat-badge` in `css/styles.css`).
+`renderHeader()` in `js/app.js`. The header itself shows a shorter compact
+subtitle (`app_subtitle_compact`) inline with the compatibility statement; the
+longer `app_subtitle` is for other long-form contexts (metadata, README, About
+content). "Daggerheart™ Compatible" (`compatibility_label` in `data/i18n.json`)
+is a separate compatibility statement, not part of the project name: it is
+never translated, never placed inside the `<h1>` or the logo's accessible name,
+and always stays visually secondary to the title (see `.compat-label` in
+`css/styles.css` — plain secondary text, not a badge).
 
 Do not use "Daggerheart" as part of the project title, logo, or main brand name.
 Do not imitate the official Daggerheart logo or artwork.
