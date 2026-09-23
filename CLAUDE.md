@@ -363,3 +363,66 @@ and `data-rich-block` attributes when rendering rich text. Those are not route
 input: the same function always writes them first with a paired
 `encodeURIComponent()` call from internal content (environment/adversary text),
 so they stay outside this decoder and are unchanged by this section.
+
+## Environment search index
+
+The environment dataset is read-only during the page session, so its
+searchable text is derived once — not rebuilt on every filter pass. `js/search-index.js`
+(global `SearchIndex`, loaded before `js/app.js` in `index.html`, the same
+dependency-free browser/CommonJS pattern as `js/route-utils.js`) is the one
+place that happens.
+
+- **Built once, stored separately from source data.** `setEnvironmentCatalog()`
+  in `js/app.js` is the single lifecycle boundary that assigns
+  `state.builtinEnvs` and builds `state.environmentSearchIndex` (a
+  `Map<environmentId, { aliasText, literalText }>`) together, right after
+  `environments.json` loads and before the first render. The index lives in
+  that Map, never as a hidden property on the environment objects themselves
+  — environment records loaded from `data/environments.json` are never
+  mutated.
+- **Both languages, always.** Each record's `aliasText`/`literalText` contain
+  EN and RU simultaneously, so switching `state.lang` never rebuilds the
+  index and never changes which fields are searchable in which language.
+- **Alias-eligible text** (`aliasText`) is, in this field order: `name.en`/
+  `name.ru`, `impulses.en`/`impulses.ru`, then for every feature in source
+  order `name`/`description`/`prompt` (en, ru each), then `rawText.en`/
+  `rawText.ru`, then `lore.en`/`lore.ru`.
+- **Literal-only text**: `literalText` is `aliasText` plus
+  `potential_adversaries.en`/`potential_adversaries.ru`. Potential adversaries
+  are deliberately excluded from `aliasText` — a roster of stock NPCs says
+  nothing about what kind of place an environment is, so an alias like
+  "market" must not match an environment just because it lists a Merchant.
+  Typing the adversary's name outright still finds it, through
+  `literalText`.
+- **Intentionally excluded**: `story_seeds`, `source`, `biomes`, `type`,
+  `tier`, region names, and any other UI-generated label. Adding a new
+  searchable field means updating `buildEnvironmentSearchRecord()` in
+  `js/search-index.js` and its tests in `tests/search-index.test.js` — not
+  reaching for `JSON.stringify(environment)`.
+- **Query preparation happens once per filtering pass.** `sortedFilteredEnvs()`
+  calls `SearchIndex.prepareSearchQuery(state.filters.search)` exactly once
+  per call, producing `{ normalized, empty, aliasTerms, aliasMatchers }`; that
+  prepared query is threaded through to every `envMatchesFilters(env,
+  preparedQuery)` call instead of being recomputed per environment.
+  `envMatchesFilters()` must not rebuild text haystacks, traverse
+  `env.features`, join strings, lowercase environment content, or expand
+  aliases itself — it only looks up `state.environmentSearchIndex.get(env.id)`
+  and calls `SearchIndex.matches()`.
+- **Alias regexes are cached, not recompiled.** `SearchIndex`'s
+  `aliasRegexCache` holds one compiled word-start `RegExp` per configured
+  alias term (see `SEARCH_ALIASES`/`MIN_ALIAS_QUERY` there, unchanged from
+  before this index existed) — never one per environment, and never one
+  built from an arbitrary user query.
+- **Catalog and list views share one index.** A list is just a filtered
+  subset of `allEnvs()`; searching inside a list looks records up in the
+  same global `state.environmentSearchIndex` rather than building a
+  per-list index.
+- **Missing-record fallback**: under normal operation every environment has
+  a record, built eagerly by `setEnvironmentCatalog()`. If `envMatchesFilters()`
+  ever finds one missing, `getSearchRecord()` builds it once, inserts it into
+  the index, and reuses it from then on — it does not rebuild the whole
+  index and does not log environment text, only the environment id.
+
+Do not concatenate or normalize environment content inside the
+per-environment filter callback. Update the centralized search-index builder
+(`js/search-index.js`) and its tests instead.

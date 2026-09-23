@@ -48,6 +48,10 @@ const state = {
   lang: storedLang(),
   i18n: null,
   builtinEnvs: [],
+  // Built once by setEnvironmentCatalog() alongside builtinEnvs — never
+  // rebuilt on language switch, filter change, or list navigation. See the
+  // "Environment search index" section in CLAUDE.md.
+  environmentSearchIndex: new Map(),
   regions: [],
   itemCatalog: { items: {}, itemUrl: '', imageUrl: '' },
   itemIndex: new Map(),
@@ -150,6 +154,14 @@ function t(key) {
 
 function allEnvs() {
   return state.builtinEnvs;
+}
+
+/* The one lifecycle boundary for the environment catalog: assigning it and
+ * building its search index always happen together, so the two can never
+ * drift apart. See the "Environment search index" section in CLAUDE.md. */
+function setEnvironmentCatalog(environments) {
+  state.builtinEnvs = environments;
+  state.environmentSearchIndex = SearchIndex.buildEnvironmentSearchIndex(environments);
 }
 
 /* The members of a list, in catalog order. Taken off the catalog rather than off
@@ -692,7 +704,7 @@ async function init() {
     return;
   }
   const [envs, regions, items, journey, adversaries] = result.value;
-  state.builtinEnvs = envs.environments;
+  setEnvironmentCatalog(envs.environments);
   state.regions = regions.regions || [];
   setItemCatalog(items);
   state.journey = { ...JOURNEY_EMPTY, ...journey };
@@ -1731,101 +1743,31 @@ function bindMultiSelectField({ field, trigger, panel, onToggle, updateLabel }) 
   return controller;
 }
 
-// Searching any term in a group also searches every other term in the group,
-// so "магазин" finds Магическая Лавка and "tavern" finds Магический город.
-// Both languages sit in one group because the haystack holds EN and RU text.
-// Terms are stems matched at word start, which covers Russian inflections
-// (лавк → лавка, лавке). Keep them long and unambiguous: a stem also fires
-// inside longer words, so "порт" would drag in Город Порталов and "бар" every
-// барьер. Verify a new term against the data before adding it.
-//
-// A group holds names for one and the same place, nothing looser. Everything a
-// wider reading used to sweep in has been taken back out:
-// - the person standing in the place ("торгов"/"merchant" matched 21 of 188
-//   environments, nearly all of them a feast or a casino that merely lists a
-//   Merchant among its adversaries; likewise innkeeper, bartender, barkeep),
-// - the thing kept inside it ("книг"/"book" put Лаборатория, Магическая буря
-//   and Оживлённый рынок under "библиотека"; "алтар"/"altar" put Туманная
-//   Пустошь under "храм"),
-// - a neighbouring but different place — a market is not a shop, a cave is not
-//   a dungeon, a crypt is not a graveyard, so those now sit in groups of their
-//   own,
-// - a word the data only ever uses in another sense ("store" appears solely as
-//   the verb, "store that roll"),
-// - a synonym the data never uses at all, which only lengthens the table.
-const SEARCH_ALIASES = [
-  ['магазин', 'лавк', 'shop'],
-  ['рынок', 'базар', 'market'],
-  ['таверн', 'трактир', 'кабак', 'tavern'],
-  ['кладбищ', 'погост', 'graveyard', 'cemetery'],
-  ['склеп', 'гробниц', 'tomb', 'crypt'],
-  ['храм', 'церк', 'temple', 'church'],
-  ['пещер', 'cave', 'cavern'],
-  ['библиотек', 'library'],
-];
+/* Environment search text is precomputed once by js/search-index.js
+ * (SearchIndex) rather than rebuilt on every filter pass — see the
+ * "Environment search index" section in CLAUDE.md. The alias groups,
+ * MIN_ALIAS_QUERY, and the word-start alias-matching rules that used to
+ * live here moved there unchanged; envMatchesFilters() below only looks
+ * index records up, and must never traverse features, join text,
+ * lowercase environment content, or expand aliases itself. */
 
-// Below this length a query is too generic to expand — "ба" would otherwise
-// pull in the whole tavern group.
-const MIN_ALIAS_QUERY = 3;
-
-const aliasRegexCache = new Map();
-
-function wordStartRegex(term) {
-  let re = aliasRegexCache.get(term);
-  if (!re) {
-    re = new RegExp('(^|[^\\p{L}\\p{N}])' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'iu');
-    aliasRegexCache.set(term, re);
+/* Under normal operation every environment already has an index record,
+ * built by setEnvironmentCatalog() at load time. If one is unexpectedly
+ * missing, it's built once, inserted, and reused from then on — never
+ * rebuilt on every lookup — and only the environment id is logged. */
+function getSearchRecord(env) {
+  let record = state.environmentSearchIndex.get(env.id);
+  if (!record) {
+    record = SearchIndex.buildEnvironmentSearchRecord(env);
+    state.environmentSearchIndex.set(env.id, record);
+    console.warn('[search-index] missing record repaired for environment id', env.id);
   }
-  return re;
+  return record;
 }
 
-// A query expands only as a whole: it must be a prefix of a group term (user
-// typed a stem, "таверн") or start with one (user typed an inflection,
-// "таверной"). Multi-word queries stay literal — someone narrowing to
-// "магазин товаров" wants fewer results than "магазин", not the whole group.
-function aliasTermsFor(query) {
-  if (query.length < MIN_ALIAS_QUERY || /\s/.test(query)) return [];
-  const terms = new Set();
-  for (const group of SEARCH_ALIASES) {
-    if (!group.some(term => term.startsWith(query) || query.startsWith(term))) continue;
-    for (const term of group) terms.add(term);
-  }
-  return [...terms];
-}
-
-// Literal substring first, so every match that worked before still works; the
-// alias pass only ever widens the result set. It runs against a narrower
-// haystack than the literal pass: the adversary list is a roster of stock NPCs
-// that says nothing about what the place is, so a lone Merchant there must not
-// answer for "рынок" — but typing "торговец" outright still finds it literally.
-function matchesSearch(hay, aliasHay, query) {
-  const q = query.trim().toLowerCase();
-  if (!q) return true;
-  if (hay.includes(q)) return true;
-  return aliasTermsFor(q).some(term => wordStartRegex(term).test(aliasHay));
-}
-
-function envMatchesFilters(env) {
+function envMatchesFilters(env, preparedQuery) {
   const f = state.filters;
-  if (f.search) {
-    const featureText = (env.features || []).flatMap(feat => [
-      feat.name?.en, feat.name?.ru, feat.description?.en, feat.description?.ru, feat.prompt?.en, feat.prompt?.ru,
-    ]);
-    const rawText = env.rawText ? [env.rawText.en, env.rawText.ru] : [];
-    const loreText = env.lore ? [env.lore.en, env.lore.ru] : [];
-    const adversaries = env.potential_adversaries
-      ? [...(env.potential_adversaries.en || []), ...(env.potential_adversaries.ru || [])]
-      : [];
-    const aliasHay = [
-      env.name.en, env.name.ru,
-      ...(env.impulses ? [...(env.impulses.en || []), ...(env.impulses.ru || [])] : []),
-      ...featureText, ...rawText, ...loreText,
-    ].filter(Boolean).join(' ').toLowerCase();
-    const hay = adversaries.length
-      ? aliasHay + ' ' + adversaries.join(' ').toLowerCase()
-      : aliasHay;
-    if (!matchesSearch(hay, aliasHay, f.search)) return false;
-  }
+  if (!preparedQuery.empty && !SearchIndex.matches(getSearchRecord(env), preparedQuery)) return false;
   if (f.tiers.size && !f.tiers.has(env.tier)) return false;
   if (f.types.size && !f.types.has(env.type)) return false;
   if (f.sources.size && !f.sources.has(env.source)) return false;
@@ -1840,11 +1782,14 @@ function envMatchesFilters(env) {
 }
 
 /* Tier first, then the displayed name — so the grid reads as a ladder and each
- * rung is alphabetical in whichever language is on screen. */
+ * rung is alphabetical in whichever language is on screen. The query is
+ * normalized and alias-expanded exactly once here, before iterating
+ * environments — not once per environment inside envMatchesFilters(). */
 function sortedFilteredEnvs() {
   const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
+  const preparedQuery = SearchIndex.prepareSearchQuery(state.filters.search);
   return currentEnvs()
-    .filter(envMatchesFilters)
+    .filter(env => envMatchesFilters(env, preparedQuery))
     .sort((a, b) => a.tier - b.tier || collator.compare(envName(a), envName(b)));
 }
 
