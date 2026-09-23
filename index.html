@@ -13,6 +13,12 @@
      "Unlisted public deployment" section in README.md — this tag is not
      access control, just a request that compliant crawlers not index it. -->
 <meta name="robots" content="noindex, nofollow, nosnippet, noimageindex">
+<!-- Filled in dist/index.html only, by scripts/version-assets.js, with a
+     content hash of the production css/js (ui) and data/*.json (data)
+     files. Always empty in source — see "Automatic asset versioning" in
+     CLAUDE.md. -->
+<meta name="atlas-ui-version" content="">
+<meta name="atlas-data-version" content="">
 <title>Атлас Бахуса — окружения, путешествия и опасности</title>
 <link rel="icon" href="favicon.ico?v=3" sizes="any">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=3">
@@ -25,7 +31,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Forum&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
-<link rel="stylesheet" href="css/styles.css?v=95">
+<link rel="stylesheet" href="css/styles.css" data-cache-version="ui">
 </head>
 <body>
   <!-- Static fallback shown before js/app.js runs. renderHeader() overwrites
@@ -42,7 +48,8 @@
     <div class="grid" id="grid-wrap"></div>
   </main>
   <footer class="site-footer" id="footer"></footer>
-  <script src="js/safe-storage.js?v=2"></script>
-  <script src="js/app.js?v=167"></script>
+  <script src="js/safe-storage.js" data-cache-version="ui"></script>
+  <script src="js/data-version.js" data-cache-version="ui"></script>
+  <script src="js/app.js" data-cache-version="ui"></script>
 </body>
 </html>

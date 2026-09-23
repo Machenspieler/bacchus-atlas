@@ -633,11 +633,6 @@ function potentialAdversaryEntryHtml(localizedText, englishText) {
 
 /* ---------------- init ---------------- */
 
-/* Cache buster for the JSON under data/. index.html versions the stylesheet and
-   this script the same way; the data files are fetched from here instead, so
-   bump this whenever anything in data/ changes or browsers serve stale copies. */
-const DATA_VERSION = 88;
-
 function getJSON(path) {
   return fetch(path).then(r => {
     if (!r.ok) throw new Error(`${r.status} ${r.statusText} — ${path}`);
@@ -650,9 +645,8 @@ function getJSON(path) {
  * a skeleton grid go up immediately, so the first paint is the shape of the page
  * rather than an empty near-black rectangle. */
 async function init() {
-  const v = `?v=${DATA_VERSION}`;
   try {
-    state.i18n = await getJSON(`data/i18n.json${v}`);
+    state.i18n = await getJSON(versionedDataUrl('data/i18n.json'));
   } catch (err) {
     renderFatalError(err);
     return;
@@ -663,11 +657,11 @@ async function init() {
   renderLoadingState();
   try {
     const [envs, regions, items, journey, adversaries] = await Promise.all([
-      getJSON(`data/environments.json${v}`),
-      getJSON(`data/regions.json${v}`).catch(() => ({ regions: [] })),
-      getJSON(`data/items.json${v}`).catch(() => ({ items: {}, aliases: {} })),
-      getJSON(`data/journey.json${v}`).catch(() => JOURNEY_EMPTY),
-      getJSON(`data/adversaries.json${v}`).catch(() => ({ adversaries: [] })),
+      getJSON(versionedDataUrl('data/environments.json')),
+      getJSON(versionedDataUrl('data/regions.json')).catch(() => ({ regions: [] })),
+      getJSON(versionedDataUrl('data/items.json')).catch(() => ({ items: {}, aliases: {} })),
+      getJSON(versionedDataUrl('data/journey.json')).catch(() => JOURNEY_EMPTY),
+      getJSON(versionedDataUrl('data/adversaries.json')).catch(() => ({ adversaries: [] })),
     ]);
     state.builtinEnvs = envs.environments;
     state.regions = regions.regions || [];

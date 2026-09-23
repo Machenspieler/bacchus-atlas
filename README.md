@@ -15,6 +15,8 @@ publish it as-is on GitHub Pages.
 ├── css/styles.css        — all layout and theming
 ├── js/app.js             — all logic (rendering, filters, dice, lists)
 ├── scripts/build.js      — CI-only: copies the runtime files into dist/ (see Deploy below)
+├── scripts/version-assets.js — CI-only: generates cache-busting hashes into dist/index.html
+├── scripts/check-asset-versioning.js — CI-only: fails the build if the generated versions are wrong
 ├── scripts/check-unlisted-build.js — CI-only: fails the build if dist/ regresses (see Deploy below)
 ├── img/
 │   ├── biomes/           — biome icons for catalog cards
@@ -51,18 +53,30 @@ npx serve .
 ## Deploying to GitHub Pages
 
 Deployment is automatic: [.github/workflows/deploy.yml](.github/workflows/deploy.yml)
-runs on every push to `main`. It runs the test suite (`node --test
-tests/*.test.js`), then `node scripts/validate-data.js` — a dependency-free
-semantic check of every file under `data/` (broken cross-file references,
-unsupported enum values, incomplete Journey roll tables, i18n key/placeholder
-mismatches; see "Production data validation" in `CLAUDE.md`) that fails the
-build on any error. Only then does it run `node scripts/build.js`, which
-copies the runtime files (`index.html`, `css/`, `js/`, `data/`, `img/`,
-favicons, `.nojekyll`) into `dist/` as-is — it doesn't read
-`environments.json`, generate HTML, or touch `index.html` in any way. `node
-scripts/check-unlisted-build.js` then verifies `dist/` still holds to the
-public-but-unlisted model described below (see [Unlisted public
-deployment](#unlisted-public-deployment)), and fails the build if it doesn't.
+runs on every push to `main`, in order: validate, copy, generate versions,
+verify, deploy.
+
+1. `node --test tests/*.test.js` runs the test suite.
+2. `node scripts/validate-data.js` — a dependency-free semantic check of
+   every file under `data/` (broken cross-file references, unsupported enum
+   values, incomplete Journey roll tables, i18n key/placeholder mismatches;
+   see "Production data validation" in `CLAUDE.md`) that fails the build on
+   any error.
+3. `node scripts/build.js` copies the runtime files (`index.html`, `css/`,
+   `js/`, `data/`, `img/`, favicons, `.nojekyll`) into `dist/` as-is — it
+   doesn't read `environments.json`, generate HTML, or touch `index.html` in
+   any way.
+4. `node scripts/version-assets.js` computes deterministic content hashes
+   for `dist/css` + `dist/js` (the UI version) and `dist/data` (the data
+   version), and writes them into `dist/index.html` only — see "Automatic
+   asset versioning" in `CLAUDE.md`.
+5. `node scripts/check-asset-versioning.js` re-derives both hashes and fails
+   the build if anything about the generated versions is wrong or stale.
+6. `node scripts/check-unlisted-build.js` verifies `dist/` still holds to
+   the public-but-unlisted model described below (see [Unlisted public
+   deployment](#unlisted-public-deployment)), and fails the build if it
+   doesn't.
+
 `dist/` is then published to GitHub Pages via
 `actions/upload-pages-artifact` + `actions/deploy-pages`.
 
@@ -389,7 +403,10 @@ To add art for another environment:
    `img/env/<id>.jpg`. Requirements for the image itself and the re-encode
    command are below.
 2. Add that `id` to the `ENV_ART` set in `js/app.js`.
-3. Bump `?v=` for `js/app.js` in `index.html`.
+
+No cache-busting step is needed — the production build generates it
+automatically from the changed file's contents (see "Automatic asset
+versioning" in `CLAUDE.md`).
 
 The set is listed by hand rather than probed with a request: most
 environments have no art, and none of them should have to find that out via

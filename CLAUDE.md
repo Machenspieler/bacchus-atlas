@@ -76,15 +76,55 @@ An environment may carry more than one biome. List them most to least characteri
 the first is the primary, the rest are secondary, tertiary, quaternary. Tag only what
 the card's text actually supports; don't guess a terrain from the name alone.
 
-## Cache busting
+## Automatic asset versioning
 
-`index.html` references the stylesheet and scripts with a `?v=` query string. Bump the
-number whenever `css/styles.css`, `js/safe-storage.js`, or `js/app.js` changes, or
-browsers will serve stale copies after deploy.
+Cache-busting is generated at build time from file contents — nobody edits a version
+number by hand. Do not add a manually maintained `?v=` query parameter or a
+`DATA_VERSION`-style constant anywhere in this project; if a future change needs a new
+cache-busted asset, extend the automatic scheme below instead.
 
-The JSON under `data/` is fetched by `js/app.js`, not linked from `index.html`, so it
-carries its own buster: bump `DATA_VERSION` in `js/app.js` whenever any data file
-changes. That edits `js/app.js`, so bump its `?v=` in `index.html` too.
+There are two independent content hashes, each the first 16 lowercase hex characters
+of a SHA-256 over every matching file's normalized relative path and exact bytes
+(`scripts/lib/asset-versioning.js`, `calculateContentHash`):
+
+- **UI version** — from every file under `css/**/*.css` and `js/**/*.js`.
+- **Data version** — from every file under `data/**/*.json`. Adding a new production
+  JSON file under `data/` automatically changes it; nothing else needs updating.
+
+Source `index.html` stays version-free: local CSS/JS elements that need a cache-busted
+URL carry `data-cache-version="ui"` instead of a `?v=` query string, and
+`<meta name="atlas-ui-version" content="">` / `<meta name="atlas-data-version"
+content="">` ship empty. That's what lets `index.html` be opened straight from source —
+empty meta values and unversioned local URLs are the expected, safe local-development
+state, not an error.
+
+The production pipeline runs, in order:
+
+```bash
+node scripts/build.js               # copy-only, as before
+node scripts/version-assets.js      # fills in dist/index.html only
+node scripts/check-asset-versioning.js
+```
+
+`scripts/version-assets.js` computes both hashes from `dist/`, appends `v=<hash>` to
+every `data-cache-version="ui"` element's `href`/`src` (replacing any existing `v=`,
+never touching an external URL), and writes the two hashes into the version meta tags —
+all inside `dist/`, never in the source tree. It is idempotent: running it twice against
+the same `dist/` produces the same output. `scripts/check-asset-versioning.js` then
+re-derives both hashes independently and fails the build (non-zero exit) if anything
+doesn't match — a stale version, a resurrected manual `?v=`/`DATA_VERSION`, a marked
+asset that didn't get versioned, or a JSON manifest embedded in `index.html`.
+
+Adding a new local CSS or JavaScript file that the browser must load requires adding it
+to `index.html` with the `data-cache-version="ui"` marker — nothing else. It is then
+automatically included in the UI hash and gets a `v=` parameter on every build.
+
+Every local JSON request in `js/app.js` goes through `versionedDataUrl()`
+(`js/data-version.js`), the one boundary that appends the generated data version — see
+`getDataVersion()` there for how it reads `atlas-data-version` and falls back to an
+unversioned path when the value is empty or malformed (source `index.html`, or any
+build that hasn't run `version-assets.js` yet). Do not concatenate a version onto a
+`fetch()` call anywhere else.
 
 ## Unlisted deployment — do not undo
 
