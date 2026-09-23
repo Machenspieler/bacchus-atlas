@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* ============================================================
-   Daggerheart Atlas — build.js
+   Bacchus's Atlas — build.js
    Runs in CI (see .github/workflows/deploy.yml). Produces dist/ as a
    plain copy of the runtime files — index.html, css/, js/, data/, img/,
    favicons, .nojekyll. It does not read data/environments.json, does not

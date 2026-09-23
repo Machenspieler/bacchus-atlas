@@ -1,5 +1,5 @@
 /* ============================================================
-   Daggerheart Atlas — theme
+   Bacchus's Atlas — theme
    Palette: near-black ink (#14110f), aged parchment (#e9dfc7),
    Hope gold (#d9a441), Fear crimson (#9c2b3b), deep teal accent (#2c5f5a)
    Display face: Forum (classical inscription, Cyrillic + Latin)
@@ -253,6 +253,14 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 .brand-text p {
   margin: 2px 0 0; font-size: var(--fs-xs); line-height: var(--lh-xs);
   color: var(--muted); font-style: italic;
+}
+/* Compatibility statement, not a brand name: kept visually subordinate to the
+ * title and subtitle above it — smaller, upright, boxed rather than italic. */
+.brand-text p.compat-badge {
+  display: inline-block; margin-top: var(--s-1);
+  padding: 1px var(--s-2); font-size: var(--fs-micro); font-style: normal;
+  letter-spacing: 0.03em; color: var(--muted);
+  border: 1px solid var(--line); border-radius: var(--r-pill);
 }
 .header-actions { display: flex; gap: var(--s-3); align-items: center; flex-wrap: wrap; }
 .header-nav { display: flex; gap: var(--s-2); align-items: center; }
@@ -1836,7 +1844,7 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
   #brand-home::after { inset: -8px -6px; }
   .brand-mark { height: 28px; }
   .brand-text h1 { font-size: var(--fs-md); letter-spacing: 0.04em; }
-  .brand-text p { display: none; }
+  .brand-text p, .brand-text p.compat-badge { display: none; }
   .header-actions { gap: var(--s-2); flex-wrap: nowrap; }
   .header-actions .btn { padding: 0 var(--s-3); }
 

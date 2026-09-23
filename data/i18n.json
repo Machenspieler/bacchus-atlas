@@ -1,7 +1,9 @@
 {
   "en": {
-    "app_title": "Daggerheart Atlas",
-    "app_subtitle": "A field guide to the world's scenes and hazards",
+    "app_title": "Bacchus's Atlas",
+    "app_subtitle": "A field guide to environments, journeys, and perils",
+    "browser_title": "Bacchus's Atlas — Environments, Journeys & Perils",
+    "compatibility_label": "Daggerheart™ Compatible",
     "search_placeholder": "Name or impulse…",
     "filter_tier": "Tier",
     "filter_type": "Type",
@@ -168,8 +170,10 @@
     "story_seeds_label": "Story Seeds"
   },
   "ru": {
-    "app_title": "Атлас Daggerheart",
-    "app_subtitle": "Справочник сцен и опасностей мира",
+    "app_title": "Атлас Бахуса",
+    "app_subtitle": "Полевой справочник по окружениям, путешествиям и опасностям",
+    "browser_title": "Атлас Бахуса — окружения, путешествия и опасности",
+    "compatibility_label": "Daggerheart™ Compatible",
     "search_placeholder": "Название или импульс…",
     "filter_tier": "Ранг",
     "filter_type": "Тип",

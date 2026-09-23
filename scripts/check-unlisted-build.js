@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* ============================================================
-   Daggerheart Atlas — check-unlisted-build.js
+   Bacchus's Atlas — check-unlisted-build.js
    Regression check for the public-but-unlisted deployment model (see
    the "Unlisted public deployment" section in README.md). Runs after
    scripts/build.js in CI and fails the build if dist/ ever regresses
