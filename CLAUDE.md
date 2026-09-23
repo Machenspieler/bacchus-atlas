@@ -243,3 +243,62 @@ JSON values with real internal structure, a structural validator in
   catch `setItem()`/`removeItem()` failures independently.
 - None of this logs or transmits stored values — only a key name and a failure
   reason ever reach `console.warn` or the recovery log.
+
+## Hash routing
+
+All untrusted hash-route segments must be decoded through the centralized safe
+route decoder. The route parser must never call `decodeURIComponent` directly on
+an untrusted segment without handling `URIError`. Malformed route components must
+fall back independently and must not stop startup or `hashchange` navigation.
+
+`js/route-utils.js` (global `RouteUtils`, loaded before `js/app.js` in
+`index.html`) is the one place `location.hash` is decoded:
+
+- `RouteUtils.safeDecodeRouteSegment(rawSegment)` wraps a single
+  `decodeURIComponent()` call in a narrow try/catch, returning
+  `{ ok: true, value }` or `{ ok: false, value: null }` for malformed percent
+  encoding — never partially decoding, never retrying, never falling back to
+  the raw undecoded text as an ID. A non-`URIError` exception is rethrown, not
+  swallowed.
+- `RouteUtils.parseRouteHash(hash)` is the pure route parser: given a
+  `location.hash`-shaped string, it returns `{ route, malformed,
+  canonicalHash }` and never throws. It has no DOM, application-state, or
+  browser-global dependency, which is what makes it directly unit-testable
+  (`tests/routing.test.js`) and safe to run before i18n, JSON data, or the
+  catalog have loaded.
+- `RouteUtils.baseHash(route)` / `RouteUtils.envHash(envId, route)` /
+  `RouteUtils.routeToHash(route)` are the pure route-to-hash builders — the
+  single boundary where a route becomes a URL, with every dynamic segment run
+  through `encodeURIComponent()` exactly once. `js/app.js`'s `baseHash()` /
+  `envHash()` are thin wrappers that default their `route` argument to
+  `state.route`.
+
+The environment overlay suffix and the base route beneath it (catalog, Lists
+overview, an individual list, Journey) are decoded independently: a malformed
+`/env/<id>` suffix is dropped without discarding a valid base route, and a
+malformed list ID falls back to the Lists overview without discarding a valid
+environment overlay on top of it.
+
+`js/app.js` reads the current route only through `readCurrentRoute()`, which
+calls `RouteUtils.parseRouteHash(location.hash)` and, when the result is
+malformed, repairs the address via `repairHash()` before returning the safe
+fallback route. `repairHash()` uses `history.replaceState()` — never
+`location.hash = …`, `history.pushState()`, or a reload — so a malformed
+address is corrected in place, without adding a history entry or triggering a
+second `hashchange`. Every call site that used to call the old unsafe
+`parseRoute()` (initial state construction, the `hashchange` listener,
+`navigate()`, `dismissDetail()`, `replaceEnv()`, and the "environment not in
+the catalog" fallback in `applyDetailRoute()`) now goes through
+`readCurrentRoute()` instead.
+
+An unknown-but-validly-decoded environment or list ID is a separate concern
+from decoding safety and is handled where it always was — `applyDetailRoute()`
+drops an environment ID that isn't in `allEnvs()`, and `render()` falls back to
+the Lists overview for a list ID not in `state.lists` — neither of those paths
+touches `RouteUtils`.
+
+`js/app.js` also calls `decodeURIComponent()` on `data-adv-rich`, `data-adv-dice`,
+and `data-rich-block` attributes when rendering rich text. Those are not route
+input: the same function always writes them first with a paired
+`encodeURIComponent()` call from internal content (environment/adversary text),
+so they stay outside this decoder and are unchanged by this section.

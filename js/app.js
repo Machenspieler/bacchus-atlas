@@ -78,42 +78,56 @@ const state = {
   // Whether the phone-width filter disclosure is open. Purely presentational,
   // so it lives here rather than in localStorage and survives a re-render only.
   filtersOpen: false,
-  route: parseRoute(),
+  route: readCurrentRoute(),
 };
 
 /* An open environment card is a "/env/<id>" suffix on whichever route is
  * behind it, rather than a route of its own: the card is an overlay, and the
  * catalog or list underneath it keeps its own address. That gives the card a
  * link worth sharing and, on a phone, makes the Back gesture close the sheet
- * instead of leaving the site. */
-function parseRoute() {
-  let hash = location.hash;
-  let env = null;
-  const em = hash.match(/\/env\/([^/]+)$/);
-  if (em) { env = decodeURIComponent(em[1]); hash = hash.slice(0, em.index) || '#'; }
-  const m = hash.match(/^#\/lists\/(.+)$/);
-  if (m) return { name: 'list', id: decodeURIComponent(m[1]), env };
-  if (hash === '#/lists') return { name: 'lists', env };
-  if (hash === '#/journey') return { name: 'journey', env };
-  return { name: 'catalog', env };
-}
+ * instead of leaving the site.
+ *
+ * location.hash is untrusted input — a manually edited, copied, or truncated
+ * link can carry malformed percent encoding — so it is never decoded here
+ * directly. js/route-utils.js (RouteUtils) is the one place that happens,
+ * safely; this file only reads the current route through readCurrentRoute()
+ * below. See the "Hash routing" section in CLAUDE.md. */
 
 /** The address of the route behind the card, without any card on it. */
-function baseHash(route = state.route) {
-  if (route.name === 'list') return '#/lists/' + encodeURIComponent(route.id);
-  if (route.name === 'lists') return '#/lists';
-  if (route.name === 'journey') return '#/journey';
-  return '';
-}
+function baseHash(route = state.route) { return RouteUtils.baseHash(route); }
 
-function envHash(envId, route = state.route) {
-  return (baseHash(route) || '#') + '/env/' + encodeURIComponent(envId);
-}
+function envHash(envId, route = state.route) { return RouteUtils.envHash(envId, route); }
 
 function sameBase(a, b) { return a.name === b.name && a.id === b.id; }
 
+/** Parses location.hash through the safe pure parser and, when it carries a
+ * malformed segment, repairs the address in place before returning the safe
+ * fallback route. The one boundary every call site that needs the current
+ * route reads through — initial state, hashchange, navigate(), and the
+ * replaceEnv()/dismissDetail() replaceState() call sites below. */
+function readCurrentRoute() {
+  const parsed = RouteUtils.parseRouteHash(location.hash);
+  if (parsed.malformed) repairHash(parsed.canonicalHash);
+  return parsed.route;
+}
+
+/** Best-effort: replaces the current history entry's hash with a safe
+ * canonical one, preserving origin/pathname/query/history.state and adding
+ * no new history entry. A failure here (a hardened browser rejecting
+ * replaceState, say) must not resurrect the URIError this exists to avoid —
+ * the in-memory route from parseRouteHash() is already safe either way. */
+function repairHash(canonicalHash) {
+  try {
+    const url = new URL(location.href);
+    url.hash = canonicalHash;
+    history.replaceState(history.state, '', url.href);
+  } catch (err) {
+    // Best-effort cleanup only; the safe in-memory route stands regardless.
+  }
+}
+
 function navigate(hash) {
-  if (location.hash === hash) { state.route = parseRoute(); render(); }
+  if (location.hash === hash) { state.route = readCurrentRoute(); render(); }
   else { location.hash = hash; }
 }
 
@@ -121,7 +135,7 @@ function navigate(hash) {
  * underneath would rebuild the grid and destroy the button the card was opened
  * from, which is the element focus has to return to when it closes. */
 window.addEventListener('hashchange', () => {
-  const next = parseRoute();
+  const next = readCurrentRoute();
   const onlyCardChanged = sameBase(next, state.route);
   state.route = next;
   if (!next.env) cardEntryPushed = false;
@@ -1297,7 +1311,7 @@ function applyDetailRoute() {
     // A link to an environment that is not in the catalog: drop the suffix
     // rather than leave the address pointing at nothing.
     history.replaceState(null, '', baseHash() || location.pathname + location.search);
-    state.route = parseRoute();
+    state.route = readCurrentRoute();
     document.title = routeTitle();
     return;
   }
@@ -2976,7 +2990,7 @@ function showEnv(envId) {
 function dismissDetail() {
   if (cardEntryPushed) { cardEntryPushed = false; history.back(); return; }
   history.replaceState(null, '', baseHash() || location.pathname + location.search);
-  state.route = parseRoute();
+  state.route = readCurrentRoute();
   syncDetail();
   document.title = routeTitle();
 }
@@ -2986,7 +3000,7 @@ function dismissDetail() {
  * back through every card visited along the way. */
 function replaceEnv(envId) {
   history.replaceState(null, '', envHash(envId));
-  state.route = parseRoute();
+  state.route = readCurrentRoute();
   syncDetail();
   document.title = routeTitle();
 }
