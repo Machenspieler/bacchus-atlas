@@ -1571,6 +1571,11 @@ button.loot-btn { font-family: var(--lt-ui); line-height: 1; cursor: pointer; }
 }
 .list-rename:hover { border-bottom-color: var(--line-strong); }
 .list-rename:focus { border-bottom-color: var(--hope); }
+.list-rename.has-validation-error { border-bottom-color: var(--fear-soft); }
+/* Sits between the name row and the count line, inside the card's own flex
+ * gap — the field-error's own top margin would double that spacing into a
+ * blank gap most cards never show. */
+.list-card .list-rename-error { margin-top: 0; }
 .list-card-count { font-size: var(--fs-xs); color: var(--muted); font-family: var(--font-mono); }
 /* Not a count of nothing in the mono face the numbers use — a sentence, in the
  * italic the rest of the site says "there is nothing here" in. */

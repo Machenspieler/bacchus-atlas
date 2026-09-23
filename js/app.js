@@ -2090,7 +2090,7 @@ function renderListsHome() {
   const newListError = document.getElementById('new-list-error');
 
   function createList() {
-    const name = newListInput.value.trim();
+    const name = ListUtils.normalizeName(newListInput.value);
     // An empty name used to fail silently — the button simply did nothing.
     if (!name) {
       newListError.hidden = false;
@@ -2115,13 +2115,7 @@ function renderListsHome() {
   });
   document.getElementById('new-list-btn').addEventListener('click', createList);
 
-  el.querySelectorAll('.list-rename').forEach(input => {
-    input.addEventListener('change', () => {
-      const id = input.closest('.list-card').dataset.list;
-      const list = state.lists.find(l => l.id === id);
-      if (list && input.value.trim()) { list.name = input.value.trim(); persist(LS_KEYS.lists, state.lists); }
-    });
-  });
+  el.querySelectorAll('.list-rename').forEach(bindListRename);
   el.querySelectorAll('[data-del-list]').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.delList;
@@ -2139,6 +2133,74 @@ function renderListsHome() {
   });
   el.querySelectorAll('[data-open-list]').forEach(btn => {
     btn.addEventListener('click', () => navigate('#/lists/' + encodeURIComponent(btn.dataset.openList)));
+  });
+}
+
+/* The one place a list-rename input's edit is resolved, for both a
+ * blur-triggered "change" and Enter — see ListUtils.resolveListRename() in
+ * js/list-utils.js for the pure invalid/unchanged/changed decision this
+ * wraps. Escape has its own short-circuit below: it never resolves through
+ * this, since cancelling never persists or validates.
+ *
+ * No separate "already committed" flag is needed to keep Enter-then-blur
+ * from writing twice: commitListRename() always resolves against the
+ * list's current in-memory name, and once Enter has committed a change that
+ * name already matches the input's value, so the following blur/change
+ * resolves to "unchanged" and persists nothing. */
+function showRenameError(input, errorEl) {
+  errorEl.hidden = false;
+  input.classList.add('has-validation-error');
+  input.setAttribute('aria-invalid', 'true');
+}
+
+function clearRenameError(input, errorEl) {
+  errorEl.hidden = true;
+  input.classList.remove('has-validation-error');
+  input.removeAttribute('aria-invalid');
+}
+
+function restoreCommittedName(input, list) {
+  input.value = list.name;
+}
+
+function bindListRename(input) {
+  const card = input.closest('.list-card');
+  const listId = card.dataset.list;
+  const errorEl = card.querySelector('.list-rename-error');
+
+  function commitListRename() {
+    const list = state.lists.find(l => l.id === listId);
+    if (!list) return null;
+    const result = ListUtils.resolveListRename(list.name, input.value);
+    if (result.status === 'invalid') {
+      restoreCommittedName(input, list);
+      showRenameError(input, errorEl);
+      return result;
+    }
+    input.value = result.value;
+    clearRenameError(input, errorEl);
+    if (result.status === 'changed') {
+      list.name = result.value;
+      persist(LS_KEYS.lists, state.lists);
+    }
+    return result;
+  }
+
+  input.addEventListener('input', () => clearRenameError(input, errorEl));
+  input.addEventListener('change', commitListRename);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const result = commitListRename();
+      if (result && result.status === 'invalid') input.select();
+      else input.blur();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      const list = state.lists.find(l => l.id === listId);
+      if (list) restoreCommittedName(input, list);
+      clearRenameError(input, errorEl);
+      input.blur();
+    }
   });
 }
 
@@ -2205,13 +2267,18 @@ function listCardHtml(list) {
   const countLine = count
     ? `<div class="list-card-count">${t('list_env_count').replace('{n}', count)}</div>`
     : `<div class="list-card-count empty">${t('list_card_empty')}</div>`;
+  /* list.id is app-generated (see createList()/createAndAdd()) and never
+   * derived from user text, so it's safe to use directly as a DOM id — the
+   * rename error needs one of its own to associate via aria-describedby. */
+  const errorId = 'list-rename-error-' + list.id;
   return `
     <div class="list-card${cover ? ' has-cover' : ''}" data-list="${list.id}">${cover}
       <div class="list-card-top">
-        <input type="text" value="${escapeAttr(list.name)}" class="list-rename" aria-label="${t('new_list_name')}">
+        <input type="text" value="${escapeAttr(list.name)}" class="list-rename" aria-label="${t('rename_list_label')}" aria-describedby="${errorId}">
         <button type="button" class="list-card-del" data-del-list="${list.id}"
                 aria-label="${t('delete')}" data-tip="${t('delete')}">${ICON_TRASH}</button>
       </div>
+      <p class="field-error list-rename-error" id="${errorId}" role="alert" hidden>${ICON_ALERT}<span>${t('list_rename_required')}</span></p>
       ${countLine}
       <button type="button" class="btn btn-sm list-card-open" data-open-list="${list.id}">${t('open_list')}</button>
     </div>`;
@@ -2314,7 +2381,7 @@ function openAddToListPopup(envId) {
   const newError = overlay.querySelector('#atl-new-error');
 
   function createAndAdd() {
-    const name = newInput.value.trim();
+    const name = ListUtils.normalizeName(newInput.value);
     if (!name) {
       newError.hidden = false;
       newInput.setAttribute('aria-invalid', 'true');

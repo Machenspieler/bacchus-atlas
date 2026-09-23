@@ -220,6 +220,39 @@ which imports the validator directly rather than duplicating its rules.
   production data file without updating `scripts/validate-data.js` and its
   tests to cover it.
 
+## Lists validation
+
+List names are required. Creation (the Lists page and the "Add to list"
+popup) and rename both trim through `ListUtils.normalizeName()`
+(`js/list-utils.js`, loaded before `js/app.js`); renaming additionally goes
+through the pure `ListUtils.resolveListRename(currentName, rawValue)`, which
+returns `{ status: 'invalid' | 'unchanged' | 'changed', value }` without
+touching the DOM, state, i18n, or persistence.
+
+An invalid rename (empty or whitespace-only) never mutates `list.name` and
+never calls `persist()`: the previous committed name is restored into the
+input immediately, and an inline per-card error
+(`.list-rename-error`, `role="alert"`, associated via `aria-describedby`,
+its DOM id derived from the list's own `id` — never from the list's name)
+explains that the name was restored. An unchanged normalized name (e.g.
+surrounding whitespace only) also performs no write. Only a `'changed'`
+result updates `list.name` and calls `persist(LS_KEYS.lists, state.lists)`,
+exactly once.
+
+Rename commits happen on `change` (blur) and on Enter, both through the same
+`bindListRename()` / `commitListRename()` boundary in `js/app.js` — there is
+no separate validation branch per event. Escape cancels the edit, restores
+the latest committed name, clears the error, and never persists. Because
+`commitListRename()` always resolves against the list's current in-memory
+name, an Enter-then-blur sequence cannot write twice: once Enter has
+committed a change, the following blur/change resolves to `'unchanged'`.
+
+List IDs and routes never change when a list is renamed — see the "Hash
+routing" section above. A write failure on a valid rename falls back to the
+same centralized `storage_write_failed_warning` toast as every other
+persisted action (see "Safe browser storage" below); it does not show a
+rename validation error and does not revert the in-memory rename.
+
 ## Safe browser storage
 
 All persisted browser state (`LS_KEYS` in `js/app.js`) must be loaded through the
