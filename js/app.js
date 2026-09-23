@@ -1,5 +1,5 @@
 /* ============================================================
-   Daggerheart Atlas — app.js
+   Bacchus's Atlas — app.js
    Vanilla JS, no build step. All state persisted to localStorage
    except the environment data (data/environments.json), which stays
    read-only on disk.
@@ -616,7 +616,7 @@ function potentialAdversaryEntryHtml(localizedText, englishText) {
 /* Cache buster for the JSON under data/. index.html versions the stylesheet and
    this script the same way; the data files are fetched from here instead, so
    bump this whenever anything in data/ changes or browsers serve stale copies. */
-const DATA_VERSION = 84;
+const DATA_VERSION = 85;
 
 function getJSON(path) {
   return fetch(path).then(r => {
@@ -1241,7 +1241,7 @@ function routeTitle() {
   // which environment they lead to.
   const env = state.route.env && allEnvs().find(e => e.id === state.route.env);
   if (env) return `${envName(env)} — ${t('app_title')}`;
-  if (state.route.name === 'catalog') return t('app_title');
+  if (state.route.name === 'catalog') return t('browser_title');
   if (state.route.name === 'journey') return `${t('journey_title')} — ${t('app_title')}`;
   if (state.route.name === 'list') {
     const list = state.lists.find(l => l.id === state.route.id);
@@ -1264,6 +1264,7 @@ function renderHeader() {
         <span class="brand-text">
           <h1><button type="button" id="brand-home">${t('app_title')}</button></h1>
           <p>${t('app_subtitle')}</p>
+          <p class="compat-badge">${t('compatibility_label')}</p>
         </span>
       </div>
       <div class="header-actions">

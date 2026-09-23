@@ -1,8 +1,8 @@
-# Daggerheart Atlas
+# Bacchus's Atlas
 
-A static reference site for Daggerheart Environment stat blocks: search,
-filters, an RU/EN language toggle, and clickable dice right inside property
-text.
+A Daggerheart™ Compatible field guide to environments, journeys, and perils:
+search, filters, an RU/EN language toggle, and clickable dice right inside
+property text.
 
 The site is **build-free** — plain HTML/CSS/JS files. Open it locally or
 publish it as-is on GitHub Pages.
@@ -90,7 +90,9 @@ around for content.
   secret.
 - GitHub Pages only honors `robots.txt` at the origin root
   (`https://machenspieler.github.io/robots.txt`), not under this project's
-  path (`https://machenspieler.github.io/daggerheart-codex/robots.txt`).
+  path (currently `https://machenspieler.github.io/daggerheart-codex/robots.txt`;
+  planned to become `https://machenspieler.github.io/bacchus-atlas/robots.txt`
+  once the repository is renamed — see "Planned repository rename" below).
   This repo can't deploy to the origin root, so it doesn't ship a
   project-level `robots.txt` that would create a false sense of protection.
   [scripts/root-robots.example.txt](scripts/root-robots.example.txt) is a
@@ -106,6 +108,22 @@ around for content.
 `scripts/check-unlisted-build.js` runs in CI after every build and fails it
 if `dist/index.html` ever regresses back toward baking in catalog content,
 JSON-LD, or the removed crawler-discovery files.
+
+## Planned repository rename
+
+This repo is currently `Machenspieler/daggerheart-codex`, deployed at
+`https://machenspieler.github.io/daggerheart-codex/`. It's planned to be
+renamed to `bacchus-atlas`, moving the deployed site to
+`https://machenspieler.github.io/bacchus-atlas/`. All runtime assets
+(`index.html`, `css/`, `js/`, `data/`, `img/`) are referenced by relative
+path, so the site keeps working under either project path without code
+changes. `scripts/root-robots.example.txt` already documents the *post-rename*
+path (`/bacchus-atlas/`), since it's a template for a future root-level
+deployment, not something served today. The GitHub repository rename itself
+has to be done by hand in GitHub's settings (Settings → repository name) —
+it isn't something a local commit can do. The site stays on the same
+`https://machenspieler.github.io` origin after the rename, so `localStorage`
+data (lists, language, Journey saves) survives it untouched.
 
 ## How new environments get added
 

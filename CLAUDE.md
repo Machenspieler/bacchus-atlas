@@ -1,7 +1,28 @@
-# Daggerheart Atlas
+# Bacchus's Atlas
 
 Static site — plain HTML/CSS/JS, no build step. `index.html` loads `css/styles.css`
 and `js/app.js` directly; content lives in `data/environments.json` and `data/i18n.json`.
+
+## Branding
+
+The project name is "Bacchus's Atlas" in English and "Атлас Бахуса" in Russian —
+both stored in `data/i18n.json` as `app_title`/`app_subtitle` and rendered via
+`renderHeader()` in `js/app.js`. "Daggerheart™ Compatible" (`compatibility_label`
+in `data/i18n.json`) is a separate compatibility statement, not part of the
+project name: it is never translated, never placed inside the `<h1>` or the
+logo's accessible name, and always stays visually secondary to the title and
+subtitle (see `.compat-badge` in `css/styles.css`).
+
+Do not use "Daggerheart" as part of the project title, logo, or main brand name.
+Do not imitate the official Daggerheart logo or artwork.
+
+This does not mean stripping "Daggerheart" from the project generally — it
+remains correct and expected in: the compatibility label itself, source/book
+attributions (`source` fields, `footer_note` in `data/i18n.json`), rules
+terminology, data imported from Daggerheart-compatible material, and any
+documentation describing system compatibility. Don't do a blind find-and-replace
+across the repo for a future branding tweak — check each occurrence against
+this list first.
 
 ## Identity
 

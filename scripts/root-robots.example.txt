@@ -2,41 +2,47 @@
 # https://machenspieler.github.io/robots.txt
 #
 # It is NOT effective when deployed as:
-# https://machenspieler.github.io/daggerheart-codex/robots.txt
+# https://machenspieler.github.io/bacchus-atlas/robots.txt
 #
 # GitHub Pages only honors robots.txt at the origin root. A file committed
-# under this project (github.io/daggerheart-codex/robots.txt) is just another
+# under this project (github.io/bacchus-atlas/robots.txt) is just another
 # static file at that path — no crawler treats it as the site's robots.txt.
 # Deploying this file requires control of the root github.io Pages site (a
 # separate <username>.github.io repo) or a custom domain for this project.
 # This file is not copied into dist/ — see scripts/build.js and
 # scripts/check-unlisted-build.js.
 #
+# Paths below assume the project has already been renamed from
+# daggerheart-codex to bacchus-atlas (see "Planned repository rename" in
+# README.md). Until that rename happens, the live path is still
+# /daggerheart-codex/ — update the Disallow lines to match whichever path is
+# actually live before deploying this file.
+#
 # The bot names below are a maintained list, not a permanent or exhaustive
 # one — review and update them periodically as crawlers rename themselves or
 # new ones appear.
 
 User-agent: GPTBot
-Disallow: /daggerheart-codex/
+Disallow: /bacchus-atlas/
 
 User-agent: OAI-SearchBot
-Disallow: /daggerheart-codex/
+Disallow: /bacchus-atlas/
 
 User-agent: ClaudeBot
-Disallow: /daggerheart-codex/
+Disallow: /bacchus-atlas/
 
 User-agent: Claude-SearchBot
-Disallow: /daggerheart-codex/
+Disallow: /bacchus-atlas/
 
 User-agent: CCBot
-Disallow: /daggerheart-codex/
+Disallow: /bacchus-atlas/
 
 # General compliant crawlers may load index.html so they can observe noindex,
 # but they should not fetch the machine-readable catalog or application assets.
 User-agent: *
-Disallow: /daggerheart-codex/data/
-Disallow: /daggerheart-codex/js/
-Disallow: /daggerheart-codex/img/
+Disallow: /bacchus-atlas/data/
+Disallow: /bacchus-atlas/js/
+Disallow: /bacchus-atlas/img/
 
 # Not included above: user-triggered agents such as ChatGPT-User or
 # Claude-User, which fetch a page only when a person explicitly hands it a
@@ -44,9 +50,9 @@ Disallow: /daggerheart-codex/img/
 # legitimate, user-directed use. A stricter configuration could add:
 #
 # User-agent: ChatGPT-User
-# Disallow: /daggerheart-codex/
+# Disallow: /bacchus-atlas/
 #
 # User-agent: Claude-User
-# Disallow: /daggerheart-codex/
+# Disallow: /bacchus-atlas/
 #
 # but understand the tradeoff before adding it.
