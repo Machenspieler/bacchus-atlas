@@ -139,6 +139,34 @@ Do not add SEO catalog output, crawler-discovery files, JSON-LD environment list
 repository owner explicitly requests that the website become publicly discoverable
 again.
 
+## Initial loading shell
+
+`index.html` ships a generic, static loading shell inside `#toolbar` and
+`#grid-wrap` (a `.skeleton-toolbar` and six `.sk-card` placeholders, marked
+`data-initial-loading="toolbar"`/`"grid"`), present before any JavaScript
+runs. It contains no environment data — no names, lore, IDs, or links — so it
+stays compatible with the public-but-unlisted deployment above. A bilingual
+`<span class="sr-only">` inside `#result-count` and a `<noscript>` fallback
+(which hides the shell via an inline `<style>` and shows a compact bilingual
+notice) cover screen readers and JavaScript-disabled visitors respectively.
+
+`js/app.js` must not recreate this markup. `init()` starts the i18n and
+application-data requests together (no i18n-first waterfall), then:
+
+- `beginInitialLoading()` marks `#main`/`#toolbar`/`#grid-wrap` `aria-busy`;
+- `localizeInitialLoading()`, once i18n resolves, only updates the
+  `#result-count` status text — it never touches `#toolbar` or `#grid-wrap`;
+- `finishInitialLoading()` (success) and `failInitialLoading()` (data-load or
+  fatal i18n failure) clear `aria-busy` and the `is-loading` class.
+
+The skeleton markup itself disappears as a side effect of the normal
+render/error paths (`renderToolbar()`/`renderGrid()`/`renderLoadError()`/
+`renderFatalError()` already replace `#toolbar` and `#grid-wrap`'s contents
+unconditionally) — nothing re-injects an identical skeleton after the first
+network request. Do not leave `#toolbar` and `#grid-wrap` empty in source
+HTML and then inject the same initial skeleton in JS after i18n loads; keep
+the generic loading shell static and free of catalog data.
+
 ## Production data validation
 
 `scripts/validate-data.js` is a dependency-free, read-only semantic validator

@@ -40,12 +40,38 @@
     <h1>Атлас Бахуса</h1>
     <p>Окружения, путешествия и опасности · Daggerheart™ Compatible</p>
   </header>
-  <main class="shell" id="main" tabindex="-1">
-    <div id="toolbar"></div>
-    <div class="result-count" id="result-count" role="status"></div>
+  <main class="shell" id="main" tabindex="-1" aria-busy="true">
+    <!-- No environment data below — see "Initial loading shell" in CLAUDE.md.
+         js/app.js localizes the status text and clears aria-busy once, but
+         never recreates this markup. -->
+    <noscript>
+      <style>#toolbar,#result-count,#grid-wrap{display:none}</style>
+      <div class="empty-state">
+        <p>Для загрузки атласа необходимо включить JavaScript. / JavaScript is required to load the atlas.</p>
+      </div>
+    </noscript>
+    <div id="toolbar" aria-busy="true">
+      <div class="skeleton-toolbar initial-loading-shell" data-initial-loading="toolbar" aria-hidden="true">
+        <div class="sk sk-field wide"></div>
+        <div class="sk sk-field"></div>
+        <div class="sk sk-field"></div>
+        <div class="sk sk-field"></div>
+      </div>
+    </div>
+    <div class="result-count" id="result-count" role="status" aria-live="polite">
+      <span class="sr-only">Загрузка… / Loading…</span>
+    </div>
     <!-- The catalog is rendered client-side only, after js/app.js fetches
-         data/environments.json — nothing here until then. -->
-    <div class="grid" id="grid-wrap"></div>
+         data/environments.json. Until then this holds only generic
+         skeleton cards, never real environment data. -->
+    <div class="grid is-loading" id="grid-wrap" data-initial-loading="grid" aria-busy="true">
+      <div class="sk sk-card" aria-hidden="true"></div>
+      <div class="sk sk-card" aria-hidden="true"></div>
+      <div class="sk sk-card" aria-hidden="true"></div>
+      <div class="sk sk-card" aria-hidden="true"></div>
+      <div class="sk sk-card" aria-hidden="true"></div>
+      <div class="sk sk-card" aria-hidden="true"></div>
+    </div>
   </main>
   <footer class="site-footer" id="footer"></footer>
   <script src="js/safe-storage.js" data-cache-version="ui"></script>

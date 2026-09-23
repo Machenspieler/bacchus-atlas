@@ -654,11 +654,27 @@ function getJSON(path) {
   });
 }
 
-/* The dictionary comes first and alone: it is 8KB against the catalogue's 1.4MB,
- * and every string on the loading screen is in it. Once it lands the header and
- * a skeleton grid go up immediately, so the first paint is the shape of the page
- * rather than an empty near-black rectangle. */
+/* The generic shell (toolbar/status/grid skeletons) already ships in
+ * index.html — see "Initial loading shell" in CLAUDE.md. i18n and the
+ * application data requests are started together rather than one after the
+ * other, since the shell no longer needs i18n to be visible; only the
+ * translated status text and the final render wait on it. */
 async function init() {
+  beginInitialLoading();
+  const dataPromise = Promise.all([
+    getJSON(versionedDataUrl('data/environments.json')),
+    getJSON(versionedDataUrl('data/regions.json')).catch(() => ({ regions: [] })),
+    getJSON(versionedDataUrl('data/items.json')).catch(() => ({ items: {}, aliases: {} })),
+    getJSON(versionedDataUrl('data/journey.json')).catch(() => JOURNEY_EMPTY),
+    getJSON(versionedDataUrl('data/adversaries.json')).catch(() => ({ adversaries: [] })),
+  ]);
+  // Settled immediately so its rejection is handled here, not left dangling
+  // while init() is still busy awaiting i18n below.
+  const dataResult = dataPromise.then(
+    value => ({ ok: true, value }),
+    error => ({ ok: false, error })
+  );
+
   try {
     state.i18n = await getJSON(versionedDataUrl('data/i18n.json'));
   } catch (err) {
@@ -668,39 +684,54 @@ async function init() {
   renderHeader();
   renderFooter();
   mountToTop();
-  renderLoadingState();
-  try {
-    const [envs, regions, items, journey, adversaries] = await Promise.all([
-      getJSON(versionedDataUrl('data/environments.json')),
-      getJSON(versionedDataUrl('data/regions.json')).catch(() => ({ regions: [] })),
-      getJSON(versionedDataUrl('data/items.json')).catch(() => ({ items: {}, aliases: {} })),
-      getJSON(versionedDataUrl('data/journey.json')).catch(() => JOURNEY_EMPTY),
-      getJSON(versionedDataUrl('data/adversaries.json')).catch(() => ({ adversaries: [] })),
-    ]);
-    state.builtinEnvs = envs.environments;
-    state.regions = regions.regions || [];
-    setItemCatalog(items);
-    state.journey = { ...JOURNEY_EMPTY, ...journey };
-    setAdversaryCatalog(adversaries);
-  } catch (err) {
-    renderLoadError(err);
+  localizeInitialLoading();
+
+  const result = await dataResult;
+  if (!result.ok) {
+    renderLoadError(result.error);
     return;
   }
+  const [envs, regions, items, journey, adversaries] = result.value;
+  state.builtinEnvs = envs.environments;
+  state.regions = regions.regions || [];
+  setItemCatalog(items);
+  state.journey = { ...JOURNEY_EMPTY, ...journey };
+  setAdversaryCatalog(adversaries);
   render();
+  finishInitialLoading();
   reportStorageRecovery();
 }
 
-function renderLoadingState() {
-  document.getElementById('toolbar').innerHTML = `
-    <div class="skeleton-toolbar" aria-hidden="true">
-      <div class="sk sk-field wide"></div>
-      <div class="sk sk-field"></div>
-      <div class="sk sk-field"></div>
-      <div class="sk sk-field"></div>
-    </div>`;
+/* ---------------- initial loading shell lifecycle ---------------- */
+/* The only place the static shell's aria-busy state and accessible status
+ * get touched. The shell markup itself (index.html) is never recreated —
+ * these just localize its status text and clear busy state once, on every
+ * success and failure path. */
+
+function beginInitialLoading() {
+  document.getElementById('main').setAttribute('aria-busy', 'true');
+  document.getElementById('toolbar').setAttribute('aria-busy', 'true');
+  document.getElementById('grid-wrap').setAttribute('aria-busy', 'true');
+}
+
+function localizeInitialLoading() {
   document.getElementById('result-count').textContent = t('loading');
-  document.getElementById('grid-wrap').innerHTML =
-    Array.from({ length: 6 }, () => '<div class="sk sk-card" aria-hidden="true"></div>').join('');
+}
+
+function finishInitialLoading() {
+  document.getElementById('main').removeAttribute('aria-busy');
+  document.getElementById('toolbar').removeAttribute('aria-busy');
+  const grid = document.getElementById('grid-wrap');
+  grid.removeAttribute('aria-busy');
+  grid.classList.remove('is-loading');
+}
+
+function failInitialLoading() {
+  document.getElementById('main').setAttribute('aria-busy', 'false');
+  document.getElementById('toolbar').setAttribute('aria-busy', 'false');
+  const grid = document.getElementById('grid-wrap');
+  grid.setAttribute('aria-busy', 'false');
+  grid.classList.remove('is-loading');
 }
 
 function renderLoadError(err) {
@@ -714,6 +745,7 @@ function renderLoadError(err) {
     action: `<button type="button" class="btn btn-primary" id="retry-load">${t('retry')}</button>`,
     error: true,
   });
+  failInitialLoading();
   document.getElementById('retry-load').addEventListener('click', e => {
     e.currentTarget.dataset.loading = 'true';
     location.reload();
@@ -723,12 +755,15 @@ function renderLoadError(err) {
 /* The dictionary itself failed, so there are no strings to say so with. */
 function renderFatalError(err) {
   console.error('[atlas] i18n load failed', err);
+  document.getElementById('toolbar').innerHTML = '';
+  document.getElementById('result-count').textContent = '';
   document.getElementById('grid-wrap').innerHTML = emptyStateHtml({
     icon: ICON_ALERT,
     title: 'Не удалось загрузить атлас. / The atlas could not be loaded.',
     hint: 'Проверьте соединение и обновите страницу. / Check your connection and reload.',
     error: true,
   });
+  failInitialLoading();
 }
 
 /* ---------------- shared UI primitives ---------------- */
