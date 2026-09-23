@@ -51,10 +51,15 @@ npx serve .
 ## Deploying to GitHub Pages
 
 Deployment is automatic: [.github/workflows/deploy.yml](.github/workflows/deploy.yml)
-runs on every push to `main`. It runs `node scripts/build.js`, which copies
-the runtime files (`index.html`, `css/`, `js/`, `data/`, `img/`, favicons,
-`.nojekyll`) into `dist/` as-is — it doesn't read `environments.json`,
-generate HTML, or touch `index.html` in any way. `node
+runs on every push to `main`. It runs the test suite (`node --test
+tests/*.test.js`), then `node scripts/validate-data.js` — a dependency-free
+semantic check of every file under `data/` (broken cross-file references,
+unsupported enum values, incomplete Journey roll tables, i18n key/placeholder
+mismatches; see "Production data validation" in `CLAUDE.md`) that fails the
+build on any error. Only then does it run `node scripts/build.js`, which
+copies the runtime files (`index.html`, `css/`, `js/`, `data/`, `img/`,
+favicons, `.nojekyll`) into `dist/` as-is — it doesn't read
+`environments.json`, generate HTML, or touch `index.html` in any way. `node
 scripts/check-unlisted-build.js` then verifies `dist/` still holds to the
 public-but-unlisted model described below (see [Unlisted public
 deployment](#unlisted-public-deployment)), and fails the build if it doesn't.

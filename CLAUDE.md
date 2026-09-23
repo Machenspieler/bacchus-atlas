@@ -99,6 +99,59 @@ Do not add SEO catalog output, crawler-discovery files, JSON-LD environment list
 repository owner explicitly requests that the website become publicly discoverable
 again.
 
+## Production data validation
+
+`scripts/validate-data.js` is a dependency-free, read-only semantic validator
+for everything under `data/` (`environments.json`, `regions.json`,
+`adversaries.json`, `items.json`, `journey.json`, `i18n.json`). It runs before
+the copy-only build (see `.github/workflows/deploy.yml`) and blocks
+deployment when it finds an error:
+
+```bash
+node scripts/validate-data.js
+```
+
+Every production data change must pass this before it ships. Its logic is
+covered by `tests/data-validation.test.js` (`node --test tests/*.test.js`),
+which imports the validator directly rather than duplicating its rules.
+
+- **Errors vs. warnings**: an error is a broken reference, an unsupported enum
+  value, an incomplete Journey roll table, a bilingual EN/RU length mismatch,
+  or an i18n key that would resolve to its own raw name — anything that
+  crashes rendering, produces a wrong value, or hides content silently.
+  Errors block deployment (`process.exitCode = 1`). A warning (e.g. two
+  environments sharing a normalized display name under different ids) is
+  reported but never blocks deployment.
+- **Read-only**: the validator only reads files and reports diagnostics. It
+  never rewrites a data file, reorders an array, "fixes" a broken reference,
+  or writes a baseline/cache of its own. If it finds a real error in checked-in
+  data, fix the data by hand and document the correction — don't weaken the
+  rule that caught it.
+- **Optional stays optional**: `lore`, `biomes`, `source`,
+  `featured_adversaries`, `story_seeds`, `rawText`, and an empty/absent
+  Russian translation are all still optional — the validator only checks
+  their shape when they're present.
+- **Unknown fields are allowed**: the validator never rejects a field it
+  doesn't yet know about; the schema is additive, not closed.
+- **Cross-file references block deployment**: an unknown environment id in a
+  region, an environment in more than one region, an unknown featured
+  adversary id, a broken item alias/craft target, or an item crafting cycle
+  are all errors.
+- **Journey roll tables must have complete coverage**: `habitat` (1–20 via
+  ranges), `encounter` (2–14), `terrain` (1–4), `rumors` (1–100), every
+  `sanctuary` table (1–its own die), and `nameElements` (1–100) must each
+  cover their full range exactly once — no gaps, no duplicates, no
+  out-of-range rolls.
+- **i18n placeholders must match**: `{n}`-style placeholders must appear the
+  same number of times, with the same names, in the English and Russian value
+  for a given key.
+- **Rich text formatting is never normalized**: Markdown-style bullets,
+  numbered lists, line breaks, bold/italic, and dice notation inside bilingual
+  text fields are preserved and never rewritten or rejected by the validator.
+- **Do not add** a new machine-readable enum, cross-file ID reference, or
+  production data file without updating `scripts/validate-data.js` and its
+  tests to cover it.
+
 ## Safe browser storage
 
 All persisted browser state (`LS_KEYS` in `js/app.js`) must be loaded through the
