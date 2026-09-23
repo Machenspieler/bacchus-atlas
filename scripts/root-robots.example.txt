@@ -1,0 +1,52 @@
+# This file must be deployed as:
+# https://machenspieler.github.io/robots.txt
+#
+# It is NOT effective when deployed as:
+# https://machenspieler.github.io/daggerheart-codex/robots.txt
+#
+# GitHub Pages only honors robots.txt at the origin root. A file committed
+# under this project (github.io/daggerheart-codex/robots.txt) is just another
+# static file at that path — no crawler treats it as the site's robots.txt.
+# Deploying this file requires control of the root github.io Pages site (a
+# separate <username>.github.io repo) or a custom domain for this project.
+# This file is not copied into dist/ — see scripts/build.js and
+# scripts/check-unlisted-build.js.
+#
+# The bot names below are a maintained list, not a permanent or exhaustive
+# one — review and update them periodically as crawlers rename themselves or
+# new ones appear.
+
+User-agent: GPTBot
+Disallow: /daggerheart-codex/
+
+User-agent: OAI-SearchBot
+Disallow: /daggerheart-codex/
+
+User-agent: ClaudeBot
+Disallow: /daggerheart-codex/
+
+User-agent: Claude-SearchBot
+Disallow: /daggerheart-codex/
+
+User-agent: CCBot
+Disallow: /daggerheart-codex/
+
+# General compliant crawlers may load index.html so they can observe noindex,
+# but they should not fetch the machine-readable catalog or application assets.
+User-agent: *
+Disallow: /daggerheart-codex/data/
+Disallow: /daggerheart-codex/js/
+Disallow: /daggerheart-codex/img/
+
+# Not included above: user-triggered agents such as ChatGPT-User or
+# Claude-User, which fetch a page only when a person explicitly hands it a
+# URL and asks it to read that page. Blocking them here would also block that
+# legitimate, user-directed use. A stricter configuration could add:
+#
+# User-agent: ChatGPT-User
+# Disallow: /daggerheart-codex/
+#
+# User-agent: Claude-User
+# Disallow: /daggerheart-codex/
+#
+# but understand the tradeoff before adding it.

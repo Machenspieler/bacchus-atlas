@@ -14,8 +14,8 @@ publish it as-is on GitHub Pages.
 ├── index.html            — entry point
 ├── css/styles.css        — all layout and theming
 ├── js/app.js             — all logic (rendering, filters, dice, lists)
-├── scripts/prerender.js  — CI-only: bakes the catalog into index.html (see Deploy below)
-├── llms.txt, robots.txt, sitemap.xml — SEO / AI-crawler hints
+├── scripts/build.js      — CI-only: copies the runtime files into dist/ (see Deploy below)
+├── scripts/check-unlisted-build.js — CI-only: fails the build if dist/ regresses (see Deploy below)
 ├── img/
 │   ├── biomes/           — biome icons for catalog cards
 │   └── env/              — background art shown behind environment cards
@@ -51,11 +51,13 @@ npx serve .
 ## Deploying to GitHub Pages
 
 Deployment is automatic: [.github/workflows/deploy.yml](.github/workflows/deploy.yml)
-runs on every push to `main`. It runs `node scripts/prerender.js`, which
-copies the repo into `dist/` and bakes a server-rendered Russian-language
-catalog (plus a schema.org `ItemList`) into `dist/index.html`, replacing the
-`<!--PRERENDER:CATALOG-->` / `<!--PRERENDER:JSONLD-->` markers — so search
-engines and AI crawlers that never run `js/app.js` still see the full catalog.
+runs on every push to `main`. It runs `node scripts/build.js`, which copies
+the runtime files (`index.html`, `css/`, `js/`, `data/`, `img/`, favicons,
+`.nojekyll`) into `dist/` as-is — it doesn't read `environments.json`,
+generate HTML, or touch `index.html` in any way. `node
+scripts/check-unlisted-build.js` then verifies `dist/` still holds to the
+public-but-unlisted model described below (see [Unlisted public
+deployment](#unlisted-public-deployment)), and fails the build if it doesn't.
 `dist/` is then published to GitHub Pages via
 `actions/upload-pages-artifact` + `actions/deploy-pages`.
 
@@ -63,6 +65,47 @@ There's nothing to trigger by hand beyond pushing to `main`. `.nojekyll` is
 already in place so GitHub Pages doesn't try to run the site through Jekyll
 (which would otherwise mangle paths starting with `_` — we don't have any
 today, but it costs nothing to be safe).
+
+## Unlisted public deployment
+
+The site is deployed **public but unlisted**: anyone with the URL can open it
+normally, but it isn't meant to be found by search or by AI crawlers browsing
+around for content.
+
+- `index.html` ships a static
+  `<meta name="robots" content="noindex, nofollow, nosnippet, noimageindex">`
+  tag, present in the source before any JavaScript runs.
+- The initial HTML no longer contains the environment catalog. The catalog
+  renders only after `js/app.js` fetches `data/environments.json` and builds
+  it client-side — there's nothing to bake in server-side anymore
+  (`scripts/build.js` is a plain copy, not a prerender step; see
+  [Deploying to GitHub Pages](#deploying-to-github-pages)).
+- `llms.txt`, `sitemap.xml`, and a project-level `robots.txt` are not part of
+  this repo or the deployed site — they used to advertise machine-readable
+  catalog data and discovery hints, which is the opposite of "unlisted".
+- **This is not access control.** `noindex` and `robots.txt` are requests
+  that *compliant* crawlers are free to ignore, and neither stops a human
+  (or a bot) that already has the URL, or the URL to `data/*.json`, from
+  reading it directly. Nothing here is encryption, authentication, or a
+  secret.
+- GitHub Pages only honors `robots.txt` at the origin root
+  (`https://machenspieler.github.io/robots.txt`), not under this project's
+  path (`https://machenspieler.github.io/daggerheart-codex/robots.txt`).
+  This repo can't deploy to the origin root, so it doesn't ship a
+  project-level `robots.txt` that would create a false sense of protection.
+  [scripts/root-robots.example.txt](scripts/root-robots.example.txt) is a
+  template for what could be deployed there (from a separate
+  `machenspieler.github.io` repo, or a custom domain) — it documents this
+  limitation and is deliberately excluded from `dist/`.
+- The public JSON under `data/` remains reachable by anyone who knows or
+  guesses its URL, same as any other static file on the site. If something
+  must not be publicly distributed, it needs to be removed from this repo
+  entirely or protected by real server-side authorization — `noindex` and
+  `robots.txt` can't do that job.
+
+`scripts/check-unlisted-build.js` runs in CI after every build and fails it
+if `dist/index.html` ever regresses back toward baking in catalog content,
+JSON-LD, or the removed crawler-discovery files.
 
 ## How new environments get added
 

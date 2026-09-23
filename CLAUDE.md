@@ -61,3 +61,16 @@ copies after deploy.
 The JSON under `data/` is fetched by `js/app.js`, not linked from `index.html`, so it
 carries its own buster: bump `DATA_VERSION` in `js/app.js` whenever any data file
 changes. That edits `js/app.js`, so bump its `?v=` in `index.html` too.
+
+## Unlisted deployment — do not undo
+
+The site is deployed public-but-unlisted on purpose (see the "Unlisted public
+deployment" section in README.md): `index.html` carries a static `noindex` tag, the
+environment catalog is not present in the initial HTML, and `scripts/build.js` only
+copies files — it does not prerender anything. `scripts/check-unlisted-build.js` runs
+in CI to catch regressions.
+
+Do not add SEO catalog output, crawler-discovery files, JSON-LD environment lists,
+`llms.txt`, `sitemap.xml`, or server-side environment prerendering unless the
+repository owner explicitly requests that the website become publicly discoverable
+again.
