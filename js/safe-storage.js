@@ -24,15 +24,16 @@
 
   /* ---------------- storage access ---------------- */
 
-  /** Null when localStorage cannot be used at all (unavailable, blocked,
-   * or a private-mode browser that exposes it but throws on write). Every
-   * caller must treat that as "run with defaults", not "crash". */
+  /** Null only when localStorage cannot be *obtained* at all (unavailable, or
+   * accessing window.localStorage itself throws, as some browsers do in a
+   * locked-down privacy mode). Deliberately does not probe with a test
+   * setItem/removeItem: a browser can expose perfectly readable storage while
+   * rejecting writes (quota exceeded, a write-blocking privacy policy), and
+   * that must still let read functions see existing data. Write functions
+   * below catch their own setItem/removeItem failures independently. */
   function getStorage() {
     try {
       if (typeof window === 'undefined' || !window.localStorage) return null;
-      var probeKey = '__dhcodex_probe__';
-      window.localStorage.setItem(probeKey, '1');
-      window.localStorage.removeItem(probeKey);
       return window.localStorage;
     } catch (err) {
       return null;
@@ -206,6 +207,137 @@
     }
   }
 
+  /* ---------------- the writer ---------------- */
+
+  /* User-action writes (creating a list, toggling membership, saving a
+   * Journey roll…) go through the functions below instead of a bare
+   * storage.setItem(). They never throw: every expected failure — storage
+   * unavailable, a value that cannot be serialized, setItem() rejecting the
+   * write — comes back as a structured { ok:false, reason } result for the
+   * caller to act on. None of these functions know about document, state,
+   * t() or showToast(): they only touch storage and return data. */
+
+  /** { ok:true, json } or { ok:false } — never throws, even for a value
+   * JSON.stringify itself cannot handle (a circular reference) or one it
+   * silently turns into undefined (a bare function or symbol). */
+  function safeStringify(value) {
+    var json;
+    try {
+      json = JSON.stringify(value);
+    } catch (err) {
+      return { ok: false };
+    }
+    if (json === undefined) return { ok: false };
+    return { ok: true, json: json };
+  }
+
+  /** Writes one JSON-serializable value to one key. Reasons: 'unavailable'
+   * (no storage), 'serialization-failed' (value could not become JSON),
+   * 'write-failed' (setItem() itself threw — quota, blocked, private mode). */
+  function writeJson(storage, key, value) {
+    if (!storage) return { ok: false, reason: 'unavailable' };
+    var serialized = safeStringify(value);
+    if (!serialized.ok) return { ok: false, reason: 'serialization-failed' };
+    try {
+      storage.setItem(key, serialized.json);
+    } catch (err) {
+      return { ok: false, reason: 'write-failed' };
+    }
+    return { ok: true };
+  }
+
+  /** For the one flag that is intentionally not JSON (the raw "1" of
+   * dhcodex_storage_notice_dismissed) — same result shape as writeJson, no
+   * serialization step. */
+  function writeRaw(storage, key, rawValue) {
+    if (!storage) return { ok: false, reason: 'unavailable' };
+    try {
+      storage.setItem(key, String(rawValue));
+    } catch (err) {
+      return { ok: false, reason: 'write-failed' };
+    }
+    return { ok: true };
+  }
+
+  /**
+   * Coordinated multi-key write for an action that changes more than one
+   * persisted key (deleting a list touches both the list and its
+   * memberships). Best-effort transactional: not real localStorage atomicity,
+   * just an attempt to avoid leaving storage half-updated when the second of
+   * two writes fails.
+   *
+   * entries: [{ key, value }, …]. Every value is serialized before anything
+   * is written; every affected key's previous raw value is read before
+   * anything is written. If a write partway through the batch fails, the
+   * keys already written by this batch are restored (in reverse order) to
+   * their previous raw value, or removed if the key did not exist before.
+   *
+   * Success: { ok: true }
+   * Failure: { ok: false, reason, failedKey?, rollbackAttempted, rollbackSucceeded }
+   * Never includes the values being written or their previous raw contents.
+   */
+  function writeJsonBatch(storage, entries) {
+    if (!storage) return { ok: false, reason: 'unavailable', rollbackAttempted: false, rollbackSucceeded: false };
+    if (!Array.isArray(entries) || !entries.length) {
+      return { ok: false, reason: 'invalid-batch', rollbackAttempted: false, rollbackSucceeded: false };
+    }
+
+    var serialized = [];
+    for (var i = 0; i < entries.length; i++) {
+      var entry = entries[i];
+      if (!entry || typeof entry.key !== 'string' || !entry.key) {
+        return { ok: false, reason: 'invalid-batch', rollbackAttempted: false, rollbackSucceeded: false };
+      }
+      var result = safeStringify(entry.value);
+      if (!result.ok) {
+        return { ok: false, reason: 'serialization-failed', rollbackAttempted: false, rollbackSucceeded: false };
+      }
+      serialized.push({ key: entry.key, json: result.json });
+    }
+
+    /* Snapshot every affected key's previous raw value before writing
+     * anything, so a failure partway through has something to roll back to. */
+    var previous = [];
+    try {
+      for (var j = 0; j < serialized.length; j++) {
+        var k = serialized[j].key;
+        var raw = storage.getItem(k);
+        previous.push({ key: k, existed: raw !== null && raw !== undefined, raw: raw });
+      }
+    } catch (err) {
+      return { ok: false, reason: 'write-failed', rollbackAttempted: false, rollbackSucceeded: false };
+    }
+
+    var written = [];
+    for (var w = 0; w < serialized.length; w++) {
+      var toWrite = serialized[w];
+      try {
+        storage.setItem(toWrite.key, toWrite.json);
+        written.push(toWrite.key);
+      } catch (err) {
+        var rollbackSucceeded = true;
+        for (var r = written.length - 1; r >= 0; r--) {
+          var writtenKey = written[r];
+          var snapshot = previous[r];
+          try {
+            if (snapshot.existed) storage.setItem(writtenKey, snapshot.raw);
+            else storage.removeItem(writtenKey);
+          } catch (rollbackErr) {
+            rollbackSucceeded = false;
+          }
+        }
+        return {
+          ok: false,
+          reason: 'write-failed',
+          failedKey: toWrite.key,
+          rollbackAttempted: true,
+          rollbackSucceeded: rollbackSucceeded,
+        };
+      }
+    }
+    return { ok: true };
+  }
+
   /* ---------------- validators ---------------- */
 
   function isPlainObject(v) { return typeof v === 'object' && v !== null && !Array.isArray(v); }
@@ -320,6 +452,9 @@
     getStorage: getStorage,
     loadStoredJson: loadStoredJson,
     readRawFlag: readRawFlag,
+    writeJson: writeJson,
+    writeRaw: writeRaw,
+    writeJsonBatch: writeJsonBatch,
     resetRecoverySummary: resetRecoverySummary,
     getRecoverySummary: getRecoverySummary,
     logRecoverySummary: logRecoverySummary,

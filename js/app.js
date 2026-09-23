@@ -129,8 +129,6 @@ window.addEventListener('hashchange', () => {
   else render();
 });
 
-function persist(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
-
 function t(key) {
   const dict = state.i18n[state.lang] || {};
   return dict[key] || key;
@@ -638,7 +636,7 @@ function potentialAdversaryEntryHtml(localizedText, englishText) {
 /* Cache buster for the JSON under data/. index.html versions the stylesheet and
    this script the same way; the data files are fetched from here instead, so
    bump this whenever anything in data/ changes or browsers serve stale copies. */
-const DATA_VERSION = 87;
+const DATA_VERSION = 88;
 
 function getJSON(path) {
   return fetch(path).then(r => {
@@ -749,6 +747,10 @@ function emptyStateHtml({ icon, title, hint, action = '', error = false }) {
     </div>`;
 }
 
+/** Returns { el, timer } so a caller that needs to dedupe (see
+ * reportStorageWriteFailure below) can clear the pending removal and reuse
+ * the element instead of stacking a second toast. Callers that don't need
+ * that just ignore the return value, same as before. */
 function showToast(message, kind = 'success', durationMs = 3200) {
   let stack = document.getElementById('toast-stack');
   if (!stack) {
@@ -764,7 +766,8 @@ function showToast(message, kind = 'success', durationMs = 3200) {
   toast.innerHTML = `${kind === 'error' ? ICON_ALERT : ICON_CHECK}<span></span>`;
   toast.querySelector('span').textContent = message;
   stack.appendChild(toast);
-  setTimeout(() => toast.remove(), durationMs);
+  const timer = setTimeout(() => toast.remove(), durationMs);
+  return { el: toast, timer };
 }
 
 /* Longer than the default toast: this warning matters more than a routine
@@ -783,6 +786,60 @@ function reportStorageRecovery() {
   if (!keys) return;
   const message = keys.backupNote ? `${t(keys.main)} ${t(keys.backupNote)}` : t(keys.main);
   showToast(message, 'error', STORAGE_WARNING_TOAST_MS);
+}
+
+/* Separate from reportStorageRecovery() above: that one is about data that
+ * was already broken before this page load, this one is about a user action
+ * just now failing to persist. Kept as its own toast handle so several
+ * failures in a row (e.g. rapid Journey edits while storage is blocked)
+ * refresh one visible warning instead of stacking duplicates. */
+let storageWriteWarningToast = null;
+
+/** Never receives — and never logs — the value that failed to persist, only
+ * the key name, the structured failure reason, and whether rollback (for a
+ * batch write) succeeded. */
+function reportStorageWriteFailure(result) {
+  console.warn('[atlas] Browser storage write failed', {
+    key: result.failedKey,
+    reason: result.reason,
+    rollbackSucceeded: result.rollbackSucceeded,
+  });
+  const message = t('storage_write_failed_warning');
+  if (storageWriteWarningToast && storageWriteWarningToast.el.isConnected) {
+    clearTimeout(storageWriteWarningToast.timer);
+    storageWriteWarningToast.el.querySelector('span').textContent = message;
+    storageWriteWarningToast.timer = setTimeout(() => storageWriteWarningToast.el.remove(), STORAGE_WARNING_TOAST_MS);
+    return;
+  }
+  storageWriteWarningToast = showToast(message, 'error', STORAGE_WARNING_TOAST_MS);
+}
+
+/* ---------------- persistence boundary ----------------
+   The only functions in this file allowed to reach into browser storage.
+   Everything else in app.js works with state and calls these — see the
+   "Safe browser storage" section in CLAUDE.md. Each returns the structured
+   SafeStorage result so a caller can decide whether a success toast is
+   honest to show; reportStorageWriteFailure() above handles the failure
+   side once, here, so no call site has to. */
+
+function persist(key, value) {
+  const result = SafeStorage.writeJson(lsStorage, key, value);
+  if (!result.ok) reportStorageWriteFailure({ ...result, failedKey: key });
+  return result;
+}
+
+function persistRaw(key, value) {
+  const result = SafeStorage.writeRaw(lsStorage, key, value);
+  if (!result.ok) reportStorageWriteFailure({ ...result, failedKey: key });
+  return result;
+}
+
+/** entries: [{ key, value }, …] — see SafeStorage.writeJsonBatch. One failed
+ * batch produces exactly one warning, not one per key. */
+function persistBatch(entries) {
+  const result = SafeStorage.writeJsonBatch(lsStorage, entries);
+  if (!result.ok) reportStorageWriteFailure(result);
+  return result;
 }
 
 /* ---------------- tooltip ---------------- */
@@ -1981,7 +2038,7 @@ function renderListsHome() {
   const noticeClose = document.getElementById('storage-notice-close');
   if (noticeClose) noticeClose.addEventListener('click', () => {
     state.storageNoticeDismissed = true;
-    localStorage.setItem(LS_KEYS.storageNoticeDismissed, '1');
+    persistRaw(LS_KEYS.storageNoticeDismissed, '1');
     const notice = noticeClose.closest('.storage-notice');
     if (notice) notice.remove();
   });
@@ -1999,9 +2056,9 @@ function renderListsHome() {
       return;
     }
     state.lists.push({ id: 'list-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name });
-    persist(LS_KEYS.lists, state.lists);
+    const result = persist(LS_KEYS.lists, state.lists);
     renderListsHome();
-    showToast(t('list_created').replace('{n}', name));
+    if (result.ok) showToast(t('list_created').replace('{n}', name));
     const input = document.getElementById('new-list-input');
     if (input) input.focus();
   }
@@ -2030,8 +2087,10 @@ function renderListsHome() {
       Object.keys(state.envLists).forEach(envId => {
         setEnvLists(envId, (state.envLists[envId] || []).filter(lid => lid !== id));
       });
-      persist(LS_KEYS.lists, state.lists);
-      persist(LS_KEYS.envLists, state.envLists);
+      persistBatch([
+        { key: LS_KEYS.lists, value: state.lists },
+        { key: LS_KEYS.envLists, value: state.envLists },
+      ]);
       renderListsHome();
     });
   });
@@ -2180,9 +2239,13 @@ function openAddToListPopup(envId) {
       const set = new Set(state.envLists[envId] || []);
       if (cb.checked) set.add(listId); else set.delete(listId);
       setEnvLists(envId, [...set]);
-      persist(LS_KEYS.envLists, state.envLists);
+      const result = persist(LS_KEYS.envLists, state.envLists);
       // Membership is otherwise a silent toggle with nothing to confirm it.
-      showToast((cb.checked ? t('added_to_list') : t('removed_from_list')).replace('{n}', list ? list.name : ''));
+      // A failed write already reported its own warning inside persist() —
+      // showing "Added"/"Removed" on top of that would be a false success.
+      if (result.ok) {
+        showToast((cb.checked ? t('added_to_list') : t('removed_from_list')).replace('{n}', list ? list.name : ''));
+      }
       // Unticking is not the job finishing, and it also undoes a tick that has
       // a close already pending — either way the popup stays up.
       if (cb.checked) closeAfterAdd(); else clearTimeout(closeTimer);
@@ -2217,16 +2280,18 @@ function openAddToListPopup(envId) {
     }
     const list = { id: 'list-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name };
     state.lists.push(list);
-    persist(LS_KEYS.lists, state.lists);
     const set = new Set(state.envLists[envId] || []);
     set.add(list.id);
     setEnvLists(envId, [...set]);
-    persist(LS_KEYS.envLists, state.envLists);
+    const result = persistBatch([
+      { key: LS_KEYS.lists, value: state.lists },
+      { key: LS_KEYS.envLists, value: state.envLists },
+    ]);
     newInput.value = '';
     const container = overlay.querySelector('#atl-list');
     container.innerHTML = listRowsHtml();
     container.querySelectorAll('[data-list-toggle]').forEach(bindToggle);
-    showToast(t('added_to_list').replace('{n}', name));
+    if (result.ok) showToast(t('added_to_list').replace('{n}', name));
     newInput.focus();
     closeAfterAdd();
   }
@@ -2447,9 +2512,9 @@ function saveJourneyDraft(kind) {
   if (!draft) return;
   journeySaved(kind).push(draft);
   state.journeyDraft[kind] = null;
-  persist(journeyLsKey(kind), journeySaved(kind));
+  const result = persist(journeyLsKey(kind), journeySaved(kind));
   renderJourneyPage(journeySel(kind, null, '[data-roll-new]'));
-  showToast(t(kind === 'region' ? 'journey_region_saved' : 'journey_sanctuary_saved'));
+  if (result.ok) showToast(t(kind === 'region' ? 'journey_region_saved' : 'journey_sanctuary_saved'));
 }
 
 function deleteJourneyEntry(kind, id) {

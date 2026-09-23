@@ -123,6 +123,30 @@ JSON values with real internal structure, a structural validator in
   `unavailable` (fallback used). Only `sanitized`/`invalid-*`/`unavailable` show the
   one post-init recovery toast (`reportStorageRecovery()` in `js/app.js`), driven by
   `SafeStorage.getRecoverySummary()`/`recoveryMessageKeys()` — never per-key.
-- localStorage write-failure handling for user-initiated actions (creating a list,
-  toggling membership, saving a Journey roll) is a separate, not-yet-covered concern;
-  `persist()` itself is unchanged. This section covers startup reads only.
+- Writes go through the same module. `js/app.js` never calls `localStorage.setItem`,
+  `removeItem`, or `clear()` directly — `tests/storage.test.js` asserts that too. A
+  JSON value is written with `SafeStorage.writeJson`; the one raw flag
+  (`dhcodex_storage_notice_dismissed`) with `SafeStorage.writeRaw`; an action that
+  changes more than one key (deleting a list, creating a list from the "Add to list"
+  popup) writes them together with `SafeStorage.writeJsonBatch`, so a failure partway
+  through restores the keys that batch already wrote rather than leaving storage
+  half-updated. All three return a structured `{ ok, reason }` result and never throw
+  — a full storage or serialization failure comes back as data, not an exception, so
+  it can never propagate into a UI event handler. `js/app.js`'s own `persist()` /
+  `persistRaw()` / `persistBatch()` wrap these, report a failure once through
+  `reportStorageWriteFailure()` (which also dedupes: only one write-failure toast is
+  ever visible at a time), and hand the result back to the caller.
+- A failed write keeps the user's change in memory for the current tab — it is never
+  auto-reverted — and skips the corresponding success toast (`list_created`,
+  `added_to_list`/`removed_from_list`, `journey_region_saved`/`journey_sanctuary_saved`,
+  etc.) in favor of the localized `storage_write_failed_warning` toast, so the UI never
+  claims a change is saved when it isn't. This is a distinct situation from the
+  startup-recovery warning above: recovery is about data that was already broken
+  before this page load, this is about an action just now failing to persist.
+- `SafeStorage.getStorage()` only guards obtaining `window.localStorage` itself — it
+  does not probe with a test write, so storage that can be read but not written to
+  (quota exceeded, a write-blocking privacy mode) still lets existing Lists/Journey
+  data load. Read functions catch their own `getItem()` failures; write functions
+  catch `setItem()`/`removeItem()` failures independently.
+- None of this logs or transmits stored values — only a key name and a failure
+  reason ever reach `console.warn` or the recovery log.

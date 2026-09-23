@@ -307,3 +307,288 @@ test('js/app.js contains no direct JSON.parse(localStorage.getItem(...)) startup
     'startup state must be read through SafeStorage.loadStoredJson(), not a bare JSON.parse(localStorage.getItem(...))',
   );
 });
+
+/* ============================================================
+   Write functions: writeJson / writeRaw / writeJsonBatch
+   ============================================================ */
+
+/* ---------------- writeJson ---------------- */
+
+test('writeJson stores the exact JSON.stringify(value) format', () => {
+  const storage = new FakeStorage();
+  const value = [{ id: 'list-1', name: 'Coast' }];
+  const result = SafeStorage.writeJson(storage, 'dhcodex_lists', value);
+  assert.deepEqual(result, { ok: true });
+  assert.equal(storage.data.get('dhcodex_lists'), JSON.stringify(value));
+});
+
+test('writeJson against null storage returns unavailable without throwing', () => {
+  assert.doesNotThrow(() => {
+    const result = SafeStorage.writeJson(null, 'dhcodex_lists', []);
+    assert.deepEqual(result, { ok: false, reason: 'unavailable' });
+  });
+});
+
+test('writeJson returns write-failed when setItem() throws, without throwing', () => {
+  const storage = new FakeStorage().throwFrom('setItem');
+  assert.doesNotThrow(() => {
+    const result = SafeStorage.writeJson(storage, 'dhcodex_lists', []);
+    assert.equal(result.ok, false);
+    assert.equal(result.reason, 'write-failed');
+  });
+});
+
+test('writeJson returns serialization-failed when JSON.stringify() throws', () => {
+  const storage = new FakeStorage();
+  const circular = {};
+  circular.self = circular;
+  const result = SafeStorage.writeJson(storage, 'dhcodex_lists', circular);
+  assert.deepEqual(result, { ok: false, reason: 'serialization-failed' });
+  assert.equal(storage.data.has('dhcodex_lists'), false, 'a failed serialization must not write anything');
+});
+
+test('writeJson treats a JSON.stringify() of undefined as a serialization failure', () => {
+  const storage = new FakeStorage();
+  const result = SafeStorage.writeJson(storage, 'dhcodex_lists', undefined);
+  assert.deepEqual(result, { ok: false, reason: 'serialization-failed' });
+  assert.equal(storage.data.has('dhcodex_lists'), false);
+});
+
+test('a failed write result never carries the value that was being written', () => {
+  const storage = new FakeStorage().throwFrom('setItem');
+  const result = SafeStorage.writeJson(storage, 'dhcodex_lists', [{ id: 'list-1', name: 'Secret Name' }]);
+  const serialized = JSON.stringify(result);
+  assert.doesNotMatch(serialized, /Secret Name/);
+});
+
+/* ---------------- writeRaw ---------------- */
+
+test('writeRaw stores the exact raw string', () => {
+  const storage = new FakeStorage();
+  const result = SafeStorage.writeRaw(storage, 'dhcodex_storage_notice_dismissed', '1');
+  assert.deepEqual(result, { ok: true });
+  assert.equal(storage.data.get('dhcodex_storage_notice_dismissed'), '1');
+});
+
+test('writeRaw against null storage returns unavailable without throwing', () => {
+  assert.doesNotThrow(() => {
+    const result = SafeStorage.writeRaw(null, 'dhcodex_storage_notice_dismissed', '1');
+    assert.deepEqual(result, { ok: false, reason: 'unavailable' });
+  });
+});
+
+test('writeRaw returns write-failed when setItem() throws, without throwing', () => {
+  const storage = new FakeStorage().throwFrom('setItem');
+  assert.doesNotThrow(() => {
+    const result = SafeStorage.writeRaw(storage, 'dhcodex_storage_notice_dismissed', '1');
+    assert.equal(result.ok, false);
+    assert.equal(result.reason, 'write-failed');
+  });
+});
+
+/* ---------------- writeJsonBatch ---------------- */
+
+const BATCH_KEYS = ['dhcodex_lists', 'dhcodex_env_lists'];
+
+test('a successful batch writes every entry', () => {
+  const storage = new FakeStorage();
+  const lists = [{ id: 'list-1', name: 'Coast' }];
+  const envLists = { 'env-a': ['list-1'] };
+  const result = SafeStorage.writeJsonBatch(storage, [
+    { key: 'dhcodex_lists', value: lists },
+    { key: 'dhcodex_env_lists', value: envLists },
+  ]);
+  assert.deepEqual(result, { ok: true });
+  assert.equal(storage.data.get('dhcodex_lists'), JSON.stringify(lists));
+  assert.equal(storage.data.get('dhcodex_env_lists'), JSON.stringify(envLists));
+});
+
+test('an empty batch is rejected safely', () => {
+  const storage = new FakeStorage();
+  assert.doesNotThrow(() => {
+    const result = SafeStorage.writeJsonBatch(storage, []);
+    assert.equal(result.ok, false);
+  });
+});
+
+test('a batch against null storage returns unavailable without throwing', () => {
+  assert.doesNotThrow(() => {
+    const result = SafeStorage.writeJsonBatch(null, [{ key: 'dhcodex_lists', value: [] }]);
+    assert.equal(result.ok, false);
+    assert.equal(result.reason, 'unavailable');
+  });
+});
+
+test('a batch serialization failure writes nothing, not even the entry before it', () => {
+  const storage = new FakeStorage({ dhcodex_lists: '[]' });
+  const circular = {};
+  circular.self = circular;
+  const result = SafeStorage.writeJsonBatch(storage, [
+    { key: 'dhcodex_lists', value: [{ id: 'list-1', name: 'Coast' }] },
+    { key: 'dhcodex_env_lists', value: circular },
+  ]);
+  assert.equal(result.ok, false);
+  assert.equal(result.reason, 'serialization-failed');
+  assert.equal(storage.data.get('dhcodex_lists'), '[]', 'the first entry must not have been written either');
+  assert.equal(storage.data.has('dhcodex_env_lists'), false);
+});
+
+test('a batch snapshot failure (getItem throws) writes nothing', () => {
+  const storage = new FakeStorage({ dhcodex_lists: '[]' }).throwFrom('getItem');
+  const result = SafeStorage.writeJsonBatch(storage, [
+    { key: 'dhcodex_lists', value: [] },
+    { key: 'dhcodex_env_lists', value: {} },
+  ]);
+  assert.equal(result.ok, false);
+  // FakeStorage.getItem() throws before any setItem() in this batch runs.
+});
+
+test('failure on the first batch write leaves previously stored values unchanged', () => {
+  const storage = new FakeStorage({ dhcodex_lists: '[]', dhcodex_env_lists: '{}' });
+  storage.setItem = (key) => { throw new Error('quota on ' + key); };
+  const result = SafeStorage.writeJsonBatch(storage, [
+    { key: 'dhcodex_lists', value: [{ id: 'list-1', name: 'Coast' }] },
+    { key: 'dhcodex_env_lists', value: { 'env-a': ['list-1'] } },
+  ]);
+  assert.equal(result.ok, false);
+  assert.equal(result.failedKey, 'dhcodex_lists');
+  assert.equal(result.rollbackAttempted, true);
+  assert.equal(result.rollbackSucceeded, true);
+  assert.equal(storage.data.get('dhcodex_lists'), '[]');
+  assert.equal(storage.data.get('dhcodex_env_lists'), '{}');
+});
+
+test('failure on a later batch write restores the keys already written by this batch', () => {
+  const storage = new FakeStorage({ dhcodex_lists: '[]', dhcodex_env_lists: '{}' });
+  let calls = 0;
+  const realSetItem = storage.setItem.bind(storage);
+  storage.setItem = (key, value) => {
+    calls++;
+    if (calls === 2) throw new Error('quota on ' + key);
+    return realSetItem(key, value);
+  };
+  const result = SafeStorage.writeJsonBatch(storage, [
+    { key: 'dhcodex_lists', value: [{ id: 'list-1', name: 'Coast' }] },
+    { key: 'dhcodex_env_lists', value: { 'env-a': ['list-1'] } },
+  ]);
+  assert.equal(result.ok, false);
+  assert.equal(result.failedKey, 'dhcodex_env_lists');
+  assert.equal(result.rollbackAttempted, true);
+  assert.equal(result.rollbackSucceeded, true);
+  assert.equal(storage.data.get('dhcodex_lists'), '[]', 'the earlier key in this batch must be restored');
+  assert.equal(storage.data.get('dhcodex_env_lists'), '{}');
+});
+
+test('rollback removes a key that did not exist before the batch', () => {
+  const storage = new FakeStorage({ dhcodex_lists: '[]' }); // dhcodex_env_lists never written before
+  let calls = 0;
+  const realSetItem = storage.setItem.bind(storage);
+  storage.setItem = (key, value) => {
+    calls++;
+    if (calls === 2) throw new Error('quota on ' + key);
+    return realSetItem(key, value);
+  };
+  const result = SafeStorage.writeJsonBatch(storage, [
+    { key: 'dhcodex_lists', value: [{ id: 'list-1', name: 'Coast' }] },
+    { key: 'dhcodex_env_lists', value: { 'env-a': ['list-1'] } },
+  ]);
+  assert.equal(result.ok, false);
+  assert.equal(result.rollbackSucceeded, true);
+  assert.equal(storage.data.get('dhcodex_lists'), '[]', 'the pre-existing key must be restored to its exact previous value');
+  assert.equal(storage.data.has('dhcodex_env_lists'), false, 'a key with no previous value must be removed by rollback');
+});
+
+test('a rollback setItem() failure is caught and reported, not thrown', () => {
+  const storage = new FakeStorage({ dhcodex_lists: '[]', dhcodex_env_lists: '{}' });
+  let calls = 0;
+  const realSetItem = storage.setItem.bind(storage);
+  storage.setItem = (key, value) => {
+    calls++;
+    if (calls === 2) throw new Error('quota on ' + key); // second forward write fails
+    if (calls === 3) throw new Error('rollback also fails'); // rollback of the first key fails
+    return realSetItem(key, value);
+  };
+  assert.doesNotThrow(() => {
+    const result = SafeStorage.writeJsonBatch(storage, [
+      { key: 'dhcodex_lists', value: [{ id: 'list-1', name: 'Coast' }] },
+      { key: 'dhcodex_env_lists', value: { 'env-a': ['list-1'] } },
+    ]);
+    assert.equal(result.ok, false);
+    assert.equal(result.rollbackAttempted, true);
+    assert.equal(result.rollbackSucceeded, false);
+  });
+});
+
+test('a rollback removeItem() failure is caught and reported, not thrown', () => {
+  const storage = new FakeStorage(); // neither key exists before the batch
+  let setCalls = 0;
+  const realSetItem = storage.setItem.bind(storage);
+  storage.setItem = (key, value) => {
+    setCalls++;
+    if (setCalls === 2) throw new Error('quota on ' + key);
+    return realSetItem(key, value);
+  };
+  storage.removeItem = () => { throw new Error('removeItem boom'); };
+  assert.doesNotThrow(() => {
+    const result = SafeStorage.writeJsonBatch(storage, [
+      { key: 'dhcodex_lists', value: [{ id: 'list-1', name: 'Coast' }] },
+      { key: 'dhcodex_env_lists', value: { 'env-a': ['list-1'] } },
+    ]);
+    assert.equal(result.ok, false);
+    assert.equal(result.rollbackAttempted, true);
+    assert.equal(result.rollbackSucceeded, false);
+  });
+});
+
+test('a failed batch result never carries previous or new raw values', () => {
+  const storage = new FakeStorage({ dhcodex_lists: '[]', dhcodex_env_lists: '{}' });
+  let calls = 0;
+  const realSetItem = storage.setItem.bind(storage);
+  storage.setItem = (key, value) => {
+    calls++;
+    if (calls === 2) throw new Error('quota on ' + key);
+    return realSetItem(key, value);
+  };
+  const result = SafeStorage.writeJsonBatch(storage, [
+    { key: 'dhcodex_lists', value: [{ id: 'list-1', name: 'Secret Coast Name' }] },
+    { key: 'dhcodex_env_lists', value: { 'env-a': ['list-1'] } },
+  ]);
+  const serialized = JSON.stringify(result);
+  assert.doesNotMatch(serialized, /Secret Coast Name/);
+});
+
+/* ---------------- getStorage(): readable-but-unwritable storage ---------------- */
+
+test('getStorage() does not require a successful write probe, and reads still work when writes would fail', () => {
+  const fake = new FakeStorage({ dhcodex_lists: JSON.stringify([{ id: 'list-1', name: 'Fine' }]) }).throwFrom('setItem');
+  const originalWindow = global.window;
+  global.window = { localStorage: fake };
+  try {
+    const storage = SafeStorage.getStorage();
+    assert.equal(storage, fake, 'getStorage() must return the Storage object without probing it');
+    const loaded = SafeStorage.loadStoredJson(storage, 'dhcodex_lists', { fallback: () => [], validate: SafeStorage.validators.lists });
+    assert.deepEqual(loaded, [{ id: 'list-1', name: 'Fine' }], 'existing data must still be readable');
+    const writeResult = SafeStorage.writeJson(storage, 'dhcodex_lists', []);
+    assert.equal(writeResult.ok, false, 'the storage this session actually has is still unwritable');
+  } finally {
+    if (originalWindow === undefined) delete global.window;
+    else global.window = originalWindow;
+  }
+});
+
+/* ---------------- static checks: js/app.js never writes localStorage directly ---------------- */
+
+test('js/app.js contains no direct localStorage.setItem()/removeItem() calls', () => {
+  const src = fs.readFileSync(path.join(__dirname, '../js/app.js'), 'utf8');
+  assert.doesNotMatch(src, /localStorage\s*\.\s*setItem\s*\(/, 'writes must go through SafeStorage.writeJson/writeRaw/writeJsonBatch');
+  assert.doesNotMatch(src, /localStorage\s*\.\s*removeItem\s*\(/, 'removals must go through SafeStorage');
+});
+
+test('the old unguarded persist() implementation is absent from js/app.js', () => {
+  const src = fs.readFileSync(path.join(__dirname, '../js/app.js'), 'utf8');
+  assert.doesNotMatch(
+    src,
+    /function\s+persist\s*\([^)]*\)\s*\{\s*localStorage\.setItem/,
+    'persist() must go through SafeStorage.writeJson(), not call localStorage.setItem() directly',
+  );
+});
