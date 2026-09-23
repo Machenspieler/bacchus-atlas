@@ -22,6 +22,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - run: node --test tests/storage.test.js
       - run: node scripts/build.js
       - run: node scripts/check-unlisted-build.js
       - uses: actions/upload-pages-artifact@v3

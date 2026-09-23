@@ -78,9 +78,9 @@ the card's text actually supports; don't guess a terrain from the name alone.
 
 ## Cache busting
 
-`index.html` references the stylesheet and script with a `?v=` query string. Bump the
-number whenever `css/styles.css` or `js/app.js` changes, or browsers will serve stale
-copies after deploy.
+`index.html` references the stylesheet and scripts with a `?v=` query string. Bump the
+number whenever `css/styles.css`, `js/safe-storage.js`, or `js/app.js` changes, or
+browsers will serve stale copies after deploy.
 
 The JSON under `data/` is fetched by `js/app.js`, not linked from `index.html`, so it
 carries its own buster: bump `DATA_VERSION` in `js/app.js` whenever any data file
@@ -98,3 +98,31 @@ Do not add SEO catalog output, crawler-discovery files, JSON-LD environment list
 `llms.txt`, `sitemap.xml`, or server-side environment prerendering unless the
 repository owner explicitly requests that the website become publicly discoverable
 again.
+
+## Safe browser storage
+
+All persisted browser state (`LS_KEYS` in `js/app.js`) must be loaded through the
+centralized safe-storage reader in `js/safe-storage.js` (`SafeStorage.loadStoredJson` /
+`SafeStorage.readRawFlag`), loaded via its own `<script>` tag before `js/app.js` in
+`index.html`. New localStorage keys require an explicit fallback factory and, for
+JSON values with real internal structure, a structural validator in
+`SafeStorage.validators`. Do not add a direct
+`JSON.parse(localStorage.getItem(...))` expression during application startup —
+`tests/storage.test.js` asserts that pattern is absent from `js/app.js`.
+
+- **Recovery backup key convention**: before a corrupted or wrong-shaped value under
+  key `dhcodex_x` is replaced, its raw string is best-effort backed up under
+  `dhcodex_corrupt_backup_x` (see `SafeStorage.backupKeyFor`). At most one backup key
+  exists per source key — a later recovery overwrites it rather than adding another.
+- One key failing (bad JSON, wrong top-level type, or invalid nested entries) never
+  resets another key. Lists, environment-to-list membership, and the two Journey
+  tables are each read and sanitized independently.
+- Four statuses matter internally: `missing` (no warning, normal default), `valid`
+  (used as-is, nothing rewritten), `sanitized` (top-level usable, some invalid nested
+  entries dropped — the rest of the value is kept), and `invalid-json`/`invalid-shape`/
+  `unavailable` (fallback used). Only `sanitized`/`invalid-*`/`unavailable` show the
+  one post-init recovery toast (`reportStorageRecovery()` in `js/app.js`), driven by
+  `SafeStorage.getRecoverySummary()`/`recoveryMessageKeys()` — never per-key.
+- localStorage write-failure handling for user-initiated actions (creating a list,
+  toggling membership, saving a Journey roll) is a separate, not-yet-covered concern;
+  `persist()` itself is unchanged. This section covers startup reads only.

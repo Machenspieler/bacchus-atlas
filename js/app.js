@@ -23,15 +23,25 @@ const JOURNEY_EMPTY = { habitat: [], encounter: [], terrain: [], rumors: [], san
 
 function normalizeLang(v) { return v === 'en' ? 'en' : 'ru'; }
 
+/* Every persisted value is read through SafeStorage (js/safe-storage.js),
+ * loaded before this script, so corrupt or wrong-shaped browser storage can
+ * never stop startup — see the "Safe browser storage" section in
+ * CLAUDE.md. `lsStorage` is resolved once: null when localStorage cannot be
+ * used at all, in which case every read below quietly returns its fallback. */
+const lsStorage = SafeStorage.getStorage();
+
 /* The language is written through persist(), so what comes back out is JSON —
  * `"en"`, quote marks and all, which never equals `en`. Parsing it here keeps
  * the write side symmetric with every other key; the fallback covers a value
  * left in storage by a build that wrote the bare string. */
 function storedLang() {
-  const raw = localStorage.getItem(LS_KEYS.lang);
-  if (!raw) return 'ru';
-  try { return normalizeLang(JSON.parse(raw)); }
-  catch { return normalizeLang(raw); }
+  return SafeStorage.loadStoredJson(lsStorage, LS_KEYS.lang, {
+    fallback: () => 'ru',
+    parse: raw => {
+      try { return normalizeLang(JSON.parse(raw)); }
+      catch { return normalizeLang(raw); }
+    },
+  });
 }
 
 const state = {
@@ -43,15 +53,27 @@ const state = {
   itemIndex: new Map(),
   adversaryCatalog: new Map(),
   journey: JOURNEY_EMPTY,
-  journeyRegions: JSON.parse(localStorage.getItem(LS_KEYS.journeyRegions) || '[]'),
-  journeySanctuaries: JSON.parse(localStorage.getItem(LS_KEYS.journeySanctuaries) || '[]'),
+  journeyRegions: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.journeyRegions, {
+    fallback: () => [],
+    validate: SafeStorage.validators.journeyRegions,
+  }),
+  journeySanctuaries: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.journeySanctuaries, {
+    fallback: () => [],
+    validate: SafeStorage.validators.journeySanctuaries,
+  }),
   /* The roll on screen that has not been kept yet. Deliberately not persisted:
    * an unsaved roll is a suggestion the GM is still looking at, and it should
    * not outlive the visit the way a saved one does. */
   journeyDraft: { region: null, sanctuary: null },
-  lists: JSON.parse(localStorage.getItem(LS_KEYS.lists) || '[]'),
-  envLists: JSON.parse(localStorage.getItem(LS_KEYS.envLists) || '{}'),
-  storageNoticeDismissed: localStorage.getItem(LS_KEYS.storageNoticeDismissed) === '1',
+  lists: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.lists, {
+    fallback: () => [],
+    validate: SafeStorage.validators.lists,
+  }),
+  envLists: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.envLists, {
+    fallback: () => ({}),
+    validate: SafeStorage.validators.envLists,
+  }),
+  storageNoticeDismissed: SafeStorage.readRawFlag(lsStorage, LS_KEYS.storageNoticeDismissed) === '1',
   filters: { search: '', tiers: new Set(), types: new Set(), sources: new Set(), biomes: new Set(), regionOnly: false },
   // Whether the phone-width filter disclosure is open. Purely presentational,
   // so it lives here rather than in localStorage and survives a re-render only.
@@ -616,7 +638,7 @@ function potentialAdversaryEntryHtml(localizedText, englishText) {
 /* Cache buster for the JSON under data/. index.html versions the stylesheet and
    this script the same way; the data files are fetched from here instead, so
    bump this whenever anything in data/ changes or browsers serve stale copies. */
-const DATA_VERSION = 86;
+const DATA_VERSION = 87;
 
 function getJSON(path) {
   return fetch(path).then(r => {
@@ -659,6 +681,7 @@ async function init() {
     return;
   }
   render();
+  reportStorageRecovery();
 }
 
 function renderLoadingState() {
@@ -726,7 +749,7 @@ function emptyStateHtml({ icon, title, hint, action = '', error = false }) {
     </div>`;
 }
 
-function showToast(message, kind = 'success') {
+function showToast(message, kind = 'success', durationMs = 3200) {
   let stack = document.getElementById('toast-stack');
   if (!stack) {
     stack = document.createElement('div');
@@ -741,7 +764,25 @@ function showToast(message, kind = 'success') {
   toast.innerHTML = `${kind === 'error' ? ICON_ALERT : ICON_CHECK}<span></span>`;
   toast.querySelector('span').textContent = message;
   stack.appendChild(toast);
-  setTimeout(() => toast.remove(), 3200);
+  setTimeout(() => toast.remove(), durationMs);
+}
+
+/* Longer than the default toast: this warning matters more than a routine
+ * confirmation and needs time to actually be read. */
+const STORAGE_WARNING_TOAST_MS = 8000;
+
+/** Shown once, after i18n and the first render are ready — never during
+ * state construction, since t() has nothing to translate with yet. Reads
+ * only the key/reason recovery summary SafeStorage kept; never the raw
+ * stored values it recovered from. */
+function reportStorageRecovery() {
+  const summary = SafeStorage.getRecoverySummary();
+  if (!summary.hasIssues) return;
+  SafeStorage.logRecoverySummary();
+  const keys = SafeStorage.recoveryMessageKeys(summary);
+  if (!keys) return;
+  const message = keys.backupNote ? `${t(keys.main)} ${t(keys.backupNote)}` : t(keys.main);
+  showToast(message, 'error', STORAGE_WARNING_TOAST_MS);
 }
 
 /* ---------------- tooltip ---------------- */
