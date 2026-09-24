@@ -2176,6 +2176,85 @@ body[data-route="session-prep"] .header-inner {
 .prep-item-meta { font-size: var(--fs-xs); color: var(--muted); }
 .prep-item-source-note { margin: 0; font-size: var(--fs-xs); color: var(--muted); font-style: italic; }
 
+/* ---- large screens (≥1200px, the three-column layout) only: the whole page
+   fits in the viewport with no page-level scroll. Every ancestor from body
+   down to .prep-main is given a definite, shrinkable height (flex + min-height:
+   0) so that height reaches the three columns; the env/adversary pickers and
+   the item catalogue scroll internally instead of growing the page. Narrower
+   layouts (tablet/phone, below) keep the normal page scroll. */
+@media (min-width: 1200px) {
+  body[data-route="session-prep"] {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  body[data-route="session-prep"] .site-header,
+  body[data-route="session-prep"] #footer {
+    flex: none;
+  }
+  body[data-route="session-prep"] #main {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: var(--s-4);
+  }
+  body[data-route="session-prep"] #toolbar,
+  body[data-route="session-prep"] #result-count {
+    display: none;
+  }
+  body[data-route="session-prep"] #grid-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  body[data-route="session-prep"] .prep-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  body[data-route="session-prep"] .prep-session-header,
+  body[data-route="session-prep"] .prep-items-panel {
+    flex: none;
+  }
+  body[data-route="session-prep"] .prep-main {
+    flex: 1 1 auto;
+    min-height: 0;
+    grid-template-rows: minmax(0, 1fr);
+    align-items: stretch;
+  }
+  /* Each column stretches to the row's full height; only the picker list
+     inside env/adv scrolls (below), so the column itself clips rather than
+     also scrolling — one scrollbar per block, not two nested ones. */
+  body[data-route="session-prep"] .prep-col {
+    min-height: 0;
+    overflow: hidden;
+  }
+  /* Selected-items summary has no single inner list to delegate to, so the
+     whole column scrolls if its three sections together run long. */
+  body[data-route="session-prep"] .prep-central {
+    min-height: 0;
+    overflow-y: auto;
+  }
+  body[data-route="session-prep"] .prep-picker-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+  }
+  /* The item catalogue scrolls sideways in one row instead of wrapping into
+     more rows than the viewport has height for. */
+  body[data-route="session-prep"] .prep-item-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: var(--s-2);
+  }
+  body[data-route="session-prep"] .prep-item-card {
+    flex: 0 0 220px;
+  }
+}
+
 /* ---- responsive: 900-1199px puts the central panel first and full width,
    with the two catalogues below it in two columns ---- */
 @media (max-width: 1199px) {
