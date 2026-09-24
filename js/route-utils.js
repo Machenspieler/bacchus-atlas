@@ -50,7 +50,7 @@
    * Lists overview while a valid environment suffix on it is preserved.
    *
    * Returns { route, malformed, canonicalHash }:
-   *   route: { name: 'catalog'|'lists'|'list'|'journey', id?, env }
+   *   route: { name: 'catalog'|'lists'|'list'|'journey'|'session-prep', id?, env }
    *   malformed: whether any segment failed to decode
    *   canonicalHash: the safe hash the address should be repaired to, or
    *     null when nothing was malformed
@@ -78,6 +78,8 @@
       route = { name: 'lists', env: env };
     } else if (working === '#/journey') {
       route = { name: 'journey', env: env };
+    } else if (working === '#/session-prep') {
+      route = { name: 'session-prep', env: env };
     } else {
       route = { name: 'catalog', env: env };
     }
@@ -94,6 +96,7 @@
     if (route.name === 'list') return '#/lists/' + encodeURIComponent(route.id);
     if (route.name === 'lists') return '#/lists';
     if (route.name === 'journey') return '#/journey';
+    if (route.name === 'session-prep') return '#/session-prep';
     return '';
   }
 

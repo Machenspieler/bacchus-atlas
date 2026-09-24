@@ -448,6 +448,140 @@
   function sanitizeJourneyRegions(parsed) { return sanitizeJourneyArray(parsed, sanitizeRegionEntry); }
   function sanitizeJourneySanctuaries(parsed) { return sanitizeJourneyArray(parsed, sanitizeSanctuaryEntry); }
 
+  /* ---------------- Session Prep (dhcodex_session_prep) ----------------
+   * Mirrors the shape SessionPrepUtils (js/session-prep-utils.js) operates
+   * on, but is deliberately self-contained rather than requiring that
+   * module: this validator only needs to know the storage *shape* is sound
+   * (bounds, uniqueness, cross-field consistency), not the selection rules
+   * a live page applies, and duplicating the three small constants below
+   * keeps this file loadable standalone in a test the same way
+   * sanitizeRegionEntry/sanitizeSanctuaryEntry already are. See the
+   * "Persistence" section of the Session Prep spec in CLAUDE.md. */
+
+  var SP_MAX_ENVIRONMENTS = 3;
+  var SP_MIN_QUANTITY = 1;
+  var SP_MAX_QUANTITY = 99;
+
+  function isValidIsoTimestamp(v) {
+    if (typeof v !== 'string' || !v) return false;
+    var d = new Date(v);
+    return !isNaN(d.getTime());
+  }
+
+  /** Sanitizes an { id, quantity } list (Session Prep adversaries/items):
+   * drops entries with a missing/duplicate id, clamps quantity into
+   * 1-99/integer. Never fails the whole list over one bad row. */
+  function sanitizeQuantityEntries(list) {
+    if (!Array.isArray(list)) return { ok: false };
+    var seen = Object.create(null);
+    var kept = [];
+    var changed = false;
+    list.forEach(function (entry) {
+      if (!isPlainObject(entry) || !isNonEmptyString(entry.id) || DANGEROUS_KEYS[entry.id]) { changed = true; return; }
+      if (seen[entry.id]) { changed = true; return; }
+      seen[entry.id] = true;
+      var q = entry.quantity;
+      var safeQty = isFiniteNumber(q) && Number.isInteger(q) && q >= SP_MIN_QUANTITY && q <= SP_MAX_QUANTITY
+        ? q
+        : Math.min(SP_MAX_QUANTITY, Math.max(SP_MIN_QUANTITY, Math.round(isFiniteNumber(q) ? q : SP_MIN_QUANTITY)));
+      if (safeQty !== q) changed = true;
+      kept.push({ id: entry.id, quantity: safeQty });
+    });
+    return { ok: true, value: kept, changed: changed };
+  }
+
+  function sanitizeSessionPrepSession(session) {
+    if (!isPlainObject(session) || !isNonEmptyString(session.id)) return { ok: false };
+    var changed = false;
+    var now = new Date().toISOString();
+
+    var title = typeof session.title === 'string' ? session.title : '';
+    if (title !== session.title) changed = true;
+
+    var createdAt = isValidIsoTimestamp(session.createdAt) ? session.createdAt : now;
+    if (createdAt !== session.createdAt) changed = true;
+    var updatedAt = isValidIsoTimestamp(session.updatedAt) ? session.updatedAt : now;
+    if (updatedAt !== session.updatedAt) changed = true;
+
+    var rawEnvIds = Array.isArray(session.environmentIds) ? session.environmentIds : [];
+    if (!Array.isArray(session.environmentIds)) changed = true;
+    var seenEnv = Object.create(null);
+    var environmentIds = [];
+    rawEnvIds.forEach(function (id) {
+      if (!isNonEmptyString(id) || DANGEROUS_KEYS[id]) { changed = true; return; }
+      if (seenEnv[id]) { changed = true; return; }
+      seenEnv[id] = true;
+      environmentIds.push(id);
+    });
+    if (environmentIds.length > SP_MAX_ENVIRONMENTS) {
+      environmentIds = environmentIds.slice(0, SP_MAX_ENVIRONMENTS);
+      changed = true;
+    }
+
+    var primaryEnvironmentId = session.primaryEnvironmentId;
+    if (primaryEnvironmentId !== null && !isNonEmptyString(primaryEnvironmentId)) {
+      primaryEnvironmentId = environmentIds[0] || null;
+      changed = true;
+    } else if (primaryEnvironmentId && environmentIds.indexOf(primaryEnvironmentId) === -1) {
+      primaryEnvironmentId = environmentIds[0] || null;
+      changed = true;
+    } else if (!primaryEnvironmentId && environmentIds.length) {
+      primaryEnvironmentId = environmentIds[0];
+      changed = true;
+    }
+
+    var advResult = sanitizeQuantityEntries(session.adversaries);
+    if (!advResult.ok) { advResult = { ok: true, value: [], changed: true }; }
+    else if (advResult.changed) changed = true;
+
+    var itemResult = sanitizeQuantityEntries(session.items);
+    if (!itemResult.ok) { itemResult = { ok: true, value: [], changed: true }; }
+    else if (itemResult.changed) changed = true;
+
+    return {
+      ok: true,
+      changed: changed,
+      value: {
+        id: session.id,
+        title: title,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        primaryEnvironmentId: primaryEnvironmentId,
+        environmentIds: environmentIds,
+        adversaries: advResult.value,
+        items: itemResult.value,
+      },
+    };
+  }
+
+  function sanitizeSessionPrep(parsed) {
+    if (!isPlainObject(parsed)) return { ok: false };
+    if (parsed.schemaVersion !== 1) return { ok: false };
+    if (!Array.isArray(parsed.sessions) || !parsed.sessions.length) return { ok: false };
+
+    var changed = false;
+    var kept = [];
+    parsed.sessions.forEach(function (session) {
+      var result = sanitizeSessionPrepSession(session);
+      if (!result.ok) { changed = true; return; }
+      if (result.changed) changed = true;
+      kept.push(result.value);
+    });
+    if (!kept.length) return { ok: false };
+
+    var activeSessionId = parsed.activeSessionId;
+    if (!isNonEmptyString(activeSessionId) || !kept.some(function (s) { return s.id === activeSessionId; })) {
+      activeSessionId = kept[0].id;
+      changed = true;
+    }
+
+    return {
+      ok: true,
+      changed: changed,
+      value: { schemaVersion: 1, activeSessionId: activeSessionId, sessions: kept },
+    };
+  }
+
   return {
     getStorage: getStorage,
     loadStoredJson: loadStoredJson,
@@ -466,6 +600,7 @@
       envLists: sanitizeEnvLists,
       journeyRegions: sanitizeJourneyRegions,
       journeySanctuaries: sanitizeJourneySanctuaries,
+      sessionPrep: sanitizeSessionPrep,
     },
   };
 });

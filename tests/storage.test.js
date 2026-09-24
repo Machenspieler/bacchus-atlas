@@ -206,6 +206,158 @@ test('invalid journey sanctuary entries are dropped individually', () => {
   assert.deepEqual(loaded, [VALID_SANCTUARY]);
 });
 
+/* ---------------- 15b: Session Prep ---------------- */
+
+function loadSessionPrep(storage) {
+  return SafeStorage.loadStoredJson(storage, 'dhcodex_session_prep', {
+    fallback: () => ({ schemaVersion: 1, activeSessionId: 'default', sessions: [{
+      id: 'default', title: '', createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-01T00:00:00.000Z',
+      primaryEnvironmentId: null, environmentIds: [], adversaries: [], items: [],
+    }] }),
+    validate: SafeStorage.validators.sessionPrep,
+  });
+}
+
+const VALID_SESSION_PREP = {
+  schemaVersion: 1,
+  activeSessionId: 'default',
+  sessions: [{
+    id: 'default', title: 'My Prep',
+    createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-02T00:00:00.000Z',
+    primaryEnvironmentId: 'ancient-grove', environmentIds: ['ancient-grove', 'harsh-desert'],
+    adversaries: [{ id: 'cave-ogre', quantity: 2 }], items: [{ id: 'ci1', quantity: 1 }],
+  }],
+};
+
+test('missing Session Prep storage returns a valid default preparation', () => {
+  const storage = new FakeStorage();
+  const loaded = loadSessionPrep(storage);
+  assert.equal(loaded.schemaVersion, 1);
+  assert.equal(loaded.activeSessionId, 'default');
+  assert.equal(loaded.sessions.length, 1);
+  assert.equal(loaded.sessions[0].environmentIds.length, 0);
+});
+
+test('a valid Session Prep preparation is preserved as-is', () => {
+  const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify(VALID_SESSION_PREP) });
+  const loaded = loadSessionPrep(storage);
+  assert.deepEqual(loaded, VALID_SESSION_PREP);
+  assert.equal(SafeStorage.getRecoverySummary().hasIssues, false);
+});
+
+test('invalid Session Prep JSON recovers to a safe default', () => {
+  const storage = new FakeStorage({ dhcodex_session_prep: '{not-json' });
+  const loaded = loadSessionPrep(storage);
+  assert.equal(loaded.sessions[0].environmentIds.length, 0);
+  assert.equal(SafeStorage.getRecoverySummary().hasIssues, true);
+});
+
+test('an invalid Session Prep top-level shape recovers to a safe default', () => {
+  const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify([1, 2, 3]) });
+  const loaded = loadSessionPrep(storage);
+  assert.equal(loaded.sessions[0].environmentIds.length, 0);
+});
+
+test('an unsupported Session Prep schemaVersion recovers to a safe default', () => {
+  const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify({ ...VALID_SESSION_PREP, schemaVersion: 2 }) });
+  const loaded = loadSessionPrep(storage);
+  assert.equal(loaded.sessions[0].environmentIds.length, 0);
+});
+
+test('a missing Session Prep sessions array recovers to a safe default', () => {
+  const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify({ schemaVersion: 1, activeSessionId: 'default' }) });
+  const loaded = loadSessionPrep(storage);
+  assert.equal(loaded.sessions[0].environmentIds.length, 0);
+});
+
+test('an invalid Session Prep activeSessionId is repaired to an existing session', () => {
+  const raw = { ...VALID_SESSION_PREP, activeSessionId: 'no-such-session' };
+  const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify(raw) });
+  const loaded = loadSessionPrep(storage);
+  assert.equal(loaded.activeSessionId, 'default');
+  assert.equal(SafeStorage.getRecoverySummary().hasIssues, true);
+});
+
+test('Session Prep environment selection is sanitized to at most three, deduplicated', () => {
+  const raw = { ...VALID_SESSION_PREP, sessions: [{
+    ...VALID_SESSION_PREP.sessions[0],
+    environmentIds: ['a', 'a', 'b', 'c', 'd'],
+    primaryEnvironmentId: 'a',
+  }] };
+  const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify(raw) });
+  const loaded = loadSessionPrep(storage);
+  assert.deepEqual(loaded.sessions[0].environmentIds, ['a', 'b', 'c']);
+});
+
+test('a Session Prep primary environment not present in environmentIds is repaired', () => {
+  const raw = { ...VALID_SESSION_PREP, sessions: [{
+    ...VALID_SESSION_PREP.sessions[0],
+    environmentIds: ['ancient-grove'],
+    primaryEnvironmentId: 'harsh-desert',
+  }] };
+  const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify(raw) });
+  const loaded = loadSessionPrep(storage);
+  assert.equal(loaded.sessions[0].primaryEnvironmentId, 'ancient-grove');
+});
+
+test('duplicate Session Prep adversary/item ids are deduplicated, keeping the first', () => {
+  const raw = { ...VALID_SESSION_PREP, sessions: [{
+    ...VALID_SESSION_PREP.sessions[0],
+    adversaries: [{ id: 'cave-ogre', quantity: 2 }, { id: 'cave-ogre', quantity: 9 }],
+    items: [{ id: 'ci1', quantity: 1 }, { id: 'ci1', quantity: 5 }],
+  }] };
+  const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify(raw) });
+  const loaded = loadSessionPrep(storage);
+  assert.deepEqual(loaded.sessions[0].adversaries, [{ id: 'cave-ogre', quantity: 2 }]);
+  assert.deepEqual(loaded.sessions[0].items, [{ id: 'ci1', quantity: 1 }]);
+});
+
+test('Session Prep quantities are sanitized to integers within 1-99', () => {
+  const raw = { ...VALID_SESSION_PREP, sessions: [{
+    ...VALID_SESSION_PREP.sessions[0],
+    adversaries: [{ id: 'a', quantity: 0 }, { id: 'b', quantity: 500 }, { id: 'c', quantity: 3.7 }, { id: 'd', quantity: 'nope' }],
+    items: [],
+  }] };
+  const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify(raw) });
+  const loaded = loadSessionPrep(storage);
+  assert.deepEqual(loaded.sessions[0].adversaries, [
+    { id: 'a', quantity: 1 }, { id: 'b', quantity: 99 }, { id: 'c', quantity: 4 }, { id: 'd', quantity: 1 },
+  ]);
+});
+
+test('invalid nested Session Prep rows are dropped while valid rows are preserved', () => {
+  const raw = { ...VALID_SESSION_PREP, sessions: [{
+    ...VALID_SESSION_PREP.sessions[0],
+    adversaries: [{ id: 'cave-ogre', quantity: 2 }, { quantity: 3 }, null, { id: 42, quantity: 1 }],
+  }] };
+  const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify(raw) });
+  const loaded = loadSessionPrep(storage);
+  assert.deepEqual(loaded.sessions[0].adversaries, [{ id: 'cave-ogre', quantity: 2 }]);
+});
+
+test('an invalid Session Prep title is repaired without dropping the session', () => {
+  const raw = { ...VALID_SESSION_PREP, sessions: [{ ...VALID_SESSION_PREP.sessions[0], title: 42 }] };
+  const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify(raw) });
+  const loaded = loadSessionPrep(storage);
+  assert.equal(loaded.sessions[0].title, '');
+});
+
+test('invalid Session Prep timestamps are repaired without dropping the session', () => {
+  const raw = { ...VALID_SESSION_PREP, sessions: [{ ...VALID_SESSION_PREP.sessions[0], createdAt: 'not-a-date', updatedAt: null }] };
+  const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify(raw) });
+  const loaded = loadSessionPrep(storage);
+  assert.equal(typeof loaded.sessions[0].createdAt, 'string');
+  assert.ok(!isNaN(new Date(loaded.sessions[0].createdAt).getTime()));
+});
+
+test('a Session Prep read never throws even against thoroughly hostile input', () => {
+  const hostile = [null, 42, 'x', [], { schemaVersion: 1 }, { schemaVersion: 1, sessions: 'nope' }];
+  hostile.forEach(value => {
+    const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify(value) });
+    assert.doesNotThrow(() => loadSessionPrep(storage));
+  });
+});
+
 /* ---------------- 16/17/18: storage exceptions ---------------- */
 
 test('a getItem() exception returns defaults rather than throwing', () => {

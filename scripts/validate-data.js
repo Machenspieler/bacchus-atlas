@@ -770,6 +770,171 @@ function validateItems(data, file, diagnostics) {
   return facts;
 }
 
+/* ---------------- data/session-prep.json ---------------- */
+
+/** True when `image` (an adversary's local artwork path or an item's bare
+ * image filename) has a supported raster extension. Session Prep adversary
+ * art may be PNG, WebP, JPG, JPEG or AVIF (see the "Adversary MVP data"
+ * section of the Session Prep spec in CLAUDE.md); item images always come
+ * from the external Loot Generator as .webp. */
+const SESSION_PREP_IMAGE_EXTENSIONS = ['.png', '.webp', '.jpg', '.jpeg', '.avif'];
+function hasSupportedImageExtension(filename) {
+  const lower = filename.toLowerCase();
+  return SESSION_PREP_IMAGE_EXTENSIONS.some(ext => lower.endsWith(ext));
+}
+
+function validateSessionPrep(data, file, diagnostics, rootPath) {
+  const reporter = createReporter(file, diagnostics);
+  const facts = { adversaryIds: new Set(), itemIds: new Set(), usedKinds: new Set(), usedSources: new Set() };
+  if (!isPlainObject(data)) { reporter.error('$', `Top-level value must be an object, got ${describeType(data)}.`); return facts; }
+  checkDangerousKeys(data, '$', reporter);
+
+  if (!isNonEmptyString(data.item_page_url) || !data.item_page_url.includes('{id}')) {
+    reporter.error('$.item_page_url', 'item_page_url must be a non-empty string containing "{id}".');
+  }
+  if (!isNonEmptyString(data.item_image_url) || !data.item_image_url.includes('{image}')) {
+    reporter.error('$.item_image_url', 'item_image_url must be a non-empty string containing "{image}".');
+  }
+
+  /* ---- adversaries: picker metadata only (id, bilingual name, optional local image) ---- */
+
+  const advNameOccurrences = new Map();
+  if (data.adversaries === undefined) {
+    reporter.error('$.adversaries', 'adversaries is required (may be an empty array).');
+  } else if (!Array.isArray(data.adversaries)) {
+    reporter.error('$.adversaries', `Must be an array, got ${describeType(data.adversaries)}.`);
+  } else {
+    data.adversaries.forEach((adv, i) => {
+      const p = `$.adversaries[${i}]`;
+      if (!isPlainObject(adv)) { reporter.error(p, `Adversary entry must be an object, got ${describeType(adv)}.`); return; }
+      checkDangerousKeys(adv, p, reporter);
+
+      const id = adv.id;
+      let idLabel = `#${i}`;
+      if (!isNonEmptyString(id) || !isSlug(id)) {
+        reporter.error(`${p}.id`, `Adversary id must be a non-empty lowercase slug (got ${JSON.stringify(id)}).`);
+      } else if (facts.adversaryIds.has(id)) {
+        reporter.error(`${p}.id`, `Duplicate adversary id "${id}".`, id);
+        idLabel = id;
+      } else {
+        facts.adversaryIds.add(id);
+        idLabel = id;
+      }
+
+      if (adv.name === undefined) {
+        reporter.error(`${p}.name`, `Adversary "${idLabel}" is missing a name.`, idLabel);
+      } else {
+        validateBilingualString(adv.name, `${p}.name`, reporter, { requireEn: true });
+        if (isPlainObject(adv.name) && isNonEmptyString(adv.name.en)) {
+          const norm = normalizeDisplayName(adv.name.en);
+          if (!advNameOccurrences.has(norm)) advNameOccurrences.set(norm, []);
+          advNameOccurrences.get(norm).push({ id: idLabel, index: i, original: adv.name.en });
+        }
+      }
+
+      if (adv.image !== undefined) {
+        if (!isNonEmptyString(adv.image)) {
+          reporter.error(`${p}.image`, `Adversary "${idLabel}" image must be a non-empty string when present.`, idLabel);
+        } else if (adv.image.includes('..')) {
+          reporter.error(`${p}.image`, `Adversary "${idLabel}" image path "${adv.image}" must not contain "..".`, idLabel);
+        } else if (!hasSupportedImageExtension(adv.image)) {
+          reporter.error(`${p}.image`, `Adversary "${idLabel}" image "${adv.image}" must end in one of: ${SESSION_PREP_IMAGE_EXTENSIONS.join(', ')}.`, idLabel);
+        } else if (rootPath && !fs.existsSync(path.join(rootPath, adv.image))) {
+          reporter.error(`${p}.image`, `Adversary "${idLabel}" image path "${adv.image}" does not point to an existing file.`, idLabel);
+        }
+      }
+    });
+  }
+
+  for (const occurrences of advNameOccurrences.values()) {
+    if (occurrences.length < 2) continue;
+    const [first, ...rest] = occurrences;
+    rest.forEach(occ => {
+      diagnostics.push({
+        severity: 'warning',
+        file,
+        path: `$.adversaries[${occ.index}].name.en`,
+        message: `Normalized name "${occ.original}" is also used by adversary "${first.id}".`,
+        id: occ.id,
+      });
+    });
+  }
+
+  /* ---- items: picker metadata only (id, roll, kind, source, bilingual name, image filename) ---- */
+
+  const itemNameOccurrences = new Map();
+  if (data.items === undefined) {
+    reporter.error('$.items', 'items is required (may be an empty array).');
+  } else if (!Array.isArray(data.items)) {
+    reporter.error('$.items', `Must be an array, got ${describeType(data.items)}.`);
+  } else {
+    data.items.forEach((item, i) => {
+      const p = `$.items[${i}]`;
+      if (!isPlainObject(item)) { reporter.error(p, `Item entry must be an object, got ${describeType(item)}.`); return; }
+      checkDangerousKeys(item, p, reporter);
+
+      const id = item.id;
+      let idLabel = `#${i}`;
+      if (!isNonEmptyString(id) || !/^[a-z0-9]+$/.test(id)) {
+        reporter.error(`${p}.id`, `Item id must be a non-empty lowercase alphanumeric key (got ${JSON.stringify(id)}).`);
+      } else if (facts.itemIds.has(id)) {
+        reporter.error(`${p}.id`, `Duplicate item id "${id}".`, id);
+        idLabel = id;
+      } else {
+        facts.itemIds.add(id);
+        idLabel = id;
+      }
+
+      if (!isFiniteInteger(item.roll) || item.roll < 1) {
+        reporter.error(`${p}.roll`, `Item "${idLabel}" has invalid roll ${JSON.stringify(item.roll)}; must be a positive integer.`, idLabel);
+      }
+
+      if (!isNonEmptyString(item.kind)) reporter.error(`${p}.kind`, `Item "${idLabel}" is missing a kind.`, idLabel);
+      else facts.usedKinds.add(item.kind);
+
+      if (!isNonEmptyString(item.source)) reporter.error(`${p}.source`, `Item "${idLabel}" is missing a source.`, idLabel);
+      else facts.usedSources.add(item.source);
+
+      if (item.name === undefined) {
+        reporter.error(`${p}.name`, `Item "${idLabel}" is missing a name.`, idLabel);
+      } else {
+        validateBilingualString(item.name, `${p}.name`, reporter, { requireEn: true });
+        if (isPlainObject(item.name) && isNonEmptyString(item.name.en)) {
+          const norm = normalizeDisplayName(item.name.en);
+          if (!itemNameOccurrences.has(norm)) itemNameOccurrences.set(norm, []);
+          itemNameOccurrences.get(norm).push({ id: idLabel, index: i, original: item.name.en });
+        }
+      }
+
+      if (!isNonEmptyString(item.image)) {
+        reporter.error(`${p}.image`, `Item "${idLabel}" is missing an image filename.`, idLabel);
+      } else if (item.image.includes('..') || item.image.includes('/') || item.image.includes('\\')) {
+        reporter.error(`${p}.image`, `Item "${idLabel}" image filename "${item.image}" must not contain path separators or "..".`, idLabel);
+      } else if (!hasSupportedImageExtension(item.image)) {
+        reporter.error(`${p}.image`, `Item "${idLabel}" image "${item.image}" must end in one of: ${SESSION_PREP_IMAGE_EXTENSIONS.join(', ')}.`, idLabel);
+      } else if (isNonEmptyString(id) && !item.image.toLowerCase().startsWith(id.toLowerCase())) {
+        reporter.error(`${p}.image`, `Item "${idLabel}" image filename "${item.image}" must start with its own id.`, idLabel);
+      }
+    });
+  }
+
+  for (const occurrences of itemNameOccurrences.values()) {
+    if (occurrences.length < 2) continue;
+    const [first, ...rest] = occurrences;
+    rest.forEach(occ => {
+      diagnostics.push({
+        severity: 'warning',
+        file,
+        path: `$.items[${occ.index}].name.en`,
+        message: `Normalized name "${occ.original}" is also used by item "${first.id}".`,
+        id: occ.id,
+      });
+    });
+  }
+
+  return facts;
+}
+
 /* ---------------- data/journey.json ---------------- */
 
 function validateExactRollCoverage(rows, lo, hi, reporter, basePath, label) {
@@ -1099,6 +1264,7 @@ const FILES = {
   regions: 'data/regions.json',
   adversaries: 'data/adversaries.json',
   items: 'data/items.json',
+  sessionPrep: 'data/session-prep.json',
   journey: 'data/journey.json',
   i18n: 'data/i18n.json',
 };
@@ -1122,6 +1288,9 @@ function validateRepositoryData(rootPath) {
   const itemFacts = loaded.items !== null
     ? validateItems(loaded.items, FILES.items, diagnostics)
     : { itemIds: new Set(), usedKinds: new Set(), usedSrcs: new Set() };
+  const sessionPrepFacts = loaded.sessionPrep !== null
+    ? validateSessionPrep(loaded.sessionPrep, FILES.sessionPrep, diagnostics, rootPath)
+    : { adversaryIds: new Set(), itemIds: new Set(), usedKinds: new Set(), usedSources: new Set() };
   const journeyFacts = loaded.journey !== null
     ? validateJourney(loaded.journey, FILES.journey, diagnostics)
     : { usedBiomes: new Set() };
@@ -1157,6 +1326,8 @@ function validateRepositoryData(rootPath) {
     requireI18nKeysForUsedValues(advFacts.usedDamageTypes, 'damage', i18nFacts, diagnostics, v => `used as damage type "${v}"`);
     requireI18nKeysForUsedValues(itemFacts.usedKinds, 'item_kind', i18nFacts, diagnostics, v => `used as item kind "${v}"`);
     requireI18nKeysForUsedValues(itemFacts.usedSrcs, 'item_src', i18nFacts, diagnostics, v => `used as item src "${v}"`);
+    requireI18nKeysForUsedValues(sessionPrepFacts.usedKinds, 'item_kind', i18nFacts, diagnostics, v => `used as data/session-prep.json item kind "${v}"`);
+    requireI18nKeysForUsedValues(sessionPrepFacts.usedSources, 'item_src', i18nFacts, diagnostics, v => `used as data/session-prep.json item source "${v}"`);
   }
 
   validateBiomeAssets(rootPath, envFacts.usedBiomes, diagnostics);
@@ -1192,6 +1363,7 @@ module.exports = {
   validateRegions,
   validateAdversaries,
   validateItems,
+  validateSessionPrep,
   validateJourney,
   validateI18n,
   readJsonFile,

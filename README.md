@@ -14,18 +14,21 @@ publish it as-is on GitHub Pages.
 ├── index.html            — entry point
 ├── css/styles.css        — all layout and theming
 ├── js/app.js             — all logic (rendering, filters, dice, lists)
+├── js/session-prep-utils.js — pure selection/quantity/search logic for Session Prep (#/session-prep)
 ├── scripts/build.js      — CI-only: copies the runtime files into dist/ (see Deploy below)
 ├── scripts/version-assets.js — CI-only: generates cache-busting hashes into dist/index.html
 ├── scripts/check-asset-versioning.js — CI-only: fails the build if the generated versions are wrong
 ├── scripts/check-unlisted-build.js — CI-only: fails the build if dist/ regresses (see Deploy below)
 ├── img/
 │   ├── biomes/           — biome icons for catalog cards
-│   └── env/              — background art shown behind environment cards
+│   ├── env/              — background art shown behind environment cards
+│   └── adversaries/art/session-prep/ — optional local art for Session Prep's MVP adversary picker
 └── data/
     ├── environments.json — environments (EN/RU bilingual), the "official" data
     ├── adversaries.json  — stat blocks for "featured adversaries" embedded in an environment card
     ├── regions.json      — regions: groups of related environments
     ├── items.json        — item cards from the loot generator (bilingual)
+    ├── session-prep.json — Session Prep's own minimal adversary/item picker metadata
     ├── journey.json       — Journey to Horizon generator tables (bilingual)
     └── i18n.json          — interface dictionary (EN/RU)
 ```
@@ -547,6 +550,46 @@ as in the original where "Umbra Lily" opens "Umbra Lily Petals". When
 translating a new environment, a plant's name is taken from its item's RU
 name in the generator, not translated fresh.
 
+## Session Prep
+
+`#/session-prep` is a GM-facing page for assembling one encounter/session's
+worth of environments, adversaries, and items — separate from Lists (which
+bookmark environments for browsing) and from Journey (which generates map
+content). Three columns on desktop — the full environment catalog on the
+left, the current preparation in the middle, an MVP adversary catalog on the
+right — with a full-width item catalog below; the three columns collapse to
+one on a phone. Environments come from the existing `environments.json`
+catalog (up to three per preparation, the first becomes "primary" and can be
+reassigned). Adversaries and items come from `data/session-prep.json`, a
+small hand-picked MVP catalog — 17 adversaries and the 10 Core items — kept
+deliberately separate from `data/adversaries.json` (full featured-adversary
+stat blocks) and `data/items.json` (the complete loot encyclopedia): Session
+Prep only ever needs an id, a bilingual name, and (for adversaries) an
+optional local image.
+
+An adversary's `image` field, when present, points at a file this repo owns
+under `img/adversaries/art/session-prep/`; only adversaries a matching image
+was actually found for get one mapped in — nothing is generated or
+downloaded to fill a gap. Everything else falls back to a designed inline SVG
+silhouette, the same one a broken image swaps to at runtime. Item art and
+item detail pages are never copied into this repo — `item_image_url`/
+`item_page_url` in `data/session-prep.json` build both from the item's id/
+image filename against the [Daggerheart Loot
+Generator](https://artex-x.github.io/daggerheart-loot/) at render time, same
+spirit as the item cards described above.
+
+The MVP holds one active preparation (title, primary/selected environments,
+selected adversaries and items with 1-99 quantities each), autosaved to
+`localStorage` under `dhcodex_session_prep` through the same `SafeStorage`
+boundary as Lists and Journey. The stored shape is intentionally
+multi-session-ready (`{ schemaVersion, activeSessionId, sessions: [...] }`),
+but the UI doesn't yet expose creating, switching, or deleting a session —
+that's future work, not implemented here. Pure logic (default shape,
+selection rules, the three-environment cap and primary promotion, quantity
+clamping, search) lives in `js/session-prep-utils.js`, in the same
+dependency-free, Node-testable shape as `js/route-utils.js`/
+`js/list-utils.js`.
+
 ## Dice in text
 
 Any occurrence of the form `1d4`, `2d12`, `3d8`, `d20`, `100`, etc. in feature
@@ -561,3 +604,8 @@ Daggerheart die.
 - There's no JSON export/import through the UI (that's currently done
   through me, in chat) — "Export/Import" buttons could be added to move data
   between browsers.
+- Session Prep (`#/session-prep`) supports exactly one active preparation.
+  Its storage shape is ready for multiple sessions, but creating, switching,
+  duplicating, or deleting one isn't implemented yet, and the MVP adversary
+  catalog covers 17 adversaries and the 10 Core items rather than the full
+  bestiary/loot table.

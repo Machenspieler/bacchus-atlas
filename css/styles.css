@@ -136,7 +136,8 @@ body {
 body[data-route="catalog"]::before,
 body[data-route="lists"]::before,
 body[data-route="list"]::before,
-body[data-route="journey"]::before {
+body[data-route="journey"]::before,
+body[data-route="session-prep"]::before {
   --catalog-art-opacity: 0.26;
   --catalog-art-size: min(1024px, 82vw, 100vh);
   --catalog-art-brightness: 0.75;
@@ -160,7 +161,8 @@ body[data-route="journey"]::before {
   body[data-route="catalog"]::before,
   body[data-route="lists"]::before,
   body[data-route="list"]::before,
-  body[data-route="journey"]::before {
+  body[data-route="journey"]::before,
+  body[data-route="session-prep"]::before {
     --catalog-art-opacity: 0.14;
     --catalog-art-size: min(140vw, 640px);
     --catalog-art-brightness: 0.6;
@@ -171,7 +173,8 @@ body[data-route="journey"]::before {
   body[data-route="catalog"]::before,
   body[data-route="lists"]::before,
   body[data-route="list"]::before,
-  body[data-route="journey"]::before { display: none; }
+  body[data-route="journey"]::before,
+  body[data-route="session-prep"]::before { display: none; }
 }
 
 a { color: var(--hope-soft); text-decoration: none; }
@@ -1962,6 +1965,239 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
 @media (max-width: 400px) {
   .nav-btn { padding: 0 var(--s-2); }
   .nav-btn > span { display: none; }
+}
+
+/* ---------- Session Prep (#/session-prep) ----------
+   Every rule here is prefixed .prep- to stay clear of the rest of the
+   stylesheet — see the "Session Prep" sections in CLAUDE.md. Reuses existing
+   tokens/components wherever possible: .field/.btn/.btn-sm/.btn-ghost for
+   inputs and buttons, and the same checkbox recipe as .atl-row (the "Add to
+   list" popup) for every real checkbox on this page. */
+
+/* A slightly wider shell for the three-column composition, same technique as
+   the fixed-width .shell everywhere else — only this route's header/shell
+   are widened, nothing else. */
+body[data-route="session-prep"] .shell,
+body[data-route="session-prep"] .header-inner {
+  max-width: 1440px;
+}
+
+.prep-wrap { grid-column: 1 / -1; margin-top: var(--s-6); display: flex; flex-direction: column; gap: var(--s-6); }
+
+.prep-session-header {
+  display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: var(--s-3);
+  padding-bottom: var(--s-3); border-bottom: 1px solid var(--line-faint);
+}
+.prep-title-field { flex: 1; min-width: 220px; }
+#prep-session-title {
+  width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--line-faint);
+  font-family: var(--font-display); font-weight: 400; font-size: var(--fs-xl); color: var(--parchment);
+  padding: var(--s-1) 0; transition: border-color var(--t-fast) var(--ease-out);
+}
+#prep-session-title:hover { border-bottom-color: var(--line-strong); }
+#prep-session-title:focus { border-bottom-color: var(--hope); outline: none; }
+#prep-session-title::placeholder { color: var(--muted); font-family: var(--font-body); font-size: var(--fs-md); }
+.prep-save-status { margin: 0; font-size: var(--fs-xs); color: var(--muted); white-space: nowrap; }
+
+/* ---- three-column composition ---- */
+.prep-main {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.85fr) minmax(480px, 1.4fr) minmax(300px, 1fr);
+  grid-template-areas: "env central adv";
+  gap: var(--s-4);
+  align-items: start;
+}
+.prep-col-env { grid-area: env; }
+.prep-central { grid-area: central; }
+.prep-col-adv { grid-area: adv; }
+
+/* Quieter outer catalogues vs. the brighter, gold-accented central panel —
+   see "Visual priorities" in the Session Prep spec. */
+.prep-col {
+  min-width: 0; display: flex; flex-direction: column; gap: var(--s-3);
+  background: var(--ink-card); border: 1px solid var(--line-faint); border-radius: var(--r-md);
+  padding: var(--s-4);
+}
+.prep-central {
+  min-width: 0; display: flex; flex-direction: column; gap: var(--s-4);
+  background: var(--ink-raised); border: 1px solid var(--line-strong); border-top: 2px solid var(--hope);
+  border-radius: var(--r-lg); padding: var(--s-5); box-shadow: var(--e-2);
+}
+
+.prep-col-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2); flex-wrap: wrap; }
+.prep-col-head h2 {
+  margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md);
+  letter-spacing: var(--tracking-display); color: var(--parchment);
+}
+.prep-count { font-size: var(--fs-xs); color: var(--muted); font-family: var(--font-mono); white-space: nowrap; }
+
+.prep-search { margin: 0; }
+.prep-picker-list {
+  display: flex; flex-direction: column; gap: 2px;
+  max-height: 460px; overflow-y: auto; padding-right: 2px;
+}
+.prep-empty { margin: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--muted); font-style: italic; }
+
+/* ---- environment picker row (checkbox + separate "open detail" button) ---- */
+.prep-row { display: flex; align-items: center; gap: var(--s-3); border-radius: var(--r-sm); }
+.prep-env-row { padding: var(--s-1) var(--s-1); }
+.prep-env-row:hover { background: var(--ink-hover); }
+.prep-row-open {
+  all: unset; flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--s-3); cursor: pointer;
+}
+.prep-row-open:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); border-radius: var(--r-sm); }
+.prep-row-text { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.prep-row-name { color: var(--parchment); font-size: var(--fs-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prep-row-open:hover .prep-row-name { color: var(--hope-soft); }
+.prep-row-meta { font-size: var(--fs-xs); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Same recipe as .atl-row's checkbox (Add to List popup), applied to the
+   two checkboxes that are not already inside an .atl-row: the environment
+   row's own checkbox and each item card's. */
+.prep-env-row input[type="checkbox"],
+.prep-item-select-wrap input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none;
+  flex: none; width: 18px; height: 18px; margin: 0;
+  border: 1px solid var(--line-strong); border-radius: var(--r-xs);
+  background: var(--ink-raised); cursor: pointer; position: relative;
+  transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.prep-env-row:hover input[type="checkbox"],
+.prep-item-card:hover input[type="checkbox"] { border-color: var(--hope); }
+.prep-env-row input[type="checkbox"]:checked,
+.prep-item-select-wrap input[type="checkbox"]:checked { background: var(--hope); border-color: var(--hope); }
+.prep-env-row input[type="checkbox"]:checked::after,
+.prep-item-select-wrap input[type="checkbox"]:checked::after {
+  content: ""; position: absolute; left: 5px; top: 1px; width: 5px; height: 10px;
+  border: solid var(--hope-ink); border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+
+/* Adversary rows reuse .atl-row (same label-wraps-checkbox pattern already
+   themed for the Add to List popup) — only sizing for the thumbnail/name
+   inside it is added here. */
+.prep-adv-row { gap: var(--s-3); }
+
+/* ---- thumbnails: biome art (environments) or transparent-background PNG
+   (adversaries/items), with a fallback that is never a broken-image icon ---- */
+.prep-thumb { flex: none; width: 32px; height: 32px; border-radius: var(--r-sm); object-fit: cover; }
+.prep-adv-thumb, .prep-item-thumb {
+  flex: none; width: 40px; height: 40px; border-radius: var(--r-sm); padding: 5px;
+  overflow: hidden; background: radial-gradient(circle at 50% 35%, rgba(217,164,65,0.14), transparent 70%), var(--ink-raised);
+}
+.prep-adv-thumb img, .prep-item-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.prep-thumb.prep-thumb-fallback,
+.prep-adv-thumb.prep-thumb-fallback,
+.prep-item-thumb.prep-thumb-fallback {
+  display: flex; align-items: center; justify-content: center; background: var(--ink-raised);
+}
+.prep-thumb-fallback svg { width: 62%; height: 62%; color: var(--muted); }
+
+/* ---- central preparation: environments / adversaries / items ---- */
+.prep-central-section { display: flex; flex-direction: column; gap: var(--s-2); }
+.prep-central-section + .prep-central-section { padding-top: var(--s-4); border-top: 1px solid var(--line-faint); }
+.prep-central-section h3 {
+  display: flex; align-items: center; gap: var(--s-2); margin: 0;
+  font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md);
+  letter-spacing: var(--tracking-display); color: var(--parchment);
+}
+.prep-central-section h3 svg { width: var(--s-5); height: var(--s-5); flex: none; color: var(--hope); }
+.prep-central-count { margin-left: auto; font-size: var(--fs-xs); font-family: var(--font-mono); color: var(--muted); }
+
+.prep-central-card, .prep-qty-row {
+  display: flex; align-items: center; gap: var(--s-3); padding: var(--s-2) 0;
+  border-bottom: 1px solid var(--line-faint); flex-wrap: wrap;
+}
+.prep-central-card:last-child, .prep-qty-row:last-child { border-bottom: none; }
+.prep-central-card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.prep-central-card-name { display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-sm); color: var(--parchment); }
+.prep-central-card-meta { font-size: var(--fs-xs); color: var(--muted); }
+.prep-central-card-actions { flex: none; display: flex; align-items: center; gap: var(--s-1); }
+.prep-make-primary-btn { white-space: nowrap; }
+.prep-primary-badge {
+  font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tracking-caps);
+  background: var(--hope); color: var(--hope-ink); border-radius: var(--r-xs); padding: 1px 6px;
+}
+
+.prep-qty-name { flex: 1; min-width: 80px; font-size: var(--fs-sm); color: var(--parchment); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prep-qty-controls { flex: none; display: flex; align-items: center; gap: var(--s-1); }
+.prep-qty-controls button {
+  width: 26px; height: 26px; padding: 0; display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--ink-card);
+  color: var(--parchment); font-family: var(--font-mono); font-size: var(--fs-md); line-height: 1; cursor: pointer;
+}
+.prep-qty-controls button:hover:not(:disabled) { border-color: var(--hope); color: var(--hope-soft); }
+.prep-qty-controls button:disabled { opacity: 0.4; cursor: not-allowed; }
+.prep-qty-value { min-width: 2ch; text-align: center; font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--parchment); }
+
+/* 24px on the card, larger under a finger — same recipe as .list-card-del. */
+.prep-remove-btn {
+  position: relative; flex: none; width: var(--h-xs); height: var(--h-xs); padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid transparent; border-radius: var(--r-sm);
+  background: transparent; color: var(--muted); font-size: var(--fs-lg); line-height: 1; cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.prep-remove-btn::after { content: ""; position: absolute; inset: -10px; }
+.prep-remove-btn:hover, .prep-remove-btn:focus-visible {
+  color: var(--fear-soft); border-color: var(--fear); background: rgba(156,43,59,0.14);
+}
+
+/* Non-blocking heads-up, not an error — an amber rule, not the fear-red used
+   for destructive/error states elsewhere. */
+.prep-warning {
+  margin: 0; padding: var(--s-2) var(--s-3); border: 1px solid var(--line); border-left: 3px solid var(--hope);
+  border-radius: var(--r-sm); background: rgba(217,164,65,0.06); font-size: var(--fs-xs); color: var(--parchment-dim);
+}
+
+/* ---- items panel (full width, below the three columns) ---- */
+.prep-items-panel {
+  grid-column: 1 / -1;
+  display: flex; flex-direction: column; gap: var(--s-3);
+  background: var(--ink-card); border: 1px solid var(--line-faint); border-radius: var(--r-md); padding: var(--s-4);
+}
+.prep-item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--s-3); }
+.prep-item-card {
+  position: relative; display: flex; align-items: center; gap: var(--s-3);
+  background: var(--ink-raised); border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--s-3);
+  transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.prep-item-card.is-selected { border-color: var(--hope); background: rgba(217,164,65,0.08); }
+.prep-item-select-wrap { flex: none; display: flex; cursor: pointer; }
+.prep-item-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.prep-item-name-row { display: flex; align-items: center; gap: var(--s-1); min-width: 0; }
+.prep-item-name { min-width: 0; color: var(--hope-soft); font-size: var(--fs-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prep-item-ext-link { flex: none; display: flex; color: var(--muted); }
+.prep-item-ext-link svg { width: 14px; height: 14px; }
+.prep-item-ext-link:hover, .prep-item-ext-link:focus-visible { color: var(--hope-soft); }
+.prep-item-meta { font-size: var(--fs-xs); color: var(--muted); }
+.prep-item-source-note { margin: 0; font-size: var(--fs-xs); color: var(--muted); font-style: italic; }
+
+/* ---- responsive: 900-1199px puts the central panel first and full width,
+   with the two catalogues below it in two columns ---- */
+@media (max-width: 1199px) {
+  .prep-main {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "central central" "env adv";
+  }
+}
+
+/* ---- below ~900px: one column, central first, then the two catalogues,
+   then items — the single stack order the mobile spec calls for ---- */
+@media (max-width: 900px) {
+  .prep-main { grid-template-columns: 1fr; grid-template-areas: "central" "env" "adv"; }
+}
+
+/* ---- phone: no nested scroll areas, ~44px touch targets ---- */
+@media (max-width: 760px) {
+  .prep-picker-list { max-height: none; overflow: visible; }
+  .prep-qty-controls button, .prep-remove-btn {
+    width: 44px; height: 44px;
+  }
+  .prep-env-row input[type="checkbox"],
+  .prep-item-select-wrap input[type="checkbox"] { width: 22px; height: 22px; }
+  .prep-env-row input[type="checkbox"]:checked::after,
+  .prep-item-select-wrap input[type="checkbox"]:checked::after { left: 6px; top: 2px; width: 6px; height: 12px; }
+  .prep-session-header { align-items: stretch; }
 }
 
 @media (prefers-reduced-motion: reduce) {

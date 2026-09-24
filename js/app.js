@@ -12,6 +12,7 @@ const LS_KEYS = {
   storageNoticeDismissed: 'dhcodex_storage_notice_dismissed',
   journeyRegions: 'dhcodex_journey_regions',
   journeySanctuaries: 'dhcodex_journey_sanctuaries',
+  sessionPrep: 'dhcodex_session_prep',
 };
 
 const BIOMES = ['underground', 'aquatic', 'wetland', 'grassland', 'tropical', 'forest', 'drylands', 'rolling', 'mountain', 'frozen', 'badlands', 'settlement', 'universal'];
@@ -56,6 +57,20 @@ const state = {
   itemCatalog: { items: {}, itemUrl: '', imageUrl: '' },
   itemIndex: new Map(),
   adversaryCatalog: new Map(),
+  // Session Prep's own minimal picker catalogue (data/session-prep.json) —
+  // deliberately separate from adversaryCatalog/itemCatalog above, which
+  // hold full featured-adversary stat blocks and the complete item
+  // encyclopedia respectively. See the "Session Prep" sections in CLAUDE.md.
+  sessionPrepCatalog: { adversaries: [], items: [], adversaryById: new Map(), itemById: new Map(), itemPageUrl: '', itemImageUrl: '' },
+  sessionPrepLoadFailed: false,
+  sessionPrep: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.sessionPrep, {
+    fallback: () => SessionPrepUtils.createDefaultStore(),
+    validate: SafeStorage.validators.sessionPrep,
+  }),
+  // Search text per picker and the last successful/failed save, for the MVP's
+  // single active preparation. Transient UI state, never persisted — see the
+  // "Transient UI state and rerendering" section of the Session Prep spec.
+  sessionPrepUI: { envSearch: '', advSearch: '', itemSearch: '', lastSavedAt: null, saveFailed: false },
   journey: JOURNEY_EMPTY,
   journeyRegions: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.journeyRegions, {
     fallback: () => [],
@@ -679,6 +694,11 @@ async function init() {
     getJSON(versionedDataUrl('data/items.json')).catch(() => ({ items: {}, aliases: {} })),
     getJSON(versionedDataUrl('data/journey.json')).catch(() => JOURNEY_EMPTY),
     getJSON(versionedDataUrl('data/adversaries.json')).catch(() => ({ adversaries: [] })),
+    // null (not a fallback catalogue) marks a real load failure, so Session
+    // Prep can show its own retry state instead of silently rendering empty
+    // adversary/item pickers — see setSessionPrepCatalog() and
+    // renderSessionPrepPage() below.
+    getJSON(versionedDataUrl('data/session-prep.json')).catch(() => null),
   ]);
   // Settled immediately so its rejection is handled here, not left dangling
   // while init() is still busy awaiting i18n below.
@@ -703,12 +723,14 @@ async function init() {
     renderLoadError(result.error);
     return;
   }
-  const [envs, regions, items, journey, adversaries] = result.value;
+  const [envs, regions, items, journey, adversaries, sessionPrepData] = result.value;
   setEnvironmentCatalog(envs.environments);
   state.regions = regions.regions || [];
   setItemCatalog(items);
   state.journey = { ...JOURNEY_EMPTY, ...journey };
   setAdversaryCatalog(adversaries);
+  if (sessionPrepData) setSessionPrepCatalog(sessionPrepData);
+  else state.sessionPrepLoadFailed = true;
   render();
   finishInitialLoading();
   reportStorageRecovery();
@@ -789,6 +811,10 @@ const ICON_TRASH = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><pat
 const ICON_COMPASS =`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="m15 9-2.1 4.9L8 16l2.1-4.9L15 9z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
 const ICON_HEX = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.6 20.1 7v10L12 21.4 3.9 17V7L12 2.6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
 const ICON_REROLL = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v4h-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const ICON_CHECKLIST = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="1.6" stroke="currentColor" stroke-width="1.6"/><path d="M9 4V3.3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1V4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="m7.8 9.6 1.1 1.1 1.7-1.9M7.8 14.3l1.1 1.1 1.7-1.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 9.4h4.2M13 14.1h4.2M8 17.9h9.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+const ICON_ADVERSARY_FALLBACK = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5c-3.5 0-6 2.7-6 6.2 0 2 1 3.6 1 5.3 0 2 1.4 3.5 3 3.5h4c1.6 0 3-1.5 3-3.5 0-1.7 1-3.3 1-5.3 0-3.5-2.5-6.2-6-6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="9.6" cy="10.2" r="0.9" fill="currentColor"/><circle cx="14.4" cy="10.2" r="0.9" fill="currentColor"/><path d="M9.5 14.4c1 .8 4 .8 5 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+const ICON_ITEM_FALLBACK = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 10.5h15v8a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1v-8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M4 8a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2.5H4V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 10.5v9" stroke="currentColor" stroke-width="1.4"/></svg>`;
+const ICON_EXTERNAL = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6H6a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 4.5h5.5V10M19.3 4.7l-8.6 8.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 /** One empty/error state for the whole app: an icon, a headline, a line of help
  * and — the part the old dashed box was missing — the action that resolves it. */
@@ -1316,6 +1342,8 @@ function render() {
     renderListsHome();
   } else if (state.route.name === 'journey') {
     renderJourneyPage();
+  } else if (state.route.name === 'session-prep') {
+    renderSessionPrepPage();
   } else {
     renderToolbar();
     renderGrid();
@@ -1396,6 +1424,7 @@ function routeTitle() {
   if (env) return `${envName(env)} — ${t('app_title')}`;
   if (state.route.name === 'catalog') return t('browser_title');
   if (state.route.name === 'journey') return `${t('journey_title')} — ${t('app_title')}`;
+  if (state.route.name === 'session-prep') return `${t('session_prep_title')} — ${t('app_title')}`;
   if (state.route.name === 'list') {
     const list = state.lists.find(l => l.id === state.route.id);
     if (list) return `${list.name} — ${t('app_title')}`;
@@ -1409,6 +1438,7 @@ function renderHeader() {
    * test marked Lists as the current page while the generators were open. */
   const onLists = state.route.name === 'lists' || state.route.name === 'list';
   const onJourney = state.route.name === 'journey';
+  const onSessionPrep = state.route.name === 'session-prep';
   el.innerHTML = `
     <a class="skip-link" href="#grid-wrap">${t('skip_to_content')}</a>
     <div class="header-inner">
@@ -1424,19 +1454,23 @@ function renderHeader() {
         </span>
       </div>
       <div class="header-actions">
-        <div class="lang-switch">${langButtonsHtml()}</div>
         <nav class="header-nav" aria-label="${t('main_nav')}">
           <button type="button" class="btn nav-btn ${onLists ? 'active' : ''}" id="btn-lists"
                   aria-label="${t('nav_lists')}"
                   ${onLists ? 'aria-current="page"' : ''}>${ICON_BOOKMARK}<span>${t('nav_lists')}</span></button>
+          <button type="button" class="btn nav-btn ${onSessionPrep ? 'active' : ''}" id="btn-session-prep"
+                  aria-label="${t('nav_session_prep')}"
+                  ${onSessionPrep ? 'aria-current="page"' : ''}>${ICON_CHECKLIST}<span>${t('nav_session_prep')}</span></button>
           <button type="button" class="btn nav-btn ${onJourney ? 'active' : ''}" id="btn-journey"
                   aria-label="${t('nav_journey')}"
                   ${onJourney ? 'aria-current="page"' : ''}>${ICON_COMPASS}<span>${t('nav_journey')}</span></button>
         </nav>
+        <div class="lang-switch">${langButtonsHtml()}</div>
       </div>
     </div>`;
   bindLangSwitch(el);
   document.getElementById('btn-lists').addEventListener('click', () => navigate('#/lists'));
+  document.getElementById('btn-session-prep').addEventListener('click', () => navigate('#/session-prep'));
   document.getElementById('btn-journey').addEventListener('click', () => navigate('#/journey'));
   // A real <button> now, so Enter and Space come for free — the old div carried
   // role="button" and tabindex but no key handler, and did nothing when focused.
@@ -2835,6 +2869,685 @@ function bindJourneyDelegation(el) {
     entry.name = input.value.trim();
     persistJourney(kind, entry);
   });
+}
+
+/* ---------------- Session Prep (#/session-prep) ----------------
+   MVP: one active preparation. Pure selection/quantity/search logic lives in
+   js/session-prep-utils.js (SessionPrepUtils); this section is the DOM layer
+   over it, following the same render-into-#grid-wrap architecture as
+   renderListsHome()/renderJourneyPage() above. See the "Session Prep"
+   sections in CLAUDE.md for the full contract.
+
+   Rendering is split deliberately: renderSessionPrepPage() builds the whole
+   page once (route entry, language switch, catalogue retry); every
+   selection/quantity action afterwards goes through a targeted refresh*()
+   that replaces only the list/count it affects, so a source panel's search
+   text, scroll position and focus are never disturbed by picking something —
+   see "Transient UI state and rerendering" in CLAUDE.md. */
+
+function setSessionPrepCatalog(data) {
+  const adversaries = (data.adversaries || []).filter(a => a && a.id);
+  const items = (data.items || []).filter(i => i && i.id);
+  state.sessionPrepCatalog = {
+    adversaries,
+    items,
+    adversaryById: new Map(adversaries.map(a => [a.id, a])),
+    itemById: new Map(items.map(i => [i.id, i])),
+    itemPageUrl: data.item_page_url || '',
+    itemImageUrl: data.item_image_url || '',
+  };
+  state.sessionPrepLoadFailed = false;
+}
+
+function spName(entry) { return entry.name?.[state.lang] || entry.name?.en || entry.name?.ru || entry.id; }
+function spItemPageUrl(item) { return state.sessionPrepCatalog.itemPageUrl.replace('{id}', item.id); }
+function spItemImageUrl(item) {
+  return item.image && state.sessionPrepCatalog.itemImageUrl
+    ? state.sessionPrepCatalog.itemImageUrl.replace('{image}', item.image)
+    : '';
+}
+
+function activeSessionPrep() { return SessionPrepUtils.getActiveSession(state.sessionPrep); }
+
+/** The one place a Session Prep mutation is applied: runs `mutator` against
+ * the active session, stamps updatedAt, writes the whole store back through
+ * persist() (which already reports a write failure via the app's one shared
+ * toast — see reportStorageWriteFailure()), and hands back the structured
+ * result so the caller can also refresh the inline save-status line. */
+function updateSessionPrepSession(mutator) {
+  const current = activeSessionPrep();
+  if (!current) return { session: null, result: { ok: false, reason: 'no-session' } };
+  const mutated = Object.assign({}, mutator(current), { updatedAt: new Date().toISOString() });
+  state.sessionPrep = SessionPrepUtils.withActiveSession(state.sessionPrep, mutated);
+  const result = persist(LS_KEYS.sessionPrep, state.sessionPrep);
+  return { session: mutated, result };
+}
+
+function sessionSaveStatusText() {
+  if (state.sessionPrepUI.saveFailed) return t('session_save_failed');
+  if (!state.sessionPrepUI.lastSavedAt) return '';
+  const time = state.sessionPrepUI.lastSavedAt.toLocaleTimeString(state.lang === 'ru' ? 'ru-RU' : 'en-US', {
+    hour: '2-digit', minute: '2-digit',
+  });
+  return `${t('session_saved_local')} · ${time}`;
+}
+
+/** Only ever called right after a persist() attempt — never speculatively —
+ * so "Saved" never appears before SafeStorage has actually reported success. */
+function updateSaveStatusDisplay(result) {
+  state.sessionPrepUI.saveFailed = !result.ok;
+  if (result.ok) state.sessionPrepUI.lastSavedAt = new Date();
+  const statusEl = document.getElementById('prep-save-status');
+  if (statusEl) statusEl.textContent = sessionSaveStatusText();
+}
+
+function escapeSelectorAttrValue(value) { return String(value).replace(/(["\\])/g, '\\$1'); }
+
+/** Keeps a source picker's checkbox in sync after the central list removes
+ * an entry. A no-op if that row isn't currently rendered (filtered out by
+ * search) — nothing to sync in that case, and the checkbox will read
+ * correctly from state next time it is. */
+function syncPickerCheckbox(attr, id, checked) {
+  const cb = document.querySelector(`[${attr}="${escapeSelectorAttrValue(id)}"]`);
+  if (cb) cb.checked = checked;
+}
+
+/* ---------------- environments picker ---------------- */
+
+function prepFilteredEnvs() {
+  const filtered = SessionPrepUtils.filterEntries(allEnvs(), state.sessionPrepUI.envSearch, env => [env.name?.en, env.name?.ru]);
+  const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
+  return filtered.sort((a, b) => collator.compare(envName(a), envName(b)));
+}
+
+function envCountText() {
+  return t('prep_results_count').replace('{n}', prepFilteredEnvs().length).replace('{total}', allEnvs().length);
+}
+
+/** A small biome-art thumbnail — the same per-biome fallback picture the
+ * catalog card's <picture> falls back to (img/biomes/*-200.webp; no smaller
+ * width is served), downscaled by CSS into a compact row here. No thumbnail
+ * exists per-environment, only per-biome, so an environment with no terrain
+ * biome (a settlement/universal-only entry) falls back to a plain icon
+ * rather than a wrong or blank image. */
+function prepEnvThumbHtml(env) {
+  const biome = artBiome(env);
+  if (!biome) return `<span class="prep-thumb prep-thumb-fallback" aria-hidden="true">${ICON_HEX}</span>`;
+  return `<img class="prep-thumb" src="img/biomes/${biome}-200.webp" alt="" loading="lazy" decoding="async">`;
+}
+
+function envPickerRowHtml(env, session) {
+  const checked = session.environmentIds.includes(env.id);
+  const name = envName(env);
+  const biome = artBiome(env);
+  return `
+    <div class="prep-row prep-env-row" data-env-id="${escapeAttr(env.id)}">
+      <input type="checkbox" data-sp-toggle-env="${escapeAttr(env.id)}" ${checked ? 'checked' : ''} aria-label="${escapeAttr(name)}">
+      <button type="button" class="prep-row-open" data-sp-open-env="${escapeAttr(env.id)}">
+        ${prepEnvThumbHtml(env)}
+        <span class="prep-row-text">
+          <span class="prep-row-name">${escapeHtml(name)}</span>
+          <span class="prep-row-meta">${t('tier_label')} ${env.tier} · ${escapeHtml(t('type_' + env.type))}${biome ? ' · ' + escapeHtml(t('biome_' + biome)) : ''}</span>
+        </span>
+      </button>
+    </div>`;
+}
+
+function envPickerListHtml(session) {
+  const envs = prepFilteredEnvs();
+  if (!envs.length) return `<p class="prep-empty">${escapeHtml(t('no_results'))}</p>`;
+  return envs.map(env => envPickerRowHtml(env, session)).join('');
+}
+
+function envPickerColumnHtml(session) {
+  return `
+    <section class="prep-col prep-col-env" aria-labelledby="prep-env-heading">
+      <div class="prep-col-head">
+        <h2 id="prep-env-heading">${t('prep_all_environments')}</h2>
+        <span class="prep-count" id="prep-env-count">${escapeHtml(envCountText())}</span>
+      </div>
+      <div class="field search-field prep-search">
+        <input type="text" id="prep-env-search" aria-label="${escapeAttr(t('prep_environment_search'))}"
+               placeholder="${escapeAttr(t('prep_environment_search'))}" value="${escapeAttr(state.sessionPrepUI.envSearch)}">
+      </div>
+      <div class="prep-picker-list" id="prep-env-list" role="list">${envPickerListHtml(session)}</div>
+    </section>`;
+}
+
+function refreshEnvPicker() {
+  const session = activeSessionPrep();
+  const list = document.getElementById('prep-env-list');
+  if (list) list.innerHTML = envPickerListHtml(session);
+  const count = document.getElementById('prep-env-count');
+  if (count) count.textContent = envCountText();
+}
+
+/* ---------------- adversaries picker ---------------- */
+
+function prepFilteredAdversaries() {
+  const filtered = SessionPrepUtils.filterEntries(
+    state.sessionPrepCatalog.adversaries, state.sessionPrepUI.advSearch, a => [a.name?.en, a.name?.ru]
+  );
+  const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
+  return filtered.sort((a, b) => collator.compare(spName(a), spName(b)));
+}
+
+function advCountText() {
+  return t('prep_results_count').replace('{n}', prepFilteredAdversaries().length).replace('{total}', state.sessionPrepCatalog.adversaries.length);
+}
+
+/** A missing image entry, and a present-but-broken one at runtime (the
+ * delegated 'error' listener below swaps its wrapper's contents), both land
+ * on the same designed fallback — never a broken-image icon. */
+function prepAdvThumbHtml(adv) {
+  if (!adv.image) return `<span class="prep-adv-thumb prep-thumb-fallback" aria-hidden="true">${ICON_ADVERSARY_FALLBACK}</span>`;
+  return `<span class="prep-adv-thumb"><img src="${escapeAttr(adv.image)}" alt="" loading="lazy" decoding="async" data-adv-thumb-img></span>`;
+}
+
+function advPickerRowHtml(adv, session) {
+  const checked = session.adversaries.some(e => e.id === adv.id);
+  const name = spName(adv);
+  return `
+    <label class="prep-row atl-row prep-adv-row" data-adv-id="${escapeAttr(adv.id)}">
+      <input type="checkbox" data-sp-toggle-adv="${escapeAttr(adv.id)}" ${checked ? 'checked' : ''}>
+      ${prepAdvThumbHtml(adv)}
+      <span class="prep-row-name">${escapeHtml(name)}</span>
+    </label>`;
+}
+
+function advPickerListHtml(session) {
+  const advs = prepFilteredAdversaries();
+  if (!advs.length) return `<p class="prep-empty">${escapeHtml(t('no_results'))}</p>`;
+  return advs.map(adv => advPickerRowHtml(adv, session)).join('');
+}
+
+function advPickerColumnHtml(session) {
+  return `
+    <section class="prep-col prep-col-adv" aria-labelledby="prep-adv-heading">
+      <div class="prep-col-head">
+        <h2 id="prep-adv-heading">${t('prep_all_adversaries')}</h2>
+        <span class="prep-count" id="prep-adv-count">${escapeHtml(advCountText())}</span>
+      </div>
+      <div class="field search-field prep-search">
+        <input type="text" id="prep-adv-search" aria-label="${escapeAttr(t('prep_adversary_search'))}"
+               placeholder="${escapeAttr(t('prep_adversary_search'))}" value="${escapeAttr(state.sessionPrepUI.advSearch)}">
+      </div>
+      <div class="prep-picker-list" id="prep-adv-list" role="list">${advPickerListHtml(session)}</div>
+    </section>`;
+}
+
+function refreshAdvPicker() {
+  const session = activeSessionPrep();
+  const list = document.getElementById('prep-adv-list');
+  if (list) list.innerHTML = advPickerListHtml(session);
+  const count = document.getElementById('prep-adv-count');
+  if (count) count.textContent = advCountText();
+}
+
+/* ---------------- items panel ---------------- */
+
+function prepFilteredItems() {
+  // Roll order (1-10), never re-sorted — search only narrows the set.
+  return SessionPrepUtils.filterEntries(state.sessionPrepCatalog.items, state.sessionPrepUI.itemSearch, i => [i.name?.en, i.name?.ru]);
+}
+
+function itemCountText() {
+  return t('prep_results_count').replace('{n}', prepFilteredItems().length).replace('{total}', state.sessionPrepCatalog.items.length);
+}
+
+function prepItemThumbHtml(item) {
+  const url = spItemImageUrl(item);
+  if (!url) return `<span class="prep-item-thumb prep-thumb-fallback" aria-hidden="true">${ICON_ITEM_FALLBACK}</span>`;
+  return `<span class="prep-item-thumb"><img src="${escapeAttr(url)}" alt="" loading="lazy" decoding="async" data-item-thumb-img></span>`;
+}
+
+function itemCardHtml(item, session) {
+  const checked = session.items.some(e => e.id === item.id);
+  const name = spName(item);
+  const url = spItemPageUrl(item);
+  return `
+    <div class="prep-item-card${checked ? ' is-selected' : ''}" data-item-id="${escapeAttr(item.id)}">
+      <label class="prep-item-select-wrap">
+        <input type="checkbox" data-sp-toggle-item="${escapeAttr(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeAttr(name)}">
+      </label>
+      ${prepItemThumbHtml(item)}
+      <div class="prep-item-body">
+        <span class="prep-item-name-row">
+          <a class="prep-item-name" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(name)}</a>
+          <a class="prep-item-ext-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer"
+             aria-label="${escapeAttr(t('prep_open_item_external').replace('{name}', name))}">${ICON_EXTERNAL}</a>
+        </span>
+        <span class="prep-item-meta">${escapeHtml(t('item_src_' + item.source))} · ${escapeHtml(t('item_kind_' + item.kind))}</span>
+      </div>
+    </div>`;
+}
+
+function itemCardsHtml(session) {
+  const items = prepFilteredItems();
+  if (!items.length) return `<p class="prep-empty">${escapeHtml(t('no_results'))}</p>`;
+  return items.map(item => itemCardHtml(item, session)).join('');
+}
+
+function itemsPanelHtml(session) {
+  return `
+    <section class="prep-items-panel" aria-labelledby="prep-items-heading">
+      <div class="prep-col-head">
+        <h2 id="prep-items-heading">${t('prep_items')}</h2>
+        <span class="prep-count" id="prep-item-total-count">${escapeHtml(itemCountText())}</span>
+      </div>
+      <div class="field search-field prep-search">
+        <input type="text" id="prep-item-search" aria-label="${escapeAttr(t('prep_item_search'))}"
+               placeholder="${escapeAttr(t('prep_item_search'))}" value="${escapeAttr(state.sessionPrepUI.itemSearch)}">
+      </div>
+      <div class="prep-item-grid" id="prep-item-grid">${itemCardsHtml(session)}</div>
+      <p class="prep-item-source-note">${escapeHtml(t('prep_item_source_note'))}</p>
+    </section>`;
+}
+
+function refreshItemGrid() {
+  const session = activeSessionPrep();
+  const grid = document.getElementById('prep-item-grid');
+  if (grid) grid.innerHTML = itemCardsHtml(session);
+  const count = document.getElementById('prep-item-total-count');
+  if (count) count.textContent = itemCountText();
+}
+
+/* ---------------- central preparation ---------------- */
+
+function centralEnvCardHtml(env, session) {
+  const name = envName(env);
+  const isPrimary = session.primaryEnvironmentId === env.id;
+  return `
+    <div class="prep-central-card" data-env-id="${escapeAttr(env.id)}">
+      ${prepEnvThumbHtml(env)}
+      <div class="prep-central-card-body">
+        <span class="prep-central-card-name">${escapeHtml(name)}${isPrimary ? `<span class="prep-primary-badge">${escapeHtml(t('prep_primary'))}</span>` : ''}</span>
+        <span class="prep-central-card-meta">${t('tier_label')} ${env.tier} · ${escapeHtml(t('type_' + env.type))}</span>
+      </div>
+      <div class="prep-central-card-actions">
+        ${!isPrimary ? `<button type="button" class="btn btn-sm btn-ghost prep-make-primary-btn" data-sp-make-primary="${escapeAttr(env.id)}"
+                 aria-label="${escapeAttr(t('prep_make_primary_named').replace('{name}', name))}">${escapeHtml(t('prep_make_primary'))}</button>` : ''}
+        <button type="button" class="prep-remove-btn" data-sp-remove-env="${escapeAttr(env.id)}"
+                aria-label="${escapeAttr(t('prep_remove_named').replace('{name}', name))}">×</button>
+      </div>
+    </div>`;
+}
+
+function centralEnvListHtml(session) {
+  if (!session.environmentIds.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_environments'))}</p>`;
+  return session.environmentIds.map(id => {
+    const env = allEnvs().find(e => e.id === id);
+    return env ? centralEnvCardHtml(env, session) : '';
+  }).join('');
+}
+
+function refreshCentralEnvironments() {
+  const session = activeSessionPrep();
+  const list = document.getElementById('prep-central-env-list');
+  if (list) list.innerHTML = centralEnvListHtml(session);
+  const count = document.getElementById('prep-central-env-count');
+  if (count) count.textContent = `${session.environmentIds.length} / ${SessionPrepUtils.MAX_ENVIRONMENTS}`;
+}
+
+/** Shared compact row for a selected adversary or item: thumbnail, name,
+ * decrement/quantity/increment, remove. `kind` ('adv' | 'item') is our own
+ * literal, never user data, so it's safe to splice into the data-attribute
+ * name below. */
+function centralQtyRowHtml({ id, name, qty, thumb, kind }) {
+  return `
+    <div class="prep-qty-row">
+      ${thumb}
+      <span class="prep-qty-name">${escapeHtml(name)}</span>
+      <div class="prep-qty-controls">
+        <button type="button" data-sp-dec-${kind}="${escapeAttr(id)}"
+                aria-label="${escapeAttr(t('prep_decrement').replace('{name}', name))}" ${qty <= 1 ? 'disabled' : ''}>−</button>
+        <span class="prep-qty-value" aria-label="${escapeAttr(t('prep_quantity_label'))}: ${qty}">${qty}</span>
+        <button type="button" data-sp-inc-${kind}="${escapeAttr(id)}"
+                aria-label="${escapeAttr(t('prep_increment').replace('{name}', name))}">+</button>
+      </div>
+      <button type="button" class="prep-remove-btn" data-sp-remove-${kind}="${escapeAttr(id)}"
+              aria-label="${escapeAttr(t('prep_remove_named').replace('{name}', name))}">×</button>
+    </div>`;
+}
+
+function advTypesCreaturesText(session) {
+  return t('prep_adversary_types_count')
+    .replace('{types}', SessionPrepUtils.countUnique(session.adversaries))
+    .replace('{creatures}', SessionPrepUtils.countTotalQuantity(session.adversaries));
+}
+
+/** Non-blocking: a lot of adversary types is a play-experience concern, not
+ * an error, so this never stops selection — just a heads-up under the
+ * heading once the count passes ten. */
+function advWarningHtml(session) {
+  if (session.adversaries.length <= 10) return '';
+  return `<p class="prep-warning" role="status">${escapeHtml(t('prep_adversary_large_warning').replace('{n}', session.adversaries.length))}</p>`;
+}
+
+function centralAdvListHtml(session) {
+  if (!session.adversaries.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_adversaries'))}</p>`;
+  return session.adversaries.map(entry => {
+    const adv = state.sessionPrepCatalog.adversaryById.get(entry.id);
+    if (!adv) return '';
+    return centralQtyRowHtml({ id: adv.id, name: spName(adv), qty: entry.quantity, thumb: prepAdvThumbHtml(adv), kind: 'adv' });
+  }).join('');
+}
+
+function refreshCentralAdversaries() {
+  const session = activeSessionPrep();
+  const list = document.getElementById('prep-central-adv-list');
+  if (list) list.innerHTML = centralAdvListHtml(session);
+  const count = document.getElementById('prep-central-adv-count');
+  if (count) count.textContent = advTypesCreaturesText(session);
+  const warning = document.getElementById('prep-central-adv-warning');
+  if (warning) warning.innerHTML = advWarningHtml(session);
+}
+
+function itemTypesQtyText(session) {
+  return t('prep_item_count')
+    .replace('{types}', SessionPrepUtils.countUnique(session.items))
+    .replace('{qty}', SessionPrepUtils.countTotalQuantity(session.items));
+}
+
+function centralItemListHtml(session) {
+  if (!session.items.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_items'))}</p>`;
+  return session.items.map(entry => {
+    const item = state.sessionPrepCatalog.itemById.get(entry.id);
+    if (!item) return '';
+    return centralQtyRowHtml({ id: item.id, name: spName(item), qty: entry.quantity, thumb: prepItemThumbHtml(item), kind: 'item' });
+  }).join('');
+}
+
+function refreshCentralItems() {
+  const session = activeSessionPrep();
+  const list = document.getElementById('prep-central-item-list');
+  if (list) list.innerHTML = centralItemListHtml(session);
+  const count = document.getElementById('prep-central-item-count');
+  if (count) count.textContent = itemTypesQtyText(session);
+}
+
+function centralSectionHtml(session) {
+  return `
+    <section class="prep-central" aria-labelledby="prep-central-heading">
+      <h2 id="prep-central-heading" class="sr-only">${t('session_prep_title')}</h2>
+      <div class="prep-central-section" data-sp-section="environments">
+        <h3>${ICON_HEX}<span>${t('prep_selected_environments')}</span><span class="prep-central-count" id="prep-central-env-count">${session.environmentIds.length} / ${SessionPrepUtils.MAX_ENVIRONMENTS}</span></h3>
+        <div id="prep-central-env-list">${centralEnvListHtml(session)}</div>
+      </div>
+      <div class="prep-central-section" data-sp-section="adversaries">
+        <h3>${ICON_ADVERSARY_FALLBACK}<span>${t('prep_selected_adversaries')}</span><span class="prep-central-count" id="prep-central-adv-count">${escapeHtml(advTypesCreaturesText(session))}</span></h3>
+        <div id="prep-central-adv-warning">${advWarningHtml(session)}</div>
+        <div id="prep-central-adv-list">${centralAdvListHtml(session)}</div>
+      </div>
+      <div class="prep-central-section" data-sp-section="items">
+        <h3>${ICON_ITEM_FALLBACK}<span>${t('prep_selected_items')}</span><span class="prep-central-count" id="prep-central-item-count">${escapeHtml(itemTypesQtyText(session))}</span></h3>
+        <div id="prep-central-item-list">${centralItemListHtml(session)}</div>
+      </div>
+    </section>`;
+}
+
+/* ---------------- session header (title + save status) ---------------- */
+
+function sessionHeaderHtml(session) {
+  return `
+    <div class="prep-session-header">
+      <div class="prep-title-field">
+        <label class="sr-only" for="prep-session-title">${escapeHtml(t('session_name_label'))}</label>
+        <input type="text" id="prep-session-title" maxlength="120"
+               placeholder="${escapeAttr(t('session_name_placeholder'))}" value="${escapeAttr(session.title)}">
+      </div>
+      <p class="prep-save-status" id="prep-save-status" role="status" aria-live="polite">${escapeHtml(sessionSaveStatusText())}</p>
+    </div>`;
+}
+
+const SESSION_TITLE_DEBOUNCE_MS = 300;
+
+function saveSessionTitle(rawValue) {
+  const title = String(rawValue == null ? '' : rawValue).slice(0, 120);
+  const session = activeSessionPrep();
+  if (!session || session.title === title) return;
+  const { result } = updateSessionPrepSession(s => Object.assign({}, s, { title }));
+  updateSaveStatusDisplay(result);
+}
+
+function bindSessionPrepTitleInput() {
+  const input = document.getElementById('prep-session-title');
+  if (!input) return;
+  let debounceTimer = null;
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => saveSessionTitle(input.value), SESSION_TITLE_DEBOUNCE_MS);
+  });
+  input.addEventListener('blur', () => {
+    clearTimeout(debounceTimer);
+    const trimmed = input.value.trim();
+    if (trimmed !== input.value) input.value = trimmed;
+    saveSessionTitle(trimmed);
+  });
+}
+
+const SESSION_PREP_SEARCH_DEBOUNCE_MS = 200;
+
+/** Rebound on every full renderSessionPrepPage() call, since that's the only
+ * time these input elements themselves are (re)created — unlike the
+ * delegated click/change handlers below, which are bound once and outlive
+ * any number of targeted refresh*() calls. */
+function bindSessionPrepSearchAndTitle() {
+  const envSearch = document.getElementById('prep-env-search');
+  if (envSearch) {
+    let timer = null;
+    envSearch.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { state.sessionPrepUI.envSearch = envSearch.value; refreshEnvPicker(); }, SESSION_PREP_SEARCH_DEBOUNCE_MS);
+    });
+  }
+  const advSearch = document.getElementById('prep-adv-search');
+  if (advSearch) {
+    let timer = null;
+    advSearch.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { state.sessionPrepUI.advSearch = advSearch.value; refreshAdvPicker(); }, SESSION_PREP_SEARCH_DEBOUNCE_MS);
+    });
+  }
+  const itemSearch = document.getElementById('prep-item-search');
+  if (itemSearch) {
+    let timer = null;
+    itemSearch.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { state.sessionPrepUI.itemSearch = itemSearch.value; refreshItemGrid(); }, SESSION_PREP_SEARCH_DEBOUNCE_MS);
+    });
+  }
+  bindSessionPrepTitleInput();
+}
+
+/* ---------------- quantity actions ---------------- */
+
+function adjustAdversaryQty(id, delta) {
+  const { result } = updateSessionPrepSession(session => Object.assign({}, session, {
+    adversaries: delta > 0 ? SessionPrepUtils.incrementEntry(session.adversaries, id) : SessionPrepUtils.decrementEntry(session.adversaries, id),
+  }));
+  updateSaveStatusDisplay(result);
+  refreshCentralAdversaries();
+}
+
+function adjustItemQty(id, delta) {
+  const { result } = updateSessionPrepSession(session => Object.assign({}, session, {
+    items: delta > 0 ? SessionPrepUtils.incrementEntry(session.items, id) : SessionPrepUtils.decrementEntry(session.items, id),
+  }));
+  updateSaveStatusDisplay(result);
+  refreshCentralItems();
+}
+
+/* ---------------- catalogue load failure + retry ---------------- */
+
+function retrySessionPrepCatalog() {
+  const btn = document.querySelector('[data-sp-retry]');
+  if (btn) { btn.dataset.loading = 'true'; btn.disabled = true; }
+  getJSON(versionedDataUrl('data/session-prep.json')).then(data => {
+    setSessionPrepCatalog(data);
+    if (state.route.name === 'session-prep') renderSessionPrepPage();
+  }).catch(() => {
+    state.sessionPrepLoadFailed = true;
+    if (btn) { btn.removeAttribute('data-loading'); btn.disabled = false; }
+  });
+}
+
+/* ---------------- delegation ---------------- */
+
+/** Bound once per #grid-wrap lifetime (delegated listeners survive any
+ * number of innerHTML replacements of *its children*) — unlike
+ * bindSessionPrepSearchAndTitle() above, which rebinds every full render
+ * because the input elements themselves get recreated then. */
+function bindSessionPrepDelegation(el) {
+  if (el._sessionPrepDelegated) return;
+  el._sessionPrepDelegated = true;
+
+  el.addEventListener('change', e => {
+    const envCb = e.target.closest('[data-sp-toggle-env]');
+    if (envCb) {
+      const envId = envCb.dataset.spToggleEnv;
+      const outcome = SessionPrepUtils.toggleEnvironment(activeSessionPrep(), envId);
+      if (outcome.limitReached) {
+        envCb.checked = false;
+        showToast(t('prep_environment_limit'), 'error');
+        return;
+      }
+      const { result } = updateSessionPrepSession(() => outcome.session);
+      updateSaveStatusDisplay(result);
+      refreshCentralEnvironments();
+      return;
+    }
+    const advCb = e.target.closest('[data-sp-toggle-adv]');
+    if (advCb) {
+      const advId = advCb.dataset.spToggleAdv;
+      const { result } = updateSessionPrepSession(session => Object.assign({}, session, {
+        adversaries: SessionPrepUtils.toggleEntry(session.adversaries, advId),
+      }));
+      updateSaveStatusDisplay(result);
+      refreshCentralAdversaries();
+      return;
+    }
+    const itemCb = e.target.closest('[data-sp-toggle-item]');
+    if (itemCb) {
+      const itemId = itemCb.dataset.spToggleItem;
+      const { result } = updateSessionPrepSession(session => Object.assign({}, session, {
+        items: SessionPrepUtils.toggleEntry(session.items, itemId),
+      }));
+      updateSaveStatusDisplay(result);
+      refreshCentralItems();
+      const card = itemCb.closest('.prep-item-card');
+      if (card) card.classList.toggle('is-selected', itemCb.checked);
+    }
+  });
+
+  el.addEventListener('click', e => {
+    const openEnv = e.target.closest('[data-sp-open-env]');
+    if (openEnv) { navigate(envHash(openEnv.dataset.spOpenEnv, state.route)); return; }
+
+    const removeEnv = e.target.closest('[data-sp-remove-env]');
+    if (removeEnv) {
+      const envId = removeEnv.dataset.spRemoveEnv;
+      const outcome = SessionPrepUtils.removeEnvironment(activeSessionPrep(), envId);
+      const { result } = updateSessionPrepSession(() => outcome.session);
+      updateSaveStatusDisplay(result);
+      refreshCentralEnvironments();
+      syncPickerCheckbox('data-sp-toggle-env', envId, false);
+      return;
+    }
+    const makePrimary = e.target.closest('[data-sp-make-primary]');
+    if (makePrimary) {
+      const envId = makePrimary.dataset.spMakePrimary;
+      const { result } = updateSessionPrepSession(session => SessionPrepUtils.setPrimaryEnvironment(session, envId));
+      updateSaveStatusDisplay(result);
+      refreshCentralEnvironments();
+      return;
+    }
+
+    const incAdv = e.target.closest('[data-sp-inc-adv]');
+    if (incAdv) { adjustAdversaryQty(incAdv.dataset.spIncAdv, 1); return; }
+    const decAdv = e.target.closest('[data-sp-dec-adv]');
+    if (decAdv) { adjustAdversaryQty(decAdv.dataset.spDecAdv, -1); return; }
+    const removeAdv = e.target.closest('[data-sp-remove-adv]');
+    if (removeAdv) {
+      const advId = removeAdv.dataset.spRemoveAdv;
+      const { result } = updateSessionPrepSession(session => Object.assign({}, session, {
+        adversaries: SessionPrepUtils.removeEntry(session.adversaries, advId),
+      }));
+      updateSaveStatusDisplay(result);
+      refreshCentralAdversaries();
+      syncPickerCheckbox('data-sp-toggle-adv', advId, false);
+      return;
+    }
+
+    const incItem = e.target.closest('[data-sp-inc-item]');
+    if (incItem) { adjustItemQty(incItem.dataset.spIncItem, 1); return; }
+    const decItem = e.target.closest('[data-sp-dec-item]');
+    if (decItem) { adjustItemQty(decItem.dataset.spDecItem, -1); return; }
+    const removeItem = e.target.closest('[data-sp-remove-item]');
+    if (removeItem) {
+      const itemId = removeItem.dataset.spRemoveItem;
+      const { result } = updateSessionPrepSession(session => Object.assign({}, session, {
+        items: SessionPrepUtils.removeEntry(session.items, itemId),
+      }));
+      updateSaveStatusDisplay(result);
+      refreshCentralItems();
+      syncPickerCheckbox('data-sp-toggle-item', itemId, false);
+      const card = document.querySelector(`.prep-item-card[data-item-id="${escapeSelectorAttrValue(itemId)}"]`);
+      if (card) card.classList.remove('is-selected');
+      return;
+    }
+
+    const retry = e.target.closest('[data-sp-retry]');
+    if (retry) retrySessionPrepCatalog();
+  });
+
+  /* 'error' does not bubble, so it is only observable here via the capture
+   * phase — the one deliberate exception to this file's usual bubble-phase
+   * delegation. Swaps a failed adversary/item image for the same designed
+   * fallback a missing `image`/url gets at build time; never a broken-image
+   * icon on screen. */
+  el.addEventListener('error', e => {
+    const target = e.target;
+    if (!target || !target.matches) return;
+    if (target.matches('[data-adv-thumb-img]')) {
+      const wrap = target.closest('.prep-adv-thumb');
+      if (wrap) wrap.innerHTML = ICON_ADVERSARY_FALLBACK;
+    } else if (target.matches('[data-item-thumb-img]')) {
+      const wrap = target.closest('.prep-item-thumb');
+      if (wrap) wrap.innerHTML = ICON_ITEM_FALLBACK;
+    }
+  }, true);
+}
+
+/* ---------------- page render ---------------- */
+
+function renderSessionPrepPage() {
+  document.getElementById('toolbar').innerHTML = '';
+  document.getElementById('result-count').innerHTML = '';
+  const el = document.getElementById('grid-wrap');
+  if (state.sessionPrepLoadFailed) {
+    el.innerHTML = `<div class="prep-wrap">${emptyStateHtml({
+      icon: ICON_ALERT,
+      title: t('prep_catalog_load_error'),
+      action: `<button type="button" class="btn btn-primary" data-sp-retry>${t('prep_retry')}</button>`,
+      error: true,
+    })}</div>`;
+    bindSessionPrepDelegation(el);
+    return;
+  }
+  const session = activeSessionPrep();
+  el.innerHTML = `
+    <div class="prep-wrap">
+      ${sessionHeaderHtml(session)}
+      <div class="prep-main">
+        ${envPickerColumnHtml(session)}
+        ${centralSectionHtml(session)}
+        ${advPickerColumnHtml(session)}
+      </div>
+      ${itemsPanelHtml(session)}
+    </div>`;
+  bindSessionPrepDelegation(el);
+  bindSessionPrepSearchAndTitle();
 }
 
 /* ---------------- sources ---------------- */

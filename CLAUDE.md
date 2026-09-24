@@ -426,3 +426,71 @@ place that happens.
 Do not concatenate or normalize environment content inside the
 per-environment filter callback. Update the centralized search-index builder
 (`js/search-index.js`) and its tests instead.
+
+## Session Prep
+
+`#/session-prep` (route name `session-prep` in `RouteUtils`/`state.route`,
+same `/env/<id>` overlay support as every other route) lets a GM assemble one
+encounter/session's worth of environments, adversaries, and items. It reuses
+the existing `#toolbar`/`#result-count`/`#grid-wrap` rendering architecture
+and header nav pattern (`Lists → Session Prep → Journeys → RU → EN` in DOM
+order) rather than standing up a second application root.
+
+- **Two data sources, deliberately not one.** The environment picker reads
+  the existing `allEnvs()` catalog (up to three selections, the first becomes
+  primary and can be reassigned via "Make primary"). Adversaries and items
+  come from `data/session-prep.json`, a small MVP-only picker catalog (17
+  adversaries, the 10 Core items) — never `data/adversaries.json` (full
+  featured-adversary stat blocks) or `data/items.json` (the complete item
+  encyclopedia). Loaded into `state.sessionPrepCatalog`, kept separate from
+  `state.adversaryCatalog`/`state.itemCatalog`.
+- **`data/session-prep.json` shape**: `{ item_page_url, item_image_url,
+  adversaries: [{ id, name: {en, ru}, image? }], items: [{ id, roll, kind,
+  source, name: {en, ru}, image }] }`. `item_page_url`/`item_image_url` are
+  `{id}`/`{image}` templates against the [Daggerheart Loot
+  Generator](https://artex-x.github.io/daggerheart-loot/) — item art and
+  detail pages are never copied into this repo, only linked/hotlinked at
+  render time. An adversary's optional `image` is a local repo-relative path
+  (currently under `img/adversaries/art/session-prep/`); only include one
+  when the file actually exists — never generate, download, or fabricate
+  adversary art. No image (or a runtime load failure, handled by the
+  delegated `error`-event listener in `bindSessionPrepDelegation()`) falls
+  back to a designed inline SVG silhouette, never a broken-image icon.
+  `scripts/validate-data.js`'s `validateSessionPrep()` enforces unique ids,
+  bilingual names, valid `kind`/`source`/`roll`, image path shape, that an
+  item's image filename agrees with its own id, and that a supplied local
+  adversary image path exists on disk.
+- **Persistence**: `LS_KEYS.sessionPrep` (`dhcodex_session_prep`), loaded via
+  `SafeStorage.loadStoredJson()` with the dedicated `SafeStorage.validators.
+  sessionPrep` structural validator (mirrors `sanitizeRegionEntry`/
+  `sanitizeSanctuaryEntry` — sanitizes what it can, drops only what it must,
+  never resets the whole preparation over one bad row). Stored shape is
+  forward-compatible with multiple sessions (`{ schemaVersion, activeSessionId,
+  sessions: [...] }`), but this MVP only ever reads/writes the active one —
+  there is no UI for creating, switching, duplicating, or deleting a session.
+  Every mutation goes through `updateSessionPrepSession()` in `js/app.js`,
+  the one place that stamps `updatedAt`, calls `persist()`, and reports the
+  result to the inline "Saved on this device · HH:MM" / "Could not save in
+  this browser" status line — the same `persist()` that already raises the
+  app's one shared storage-write-failure toast on its own.
+- **Pure logic lives in `js/session-prep-utils.js`** (global `SessionPrepUtils`,
+  same dependency-free browser/CommonJS pattern as `js/route-utils.js`/
+  `js/list-utils.js`, tested directly in `tests/session-prep-utils.test.js`):
+  the default stored shape, the three-environment cap and primary-promotion
+  rules, adversary/item toggle-and-1-to-99-quantity rules, unique/total
+  counts, and search normalization/filtering. `js/app.js` is the DOM layer
+  over it — it does not reimplement any of these rules inline.
+- **Rendering avoids full-page rerenders on every interaction.**
+  `renderSessionPrepPage()` builds the whole page once (route entry, language
+  switch, catalogue retry). A checkbox toggle, quantity change, remove, or
+  "Make primary" click afterwards goes through a targeted `refresh*()` that
+  replaces only the list/count it affects (`refreshCentralEnvironments()`,
+  `refreshCentralAdversaries()`, `refreshCentralItems()`, `refreshEnvPicker()`,
+  `refreshAdvPicker()`, `refreshItemGrid()`), so a picker's search text,
+  scroll position, and focus are never disturbed by picking something.
+  Removing an entry centrally syncs the matching source checkbox back to
+  unchecked via `syncPickerCheckbox()` rather than rebuilding that picker.
+  Click/change/error listeners are delegated once per `#grid-wrap` lifetime
+  (`bindSessionPrepDelegation()`); the search inputs and the title input are
+  rebound on every full render instead (`bindSessionPrepSearchAndTitle()`),
+  since those elements themselves are recreated then.

@@ -103,6 +103,7 @@ function buildFixture(overrides = {}) {
     regions: { regions: [] },
     adversaries: { adversaries: [] },
     items: { item_url: 'https://example.test/i/{id}.html', image_url: 'https://example.test/img/{img}', aliases: {}, items: {} },
+    sessionPrep: { item_page_url: 'https://example.test/i/{id}.html', item_image_url: 'https://example.test/img/{image}', adversaries: [], items: [] },
     journey: defaultJourney(),
     i18n: defaultI18nKeys(),
   };
@@ -112,6 +113,7 @@ function buildFixture(overrides = {}) {
     regions: 'data/regions.json',
     adversaries: 'data/adversaries.json',
     items: 'data/items.json',
+    sessionPrep: 'data/session-prep.json',
     journey: 'data/journey.json',
     i18n: 'data/i18n.json',
   })) {
@@ -419,6 +421,135 @@ test('a normalized item lookup collision between different ids fails', () => {
   });
   const result = validateRepositoryData(dir);
   assert.ok(errorsOf(result).some(d => /resolves to more than one item/.test(d.message)));
+});
+
+/* ---------------- 24b: data/session-prep.json ---------------- */
+
+function sessionPrepFixtureBase() {
+  return {
+    item_page_url: 'https://example.test/i/{id}.html',
+    item_image_url: 'https://example.test/img/{image}',
+    adversaries: [
+      { id: 'test-adversary', name: bi('Test Adversary', 'Тестовый противник') },
+    ],
+    items: [
+      { id: 'ci1', roll: 1, kind: 'item', source: 'core', name: bi('Bedroll', 'Спальный мешок'), image: 'ci1.webp' },
+    ],
+  };
+}
+
+function sessionPrepI18n(v) {
+  v.en.item_kind_item = 'Item'; v.ru.item_kind_item = 'Предмет';
+  v.en.item_src_core = 'Core'; v.ru.item_src_core = 'Базовая';
+}
+
+test('a valid session-prep fixture passes with zero errors', () => {
+  const dir = buildFixture({ sessionPrep: sessionPrepFixtureBase(), i18n: sessionPrepI18n });
+  const result = validateRepositoryData(dir);
+  assert.equal(errorsOf(result).length, 0, messages(errorsOf(result)));
+});
+
+test('duplicate session-prep adversary id fails', () => {
+  const sp = sessionPrepFixtureBase();
+  sp.adversaries.push({ id: 'test-adversary', name: bi('Again', 'Опять') });
+  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => d.file === 'data/session-prep.json' && /Duplicate adversary id/.test(d.message)));
+});
+
+test('duplicate session-prep item id fails', () => {
+  const sp = sessionPrepFixtureBase();
+  sp.items.push({ id: 'ci1', roll: 2, kind: 'item', source: 'core', name: bi('Bedroll 2', 'Спальный мешок 2'), image: 'ci1-alt.webp' });
+  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => d.file === 'data/session-prep.json' && /Duplicate item id/.test(d.message)));
+});
+
+test('a malformed session-prep bilingual name fails', () => {
+  const sp = sessionPrepFixtureBase();
+  sp.adversaries[0].name = 'Not bilingual';
+  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => d.path === '$.adversaries[0].name'));
+});
+
+test('an invalid session-prep item roll fails', () => {
+  const sp = sessionPrepFixtureBase();
+  sp.items[0].roll = 0;
+  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => /invalid roll/.test(d.message)));
+});
+
+test('a missing session-prep item kind fails', () => {
+  const sp = sessionPrepFixtureBase();
+  delete sp.items[0].kind;
+  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => d.path === '$.items[0].kind'));
+});
+
+test('a missing session-prep item source fails', () => {
+  const sp = sessionPrepFixtureBase();
+  delete sp.items[0].source;
+  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => d.path === '$.items[0].source'));
+});
+
+test('a session-prep item image filename that disagrees with its id fails', () => {
+  const sp = sessionPrepFixtureBase();
+  sp.items[0].image = 'not-the-id.webp';
+  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => /must start with its own id/.test(d.message)));
+});
+
+test('a missing referenced local session-prep adversary image fails', () => {
+  const sp = sessionPrepFixtureBase();
+  sp.adversaries[0].image = 'img/adversaries/art/session-prep/does-not-exist.png';
+  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => d.path === '$.adversaries[0].image' && /does not point to an existing file/.test(d.message)));
+});
+
+test('an existing local session-prep adversary image passes', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'atlas-validate-'));
+  fs.mkdirSync(path.join(dir, 'img/adversaries/art/session-prep'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'img/adversaries/art/session-prep/test.png'), 'fake-png-bytes');
+  const sp = sessionPrepFixtureBase();
+  sp.adversaries[0].image = 'img/adversaries/art/session-prep/test.png';
+  const defaults = {
+    environments: { environments: [defaultEnvironment()] },
+    regions: { regions: [] },
+    adversaries: { adversaries: [] },
+    items: { item_url: 'https://example.test/i/{id}.html', image_url: 'https://example.test/img/{img}', aliases: {}, items: {} },
+    sessionPrep: sp,
+    journey: defaultJourney(),
+    i18n: (() => { const v = defaultI18nKeys(); sessionPrepI18n(v); return v; })(),
+  };
+  for (const [key, rel] of Object.entries({
+    environments: 'data/environments.json',
+    regions: 'data/regions.json',
+    adversaries: 'data/adversaries.json',
+    items: 'data/items.json',
+    sessionPrep: 'data/session-prep.json',
+    journey: 'data/journey.json',
+    i18n: 'data/i18n.json',
+  })) {
+    writeJSON(dir, rel, defaults[key]);
+  }
+  const result = validateRepositoryData(dir);
+  assert.equal(errorsOf(result).length, 0, messages(errorsOf(result)));
+});
+
+test('a duplicate normalized session-prep adversary name is a warning, not an error', () => {
+  const sp = sessionPrepFixtureBase();
+  sp.adversaries.push({ id: 'test-adversary-2', name: bi('Test  Adversary', 'Другое') });
+  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
+  const result = validateRepositoryData(dir);
+  assert.equal(errorsOf(result).length, 0, messages(errorsOf(result)));
+  assert.ok(warningsOf(result).some(d => d.file === 'data/session-prep.json' && /also used by adversary/.test(d.message)));
 });
 
 /* ---------------- 25: Journey habitat overlap ---------------- */

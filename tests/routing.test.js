@@ -46,6 +46,12 @@ test('"#/journey" resolves to Journey', () => {
   assert.equal(r.malformed, false);
 });
 
+test('"#/session-prep" resolves to Session Prep', () => {
+  const r = parseRouteHash('#/session-prep');
+  assert.deepEqual(r.route, { name: 'session-prep', env: null });
+  assert.equal(r.malformed, false);
+});
+
 test('a valid list ID resolves to an individual list', () => {
   const r = parseRouteHash('#/lists/list-abc');
   assert.deepEqual(r.route, { name: 'list', id: 'list-abc', env: null });
@@ -67,6 +73,12 @@ test('a valid list environment suffix preserves both IDs', () => {
 test('a valid Journey environment suffix preserves the Journey route', () => {
   const r = parseRouteHash('#/journey/env/ancient-grove');
   assert.deepEqual(r.route, { name: 'journey', env: 'ancient-grove' });
+  assert.equal(r.malformed, false);
+});
+
+test('a valid Session Prep environment suffix preserves the Session Prep route', () => {
+  const r = parseRouteHash('#/session-prep/env/ancient-grove');
+  assert.deepEqual(r.route, { name: 'session-prep', env: 'ancient-grove' });
   assert.equal(r.malformed, false);
 });
 
@@ -151,6 +163,13 @@ test('malformed Journey environment preserves Journey', () => {
   assert.equal(r.canonicalHash, '#/journey');
 });
 
+test('malformed Session Prep environment preserves Session Prep', () => {
+  const r = parseRouteHash('#/session-prep/env/%');
+  assert.deepEqual(r.route, { name: 'session-prep', env: null });
+  assert.equal(r.malformed, true);
+  assert.equal(r.canonicalHash, '#/session-prep');
+});
+
 test('malformed list ID falls back to Lists overview', () => {
   const r = parseRouteHash('#/lists/%');
   assert.deepEqual(r.route, { name: 'lists', env: null });
@@ -196,6 +215,7 @@ test('every supported base route generates the expected hash', () => {
   assert.equal(baseHash({ name: 'lists', env: null }), '#/lists');
   assert.equal(baseHash({ name: 'list', id: 'list-abc', env: null }), '#/lists/list-abc');
   assert.equal(baseHash({ name: 'journey', env: null }), '#/journey');
+  assert.equal(baseHash({ name: 'session-prep', env: null }), '#/session-prep');
 });
 
 test('environment suffixes are encoded exactly once', () => {
@@ -214,10 +234,12 @@ test('generated routes round-trip through the parser', () => {
     { name: 'catalog', env: null },
     { name: 'lists', env: null },
     { name: 'journey', env: null },
+    { name: 'session-prep', env: null },
     { name: 'list', id: 'list-abc', env: null },
     { name: 'catalog', env: 'ancient-grove' },
     { name: 'lists', env: 'ancient-grove' },
     { name: 'journey', env: 'ancient-grove' },
+    { name: 'session-prep', env: 'ancient-grove' },
     { name: 'list', id: 'list-abc', env: 'ancient-grove' },
   ];
   for (const route of routes) {
@@ -263,6 +285,7 @@ test('canonicalization does not produce duplicate /env/ segments', () => {
 const ARBITRARY_HASH_CORPUS = [
   '', '#', '#/', '#//', '#/env', '#/env/', '#/lists/', '#/lists//env/x',
   '#/lists/%/%', '#///', '#/journey/env/', '#/env/%%%', '#/lists/%C0',
+  '#/session-prep', '#/session-prep/env/', '#/session-prep/env/%',
   '#random', '#/lists/list-abc/env/list-abc/env/x', '#/env/' + '%'.repeat(50),
   '#/lists/' + 'a'.repeat(500), '#/lists/list abc/env/an chor',
   ...MALFORMED_SEGMENTS.map(s => `#/env/${s}`),
