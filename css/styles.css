@@ -2103,14 +2103,14 @@ body[data-route="session-prep"] #session-prep-chrome[data-collapsed="true"] > .s
 /* Quieter outer catalogues vs. the brighter, gold-accented central panel —
    see "Visual priorities" in the Session Prep spec. */
 .prep-col {
-  min-width: 0; display: flex; flex-direction: column; gap: var(--s-3);
+  min-width: 0; display: flex; flex-direction: column; gap: var(--s-2);
   background: var(--ink-card); border: 1px solid var(--line-faint); border-radius: var(--r-md);
-  padding: var(--s-4);
+  padding: 12px var(--s-4) var(--s-4);
 }
 .prep-central {
   min-width: 0; display: flex; flex-direction: column;
   background: var(--ink-raised); border: 1px solid var(--line-strong); border-top: 2px solid var(--hope);
-  border-radius: var(--r-lg); padding: var(--s-5); box-shadow: var(--e-2);
+  border-radius: var(--r-lg); padding: 12px var(--s-5) var(--s-5); box-shadow: var(--e-2);
 }
 
 .prep-col-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2); flex-wrap: wrap; }
@@ -2125,6 +2125,7 @@ body[data-route="session-prep"] #session-prep-chrome[data-collapsed="true"] > .s
    container instead (.prep-col / .prep-items-panel), where that same
    flex-basis is read as a height, stretching the field to 260px tall. */
 .prep-search { margin: 0; flex: none; }
+.prep-search input[type="text"] { height: 35px; }
 .prep-picker-list {
   display: flex; flex-direction: column; gap: 2px;
   max-height: 460px; overflow-y: auto; padding-right: 2px;
@@ -2194,8 +2195,8 @@ body[data-route="session-prep"] #session-prep-chrome[data-collapsed="true"] > .s
 .prep-thumb-fallback svg { width: 62%; height: 62%; color: var(--muted); }
 
 /* ---- central preparation: environments / adversaries / items ---- */
-.prep-central-section { display: flex; flex-direction: column; gap: var(--s-2); }
-.prep-central-section + .prep-central-section { padding-top: var(--s-4); border-top: 1px solid var(--line-faint); }
+.prep-central-section { display: flex; flex-direction: column; gap: 6px; }
+.prep-central-section + .prep-central-section { padding-top: 11px; border-top: 1px solid var(--line-faint); }
 .prep-central-section h3 {
   display: flex; align-items: center; gap: var(--s-2); margin: 0;
   font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md);
@@ -2273,8 +2274,9 @@ body[data-route="session-prep"] #session-prep-chrome[data-collapsed="true"] > .s
 /* ---- items panel (full width, below the three columns) ---- */
 .prep-items-panel {
   grid-column: 1 / -1;
-  display: flex; flex-direction: column; gap: var(--s-3);
-  background: var(--ink-card); border: 1px solid var(--line-faint); border-radius: var(--r-md); padding: var(--s-4);
+  display: flex; flex-direction: column; gap: var(--s-2);
+  background: var(--ink-card); border: 1px solid var(--line-faint); border-radius: var(--r-md);
+  padding: 12px var(--s-4) var(--s-4);
 }
 /* A single horizontal strip of icon-only tiles at every viewport width — no
    name/description in the strip itself (that lives behind the click-through
