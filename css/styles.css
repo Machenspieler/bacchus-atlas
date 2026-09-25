@@ -1975,22 +1975,21 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
    list" popup) for every real checkbox on this page. */
 
 /* A slightly wider shell for the three-column composition, same technique as
-   the fixed-width .shell everywhere else — only this route's header/shell
-   are widened, nothing else. Above 1440px there's no fixed-width card grid
-   to size against (unlike the catalog's .shell steps), so the cap is simply
-   dropped and the tool fills the monitor instead of leaving margins. .shell
-   is also a flex item of body on this route (see the ≥1200px block below);
-   an explicit width: 100% is required alongside max-width: none because a
-   stretched flex item still falls back to its content's intrinsic width
-   (here, the horizontally-scrolling item strip) instead of the container's
-   width once max-width no longer clamps it. */
-body[data-route="session-prep"] .shell,
-body[data-route="session-prep"] .header-inner {
+   the fixed-width .shell everywhere else — only this route's main content is
+   widened, not the header, which stays the same width on every route so the
+   brand/nav bar never shifts between pages. Above 1440px there's no
+   fixed-width card grid to size against (unlike the catalog's .shell steps),
+   so the cap is simply dropped and the tool fills the monitor instead of
+   leaving margins. .shell is also a flex item of body on this route (see the
+   ≥1200px block below); an explicit width: 100% is required alongside
+   max-width: none because a stretched flex item still falls back to its
+   content's intrinsic width (here, the horizontally-scrolling item strip)
+   instead of the container's width once max-width no longer clamps it. */
+body[data-route="session-prep"] .shell {
   max-width: 1440px;
 }
 @media (min-width: 1440px) {
-  body[data-route="session-prep"] .shell,
-  body[data-route="session-prep"] .header-inner {
+  body[data-route="session-prep"] .shell {
     max-width: none;
     width: 100%;
   }
