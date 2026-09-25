@@ -1978,7 +1978,12 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
    the fixed-width .shell everywhere else — only this route's header/shell
    are widened, nothing else. Above 1440px there's no fixed-width card grid
    to size against (unlike the catalog's .shell steps), so the cap is simply
-   dropped and the tool fills the monitor instead of leaving margins. */
+   dropped and the tool fills the monitor instead of leaving margins. .shell
+   is also a flex item of body on this route (see the ≥1200px block below);
+   an explicit width: 100% is required alongside max-width: none because a
+   stretched flex item still falls back to its content's intrinsic width
+   (here, the horizontally-scrolling item strip) instead of the container's
+   width once max-width no longer clamps it. */
 body[data-route="session-prep"] .shell,
 body[data-route="session-prep"] .header-inner {
   max-width: 1440px;
@@ -1987,6 +1992,7 @@ body[data-route="session-prep"] .header-inner {
   body[data-route="session-prep"] .shell,
   body[data-route="session-prep"] .header-inner {
     max-width: none;
+    width: 100%;
   }
 }
 
@@ -2191,10 +2197,15 @@ body[data-route="session-prep"] #footer {
 
 /* ---- large screens (≥1200px, the three-column layout) only: the whole page
    fits in the viewport with no page-level scroll. Every ancestor from body
-   down to .prep-main is given a definite, shrinkable height (flex + min-height:
-   0) so that height reaches the three columns; the env/adversary pickers and
-   the item catalogue scroll internally instead of growing the page. Narrower
-   layouts (tablet/phone, below) keep the normal page scroll. */
+   down to .prep-main is given a definite, shrinkable height AND width (flex/
+   grid items default to a content-based automatic minimum size on both axes,
+   so without min-height/min-width: 0 they refuse to shrink below their
+   content and silently push the box wider/taller than the viewport instead
+   of clipping — the horizontally-scrolling item strip below is exactly the
+   kind of wide content that triggers this) so the env/adversary pickers and
+   the item catalogue scroll internally instead of growing the page in either
+   direction. Narrower layouts (tablet/phone, below) keep the normal page
+   scroll. */
 @media (min-width: 1200px) {
   body[data-route="session-prep"] {
     height: 100vh;
@@ -2208,6 +2219,7 @@ body[data-route="session-prep"] #footer {
   body[data-route="session-prep"] #main {
     flex: 1 1 auto;
     min-height: 0;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     padding-bottom: var(--s-4);
@@ -2219,20 +2231,24 @@ body[data-route="session-prep"] #footer {
   body[data-route="session-prep"] #grid-wrap {
     flex: 1 1 auto;
     min-height: 0;
+    min-width: 0;
     display: flex;
     flex-direction: column;
   }
   body[data-route="session-prep"] .prep-wrap {
     flex: 1 1 auto;
     min-height: 0;
+    min-width: 0;
   }
   body[data-route="session-prep"] .prep-session-header,
   body[data-route="session-prep"] .prep-items-panel {
     flex: none;
+    min-width: 0;
   }
   body[data-route="session-prep"] .prep-main {
     flex: 1 1 auto;
     min-height: 0;
+    min-width: 0;
     grid-template-rows: minmax(0, 1fr);
     align-items: stretch;
   }
