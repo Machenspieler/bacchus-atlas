@@ -3495,7 +3495,7 @@ function centralItemCardHtml(id, item) {
       ${prepItemThumbHtml(item)}
       <div class="prep-central-card-body">
         <span class="prep-central-card-name">${escapeHtml(name)}</span>
-        <span class="prep-central-card-meta">${escapeHtml(t('item_src_' + item.src))} · ${escapeHtml(t('item_kind_' + kind))}<span class="prep-central-item-roll"> #${item.roll}</span></span>
+        <span class="prep-central-card-meta">${escapeHtml(t('item_src_' + item.src))} · ${escapeHtml(t('item_kind_' + kind))} · #${item.roll}</span>
       </div>
     </div>`;
 }

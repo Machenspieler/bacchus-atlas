@@ -2163,7 +2163,6 @@ body[data-route="session-prep"] #footer {
   border: 1px solid var(--line-faint); border-radius: var(--r-sm); background: var(--ink-raised);
 }
 .prep-central-item-card .prep-central-item-remove { position: absolute; top: var(--s-1); right: var(--s-1); }
-.prep-central-item-roll { color: var(--fear-soft); }
 
 .prep-qty-name { flex: 1; min-width: 80px; font-size: var(--fs-sm); color: var(--parchment); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .prep-qty-controls { flex: none; display: flex; align-items: center; gap: var(--s-1); }
