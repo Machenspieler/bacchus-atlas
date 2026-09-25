@@ -3481,13 +3481,32 @@ function itemTypesQtyText(session) {
     .replace('{qty}', SessionPrepUtils.countTotalQuantity(session.items));
 }
 
+/** Selected-item card: icon, name, "source · kind #roll" meta line, remove.
+ * Unlike adversaries, items carry no visible quantity control here — see
+ * "Session Prep" in CLAUDE.md; a selected item is always added at quantity 1
+ * and can only be removed, not incremented, from this card. */
+function centralItemCardHtml(id, item) {
+  const name = itemField(item, 'name');
+  const kind = item.kind === 'consumable' ? 'consumable' : 'item';
+  return `
+    <div class="prep-central-item-card">
+      <button type="button" class="prep-remove-btn prep-central-item-remove" data-sp-remove-item="${escapeAttr(id)}"
+              aria-label="${escapeAttr(t('prep_remove_named').replace('{name}', name))}">×</button>
+      ${prepItemThumbHtml(item)}
+      <div class="prep-central-card-body">
+        <span class="prep-central-card-name">${escapeHtml(name)}</span>
+        <span class="prep-central-card-meta">${escapeHtml(t('item_src_' + item.src))} · ${escapeHtml(t('item_kind_' + kind))}<span class="prep-central-item-roll"> #${item.roll}</span></span>
+      </div>
+    </div>`;
+}
+
 function centralItemListHtml(session) {
   if (!session.items.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_items'))}</p>`;
-  return session.items.map(entry => {
+  const cards = session.items.map(entry => {
     const item = itemById(entry.id);
-    if (!item) return '';
-    return centralQtyRowHtml({ id: entry.id, name: itemField(item, 'name'), qty: entry.quantity, thumb: prepItemThumbHtml(item), kind: 'item' });
+    return item ? centralItemCardHtml(entry.id, item) : '';
   }).join('');
+  return `<div class="prep-central-item-grid">${cards}</div>`;
 }
 
 function refreshCentralItems() {
@@ -3602,14 +3621,6 @@ function adjustAdversaryQty(id, delta) {
   refreshCentralAdversaries();
 }
 
-function adjustItemQty(id, delta) {
-  const { result } = updateSessionPrepSession(session => Object.assign({}, session, {
-    items: delta > 0 ? SessionPrepUtils.incrementEntry(session.items, id) : SessionPrepUtils.decrementEntry(session.items, id),
-  }));
-  updateSaveStatusDisplay(result);
-  refreshCentralItems();
-}
-
 /* ---------------- catalogue load failure + retry ---------------- */
 
 function retrySessionPrepCatalog() {
@@ -3707,10 +3718,6 @@ function bindSessionPrepDelegation(el) {
     const openItem = e.target.closest('[data-sp-open-item]');
     if (openItem) { openItemDetail(openItem.dataset.spOpenItem); return; }
 
-    const incItem = e.target.closest('[data-sp-inc-item]');
-    if (incItem) { adjustItemQty(incItem.dataset.spIncItem, 1); return; }
-    const decItem = e.target.closest('[data-sp-dec-item]');
-    if (decItem) { adjustItemQty(decItem.dataset.spDecItem, -1); return; }
     const removeItem = e.target.closest('[data-sp-remove-item]');
     if (removeItem) {
       const itemId = removeItem.dataset.spRemoveItem;
