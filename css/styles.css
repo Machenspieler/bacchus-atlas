@@ -2102,9 +2102,9 @@ body[data-route="session-prep"] #footer {
 
 /* ---- thumbnails: biome art (environments) or transparent-background PNG
    (adversaries/items), with a fallback that is never a broken-image icon ---- */
-.prep-thumb { flex: none; width: 32px; height: 32px; border-radius: var(--r-sm); object-fit: cover; }
+.prep-thumb { flex: none; width: 48px; height: 48px; border-radius: var(--r-sm); object-fit: cover; }
 .prep-adv-thumb, .prep-item-thumb {
-  flex: none; width: 40px; height: 40px; border-radius: var(--r-sm); padding: 5px;
+  flex: none; width: 60px; height: 60px; border-radius: var(--r-sm); padding: 7.5px;
   overflow: hidden; background: radial-gradient(circle at 50% 35%, rgba(217,164,65,0.14), transparent 70%), var(--ink-raised);
 }
 .prep-adv-thumb img, .prep-item-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }

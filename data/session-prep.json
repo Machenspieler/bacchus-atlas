@@ -1,7 +1,7 @@
 {
   "_note": "Session Prep MVP picker data — metadata only (id, bilingual name, optional image/roll/kind/source). No stat blocks, no long descriptions: adversary stat blocks live in FreshCutGrass/the printed book, and item descriptions live on the Daggerheart Loot Generator (linked via item_page_url). Adversary art is Bacchus's Atlas's own, mapped explicitly per id when a file exists under img/adversaries/art/session-prep/; an adversary with no image entry uses the designed inline SVG fallback. Item art loads from item_image_url at render time and is never copied into this repository.",
   "item_page_url": "https://artex-x.github.io/daggerheart-loot/i/{id}.html",
-  "item_image_url": "https://artex-x.github.io/daggerheart-loot/img/{image}",
+  "item_image_url": "https://artex-x.github.io/daggerheart-loot/img/thumb/{image}",
   "adversaries": [
     { "id": "acid-burrower", "name": { "en": "Acid Burrower", "ru": "Кислотный Землекоп" } },
     { "id": "ahuizotl", "name": { "en": "Ahuizotl", "ru": "" }, "image": "img/adversaries/art/session-prep/063_ahuizotl.png" },
