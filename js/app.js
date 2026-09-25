@@ -3140,7 +3140,6 @@ function itemsPanelHtml(session) {
                placeholder="${escapeAttr(t('prep_item_search'))}" value="${escapeAttr(state.sessionPrepUI.itemSearch)}">
       </div>
       <div class="prep-item-grid" id="prep-item-grid">${itemCardsHtml(session)}</div>
-      <p class="prep-item-source-note">${escapeHtml(t('prep_item_source_note'))}</p>
     </section>`;
 }
 

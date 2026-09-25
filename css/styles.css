@@ -1976,10 +1976,24 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
 
 /* A slightly wider shell for the three-column composition, same technique as
    the fixed-width .shell everywhere else — only this route's header/shell
-   are widened, nothing else. */
+   are widened, nothing else. Above 1440px there's no fixed-width card grid
+   to size against (unlike the catalog's .shell steps), so the cap is simply
+   dropped and the tool fills the monitor instead of leaving margins. */
 body[data-route="session-prep"] .shell,
 body[data-route="session-prep"] .header-inner {
   max-width: 1440px;
+}
+@media (min-width: 1440px) {
+  body[data-route="session-prep"] .shell,
+  body[data-route="session-prep"] .header-inner {
+    max-width: none;
+  }
+}
+
+/* The site footer belongs to the catalog/reading pages; Session Prep is a
+   dense working tool and the vertical space is worth more as table room. */
+body[data-route="session-prep"] #footer {
+  display: none;
 }
 
 .prep-wrap { grid-column: 1 / -1; margin-top: var(--s-6); display: flex; flex-direction: column; gap: var(--s-6); }
@@ -2174,7 +2188,6 @@ body[data-route="session-prep"] .header-inner {
 .prep-item-ext-link svg { width: 14px; height: 14px; }
 .prep-item-ext-link:hover, .prep-item-ext-link:focus-visible { color: var(--hope-soft); }
 .prep-item-meta { font-size: var(--fs-xs); color: var(--muted); }
-.prep-item-source-note { margin: 0; font-size: var(--fs-xs); color: var(--muted); font-style: italic; }
 
 /* ---- large screens (≥1200px, the three-column layout) only: the whole page
    fits in the viewport with no page-level scroll. Every ancestor from body
@@ -2189,8 +2202,7 @@ body[data-route="session-prep"] .header-inner {
     display: flex;
     flex-direction: column;
   }
-  body[data-route="session-prep"] .site-header,
-  body[data-route="session-prep"] #footer {
+  body[data-route="session-prep"] .site-header {
     flex: none;
   }
   body[data-route="session-prep"] #main {

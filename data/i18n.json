@@ -207,8 +207,7 @@
     "prep_open_item_external": "Open {name} on the Daggerheart Loot Generator (opens in a new tab)",
     "prep_catalog_load_error": "Session Prep data could not be loaded.",
     "prep_retry": "Try again",
-    "prep_results_count": "{n} of {total}",
-    "prep_item_source_note": "Item artwork and pages courtesy of the Daggerheart Loot Generator."
+    "prep_results_count": "{n} of {total}"
   },
   "ru": {
     "app_title": "Атлас Бахуса",
@@ -418,7 +417,6 @@
     "prep_open_item_external": "Открыть «{name}» в генераторе лута Daggerheart (откроется в новой вкладке)",
     "prep_catalog_load_error": "Не удалось загрузить данные подготовки сессии.",
     "prep_retry": "Повторить",
-    "prep_results_count": "{n} из {total}",
-    "prep_item_source_note": "Изображения и страницы предметов — из Daggerheart Loot Generator."
+    "prep_results_count": "{n} из {total}"
   }
 }
