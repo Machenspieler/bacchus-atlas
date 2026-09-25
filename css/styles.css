@@ -2078,7 +2078,7 @@ body[data-route="session-prep"] #footer {
    two checkboxes that are not already inside an .atl-row: the environment
    row's own checkbox and each item card's. */
 .prep-env-row input[type="checkbox"],
-.prep-item-select-wrap input[type="checkbox"] {
+.prep-item-drawer input[type="checkbox"] {
   appearance: none; -webkit-appearance: none;
   flex: none; width: 18px; height: 18px; margin: 0;
   border: 1px solid var(--line-strong); border-radius: var(--r-xs);
@@ -2088,11 +2088,14 @@ body[data-route="session-prep"] #footer {
 .prep-env-row:hover input[type="checkbox"],
 .prep-item-card:hover input[type="checkbox"] { border-color: var(--hope); }
 .prep-env-row input[type="checkbox"]:checked,
-.prep-item-select-wrap input[type="checkbox"]:checked { background: var(--hope); border-color: var(--hope); }
+.prep-item-drawer input[type="checkbox"]:checked { background: var(--hope); border-color: var(--hope); }
 .prep-env-row input[type="checkbox"]:checked::after,
-.prep-item-select-wrap input[type="checkbox"]:checked::after {
+.prep-item-drawer input[type="checkbox"]:checked::after {
   content: ""; position: absolute; left: 5px; top: 1px; width: 5px; height: 10px;
   border: solid var(--hope-ink); border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+.prep-item-drawer input[type="checkbox"]:focus-visible {
+  outline: var(--focus-ring); outline-offset: var(--focus-offset);
 }
 
 /* Adversary rows reuse .atl-row (same label-wraps-checkbox pattern already
@@ -2185,26 +2188,33 @@ body[data-route="session-prep"] #footer {
   display: flex; flex-direction: column; gap: var(--s-3);
   background: var(--ink-card); border: 1px solid var(--line-faint); border-radius: var(--r-md); padding: var(--s-4);
 }
-/* Icon-only tiles (no name/description — that lives behind the click-through
-   overlay, see openSessionPrepItemDetail()), so tracks size to content
-   instead of stretching cards wide like the old text-bearing card did. */
-.prep-item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, max-content)); gap: var(--s-3); }
+/* A single horizontal strip of icon-only tiles at every viewport width — no
+   name/description in the strip itself (that lives behind the click-through
+   overlay, openItemDetail()). Real interactive controls in source order,
+   never cloned for a fake infinite-carousel effect; native overflow gives
+   trackpad/shift-wheel/scrollbar-drag/touch-swipe scrolling for free, with
+   momentum scrolling opted into explicitly for iOS Safari. See "Session
+   Prep" in CLAUDE.md for the drawer/auto-pan interaction contract. */
+.prep-item-grid {
+  --sp-drawer-w: 36px;      /* desktop hover/focus-revealed drawer width */
+  --sp-drawer-w-touch: 44px; /* coarse-pointer minimum touch target */
+  display: flex; flex-wrap: nowrap; align-items: flex-start;
+  gap: var(--s-3); overflow-x: auto; -webkit-overflow-scrolling: touch;
+  padding-bottom: var(--s-2);
+  /* Reserves room for the *last* tile's drawer before it ever opens. A
+     middle tile's drawer growing on hover pushes later tiles over — no
+     clipping risk, scrollWidth just grows with it — but the last tile has
+     no later sibling to push, so without this the drawer would grow past
+     the end of the already-established scrollable area and get clipped at
+     the strip's right edge when it's already scrolled all the way over. */
+  padding-right: var(--sp-drawer-w-touch);
+}
 .prep-item-card {
-  position: relative; display: flex;
-  background: var(--ink-raised); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden;
+  position: relative; flex: none; display: flex; align-items: stretch;
+  background: var(--ink-raised); border: 1px solid var(--line); border-radius: var(--r-md);
   transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
 }
 .prep-item-card.is-selected { border-color: var(--hope); background: rgba(217,164,65,0.08); }
-/* The checkbox stays visually where it always was, but its clickable label
-   now spans the card's full height (set by the icon button next to it,
-   the row's tallest child, via the default flex cross-axis stretch) rather
-   than just the 18px square — a much easier target to hit or tap. */
-.prep-item-select-wrap {
-  flex: none; width: 34px; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; border-right: 1px solid var(--line-faint);
-  transition: background var(--t-fast) var(--ease-out);
-}
-.prep-item-select-wrap:hover { background: var(--ink-hover); }
 /* 75% larger than the shared 60px .prep-item-thumb/.prep-adv-thumb size used
    everywhere else (central list, adversary picker) — scoped to this button
    alone so those other icons are untouched. */
@@ -2218,6 +2228,43 @@ body[data-route="session-prep"] #footer {
 .prep-item-icon-btn .prep-item-thumb,
 .prep-item-icon-btn .prep-item-thumb.prep-thumb-fallback {
   width: 100%; height: 100%; padding: 13px;
+}
+/* The selection drawer: the icon button's sibling, placed after it in both
+   DOM and visual order. Collapsed to zero width at rest — so the resting
+   strip shows only square icons — and revealed by growing to the right of
+   the icon on hover/:focus-within. A real flex-item width change (rather
+   than an absolutely-positioned overlay) can never cover the icon or the
+   next tile: it pushes the next tile over by its own width instead, a
+   small, bounded change confined to the hovered/focused tile alone.
+   `overflow` flips to visible in the very same rule that starts the width
+   transition, so a keyboard focus ring inside is never clipped mid-animation
+   — the drawer only ever clips its content at rest, where it is genuinely
+   zero width. The label covers the drawer's full height (via the row's
+   default flex cross-axis stretch), so the empty space above and below the
+   checkbox is just as clickable as the checkbox itself. */
+.prep-item-drawer {
+  flex: none; width: 0; overflow: hidden; align-self: stretch;
+  display: flex; align-items: center; justify-content: center;
+  border-left: 1px solid transparent; border-top-right-radius: var(--r-md); border-bottom-right-radius: var(--r-md);
+  background: var(--ink-hover); cursor: pointer;
+  transition: width var(--t-base) var(--ease-out), border-color var(--t-base) var(--ease-out);
+}
+.prep-item-card:hover .prep-item-drawer,
+.prep-item-card:focus-within .prep-item-drawer {
+  width: var(--sp-drawer-w);
+  overflow: visible;
+  border-left-color: var(--line-faint);
+}
+/* Devices without reliable hover have no gesture to reveal the drawer with,
+   so it stays permanently visible there instead, at the wider touch-target
+   size — tapping the icon and tapping the drawer remain two separate
+   controls either way. */
+@media (hover: none), (pointer: coarse) {
+  .prep-item-drawer {
+    width: var(--sp-drawer-w-touch);
+    overflow: visible;
+    border-left-color: var(--line-faint);
+  }
 }
 
 /* ---- large screens (≥1200px, the three-column layout) only: the whole page
@@ -2295,17 +2342,6 @@ body[data-route="session-prep"] #footer {
     min-height: 0;
     max-height: none;
   }
-  /* The item catalogue scrolls sideways in one row instead of wrapping into
-     more rows than the viewport has height for. */
-  body[data-route="session-prep"] .prep-item-grid {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: var(--s-2);
-  }
-  body[data-route="session-prep"] .prep-item-card {
-    flex: 0 0 auto;
-  }
 }
 
 /* ---- responsive: 900-1199px puts the central panel first and full width,
@@ -2330,10 +2366,9 @@ body[data-route="session-prep"] #footer {
     width: 44px; height: 44px;
   }
   .prep-env-row input[type="checkbox"],
-  .prep-item-select-wrap input[type="checkbox"] { width: 22px; height: 22px; }
+  .prep-item-drawer input[type="checkbox"] { width: 22px; height: 22px; }
   .prep-env-row input[type="checkbox"]:checked::after,
-  .prep-item-select-wrap input[type="checkbox"]:checked::after { left: 6px; top: 2px; width: 6px; height: 12px; }
-  .prep-item-select-wrap { width: 44px; }
+  .prep-item-drawer input[type="checkbox"]:checked::after { left: 6px; top: 2px; width: 6px; height: 12px; }
   .prep-session-header { align-items: stretch; }
 }
 

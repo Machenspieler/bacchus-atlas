@@ -502,16 +502,80 @@ order) rather than standing up a second application root.
   (`bindSessionPrepDelegation()`); the search inputs and the title input are
   rebound on every full render instead (`bindSessionPrepSearchAndTitle()`),
   since those elements themselves are recreated then.
-- **Item picker cards are icon-only** (`itemCardHtml()`): a checkbox on the
-  left (its clickable `<label>` spans the card's full height, not just the
-  18px box) and a `.prep-item-icon-btn` — 75% larger than the shared
+- **Item picker is a horizontal icon strip with a hover/focus drawer**
+  (`itemCardHtml()`, `#prep-item-grid`/`.prep-item-grid`): one row of square
+  `.prep-item-icon-btn` tiles — 75% larger than the shared
   `.prep-item-thumb`/`.prep-adv-thumb` size used everywhere else, scoped so
-  those other icons are untouched. No name or description on the card; a
-  `data-tip` tooltip on the icon covers that (name, kind, source, roll
-  number), and clicking the icon calls the main Items page's own
-  `openItemDetail()` directly — since the item lives in the same catalog,
-  Session Prep needs no item-detail overlay code of its own, just a click
-  handler that hands the id to it.
+  those other icons are untouched — at every viewport width, using native
+  `overflow-x` (trackpad, shift+wheel, scrollbar drag, and touch swipe all
+  keep working for free; no cloned elements, no looping CSS marquee). At
+  rest a tile shows only its icon: no name, description, or checkbox is
+  permanently visible. Each icon button's `data-tip` tooltip (the existing
+  global controller, not a second implementation) carries what the card used
+  to show inline — name, kind, source, roll number — and clicking the icon
+  still calls the main Items page's own `openItemDetail()` directly, exactly
+  as before; Session Prep still has no item-detail overlay code of its own.
+  A `.prep-item-drawer` — the icon button's sibling, after it in both DOM and
+  visual order — wraps the actual selection checkbox in a full-height
+  `<label>` and sits collapsed at zero width until the tile is hovered or
+  gains `:focus-within`, when it grows to `--sp-drawer-w` (36px) on the
+  icon's right, revealing a separated surface without ever covering the icon
+  or overlapping the next tile (a real flex-item width change pushes later
+  tiles over by that same bounded amount, rather than an absolutely
+  positioned overlay risking either). `overflow` on the drawer flips from
+  `hidden` to `visible` in the very same rule that starts that width
+  transition, so a keyboard focus ring inside is never clipped mid-animation
+  — only ever hidden at rest, where the drawer is genuinely zero width. The
+  grid reserves `--sp-drawer-w-touch` (44px) of trailing padding so the
+  *last* tile's drawer — which has no later sibling to push — never grows
+  past the edge of the already-established scrollable area and gets clipped
+  there. On a coarse/no-hover pointer the drawer instead stays permanently
+  visible at that same 44px touch-target width (`@media (hover: none),
+  (pointer: coarse)`), so tapping the icon and tapping the drawer remain two
+  separate controls without needing a hover gesture. The checkbox's own
+  aria-label states what it currently does ("Add …"/"Remove …", not just the
+  item's name) and is kept in sync wherever its checked state changes
+  without a full grid rebuild — `updateItemCheckboxLabel()`, called from
+  both the toggle-change and remove-centrally handlers in
+  `bindSessionPrepDelegation()`.
+- **Idle auto-pan** nudges the strip slowly back and forth (ping-pong) as a
+  discovery hint once nothing has happened for `SESSION_PREP_ITEM_IDLE_MS`
+  (15000ms), at `SESSION_PREP_ITEM_SCROLL_SPEED` (12px/s) — a desktop,
+  mouse-driven affordance only. `SessionPrepUtils.computeAutoPanStep()` is
+  the pure, independently-tested boundary math (where `scrollLeft` ends up,
+  when direction flips, clamped so even a huge elapsed time can't overshoot
+  a boundary — see `tests/session-prep-utils.test.js`); everything else is
+  DOM wiring in js/app.js, behind one controller instance in
+  `itemStripState`. `initSessionPrepItemStrip()`/`destroySessionPrepItemStrip()`
+  are the only two functions that touch that variable, called from
+  `renderSessionPrepPage()` (which owns creating and recreating it, since a
+  full render — route entry, a language switch, a successful catalogue
+  retry — always destroys and recreates `#prep-item-grid` itself) and from
+  `render()` (which tears it down when navigating to any other route).
+  `refreshItemGrid()` calls `refreshSessionPrepItemStrip()` after every
+  filter pass to re-clamp `scrollLeft`/direction against the current
+  `scrollWidth`/`clientWidth` and stop or (after the normal idle delay)
+  re-arm auto-pan as overflow disappears or reappears; a `ResizeObserver` on
+  the strip and a `window` resize listener call the same function for window
+  resizes and other layout changes. `sessionPrepAutoPanAllowed()` is the one
+  gate checked before starting a run and on every frame of one — route,
+  `document.hidden`, an open overlay (`overlayStack.length`),
+  `prefers-reduced-motion`, `(hover: none), (pointer: coarse)`,
+  `IntersectionObserver` viewport visibility, `:hover` on the strip itself,
+  and focus inside the strip or any editable control — so a change mid-run
+  (an overlay opening, the tab backgrounding, focus moving in) halts it
+  immediately rather than only at the next idle cycle. The animation itself
+  tracks its own float accumulator (`s.scrollLeftFloat`, re-synced from the
+  real `scrollLeft` whenever a run starts) rather than reading `scrollLeft`
+  back each frame — at 12px/s a single frame's advance is well under a
+  pixel, and `scrollLeft` always reads back a rounded integer, so relying on
+  it directly would round every frame's progress away and never move at
+  all. `requestAnimationFrame`'s own timestamp resets to `null` on every
+  stop, so resuming (including after a backgrounded tab) always measures a
+  fresh near-zero elapsed time instead of the real wall-clock gap. An idle
+  countdown that fires while auto-pan still isn't allowed simply reschedules
+  itself rather than giving up, so there is no dependency on catching the
+  exact moment the pointer leaves or focus moves away.
 - **Standalone `openItemDetail()` opens and language switching.** That
   overlay's own staleness fix (`applyDetailRoute()`'s "restack" of
   `openItemId` in the new language) only fires when the card sits on top of

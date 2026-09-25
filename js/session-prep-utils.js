@@ -27,6 +27,7 @@
   var MAX_QUANTITY = 99;
   var SCHEMA_VERSION = 1;
   var DEFAULT_SESSION_ID = 'default';
+  var ITEM_STRIP_INITIAL_DIRECTION = 1;
 
   /* ---------------- default shape ---------------- */
 
@@ -174,6 +175,43 @@
     return list.reduce(function (sum, e) { return sum + (Number(e.quantity) || 0); }, 0);
   }
 
+  /* ---------------- item strip auto-pan boundary math ---------------- */
+
+  /** One frame of the Session Prep item strip's idle auto-pan: advances
+   * `scrollLeft` by `speedPxPerSec * elapsedMs` in `direction` (1 = toward
+   * increasing scrollLeft, -1 = toward zero), reversing direction and
+   * clamping exactly at either boundary rather than overshooting past it —
+   * so even a huge `elapsedMs` (e.g. a tab that was backgrounded, or a
+   * caller that forgot to reset its timestamp) lands on the boundary and
+   * flips direction instead of scrolling out of range. Pure function of its
+   * inputs — no DOM, no timers — so the DOM controller in js/app.js
+   * (initSessionPrepItemStrip() et al.) can drive a real element's
+   * scrollLeft from its result without this file ever touching the page.
+   * Returns `{ scrollLeft: 0, direction: ITEM_STRIP_INITIAL_DIRECTION }`,
+   * i.e. no movement, when the strip has no horizontal overflow to pan. */
+  function computeAutoPanStep(params) {
+    var scrollWidth = params.scrollWidth || 0;
+    var clientWidth = params.clientWidth || 0;
+    var max = Math.max(0, scrollWidth - clientWidth);
+    if (max <= 0) return { scrollLeft: 0, direction: ITEM_STRIP_INITIAL_DIRECTION };
+
+    var direction = params.direction === -1 ? -1 : 1;
+    var current = Math.min(max, Math.max(0, params.scrollLeft || 0));
+    var elapsedMs = Math.max(0, params.elapsedMs || 0);
+    var speed = Math.max(0, params.speedPxPerSec || 0);
+    var distance = (speed * elapsedMs) / 1000;
+
+    var next = current + direction * distance;
+    if (next >= max) {
+      next = max;
+      direction = -1;
+    } else if (next <= 0) {
+      next = 0;
+      direction = 1;
+    }
+    return { scrollLeft: next, direction: direction };
+  }
+
   /* ---------------- search ---------------- */
 
   function normalizeSearchText(value) {
@@ -227,6 +265,8 @@
     MAX_QUANTITY: MAX_QUANTITY,
     SCHEMA_VERSION: SCHEMA_VERSION,
     DEFAULT_SESSION_ID: DEFAULT_SESSION_ID,
+    ITEM_STRIP_INITIAL_DIRECTION: ITEM_STRIP_INITIAL_DIRECTION,
+    computeAutoPanStep: computeAutoPanStep,
     createDefaultSession: createDefaultSession,
     createDefaultStore: createDefaultStore,
     getActiveSession: getActiveSession,

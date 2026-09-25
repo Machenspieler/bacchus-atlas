@@ -1348,6 +1348,10 @@ function render() {
   document.body.dataset.route = state.route.name;
   document.title = routeTitle();
   renderHeader();
+  // renderSessionPrepPage() owns creating/destroying the item strip
+  // controller for its own re-renders; this is the one place that tears it
+  // down when navigating to any *other* route.
+  if (state.route.name !== 'session-prep') destroySessionPrepItemStrip();
   if (state.route.name === 'lists') {
     renderListsHome();
   } else if (state.route.name === 'journey') {
@@ -2963,6 +2967,18 @@ function syncPickerCheckbox(attr, id, checked) {
   if (cb) cb.checked = checked;
 }
 
+/** The item picker's checkbox describes what it currently *does* ("Add …" /
+ * "Remove …"), not just the item's name, so it has to be refreshed wherever
+ * the checked state changes without a full grid rebuild — see
+ * itemToggleLabel() and its call sites in bindSessionPrepDelegation(). */
+function updateItemCheckboxLabel(itemId, checked) {
+  const cb = document.querySelector(`[data-sp-toggle-item="${escapeSelectorAttrValue(itemId)}"]`);
+  if (!cb) return;
+  const item = itemById(itemId);
+  if (!item) return;
+  cb.setAttribute('aria-label', itemToggleLabel(itemField(item, 'name'), checked));
+}
+
 /* ---------------- environments picker ---------------- */
 
 function prepFilteredEnvs() {
@@ -3113,25 +3129,40 @@ function prepItemThumbHtml(item) {
   return `<span class="prep-item-thumb"><img src="${escapeAttr(url)}" alt="" loading="lazy" decoding="async" data-item-thumb-img></span>`;
 }
 
+/** Localized label for the drawer's checkbox, reflecting what the action
+ * currently does ("Add …"/"Remove …") rather than a static name — kept in
+ * sync with the checkbox's own `checked` state everywhere that state can
+ * change without a full grid rebuild (see updateItemCheckboxLabel() below). */
+function itemToggleLabel(name, checked) {
+  return t(checked ? 'prep_remove_item_from_selected' : 'prep_add_item_to_selected').replace('{name}', name);
+}
+
 /* Item metadata (name, kind, source, roll, image, description) all live in
  * data/items.json — see itemById()/itemField() near the top of the file —
  * so this card is just a thin picker skin over that catalog. Clicking the
  * icon opens the very same openItemDetail() overlay the main Items page
- * uses; Session Prep keeps no item-detail code of its own. */
+ * uses; Session Prep keeps no item-detail code of its own.
+ *
+ * The icon button comes before the selection drawer in both DOM and visual
+ * order (a plain flex row: the drawer is the button's next sibling, hidden
+ * at zero width until hovered/focused — see .prep-item-drawer in
+ * css/styles.css), so Tab visits "open details" before "add/remove" and the
+ * drawer never has to be positioned to "look" like it's after the icon. */
 function itemCardHtml(item, session) {
   const checked = session.items.some(e => e.id === item.id);
   const name = itemField(item, 'name');
   const kind = item.kind === 'consumable' ? 'consumable' : 'item';
-  const tip = `${name} — ${t('item_kind_' + kind)} · ${t('item_src_' + item.src)} · #${item.roll}`;
+  const tip = `${name} · ${t('item_kind_' + kind)} · ${t('item_src_' + item.src)} · #${item.roll}`;
   return `
     <div class="prep-item-card${checked ? ' is-selected' : ''}" data-item-id="${escapeAttr(item.id)}">
-      <label class="prep-item-select-wrap">
-        <input type="checkbox" data-sp-toggle-item="${escapeAttr(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeAttr(name)}">
-      </label>
       <button type="button" class="prep-item-icon-btn" data-sp-open-item="${escapeAttr(item.id)}"
               data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(t('prep_open_item_detail').replace('{name}', name))}">
         ${prepItemThumbHtml(item)}
       </button>
+      <label class="prep-item-drawer">
+        <input type="checkbox" data-sp-toggle-item="${escapeAttr(item.id)}" ${checked ? 'checked' : ''}
+               aria-label="${escapeAttr(itemToggleLabel(name, checked))}">
+      </label>
     </div>`;
 }
 
@@ -3162,6 +3193,199 @@ function refreshItemGrid() {
   if (grid) grid.innerHTML = itemCardsHtml(session);
   const count = document.getElementById('prep-item-total-count');
   if (count) count.textContent = itemCountText();
+  refreshSessionPrepItemStrip();
+}
+
+/* ---------------- item strip idle auto-pan ----------------
+ *
+ * After SESSION_PREP_ITEM_IDLE_MS of no activity, the item strip drifts
+ * slowly toward its far end and back (ping-pong) at
+ * SESSION_PREP_ITEM_SCROLL_SPEED px/s, as a discovery hint that there is
+ * more to scroll to — purely a desktop, mouse-driven affordance (see
+ * sessionPrepAutoPanAllowed() below for every condition that disables it,
+ * including reduced motion and coarse/no-hover pointers).
+ *
+ * One controller instance lives in `itemStripState`, created by
+ * initSessionPrepItemStrip() and torn down by destroySessionPrepItemStrip()
+ * — the only two functions here that touch that variable — so there is
+ * never more than one requestAnimationFrame loop or one set of document
+ * listeners at a time, across language switches, full re-renders, catalogue
+ * retries, and navigating away from and back to Session Prep. The boundary
+ * math itself (where scrollLeft ends up, when direction flips) is the pure,
+ * independently-tested SessionPrepUtils.computeAutoPanStep(); everything
+ * here is just DOM wiring around it. */
+const SESSION_PREP_ITEM_IDLE_MS = 15000;
+const SESSION_PREP_ITEM_SCROLL_SPEED = 12; // px/s
+const SESSION_PREP_ITEM_ACTIVITY_EVENTS = ['pointermove', 'pointerdown', 'wheel', 'touchstart', 'touchmove', 'keydown', 'input', 'change', 'focusin'];
+
+let itemStripState = null;
+
+function isSessionPrepEditableFocused(activeEl) {
+  if (!activeEl) return false;
+  const tag = activeEl.tagName;
+  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || activeEl.isContentEditable === true;
+}
+
+/** Every condition that must hold for the strip to be allowed to animate
+ * right now — checked both before starting a run and on every frame of one,
+ * so a change mid-animation (an overlay opening, the tab going to the
+ * background, focus moving into the strip) halts it immediately rather than
+ * only at the next idle cycle. */
+function sessionPrepAutoPanAllowed(s) {
+  if (!s || !s.el || !s.el.isConnected) return false;
+  if (state.route.name !== 'session-prep') return false;
+  if (document.hidden) return false;
+  if (overlayStack.length) return false;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+  if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return false;
+  if (s.isIntersecting === false) return false;
+  if (s.el.matches(':hover')) return false;
+  const activeEl = document.activeElement;
+  if (activeEl && s.el.contains(activeEl)) return false;
+  if (isSessionPrepEditableFocused(activeEl)) return false;
+  return s.el.scrollWidth - s.el.clientWidth > 0;
+}
+
+function stopSessionPrepItemStripAnimation(s) {
+  if (s.rafId != null) cancelAnimationFrame(s.rafId);
+  s.rafId = null;
+  s.running = false;
+  // Reset so the next run's first frame measures a fresh elapsed time of
+  // ~0, instead of the wall-clock gap since the last frame — that gap can be
+  // huge (an idle pause, or a tab that spent minutes in the background),
+  // and computeAutoPanStep() would otherwise read it as a real elapsed time.
+  s.lastFrameTime = null;
+}
+
+/* At SESSION_PREP_ITEM_SCROLL_SPEED (12px/s) a single ~16ms frame only
+ * advances a fraction of a pixel. `scrollLeft` itself always reads back a
+ * rounded integer, so accumulating position by reading `s.el.scrollLeft`
+ * back every frame would round each frame's fractional progress away and
+ * the strip would never move at all. `s.scrollLeftFloat` is the actual,
+ * unrounded accumulator driving the animation; only the value assigned to
+ * `s.el.scrollLeft` (for painting) gets rounded. */
+function tickSessionPrepItemStrip(s, timestamp) {
+  if (itemStripState !== s) return; // this controller was torn down mid-flight
+  if (!sessionPrepAutoPanAllowed(s)) { stopSessionPrepItemStripAnimation(s); return; }
+  if (s.lastFrameTime == null) s.lastFrameTime = timestamp;
+  const elapsedMs = timestamp - s.lastFrameTime;
+  s.lastFrameTime = timestamp;
+  const result = SessionPrepUtils.computeAutoPanStep({
+    scrollLeft: s.scrollLeftFloat,
+    direction: s.direction,
+    scrollWidth: s.el.scrollWidth,
+    clientWidth: s.el.clientWidth,
+    elapsedMs,
+    speedPxPerSec: SESSION_PREP_ITEM_SCROLL_SPEED,
+  });
+  s.direction = result.direction;
+  s.scrollLeftFloat = result.scrollLeft;
+  s.el.scrollLeft = Math.round(result.scrollLeft);
+  s.rafId = requestAnimationFrame(ts => tickSessionPrepItemStrip(s, ts));
+}
+
+function startSessionPrepItemStripAnimation(s) {
+  if (s.running || !sessionPrepAutoPanAllowed(s)) return;
+  s.running = true;
+  s.lastFrameTime = null;
+  // Re-synced from the real (possibly manually-scrolled) position every time
+  // a run starts, so the float accumulator never drifts from what the
+  // reader actually sees.
+  s.scrollLeftFloat = s.el.scrollLeft;
+  s.rafId = requestAnimationFrame(ts => tickSessionPrepItemStrip(s, ts));
+}
+
+/** Stops any run in progress (preserving the current scrollLeft) and arms a
+ * fresh SESSION_PREP_ITEM_IDLE_MS countdown. Any of the activity events in
+ * SESSION_PREP_ITEM_ACTIVITY_EVENTS calls this, so real user activity always
+ * both interrupts a run and restarts the full idle delay. If the countdown
+ * fires while auto-pan still isn't allowed (pointer or focus still inside
+ * the strip, an overlay still open, …), it simply reschedules itself rather
+ * than giving up — self-healing without needing a precise "the pointer just
+ * left" event of its own. */
+function scheduleSessionPrepItemStripIdle(s) {
+  if (!s) return;
+  stopSessionPrepItemStripAnimation(s);
+  clearTimeout(s.idleTimer);
+  s.idleTimer = setTimeout(() => {
+    s.idleTimer = null;
+    if (sessionPrepAutoPanAllowed(s)) startSessionPrepItemStripAnimation(s);
+    else scheduleSessionPrepItemStripIdle(s);
+  }, SESSION_PREP_ITEM_IDLE_MS);
+}
+
+/** Re-measures scrollWidth/clientWidth after anything that can change them
+ * (item search filtering, window resizing, a responsive layout change) —
+ * clamping scrollLeft and the current direction back into range, stopping
+ * auto-pan entirely if the strip no longer overflows, and arming it again
+ * (after the normal idle delay) if it now does. Called by refreshItemGrid()
+ * directly, and by this controller's own ResizeObserver/window resize
+ * listener. */
+function refreshSessionPrepItemStrip() {
+  const s = itemStripState;
+  if (!s || !s.el) return;
+  const max = Math.max(0, s.el.scrollWidth - s.el.clientWidth);
+  if (s.el.scrollLeft > max) s.el.scrollLeft = max;
+  if (s.direction === 1 && s.el.scrollLeft >= max) s.direction = -1;
+  else if (s.direction === -1 && s.el.scrollLeft <= 0) s.direction = 1;
+  if (max <= 0) {
+    stopSessionPrepItemStripAnimation(s);
+    clearTimeout(s.idleTimer);
+    s.idleTimer = null;
+  } else if (!s.running && !s.idleTimer) {
+    scheduleSessionPrepItemStripIdle(s);
+  }
+}
+
+/** Builds the one controller instance for #prep-item-grid. Safe to call any
+ * number of times — it always tears down a previous instance first — but
+ * renderSessionPrepPage() is the only call site, since that's the only place
+ * the element itself is (re)created. */
+function initSessionPrepItemStrip() {
+  destroySessionPrepItemStrip();
+  const el = document.getElementById('prep-item-grid');
+  if (!el) return;
+
+  const s = { el, direction: SessionPrepUtils.ITEM_STRIP_INITIAL_DIRECTION, rafId: null, idleTimer: null, lastFrameTime: null, scrollLeftFloat: el.scrollLeft, running: false, isIntersecting: true };
+  s.onActivity = () => scheduleSessionPrepItemStripIdle(s);
+  s.onVisibilityChange = () => { if (document.hidden) stopSessionPrepItemStripAnimation(s); else scheduleSessionPrepItemStripIdle(s); };
+  s.onResize = () => refreshSessionPrepItemStrip();
+
+  SESSION_PREP_ITEM_ACTIVITY_EVENTS.forEach(type => document.addEventListener(type, s.onActivity, { passive: true }));
+  document.addEventListener('visibilitychange', s.onVisibilityChange);
+  window.addEventListener('resize', s.onResize);
+
+  if (typeof ResizeObserver !== 'undefined') {
+    s.ro = new ResizeObserver(() => refreshSessionPrepItemStrip());
+    s.ro.observe(el);
+  }
+  if (typeof IntersectionObserver !== 'undefined') {
+    s.io = new IntersectionObserver(entries => {
+      s.isIntersecting = entries[entries.length - 1].isIntersecting;
+      if (!s.isIntersecting) stopSessionPrepItemStripAnimation(s);
+    }, { threshold: 0 });
+    s.io.observe(el);
+  }
+
+  itemStripState = s;
+  scheduleSessionPrepItemStripIdle(s);
+}
+
+/** Cancels the animation frame and idle timer, disconnects the observers,
+ * and removes every document/window listener this controller added —
+ * called before every (re)init, and whenever render() leaves the
+ * session-prep route, so nothing from this controller outlives its page. */
+function destroySessionPrepItemStrip() {
+  const s = itemStripState;
+  if (!s) return;
+  stopSessionPrepItemStripAnimation(s);
+  clearTimeout(s.idleTimer);
+  SESSION_PREP_ITEM_ACTIVITY_EVENTS.forEach(type => document.removeEventListener(type, s.onActivity));
+  document.removeEventListener('visibilitychange', s.onVisibilityChange);
+  window.removeEventListener('resize', s.onResize);
+  if (s.ro) s.ro.disconnect();
+  if (s.io) s.io.disconnect();
+  itemStripState = null;
 }
 
 /* ---------------- central preparation ---------------- */
@@ -3445,6 +3669,7 @@ function bindSessionPrepDelegation(el) {
       refreshCentralItems();
       const card = itemCb.closest('.prep-item-card');
       if (card) card.classList.toggle('is-selected', itemCb.checked);
+      updateItemCheckboxLabel(itemId, itemCb.checked);
     }
   });
 
@@ -3495,6 +3720,7 @@ function bindSessionPrepDelegation(el) {
       updateSaveStatusDisplay(result);
       refreshCentralItems();
       syncPickerCheckbox('data-sp-toggle-item', itemId, false);
+      updateItemCheckboxLabel(itemId, false);
       const card = document.querySelector(`.prep-item-card[data-item-id="${escapeSelectorAttrValue(itemId)}"]`);
       if (card) card.classList.remove('is-selected');
       return;
@@ -3524,7 +3750,14 @@ function bindSessionPrepDelegation(el) {
 
 /* ---------------- page render ---------------- */
 
+/* Every call rebuilds #grid-wrap's innerHTML from scratch (a full render()
+ * from the route entry, a language switch, or a successful catalogue
+ * retry), which destroys any existing #prep-item-grid element along with
+ * it — so the item strip controller is unconditionally torn down at the top
+ * and, on the success path, rebuilt from the freshly-created element at the
+ * end. This is the only place either happens. */
 function renderSessionPrepPage() {
+  destroySessionPrepItemStrip();
   document.getElementById('toolbar').innerHTML = '';
   document.getElementById('result-count').innerHTML = '';
   const el = document.getElementById('grid-wrap');
@@ -3551,6 +3784,7 @@ function renderSessionPrepPage() {
     </div>`;
   bindSessionPrepDelegation(el);
   bindSessionPrepSearchAndTitle();
+  initSessionPrepItemStrip();
 }
 
 /* ---------------- sources ---------------- */

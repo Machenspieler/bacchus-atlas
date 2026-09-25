@@ -317,3 +317,69 @@ test('toggleEntry does not mutate the input list', () => {
   SPU.toggleEntry(list, 'b');
   assert.equal(JSON.stringify(list), snapshot);
 });
+
+/* ---------------- item strip auto-pan boundary math ---------------- */
+
+function panParams(overrides = {}) {
+  return Object.assign({
+    scrollLeft: 0,
+    direction: SPU.ITEM_STRIP_INITIAL_DIRECTION,
+    scrollWidth: 1000,
+    clientWidth: 400,
+    elapsedMs: 1000,
+    speedPxPerSec: 12,
+  }, overrides);
+}
+
+test('the initial direction moves toward increasing scrollLeft', () => {
+  const result = SPU.computeAutoPanStep(panParams({ scrollLeft: 0, direction: SPU.ITEM_STRIP_INITIAL_DIRECTION }));
+  assert.ok(result.scrollLeft > 0);
+  assert.equal(result.direction, 1);
+});
+
+test('reaching the maximum scroll position reverses direction', () => {
+  // max = 1000 - 400 = 600; already at the edge, one more second of travel would overshoot.
+  const result = SPU.computeAutoPanStep(panParams({ scrollLeft: 600, direction: 1, elapsedMs: 1000 }));
+  assert.equal(result.scrollLeft, 600);
+  assert.equal(result.direction, -1);
+});
+
+test('reaching zero reverses direction', () => {
+  const result = SPU.computeAutoPanStep(panParams({ scrollLeft: 0, direction: -1, elapsedMs: 1000 }));
+  assert.equal(result.scrollLeft, 0);
+  assert.equal(result.direction, 1);
+});
+
+test('movement is clamped to the valid [0, max] range', () => {
+  const max = 600;
+  for (const start of [0, 300, 600]) {
+    for (const direction of [1, -1]) {
+      const result = SPU.computeAutoPanStep(panParams({ scrollLeft: start, direction, elapsedMs: 5000, speedPxPerSec: 12 }));
+      assert.ok(result.scrollLeft >= 0 && result.scrollLeft <= max);
+    }
+  }
+});
+
+test('no movement occurs when scrollWidth <= clientWidth (no overflow)', () => {
+  const result = SPU.computeAutoPanStep(panParams({ scrollWidth: 400, clientWidth: 400, scrollLeft: 0, direction: 1 }));
+  assert.equal(result.scrollLeft, 0);
+  assert.equal(result.direction, SPU.ITEM_STRIP_INITIAL_DIRECTION);
+  const resultOverflowLess = SPU.computeAutoPanStep(panParams({ scrollWidth: 300, clientWidth: 400 }));
+  assert.equal(resultOverflowLess.scrollLeft, 0);
+});
+
+test('a large elapsed time cannot move the strip beyond a boundary', () => {
+  const result = SPU.computeAutoPanStep(panParams({ scrollLeft: 100, direction: 1, elapsedMs: 10 * 60 * 1000, speedPxPerSec: 12 }));
+  assert.equal(result.scrollLeft, 600);
+  assert.equal(result.direction, -1);
+});
+
+test('direction remains valid after the maximum scroll position shrinks', () => {
+  // Was mid-strip heading right when a filter shrank the content so the
+  // previous scrollLeft now sits past the new (smaller) maximum.
+  const result = SPU.computeAutoPanStep(panParams({
+    scrollLeft: 500, direction: 1, scrollWidth: 700, clientWidth: 400, elapsedMs: 1000, speedPxPerSec: 12,
+  }));
+  assert.equal(result.scrollLeft, 300); // new max = 700 - 400
+  assert.equal(result.direction, -1);
+});

@@ -202,6 +202,8 @@
     "prep_decrement": "Decrease {name} quantity",
     "prep_remove_named": "Remove {name}",
     "prep_open_item_detail": "View {name} details",
+    "prep_add_item_to_selected": "Add {name} to selected items",
+    "prep_remove_item_from_selected": "Remove {name} from selected items",
     "prep_catalog_load_error": "Session Prep data could not be loaded.",
     "prep_retry": "Try again",
     "prep_results_count": "{n} of {total}"
@@ -409,6 +411,8 @@
     "prep_decrement": "Уменьшить количество: {name}",
     "prep_remove_named": "Убрать: {name}",
     "prep_open_item_detail": "Подробнее о «{name}»",
+    "prep_add_item_to_selected": "Добавить «{name}» в выбранные предметы",
+    "prep_remove_item_from_selected": "Удалить «{name}» из выбранных предметов",
     "prep_catalog_load_error": "Не удалось загрузить данные подготовки сессии.",
     "prep_retry": "Повторить",
     "prep_results_count": "{n} из {total}"
