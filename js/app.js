@@ -2966,7 +2966,8 @@ function syncPickerCheckbox(attr, id, checked) {
 /* ---------------- environments picker ---------------- */
 
 function prepFilteredEnvs() {
-  const filtered = SessionPrepUtils.filterEntries(allEnvs(), state.sessionPrepUI.envSearch, env => [env.name?.en, env.name?.ru]);
+  const filtered = SessionPrepUtils.filterEntries(allEnvs(), state.sessionPrepUI.envSearch,
+    env => SessionPrepUtils.environmentSearchFields(env, state.i18n.en, state.i18n.ru));
   const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
   return filtered.sort((a, b) => collator.compare(envName(a), envName(b)));
 }

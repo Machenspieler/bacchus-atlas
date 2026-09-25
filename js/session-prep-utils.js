@@ -177,7 +177,7 @@
   /* ---------------- search ---------------- */
 
   function normalizeSearchText(value) {
-    return String(value == null ? '' : value).toLowerCase().trim();
+    return String(value == null ? '' : value).toLowerCase().trim().replace(/\s+/g, ' ');
   }
 
   /** True when `query` is empty (matches everything) or is found as a
@@ -201,6 +201,24 @@
     var q = normalizeSearchText(query);
     if (!q) return entries.slice();
     return entries.filter(function (entry) { return matchesSearch(q, getFields(entry)); });
+  }
+
+  /** Searchable fields for one environment in the Session Prep picker: its
+   * bilingual name plus, for every biome id it carries, the raw biome id
+   * itself and its EN/RU localized label — read from the supplied i18n
+   * dictionaries' `biome_<id>` keys (both languages at once, regardless of
+   * which one is currently displayed), never a biome name hardcoded here.
+   * `i18nEn`/`i18nRu` are plain `{ key: value }` dictionaries, e.g.
+   * `state.i18n.en`/`state.i18n.ru` in js/app.js — this stays a pure
+   * function of its arguments, with no access to application state itself.
+   * See "Biome tagging" in CLAUDE.md for the fixed set of biome ids. */
+  function environmentSearchFields(env, i18nEn, i18nRu) {
+    var enDict = i18nEn || {};
+    var ruDict = i18nRu || {};
+    var biomeFields = (env.biomes || []).flatMap(function (id) {
+      return [id, enDict['biome_' + id], ruDict['biome_' + id]];
+    });
+    return [env.name && env.name.en, env.name && env.name.ru].concat(biomeFields);
   }
 
   return {
@@ -228,5 +246,6 @@
     normalizeSearchText: normalizeSearchText,
     matchesSearch: matchesSearch,
     filterEntries: filterEntries,
+    environmentSearchFields: environmentSearchFields,
   };
 });

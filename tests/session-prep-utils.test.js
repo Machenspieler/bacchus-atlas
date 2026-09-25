@@ -219,6 +219,79 @@ test('filterEntries returns every entry for an empty query', () => {
   assert.deepEqual(result.map(e => e.id), ['a', 'b']);
 });
 
+test('normalizeSearchText collapses repeated internal whitespace', () => {
+  assert.equal(SPU.normalizeSearchText('cave   ogre'), 'cave ogre');
+  assert.equal(SPU.normalizeSearchText('  forest\t\tbiome  '), 'forest biome');
+});
+
+/* ---------------- environment + biome search (Session Prep) ---------------- */
+
+const PREP_I18N_EN = {
+  biome_forest: 'Forest',
+  biome_settlement: 'Settlement',
+  biome_aquatic: 'Aquatic',
+};
+const PREP_I18N_RU = {
+  biome_forest: 'Лесное',
+  biome_settlement: 'Поселение',
+  biome_aquatic: 'Водное',
+};
+
+const PREP_ENVS = [
+  { id: 'moonlit-glade', name: { en: 'Moonlit Glade', ru: 'Лунная Поляна' }, biomes: ['forest'] },
+  { id: 'market-square', name: { en: 'Market Square', ru: 'Рыночная Площадь' }, biomes: ['settlement'] },
+  { id: 'sunken-reef', name: { en: 'Sunken Reef', ru: 'Затонувший Риф' }, biomes: ['aquatic', 'settlement'] },
+];
+
+function prepFields(env) {
+  return SPU.environmentSearchFields(env, PREP_I18N_EN, PREP_I18N_RU);
+}
+
+test('environmentSearchFields matches by English environment name', () => {
+  const result = SPU.filterEntries(PREP_ENVS, 'Moonlit', prepFields);
+  assert.deepEqual(result.map(e => e.id), ['moonlit-glade']);
+});
+
+test('environmentSearchFields matches by Russian environment name', () => {
+  const result = SPU.filterEntries(PREP_ENVS, 'Поляна', prepFields);
+  assert.deepEqual(result.map(e => e.id), ['moonlit-glade']);
+});
+
+test('environmentSearchFields matches by canonical biome key', () => {
+  const result = SPU.filterEntries(PREP_ENVS, 'forest', prepFields);
+  assert.deepEqual(result.map(e => e.id), ['moonlit-glade']);
+});
+
+test('environmentSearchFields matches by English biome label even when absent from the name', () => {
+  const result = SPU.filterEntries(PREP_ENVS, 'Settlement', prepFields);
+  assert.deepEqual(result.map(e => e.id).sort(), ['market-square', 'sunken-reef']);
+});
+
+test('environmentSearchFields matches by Russian biome label', () => {
+  const result = SPU.filterEntries(PREP_ENVS, 'поселение', prepFields);
+  assert.deepEqual(result.map(e => e.id).sort(), ['market-square', 'sunken-reef']);
+});
+
+test('environmentSearchFields matching is case-insensitive', () => {
+  const upper = SPU.filterEntries(PREP_ENVS, 'FOREST', prepFields);
+  const lower = SPU.filterEntries(PREP_ENVS, 'forest', prepFields);
+  assert.deepEqual(upper.map(e => e.id), lower.map(e => e.id));
+  assert.deepEqual(upper.map(e => e.id), ['moonlit-glade']);
+});
+
+test('an environment matching on more than one field is returned only once', () => {
+  // "settlement" matches both the raw biome id and its EN label for the same entries.
+  const result = SPU.filterEntries(PREP_ENVS, 'settlement', prepFields);
+  const ids = result.map(e => e.id);
+  assert.deepEqual(ids.sort(), ['market-square', 'sunken-reef']);
+  assert.equal(new Set(ids).size, ids.length);
+});
+
+test('an empty biome/name query returns the full environment catalogue', () => {
+  const result = SPU.filterEntries(PREP_ENVS, '', prepFields);
+  assert.deepEqual(result.map(e => e.id), PREP_ENVS.map(e => e.id));
+});
+
 /* ---------------- id-list normalization ---------------- */
 
 test('normalizeIdList drops duplicates while preserving first-seen order', () => {
