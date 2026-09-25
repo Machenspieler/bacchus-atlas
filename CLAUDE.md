@@ -436,30 +436,38 @@ the existing `#toolbar`/`#result-count`/`#grid-wrap` rendering architecture
 and header nav pattern (`Lists → Session Prep → Journeys → RU → EN` in DOM
 order) rather than standing up a second application root.
 
-- **Two data sources, deliberately not one.** The environment picker reads
-  the existing `allEnvs()` catalog (up to three selections, the first becomes
-  primary and can be reassigned via "Make primary"). Adversaries and items
-  come from `data/session-prep.json`, a small MVP-only picker catalog (17
-  adversaries, the 10 Core items) — never `data/adversaries.json` (full
-  featured-adversary stat blocks) or `data/items.json` (the complete item
-  encyclopedia). Loaded into `state.sessionPrepCatalog`, kept separate from
-  `state.adversaryCatalog`/`state.itemCatalog`.
-- **`data/session-prep.json` shape**: `{ item_page_url, item_image_url,
-  adversaries: [{ id, name: {en, ru}, image? }], items: [{ id, roll, kind,
-  source, name: {en, ru}, image }] }`. `item_page_url`/`item_image_url` are
-  `{id}`/`{image}` templates against the [Daggerheart Loot
-  Generator](https://artex-x.github.io/daggerheart-loot/) — item art and
-  detail pages are never copied into this repo, only linked/hotlinked at
-  render time. An adversary's optional `image` is a local repo-relative path
-  (currently under `img/adversaries/art/session-prep/`); only include one
-  when the file actually exists — never generate, download, or fabricate
-  adversary art. No image (or a runtime load failure, handled by the
-  delegated `error`-event listener in `bindSessionPrepDelegation()`) falls
-  back to a designed inline SVG silhouette, never a broken-image icon.
-  `scripts/validate-data.js`'s `validateSessionPrep()` enforces unique ids,
-  bilingual names, valid `kind`/`source`/`roll`, image path shape, that an
-  item's image filename agrees with its own id, and that a supplied local
-  adversary image path exists on disk.
+- **Three data sources for three different things.** The environment picker
+  reads the existing `allEnvs()` catalog (up to three selections, the first
+  becomes primary and can be reassigned via "Make primary"). Adversaries are
+  metadata-only picker entries from `data/session-prep.json` — never
+  `data/adversaries.json` (full featured-adversary stat blocks); a full stat
+  block belongs in FreshCutGrass/the printed book, not this picker. Items,
+  by contrast, are just **ids into `data/items.json`** (the same catalog the
+  main Items page uses) — Session Prep keeps no item metadata of its own, so
+  an item's name/description/kind/source/roll/image/artwork exist in exactly
+  one place in this repo no matter which page shows it. Loaded into
+  `state.sessionPrepCatalog` (`{ adversaries, itemIds, adversaryById }`);
+  `sessionPrepItems()` resolves `itemIds` against the shared `itemById()`
+  lookup at render time (`init()` loads `data/items.json` before
+  `data/session-prep.json` resolves anything, so this is never a race). An
+  id an item load failure (or a stale build) left dangling is dropped by
+  `sessionPrepItems()`'s `.filter(Boolean)` rather than rendered as a blank
+  card.
+- **`data/session-prep.json` shape**: `{ adversaries: [{ id, name: {en, ru},
+  image? }], items: [id, ...] }` — `items` is a plain array of item-catalog
+  ids (e.g. `["ci1", "ci2", ...]`), not objects. An adversary's optional
+  `image` is a local repo-relative path (currently under
+  `img/adversaries/art/session-prep/`); only include one when the file
+  actually exists — never generate, download, or fabricate adversary art. No
+  image (or a runtime load failure, handled by the delegated `error`-event
+  listener in `bindSessionPrepDelegation()`) falls back to a designed inline
+  SVG silhouette, never a broken-image icon.
+  `scripts/validate-data.js`'s `validateSessionPrep()` enforces unique
+  adversary ids, bilingual adversary names, that a supplied local adversary
+  image path exists on disk, and — the one cross-file check here — that
+  every item id is well-formed, unique, and actually exists in
+  `data/items.json` (checked against `validateItems()`'s own `itemIds`,
+  which runs first in `validateRepositoryData()`).
 - **Persistence**: `LS_KEYS.sessionPrep` (`dhcodex_session_prep`), loaded via
   `SafeStorage.loadStoredJson()` with the dedicated `SafeStorage.validators.
   sessionPrep` structural validator (mirrors `sanitizeRegionEntry`/
@@ -494,3 +502,23 @@ order) rather than standing up a second application root.
   (`bindSessionPrepDelegation()`); the search inputs and the title input are
   rebound on every full render instead (`bindSessionPrepSearchAndTitle()`),
   since those elements themselves are recreated then.
+- **Item picker cards are icon-only** (`itemCardHtml()`): a checkbox on the
+  left (its clickable `<label>` spans the card's full height, not just the
+  18px box) and a `.prep-item-icon-btn` — 75% larger than the shared
+  `.prep-item-thumb`/`.prep-adv-thumb` size used everywhere else, scoped so
+  those other icons are untouched. No name or description on the card; a
+  `data-tip` tooltip on the icon covers that (name, kind, source, roll
+  number), and clicking the icon calls the main Items page's own
+  `openItemDetail()` directly — since the item lives in the same catalog,
+  Session Prep needs no item-detail overlay code of its own, just a click
+  handler that hands the id to it.
+- **Standalone `openItemDetail()` opens and language switching.** That
+  overlay's own staleness fix (`applyDetailRoute()`'s "restack" of
+  `openItemId` in the new language) only fires when the card sits on top of
+  an environment detail overlay (`state.route.env`), because until Session
+  Prep every call site opened it that way. Opened standalone instead — no
+  environment overlay beneath it, as Session Prep's item picker now does —
+  it falls outside that path, so `setLang()` carries a second check
+  (`if (openItemId && openDetailId === null) { ...reopen quietly... }`)
+  for exactly that case, rather than Session Prep keeping a duplicate
+  `openItemId`/`closeOpenItemDetail` pair and rebuild call of its own.

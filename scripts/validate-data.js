@@ -783,18 +783,11 @@ function hasSupportedImageExtension(filename) {
   return SESSION_PREP_IMAGE_EXTENSIONS.some(ext => lower.endsWith(ext));
 }
 
-function validateSessionPrep(data, file, diagnostics, rootPath) {
+function validateSessionPrep(data, file, diagnostics, rootPath, validItemIds) {
   const reporter = createReporter(file, diagnostics);
-  const facts = { adversaryIds: new Set(), itemIds: new Set(), usedKinds: new Set(), usedSources: new Set() };
+  const facts = { adversaryIds: new Set() };
   if (!isPlainObject(data)) { reporter.error('$', `Top-level value must be an object, got ${describeType(data)}.`); return facts; }
   checkDangerousKeys(data, '$', reporter);
-
-  if (!isNonEmptyString(data.item_page_url) || !data.item_page_url.includes('{id}')) {
-    reporter.error('$.item_page_url', 'item_page_url must be a non-empty string containing "{id}".');
-  }
-  if (!isNonEmptyString(data.item_image_url) || !data.item_image_url.includes('{image}')) {
-    reporter.error('$.item_image_url', 'item_image_url must be a non-empty string containing "{image}".');
-  }
 
   /* ---- adversaries: picker metadata only (id, bilingual name, optional local image) ---- */
 
@@ -860,75 +853,29 @@ function validateSessionPrep(data, file, diagnostics, rootPath) {
     });
   }
 
-  /* ---- items: picker metadata only (id, roll, kind, source, bilingual name, image filename) ---- */
+  /* ---- items: no local metadata — just an ordered list of ids into
+     data/items.json, which is the one place name/description/kind/source/
+     roll/image live for any item. Only the reference itself is checked
+     here: well-formed, unique, and pointing at an item that actually
+     exists (cross-file, against validItemIds from validateItems()). ---- */
 
-  const itemNameOccurrences = new Map();
+  const seenItemIds = new Set();
   if (data.items === undefined) {
     reporter.error('$.items', 'items is required (may be an empty array).');
   } else if (!Array.isArray(data.items)) {
     reporter.error('$.items', `Must be an array, got ${describeType(data.items)}.`);
   } else {
-    data.items.forEach((item, i) => {
+    data.items.forEach((id, i) => {
       const p = `$.items[${i}]`;
-      if (!isPlainObject(item)) { reporter.error(p, `Item entry must be an object, got ${describeType(item)}.`); return; }
-      checkDangerousKeys(item, p, reporter);
-
-      const id = item.id;
-      let idLabel = `#${i}`;
       if (!isNonEmptyString(id) || !/^[a-z0-9]+$/.test(id)) {
-        reporter.error(`${p}.id`, `Item id must be a non-empty lowercase alphanumeric key (got ${JSON.stringify(id)}).`);
-      } else if (facts.itemIds.has(id)) {
-        reporter.error(`${p}.id`, `Duplicate item id "${id}".`, id);
-        idLabel = id;
-      } else {
-        facts.itemIds.add(id);
-        idLabel = id;
+        reporter.error(p, `Item id must be a non-empty lowercase alphanumeric string (got ${JSON.stringify(id)}).`);
+        return;
       }
-
-      if (!isFiniteInteger(item.roll) || item.roll < 1) {
-        reporter.error(`${p}.roll`, `Item "${idLabel}" has invalid roll ${JSON.stringify(item.roll)}; must be a positive integer.`, idLabel);
+      if (seenItemIds.has(id)) { reporter.error(p, `Duplicate item id "${id}".`, id); return; }
+      seenItemIds.add(id);
+      if (validItemIds && !validItemIds.has(id)) {
+        reporter.error(p, `Unknown item id "${id}" — not found in data/items.json.`, id);
       }
-
-      if (!isNonEmptyString(item.kind)) reporter.error(`${p}.kind`, `Item "${idLabel}" is missing a kind.`, idLabel);
-      else facts.usedKinds.add(item.kind);
-
-      if (!isNonEmptyString(item.source)) reporter.error(`${p}.source`, `Item "${idLabel}" is missing a source.`, idLabel);
-      else facts.usedSources.add(item.source);
-
-      if (item.name === undefined) {
-        reporter.error(`${p}.name`, `Item "${idLabel}" is missing a name.`, idLabel);
-      } else {
-        validateBilingualString(item.name, `${p}.name`, reporter, { requireEn: true });
-        if (isPlainObject(item.name) && isNonEmptyString(item.name.en)) {
-          const norm = normalizeDisplayName(item.name.en);
-          if (!itemNameOccurrences.has(norm)) itemNameOccurrences.set(norm, []);
-          itemNameOccurrences.get(norm).push({ id: idLabel, index: i, original: item.name.en });
-        }
-      }
-
-      if (!isNonEmptyString(item.image)) {
-        reporter.error(`${p}.image`, `Item "${idLabel}" is missing an image filename.`, idLabel);
-      } else if (item.image.includes('..') || item.image.includes('/') || item.image.includes('\\')) {
-        reporter.error(`${p}.image`, `Item "${idLabel}" image filename "${item.image}" must not contain path separators or "..".`, idLabel);
-      } else if (!hasSupportedImageExtension(item.image)) {
-        reporter.error(`${p}.image`, `Item "${idLabel}" image "${item.image}" must end in one of: ${SESSION_PREP_IMAGE_EXTENSIONS.join(', ')}.`, idLabel);
-      } else if (isNonEmptyString(id) && !item.image.toLowerCase().startsWith(id.toLowerCase())) {
-        reporter.error(`${p}.image`, `Item "${idLabel}" image filename "${item.image}" must start with its own id.`, idLabel);
-      }
-    });
-  }
-
-  for (const occurrences of itemNameOccurrences.values()) {
-    if (occurrences.length < 2) continue;
-    const [first, ...rest] = occurrences;
-    rest.forEach(occ => {
-      diagnostics.push({
-        severity: 'warning',
-        file,
-        path: `$.items[${occ.index}].name.en`,
-        message: `Normalized name "${occ.original}" is also used by item "${first.id}".`,
-        id: occ.id,
-      });
     });
   }
 
@@ -1289,8 +1236,8 @@ function validateRepositoryData(rootPath) {
     ? validateItems(loaded.items, FILES.items, diagnostics)
     : { itemIds: new Set(), usedKinds: new Set(), usedSrcs: new Set() };
   const sessionPrepFacts = loaded.sessionPrep !== null
-    ? validateSessionPrep(loaded.sessionPrep, FILES.sessionPrep, diagnostics, rootPath)
-    : { adversaryIds: new Set(), itemIds: new Set(), usedKinds: new Set(), usedSources: new Set() };
+    ? validateSessionPrep(loaded.sessionPrep, FILES.sessionPrep, diagnostics, rootPath, itemFacts.itemIds)
+    : { adversaryIds: new Set() };
   const journeyFacts = loaded.journey !== null
     ? validateJourney(loaded.journey, FILES.journey, diagnostics)
     : { usedBiomes: new Set() };
@@ -1324,10 +1271,11 @@ function validateRepositoryData(rootPath) {
     requireI18nKeysForUsedValues(advFacts.usedRoles, 'role', i18nFacts, diagnostics, v => `used as adversary role "${v}"`);
     requireI18nKeysForUsedValues(advFacts.usedRanges, 'range', i18nFacts, diagnostics, v => `used as attack range "${v}"`);
     requireI18nKeysForUsedValues(advFacts.usedDamageTypes, 'damage', i18nFacts, diagnostics, v => `used as damage type "${v}"`);
+    // Session Prep's items are just ids into data/items.json now, so every
+    // kind/src they could use is already covered by the itemFacts checks
+    // above — nothing session-prep-specific left to require here.
     requireI18nKeysForUsedValues(itemFacts.usedKinds, 'item_kind', i18nFacts, diagnostics, v => `used as item kind "${v}"`);
     requireI18nKeysForUsedValues(itemFacts.usedSrcs, 'item_src', i18nFacts, diagnostics, v => `used as item src "${v}"`);
-    requireI18nKeysForUsedValues(sessionPrepFacts.usedKinds, 'item_kind', i18nFacts, diagnostics, v => `used as data/session-prep.json item kind "${v}"`);
-    requireI18nKeysForUsedValues(sessionPrepFacts.usedSources, 'item_src', i18nFacts, diagnostics, v => `used as data/session-prep.json item source "${v}"`);
   }
 
   validateBiomeAssets(rootPath, envFacts.usedBiomes, diagnostics);

@@ -1,5 +1,5 @@
 {
-  "_note": "Item cards mirrored from the Daggerheart Loot generator (artex-x.github.io/daggerheart-loot). Names, descriptions and both translations come from its data.json; the artwork is loaded from there at display time. `aliases` maps the plant/item names as an environment stat block writes them to the catalogue entry they yield — a bullet whose text matches an alias, or an item name outright, becomes a link. Matching ignores case, punctuation and spacing.",
+  "_note": "Item cards mirrored from the Daggerheart Loot generator (artex-x.github.io/daggerheart-loot). Names, descriptions and both translations come from its data.json; the artwork is loaded from there at display time. `aliases` maps the plant/item names as an environment stat block writes them to the catalogue entry they yield — a bullet whose text matches an alias, or an item name outright, becomes a link. Matching ignores case, punctuation and spacing. This is also the one place item data lives for the app: Session Prep's item picker (data/session-prep.json) references entries here by id rather than keeping its own copy of the name/description/image.",
   "source": "https://artex-x.github.io/daggerheart-loot/",
   "item_url": "https://artex-x.github.io/daggerheart-loot/i/{id}.html",
   "image_url": "https://artex-x.github.io/daggerheart-loot/img/{img}",
@@ -86,6 +86,146 @@
       "ru": {
         "name": "Зелье Увеличения",
         "description": "Вы можете выпить это зелье, чтобы удвоить свой размер, пока не решите отказаться от этой формы или не наступит следующий отдых. В этой форме вы получаете бонус +2 к Силе и +1 к Мастерству."
+      }
+    },
+    "ci1": {
+      "kind": "item",
+      "src": "core",
+      "roll": 1,
+      "img": "ci1.webp",
+      "en": {
+        "name": "Premium Bedroll",
+        "description": "During downtime, you automatically clear a Stress."
+      },
+      "ru": {
+        "name": "Первоклассный Спальный Мешок",
+        "description": "Во время отдыха вы автоматически очищаете Стресс."
+      }
+    },
+    "ci2": {
+      "kind": "item",
+      "src": "core",
+      "roll": 2,
+      "img": "ci2.webp",
+      "en": {
+        "name": "Piper Whistle",
+        "description": "This handcrafted whistle has a distinctive sound. When you blow this whistle, its piercing tone can be heard within a 1-mile radius."
+      },
+      "ru": {
+        "name": "Пронзительная Свирель",
+        "description": "Эта свирель ручной работы имеет характерный звук. Когда вы дуете в этот свисток, его пронзительный звук слышен в радиусе 1 километра."
+      }
+    },
+    "ci3": {
+      "kind": "item",
+      "src": "core",
+      "roll": 3,
+      "img": "ci3.webp",
+      "en": {
+        "name": "Charging Quiver",
+        "description": "When you succeed on an attack with an arrow stored in this quiver, gain a bonus to the damage roll equal to your current tier."
+      },
+      "ru": {
+        "name": "Заряжающий Колчан",
+        "description": "Когда вы успешно наносите удар стрелой из этого колчана, получите бонус к Броску Урона, равный вашему текущему Рангу."
+      }
+    },
+    "ci4": {
+      "kind": "item",
+      "src": "core",
+      "roll": 4,
+      "img": "ci4.webp",
+      "en": {
+        "name": "Alistair's Torch",
+        "description": "You can light this magic torch at will. The flame's light fills a much larger space than it should, enough to illuminate a cave bright as day."
+      },
+      "ru": {
+        "name": "Факел Алистера",
+        "description": "Вы можете зажигать этот магический факел по желанию. Его пламя освещает гораздо большую область, чем должно, — достаточно, чтобы осветить пещеру, как при дневном свете."
+      }
+    },
+    "ci5": {
+      "kind": "item",
+      "src": "core",
+      "roll": 5,
+      "img": "ci5.webp",
+      "en": {
+        "name": "Speaking Orbs",
+        "description": "This pair of orbs allows any creatures holding them to communicate with each other across any distance."
+      },
+      "ru": {
+        "name": "Разговаривающие Сферы",
+        "description": "Эта пара сфер позволяет существам, которые держат их, общаться друг с другом на любом расстоянии."
+      }
+    },
+    "ci6": {
+      "kind": "item",
+      "src": "core",
+      "roll": 6,
+      "img": "ci6.webp",
+      "en": {
+        "name": "Manacles",
+        "description": "This pair of locking cuffs comes with a key."
+      },
+      "ru": {
+        "name": "Наручники",
+        "description": "Эта пара наручников с замком поставляется с ключом."
+      }
+    },
+    "ci7": {
+      "kind": "item",
+      "src": "core",
+      "roll": 7,
+      "img": "ci7.webp",
+      "en": {
+        "name": "Arcane Cloak",
+        "description": "A creature with a Spellcast trait wearing this cloak can adjust its color, texture, and size at will."
+      },
+      "ru": {
+        "name": "Мистический Плащ",
+        "description": "Существо с Характеристикой Заклинателя, носящее этот плащ, может изменять его цвет, текстуру и размер по своему желанию."
+      }
+    },
+    "ci8": {
+      "kind": "item",
+      "src": "core",
+      "roll": 8,
+      "img": "ci8.webp",
+      "en": {
+        "name": "Woven Net",
+        "description": "You can make a Finesse Roll using this net to trap a small creature. A trapped target can break free with a successful Attack Roll (16)."
+      },
+      "ru": {
+        "name": "Плетёная Сеть",
+        "description": "Вы можете совершить Бросок Искусности, используя эту сеть, чтобы поймать небольшое существо. Пойманная цель может освободиться, успешно совершив Бросок Атаки (16)."
+      }
+    },
+    "ci9": {
+      "kind": "item",
+      "src": "core",
+      "roll": 9,
+      "img": "ci9.webp",
+      "en": {
+        "name": "Fire Jar",
+        "description": "You can pour out the strange liquid contents of this jar to instantly produce fire. The contents regenerate when you take a long rest."
+      },
+      "ru": {
+        "name": "Банка с Огнём",
+        "description": "Вы можете вылить странную жидкость из этой банки, чтобы мгновенно разжечь огонь. Содержимое восстанавливается после продолжительного отдыха."
+      }
+    },
+    "ci10": {
+      "kind": "item",
+      "src": "core",
+      "roll": 10,
+      "img": "ci10.webp",
+      "en": {
+        "name": "Suspended Rod",
+        "description": "This flat rod is inscribed with runes. When you activate the rod, it is immediately suspended in place. Until the rod is deactivated, it can't move, doesn't abide by the rules of gravity, and remains in place."
+      },
+      "ru": {
+        "name": "Подвешенный Жезл",
+        "description": "Этот плоский жезл исписан рунами. Когда вы активируете жезл, он сразу же зависает на месте. До тех пор пока жезл не будет деактивирован, он не подчиняется законам гравитации и остаётся на месте."
       }
     },
     "di11": {

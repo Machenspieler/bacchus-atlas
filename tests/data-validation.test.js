@@ -423,18 +423,52 @@ test('a normalized item lookup collision between different ids fails', () => {
   assert.ok(errorsOf(result).some(d => /resolves to more than one item/.test(d.message)));
 });
 
+/* ---------------- 24a: items.json's own field validation ---------------- */
+/* Session Prep used to duplicate roll/kind/src validation for its own copy
+   of an item's fields; now that its items are just ids into this file (see
+   24b below), that coverage belongs here instead. */
+
+test('a missing item kind fails', () => {
+  const items = itemsFixtureBase();
+  delete items.items.w1.kind;
+  const dir = buildFixture({
+    items,
+    i18n: v => { v.en.item_src_core = 'Core'; v.ru.item_src_core = 'Базовая'; },
+  });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => d.path === '$.items.w1.kind'));
+});
+
+test('a missing item src fails', () => {
+  const items = itemsFixtureBase();
+  delete items.items.w1.src;
+  const dir = buildFixture({
+    items,
+    i18n: v => { v.en.item_kind_item = 'Item'; v.ru.item_kind_item = 'Предмет'; },
+  });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => d.path === '$.items.w1.src'));
+});
+
+test('an invalid item roll fails', () => {
+  const items = itemsFixtureBase();
+  items.items.w1.roll = 0;
+  const dir = buildFixture({
+    items,
+    i18n: v => { v.en.item_kind_item = 'Item'; v.ru.item_kind_item = 'Предмет'; v.en.item_src_core = 'Core'; v.ru.item_src_core = 'Базовая'; },
+  });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => /invalid roll/.test(d.message)));
+});
+
 /* ---------------- 24b: data/session-prep.json ---------------- */
 
 function sessionPrepFixtureBase() {
   return {
-    item_page_url: 'https://example.test/i/{id}.html',
-    item_image_url: 'https://example.test/img/{image}',
     adversaries: [
       { id: 'test-adversary', name: bi('Test Adversary', 'Тестовый противник') },
     ],
-    items: [
-      { id: 'ci1', roll: 1, kind: 'item', source: 'core', name: bi('Bedroll', 'Спальный мешок'), image: 'ci1.webp' },
-    ],
+    items: [],
   };
 }
 
@@ -444,7 +478,9 @@ function sessionPrepI18n(v) {
 }
 
 test('a valid session-prep fixture passes with zero errors', () => {
-  const dir = buildFixture({ sessionPrep: sessionPrepFixtureBase(), i18n: sessionPrepI18n });
+  const sp = sessionPrepFixtureBase();
+  sp.items = ['w1'];
+  const dir = buildFixture({ sessionPrep: sp, items: itemsFixtureBase(), i18n: sessionPrepI18n });
   const result = validateRepositoryData(dir);
   assert.equal(errorsOf(result).length, 0, messages(errorsOf(result)));
 });
@@ -459,10 +495,18 @@ test('duplicate session-prep adversary id fails', () => {
 
 test('duplicate session-prep item id fails', () => {
   const sp = sessionPrepFixtureBase();
-  sp.items.push({ id: 'ci1', roll: 2, kind: 'item', source: 'core', name: bi('Bedroll 2', 'Спальный мешок 2'), image: 'ci1-alt.webp' });
-  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
+  sp.items = ['w1', 'w1'];
+  const dir = buildFixture({ sessionPrep: sp, items: itemsFixtureBase(), i18n: sessionPrepI18n });
   const result = validateRepositoryData(dir);
   assert.ok(errorsOf(result).some(d => d.file === 'data/session-prep.json' && /Duplicate item id/.test(d.message)));
+});
+
+test('an unknown session-prep item id fails', () => {
+  const sp = sessionPrepFixtureBase();
+  sp.items = ['nosuchitem'];
+  const dir = buildFixture({ sessionPrep: sp, items: itemsFixtureBase(), i18n: sessionPrepI18n });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => d.file === 'data/session-prep.json' && /not found in data\/items\.json/.test(d.message)));
 });
 
 test('a malformed session-prep bilingual name fails', () => {
@@ -471,38 +515,6 @@ test('a malformed session-prep bilingual name fails', () => {
   const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
   const result = validateRepositoryData(dir);
   assert.ok(errorsOf(result).some(d => d.path === '$.adversaries[0].name'));
-});
-
-test('an invalid session-prep item roll fails', () => {
-  const sp = sessionPrepFixtureBase();
-  sp.items[0].roll = 0;
-  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
-  const result = validateRepositoryData(dir);
-  assert.ok(errorsOf(result).some(d => /invalid roll/.test(d.message)));
-});
-
-test('a missing session-prep item kind fails', () => {
-  const sp = sessionPrepFixtureBase();
-  delete sp.items[0].kind;
-  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
-  const result = validateRepositoryData(dir);
-  assert.ok(errorsOf(result).some(d => d.path === '$.items[0].kind'));
-});
-
-test('a missing session-prep item source fails', () => {
-  const sp = sessionPrepFixtureBase();
-  delete sp.items[0].source;
-  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
-  const result = validateRepositoryData(dir);
-  assert.ok(errorsOf(result).some(d => d.path === '$.items[0].source'));
-});
-
-test('a session-prep item image filename that disagrees with its id fails', () => {
-  const sp = sessionPrepFixtureBase();
-  sp.items[0].image = 'not-the-id.webp';
-  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
-  const result = validateRepositoryData(dir);
-  assert.ok(errorsOf(result).some(d => /must start with its own id/.test(d.message)));
 });
 
 test('a missing referenced local session-prep adversary image fails', () => {

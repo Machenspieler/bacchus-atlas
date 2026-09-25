@@ -1,7 +1,5 @@
 {
-  "_note": "Session Prep MVP picker data — metadata only (id, bilingual name, optional image/roll/kind/source). No stat blocks, no long descriptions: adversary stat blocks live in FreshCutGrass/the printed book, and item descriptions live on the Daggerheart Loot Generator (linked via item_page_url). Adversary art is Bacchus's Atlas's own, mapped explicitly per id when a file exists under img/adversaries/art/session-prep/; an adversary with no image entry uses the designed inline SVG fallback. Item art loads from item_image_url at render time and is never copied into this repository.",
-  "item_page_url": "https://artex-x.github.io/daggerheart-loot/i/{id}.html",
-  "item_image_url": "https://artex-x.github.io/daggerheart-loot/img/thumb/{image}",
+  "_note": "Session Prep MVP picker data. Adversaries are metadata only (id, bilingual name, optional image) — full stat blocks live in FreshCutGrass/the printed book, never in this repo. `items` is just an ordered list of ids into data/items.json's own catalogue: name, description, kind, source, roll and image all live there so this file never keeps a second copy of them. Adversary art is Bacchus's Atlas's own, mapped explicitly per id when a file exists under img/adversaries/art/session-prep/; an adversary with no image entry uses the designed inline SVG fallback.",
   "adversaries": [
     { "id": "acid-burrower", "name": { "en": "Acid Burrower", "ru": "Кислотный Землекоп" } },
     { "id": "ahuizotl", "name": { "en": "Ahuizotl", "ru": "" }, "image": "img/adversaries/art/session-prep/063_ahuizotl.png" },
@@ -21,16 +19,5 @@
     { "id": "elk", "name": { "en": "Elk", "ru": "" } },
     { "id": "falcon", "name": { "en": "Falcon", "ru": "" } }
   ],
-  "items": [
-    { "id": "ci1", "roll": 1, "kind": "item", "source": "core", "name": { "en": "Premium Bedroll", "ru": "Первоклассный Спальный Мешок" }, "image": "ci1.webp" },
-    { "id": "ci2", "roll": 2, "kind": "item", "source": "core", "name": { "en": "Piper Whistle", "ru": "Пронзительная Свирель" }, "image": "ci2.webp" },
-    { "id": "ci3", "roll": 3, "kind": "item", "source": "core", "name": { "en": "Charging Quiver", "ru": "Заряжающий Колчан" }, "image": "ci3.webp" },
-    { "id": "ci4", "roll": 4, "kind": "item", "source": "core", "name": { "en": "Alistair's Torch", "ru": "Факел Алистера" }, "image": "ci4.webp" },
-    { "id": "ci5", "roll": 5, "kind": "item", "source": "core", "name": { "en": "Speaking Orbs", "ru": "Разговаривающие Сферы" }, "image": "ci5.webp" },
-    { "id": "ci6", "roll": 6, "kind": "item", "source": "core", "name": { "en": "Manacles", "ru": "Наручники" }, "image": "ci6.webp" },
-    { "id": "ci7", "roll": 7, "kind": "item", "source": "core", "name": { "en": "Arcane Cloak", "ru": "Мистический Плащ" }, "image": "ci7.webp" },
-    { "id": "ci8", "roll": 8, "kind": "item", "source": "core", "name": { "en": "Woven Net", "ru": "Плетёная Сеть" }, "image": "ci8.webp" },
-    { "id": "ci9", "roll": 9, "kind": "item", "source": "core", "name": { "en": "Fire Jar", "ru": "Банка с Огнём" }, "image": "ci9.webp" },
-    { "id": "ci10", "roll": 10, "kind": "item", "source": "core", "name": { "en": "Suspended Rod", "ru": "Подвешенный Жезл" }, "image": "ci10.webp" }
-  ]
+  "items": ["ci1", "ci2", "ci3", "ci4", "ci5", "ci6", "ci7", "ci8", "ci9", "ci10"]
 }

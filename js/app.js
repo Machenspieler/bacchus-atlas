@@ -57,11 +57,12 @@ const state = {
   itemCatalog: { items: {}, itemUrl: '', imageUrl: '' },
   itemIndex: new Map(),
   adversaryCatalog: new Map(),
-  // Session Prep's own minimal picker catalogue (data/session-prep.json) —
-  // deliberately separate from adversaryCatalog/itemCatalog above, which
-  // hold full featured-adversary stat blocks and the complete item
-  // encyclopedia respectively. See the "Session Prep" sections in CLAUDE.md.
-  sessionPrepCatalog: { adversaries: [], items: [], adversaryById: new Map(), itemById: new Map(), itemPageUrl: '', itemImageUrl: '' },
+  // Session Prep's own minimal adversary picker catalogue (data/session-prep.json)
+  // — deliberately separate from adversaryCatalog above, which holds full
+  // featured-adversary stat blocks. Its items are just ids into itemCatalog
+  // above (the complete item encyclopedia); see the "Session Prep" sections
+  // in CLAUDE.md.
+  sessionPrepCatalog: { adversaries: [], itemIds: [], adversaryById: new Map() },
   sessionPrepLoadFailed: false,
   sessionPrep: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.sessionPrep, {
     fallback: () => SessionPrepUtils.createDefaultStore(),
@@ -814,7 +815,6 @@ const ICON_REROLL = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><pa
 const ICON_CHECKLIST = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="1.6" stroke="currentColor" stroke-width="1.6"/><path d="M9 4V3.3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1V4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="m7.8 9.6 1.1 1.1 1.7-1.9M7.8 14.3l1.1 1.1 1.7-1.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 9.4h4.2M13 14.1h4.2M8 17.9h9.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
 const ICON_ADVERSARY_FALLBACK = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5c-3.5 0-6 2.7-6 6.2 0 2 1 3.6 1 5.3 0 2 1.4 3.5 3 3.5h4c1.6 0 3-1.5 3-3.5 0-1.7 1-3.3 1-5.3 0-3.5-2.5-6.2-6-6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="9.6" cy="10.2" r="0.9" fill="currentColor"/><circle cx="14.4" cy="10.2" r="0.9" fill="currentColor"/><path d="M9.5 14.4c1 .8 4 .8 5 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`;
 const ICON_ITEM_FALLBACK = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 10.5h15v8a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1v-8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M4 8a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2.5H4V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 10.5v9" stroke="currentColor" stroke-width="1.4"/></svg>`;
-const ICON_EXTERNAL = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6H6a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 4.5h5.5V10M19.3 4.7l-8.6 8.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 /** One empty/error state for the whole app: an icon, a headline, a line of help
  * and — the part the old dashed box was missing — the action that resolves it. */
@@ -1158,6 +1158,16 @@ function setLang(lang) {
   state.lang = lang;
   persist(LS_KEYS.lang, state.lang);
   render();
+  // render() → syncDetail() → applyDetailRoute() already restacks an item
+  // card that sits on top of an environment overlay (its own stale check,
+  // gated on state.route.env). A standalone one — no environment overlay
+  // beneath it, e.g. opened from Session Prep's item picker — is outside
+  // that path, so it would otherwise be left showing the old language.
+  if (openItemId && openDetailId === null) {
+    const id = openItemId;
+    closeOpenItemDetail();
+    openItemDetail(id, { quiet: true });
+  }
   if (fromFloat) {
     document.getElementById('lang-float')?.querySelector(`[data-lang="${lang}"]`)?.focus();
   }
@@ -2887,25 +2897,26 @@ function bindJourneyDelegation(el) {
 
 function setSessionPrepCatalog(data) {
   const adversaries = (data.adversaries || []).filter(a => a && a.id);
-  const items = (data.items || []).filter(i => i && i.id);
+  const itemIds = (data.items || []).filter(id => typeof id === 'string' && id);
   state.sessionPrepCatalog = {
     adversaries,
-    items,
+    itemIds,
     adversaryById: new Map(adversaries.map(a => [a.id, a])),
-    itemById: new Map(items.map(i => [i.id, i])),
-    itemPageUrl: data.item_page_url || '',
-    itemImageUrl: data.item_image_url || '',
   };
   state.sessionPrepLoadFailed = false;
 }
 
-function spName(entry) { return entry.name?.[state.lang] || entry.name?.en || entry.name?.ru || entry.id; }
-function spItemPageUrl(item) { return state.sessionPrepCatalog.itemPageUrl.replace('{id}', item.id); }
-function spItemImageUrl(item) {
-  return item.image && state.sessionPrepCatalog.itemImageUrl
-    ? state.sessionPrepCatalog.itemImageUrl.replace('{image}', item.image)
-    : '';
+/** Session Prep's items are ids into the shared item catalog (see itemById()
+ * below), resolved to `{ id, ...item }` at render time rather than kept as
+ * their own copy — an id an item load failure (or a stale build) left
+ * dangling is dropped rather than rendered as a blank card. */
+function sessionPrepItems() {
+  return state.sessionPrepCatalog.itemIds
+    .map(id => { const item = itemById(id); return item ? Object.assign({ id }, item) : null; })
+    .filter(Boolean);
 }
+
+function spName(entry) { return entry.name?.[state.lang] || entry.name?.en || entry.name?.ru || entry.id; }
 
 function activeSessionPrep() { return SessionPrepUtils.getActiveSession(state.sessionPrep); }
 
@@ -3088,37 +3099,38 @@ function refreshAdvPicker() {
 
 function prepFilteredItems() {
   // Roll order (1-10), never re-sorted — search only narrows the set.
-  return SessionPrepUtils.filterEntries(state.sessionPrepCatalog.items, state.sessionPrepUI.itemSearch, i => [i.name?.en, i.name?.ru]);
+  return SessionPrepUtils.filterEntries(sessionPrepItems(), state.sessionPrepUI.itemSearch, i => [i.en?.name, i.ru?.name]);
 }
 
 function itemCountText() {
-  return t('prep_results_count').replace('{n}', prepFilteredItems().length).replace('{total}', state.sessionPrepCatalog.items.length);
+  return t('prep_results_count').replace('{n}', prepFilteredItems().length).replace('{total}', sessionPrepItems().length);
 }
 
 function prepItemThumbHtml(item) {
-  const url = spItemImageUrl(item);
+  const url = itemImageUrl(item);
   if (!url) return `<span class="prep-item-thumb prep-thumb-fallback" aria-hidden="true">${ICON_ITEM_FALLBACK}</span>`;
   return `<span class="prep-item-thumb"><img src="${escapeAttr(url)}" alt="" loading="lazy" decoding="async" data-item-thumb-img></span>`;
 }
 
+/* Item metadata (name, kind, source, roll, image, description) all live in
+ * data/items.json — see itemById()/itemField() near the top of the file —
+ * so this card is just a thin picker skin over that catalog. Clicking the
+ * icon opens the very same openItemDetail() overlay the main Items page
+ * uses; Session Prep keeps no item-detail code of its own. */
 function itemCardHtml(item, session) {
   const checked = session.items.some(e => e.id === item.id);
-  const name = spName(item);
-  const url = spItemPageUrl(item);
+  const name = itemField(item, 'name');
+  const kind = item.kind === 'consumable' ? 'consumable' : 'item';
+  const tip = `${name} — ${t('item_kind_' + kind)} · ${t('item_src_' + item.src)} · #${item.roll}`;
   return `
     <div class="prep-item-card${checked ? ' is-selected' : ''}" data-item-id="${escapeAttr(item.id)}">
       <label class="prep-item-select-wrap">
         <input type="checkbox" data-sp-toggle-item="${escapeAttr(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeAttr(name)}">
       </label>
-      ${prepItemThumbHtml(item)}
-      <div class="prep-item-body">
-        <span class="prep-item-name-row">
-          <a class="prep-item-name" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(name)}</a>
-          <a class="prep-item-ext-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer"
-             aria-label="${escapeAttr(t('prep_open_item_external').replace('{name}', name))}">${ICON_EXTERNAL}</a>
-        </span>
-        <span class="prep-item-meta">${escapeHtml(t('item_src_' + item.source))} · ${escapeHtml(t('item_kind_' + item.kind))}</span>
-      </div>
+      <button type="button" class="prep-item-icon-btn" data-sp-open-item="${escapeAttr(item.id)}"
+              data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(t('prep_open_item_detail').replace('{name}', name))}">
+        ${prepItemThumbHtml(item)}
+      </button>
     </div>`;
 }
 
@@ -3251,9 +3263,9 @@ function itemTypesQtyText(session) {
 function centralItemListHtml(session) {
   if (!session.items.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_items'))}</p>`;
   return session.items.map(entry => {
-    const item = state.sessionPrepCatalog.itemById.get(entry.id);
+    const item = itemById(entry.id);
     if (!item) return '';
-    return centralQtyRowHtml({ id: item.id, name: spName(item), qty: entry.quantity, thumb: prepItemThumbHtml(item), kind: 'item' });
+    return centralQtyRowHtml({ id: entry.id, name: itemField(item, 'name'), qty: entry.quantity, thumb: prepItemThumbHtml(item), kind: 'item' });
   }).join('');
 }
 
@@ -3477,6 +3489,9 @@ function bindSessionPrepDelegation(el) {
       syncPickerCheckbox('data-sp-toggle-adv', advId, false);
       return;
     }
+
+    const openItem = e.target.closest('[data-sp-open-item]');
+    if (openItem) { openItemDetail(openItem.dataset.spOpenItem); return; }
 
     const incItem = e.target.closest('[data-sp-inc-item]');
     if (incItem) { adjustItemQty(incItem.dataset.spIncItem, 1); return; }
