@@ -806,6 +806,7 @@ function renderFatalError(err) {
 const ICON_ALERT = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5 22 20H2L12 3.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 10v4.5M12 17.2v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
 const ICON_CHECK = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="m8 12.2 2.7 2.6L16 9.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_CHEVRON_UP = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 15 6-6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const ICON_CHEVRON_DOWN = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_SEARCH_EMPTY = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="m15.5 15.5 4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 10.5h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 const ICON_BOOKMARK = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 3.5h11a1 1 0 0 1 1 1v16l-6.5-4-6.5 4v-16a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
 const ICON_TRASH = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 6.5h15M9.8 6.5V4.9a1 1 0 0 1 1-1h2.4a1 1 0 0 1 1 1v1.6M6.8 6.5l.8 12.3a1 1 0 0 0 1 .9h6.8a1 1 0 0 0 1-.9l.8-12.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.4 10.2v6M13.6 10.2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
@@ -1348,10 +1349,13 @@ function render() {
   document.body.dataset.route = state.route.name;
   document.title = routeTitle();
   renderHeader();
-  // renderSessionPrepPage() owns creating/destroying the item strip
-  // controller for its own re-renders; this is the one place that tears it
-  // down when navigating to any *other* route.
-  if (state.route.name !== 'session-prep') destroySessionPrepItemStrip();
+  // renderSessionPrepPage() owns creating/destroying the item strip and the
+  // top-chrome controller for its own re-renders; this is the one place
+  // that tears both down when navigating to any *other* route.
+  if (state.route.name !== 'session-prep') {
+    destroySessionPrepItemStrip();
+    destroySessionPrepChrome();
+  }
   if (state.route.name === 'lists') {
     renderListsHome();
   } else if (state.route.name === 'journey') {
@@ -2954,6 +2958,7 @@ function updateSaveStatusDisplay(result) {
   if (result.ok) state.sessionPrepUI.lastSavedAt = new Date();
   const statusEl = document.getElementById('prep-save-status');
   if (statusEl) statusEl.textContent = sessionSaveStatusText();
+  if (!result.ok) sessionPrepChromeHandleSaveError();
 }
 
 function escapeSelectorAttrValue(value) { return String(value).replace(/(["\\])/g, '\\$1'); }
@@ -3755,6 +3760,223 @@ function bindSessionPrepDelegation(el) {
   }, true);
 }
 
+/* ---------------- top chrome (collapsible header + session row) ----------
+ *
+ * #session-prep-chrome (index.html) wraps the shared site header and, only
+ * on this route, the session title/save-status row that
+ * renderSessionPrepPage() moves into #session-prep-chrome-extra instead of
+ * .prep-wrap — see the "Session Prep chrome" rules in css/styles.css. The
+ * two keep their own separate business logic; only their visual
+ * collapse/expand is combined here.
+ *
+ * State machine (see the Session Prep spec in CLAUDE.md for the full
+ * contract):
+ *   expanded-initial --(1st workspace interaction, then 10s)--> collapsed-auto
+ *   collapsed-auto/collapsed-manual --(chevron click)--> expanded-manual
+ *   expanded-manual --(chevron click)--> collapsed-manual   (immediate)
+ *   expanded-manual --(1st new workspace interaction, then 30s)--> collapsed-auto
+ * A pending timer is one-shot — armed once per expand, never reset by
+ * further activity — and is cancelled outright (with no replacement armed)
+ * by an interaction inside the chrome itself or by the tab going to the
+ * background; either way, the next workspace interaction arms a fresh one.
+ * There is no path that expands the chrome from inactivity alone.
+ *
+ * One controller instance lives in `sessionPrepChromeState`, built by
+ * initSessionPrepChrome() and torn down by destroySessionPrepChrome() — the
+ * only two functions that touch that variable, mirroring the item-strip
+ * controller above. */
+
+const SESSION_PREP_CHROME_BREAKPOINT = '(min-width: 1200px)';
+const INITIAL_AUTO_COLLAPSE_DELAY_MS = 10_000;
+const REOPEN_AUTO_COLLAPSE_DELAY_MS = 30_000;
+// click/input/change/keydown/focusin all bubble and are bound once, directly
+// on #grid-wrap (see initSessionPrepChrome()); scroll does not bubble, so it
+// is bound separately with { capture: true } — the same technique the
+// site's own global tooltip-dismiss-on-scroll listener already uses.
+const SESSION_PREP_CHROME_ACTIVITY_EVENTS = ['click', 'input', 'change', 'keydown', 'focusin'];
+
+let sessionPrepChromeState = null;
+
+function sessionPrepChromeAutoTimingAllowed() {
+  return window.matchMedia(SESSION_PREP_CHROME_BREAKPOINT).matches;
+}
+
+/** Every condition that must hold for an *automatic* collapse to proceed —
+ * checked only when a pending timer fires. The manual chevron click never
+ * calls this: a deliberate click always applies immediately. A blocked
+ * attempt does not retry on its own; sessionPrepChromeAttemptAutoCollapse()
+ * just leaves the timer un-armed so the next meaningful workspace
+ * interaction starts a fresh one. */
+function sessionPrepChromeCollapseAllowed() {
+  if (document.hidden) return false;
+  if (state.sessionPrepUI.saveFailed) return false;
+  if (overlayStack.length) return false;
+  if (activeMultiSelect) return false;
+  // .sp-chrome-body (the header + session-title row that actually fades/
+  // collapses), not #session-prep-chrome as a whole — the toggle button is
+  // also a child of the latter and keeps focus after being clicked, which
+  // would otherwise permanently block every future auto-collapse.
+  const bodyEl = document.getElementById('sp-chrome-body');
+  const active = document.activeElement;
+  if (bodyEl && active && bodyEl.contains(active)) return false;
+  return true;
+}
+
+/** Reflects the current mode onto the DOM: the chrome's data-collapsed
+ * attribute (drives the CSS grid-row/opacity transition), inert on the
+ * fading body so a hidden header/session-title input can never keep or gain
+ * keyboard focus, and the toggle's icon/aria-expanded/label. Called on every
+ * mode change and once more at the end of every renderSessionPrepPage(), so
+ * a language switch keeps the toggle's text current without recreating the
+ * button. */
+function applySessionPrepChromeDom() {
+  const c = sessionPrepChromeState;
+  if (!c) return;
+  const collapsed = c.mode === 'collapsed-auto' || c.mode === 'collapsed-manual';
+  const chromeEl = document.getElementById('session-prep-chrome');
+  const bodyEl = document.getElementById('sp-chrome-body');
+  if (chromeEl) chromeEl.dataset.collapsed = collapsed ? 'true' : 'false';
+  if (bodyEl) bodyEl.inert = collapsed;
+  if (c.toggleEl) {
+    const label = t(collapsed ? 'session_prep_show_controls' : 'session_prep_hide_controls');
+    c.toggleEl.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    c.toggleEl.setAttribute('aria-label', label);
+    c.toggleEl.dataset.tip = label;
+    c.toggleEl.innerHTML = collapsed ? ICON_CHEVRON_DOWN : ICON_CHEVRON_UP;
+  }
+}
+
+function sessionPrepChromeClearTimer() {
+  const c = sessionPrepChromeState;
+  if (!c) return;
+  if (c.timerId != null) clearTimeout(c.timerId);
+  c.timerId = null;
+  c.timerArmed = false;
+}
+
+function sessionPrepChromeSetMode(next) {
+  const c = sessionPrepChromeState;
+  if (!c || c.mode === next) return;
+  c.mode = next;
+  sessionPrepChromeClearTimer();
+  applySessionPrepChromeDom();
+}
+
+function sessionPrepChromeAttemptAutoCollapse() {
+  const c = sessionPrepChromeState;
+  if (!c) return;
+  c.timerId = null;
+  if (!sessionPrepChromeAutoTimingAllowed() || !sessionPrepChromeCollapseAllowed()) {
+    c.timerArmed = false; // wait for the next meaningful workspace interaction to re-arm
+    return;
+  }
+  sessionPrepChromeSetMode('collapsed-auto');
+}
+
+/** The one entry point every "did something meaningful in the four-table
+ * workspace" event calls. One-shot per expand: further activity while a
+ * timer is already armed is ignored, so a continuously active user still
+ * reaches collapsed-auto rather than never arming at all. No-ops below the
+ * desktop/tablet breakpoint and whenever the chrome is not currently
+ * expanded — there is nothing to arm a collapse timer for while it is
+ * already collapsed. */
+function registerSessionPrepWorkspaceActivity() {
+  const c = sessionPrepChromeState;
+  if (!c || !sessionPrepChromeAutoTimingAllowed()) return;
+  if (c.mode !== 'expanded-initial' && c.mode !== 'expanded-manual') return;
+  if (c.timerArmed) return;
+  c.timerArmed = true;
+  const delay = c.mode === 'expanded-initial' ? INITIAL_AUTO_COLLAPSE_DELAY_MS : REOPEN_AUTO_COLLAPSE_DELAY_MS;
+  c.timerId = setTimeout(sessionPrepChromeAttemptAutoCollapse, delay);
+}
+
+/** Forces the chrome open so a save error is visible, called from
+ * updateSaveStatusDisplay() whenever a save just failed. If already
+ * expanded this just cancels any pending timer instead — either way,
+ * sessionPrepChromeCollapseAllowed() also refuses to auto-collapse while
+ * saveFailed is true, so the chrome stays open until the error clears and
+ * the user resumes workspace activity. */
+function sessionPrepChromeHandleSaveError() {
+  const c = sessionPrepChromeState;
+  if (!c) return;
+  if (c.mode === 'collapsed-auto' || c.mode === 'collapsed-manual') sessionPrepChromeSetMode('expanded-manual');
+  else sessionPrepChromeClearTimer();
+}
+
+/** Builds the one controller + toggle button for #session-prep-chrome. Safe
+ * to call any number of times — a second call while one already exists is a
+ * no-op — but renderSessionPrepPage() is the only call site, since that's
+ * the only place the route is (re-)entered. Always starts in
+ * expanded-initial: per the Session Prep spec, this state is not persisted
+ * across a reload or a return visit to the route. */
+function initSessionPrepChrome() {
+  if (sessionPrepChromeState) return;
+  const chromeEl = document.getElementById('session-prep-chrome');
+  if (!chromeEl) return;
+
+  const toggleEl = document.createElement('button');
+  toggleEl.type = 'button';
+  toggleEl.id = 'sp-chrome-toggle';
+  toggleEl.className = 'sp-chrome-toggle';
+  toggleEl.setAttribute('aria-controls', 'session-prep-chrome');
+  chromeEl.appendChild(toggleEl);
+
+  const c = { mode: 'expanded-initial', timerId: null, timerArmed: false, toggleEl };
+  sessionPrepChromeState = c;
+
+  toggleEl.addEventListener('click', () => {
+    const collapsed = c.mode === 'collapsed-auto' || c.mode === 'collapsed-manual';
+    sessionPrepChromeSetMode(collapsed ? 'expanded-manual' : 'collapsed-manual');
+  });
+
+  // Any interaction with the chrome while a pending timer is armed cancels
+  // it outright — the user came back to read or edit something up there, so
+  // the next countdown should only start once they return to the workspace.
+  c.onChromeInteraction = () => sessionPrepChromeClearTimer();
+  chromeEl.addEventListener('focusin', c.onChromeInteraction);
+  chromeEl.addEventListener('click', c.onChromeInteraction);
+
+  c.onVisibilityChange = () => { if (document.hidden) sessionPrepChromeClearTimer(); };
+  document.addEventListener('visibilitychange', c.onVisibilityChange);
+
+  // Bound once per #grid-wrap lifetime, like bindSessionPrepDelegation()'s
+  // own guard flag above — #grid-wrap is shared by every route, so this
+  // would otherwise accumulate a duplicate set on every return visit to
+  // Session Prep. registerSessionPrepWorkspaceActivity() itself no-ops once
+  // the controller is torn down, so leaving these bound on other routes is
+  // harmless.
+  const gridWrap = document.getElementById('grid-wrap');
+  if (gridWrap && !gridWrap._sessionPrepChromeActivityBound) {
+    gridWrap._sessionPrepChromeActivityBound = true;
+    SESSION_PREP_CHROME_ACTIVITY_EVENTS.forEach(type => gridWrap.addEventListener(type, registerSessionPrepWorkspaceActivity));
+    gridWrap.addEventListener('scroll', registerSessionPrepWorkspaceActivity, { capture: true, passive: true });
+  }
+
+  applySessionPrepChromeDom();
+}
+
+/** Cancels the pending timer, removes the toggle button and every listener
+ * this controller added to the chrome itself, and resets the chrome back to
+ * its default expanded appearance — called whenever render() leaves the
+ * session-prep route, so nothing here outlives the page and a later
+ * re-entry starts clean. */
+function destroySessionPrepChrome() {
+  const c = sessionPrepChromeState;
+  if (!c) return;
+  sessionPrepChromeClearTimer();
+  const chromeEl = document.getElementById('session-prep-chrome');
+  if (chromeEl) {
+    chromeEl.removeEventListener('focusin', c.onChromeInteraction);
+    chromeEl.removeEventListener('click', c.onChromeInteraction);
+    delete chromeEl.dataset.collapsed;
+  }
+  document.removeEventListener('visibilitychange', c.onVisibilityChange);
+  const bodyEl = document.getElementById('sp-chrome-body');
+  if (bodyEl) bodyEl.inert = false;
+  if (c.toggleEl) c.toggleEl.remove();
+  sessionPrepChromeState = null;
+}
+
 /* ---------------- page render ---------------- */
 
 /* Every call rebuilds #grid-wrap's innerHTML from scratch (a full render()
@@ -3765,10 +3987,17 @@ function bindSessionPrepDelegation(el) {
  * end. This is the only place either happens. */
 function renderSessionPrepPage() {
   destroySessionPrepItemStrip();
+  initSessionPrepChrome();
   document.getElementById('toolbar').innerHTML = '';
   document.getElementById('result-count').innerHTML = '';
   const el = document.getElementById('grid-wrap');
+  const chromeExtra = document.getElementById('session-prep-chrome-extra');
   if (state.sessionPrepLoadFailed) {
+    // Matches the pre-existing behaviour of not showing the session title
+    // bar while the catalogue failed to load — unrelated to the chrome
+    // collapse feature itself, which still works (see initSessionPrepChrome()
+    // above) since it doesn't depend on this catalogue.
+    if (chromeExtra) chromeExtra.innerHTML = '';
     el.innerHTML = `<div class="prep-wrap">${emptyStateHtml({
       icon: ICON_ALERT,
       title: t('prep_catalog_load_error'),
@@ -3776,12 +4005,15 @@ function renderSessionPrepPage() {
       error: true,
     })}</div>`;
     bindSessionPrepDelegation(el);
+    applySessionPrepChromeDom();
     return;
   }
   const session = activeSessionPrep();
+  // Moved into the chrome, alongside the shared site header, instead of
+  // .prep-wrap — see the "Session Prep chrome" rules in css/styles.css.
+  if (chromeExtra) chromeExtra.innerHTML = `<div class="sp-chrome-session-inner">${sessionHeaderHtml(session)}</div>`;
   el.innerHTML = `
     <div class="prep-wrap">
-      ${sessionHeaderHtml(session)}
       <div class="prep-main">
         ${envPickerColumnHtml(session)}
         ${centralSectionHtml(session)}
@@ -3792,6 +4024,7 @@ function renderSessionPrepPage() {
   bindSessionPrepDelegation(el);
   bindSessionPrepSearchAndTitle();
   initSessionPrepItemStrip();
+  applySessionPrepChromeDom();
 }
 
 /* ---------------- sources ---------------- */

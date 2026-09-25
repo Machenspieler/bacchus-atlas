@@ -2018,6 +2018,76 @@ body[data-route="session-prep"] #footer {
 #prep-session-title::placeholder { color: var(--muted); font-family: var(--font-body); font-size: var(--fs-md); }
 .prep-save-status { margin: 0; font-size: var(--fs-xs); color: var(--muted); white-space: nowrap; }
 
+/* ---- Session Prep chrome (collapsible top region) ----
+   #session-prep-chrome (in index.html) wraps the shared site header and, on
+   this route only, the session title/save-status row that
+   renderSessionPrepPage() moves into #session-prep-chrome-extra — see
+   initSessionPrepChrome() in js/app.js. The two keep their own separate
+   business logic; only their visual collapse/expand is combined. On every
+   other route this stays display:contents, a no-op wrapper so #header
+   behaves exactly as it did before this existed.
+
+   The 1fr/0fr grid-template-rows swap on a single-row, single-child grid is
+   what lets .sp-chrome-body animate to and from its real content height
+   (rather than a hardcoded one) without a leftover spacer — the same
+   reasoning already used for the item drawer's width transition below. */
+#session-prep-chrome, #session-prep-chrome .sp-chrome-body { display: contents; }
+
+body[data-route="session-prep"] #session-prep-chrome {
+  position: relative;
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--t-slow) var(--ease-enter);
+}
+body[data-route="session-prep"] #session-prep-chrome > .sp-chrome-body {
+  display: block;
+  overflow: hidden;
+  min-height: 0;
+  transition: opacity var(--t-slow) var(--ease-out);
+}
+body[data-route="session-prep"] #session-prep-chrome[data-collapsed="true"] {
+  grid-template-rows: 0fr;
+}
+body[data-route="session-prep"] #session-prep-chrome[data-collapsed="true"] > .sp-chrome-body {
+  opacity: 0;
+}
+/* Only a real flex item of body at this breakpoint (see the ≥1200px,
+   no-page-scroll block further down) — .site-header itself is nested one
+   level deeper now, so its own `flex: none` there targets this instead. */
+@media (min-width: 1200px) {
+  body[data-route="session-prep"] #session-prep-chrome { flex: none; }
+}
+
+#session-prep-chrome-extra:not(:empty) {
+  border-top: 1px solid var(--line-faint);
+}
+.sp-chrome-session-inner {
+  max-width: 1180px; margin: 0 auto;
+  padding-block: var(--s-3);
+  padding-inline: max(var(--s-5), env(safe-area-inset-left)) max(var(--s-5), env(safe-area-inset-right));
+}
+
+/* The reveal/hide control: one mounted <button>, never recreated between
+   collapsed and expanded, straddling the boundary between the chrome and
+   the workspace below — bottom:0 of the chrome tracks its collapsing height,
+   so the same position reads as "attached to the top edge of the workspace"
+   when collapsed and "attached to the bottom edge of the chrome" when
+   expanded, with no JS repositioning needed. Sized and coloured off existing
+   tokens only — a subtle frame element, not a floating feature. */
+.sp-chrome-toggle {
+  position: absolute; left: 50%; bottom: 0; z-index: 20;
+  transform: translate(-50%, 50%);
+  display: flex; align-items: center; justify-content: center;
+  width: var(--h-md); height: var(--h-md); padding: 0;
+  background: var(--ink-raised); color: var(--muted);
+  border: 1px solid var(--line-faint); border-radius: var(--r-pill);
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.sp-chrome-toggle svg { width: var(--icon-md); height: var(--icon-md); }
+.sp-chrome-toggle:hover { color: var(--hope-soft); border-color: var(--line-strong); background: var(--ink-hover); }
+.sp-chrome-toggle:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); color: var(--hope-soft); }
+
 /* ---- three-column composition ---- */
 .prep-main {
   display: grid;
@@ -2216,6 +2286,7 @@ body[data-route="session-prep"] #footer {
 .prep-item-grid {
   --sp-drawer-w: 36px;      /* desktop hover/focus-revealed drawer width */
   --sp-drawer-w-touch: 44px; /* coarse-pointer minimum touch target */
+  --sp-item-icon-size: 94.5px; /* 90% of the tile's original 105px, at every breakpoint */
   display: flex; flex-wrap: nowrap; align-items: flex-start;
   gap: var(--s-3); overflow-x: auto; -webkit-overflow-scrolling: touch;
   padding-bottom: var(--s-2);
@@ -2233,12 +2304,15 @@ body[data-route="session-prep"] #footer {
   transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
 }
 .prep-item-card.is-selected { border-color: var(--hope); background: rgba(217,164,65,0.08); }
-/* 75% larger than the shared 60px .prep-item-thumb/.prep-adv-thumb size used
+/* Larger than the shared 60px .prep-item-thumb/.prep-adv-thumb size used
    everywhere else (central list, adversary picker) — scoped to this button
-   alone so those other icons are untouched. */
+   alone so those other icons are untouched. Sized off --sp-item-icon-size
+   (declared on .prep-item-grid above) rather than a literal, so every tile
+   stays square and every dependent measurement (the drawer's stretched
+   height) tracks it automatically. */
 .prep-item-icon-btn {
   flex: none; display: flex; align-items: center; justify-content: center;
-  width: 105px; height: 105px; padding: 0; margin: 0; border: none; background: none;
+  width: var(--sp-item-icon-size); height: var(--sp-item-icon-size); padding: 0; margin: 0; border: none; background: none;
   border-radius: var(--r-sm); cursor: pointer;
 }
 .prep-item-icon-btn:hover { box-shadow: inset 0 0 0 1px var(--hope); }
@@ -2302,9 +2376,6 @@ body[data-route="session-prep"] #footer {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-  }
-  body[data-route="session-prep"] .site-header {
-    flex: none;
   }
   body[data-route="session-prep"] #main {
     flex: 1 1 auto;

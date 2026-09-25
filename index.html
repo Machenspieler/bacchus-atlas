@@ -35,11 +35,20 @@
 </head>
 <body>
   <!-- Static fallback shown before js/app.js runs. renderHeader() overwrites
-       this on first render. -->
-  <header class="site-header" id="header">
-    <h1>Атлас Бахуса</h1>
-    <p>Окружения, путешествия и опасности · Daggerheart™ Compatible</p>
-  </header>
+       this on first render. #session-prep-chrome is display:contents on every
+       other route (a no-op wrapper) and only becomes a real collapsible box
+       on #/session-prep — see the "Session Prep chrome" rules in
+       css/styles.css and initSessionPrepChrome() in js/app.js.
+       #session-prep-chrome-extra stays empty outside that route. -->
+  <div id="session-prep-chrome">
+    <div class="sp-chrome-body" id="sp-chrome-body">
+      <header class="site-header" id="header">
+        <h1>Атлас Бахуса</h1>
+        <p>Окружения, путешествия и опасности · Daggerheart™ Compatible</p>
+      </header>
+      <div id="session-prep-chrome-extra"></div>
+    </div>
+  </div>
   <main class="shell" id="main" tabindex="-1" aria-busy="true">
     <!-- No environment data below — see "Initial loading shell" in CLAUDE.md.
          js/app.js localizes the status text and clears aria-busy once, but
