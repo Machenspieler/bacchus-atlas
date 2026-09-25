@@ -2126,20 +2126,27 @@ body[data-route="session-prep"] #footer {
 .prep-central-section h3 svg { width: var(--s-5); height: var(--s-5); flex: none; color: var(--hope); }
 .prep-central-count { margin-left: auto; font-size: var(--fs-xs); font-family: var(--font-mono); color: var(--muted); }
 
-.prep-central-card, .prep-qty-row {
+.prep-qty-row {
   display: flex; align-items: center; gap: var(--s-3); padding: var(--s-2) 0;
   border-bottom: 1px solid var(--line-faint); flex-wrap: wrap;
 }
-.prep-central-card:last-child, .prep-qty-row:last-child { border-bottom: none; }
+.prep-qty-row:last-child { border-bottom: none; }
 .prep-central-card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
 .prep-central-card-name { display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-sm); color: var(--parchment); }
 .prep-central-card-meta { font-size: var(--fs-xs); color: var(--muted); }
-.prep-central-card-actions { flex: none; display: flex; align-items: center; gap: var(--s-1); }
-.prep-make-primary-btn { white-space: nowrap; }
-.prep-primary-badge {
-  font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tracking-caps);
-  background: var(--hope); color: var(--hope-ink); border-radius: var(--r-xs); padding: 1px 6px;
+
+/* Selected environments: up to three tiles side by side (wrapping on
+   narrow widths) instead of the stacked rows adversaries/items use below —
+   each is its own bordered card with the remove control in its corner. */
+.prep-central-env-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--s-3);
 }
+.prep-central-env-card {
+  position: relative; display: flex; align-items: center; gap: var(--s-3);
+  padding: var(--s-2); padding-right: var(--s-7);
+  border: 1px solid var(--line-faint); border-radius: var(--r-sm); background: var(--ink-raised);
+}
+.prep-central-env-card .prep-central-env-remove { position: absolute; top: var(--s-1); right: var(--s-1); }
 
 .prep-qty-name { flex: 1; min-width: 80px; font-size: var(--fs-sm); color: var(--parchment); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .prep-qty-controls { flex: none; display: flex; align-items: center; gap: var(--s-1); }

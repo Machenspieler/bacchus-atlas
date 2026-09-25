@@ -3166,31 +3166,27 @@ function refreshItemGrid() {
 
 /* ---------------- central preparation ---------------- */
 
-function centralEnvCardHtml(env, session) {
+function centralEnvCardHtml(env) {
   const name = envName(env);
-  const isPrimary = session.primaryEnvironmentId === env.id;
   return `
-    <div class="prep-central-card" data-env-id="${escapeAttr(env.id)}">
+    <div class="prep-central-env-card" data-env-id="${escapeAttr(env.id)}">
+      <button type="button" class="prep-remove-btn prep-central-env-remove" data-sp-remove-env="${escapeAttr(env.id)}"
+              aria-label="${escapeAttr(t('prep_remove_named').replace('{name}', name))}">×</button>
       ${prepEnvThumbHtml(env)}
       <div class="prep-central-card-body">
-        <span class="prep-central-card-name">${escapeHtml(name)}${isPrimary ? `<span class="prep-primary-badge">${escapeHtml(t('prep_primary'))}</span>` : ''}</span>
+        <span class="prep-central-card-name">${escapeHtml(name)}</span>
         <span class="prep-central-card-meta">${t('tier_label')} ${env.tier} · ${escapeHtml(t('type_' + env.type))}</span>
-      </div>
-      <div class="prep-central-card-actions">
-        ${!isPrimary ? `<button type="button" class="btn btn-sm btn-ghost prep-make-primary-btn" data-sp-make-primary="${escapeAttr(env.id)}"
-                 aria-label="${escapeAttr(t('prep_make_primary_named').replace('{name}', name))}">${escapeHtml(t('prep_make_primary'))}</button>` : ''}
-        <button type="button" class="prep-remove-btn" data-sp-remove-env="${escapeAttr(env.id)}"
-                aria-label="${escapeAttr(t('prep_remove_named').replace('{name}', name))}">×</button>
       </div>
     </div>`;
 }
 
 function centralEnvListHtml(session) {
   if (!session.environmentIds.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_environments'))}</p>`;
-  return session.environmentIds.map(id => {
+  const cards = session.environmentIds.map(id => {
     const env = allEnvs().find(e => e.id === id);
-    return env ? centralEnvCardHtml(env, session) : '';
+    return env ? centralEnvCardHtml(env) : '';
   }).join('');
+  return `<div class="prep-central-env-grid">${cards}</div>`;
 }
 
 function refreshCentralEnvironments() {
@@ -3464,14 +3460,6 @@ function bindSessionPrepDelegation(el) {
       updateSaveStatusDisplay(result);
       refreshCentralEnvironments();
       syncPickerCheckbox('data-sp-toggle-env', envId, false);
-      return;
-    }
-    const makePrimary = e.target.closest('[data-sp-make-primary]');
-    if (makePrimary) {
-      const envId = makePrimary.dataset.spMakePrimary;
-      const { result } = updateSessionPrepSession(session => SessionPrepUtils.setPrimaryEnvironment(session, envId));
-      updateSaveStatusDisplay(result);
-      refreshCentralEnvironments();
       return;
     }
 
