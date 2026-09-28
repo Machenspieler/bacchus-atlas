@@ -84,7 +84,7 @@ Range and damage-type enums, translated via `data/i18n.json`
 | Very Far | Очень Далеко |
 | Physical (damage) | Физический |
 | Magic (damage) | Магический |
-| Solo (role) | Соло |
+| Solo (role) | Одиночка |
 
 ## Traits (six core traits)
 
