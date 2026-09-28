@@ -2195,7 +2195,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-central {
   min-width: 0; display: flex; flex-direction: column;
   background: var(--ink-raised); border: 1px solid var(--line-strong); border-top: 2px solid var(--hope);
-  border-radius: var(--r-lg); padding: 12px var(--s-5) var(--s-5); box-shadow: var(--e-2);
+  border-radius: var(--r-lg); padding: 0 var(--s-5) var(--s-5); box-shadow: var(--e-2);
 }
 
 .prep-col-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2); flex-wrap: wrap; }
@@ -2296,14 +2296,24 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-thumb-fallback svg { width: 62%; height: 62%; color: var(--muted); }
 
 /* ---- central preparation: environments / adversaries / items ----
-   Each h3 is position:sticky within .prep-central's own internal scroll
-   area (≥1200px only — see the no-page-scroll block below) so the current
-   section stays identifiable while scrolling a long preparation. */
-.prep-central-section { display: flex; flex-direction: column; gap: 6px; }
+   Each h3 is a full-bleed sticky bar, position:sticky within .prep-central's
+   own internal scroll area (≥1200px only — see the no-page-scroll block
+   below) so the current section stays identifiable while scrolling a long
+   preparation. Sticking is scoped to its own .prep-central-section (the
+   containing block for the offset), so a header never overlaps a sibling
+   section's. The negative inline margin cancels .prep-central's own side
+   padding so the bar's opaque background spans the full column width
+   instead of leaving a sliver of scrolled content visible beside it; that
+   padding is removed from .prep-central's top entirely (rather than left as
+   a transparent gap above the bar) since the bar's own min-height already
+   gives the resting (unstuck) heading equivalent breathing room. */
+.prep-central-section { display: flex; flex-direction: column; gap: 6px; scroll-margin-top: 40px; }
 .prep-central-section + .prep-central-section { padding-top: 11px; border-top: 1px solid var(--line-faint); }
 .prep-central-section h3 {
-  position: sticky; top: 0; z-index: 1; background: var(--ink-raised);
-  display: flex; align-items: center; gap: var(--s-2); margin: 0; padding-block: 2px;
+  position: sticky; top: 0; z-index: 1; min-height: 40px;
+  margin: 0 calc(-1 * var(--s-5)); padding-inline: var(--s-5);
+  background: var(--ink-raised); border-bottom: 1px solid var(--line); box-shadow: var(--e-1);
+  display: flex; align-items: center; gap: var(--s-2);
   font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md);
   letter-spacing: var(--tracking-display); color: var(--parchment);
 }
@@ -2510,6 +2520,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   body[data-route="session-prep"] .prep-central {
     min-height: 0;
     overflow-y: auto;
+    scroll-padding-top: 40px;
     scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
   }
   body[data-route="session-prep"] .prep-central::-webkit-scrollbar { width: 8px; }
