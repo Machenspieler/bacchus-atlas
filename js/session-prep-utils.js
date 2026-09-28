@@ -70,6 +70,80 @@
     return Object.assign({}, store, { sessions: sessions });
   }
 
+  /* ---------------- session lifecycle (create / switch / duplicate / delete) ----------------
+   * These are the pure, storage-shape half of Session Prep's multi-session
+   * lifecycle — id generation, timestamps, and the "never end up with zero
+   * sessions" guarantee are the caller's job (js/app.js), same division as
+   * updateSessionPrepSession() already draws for a same-session edit: this
+   * file decides what the resulting `sessions`/`activeSessionId` look like,
+   * never how an id or a timestamp is produced. */
+
+  /** Appends `session` (built by the caller, e.g. via createDefaultSession())
+   * and makes it the active session. Used for both "new session" and
+   * "duplicate session" — the caller decides `session`'s starting fields,
+   * this just handles the store-level append + activate. Never mutates
+   * `store` or its `sessions` array. */
+  function addSession(store, session) {
+    return Object.assign({}, store, {
+      sessions: store.sessions.concat([session]),
+      activeSessionId: session.id,
+    });
+  }
+
+  /** Switches the active session to `sessionId`. A no-op (returns `store`
+   * itself, not a copy) when `sessionId` doesn't match any session in the
+   * store, so a caller can tell "nothing changed" apart from "switched" by
+   * identity comparison. */
+  function setActiveSession(store, sessionId) {
+    if (!store || !Array.isArray(store.sessions)) return store;
+    if (store.activeSessionId === sessionId) return store;
+    var exists = store.sessions.some(function (s) { return s.id === sessionId; });
+    if (!exists) return store;
+    return Object.assign({}, store, { activeSessionId: sessionId });
+  }
+
+  /** Removes the session `sessionId` from `store`. If it was the active
+   * session, activates the next session in list order, falling back to the
+   * previous one for the last entry — never leaves `activeSessionId`
+   * pointing at a session that no longer exists. Deliberately allows the
+   * result to end up with an empty `sessions` array (deleting the only
+   * remaining session): guaranteeing at least one session always exists
+   * again afterward is the caller's job (see js/app.js's
+   * deleteSessionPrepSession()), the same way this file never invents an id
+   * or timestamp for a session it creates. A no-op (returns `store` itself)
+   * when `sessionId` isn't found. */
+  function removeSession(store, sessionId) {
+    if (!store || !Array.isArray(store.sessions)) return store;
+    var idx = -1;
+    for (var i = 0; i < store.sessions.length; i++) {
+      if (store.sessions[i] && store.sessions[i].id === sessionId) { idx = i; break; }
+    }
+    if (idx === -1) return store;
+    var remaining = store.sessions.slice(0, idx).concat(store.sessions.slice(idx + 1));
+    if (store.activeSessionId !== sessionId) {
+      return Object.assign({}, store, { sessions: remaining });
+    }
+    var replacement = remaining.length ? (store.sessions[idx + 1] || store.sessions[idx - 1]) : null;
+    return Object.assign({}, store, {
+      sessions: remaining,
+      activeSessionId: replacement ? replacement.id : null,
+    });
+  }
+
+  /* ---------------- session title ---------------- */
+
+  /** Resolves a raw title edit to what should actually be stored: trims
+   * surrounding whitespace, and falls back to `fallback` (the caller's
+   * localized default session name) when that leaves nothing — a session
+   * title is never persisted as empty/whitespace-only. Mirrors
+   * ListUtils.resolveListRename()'s trim-and-decide role for list renames,
+   * but a Session Prep title has no "invalid" case of its own to reject: any
+   * non-empty trimmed value is accepted as-is, duplicates included. */
+  function resolveSessionTitle(rawValue, fallback) {
+    var trimmed = String(rawValue == null ? '' : rawValue).trim();
+    return trimmed || fallback;
+  }
+
   /* ---------------- id-list normalization ---------------- */
 
   /** Drops duplicates, keeping the first occurrence's position. Used for
@@ -272,6 +346,10 @@
     createDefaultStore: createDefaultStore,
     getActiveSession: getActiveSession,
     withActiveSession: withActiveSession,
+    addSession: addSession,
+    setActiveSession: setActiveSession,
+    removeSession: removeSession,
+    resolveSessionTitle: resolveSessionTitle,
     normalizeIdList: normalizeIdList,
     toggleId: toggleId,
     removeId: removeId,

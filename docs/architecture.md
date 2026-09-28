@@ -95,7 +95,11 @@ themselves wholesale each time:
   every one of these lives in `js/session-prep-utils.js`
   (`toggleId`/`removeId`/`toggleEnvironment`/`removeEnvironment` — see
   [docs/product-decisions.md](product-decisions.md) PD-001/PD-002 for what
-  this logic deliberately does not do).
+  this logic deliberately does not do). Session Prep supports multiple
+  independent saved sessions (see "Session Prep multi-session model" below);
+  switching, creating, duplicating, or deleting one goes through a full
+  `renderSessionPrepPage()`, never a targeted `refresh*()`, since the active
+  session itself changed rather than one of its fields.
 - **Lists rename** goes through `bindListRename()`/`commitListRename()`,
   resolved via the pure `ListUtils.resolveListRename()` — see
   [.claude/rules/browser-state.md](../.claude/rules/browser-state.md).
@@ -104,6 +108,50 @@ An open environment/item detail overlay is layered on top of whichever page
 is behind it (`syncDetail()`/`applyDetailRoute()`), rendered against a
 blurred backdrop of the environment's own art when one exists
 (`syncEnvBackdrop()`).
+
+## Session Prep multi-session model
+
+`state.sessionPrep` (persisted as `dhcodex_session_prep`) is a *store*, not a
+single preparation: `{ schemaVersion: 2, activeSessionId, sessions: [...] }`,
+each session carrying its own `id`/`title`/`createdAt`/`updatedAt`/
+`environmentIds`/`adversaryIds`/`itemIds`. `activeSessionPrep()`
+(`SessionPrepUtils.getActiveSession()`) is the one source of truth the whole
+page renders from — there is no separate `selectedEnvironmentIds`-style
+global to keep in sync with it.
+
+- **Same-session edits** (a picker toggle, a remove, a title keystroke) go
+  through `updateSessionPrepSession()`, which mutates only the active
+  session's own fields and stamps `updatedAt` — unchanged by multi-session
+  support.
+- **Session lifecycle** (which sessions exist, which one is active) is
+  centralized in a small set of `js/app.js` functions, each persisting once:
+  `createSessionPrepSession()`, `switchSessionPrepSession(id)`,
+  `duplicateSessionPrepSession(id)`, `deleteSessionPrepSession(id)` — backed
+  by pure store-shape helpers in `js/session-prep-utils.js`:
+  `addSession()`, `setActiveSession()`, `removeSession()`. `removeSession()`
+  itself may return zero sessions (deleting the last one); guaranteeing at
+  least one session always exists again is `deleteSessionPrepSession()`'s
+  job, not that helper's. Renaming reuses the existing title field/
+  `updateSessionPrepSession()`; on blur, an empty/whitespace-only title
+  resolves to the localized default (`SessionPrepUtils.resolveSessionTitle()`)
+  rather than being stored empty.
+- **Session order** is creation order — `addSession()` always appends and
+  never reorders `sessions` on an edit, so a session's position in the
+  switcher never jumps around from autosaving.
+- **Migration**: a stored v1 (single legacy preparation, `primaryEnvironmentId`
+  + quantity-bearing `adversaries`/`items`) or a malformed store is sanitized/
+  upgraded to v2 by `SafeStorage.validators.sessionPrep`
+  (`sanitizeSessionPrep()`/`migrateSessionPrepSessionV1ToV2()` in
+  `js/safe-storage.js`) — see [.claude/rules/browser-state.md](../.claude/rules/browser-state.md).
+  This runs on every load (idempotent: a store already at v2 with nothing to
+  fix is returned unchanged) and repairs an `activeSessionId` that doesn't
+  match any surviving session by pointing it at the first one.
+- **Minimal UI**: a native `<select>` session switcher plus New/Duplicate/
+  Delete buttons (`sessionSwitcherHtml()`/`bindSessionPrepSwitcher()`), as a
+  plain sibling of `.prep-session-header` rather than inside it. Delete asks
+  for confirmation (`confirm()`, naming the session) before calling
+  `deleteSessionPrepSession()`. This is deliberately minimal — a full visual
+  pass on Session Prep's header is separate future work.
 
 ## Environment search index
 
@@ -149,7 +197,8 @@ and `localStorage` — see [.claude/rules/browser-state.md](../.claude/rules/bro
 for the read/write/migration contract. `LS_KEYS` (top of `js/app.js`) is the
 full list of persisted keys: language, lists, environment-to-list
 membership, the storage-notice dismissal flag, the two Journey tables, and
-Session Prep's one active session. `persist()`/`persistRaw()`/`persistBatch()`
+Session Prep's multi-session store (see "Session Prep multi-session model"
+above). `persist()`/`persistRaw()`/`persistBatch()`
 in `js/app.js` wrap `SafeStorage`'s write functions and centralize
 write-failure reporting (`reportStorageWriteFailure()`).
 
@@ -165,7 +214,7 @@ directly rather than driving it through the DOM:
 | `js/route-utils.js` | hash parsing, building, and safe decoding |
 | `js/list-utils.js` | list name normalization and rename resolution |
 | `js/search-index.js` | environment search record building and matching |
-| `js/session-prep-utils.js` | Session Prep default shape, selection toggling, search/Tier/Type/Category/Source filtering |
+| `js/session-prep-utils.js` | Session Prep default shape, session lifecycle (add/switch/remove session, title resolution), selection toggling, search/Tier/Type/Category/Source filtering |
 | `js/freshcutgrass-utils.js` | FreshCutGrass encounter URL encoding |
 
 ## Build and deployment flow

@@ -51,6 +51,77 @@ test('getActiveSession returns null for a store with no sessions', () => {
   assert.equal(SPU.getActiveSession(null), null);
 });
 
+/* ---------------- session lifecycle (create / switch / duplicate / delete) ---------------- */
+
+test('addSession appends the new session and makes it active', () => {
+  const store = { schemaVersion: 2, activeSessionId: 'a', sessions: [baseSession({ id: 'a' })] };
+  const next = SPU.addSession(store, baseSession({ id: 'b' }));
+  assert.equal(next.sessions.length, 2);
+  assert.equal(next.activeSessionId, 'b');
+  assert.equal(store.sessions.length, 1, 'original store is not mutated');
+});
+
+test('setActiveSession switches to an existing session', () => {
+  const store = { activeSessionId: 'a', sessions: [baseSession({ id: 'a' }), baseSession({ id: 'b' })] };
+  const next = SPU.setActiveSession(store, 'b');
+  assert.equal(next.activeSessionId, 'b');
+});
+
+test('setActiveSession is a no-op (returns the same store) for an unknown session id', () => {
+  const store = { activeSessionId: 'a', sessions: [baseSession({ id: 'a' })] };
+  assert.equal(SPU.setActiveSession(store, 'ghost'), store);
+});
+
+test('setActiveSession is a no-op for the already-active session', () => {
+  const store = { activeSessionId: 'a', sessions: [baseSession({ id: 'a' })] };
+  assert.equal(SPU.setActiveSession(store, 'a'), store);
+});
+
+test('removeSession drops a non-active session without changing activeSessionId', () => {
+  const store = { activeSessionId: 'a', sessions: [baseSession({ id: 'a' }), baseSession({ id: 'b' })] };
+  const next = SPU.removeSession(store, 'b');
+  assert.deepEqual(next.sessions.map(s => s.id), ['a']);
+  assert.equal(next.activeSessionId, 'a');
+});
+
+test('removeSession activates the next session in list order when the active session is removed', () => {
+  const store = { activeSessionId: 'b', sessions: [baseSession({ id: 'a' }), baseSession({ id: 'b' }), baseSession({ id: 'c' })] };
+  const next = SPU.removeSession(store, 'b');
+  assert.deepEqual(next.sessions.map(s => s.id), ['a', 'c']);
+  assert.equal(next.activeSessionId, 'c');
+});
+
+test('removeSession falls back to the previous session when the active session is the last one', () => {
+  const store = { activeSessionId: 'c', sessions: [baseSession({ id: 'a' }), baseSession({ id: 'b' }), baseSession({ id: 'c' })] };
+  const next = SPU.removeSession(store, 'c');
+  assert.deepEqual(next.sessions.map(s => s.id), ['a', 'b']);
+  assert.equal(next.activeSessionId, 'b');
+});
+
+test('removeSession deleting the only session leaves an empty sessions array and no active session', () => {
+  const store = { activeSessionId: 'a', sessions: [baseSession({ id: 'a' })] };
+  const next = SPU.removeSession(store, 'a');
+  assert.deepEqual(next.sessions, []);
+  assert.equal(next.activeSessionId, null);
+});
+
+test('removeSession is a no-op for an unknown session id', () => {
+  const store = { activeSessionId: 'a', sessions: [baseSession({ id: 'a' })] };
+  assert.equal(SPU.removeSession(store, 'ghost'), store);
+});
+
+/* ---------------- resolveSessionTitle ---------------- */
+
+test('resolveSessionTitle trims surrounding whitespace', () => {
+  assert.equal(SPU.resolveSessionTitle('  Sunken Temple  ', 'New session'), 'Sunken Temple');
+});
+
+test('resolveSessionTitle falls back for an empty or whitespace-only value', () => {
+  assert.equal(SPU.resolveSessionTitle('', 'New session'), 'New session');
+  assert.equal(SPU.resolveSessionTitle('   ', 'New session'), 'New session');
+  assert.equal(SPU.resolveSessionTitle(null, 'New session'), 'New session');
+});
+
 /* ---------------- toggleId / removeId (generic binary selection) ---------------- */
 
 test('toggleId adds a string id that is not yet present', () => {

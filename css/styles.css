@@ -2033,6 +2033,20 @@ body[data-route="session-prep"] {
   --sp-workspace-gap: 10px;
 }
 
+/* ---- session switcher (switch / new / duplicate / delete) ----
+   Deliberately a plain sibling of .prep-session-header, not a child of it —
+   see sessionSwitcherHtml() in js/app.js — so it never has to participate in
+   that element's expanded/compact grid layout below. Minimal styling for
+   this stage: reuses .field/.field select (toolbar) and .btn/.btn-ghost
+   (shared button system) rather than introducing new visual treatment. */
+.prep-session-switcher {
+  display: flex; align-items: flex-end; flex-wrap: wrap; gap: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+.prep-session-select-field { min-width: 220px; }
+.prep-session-select-field select { width: 100%; }
+.prep-session-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+
 /* ---- session name + save status (workspace-level, not the header chrome) ----
    Renders as the first child of .prep-wrap (see renderSessionPrepPage() in
    js/app.js) so it aligns with the same wide workspace shell as the three

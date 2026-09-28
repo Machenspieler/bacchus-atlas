@@ -2969,6 +2969,81 @@ function updateSaveStatusDisplay(result) {
   }
 }
 
+/* ---------------- session lifecycle (create / switch / rename / duplicate / delete) ----------------
+ * Centralizes every operation that changes *which* sessions exist or which
+ * one is active — as opposed to updateSessionPrepSession() above, which only
+ * ever edits the active session's own fields. Each of these mutates
+ * state.sessionPrep exactly once and persists it exactly once, mirroring
+ * updateSessionPrepSession()'s own contract, so callers always follow the
+ * same pattern: call one of these, then updateSaveStatusDisplay(result),
+ * then a full renderSessionPrepPage() (never a targeted refresh*() — the
+ * active session itself changed, not just one of its fields). */
+
+/** Not cryptographically unique, only collision-resistant enough for a
+ * client-only id a GM's own browser generates — the same shape list ids
+ * already use (see createList() above). */
+function generateSessionPrepId() {
+  return 'session-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+function sessionDisplayTitle(session) {
+  return SessionPrepUtils.resolveSessionTitle(session && session.title, t('session_name_placeholder'));
+}
+
+function createSessionPrepSession() {
+  const now = new Date().toISOString();
+  const session = SessionPrepUtils.createDefaultSession(generateSessionPrepId(), now);
+  state.sessionPrep = SessionPrepUtils.addSession(state.sessionPrep, session);
+  return persist(LS_KEYS.sessionPrep, state.sessionPrep);
+}
+
+/** Returns `null` (no-op, nothing to persist) when `sessionId` is already
+ * active or doesn't exist — same "identity means no-op" contract as
+ * SessionPrepUtils.setActiveSession() itself. */
+function switchSessionPrepSession(sessionId) {
+  const next = SessionPrepUtils.setActiveSession(state.sessionPrep, sessionId);
+  if (next === state.sessionPrep) return null;
+  state.sessionPrep = next;
+  return persist(LS_KEYS.sessionPrep, state.sessionPrep);
+}
+
+/** Copies the active session's selections into a brand-new session (new id,
+ * new createdAt/updatedAt, a "<title> — copy" title) and makes it active.
+ * Slices every id array so editing the duplicate can never mutate the
+ * source session's arrays. Returns `null` if there is no active session to
+ * duplicate. */
+function duplicateSessionPrepSession(sessionId) {
+  const source = state.sessionPrep.sessions.find(s => s.id === sessionId);
+  if (!source) return null;
+  const now = new Date().toISOString();
+  const duplicate = Object.assign({}, source, {
+    id: generateSessionPrepId(),
+    title: t('session_copy_of').replace('{name}', sessionDisplayTitle(source)),
+    createdAt: now,
+    updatedAt: now,
+    environmentIds: source.environmentIds.slice(),
+    adversaryIds: source.adversaryIds.slice(),
+    itemIds: source.itemIds.slice(),
+  });
+  state.sessionPrep = SessionPrepUtils.addSession(state.sessionPrep, duplicate);
+  return persist(LS_KEYS.sessionPrep, state.sessionPrep);
+}
+
+/** Deletes `sessionId`, letting SessionPrepUtils.removeSession() pick the
+ * next active session (or none, if it was the last one) — then, only here,
+ * enforces the one invariant that helper deliberately leaves to its caller:
+ * Session Prep must never be left with zero sessions. A GM who deletes their
+ * last saved session gets a fresh empty one instead of an unusable page. */
+function deleteSessionPrepSession(sessionId) {
+  let next = SessionPrepUtils.removeSession(state.sessionPrep, sessionId);
+  if (!next.sessions.length) {
+    const now = new Date().toISOString();
+    next = SessionPrepUtils.addSession(next, SessionPrepUtils.createDefaultSession(generateSessionPrepId(), now));
+  }
+  state.sessionPrep = next;
+  return persist(LS_KEYS.sessionPrep, state.sessionPrep);
+}
+
 function escapeSelectorAttrValue(value) { return String(value).replace(/(["\\])/g, '\\$1'); }
 
 /** Keeps a source picker's checkbox in sync after the central list removes
@@ -3752,10 +3827,84 @@ function centralSectionHtml(session) {
     </section>`;
 }
 
+/* ---------------- session switcher (switch / new / duplicate / delete) ---------------- */
+
+/** A plain native `<select>` — not the app's Type/Biome-style multiselect
+ * dropdown, since this is single-choice ("which saved session is active"),
+ * not a filter — gives keyboard operation, screen-reader semantics, and the
+ * mobile wheel picker for free, matching `.field select` styling already
+ * defined in css/styles.css. Sits above `.prep-session-header` as its own
+ * sibling rather than inside it, so it never has to participate in that
+ * element's expanded/compact `data-sp-header-mode` grid layout. */
+function sessionSwitcherHtml(session) {
+  const options = state.sessionPrep.sessions.map(s =>
+    `<option value="${escapeAttr(s.id)}"${s.id === session.id ? ' selected' : ''}>${escapeHtml(sessionDisplayTitle(s))}</option>`
+  ).join('');
+  return `
+    <div class="prep-session-switcher" id="prep-session-switcher">
+      <div class="field prep-session-select-field">
+        <label class="prep-title-label" for="prep-session-select">${escapeHtml(t('session_switcher_label'))}</label>
+        <select id="prep-session-select" aria-label="${escapeAttr(t('session_switcher_label'))}">${options}</select>
+      </div>
+      <div class="prep-session-actions">
+        <button type="button" class="btn btn-sm btn-ghost" id="prep-session-new">${escapeHtml(t('session_new'))}</button>
+        <button type="button" class="btn btn-sm btn-ghost" id="prep-session-duplicate">${escapeHtml(t('session_duplicate'))}</button>
+        <button type="button" class="btn btn-sm btn-ghost" id="prep-session-delete">${escapeHtml(t('session_delete'))}</button>
+      </div>
+    </div>`;
+}
+
+/** Focuses and selects the session title field — used right after creating
+ * or duplicating a session, so the GM can immediately type a name over the
+ * default/copied one without an extra click. */
+function focusSessionTitleForRename() {
+  const input = document.getElementById('prep-session-title');
+  if (input) { input.focus(); input.select(); }
+}
+
+function bindSessionPrepSwitcher() {
+  const select = document.getElementById('prep-session-select');
+  if (select) {
+    select.addEventListener('change', () => {
+      const result = switchSessionPrepSession(select.value);
+      if (!result) return;
+      updateSaveStatusDisplay(result);
+      renderSessionPrepPage();
+    });
+  }
+  const newBtn = document.getElementById('prep-session-new');
+  if (newBtn) newBtn.addEventListener('click', () => {
+    const result = createSessionPrepSession();
+    updateSaveStatusDisplay(result);
+    renderSessionPrepPage();
+    focusSessionTitleForRename();
+  });
+  const dupBtn = document.getElementById('prep-session-duplicate');
+  if (dupBtn) dupBtn.addEventListener('click', () => {
+    const session = activeSessionPrep();
+    if (!session) return;
+    const result = duplicateSessionPrepSession(session.id);
+    if (!result) return;
+    updateSaveStatusDisplay(result);
+    renderSessionPrepPage();
+    focusSessionTitleForRename();
+  });
+  const delBtn = document.getElementById('prep-session-delete');
+  if (delBtn) delBtn.addEventListener('click', () => {
+    const session = activeSessionPrep();
+    if (!session) return;
+    if (!confirm(t('session_delete_confirm').replace('{name}', sessionDisplayTitle(session)))) return;
+    const result = deleteSessionPrepSession(session.id);
+    updateSaveStatusDisplay(result);
+    renderSessionPrepPage();
+  });
+}
+
 /* ---------------- session header (title + save status) ---------------- */
 
 function sessionHeaderHtml(session) {
   return `
+    ${sessionSwitcherHtml(session)}
     <div class="prep-session-header" id="prep-session-header">
       <div class="prep-title-field">
         <label class="prep-title-label" for="prep-session-title">${escapeHtml(t('session_name_label'))}</label>
@@ -3767,15 +3916,26 @@ function sessionHeaderHtml(session) {
     </div>`;
 }
 
+/** Keeps the switcher's own option label for `session` in sync with a title
+ * edit, without a full renderSessionPrepPage() — the same targeted-refresh
+ * approach every other Session Prep field change already uses. */
+function refreshSessionSwitcherOption(session) {
+  const select = document.getElementById('prep-session-select');
+  if (!select) return;
+  const option = select.querySelector(`option[value="${escapeSelectorAttrValue(session.id)}"]`);
+  if (option) option.textContent = sessionDisplayTitle(session);
+}
+
 const SESSION_TITLE_DEBOUNCE_MS = 300;
 
 function saveSessionTitle(rawValue) {
   const title = String(rawValue == null ? '' : rawValue).slice(0, 120);
   const session = activeSessionPrep();
   if (!session || session.title === title) return;
-  const { result } = updateSessionPrepSession(s => Object.assign({}, s, { title }));
+  const { result, session: saved } = updateSessionPrepSession(s => Object.assign({}, s, { title }));
   updateSaveStatusDisplay(result);
   refreshFreshCutGrassLink();
+  if (saved) refreshSessionSwitcherOption(saved);
 }
 
 function bindSessionPrepTitleInput() {
@@ -3788,9 +3948,13 @@ function bindSessionPrepTitleInput() {
   });
   input.addEventListener('blur', () => {
     clearTimeout(debounceTimer);
-    const trimmed = input.value.trim();
-    if (trimmed !== input.value) input.value = trimmed;
-    saveSessionTitle(trimmed);
+    // A session's stored title is never left empty/whitespace-only — unlike
+    // the debounced mid-typing save above (which can transiently persist an
+    // empty string while a GM is still typing), blur is the "done editing"
+    // commit point, so this is where the localized default is substituted.
+    const resolved = SessionPrepUtils.resolveSessionTitle(input.value, t('session_name_placeholder'));
+    if (resolved !== input.value) input.value = resolved;
+    saveSessionTitle(resolved);
   });
 }
 
@@ -3858,6 +4022,7 @@ function bindSessionPrepSearchAndTitle() {
   bindSessionPrepSearchField('adv');
   bindSessionPrepSearchField('item');
   bindSessionPrepTitleInput();
+  bindSessionPrepSwitcher();
 }
 
 /* ---------------- catalogue load failure + retry ---------------- */
