@@ -29521,6 +29521,131 @@
         "settlement"
       ],
       "source": "The Game Master's Book of Traps, Puzzles and Dungeons"
+    },
+    {
+      "id": "faestone-wode",
+      "tier": 1,
+      "type": "exploration",
+      "difficulty": 10,
+      "name": {
+        "en": "Faestone Wode",
+        "ru": "Феекаменная Чаща"
+      },
+      "lore": {
+        "en": "A dark and verdant wilderness, suddenly lit with purple-and-blue lights emanating from a beguiling set of stones.",
+        "ru": "Тёмная и пышная чаща, внезапно озарённая фиолетово-синими огнями, что исходят от завораживающих камней."
+      },
+      "impulses": {
+        "en": [
+          "Dance",
+          "sing",
+          "make merry",
+          "stay forever"
+        ],
+        "ru": [
+          "Танцевать",
+          "петь",
+          "веселиться",
+          "остаться навсегда"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Young Dryad",
+          "Sylvan Soldier",
+          "Tangle Bramble",
+          "Tangle Bramble Swarm",
+          "Swarm of Rats"
+        ],
+        "ru": [
+          "Юная Дриада",
+          "Лесной Солдат",
+          "Спутанный Терновник",
+          "Рой Спутанного Терновника",
+          "Стая Крыс"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Faestone Lore",
+            "ru": "Знания Феекамней"
+          },
+          "description": {
+            "en": "These Faestones hold the lore of nature, etched in glowing magic runes. They hold great lore, but evade the minds that pursue them. A PC can make a Knowledge Roll to study these stones for information about nature magic and the local area. On a success or failure with fear, activate \"Defenders of the Stones\" for free.",
+            "ru": "Эти Феекамни хранят знания природы, начертанные светящимися магическими рунами. В них скрыта великая мудрость, но она ускользает от умов, что пытаются её постичь. Персонаж может совершить бросок Знания, чтобы изучить эти камни в поисках сведений о природной магии и окрестностях. При успехе или провале со Страхом бесплатно активируйте «Защитников Камней»."
+          },
+          "prompt": {
+            "en": "Was this lore etched here deliberately, or the natural result of nature magic running its course?",
+            "ru": "Эти знания были начертаны здесь намеренно, или это естественный результат действия природной магии?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Defenders of the Stones",
+            "ru": "Защитники Камней"
+          },
+          "description": {
+            "en": "Spend a Fear to have a Young Dryad, three Sylvan Soldiers, and double as many Tangle Brambles as there are PCs appear to remove the party as intruders.",
+            "ru": "Потратьте Страх, чтобы появились Юная Дриада, три Лесных Солдата и вдвое больше Спутанных Терновников, чем персонажей в отряде, — они попытаются изгнать незваных гостей."
+          },
+          "prompt": {
+            "en": "Does the party have some right to this place to invoke? Will the Dryad care?",
+            "ru": "Может ли отряд сослаться на какое-то право находиться здесь? Будет ли это волновать Дриаду?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Fae Trickery",
+            "ru": "Фейские Козни"
+          },
+          "description": {
+            "en": "Countdown (Loop 4). Every time a PC rolls with Fear, advance the countdown. When it triggers, the next PC to spotlight has Disadvantage as the Faestones flicker and some trickery sprites them.",
+            "ru": "Отсчёт (Цикл 4). Каждый раз, когда персонаж выбрасывает результат со Страхом, продвигайте отсчёт. Когда он срабатывает, следующий персонаж, получающий Активацию, действует с Помехой — Феекамни мерцают, и некое фейское озорство подшучивает над ним."
+          },
+          "prompt": {
+            "en": "Is this a deliberate force trying to hold the PCs back, or a simple force of nature? Can it be averted or deferred? Can it be turned off?",
+            "ru": "Это осознанная сила, пытающаяся сдержать персонажей, или обычное явление природы? Можно ли его избежать или отсрочить? Можно ли его отключить?"
+          }
+        }
+      ],
+      "story_seeds": [
+        {
+          "title": {
+            "en": "Secret of the Woods",
+            "ru": "Тайна Леса"
+          },
+          "body": {
+            "en": "One of the PCs connections requires information only known in the deep faestone lore of the fae they are reluctant to share. It seems the only way to appease their desire is to gaze upon the Faestones.",
+            "ru": "Один из Знакомых персонажей нуждается в сведениях, известных лишь из глубинных знаний фей о Феекамнях, которыми они делятся неохотно. Похоже, единственный способ утолить эту нужду — взглянуть на сами Феекамни."
+          },
+          "prompt": {
+            "en": "What does the connection want with this lore? Do the PCs have some reason to withhold it once they realize what it is?",
+            "ru": "Зачем этому Знакомому такие знания? Есть ли у персонажей причина скрыть их, поняв, что это такое?"
+          }
+        },
+        {
+          "title": {
+            "en": "We Took the Wrong Left",
+            "ru": "Свернули не туда"
+          },
+          "body": {
+            "en": "The Faestone Wode is not a place everyone arrives at deliberately—many tricky woodland paths twist and turn here. Those who try to follow desire paths and remote dirt roads may find themselves brought here. While it's nature to be fascinated by the Faestones, these wanderers may need to study them closely to figure out how to get where they were originally going.",
+            "ru": "В Феекаменную Чащу не все попадают намеренно — здесь петляет множество обманчивых лесных троп. Те, кто пытается срезать путь по протоптанным дорожкам и глухим просёлкам, порой оказываются именно здесь. И хотя Феекамни завораживают почти любого, этим путникам, возможно, придётся присмотреться к ним внимательнее, чтобы понять, как выбраться туда, куда они изначально держали путь."
+          },
+          "prompt": {
+            "en": "Did the PCs wander here by accident, or is it fate they wind up in the Faestone Wode?",
+            "ru": "Забрели ли персонажи сюда случайно, или им суждено было оказаться в Феекаменной Чаще?"
+          }
+        }
+      ],
+      "biomes": [
+        "forest"
+      ],
+      "source": "Resting Dagger"
     }
   ]
 }
