@@ -3176,10 +3176,11 @@ function prepToggleLabel(name, checked) {
  * icon opens the very same openItemDetail() overlay the main Items page
  * uses; Session Prep keeps no item-detail code of its own.
  *
- * Art-first tile: the name only appears as a bottom overlay and the full
- * "name · kind · source · #roll" line only in the data-tip tooltip (both
- * on hover/focus, see css/styles.css's .prep-item-name-overlay) — the
- * artwork itself is the permanent content. This is the one Session Prep
+ * Art-first tile: the name only appears as a bottom overlay, and the
+ * "kind · source · #roll" line (no name — the overlay already gives that)
+ * only in the data-tip tooltip (both on hover/focus, see css/styles.css's
+ * .prep-item-name-overlay) — the artwork itself is the permanent content.
+ * This is the one Session Prep
  * picker where the selection checkbox (.prep-checkbox-hit) is hidden until
  * hover/:focus-within rather than always visible, an intentional exception
  * scoped to `.prep-item-card` alone (env/adv rows keep the always-visible
@@ -3190,7 +3191,7 @@ function itemCardHtml(item, session) {
   const checked = session.itemIds.includes(item.id);
   const name = itemField(item, 'name');
   const kind = item.kind === 'consumable' ? 'consumable' : 'item';
-  const tip = `${name} · ${t('item_kind_' + kind)} · ${t('item_src_' + item.src)} · #${item.roll}`;
+  const tip = `${t('item_kind_' + kind)} · ${t('item_src_' + item.src)} · #${item.roll}`;
   return `
     <div class="prep-item-card${checked ? ' is-selected' : ''}" data-item-id="${escapeAttr(item.id)}">
       <button type="button" class="prep-item-icon-btn" data-sp-open-item="${escapeAttr(item.id)}"
