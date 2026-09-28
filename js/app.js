@@ -3334,7 +3334,7 @@ function centralEnvCardHtml(env) {
       ${prepEnvThumbHtml(env)}
       <div class="prep-central-card-body">
         <span class="prep-central-card-name">${escapeHtml(name)}</span>
-        <span class="prep-central-card-meta">${t('tier_label')} ${env.tier} · ${escapeHtml(t('type_' + env.type))}</span>
+        <span class="prep-central-card-meta">${t('tier_label')} ${env.tier}</span>
       </div>
     </div>`;
 }

@@ -2329,15 +2329,20 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-central-card-name { display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-base); line-height: 1.4; color: var(--parchment); }
 .prep-central-card-meta { font-size: var(--fs-sm); line-height: 1.4; color: var(--muted); }
 
-/* Selected environments: up to three tiles side by side (wrapping on
-   narrow widths) instead of the stacked rows adversaries use below — each
-   is its own bordered card with the remove control in its corner. */
+/* Selected environments: up to three tiles side by side — always exactly
+   three columns (never auto-fill's implicit drop to two at in-between
+   widths, which was the cramped-card/excessive-wrap bug at laptop widths)
+   since the three-environment cap (SessionPrepUtils.MAX_ENVIRONMENTS,
+   PD-002) means this grid never needs to hold more or fewer. minmax(0, 1fr)
+   lets a column shrink below its content's natural width so a long name
+   wraps instead of forcing overflow — each card is its own bordered box
+   with the remove control in its corner. */
 .prep-central-env-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--s-3);
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3);
 }
 .prep-central-env-card {
-  position: relative; display: flex; align-items: center; gap: var(--s-3);
-  padding: var(--s-2); padding-right: var(--s-7);
+  position: relative; display: flex; align-items: center; gap: var(--s-2);
+  padding: var(--s-2) var(--s-7) var(--s-2) var(--s-1);
   border: 1px solid var(--line-faint); border-radius: var(--r-sm); background: var(--ink-raised);
 }
 .prep-central-env-card .prep-central-env-remove { position: absolute; top: var(--s-1); right: var(--s-1); }
