@@ -2289,6 +2289,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-item-thumb { padding: 2px; }
 .prep-adv-thumb img, .prep-item-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .prep-thumb.prep-thumb-fallback,
+.prep-adv-thumb.prep-thumb-fallback,
 .prep-item-thumb.prep-thumb-fallback {
   display: flex; align-items: center; justify-content: center; background: var(--ink-raised);
 }
