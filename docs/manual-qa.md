@@ -80,6 +80,23 @@ locally") before starting.
       re-enables the rest without losing search text/scroll position.
 - [ ] Header chrome collapse/expand (see "Header" above) from within
       Session Prep specifically.
+- [ ] **Adversary catalogue reports 264**: the "All Adversaries" count reads
+      264 of 264 with no filters active.
+- [ ] **Adversary Tier/Type filters**: Tier values OR together, Type values
+      OR together, Tier and Type AND together, "Selected only" combines with
+      both, "Clear filters" resets all three and hides itself, the Filters
+      disclosure is collapsed by default and toggles open/closed.
+- [ ] **FreshCutGrass export**: "Open in FreshCutGrass" is absent with zero
+      adversaries selected, appears the moment one is selected, opens in a
+      new tab, and its accessible label/tooltip announces the destination
+      and adversary count. Decode the link's payload and confirm it uses
+      `name.en` (never the Russian label) at `q: 1`, with no environment or
+      item data included.
+- [ ] **Item Category/Source controls**: Items/Consumables each report 120;
+      Core/Hope & Fear/All sources narrow correctly; switching category or
+      source never clears an existing item selection.
+- [ ] A selected adversary/item's Tier/Type/source meta line in both the
+      picker row and the central selected list.
 
 ## Language
 

@@ -132,3 +132,89 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   logo, or main brand name anywhere; imitating the official Daggerheart
   logo or artwork.
 - **Supersedes:** n/a.
+
+## PD-005: Session Prep's adversary catalogue is full-SRD, picker-metadata-only
+
+- **Status:** Active
+- **Date:** 2026-09-28
+- **Decision:** Session Prep's adversary picker (`data/session-prep.json`'s
+  `adversaries` array) covers all 264 adversaries in the official Daggerheart
+  SRD 2.0, each carrying only picker metadata — id, English/Russian name,
+  Tier (1-4), official Adversary Type (one of ten fixed keys: bruiser,
+  horde, leader, minion, ranged, skulk, social, solo, standard, support),
+  and an optional local image. It never carries a full stat block, a
+  source/book attribution, or Core-vs-Hope & Fear membership.
+- **Implications:**
+  - `scripts/validate-data.js` hard-fails the build if the array isn't
+    exactly 264 records, if any record is missing Tier/Type/a non-empty
+    English or Russian name, or if a record carries a forbidden
+    stat-block-shaped field (`role`, `source`, `book`, `difficulty`, `hp`,
+    `stress`, `attacks`, `features`, `description`, etc. — see
+    `SESSION_PREP_ADVERSARY_FORBIDDEN_KEYS`).
+  - The 17 adversary ids from the original MVP
+    (`SESSION_PREP_MVP_IDS`/`scripts/validate-data.js`) are permanent and
+    must never be renamed or removed — a GM's already-saved Session Prep
+    selection must keep resolving.
+  - English name/Tier/Type were sourced from a GitHub mirror of the
+    official Daggerheart SRD 2.0 text (matthttam/daggerheart-srd-2.0),
+    cross-checked against each adversary's own stat-block header line
+    ("Tier N <Type>.").
+  - Russian names come from whichever is available first: (1)
+    daggerheart.ru's own adversary listing (`https://daggerheart.ru/adversary`)
+    with its "На Русском" language toggle switched on — a session-scoped
+    cookie, not a URL prefix, which is why an initial archive.org-only
+    research pass wrongly concluded the site had no adversary translations
+    at all; it covers 129 of the 264 (confirmed directly by the project
+    owner: the site doesn't cover all of them), matched by the site's own
+    `/adversary/<slug>` English URL, with zero Tier/Type discrepancies
+    against the canonical SRD source for every match, (2) a non-empty
+    translation already in the project's existing data (the original MVP's
+    own translations — all 7 that overlap with daggerheart.ru's listing
+    matched it byte-for-byte, confirming that's where they originally came
+    from), (3) `data/adversary-translations-manual.json`, this project's
+    own literary translations for the ids daggerheart.ru doesn't cover. No
+    adversary ships with an empty or placeholder Russian name.
+  - `scripts/import-session-prep-adversaries.js` is the one-time,
+    dependency-free tool that (re)builds the array from these sources and
+    writes a translation-status audit report; it refuses to write anything
+    if a record is left unresolved/ambiguous.
+  - Adding a filter (Tier, Type, "Selected only") to the adversary picker
+    is in scope; adding a Core/Hope & Fear source filter, full stat blocks,
+    or any other book-attribution UI is not — see the "OUT OF SCOPE"
+    boundary this decision inherits from PD-001/PD-002's binary-selection
+    spirit.
+- **Explicitly excluded:** a `role`/`source`/`book` field on any adversary
+  record, a Core-vs-Hope & Fear filter or badge for adversaries, importing
+  or displaying Difficulty/HP/Stress/attacks/features/Experiences/
+  descriptions, renaming any of the 17 original MVP ids.
+- **Supersedes:** the original Session Prep MVP's 17-adversary hand-picked
+  subset (no Tier/Type fields at all) — see git history predating this
+  decision for that shape.
+
+## PD-006: Session Prep's item catalogue is the full 240-entry loot table
+
+- **Status:** Active
+- **Date:** 2026-09-28
+- **Decision:** Session Prep's item picker (`data/session-prep.json`'s
+  `items` array) references exactly 240 ids: `ci1`-`ci60` (Core Items),
+  `cc1`-`cc60` (Core Consumables), `hi1`-`hi60` (Hope & Fear Items),
+  `hc1`-`hc60` (Hope & Fear Consumables) — the Daggerheart Loot Generator's
+  complete roll-table loot, not just the original MVP's `ci1`-`ci10`
+  subset. The full metadata for every one of these ids is merged into the
+  shared `data/items.json` catalogue (which keeps its other, non-Session-
+  Prep entries — aliases, environment-linked items — unchanged);
+  `session-prep.json` itself still only ever stores the ordered id list.
+- **Implications:**
+  - `scripts/validate-data.js` hard-fails the build if the array isn't
+    exactly 240 entries, or if any of the four prefix groups is missing a
+    roll number 1-60 or has one outside that range.
+  - Session Prep's item picker gained a Category toggle (Items/
+    Consumables) and a Source toggle (All/Core/Hope & Fear), each
+    combining with the existing name-or-exact-roll-number search — see
+    `SessionPrepUtils.filterItems()`.
+  - The `ci1`-`ci10` ids from the original MVP resolve exactly as before
+    (same metadata, unchanged) — nothing about them was touched by this
+    expansion.
+- **Explicitly excluded:** item quantities (still PD-002), a second
+  storage key or duplicated item metadata inside `session-prep.json`.
+- **Supersedes:** the original Session Prep MVP's `ci1`-`ci10` subset.

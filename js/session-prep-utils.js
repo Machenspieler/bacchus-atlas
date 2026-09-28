@@ -204,6 +204,66 @@
     return [env.name && env.name.en, env.name && env.name.ru].concat(biomeFields);
   }
 
+  /* ---------------- adversary filters (Tier / Type / Selected only) ---------------- */
+
+  var ADVERSARY_TIERS = [1, 2, 3, 4];
+  var ADVERSARY_TYPES = ['bruiser', 'horde', 'leader', 'minion', 'ranged', 'skulk', 'social', 'solo', 'standard', 'support'];
+
+  function toSet(value) {
+    if (value instanceof Set) return value;
+    var s = new Set();
+    (value || []).forEach(function (v) { s.add(v); });
+    return s;
+  }
+
+  /** Filters the full adversary catalogue by every active Session Prep
+   * filter at once: free-text search (name.en/name.ru, see filterEntries()),
+   * a Tier multiselect (`options.tiers`, values OR together, empty = no
+   * restriction), a Type multiselect (`options.types`, same OR/empty rule),
+   * and "Selected only" (`options.selectedOnly` + `options.selectedIds`) —
+   * every group ANDs with the others, so an entirely empty filter set
+   * returns the full, unfiltered catalogue. Never mutates `adversaries` or
+   * `options`; a filtered-out entry is simply absent from the result, never
+   * flagged as unselected. */
+  function filterAdversaries(adversaries, options) {
+    var opts = options || {};
+    var tiers = toSet(opts.tiers);
+    var types = toSet(opts.types);
+    var selectedOnly = !!opts.selectedOnly;
+    var selectedIds = toSet(opts.selectedIds);
+    var bySearch = filterEntries(adversaries, opts.search, function (a) {
+      return [a.name && a.name.en, a.name && a.name.ru];
+    });
+    return bySearch.filter(function (adv) {
+      if (tiers.size && !tiers.has(adv.tier)) return false;
+      if (types.size && !types.has(adv.type)) return false;
+      if (selectedOnly && !selectedIds.has(adv.id)) return false;
+      return true;
+    });
+  }
+
+  /* ---------------- item filters (Category / Source) ---------------- */
+
+  /** Filters Session Prep's item/consumable catalogue by category
+   * (`options.category`: 'item' | 'consumable' | falsy for no restriction),
+   * source (`options.source`: 'core' | 'hnf' | 'all'/falsy for no
+   * restriction), and free-text-or-exact-roll search (see
+   * matchesItemSearch()/filterItemEntries()) — every group ANDs with the
+   * others. `getFields`/`getRoll` mirror filterItemEntries()'s own contract
+   * (typically `i => [i.en?.name, i.ru?.name]` / `i => i.roll`). Never
+   * mutates `items`. */
+  function filterItems(items, options, getFields, getRoll) {
+    var opts = options || {};
+    var category = opts.category || null;
+    var source = opts.source && opts.source !== 'all' ? opts.source : null;
+    var bySearch = filterItemEntries(items, opts.search, getFields, getRoll);
+    return bySearch.filter(function (item) {
+      if (category && item.kind !== category) return false;
+      if (source && item.src !== source) return false;
+      return true;
+    });
+  }
+
   return {
     MAX_ENVIRONMENTS: MAX_ENVIRONMENTS,
     SCHEMA_VERSION: SCHEMA_VERSION,
@@ -224,5 +284,9 @@
     matchesItemSearch: matchesItemSearch,
     filterItemEntries: filterItemEntries,
     environmentSearchFields: environmentSearchFields,
+    ADVERSARY_TIERS: ADVERSARY_TIERS,
+    ADVERSARY_TYPES: ADVERSARY_TYPES,
+    filterAdversaries: filterAdversaries,
+    filterItems: filterItems,
   };
 });

@@ -1,23 +1,2733 @@
 {
-  "_note": "Session Prep MVP picker data. Adversaries are metadata only (id, bilingual name, optional image) — full stat blocks live in FreshCutGrass/the printed book, never in this repo. `items` is just an ordered list of ids into data/items.json's own catalogue: name, description, kind, source, roll and image all live there so this file never keeps a second copy of them. Adversary art is Bacchus's Atlas's own, mapped explicitly per id when a file exists under img/adversaries/art/session-prep/; an adversary with no image entry uses the designed inline SVG fallback.",
+  "_note": "Session Prep picker data — full Daggerheart SRD 2.0 catalogues, not the original MVP subset. Adversaries are metadata only (id, tier, type, bilingual name, optional image) — full stat blocks live in FreshCutGrass/the printed book, never in this repo; no source/book/Core-vs-Hope&Fear field, no quantity, no primary environment (see PD-001/PD-002 and the Session Prep sections of CLAUDE.md). The 17 original MVP adversary ids are preserved unchanged (scripts/validate-data.js enforces this). `items` is an ordered list of exactly 240 ids (ci1-60, cc1-60, hi1-60, hc1-60) into data/items.json's own catalogue: name, description, kind, source, roll and image all live there so this file never keeps a second copy of them. Adversary art is Bacchus's Atlas's own, mapped explicitly per id when a file exists under img/adversaries/session-prep/; an adversary with no image entry uses the designed inline SVG fallback. Regenerate this file's `adversaries` array with scripts/import-session-prep-adversaries.js (see its header comment) rather than hand-editing 264 records.",
   "adversaries": [
-    { "id": "acid-burrower", "name": { "en": "Acid Burrower", "ru": "Кислотный Землекоп" } },
-    { "id": "ahuizotl", "name": { "en": "Ahuizotl", "ru": "" }, "image": "img/adversaries/art/session-prep/063_ahuizotl.png" },
-    { "id": "atototl", "name": { "en": "Atototl", "ru": "" } },
-    { "id": "bear", "name": { "en": "Bear", "ru": "Медведь" } },
-    { "id": "bugboar", "name": { "en": "Bugboar", "ru": "Багбор" }, "image": "img/adversaries/art/session-prep/063_bugboar.png" },
-    { "id": "cave-ogre", "name": { "en": "Cave Ogre", "ru": "Пещерный Огр" } },
-    { "id": "common-ruffian", "name": { "en": "Common Ruffian", "ru": "Обычный Головорез" } },
-    { "id": "construct", "name": { "en": "Construct", "ru": "Конструкт" } },
-    { "id": "courtier", "name": { "en": "Courtier", "ru": "Придворный" } },
-    { "id": "darkweave-crawler", "name": { "en": "Darkweave Crawler", "ru": "Паутинный Ползун" } },
-    { "id": "darkweave-queen", "name": { "en": "Darkweave Queen", "ru": "" } },
-    { "id": "darkweave-spinner", "name": { "en": "Darkweave Spinner", "ru": "Паутинный Ткач" } },
-    { "id": "darkweave-swarmlings", "name": { "en": "Darkweave Swarmlings", "ru": "Паутинные Детёныши" } },
-    { "id": "deeproot-defender", "name": { "en": "Deeproot Defender", "ru": "Защитник Корней" } },
-    { "id": "dire-wolf", "name": { "en": "Dire Wolf", "ru": "Лютоволк" } },
-    { "id": "elk", "name": { "en": "Elk", "ru": "" } },
-    { "id": "falcon", "name": { "en": "Falcon", "ru": "" } }
+    {
+      "id": "acid-burrower",
+      "name": {
+        "en": "Acid Burrower",
+        "ru": "Кислотный Землекоп"
+      },
+      "tier": 1,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/acid-burrower.png"
+    },
+    {
+      "id": "adult-flickerfly",
+      "name": {
+        "en": "Adult Flickerfly",
+        "ru": "Взрослая Мерцекрылка"
+      },
+      "tier": 3,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/adult-flickerfly.png"
+    },
+    {
+      "id": "ahuizotl",
+      "name": {
+        "en": "Ahuizotl",
+        "ru": "Ауицотль"
+      },
+      "tier": 1,
+      "type": "skulk",
+      "image": "img/adversaries/session-prep/063_ahuizotl.png"
+    },
+    {
+      "id": "apprentice-assassin",
+      "name": {
+        "en": "Apprentice Assassin",
+        "ru": "Убийца Ученик"
+      },
+      "tier": 2,
+      "type": "minion",
+      "image": "img/adversaries/session-prep/apprentice-assassin.png"
+    },
+    {
+      "id": "arch-necromancer",
+      "name": {
+        "en": "Arch-Necromancer",
+        "ru": "Архинекромант"
+      },
+      "tier": 4,
+      "type": "leader",
+      "image": "img/adversaries/session-prep/arch-necromancer.png"
+    },
+    {
+      "id": "archer-guard",
+      "name": {
+        "en": "Archer Guard",
+        "ru": "Стражник-Лучник"
+      },
+      "tier": 1,
+      "type": "ranged"
+    },
+    {
+      "id": "archer-squadron",
+      "name": {
+        "en": "Archer Squadron",
+        "ru": "Отряд Лучников"
+      },
+      "tier": 2,
+      "type": "horde"
+    },
+    {
+      "id": "archmage",
+      "name": {
+        "en": "Archmage",
+        "ru": "Архимаг"
+      },
+      "tier": 3,
+      "type": "solo"
+    },
+    {
+      "id": "assassin-poisoner",
+      "name": {
+        "en": "Assassin Poisoner",
+        "ru": "Убийца Отравитель"
+      },
+      "tier": 2,
+      "type": "skulk",
+      "image": "img/adversaries/session-prep/assassin-poisoner.png"
+    },
+    {
+      "id": "atototl",
+      "name": {
+        "en": "Atototl",
+        "ru": "Атототль"
+      },
+      "tier": 1,
+      "type": "standard"
+    },
+    {
+      "id": "banshee",
+      "name": {
+        "en": "Banshee",
+        "ru": "Банши"
+      },
+      "tier": 2,
+      "type": "skulk"
+    },
+    {
+      "id": "basilisk",
+      "name": {
+        "en": "Basilisk",
+        "ru": "Василиск"
+      },
+      "tier": 2,
+      "type": "standard",
+      "image": "img/adversaries/session-prep/071_basilisk.png"
+    },
+    {
+      "id": "battle-box",
+      "name": {
+        "en": "Battle Box",
+        "ru": "Боевой Куб"
+      },
+      "tier": 2,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/battle-box.png"
+    },
+    {
+      "id": "bear",
+      "name": {
+        "en": "Bear",
+        "ru": "Медведь"
+      },
+      "tier": 1,
+      "type": "bruiser"
+    },
+    {
+      "id": "berserker-alpha",
+      "name": {
+        "en": "Berserker Alpha",
+        "ru": "Берсерк-Вожак"
+      },
+      "tier": 2,
+      "type": "leader"
+    },
+    {
+      "id": "berserker-initiate",
+      "name": {
+        "en": "Berserker Initiate",
+        "ru": "Берсерк-Послушник"
+      },
+      "tier": 2,
+      "type": "standard"
+    },
+    {
+      "id": "bladed-guard",
+      "name": {
+        "en": "Bladed Guard",
+        "ru": "Стражник-Мечник"
+      },
+      "tier": 1,
+      "type": "standard"
+    },
+    {
+      "id": "brawny-zombie",
+      "name": {
+        "en": "Brawny Zombie",
+        "ru": "Зомби Силач"
+      },
+      "tier": 1,
+      "type": "bruiser",
+      "image": "img/adversaries/session-prep/brawny-zombie.png"
+    },
+    {
+      "id": "bugboar",
+      "name": {
+        "en": "Bugboar",
+        "ru": "Багбор"
+      },
+      "tier": 1,
+      "type": "bruiser",
+      "image": "img/adversaries/session-prep/063_bugboar.png"
+    },
+    {
+      "id": "catrin",
+      "name": {
+        "en": "Catrin",
+        "ru": "Катрин"
+      },
+      "tier": 3,
+      "type": "social"
+    },
+    {
+      "id": "cave-ogre",
+      "name": {
+        "en": "Cave Ogre",
+        "ru": "Пещерный Огр"
+      },
+      "tier": 1,
+      "type": "solo"
+    },
+    {
+      "id": "centaur-warden",
+      "name": {
+        "en": "Centaur Warden",
+        "ru": "Кентавр-Страж"
+      },
+      "tier": 2,
+      "type": "ranged"
+    },
+    {
+      "id": "cephilith-abomination",
+      "name": {
+        "en": "Cephilith Abomination",
+        "ru": "Цефилит-Мерзость"
+      },
+      "tier": 4,
+      "type": "bruiser"
+    },
+    {
+      "id": "cephilith-hatchling",
+      "name": {
+        "en": "Cephilith Hatchling",
+        "ru": "Цефилит-Детёныш"
+      },
+      "tier": 4,
+      "type": "minion",
+      "image": "img/adversaries/session-prep/091_cephilith_hatchling.png"
+    },
+    {
+      "id": "cephilith-novitiate",
+      "name": {
+        "en": "Cephilith Novitiate",
+        "ru": "Цефилит-Послушник"
+      },
+      "tier": 4,
+      "type": "minion"
+    },
+    {
+      "id": "cephilith-priest",
+      "name": {
+        "en": "Cephilith Priest",
+        "ru": "Цефилит-Жрец"
+      },
+      "tier": 4,
+      "type": "leader"
+    },
+    {
+      "id": "cephilith-titan",
+      "name": {
+        "en": "Cephilith Titan",
+        "ru": "Цефилит-Титан"
+      },
+      "tier": 4,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/092_cephilith_titan.png"
+    },
+    {
+      "id": "chaos-skull",
+      "name": {
+        "en": "Chaos Skull",
+        "ru": "Череп Хаоса"
+      },
+      "tier": 2,
+      "type": "ranged",
+      "image": "img/adversaries/session-prep/chaos-skull.png"
+    },
+    {
+      "id": "chicken-foot-hut",
+      "name": {
+        "en": "Chicken-Foot Hut",
+        "ru": "Избушка на Курьих Ножках"
+      },
+      "tier": 2,
+      "type": "bruiser"
+    },
+    {
+      "id": "chimera",
+      "name": {
+        "en": "Chimera",
+        "ru": "Химера"
+      },
+      "tier": 3,
+      "type": "bruiser",
+      "image": "img/adversaries/session-prep/082_chimera.png"
+    },
+    {
+      "id": "cipactli",
+      "name": {
+        "en": "Cipactli",
+        "ru": "Сипактли"
+      },
+      "tier": 4,
+      "type": "solo"
+    },
+    {
+      "id": "cloud-titan",
+      "name": {
+        "en": "Cloud Titan",
+        "ru": "Титан Облаков"
+      },
+      "tier": 4,
+      "type": "social"
+    },
+    {
+      "id": "common-ruffian",
+      "name": {
+        "en": "Common Ruffian",
+        "ru": "Обычный Головорез"
+      },
+      "tier": 1,
+      "type": "standard"
+    },
+    {
+      "id": "conscript",
+      "name": {
+        "en": "Conscript",
+        "ru": "Призывник"
+      },
+      "tier": 2,
+      "type": "minion"
+    },
+    {
+      "id": "construct",
+      "name": {
+        "en": "Construct",
+        "ru": "Конструкт"
+      },
+      "tier": 1,
+      "type": "solo"
+    },
+    {
+      "id": "courtesan",
+      "name": {
+        "en": "Courtesan",
+        "ru": "Куртизанка"
+      },
+      "tier": 2,
+      "type": "social"
+    },
+    {
+      "id": "courtier",
+      "name": {
+        "en": "Courtier",
+        "ru": "Придворный"
+      },
+      "tier": 1,
+      "type": "social"
+    },
+    {
+      "id": "crimson-lepus",
+      "name": {
+        "en": "Crimson Lepus",
+        "ru": "Багровый Заяц"
+      },
+      "tier": 3,
+      "type": "solo"
+    },
+    {
+      "id": "cryptimoth",
+      "name": {
+        "en": "Cryptimoth",
+        "ru": "Криптомотылёк"
+      },
+      "tier": 3,
+      "type": "skulk",
+      "image": "img/adversaries/session-prep/083_cryptimoth.png"
+    },
+    {
+      "id": "cult-adept",
+      "name": {
+        "en": "Cult Adept",
+        "ru": "Адепт Культа"
+      },
+      "tier": 2,
+      "type": "support"
+    },
+    {
+      "id": "cult-fang",
+      "name": {
+        "en": "Cult Fang",
+        "ru": "Клык Культа"
+      },
+      "tier": 2,
+      "type": "skulk"
+    },
+    {
+      "id": "cult-initiate",
+      "name": {
+        "en": "Cult Initiate",
+        "ru": "Посвящённый Культа"
+      },
+      "tier": 2,
+      "type": "minion"
+    },
+    {
+      "id": "cursed-merfolk",
+      "name": {
+        "en": "Cursed Merfolk",
+        "ru": "Проклятый Водяной"
+      },
+      "tier": 3,
+      "type": "standard"
+    },
+    {
+      "id": "darkweave-crawler",
+      "name": {
+        "en": "Darkweave Crawler",
+        "ru": "Паутинный Ползун"
+      },
+      "tier": 1,
+      "type": "minion",
+      "image": "img/adversaries/session-prep/064_darkweave_adversaries.png"
+    },
+    {
+      "id": "darkweave-queen",
+      "name": {
+        "en": "Darkweave Queen",
+        "ru": "Паутинная Королева"
+      },
+      "tier": 1,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/064_darkweave_adversaries.png"
+    },
+    {
+      "id": "darkweave-spinner",
+      "name": {
+        "en": "Darkweave Spinner",
+        "ru": "Паутинный Ткач"
+      },
+      "tier": 1,
+      "type": "standard",
+      "image": "img/adversaries/session-prep/064_darkweave_adversaries.png"
+    },
+    {
+      "id": "darkweave-swarmlings",
+      "name": {
+        "en": "Darkweave Swarmlings",
+        "ru": "Паутинные Детёныши"
+      },
+      "tier": 1,
+      "type": "horde",
+      "image": "img/adversaries/session-prep/064_darkweave_adversaries.png"
+    },
+    {
+      "id": "deep-dweller",
+      "name": {
+        "en": "Deep Dweller",
+        "ru": "Глубинный Обитатель"
+      },
+      "tier": 3,
+      "type": "leader",
+      "image": "img/adversaries/session-prep/084_deep_dweller.png"
+    },
+    {
+      "id": "deeproot-defender",
+      "name": {
+        "en": "Deeproot Defender",
+        "ru": "Защитник Корней"
+      },
+      "tier": 1,
+      "type": "bruiser"
+    },
+    {
+      "id": "demon-lord-berzug",
+      "name": {
+        "en": "Demon Lord Berzug",
+        "ru": "Повелитель Демонов Берзуг"
+      },
+      "tier": 4,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/093_demon_lord_berzug.png"
+    },
+    {
+      "id": "demon-of-avarice",
+      "name": {
+        "en": "Demon of Avarice",
+        "ru": "Демон Алчности"
+      },
+      "tier": 3,
+      "type": "support",
+      "image": "img/adversaries/session-prep/demon-of-avarice.png"
+    },
+    {
+      "id": "demon-of-despair",
+      "name": {
+        "en": "Demon of Despair",
+        "ru": "Демон Уныния"
+      },
+      "tier": 3,
+      "type": "skulk",
+      "image": "img/adversaries/session-prep/demon-of-despair.png"
+    },
+    {
+      "id": "demon-of-hubris",
+      "name": {
+        "en": "Demon of Hubris",
+        "ru": "Демон Гордыни"
+      },
+      "tier": 3,
+      "type": "leader",
+      "image": "img/adversaries/session-prep/demon-of-hubris.png"
+    },
+    {
+      "id": "demon-of-jealousy",
+      "name": {
+        "en": "Demon of Jealousy",
+        "ru": "Демон Зависти"
+      },
+      "tier": 3,
+      "type": "ranged",
+      "image": "img/adversaries/session-prep/demon-of-jealousy.png"
+    },
+    {
+      "id": "demon-of-wrath",
+      "name": {
+        "en": "Demon of Wrath",
+        "ru": "Демон Гнева"
+      },
+      "tier": 3,
+      "type": "bruiser",
+      "image": "img/adversaries/session-prep/demon-of-wrath.png"
+    },
+    {
+      "id": "demonic-hound-pack",
+      "name": {
+        "en": "Demonic Hound Pack",
+        "ru": "Стая Адских Псов"
+      },
+      "tier": 2,
+      "type": "horde",
+      "image": "img/adversaries/session-prep/demonic-hound-pack.png"
+    },
+    {
+      "id": "dire-bat",
+      "name": {
+        "en": "Dire Bat",
+        "ru": "Ужасная летучая мышь"
+      },
+      "tier": 3,
+      "type": "skulk",
+      "image": "img/adversaries/session-prep/head-vampire-and-dire-bat.png"
+    },
+    {
+      "id": "dire-pangolati",
+      "name": {
+        "en": "Dire Pangolati",
+        "ru": "Лютый Панголати"
+      },
+      "tier": 2,
+      "type": "bruiser",
+      "image": "img/adversaries/session-prep/072_dire_pangolati.png"
+    },
+    {
+      "id": "dire-wolf",
+      "name": {
+        "en": "Dire Wolf",
+        "ru": "Лютоволк"
+      },
+      "tier": 1,
+      "type": "skulk"
+    },
+    {
+      "id": "doppelhound",
+      "name": {
+        "en": "Doppelhound",
+        "ru": "Пёс-Двойник"
+      },
+      "tier": 2,
+      "type": "skulk",
+      "image": "img/adversaries/session-prep/072_doppelhound.png"
+    },
+    {
+      "id": "dragon-knight",
+      "name": {
+        "en": "Dragon Knight",
+        "ru": "Драконий Рыцарь"
+      },
+      "tier": 2,
+      "type": "bruiser"
+    },
+    {
+      "id": "dragon-mother-mitera",
+      "name": {
+        "en": "Dragon Mother Mitera",
+        "ru": "Мать Драконов Митера"
+      },
+      "tier": 4,
+      "type": "solo"
+    },
+    {
+      "id": "drake",
+      "name": {
+        "en": "Drake",
+        "ru": "Дрейк"
+      },
+      "tier": 3,
+      "type": "skulk"
+    },
+    {
+      "id": "dryad",
+      "name": {
+        "en": "Dryad",
+        "ru": "Дриада"
+      },
+      "tier": 3,
+      "type": "leader"
+    },
+    {
+      "id": "dullahan",
+      "name": {
+        "en": "Dullahan",
+        "ru": "Дуллахан"
+      },
+      "tier": 3,
+      "type": "bruiser"
+    },
+    {
+      "id": "electric-eels",
+      "name": {
+        "en": "Electric Eels",
+        "ru": "Стая Электрических Угрей"
+      },
+      "tier": 2,
+      "type": "horde"
+    },
+    {
+      "id": "elemental-spark",
+      "name": {
+        "en": "Elemental Spark",
+        "ru": "Стихийная Искра"
+      },
+      "tier": 3,
+      "type": "minion"
+    },
+    {
+      "id": "elephant",
+      "name": {
+        "en": "Elephant",
+        "ru": "Слон"
+      },
+      "tier": 2,
+      "type": "bruiser"
+    },
+    {
+      "id": "elite-soldier",
+      "name": {
+        "en": "Elite Soldier",
+        "ru": "Элитный Солдат"
+      },
+      "tier": 2,
+      "type": "standard"
+    },
+    {
+      "id": "elk",
+      "name": {
+        "en": "Elk",
+        "ru": "Лось"
+      },
+      "tier": 1,
+      "type": "skulk"
+    },
+    {
+      "id": "entombed-cat-beast",
+      "name": {
+        "en": "Entombed Cat Beast",
+        "ru": "Погребённый Кошачий Зверь"
+      },
+      "tier": 2,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/073_entombed_cat_beast.png"
+    },
+    {
+      "id": "entombed-elite-guard",
+      "name": {
+        "en": "Entombed Elite Guard",
+        "ru": "Погребённый Элитный Страж"
+      },
+      "tier": 2,
+      "type": "standard",
+      "image": "img/adversaries/session-prep/074_entombed_elite_guard.png"
+    },
+    {
+      "id": "entombed-empress",
+      "name": {
+        "en": "Entombed Empress",
+        "ru": "Погребённая Императрица"
+      },
+      "tier": 2,
+      "type": "leader",
+      "image": "img/adversaries/session-prep/074_entombed_empress.png"
+    },
+    {
+      "id": "entombed-necropriest",
+      "name": {
+        "en": "Entombed Necropriest",
+        "ru": "Погребённый Некрожрец"
+      },
+      "tier": 2,
+      "type": "support"
+    },
+    {
+      "id": "entombed-skin-beetles",
+      "name": {
+        "en": "Entombed Skin Beetles",
+        "ru": "Погребённые Кожееды"
+      },
+      "tier": 2,
+      "type": "horde"
+    },
+    {
+      "id": "entombed-stonemason",
+      "name": {
+        "en": "Entombed Stonemason",
+        "ru": "Погребённый Каменщик"
+      },
+      "tier": 2,
+      "type": "minion",
+      "image": "img/adversaries/session-prep/074_entombed_stonemason.png"
+    },
+    {
+      "id": "failed-experiment",
+      "name": {
+        "en": "Failed Experiment",
+        "ru": "Провальный Эксперимент"
+      },
+      "tier": 2,
+      "type": "standard"
+    },
+    {
+      "id": "falcon",
+      "name": {
+        "en": "Falcon",
+        "ru": "Сокол"
+      },
+      "tier": 1,
+      "type": "skulk"
+    },
+    {
+      "id": "fallen-shock-troop",
+      "name": {
+        "en": "Fallen Shock Troop",
+        "ru": "Падший Пехотинец"
+      },
+      "tier": 4,
+      "type": "minion"
+    },
+    {
+      "id": "fallen-sorcerer",
+      "name": {
+        "en": "Fallen Sorcerer",
+        "ru": "Падший Чародей"
+      },
+      "tier": 4,
+      "type": "support"
+    },
+    {
+      "id": "fallen-warlord-realm-breaker",
+      "name": {
+        "en": "Fallen Warlord Realm-Breaker",
+        "ru": "Полководец Падших: Губитель Миров"
+      },
+      "tier": 4,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/fallen-warlord-realm-breaker.png"
+    },
+    {
+      "id": "fallen-warlord-undefeated-champion",
+      "name": {
+        "en": "Fallen Warlord Undefeated Champion",
+        "ru": "Полководец Падших: Непобеждённый Чемпион"
+      },
+      "tier": 4,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/fallen-warlord-undefeated-champion.png"
+    },
+    {
+      "id": "fellmounted-shadow-king",
+      "name": {
+        "en": "Fellmounted Shadow King",
+        "ru": "Теневой Король-Всадник"
+      },
+      "tier": 3,
+      "type": "support"
+    },
+    {
+      "id": "fire-titan",
+      "name": {
+        "en": "Fire Titan",
+        "ru": "Титан Огня"
+      },
+      "tier": 3,
+      "type": "solo"
+    },
+    {
+      "id": "fire-titan-warlord",
+      "name": {
+        "en": "Fire Titan Warlord",
+        "ru": "Военачальник Титанов Огня"
+      },
+      "tier": 4,
+      "type": "leader"
+    },
+    {
+      "id": "flock-of-feather-fiends",
+      "name": {
+        "en": "Flock of Feather Fiends",
+        "ru": "Стая Пернатых Демонов"
+      },
+      "tier": 2,
+      "type": "horde"
+    },
+    {
+      "id": "fowlbear",
+      "name": {
+        "en": "Fowlbear",
+        "ru": "Птицемедведь"
+      },
+      "tier": 2,
+      "type": "bruiser",
+      "image": "img/adversaries/session-prep/075_fowlbear.png"
+    },
+    {
+      "id": "frost-titan",
+      "name": {
+        "en": "Frost Titan",
+        "ru": "Титан Мороза"
+      },
+      "tier": 3,
+      "type": "bruiser"
+    },
+    {
+      "id": "fungispunj-sporeling",
+      "name": {
+        "en": "Fungispunj Sporeling",
+        "ru": "Спорёнок Фунгиспанжа"
+      },
+      "tier": 2,
+      "type": "minion"
+    },
+    {
+      "id": "fungispunj-sporophore",
+      "name": {
+        "en": "Fungispunj Sporophore",
+        "ru": "Спорофор Фунгиспанжа"
+      },
+      "tier": 2,
+      "type": "leader"
+    },
+    {
+      "id": "gargantuan-sea-turtle",
+      "name": {
+        "en": "Gargantuan Sea Turtle",
+        "ru": "Гигантская Морская Черепаха"
+      },
+      "tier": 3,
+      "type": "solo"
+    },
+    {
+      "id": "gargantuan-war-machine",
+      "name": {
+        "en": "Gargantuan War Machine",
+        "ru": "Гигантская Боевая Машина"
+      },
+      "tier": 4,
+      "type": "solo"
+    },
+    {
+      "id": "gargoyle",
+      "name": {
+        "en": "Gargoyle",
+        "ru": "Гаргулья"
+      },
+      "tier": 2,
+      "type": "bruiser"
+    },
+    {
+      "id": "ghastly-legion",
+      "name": {
+        "en": "Ghastly Legion",
+        "ru": "Жуткий Легион"
+      },
+      "tier": 4,
+      "type": "horde"
+    },
+    {
+      "id": "giant-beastmaster",
+      "name": {
+        "en": "Giant Beastmaster",
+        "ru": "Великан Укротитель Зверей"
+      },
+      "tier": 2,
+      "type": "leader"
+    },
+    {
+      "id": "giant-brawler",
+      "name": {
+        "en": "Giant Brawler",
+        "ru": "Великан Боец"
+      },
+      "tier": 2,
+      "type": "bruiser",
+      "image": "img/adversaries/session-prep/giant-brawler.png"
+    },
+    {
+      "id": "giant-eagle",
+      "name": {
+        "en": "Giant Eagle",
+        "ru": "Огромный Орёл"
+      },
+      "tier": 2,
+      "type": "skulk"
+    },
+    {
+      "id": "giant-mosquitoes",
+      "name": {
+        "en": "Giant Mosquitoes",
+        "ru": "Гигантские Комары"
+      },
+      "tier": 1,
+      "type": "horde"
+    },
+    {
+      "id": "giant-octopus",
+      "name": {
+        "en": "Giant Octopus",
+        "ru": "Гигантский Осьминог"
+      },
+      "tier": 2,
+      "type": "solo"
+    },
+    {
+      "id": "giant-rat",
+      "name": {
+        "en": "Giant Rat",
+        "ru": "Гигантская Крыса"
+      },
+      "tier": 1,
+      "type": "minion"
+    },
+    {
+      "id": "giant-recruit",
+      "name": {
+        "en": "Giant Recruit",
+        "ru": "Гигант Новобранец"
+      },
+      "tier": 2,
+      "type": "minion"
+    },
+    {
+      "id": "giant-scorpion",
+      "name": {
+        "en": "Giant Scorpion",
+        "ru": "Гигантский Скорпион"
+      },
+      "tier": 1,
+      "type": "bruiser"
+    },
+    {
+      "id": "glass-snake",
+      "name": {
+        "en": "Glass Snake",
+        "ru": "Стеклянная Змея"
+      },
+      "tier": 1,
+      "type": "standard",
+      "image": "img/adversaries/session-prep/glass-snake.png"
+    },
+    {
+      "id": "gobstalker",
+      "name": {
+        "en": "Gobstalker",
+        "ru": "Гобсталкер"
+      },
+      "tier": 2,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/076_gobstalker.png"
+    },
+    {
+      "id": "gorgon",
+      "name": {
+        "en": "Gorgon",
+        "ru": "Горгона"
+      },
+      "tier": 2,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/gorgon.png"
+    },
+    {
+      "id": "greater-earth-elemental",
+      "name": {
+        "en": "Greater Earth Elemental",
+        "ru": "Великий Земляной Элементаль"
+      },
+      "tier": 3,
+      "type": "bruiser",
+      "image": "img/adversaries/session-prep/greater-earth-elemental.png"
+    },
+    {
+      "id": "greater-water-elemental",
+      "name": {
+        "en": "Greater Water Elemental",
+        "ru": "Великий Водный Элементаль"
+      },
+      "tier": 3,
+      "type": "support"
+    },
+    {
+      "id": "green-ooze",
+      "name": {
+        "en": "Green Ooze",
+        "ru": "Зелёная Слизь"
+      },
+      "tier": 1,
+      "type": "skulk",
+      "image": "img/adversaries/session-prep/green-ooze.png"
+    },
+    {
+      "id": "griffin",
+      "name": {
+        "en": "Griffin",
+        "ru": "Грифон"
+      },
+      "tier": 4,
+      "type": "standard"
+    },
+    {
+      "id": "grimmling-warband",
+      "name": {
+        "en": "Grimmling Warband",
+        "ru": "Военный Отряд Гримлингов"
+      },
+      "tier": 1,
+      "type": "horde",
+      "image": "img/adversaries/session-prep/065_grimmling_warband.png"
+    },
+    {
+      "id": "guahalan-alebrujo",
+      "name": {
+        "en": "Guahalan Alebrujo",
+        "ru": "Гуахаланский Алебрухо"
+      },
+      "tier": 2,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/078_guahalan_alebrujo.png"
+    },
+    {
+      "id": "guahalan-fang-lord",
+      "name": {
+        "en": "Guahalan Fang Lord",
+        "ru": "Гуахаланский Клыкастый Владыка"
+      },
+      "tier": 2,
+      "type": "leader",
+      "image": "img/adversaries/session-prep/077_guahalan_fang_lord.png"
+    },
+    {
+      "id": "guahalan-shifter",
+      "name": {
+        "en": "Guahalan Shifter",
+        "ru": "Гуахаланский Оборотень"
+      },
+      "tier": 2,
+      "type": "standard",
+      "image": "img/adversaries/session-prep/077_guahalan_shifter.png"
+    },
+    {
+      "id": "guahalan-spirit-beast",
+      "name": {
+        "en": "Guahalan Spirit Beast",
+        "ru": "Гуахаланский Зверь-Дух"
+      },
+      "tier": 2,
+      "type": "minion",
+      "image": "img/adversaries/session-prep/077_guahalan_spirit_beast.png"
+    },
+    {
+      "id": "guahalan-spirit-singer",
+      "name": {
+        "en": "Guahalan Spirit Singer",
+        "ru": "Гуахаланский Певец Духов"
+      },
+      "tier": 2,
+      "type": "support",
+      "image": "img/adversaries/session-prep/078_guahalan_spirit_singer.png"
+    },
+    {
+      "id": "hallowed-archer",
+      "name": {
+        "en": "Hallowed Archer",
+        "ru": "Святой Лучник"
+      },
+      "tier": 4,
+      "type": "ranged"
+    },
+    {
+      "id": "hallowed-choir",
+      "name": {
+        "en": "Hallowed Choir",
+        "ru": "Освящённый Хор"
+      },
+      "tier": 4,
+      "type": "horde"
+    },
+    {
+      "id": "hallowed-soldier",
+      "name": {
+        "en": "Hallowed Soldier",
+        "ru": "Святой Солдат"
+      },
+      "tier": 4,
+      "type": "minion"
+    },
+    {
+      "id": "harbinger-of-death",
+      "name": {
+        "en": "Harbinger of Death",
+        "ru": "Вестник Смерти"
+      },
+      "tier": 4,
+      "type": "skulk",
+      "image": "img/adversaries/session-prep/095_the_harbingers.png"
+    },
+    {
+      "id": "harbinger-of-famine",
+      "name": {
+        "en": "Harbinger of Famine",
+        "ru": "Вестник Голода"
+      },
+      "tier": 4,
+      "type": "support",
+      "image": "img/adversaries/session-prep/095_the_harbingers.png"
+    },
+    {
+      "id": "harbinger-of-pestilence",
+      "name": {
+        "en": "Harbinger of Pestilence",
+        "ru": "Вестник Мора"
+      },
+      "tier": 4,
+      "type": "leader",
+      "image": "img/adversaries/session-prep/095_the_harbingers.png"
+    },
+    {
+      "id": "harbinger-of-war",
+      "name": {
+        "en": "Harbinger of War",
+        "ru": "Вестник Войны"
+      },
+      "tier": 4,
+      "type": "bruiser",
+      "image": "img/adversaries/session-prep/095_the_harbingers.png"
+    },
+    {
+      "id": "harpy",
+      "name": {
+        "en": "Harpy",
+        "ru": "Гарпия"
+      },
+      "tier": 1,
+      "type": "skulk"
+    },
+    {
+      "id": "harrier",
+      "name": {
+        "en": "Harrier",
+        "ru": "Налётчик"
+      },
+      "tier": 1,
+      "type": "standard"
+    },
+    {
+      "id": "head-guard",
+      "name": {
+        "en": "Head Guard",
+        "ru": "Капитан Стражи"
+      },
+      "tier": 1,
+      "type": "leader"
+    },
+    {
+      "id": "head-vampire",
+      "name": {
+        "en": "Head Vampire",
+        "ru": "Владыка Вампиров"
+      },
+      "tier": 3,
+      "type": "leader",
+      "image": "img/adversaries/session-prep/head-vampire-and-dire-bat.png"
+    },
+    {
+      "id": "high-seraph",
+      "name": {
+        "en": "High Seraph",
+        "ru": "Высший Серафим"
+      },
+      "tier": 4,
+      "type": "leader"
+    },
+    {
+      "id": "hill-titan",
+      "name": {
+        "en": "Hill Titan",
+        "ru": "Титан Холмов"
+      },
+      "tier": 2,
+      "type": "solo"
+    },
+    {
+      "id": "hive-walker",
+      "name": {
+        "en": "Hive Walker",
+        "ru": "Ходок Улья"
+      },
+      "tier": 2,
+      "type": "standard"
+    },
+    {
+      "id": "huge-green-ooze",
+      "name": {
+        "en": "Huge Green Ooze",
+        "ru": "Огромная Зелёная Слизь"
+      },
+      "tier": 3,
+      "type": "skulk"
+    },
+    {
+      "id": "hydra",
+      "name": {
+        "en": "Hydra",
+        "ru": "Гидра"
+      },
+      "tier": 3,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/hydra.png"
+    },
+    {
+      "id": "jack-o-lantern",
+      "name": {
+        "en": "Jack-O-Lantern",
+        "ru": "Джек-Фонарь"
+      },
+      "tier": 2,
+      "type": "minion"
+    },
+    {
+      "id": "jagged-knife-bandit",
+      "name": {
+        "en": "Jagged Knife Bandit",
+        "ru": "Бандит из «Зазубренного Ножа»"
+      },
+      "tier": 1,
+      "type": "standard",
+      "image": "img/adversaries/session-prep/jagged-knife-bandit.png"
+    },
+    {
+      "id": "jagged-knife-hexer",
+      "name": {
+        "en": "Jagged Knife Hexer",
+        "ru": "Колдун из «Зазубренного Ножа»"
+      },
+      "tier": 1,
+      "type": "support",
+      "image": "img/adversaries/session-prep/jagged-knife-hexer.png"
+    },
+    {
+      "id": "jagged-knife-kneebreaker",
+      "name": {
+        "en": "Jagged Knife Kneebreaker",
+        "ru": "Коленолом из «Зазубренного Ножа»"
+      },
+      "tier": 1,
+      "type": "bruiser"
+    },
+    {
+      "id": "jagged-knife-lackey",
+      "name": {
+        "en": "Jagged Knife Lackey",
+        "ru": "Шестёрка из «Зазубренного Ножа»"
+      },
+      "tier": 1,
+      "type": "minion"
+    },
+    {
+      "id": "jagged-knife-lieutenant",
+      "name": {
+        "en": "Jagged Knife Lieutenant",
+        "ru": "Лейтенант из «Зазубренного Ножа»"
+      },
+      "tier": 1,
+      "type": "leader",
+      "image": "img/adversaries/session-prep/jagged-knife-lieutenant.png"
+    },
+    {
+      "id": "jagged-knife-shadow",
+      "name": {
+        "en": "Jagged Knife Shadow",
+        "ru": "Тень из «Зазубренного Ножа»"
+      },
+      "tier": 1,
+      "type": "skulk"
+    },
+    {
+      "id": "jagged-knife-sniper",
+      "name": {
+        "en": "Jagged Knife Sniper",
+        "ru": "Снайпер из «Зазубренного Ножа»"
+      },
+      "tier": 1,
+      "type": "ranged"
+    },
+    {
+      "id": "juvenile-flickerfly",
+      "name": {
+        "en": "Juvenile Flickerfly",
+        "ru": "Молодая Мерцекрылка"
+      },
+      "tier": 2,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/juvenile-flickerfly.png"
+    },
+    {
+      "id": "kelpie",
+      "name": {
+        "en": "Kelpie",
+        "ru": "Келпи"
+      },
+      "tier": 1,
+      "type": "skulk"
+    },
+    {
+      "id": "knight-of-the-realm",
+      "name": {
+        "en": "Knight of the Realm",
+        "ru": "Рыцарь Короны"
+      },
+      "tier": 2,
+      "type": "leader",
+      "image": "img/adversaries/session-prep/knight-of-the-realm.png"
+    },
+    {
+      "id": "kraken",
+      "name": {
+        "en": "Kraken",
+        "ru": "Кракен"
+      },
+      "tier": 4,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/kraken.png"
+    },
+    {
+      "id": "lamia",
+      "name": {
+        "en": "Lamia",
+        "ru": "Ламия"
+      },
+      "tier": 3,
+      "type": "skulk"
+    },
+    {
+      "id": "lamplight-beguiler",
+      "name": {
+        "en": "Lamplight Beguiler",
+        "ru": "Чаровник с Фонарём"
+      },
+      "tier": 3,
+      "type": "skulk",
+      "image": "img/adversaries/session-prep/086_lamplight_beguiler.png"
+    },
+    {
+      "id": "landshark",
+      "name": {
+        "en": "Landshark",
+        "ru": "Сухопутная Акула"
+      },
+      "tier": 2,
+      "type": "bruiser",
+      "image": "img/adversaries/session-prep/079_landshark.png"
+    },
+    {
+      "id": "landshark-behemoth",
+      "name": {
+        "en": "Landshark Behemoth",
+        "ru": "Исполинская Сухопутная Акула"
+      },
+      "tier": 2,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/079_landshark_behemoth.png"
+    },
+    {
+      "id": "manticore",
+      "name": {
+        "en": "Manticore",
+        "ru": "Мантикора"
+      },
+      "tier": 3,
+      "type": "solo"
+    },
+    {
+      "id": "masked-thief",
+      "name": {
+        "en": "Masked Thief",
+        "ru": "Вор в Маске"
+      },
+      "tier": 2,
+      "type": "skulk"
+    },
+    {
+      "id": "masque-muerte",
+      "name": {
+        "en": "Masque Muerte",
+        "ru": "Маскарад Муэрте"
+      },
+      "tier": 1,
+      "type": "solo"
+    },
+    {
+      "id": "master-assassin",
+      "name": {
+        "en": "Master Assassin",
+        "ru": "Убийца Мастер"
+      },
+      "tier": 2,
+      "type": "leader",
+      "image": "img/adversaries/session-prep/master-assassin.png"
+    },
+    {
+      "id": "mechanorb",
+      "name": {
+        "en": "Mechanorb",
+        "ru": "Механосфера"
+      },
+      "tier": 1,
+      "type": "standard",
+      "image": "img/adversaries/session-prep/066_mechanorb.png"
+    },
+    {
+      "id": "merchant",
+      "name": {
+        "en": "Merchant",
+        "ru": "Торговец"
+      },
+      "tier": 1,
+      "type": "social"
+    },
+    {
+      "id": "merchant-baron",
+      "name": {
+        "en": "Merchant Baron",
+        "ru": "Торговый Барон"
+      },
+      "tier": 2,
+      "type": "social"
+    },
+    {
+      "id": "minor-chaos-elemental",
+      "name": {
+        "en": "Minor Chaos Elemental",
+        "ru": "Малый Элементаль Хаоса"
+      },
+      "tier": 1,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/minor-chaos-elemental.png"
+    },
+    {
+      "id": "minor-demon",
+      "name": {
+        "en": "Minor Demon",
+        "ru": "Малый Демон"
+      },
+      "tier": 1,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/minor-demon.png"
+    },
+    {
+      "id": "minor-fire-elemental",
+      "name": {
+        "en": "Minor Fire Elemental",
+        "ru": "Малый Огненный Элементаль"
+      },
+      "tier": 1,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/minor-fire-elemental.png"
+    },
+    {
+      "id": "minor-treant",
+      "name": {
+        "en": "Minor Treant",
+        "ru": "Молодой Древень"
+      },
+      "tier": 1,
+      "type": "minion",
+      "image": "img/adversaries/session-prep/minor-treant.png"
+    },
+    {
+      "id": "minotaur-wrecker",
+      "name": {
+        "en": "Minotaur Wrecker",
+        "ru": "Минотавр Крушитель"
+      },
+      "tier": 2,
+      "type": "bruiser",
+      "image": "img/adversaries/session-prep/minotaur.png"
+    },
+    {
+      "id": "monarch",
+      "name": {
+        "en": "Monarch",
+        "ru": "Монарх"
+      },
+      "tier": 3,
+      "type": "social"
+    },
+    {
+      "id": "mortal-hunter",
+      "name": {
+        "en": "Mortal Hunter",
+        "ru": "Охотник на Живых"
+      },
+      "tier": 2,
+      "type": "leader"
+    },
+    {
+      "id": "mountain-troll",
+      "name": {
+        "en": "Mountain Troll",
+        "ru": "Горный Тролль"
+      },
+      "tier": 1,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/066_mountain_troll.png"
+    },
+    {
+      "id": "night-children",
+      "name": {
+        "en": "Night Children",
+        "ru": "Дети Ночи"
+      },
+      "tier": 3,
+      "type": "horde",
+      "image": "img/adversaries/session-prep/086_night_children.png"
+    },
+    {
+      "id": "oak-treant",
+      "name": {
+        "en": "Oak Treant",
+        "ru": "Дубовый Трэнт"
+      },
+      "tier": 3,
+      "type": "bruiser"
+    },
+    {
+      "id": "octopus",
+      "name": {
+        "en": "Octopus",
+        "ru": "Осьминог"
+      },
+      "tier": 1,
+      "type": "skulk"
+    },
+    {
+      "id": "oracle-of-doom",
+      "name": {
+        "en": "Oracle of Doom",
+        "ru": "Оракул Погибели"
+      },
+      "tier": 4,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/oracle-of-doom.png"
+    },
+    {
+      "id": "outer-realms-abomination",
+      "name": {
+        "en": "Outer Realms Abomination",
+        "ru": "Мерзость из внешних миров"
+      },
+      "tier": 4,
+      "type": "bruiser"
+    },
+    {
+      "id": "outer-realms-corrupter",
+      "name": {
+        "en": "Outer Realms Corrupter",
+        "ru": "Искуситель из внешних миров"
+      },
+      "tier": 4,
+      "type": "support"
+    },
+    {
+      "id": "outer-realms-thrall",
+      "name": {
+        "en": "Outer Realms Thrall",
+        "ru": "Прислужник из внешних миров"
+      },
+      "tier": 4,
+      "type": "minion"
+    },
+    {
+      "id": "owl-witch",
+      "name": {
+        "en": "Owl Witch",
+        "ru": "Ведьма-Сова"
+      },
+      "tier": 4,
+      "type": "support"
+    },
+    {
+      "id": "pain-priest",
+      "name": {
+        "en": "Pain Priest",
+        "ru": "Жрец Боли"
+      },
+      "tier": 3,
+      "type": "social",
+      "image": "img/adversaries/session-prep/087_pain_priest.png"
+    },
+    {
+      "id": "panther",
+      "name": {
+        "en": "Panther",
+        "ru": "Пантера"
+      },
+      "tier": 1,
+      "type": "skulk"
+    },
+    {
+      "id": "patchwork-zombie-hulk",
+      "name": {
+        "en": "Patchwork Zombie Hulk",
+        "ru": "Лоскутный Зомби-Громила"
+      },
+      "tier": 1,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/patchwork-zombie-hulk.png"
+    },
+    {
+      "id": "perfected-zombie",
+      "name": {
+        "en": "Perfected Zombie",
+        "ru": "Совершенный Зомби"
+      },
+      "tier": 4,
+      "type": "bruiser"
+    },
+    {
+      "id": "petty-noble",
+      "name": {
+        "en": "Petty Noble",
+        "ru": "Мелкий Аристократ"
+      },
+      "tier": 1,
+      "type": "social"
+    },
+    {
+      "id": "phantom",
+      "name": {
+        "en": "Phantom",
+        "ru": "Фантом"
+      },
+      "tier": 1,
+      "type": "standard"
+    },
+    {
+      "id": "phoenix",
+      "name": {
+        "en": "Phoenix",
+        "ru": "Феникс"
+      },
+      "tier": 3,
+      "type": "ranged",
+      "image": "img/adversaries/session-prep/087_phoenix.png"
+    },
+    {
+      "id": "pirate-captain",
+      "name": {
+        "en": "Pirate Captain",
+        "ru": "Капитан Пиратов"
+      },
+      "tier": 1,
+      "type": "leader"
+    },
+    {
+      "id": "pirate-raiders",
+      "name": {
+        "en": "Pirate Raiders",
+        "ru": "Пираты налётчики"
+      },
+      "tier": 1,
+      "type": "horde"
+    },
+    {
+      "id": "pirate-tough",
+      "name": {
+        "en": "Pirate Tough",
+        "ru": "Пират Громила"
+      },
+      "tier": 1,
+      "type": "bruiser"
+    },
+    {
+      "id": "plesiosaurus",
+      "name": {
+        "en": "Plesiosaurus",
+        "ru": "Плезиозавр"
+      },
+      "tier": 3,
+      "type": "standard"
+    },
+    {
+      "id": "poltergeist",
+      "name": {
+        "en": "Poltergeist",
+        "ru": "Полтергейст"
+      },
+      "tier": 1,
+      "type": "ranged"
+    },
+    {
+      "id": "rabble-mawb",
+      "name": {
+        "en": "Rabble Mawb",
+        "ru": "Сброд Мауба"
+      },
+      "tier": 1,
+      "type": "horde",
+      "image": "img/adversaries/session-prep/067_rabble_mawb.png"
+    },
+    {
+      "id": "ravenous-mockery",
+      "name": {
+        "en": "Ravenous Mockery",
+        "ru": "Прожорливая Пересмешница"
+      },
+      "tier": 2,
+      "type": "standard",
+      "image": "img/adversaries/session-prep/079_ravenous_mockery.png"
+    },
+    {
+      "id": "red-ooze",
+      "name": {
+        "en": "Red Ooze",
+        "ru": "Алая Слизь"
+      },
+      "tier": 1,
+      "type": "skulk",
+      "image": "img/adversaries/session-prep/red-ooze.png"
+    },
+    {
+      "id": "redcap-biters",
+      "name": {
+        "en": "Redcap Biters",
+        "ru": "Кусачие Редкапы"
+      },
+      "tier": 1,
+      "type": "horde"
+    },
+    {
+      "id": "redcap-breaker",
+      "name": {
+        "en": "Redcap Breaker",
+        "ru": "Редкап-Крушитель"
+      },
+      "tier": 1,
+      "type": "bruiser"
+    },
+    {
+      "id": "redcap-butcher",
+      "name": {
+        "en": "Redcap Butcher",
+        "ru": "Редкап-Мясник"
+      },
+      "tier": 1,
+      "type": "standard",
+      "image": "img/adversaries/session-prep/068_redcap_butcher.png"
+    },
+    {
+      "id": "redcap-candlemaker",
+      "name": {
+        "en": "Redcap Candlemaker",
+        "ru": "Редкап-Свечник"
+      },
+      "tier": 1,
+      "type": "leader",
+      "image": "img/adversaries/session-prep/068_redcap_candlemaker.png"
+    },
+    {
+      "id": "redcap-skinner",
+      "name": {
+        "en": "Redcap Skinner",
+        "ru": "Редкап-Живодёр"
+      },
+      "tier": 1,
+      "type": "minion",
+      "image": "img/adversaries/session-prep/068_redcap_skinner.png"
+    },
+    {
+      "id": "roc",
+      "name": {
+        "en": "Roc",
+        "ru": "Птица Рух"
+      },
+      "tier": 3,
+      "type": "solo"
+    },
+    {
+      "id": "rotted-zombie",
+      "name": {
+        "en": "Rotted Zombie",
+        "ru": "Гнилой Зомби"
+      },
+      "tier": 1,
+      "type": "minion",
+      "image": "img/adversaries/session-prep/rotted-zombie.png"
+    },
+    {
+      "id": "royal-advisor",
+      "name": {
+        "en": "Royal Advisor",
+        "ru": "Королевский Советник"
+      },
+      "tier": 2,
+      "type": "social"
+    },
+    {
+      "id": "ruby-dragon",
+      "name": {
+        "en": "Ruby Dragon",
+        "ru": "Рубиновый Дракон"
+      },
+      "tier": 4,
+      "type": "standard"
+    },
+    {
+      "id": "rugaru",
+      "name": {
+        "en": "Rugaru",
+        "ru": "Ругару"
+      },
+      "tier": 1,
+      "type": "solo"
+    },
+    {
+      "id": "rust-eater",
+      "name": {
+        "en": "Rust Eater",
+        "ru": "Пожиратель Ржавчины"
+      },
+      "tier": 2,
+      "type": "standard"
+    },
+    {
+      "id": "sandwyrm",
+      "name": {
+        "en": "Sandwyrm",
+        "ru": "Песчаный Вирм"
+      },
+      "tier": 3,
+      "type": "bruiser",
+      "image": "img/adversaries/session-prep/088_sandwyrm.png"
+    },
+    {
+      "id": "sawtoothed-gillbeast",
+      "name": {
+        "en": "Sawtoothed Gillbeast",
+        "ru": "Пилозубый Жаброзверь"
+      },
+      "tier": 1,
+      "type": "standard",
+      "image": "img/adversaries/session-prep/069_sawtoothed_gillbeast.png"
+    },
+    {
+      "id": "scarecrow",
+      "name": {
+        "en": "Scarecrow",
+        "ru": "Пугало"
+      },
+      "tier": 2,
+      "type": "standard"
+    },
+    {
+      "id": "secret-keeper",
+      "name": {
+        "en": "Secret-Keeper",
+        "ru": "Культист - Хранитель Тайн"
+      },
+      "tier": 2,
+      "type": "leader"
+    },
+    {
+      "id": "sellsword",
+      "name": {
+        "en": "Sellsword",
+        "ru": "Наёмник"
+      },
+      "tier": 1,
+      "type": "minion"
+    },
+    {
+      "id": "severed-shadow",
+      "name": {
+        "en": "Severed Shadow",
+        "ru": "Отсечённая Тень"
+      },
+      "tier": 4,
+      "type": "minion"
+    },
+    {
+      "id": "shambling-zombie",
+      "name": {
+        "en": "Shambling Zombie",
+        "ru": "Бредущий Зомби"
+      },
+      "tier": 1,
+      "type": "standard"
+    },
+    {
+      "id": "shapeshifting-fiend",
+      "name": {
+        "en": "Shapeshifting Fiend",
+        "ru": "Демон-Перевёртыш"
+      },
+      "tier": 3,
+      "type": "social"
+    },
+    {
+      "id": "shapeshifting-fiend-revealed",
+      "name": {
+        "en": "Shapeshifting Fiend Revealed",
+        "ru": "Демон-Перевёртыш: Истинный Облик"
+      },
+      "tier": 3,
+      "type": "solo"
+    },
+    {
+      "id": "shark",
+      "name": {
+        "en": "Shark",
+        "ru": "Акула"
+      },
+      "tier": 2,
+      "type": "bruiser"
+    },
+    {
+      "id": "siren",
+      "name": {
+        "en": "Siren",
+        "ru": "Сирена"
+      },
+      "tier": 2,
+      "type": "skulk"
+    },
+    {
+      "id": "skeleton-archer",
+      "name": {
+        "en": "Skeleton Archer",
+        "ru": "Скелет Лучник"
+      },
+      "tier": 1,
+      "type": "ranged",
+      "image": "img/adversaries/session-prep/skeleton-archer.png"
+    },
+    {
+      "id": "skeleton-dredge",
+      "name": {
+        "en": "Skeleton Dredge",
+        "ru": "Скелет Гниль"
+      },
+      "tier": 1,
+      "type": "minion",
+      "image": "img/adversaries/session-prep/skeleton-dredge.png"
+    },
+    {
+      "id": "skeleton-knight",
+      "name": {
+        "en": "Skeleton Knight",
+        "ru": "Скелет Рыцарь"
+      },
+      "tier": 1,
+      "type": "bruiser",
+      "image": "img/adversaries/session-prep/skeleton-knight.png"
+    },
+    {
+      "id": "skeleton-warrior",
+      "name": {
+        "en": "Skeleton Warrior",
+        "ru": "Скелет Воин"
+      },
+      "tier": 1,
+      "type": "standard",
+      "image": "img/adversaries/session-prep/skeleton-warrior.png"
+    },
+    {
+      "id": "soul-shattered-mage",
+      "name": {
+        "en": "Soul-Shattered Mage",
+        "ru": "Маг с Разбитой Душой"
+      },
+      "tier": 1,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/069_soul_shattered_mage.png"
+    },
+    {
+      "id": "spectral-archer",
+      "name": {
+        "en": "Spectral Archer",
+        "ru": "Призрачный Лучник"
+      },
+      "tier": 2,
+      "type": "ranged"
+    },
+    {
+      "id": "spectral-captain",
+      "name": {
+        "en": "Spectral Captain",
+        "ru": "Призрачный Командующий"
+      },
+      "tier": 2,
+      "type": "leader"
+    },
+    {
+      "id": "spectral-guardian",
+      "name": {
+        "en": "Spectral Guardian",
+        "ru": "Призрачный Страж"
+      },
+      "tier": 2,
+      "type": "standard"
+    },
+    {
+      "id": "spellblade",
+      "name": {
+        "en": "Spellblade",
+        "ru": "Заклинатель-мечник"
+      },
+      "tier": 1,
+      "type": "leader"
+    },
+    {
+      "id": "spellbound-armor",
+      "name": {
+        "en": "Spellbound Armor",
+        "ru": "Зачарованные Доспехи"
+      },
+      "tier": 1,
+      "type": "bruiser",
+      "image": "img/adversaries/session-prep/069_spellbound_armor.png"
+    },
+    {
+      "id": "sprite",
+      "name": {
+        "en": "Sprite",
+        "ru": "Спрайт"
+      },
+      "tier": 2,
+      "type": "minion",
+      "image": "img/adversaries/session-prep/080_sprite.png"
+    },
+    {
+      "id": "spy",
+      "name": {
+        "en": "Spy",
+        "ru": "Шпион"
+      },
+      "tier": 2,
+      "type": "social"
+    },
+    {
+      "id": "stag-knight",
+      "name": {
+        "en": "Stag Knight",
+        "ru": "Рыцарь-Олень"
+      },
+      "tier": 3,
+      "type": "standard"
+    },
+    {
+      "id": "stone-titan",
+      "name": {
+        "en": "Stone Titan",
+        "ru": "Титан Камня"
+      },
+      "tier": 2,
+      "type": "solo"
+    },
+    {
+      "id": "stonewraith",
+      "name": {
+        "en": "Stonewraith",
+        "ru": "Каменный Призрак"
+      },
+      "tier": 2,
+      "type": "skulk",
+      "image": "img/adversaries/session-prep/stonewraith.png"
+    },
+    {
+      "id": "storm-titan",
+      "name": {
+        "en": "Storm Titan",
+        "ru": "Титан Бури"
+      },
+      "tier": 3,
+      "type": "solo"
+    },
+    {
+      "id": "supreme-demiurge-adonix",
+      "name": {
+        "en": "Supreme Demiurge Adonix",
+        "ru": "Верховный Демиург Адоникс"
+      },
+      "tier": 4,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/097_supreme_demiurge_adonix.png"
+    },
+    {
+      "id": "swarm-of-rats",
+      "name": {
+        "en": "Swarm of Rats",
+        "ru": "Стая Крыс"
+      },
+      "tier": 1,
+      "type": "horde"
+    },
+    {
+      "id": "sylvan-soldier",
+      "name": {
+        "en": "Sylvan Soldier",
+        "ru": "Лесной Солдат"
+      },
+      "tier": 1,
+      "type": "standard"
+    },
+    {
+      "id": "tangle-bramble",
+      "name": {
+        "en": "Tangle Bramble",
+        "ru": "Колючий Тёрн"
+      },
+      "tier": 1,
+      "type": "minion"
+    },
+    {
+      "id": "tangle-bramble-swarm",
+      "name": {
+        "en": "Tangle Bramble Swarm",
+        "ru": "Рой Колючих Тёрнов"
+      },
+      "tier": 1,
+      "type": "horde"
+    },
+    {
+      "id": "temporal-enforcer",
+      "name": {
+        "en": "Temporal Enforcer",
+        "ru": "Страж Времени"
+      },
+      "tier": 4,
+      "type": "bruiser"
+    },
+    {
+      "id": "tiny-green-ooze",
+      "name": {
+        "en": "Tiny Green Ooze",
+        "ru": "Крошечная Зелёная Слизь"
+      },
+      "tier": 1,
+      "type": "skulk"
+    },
+    {
+      "id": "tiny-red-ooze",
+      "name": {
+        "en": "Tiny Red Ooze",
+        "ru": "Крошечная Алая Слизь"
+      },
+      "tier": 1,
+      "type": "skulk",
+      "image": "img/adversaries/session-prep/tiny-red-ooze.png"
+    },
+    {
+      "id": "treant-sapling",
+      "name": {
+        "en": "Treant Sapling",
+        "ru": "Трэнт Саженец"
+      },
+      "tier": 3,
+      "type": "minion"
+    },
+    {
+      "id": "triceratops",
+      "name": {
+        "en": "Triceratops",
+        "ru": "Трицератопс"
+      },
+      "tier": 2,
+      "type": "bruiser",
+      "image": "img/adversaries/session-prep/080_triceratops.png"
+    },
+    {
+      "id": "tyrannosaurus",
+      "name": {
+        "en": "Tyrannosaurus",
+        "ru": "Тираннозавр"
+      },
+      "tier": 2,
+      "type": "bruiser"
+    },
+    {
+      "id": "unicorn",
+      "name": {
+        "en": "Unicorn",
+        "ru": "Единорог"
+      },
+      "tier": 3,
+      "type": "standard"
+    },
+    {
+      "id": "urco",
+      "name": {
+        "en": "Urco",
+        "ru": "Урко"
+      },
+      "tier": 2,
+      "type": "standard",
+      "image": "img/adversaries/session-prep/081_urco.png"
+    },
+    {
+      "id": "valdenhax",
+      "name": {
+        "en": "Valdenhax",
+        "ru": "Вальденхакс"
+      },
+      "tier": 2,
+      "type": "leader",
+      "image": "img/adversaries/session-prep/081_valdenhax.png"
+    },
+    {
+      "id": "vampire",
+      "name": {
+        "en": "Vampire",
+        "ru": "Вампир"
+      },
+      "tier": 3,
+      "type": "standard"
+    },
+    {
+      "id": "vampire-bat-swarm",
+      "name": {
+        "en": "Vampire Bat Swarm",
+        "ru": "Рой Летучих Мышей-Вампиров"
+      },
+      "tier": 3,
+      "type": "horde"
+    },
+    {
+      "id": "vampire-lord",
+      "name": {
+        "en": "Vampire Lord",
+        "ru": "Повелитель Вампиров"
+      },
+      "tier": 3,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/089_vampire_lord_hellwing.png"
+    },
+    {
+      "id": "vault-guardian-gaoler",
+      "name": {
+        "en": "Vault Guardian Gaoler",
+        "ru": "Страж Хранилища — Тюремщик"
+      },
+      "tier": 3,
+      "type": "support"
+    },
+    {
+      "id": "vault-guardian-sentinel",
+      "name": {
+        "en": "Vault Guardian Sentinel",
+        "ru": "Страж Хранилища — Дозорный"
+      },
+      "tier": 3,
+      "type": "bruiser"
+    },
+    {
+      "id": "vault-guardian-turret",
+      "name": {
+        "en": "Vault Guardian Turret",
+        "ru": "Страж Хранилища — Турель"
+      },
+      "tier": 3,
+      "type": "ranged",
+      "image": "img/adversaries/session-prep/vault-guardian-turret.png"
+    },
+    {
+      "id": "viper",
+      "name": {
+        "en": "Viper",
+        "ru": "Гадюка"
+      },
+      "tier": 1,
+      "type": "minion"
+    },
+    {
+      "id": "viscera-sucker",
+      "name": {
+        "en": "Viscera Sucker",
+        "ru": "Высасыватель Внутренностей"
+      },
+      "tier": 3,
+      "type": "skulk"
+    },
+    {
+      "id": "volcanic-dragon-ashen-tyrant",
+      "name": {
+        "en": "Volcanic Dragon Ashen Tyrant",
+        "ru": "Вулканический Дракон: Пепельный Тиран"
+      },
+      "tier": 4,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/volcanic-dragon-ashen-tyrant.png"
+    },
+    {
+      "id": "volcanic-dragon-molten-scourge",
+      "name": {
+        "en": "Volcanic Dragon Molten Scourge",
+        "ru": "Вулканический Дракон: Расплавленная Кара"
+      },
+      "tier": 4,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/volcanic-dragon-molten-scourge.png"
+    },
+    {
+      "id": "volcanic-dragon-obsidian-predator",
+      "name": {
+        "en": "Volcanic Dragon Obsidian Predator",
+        "ru": "Вулканический Дракон: Обсидиановый Хищник"
+      },
+      "tier": 4,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/volcanic-dragon-obsidian-predator.png"
+    },
+    {
+      "id": "war-wizard",
+      "name": {
+        "en": "War Wizard",
+        "ru": "Боевой Маг"
+      },
+      "tier": 2,
+      "type": "ranged",
+      "image": "img/adversaries/session-prep/war-wizard.png"
+    },
+    {
+      "id": "water-mother",
+      "name": {
+        "en": "Water Mother",
+        "ru": "Мать Вод"
+      },
+      "tier": 4,
+      "type": "solo"
+    },
+    {
+      "id": "waxwork-creation",
+      "name": {
+        "en": "Waxwork Creation",
+        "ru": "Восковое Творение"
+      },
+      "tier": 1,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/070_waxwork_creation.png"
+    },
+    {
+      "id": "weaponmaster",
+      "name": {
+        "en": "Weaponmaster",
+        "ru": "Мастер Оружия"
+      },
+      "tier": 1,
+      "type": "bruiser"
+    },
+    {
+      "id": "whisper-wraith",
+      "name": {
+        "en": "Whisper Wraith",
+        "ru": "Дух-Шептун"
+      },
+      "tier": 3,
+      "type": "skulk"
+    },
+    {
+      "id": "will-o-the-wisps",
+      "name": {
+        "en": "Will-O-The-Wisps",
+        "ru": "Блуждающие Огоньки"
+      },
+      "tier": 1,
+      "type": "horde"
+    },
+    {
+      "id": "wyrmfiend",
+      "name": {
+        "en": "Wyrmfiend",
+        "ru": "Демон-Вирм"
+      },
+      "tier": 4,
+      "type": "minion"
+    },
+    {
+      "id": "wyrmlings",
+      "name": {
+        "en": "Wyrmlings",
+        "ru": "Вирмлинги"
+      },
+      "tier": 4,
+      "type": "horde"
+    },
+    {
+      "id": "wyvern",
+      "name": {
+        "en": "Wyvern",
+        "ru": "Виверна"
+      },
+      "tier": 3,
+      "type": "standard",
+      "image": "img/adversaries/session-prep/090_wyvern.png"
+    },
+    {
+      "id": "xero-the-castle-killer",
+      "name": {
+        "en": "Xero the Castle Killer",
+        "ru": "Ксеро, Убийца Замков"
+      },
+      "tier": 4,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/098_xero_the_castle_killer.png"
+    },
+    {
+      "id": "young-dryad",
+      "name": {
+        "en": "Young Dryad",
+        "ru": "Юная Дриада"
+      },
+      "tier": 1,
+      "type": "leader"
+    },
+    {
+      "id": "young-fire-dragon",
+      "name": {
+        "en": "Young Fire Dragon",
+        "ru": "Молодой Огненный Дракон"
+      },
+      "tier": 3,
+      "type": "solo"
+    },
+    {
+      "id": "young-ice-dragon",
+      "name": {
+        "en": "Young Ice Dragon",
+        "ru": "Молодой Ледяной Дракон"
+      },
+      "tier": 3,
+      "type": "solo",
+      "image": "img/adversaries/session-prep/young-ice-dragon.png"
+    },
+    {
+      "id": "yufo",
+      "name": {
+        "en": "Yufo",
+        "ru": "Юфо"
+      },
+      "tier": 1,
+      "type": "social",
+      "image": "img/adversaries/session-prep/070_yufo.png"
+    },
+    {
+      "id": "zombie-legion",
+      "name": {
+        "en": "Zombie Legion",
+        "ru": "Легион Зомби"
+      },
+      "tier": 4,
+      "type": "horde"
+    },
+    {
+      "id": "zombie-pack",
+      "name": {
+        "en": "Zombie Pack",
+        "ru": "Орда Зомби"
+      },
+      "tier": 1,
+      "type": "horde"
+    }
   ],
-  "items": ["ci1", "ci2", "ci3", "ci4", "ci5", "ci6", "ci7", "ci8", "ci9", "ci10"]
+  "items": [
+    "ci1",
+    "ci2",
+    "ci3",
+    "ci4",
+    "ci5",
+    "ci6",
+    "ci7",
+    "ci8",
+    "ci9",
+    "ci10",
+    "ci11",
+    "ci12",
+    "ci13",
+    "ci14",
+    "ci15",
+    "ci16",
+    "ci17",
+    "ci18",
+    "ci19",
+    "ci20",
+    "ci21",
+    "ci22",
+    "ci23",
+    "ci24",
+    "ci25",
+    "ci26",
+    "ci27",
+    "ci28",
+    "ci29",
+    "ci30",
+    "ci31",
+    "ci32",
+    "ci33",
+    "ci34",
+    "ci35",
+    "ci36",
+    "ci37",
+    "ci38",
+    "ci39",
+    "ci40",
+    "ci41",
+    "ci42",
+    "ci43",
+    "ci44",
+    "ci45",
+    "ci46",
+    "ci47",
+    "ci48",
+    "ci49",
+    "ci50",
+    "ci51",
+    "ci52",
+    "ci53",
+    "ci54",
+    "ci55",
+    "ci56",
+    "ci57",
+    "ci58",
+    "ci59",
+    "ci60",
+    "cc1",
+    "cc2",
+    "cc3",
+    "cc4",
+    "cc5",
+    "cc6",
+    "cc7",
+    "cc8",
+    "cc9",
+    "cc10",
+    "cc11",
+    "cc12",
+    "cc13",
+    "cc14",
+    "cc15",
+    "cc16",
+    "cc17",
+    "cc18",
+    "cc19",
+    "cc20",
+    "cc21",
+    "cc22",
+    "cc23",
+    "cc24",
+    "cc25",
+    "cc26",
+    "cc27",
+    "cc28",
+    "cc29",
+    "cc30",
+    "cc31",
+    "cc32",
+    "cc33",
+    "cc34",
+    "cc35",
+    "cc36",
+    "cc37",
+    "cc38",
+    "cc39",
+    "cc40",
+    "cc41",
+    "cc42",
+    "cc43",
+    "cc44",
+    "cc45",
+    "cc46",
+    "cc47",
+    "cc48",
+    "cc49",
+    "cc50",
+    "cc51",
+    "cc52",
+    "cc53",
+    "cc54",
+    "cc55",
+    "cc56",
+    "cc57",
+    "cc58",
+    "cc59",
+    "cc60",
+    "hi1",
+    "hi2",
+    "hi3",
+    "hi4",
+    "hi5",
+    "hi6",
+    "hi7",
+    "hi8",
+    "hi9",
+    "hi10",
+    "hi11",
+    "hi12",
+    "hi13",
+    "hi14",
+    "hi15",
+    "hi16",
+    "hi17",
+    "hi18",
+    "hi19",
+    "hi20",
+    "hi21",
+    "hi22",
+    "hi23",
+    "hi24",
+    "hi25",
+    "hi26",
+    "hi27",
+    "hi28",
+    "hi29",
+    "hi30",
+    "hi31",
+    "hi32",
+    "hi33",
+    "hi34",
+    "hi35",
+    "hi36",
+    "hi37",
+    "hi38",
+    "hi39",
+    "hi40",
+    "hi41",
+    "hi42",
+    "hi43",
+    "hi44",
+    "hi45",
+    "hi46",
+    "hi47",
+    "hi48",
+    "hi49",
+    "hi50",
+    "hi51",
+    "hi52",
+    "hi53",
+    "hi54",
+    "hi55",
+    "hi56",
+    "hi57",
+    "hi58",
+    "hi59",
+    "hi60",
+    "hc1",
+    "hc2",
+    "hc3",
+    "hc4",
+    "hc5",
+    "hc6",
+    "hc7",
+    "hc8",
+    "hc9",
+    "hc10",
+    "hc11",
+    "hc12",
+    "hc13",
+    "hc14",
+    "hc15",
+    "hc16",
+    "hc17",
+    "hc18",
+    "hc19",
+    "hc20",
+    "hc21",
+    "hc22",
+    "hc23",
+    "hc24",
+    "hc25",
+    "hc26",
+    "hc27",
+    "hc28",
+    "hc29",
+    "hc30",
+    "hc31",
+    "hc32",
+    "hc33",
+    "hc34",
+    "hc35",
+    "hc36",
+    "hc37",
+    "hc38",
+    "hc39",
+    "hc40",
+    "hc41",
+    "hc42",
+    "hc43",
+    "hc44",
+    "hc45",
+    "hc46",
+    "hc47",
+    "hc48",
+    "hc49",
+    "hc50",
+    "hc51",
+    "hc52",
+    "hc53",
+    "hc54",
+    "hc55",
+    "hc56",
+    "hc57",
+    "hc58",
+    "hc59",
+    "hc60"
+  ]
 }

@@ -2376,10 +2376,43 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   border-bottom: 1px solid var(--line-faint);
 }
 .prep-central-row:last-child { border-bottom: none; }
+.prep-central-row-body { flex: 1; min-width: 80px; display: flex; flex-direction: column; gap: 1px; }
 .prep-central-row-name {
-  flex: 1; min-width: 80px; font-size: var(--fs-base); line-height: 1.4; color: var(--parchment);
+  font-size: var(--fs-base); line-height: 1.4; color: var(--parchment);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
+.prep-central-row-meta { font-size: var(--fs-sm); line-height: 1.4; color: var(--muted); }
+
+/* Adversary picker/central "Tier N · Type" meta line and the Filters
+   disclosure above it. Unlike the main catalog toolbar (which only
+   disclosures its filter groups below a phone-width breakpoint — see the
+   "no-page-scroll" media block further down), Session Prep's adversary
+   column is narrow at every viewport, so the disclosure is always
+   collapsed-by-default here rather than only on a phone. */
+.prep-adv-toolbar { margin: var(--s-1) 0 var(--s-2); }
+.prep-adv-toolbar .filter-toggle { display: inline-flex; }
+.prep-adv-toolbar .toolbar-filters {
+  display: none; justify-content: flex-start; margin-top: var(--s-2);
+}
+.prep-adv-toolbar[data-filters-open="true"] .toolbar-filters { display: flex; }
+.prep-selected-only-field {
+  display: flex; align-items: center; gap: var(--s-2); min-height: var(--h-md);
+  font-size: var(--fs-sm); color: var(--parchment); cursor: pointer;
+}
+
+/* Selected-adversaries heading's "Open in FreshCutGrass" export link —
+   absent entirely (not just disabled) when nothing is selected, see
+   freshCutGrassLinkHtml() in js/app.js. */
+.prep-freshcutgrass-wrap { margin-left: auto; }
+.prep-freshcutgrass-wrap:empty { display: none; }
+.prep-freshcutgrass-link { flex: none; }
+
+/* Items panel: Category (Items/Consumables) and Source (All/Core/Hope &
+   Fear) toggles, each a small group of pressed/unpressed buttons — same
+   btn-sm/btn-ghost/btn-primary recipe as everywhere else, so "selected"
+   reads the same way active filters do elsewhere in the app. */
+.prep-item-filters { display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-4); align-items: center; margin-bottom: var(--s-2); }
+.prep-item-category-toggle, .prep-item-source-toggle { display: flex; gap: var(--s-2); flex-wrap: wrap; }
 
 /* 24px on the card, larger under a finger — same recipe as .list-card-del. */
 .prep-remove-btn {

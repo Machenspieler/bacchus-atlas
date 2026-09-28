@@ -14,21 +14,24 @@ publish it as-is on GitHub Pages.
 ├── index.html            — entry point
 ├── css/styles.css        — all layout and theming
 ├── js/app.js             — all logic (rendering, filters, dice, lists)
-├── js/session-prep-utils.js — pure binary-selection/search logic for Session Prep (#/session-prep)
+├── js/session-prep-utils.js — pure binary-selection/search/filter logic for Session Prep (#/session-prep)
+├── js/freshcutgrass-utils.js — pure FreshCutGrass encounter-URL encoder (shared by env detail + Session Prep)
 ├── scripts/build.js      — CI-only: copies the runtime files into dist/ (see Deploy below)
 ├── scripts/version-assets.js — CI-only: generates cache-busting hashes into dist/index.html
 ├── scripts/check-asset-versioning.js — CI-only: fails the build if the generated versions are wrong
 ├── scripts/check-unlisted-build.js — CI-only: fails the build if dist/ regresses (see Deploy below)
+├── scripts/import-session-prep-adversaries.js — one-time tool: (re)builds Session Prep's adversary catalogue
 ├── img/
 │   ├── biomes/           — biome icons for catalog cards
 │   ├── env/              — background art shown behind environment cards
-│   └── adversaries/art/session-prep/ — optional local art for Session Prep's MVP adversary picker
+│   └── adversaries/session-prep/ — optional local art for Session Prep's adversary picker
 └── data/
     ├── environments.json — environments (EN/RU bilingual), the "official" data
     ├── adversaries.json  — stat blocks for "featured adversaries" embedded in an environment card
     ├── regions.json      — regions: groups of related environments
     ├── items.json        — item cards from the loot generator (bilingual)
-    ├── session-prep.json — Session Prep's own minimal adversary/item picker metadata
+    ├── session-prep.json — Session Prep's own adversary/item picker metadata (264 adversaries, 240 item refs)
+    ├── adversary-translations-manual.json — manual RU adversary-name translations for ids daggerheart.ru doesn't cover
     ├── journey.json       — Journey to Horizon generator tables (bilingual)
     └── i18n.json          — interface dictionary (EN/RU)
 ```
@@ -556,31 +559,72 @@ name in the generator, not translated fresh.
 worth of environments, adversaries, and items — separate from Lists (which
 bookmark environments for browsing) and from Journey (which generates map
 content). Three columns on desktop — the full environment catalog on the
-left, the current preparation in the middle, an MVP adversary catalog on the
-right — with a full-width item catalog below; the three columns collapse to
-one on a phone. Every selection — environment, adversary, item — is binary
+left, the current preparation in the middle, the full adversary catalog on
+the right — with a full-width item catalog below; the three columns collapse
+to one on a phone. Every selection — environment, adversary, item — is binary
 (selected or not); there is no primary environment and no quantity anywhere
 in this feature. Environments come from the existing `environments.json`
 catalog (up to three per preparation, order preserved but carrying no
-special meaning). Adversaries and items come from `data/session-prep.json`, a
-small hand-picked MVP catalog — 17 adversaries and the 10 Core items — kept
-deliberately separate from `data/adversaries.json` (full featured-adversary
-stat blocks) and `data/items.json` (the complete loot encyclopedia): Session
-Prep only ever needs an id, a bilingual name, and (for adversaries) an
-optional local image.
+special meaning). Adversaries and items come from `data/session-prep.json`,
+kept deliberately separate from `data/adversaries.json` (full
+featured-adversary stat blocks) and `data/items.json` (the complete loot
+encyclopedia): Session Prep only ever needs picker metadata, never a full
+stat block.
+
+The adversary catalogue covers all 264 Daggerheart SRD 2.0 adversaries —
+id, English/Russian name, Tier (1-4), and official Adversary Type (one of
+ten fixed keys: bruiser/horde/leader/minion/ranged/skulk/social/solo/
+standard/support), plus an optional local image. No source/book field, no
+Core-vs-Hope & Fear membership, and no stat-block data of any kind live
+here. Search (English or Russian name), a Tier filter, a Type filter, and a
+"Selected only" toggle all combine (AND across groups, OR within a group);
+see `SessionPrepUtils.filterAdversaries()`. The 17 original MVP adversary
+ids are preserved unchanged forever — `scripts/validate-data.js` enforces
+this, and `scripts/import-session-prep-adversaries.js` (a one-time,
+dependency-free import/audit tool — see its header comment) is how the
+catalogue was built and how it would be rebuilt if the canonical SRD source
+changes. English names, Tiers, and Types come from a GitHub mirror of the
+official Daggerheart SRD 2.0 text, cross-checked against each adversary's
+own stat-block header line. Russian names come from
+[daggerheart.ru](https://daggerheart.ru/adversary) (its "На Русском" toggle
+switches the site to Russian via a session cookie, not a URL prefix) for
+129 of the 264 — matched by the site's own English URL slug, with zero
+Tier/Type discrepancies found against the canonical source — plus the
+project's existing translations for the original MVP entries, plus
+`data/adversary-translations-manual.json` (this project's own literary
+translations) for the ids the site doesn't cover.
+
+The item/consumable catalogue covers all 240 Session Prep loot entries —
+`ci1`-`ci60` (Core Items), `cc1`-`cc60` (Core Consumables), `hi1`-`hi60`
+(Hope & Fear Items), `hc1`-`hc60` (Hope & Fear Consumables) — merged into
+the shared `data/items.json` catalogue (which keeps its other, non-Session-
+Prep entries too) from the [Daggerheart Loot
+Generator](https://artex-x.github.io/daggerheart-loot/)'s own structured
+data. A Category toggle (Items/Consumables) and a Source toggle (All/Core/
+Hope & Fear) combine with the existing name-or-roll-number search; see
+`SessionPrepUtils.filterItems()`.
 
 An adversary's `image` field, when present, points at a file this repo owns
-under `img/adversaries/art/session-prep/`; only adversaries a matching image
-was actually found for get one mapped in — nothing is generated or
-downloaded to fill a gap. Everything else falls back to a designed inline SVG
-silhouette, the same one a broken image swaps to at runtime. Item art and
-item detail pages are never copied into this repo — `item_image_url`/
-`item_page_url` in `data/session-prep.json` build both from the item's id/
-image filename against the [Daggerheart Loot
-Generator](https://artex-x.github.io/daggerheart-loot/) at render time, same
+under `img/adversaries/session-prep/`; only adversaries a matching image was
+actually found for get one mapped in — nothing is generated or downloaded to
+fill a gap (110 of 264 currently have local art, including a handful of
+group images intentionally shared by every member of a named group the
+source book itself groups together). Everything else falls back to a
+designed inline SVG silhouette, the same one a broken image swaps to at
+runtime. Item art and item detail pages are never copied into this repo —
+`item_image_url`/`item_page_url` in `data/session-prep.json` build both from
+the item's id/image filename against the Loot Generator at render time, same
 spirit as the item cards described above.
 
-The MVP holds one active preparation (title, selected environments,
+The selected-Adversaries section has an "Open in FreshCutGrass" export
+(hidden when nothing is selected): every selected adversary's `name.en` (never
+the Russian display name) at quantity 1, under the session's own title (or a
+localized default), through the same `FreshCutGrassUtils`
+(`js/freshcutgrass-utils.js`) Unicode-safe base64 encoder the environment
+detail page's "Potential Adversaries" links already use — one encoder for
+the whole app.
+
+Session Prep holds one active preparation (title, selected environments,
 adversaries, and items — plain id lists, schema version 2), autosaved to
 `localStorage` under `dhcodex_session_prep` through the same `SafeStorage`
 boundary as Lists and Journey (which also owns the one-time, non-destructive
@@ -589,7 +633,8 @@ stored shape is intentionally multi-session-ready (`{ schemaVersion,
 activeSessionId, sessions: [...] }`), but the UI doesn't yet expose
 creating, switching, or deleting a session — that's future work, not
 implemented here. Pure logic (default shape, the three-environment cap,
-binary toggle/remove, search) lives in `js/session-prep-utils.js`, in the
+binary toggle/remove, search, adversary Tier/Type/Selected-only filtering,
+item Category/Source filtering) lives in `js/session-prep-utils.js`, in the
 same dependency-free, Node-testable shape as `js/route-utils.js`/
 `js/list-utils.js`.
 
@@ -609,6 +654,4 @@ Daggerheart die.
   between browsers.
 - Session Prep (`#/session-prep`) supports exactly one active preparation.
   Its storage shape is ready for multiple sessions, but creating, switching,
-  duplicating, or deleting one isn't implemented yet, and the MVP adversary
-  catalog covers 17 adversaries and the 10 Core items rather than the full
-  bestiary/loot table.
+  duplicating, or deleting one isn't implemented yet.

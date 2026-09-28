@@ -306,3 +306,145 @@ test('normalizeIdList drops duplicates while preserving first-seen order', () =>
 test('normalizeIdList drops non-string and empty entries', () => {
   assert.deepEqual(SPU.normalizeIdList(['a', null, '', 42, 'b']), ['a', 'b']);
 });
+
+/* ---------------- adversary filters (Tier / Type / Selected only) ---------------- */
+
+const PREP_ADVS = [
+  { id: 'acid-burrower', name: { en: 'Acid Burrower', ru: 'Кислотный Землекоп' }, tier: 1, type: 'solo' },
+  { id: 'bugboar', name: { en: 'Bugboar', ru: 'Багбор' }, tier: 1, type: 'bruiser' },
+  { id: 'construct', name: { en: 'Construct', ru: 'Конструкт' }, tier: 1, type: 'solo' },
+  { id: 'courtier', name: { en: 'Courtier', ru: 'Придворный' }, tier: 2, type: 'social' },
+  { id: 'dire-wolf', name: { en: 'Dire Wolf', ru: 'Лютоволк' }, tier: 1, type: 'skulk' },
+];
+
+test('filterAdversaries with no filters returns the full catalogue', () => {
+  const result = SPU.filterAdversaries(PREP_ADVS, {});
+  assert.deepEqual(result.map(a => a.id), PREP_ADVS.map(a => a.id));
+});
+
+test('filterAdversaries matches by English name', () => {
+  const result = SPU.filterAdversaries(PREP_ADVS, { search: 'bugboar' });
+  assert.deepEqual(result.map(a => a.id), ['bugboar']);
+});
+
+test('filterAdversaries matches by Russian name', () => {
+  const result = SPU.filterAdversaries(PREP_ADVS, { search: 'Лютоволк' });
+  assert.deepEqual(result.map(a => a.id), ['dire-wolf']);
+});
+
+test('filterAdversaries search is case-insensitive', () => {
+  const result = SPU.filterAdversaries(PREP_ADVS, { search: 'BUGBOAR' });
+  assert.deepEqual(result.map(a => a.id), ['bugboar']);
+});
+
+test('filterAdversaries filters by a single Tier', () => {
+  const result = SPU.filterAdversaries(PREP_ADVS, { tiers: [2] });
+  assert.deepEqual(result.map(a => a.id), ['courtier']);
+});
+
+test('filterAdversaries ORs multiple Tier values', () => {
+  const result = SPU.filterAdversaries(PREP_ADVS, { tiers: [2] }).concat(); // sanity
+  const orResult = SPU.filterAdversaries(PREP_ADVS, { tiers: new Set([1, 2]) });
+  assert.deepEqual(orResult.map(a => a.id), PREP_ADVS.map(a => a.id));
+});
+
+test('filterAdversaries filters by a single Type', () => {
+  const result = SPU.filterAdversaries(PREP_ADVS, { types: ['bruiser'] });
+  assert.deepEqual(result.map(a => a.id), ['bugboar']);
+});
+
+test('filterAdversaries ORs multiple Type values', () => {
+  const result = SPU.filterAdversaries(PREP_ADVS, { types: ['bruiser', 'social'] });
+  assert.deepEqual(result.map(a => a.id).sort(), ['bugboar', 'courtier']);
+});
+
+test('filterAdversaries ANDs Tier and Type', () => {
+  const result = SPU.filterAdversaries(PREP_ADVS, { tiers: [1], types: ['solo'] });
+  assert.deepEqual(result.map(a => a.id).sort(), ['acid-burrower', 'construct']);
+});
+
+test('filterAdversaries ANDs text search with Tier/Type filters', () => {
+  const result = SPU.filterAdversaries(PREP_ADVS, { search: 'construct', tiers: [1], types: ['solo'] });
+  assert.deepEqual(result.map(a => a.id), ['construct']);
+  const noMatch = SPU.filterAdversaries(PREP_ADVS, { search: 'construct', tiers: [2] });
+  assert.deepEqual(noMatch, []);
+});
+
+test('filterAdversaries Selected only keeps only ids in selectedIds', () => {
+  const result = SPU.filterAdversaries(PREP_ADVS, { selectedOnly: true, selectedIds: ['bugboar', 'courtier'] });
+  assert.deepEqual(result.map(a => a.id).sort(), ['bugboar', 'courtier']);
+});
+
+test('filterAdversaries Selected only combines with Tier and Type', () => {
+  const result = SPU.filterAdversaries(PREP_ADVS, {
+    selectedOnly: true, selectedIds: ['bugboar', 'courtier', 'dire-wolf'], tiers: [1],
+  });
+  assert.deepEqual(result.map(a => a.id).sort(), ['bugboar', 'dire-wolf']);
+});
+
+test('filterAdversaries never mutates the input array or selection', () => {
+  const before = PREP_ADVS.map(a => a.id);
+  SPU.filterAdversaries(PREP_ADVS, { tiers: [1], types: ['solo'], selectedOnly: true, selectedIds: ['construct'] });
+  assert.deepEqual(PREP_ADVS.map(a => a.id), before);
+});
+
+test('ADVERSARY_TIERS and ADVERSARY_TYPES expose the fixed enums', () => {
+  assert.deepEqual(SPU.ADVERSARY_TIERS, [1, 2, 3, 4]);
+  assert.equal(SPU.ADVERSARY_TYPES.length, 10);
+  assert.ok(SPU.ADVERSARY_TYPES.includes('bruiser'));
+  assert.ok(SPU.ADVERSARY_TYPES.includes('support'));
+});
+
+/* ---------------- item filters (Category / Source) ---------------- */
+
+const PREP_LOOT_ITEMS = [
+  { id: 'ci1', kind: 'item', src: 'core', roll: 1, en: { name: 'Premium Bedroll' }, ru: { name: 'Спальный Мешок' } },
+  { id: 'cc1', kind: 'consumable', src: 'core', roll: 1, en: { name: 'Minor Health Potion' }, ru: { name: 'Зелье Лечения' } },
+  { id: 'hi1', kind: 'item', src: 'hnf', roll: 1, en: { name: 'Wondrous Compass' }, ru: { name: 'Чудесный Компас' } },
+  { id: 'hc1', kind: 'consumable', src: 'hnf', roll: 1, en: { name: 'Vial of Starlight' }, ru: { name: 'Флакон Звёздного Света' } },
+];
+const lootItemFields = i => [i.en?.name, i.ru?.name];
+const lootItemRoll = i => i.roll;
+
+test('filterItems with no filters returns every item', () => {
+  const result = SPU.filterItems(PREP_LOOT_ITEMS, {}, lootItemFields, lootItemRoll);
+  assert.deepEqual(result.map(i => i.id), PREP_LOOT_ITEMS.map(i => i.id));
+});
+
+test('filterItems category "item" returns only items, not consumables', () => {
+  const result = SPU.filterItems(PREP_LOOT_ITEMS, { category: 'item' }, lootItemFields, lootItemRoll);
+  assert.deepEqual(result.map(i => i.id).sort(), ['ci1', 'hi1']);
+});
+
+test('filterItems category "consumable" returns only consumables', () => {
+  const result = SPU.filterItems(PREP_LOOT_ITEMS, { category: 'consumable' }, lootItemFields, lootItemRoll);
+  assert.deepEqual(result.map(i => i.id).sort(), ['cc1', 'hc1']);
+});
+
+test('filterItems source "core" excludes Hope & Fear items', () => {
+  const result = SPU.filterItems(PREP_LOOT_ITEMS, { source: 'core' }, lootItemFields, lootItemRoll);
+  assert.deepEqual(result.map(i => i.id).sort(), ['cc1', 'ci1']);
+});
+
+test('filterItems source "hnf" excludes Core items', () => {
+  const result = SPU.filterItems(PREP_LOOT_ITEMS, { source: 'hnf' }, lootItemFields, lootItemRoll);
+  assert.deepEqual(result.map(i => i.id).sort(), ['hc1', 'hi1']);
+});
+
+test('filterItems category and source combine with AND', () => {
+  const result = SPU.filterItems(PREP_LOOT_ITEMS, { category: 'item', source: 'hnf' }, lootItemFields, lootItemRoll);
+  assert.deepEqual(result.map(i => i.id), ['hi1']);
+});
+
+test('filterItems combines category/source with a name search', () => {
+  const result = SPU.filterItems(PREP_LOOT_ITEMS, { category: 'item', source: 'core', search: 'bedroll' }, lootItemFields, lootItemRoll);
+  assert.deepEqual(result.map(i => i.id), ['ci1']);
+  const noMatch = SPU.filterItems(PREP_LOOT_ITEMS, { category: 'consumable', source: 'core', search: 'bedroll' }, lootItemFields, lootItemRoll);
+  assert.deepEqual(noMatch, []);
+});
+
+test('filterItems source "all" is the same as no source filter', () => {
+  const all = SPU.filterItems(PREP_LOOT_ITEMS, { source: 'all' }, lootItemFields, lootItemRoll);
+  const none = SPU.filterItems(PREP_LOOT_ITEMS, {}, lootItemFields, lootItemRoll);
+  assert.deepEqual(all.map(i => i.id), none.map(i => i.id));
+});

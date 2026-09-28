@@ -783,13 +783,45 @@ function hasSupportedImageExtension(filename) {
   return SESSION_PREP_IMAGE_EXTENSIONS.some(ext => lower.endsWith(ext));
 }
 
+/* The production adversary catalogue's exact required size (all of Daggerheart
+ * SRD 2.0's adversaries) and the ten official Adversary Type keys — see the
+ * "Session Prep" adversary catalogue section of CLAUDE.md. Exported so tests
+ * build fixtures from the same single source of truth rather than
+ * hand-copying "264"/the type list a second time. */
+const SESSION_PREP_ADVERSARY_COUNT = 264;
+const ADVERSARY_TYPES = ['bruiser', 'horde', 'leader', 'minion', 'ranged', 'skulk', 'social', 'solo', 'standard', 'support'];
+
+/* The 17 adversary ids from the original Session Prep MVP — see PD-00x and
+ * the "Preserve the existing 17 MVP adversary IDs exactly" rule in
+ * CLAUDE.md. A production catalogue that renamed or dropped one of these
+ * would silently break every GM's already-saved Session Prep selections. */
+const SESSION_PREP_MVP_IDS = [
+  'acid-burrower', 'ahuizotl', 'atototl', 'bear', 'bugboar', 'cave-ogre', 'common-ruffian',
+  'construct', 'courtier', 'darkweave-crawler', 'darkweave-queen', 'darkweave-spinner',
+  'darkweave-swarmlings', 'deeproot-defender', 'dire-wolf', 'elk', 'falcon',
+];
+
+/* Adversary picker records are picker metadata only — no stat block, no
+ * source/book attribution, no Core/Hope & Fear membership. Any of these keys
+ * present on a record means stat-block or out-of-scope data leaked in during
+ * import; see "ADVERSARY PRODUCTION DATA MODEL" in CLAUDE.md. */
+const SESSION_PREP_ADVERSARY_FORBIDDEN_KEYS = [
+  'role', 'source', 'book', 'collection', 'coreOrHopeFear', 'statBlockId', 'statBlock',
+  'description', 'freshcutgrassName', 'difficulty', 'thresholds', 'hp', 'stress',
+  'attack_modifier', 'attacks', 'experiences', 'features',
+];
+
+const PLACEHOLDER_TEXT_RE = /\b(TODO|TBD|UNKNOWN|TRANSLATE)\b/i;
+
 function validateSessionPrep(data, file, diagnostics, rootPath, validItemIds) {
   const reporter = createReporter(file, diagnostics);
   const facts = { adversaryIds: new Set() };
   if (!isPlainObject(data)) { reporter.error('$', `Top-level value must be an object, got ${describeType(data)}.`); return facts; }
   checkDangerousKeys(data, '$', reporter);
 
-  /* ---- adversaries: picker metadata only (id, bilingual name, optional local image) ---- */
+  /* ---- adversaries: picker metadata only (id, tier, type, bilingual name,
+     optional local image) — see "ADVERSARY TIER AND TYPE" and "ADVERSARY
+     PRODUCTION DATA MODEL" in CLAUDE.md. ---- */
 
   const advNameOccurrences = new Map();
   if (data.adversaries === undefined) {
@@ -797,6 +829,10 @@ function validateSessionPrep(data, file, diagnostics, rootPath, validItemIds) {
   } else if (!Array.isArray(data.adversaries)) {
     reporter.error('$.adversaries', `Must be an array, got ${describeType(data.adversaries)}.`);
   } else {
+    if (data.adversaries.length !== SESSION_PREP_ADVERSARY_COUNT) {
+      reporter.error('$.adversaries', `Expected exactly ${SESSION_PREP_ADVERSARY_COUNT} adversaries, got ${data.adversaries.length}.`);
+    }
+
     data.adversaries.forEach((adv, i) => {
       const p = `$.adversaries[${i}]`;
       if (!isPlainObject(adv)) { reporter.error(p, `Adversary entry must be an object, got ${describeType(adv)}.`); return; }
@@ -814,15 +850,39 @@ function validateSessionPrep(data, file, diagnostics, rootPath, validItemIds) {
         idLabel = id;
       }
 
+      SESSION_PREP_ADVERSARY_FORBIDDEN_KEYS.forEach(key => {
+        if (Object.prototype.hasOwnProperty.call(adv, key)) {
+          reporter.error(`${p}.${key}`, `Adversary "${idLabel}" must not carry a "${key}" field — Session Prep adversaries are picker metadata only, no stat block or source attribution.`, idLabel);
+        }
+      });
+
       if (adv.name === undefined) {
         reporter.error(`${p}.name`, `Adversary "${idLabel}" is missing a name.`, idLabel);
       } else {
         validateBilingualString(adv.name, `${p}.name`, reporter, { requireEn: true });
-        if (isPlainObject(adv.name) && isNonEmptyString(adv.name.en)) {
-          const norm = normalizeDisplayName(adv.name.en);
-          if (!advNameOccurrences.has(norm)) advNameOccurrences.set(norm, []);
-          advNameOccurrences.get(norm).push({ id: idLabel, index: i, original: adv.name.en });
+        if (isPlainObject(adv.name)) {
+          if (!isNonEmptyString(adv.name.ru)) {
+            reporter.error(`${p}.name.ru`, `Adversary "${idLabel}" is missing a Russian name.`, idLabel);
+          } else if (PLACEHOLDER_TEXT_RE.test(adv.name.ru)) {
+            reporter.error(`${p}.name.ru`, `Adversary "${idLabel}" has a placeholder Russian name ("${adv.name.ru}") in production data.`, idLabel);
+          }
+          if (isNonEmptyString(adv.name.en) && PLACEHOLDER_TEXT_RE.test(adv.name.en)) {
+            reporter.error(`${p}.name.en`, `Adversary "${idLabel}" has a placeholder English name ("${adv.name.en}") in production data.`, idLabel);
+          }
+          if (isNonEmptyString(adv.name.en)) {
+            const norm = normalizeDisplayName(adv.name.en);
+            if (!advNameOccurrences.has(norm)) advNameOccurrences.set(norm, []);
+            advNameOccurrences.get(norm).push({ id: idLabel, index: i, original: adv.name.en });
+          }
         }
+      }
+
+      if (!isFiniteInteger(adv.tier) || adv.tier < 1 || adv.tier > 4) {
+        reporter.error(`${p}.tier`, `Adversary "${idLabel}" has invalid tier ${JSON.stringify(adv.tier)}; must be an integer 1-4.`, idLabel);
+      }
+
+      if (!isNonEmptyString(adv.type) || !ADVERSARY_TYPES.includes(adv.type)) {
+        reporter.error(`${p}.type`, `Adversary "${idLabel}" has invalid type ${JSON.stringify(adv.type)}; must be one of: ${ADVERSARY_TYPES.join(', ')}.`, idLabel);
       }
 
       if (adv.image !== undefined) {
@@ -835,6 +895,12 @@ function validateSessionPrep(data, file, diagnostics, rootPath, validItemIds) {
         } else if (rootPath && !fs.existsSync(path.join(rootPath, adv.image))) {
           reporter.error(`${p}.image`, `Adversary "${idLabel}" image path "${adv.image}" does not point to an existing file.`, idLabel);
         }
+      }
+    });
+
+    SESSION_PREP_MVP_IDS.forEach(mvpId => {
+      if (!facts.adversaryIds.has(mvpId)) {
+        reporter.error('$.adversaries', `Original MVP adversary id "${mvpId}" is missing — Session Prep adversary ids must never be renamed or removed.`, mvpId);
       }
     });
   }
@@ -855,11 +921,14 @@ function validateSessionPrep(data, file, diagnostics, rootPath, validItemIds) {
 
   /* ---- items: no local metadata — just an ordered list of ids into
      data/items.json, which is the one place name/description/kind/source/
-     roll/image live for any item. Only the reference itself is checked
-     here: well-formed, unique, and pointing at an item that actually
-     exists (cross-file, against validItemIds from validateItems()). ---- */
+     roll/image live for any item. Well-formed, unique, pointing at an item
+     that actually exists (cross-file, against validItemIds from
+     validateItems()), and — per the "FULL ITEM AND CONSUMABLE CATALOGUE"
+     section of CLAUDE.md — covering exactly ci1-60/cc1-60/hi1-60/hc1-60
+     once each (240 total), never more, never fewer. ---- */
 
   const seenItemIds = new Set();
+  const itemPrefixCounts = { ci: new Set(), cc: new Set(), hi: new Set(), hc: new Set() };
   if (data.items === undefined) {
     reporter.error('$.items', 'items is required (may be an empty array).');
   } else if (!Array.isArray(data.items)) {
@@ -876,6 +945,19 @@ function validateSessionPrep(data, file, diagnostics, rootPath, validItemIds) {
       if (validItemIds && !validItemIds.has(id)) {
         reporter.error(p, `Unknown item id "${id}" — not found in data/items.json.`, id);
       }
+      const m = id.match(/^(ci|cc|hi|hc)(\d+)$/);
+      if (m) itemPrefixCounts[m[1]].add(Number(m[2]));
+    });
+
+    if (data.items.length !== 240) {
+      reporter.error('$.items', `Expected exactly 240 Session Prep item references, got ${data.items.length}.`);
+    }
+    Object.entries(itemPrefixCounts).forEach(([prefix, rolls]) => {
+      for (let n = 1; n <= 60; n++) {
+        if (!rolls.has(n)) reporter.error('$.items', `Session Prep item references are missing "${prefix}${n}".`);
+      }
+      const extra = [...rolls].filter(n => n < 1 || n > 60);
+      if (extra.length) reporter.error('$.items', `Session Prep item references include out-of-range "${prefix}" numbers: ${extra.join(', ')} (expected 1-60 only).`);
     });
   }
 
@@ -1174,6 +1256,11 @@ const EXTRA_REQUIRED_I18N_KEYS = [
   'journey_k_politics', 'journey_k_settlement_size', 'journey_k_population',
   'journey_k_habitat', 'journey_k_size', 'journey_k_encounter', 'journey_k_terrain', 'journey_k_rumor',
   'storage_unavailable_warning', 'storage_recovery_warning', 'storage_recovery_backup_note',
+  // Session Prep's adversary Type labels: js/app.js looks these up as
+  // t('adversary_type_' + adv.type) — a dynamic lookup the literal scan
+  // above can't resolve, so every one of the ten allowed Type keys is
+  // listed here by hand instead, same as the journey_k_*/storage_* keys.
+  ...ADVERSARY_TYPES.map(t => `adversary_type_${t}`),
 ];
 
 /* ---------------- local biome asset check ---------------- */
@@ -1324,4 +1411,7 @@ module.exports = {
   scanLiteralI18nKeys,
   scanDataI18nAttributes,
   EXTRA_REQUIRED_I18N_KEYS,
+  SESSION_PREP_ADVERSARY_COUNT,
+  ADVERSARY_TYPES,
+  SESSION_PREP_MVP_IDS,
 };

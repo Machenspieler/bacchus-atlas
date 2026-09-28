@@ -69,10 +69,20 @@ const state = {
     fallback: () => SessionPrepUtils.createDefaultStore(),
     validate: SafeStorage.validators.sessionPrep,
   }),
-  // Search text per picker and the last successful/failed save, for the MVP's
-  // single active preparation. Transient UI state, never persisted — see the
-  // "Transient UI state and rerendering" section of the Session Prep spec.
-  sessionPrepUI: { envSearch: '', advSearch: '', itemSearch: '', lastSavedAt: null, saveFailed: false },
+  // Search text per picker, the adversary Tier/Type/Selected-only filters,
+  // the item category/source filters, and the last successful/failed save,
+  // for the single active preparation. Transient UI state, never persisted
+  // — see the "Transient UI state and rerendering" section of the Session
+  // Prep spec. advFilters.tiers/types are plain Sets, matching the main
+  // catalog toolbar's own state.filters shape.
+  sessionPrepUI: {
+    envSearch: '', advSearch: '', itemSearch: '',
+    advFiltersOpen: false,
+    advFilters: { tiers: new Set(), types: new Set(), selectedOnly: false },
+    itemCategory: 'item',
+    itemSource: 'all',
+    lastSavedAt: null, saveFailed: false,
+  },
   journey: JOURNEY_EMPTY,
   journeyRegions: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.journeyRegions, {
     fallback: () => [],
@@ -580,35 +590,11 @@ function envAdversaryNames(env) {
   return [...seen];
 }
 
-/** UTF-16 JS string -> Unicode-safe base64. atob/btoa only round-trip Latin1,
- * so the string is routed through its UTF-8 bytes first — an accented or
- * non-Latin encounter/adversary name added later still encodes correctly
- * instead of throwing. */
-function utf8ToBase64(str) {
-  const bytes = new TextEncoder().encode(str);
-  let binary = '';
-  bytes.forEach(byte => { binary += String.fromCharCode(byte); });
-  return btoa(binary);
-}
-
-/** Builds a FreshCutGrass encounter URL at runtime from an encounter name and
- * a flat list of adversary names. Nothing here is specific to Abandoned Grove
- * or even to environments — the same call works for a single adversary, a
- * named group, or an entire environment's roster, all through one payload
- * shape and one encoder. */
+/** The one FreshCutGrass URL encoder for the whole app — see
+ * js/freshcutgrass-utils.js (FreshCutGrassUtils) for the pure
+ * implementation shared with Session Prep's own export. */
 function buildFreshCutGrassEncounterUrl(encounterName, adversaryNames) {
-  const payload = {
-    n: encounterName,
-    d: adversaryNames.map(name => ({
-      n: name,
-      a: '',
-      q: 1,
-      u: 0,
-      i: [{ n: null }],
-    })),
-  };
-  const base64 = utf8ToBase64(JSON.stringify(payload));
-  return `https://freshcutgrass.app/encounter?data=${encodeURIComponent(base64)}`;
+  return FreshCutGrassUtils.buildFreshCutGrassEncounterUrl(encounterName, adversaryNames);
 }
 
 /** The whole-environment encounter URL for an environment, or null for one
@@ -1698,6 +1684,7 @@ function renderToolbar() {
         else setSetValue(state.filters.types, cb.dataset.type, cb.checked);
       },
       updateLabel(trigger) { trigger.querySelector('.ms-trigger-label').textContent = typesTriggerLabel(types); },
+      onChange: renderGrid,
     });
   }
   const biomesField = document.getElementById('f-biomes-field');
@@ -1708,6 +1695,7 @@ function renderToolbar() {
       panel: document.getElementById('f-biomes-panel'),
       onToggle(cb) { setSetValue(state.filters.biomes, cb.dataset.biome, cb.checked); },
       updateLabel(trigger) { trigger.querySelector('.ms-trigger-label').textContent = biomesTriggerLabel(usedBiomes); },
+      onChange: renderGrid,
     });
   }
   const sourcesField = document.getElementById('f-sources-field');
@@ -1718,6 +1706,7 @@ function renderToolbar() {
       panel: document.getElementById('f-sources-panel'),
       onToggle(cb) { setSetValue(state.filters.sources, cb.dataset.source, cb.checked); },
       updateLabel(trigger) { trigger.querySelector('.ms-trigger-label').textContent = sourcesTriggerLabel(usedSources); },
+      onChange: renderGrid,
     });
   }
   const backBtn = document.getElementById('btn-back-to-lists');
@@ -1738,16 +1727,19 @@ function closeActiveMultiSelect() {
   if (activeMultiSelect) activeMultiSelect.close();
 }
 
-/* Shared behavior behind the Type, Biome and Source dropdowns: instant
- * checkbox filtering that never auto-closes on its own, closing only on an
- * explicit exit (trigger re-click, outside click, Escape, focus leaving the
- * field, another dropdown opening, or the toolbar being rebuilt).
+/* Shared behavior behind the Type, Biome and Source dropdowns (and Session
+ * Prep's own adversary Type dropdown): instant checkbox filtering that never
+ * auto-closes on its own, closing only on an explicit exit (trigger re-click,
+ * outside click, Escape, focus leaving the field, another dropdown opening,
+ * or the toolbar being rebuilt).
  *
- * `onToggle(checkbox)` applies one changed checkbox to state.filters;
- * `updateLabel(trigger)` recomputes that trigger's "Label (n)" text from
- * state.filters afterwards. Both run before renderGrid() so the trigger label
- * and the grid never fall out of sync with each other. */
-function bindMultiSelectField({ field, trigger, panel, onToggle, updateLabel }) {
+ * `onToggle(checkbox)` applies one changed checkbox to the caller's own
+ * filter state; `updateLabel(trigger)` recomputes that trigger's "Label (n)"
+ * text afterwards; `onChange` re-renders whatever result list depends on
+ * that state (`renderGrid` for the main catalog, `refreshAdvPicker` for
+ * Session Prep) — deliberately not a full toolbar rebuild, so the open
+ * panel itself survives the change. */
+function bindMultiSelectField({ field, trigger, panel, onToggle, updateLabel, onChange }) {
   const controller = { close, isOpen: () => !panel.hidden };
 
   function open() {
@@ -1777,7 +1769,7 @@ function bindMultiSelectField({ field, trigger, panel, onToggle, updateLabel }) 
     if (!cb) return;
     onToggle(cb);
     updateLabel(trigger);
-    renderGrid();
+    onChange();
   });
   // Tab/Shift+Tab off the end of the field closes it — checked only on an
   // actual Tab keydown, never on a generic focusout. A mouse click on
@@ -3081,16 +3073,44 @@ function refreshEnvPicker() {
 
 /* ---------------- adversaries picker ---------------- */
 
+/** Tier/Type/Selected-only ANDed with the free-text search — see
+ * SessionPrepUtils.filterAdversaries() for the exact AND/OR contract. */
 function prepFilteredAdversaries() {
-  const filtered = SessionPrepUtils.filterEntries(
-    state.sessionPrepCatalog.adversaries, state.sessionPrepUI.advSearch, a => [a.name?.en, a.name?.ru]
-  );
+  const session = activeSessionPrep();
+  const filtered = SessionPrepUtils.filterAdversaries(state.sessionPrepCatalog.adversaries, {
+    search: state.sessionPrepUI.advSearch,
+    tiers: state.sessionPrepUI.advFilters.tiers,
+    types: state.sessionPrepUI.advFilters.types,
+    selectedOnly: state.sessionPrepUI.advFilters.selectedOnly,
+    selectedIds: session ? session.adversaryIds : [],
+  });
   const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
   return filtered.sort((a, b) => collator.compare(spName(a), spName(b)));
 }
 
 function advCountText() {
   return t('prep_results_count').replace('{n}', prepFilteredAdversaries().length).replace('{total}', state.sessionPrepCatalog.adversaries.length);
+}
+
+/** How many of the three adversary filter groups (Tier, Type, Selected
+ * only) are currently narrowing the list — shown next to the Filters
+ * disclosure, the same "filter-count" pattern the main catalog toolbar
+ * uses for its own Tier/Type/Biome/Source groups. */
+function advActiveFilterGroupCount() {
+  const f = state.sessionPrepUI.advFilters;
+  return (f.tiers.size ? 1 : 0) + (f.types.size ? 1 : 0) + (f.selectedOnly ? 1 : 0);
+}
+
+function advTypesTriggerLabel() {
+  const count = state.sessionPrepUI.advFilters.types.size;
+  return count ? `${t('filter_type')} (${count})` : t('filter_type');
+}
+
+/** Localized "Tier N · Type" meta line shared by the adversary picker row
+ * and the central selected-adversary row — see the "ADVERSARY ROWS AND
+ * SELECTED LIST" section of the Session Prep spec in CLAUDE.md. */
+function advMetaText(adv) {
+  return `${t('tier_label')} ${adv.tier} · ${t('adversary_type_' + adv.type)}`;
 }
 
 /** A missing image entry, and a present-but-broken one at runtime (the
@@ -3111,7 +3131,10 @@ function advPickerRowHtml(adv, session) {
                ${checked ? 'checked' : ''} aria-label="${escapeAttr(prepToggleLabel(name, checked))}">
       </label>
       ${prepAdvThumbHtml(adv)}
-      <span class="prep-row-name">${escapeHtml(name)}</span>
+      <span class="prep-row-text">
+        <span class="prep-row-name">${escapeHtml(name)}</span>
+        <span class="prep-row-meta">${escapeHtml(advMetaText(adv))}</span>
+      </span>
     </div>`;
 }
 
@@ -3119,6 +3142,44 @@ function advPickerListHtml(session) {
   const advs = prepFilteredAdversaries();
   if (!advs.length) return `<p class="prep-empty">${escapeHtml(t('no_results'))}</p>`;
   return advs.map(adv => advPickerRowHtml(adv, session)).join('');
+}
+
+function advFiltersHtml() {
+  const f = state.sessionPrepUI.advFilters;
+  const activeCount = advActiveFilterGroupCount();
+  return `
+    <div class="toolbar prep-adv-toolbar" data-filters-open="${state.sessionPrepUI.advFiltersOpen}">
+      <button type="button" class="btn filter-toggle" id="sp-adv-filter-toggle"
+              aria-expanded="${state.sessionPrepUI.advFiltersOpen}" aria-controls="sp-adv-toolbar-filters">
+        ${t('filters_label')}
+        ${activeCount ? `<span class="filter-count" aria-label="${escapeAttr(t('filters_active').replace('{n}', activeCount))}">${activeCount}</span>` : ''}
+      </button>
+      <div class="toolbar-filters" id="sp-adv-toolbar-filters">
+        <div class="field">
+          <div class="rank-pills field-control" id="sp-adv-tiers" role="group" aria-label="${escapeAttr(t('filter_tier'))}">
+            ${SessionPrepUtils.ADVERSARY_TIERS.map(tier => `<button type="button" class="rank-icon ${f.tiers.has(tier) ? 'active' : ''}" data-sp-adv-tier="${tier}" aria-pressed="${f.tiers.has(tier)}" aria-label="${escapeAttr(t('tier_label'))} ${tier}"><span>${tier}</span></button>`).join('')}
+          </div>
+        </div>
+        <div class="field ms-field" id="sp-adv-types-field">
+          <button type="button" class="ms-trigger field-control" id="sp-adv-types-btn"
+                  aria-expanded="false" aria-controls="sp-adv-types-panel">
+            <span class="ms-trigger-label">${escapeHtml(advTypesTriggerLabel())}</span>
+          </button>
+          <div class="ms-panel" id="sp-adv-types-panel" role="group" aria-label="${escapeAttr(t('filter_type'))}" hidden>
+            ${SessionPrepUtils.ADVERSARY_TYPES.map(type => `
+            <label class="ms-row">
+              <input type="checkbox" class="ms-checkbox sr-only" data-sp-adv-type="${type}" ${f.types.has(type) ? 'checked' : ''}>
+              <span class="ms-row-label">${escapeHtml(t('adversary_type_' + type))}</span>
+            </label>`).join('')}
+          </div>
+        </div>
+        <label class="field prep-selected-only-field">
+          <input type="checkbox" id="sp-adv-selected-only" ${f.selectedOnly ? 'checked' : ''}>
+          <span>${escapeHtml(t('prep_selected_only'))}</span>
+        </label>
+        ${activeCount ? `<button type="button" class="btn btn-ghost btn-sm" id="sp-adv-clear-filters">${escapeHtml(t('clear_filters'))}</button>` : ''}
+      </div>
+    </div>`;
 }
 
 function advPickerColumnHtml(session) {
@@ -3135,8 +3196,19 @@ function advPickerColumnHtml(session) {
                 aria-label="${escapeAttr(t('prep_clear_adversary_search'))}"
                 style="${state.sessionPrepUI.advSearch ? '' : 'display:none;'}">×</button>
       </div>
+      <div id="sp-adv-filters-wrap">${advFiltersHtml()}</div>
       <div class="prep-picker-list" id="prep-adv-list" role="list">${advPickerListHtml(session)}</div>
     </section>`;
+}
+
+/** Re-renders just the filter toolbar (trigger label, active-filter count,
+ * pressed/checked states) — called after a Tier/Type/Selected-only change,
+ * alongside refreshAdvPicker(), so the two never fall out of sync without
+ * a full page rebuild. */
+function refreshAdvFilters() {
+  const wrap = document.getElementById('sp-adv-filters-wrap');
+  if (wrap) wrap.innerHTML = advFiltersHtml();
+  bindAdvFilterControls();
 }
 
 function refreshAdvPicker() {
@@ -3147,17 +3219,124 @@ function refreshAdvPicker() {
   if (count) count.textContent = advCountText();
 }
 
+/** Binds the adversary Tier/Type/Selected-only filter controls. Rebound
+ * every time #sp-adv-filters-wrap's markup is regenerated (the initial
+ * render, and every refreshAdvFilters() call after a Tier/Selected-only/
+ * Clear change) — same rebind-per-rebuild pattern bindSessionPrepSearchField()
+ * uses, since these elements themselves get recreated each time. A Tier
+ * toggle or Selected-only change re-renders the whole filter toolbar (so its
+ * active-filter count/pressed state stays in sync); a Type checkbox change
+ * only updates its own trigger label and the adversary list, deliberately
+ * not the toolbar, so the open Type panel survives the change — same
+ * asymmetry the main catalog toolbar's own Tier/Type dropdowns have. */
+function bindAdvFilterControls() {
+  const toggle = document.getElementById('sp-adv-filter-toggle');
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      state.sessionPrepUI.advFiltersOpen = !state.sessionPrepUI.advFiltersOpen;
+      refreshAdvFilters();
+      const reToggle = document.getElementById('sp-adv-filter-toggle');
+      if (reToggle) reToggle.focus();
+    });
+  }
+  document.querySelectorAll('#sp-adv-tiers .rank-icon').forEach(btn => btn.addEventListener('click', () => {
+    const tier = Number(btn.dataset.spAdvTier);
+    toggleSetValue(state.sessionPrepUI.advFilters.tiers, tier);
+    refreshAdvFilters();
+    refreshAdvPicker();
+  }));
+  const typesField = document.getElementById('sp-adv-types-field');
+  if (typesField) {
+    bindMultiSelectField({
+      field: typesField,
+      trigger: document.getElementById('sp-adv-types-btn'),
+      panel: document.getElementById('sp-adv-types-panel'),
+      onToggle(cb) { setSetValue(state.sessionPrepUI.advFilters.types, cb.dataset.spAdvType, cb.checked); },
+      updateLabel(trigger) { trigger.querySelector('.ms-trigger-label').textContent = advTypesTriggerLabel(); },
+      onChange: refreshAdvPicker,
+    });
+  }
+  const selectedOnly = document.getElementById('sp-adv-selected-only');
+  if (selectedOnly) {
+    selectedOnly.addEventListener('change', () => {
+      state.sessionPrepUI.advFilters.selectedOnly = selectedOnly.checked;
+      refreshAdvFilters();
+      refreshAdvPicker();
+    });
+  }
+  const clearBtn = document.getElementById('sp-adv-clear-filters');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      state.sessionPrepUI.advFilters.tiers.clear();
+      state.sessionPrepUI.advFilters.types.clear();
+      state.sessionPrepUI.advFilters.selectedOnly = false;
+      refreshAdvFilters();
+      refreshAdvPicker();
+    });
+  }
+}
+
 /* ---------------- items panel ---------------- */
 
+function itemSearchFields(item) { return [item.en?.name, item.ru?.name]; }
+function itemSearchRoll(item) { return item.roll; }
+
+/** Roll order (1-60 within its own category), never re-sorted — Category/
+ * Source/search only narrow the set. A purely numeric query (e.g. "3")
+ * matches the item's book "#" number exactly, alongside the usual EN/RU
+ * name substring match — see SessionPrepUtils.filterItems(). */
 function prepFilteredItems() {
-  // Roll order (1-10), never re-sorted — search only narrows the set.
-  // A purely numeric query (e.g. "3") matches the item's book "#" number
-  // exactly, alongside the usual EN/RU name substring match.
-  return SessionPrepUtils.filterItemEntries(sessionPrepItems(), state.sessionPrepUI.itemSearch, i => [i.en?.name, i.ru?.name], i => i.roll);
+  return SessionPrepUtils.filterItems(sessionPrepItems(), {
+    search: state.sessionPrepUI.itemSearch,
+    category: state.sessionPrepUI.itemCategory,
+    source: state.sessionPrepUI.itemSource,
+  }, itemSearchFields, itemSearchRoll);
+}
+
+/** Every item matching the current Category/Source alone (before the
+ * text/roll search) — the "{total}" half of "{n} of {total}" below, so
+ * switching category shows e.g. "of 120" (or "of 60" once a source is also
+ * picked) rather than the grand 240-item catalogue. */
+function itemScopeCount() {
+  return SessionPrepUtils.filterItems(sessionPrepItems(), {
+    category: state.sessionPrepUI.itemCategory,
+    source: state.sessionPrepUI.itemSource,
+  }, itemSearchFields, itemSearchRoll).length;
 }
 
 function itemCountText() {
-  return t('prep_results_count').replace('{n}', prepFilteredItems().length).replace('{total}', sessionPrepItems().length);
+  return t('prep_results_count').replace('{n}', prepFilteredItems().length).replace('{total}', itemScopeCount());
+}
+
+function itemCategoryTotalCount(category) {
+  return sessionPrepItems().filter(i => i.kind === category).length;
+}
+
+function itemCategoryButtonHtml(category, label) {
+  const active = state.sessionPrepUI.itemCategory === category;
+  return `<button type="button" class="btn btn-sm ${active ? 'btn-primary' : 'btn-ghost'}"
+                   data-sp-item-category="${category}" aria-pressed="${active}">${escapeHtml(label)} — ${itemCategoryTotalCount(category)}</button>`;
+}
+
+function itemSourceButtonHtml(source, label) {
+  const active = state.sessionPrepUI.itemSource === source;
+  return `<button type="button" class="btn btn-sm ${active ? 'btn-primary' : 'btn-ghost'}"
+                   data-sp-item-source="${source}" aria-pressed="${active}">${escapeHtml(label)}</button>`;
+}
+
+function itemFiltersHtml() {
+  return `
+    <div class="prep-item-filters">
+      <div class="prep-item-category-toggle" role="group" aria-label="${escapeAttr(t('prep_category_label'))}">
+        ${itemCategoryButtonHtml('item', t('prep_category_items'))}
+        ${itemCategoryButtonHtml('consumable', t('prep_category_consumables'))}
+      </div>
+      <div class="prep-item-source-toggle" role="group" aria-label="${escapeAttr(t('filter_source'))}">
+        ${itemSourceButtonHtml('all', t('prep_item_source_all'))}
+        ${itemSourceButtonHtml('core', t('item_src_core'))}
+        ${itemSourceButtonHtml('hnf', t('item_src_hnf'))}
+      </div>
+    </div>`;
 }
 
 function prepItemThumbHtml(item) {
@@ -3224,6 +3403,7 @@ function itemsPanelHtml(session) {
         <h2 id="prep-items-heading">${t('prep_items')}</h2>
         <span class="prep-count" id="prep-item-total-count">${escapeHtml(itemCountText())}</span>
       </div>
+      <div id="sp-item-filters-wrap">${itemFiltersHtml()}</div>
       <div class="field search-field prep-search">
         <input type="text" id="prep-item-search" aria-label="${escapeAttr(t('prep_item_search'))}"
                placeholder="${escapeAttr(t('prep_item_search'))}" value="${escapeAttr(state.sessionPrepUI.itemSearch)}">
@@ -3246,6 +3426,33 @@ function refreshItemGrid() {
   const count = document.getElementById('prep-item-total-count');
   if (count) count.textContent = itemCountText();
   refreshSessionPrepItemNav();
+}
+
+/** Rebuilds the Category/Source toggle (active-state highlighting) and
+ * rebinds its buttons — called after every Category/Source change,
+ * alongside refreshItemGrid(), the same rebuild-and-rebind pattern
+ * refreshAdvFilters()/bindAdvFilterControls() use. */
+function refreshItemFilters() {
+  const wrap = document.getElementById('sp-item-filters-wrap');
+  if (wrap) wrap.innerHTML = itemFiltersHtml();
+  bindItemFilterControls();
+}
+
+function bindItemFilterControls() {
+  document.querySelectorAll('[data-sp-item-category]').forEach(btn => btn.addEventListener('click', () => {
+    const category = btn.dataset.spItemCategory;
+    if (state.sessionPrepUI.itemCategory === category) return;
+    state.sessionPrepUI.itemCategory = category;
+    refreshItemFilters();
+    refreshItemGrid();
+  }));
+  document.querySelectorAll('[data-sp-item-source]').forEach(btn => btn.addEventListener('click', () => {
+    const source = btn.dataset.spItemSource;
+    if (state.sessionPrepUI.itemSource === source) return;
+    state.sessionPrepUI.itemSource = source;
+    refreshItemFilters();
+    refreshItemGrid();
+  }));
 }
 
 /* ---------------- item strip manual navigation ----------------
@@ -3390,15 +3597,19 @@ function refreshCentralEnvironments() {
   refreshEnvCheckboxDisabled(session);
 }
 
-/** Simple selected row: thumbnail, name, remove — no quantity control.
- * `kind` is our own literal, never user data, so it's safe to splice into
- * the data-attribute name below. Used for selected adversaries; selected
- * items use their own card grid (centralItemCardHtml) instead. */
-function centralSimpleRowHtml({ id, name, thumb, kind }) {
+/** Simple selected row: thumbnail, name, optional meta line, remove — no
+ * quantity control. `kind` is our own literal, never user data, so it's
+ * safe to splice into the data-attribute name below. Used for selected
+ * adversaries; selected items use their own card grid (centralItemCardHtml)
+ * instead. */
+function centralSimpleRowHtml({ id, name, thumb, kind, meta }) {
   return `
     <div class="prep-central-row">
       ${thumb}
-      <span class="prep-central-row-name">${escapeHtml(name)}</span>
+      <span class="prep-central-row-body">
+        <span class="prep-central-row-name">${escapeHtml(name)}</span>
+        ${meta ? `<span class="prep-central-row-meta">${escapeHtml(meta)}</span>` : ''}
+      </span>
       <button type="button" class="prep-remove-btn" data-sp-remove-${kind}="${escapeAttr(id)}"
               aria-label="${escapeAttr(t('prep_remove_named').replace('{name}', name))}">×</button>
     </div>`;
@@ -3421,8 +3632,53 @@ function centralAdvListHtml(session) {
   return session.adversaryIds.map(id => {
     const adv = state.sessionPrepCatalog.adversaryById.get(id);
     if (!adv) return '';
-    return centralSimpleRowHtml({ id: adv.id, name: spName(adv), thumb: prepAdvThumbHtml(adv), kind: 'adv' });
+    return centralSimpleRowHtml({ id: adv.id, name: spName(adv), thumb: prepAdvThumbHtml(adv), kind: 'adv', meta: advMetaText(adv) });
   }).join('');
+}
+
+/** The FreshCutGrass encounter name for the current session: the GM's own
+ * title when they've set one, or a localized generic default — see the
+ * "FreshCutGrass export" section of CLAUDE.md. Always a non-empty plain
+ * string, so the payload's own `n` field is never blank. */
+function freshCutGrassEncounterTitle(session) {
+  const trimmed = (session.title || '').trim();
+  return trimmed || t('prep_freshcutgrass_default_title');
+}
+
+/** The export is adversaries only (see PD-002/the FreshCutGrass section):
+ * never environments, never items, and always adversary.name.en — never
+ * name.ru, a translated alias, or any other display text — since that's
+ * the only name FreshCutGrass itself recognizes. Returns null when nothing
+ * is selected, so the caller can hide the action entirely rather than
+ * exporting an empty encounter. */
+function freshCutGrassUrlForSession(session) {
+  const names = session.adversaryIds
+    .map(id => state.sessionPrepCatalog.adversaryById.get(id))
+    .filter(Boolean)
+    .map(adv => adv.name.en);
+  if (!names.length) return null;
+  return FreshCutGrassUtils.buildFreshCutGrassEncounterUrl(freshCutGrassEncounterTitle(session), names);
+}
+
+/** An ordinary link (not a button) so it behaves like every other
+ * FreshCutGrass link in the app — opens in a new tab, `noopener noreferrer`,
+ * and an accessible name that announces both the destination and the new
+ * tab. Absent entirely (not just disabled) when no adversary is selected. */
+function freshCutGrassLinkHtml(session) {
+  const url = freshCutGrassUrlForSession(session);
+  if (!url) return '';
+  const tip = t('prep_open_freshcutgrass_tip').replace('{n}', session.adversaryIds.length);
+  return `<a class="btn btn-sm prep-freshcutgrass-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer"
+             data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(tip)}">${escapeHtml(t('prep_open_freshcutgrass'))}</a>`;
+}
+
+/** Refreshed after every adversary selection change and every session-title
+ * edit (see saveSessionTitle()) — the encounter name and roster both feed
+ * this link's href, so either one changing must recompute it. */
+function refreshFreshCutGrassLink() {
+  const session = activeSessionPrep();
+  const wrap = document.getElementById('prep-freshcutgrass-wrap');
+  if (wrap) wrap.innerHTML = session ? freshCutGrassLinkHtml(session) : '';
 }
 
 function refreshCentralAdversaries() {
@@ -3433,6 +3689,7 @@ function refreshCentralAdversaries() {
   if (count) count.textContent = centralAdvCountText(session);
   const warning = document.getElementById('prep-central-adv-warning');
   if (warning) warning.innerHTML = advWarningHtml(session);
+  refreshFreshCutGrassLink();
 }
 
 function centralItemCountText(session) {
@@ -3482,7 +3739,9 @@ function centralSectionHtml(session) {
         <div id="prep-central-env-list">${centralEnvListHtml(session)}</div>
       </div>
       <div class="prep-central-section" data-sp-section="adversaries">
-        <h3>${ICON_TABLE_ADVERSARIES}<span>${t('prep_selected_adversaries')}</span><span class="prep-central-count" id="prep-central-adv-count">${escapeHtml(centralAdvCountText(session))}</span></h3>
+        <h3>${ICON_TABLE_ADVERSARIES}<span>${t('prep_selected_adversaries')}</span><span class="prep-central-count" id="prep-central-adv-count">${escapeHtml(centralAdvCountText(session))}</span>
+          <span class="prep-freshcutgrass-wrap" id="prep-freshcutgrass-wrap">${freshCutGrassLinkHtml(session)}</span>
+        </h3>
         <div id="prep-central-adv-warning">${advWarningHtml(session)}</div>
         <div id="prep-central-adv-list">${centralAdvListHtml(session)}</div>
       </div>
@@ -3516,6 +3775,7 @@ function saveSessionTitle(rawValue) {
   if (!session || session.title === title) return;
   const { result } = updateSessionPrepSession(s => Object.assign({}, s, { title }));
   updateSaveStatusDisplay(result);
+  refreshFreshCutGrassLink();
 }
 
 function bindSessionPrepTitleInput() {
@@ -3920,6 +4180,8 @@ function renderSessionPrepPage() {
     </div>`;
   bindSessionPrepDelegation(el);
   bindSessionPrepSearchAndTitle();
+  bindAdvFilterControls();
+  bindItemFilterControls();
   initSessionPrepItemNav();
   applySessionPrepChromeDom();
 }

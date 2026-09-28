@@ -21,12 +21,13 @@ js/data-version.js      — versionedDataUrl() for data/*.json fetches
 js/route-utils.js       — location.hash parsing/building
 js/list-utils.js        — Lists name validation
 js/search-index.js      — environment search index builder
-js/session-prep-utils.js — Session Prep pure selection/search logic
+js/session-prep-utils.js — Session Prep pure selection/search/filter logic
+js/freshcutgrass-utils.js — FreshCutGrass encounter-URL encoder (shared by env detail + Session Prep)
 js/app.js               — everything else: state, rendering, event wiring
 ```
 
 Everything above `js/app.js` is a dependency-free module exposing a global
-(`SafeStorage`, `RouteUtils`, `ListUtils`, `SearchIndex`, `SessionPrepUtils`)
+(`SafeStorage`, `RouteUtils`, `ListUtils`, `SearchIndex`, `SessionPrepUtils`, `FreshCutGrassUtils`)
 that also works under plain Node `require()` — that's what makes each one
 directly unit-testable in `tests/*.test.js` without a DOM or bundler.
 
@@ -164,7 +165,8 @@ directly rather than driving it through the DOM:
 | `js/route-utils.js` | hash parsing, building, and safe decoding |
 | `js/list-utils.js` | list name normalization and rename resolution |
 | `js/search-index.js` | environment search record building and matching |
-| `js/session-prep-utils.js` | Session Prep default shape, selection toggling, search filtering |
+| `js/session-prep-utils.js` | Session Prep default shape, selection toggling, search/Tier/Type/Category/Source filtering |
+| `js/freshcutgrass-utils.js` | FreshCutGrass encounter URL encoding |
 
 ## Build and deployment flow
 
@@ -194,7 +196,8 @@ stays copy-only.
 | Hash routing | `js/route-utils.js` | `tests/routing.test.js` |
 | List rename resolution | `js/list-utils.js` | `tests/list-rename.test.js` |
 | Environment search index | `js/search-index.js` | `tests/search-index.test.js` |
-| Session Prep selection/search logic | `js/session-prep-utils.js` | `tests/session-prep-utils.test.js` |
+| Session Prep selection/search/filter logic | `js/session-prep-utils.js` | `tests/session-prep-utils.test.js` |
+| FreshCutGrass URL encoding | `js/freshcutgrass-utils.js` | `tests/freshcutgrass-utils.test.js` |
 | Initial loading shell lifecycle | `js/app.js` (`beginInitialLoading()` etc.) | `tests/loading-state.test.js` |
 
 Run all of them with `node --test tests/*.test.js`.
