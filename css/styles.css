@@ -2050,8 +2050,9 @@ body[data-route="session-prep"] {
 /* ---- session name + save status (workspace-level, not the header chrome) ----
    Renders as the first child of .prep-wrap (see renderSessionPrepPage() in
    js/app.js) so it aligns with the same wide workspace shell as the three
-   catalogues below it, rather than the header's narrower 1180px container —
-   and so the save-status line stays visible in both header modes. */
+   catalogues below it, rather than the header's narrower 1180px container.
+   Hidden outright in compact mode along with the switcher row below —
+   see the compact-mode rule further down. */
 .prep-session-header {
   display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: var(--s-3);
   padding-bottom: var(--s-3); border-bottom: 1px solid var(--line-faint);
@@ -2111,59 +2112,20 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .lang-switch {
   transition: height var(--t-base) var(--ease-out);
 }
 
-/* ---- compact session strip: one dense row instead of the large
-   standalone title block ----
-   `minmax(0, 1fr) auto` is what keeps a long title from ever pushing the
-   save status off-screen — the status column only ever takes its own
-   content width, and the title column absorbs everything else, truncating
-   rather than growing past it (the input itself still holds the full text
-   for editing; only its rendered box is capped). */
-body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-session-header {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
-  min-height: var(--sp-strip-h);
-  padding-bottom: 0; border-bottom: none;
-}
-body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-title-label {
-  display: none;
-}
-body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-title-field {
-  min-width: 0;
-}
-body[data-route="session-prep"][data-sp-header-mode="compact"] #prep-session-title {
-  font-family: var(--font-body); font-weight: 500; font-size: var(--fs-base);
-  padding: 6px var(--s-2); border: 1px solid var(--line-faint); border-radius: var(--r-sm);
-  background: var(--ink-raised); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-body[data-route="session-prep"][data-sp-header-mode="compact"] #prep-session-title:hover {
-  border-color: var(--line-strong);
-}
-body[data-route="session-prep"][data-sp-header-mode="compact"] #prep-session-title:focus {
-  border-color: var(--hope); white-space: normal;
-}
-
-/* The switch/new/duplicate/delete row is session *management*, not
-   in-session reference — a GM mid-session wants the dense strip above and
-   this row out of the way entirely, not merely shrunk. */
+/* ---- compact mode: session name/save-status and the switcher row both
+   come out of layout entirely, not merely shrunk. Both are session
+   *management* — a GM mid-session wants the workspace, not this chrome. */
+body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-session-header,
 body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-session-switcher {
   display: none;
 }
 
-/* The saved header/strip space becomes workspace room, not an empty gap —
-   see the ≥1200px "no page-level scroll" block further down, where every
+/* The removed rows' space becomes workspace room, not an empty gap — see
+   the ≥1200px "no page-level scroll" block further down, where every
    ancestor from body to .prep-main already has a definite, shrinkable
-   height, so shrinking these two rows directly grows .prep-main's share. */
+   height, so removing these two rows directly grows .prep-main's share. */
 body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-wrap {
   margin-top: var(--sp-workspace-gap); gap: var(--sp-workspace-gap);
-}
-
-/* Narrow enough that the two-column strip risks colliding — stack instead,
-   title first, status below it. Outside the scope of this task's desktop
-   target sizes, but cheap enough to keep the compact strip usable rather
-   than regressing it at phone widths. */
-@media (max-width: 760px) {
-  body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-session-header {
-    grid-template-columns: 1fr; row-gap: 4px;
-  }
 }
 
 /* A normal flex child of #header's own .header-actions (alongside the nav
