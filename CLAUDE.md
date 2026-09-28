@@ -436,146 +436,207 @@ the existing `#toolbar`/`#result-count`/`#grid-wrap` rendering architecture
 and header nav pattern (`Lists → Session Prep → Journeys → RU → EN` in DOM
 order) rather than standing up a second application root.
 
+Every selection — environment, adversary, item — is **binary**: selected or
+not selected. There is no primary environment and no quantity anywhere in
+this feature. The three-environment cap is the only limit.
+
 - **Three data sources for three different things.** The environment picker
-  reads the existing `allEnvs()` catalog (up to three selections, the first
-  becomes primary and can be reassigned via "Make primary"). Adversaries are
-  metadata-only picker entries from `data/session-prep.json` — never
-  `data/adversaries.json` (full featured-adversary stat blocks); a full stat
-  block belongs in FreshCutGrass/the printed book, not this picker. Items,
-  by contrast, are just **ids into `data/items.json`** (the same catalog the
-  main Items page uses) — Session Prep keeps no item metadata of its own, so
-  an item's name/description/kind/source/roll/image/artwork exist in exactly
-  one place in this repo no matter which page shows it. Loaded into
-  `state.sessionPrepCatalog` (`{ adversaries, itemIds, adversaryById }`);
-  `sessionPrepItems()` resolves `itemIds` against the shared `itemById()`
-  lookup at render time (`init()` loads `data/items.json` before
-  `data/session-prep.json` resolves anything, so this is never a race). An
-  id an item load failure (or a stale build) left dangling is dropped by
-  `sessionPrepItems()`'s `.filter(Boolean)` rather than rendered as a blank
-  card.
+  reads the existing `allEnvs()` catalog (up to three selections, order
+  preserved but carrying no special meaning — there is no primary
+  environment). Adversaries are metadata-only picker entries from
+  `data/session-prep.json` — never `data/adversaries.json` (full featured-
+  adversary stat blocks); a full stat block belongs in FreshCutGrass/the
+  printed book, not this picker. Items, by contrast, are just **ids into
+  `data/items.json`** (the same catalog the main Items page uses) — Session
+  Prep keeps no item metadata of its own, so an item's name/description/
+  kind/source/roll/image/artwork exist in exactly one place in this repo no
+  matter which page shows it. Loaded into `state.sessionPrepCatalog`
+  (`{ adversaries, itemIds, adversaryById }`); `sessionPrepItems()` resolves
+  `itemIds` against the shared `itemById()` lookup at render time (`init()`
+  loads `data/items.json` before `data/session-prep.json` resolves anything,
+  so this is never a race). An id an item load failure (or a stale build)
+  left dangling is dropped by `sessionPrepItems()`'s `.filter(Boolean)`
+  rather than rendered as a blank card.
 - **`data/session-prep.json` shape**: `{ adversaries: [{ id, name: {en, ru},
   image? }], items: [id, ...] }` — `items` is a plain array of item-catalog
-  ids (e.g. `["ci1", "ci2", ...]`), not objects. An adversary's optional
-  `image` is a local repo-relative path (currently under
-  `img/adversaries/art/session-prep/`); only include one when the file
-  actually exists — never generate, download, or fabricate adversary art. No
-  image (or a runtime load failure, handled by the delegated `error`-event
-  listener in `bindSessionPrepDelegation()`) falls back to a designed inline
-  SVG silhouette, never a broken-image icon.
-  `scripts/validate-data.js`'s `validateSessionPrep()` enforces unique
-  adversary ids, bilingual adversary names, that a supplied local adversary
-  image path exists on disk, and — the one cross-file check here — that
-  every item id is well-formed, unique, and actually exists in
-  `data/items.json` (checked against `validateItems()`'s own `itemIds`,
-  which runs first in `validateRepositoryData()`).
-- **Persistence**: `LS_KEYS.sessionPrep` (`dhcodex_session_prep`), loaded via
-  `SafeStorage.loadStoredJson()` with the dedicated `SafeStorage.validators.
-  sessionPrep` structural validator (mirrors `sanitizeRegionEntry`/
-  `sanitizeSanctuaryEntry` — sanitizes what it can, drops only what it must,
-  never resets the whole preparation over one bad row). Stored shape is
-  forward-compatible with multiple sessions (`{ schemaVersion, activeSessionId,
-  sessions: [...] }`), but this MVP only ever reads/writes the active one —
-  there is no UI for creating, switching, duplicating, or deleting a session.
-  Every mutation goes through `updateSessionPrepSession()` in `js/app.js`,
-  the one place that stamps `updatedAt`, calls `persist()`, and reports the
-  result to the inline "Saved on this device · HH:MM" / "Could not save in
-  this browser" status line — the same `persist()` that already raises the
-  app's one shared storage-write-failure toast on its own.
+  ids (e.g. `["ci1", "ci2", ...]`), not objects. This is a separate concern
+  from the *persisted* schema below: it is the read-only picker catalog, not
+  a session's own selections. An adversary's optional `image` is a local
+  repo-relative path (currently under `img/adversaries/art/session-prep/`);
+  only include one when the file actually exists — never generate,
+  download, or fabricate adversary art. No image (or a runtime load
+  failure, handled by the delegated `error`-event listener in
+  `bindSessionPrepDelegation()`) falls back to a designed inline SVG
+  silhouette, never a broken-image icon. `scripts/validate-data.js`'s
+  `validateSessionPrep()` enforces unique adversary ids, bilingual adversary
+  names, that a supplied local adversary image path exists on disk, and —
+  the one cross-file check here — that every item id is well-formed,
+  unique, and actually exists in `data/items.json` (checked against
+  `validateItems()`'s own `itemIds`, which runs first in
+  `validateRepositoryData()`).
+- **Persistence: schema version 2, binary selections only.** `LS_KEYS.sessionPrep`
+  (`dhcodex_session_prep`), loaded via `SafeStorage.loadStoredJson()` with
+  the dedicated `SafeStorage.validators.sessionPrep` structural validator.
+  The stored shape is:
+  ```
+  {
+    "schemaVersion": 2,
+    "activeSessionId": "default",
+    "sessions": [{
+      "id": "default", "title": "", "createdAt": "...", "updatedAt": "...",
+      "environmentIds": [], "adversaryIds": [], "itemIds": []
+    }]
+  }
+  ```
+  A session object never contains `primaryEnvironmentId`, a nested
+  `adversaries`/`items` quantity list, or any other quantity field —
+  `environmentIds`/`adversaryIds`/`itemIds` are all plain deduplicated
+  string-id arrays, and selection counts are just their `.length`. This
+  MVP only ever reads/writes the one active session — there is no UI for
+  creating, switching, duplicating, or deleting a session, though the
+  store's shape stays forward-compatible with more than one.
+- **v1 → v2 migration lives entirely in `js/safe-storage.js`.** A stored
+  `schemaVersion: 1` value (the pre-binary-selection shape, with
+  `primaryEnvironmentId` and `adversaries`/`items` as `{ id, quantity }[]`)
+  is migrated to v2 by `sanitizeSessionPrep()`/`migrateSessionPrepSessionV1ToV2()`:
+  `environmentIds` are preserved/deduplicated/capped at three,
+  `adversaryIds`/`itemIds` become just the entries' ids (the `quantity`
+  field and `primaryEnvironmentId` are discarded), tolerating a
+  partially-migrated selection array that mixes plain strings and
+  `{ id, quantity }` objects. A truly unknown schema version (anything
+  other than 1 or 2) still hard-resets to a fresh default, same as any
+  other unrecoverable shape. Discarding `quantity`/`primaryEnvironmentId`
+  during a clean v1 → v2 migration is **never** flagged as a storage
+  recovery — see `loadStoredJson()`'s `{ ok: true, changed: false,
+  migrated: true }` result shape in `js/safe-storage.js` — so upgrading a
+  browser's existing preparation never shows the "storage recovered"
+  toast. A v1 store that also contains genuine corruption (a malformed id,
+  a bad timestamp, …) still both migrates *and* reports that separately,
+  since that part really is a recovery. The migrated value is written back
+  to storage best-effort in either case; if that write-back fails, the
+  migrated value is still used in memory for the rest of the visit, and the
+  next actual save attempt goes through the app's normal
+  `reportStorageWriteFailure()` path like any other write. Do not weaken
+  `sanitizeSessionPrep()`'s per-row sanitizing (dropping only what it must,
+  same "sanitize what you can" pattern as `sanitizeRegionEntry`/
+  `sanitizeSanctuaryEntry`) or reintroduce a shared dependency between this
+  validator and `js/session-prep-utils.js` — the two intentionally
+  duplicate the small `MAX_ENVIRONMENTS`-style constants so each file stays
+  standalone-loadable.
 - **Pure logic lives in `js/session-prep-utils.js`** (global `SessionPrepUtils`,
   same dependency-free browser/CommonJS pattern as `js/route-utils.js`/
   `js/list-utils.js`, tested directly in `tests/session-prep-utils.test.js`):
-  the default stored shape, the three-environment cap and primary-promotion
-  rules, adversary/item toggle-and-1-to-99-quantity rules, unique/total
-  counts, and search normalization/filtering. `js/app.js` is the DOM layer
-  over it — it does not reimplement any of these rules inline.
+  the default stored shape, `toggleId(ids, id)`/`removeId(ids, id)` (generic
+  binary-selection helpers shared by all three catalogs),
+  `toggleEnvironment(session, environmentId)`/`removeEnvironment(session,
+  environmentId)` (the three-environment cap, no primary-promotion logic of
+  any kind), and search normalization/filtering. `js/app.js` is the DOM
+  layer over it — it does not reimplement any of these rules inline, and
+  adversary/item selection changes call `toggleId`/`removeId` directly
+  against `session.adversaryIds`/`session.itemIds` rather than through a
+  dedicated wrapper.
 - **Rendering avoids full-page rerenders on every interaction.**
-  `renderSessionPrepPage()` builds the whole page once (route entry, language
-  switch, catalogue retry). A checkbox toggle, quantity change, remove, or
-  "Make primary" click afterwards goes through a targeted `refresh*()` that
-  replaces only the list/count it affects (`refreshCentralEnvironments()`,
+  `renderSessionPrepPage()` builds the whole page once (route entry,
+  language switch, catalogue retry). A checkbox toggle, remove, or search
+  edit afterwards goes through a targeted `refresh*()` that replaces only
+  the list/count it affects (`refreshCentralEnvironments()`,
   `refreshCentralAdversaries()`, `refreshCentralItems()`, `refreshEnvPicker()`,
   `refreshAdvPicker()`, `refreshItemGrid()`), so a picker's search text,
   scroll position, and focus are never disturbed by picking something.
-  Removing an entry centrally syncs the matching source checkbox back to
-  unchecked via `syncPickerCheckbox()` rather than rebuilding that picker.
-  Click/change/error listeners are delegated once per `#grid-wrap` lifetime
-  (`bindSessionPrepDelegation()`); the search inputs and the title input are
-  rebound on every full render instead (`bindSessionPrepSearchAndTitle()`),
-  since those elements themselves are recreated then.
-- **Item picker is a horizontal icon strip with a hover/focus drawer**
-  (`itemCardHtml()`, `#prep-item-grid`/`.prep-item-grid`): one row of square
-  `.prep-item-icon-btn` tiles — 75% larger than the shared
-  `.prep-item-thumb`/`.prep-adv-thumb` size used everywhere else, scoped so
-  those other icons are untouched — at every viewport width, using native
-  `overflow-x` (trackpad, shift+wheel, scrollbar drag, and touch swipe all
-  keep working for free; no cloned elements, no looping CSS marquee). At
-  rest a tile shows only its icon: no name, description, or checkbox is
-  permanently visible. Each icon button's `data-tip` tooltip (the existing
-  global controller, not a second implementation) carries what the card used
-  to show inline — name, kind, source, roll number — and clicking the icon
-  still calls the main Items page's own `openItemDetail()` directly, exactly
-  as before; Session Prep still has no item-detail overlay code of its own.
-  A `.prep-item-drawer` — the icon button's sibling, after it in both DOM and
-  visual order — wraps the actual selection checkbox in a full-height
-  `<label>` and sits collapsed at zero width until the tile is hovered or
-  gains `:focus-within`, when it grows to `--sp-drawer-w` (36px) on the
-  icon's right, revealing a separated surface without ever covering the icon
-  or overlapping the next tile (a real flex-item width change pushes later
-  tiles over by that same bounded amount, rather than an absolutely
-  positioned overlay risking either). `overflow` on the drawer flips from
-  `hidden` to `visible` in the very same rule that starts that width
-  transition, so a keyboard focus ring inside is never clipped mid-animation
-  — only ever hidden at rest, where the drawer is genuinely zero width. The
-  grid reserves `--sp-drawer-w-touch` (44px) of trailing padding so the
-  *last* tile's drawer — which has no later sibling to push — never grows
-  past the edge of the already-established scrollable area and gets clipped
-  there. On a coarse/no-hover pointer the drawer instead stays permanently
-  visible at that same 44px touch-target width (`@media (hover: none),
-  (pointer: coarse)`), so tapping the icon and tapping the drawer remain two
-  separate controls without needing a hover gesture. The checkbox's own
-  aria-label states what it currently does ("Add …"/"Remove …", not just the
-  item's name) and is kept in sync wherever its checked state changes
-  without a full grid rebuild — `updateItemCheckboxLabel()`, called from
-  both the toggle-change and remove-centrally handlers in
-  `bindSessionPrepDelegation()`.
-- **Idle auto-pan** nudges the strip slowly back and forth (ping-pong) as a
-  discovery hint once nothing has happened for `SESSION_PREP_ITEM_IDLE_MS`
-  (15000ms), at `SESSION_PREP_ITEM_SCROLL_SPEED` (12px/s) — a desktop,
-  mouse-driven affordance only. `SessionPrepUtils.computeAutoPanStep()` is
-  the pure, independently-tested boundary math (where `scrollLeft` ends up,
-  when direction flips, clamped so even a huge elapsed time can't overshoot
-  a boundary — see `tests/session-prep-utils.test.js`); everything else is
-  DOM wiring in js/app.js, behind one controller instance in
-  `itemStripState`. `initSessionPrepItemStrip()`/`destroySessionPrepItemStrip()`
-  are the only two functions that touch that variable, called from
-  `renderSessionPrepPage()` (which owns creating and recreating it, since a
-  full render — route entry, a language switch, a successful catalogue
-  retry — always destroys and recreates `#prep-item-grid` itself) and from
-  `render()` (which tears it down when navigating to any other route).
-  `refreshItemGrid()` calls `refreshSessionPrepItemStrip()` after every
-  filter pass to re-clamp `scrollLeft`/direction against the current
-  `scrollWidth`/`clientWidth` and stop or (after the normal idle delay)
-  re-arm auto-pan as overflow disappears or reappears; a `ResizeObserver` on
-  the strip and a `window` resize listener call the same function for window
-  resizes and other layout changes. `sessionPrepAutoPanAllowed()` is the one
-  gate checked before starting a run and on every frame of one — route,
-  `document.hidden`, an open overlay (`overlayStack.length`),
-  `prefers-reduced-motion`, `(hover: none), (pointer: coarse)`,
-  `IntersectionObserver` viewport visibility, `:hover` on the strip itself,
-  and focus inside the strip or any editable control — so a change mid-run
-  (an overlay opening, the tab backgrounding, focus moving in) halts it
-  immediately rather than only at the next idle cycle. The animation itself
-  tracks its own float accumulator (`s.scrollLeftFloat`, re-synced from the
-  real `scrollLeft` whenever a run starts) rather than reading `scrollLeft`
-  back each frame — at 12px/s a single frame's advance is well under a
-  pixel, and `scrollLeft` always reads back a rounded integer, so relying on
-  it directly would round every frame's progress away and never move at
-  all. `requestAnimationFrame`'s own timestamp resets to `null` on every
-  stop, so resuming (including after a backgrounded tab) always measures a
-  fresh near-zero elapsed time instead of the real wall-clock gap. An idle
-  countdown that fires while auto-pan still isn't allowed simply reschedules
-  itself rather than giving up, so there is no dependency on catching the
-  exact moment the pointer leaves or focus moves away.
+  Removing an entry centrally syncs the matching source checkbox — both its
+  `checked` state and its accessible label (`updatePrepToggleLabel()`,
+  shared by all three pickers) — back via `syncPickerCheckbox()` rather than
+  rebuilding that picker. Click/change/error listeners are delegated once
+  per `#grid-wrap` lifetime (`bindSessionPrepDelegation()`); the search
+  inputs and the title input are rebound on every full render instead
+  (`bindSessionPrepSearchAndTitle()`), since those elements themselves are
+  recreated then.
+- **One shared selection control across all three catalogs.** A permanently
+  visible ~20px checkbox (`.prep-select-checkbox`, wrapped in a
+  `.prep-checkbox-hit` label purely to enlarge the tap target to ~36-40px
+  desktop / 44px touch) is the *only* control that adds or removes an
+  entity — nothing else in a row or card silently toggles selection.
+  Environments: the checkbox selects; a separate `.prep-row-open` button
+  opens the existing environment detail overlay, and stays enabled even at
+  the three-environment cap. Adversaries: a bare checkbox plus a
+  non-interactive thumbnail/name — never a whole row wrapped in a `<label>`,
+  since there is no adversary detail view in Session Prep to protect the
+  row from accidentally opening. Items: the checkbox and the
+  `.prep-item-icon-btn` (which opens the existing item detail overlay,
+  exactly the `openItemDetail()` the main Items page uses) are two separate
+  controls on the card; the item's name and a compact "source · kind ·
+  #roll" meta line are always visible on the card, never hidden behind a
+  hover state. Every selected row/card gets an `is-selected` state with a
+  visible border/background difference, never color alone.
+- **Environment-limit feedback is persistent, not just a toast.** At the
+  three-environment cap, `envPickerRowHtml()` disables every *unselected*
+  checkbox (the three already-selected ones stay enabled so they can be
+  unchecked) while leaving the detail button enabled; `envLimitStateText()`
+  renders a persistent "Limit reached" state next to the selected-
+  environment counter (`prep_env_limit_reached`), inside a `role="status"`
+  element that only actually changes — and so only announces — when the
+  limit state itself flips. `refreshEnvCheckboxDisabled()` re-enables the
+  remaining checkboxes immediately on removal without rebuilding the picker
+  list, so search text/scroll/focus survive. The `prep_environment_limit`
+  toast is still wired as a defensive fallback for a stale or programmatic
+  4th-selection attempt (`SessionPrepUtils.toggleEnvironment()`'s
+  `limitReached` result), but it is not the primary explanation.
+- **Counters use two consistent formats.** All three catalog headers share
+  one "{n} of {total}" key (`prep_results_count`). The selected-environment
+  counter is "Selected: {n} of {max}" (`prep_selected_count_max`); selected
+  adversaries/items use "Selected: {n}" (`prep_selected_count`) — no
+  "types vs. creatures"/quantity framing anywhere.
+- **Search-clear controls.** Each of the three search fields
+  (`#prep-env-search`/`#prep-adv-search`/`#prep-item-search`) has its own
+  `.search-clear-btn` (the same control the main catalog search uses),
+  shown only while that field's text is non-empty, and Escape while the
+  field is focused performs the same immediate clear-and-refocus —
+  `clearSessionPrepSearch()`/`bindSessionPrepSearchField()` in `js/app.js`,
+  keyed by `SESSION_PREP_SEARCH_FIELDS`. Selecting something never touches
+  any of these search fields.
+- **Item strip navigation is entirely manual.** `#prep-item-grid` is a plain
+  horizontally-scrolling row (native trackpad/wheel/touch/scrollbar
+  scrolling always works); `.prep-item-strip-wrap` adds two prev/next arrow
+  buttons (`initSessionPrepItemNav()`/`destroySessionPrepItemNav()` in
+  `js/app.js`), hidden entirely when the strip has no overflow and disabled
+  at each scroll boundary, refreshed after scrolling, resizing, searching
+  (`refreshItemGrid()` calls `refreshSessionPrepItemNav()`), and language
+  changes. There is no idle timer, no automatic scrolling, and no
+  requestAnimationFrame loop anywhere in this controller — the strip never
+  moves except by direct user action (a native scroll gesture or a click on
+  one of the two arrows, which scrolls by `scrollBy()` and respects
+  `prefers-reduced-motion`).
+- **The header chrome only changes on a deliberate click — never
+  automatically.** `#session-prep-chrome` (in `index.html`) wraps the
+  shared site header; `initSessionPrepChrome()`/`destroySessionPrepChrome()`
+  build/tear down one small controller (`sessionPrepChromeState`, mode
+  `'expanded' | 'collapsed'`, always starting `'expanded'` on route entry —
+  this is not persisted across a reload or a return visit) and its single
+  toggle button. There is no timer, no workspace-activity listener, and no
+  save-error-forces-reopen logic of any kind: the collapsed state is purely
+  a CSS variant of the one `#header` markup `renderHeader()` always
+  produces (hiding the subtitle/compat-label and shrinking the logo via
+  `#session-prep-chrome[data-collapsed="true"]` rules in `css/styles.css`),
+  driven only by `applySessionPrepChromeDom()`. The toggle itself
+  (`.sp-chrome-toggle`) is fixed to the viewport corner rather than
+  positioned over the header's own box, so it is never clipped and never
+  straddles the boundary between the header and the workspace regardless of
+  which state the header is in.
+- **The session name and save status live in the workspace, not the header
+  chrome.** `sessionHeaderHtml()` renders as the first child of `.prep-wrap`
+  (inside `renderSessionPrepPage()`), so it aligns with the same wide
+  session-prep shell as the three catalogs below it and stays visible
+  regardless of whether the header chrome above it is collapsed. The name
+  field has a visible label (`session_name_label`, not just an
+  accessibility-only one) above the input, which keeps the existing 300ms
+  debounce, trim-on-blur, and 120-character limit
+  (`bindSessionPrepTitleInput()`). The save-status line
+  (`sessionSaveStatusText()`) is never blank: before the first mutation
+  this visit it shows `session_autosave_ready` ("Autosave is on · stored in
+  this browser only"), after a successful save it shows
+  `session_saved_local` plus a timestamp, and after a failure it shows
+  `session_save_failed` with a `data-state="error"` styling hook — never
+  color alone.
 - **Standalone `openItemDetail()` opens and language switching.** That
   overlay's own staleness fix (`applyDetailRoute()`'s "restack" of
   `openItemId` in the new language) only fires when the card sits on top of

@@ -149,6 +149,12 @@
    *   { ok: false }                          — unusable top-level shape
    *   { ok: true, value, changed: false }    — usable as-is
    *   { ok: true, value, changed: true }     — usable after sanitizing
+   *   { ok: true, value, changed: false, migrated: true }
+   *     — the value differs from what was stored only because of an
+   *       expected schema version upgrade, not because anything was
+   *       invalid. Written back best-effort but never backed up and never
+   *       recorded as a recovery — an upgrade must not be presented to the
+   *       user as corrupted browser storage.
    *   Omit to accept whatever parsed to.
    */
   function loadStoredJson(storage, key, options) {
@@ -189,6 +195,13 @@
       var backedUp = attemptBackup(storage, key, raw, 'sanitized');
       var repaired = backedUp && attemptRepair(storage, key, result.value);
       recordRecovery(key, 'sanitized', { backedUp: backedUp, repaired: repaired });
+    } else if (result.migrated) {
+      // A clean version upgrade, not corruption — write the upgraded value
+      // back best-effort (no backup needed, nothing was invalid) and never
+      // call recordRecovery(), so no recovery toast is shown for it. The
+      // in-memory value returned below is the migrated one regardless of
+      // whether this silent write-back succeeds.
+      attemptRepair(storage, key, result.value);
     }
     return result.value;
   }
@@ -453,14 +466,25 @@
    * on, but is deliberately self-contained rather than requiring that
    * module: this validator only needs to know the storage *shape* is sound
    * (bounds, uniqueness, cross-field consistency), not the selection rules
-   * a live page applies, and duplicating the three small constants below
-   * keeps this file loadable standalone in a test the same way
-   * sanitizeRegionEntry/sanitizeSanctuaryEntry already are. See the
-   * "Persistence" section of the Session Prep spec in CLAUDE.md. */
+   * a live page applies, and duplicating the small constants below keeps
+   * this file loadable standalone in a test the same way
+   * sanitizeRegionEntry/sanitizeSanctuaryEntry already are.
+   *
+   * Schema v2 (current) is a plain binary-selection shape: every session
+   * has `environmentIds`/`adversaryIds`/`itemIds`, each a deduplicated
+   * array of string ids — no primary environment, no quantity anywhere.
+   * Schema v1 (legacy) had `primaryEnvironmentId` and `adversaries`/`items`
+   * as `{ id, quantity }[]`. This is the one place a v1 store is migrated
+   * to v2: dropping `primaryEnvironmentId` and each entry's `quantity` is
+   * the *intended* effect of the migration, not something to flag as
+   * "changed" — only a genuinely invalid row (bad id, duplicate, over the
+   * environment cap, a bad timestamp, ...) is. See the "Session Prep"
+   * section of CLAUDE.md and options.validate's contract in
+   * loadStoredJson() above for how a clean migration avoids the recovery
+   * toast while still writing the upgraded value back. */
 
   var SP_MAX_ENVIRONMENTS = 3;
-  var SP_MIN_QUANTITY = 1;
-  var SP_MAX_QUANTITY = 99;
+  var SP_SCHEMA_VERSION = 2;
 
   function isValidIsoTimestamp(v) {
     if (typeof v !== 'string' || !v) return false;
@@ -468,29 +492,55 @@
     return !isNaN(d.getTime());
   }
 
-  /** Sanitizes an { id, quantity } list (Session Prep adversaries/items):
-   * drops entries with a missing/duplicate id, clamps quantity into
-   * 1-99/integer. Never fails the whole list over one bad row. */
-  function sanitizeQuantityEntries(list) {
-    if (!Array.isArray(list)) return { ok: false };
+  /** Sanitizes a plain array of string ids: drops non-string/empty/
+   * dangerous/duplicate entries (keeping the first occurrence), optionally
+   * capping the result length. Never fails the whole list over one bad
+   * entry. */
+  function sanitizeIdList(list, max) {
+    var raw = Array.isArray(list) ? list : [];
+    var changed = !Array.isArray(list);
     var seen = Object.create(null);
-    var kept = [];
-    var changed = false;
-    list.forEach(function (entry) {
-      if (!isPlainObject(entry) || !isNonEmptyString(entry.id) || DANGEROUS_KEYS[entry.id]) { changed = true; return; }
-      if (seen[entry.id]) { changed = true; return; }
-      seen[entry.id] = true;
-      var q = entry.quantity;
-      var safeQty = isFiniteNumber(q) && Number.isInteger(q) && q >= SP_MIN_QUANTITY && q <= SP_MAX_QUANTITY
-        ? q
-        : Math.min(SP_MAX_QUANTITY, Math.max(SP_MIN_QUANTITY, Math.round(isFiniteNumber(q) ? q : SP_MIN_QUANTITY)));
-      if (safeQty !== q) changed = true;
-      kept.push({ id: entry.id, quantity: safeQty });
+    var out = [];
+    raw.forEach(function (id) {
+      if (!isNonEmptyString(id) || DANGEROUS_KEYS[id]) { changed = true; return; }
+      if (seen[id]) { changed = true; return; }
+      seen[id] = true;
+      out.push(id);
     });
-    return { ok: true, value: kept, changed: changed };
+    if (typeof max === 'number' && out.length > max) {
+      out = out.slice(0, max);
+      changed = true;
+    }
+    return { value: out, changed: changed };
   }
 
-  function sanitizeSessionPrepSession(session) {
+  /** Migrates a v1 selection list into a plain id array. Tolerates three
+   * shapes for `list`: a v1 `{ id, quantity }[]`, an already-migrated plain
+   * `string[]`, or a mix of both (a partially-migrated row) — extracting
+   * and deduplicating ids from whichever form each entry takes. Discarding
+   * the `quantity` field itself is the silent, intended part of the
+   * migration and is never flagged as `changed`; only a missing/invalid/
+   * duplicate/dangerous id is. */
+  function migrateIdListFromEntries(list) {
+    if (!Array.isArray(list)) return { value: [], changed: true };
+    var seen = Object.create(null);
+    var out = [];
+    var changed = false;
+    list.forEach(function (entry) {
+      var id = typeof entry === 'string' ? entry : (isPlainObject(entry) ? entry.id : null);
+      if (!isNonEmptyString(id) || DANGEROUS_KEYS[id]) { changed = true; return; }
+      if (seen[id]) { changed = true; return; }
+      seen[id] = true;
+      out.push(id);
+    });
+    return { value: out, changed: changed };
+  }
+
+  /** Shared id-list/title/timestamp sanitizing for one session, used by
+   * both the v1->v2 migration and the v2 shape validator below —
+   * `getSelectionIds(session)` is the one difference between them (where
+   * the adversary/item ids are read from, and by which rule). */
+  function sanitizeSessionPrepSessionCommon(session, getSelectionIds) {
     if (!isPlainObject(session) || !isNonEmptyString(session.id)) return { ok: false };
     var changed = false;
     var now = new Date().toISOString();
@@ -503,40 +553,12 @@
     var updatedAt = isValidIsoTimestamp(session.updatedAt) ? session.updatedAt : now;
     if (updatedAt !== session.updatedAt) changed = true;
 
-    var rawEnvIds = Array.isArray(session.environmentIds) ? session.environmentIds : [];
-    if (!Array.isArray(session.environmentIds)) changed = true;
-    var seenEnv = Object.create(null);
-    var environmentIds = [];
-    rawEnvIds.forEach(function (id) {
-      if (!isNonEmptyString(id) || DANGEROUS_KEYS[id]) { changed = true; return; }
-      if (seenEnv[id]) { changed = true; return; }
-      seenEnv[id] = true;
-      environmentIds.push(id);
-    });
-    if (environmentIds.length > SP_MAX_ENVIRONMENTS) {
-      environmentIds = environmentIds.slice(0, SP_MAX_ENVIRONMENTS);
-      changed = true;
-    }
+    var envResult = sanitizeIdList(session.environmentIds, SP_MAX_ENVIRONMENTS);
+    if (envResult.changed) changed = true;
 
-    var primaryEnvironmentId = session.primaryEnvironmentId;
-    if (primaryEnvironmentId !== null && !isNonEmptyString(primaryEnvironmentId)) {
-      primaryEnvironmentId = environmentIds[0] || null;
-      changed = true;
-    } else if (primaryEnvironmentId && environmentIds.indexOf(primaryEnvironmentId) === -1) {
-      primaryEnvironmentId = environmentIds[0] || null;
-      changed = true;
-    } else if (!primaryEnvironmentId && environmentIds.length) {
-      primaryEnvironmentId = environmentIds[0];
-      changed = true;
-    }
-
-    var advResult = sanitizeQuantityEntries(session.adversaries);
-    if (!advResult.ok) { advResult = { ok: true, value: [], changed: true }; }
-    else if (advResult.changed) changed = true;
-
-    var itemResult = sanitizeQuantityEntries(session.items);
-    if (!itemResult.ok) { itemResult = { ok: true, value: [], changed: true }; }
-    else if (itemResult.changed) changed = true;
+    var selection = getSelectionIds(session);
+    if (selection.adversaryIds.changed) changed = true;
+    if (selection.itemIds.changed) changed = true;
 
     return {
       ok: true,
@@ -546,25 +568,50 @@
         title: title,
         createdAt: createdAt,
         updatedAt: updatedAt,
-        primaryEnvironmentId: primaryEnvironmentId,
-        environmentIds: environmentIds,
-        adversaries: advResult.value,
-        items: itemResult.value,
+        environmentIds: envResult.value,
+        adversaryIds: selection.adversaryIds.value,
+        itemIds: selection.itemIds.value,
       },
     };
   }
 
+  /** v1 -> v2: reads the legacy `adversaries`/`items` quantity-entry arrays
+   * (tolerating a partially-migrated string array too) and drops
+   * `primaryEnvironmentId` entirely — that drop is never itself flagged as
+   * `changed`. */
+  function migrateSessionPrepSessionV1ToV2(session) {
+    return sanitizeSessionPrepSessionCommon(session, function (s) {
+      return {
+        adversaryIds: migrateIdListFromEntries(s.adversaryIds !== undefined ? s.adversaryIds : s.adversaries),
+        itemIds: migrateIdListFromEntries(s.itemIds !== undefined ? s.itemIds : s.items),
+      };
+    });
+  }
+
+  /** Current (v2) shape: `adversaryIds`/`itemIds` are read directly as
+   * plain id arrays — defensive against a hand-edited or otherwise
+   * malformed v2 store. */
+  function sanitizeSessionPrepSessionV2(session) {
+    return sanitizeSessionPrepSessionCommon(session, function (s) {
+      return {
+        adversaryIds: sanitizeIdList(s.adversaryIds),
+        itemIds: sanitizeIdList(s.itemIds),
+      };
+    });
+  }
+
   function sanitizeSessionPrep(parsed) {
     if (!isPlainObject(parsed)) return { ok: false };
-    if (parsed.schemaVersion !== 1) return { ok: false };
+    var version = parsed.schemaVersion;
+    if (version !== 1 && version !== 2) return { ok: false };
     if (!Array.isArray(parsed.sessions) || !parsed.sessions.length) return { ok: false };
 
-    var changed = false;
+    var anySanitized = false;
     var kept = [];
     parsed.sessions.forEach(function (session) {
-      var result = sanitizeSessionPrepSession(session);
-      if (!result.ok) { changed = true; return; }
-      if (result.changed) changed = true;
+      var result = version === 1 ? migrateSessionPrepSessionV1ToV2(session) : sanitizeSessionPrepSessionV2(session);
+      if (!result.ok) { anySanitized = true; return; }
+      if (result.changed) anySanitized = true;
       kept.push(result.value);
     });
     if (!kept.length) return { ok: false };
@@ -572,14 +619,17 @@
     var activeSessionId = parsed.activeSessionId;
     if (!isNonEmptyString(activeSessionId) || !kept.some(function (s) { return s.id === activeSessionId; })) {
       activeSessionId = kept[0].id;
-      changed = true;
+      anySanitized = true;
     }
 
-    return {
-      ok: true,
-      changed: changed,
-      value: { schemaVersion: 1, activeSessionId: activeSessionId, sessions: kept },
-    };
+    var value = { schemaVersion: SP_SCHEMA_VERSION, activeSessionId: activeSessionId, sessions: kept };
+    if (version === 1) {
+      // A clean version bump (nothing here was actually invalid) is a
+      // silent migration, not a recovery — see loadStoredJson()'s
+      // `migrated` contract above.
+      return { ok: true, changed: anySanitized, value: value, migrated: !anySanitized };
+    }
+    return { ok: true, changed: anySanitized, value: value };
   }
 
   return {

@@ -1353,7 +1353,7 @@ function render() {
   // top-chrome controller for its own re-renders; this is the one place
   // that tears both down when navigating to any *other* route.
   if (state.route.name !== 'session-prep') {
-    destroySessionPrepItemStrip();
+    destroySessionPrepItemNav();
     destroySessionPrepChrome();
   }
   if (state.route.name === 'lists') {
@@ -2890,7 +2890,8 @@ function bindJourneyDelegation(el) {
 }
 
 /* ---------------- Session Prep (#/session-prep) ----------------
-   MVP: one active preparation. Pure selection/quantity/search logic lives in
+   MVP: one active preparation, three binary-selection catalogs (no primary
+   environment, no quantity anywhere). Pure selection/search logic lives in
    js/session-prep-utils.js (SessionPrepUtils); this section is the DOM layer
    over it, following the same render-into-#grid-wrap architecture as
    renderListsHome()/renderJourneyPage() above. See the "Session Prep"
@@ -2898,9 +2899,9 @@ function bindJourneyDelegation(el) {
 
    Rendering is split deliberately: renderSessionPrepPage() builds the whole
    page once (route entry, language switch, catalogue retry); every
-   selection/quantity action afterwards goes through a targeted refresh*()
-   that replaces only the list/count it affects, so a source panel's search
-   text, scroll position and focus are never disturbed by picking something —
+   selection action afterwards goes through a targeted refresh*() that
+   replaces only the list/count it affects, so a source panel's search text,
+   scroll position and focus are never disturbed by picking something —
    see "Transient UI state and rerendering" in CLAUDE.md. */
 
 function setSessionPrepCatalog(data) {
@@ -2942,9 +2943,12 @@ function updateSessionPrepSession(mutator) {
   return { session: mutated, result };
 }
 
+/** The save-status line is never blank: before the first mutation this
+ * visit it explains that autosave is on, after a successful save it shows
+ * when, and after a failure it explains that. */
 function sessionSaveStatusText() {
   if (state.sessionPrepUI.saveFailed) return t('session_save_failed');
-  if (!state.sessionPrepUI.lastSavedAt) return '';
+  if (!state.sessionPrepUI.lastSavedAt) return t('session_autosave_ready');
   const time = state.sessionPrepUI.lastSavedAt.toLocaleTimeString(state.lang === 'ru' ? 'ru-RU' : 'en-US', {
     hour: '2-digit', minute: '2-digit',
   });
@@ -2952,13 +2956,19 @@ function sessionSaveStatusText() {
 }
 
 /** Only ever called right after a persist() attempt — never speculatively —
- * so "Saved" never appears before SafeStorage has actually reported success. */
+ * so "Saved" never appears before SafeStorage has actually reported success.
+ * `data-state` drives the error styling in css/styles.css; the status line
+ * itself lives in the workspace (see sessionHeaderHtml()), not the
+ * collapsible header chrome, so it stays visible regardless of collapse
+ * state without any extra plumbing here. */
 function updateSaveStatusDisplay(result) {
   state.sessionPrepUI.saveFailed = !result.ok;
   if (result.ok) state.sessionPrepUI.lastSavedAt = new Date();
   const statusEl = document.getElementById('prep-save-status');
-  if (statusEl) statusEl.textContent = sessionSaveStatusText();
-  if (!result.ok) sessionPrepChromeHandleSaveError();
+  if (statusEl) {
+    statusEl.textContent = sessionSaveStatusText();
+    statusEl.dataset.state = result.ok ? 'ok' : 'error';
+  }
 }
 
 function escapeSelectorAttrValue(value) { return String(value).replace(/(["\\])/g, '\\$1'); }
@@ -2972,16 +2982,17 @@ function syncPickerCheckbox(attr, id, checked) {
   if (cb) cb.checked = checked;
 }
 
-/** The item picker's checkbox describes what it currently *does* ("Add …" /
- * "Remove …"), not just the item's name, so it has to be refreshed wherever
- * the checked state changes without a full grid rebuild — see
- * itemToggleLabel() and its call sites in bindSessionPrepDelegation(). */
-function updateItemCheckboxLabel(itemId, checked) {
-  const cb = document.querySelector(`[data-sp-toggle-item="${escapeSelectorAttrValue(itemId)}"]`);
-  if (!cb) return;
-  const item = itemById(itemId);
-  if (!item) return;
-  cb.setAttribute('aria-label', itemToggleLabel(itemField(item, 'name'), checked));
+/** Every selection checkbox's accessible label describes what it currently
+ * *does* ("Add …" / "Remove …"), not just the entry's name — see
+ * prepToggleLabel() — so it has to be refreshed wherever the checked state
+ * changes without a full picker rebuild (a toggle elsewhere, or a removal
+ * from the central list). `attr` is the checkbox's own data attribute
+ * (`data-sp-toggle-env`/`-adv`/`-item`). A no-op if that checkbox isn't
+ * currently rendered (filtered out by search) — nothing to update in that
+ * case, and it will read correctly from state next time it is. */
+function updatePrepToggleLabel(attr, id, checked, name) {
+  const cb = document.querySelector(`[${attr}="${escapeSelectorAttrValue(id)}"]`);
+  if (cb) cb.setAttribute('aria-label', prepToggleLabel(name, checked));
 }
 
 /* ---------------- environments picker ---------------- */
@@ -3011,11 +3022,15 @@ function prepEnvThumbHtml(env) {
 
 function envPickerRowHtml(env, session) {
   const checked = session.environmentIds.includes(env.id);
+  const atLimit = !checked && session.environmentIds.length >= SessionPrepUtils.MAX_ENVIRONMENTS;
   const name = envName(env);
   const biome = artBiome(env);
   return `
     <div class="prep-row prep-env-row" data-env-id="${escapeAttr(env.id)}">
-      <input type="checkbox" data-sp-toggle-env="${escapeAttr(env.id)}" ${checked ? 'checked' : ''} aria-label="${escapeAttr(name)}">
+      <label class="prep-checkbox-hit">
+        <input type="checkbox" class="prep-select-checkbox" data-sp-toggle-env="${escapeAttr(env.id)}"
+               ${checked ? 'checked' : ''} ${atLimit ? 'disabled' : ''} aria-label="${escapeAttr(prepToggleLabel(name, checked))}">
+      </label>
       <button type="button" class="prep-row-open" data-sp-open-env="${escapeAttr(env.id)}">
         ${prepEnvThumbHtml(env)}
         <span class="prep-row-text">
@@ -3042,6 +3057,9 @@ function envPickerColumnHtml(session) {
       <div class="field search-field prep-search">
         <input type="text" id="prep-env-search" aria-label="${escapeAttr(t('prep_environment_search'))}"
                placeholder="${escapeAttr(t('prep_environment_search'))}" value="${escapeAttr(state.sessionPrepUI.envSearch)}">
+        <button type="button" class="search-clear-btn" id="prep-env-search-clear" data-sp-clear-search="env"
+                aria-label="${escapeAttr(t('prep_clear_environment_search'))}"
+                style="${state.sessionPrepUI.envSearch ? '' : 'display:none;'}">×</button>
       </div>
       <div class="prep-picker-list" id="prep-env-list" role="list">${envPickerListHtml(session)}</div>
     </section>`;
@@ -3078,14 +3096,17 @@ function prepAdvThumbHtml(adv) {
 }
 
 function advPickerRowHtml(adv, session) {
-  const checked = session.adversaries.some(e => e.id === adv.id);
+  const checked = session.adversaryIds.includes(adv.id);
   const name = spName(adv);
   return `
-    <label class="prep-row atl-row prep-adv-row" data-adv-id="${escapeAttr(adv.id)}">
-      <input type="checkbox" data-sp-toggle-adv="${escapeAttr(adv.id)}" ${checked ? 'checked' : ''}>
+    <div class="prep-row prep-adv-row" data-adv-id="${escapeAttr(adv.id)}">
+      <label class="prep-checkbox-hit">
+        <input type="checkbox" class="prep-select-checkbox" data-sp-toggle-adv="${escapeAttr(adv.id)}"
+               ${checked ? 'checked' : ''} aria-label="${escapeAttr(prepToggleLabel(name, checked))}">
+      </label>
       ${prepAdvThumbHtml(adv)}
       <span class="prep-row-name">${escapeHtml(name)}</span>
-    </label>`;
+    </div>`;
 }
 
 function advPickerListHtml(session) {
@@ -3104,6 +3125,9 @@ function advPickerColumnHtml(session) {
       <div class="field search-field prep-search">
         <input type="text" id="prep-adv-search" aria-label="${escapeAttr(t('prep_adversary_search'))}"
                placeholder="${escapeAttr(t('prep_adversary_search'))}" value="${escapeAttr(state.sessionPrepUI.advSearch)}">
+        <button type="button" class="search-clear-btn" id="prep-adv-search-clear" data-sp-clear-search="adv"
+                aria-label="${escapeAttr(t('prep_clear_adversary_search'))}"
+                style="${state.sessionPrepUI.advSearch ? '' : 'display:none;'}">×</button>
       </div>
       <div class="prep-picker-list" id="prep-adv-list" role="list">${advPickerListHtml(session)}</div>
     </section>`;
@@ -3134,12 +3158,13 @@ function prepItemThumbHtml(item) {
   return `<span class="prep-item-thumb"><img src="${escapeAttr(url)}" alt="" loading="lazy" decoding="async" data-item-thumb-img></span>`;
 }
 
-/** Localized label for the drawer's checkbox, reflecting what the action
+/** Localized label for a selection checkbox, reflecting what the action
  * currently does ("Add …"/"Remove …") rather than a static name — kept in
  * sync with the checkbox's own `checked` state everywhere that state can
- * change without a full grid rebuild (see updateItemCheckboxLabel() below). */
-function itemToggleLabel(name, checked) {
-  return t(checked ? 'prep_remove_item_from_selected' : 'prep_add_item_to_selected').replace('{name}', name);
+ * change without a full grid rebuild (see updatePrepToggleLabel() below).
+ * Shared by all three pickers (environments, adversaries, items). */
+function prepToggleLabel(name, checked) {
+  return t(checked ? 'prep_remove_from_prep' : 'prep_add_to_prep').replace('{name}', name);
 }
 
 /* Item metadata (name, kind, source, roll, image, description) all live in
@@ -3148,26 +3173,30 @@ function itemToggleLabel(name, checked) {
  * icon opens the very same openItemDetail() overlay the main Items page
  * uses; Session Prep keeps no item-detail code of its own.
  *
- * The icon button comes before the selection drawer in both DOM and visual
- * order (a plain flex row: the drawer is the button's next sibling, hidden
- * at zero width until hovered/focused — see .prep-item-drawer in
- * css/styles.css), so Tab visits "open details" before "add/remove" and the
- * drawer never has to be positioned to "look" like it's after the icon. */
+ * The name and a compact meta line are always visible on the card — never
+ * only in a tooltip — and the selection checkbox is always visible too
+ * (never a hover-only drawer): the icon button (opens detail) and the
+ * checkbox (selects) are two separate controls, per the "Session Prep"
+ * section of CLAUDE.md. */
 function itemCardHtml(item, session) {
-  const checked = session.items.some(e => e.id === item.id);
+  const checked = session.itemIds.includes(item.id);
   const name = itemField(item, 'name');
   const kind = item.kind === 'consumable' ? 'consumable' : 'item';
   const tip = `${name} · ${t('item_kind_' + kind)} · ${t('item_src_' + item.src)} · #${item.roll}`;
   return `
     <div class="prep-item-card${checked ? ' is-selected' : ''}" data-item-id="${escapeAttr(item.id)}">
-      <button type="button" class="prep-item-icon-btn" data-sp-open-item="${escapeAttr(item.id)}"
-              data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(t('prep_open_item_detail').replace('{name}', name))}">
-        ${prepItemThumbHtml(item)}
-      </button>
-      <label class="prep-item-drawer">
-        <input type="checkbox" data-sp-toggle-item="${escapeAttr(item.id)}" ${checked ? 'checked' : ''}
-               aria-label="${escapeAttr(itemToggleLabel(name, checked))}">
-      </label>
+      <div class="prep-item-card-top">
+        <button type="button" class="prep-item-icon-btn" data-sp-open-item="${escapeAttr(item.id)}"
+                data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(t('prep_open_item_detail').replace('{name}', name))}">
+          ${prepItemThumbHtml(item)}
+        </button>
+        <label class="prep-checkbox-hit">
+          <input type="checkbox" class="prep-select-checkbox" data-sp-toggle-item="${escapeAttr(item.id)}" ${checked ? 'checked' : ''}
+                 aria-label="${escapeAttr(prepToggleLabel(name, checked))}">
+        </label>
+      </div>
+      <span class="prep-item-card-name">${escapeHtml(name)}</span>
+      <span class="prep-item-card-meta">${escapeHtml(t('item_src_' + item.src))} · ${escapeHtml(t('item_kind_' + kind))} · #${item.roll}</span>
     </div>`;
 }
 
@@ -3187,8 +3216,15 @@ function itemsPanelHtml(session) {
       <div class="field search-field prep-search">
         <input type="text" id="prep-item-search" aria-label="${escapeAttr(t('prep_item_search'))}"
                placeholder="${escapeAttr(t('prep_item_search'))}" value="${escapeAttr(state.sessionPrepUI.itemSearch)}">
+        <button type="button" class="search-clear-btn" id="prep-item-search-clear" data-sp-clear-search="item"
+                aria-label="${escapeAttr(t('prep_clear_item_search'))}"
+                style="${state.sessionPrepUI.itemSearch ? '' : 'display:none;'}">×</button>
       </div>
-      <div class="prep-item-grid" id="prep-item-grid">${itemCardsHtml(session)}</div>
+      <div class="prep-item-strip-wrap">
+        <button type="button" class="prep-item-nav-btn" data-sp-item-nav="prev" aria-label="${escapeAttr(t('prep_item_nav_prev'))}" hidden>${ICON_CHEVRON_UP}</button>
+        <div class="prep-item-grid" id="prep-item-grid">${itemCardsHtml(session)}</div>
+        <button type="button" class="prep-item-nav-btn" data-sp-item-nav="next" aria-label="${escapeAttr(t('prep_item_nav_next'))}" hidden>${ICON_CHEVRON_UP}</button>
+      </div>
     </section>`;
 }
 
@@ -3198,199 +3234,87 @@ function refreshItemGrid() {
   if (grid) grid.innerHTML = itemCardsHtml(session);
   const count = document.getElementById('prep-item-total-count');
   if (count) count.textContent = itemCountText();
-  refreshSessionPrepItemStrip();
+  refreshSessionPrepItemNav();
 }
 
-/* ---------------- item strip idle auto-pan ----------------
+/* ---------------- item strip manual navigation ----------------
  *
- * After SESSION_PREP_ITEM_IDLE_MS of no activity, the item strip drifts
- * slowly toward its far end and back (ping-pong) at
- * SESSION_PREP_ITEM_SCROLL_SPEED px/s, as a discovery hint that there is
- * more to scroll to — purely a desktop, mouse-driven affordance (see
- * sessionPrepAutoPanAllowed() below for every condition that disables it,
- * including reduced motion and coarse/no-hover pointers).
+ * The item strip never moves on its own. Native trackpad/wheel/touch/
+ * scrollbar scrolling always works (plain CSS overflow-x); this controller
+ * only adds the two prev/next arrow buttons around #prep-item-grid, shown
+ * only while the strip actually overflows, and keeps their disabled state
+ * in sync with the current scroll position after scrolling, searching,
+ * resizing, and language changes.
  *
- * One controller instance lives in `itemStripState`, created by
- * initSessionPrepItemStrip() and torn down by destroySessionPrepItemStrip()
- * — the only two functions here that touch that variable — so there is
- * never more than one requestAnimationFrame loop or one set of document
- * listeners at a time, across language switches, full re-renders, catalogue
- * retries, and navigating away from and back to Session Prep. The boundary
- * math itself (where scrollLeft ends up, when direction flips) is the pure,
- * independently-tested SessionPrepUtils.computeAutoPanStep(); everything
- * here is just DOM wiring around it. */
-const SESSION_PREP_ITEM_IDLE_MS = 15000;
-const SESSION_PREP_ITEM_SCROLL_SPEED = 12; // px/s
-const SESSION_PREP_ITEM_ACTIVITY_EVENTS = ['pointermove', 'pointerdown', 'wheel', 'touchstart', 'touchmove', 'keydown', 'input', 'change', 'focusin'];
+ * One controller instance lives in `itemNavState`, created by
+ * initSessionPrepItemNav() and torn down by destroySessionPrepItemNav() —
+ * the only two functions here that touch that variable — so there is never
+ * more than one set of listeners at a time, across language switches, full
+ * re-renders, catalogue retries, and navigating away from and back to
+ * Session Prep. */
 
-let itemStripState = null;
+let itemNavState = null;
 
-function isSessionPrepEditableFocused(activeEl) {
-  if (!activeEl) return false;
-  const tag = activeEl.tagName;
-  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || activeEl.isContentEditable === true;
+/** Scrolls by ~80% of the strip's own visible width, smoothly unless the
+ * reader has asked for reduced motion. */
+function scrollSessionPrepItemStrip(direction) {
+  const s = itemNavState;
+  if (!s || !s.el) return;
+  const step = Math.max(1, Math.round(s.el.clientWidth * 0.8));
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  s.el.scrollBy({ left: direction * step, behavior: reduceMotion ? 'auto' : 'smooth' });
 }
 
-/** Every condition that must hold for the strip to be allowed to animate
- * right now — checked both before starting a run and on every frame of one,
- * so a change mid-animation (an overlay opening, the tab going to the
- * background, focus moving into the strip) halts it immediately rather than
- * only at the next idle cycle. */
-function sessionPrepAutoPanAllowed(s) {
-  if (!s || !s.el || !s.el.isConnected) return false;
-  if (state.route.name !== 'session-prep') return false;
-  if (document.hidden) return false;
-  if (overlayStack.length) return false;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
-  if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return false;
-  if (s.isIntersecting === false) return false;
-  if (s.el.matches(':hover')) return false;
-  const activeEl = document.activeElement;
-  if (activeEl && s.el.contains(activeEl)) return false;
-  if (isSessionPrepEditableFocused(activeEl)) return false;
-  return s.el.scrollWidth - s.el.clientWidth > 0;
-}
-
-function stopSessionPrepItemStripAnimation(s) {
-  if (s.rafId != null) cancelAnimationFrame(s.rafId);
-  s.rafId = null;
-  s.running = false;
-  // Reset so the next run's first frame measures a fresh elapsed time of
-  // ~0, instead of the wall-clock gap since the last frame — that gap can be
-  // huge (an idle pause, or a tab that spent minutes in the background),
-  // and computeAutoPanStep() would otherwise read it as a real elapsed time.
-  s.lastFrameTime = null;
-}
-
-/* At SESSION_PREP_ITEM_SCROLL_SPEED (12px/s) a single ~16ms frame only
- * advances a fraction of a pixel. `scrollLeft` itself always reads back a
- * rounded integer, so accumulating position by reading `s.el.scrollLeft`
- * back every frame would round each frame's fractional progress away and
- * the strip would never move at all. `s.scrollLeftFloat` is the actual,
- * unrounded accumulator driving the animation; only the value assigned to
- * `s.el.scrollLeft` (for painting) gets rounded. */
-function tickSessionPrepItemStrip(s, timestamp) {
-  if (itemStripState !== s) return; // this controller was torn down mid-flight
-  if (!sessionPrepAutoPanAllowed(s)) { stopSessionPrepItemStripAnimation(s); return; }
-  if (s.lastFrameTime == null) s.lastFrameTime = timestamp;
-  const elapsedMs = timestamp - s.lastFrameTime;
-  s.lastFrameTime = timestamp;
-  const result = SessionPrepUtils.computeAutoPanStep({
-    scrollLeft: s.scrollLeftFloat,
-    direction: s.direction,
-    scrollWidth: s.el.scrollWidth,
-    clientWidth: s.el.clientWidth,
-    elapsedMs,
-    speedPxPerSec: SESSION_PREP_ITEM_SCROLL_SPEED,
-  });
-  s.direction = result.direction;
-  s.scrollLeftFloat = result.scrollLeft;
-  s.el.scrollLeft = Math.round(result.scrollLeft);
-  s.rafId = requestAnimationFrame(ts => tickSessionPrepItemStrip(s, ts));
-}
-
-function startSessionPrepItemStripAnimation(s) {
-  if (s.running || !sessionPrepAutoPanAllowed(s)) return;
-  s.running = true;
-  s.lastFrameTime = null;
-  // Re-synced from the real (possibly manually-scrolled) position every time
-  // a run starts, so the float accumulator never drifts from what the
-  // reader actually sees.
-  s.scrollLeftFloat = s.el.scrollLeft;
-  s.rafId = requestAnimationFrame(ts => tickSessionPrepItemStrip(s, ts));
-}
-
-/** Stops any run in progress (preserving the current scrollLeft) and arms a
- * fresh SESSION_PREP_ITEM_IDLE_MS countdown. Any of the activity events in
- * SESSION_PREP_ITEM_ACTIVITY_EVENTS calls this, so real user activity always
- * both interrupts a run and restarts the full idle delay. If the countdown
- * fires while auto-pan still isn't allowed (pointer or focus still inside
- * the strip, an overlay still open, …), it simply reschedules itself rather
- * than giving up — self-healing without needing a precise "the pointer just
- * left" event of its own. */
-function scheduleSessionPrepItemStripIdle(s) {
-  if (!s) return;
-  stopSessionPrepItemStripAnimation(s);
-  clearTimeout(s.idleTimer);
-  s.idleTimer = setTimeout(() => {
-    s.idleTimer = null;
-    if (sessionPrepAutoPanAllowed(s)) startSessionPrepItemStripAnimation(s);
-    else scheduleSessionPrepItemStripIdle(s);
-  }, SESSION_PREP_ITEM_IDLE_MS);
-}
-
-/** Re-measures scrollWidth/clientWidth after anything that can change them
- * (item search filtering, window resizing, a responsive layout change) —
- * clamping scrollLeft and the current direction back into range, stopping
- * auto-pan entirely if the strip no longer overflows, and arming it again
- * (after the normal idle delay) if it now does. Called by refreshItemGrid()
- * directly, and by this controller's own ResizeObserver/window resize
- * listener. */
-function refreshSessionPrepItemStrip() {
-  const s = itemStripState;
+/** Shows/hides each arrow (no overflow at all -> both hidden) and disables
+ * one at each scroll boundary. Called after the strip is built, after every
+ * refreshItemGrid() re-filter, on scroll, and on resize. */
+function refreshSessionPrepItemNav() {
+  const s = itemNavState;
   if (!s || !s.el) return;
   const max = Math.max(0, s.el.scrollWidth - s.el.clientWidth);
-  if (s.el.scrollLeft > max) s.el.scrollLeft = max;
-  if (s.direction === 1 && s.el.scrollLeft >= max) s.direction = -1;
-  else if (s.direction === -1 && s.el.scrollLeft <= 0) s.direction = 1;
-  if (max <= 0) {
-    stopSessionPrepItemStripAnimation(s);
-    clearTimeout(s.idleTimer);
-    s.idleTimer = null;
-  } else if (!s.running && !s.idleTimer) {
-    scheduleSessionPrepItemStripIdle(s);
-  }
+  const overflowing = max > 0;
+  if (s.prevBtn) { s.prevBtn.hidden = !overflowing; s.prevBtn.disabled = s.el.scrollLeft <= 0; }
+  if (s.nextBtn) { s.nextBtn.hidden = !overflowing; s.nextBtn.disabled = s.el.scrollLeft >= max; }
 }
 
-/** Builds the one controller instance for #prep-item-grid. Safe to call any
- * number of times — it always tears down a previous instance first — but
- * renderSessionPrepPage() is the only call site, since that's the only place
- * the element itself is (re)created. */
-function initSessionPrepItemStrip() {
-  destroySessionPrepItemStrip();
+/** Builds the one controller instance for #prep-item-grid and its two arrow
+ * buttons (siblings in .prep-item-strip-wrap — see itemsPanelHtml()). Safe
+ * to call any number of times — it always tears down a previous instance
+ * first — but renderSessionPrepPage() is the only call site, since that's
+ * the only place these elements are (re)created. */
+function initSessionPrepItemNav() {
+  destroySessionPrepItemNav();
   const el = document.getElementById('prep-item-grid');
   if (!el) return;
+  const wrap = el.parentElement;
+  const prevBtn = wrap && wrap.querySelector('[data-sp-item-nav="prev"]');
+  const nextBtn = wrap && wrap.querySelector('[data-sp-item-nav="next"]');
 
-  const s = { el, direction: SessionPrepUtils.ITEM_STRIP_INITIAL_DIRECTION, rafId: null, idleTimer: null, lastFrameTime: null, scrollLeftFloat: el.scrollLeft, running: false, isIntersecting: true };
-  s.onActivity = () => scheduleSessionPrepItemStripIdle(s);
-  s.onVisibilityChange = () => { if (document.hidden) stopSessionPrepItemStripAnimation(s); else scheduleSessionPrepItemStripIdle(s); };
-  s.onResize = () => refreshSessionPrepItemStrip();
-
-  SESSION_PREP_ITEM_ACTIVITY_EVENTS.forEach(type => document.addEventListener(type, s.onActivity, { passive: true }));
-  document.addEventListener('visibilitychange', s.onVisibilityChange);
-  window.addEventListener('resize', s.onResize);
-
+  const s = { el, prevBtn, nextBtn };
+  s.onScroll = () => refreshSessionPrepItemNav();
+  el.addEventListener('scroll', s.onScroll, { passive: true });
   if (typeof ResizeObserver !== 'undefined') {
-    s.ro = new ResizeObserver(() => refreshSessionPrepItemStrip());
+    s.ro = new ResizeObserver(() => refreshSessionPrepItemNav());
     s.ro.observe(el);
-  }
-  if (typeof IntersectionObserver !== 'undefined') {
-    s.io = new IntersectionObserver(entries => {
-      s.isIntersecting = entries[entries.length - 1].isIntersecting;
-      if (!s.isIntersecting) stopSessionPrepItemStripAnimation(s);
-    }, { threshold: 0 });
-    s.io.observe(el);
+  } else {
+    s.onWindowResize = () => refreshSessionPrepItemNav();
+    window.addEventListener('resize', s.onWindowResize);
   }
 
-  itemStripState = s;
-  scheduleSessionPrepItemStripIdle(s);
+  itemNavState = s;
+  refreshSessionPrepItemNav();
 }
 
-/** Cancels the animation frame and idle timer, disconnects the observers,
- * and removes every document/window listener this controller added —
- * called before every (re)init, and whenever render() leaves the
- * session-prep route, so nothing from this controller outlives its page. */
-function destroySessionPrepItemStrip() {
-  const s = itemStripState;
+/** Disconnects the observer/listeners this controller added — called
+ * before every (re)init, and whenever render() leaves the session-prep
+ * route, so nothing from this controller outlives its page. */
+function destroySessionPrepItemNav() {
+  const s = itemNavState;
   if (!s) return;
-  stopSessionPrepItemStripAnimation(s);
-  clearTimeout(s.idleTimer);
-  SESSION_PREP_ITEM_ACTIVITY_EVENTS.forEach(type => document.removeEventListener(type, s.onActivity));
-  document.removeEventListener('visibilitychange', s.onVisibilityChange);
-  window.removeEventListener('resize', s.onResize);
+  if (s.el) s.el.removeEventListener('scroll', s.onScroll);
   if (s.ro) s.ro.disconnect();
-  if (s.io) s.io.disconnect();
-  itemStripState = null;
+  if (s.onWindowResize) window.removeEventListener('resize', s.onWindowResize);
+  itemNavState = null;
 }
 
 /* ---------------- central preparation ---------------- */
@@ -3418,55 +3342,75 @@ function centralEnvListHtml(session) {
   return `<div class="prep-central-env-grid">${cards}</div>`;
 }
 
+function envSelectedCountText(session) {
+  return t('prep_selected_count_max')
+    .replace('{n}', session.environmentIds.length)
+    .replace('{max}', SessionPrepUtils.MAX_ENVIRONMENTS);
+}
+
+/** Persistent text next to the environment counter while at the
+ * three-environment cap — the primary explanation for why the remaining
+ * checkboxes are disabled; the toast (prep_environment_limit) is only a
+ * fallback for a stale/programmatic attempt. Empty string below the cap. */
+function envLimitStateText(session) {
+  return session.environmentIds.length >= SessionPrepUtils.MAX_ENVIRONMENTS ? t('prep_env_limit_reached') : '';
+}
+
+/** Disables every unselected environment checkbox currently rendered in the
+ * picker once the session is at the cap, and re-enables them the moment it
+ * isn't — without rebuilding the picker list itself, so search text, scroll
+ * position, and focus in that list are never disturbed by a selection
+ * change elsewhere. */
+function refreshEnvCheckboxDisabled(session) {
+  const atLimit = session.environmentIds.length >= SessionPrepUtils.MAX_ENVIRONMENTS;
+  document.querySelectorAll('#prep-env-list [data-sp-toggle-env]').forEach(cb => {
+    cb.disabled = atLimit && !cb.checked;
+  });
+}
+
 function refreshCentralEnvironments() {
   const session = activeSessionPrep();
   const list = document.getElementById('prep-central-env-list');
   if (list) list.innerHTML = centralEnvListHtml(session);
   const count = document.getElementById('prep-central-env-count');
-  if (count) count.textContent = `${session.environmentIds.length} / ${SessionPrepUtils.MAX_ENVIRONMENTS}`;
+  if (count) count.textContent = envSelectedCountText(session);
+  const limitState = document.getElementById('prep-env-limit-state');
+  if (limitState) limitState.textContent = envLimitStateText(session);
+  refreshEnvCheckboxDisabled(session);
 }
 
-/** Shared compact row for a selected adversary or item: thumbnail, name,
- * decrement/quantity/increment, remove. `kind` ('adv' | 'item') is our own
- * literal, never user data, so it's safe to splice into the data-attribute
- * name below. */
-function centralQtyRowHtml({ id, name, qty, thumb, kind }) {
+/** Simple selected row: thumbnail, name, remove — no quantity control.
+ * `kind` is our own literal, never user data, so it's safe to splice into
+ * the data-attribute name below. Used for selected adversaries; selected
+ * items use their own card grid (centralItemCardHtml) instead. */
+function centralSimpleRowHtml({ id, name, thumb, kind }) {
   return `
-    <div class="prep-qty-row">
+    <div class="prep-central-row">
       ${thumb}
-      <span class="prep-qty-name">${escapeHtml(name)}</span>
-      <div class="prep-qty-controls">
-        <button type="button" data-sp-dec-${kind}="${escapeAttr(id)}"
-                aria-label="${escapeAttr(t('prep_decrement').replace('{name}', name))}" ${qty <= 1 ? 'disabled' : ''}>−</button>
-        <span class="prep-qty-value" aria-label="${escapeAttr(t('prep_quantity_label'))}: ${qty}">${qty}</span>
-        <button type="button" data-sp-inc-${kind}="${escapeAttr(id)}"
-                aria-label="${escapeAttr(t('prep_increment').replace('{name}', name))}">+</button>
-      </div>
+      <span class="prep-central-row-name">${escapeHtml(name)}</span>
       <button type="button" class="prep-remove-btn" data-sp-remove-${kind}="${escapeAttr(id)}"
               aria-label="${escapeAttr(t('prep_remove_named').replace('{name}', name))}">×</button>
     </div>`;
 }
 
-function advTypesCreaturesText(session) {
-  return t('prep_adversary_types_count')
-    .replace('{types}', SessionPrepUtils.countUnique(session.adversaries))
-    .replace('{creatures}', SessionPrepUtils.countTotalQuantity(session.adversaries));
+function centralAdvCountText(session) {
+  return t('prep_selected_count').replace('{n}', session.adversaryIds.length);
 }
 
-/** Non-blocking: a lot of adversary types is a play-experience concern, not
- * an error, so this never stops selection — just a heads-up under the
- * heading once the count passes ten. */
+/** Non-blocking: a lot of selected adversaries is a play-experience
+ * concern, not an error, so this never stops selection — just a heads-up
+ * under the heading once the count passes ten. */
 function advWarningHtml(session) {
-  if (session.adversaries.length <= 10) return '';
-  return `<p class="prep-warning" role="status">${escapeHtml(t('prep_adversary_large_warning').replace('{n}', session.adversaries.length))}</p>`;
+  if (session.adversaryIds.length <= 10) return '';
+  return `<p class="prep-warning" role="status">${escapeHtml(t('prep_adversary_large_warning').replace('{n}', session.adversaryIds.length))}</p>`;
 }
 
 function centralAdvListHtml(session) {
-  if (!session.adversaries.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_adversaries'))}</p>`;
-  return session.adversaries.map(entry => {
-    const adv = state.sessionPrepCatalog.adversaryById.get(entry.id);
+  if (!session.adversaryIds.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_adversaries'))}</p>`;
+  return session.adversaryIds.map(id => {
+    const adv = state.sessionPrepCatalog.adversaryById.get(id);
     if (!adv) return '';
-    return centralQtyRowHtml({ id: adv.id, name: spName(adv), qty: entry.quantity, thumb: prepAdvThumbHtml(adv), kind: 'adv' });
+    return centralSimpleRowHtml({ id: adv.id, name: spName(adv), thumb: prepAdvThumbHtml(adv), kind: 'adv' });
   }).join('');
 }
 
@@ -3475,21 +3419,17 @@ function refreshCentralAdversaries() {
   const list = document.getElementById('prep-central-adv-list');
   if (list) list.innerHTML = centralAdvListHtml(session);
   const count = document.getElementById('prep-central-adv-count');
-  if (count) count.textContent = advTypesCreaturesText(session);
+  if (count) count.textContent = centralAdvCountText(session);
   const warning = document.getElementById('prep-central-adv-warning');
   if (warning) warning.innerHTML = advWarningHtml(session);
 }
 
-function itemTypesQtyText(session) {
-  return t('prep_item_count')
-    .replace('{types}', SessionPrepUtils.countUnique(session.items))
-    .replace('{qty}', SessionPrepUtils.countTotalQuantity(session.items));
+function centralItemCountText(session) {
+  return t('prep_selected_count').replace('{n}', session.itemIds.length);
 }
 
-/** Selected-item card: icon, name, "source · kind #roll" meta line, remove.
- * Unlike adversaries, items carry no visible quantity control here — see
- * "Session Prep" in CLAUDE.md; a selected item is always added at quantity 1
- * and can only be removed, not incremented, from this card. */
+/** Selected-item card: icon, name, "source · kind #roll" meta line, remove
+ * — items carry no quantity anywhere in Session Prep. */
 function centralItemCardHtml(id, item) {
   const name = itemField(item, 'name');
   const kind = item.kind === 'consumable' ? 'consumable' : 'item';
@@ -3506,10 +3446,10 @@ function centralItemCardHtml(id, item) {
 }
 
 function centralItemListHtml(session) {
-  if (!session.items.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_items'))}</p>`;
-  const cards = session.items.map(entry => {
-    const item = itemById(entry.id);
-    return item ? centralItemCardHtml(entry.id, item) : '';
+  if (!session.itemIds.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_items'))}</p>`;
+  const cards = session.itemIds.map(id => {
+    const item = itemById(id);
+    return item ? centralItemCardHtml(id, item) : '';
   }).join('');
   return `<div class="prep-central-item-grid">${cards}</div>`;
 }
@@ -3519,7 +3459,7 @@ function refreshCentralItems() {
   const list = document.getElementById('prep-central-item-list');
   if (list) list.innerHTML = centralItemListHtml(session);
   const count = document.getElementById('prep-central-item-count');
-  if (count) count.textContent = itemTypesQtyText(session);
+  if (count) count.textContent = centralItemCountText(session);
 }
 
 function centralSectionHtml(session) {
@@ -3527,16 +3467,16 @@ function centralSectionHtml(session) {
     <section class="prep-central" aria-labelledby="prep-central-heading">
       <h2 id="prep-central-heading" class="sr-only">${t('session_prep_title')}</h2>
       <div class="prep-central-section" data-sp-section="environments">
-        <h3>${ICON_HEX}<span>${t('prep_selected_environments')}</span><span class="prep-central-count" id="prep-central-env-count">${session.environmentIds.length} / ${SessionPrepUtils.MAX_ENVIRONMENTS}</span></h3>
+        <h3>${ICON_HEX}<span>${t('prep_selected_environments')}</span><span class="prep-central-count" id="prep-central-env-count">${escapeHtml(envSelectedCountText(session))}</span><span class="prep-env-limit-state" id="prep-env-limit-state" role="status">${escapeHtml(envLimitStateText(session))}</span></h3>
         <div id="prep-central-env-list">${centralEnvListHtml(session)}</div>
       </div>
       <div class="prep-central-section" data-sp-section="adversaries">
-        <h3>${ICON_ADVERSARY_FALLBACK}<span>${t('prep_selected_adversaries')}</span><span class="prep-central-count" id="prep-central-adv-count">${escapeHtml(advTypesCreaturesText(session))}</span></h3>
+        <h3>${ICON_ADVERSARY_FALLBACK}<span>${t('prep_selected_adversaries')}</span><span class="prep-central-count" id="prep-central-adv-count">${escapeHtml(centralAdvCountText(session))}</span></h3>
         <div id="prep-central-adv-warning">${advWarningHtml(session)}</div>
         <div id="prep-central-adv-list">${centralAdvListHtml(session)}</div>
       </div>
       <div class="prep-central-section" data-sp-section="items">
-        <h3>${ICON_ITEM_FALLBACK}<span>${t('prep_selected_items')}</span><span class="prep-central-count" id="prep-central-item-count">${escapeHtml(itemTypesQtyText(session))}</span></h3>
+        <h3>${ICON_ITEM_FALLBACK}<span>${t('prep_selected_items')}</span><span class="prep-central-count" id="prep-central-item-count">${escapeHtml(centralItemCountText(session))}</span></h3>
         <div id="prep-central-item-list">${centralItemListHtml(session)}</div>
       </div>
     </section>`;
@@ -3548,11 +3488,12 @@ function sessionHeaderHtml(session) {
   return `
     <div class="prep-session-header">
       <div class="prep-title-field">
-        <label class="sr-only" for="prep-session-title">${escapeHtml(t('session_name_label'))}</label>
+        <label class="prep-title-label" for="prep-session-title">${escapeHtml(t('session_name_label'))}</label>
         <input type="text" id="prep-session-title" maxlength="120"
                placeholder="${escapeAttr(t('session_name_placeholder'))}" value="${escapeAttr(session.title)}">
       </div>
-      <p class="prep-save-status" id="prep-save-status" role="status" aria-live="polite">${escapeHtml(sessionSaveStatusText())}</p>
+      <p class="prep-save-status" id="prep-save-status" role="status" aria-live="polite"
+         data-state="${state.sessionPrepUI.saveFailed ? 'error' : 'ok'}">${escapeHtml(sessionSaveStatusText())}</p>
     </div>`;
 }
 
@@ -3584,46 +3525,68 @@ function bindSessionPrepTitleInput() {
 
 const SESSION_PREP_SEARCH_DEBOUNCE_MS = 200;
 
-/** Rebound on every full renderSessionPrepPage() call, since that's the only
- * time these input elements themselves are (re)created — unlike the
- * delegated click/change handlers below, which are bound once and outlive
- * any number of targeted refresh*() calls. */
-function bindSessionPrepSearchAndTitle() {
-  const envSearch = document.getElementById('prep-env-search');
-  if (envSearch) {
-    let timer = null;
-    envSearch.addEventListener('input', () => {
-      clearTimeout(timer);
-      timer = setTimeout(() => { state.sessionPrepUI.envSearch = envSearch.value; refreshEnvPicker(); }, SESSION_PREP_SEARCH_DEBOUNCE_MS);
-    });
-  }
-  const advSearch = document.getElementById('prep-adv-search');
-  if (advSearch) {
-    let timer = null;
-    advSearch.addEventListener('input', () => {
-      clearTimeout(timer);
-      timer = setTimeout(() => { state.sessionPrepUI.advSearch = advSearch.value; refreshAdvPicker(); }, SESSION_PREP_SEARCH_DEBOUNCE_MS);
-    });
-  }
-  const itemSearch = document.getElementById('prep-item-search');
-  if (itemSearch) {
-    let timer = null;
-    itemSearch.addEventListener('input', () => {
-      clearTimeout(timer);
-      timer = setTimeout(() => { state.sessionPrepUI.itemSearch = itemSearch.value; refreshItemGrid(); }, SESSION_PREP_SEARCH_DEBOUNCE_MS);
-    });
-  }
-  bindSessionPrepTitleInput();
+/** One entry per picker: which transient search-text field it writes to on
+ * `state.sessionPrepUI`, and the DOM ids of its search input and clear
+ * button. `data-sp-clear-search` values in the picker templates above (env/
+ * adv/item) match these keys exactly. */
+const SESSION_PREP_SEARCH_FIELDS = {
+  env: { stateKey: 'envSearch', inputId: 'prep-env-search', clearId: 'prep-env-search-clear' },
+  adv: { stateKey: 'advSearch', inputId: 'prep-adv-search', clearId: 'prep-adv-search-clear' },
+  item: { stateKey: 'itemSearch', inputId: 'prep-item-search', clearId: 'prep-item-search-clear' },
+};
+
+function refreshSessionPrepPicker(which) {
+  if (which === 'env') refreshEnvPicker();
+  else if (which === 'adv') refreshAdvPicker();
+  else if (which === 'item') refreshItemGrid();
 }
 
-/* ---------------- quantity actions ---------------- */
+/** Clears one picker's search text immediately (no debounce), hides its
+ * clear button, refreshes that picker's results/count, and returns focus to
+ * the input — shared by the clear button's click (delegated, see
+ * bindSessionPrepDelegation()) and an Escape keypress in the field itself. */
+function clearSessionPrepSearch(which) {
+  const cfg = SESSION_PREP_SEARCH_FIELDS[which];
+  if (!cfg) return;
+  state.sessionPrepUI[cfg.stateKey] = '';
+  const input = document.getElementById(cfg.inputId);
+  if (input) input.value = '';
+  const clearBtn = document.getElementById(cfg.clearId);
+  if (clearBtn) clearBtn.style.display = 'none';
+  refreshSessionPrepPicker(which);
+  if (input) input.focus();
+}
 
-function adjustAdversaryQty(id, delta) {
-  const { result } = updateSessionPrepSession(session => Object.assign({}, session, {
-    adversaries: delta > 0 ? SessionPrepUtils.incrementEntry(session.adversaries, id) : SessionPrepUtils.decrementEntry(session.adversaries, id),
-  }));
-  updateSaveStatusDisplay(result);
-  refreshCentralAdversaries();
+/** Rebound on every full renderSessionPrepPage() call, since that's the only
+ * time these input elements themselves are (re)created — unlike the
+ * delegated click/change handlers in bindSessionPrepDelegation(), which are
+ * bound once and outlive any number of targeted refresh*() calls. Debounces
+ * the actual filtering, but the clear button's own visibility and an
+ * Escape-to-clear both act immediately. */
+function bindSessionPrepSearchField(which) {
+  const cfg = SESSION_PREP_SEARCH_FIELDS[which];
+  const input = document.getElementById(cfg.inputId);
+  if (!input) return;
+  const clearBtn = document.getElementById(cfg.clearId);
+  let timer = null;
+  input.addEventListener('input', () => {
+    if (clearBtn) clearBtn.style.display = input.value ? '' : 'none';
+    clearTimeout(timer);
+    timer = setTimeout(() => { state.sessionPrepUI[cfg.stateKey] = input.value; refreshSessionPrepPicker(which); }, SESSION_PREP_SEARCH_DEBOUNCE_MS);
+  });
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && input.value) {
+      clearTimeout(timer);
+      clearSessionPrepSearch(which);
+    }
+  });
+}
+
+function bindSessionPrepSearchAndTitle() {
+  bindSessionPrepSearchField('env');
+  bindSessionPrepSearchField('adv');
+  bindSessionPrepSearchField('item');
+  bindSessionPrepTitleInput();
 }
 
 /* ---------------- catalogue load failure + retry ---------------- */
@@ -3663,29 +3626,34 @@ function bindSessionPrepDelegation(el) {
       const { result } = updateSessionPrepSession(() => outcome.session);
       updateSaveStatusDisplay(result);
       refreshCentralEnvironments();
+      const env = allEnvs().find(e => e.id === envId);
+      if (env) updatePrepToggleLabel('data-sp-toggle-env', envId, envCb.checked, envName(env));
       return;
     }
     const advCb = e.target.closest('[data-sp-toggle-adv]');
     if (advCb) {
       const advId = advCb.dataset.spToggleAdv;
       const { result } = updateSessionPrepSession(session => Object.assign({}, session, {
-        adversaries: SessionPrepUtils.toggleEntry(session.adversaries, advId),
+        adversaryIds: SessionPrepUtils.toggleId(session.adversaryIds, advId),
       }));
       updateSaveStatusDisplay(result);
       refreshCentralAdversaries();
+      const adv = state.sessionPrepCatalog.adversaryById.get(advId);
+      if (adv) updatePrepToggleLabel('data-sp-toggle-adv', advId, advCb.checked, spName(adv));
       return;
     }
     const itemCb = e.target.closest('[data-sp-toggle-item]');
     if (itemCb) {
       const itemId = itemCb.dataset.spToggleItem;
       const { result } = updateSessionPrepSession(session => Object.assign({}, session, {
-        items: SessionPrepUtils.toggleEntry(session.items, itemId),
+        itemIds: SessionPrepUtils.toggleId(session.itemIds, itemId),
       }));
       updateSaveStatusDisplay(result);
       refreshCentralItems();
       const card = itemCb.closest('.prep-item-card');
       if (card) card.classList.toggle('is-selected', itemCb.checked);
-      updateItemCheckboxLabel(itemId, itemCb.checked);
+      const item = itemById(itemId);
+      if (item) updatePrepToggleLabel('data-sp-toggle-item', itemId, itemCb.checked, itemField(item, 'name'));
     }
   });
 
@@ -3701,22 +3669,22 @@ function bindSessionPrepDelegation(el) {
       updateSaveStatusDisplay(result);
       refreshCentralEnvironments();
       syncPickerCheckbox('data-sp-toggle-env', envId, false);
+      const env = allEnvs().find(e => e.id === envId);
+      if (env) updatePrepToggleLabel('data-sp-toggle-env', envId, false, envName(env));
       return;
     }
 
-    const incAdv = e.target.closest('[data-sp-inc-adv]');
-    if (incAdv) { adjustAdversaryQty(incAdv.dataset.spIncAdv, 1); return; }
-    const decAdv = e.target.closest('[data-sp-dec-adv]');
-    if (decAdv) { adjustAdversaryQty(decAdv.dataset.spDecAdv, -1); return; }
     const removeAdv = e.target.closest('[data-sp-remove-adv]');
     if (removeAdv) {
       const advId = removeAdv.dataset.spRemoveAdv;
       const { result } = updateSessionPrepSession(session => Object.assign({}, session, {
-        adversaries: SessionPrepUtils.removeEntry(session.adversaries, advId),
+        adversaryIds: SessionPrepUtils.removeId(session.adversaryIds, advId),
       }));
       updateSaveStatusDisplay(result);
       refreshCentralAdversaries();
       syncPickerCheckbox('data-sp-toggle-adv', advId, false);
+      const adv = state.sessionPrepCatalog.adversaryById.get(advId);
+      if (adv) updatePrepToggleLabel('data-sp-toggle-adv', advId, false, spName(adv));
       return;
     }
 
@@ -3727,16 +3695,23 @@ function bindSessionPrepDelegation(el) {
     if (removeItem) {
       const itemId = removeItem.dataset.spRemoveItem;
       const { result } = updateSessionPrepSession(session => Object.assign({}, session, {
-        items: SessionPrepUtils.removeEntry(session.items, itemId),
+        itemIds: SessionPrepUtils.removeId(session.itemIds, itemId),
       }));
       updateSaveStatusDisplay(result);
       refreshCentralItems();
       syncPickerCheckbox('data-sp-toggle-item', itemId, false);
-      updateItemCheckboxLabel(itemId, false);
+      const item = itemById(itemId);
+      if (item) updatePrepToggleLabel('data-sp-toggle-item', itemId, false, itemField(item, 'name'));
       const card = document.querySelector(`.prep-item-card[data-item-id="${escapeSelectorAttrValue(itemId)}"]`);
       if (card) card.classList.remove('is-selected');
       return;
     }
+
+    const navBtn = e.target.closest('[data-sp-item-nav]');
+    if (navBtn) { scrollSessionPrepItemStrip(navBtn.dataset.spItemNav === 'next' ? 1 : -1); return; }
+
+    const clearSearch = e.target.closest('[data-sp-clear-search]');
+    if (clearSearch) { clearSessionPrepSearch(clearSearch.dataset.spClearSearch); return; }
 
     const retry = e.target.closest('[data-sp-retry]');
     if (retry) retrySessionPrepCatalog();
@@ -3760,83 +3735,51 @@ function bindSessionPrepDelegation(el) {
   }, true);
 }
 
-/* ---------------- top chrome (collapsible header + session row) ----------
+/* ---------------- top chrome (collapsible header) ----------------
  *
- * #session-prep-chrome (index.html) wraps the shared site header and, only
- * on this route, the session title/save-status row that
- * renderSessionPrepPage() moves into #session-prep-chrome-extra instead of
- * .prep-wrap — see the "Session Prep chrome" rules in css/styles.css. The
- * two keep their own separate business logic; only their visual
- * collapse/expand is combined here.
+ * #session-prep-chrome (index.html) wraps the shared site header. Only on
+ * this route it can be manually collapsed to a compact bar via the toggle
+ * button this controller adds — a CSS-driven compact variant of the same
+ * #header markup renderHeader() always produces (see the "Session Prep
+ * chrome" rules in css/styles.css), not a second copy of the header. The
+ * session title/save-status row lives in the workspace instead (see
+ * sessionHeaderHtml()), not in this chrome at all.
  *
- * State machine (see the Session Prep spec in CLAUDE.md for the full
- * contract):
- *   expanded-initial --(1st workspace interaction, then 10s)--> collapsed-auto
- *   collapsed-auto/collapsed-manual --(chevron click)--> expanded-manual
- *   expanded-manual --(chevron click)--> collapsed-manual   (immediate)
- *   expanded-manual --(1st new workspace interaction, then 30s)--> collapsed-auto
- * A pending timer is one-shot — armed once per expand, never reset by
- * further activity — and is cancelled outright (with no replacement armed)
- * by an interaction inside the chrome itself or by the tab going to the
- * background; either way, the next workspace interaction arms a fresh one.
- * There is no path that expands the chrome from inactivity alone.
+ * There is no automatic collapse of any kind: the chrome only ever changes
+ * state when the reader deliberately clicks the toggle. It always starts
+ * expanded on route entry — this state is not persisted across a reload or
+ * a return visit to the route.
+ *
+ * The toggle button is a normal flex child of #header's own
+ * .header-actions (alongside the nav and language switch) rather than an
+ * absolutely/fixed-positioned overlay — flexbox lays it out correctly at
+ * every viewport width for free, with no collision math against the nav/
+ * lang buttons to get wrong. renderHeader() rebuilds #header's entire
+ * innerHTML on every render() (including a language switch while still on
+ * this route), which would otherwise silently detach this button from the
+ * page — initSessionPrepChrome() re-appends the *same* button element into
+ * the freshly-rendered .header-actions every time it runs (render() always
+ * calls it, via renderSessionPrepPage(), after renderHeader() has already
+ * replaced #header), so the button and its listener are created once but
+ * kept attached across any number of re-renders.
  *
  * One controller instance lives in `sessionPrepChromeState`, built by
  * initSessionPrepChrome() and torn down by destroySessionPrepChrome() — the
- * only two functions that touch that variable, mirroring the item-strip
- * controller above. */
-
-const SESSION_PREP_CHROME_BREAKPOINT = '(min-width: 1200px)';
-const INITIAL_AUTO_COLLAPSE_DELAY_MS = 10_000;
-const REOPEN_AUTO_COLLAPSE_DELAY_MS = 30_000;
-// click/input/change/keydown/focusin all bubble and are bound once, directly
-// on #grid-wrap (see initSessionPrepChrome()); scroll does not bubble, so it
-// is bound separately with { capture: true } — the same technique the
-// site's own global tooltip-dismiss-on-scroll listener already uses.
-const SESSION_PREP_CHROME_ACTIVITY_EVENTS = ['click', 'input', 'change', 'keydown', 'focusin'];
+ * only two functions that touch that variable. */
 
 let sessionPrepChromeState = null;
 
-function sessionPrepChromeAutoTimingAllowed() {
-  return window.matchMedia(SESSION_PREP_CHROME_BREAKPOINT).matches;
-}
-
-/** Every condition that must hold for an *automatic* collapse to proceed —
- * checked only when a pending timer fires. The manual chevron click never
- * calls this: a deliberate click always applies immediately. A blocked
- * attempt does not retry on its own; sessionPrepChromeAttemptAutoCollapse()
- * just leaves the timer un-armed so the next meaningful workspace
- * interaction starts a fresh one. */
-function sessionPrepChromeCollapseAllowed() {
-  if (document.hidden) return false;
-  if (state.sessionPrepUI.saveFailed) return false;
-  if (overlayStack.length) return false;
-  if (activeMultiSelect) return false;
-  // .sp-chrome-body (the header + session-title row that actually fades/
-  // collapses), not #session-prep-chrome as a whole — the toggle button is
-  // also a child of the latter and keeps focus after being clicked, which
-  // would otherwise permanently block every future auto-collapse.
-  const bodyEl = document.getElementById('sp-chrome-body');
-  const active = document.activeElement;
-  if (bodyEl && active && bodyEl.contains(active)) return false;
-  return true;
-}
-
 /** Reflects the current mode onto the DOM: the chrome's data-collapsed
- * attribute (drives the CSS grid-row/opacity transition), inert on the
- * fading body so a hidden header/session-title input can never keep or gain
- * keyboard focus, and the toggle's icon/aria-expanded/label. Called on every
- * mode change and once more at the end of every renderSessionPrepPage(), so
- * a language switch keeps the toggle's text current without recreating the
- * button. */
+ * attribute (drives the CSS compact-header rules in css/styles.css) and the
+ * toggle's icon/aria-expanded/label. Called on every mode change and once
+ * more at the end of every renderSessionPrepPage(), so a language switch
+ * keeps the toggle's text current without recreating the button. */
 function applySessionPrepChromeDom() {
   const c = sessionPrepChromeState;
   if (!c) return;
-  const collapsed = c.mode === 'collapsed-auto' || c.mode === 'collapsed-manual';
+  const collapsed = c.mode === 'collapsed';
   const chromeEl = document.getElementById('session-prep-chrome');
-  const bodyEl = document.getElementById('sp-chrome-body');
   if (chromeEl) chromeEl.dataset.collapsed = collapsed ? 'true' : 'false';
-  if (bodyEl) bodyEl.inert = collapsed;
   if (c.toggleEl) {
     const label = t(collapsed ? 'session_prep_show_controls' : 'session_prep_hide_controls');
     c.toggleEl.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
@@ -3846,137 +3789,53 @@ function applySessionPrepChromeDom() {
   }
 }
 
-function sessionPrepChromeClearTimer() {
-  const c = sessionPrepChromeState;
-  if (!c) return;
-  if (c.timerId != null) clearTimeout(c.timerId);
-  c.timerId = null;
-  c.timerArmed = false;
-}
-
 function sessionPrepChromeSetMode(next) {
   const c = sessionPrepChromeState;
   if (!c || c.mode === next) return;
   c.mode = next;
-  sessionPrepChromeClearTimer();
   applySessionPrepChromeDom();
 }
 
-function sessionPrepChromeAttemptAutoCollapse() {
-  const c = sessionPrepChromeState;
-  if (!c) return;
-  c.timerId = null;
-  if (!sessionPrepChromeAutoTimingAllowed() || !sessionPrepChromeCollapseAllowed()) {
-    c.timerArmed = false; // wait for the next meaningful workspace interaction to re-arm
-    return;
-  }
-  sessionPrepChromeSetMode('collapsed-auto');
-}
-
-/** The one entry point every "did something meaningful in the four-table
- * workspace" event calls. One-shot per expand: further activity while a
- * timer is already armed is ignored, so a continuously active user still
- * reaches collapsed-auto rather than never arming at all. No-ops below the
- * desktop/tablet breakpoint and whenever the chrome is not currently
- * expanded — there is nothing to arm a collapse timer for while it is
- * already collapsed. */
-function registerSessionPrepWorkspaceActivity() {
-  const c = sessionPrepChromeState;
-  if (!c || !sessionPrepChromeAutoTimingAllowed()) return;
-  if (c.mode !== 'expanded-initial' && c.mode !== 'expanded-manual') return;
-  if (c.timerArmed) return;
-  c.timerArmed = true;
-  const delay = c.mode === 'expanded-initial' ? INITIAL_AUTO_COLLAPSE_DELAY_MS : REOPEN_AUTO_COLLAPSE_DELAY_MS;
-  c.timerId = setTimeout(sessionPrepChromeAttemptAutoCollapse, delay);
-}
-
-/** Forces the chrome open so a save error is visible, called from
- * updateSaveStatusDisplay() whenever a save just failed. If already
- * expanded this just cancels any pending timer instead — either way,
- * sessionPrepChromeCollapseAllowed() also refuses to auto-collapse while
- * saveFailed is true, so the chrome stays open until the error clears and
- * the user resumes workspace activity. */
-function sessionPrepChromeHandleSaveError() {
-  const c = sessionPrepChromeState;
-  if (!c) return;
-  if (c.mode === 'collapsed-auto' || c.mode === 'collapsed-manual') sessionPrepChromeSetMode('expanded-manual');
-  else sessionPrepChromeClearTimer();
-}
-
-/** Builds the one controller + toggle button for #session-prep-chrome. Safe
- * to call any number of times — a second call while one already exists is a
- * no-op — but renderSessionPrepPage() is the only call site, since that's
- * the only place the route is (re-)entered. Always starts in
- * expanded-initial: per the Session Prep spec, this state is not persisted
- * across a reload or a return visit to the route. */
+/** Builds (once) and (re-)attaches the one toggle button into #header's
+ * current .header-actions. Safe to call any number of times — every call
+ * after the first just moves the existing button into the current header
+ * DOM rather than recreating it — but renderSessionPrepPage() is the only
+ * call site, since that's the only place the route is (re-)entered or the
+ * header is rebuilt. Always starts expanded. */
 function initSessionPrepChrome() {
-  if (sessionPrepChromeState) return;
-  const chromeEl = document.getElementById('session-prep-chrome');
-  if (!chromeEl) return;
+  const headerActions = document.querySelector('#header .header-actions');
+  if (!headerActions) return;
 
-  const toggleEl = document.createElement('button');
-  toggleEl.type = 'button';
-  toggleEl.id = 'sp-chrome-toggle';
-  toggleEl.className = 'sp-chrome-toggle';
-  toggleEl.setAttribute('aria-controls', 'session-prep-chrome');
-  chromeEl.appendChild(toggleEl);
-
-  const c = { mode: 'expanded-initial', timerId: null, timerArmed: false, toggleEl };
-  sessionPrepChromeState = c;
-
-  toggleEl.addEventListener('click', () => {
-    const collapsed = c.mode === 'collapsed-auto' || c.mode === 'collapsed-manual';
-    sessionPrepChromeSetMode(collapsed ? 'expanded-manual' : 'collapsed-manual');
-  });
-
-  // Any interaction with the chrome while a pending timer is armed cancels
-  // it outright — the user came back to read or edit something up there, so
-  // the next countdown should only start once they return to the workspace.
-  c.onChromeInteraction = () => sessionPrepChromeClearTimer();
-  chromeEl.addEventListener('focusin', c.onChromeInteraction);
-  chromeEl.addEventListener('click', c.onChromeInteraction);
-
-  c.onVisibilityChange = () => { if (document.hidden) sessionPrepChromeClearTimer(); };
-  document.addEventListener('visibilitychange', c.onVisibilityChange);
-
-  // Bound once per #grid-wrap lifetime, like bindSessionPrepDelegation()'s
-  // own guard flag above — #grid-wrap is shared by every route, so this
-  // would otherwise accumulate a duplicate set on every return visit to
-  // Session Prep. registerSessionPrepWorkspaceActivity() itself no-ops once
-  // the controller is torn down, so leaving these bound on other routes is
-  // harmless.
-  const gridWrap = document.getElementById('grid-wrap');
-  if (gridWrap && !gridWrap._sessionPrepChromeActivityBound) {
-    gridWrap._sessionPrepChromeActivityBound = true;
-    SESSION_PREP_CHROME_ACTIVITY_EVENTS.forEach(type => gridWrap.addEventListener(type, registerSessionPrepWorkspaceActivity));
-    gridWrap.addEventListener('scroll', registerSessionPrepWorkspaceActivity, { capture: true, passive: true });
+  let c = sessionPrepChromeState;
+  if (!c) {
+    const toggleEl = document.createElement('button');
+    toggleEl.type = 'button';
+    toggleEl.id = 'sp-chrome-toggle';
+    toggleEl.className = 'sp-chrome-toggle';
+    toggleEl.setAttribute('aria-controls', 'session-prep-chrome');
+    c = { mode: 'expanded', toggleEl };
+    toggleEl.addEventListener('click', () => {
+      sessionPrepChromeSetMode(c.mode === 'collapsed' ? 'expanded' : 'collapsed');
+    });
+    sessionPrepChromeState = c;
   }
+  headerActions.appendChild(c.toggleEl);
 
   applySessionPrepChromeDom();
 }
 
-/** Cancels the pending timer, removes the toggle button and every listener
- * this controller added to the chrome itself, and resets the chrome back to
- * its default expanded appearance — called whenever render() leaves the
- * session-prep route, so nothing here outlives the page and a later
- * re-entry starts clean. */
+/** Removes the toggle button and resets the chrome back to its default
+ * expanded appearance — called whenever render() leaves the session-prep
+ * route, so nothing here outlives the page and a later re-entry starts
+ * clean. */
 function destroySessionPrepChrome() {
   const c = sessionPrepChromeState;
   if (!c) return;
-  sessionPrepChromeClearTimer();
   const chromeEl = document.getElementById('session-prep-chrome');
-  if (chromeEl) {
-    chromeEl.removeEventListener('focusin', c.onChromeInteraction);
-    chromeEl.removeEventListener('click', c.onChromeInteraction);
-    delete chromeEl.dataset.collapsed;
-  }
-  document.removeEventListener('visibilitychange', c.onVisibilityChange);
-  const bodyEl = document.getElementById('sp-chrome-body');
-  if (bodyEl) bodyEl.inert = false;
+  if (chromeEl) delete chromeEl.dataset.collapsed;
   if (c.toggleEl) c.toggleEl.remove();
   sessionPrepChromeState = null;
 }
-
 /* ---------------- page render ---------------- */
 
 /* Every call rebuilds #grid-wrap's innerHTML from scratch (a full render()
@@ -3986,18 +3845,16 @@ function destroySessionPrepChrome() {
  * and, on the success path, rebuilt from the freshly-created element at the
  * end. This is the only place either happens. */
 function renderSessionPrepPage() {
-  destroySessionPrepItemStrip();
+  destroySessionPrepItemNav();
   initSessionPrepChrome();
   document.getElementById('toolbar').innerHTML = '';
   document.getElementById('result-count').innerHTML = '';
   const el = document.getElementById('grid-wrap');
-  const chromeExtra = document.getElementById('session-prep-chrome-extra');
   if (state.sessionPrepLoadFailed) {
     // Matches the pre-existing behaviour of not showing the session title
-    // bar while the catalogue failed to load — unrelated to the chrome
-    // collapse feature itself, which still works (see initSessionPrepChrome()
-    // above) since it doesn't depend on this catalogue.
-    if (chromeExtra) chromeExtra.innerHTML = '';
+    // bar while the catalogue failed to load — the chrome toggle itself
+    // still works (see initSessionPrepChrome() above) since it doesn't
+    // depend on this catalogue.
     el.innerHTML = `<div class="prep-wrap">${emptyStateHtml({
       icon: ICON_ALERT,
       title: t('prep_catalog_load_error'),
@@ -4009,11 +3866,13 @@ function renderSessionPrepPage() {
     return;
   }
   const session = activeSessionPrep();
-  // Moved into the chrome, alongside the shared site header, instead of
-  // .prep-wrap — see the "Session Prep chrome" rules in css/styles.css.
-  if (chromeExtra) chromeExtra.innerHTML = `<div class="sp-chrome-session-inner">${sessionHeaderHtml(session)}</div>`;
+  // The session name/save-status row is part of the workspace, not the
+  // collapsible header chrome — see the "Session Prep" section of
+  // CLAUDE.md — so it's the first child of .prep-wrap and stays visible
+  // regardless of the chrome's collapsed state.
   el.innerHTML = `
     <div class="prep-wrap">
+      ${sessionHeaderHtml(session)}
       <div class="prep-main">
         ${envPickerColumnHtml(session)}
         ${centralSectionHtml(session)}
@@ -4023,7 +3882,7 @@ function renderSessionPrepPage() {
     </div>`;
   bindSessionPrepDelegation(el);
   bindSessionPrepSearchAndTitle();
-  initSessionPrepItemStrip();
+  initSessionPrepItemNav();
   applySessionPrepChromeDom();
 }
 

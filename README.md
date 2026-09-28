@@ -14,7 +14,7 @@ publish it as-is on GitHub Pages.
 ├── index.html            — entry point
 ├── css/styles.css        — all layout and theming
 ├── js/app.js             — all logic (rendering, filters, dice, lists)
-├── js/session-prep-utils.js — pure selection/quantity/search logic for Session Prep (#/session-prep)
+├── js/session-prep-utils.js — pure binary-selection/search logic for Session Prep (#/session-prep)
 ├── scripts/build.js      — CI-only: copies the runtime files into dist/ (see Deploy below)
 ├── scripts/version-assets.js — CI-only: generates cache-busting hashes into dist/index.html
 ├── scripts/check-asset-versioning.js — CI-only: fails the build if the generated versions are wrong
@@ -558,9 +558,11 @@ bookmark environments for browsing) and from Journey (which generates map
 content). Three columns on desktop — the full environment catalog on the
 left, the current preparation in the middle, an MVP adversary catalog on the
 right — with a full-width item catalog below; the three columns collapse to
-one on a phone. Environments come from the existing `environments.json`
-catalog (up to three per preparation, the first becomes "primary" and can be
-reassigned). Adversaries and items come from `data/session-prep.json`, a
+one on a phone. Every selection — environment, adversary, item — is binary
+(selected or not); there is no primary environment and no quantity anywhere
+in this feature. Environments come from the existing `environments.json`
+catalog (up to three per preparation, order preserved but carrying no
+special meaning). Adversaries and items come from `data/session-prep.json`, a
 small hand-picked MVP catalog — 17 adversaries and the 10 Core items — kept
 deliberately separate from `data/adversaries.json` (full featured-adversary
 stat blocks) and `data/items.json` (the complete loot encyclopedia): Session
@@ -578,16 +580,17 @@ image filename against the [Daggerheart Loot
 Generator](https://artex-x.github.io/daggerheart-loot/) at render time, same
 spirit as the item cards described above.
 
-The MVP holds one active preparation (title, primary/selected environments,
-selected adversaries and items with 1-99 quantities each), autosaved to
+The MVP holds one active preparation (title, selected environments,
+adversaries, and items — plain id lists, schema version 2), autosaved to
 `localStorage` under `dhcodex_session_prep` through the same `SafeStorage`
-boundary as Lists and Journey. The stored shape is intentionally
-multi-session-ready (`{ schemaVersion, activeSessionId, sessions: [...] }`),
-but the UI doesn't yet expose creating, switching, or deleting a session —
-that's future work, not implemented here. Pure logic (default shape,
-selection rules, the three-environment cap and primary promotion, quantity
-clamping, search) lives in `js/session-prep-utils.js`, in the same
-dependency-free, Node-testable shape as `js/route-utils.js`/
+boundary as Lists and Journey (which also owns the one-time, non-destructive
+v1 → v2 migration for a preparation saved before this schema existed). The
+stored shape is intentionally multi-session-ready (`{ schemaVersion,
+activeSessionId, sessions: [...] }`), but the UI doesn't yet expose
+creating, switching, or deleting a session — that's future work, not
+implemented here. Pure logic (default shape, the three-environment cap,
+binary toggle/remove, search) lives in `js/session-prep-utils.js`, in the
+same dependency-free, Node-testable shape as `js/route-utils.js`/
 `js/list-utils.js`.
 
 ## Dice in text

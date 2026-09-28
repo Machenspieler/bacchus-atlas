@@ -6,6 +6,8 @@
 
    SessionPrepUtils is pure (no DOM, no application state, no i18n), so it
    is exercised directly here — same shape as tests/list-rename.test.js.
+   Every selection (environment/adversary/item) is binary: there is no
+   primary environment and no quantity anywhere in this module.
    ============================================================ */
 'use strict';
 
@@ -20,13 +22,18 @@ function baseSession(overrides = {}) {
 
 /* ---------------- default shape ---------------- */
 
-test('createDefaultStore has one default session with an empty selection', () => {
+test('createDefaultStore has one default session with no primary environment and no quantity objects', () => {
   const store = SPU.createDefaultStore('2024-01-01T00:00:00.000Z');
-  assert.equal(store.schemaVersion, 1);
+  assert.equal(store.schemaVersion, 2);
   assert.equal(store.activeSessionId, 'default');
   assert.equal(store.sessions.length, 1);
-  assert.deepEqual(store.sessions[0].environmentIds, []);
-  assert.equal(store.sessions[0].primaryEnvironmentId, null);
+  const session = store.sessions[0];
+  assert.deepEqual(session.environmentIds, []);
+  assert.deepEqual(session.adversaryIds, []);
+  assert.deepEqual(session.itemIds, []);
+  assert.equal('primaryEnvironmentId' in session, false);
+  assert.equal('adversaries' in session, false);
+  assert.equal('items' in session, false);
 });
 
 test('getActiveSession finds the session matching activeSessionId', () => {
@@ -44,24 +51,56 @@ test('getActiveSession returns null for a store with no sessions', () => {
   assert.equal(SPU.getActiveSession(null), null);
 });
 
-/* ---------------- environments: selection + primary ---------------- */
+/* ---------------- toggleId / removeId (generic binary selection) ---------------- */
 
-test('the first selected environment becomes primary', () => {
+test('toggleId adds a string id that is not yet present', () => {
+  assert.deepEqual(SPU.toggleId([], 'cave-ogre'), ['cave-ogre']);
+  assert.deepEqual(SPU.toggleId(['a'], 'b'), ['a', 'b']);
+});
+
+test('toggleId removes a string id that is already present', () => {
+  assert.deepEqual(SPU.toggleId(['a', 'b'], 'a'), ['b']);
+});
+
+test('toggleId does not mutate its input array', () => {
+  const ids = ['a'];
+  const snapshot = JSON.stringify(ids);
+  SPU.toggleId(ids, 'b');
+  SPU.toggleId(ids, 'a');
+  assert.equal(JSON.stringify(ids), snapshot);
+});
+
+test('removeId removes only the named id, never mutating its input', () => {
+  const ids = ['a', 'b', 'c'];
+  const snapshot = JSON.stringify(ids);
+  const result = SPU.removeId(ids, 'b');
+  assert.deepEqual(result, ['a', 'c']);
+  assert.equal(JSON.stringify(ids), snapshot);
+});
+
+test('removeId is a no-op (still returns a new array) when the id is absent', () => {
+  assert.deepEqual(SPU.removeId(['a', 'b'], 'ghost'), ['a', 'b']);
+});
+
+/* ---------------- environments: selection, no primary ---------------- */
+
+test('selecting an environment adds its id, with no primary concept', () => {
   const result = SPU.toggleEnvironment(baseSession(), 'env-a');
   assert.equal(result.changed, true);
   assert.deepEqual(result.session.environmentIds, ['env-a']);
-  assert.equal(result.session.primaryEnvironmentId, 'env-a');
+  assert.equal('primaryEnvironmentId' in result.session, false);
 });
 
-test('a second selected environment does not change the primary', () => {
-  const session = baseSession({ environmentIds: ['env-a'], primaryEnvironmentId: 'env-a' });
-  const result = SPU.toggleEnvironment(session, 'env-b');
-  assert.deepEqual(result.session.environmentIds, ['env-a', 'env-b']);
-  assert.equal(result.session.primaryEnvironmentId, 'env-a');
+test('a second and third selected environment are both added in order', () => {
+  let session = baseSession({ environmentIds: ['env-a'] });
+  const second = SPU.toggleEnvironment(session, 'env-b');
+  assert.deepEqual(second.session.environmentIds, ['env-a', 'env-b']);
+  const third = SPU.toggleEnvironment(second.session, 'env-c');
+  assert.deepEqual(third.session.environmentIds, ['env-a', 'env-b', 'env-c']);
 });
 
 test('a fourth environment selection is rejected and leaves the session unchanged', () => {
-  const session = baseSession({ environmentIds: ['a', 'b', 'c'], primaryEnvironmentId: 'a' });
+  const session = baseSession({ environmentIds: ['a', 'b', 'c'] });
   const result = SPU.toggleEnvironment(session, 'd');
   assert.equal(result.changed, false);
   assert.equal(result.limitReached, true);
@@ -70,116 +109,31 @@ test('a fourth environment selection is rejected and leaves the session unchange
 });
 
 test('toggling an already-selected environment removes it', () => {
-  const session = baseSession({ environmentIds: ['a', 'b'], primaryEnvironmentId: 'a' });
+  const session = baseSession({ environmentIds: ['a', 'b'] });
   const result = SPU.toggleEnvironment(session, 'b');
   assert.deepEqual(result.session.environmentIds, ['a']);
-  assert.equal(result.session.primaryEnvironmentId, 'a');
 });
 
-test('removing the primary environment promotes the next remaining one', () => {
-  const session = baseSession({ environmentIds: ['a', 'b', 'c'], primaryEnvironmentId: 'a' });
-  const result = SPU.removeEnvironment(session, 'a');
-  assert.deepEqual(result.session.environmentIds, ['b', 'c']);
-  assert.equal(result.session.primaryEnvironmentId, 'b');
+test('removeEnvironment removes only the named environment', () => {
+  const session = baseSession({ environmentIds: ['a', 'b', 'c'] });
+  const result = SPU.removeEnvironment(session, 'b');
+  assert.deepEqual(result.session.environmentIds, ['a', 'c']);
+  assert.equal(result.changed, true);
+  assert.equal(result.limitReached, false);
 });
 
-test('removing the last environment leaves no primary', () => {
-  const session = baseSession({ environmentIds: ['a'], primaryEnvironmentId: 'a' });
+test('removing the last environment leaves an empty selection', () => {
+  const session = baseSession({ environmentIds: ['a'] });
   const result = SPU.removeEnvironment(session, 'a');
   assert.deepEqual(result.session.environmentIds, []);
-  assert.equal(result.session.primaryEnvironmentId, null);
 });
 
-test('removing a non-primary environment leaves the primary untouched', () => {
-  const session = baseSession({ environmentIds: ['a', 'b'], primaryEnvironmentId: 'a' });
-  const result = SPU.removeEnvironment(session, 'b');
-  assert.deepEqual(result.session.environmentIds, ['a']);
-  assert.equal(result.session.primaryEnvironmentId, 'a');
-});
-
-test('setPrimaryEnvironment promotes a selected environment', () => {
-  const session = baseSession({ environmentIds: ['a', 'b'], primaryEnvironmentId: 'a' });
-  const updated = SPU.setPrimaryEnvironment(session, 'b');
-  assert.equal(updated.primaryEnvironmentId, 'b');
-});
-
-test('setPrimaryEnvironment is a no-op for an environment that is not selected', () => {
-  const session = baseSession({ environmentIds: ['a'], primaryEnvironmentId: 'a' });
-  const updated = SPU.setPrimaryEnvironment(session, 'ghost');
-  assert.equal(updated, session);
-});
-
-/* ---------------- adversaries / items: toggle + quantity ---------------- */
-
-test('selecting an adversary starts at quantity 1', () => {
-  const list = SPU.toggleEntry([], 'cave-ogre');
-  assert.deepEqual(list, [{ id: 'cave-ogre', quantity: 1 }]);
-});
-
-test('selecting an item starts at quantity 1', () => {
-  const list = SPU.toggleEntry([], 'ci1');
-  assert.deepEqual(list, [{ id: 'ci1', quantity: 1 }]);
-});
-
-test('toggling an already-selected entry removes it', () => {
-  const list = SPU.toggleEntry([{ id: 'cave-ogre', quantity: 3 }], 'cave-ogre');
-  assert.deepEqual(list, []);
-});
-
-test('removeEntry removes only the named entry', () => {
-  const list = SPU.removeEntry([{ id: 'a', quantity: 1 }, { id: 'b', quantity: 2 }], 'a');
-  assert.deepEqual(list, [{ id: 'b', quantity: 2 }]);
-});
-
-test('quantity never goes below 1', () => {
-  const list = SPU.decrementEntry([{ id: 'a', quantity: 1 }], 'a');
-  assert.equal(list[0].quantity, 1);
-});
-
-test('quantity never exceeds 99', () => {
-  const list = SPU.incrementEntry([{ id: 'a', quantity: 99 }], 'a');
-  assert.equal(list[0].quantity, 99);
-});
-
-test('increment and decrement adjust only the named entry', () => {
-  const list = [{ id: 'a', quantity: 1 }, { id: 'b', quantity: 5 }];
-  assert.deepEqual(SPU.incrementEntry(list, 'a'), [{ id: 'a', quantity: 2 }, { id: 'b', quantity: 5 }]);
-  assert.deepEqual(SPU.decrementEntry(list, 'b'), [{ id: 'a', quantity: 1 }, { id: 'b', quantity: 4 }]);
-});
-
-test('setEntryQuantity clamps and rounds arbitrary input', () => {
-  const list = [{ id: 'a', quantity: 1 }];
-  assert.equal(SPU.setEntryQuantity(list, 'a', 500)[0].quantity, 99);
-  assert.equal(SPU.setEntryQuantity(list, 'a', 0)[0].quantity, 1);
-  assert.equal(SPU.setEntryQuantity(list, 'a', 3.6)[0].quantity, 4);
-  assert.equal(SPU.setEntryQuantity(list, 'a', NaN)[0].quantity, 1);
-});
-
-/* ---------------- counts ---------------- */
-
-test('countUnique and countTotalQuantity compute types vs. total creatures/items', () => {
-  const list = [{ id: 'cave-ogre', quantity: 3 }, { id: 'dire-wolf', quantity: 1 }];
-  assert.equal(SPU.countUnique(list), 2);
-  assert.equal(SPU.countTotalQuantity(list), 4);
-});
-
-test('counts are zero for an empty list', () => {
-  assert.equal(SPU.countUnique([]), 0);
-  assert.equal(SPU.countTotalQuantity([]), 0);
-});
-
-/* ---------------- removing from a selected list updates state correctly ---------------- */
-
-test('removing a selected adversary from the centre list updates both id presence and counts', () => {
-  let list = SPU.toggleEntry([], 'cave-ogre');
-  list = SPU.toggleEntry(list, 'dire-wolf');
-  list = SPU.setEntryQuantity(list, 'cave-ogre', 3);
-  assert.equal(SPU.countUnique(list), 2);
-  assert.equal(SPU.countTotalQuantity(list), 4);
-  list = SPU.removeEntry(list, 'dire-wolf');
-  assert.deepEqual(list, [{ id: 'cave-ogre', quantity: 3 }]);
-  assert.equal(SPU.countUnique(list), 1);
-  assert.equal(SPU.countTotalQuantity(list), 3);
+test('toggleEnvironment/removeEnvironment do not mutate the input session', () => {
+  const session = baseSession({ environmentIds: ['a'] });
+  const snapshot = JSON.stringify(session);
+  SPU.toggleEnvironment(session, 'b');
+  SPU.removeEnvironment(session, 'a');
+  assert.equal(JSON.stringify(session), snapshot);
 });
 
 /* ---------------- search ---------------- */
@@ -300,86 +254,4 @@ test('normalizeIdList drops duplicates while preserving first-seen order', () =>
 
 test('normalizeIdList drops non-string and empty entries', () => {
   assert.deepEqual(SPU.normalizeIdList(['a', null, '', 42, 'b']), ['a', 'b']);
-});
-
-/* ---------------- purity: inputs are never mutated ---------------- */
-
-test('toggleEnvironment does not mutate the input session', () => {
-  const session = baseSession({ environmentIds: ['a'], primaryEnvironmentId: 'a' });
-  const snapshot = JSON.stringify(session);
-  SPU.toggleEnvironment(session, 'b');
-  assert.equal(JSON.stringify(session), snapshot);
-});
-
-test('toggleEntry does not mutate the input list', () => {
-  const list = [{ id: 'a', quantity: 1 }];
-  const snapshot = JSON.stringify(list);
-  SPU.toggleEntry(list, 'b');
-  assert.equal(JSON.stringify(list), snapshot);
-});
-
-/* ---------------- item strip auto-pan boundary math ---------------- */
-
-function panParams(overrides = {}) {
-  return Object.assign({
-    scrollLeft: 0,
-    direction: SPU.ITEM_STRIP_INITIAL_DIRECTION,
-    scrollWidth: 1000,
-    clientWidth: 400,
-    elapsedMs: 1000,
-    speedPxPerSec: 12,
-  }, overrides);
-}
-
-test('the initial direction moves toward increasing scrollLeft', () => {
-  const result = SPU.computeAutoPanStep(panParams({ scrollLeft: 0, direction: SPU.ITEM_STRIP_INITIAL_DIRECTION }));
-  assert.ok(result.scrollLeft > 0);
-  assert.equal(result.direction, 1);
-});
-
-test('reaching the maximum scroll position reverses direction', () => {
-  // max = 1000 - 400 = 600; already at the edge, one more second of travel would overshoot.
-  const result = SPU.computeAutoPanStep(panParams({ scrollLeft: 600, direction: 1, elapsedMs: 1000 }));
-  assert.equal(result.scrollLeft, 600);
-  assert.equal(result.direction, -1);
-});
-
-test('reaching zero reverses direction', () => {
-  const result = SPU.computeAutoPanStep(panParams({ scrollLeft: 0, direction: -1, elapsedMs: 1000 }));
-  assert.equal(result.scrollLeft, 0);
-  assert.equal(result.direction, 1);
-});
-
-test('movement is clamped to the valid [0, max] range', () => {
-  const max = 600;
-  for (const start of [0, 300, 600]) {
-    for (const direction of [1, -1]) {
-      const result = SPU.computeAutoPanStep(panParams({ scrollLeft: start, direction, elapsedMs: 5000, speedPxPerSec: 12 }));
-      assert.ok(result.scrollLeft >= 0 && result.scrollLeft <= max);
-    }
-  }
-});
-
-test('no movement occurs when scrollWidth <= clientWidth (no overflow)', () => {
-  const result = SPU.computeAutoPanStep(panParams({ scrollWidth: 400, clientWidth: 400, scrollLeft: 0, direction: 1 }));
-  assert.equal(result.scrollLeft, 0);
-  assert.equal(result.direction, SPU.ITEM_STRIP_INITIAL_DIRECTION);
-  const resultOverflowLess = SPU.computeAutoPanStep(panParams({ scrollWidth: 300, clientWidth: 400 }));
-  assert.equal(resultOverflowLess.scrollLeft, 0);
-});
-
-test('a large elapsed time cannot move the strip beyond a boundary', () => {
-  const result = SPU.computeAutoPanStep(panParams({ scrollLeft: 100, direction: 1, elapsedMs: 10 * 60 * 1000, speedPxPerSec: 12 }));
-  assert.equal(result.scrollLeft, 600);
-  assert.equal(result.direction, -1);
-});
-
-test('direction remains valid after the maximum scroll position shrinks', () => {
-  // Was mid-strip heading right when a filter shrank the content so the
-  // previous scrollLeft now sits past the new (smaller) maximum.
-  const result = SPU.computeAutoPanStep(panParams({
-    scrollLeft: 500, direction: 1, scrollWidth: 700, clientWidth: 400, elapsedMs: 1000, speedPxPerSec: 12,
-  }));
-  assert.equal(result.scrollLeft, 300); // new max = 700 - 400
-  assert.equal(result.direction, -1);
 });
