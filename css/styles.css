@@ -2014,17 +2014,34 @@ body[data-route="session-prep"] #footer {
 .prep-wrap {
   grid-column: 1 / -1; margin-top: var(--s-6); display: flex; flex-direction: column; gap: var(--s-6);
   font-family: var(--font-ui);
+  transition: margin-top var(--t-base) var(--ease-out), gap var(--t-base) var(--ease-out);
+}
+
+/* ---- Session Prep header mode: one source of truth ----
+   Expanded and compact are two genuinely distinct layouts, not one hiding a
+   single subtitle — compact turns the global header into a dense toolbar
+   AND the session name/save-status row below it into a single compact
+   strip, both driven by the one `data-sp-header-mode` attribute
+   initSessionPrepChrome()/applySessionPrepChromeDom() (js/app.js) set on
+   <body> in response to a deliberate click of .sp-chrome-toggle — never
+   automatically, and never two independent states to fall out of sync.
+   These custom properties collect the compact-mode target dimensions the
+   rules below implement, so the three numbers stay defined in one place. */
+body[data-route="session-prep"] {
+  --sp-toolbar-h: 45px;
+  --sp-strip-h: 38px;
+  --sp-workspace-gap: 10px;
 }
 
 /* ---- session name + save status (workspace-level, not the header chrome) ----
    Renders as the first child of .prep-wrap (see renderSessionPrepPage() in
    js/app.js) so it aligns with the same wide workspace shell as the three
    catalogues below it, rather than the header's narrower 1180px container —
-   and so the save-status line stays visible regardless of whether the
-   header chrome below is collapsed. */
+   and so the save-status line stays visible in both header modes. */
 .prep-session-header {
   display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: var(--s-3);
   padding-bottom: var(--s-3); border-bottom: 1px solid var(--line-faint);
+  transition: padding var(--t-base) var(--ease-out);
 }
 .prep-title-field { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 2px; }
 .prep-title-label {
@@ -2033,7 +2050,8 @@ body[data-route="session-prep"] #footer {
 #prep-session-title {
   width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--line-faint);
   font-family: var(--font-display); font-weight: 400; font-size: var(--fs-xl); color: var(--parchment);
-  padding: var(--s-1) 0; transition: border-color var(--t-fast) var(--ease-out);
+  padding: var(--s-1) 0;
+  transition: border-color var(--t-fast) var(--ease-out), font-size var(--t-base) var(--ease-out), padding var(--t-base) var(--ease-out);
 }
 #prep-session-title:hover { border-bottom-color: var(--line-strong); }
 #prep-session-title:focus { border-bottom-color: var(--hope); outline: none; }
@@ -2044,24 +2062,87 @@ body[data-route="session-prep"] #footer {
 .prep-save-status { margin: 0; font-size: var(--fs-sm); color: var(--muted); white-space: nowrap; }
 .prep-save-status[data-state="error"] { color: var(--fear-soft); }
 
-/* ---- Session Prep chrome (manually collapsible header) ----
+/* ---- Session Prep chrome (expanded / compact toggle) ----
    #session-prep-chrome (in index.html) wraps the shared site header. It
    stays display:contents on every route, including this one — the compact
    look below is a pure CSS variant of the one #header markup renderHeader()
-   always produces, driven by the [data-collapsed] attribute this file's
-   controller (initSessionPrepChrome() in js/app.js) sets — never a second
-   copy of the header, and never automatic: the header only changes state on
-   a deliberate click of .sp-chrome-toggle. */
+   always produces, never a second copy of the header, and never automatic:
+   the header only changes state on a deliberate click of .sp-chrome-toggle.
+   Expanded mode (the default markup, no rules needed here) keeps the full
+   branded presentation; every rule below only applies once
+   body[data-sp-header-mode="compact"], and both the global header and the
+   session strip above key off that one attribute. */
 #session-prep-chrome { display: contents; }
 
-body[data-route="session-prep"] #session-prep-chrome[data-collapsed="true"] .header-inner {
+body[data-route="session-prep"][data-sp-header-mode="compact"] .header-inner {
   padding-block: var(--s-2);
+  min-height: var(--sp-toolbar-h);
+  transition: padding var(--t-base) var(--ease-out);
 }
-body[data-route="session-prep"] #session-prep-chrome[data-collapsed="true"] .brand-mark {
-  height: 34px;
-}
-body[data-route="session-prep"] #session-prep-chrome[data-collapsed="true"] .brand-meta {
+/* Branding is decorative chrome once the header goes compact — the nav,
+   language switch and toggle are what a reader needs at a glance, so the
+   title/subtitle/compat-label come out of layout entirely (display:none),
+   not merely dimmed, and stop being redundantly exposed to assistive
+   technology along with them. */
+body[data-route="session-prep"][data-sp-header-mode="compact"] .brand-text {
   display: none;
+}
+body[data-route="session-prep"][data-sp-header-mode="compact"] .brand-mark {
+  height: 28px;
+  transition: height var(--t-base) var(--ease-out);
+}
+body[data-route="session-prep"][data-sp-header-mode="compact"] .header-actions .btn,
+body[data-route="session-prep"][data-sp-header-mode="compact"] .lang-switch {
+  height: 28px;
+  transition: height var(--t-base) var(--ease-out);
+}
+
+/* ---- compact session strip: one dense row instead of the large
+   standalone title block ----
+   `minmax(0, 1fr) auto` is what keeps a long title from ever pushing the
+   save status off-screen — the status column only ever takes its own
+   content width, and the title column absorbs everything else, truncating
+   rather than growing past it (the input itself still holds the full text
+   for editing; only its rendered box is capped). */
+body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-session-header {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
+  min-height: var(--sp-strip-h);
+  padding-bottom: 0; border-bottom: none;
+}
+body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-title-label {
+  display: none;
+}
+body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-title-field {
+  min-width: 0;
+}
+body[data-route="session-prep"][data-sp-header-mode="compact"] #prep-session-title {
+  font-family: var(--font-body); font-weight: 500; font-size: var(--fs-base);
+  padding: 6px var(--s-2); border: 1px solid var(--line-faint); border-radius: var(--r-sm);
+  background: var(--ink-raised); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+body[data-route="session-prep"][data-sp-header-mode="compact"] #prep-session-title:hover {
+  border-color: var(--line-strong);
+}
+body[data-route="session-prep"][data-sp-header-mode="compact"] #prep-session-title:focus {
+  border-color: var(--hope); white-space: normal;
+}
+
+/* The saved header/strip space becomes workspace room, not an empty gap —
+   see the ≥1200px "no page-level scroll" block further down, where every
+   ancestor from body to .prep-main already has a definite, shrinkable
+   height, so shrinking these two rows directly grows .prep-main's share. */
+body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-wrap {
+  margin-top: var(--sp-workspace-gap); gap: var(--sp-workspace-gap);
+}
+
+/* Narrow enough that the two-column strip risks colliding — stack instead,
+   title first, status below it. Outside the scope of this task's desktop
+   target sizes, but cheap enough to keep the compact strip usable rather
+   than regressing it at phone widths. */
+@media (max-width: 760px) {
+  body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-session-header {
+    grid-template-columns: 1fr; row-gap: 4px;
+  }
 }
 
 /* A normal flex child of #header's own .header-actions (alongside the nav
@@ -2069,19 +2150,28 @@ body[data-route="session-prep"] #session-prep-chrome[data-collapsed="true"] .bra
    is laid out correctly by flexbox at every viewport width for free. Never
    absolutely/fixed-positioned over the header, so it can never be clipped
    by, or straddle the edge of, a header whose height changes between the
-   expanded and collapsed states. */
+   expanded and compact modes. Sized like the rest of the header cluster
+   (32px, shrinking to 28px in compact mode below) but its actual hit area
+   is extended past that with a transparent ::after, same technique as
+   .search-clear-btn/.prep-remove-btn elsewhere in this file, to clear the
+   ~40px a pointer expects regardless of the visible control's size. */
 .sp-chrome-toggle {
-  flex: none;
+  position: relative; flex: none;
   display: flex; align-items: center; justify-content: center;
   width: var(--h-sm); height: var(--h-sm); padding: 0;
   background: var(--ink-raised); color: var(--muted);
   border: 1px solid var(--line-faint); border-radius: var(--r-pill);
   cursor: pointer;
-  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out),
+              background var(--t-fast) var(--ease-out), width var(--t-base) var(--ease-out), height var(--t-base) var(--ease-out);
 }
+.sp-chrome-toggle::after { content: ""; position: absolute; inset: -6px; }
 .sp-chrome-toggle svg { width: var(--icon-md); height: var(--icon-md); }
 .sp-chrome-toggle:hover { color: var(--hope-soft); border-color: var(--line-strong); background: var(--ink-hover); }
 .sp-chrome-toggle:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); color: var(--hope-soft); }
+body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
+  width: 28px; height: 28px;
+}
 
 /* ---- three-column composition ---- */
 .prep-main {

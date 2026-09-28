@@ -13,6 +13,7 @@ const LS_KEYS = {
   journeyRegions: 'dhcodex_journey_regions',
   journeySanctuaries: 'dhcodex_journey_sanctuaries',
   sessionPrep: 'dhcodex_session_prep',
+  sessionPrepHeaderMode: 'dhcodex_session_prep_header_mode',
 };
 
 const BIOMES = ['underground', 'aquatic', 'wetland', 'grassland', 'tropical', 'forest', 'drylands', 'rolling', 'mountain', 'frozen', 'badlands', 'settlement', 'universal'];
@@ -2958,9 +2959,9 @@ function sessionSaveStatusText() {
 /** Only ever called right after a persist() attempt — never speculatively —
  * so "Saved" never appears before SafeStorage has actually reported success.
  * `data-state` drives the error styling in css/styles.css; the status line
- * itself lives in the workspace (see sessionHeaderHtml()), not the
- * collapsible header chrome, so it stays visible regardless of collapse
- * state without any extra plumbing here. */
+ * itself lives in the workspace (see sessionHeaderHtml()), so it stays
+ * visible in both the expanded and compact header modes without any extra
+ * plumbing here. */
 function updateSaveStatusDisplay(result) {
   state.sessionPrepUI.saveFailed = !result.ok;
   if (result.ok) state.sessionPrepUI.lastSavedAt = new Date();
@@ -3488,7 +3489,7 @@ function centralSectionHtml(session) {
 
 function sessionHeaderHtml(session) {
   return `
-    <div class="prep-session-header">
+    <div class="prep-session-header" id="prep-session-header">
       <div class="prep-title-field">
         <label class="prep-title-label" for="prep-session-title">${escapeHtml(t('session_name_label'))}</label>
         <input type="text" id="prep-session-title" maxlength="120"
@@ -3737,20 +3738,28 @@ function bindSessionPrepDelegation(el) {
   }, true);
 }
 
-/* ---------------- top chrome (collapsible header) ----------------
+/* ---------------- top chrome (compact workspace mode) ----------------
  *
  * #session-prep-chrome (index.html) wraps the shared site header. Only on
- * this route it can be manually collapsed to a compact bar via the toggle
- * button this controller adds — a CSS-driven compact variant of the same
- * #header markup renderHeader() always produces (see the "Session Prep
- * chrome" rules in css/styles.css), not a second copy of the header. The
- * session title/save-status row lives in the workspace instead (see
- * sessionHeaderHtml()), not in this chrome at all.
+ * this route it can be switched, via the toggle button this controller
+ * adds, between two CSS-driven variants of the *same* #header markup
+ * renderHeader() always produces (see the "Session Prep chrome" rules in
+ * css/styles.css) — never a second copy of the header. The one toggle also
+ * drives the session title/save-status strip (sessionHeaderHtml(), in the
+ * workspace, not this chrome) into its own compact layout — both areas read
+ * the single `data-sp-header-mode` attribute this controller sets on
+ * <body>, so there is exactly one source of truth for the mode, never two
+ * independent states to fall out of sync.
  *
- * There is no automatic collapse of any kind: the chrome only ever changes
- * state when the reader deliberately clicks the toggle. It always starts
- * expanded on route entry — this state is not persisted across a reload or
- * a return visit to the route.
+ * There is no automatic mode change of any kind: the chrome only ever
+ * changes state when the reader deliberately clicks the toggle. The mode a
+ * reader last chose is persisted (LS_KEYS.sessionPrepHeaderMode, a raw
+ * on/off-style flag written through persistRaw() the same way
+ * dhcodex_storage_notice_dismissed is — see "Safe browser storage" in
+ * CLAUDE.md) and restored on every route entry; a reader with no saved
+ * preference yet — or one whose storage is unavailable or holds anything
+ * other than the literal string "expanded" — starts in the denser 'compact'
+ * mode, which is the more useful default for a working GM tool.
  *
  * The toggle button is a normal flex child of #header's own
  * .header-actions (alongside the nav and language switch) rather than an
@@ -3769,33 +3778,52 @@ function bindSessionPrepDelegation(el) {
  * initSessionPrepChrome() and torn down by destroySessionPrepChrome() — the
  * only two functions that touch that variable. */
 
+/** Reads the last mode the reader chose. Anything other than the exact
+ * string "expanded" — missing, unavailable storage, or a stray/corrupt
+ * value — reads as 'compact', which is also this route's default for a
+ * reader who has never touched the toggle. There is no structural shape to
+ * validate here (unlike SafeStorage.validators' JSON validators), so — like
+ * dhcodex_storage_notice_dismissed — this reads via readRawFlag() rather
+ * than loadStoredJson(). */
+function storedSessionPrepHeaderMode() {
+  return SafeStorage.readRawFlag(lsStorage, LS_KEYS.sessionPrepHeaderMode) === 'expanded' ? 'expanded' : 'compact';
+}
+
 let sessionPrepChromeState = null;
 
-/** Reflects the current mode onto the DOM: the chrome's data-collapsed
- * attribute (drives the CSS compact-header rules in css/styles.css) and the
- * toggle's icon/aria-expanded/label. Called on every mode change and once
- * more at the end of every renderSessionPrepPage(), so a language switch
- * keeps the toggle's text current without recreating the button. */
+/** Reflects the current mode onto the DOM: the `data-sp-header-mode`
+ * attribute on <body> (drives every compact-mode CSS rule in
+ * css/styles.css, for both the global header and the session-title strip)
+ * and the toggle's icon/aria-expanded/label. Called on every mode change and
+ * once more at the end of every renderSessionPrepPage(), so a language
+ * switch keeps the toggle's text current without recreating the button. */
 function applySessionPrepChromeDom() {
   const c = sessionPrepChromeState;
   if (!c) return;
-  const collapsed = c.mode === 'collapsed';
-  const chromeEl = document.getElementById('session-prep-chrome');
-  if (chromeEl) chromeEl.dataset.collapsed = collapsed ? 'true' : 'false';
+  const compact = c.mode === 'compact';
+  document.body.dataset.spHeaderMode = c.mode;
   if (c.toggleEl) {
-    const label = t(collapsed ? 'session_prep_show_controls' : 'session_prep_hide_controls');
-    c.toggleEl.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    const label = t(compact ? 'session_prep_show_controls' : 'session_prep_hide_controls');
+    c.toggleEl.setAttribute('aria-expanded', compact ? 'false' : 'true');
     c.toggleEl.setAttribute('aria-label', label);
     c.toggleEl.dataset.tip = label;
-    c.toggleEl.innerHTML = collapsed ? ICON_CHEVRON_DOWN : ICON_CHEVRON_UP;
+    c.toggleEl.innerHTML = compact ? ICON_CHEVRON_DOWN : ICON_CHEVRON_UP;
   }
 }
 
+/** The only place the mode changes, and so the only place it is persisted —
+ * this is always a direct result of the reader clicking the toggle, never
+ * an automatic transition, so writing it here can't accidentally persist a
+ * route-entry default. A failed write falls back to the same centralized
+ * storage_write_failed_warning toast every other persisted action uses (see
+ * persistRaw()); the in-memory mode still applies for the rest of the
+ * visit either way. */
 function sessionPrepChromeSetMode(next) {
   const c = sessionPrepChromeState;
   if (!c || c.mode === next) return;
   c.mode = next;
   applySessionPrepChromeDom();
+  persistRaw(LS_KEYS.sessionPrepHeaderMode, next);
 }
 
 /** Builds (once) and (re-)attaches the one toggle button into #header's
@@ -3803,7 +3831,8 @@ function sessionPrepChromeSetMode(next) {
  * after the first just moves the existing button into the current header
  * DOM rather than recreating it — but renderSessionPrepPage() is the only
  * call site, since that's the only place the route is (re-)entered or the
- * header is rebuilt. Always starts expanded. */
+ * header is rebuilt. Starts from the reader's saved preference (or the
+ * 'compact' default) rather than a hardcoded mode. */
 function initSessionPrepChrome() {
   const headerActions = document.querySelector('#header .header-actions');
   if (!headerActions) return;
@@ -3814,10 +3843,10 @@ function initSessionPrepChrome() {
     toggleEl.type = 'button';
     toggleEl.id = 'sp-chrome-toggle';
     toggleEl.className = 'sp-chrome-toggle';
-    toggleEl.setAttribute('aria-controls', 'session-prep-chrome');
-    c = { mode: 'expanded', toggleEl };
+    toggleEl.setAttribute('aria-controls', 'session-prep-chrome prep-session-header');
+    c = { mode: storedSessionPrepHeaderMode(), toggleEl };
     toggleEl.addEventListener('click', () => {
-      sessionPrepChromeSetMode(c.mode === 'collapsed' ? 'expanded' : 'collapsed');
+      sessionPrepChromeSetMode(c.mode === 'compact' ? 'expanded' : 'compact');
     });
     sessionPrepChromeState = c;
   }
@@ -3826,15 +3855,14 @@ function initSessionPrepChrome() {
   applySessionPrepChromeDom();
 }
 
-/** Removes the toggle button and resets the chrome back to its default
- * expanded appearance — called whenever render() leaves the session-prep
- * route, so nothing here outlives the page and a later re-entry starts
- * clean. */
+/** Removes the toggle button and resets <body>'s mode attribute — called
+ * whenever render() leaves the session-prep route, so nothing here outlives
+ * the page and a later re-entry starts clean (from the saved preference
+ * again, via initSessionPrepChrome() above). */
 function destroySessionPrepChrome() {
   const c = sessionPrepChromeState;
   if (!c) return;
-  const chromeEl = document.getElementById('session-prep-chrome');
-  if (chromeEl) delete chromeEl.dataset.collapsed;
+  delete document.body.dataset.spHeaderMode;
   if (c.toggleEl) c.toggleEl.remove();
   sessionPrepChromeState = null;
 }
