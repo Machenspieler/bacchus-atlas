@@ -2308,7 +2308,12 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    a transparent gap above the bar) since the bar's own min-height already
    gives the resting (unstuck) heading equivalent breathing room. */
 .prep-central-section { display: flex; flex-direction: column; gap: 6px; scroll-margin-top: 40px; }
-.prep-central-section + .prep-central-section { padding-top: 11px; border-top: 1px solid var(--line-faint); }
+/* The divider rule needs its own margin-top, not just the padding-top below
+   it — padding only pushes this section's own heading away from the rule,
+   it does nothing to separate the rule from the *previous* section's last
+   row, so without it the rule renders flush against the bottom of that
+   content (e.g. sitting right under the Selected Environments cards). */
+.prep-central-section + .prep-central-section { margin-top: var(--s-2); padding-top: 11px; border-top: 1px solid var(--line-faint); }
 .prep-central-section h3 {
   position: sticky; top: 0; z-index: 1; min-height: 40px;
   margin: 0 calc(-1 * var(--s-5)); padding-inline: var(--s-5);
