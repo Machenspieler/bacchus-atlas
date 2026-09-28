@@ -2453,9 +2453,16 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   border-color: var(--hope);
   box-shadow: 0 0 0 1px var(--hope), inset 0 0 16px rgba(217,164,65,0.18);
 }
+/* display:flex (not just width/height:100%) is required here: .prep-item-thumb
+   is a plain <span>, which ignores width/height entirely unless blockified —
+   it only picks up the sizing below by being a flex item of this button.
+   Without this, the thumb (and the <img> inside it) fall back to an
+   undefined/circular percentage-size resolution that renders inconsistently
+   across browsers, cropping the artwork in some engines. */
 .prep-item-icon-btn {
   position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; margin: 0;
   border: none; background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
   border-radius: calc(var(--r-md) - 1px); overflow: hidden;
 }
 .prep-item-icon-btn:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
