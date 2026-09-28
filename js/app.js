@@ -3176,11 +3176,16 @@ function prepToggleLabel(name, checked) {
  * icon opens the very same openItemDetail() overlay the main Items page
  * uses; Session Prep keeps no item-detail code of its own.
  *
- * The name and a compact meta line are always visible on the card — never
- * only in a tooltip — and the selection checkbox is always visible too
- * (never a hover-only drawer): the icon button (opens detail) and the
- * checkbox (selects) are two separate controls, per the "Session Prep"
- * section of CLAUDE.md. */
+ * Art-first tile: the name only appears as a bottom overlay and the full
+ * "name · kind · source · #roll" line only in the data-tip tooltip (both
+ * on hover/focus, see css/styles.css's .prep-item-name-overlay) — the
+ * artwork itself is the permanent content. This is the one Session Prep
+ * picker where the selection checkbox (.prep-checkbox-hit) is hidden until
+ * hover/:focus-within rather than always visible, an intentional exception
+ * scoped to `.prep-item-card` alone (env/adv rows keep the always-visible
+ * checkbox described in CLAUDE.md's "Session Prep" section). The preview
+ * button (opens detail) and the checkbox (selects) stay two separate
+ * sibling controls either way — never one toggling the other. */
 function itemCardHtml(item, session) {
   const checked = session.itemIds.includes(item.id);
   const name = itemField(item, 'name');
@@ -3188,18 +3193,15 @@ function itemCardHtml(item, session) {
   const tip = `${name} · ${t('item_kind_' + kind)} · ${t('item_src_' + item.src)} · #${item.roll}`;
   return `
     <div class="prep-item-card${checked ? ' is-selected' : ''}" data-item-id="${escapeAttr(item.id)}">
-      <div class="prep-item-card-top">
-        <button type="button" class="prep-item-icon-btn" data-sp-open-item="${escapeAttr(item.id)}"
-                data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(t('prep_open_item_detail').replace('{name}', name))}">
-          ${prepItemThumbHtml(item)}
-        </button>
-        <label class="prep-checkbox-hit">
-          <input type="checkbox" class="prep-select-checkbox" data-sp-toggle-item="${escapeAttr(item.id)}" ${checked ? 'checked' : ''}
-                 aria-label="${escapeAttr(prepToggleLabel(name, checked))}">
-        </label>
-      </div>
-      <span class="prep-item-card-name">${escapeHtml(name)}</span>
-      <span class="prep-item-card-meta">${escapeHtml(t('item_src_' + item.src))} · ${escapeHtml(t('item_kind_' + kind))} · #${item.roll}</span>
+      <button type="button" class="prep-item-icon-btn" data-sp-open-item="${escapeAttr(item.id)}"
+              data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(t('prep_open_item_detail').replace('{name}', name))}">
+        ${prepItemThumbHtml(item)}
+        <span class="prep-item-name-overlay">${escapeHtml(name)}</span>
+      </button>
+      <label class="prep-checkbox-hit">
+        <input type="checkbox" class="prep-select-checkbox" data-sp-toggle-item="${escapeAttr(item.id)}" ${checked ? 'checked' : ''}
+               aria-label="${escapeAttr(prepToggleLabel(name, checked))}">
+      </label>
     </div>`;
 }
 

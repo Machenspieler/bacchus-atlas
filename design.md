@@ -191,9 +191,13 @@ instead of the serif/display pairing, a collapsible header chrome
 (`#session-prep-chrome[data-collapsed]`), and a permanently-visible ~20px
 checkbox (wrapped in a larger tap target) as the *only* control that adds or
 removes a selection anywhere on the page — never a whole row/card silently
-toggling on click. See the "Session Prep" section of `CLAUDE.md` for the full
-interaction contract; this file only covers its visual departure from the
-rest of the app.
+toggling on click. The item catalog's tiles (`.prep-item-card`) are the one
+exception to "permanently visible": there, the tile is an art-first square
+dominated by the item's artwork, and the checkbox slides in on hover/
+`:focus-within` instead of sitting in the tile at rest — the environment and
+adversary pickers are unaffected and keep the always-visible checkbox. See
+the "Session Prep" section of `CLAUDE.md` for the full interaction contract;
+this file only covers its visual departure from the rest of the app.
 
 ## Responsive breakpoints
 

@@ -2414,14 +2414,19 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-item-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .prep-item-nav-btn[hidden] { display: none; }
 
-/* One row of cards, always showing icon + name + checkbox + compact meta —
-   never icon-only, never a hover-only drawer. Real interactive controls in
+/* Art-first tile strip: square tiles dominated by item artwork, with name
+   and selection as contextual overlays rather than permanent card chrome —
+   this is the one exception to the "permanently visible checkbox" recipe
+   used everywhere else in Session Prep (env/adv rows, see the shared
+   .prep-select-checkbox comment above), scoped to `.prep-item-card` alone
+   so it never touches those other pickers. Real interactive controls in
    source order; native overflow gives trackpad/shift-wheel/scrollbar-drag/
    touch-swipe scrolling for free, with momentum scrolling opted into
    explicitly for iOS Safari. */
 .prep-item-grid {
+  --session-prep-item-tile-size: clamp(108px, 6.8vw, 128px);
   flex: 1 1 auto; min-width: 0;
-  display: flex; flex-wrap: nowrap; align-items: stretch;
+  display: flex; flex-wrap: nowrap; align-items: flex-start;
   gap: var(--s-3); overflow-x: auto; -webkit-overflow-scrolling: touch;
   padding-bottom: var(--s-2);
   scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
@@ -2431,28 +2436,66 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-item-grid::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
 .prep-item-grid::-webkit-scrollbar-thumb:hover { background: rgba(185,173,145,0.56); }
 
+/* The card itself stays overflow:visible (not clipped) so the checkbox's
+   focus ring and slide-in offset are never cut off; the preview button
+   below carries its own border-radius + overflow:hidden to keep the
+   artwork's corners rounded instead. */
 .prep-item-card {
-  flex: none; width: 156px; display: flex; flex-direction: column; gap: var(--s-1);
-  padding: var(--s-2); background: var(--ink-raised); border: 1px solid var(--line); border-radius: var(--r-md);
-  transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+  position: relative; flex: none;
+  width: var(--session-prep-item-tile-size); aspect-ratio: 1 / 1;
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--ink-raised);
+  transition: border-color var(--t-fast) var(--ease-out), box-shadow var(--t-fast) var(--ease-out);
 }
-.prep-item-card.is-selected { border-color: var(--hope); background: rgba(217,164,65,0.08); }
-.prep-item-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-1); }
+/* Selected must read without hover: gold border plus a soft inner glow
+   (never color alone — the checkbox below stays permanently visible too). */
+.prep-item-card.is-selected {
+  border-color: var(--hope);
+  box-shadow: 0 0 0 1px var(--hope), inset 0 0 16px rgba(217,164,65,0.18);
+}
 .prep-item-icon-btn {
-  flex: none; display: flex; align-items: center; justify-content: center;
-  width: 68px; height: 68px; padding: 0; margin: 0; border: none; background: none;
-  border-radius: var(--r-sm); cursor: pointer;
+  position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; margin: 0;
+  border: none; background: none; cursor: pointer;
+  border-radius: calc(var(--r-md) - 1px); overflow: hidden;
 }
-.prep-item-icon-btn:hover { box-shadow: inset 0 0 0 1px var(--hope); }
-.prep-item-icon-btn:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
+.prep-item-icon-btn:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
 .prep-item-icon-btn .prep-item-thumb,
-.prep-item-icon-btn .prep-item-thumb.prep-thumb-fallback { width: 100%; height: 100%; padding: 3px; }
-.prep-item-card-name {
-  font-size: var(--fs-base); line-height: 1.35; color: var(--parchment);
-  overflow: hidden; text-overflow: ellipsis;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+.prep-item-icon-btn .prep-item-thumb.prep-thumb-fallback { width: 100%; height: 100%; padding: 4px; }
+.prep-item-icon-btn .prep-item-thumb img {
+  transition: transform var(--t-base) var(--ease-out);
 }
-.prep-item-card-meta { font-size: var(--fs-sm); line-height: 1.35; color: var(--muted); }
+.prep-item-card:hover .prep-item-icon-btn .prep-item-thumb img,
+.prep-item-card:focus-within .prep-item-icon-btn .prep-item-thumb img {
+  transform: scale(1.02);
+}
+/* Name overlay: hidden until hover/focus, a localized lower gradient (never
+   a full veil) so the artwork underneath stays legible even while shown. */
+.prep-item-name-overlay {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+  padding: 5px 7px 4px;
+  font-size: var(--fs-xs); line-height: 1.3; color: var(--parchment);
+  background: linear-gradient(to top, rgba(20,17,15,0.92), rgba(20,17,15,0.55) 65%, transparent);
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  opacity: 0; transform: translateY(4px); pointer-events: none;
+  transition: opacity var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+}
+.prep-item-card:hover .prep-item-name-overlay,
+.prep-item-card:focus-within .prep-item-name-overlay {
+  opacity: 1; transform: translateY(0);
+}
+/* Slide-in checkbox: transform + opacity only, so it never resizes the tile
+   or pushes a neighboring tile — scoped to `.prep-item-card` so the
+   env/adv pickers' own .prep-checkbox-hit stays permanently visible. */
+.prep-item-card .prep-checkbox-hit {
+  position: absolute; top: 4px; right: 4px; z-index: 2;
+  opacity: 0; transform: translate(6px, -6px) scale(0.9);
+  transition: opacity var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+}
+.prep-item-card:hover .prep-checkbox-hit,
+.prep-item-card:focus-within .prep-checkbox-hit,
+.prep-item-card.is-selected .prep-checkbox-hit {
+  opacity: 1; transform: translate(0, 0) scale(1);
+}
 
 /* ---- large screens (≥1200px, the three-column layout) only: the whole page
    fits in the viewport with no page-level scroll. Every ancestor from body
@@ -2558,6 +2601,10 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 }
 @media (hover: none), (pointer: coarse) {
   .prep-checkbox-hit { width: 44px; height: 44px; }
+  /* No hover gesture to reveal the item tile's slide-in checkbox with, so it
+     stays permanently visible here instead — same fallback the item strip
+     used before this tile redesign. */
+  .prep-item-card .prep-checkbox-hit { opacity: 1; transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
