@@ -2141,6 +2141,13 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] #prep-session-tit
   border-color: var(--hope); white-space: normal;
 }
 
+/* The switch/new/duplicate/delete row is session *management*, not
+   in-session reference — a GM mid-session wants the dense strip above and
+   this row out of the way entirely, not merely shrunk. */
+body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-session-switcher {
+  display: none;
+}
+
 /* The saved header/strip space becomes workspace room, not an empty gap —
    see the ≥1200px "no page-level scroll" block further down, where every
    ancestor from body to .prep-main already has a definite, shrinkable

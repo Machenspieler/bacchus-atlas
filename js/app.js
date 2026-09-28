@@ -4178,11 +4178,12 @@ function bindSessionPrepDelegation(el) {
  * adds, between two CSS-driven variants of the *same* #header markup
  * renderHeader() always produces (see the "Session Prep chrome" rules in
  * css/styles.css) — never a second copy of the header. The one toggle also
- * drives the session title/save-status strip (sessionHeaderHtml(), in the
- * workspace, not this chrome) into its own compact layout — both areas read
- * the single `data-sp-header-mode` attribute this controller sets on
- * <body>, so there is exactly one source of truth for the mode, never two
- * independent states to fall out of sync.
+ * drives the session title/save-status strip and the session switcher row
+ * (sessionHeaderHtml()/sessionSwitcherHtml(), in the workspace, not this
+ * chrome) — the strip into its own compact layout, the switcher hidden
+ * outright — both areas read the single `data-sp-header-mode` attribute
+ * this controller sets on <body>, so there is exactly one source of truth
+ * for the mode, never two independent states to fall out of sync.
  *
  * There is no automatic mode change of any kind: the chrome only ever
  * changes state when the reader deliberately clicks the toggle. The mode a
@@ -4276,7 +4277,7 @@ function initSessionPrepChrome() {
     toggleEl.type = 'button';
     toggleEl.id = 'sp-chrome-toggle';
     toggleEl.className = 'sp-chrome-toggle';
-    toggleEl.setAttribute('aria-controls', 'session-prep-chrome prep-session-header');
+    toggleEl.setAttribute('aria-controls', 'session-prep-chrome prep-session-header prep-session-switcher');
     c = { mode: storedSessionPrepHeaderMode(), toggleEl };
     toggleEl.addEventListener('click', () => {
       sessionPrepChromeSetMode(c.mode === 'compact' ? 'expanded' : 'compact');
