@@ -657,3 +657,16 @@ this feature. The three-environment cap is the only limit.
   (`if (openItemId && openDetailId === null) { ...reopen quietly... }`)
   for exactly that case, rather than Session Prep keeping a duplicate
   `openItemId`/`closeOpenItemDetail` pair and rebuild call of its own.
+
+## Planning new work
+
+Before implementing a change that touches more than a file or two, changes a
+data schema, a persisted storage shape, or routing, follow
+[planning.md](planning.md) — a right-sized planning workflow for this repo
+(no issue tracker or orchestrator here, so it's scaled to a single-session,
+direct-commit workflow). For anything UI-facing, its mockup step defers to
+[ui-mockups.md](ui-mockups.md), which explains how to produce a mockup
+grounded in the site's actual markup/CSS and [design.md](design.md) rather
+than a detached redesign. Plans themselves are scratch working documents
+under `.claude/plans/` (gitignored) — discarded once a change ships, not
+project documentation.
