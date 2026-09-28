@@ -158,6 +158,34 @@
     return entries.filter(function (entry) { return matchesSearch(q, getFields(entry)); });
   }
 
+  /** True when `query` is a plain, non-empty run of digits ("3", "28") with
+   * no other characters. Used to tell a numeric item search apart from a
+   * name search sharing the same input. */
+  function isNumericQuery(query) {
+    return /^\d+$/.test(query);
+  }
+
+  /** Item search: substring match against `fields` (name.en/name.ru), like
+   * matchesSearch(), OR — for a purely numeric query — an exact match
+   * against the item's book roll number. Exact, not substring: "have this
+   * number as their number in the book" means equality, so searching "1"
+   * must not also pull in every item numbered 10-19/21/31/etc. */
+  function matchesItemSearch(query, fields, roll) {
+    var q = normalizeSearchText(query);
+    if (!q) return true;
+    if (matchesSearch(q, fields)) return true;
+    return isNumericQuery(q) && roll != null && String(roll) === q;
+  }
+
+  /** Filters `items` by `query`, matching by name (`getFields`) or, for a
+   * numeric query, by exact book roll number (`getRoll`). Same empty-query
+   * contract as filterEntries(): returns `items` itself, unfiltered. */
+  function filterItemEntries(items, query, getFields, getRoll) {
+    var q = normalizeSearchText(query);
+    if (!q) return items.slice();
+    return items.filter(function (item) { return matchesItemSearch(q, getFields(item), getRoll(item)); });
+  }
+
   /** Searchable fields for one environment in the Session Prep picker: its
    * bilingual name plus, for every biome id it carries, the raw biome id
    * itself and its EN/RU localized label — read from the supplied i18n
@@ -192,6 +220,9 @@
     normalizeSearchText: normalizeSearchText,
     matchesSearch: matchesSearch,
     filterEntries: filterEntries,
+    isNumericQuery: isNumericQuery,
+    matchesItemSearch: matchesItemSearch,
+    filterItemEntries: filterItemEntries,
     environmentSearchFields: environmentSearchFields,
   };
 });

@@ -594,6 +594,16 @@ this feature. The three-environment cap is the only limit.
   `clearSessionPrepSearch()`/`bindSessionPrepSearchField()` in `js/app.js`,
   keyed by `SESSION_PREP_SEARCH_FIELDS`. Selecting something never touches
   any of these search fields.
+- **The item search also matches by book roll number.** A purely numeric
+  query in `#prep-item-search` (e.g. "3", "28" — no other characters) is
+  compared to each item's `roll` field for an *exact* match, alongside the
+  usual EN/RU name substring match — never a substring match against the
+  roll, so "1" doesn't also pull in every item numbered 10-19/21/31/etc.
+  This lives in `SessionPrepUtils.matchesItemSearch()`/`filterItemEntries()`
+  (`js/session-prep-utils.js`), used by `prepFilteredItems()` in
+  `js/app.js`; the environment and adversary pickers keep using the
+  name-only `filterEntries()`/`matchesSearch()`, since only items carry a
+  `roll`.
 - **Item strip navigation is entirely manual.** `#prep-item-grid` is a plain
   horizontally-scrolling row (native trackpad/wheel/touch/scrollbar
   scrolling always works); `.prep-item-strip-wrap` adds two prev/next arrow

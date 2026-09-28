@@ -3145,7 +3145,9 @@ function refreshAdvPicker() {
 
 function prepFilteredItems() {
   // Roll order (1-10), never re-sorted — search only narrows the set.
-  return SessionPrepUtils.filterEntries(sessionPrepItems(), state.sessionPrepUI.itemSearch, i => [i.en?.name, i.ru?.name]);
+  // A purely numeric query (e.g. "3") matches the item's book "#" number
+  // exactly, alongside the usual EN/RU name substring match.
+  return SessionPrepUtils.filterItemEntries(sessionPrepItems(), state.sessionPrepUI.itemSearch, i => [i.en?.name, i.ru?.name], i => i.roll);
 }
 
 function itemCountText() {

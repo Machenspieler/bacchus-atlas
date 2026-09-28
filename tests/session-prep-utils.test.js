@@ -178,6 +178,57 @@ test('normalizeSearchText collapses repeated internal whitespace', () => {
   assert.equal(SPU.normalizeSearchText('  forest\t\tbiome  '), 'forest biome');
 });
 
+/* ---------------- item search by book roll number ---------------- */
+
+const PREP_ITEMS = [
+  { id: 'ci3', roll: 3, en: { name: 'Charging Quiver' }, ru: { name: 'Заряженный Колчан' } },
+  { id: 'di13', roll: 13, en: { name: 'Bag of Holding' }, ru: { name: 'Мешок Бездонный' } },
+  { id: 'wc28', roll: 28, en: { name: 'Potion of Fortitude' }, ru: { name: 'Зелье Стойкости' } },
+];
+function prepItemFields(item) { return [item.en.name, item.ru.name]; }
+function prepItemRoll(item) { return item.roll; }
+
+test('isNumericQuery accepts only plain digit runs', () => {
+  assert.equal(SPU.isNumericQuery('3'), true);
+  assert.equal(SPU.isNumericQuery('28'), true);
+  assert.equal(SPU.isNumericQuery('#3'), false);
+  assert.equal(SPU.isNumericQuery('3 '), false);
+  assert.equal(SPU.isNumericQuery(''), false);
+});
+
+test('a numeric query matches an item by its exact book roll number', () => {
+  const result = SPU.filterItemEntries(PREP_ITEMS, '3', prepItemFields, prepItemRoll);
+  assert.deepEqual(result.map(i => i.id), ['ci3']);
+});
+
+test('a numeric query does not substring-match a different roll number', () => {
+  // "3" must not also pull in roll 13 or 28 just because they contain "3".
+  const result = SPU.filterItemEntries(PREP_ITEMS, '3', prepItemFields, prepItemRoll);
+  assert.deepEqual(result.map(i => i.id), ['ci3']);
+});
+
+test('a numeric query still matches a multi-digit roll number exactly', () => {
+  const result = SPU.filterItemEntries(PREP_ITEMS, '28', prepItemFields, prepItemRoll);
+  assert.deepEqual(result.map(i => i.id), ['wc28']);
+});
+
+test('a non-numeric query still matches item names as usual', () => {
+  const byEn = SPU.filterItemEntries(PREP_ITEMS, 'quiver', prepItemFields, prepItemRoll);
+  const byRu = SPU.filterItemEntries(PREP_ITEMS, 'колчан', prepItemFields, prepItemRoll);
+  assert.deepEqual(byEn.map(i => i.id), ['ci3']);
+  assert.deepEqual(byRu.map(i => i.id), ['ci3']);
+});
+
+test('an empty query returns every item unfiltered', () => {
+  const result = SPU.filterItemEntries(PREP_ITEMS, '', prepItemFields, prepItemRoll);
+  assert.deepEqual(result.map(i => i.id), PREP_ITEMS.map(i => i.id));
+});
+
+test('matchesItemSearch is false when the query matches neither name nor roll', () => {
+  assert.equal(SPU.matchesItemSearch('99', prepItemFields(PREP_ITEMS[0]), PREP_ITEMS[0].roll), false);
+  assert.equal(SPU.matchesItemSearch('dragon', prepItemFields(PREP_ITEMS[0]), PREP_ITEMS[0].roll), false);
+});
+
 /* ---------------- environment + biome search (Session Prep) ---------------- */
 
 const PREP_I18N_EN = {
