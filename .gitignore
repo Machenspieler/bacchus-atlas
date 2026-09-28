@@ -12,9 +12,15 @@ img/env/src/
 # larger; the site only ever serves the 206x168 copy.
 img/logo_tr.png
 
-# Claude Code's per-machine config: launch.json and settings.local.json describe
-# this checkout, not the project.
-.claude/
+# Claude Code's per-machine config: launch.json (this checkout's local dev-server
+# setup) and settings.local.json (locally granted tool permissions) describe this
+# machine, not the project. .claude/plans/ is scratch working documents for a
+# change in progress, not project documentation (see planning.md). Everything
+# else under .claude/ — rules/, skills/ — is shared project configuration and
+# is tracked.
+.claude/launch.json
+.claude/settings.local.json
+.claude/plans/
 
 # Build output of scripts/build.js — .github/workflows/deploy.yml generates
 # this fresh on every deploy; it's never meant to be committed.

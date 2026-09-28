@@ -1,0 +1,200 @@
+# Architecture map
+
+Bacchus's Atlas is a build-free static site: plain HTML/CSS/JS, no framework,
+no bundler for the runtime itself (only a copy-and-version pipeline for
+deployment — see "Build and deployment flow" below). This document is a map
+of ownership boundaries — where a concern lives — not a line-by-line account
+of the largest file. Read the section for the area you're touching, then go
+read the actual code; don't treat this as a substitute for it.
+
+## Entry point and script load order
+
+`index.html` is the only HTML page. It ships a static, generic loading shell
+(`#toolbar`/`#grid-wrap`, no environment data — see "Rendering boundaries"
+below and [.claude/rules/ui.md](../.claude/rules/ui.md)) and loads scripts in
+a fixed dependency order, each also marked `data-cache-version="ui"` for the
+build's asset-versioning pass:
+
+```
+js/safe-storage.js      — localStorage read/write boundary
+js/data-version.js      — versionedDataUrl() for data/*.json fetches
+js/route-utils.js       — location.hash parsing/building
+js/list-utils.js        — Lists name validation
+js/search-index.js      — environment search index builder
+js/session-prep-utils.js — Session Prep pure selection/search logic
+js/app.js               — everything else: state, rendering, event wiring
+```
+
+Everything above `js/app.js` is a dependency-free module exposing a global
+(`SafeStorage`, `RouteUtils`, `ListUtils`, `SearchIndex`, `SessionPrepUtils`)
+that also works under plain Node `require()` — that's what makes each one
+directly unit-testable in `tests/*.test.js` without a DOM or bundler.
+
+## Application startup (`init()` in `js/app.js`)
+
+`init()` starts the i18n fetch and the application-data fetches together —
+there is no i18n-first waterfall. `beginInitialLoading()` marks
+`#main`/`#toolbar`/`#grid-wrap` `aria-busy` immediately; once i18n resolves,
+`localizeInitialLoading()` updates only the `#result-count` status text
+(never `#toolbar`/`#grid-wrap` themselves); `finishInitialLoading()` (on
+success) or `failInitialLoading()` (on data-load or fatal i18n failure)
+clears the busy state. The static skeleton markup in `index.html` disappears
+only as a side effect of `renderToolbar()`/`renderGrid()`/`renderLoadError()`/
+`renderFatalError()` unconditionally replacing `#toolbar`/`#grid-wrap`'s
+contents on the first real render — nothing re-injects an equivalent
+skeleton afterward.
+
+## State ownership (`state` object, top of `js/app.js`)
+
+One module-level `state` object holds everything: `lang`, the loaded
+catalogs (`builtinEnvs`, `regions`, `itemCatalog`, `adversaryCatalog`,
+`sessionPrepCatalog`), the search index (`environmentSearchIndex`, a
+`Map<envId, record>` built once — see below), every persisted slice loaded
+through `SafeStorage` at construction time (`lists`, `envLists`, `journey*`,
+`sessionPrep`), transient UI-only state that is deliberately never persisted
+(`filtersOpen`, `sessionPrepUI`, `journeyDraft`), and the current parsed
+route (`state.route`, from `readCurrentRoute()`).
+
+There is no separate "store" abstraction or reducer — functions read and
+mutate `state` directly, then call `render()` or a narrower `refresh*()`.
+
+## Routing
+
+`js/route-utils.js` (`RouteUtils`) is the one place `location.hash` is
+decoded or built — see [.claude/rules/browser-state.md](../.claude/rules/browser-state.md)
+for the safety contract. `js/app.js` reads the current route only through
+`readCurrentRoute()`, which repairs a malformed hash via
+`repairHash()`/`history.replaceState()` before returning a safe fallback.
+An environment overlay (`/env/<id>`) is a suffix on whichever base route is
+behind it (catalog, Lists overview, a single list, Journey, Session Prep),
+not a route of its own — `applyDetailRoute()` opens/closes the overlay
+without touching the base route's own state.
+
+## Rendering boundaries
+
+`render()` dispatches on `state.route.name` to one of the page renderers —
+`renderGrid()`/`renderToolbar()` (catalog), `renderListsHome()`,
+`renderJourneyPage()`, `renderSessionPrepPage()` — each of which owns a
+top-level DOM region (`#toolbar`, `#grid-wrap`, `#footer`) and replaces its
+contents wholesale on a full render. `renderHeader()` owns the persistent
+`#header`/`#session-prep-chrome` chrome shared by every route.
+
+Two pages avoid a full rerender per interaction instead of replacing
+themselves wholesale each time:
+
+- **Session Prep** (`renderSessionPrepPage()` builds the page once per route
+  entry/language switch/catalog retry; a checkbox toggle, remove, or search
+  edit afterward goes through a targeted `refresh*()` —
+  `refreshCentralEnvironments()`, `refreshCentralAdversaries()`,
+  `refreshCentralItems()`, `refreshEnvPicker()`, `refreshAdvPicker()`,
+  `refreshItemGrid()` — that replaces only the list/count it affects, so
+  search text, scroll position, and focus survive a selection change).
+  Click/change/error listeners are delegated once per `#grid-wrap` lifetime
+  (`bindSessionPrepDelegation()`); the pure selection/search logic behind
+  every one of these lives in `js/session-prep-utils.js`
+  (`toggleId`/`removeId`/`toggleEnvironment`/`removeEnvironment` — see
+  [docs/product-decisions.md](product-decisions.md) PD-001/PD-002 for what
+  this logic deliberately does not do).
+- **Lists rename** goes through `bindListRename()`/`commitListRename()`,
+  resolved via the pure `ListUtils.resolveListRename()` — see
+  [.claude/rules/browser-state.md](../.claude/rules/browser-state.md).
+
+An open environment/item detail overlay is layered on top of whichever page
+is behind it (`syncDetail()`/`applyDetailRoute()`), rendered against a
+blurred backdrop of the environment's own art when one exists
+(`syncEnvBackdrop()`).
+
+## Environment search index
+
+`js/search-index.js` (`SearchIndex`) builds a `Map<environmentId, { aliasText,
+literalText }>` once, in `setEnvironmentCatalog()`, right after
+`environments.json` loads — never rebuilt on language switch or filter
+change, and never stored as a hidden property on the environment records
+themselves. `sortedFilteredEnvs()` calls
+`SearchIndex.prepareSearchQuery()` once per filtering pass and threads the
+prepared query through every `envMatchesFilters()` call; that function only
+looks up the precomputed record and calls `SearchIndex.matches()` — it must
+never rebuild text haystacks or traverse `env.features` itself. See
+`buildEnvironmentSearchRecord()` in `js/search-index.js` for exactly which
+fields are alias-eligible vs. literal-only vs. excluded.
+
+## Production JSON loading
+
+Every `data/*.json` fetch in `js/app.js` goes through `versionedDataUrl()`
+(`js/data-version.js`), which appends the build-generated data version (or
+falls back to an unversioned path in source/dev, where the version meta tag
+is empty). `getJSON()` wraps `fetch()` + `.json()` for all of these calls.
+Catalogs are assigned via a single setter each
+(`setEnvironmentCatalog()`, `setItemCatalog()`, `setAdversaryCatalog()`,
+`setSessionPrepCatalog()`) so catalog assignment and any derived index
+(search index, item name index) happen together, once.
+
+## Localization
+
+`data/i18n.json` is `{ en: {...}, ru: {...} }`, loaded once at startup;
+`t(key)` (`js/app.js`) looks up the active language with an EN fallback.
+`state.lang` is persisted (`LS_KEYS.lang`) and switching it
+(`setLang()`) re-renders in place — it does not reload or re-fetch
+catalogs. Bilingual data fields (`name`, `description`, …) follow the same
+`{ en, ru }` shape as `i18n.json` and are read through small per-record
+helpers (`envName()`, `envField()`, `bilingual()`, `itemField()`,
+`adversaryName()`) rather than inline property access, so the EN-fallback
+rule stays in one place.
+
+## Local persistence
+
+`js/safe-storage.js` (`SafeStorage`) is the one boundary between `js/app.js`
+and `localStorage` — see [.claude/rules/browser-state.md](../.claude/rules/browser-state.md)
+for the read/write/migration contract. `LS_KEYS` (top of `js/app.js`) is the
+full list of persisted keys: language, lists, environment-to-list
+membership, the storage-notice dismissal flag, the two Journey tables, and
+Session Prep's one active session. `persist()`/`persistRaw()`/`persistBatch()`
+in `js/app.js` wrap `SafeStorage`'s write functions and centralize
+write-failure reporting (`reportStorageWriteFailure()`).
+
+## Pure utility modules
+
+Each of these is dependency-free, loadable in both a browser `<script>` tag
+and plain Node, and has its own `tests/*.test.js` file that imports it
+directly rather than driving it through the DOM:
+
+| Module | Owns |
+| --- | --- |
+| `js/safe-storage.js` | localStorage read/write/migration/sanitization |
+| `js/route-utils.js` | hash parsing, building, and safe decoding |
+| `js/list-utils.js` | list name normalization and rename resolution |
+| `js/search-index.js` | environment search record building and matching |
+| `js/session-prep-utils.js` | Session Prep default shape, selection toggling, search filtering |
+
+## Build and deployment flow
+
+```
+node --test tests/*.test.js         # unit tests for every pure module + validator
+node scripts/validate-data.js       # semantic validation of everything under data/
+node scripts/build.js               # copy-only: index.html, css/, js/, data/, img/, favicons → dist/
+node scripts/version-assets.js      # computes UI/data content hashes, writes them into dist/index.html
+node scripts/check-asset-versioning.js  # re-derives both hashes, fails on any mismatch
+node scripts/check-unlisted-build.js    # fails if dist/ regresses the public-but-unlisted model
+```
+
+This is exactly the sequence `.github/workflows/deploy.yml` runs on every
+push to `main`; `dist/` is then published to GitHub Pages. See
+[.claude/rules/build-and-deploy.md](../.claude/rules/build-and-deploy.md)
+for the conventions that keep this pipeline correct, and
+[docs/product-decisions.md](product-decisions.md) PD-003 for why the build
+stays copy-only.
+
+## Test and validator ownership
+
+| Concern | Lives in | Covered by |
+| --- | --- | --- |
+| Environment/region/adversary/item/journey/i18n schema | `scripts/validate-data.js` | `tests/data-validation.test.js` |
+| Asset content hashing | `scripts/lib/asset-versioning.js` | `tests/asset-versioning.test.js` |
+| localStorage read/write/migration | `js/safe-storage.js` | `tests/storage.test.js` |
+| Hash routing | `js/route-utils.js` | `tests/routing.test.js` |
+| List rename resolution | `js/list-utils.js` | `tests/list-rename.test.js` |
+| Environment search index | `js/search-index.js` | `tests/search-index.test.js` |
+| Session Prep selection/search logic | `js/session-prep-utils.js` | `tests/session-prep-utils.test.js` |
+| Initial loading shell lifecycle | `js/app.js` (`beginInitialLoading()` etc.) | `tests/loading-state.test.js` |
+
+Run all of them with `node --test tests/*.test.js`.
