@@ -3439,7 +3439,7 @@ function advPickerRowHtml(adv, session) {
 
 function advPickerListHtml(session) {
   const advs = prepFilteredAdversaries();
-  if (!advs.length) return `<p class="prep-empty">${escapeHtml(t('no_results'))}</p>`;
+  if (!advs.length) return `<p class="prep-empty">${escapeHtml(t('prep_adversary_no_results'))}</p>`;
   return advs.map(adv => advPickerRowHtml(adv, session)).join('');
 }
 
