@@ -81,7 +81,7 @@ async function generate() {
 
     await sharp(srcPath)
       .resize({ width: FULL_LONG_EDGE, height: FULL_LONG_EDGE, fit: 'inside', withoutEnlargement: true })
-      .webp({ quality: 88 })
+      .webp({ quality: 92 })
       .toFile(path.join(FULL_DIR, `${stem}.webp`));
     fullWritten++;
   }
