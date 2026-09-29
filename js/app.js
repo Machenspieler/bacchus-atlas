@@ -3561,12 +3561,14 @@ function openAdversaryArtOverlay(advId) {
   overlay.innerHTML = `
     <div class="adv-art-modal-card" data-overlay-card role="dialog" aria-modal="true" aria-label="${escapeAttr(name)}">
       <button type="button" class="modal-close adv-art-close" aria-label="${escapeAttr(t('close'))}">&times;</button>
-      <button type="button" class="modal-close adv-art-copy" data-copy-adv-art
-              data-tip="${escapeAttr(t('copy_image'))}" aria-label="${escapeAttr(t('copy_image'))}">${ITEM_IMAGE_ICON}</button>
       <div class="adv-art-media">
         <img src="${escapeAttr(adv.art.full)}" alt="${escapeAttr(name)}" data-adv-art-img>
       </div>
-      <p class="adv-art-caption">${escapeHtml(name)}</p>
+      <p class="adv-art-caption">
+        <span>${escapeHtml(name)}</span>
+        <button type="button" class="adv-art-copy" data-copy-adv-art
+                data-tip="${escapeAttr(t('copy_image'))}" aria-label="${escapeAttr(t('copy_image'))}">${ITEM_IMAGE_ICON}</button>
+      </p>
     </div>`;
   document.body.appendChild(overlay);
 
