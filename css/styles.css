@@ -2543,6 +2543,11 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-adv-toolbar .prep-search { min-width: 0; }
 .prep-adv-toolbar .prep-search input { min-width: 56px; }
 .prep-adv-toolbar .prep-count { text-align: right; }
+/* .ms-trigger's 40px/150px sizing is tuned for the full-height filter form
+   fields it shares a class with elsewhere; this compact one-row toolbar
+   needs it down at the same 35px/tight-content sizing as .prep-search
+   input and the rank-icon tier buttons beside it. */
+.prep-adv-toolbar .ms-trigger { height: 35px; min-height: 35px; min-width: 96px; }
 #prep-adv-list { display: flex; flex-direction: column; gap: 2px; }
 .ms-clear { flex: none; white-space: nowrap; margin-top: var(--s-1); }
 @container prep-adv-col (max-width: 360px) {
