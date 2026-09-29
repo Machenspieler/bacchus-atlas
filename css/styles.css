@@ -2409,15 +2409,18 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   padding: var(--s-4); box-shadow: var(--e-4); position: relative;
 }
 .adv-art-modal-card:focus { outline: none; }
-.adv-art-close {
-  position: absolute; right: var(--s-3); top: var(--s-3); z-index: 1;
+.adv-art-close, .adv-art-copy {
+  position: absolute; top: var(--s-3); z-index: 1;
   width: var(--h-xs); height: var(--h-xs);
   display: flex; align-items: center; justify-content: center;
   background: rgba(20,17,15,0.72); border: 1px solid var(--line); border-radius: 50%;
   color: var(--parchment-dim); font-size: var(--fs-lg); line-height: 1; cursor: pointer;
   transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
 }
-.adv-art-close:hover { color: var(--hope-soft); border-color: var(--hope); }
+.adv-art-close { right: var(--s-3); }
+.adv-art-copy { left: var(--s-3); }
+.adv-art-copy svg { width: 16px; height: 16px; fill: currentColor; }
+.adv-art-close:hover, .adv-art-copy:hover { color: var(--hope-soft); border-color: var(--hope); }
 .adv-art-media {
   flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center;
   background: #0a0806; border-radius: var(--r-md); overflow: hidden;

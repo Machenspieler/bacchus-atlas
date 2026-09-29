@@ -3561,6 +3561,8 @@ function openAdversaryArtOverlay(advId) {
   overlay.innerHTML = `
     <div class="adv-art-modal-card" data-overlay-card role="dialog" aria-modal="true" aria-label="${escapeAttr(name)}">
       <button type="button" class="modal-close adv-art-close" aria-label="${escapeAttr(t('close'))}">&times;</button>
+      <button type="button" class="modal-close adv-art-copy" data-copy-adv-art
+              data-tip="${escapeAttr(t('copy_image'))}" aria-label="${escapeAttr(t('copy_image'))}">${ITEM_IMAGE_ICON}</button>
       <div class="adv-art-media">
         <img src="${escapeAttr(adv.art.full)}" alt="${escapeAttr(name)}" data-adv-art-img>
       </div>
@@ -3569,14 +3571,18 @@ function openAdversaryArtOverlay(advId) {
   document.body.appendChild(overlay);
 
   const media = overlay.querySelector('.adv-art-media');
+  // A picture that failed to load takes its copy button with it: there is
+  // nothing left for the button to put on the clipboard.
   media.querySelector('img').addEventListener('error', () => {
     media.innerHTML = `<span class="adv-art-fallback">${ICON_ADVERSARY_FALLBACK}<span>${escapeHtml(t('prep_adversary_art_unavailable'))}</span></span>`;
+    overlay.querySelector('.adv-art-copy')?.remove();
   });
 
   const teardown = registerOverlay(overlay, close);
   function close() { overlay.remove(); teardown(); }
 
   overlay.querySelector('.adv-art-close').addEventListener('click', close);
+  overlay.querySelector('.adv-art-copy').addEventListener('click', () => copyItemImage(adv.art.full, name));
   overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
 }
 
