@@ -111,7 +111,8 @@
      and item pickers): 4px row padding → 32px hit area holding an 18px
      checkbox → 4px gap → thumbnail. One set of numbers, never per picker. */
   --sel-box: 18px;
-  --sel-hit: 32px;
+  --sel-col: 20px;         /* the column the checkbox actually occupies in a row */
+  --sel-hit: 32px;         /* click height; width = column + the row padding/gap it overlaps */
   --sel-hit-touch: 44px;   /* coarse pointers / phones keep the WCAG-sized target */
   --sel-gap: var(--s-1);
   --sel-pad: var(--s-1);
@@ -2487,8 +2488,16 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    prepSelectionCellHtml() in js/app.js, and the row padding/gap around it
    comes from --sel-pad/--sel-gap, so the three catalogs cannot drift. */
 .prep-checkbox-hit {
-  flex: none; width: var(--sel-hit); height: var(--sel-hit); display: flex; align-items: center; justify-content: center;
+  position: relative;
+  flex: none; width: var(--sel-col); height: var(--sel-hit); display: flex; align-items: center; justify-content: center;
   cursor: pointer;
+}
+/* The enlarged click area costs no layout: an invisible overlay of the label
+   reaching into the row padding on the left and the gap on the right, so the
+   column stays as narrow as the box while the target stays ~28×32. */
+.prep-checkbox-hit::after {
+  content: ""; position: absolute; top: 0; bottom: 0;
+  left: calc(-1 * var(--sel-pad)); right: calc(-1 * var(--sel-gap));
 }
 .prep-checkbox-hit:has(.prep-select-checkbox:disabled) { cursor: not-allowed; }
 .prep-select-checkbox {
