@@ -109,6 +109,15 @@ const state = {
   // Whether the phone-width filter disclosure is open. Purely presentational,
   // so it lives here rather than in localStorage and survives a re-render only.
   filtersOpen: false,
+  // Main catalog "Show more" progressive loading — how many of the current
+  // search/filter results are actually rendered, and the grid column count
+  // that count was last computed against. Purely presentational view state:
+  // null means "(re)compute the initial six-row count on next render", never
+  // persisted, and reset to null on a genuine search/filter change but left
+  // alone by a language switch, a route revisit, or a resize. See
+  // resetCatalogVisibility()/renderGrid()/renderCatalogMore() below.
+  catalogVisibleCount: null,
+  catalogLastColumnCount: null,
   route: readCurrentRoute(),
 };
 
@@ -722,6 +731,7 @@ async function init() {
   render();
   finishInitialLoading();
   reportStorageRecovery();
+  initCatalogGridObserver();
 }
 
 /* ---------------- initial loading shell lifecycle ---------------- */
@@ -1348,6 +1358,14 @@ function render() {
     destroySessionPrepItemNav();
     destroySessionPrepChrome();
   }
+  // Progressive loading is main-catalog-only (never Lists, Journey, or
+  // Session Prep) — renderGrid() only runs for 'catalog'/'list' below, so
+  // any other route has to clear the control itself rather than leaving it
+  // showing a stale count from whichever route was open before.
+  if (state.route.name !== 'catalog') {
+    const more = document.getElementById('catalog-more');
+    if (more) more.innerHTML = '';
+  }
   if (state.route.name === 'lists') {
     renderListsHome();
   } else if (state.route.name === 'journey') {
@@ -1650,6 +1668,7 @@ function renderToolbar() {
   let searchTimer = null;
   searchInput.addEventListener('input', e => {
     state.filters.search = e.target.value;
+    resetCatalogVisibility();
     searchClearBtn.style.display = e.target.value ? '' : 'none';
     clearTimeout(searchTimer);
     searchTimer = setTimeout(renderGrid, SEARCH_DEBOUNCE_MS);
@@ -1663,6 +1682,7 @@ function renderToolbar() {
   searchClearBtn.addEventListener('click', () => {
     clearTimeout(searchTimer);
     state.filters.search = '';
+    resetCatalogVisibility();
     searchInput.value = '';
     searchClearBtn.style.display = 'none';
     searchInput.focus();
@@ -1671,6 +1691,7 @@ function renderToolbar() {
   el.querySelectorAll('#f-tiers .rank-icon').forEach(btn => btn.addEventListener('click', () => {
     const tier = Number(btn.dataset.tier);
     toggleSetValue(state.filters.tiers, tier);
+    resetCatalogVisibility();
     renderToolbar(); renderGrid();
   }));
   const typesField = document.getElementById('f-types-field');
@@ -1768,6 +1789,7 @@ function bindMultiSelectField({ field, trigger, panel, onToggle, updateLabel, on
     const cb = e.target.closest('input[type="checkbox"]');
     if (!cb) return;
     onToggle(cb);
+    resetCatalogVisibility();
     updateLabel(trigger);
     onChange();
   });
@@ -1843,10 +1865,93 @@ function sortedFilteredEnvs() {
     .sort((a, b) => a.tier - b.tier || collator.compare(envName(a), envName(b)));
 }
 
+/* ---------------- main catalog progressive loading ("Show more") ----------------
+ * Main catalog only (state.route.name === 'catalog') — never Lists, Journey,
+ * or Session Prep, and never the single-list view (state.route.name ===
+ * 'list'), which stays fully rendered like before. The arithmetic (initial
+ * count, next-batch count, resize reconciliation) is pure and lives in
+ * js/catalog-progressive.js (CatalogProgressive) so it's testable without a
+ * DOM; only the column-count read and the render/observe wiring live here.
+ * See docs/architecture.md, "Main catalog progressive loading". */
+
+// A computed grid-template-columns the browser hasn't resolved yet (or can't)
+// falls back to this rather than a guessed breakpoint table.
+const CATALOG_COLUMN_FALLBACK = 3;
+const CATALOG_RESIZE_DEBOUNCE_MS = 150;
+
+/** The grid's actual rendered column count, read off its own resolved
+ * `grid-template-columns` rather than duplicating the auto-fill/minmax
+ * breakpoints from css/styles.css in JS. */
+function getRenderedColumnCount(gridEl) {
+  if (!gridEl) return CATALOG_COLUMN_FALLBACK;
+  const value = getComputedStyle(gridEl).gridTemplateColumns;
+  const count = CatalogProgressive.countColumnsFromTemplate(value);
+  return count > 0 ? count : CATALOG_COLUMN_FALLBACK;
+}
+
+/** Marks the next renderGrid() as a genuine new result set (search/filter
+ * change) rather than a re-render of the same one (language switch, a
+ * "Show more" activation, a resize) — see the state.catalogVisibleCount
+ * comment above. Call this right where state.filters is mutated, not from
+ * renderGrid() itself. */
+function resetCatalogVisibility() { state.catalogVisibleCount = null; }
+
+function handleCatalogShowMore() {
+  const columnCount = state.catalogLastColumnCount ?? getRenderedColumnCount(document.getElementById('grid-wrap'));
+  const total = sortedFilteredEnvs().length;
+  state.catalogVisibleCount = CatalogProgressive.calculateNextVisibleCount(state.catalogVisibleCount ?? 0, total, columnCount);
+  renderGrid();
+}
+
+/** Fills (or, given null, empties) #catalog-more, the status/button pair
+ * below the grid. `view` is null off the main catalog or when there are no
+ * results; otherwise { visible, total, columnCount } for the just-rendered
+ * slice. A result set of 30 or fewer never shows this control at all — the
+ * top #result-count bar already says how many match. */
+function renderCatalogMore(view) {
+  const el = document.getElementById('catalog-more');
+  if (!el) return;
+  if (!view || view.total <= CatalogProgressive.SHOW_ALL_THRESHOLD) { el.innerHTML = ''; return; }
+
+  const { visible, total, columnCount } = view;
+  const showButton = visible < total;
+  const statusText = showButton
+    ? t('catalog_shown_of_total').replace('{n}', visible).replace('{total}', total)
+    : t('catalog_all_shown').replace('{total}', total);
+  const nextCount = CatalogProgressive.calculateNextVisibleCount(visible, total, columnCount) - visible;
+
+  el.innerHTML = `
+    <p class="catalog-more-status" role="status" aria-live="polite">${escapeHtml(statusText)}</p>
+    ${showButton ? `<button type="button" class="btn btn-sm" id="catalog-more-btn" aria-controls="grid-wrap">${escapeHtml(t('catalog_show_more').replace('{n}', nextCount))}</button>` : ''}`;
+  if (showButton) document.getElementById('catalog-more-btn').addEventListener('click', handleCatalogShowMore);
+}
+
+/** Attached once to the persistent #grid-wrap element (never recreated —
+ * only its innerHTML changes across routes), so this never needs a
+ * teardown pair the way the Session Prep item nav does. The callback is a
+ * no-op off the main catalog and debounced so a dragged window edge doesn't
+ * rebuild ~200 cards' worth of markup on every intermediate frame. */
+function initCatalogGridObserver() {
+  const grid = document.getElementById('grid-wrap');
+  if (!grid) return;
+  let resizeTimer = null;
+  const onResize = () => {
+    if (state.route.name !== 'catalog') return;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (state.route.name !== 'catalog') return;
+      if (getRenderedColumnCount(grid) !== state.catalogLastColumnCount) renderGrid();
+    }, CATALOG_RESIZE_DEBOUNCE_MS);
+  };
+  if (typeof ResizeObserver !== 'undefined') new ResizeObserver(onResize).observe(grid);
+  else window.addEventListener('resize', onResize);
+}
+
 function renderGrid() {
   const el = document.getElementById('grid-wrap');
   const total = currentEnvs().length;
   const list = sortedFilteredEnvs();
+  const onCatalog = state.route.name === 'catalog';
 
   const countBar = document.getElementById('result-count');
   countBar.innerHTML = `${t('count_showing').replace('{n}', list.length).replace('{total}', total)}` +
@@ -1867,11 +1972,27 @@ function renderGrid() {
             : '',
         });
     bindGridDelegation(el);
+    renderCatalogMore(null);
     return;
   }
 
-  el.innerHTML = list.map(cardHtml).join('');
+  let cardsToRender = list;
+  if (onCatalog) {
+    const columnCount = getRenderedColumnCount(el);
+    if (state.catalogVisibleCount === null) {
+      state.catalogVisibleCount = CatalogProgressive.calculateInitialVisibleCount(list.length, columnCount);
+    } else if (columnCount !== state.catalogLastColumnCount) {
+      state.catalogVisibleCount = CatalogProgressive.calculateResizeVisibleCount(state.catalogVisibleCount, list.length, columnCount);
+    } else {
+      state.catalogVisibleCount = Math.min(state.catalogVisibleCount, list.length);
+    }
+    state.catalogLastColumnCount = columnCount;
+    cardsToRender = list.slice(0, state.catalogVisibleCount);
+  }
+
+  el.innerHTML = cardsToRender.map(cardHtml).join('');
   bindGridDelegation(el);
+  renderCatalogMore(onCatalog ? { visible: cardsToRender.length, total: list.length, columnCount: state.catalogLastColumnCount } : null);
 }
 
 /* One listener on the container instead of two per card. With ~190 cards that
@@ -1897,6 +2018,7 @@ function bindGridDelegation(el) {
 
 function clearAllFilters() {
   state.filters = { search: '', tiers: new Set(), types: new Set(), sources: new Set(), biomes: new Set(), regionOnly: false };
+  resetCatalogVisibility();
   renderToolbar();
   renderGrid();
   const search = document.getElementById('f-search');
@@ -2637,6 +2759,7 @@ function deleteJourneyEntry(kind, id) {
 function showBiomeInCatalog(biome) {
   state.filters = { search: '', tiers: new Set(), types: new Set(), sources: new Set(), biomes: new Set([biome]), regionOnly: false };
   state.filtersOpen = true;
+  resetCatalogVisibility();
   navigate('');
 }
 

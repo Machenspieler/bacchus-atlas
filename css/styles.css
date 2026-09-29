@@ -598,6 +598,16 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
 }
 .result-count button:hover { color: var(--parchment); }
 
+/* Below the main catalog grid only — never rendered on Lists, Journey, or
+ * Session Prep. Empty whenever the whole result set already fits, so
+ * :empty collapses it to nothing rather than leaving a stray gap. */
+.catalog-more {
+  display: flex; flex-direction: column; align-items: center; gap: var(--s-3);
+  margin-top: var(--s-6); text-align: center;
+}
+.catalog-more:empty { display: none; }
+.catalog-more-status { margin: 0; font-size: var(--fs-xs); color: var(--muted); }
+
 /* ---------- card grid ---------- */
 /* A column carries the 95px picture panel plus a text column wide enough for a
  * Russian name — under ~340px the name starts wrapping to three lines.

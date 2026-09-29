@@ -167,6 +167,45 @@ never rebuild text haystacks or traverse `env.features` itself. See
 `buildEnvironmentSearchRecord()` in `js/search-index.js` for exactly which
 fields are alias-eligible vs. literal-only vs. excluded.
 
+## Main catalog progressive loading
+
+The main catalog (`state.route.name === 'catalog'` only — never the
+single-list view, Lists, Journey, or Session Prep) renders a slice of
+`sortedFilteredEnvs()` rather than the whole result set once it passes 30
+environments, revealing more via a "Show more" control below the grid
+(`#catalog-more`, filled by `renderCatalogMore()`). The constants and
+arithmetic (initial six-row count, four-row batches, the resize-alignment
+formula) are pure and live in `js/catalog-progressive.js`
+(`CatalogProgressive`), tested in `tests/catalog-progressive.test.js`; only
+the DOM/state wiring lives in `js/app.js`:
+
+- **`state.catalogVisibleCount`/`state.catalogLastColumnCount`** are
+  purely presentational (never persisted, never in the URL). `null`
+  means "recompute the initial count on next render" — this is how a
+  genuine search/filter change resets progressive loading:
+  `resetCatalogVisibility()` is called at each site that mutates
+  `state.filters` (search input, tier/type/biome/source toggles, "Clear
+  filters", `showBiomeInCatalog()`), never from `renderGrid()` itself. A
+  language switch, a route revisit, or a "Show more" click all leave the
+  count alone.
+- **`getRenderedColumnCount()`** reads the grid's own resolved
+  `grid-template-columns` (`getComputedStyle`) rather than duplicating
+  `css/styles.css`'s `auto-fill`/`minmax()`/`.shell` breakpoints in JS —
+  auto-fill always resolves to a plain space-separated pixel track list by
+  the time a layout pass has run.
+- **`renderGrid()`** decides the visible slice once per render: a `null`
+  count computes the initial six-row count; an unchanged column count just
+  clamps the existing count to the (possibly new) total; a changed column
+  count runs the resize-alignment formula, which only ever grows or holds
+  the visible count, never shrinks it below what was already on screen.
+- **`initCatalogGridObserver()`** attaches one `ResizeObserver` to
+  `#grid-wrap` at startup and never tears it down — that element is a
+  permanent part of the static shell (only its innerHTML changes across
+  routes), unlike the Session Prep item nav's create/destroy pair. Its
+  callback is a no-op off the catalog route and debounced
+  (`CATALOG_RESIZE_DEBOUNCE_MS`) so a dragged window edge doesn't rebuild
+  the grid on every intermediate frame.
+
 ## Production JSON loading
 
 Every `data/*.json` fetch in `js/app.js` goes through `versionedDataUrl()`
