@@ -281,9 +281,45 @@ opening that adversary's own FreshCutGrass encounter
 (`adversaryFreshCutGrassUrl()`, built from `adv.name.en` alone — the same
 single-adversary encounter-URL pattern `potentialAdversaryLinkHtml()`
 already uses elsewhere, since FreshCutGrass exposes no stable per-adversary
-detail route). The central "Selected Adversaries" list keeps its existing
-plain, non-interactive thumbnail (`centralAdvThumbHtml()`) — this redesign
-is scoped to the All Adversaries picker only.
+detail route). The central adversaries list keeps a plain, non-interactive
+thumbnail (`centralThumbHtml('adv', …)`) — this redesign is scoped to the
+All Adversaries picker only.
+
+### Session Prep's central selected-content panel
+
+`centralSectionHtml()` renders one compact "session manifest" — Environments,
+Adversaries, Items — from a single selected-entity primitive rather than
+three bespoke layouts: `selectedEntityHtml()` (name ≤2 lines, one-line meta,
+semantic remove `<button>`), `centralThumbHtml(kind, src)` (fixed 38–40px
+wrapper, `object-fit: contain`, icon fallback; the `data-sel-thumb-img`
+error listener swaps a broken image for it), `centralHeadHtml()` and
+`centralCountHtml()`. Environments and items are `.prep-sel--card` tiles in
+a grid; adversaries are `.prep-sel--row` rows inside one shared surface with
+separators only *between* rows. Sections are semantic `<section>`s with
+`<ul>` lists — no table markup.
+
+- **Density is tokenised** on `.prep-central` (`--pc-*`: header/card/row
+  height, thumb, remove size, paddings, gap). Cards and rows have a *fixed*
+  height so a long or translated name never changes a row; names clamp to
+  two lines (adversaries: one) and `syncCentralTruncationTips()` attaches the
+  full text as a `data-tip` tooltip only where the layout actually clipped
+  it (re-run after every central refresh, on resize, and when fonts load).
+- **Counts:** only environments have a configured cap
+  (`SessionPrepUtils.MAX_ENVIRONMENTS`), so only that header reads `n/3`;
+  adversaries and items are uncapped (PD-002) and show a plain number. At the
+  cap the pill turns gold with a tooltip; the limit sentence is also in
+  `.sr-only` text, so it never depends on colour alone. There is no permanent
+  "limit reached" text line.
+- **Scrolling:** `.prep-central` (≥1200px) is the only vertical scroller,
+  with `scrollbar-gutter: stable`; section headers are sticky inside it.
+  It is a size container (`prep-central`) — environment cards step 3→2→1
+  columns and item cards 2→1 at its width breakpoints, not the viewport's.
+- **Thumbnail exception:** biome art is a 200×600 strip meant to be cropped,
+  so environment thumbs use `object-fit: cover`; adversary/item art use
+  `contain` (adversaries with a small inset for their uneven transparent
+  padding).
+- The FreshCutGrass link label is the product name only ("FreshCutGrass ↗",
+  both languages); its localized sentence is the `aria-label` and tooltip.
 
 ### Adversary artwork data and generation
 

@@ -76,8 +76,19 @@ locally") before starting.
       and the "Selected: {n}" counter only ever increases by one per unique
       item. See PD-002.
 - [ ] Three-environment cap: at the cap, unselected checkboxes disable, the
-      persistent "Limit reached" status appears, and removing one
-      re-enables the rest without losing search text/scroll position.
+      central Environments count shows a gold "3/3" pill (tooltip "Maximum
+      limit reached" / «Достигнут максимальный лимит»; no permanent text
+      line), and removing one re-enables the rest without losing search
+      text/scroll position.
+- [ ] **Central selected-content panel** (see docs/architecture.md "Session
+      Prep's central selected-content panel"): at ~1536×760 with 3
+      environments, 3 adversaries and 4 items the panel fits with no
+      vertical scrollbar; with many items only the panel scrolls (no nested
+      scrollbars, cards keep their height); a long name clamps to two lines
+      (one line for adversaries) and shows its full text as a tooltip; the
+      empty state is one short line per section; every remove button is a
+      32×32 button with a localized name («Удалить окружение «…»») and a
+      visible keyboard focus ring; RU/EN both hold at 1536, 1280 and 900.
 - [ ] Header chrome collapse/expand (see "Header" above) from within
       Session Prep specifically — the Session Bar hides in compact mode and
       returns in expanded mode.
@@ -131,10 +142,11 @@ locally") before starting.
       thumbnail button that opened it; an adversary sharing group art with
       others (e.g. the four Darkweave adversaries) shows the same image for
       each.
-- [ ] **FreshCutGrass export**: "Open in FreshCutGrass" is absent with zero
-      adversaries selected, appears the moment one is selected, opens in a
-      new tab, and its accessible label/tooltip announces the destination
-      and adversary count. Decode the link's payload and confirm it uses
+- [ ] **FreshCutGrass export**: the central "FreshCutGrass ↗" link is absent with
+      zero adversaries selected, appears the moment one is selected, opens
+      in a new tab, and its accessible label/tooltip announces the
+      destination ("Open selected adversaries in FreshCutGrass in a new
+      tab"). Decode the link's payload and confirm it uses
       `name.en` (never the Russian label) at `q: 1`, with no environment or
       item data included.
 - [ ] **Items compact toolbar**: Type buttons (Items/Consumables), Source

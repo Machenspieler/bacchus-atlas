@@ -2340,7 +2340,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-wrap {
    expanded and compact modes. Sized like the rest of the header cluster
    (32px, shrinking to 28px in compact mode below) but its actual hit area
    is extended past that with a transparent ::after, same technique as
-   .search-clear-btn/.prep-remove-btn elsewhere in this file, to clear the
+   .search-clear-btn elsewhere in this file, to clear the
    ~40px a pointer expects regardless of the visible control's size. */
 .sp-chrome-toggle {
   position: relative; flex: none;
@@ -2380,9 +2380,20 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   padding: 12px var(--s-4) var(--s-4);
 }
 .prep-central {
+  /* Central-panel tokens: the only place its density is tuned. */
+  --pc-pad-x: var(--s-3);      /* 12px  panel/section side padding        */
+  --pc-pad-y: 6px;             /*       section body vertical padding      */
+  --pc-pad-card: 6px;          /*       card/row inner padding             */
+  --pc-gap: var(--s-2);        /* 8px   gap between cards and card parts   */
+  --pc-head-h: 36px;           /*       section header                     */
+  --pc-thumb: 40px;
+  --pc-card-h: 56px;
+  --pc-row-h: 46px;
+  --pc-remove: 32px;
+  container: prep-central / inline-size;
   min-width: 0; display: flex; flex-direction: column;
-  background: var(--ink-raised); border: 1px solid var(--line-strong); border-top: 2px solid var(--hope);
-  border-radius: var(--r-lg); padding: 0 var(--s-5) var(--s-5); box-shadow: var(--e-2);
+  background: var(--ink-raised); border: 1px solid var(--line-strong); border-top-color: rgba(217,164,65,0.55);
+  border-radius: var(--r-lg); padding: 0 var(--pc-pad-x); box-shadow: var(--e-2);
 }
 
 .prep-col-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2); flex-wrap: wrap; }
@@ -2596,92 +2607,127 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .adv-art-copy:hover { color: var(--hope-soft); background: var(--ink-hover); }
 
 /* ---- central preparation: environments / adversaries / items ----
-   Each h3 is a full-bleed sticky bar, position:sticky within .prep-central's
-   own internal scroll area (≥1200px only — see the no-page-scroll block
-   below) so the current section stays identifiable while scrolling a long
-   preparation. Sticking is scoped to its own .prep-central-section (the
-   containing block for the offset), so a header never overlaps a sibling
-   section's. The negative inline margin cancels .prep-central's own side
-   padding so the bar's opaque background spans the full column width
-   instead of leaving a sliver of scrolled content visible beside it; that
-   padding is removed from .prep-central's top entirely (rather than left as
-   a transparent gap above the bar) since the bar's own min-height already
-   gives the resting (unstuck) heading equivalent breathing room. */
-.prep-central-section { display: flex; flex-direction: column; gap: 6px; scroll-margin-top: 40px; }
-/* The divider rule needs its own margin-top, not just the padding-top below
-   it — padding only pushes this section's own heading away from the rule,
-   it does nothing to separate the rule from the *previous* section's last
-   row, so without it the rule renders flush against the bottom of that
-   content. The Environments -> Adversaries gap skips the rule line itself:
-   the Selected Adversaries heading right below it already reads as the
-   section break, so the line only added visual noise there. Adversaries ->
-   Items keeps the line since Items has no card/row content of its own above
-   it to lean on. */
-.prep-central-section + .prep-central-section { margin-top: var(--s-2); padding-top: 11px; }
-.prep-central-section + .prep-central-section[data-sp-section="items"] { border-top: 1px solid var(--line-faint); }
-.prep-central-section h3 {
-  position: sticky; top: 0; z-index: 1; min-height: 40px;
-  margin: 0 calc(-1 * var(--s-5)); padding-inline: var(--s-5);
-  background: var(--ink-raised); border-bottom: 1px solid var(--line); box-shadow: var(--e-1);
-  display: flex; align-items: center; gap: var(--s-2);
-  font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md);
+   A compact session manifest built from one shared selected-entity
+   primitive (.prep-sel: thumbnail + name + meta + remove). Environments and
+   items are bordered cards in a grid, adversaries are borderless rows inside
+   one shared list surface. Every dimension below comes from the small
+   --pc-* token set on .prep-central (spacing scale: 4/6/8/12), so density is
+   tuned in one place. Each section header is sticky within .prep-central's
+   own scroll area (≥1200px — see the no-page-scroll block further down) so
+   the current section stays identifiable in a long preparation; that scroll
+   area is the only vertical scroller (no per-section scrollbars). */
+.prep-central-section { display: flex; flex-direction: column; min-width: 0; }
+.prep-central-section + .prep-central-section { border-top: 1px solid var(--line-faint); }
+.prep-central-head {
+  position: sticky; top: 0; z-index: 1; min-height: var(--pc-head-h);
+  margin-inline: calc(-1 * var(--pc-pad-x)); padding-inline: var(--pc-pad-x);
+  background: var(--ink-raised);
+  display: flex; align-items: center; gap: var(--pc-gap);
+}
+.prep-central-title {
+  flex: 1 1 auto; min-width: 0; margin: 0; display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md); line-height: 1.2;
   letter-spacing: var(--tracking-display); color: var(--parchment);
 }
-.prep-central-section h3 svg { width: var(--s-5); height: var(--s-5); flex: none; color: var(--hope); }
-.prep-central-count { margin-left: auto; font-size: var(--fs-sm); font-family: var(--font-mono); color: var(--muted); }
-/* Persistent explanation next to the environment counter while at the
-   three-environment cap — see envLimitStateText() in js/app.js. Empty and
-   invisible below the cap. */
-.prep-env-limit-state { font-size: var(--fs-sm); color: var(--hope-soft); font-weight: 600; }
-.prep-env-limit-state:empty { display: none; }
+.prep-central-title span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prep-central-title svg { width: var(--icon-md); height: var(--icon-md); flex: none; color: var(--hope); }
+/* Gold marks "limit reached" only: the pill shape (border + tint) is the
+   non-colour cue, the sr-only text inside carries it for assistive tech. */
+.prep-central-count {
+  flex: none; padding: 0 6px; min-width: 2.25em; text-align: center;
+  font-size: var(--fs-xs); line-height: 18px; font-family: var(--font-mono); color: var(--muted);
+  border: 1px solid transparent; border-radius: var(--r-pill);
+}
+.prep-central-count.is-limit { color: var(--hope-soft); border-color: rgba(217,164,65,0.45); background: rgba(217,164,65,0.08); }
+.prep-central-body { padding-block: var(--pc-pad-y); }
+.prep-central-section .prep-empty { padding-block: 2px; }
+.prep-central-section .prep-warning { margin-block: 0 var(--pc-pad-y); }
+.prep-central-section #prep-central-adv-warning:empty { display: none; }
 
-.prep-central-card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
-.prep-central-card-name { display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-base); line-height: 1.4; color: var(--parchment); }
-.prep-central-card-meta { font-size: var(--fs-sm); line-height: 1.4; color: var(--muted); }
+/* Selected-adversaries "FreshCutGrass ↗" export link — absent entirely (not
+   just disabled) when nothing is selected, see freshCutGrassLinkHtml() in
+   js/app.js. A ghost button sized to the header, never wrapping. */
+.prep-freshcutgrass-wrap { flex: none; }
+.prep-freshcutgrass-wrap:empty { display: none; }
+.prep-freshcutgrass-link { flex: none; height: 30px; padding: 0 10px; white-space: nowrap; }
 
-/* Selected environments: up to three tiles side by side — always exactly
-   three columns (never auto-fill's implicit drop to two at in-between
-   widths, which was the cramped-card/excessive-wrap bug at laptop widths)
-   since the three-environment cap (SessionPrepUtils.MAX_ENVIRONMENTS,
-   PD-002) means this grid never needs to hold more or fewer. minmax(0, 1fr)
-   lets a column shrink below its content's natural width so a long name
-   wraps instead of forcing overflow — each card is its own bordered box
-   with the remove control in its corner. */
-.prep-central-env-grid {
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3);
+/* ---- shared selected-entity primitive ---- */
+.prep-sel-list { list-style: none; margin: 0; padding: 0; }
+.prep-sel {
+  position: relative; display: flex; align-items: center; gap: var(--pc-gap); min-width: 0;
+  transition: background var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
 }
-.prep-central-env-card {
-  position: relative; display: flex; align-items: center; gap: var(--s-2);
-  padding: var(--s-2) var(--s-7) var(--s-2) var(--s-1);
-  border: 1px solid var(--line-faint); border-radius: var(--r-sm); background: var(--ink-raised);
+.prep-sel-thumb {
+  flex: none; width: var(--pc-thumb); height: var(--pc-thumb); box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+  border-radius: var(--r-sm); padding: var(--thumb-pad, 0);
+  background: radial-gradient(circle at 50% 35%, rgba(217,164,65,0.12), transparent 70%), var(--ink);
 }
-.prep-central-env-card .prep-central-env-remove { position: absolute; top: var(--s-1); right: var(--s-1); }
-
-/* Selected items: same two-column card grid as environments above. Items
-   carry no quantity control anywhere in Session Prep. */
-.prep-central-item-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--s-3);
+/* Transparent adversary PNGs carry uneven built-in padding; a shared inset
+   plus object-fit:contain normalises them without per-asset rules. Item and
+   biome art already frame themselves. */
+.prep-sel-thumb[data-kind="adv"] { --thumb-pad: 2px; }
+.prep-sel-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+/* The one exception to contain: biome art is a tall 200×600 landscape strip
+   meant to be cropped — contained it would shrink to a 13px sliver. */
+.prep-sel-thumb[data-kind="env"] img { object-fit: cover; }
+.prep-sel-thumb.is-fallback { background: var(--ink); }
+.prep-sel-thumb.is-fallback svg { width: 60%; height: 60%; color: var(--muted); }
+.prep-sel-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.prep-sel-name {
+  font-size: var(--fs-card-copy); line-height: 17px; font-weight: 500; color: var(--parchment);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2;
+  overflow: hidden; overflow-wrap: anywhere;
 }
-.prep-central-item-card {
-  position: relative; display: flex; align-items: center; gap: var(--s-3);
-  padding: var(--s-2); padding-right: var(--s-7);
-  border: 1px solid var(--line-faint); border-radius: var(--r-sm); background: var(--ink-raised);
-}
-.prep-central-item-card .prep-central-item-remove { position: absolute; top: var(--s-1); right: var(--s-1); }
-
-/* Selected adversaries: a simple thumb + name + remove row — no quantity
-   control anywhere in Session Prep. */
-.prep-central-row {
-  display: flex; align-items: center; gap: var(--s-3); padding: var(--s-2) 0;
-  border-bottom: 1px solid var(--line-faint);
-}
-.prep-central-row:last-child { border-bottom: none; }
-.prep-central-row-body { flex: 1; min-width: 80px; display: flex; flex-direction: column; gap: 1px; }
-.prep-central-row-name {
-  font-size: var(--fs-base); line-height: 1.4; color: var(--parchment);
+.prep-sel-meta {
+  margin-top: 1px; font-size: var(--fs-xs); line-height: 15px; color: var(--muted);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.prep-central-row-meta { font-size: var(--fs-sm); line-height: 1.4; color: var(--muted); }
+.prep-sel-remove {
+  flex: none; width: var(--pc-remove); height: var(--pc-remove); padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid transparent; border-radius: var(--r-sm);
+  background: transparent; color: var(--muted); font-family: inherit; font-size: var(--fs-lg); line-height: 1; cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.prep-sel-remove:hover { color: var(--fear-soft); border-color: var(--fear); background: rgba(156,43,59,0.14); }
+.prep-sel-remove:focus-visible { outline: var(--focus-ring); outline-offset: 1px; color: var(--fear-soft); background: rgba(156,43,59,0.14); }
+
+/* Card layout (environments, items): fixed height so a long name (clamped to
+   two lines) never changes its row; the remove button sits in the top-right
+   corner over the card's own padding, and the body reserves room for it. */
+.prep-sel--card {
+  height: var(--pc-card-h); box-sizing: border-box; padding: 0 var(--pc-pad-card);
+  border: 1px solid var(--line-faint); border-radius: var(--r-md); background: var(--ink-card);
+}
+.prep-sel--card:hover { border-color: var(--line); background: var(--ink-hover); }
+.prep-sel--card .prep-sel-body { padding-right: 24px; }
+.prep-sel--card .prep-sel-remove { position: absolute; top: 1px; right: 1px; }
+
+/* Row layout (adversaries): rows share one surface; separators only between
+   rows, so the last row draws no bottom rule. */
+.prep-sel-rows {
+  border: 1px solid var(--line-faint); border-radius: var(--r-md); background: var(--ink-card); overflow: hidden;
+}
+.prep-sel--row { height: var(--pc-row-h); box-sizing: border-box; padding: 0 var(--pc-pad-card) 0 var(--pc-pad-x); }
+.prep-sel--row + .prep-sel--row { border-top: 1px solid var(--line-faint); }
+.prep-sel--row:hover { background: var(--ink-hover); }
+.prep-sel--row .prep-sel-name { -webkit-line-clamp: 1; line-clamp: 1; }
+.prep-sel--row .prep-sel-thumb { --pc-thumb: 38px; }
+
+.prep-sel-grid { display: grid; gap: var(--pc-gap); }
+.prep-sel-grid--env { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.prep-sel-grid--item { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* The center column narrows before the page does (laptop widths, the
+   two-column tablet layout): step down the grids instead of squeezing names
+   or letting the remove buttons collide with them. */
+@container prep-central (max-width: 500px) {
+  .prep-sel-grid--env { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container prep-central (max-width: 400px) {
+  .prep-sel-grid--env, .prep-sel-grid--item { grid-template-columns: minmax(0, 1fr); }
+}
 
 /* ---- compact "All Adversaries" toolbar (search + Tier + Type + counter, one row) ----
    Same plain-static-block-above-its-own-scrolling-list structure as
@@ -2716,13 +2762,6 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   .prep-adv-toolbar .prep-count { display: none; }
 }
 
-/* Selected-adversaries heading's "Open in FreshCutGrass" export link —
-   absent entirely (not just disabled) when nothing is selected, see
-   freshCutGrassLinkHtml() in js/app.js. */
-.prep-freshcutgrass-wrap { margin-left: auto; }
-.prep-freshcutgrass-wrap:empty { display: none; }
-.prep-freshcutgrass-link { flex: none; }
-
 /* ---- compact "All Items" toolbar (Type + Source + search + dice + view + counter, one row) ----
    Same structural pattern as .prep-env-toolbar/.prep-adv-toolbar above —
    a CSS grid row, one flexible `minmax(0,1fr)` track (the search field),
@@ -2753,19 +2792,6 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    wrap, same convention .prep-col-adv already established. */
 @container prep-items-panel (max-width: 640px) {
   .item-toolbar-count { display: none; }
-}
-
-/* 24px on the card, larger under a finger — same recipe as .list-card-del. */
-.prep-remove-btn {
-  position: relative; flex: none; width: var(--h-xs); height: var(--h-xs); padding: 0;
-  display: flex; align-items: center; justify-content: center;
-  border: 1px solid transparent; border-radius: var(--r-sm);
-  background: transparent; color: var(--muted); font-size: var(--fs-lg); line-height: 1; cursor: pointer;
-  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
-}
-.prep-remove-btn::after { content: ""; position: absolute; inset: -10px; }
-.prep-remove-btn:hover, .prep-remove-btn:focus-visible {
-  color: var(--fear-soft); border-color: var(--fear); background: rgba(156,43,59,0.14);
 }
 
 /* Non-blocking heads-up, not an error — an amber rule, not the fear-red used
@@ -3033,6 +3059,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
     min-height: 0;
     overflow-y: auto;
     scroll-padding-top: 40px;
+    scrollbar-gutter: stable;
     scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
   }
   body[data-route="session-prep"] .prep-central::-webkit-scrollbar { width: 8px; }
@@ -3080,7 +3107,9 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   #prep-env-list, #prep-adv-list { max-height: none; overflow: visible; }
   .prep-env-toolbar, .prep-adv-toolbar { display: flex; flex-wrap: wrap; row-gap: var(--s-2); }
   .prep-env-toolbar .prep-search, .prep-adv-toolbar .prep-search { flex: 1 1 160px; }
-  .prep-remove-btn { width: 44px; height: 44px; }
+  .prep-sel-remove { --pc-remove: 44px; }
+  .prep-sel--card { --pc-card-h: 60px; }
+  .prep-sel--card .prep-sel-body { padding-right: 36px; }
   .prep-checkbox-hit { width: 44px; height: 44px; }
 }
 @media (hover: none), (pointer: coarse) {

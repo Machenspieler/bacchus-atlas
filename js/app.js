@@ -4188,45 +4188,121 @@ function destroySessionPrepItemNav() {
   itemNavState = null;
 }
 
-/* ---------------- central preparation ---------------- */
+/* ---------------- central preparation ----------------
+ *
+ * One compact "session manifest": three sections (environments, adversaries,
+ * items) that share one selected-entity primitive (selectedEntityHtml() +
+ * centralThumbHtml() → .prep-sel* in css/styles.css) — same thumbnail,
+ * typography, remove button, radius, hover and focus treatment everywhere.
+ * Only the layout differs: environments and items are cards in a grid,
+ * adversaries are dense rows in one shared list surface.
+ *
+ * Environments are the only section with a configured limit
+ * (SessionPrepUtils.MAX_ENVIRONMENTS); adversaries and items are uncapped
+ * (PD-002), so their header count is a plain number, never "n/max". */
+
+const CENTRAL_THUMB_FALLBACK = { env: ICON_HEX, adv: ICON_ADVERSARY_FALLBACK, item: ICON_ITEM_FALLBACK };
+
+/** Fixed-size, centered, object-fit:contain thumbnail wrapper for every
+ * selected entity — the image can never affect its row's height, and a
+ * missing/broken image falls back to the same wrapper with an icon (see the
+ * delegated 'error' listener, `data-sel-thumb-img`). Decorative: the entity
+ * name next to it is what assistive tech reads. `kind` is our own literal. */
+function centralThumbHtml(kind, src) {
+  if (!src) return `<span class="prep-sel-thumb is-fallback" data-kind="${kind}" aria-hidden="true">${CENTRAL_THUMB_FALLBACK[kind]}</span>`;
+  return `<span class="prep-sel-thumb" data-kind="${kind}" aria-hidden="true"><img src="${escapeAttr(src)}" alt="" loading="lazy" decoding="async" data-sel-thumb-img></span>`;
+}
+
+/** The shared selected-entity primitive: thumbnail, name (≤2 lines), meta
+ * (1 line), semantic remove button. `layout` is 'card' (bordered tile —
+ * environments, items) or 'row' (borderless list row — adversaries). Name
+ * and meta carry `data-sel-clamp` so syncCentralTruncationTips() can attach
+ * the full text as a tooltip when — and only when — the layout clipped it.
+ * `removeAttr` is our own literal (data-sp-remove-env/adv/item), matched by
+ * the delegated click handler. */
+function selectedEntityHtml({ layout, id, thumb, name, meta, removeAttr, removeLabel, attrs = '' }) {
+  return `
+    <li class="prep-sel prep-sel--${layout}"${attrs}>
+      ${thumb}
+      <span class="prep-sel-body">
+        <span class="prep-sel-name" data-sel-clamp>${escapeHtml(name)}</span>
+        <span class="prep-sel-meta" data-sel-clamp>${escapeHtml(meta)}</span>
+      </span>
+      <button type="button" class="prep-sel-remove" ${removeAttr}="${escapeAttr(id)}"
+              aria-label="${escapeAttr(removeLabel)}"><span aria-hidden="true">×</span></button>
+    </li>`;
+}
+
+/** Full text as a tooltip on any name/meta the layout has clipped (width
+ * ellipsis or the two-line clamp); removed again once it fits. Reads layout,
+ * so it runs after every central render, on resize, and once fonts settle. */
+function syncCentralTruncationTips() {
+  document.querySelectorAll('.prep-central [data-sel-clamp]').forEach(el => {
+    if (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1) el.dataset.tip = el.textContent;
+    else delete el.dataset.tip;
+  });
+}
+window.addEventListener('resize', syncCentralTruncationTips);
+
+/** Compact "3/3" (capped section) or "4" (uncapped) header counter. Visible
+ * text is aria-hidden; screen readers get the localized "Selected: 3 of 3"
+ * (plus the limit sentence at the cap) so the limit state never depends on
+ * colour alone — sighted users additionally get the gold pill shape and the
+ * tooltip. */
+function centralCountHtml(id, count, max) {
+  const atLimit = max != null && count >= max;
+  const visible = max != null ? `${count}/${max}` : `${count}`;
+  let spoken = max != null
+    ? t('prep_selected_count_max').replace('{n}', count).replace('{max}', max)
+    : t('prep_selected_count').replace('{n}', count);
+  if (atLimit) spoken += `. ${t('prep_central_limit_reached')}`;
+  const tip = atLimit ? ` data-tip="${escapeAttr(t('prep_central_limit_reached'))}"` : '';
+  return `<span class="prep-central-count${atLimit ? ' is-limit' : ''}" id="${id}" role="status"${tip}><span aria-hidden="true">${visible}</span><span class="sr-only">${escapeHtml(spoken)}</span></span>`;
+}
+
+function setCentralCount(id, count, max) {
+  const el = document.getElementById(id);
+  if (el) el.outerHTML = centralCountHtml(id, count, max);
+}
+
+function centralHeadHtml({ titleId, icon, title, countHtml, actionHtml = '' }) {
+  return `
+    <div class="prep-central-head">
+      <h3 class="prep-central-title" id="${titleId}">${icon}<span>${escapeHtml(title)}</span></h3>
+      ${countHtml}${actionHtml}
+    </div>`;
+}
+
+function centralEmptyHtml(key) {
+  return `<p class="prep-empty">${escapeHtml(t(key))}</p>`;
+}
 
 function centralEnvCardHtml(env) {
   const name = envName(env);
-  return `
-    <div class="prep-central-env-card" data-env-id="${escapeAttr(env.id)}">
-      <button type="button" class="prep-remove-btn prep-central-env-remove" data-sp-remove-env="${escapeAttr(env.id)}"
-              aria-label="${escapeAttr(t('prep_remove_named').replace('{name}', name))}">×</button>
-      ${prepEnvThumbHtml(env)}
-      <div class="prep-central-card-body">
-        <span class="prep-central-card-name">${escapeHtml(name)}</span>
-        <span class="prep-central-card-meta">${t('tier_label')} ${env.tier}</span>
-      </div>
-    </div>`;
+  const biome = artBiome(env);
+  return selectedEntityHtml({
+    layout: 'card', id: env.id, name,
+    thumb: centralThumbHtml('env', biome ? `img/biomes/${biome}-200.webp` : ''),
+    meta: `${t('tier_label')} ${env.tier}`,
+    removeAttr: 'data-sp-remove-env',
+    removeLabel: t('prep_remove_environment_named').replace('{name}', name),
+    attrs: ` data-env-id="${escapeAttr(env.id)}"`,
+  });
 }
 
 /** Selected environments render in the same order as the "All Environments"
  * picker (Tier ascending, then alphabetically), not selection order — see
  * prepFilteredEnvs(). */
 function centralEnvListHtml(session) {
-  if (!session.environmentIds.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_environments'))}</p>`;
+  if (!session.environmentIds.length) return centralEmptyHtml('prep_no_environments');
   const envs = session.environmentIds.map(id => allEnvs().find(e => e.id === id)).filter(Boolean);
   const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
   const sorted = SessionPrepUtils.sortByTierThenName(envs, env => env.tier, (a, b) => collator.compare(envName(a), envName(b)));
-  return `<div class="prep-central-env-grid">${sorted.map(centralEnvCardHtml).join('')}</div>`;
+  return `<ul class="prep-sel-list prep-sel-grid prep-sel-grid--env">${sorted.map(centralEnvCardHtml).join('')}</ul>`;
 }
 
-function envSelectedCountText(session) {
-  return t('prep_selected_count_max')
-    .replace('{n}', session.environmentIds.length)
-    .replace('{max}', SessionPrepUtils.MAX_ENVIRONMENTS);
-}
-
-/** Persistent text next to the environment counter while at the
- * three-environment cap — the primary explanation for why the remaining
- * checkboxes are disabled; the toast (prep_environment_limit) is only a
- * fallback for a stale/programmatic attempt. Empty string below the cap. */
-function envLimitStateText(session) {
-  return session.environmentIds.length >= SessionPrepUtils.MAX_ENVIRONMENTS ? t('prep_env_limit_reached') : '';
+function centralEnvCountHtml(session) {
+  return centralCountHtml('prep-central-env-count', session.environmentIds.length, SessionPrepUtils.MAX_ENVIRONMENTS);
 }
 
 /** Disables every unselected environment checkbox currently rendered in the
@@ -4245,33 +4321,9 @@ function refreshCentralEnvironments() {
   const session = activeSessionPrep();
   const list = document.getElementById('prep-central-env-list');
   if (list) list.innerHTML = centralEnvListHtml(session);
-  const count = document.getElementById('prep-central-env-count');
-  if (count) count.textContent = envSelectedCountText(session);
-  const limitState = document.getElementById('prep-env-limit-state');
-  if (limitState) limitState.textContent = envLimitStateText(session);
+  setCentralCount('prep-central-env-count', session.environmentIds.length, SessionPrepUtils.MAX_ENVIRONMENTS);
   refreshEnvCheckboxDisabled(session);
-}
-
-/** Simple selected row: thumbnail, name, optional meta line, remove — no
- * quantity control. `kind` is our own literal, never user data, so it's
- * safe to splice into the data-attribute name below. Used for selected
- * adversaries; selected items use their own card grid (centralItemCardHtml)
- * instead. */
-function centralSimpleRowHtml({ id, name, thumb, kind, meta }) {
-  return `
-    <div class="prep-central-row">
-      ${thumb}
-      <span class="prep-central-row-body">
-        <span class="prep-central-row-name">${escapeHtml(name)}</span>
-        ${meta ? `<span class="prep-central-row-meta">${escapeHtml(meta)}</span>` : ''}
-      </span>
-      <button type="button" class="prep-remove-btn" data-sp-remove-${kind}="${escapeAttr(id)}"
-              aria-label="${escapeAttr(t('prep_remove_named').replace('{name}', name))}">×</button>
-    </div>`;
-}
-
-function centralAdvCountText(session) {
-  return t('prep_selected_count').replace('{n}', session.adversaryIds.length);
+  syncCentralTruncationTips();
 }
 
 /** Non-blocking: a lot of selected adversaries is a play-experience
@@ -4282,28 +4334,25 @@ function advWarningHtml(session) {
   return `<p class="prep-warning" role="status">${escapeHtml(t('prep_adversary_large_warning').replace('{n}', session.adversaryIds.length))}</p>`;
 }
 
-/** Non-interactive art for the central Selected Adversaries row — unlike
- * the All Adversaries picker's own thumbnail button (prepAdvThumbHtml()),
- * central rows keep their existing plain-image treatment; this redesign is
- * scoped to the All Adversaries picker only (see CLAUDE.md/the "do not
- * change the central Selected Adversaries UX beyond necessary
- * synchronization" non-goal). Same missing/broken-art fallback either way. */
-function centralAdvThumbHtml(adv) {
-  if (!adv.art) return `<span class="prep-adv-thumb prep-thumb-fallback" aria-hidden="true">${ICON_ADVERSARY_FALLBACK}</span>`;
-  return `<span class="prep-adv-thumb"><img src="${escapeAttr(adv.art.thumb)}" alt="" loading="lazy" decoding="async" data-adv-thumb-img></span>`;
-}
-
 /** Selected adversaries render in the same order as the "All Adversaries"
  * picker (Tier ascending, then alphabetically), not selection order — see
  * prepFilteredAdversaries(). */
 function centralAdvListHtml(session) {
-  if (!session.adversaryIds.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_adversaries'))}</p>`;
+  if (!session.adversaryIds.length) return centralEmptyHtml('prep_no_adversaries');
   const advs = session.adversaryIds.map(id => state.sessionPrepCatalog.adversaryById.get(id)).filter(Boolean);
   const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
   const sorted = SessionPrepUtils.sortByTierThenName(advs, adv => adv.tier, (a, b) => collator.compare(spName(a), spName(b)));
-  return sorted.map(adv =>
-    centralSimpleRowHtml({ id: adv.id, name: spName(adv), thumb: centralAdvThumbHtml(adv), kind: 'adv', meta: advMetaText(adv) })
-  ).join('');
+  const rows = sorted.map(adv => {
+    const name = spName(adv);
+    return selectedEntityHtml({
+      layout: 'row', id: adv.id, name,
+      thumb: centralThumbHtml('adv', adv.art && adv.art.thumb),
+      meta: advMetaText(adv),
+      removeAttr: 'data-sp-remove-adv',
+      removeLabel: t('prep_remove_adversary_named').replace('{name}', name),
+    });
+  }).join('');
+  return `<ul class="prep-sel-list prep-sel-rows">${rows}</ul>`;
 }
 
 /** The FreshCutGrass encounter name for the current session: the GM's own
@@ -4333,12 +4382,14 @@ function freshCutGrassUrlForSession(session) {
 /** An ordinary link (not a button) so it behaves like every other
  * FreshCutGrass link in the app — opens in a new tab, `noopener noreferrer`,
  * and an accessible name that announces both the destination and the new
- * tab. Absent entirely (not just disabled) when no adversary is selected. */
+ * tab. The visible label is the product name only ("FreshCutGrass ↗", same
+ * in both languages); the localized sentence lives in aria-label + tooltip.
+ * Absent entirely (not just disabled) when no adversary is selected. */
 function freshCutGrassLinkHtml(session) {
   const url = freshCutGrassUrlForSession(session);
   if (!url) return '';
-  const tip = t('prep_open_freshcutgrass_tip').replace('{n}', session.adversaryIds.length);
-  return `<a class="btn btn-sm prep-freshcutgrass-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer"
+  const tip = t('prep_open_freshcutgrass_tip');
+  return `<a class="btn btn-ghost btn-sm prep-freshcutgrass-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer"
              data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(tip)}">${escapeHtml(t('prep_open_freshcutgrass'))}</a>`;
 }
 
@@ -4355,15 +4406,11 @@ function refreshCentralAdversaries() {
   const session = activeSessionPrep();
   const list = document.getElementById('prep-central-adv-list');
   if (list) list.innerHTML = centralAdvListHtml(session);
-  const count = document.getElementById('prep-central-adv-count');
-  if (count) count.textContent = centralAdvCountText(session);
+  setCentralCount('prep-central-adv-count', session.adversaryIds.length, null);
   const warning = document.getElementById('prep-central-adv-warning');
   if (warning) warning.innerHTML = advWarningHtml(session);
   refreshFreshCutGrassLink();
-}
-
-function centralItemCountText(session) {
-  return t('prep_selected_count').replace('{n}', session.itemIds.length);
+  syncCentralTruncationTips();
 }
 
 /** Selected-item card: icon, name, "source · kind #roll" meta line, remove
@@ -4371,56 +4418,54 @@ function centralItemCountText(session) {
 function centralItemCardHtml(id, item) {
   const name = itemField(item, 'name');
   const kind = item.kind === 'consumable' ? 'consumable' : 'item';
-  return `
-    <div class="prep-central-item-card">
-      <button type="button" class="prep-remove-btn prep-central-item-remove" data-sp-remove-item="${escapeAttr(id)}"
-              aria-label="${escapeAttr(t('prep_remove_named').replace('{name}', name))}">×</button>
-      ${prepItemThumbHtml(item)}
-      <div class="prep-central-card-body">
-        <span class="prep-central-card-name">${escapeHtml(name)}</span>
-        <span class="prep-central-card-meta">${escapeHtml(t('item_src_' + item.src))} · ${escapeHtml(t('item_kind_' + kind))} · #${item.roll}</span>
-      </div>
-    </div>`;
+  return selectedEntityHtml({
+    layout: 'card', id, name,
+    thumb: centralThumbHtml('item', itemImageUrl(item)),
+    meta: `${t('item_src_' + item.src)} · ${t('item_kind_' + kind)} · #${item.roll}`,
+    removeAttr: 'data-sp-remove-item',
+    removeLabel: t('prep_remove_item_named').replace('{name}', name),
+  });
 }
 
 /** Selected items render in the same order as the Items picker (roll number,
  * then Source, then Kind, then alphabetically), not selection order — see
  * prepFilteredItems(). */
 function centralItemListHtml(session) {
-  if (!session.itemIds.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_items'))}</p>`;
+  if (!session.itemIds.length) return centralEmptyHtml('prep_no_items');
   const items = session.itemIds.map(id => { const item = itemById(id); return item ? Object.assign({ id }, item) : null; }).filter(Boolean);
   const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
   const sorted = SessionPrepUtils.sortItemsForPrep(items, (a, b) => collator.compare(itemField(a, 'name'), itemField(b, 'name')));
-  return `<div class="prep-central-item-grid">${sorted.map(item => centralItemCardHtml(item.id, item)).join('')}</div>`;
+  return `<ul class="prep-sel-list prep-sel-grid prep-sel-grid--item">${sorted.map(item => centralItemCardHtml(item.id, item)).join('')}</ul>`;
 }
 
 function refreshCentralItems() {
   const session = activeSessionPrep();
   const list = document.getElementById('prep-central-item-list');
   if (list) list.innerHTML = centralItemListHtml(session);
-  const count = document.getElementById('prep-central-item-count');
-  if (count) count.textContent = centralItemCountText(session);
+  setCentralCount('prep-central-item-count', session.itemIds.length, null);
+  syncCentralTruncationTips();
 }
 
 function centralSectionHtml(session) {
   return `
     <section class="prep-central" aria-labelledby="prep-central-heading">
       <h2 id="prep-central-heading" class="sr-only">${t('session_prep_title')}</h2>
-      <div class="prep-central-section" data-sp-section="environments">
-        <h3>${ICON_TABLE_ENVIRONMENTS}<span>${t('prep_selected_environments')}</span><span class="prep-central-count" id="prep-central-env-count">${escapeHtml(envSelectedCountText(session))}</span><span class="prep-env-limit-state" id="prep-env-limit-state" role="status">${escapeHtml(envLimitStateText(session))}</span></h3>
-        <div id="prep-central-env-list">${centralEnvListHtml(session)}</div>
-      </div>
-      <div class="prep-central-section" data-sp-section="adversaries">
-        <h3>${ICON_TABLE_ADVERSARIES}<span>${t('prep_selected_adversaries')}</span><span class="prep-central-count" id="prep-central-adv-count">${escapeHtml(centralAdvCountText(session))}</span>
-          <span class="prep-freshcutgrass-wrap" id="prep-freshcutgrass-wrap">${freshCutGrassLinkHtml(session)}</span>
-        </h3>
+      <section class="prep-central-section" data-sp-section="environments" aria-labelledby="prep-central-env-title">
+        ${centralHeadHtml({ titleId: 'prep-central-env-title', icon: ICON_TABLE_ENVIRONMENTS, title: t('prep_central_environments'), countHtml: centralEnvCountHtml(session) })}
+        <div class="prep-central-body" id="prep-central-env-list">${centralEnvListHtml(session)}</div>
+      </section>
+      <section class="prep-central-section" data-sp-section="adversaries" aria-labelledby="prep-central-adv-title">
+        ${centralHeadHtml({ titleId: 'prep-central-adv-title', icon: ICON_TABLE_ADVERSARIES, title: t('prep_central_adversaries'),
+          countHtml: centralCountHtml('prep-central-adv-count', session.adversaryIds.length, null),
+          actionHtml: `<span class="prep-freshcutgrass-wrap" id="prep-freshcutgrass-wrap">${freshCutGrassLinkHtml(session)}</span>` })}
         <div id="prep-central-adv-warning">${advWarningHtml(session)}</div>
-        <div id="prep-central-adv-list">${centralAdvListHtml(session)}</div>
-      </div>
-      <div class="prep-central-section" data-sp-section="items">
-        <h3>${ICON_TABLE_ITEMS}<span>${t('prep_selected_items')}</span><span class="prep-central-count" id="prep-central-item-count">${escapeHtml(centralItemCountText(session))}</span></h3>
-        <div id="prep-central-item-list">${centralItemListHtml(session)}</div>
-      </div>
+        <div class="prep-central-body" id="prep-central-adv-list">${centralAdvListHtml(session)}</div>
+      </section>
+      <section class="prep-central-section" data-sp-section="items" aria-labelledby="prep-central-item-title">
+        ${centralHeadHtml({ titleId: 'prep-central-item-title', icon: ICON_TABLE_ITEMS, title: t('prep_central_items'),
+          countHtml: centralCountHtml('prep-central-item-count', session.itemIds.length, null) })}
+        <div class="prep-central-body" id="prep-central-item-list">${centralItemListHtml(session)}</div>
+      </section>
     </section>`;
 }
 
@@ -5121,6 +5166,12 @@ function bindSessionPrepDelegation(el) {
         wrap.removeAttribute('aria-label');
         if (wrap.tagName === 'BUTTON') wrap.disabled = true;
       }
+    } else if (target.matches('[data-sel-thumb-img]')) {
+      const wrap = target.closest('.prep-sel-thumb');
+      if (wrap) {
+        wrap.innerHTML = CENTRAL_THUMB_FALLBACK[wrap.dataset.kind] || ICON_HEX;
+        wrap.classList.add('is-fallback');
+      }
     } else if (target.matches('[data-item-thumb-img]')) {
       const wrap = target.closest('.prep-item-thumb');
       if (wrap) wrap.innerHTML = ICON_ITEM_FALLBACK;
@@ -5307,6 +5358,8 @@ function renderSessionPrepPage() {
   bindAdvToolbarControls();
   initSessionPrepItemNav(activeItemGridId());
   applySessionPrepChromeDom();
+  syncCentralTruncationTips();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncCentralTruncationTips);
 }
 
 /* ---------------- sources ---------------- */
