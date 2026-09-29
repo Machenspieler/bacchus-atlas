@@ -2398,7 +2398,8 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   --pc-head-h: 36px;           /*       section header                     */
   --pc-thumb: 40px;
   --pc-card-h: 56px;
-  --pc-row-h: 46px;
+  --pc-row-h: 48px;
+  --pc-pad-x-row: 8px;         /*       adversary tile side padding        */
   --pc-remove: 32px;
   container: prep-central / inline-size;
   min-width: 0; display: flex; flex-direction: column;
@@ -2636,8 +2637,8 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 /* ---- central preparation: environments / adversaries / items ----
    A compact session manifest built from one shared selected-entity
    primitive (.prep-sel: thumbnail + name + meta + remove). Environments and
-   items are bordered cards in a grid, adversaries are borderless rows inside
-   one shared list surface. Every dimension below comes from the small
+   items are bordered cards in a 2-column grid, adversaries are compact
+   bordered tiles in a container-query grid (1 → 2 columns). Every dimension below comes from the small
    --pc-* token set on .prep-central (spacing scale: 4/6/8/12), so density is
    tuned in one place. Each section header is sticky within .prep-central's
    own scroll area (≥1200px — see the no-page-scroll block further down) so
@@ -2769,20 +2770,31 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-sel--card .prep-sel-body { padding-right: 24px; }
 .prep-sel--card .prep-sel-remove { position: absolute; top: 1px; right: 1px; }
 
-/* Row layout (adversaries): rows share one surface; separators only between
-   rows, so the last row draws no bottom rule. */
-.prep-sel-rows {
-  border: 1px solid var(--line-faint); border-radius: var(--r-md); background: var(--ink-card); overflow: hidden;
+/* Row layout (adversaries): a fixed-height compact tile in a responsive grid
+   (see .prep-sel-grid--adv below) — same surface/border language as the
+   item cards it sits above, but with its own three-zone interior (thumbnail
+   button, FreshCutGrass link, remove). The name and meta both stay on one
+   line and ellipsize, so a two-column tile never changes height. */
+.prep-sel--row {
+  height: var(--pc-row-h); box-sizing: border-box; padding: 0 var(--pc-pad-x-row) 0 var(--pc-pad-x-row);
+  border: 1px solid var(--line-faint); border-radius: var(--r-md); background: var(--ink-card);
 }
-.prep-sel--row { height: var(--pc-row-h); box-sizing: border-box; padding: 0 var(--pc-pad-card) 0 var(--pc-pad-x); }
-.prep-sel--row + .prep-sel--row { border-top: 1px solid var(--line-faint); }
-.prep-sel--row:hover { background: var(--ink-hover); }
+.prep-sel--row:hover { border-color: var(--line-strong); background: var(--ink-hover); }
 .prep-sel--row .prep-sel-name { -webkit-line-clamp: 1; line-clamp: 1; }
-.prep-sel--row .prep-sel-thumb { --pc-thumb: 38px; }
+.prep-sel--row .prep-sel-thumb { --pc-thumb: 36px; }
+/* min-width:0 all the way down so the name (not the ↗ or the remove button)
+   is what gives way; the ↗ is flex:none and stays right after the name. */
+.prep-sel--row .prep-sel-main, .prep-sel--row .prep-sel-body, .prep-sel--row .prep-sel-title { min-width: 0; }
+.prep-sel--row .prep-sel-title { align-items: center; }
+.prep-sel--row .prep-sel-name { overflow-wrap: normal; word-break: normal; white-space: nowrap; text-overflow: ellipsis; display: block; }
 
 .prep-sel-grid { display: grid; gap: var(--pc-gap); }
 .prep-sel-grid--env { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .prep-sel-grid--item { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* Adversaries: one column until the central panel can hold two ≥260px tiles
+   side by side (see the @container rules below). Row gap is tighter than the
+   column gap — the tiles are short. */
+.prep-sel-grid--adv { grid-template-columns: minmax(0, 1fr); gap: 6px var(--pc-gap); }
 
 /* The center column narrows before the page does (laptop widths, the
    two-column tablet layout): step down the grids instead of squeezing names
@@ -2792,6 +2804,10 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 }
 @container prep-central (max-width: 400px) {
   .prep-sel-grid--env, .prep-sel-grid--item { grid-template-columns: minmax(0, 1fr); }
+}
+/* Two adversary columns need 2 × 260px + the 8px gap of container width. */
+@container prep-central (min-width: 528px) {
+  .prep-sel-grid--adv { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* ---- compact "All Adversaries" toolbar (search + Tier + Type + counter, one row) ----

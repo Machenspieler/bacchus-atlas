@@ -4419,7 +4419,7 @@ function centralAdvListHtml(session) {
       removeTip: t('prep_tip_remove_adversary'),
     });
   }).join('');
-  return `<ul class="prep-sel-list prep-sel-rows">${rows}</ul>`;
+  return `<ul class="prep-sel-list prep-sel-grid prep-sel-grid--adv">${rows}</ul>`;
 }
 
 /** The FreshCutGrass encounter name for the current session: the GM's own

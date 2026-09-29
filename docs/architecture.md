@@ -307,8 +307,11 @@ semantic remove `<button>`), `centralThumbHtml(kind, src)` (fixed 38–40px
 wrapper, `object-fit: contain`, icon fallback; the `data-sel-thumb-img`
 error listener swaps a broken image for it), `centralHeadHtml()` and
 `centralCountHtml()`. Environments and items are `.prep-sel--card` tiles in
-a grid; adversaries are `.prep-sel--row` rows inside one shared surface with
-separators only *between* rows. Sections are semantic `<section>`s with
+a grid; adversaries are compact `.prep-sel--row` tiles (48px, one-line name
+and meta, ellipsized) in `.prep-sel-grid--adv`: one column by default, two
+once the `prep-central` container is ≥528px wide (a container query, not a
+viewport one — two ≥260px tiles plus the 8px gap; at 1280px the panel is
+narrower, so it stays one column there). Sections are semantic `<section>`s with
 `<ul>` lists — no table markup.
 
 - **Density is tokenised** on `.prep-central` (`--pc-*`: header/card/row
