@@ -292,9 +292,9 @@ rows and the gallery item tile) is built by `prepSelectionCellHtml()` — a
 `.prep-checkbox-hit` `<label>` (whole area toggles) around an 18px
 `.prep-select-checkbox`. Its geometry is the `--sel-*` tokens on `:root` in
 `css/styles.css` (`--sel-box` 18px, `--sel-hit` 32px, `--sel-gap` and
-`--sel-pad` 8px; `--sel-hit-touch` 44px on coarse pointers/phones, where the
-larger target is kept on purpose). The layout is 8px row padding → 32px hit
-area → 8px gap → thumbnail; change a number there, never per picker.
+`--sel-pad` 4px; `--sel-hit-touch` 44px on coarse pointers/phones, where the
+larger target is kept on purpose). The layout is 4px row padding → 32px hit
+area → 4px gap → thumbnail; change a number there, never per picker.
 
 ### Session Prep's central selected-content panel
 

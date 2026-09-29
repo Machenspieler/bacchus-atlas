@@ -108,13 +108,13 @@
   --focus-offset: 2px;
 
   /* ---- Session Prep selection cell (shared by the environment, adversary
-     and item pickers): 8px row padding → 32px hit area holding an 18px
-     checkbox → 8px gap → thumbnail. One set of numbers, never per picker. */
+     and item pickers): 4px row padding → 32px hit area holding an 18px
+     checkbox → 4px gap → thumbnail. One set of numbers, never per picker. */
   --sel-box: 18px;
   --sel-hit: 32px;
   --sel-hit-touch: 44px;   /* coarse pointers / phones keep the WCAG-sized target */
-  --sel-gap: var(--s-2);
-  --sel-pad: var(--s-2);
+  --sel-gap: var(--s-1);
+  --sel-pad: var(--s-1);
 
   /* Native chrome — scrollbars, the select popup, autofill — follows the theme. */
   color-scheme: dark;
@@ -2512,7 +2512,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-env-row, .prep-adv-row { padding: var(--s-1) var(--sel-pad); }
 .prep-env-row:hover, .prep-adv-row:hover { background: var(--ink-hover); }
 .prep-row-open {
-  all: unset; flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--s-3); cursor: pointer;
+  all: unset; flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--s-2); cursor: pointer;
   font-family: inherit;
 }
 .prep-row-open:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); border-radius: var(--r-sm); }

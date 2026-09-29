@@ -90,7 +90,7 @@ locally") before starting.
       32×32 button with a localized name («Удалить окружение «…»») and a
       visible keyboard focus ring; RU/EN both hold at 1536, 1280 and 900.
 - [ ] **Selection cell**: Environments, Adversaries and compact Items rows all
-      show 8px padding → 32px checkbox area (18px box, centred) → 8px gap →
+      show 4px padding → 32px checkbox area (18px box, centred) → 4px gap →
       thumbnail (44px area on touch/phone); the whole 32px area toggles;
       selecting/unselecting never shifts the text; disabled boxes (env cap)
       keep their state.
