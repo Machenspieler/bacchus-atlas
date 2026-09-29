@@ -206,6 +206,27 @@ the DOM/state wiring lives in `js/app.js`:
   (`CATALOG_RESIZE_DEBOUNCE_MS`) so a dragged window edge doesn't rebuild
   the grid on every intermediate frame.
 
+## Random Environment card
+
+The main catalog's first grid item (`state.route.name === 'catalog'` only —
+never the single-list view, Lists, Journey, or Session Prep) is an action
+card, not a real environment record: `randomCardHtml()` in `js/app.js`
+builds it directly in `renderGrid()`, prepended to the rendered card slice,
+and it is never added to `state.builtinEnvs`/`state.environmentSearchIndex`
+— so it never enters search, filtering, sorting, bookmarks, lists,
+`localStorage`, or the `#result-count` total. Its Tier badge and the
+environment a click opens are both derived from `sortedFilteredEnvs()`
+directly — the *complete* filtered result set, before the "Show more"
+slice — so a card hidden behind "Show more" is still eligible and the
+badge reflects the true candidate pool, not just the active Tier-filter
+buttons. The pure arithmetic (Tier-badge derivation, the random pick given
+a pluggable RNG) lives in `js/random-environment-utils.js`
+(`RandomEnvironmentUtils`), tested in
+`tests/random-environment-utils.test.js`; `handleRandomCardActivate()`
+re-reads the pool at click time and opens the pick through the same
+`showEnv()` path a regular card's click uses, reusing the existing details
+overlay unchanged.
+
 ## Production JSON loading
 
 Every `data/*.json` fetch in `js/app.js` goes through `versionedDataUrl()`
@@ -255,6 +276,7 @@ directly rather than driving it through the DOM:
 | `js/search-index.js` | environment search record building and matching |
 | `js/session-prep-utils.js` | Session Prep default shape, session lifecycle (add/switch/remove session, title resolution), selection toggling, search/Tier/Type/Category/Source filtering |
 | `js/freshcutgrass-utils.js` | FreshCutGrass encounter URL encoding |
+| `js/random-environment-utils.js` | Random Environment card's Tier-badge derivation and pool pick |
 
 ## Build and deployment flow
 
@@ -287,5 +309,6 @@ stays copy-only.
 | Session Prep selection/search/filter logic | `js/session-prep-utils.js` | `tests/session-prep-utils.test.js` |
 | FreshCutGrass URL encoding | `js/freshcutgrass-utils.js` | `tests/freshcutgrass-utils.test.js` |
 | Initial loading shell lifecycle | `js/app.js` (`beginInitialLoading()` etc.) | `tests/loading-state.test.js` |
+| Random Environment card Tier badge/pick | `js/random-environment-utils.js` | `tests/random-environment-utils.test.js` |
 
 Run all of them with `node --test tests/*.test.js`.

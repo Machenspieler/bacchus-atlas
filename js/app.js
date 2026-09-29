@@ -1990,7 +1990,7 @@ function renderGrid() {
     cardsToRender = list.slice(0, state.catalogVisibleCount);
   }
 
-  el.innerHTML = cardsToRender.map(cardHtml).join('');
+  el.innerHTML = (onCatalog ? randomCardHtml(list) : '') + cardsToRender.map(cardHtml).join('');
   bindGridDelegation(el);
   renderCatalogMore(onCatalog ? { visible: cardsToRender.length, total: list.length, columnCount: state.catalogLastColumnCount } : null);
 }
@@ -2001,6 +2001,8 @@ function bindGridDelegation(el) {
   if (el._delegated) return;
   el._delegated = true;
   el.addEventListener('click', e => {
+    const random = e.target.closest('[data-random-activate]');
+    if (random) { e.preventDefault(); handleRandomCardActivate(); return; }
     const add = e.target.closest('[data-add-to-list]');
     if (add) { e.preventDefault(); openAddToListPopup(add.dataset.addToList); return; }
     const open = e.target.closest('[data-open-env]');
@@ -2111,6 +2113,39 @@ function cardHtml(env) {
         ${badges}
       </div>
     </article>`;
+}
+
+/* The "Random Environment" action card — always the first grid item on the
+ * main catalog, never a real environment record. It never enters
+ * state.builtinEnvs/state.environmentSearchIndex and never participates in
+ * search, filtering, sorting, bookmarks, lists, counts, or storage; the
+ * candidate pool passed in here is always sortedFilteredEnvs() itself, so
+ * "Show more" truncation and the result counter never see it. See
+ * docs/architecture.md, "Random Environment card". */
+function randomCardHtml(pool) {
+  const tierLabel = RandomEnvironmentUtils.computeTierBadge(pool);
+  return `
+    <article class="card card-random" data-random-card>
+      <span class="rank-icon rank-icon-sm active card-tier-badge" aria-hidden="true"><span>${escapeHtml(tierLabel)}</span></span>
+      <div class="card-art card-random-art" aria-hidden="true"><span class="card-random-mark">?</span></div>
+      <div class="card-body">
+        <div class="card-top">
+          <h3 class="card-title">
+            <button type="button" class="card-open" data-random-activate aria-label="${escapeAttr(t('random_card_aria_label'))}">${escapeHtml(t('random_card_title'))}</button>
+          </h3>
+        </div>
+        <p class="card-lore">${escapeHtml(t('random_card_subtitle'))}</p>
+      </div>
+    </article>`;
+}
+
+/** Reads the pool fresh at click time (not off anything rendered earlier),
+ * per spec — filters/search may have changed between render and click only
+ * in theory, but recomputing costs nothing and keeps this from ever
+ * opening a stale selection. */
+function handleRandomCardActivate() {
+  const env = RandomEnvironmentUtils.pickRandomEnvironment(sortedFilteredEnvs());
+  if (env) showEnv(env.id);
 }
 
 /* Every book the catalog draws on. Titles are proper names, so they are the

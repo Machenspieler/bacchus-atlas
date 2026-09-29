@@ -746,6 +746,21 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
 }
 .badge.pending { border-color: var(--fear); color: var(--fear-soft); }
 
+/* ---------- random environment card ---------- */
+/* An action card, not a real environment record — same .card shell (border,
+ * hover lift, focus ring via :has(.card-open:focus-visible)) so it belongs
+ * to the grid, with a gold-tinted rest border marking it as the primary
+ * action rather than a stat block. See randomCardHtml()/renderGrid() in
+ * js/app.js for how it's kept first and out of every count. */
+.card-random { border-color: rgba(217,164,65,0.35); }
+.card-random:hover { border-color: var(--hope); }
+.card-random-art { display: flex; align-items: center; justify-content: center; }
+.card-random-mark {
+  font-family: var(--font-display); font-size: 2.75rem; line-height: 1;
+  color: var(--hope-soft); opacity: 0.85;
+}
+.card-random .card-lore { -webkit-line-clamp: 2; color: var(--muted); }
+
 /* ---------- empty / error / loading states ---------- */
 /* No dashed rectangle: an icon, a headline, one line of help and the action
  * that resolves the state, inside the state rather than above it. */
