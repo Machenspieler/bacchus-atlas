@@ -196,3 +196,15 @@ A change is done when:
   relevant `.claude/rules/*.md`, or `docs/architecture.md`) — not left only
   in a scratch plan under `.claude/plans/`, a commit message, or this
   conversation.
+
+## Git workflow
+
+Once an implementation meets the "Definition of done" above, commit and
+push it automatically — code, data, and docs alike — without a
+confirmation round. Report what landed rather than asking whether it
+should be committed; this authorizes that autonomy in advance, per the
+system prompt's own escape hatch for durable instructions. Before
+committing: run `git status` and `git log -1` (multiple sessions may
+share this working tree — a dirty tree or a HEAD that moved is another
+session's in-flight work, not yours to commit around; say so and let the
+user sequence it instead).
