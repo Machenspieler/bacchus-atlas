@@ -3336,10 +3336,7 @@ function envPickerRowHtml(env, session) {
   const biome = artBiome(env);
   return `
     <div class="prep-row prep-env-row" data-env-id="${escapeAttr(env.id)}">
-      <label class="prep-checkbox-hit">
-        <input type="checkbox" class="prep-select-checkbox" data-sp-toggle-env="${escapeAttr(env.id)}"
-               ${checked ? 'checked' : ''} ${atLimit ? 'disabled' : ''} aria-label="${escapeAttr(prepToggleLabel(name, checked))}">
-      </label>
+      ${prepSelectionCellHtml('data-sp-toggle-env', env.id, checked, name, atLimit)}
       <button type="button" class="prep-row-open" data-sp-open-env="${escapeAttr(env.id)}">
         ${prepEnvThumbHtml(env)}
         <span class="prep-row-text">
@@ -3476,10 +3473,7 @@ function advPickerRowHtml(adv, session) {
   const fcgLabel = t('prep_open_adversary_freshcutgrass').replace('{name}', name);
   return `
     <div class="prep-row prep-adv-row" data-adv-id="${escapeAttr(adv.id)}" role="listitem">
-      <label class="prep-checkbox-hit">
-        <input type="checkbox" class="prep-select-checkbox" data-sp-toggle-adv="${escapeAttr(adv.id)}"
-               ${checked ? 'checked' : ''} aria-label="${escapeAttr(prepToggleLabel(name, checked))}">
-      </label>
+      ${prepSelectionCellHtml('data-sp-toggle-adv', adv.id, checked, name)}
       ${prepAdvThumbHtml(adv, name)}
       <a class="prep-row-text prep-adv-link" href="${escapeAttr(fcgUrl)}" target="_blank" rel="noopener noreferrer"
          aria-label="${escapeAttr(fcgLabel)}">
@@ -3837,6 +3831,19 @@ function prepToggleLabel(name, checked) {
   return t(checked ? 'prep_remove_from_prep' : 'prep_add_to_prep').replace('{name}', name);
 }
 
+/** The one selection cell every picker shares (environment rows, adversary
+ * rows, compact item rows, gallery item tiles): a `.prep-checkbox-hit`
+ * label — the whole ~32px area toggles — around the 18px checkbox. Sizing
+ * lives in the --sel-* tokens in css/styles.css, never per picker. `attr`
+ * is our own literal (data-sp-toggle-env/adv/item), matched by the
+ * delegated 'change' handler. */
+function prepSelectionCellHtml(attr, id, checked, name, disabled = false) {
+  return `<label class="prep-checkbox-hit">
+        <input type="checkbox" class="prep-select-checkbox" ${attr}="${escapeAttr(id)}"
+               ${checked ? 'checked' : ''} ${disabled ? 'disabled' : ''} aria-label="${escapeAttr(prepToggleLabel(name, checked))}">
+      </label>`;
+}
+
 /* Item metadata (name, kind, source, roll, image, description) all live in
  * data/items.json — see itemById()/itemField() near the top of the file —
  * so this card is just a thin picker skin over that catalog. Clicking the
@@ -3885,10 +3892,7 @@ function itemCardHtml(item, session) {
         ${prepItemThumbHtml(item)}
         <span class="prep-item-name-overlay">${escapeHtml(name)}</span>
       </button>
-      <label class="prep-checkbox-hit">
-        <input type="checkbox" class="prep-select-checkbox" data-sp-toggle-item="${escapeAttr(item.id)}" ${checked ? 'checked' : ''}
-               aria-label="${escapeAttr(prepToggleLabel(name, checked))}">
-      </label>
+      ${prepSelectionCellHtml('data-sp-toggle-item', item.id, checked, name)}
     </div>`;
 }
 
@@ -3913,10 +3917,7 @@ function compactItemRowHtml(item, session) {
   const name = itemField(item, 'name');
   return `
     <div class="prep-row prep-item-compact-row" data-item-id="${escapeAttr(item.id)}">
-      <label class="prep-checkbox-hit">
-        <input type="checkbox" class="prep-select-checkbox" data-sp-toggle-item="${escapeAttr(item.id)}" ${checked ? 'checked' : ''}
-               aria-label="${escapeAttr(prepToggleLabel(name, checked))}">
-      </label>
+      ${prepSelectionCellHtml('data-sp-toggle-item', item.id, checked, name)}
       <button type="button" class="prep-row-open" data-sp-open-item="${escapeAttr(item.id)}"
               aria-label="${escapeAttr(t('prep_open_item_detail').replace('{name}', name))}">
         ${prepItemThumbHtml(item)}
@@ -4207,10 +4208,19 @@ const CENTRAL_THUMB_FALLBACK = { env: ICON_HEX, adv: ICON_ADVERSARY_FALLBACK, it
  * selected entity — the image can never affect its row's height, and a
  * missing/broken image falls back to the same wrapper with an icon (see the
  * delegated 'error' listener, `data-sel-thumb-img`). Decorative: the entity
- * name next to it is what assistive tech reads. `kind` is our own literal. */
-function centralThumbHtml(kind, src) {
+ * name next to it is what assistive tech reads. `kind` is our own literal.
+ *
+ * `action` ({attr, id, label, tip}) turns the wrapper into a real sibling
+ * <button> (the adversary art preview) instead of a decorative <span>: the
+ * button itself stays in the accessibility tree with its own name while the
+ * picture inside is hidden from it. A fallback thumbnail is never a button —
+ * nothing to open — same rule as the catalog's prepAdvThumbHtml(). */
+function centralThumbHtml(kind, src, action = null) {
   if (!src) return `<span class="prep-sel-thumb is-fallback" data-kind="${kind}" aria-hidden="true">${CENTRAL_THUMB_FALLBACK[kind]}</span>`;
-  return `<span class="prep-sel-thumb" data-kind="${kind}" aria-hidden="true"><img src="${escapeAttr(src)}" alt="" loading="lazy" decoding="async" data-sel-thumb-img></span>`;
+  const img = `<img src="${escapeAttr(src)}" alt="" loading="lazy" decoding="async" data-sel-thumb-img>`;
+  if (!action) return `<span class="prep-sel-thumb" data-kind="${kind}" aria-hidden="true">${img}</span>`;
+  return `<button type="button" class="prep-sel-thumb prep-sel-thumb-btn" data-kind="${kind}" ${action.attr}="${escapeAttr(action.id)}"
+            data-tip="${escapeAttr(action.tip)}" aria-label="${escapeAttr(action.label)}">${img}</button>`;
 }
 
 /** The shared selected-entity primitive: thumbnail, name (≤2 lines), meta
@@ -4219,17 +4229,42 @@ function centralThumbHtml(kind, src) {
  * and meta carry `data-sel-clamp` so syncCentralTruncationTips() can attach
  * the full text as a tooltip when — and only when — the layout clipped it.
  * `removeAttr` is our own literal (data-sp-remove-env/adv/item), matched by
- * the delegated click handler. */
-function selectedEntityHtml({ layout, id, thumb, name, meta, removeAttr, removeLabel, attrs = '' }) {
+ * the delegated click handler.
+ *
+ * Interaction zones are always *sibling* elements, never nested and never
+ * one big wrapper with stopPropagation() on its children:
+ *  - card layout: one `.prep-sel-main` <button> (thumbnail + text + all the
+ *    empty space in the card) carrying `openAttr`, plus the remove button.
+ *    Opens the same overlay the catalog opens (environment route / item
+ *    detail).
+ *  - row layout: the thumbnail (its own art-preview button, see
+ *    centralThumbHtml()), a `.prep-sel-main` <a> (`link`: {href, label,
+ *    tip}) to FreshCutGrass with a secondary ↗, and the remove button.
+ * DOM order is the tab order: primary action, external link, remove. */
+function selectedEntityHtml({ layout, id, thumb, name, meta, removeAttr, removeLabel, removeTip, openAttr = '', openLabel = '', link = null, attrs = '' }) {
+  const text = `
+        <span class="prep-sel-body">
+          <span class="prep-sel-title">
+            <span class="prep-sel-name" data-sel-clamp>${escapeHtml(name)}</span>${link ? '<span class="prep-sel-ext" aria-hidden="true">↗</span>' : ''}
+          </span>
+          <span class="prep-sel-meta" data-sel-clamp>${escapeHtml(meta)}</span>
+        </span>`;
+  let main;
+  if (link) {
+    main = `${thumb}
+      <a class="prep-sel-main prep-sel-link" href="${escapeAttr(link.href)}" target="_blank" rel="noopener noreferrer"
+         data-tip="${escapeAttr(link.tip)}" aria-label="${escapeAttr(link.label)}">${text}
+      </a>`;
+  } else {
+    main = `<button type="button" class="prep-sel-main" ${openAttr}="${escapeAttr(id)}" aria-label="${escapeAttr(openLabel)}">
+        ${thumb}${text}
+      </button>`;
+  }
   return `
     <li class="prep-sel prep-sel--${layout}"${attrs}>
-      ${thumb}
-      <span class="prep-sel-body">
-        <span class="prep-sel-name" data-sel-clamp>${escapeHtml(name)}</span>
-        <span class="prep-sel-meta" data-sel-clamp>${escapeHtml(meta)}</span>
-      </span>
+      ${main}
       <button type="button" class="prep-sel-remove" ${removeAttr}="${escapeAttr(id)}"
-              aria-label="${escapeAttr(removeLabel)}"><span aria-hidden="true">×</span></button>
+              data-tip="${escapeAttr(removeTip)}" aria-label="${escapeAttr(removeLabel)}"><span aria-hidden="true">×</span></button>
     </li>`;
 }
 
@@ -4284,8 +4319,11 @@ function centralEnvCardHtml(env) {
     layout: 'card', id: env.id, name,
     thumb: centralThumbHtml('env', biome ? `img/biomes/${biome}-200.webp` : ''),
     meta: `${t('tier_label')} ${env.tier}`,
+    openAttr: 'data-sp-open-env',
+    openLabel: t('prep_open_environment_detail').replace('{name}', name),
     removeAttr: 'data-sp-remove-env',
     removeLabel: t('prep_remove_environment_named').replace('{name}', name),
+    removeTip: t('prep_tip_remove_environment'),
     attrs: ` data-env-id="${escapeAttr(env.id)}"`,
   });
 }
@@ -4346,10 +4384,20 @@ function centralAdvListHtml(session) {
     const name = spName(adv);
     return selectedEntityHtml({
       layout: 'row', id: adv.id, name,
-      thumb: centralThumbHtml('adv', adv.art && adv.art.thumb),
+      thumb: centralThumbHtml('adv', adv.art && adv.art.thumb, adv.art && {
+        attr: 'data-sp-open-adv-art', id: adv.id,
+        label: t('prep_open_adversary_image').replace('{name}', name),
+        tip: t('prep_tip_open_adversary_image'),
+      }),
       meta: advMetaText(adv),
+      link: {
+        href: adversaryFreshCutGrassUrl(adv),
+        label: t('prep_open_adversary_freshcutgrass').replace('{name}', name),
+        tip: t('prep_tip_open_adversary_freshcutgrass'),
+      },
       removeAttr: 'data-sp-remove-adv',
       removeLabel: t('prep_remove_adversary_named').replace('{name}', name),
+      removeTip: t('prep_tip_remove_adversary'),
     });
   }).join('');
   return `<ul class="prep-sel-list prep-sel-rows">${rows}</ul>`;
@@ -4422,8 +4470,11 @@ function centralItemCardHtml(id, item) {
     layout: 'card', id, name,
     thumb: centralThumbHtml('item', itemImageUrl(item)),
     meta: `${t('item_src_' + item.src)} · ${t('item_kind_' + kind)} · #${item.roll}`,
+    openAttr: 'data-sp-open-item',
+    openLabel: t('prep_open_item_detail').replace('{name}', name),
     removeAttr: 'data-sp-remove-item',
     removeLabel: t('prep_remove_item_named').replace('{name}', name),
+    removeTip: t('prep_tip_remove_item'),
   });
 }
 
@@ -5171,6 +5222,17 @@ function bindSessionPrepDelegation(el) {
       if (wrap) {
         wrap.innerHTML = CENTRAL_THUMB_FALLBACK[wrap.dataset.kind] || ICON_HEX;
         wrap.classList.add('is-fallback');
+        // The adversary art-preview button: a broken thumbnail never opens
+        // an empty overlay — same treatment as the catalog's .prep-adv-thumb.
+        if (wrap.tagName === 'BUTTON') {
+          wrap.classList.remove('prep-sel-thumb-btn');
+          wrap.removeAttribute('data-sp-open-adv-art');
+          wrap.removeAttribute('data-tip');
+          wrap.removeAttribute('aria-label');
+          wrap.setAttribute('aria-hidden', 'true');
+          wrap.tabIndex = -1;
+          wrap.disabled = true;
+        }
       }
     } else if (target.matches('[data-item-thumb-img]')) {
       const wrap = target.closest('.prep-item-thumb');

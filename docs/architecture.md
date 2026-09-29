@@ -285,6 +285,17 @@ detail route). The central adversaries list keeps a plain, non-interactive
 thumbnail (`centralThumbHtml('adv', …)`) — this redesign is scoped to the
 All Adversaries picker only.
 
+### Session Prep's selection cell
+
+Every selection checkbox (environment rows, adversary rows, compact item
+rows and the gallery item tile) is built by `prepSelectionCellHtml()` — a
+`.prep-checkbox-hit` `<label>` (whole area toggles) around an 18px
+`.prep-select-checkbox`. Its geometry is the `--sel-*` tokens on `:root` in
+`css/styles.css` (`--sel-box` 18px, `--sel-hit` 32px, `--sel-gap` and
+`--sel-pad` 8px; `--sel-hit-touch` 44px on coarse pointers/phones, where the
+larger target is kept on purpose). The layout is 8px row padding → 32px hit
+area → 8px gap → thumbnail; change a number there, never per picker.
+
 ### Session Prep's central selected-content panel
 
 `centralSectionHtml()` renders one compact "session manifest" — Environments,
@@ -304,6 +315,22 @@ separators only *between* rows. Sections are semantic `<section>`s with
   two lines (adversaries: one) and `syncCentralTruncationTips()` attaches the
   full text as a `data-tip` tooltip only where the layout actually clipped
   it (re-run after every central refresh, on resize, and when fonts load).
+- **Interaction zones are sibling elements, never nested** (and never one big
+  wrapper with `stopPropagation()` on its children). Card layout
+  (environments, items): one `.prep-sel-main` `<button>` covering the
+  thumbnail, text and all the card's empty space, carrying the *same*
+  `data-sp-open-env` / `data-sp-open-item` attribute the catalog rows use —
+  so the existing delegated handler opens the very same environment route
+  overlay / `openItemDetail()`; the remove `<button>` is its sibling.
+  Adversary rows have three: the thumbnail as its own `.prep-sel-thumb-btn`
+  (`data-sp-open-adv-art` → `openAdversaryArtOverlay()`; a missing or
+  broken thumbnail is a plain non-interactive icon, never a button that
+  opens an empty overlay), a `.prep-sel-main` `<a target="_blank" rel="noopener noreferrer">`
+  built by `adversaryFreshCutGrassUrl()` (a real link, so Cmd/Ctrl-click,
+  middle-click and "copy link" work) with a secondary `↗` beside the name,
+  and remove. DOM order is tab order: primary action → external link →
+  remove. Tooltips come from the shared `data-tip` system
+  (`prep_tip_*` keys); the `aria-label`s stay name-specific.
 - **Counts:** only environments have a configured cap
   (`SessionPrepUtils.MAX_ENVIRONMENTS`), so only that header reads `n/3`;
   adversaries and items are uncapped (PD-002) and show a plain number. At the

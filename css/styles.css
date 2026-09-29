@@ -107,6 +107,15 @@
   --focus-ring: 2px solid var(--hope);
   --focus-offset: 2px;
 
+  /* ---- Session Prep selection cell (shared by the environment, adversary
+     and item pickers): 8px row padding → 32px hit area holding an 18px
+     checkbox → 8px gap → thumbnail. One set of numbers, never per picker. */
+  --sel-box: 18px;
+  --sel-hit: 32px;
+  --sel-hit-touch: 44px;   /* coarse pointers / phones keep the WCAG-sized target */
+  --sel-gap: var(--s-2);
+  --sel-pad: var(--s-2);
+
   /* Native chrome — scrollbars, the select popup, autofill — follows the theme. */
   color-scheme: dark;
 }
@@ -2473,14 +2482,18 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    removes an entity — never a whole row/card acting as an implicit toggle.
    .prep-checkbox-hit is a small, invisible label purely to enlarge the
    clickable/tappable area without changing the checkbox's own visual size:
-   ~36-40px on desktop, 44px on touch (see the touch media query below). */
+   --sel-hit (32px) on desktop, --sel-hit-touch (44px) on touch (see the
+   touch media query below). Every picker builds it through
+   prepSelectionCellHtml() in js/app.js, and the row padding/gap around it
+   comes from --sel-pad/--sel-gap, so the three catalogs cannot drift. */
 .prep-checkbox-hit {
-  flex: none; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  flex: none; width: var(--sel-hit); height: var(--sel-hit); display: flex; align-items: center; justify-content: center;
   cursor: pointer;
 }
+.prep-checkbox-hit:has(.prep-select-checkbox:disabled) { cursor: not-allowed; }
 .prep-select-checkbox {
   appearance: none; -webkit-appearance: none;
-  flex: none; width: 20px; height: 20px; margin: 0;
+  flex: none; width: var(--sel-box); height: var(--sel-box); margin: 0;
   border: 1px solid var(--line-strong); border-radius: var(--r-xs);
   background: var(--ink-raised); cursor: pointer; position: relative;
   transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
@@ -2488,15 +2501,15 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-select-checkbox:hover { border-color: var(--hope); }
 .prep-select-checkbox:checked { background: var(--hope); border-color: var(--hope); }
 .prep-select-checkbox:checked::after {
-  content: ""; position: absolute; left: 6px; top: 2px; width: 5px; height: 10px;
+  content: ""; position: absolute; left: 4.5px; top: 1.5px; width: 5px; height: 9px;
   border: solid var(--hope-ink); border-width: 0 2px 2px 0; transform: rotate(45deg);
 }
 .prep-select-checkbox:disabled { opacity: 0.4; cursor: not-allowed; }
 .prep-select-checkbox:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
 
 /* ---- environment picker row (checkbox + separate "open detail" button) ---- */
-.prep-row { display: flex; align-items: center; gap: var(--s-2); border-radius: var(--r-sm); }
-.prep-env-row, .prep-adv-row { padding: var(--s-1) var(--s-1); }
+.prep-row { display: flex; align-items: center; gap: var(--sel-gap); border-radius: var(--r-sm); }
+.prep-env-row, .prep-adv-row { padding: var(--s-1) var(--sel-pad); }
 .prep-env-row:hover, .prep-adv-row:hover { background: var(--ink-hover); }
 .prep-row-open {
   all: unset; flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--s-3); cursor: pointer;
@@ -2693,14 +2706,52 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-sel-remove:hover { color: var(--fear-soft); border-color: var(--fear); background: rgba(156,43,59,0.14); }
 .prep-sel-remove:focus-visible { outline: var(--focus-ring); outline-offset: 1px; color: var(--fear-soft); background: rgba(156,43,59,0.14); }
 
+/* Primary action zone of a selected entity: a real <button> (cards — opens
+   the catalog's own overlay) or <a> (adversary rows — FreshCutGrass) that
+   fills everything except the sibling remove button, so the thumbnail, the
+   text and the card's empty space are all one target. Reset to a plain flex
+   box first; hover/focus feedback never changes any dimension. */
+.prep-sel-main {
+  flex: 1 1 auto; min-width: 0; align-self: stretch; box-sizing: border-box;
+  display: flex; align-items: center; gap: var(--pc-gap);
+  margin: 0; border: 0; background: transparent; color: inherit;
+  font: inherit; text-align: left; text-decoration: none; cursor: pointer;
+}
+.prep-sel--card .prep-sel-main { padding: 0 var(--pc-pad-card); border-radius: calc(var(--r-md) - 1px); }
+.prep-sel-main:hover .prep-sel-name { color: var(--hope-soft); }
+.prep-sel-main:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
+.prep-sel-title { display: flex; align-items: baseline; gap: var(--s-1); min-width: 0; }
+.prep-sel-title .prep-sel-name { flex: 0 1 auto; min-width: 0; }
+/* Secondary "opens elsewhere" cue next to the adversary name: barely there
+   at rest, clearer on hover/focus, and it never takes more than its glyph. */
+.prep-sel-ext {
+  flex: none; font-size: var(--fs-xs); line-height: 1; color: var(--muted); opacity: 0.55;
+  transition: opacity var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+.prep-sel-main:hover .prep-sel-ext, .prep-sel-main:focus-visible .prep-sel-ext { opacity: 1; color: var(--hope-soft); }
+.prep-sel--row .prep-sel-link { border-radius: var(--r-sm); }
+/* The adversary thumbnail's art-preview button: same box as the decorative
+   span, plus a zoom-in cursor and a hover/focus edge (no scaling, no shift). */
+.prep-sel-thumb-btn {
+  border: 0; font: inherit; color: inherit; cursor: zoom-in;
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: box-shadow var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.prep-sel-thumb-btn:hover { background: radial-gradient(circle at 50% 35%, rgba(217,164,65,0.22), transparent 70%), var(--ink-hover); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.prep-sel-thumb-btn:focus-visible { outline: var(--focus-ring); outline-offset: 1px; }
+.prep-sel-thumb-btn:disabled { cursor: default; }
+
 /* Card layout (environments, items): fixed height so a long name (clamped to
    two lines) never changes its row; the remove button sits in the top-right
    corner over the card's own padding, and the body reserves room for it. */
 .prep-sel--card {
-  height: var(--pc-card-h); box-sizing: border-box; padding: 0 var(--pc-pad-card);
+  height: var(--pc-card-h); box-sizing: border-box; padding: 0;
   border: 1px solid var(--line-faint); border-radius: var(--r-md); background: var(--ink-card);
 }
-.prep-sel--card:hover { border-color: var(--line); background: var(--ink-hover); }
+.prep-sel--card:hover {
+  border-color: var(--line-strong); background: var(--ink-hover);
+  box-shadow: inset 0 0 0 1px rgba(217,164,65,0.08);
+}
 .prep-sel--card .prep-sel-body { padding-right: 24px; }
 .prep-sel--card .prep-sel-remove { position: absolute; top: 1px; right: 1px; }
 
@@ -2987,7 +3038,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    on top of that: a background/border so each record reads as its own
    tile in the two-row flow, and a touch-friendly minimum height. */
 .prep-item-compact-row {
-  padding: var(--s-2); border: 1px solid var(--line-faint); border-radius: var(--r-sm);
+  padding: var(--s-2) calc(var(--sel-pad) - 1px); border: 1px solid var(--line-faint); border-radius: var(--r-sm);
   background: var(--ink-raised); min-height: 44px;
 }
 .prep-item-compact-row:hover { background: var(--ink-hover); }
@@ -3110,10 +3161,10 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   .prep-sel-remove { --pc-remove: 44px; }
   .prep-sel--card { --pc-card-h: 60px; }
   .prep-sel--card .prep-sel-body { padding-right: 36px; }
-  .prep-checkbox-hit { width: 44px; height: 44px; }
+  .prep-checkbox-hit { width: var(--sel-hit-touch); height: var(--sel-hit-touch); }
 }
 @media (hover: none), (pointer: coarse) {
-  .prep-checkbox-hit { width: 44px; height: 44px; }
+  .prep-checkbox-hit { width: var(--sel-hit-touch); height: var(--sel-hit-touch); }
   /* No hover gesture to reveal the item tile's slide-in checkbox with, so it
      stays permanently visible here instead — same fallback the item strip
      used before this tile redesign. */

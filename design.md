@@ -189,7 +189,7 @@ the environment card's own conventions.
 The one screen that departs from the reading-page idiom on purpose: `--font-ui`
 instead of the serif/display pairing, a collapsible header chrome
 (`#session-prep-chrome[data-collapsed]`), and a permanently-visible ~20px
-checkbox (wrapped in a larger tap target) as the *only* control that adds or
+checkbox (18px inside a 32px hit area — the shared `--sel-*` tokens) as the *only* control that adds or
 removes a selection anywhere on the page — never a whole row/card silently
 toggling on click. The item catalog's tiles (`.prep-item-card`) are the one
 exception to "permanently visible": there, the tile is an art-first square

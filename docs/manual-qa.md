@@ -89,6 +89,21 @@ locally") before starting.
       empty state is one short line per section; every remove button is a
       32×32 button with a localized name («Удалить окружение «…»») and a
       visible keyboard focus ring; RU/EN both hold at 1536, 1280 and 900.
+- [ ] **Selection cell**: Environments, Adversaries and compact Items rows all
+      show 8px padding → 32px checkbox area (18px box, centred) → 8px gap →
+      thumbnail (44px area on touch/phone); the whole 32px area toggles;
+      selecting/unselecting never shifts the text; disabled boxes (env cap)
+      keep their state.
+- [ ] **Central panel interaction zones**: clicking anywhere on an
+      environment or item card (thumbnail, text, empty space) opens the same
+      overlay as the catalog and Escape returns focus to that card; the ×
+      removes without opening anything. An adversary thumbnail opens the art
+      overlay only; its name/meta link opens FreshCutGrass in a new tab (Cmd/
+      Ctrl-click and middle-click work) without opening the overlay; × removes
+      only that adversary. A fallback-icon adversary has no thumbnail button.
+      Tab order per adversary: image → link → ×; every stop shows a focus
+      ring; Enter/Space work on the buttons; tooltips and labels in both RU
+      and EN; no layout shift on hover/focus; long names clamp.
 - [ ] Header chrome collapse/expand (see "Header" above) from within
       Session Prep specifically — the Session Bar hides in compact mode and
       returns in expanded mode.
