@@ -181,7 +181,6 @@ versioning wiring itself.
 | Product behavior / "is this intentional?" | [docs/product-decisions.md](docs/product-decisions.md) |
 | Russian translation terminology | [docs/translation-glossary.md](docs/translation-glossary.md) |
 | Where something lives / how the app is wired together | [docs/architecture.md](docs/architecture.md) |
-| A multi-file, schema, persistence, or architectural change | run `/plan-change` before editing |
 
 ## Definition of done
 
@@ -197,14 +196,3 @@ A change is done when:
   relevant `.claude/rules/*.md`, or `docs/architecture.md`) — not left only
   in a scratch plan under `.claude/plans/`, a commit message, or this
   conversation.
-
-## Planning new work
-
-Before implementing a change that touches more than a file or two, changes
-a data schema, a persisted storage shape, or routing, run `/plan-change`
-(`.claude/skills/plan-change/SKILL.md`) — it investigates the repo and
-produces an implementation-ready plan under `.claude/plans/` (gitignored,
-discarded once the change ships) without editing production files. For a
-UI-facing change, use `/implement-ui-change` once the plan is settled; its
-mockup step defers to [ui-mockups.md](ui-mockups.md). See
-[planning.md](planning.md) for the human-facing overview of this workflow.
