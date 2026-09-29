@@ -2123,8 +2123,16 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .header-inner {
    language switch and toggle are what a reader needs at a glance, so the
    title/subtitle/compat-label come out of layout entirely (display:none),
    not merely dimmed, and stop being redundantly exposed to assistive
-   technology along with them. */
-body[data-route="session-prep"][data-sp-header-mode="compact"] .brand-text {
+   technology along with them. #brand-home itself (and .brand-text, its
+   ancestor) must stay rendered rather than display:none: #brand-home::after
+   is what extends the "go home" hit area over the whole .brand box,
+   including .brand-mark, which stays visible in compact mode below — hiding
+   an ancestor of the button would remove that hit area (and the button's
+   own focusability) along with the text, leaving the visible logo dead to
+   both click and keyboard. aria-label on the button (see renderHeader() in
+   js/app.js) keeps its accessible name once .brand-title-text is hidden. */
+body[data-route="session-prep"][data-sp-header-mode="compact"] .brand-title-text,
+body[data-route="session-prep"][data-sp-header-mode="compact"] .brand-meta {
   display: none;
 }
 body[data-route="session-prep"][data-sp-header-mode="compact"] .brand-mark {

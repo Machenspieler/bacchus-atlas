@@ -1473,7 +1473,7 @@ function renderHeader() {
       <div class="brand">
         <img class="brand-mark" src="img/brand-logo.png?v=2" alt="" aria-hidden="true">
         <span class="brand-text">
-          <h1><button type="button" id="brand-home">${t('app_title')}</button></h1>
+          <h1><button type="button" id="brand-home" aria-label="${t('app_title')}"><span class="brand-title-text">${t('app_title')}</span></button></h1>
           <span class="brand-meta">
             <span class="brand-subtitle">${t('app_subtitle_compact')}</span>
             <span class="brand-separator" aria-hidden="true">·</span>
