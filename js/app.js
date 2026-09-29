@@ -3258,7 +3258,7 @@ function prepFilteredEnvs() {
     search: state.sessionPrepUI.envSearch,
   });
   const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
-  return filtered.sort((a, b) => collator.compare(envName(a), envName(b)));
+  return SessionPrepUtils.sortByTierThenName(filtered, env => env.tier, (a, b) => collator.compare(envName(a), envName(b)));
 }
 
 function envCountText() {
@@ -3369,7 +3369,7 @@ function prepFilteredAdversaries() {
       types: state.sessionPrepUI.advFilters.types,
     });
   const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
-  return filtered.sort((a, b) => collator.compare(spName(a), spName(b)));
+  return SessionPrepUtils.sortByTierThenName(filtered, adv => adv.tier, (a, b) => collator.compare(spName(a), spName(b)));
 }
 
 function advCountText() {
@@ -3585,16 +3585,20 @@ function openAdversaryArtOverlay(advId) {
 function itemSearchFields(item) { return [item.en?.name, item.ru?.name]; }
 function itemSearchRoll(item) { return item.roll; }
 
-/** Roll order (1-60 within its own category), never re-sorted — Category/
- * Source/search only narrow the set. A purely numeric query (e.g. "3")
- * matches the item's book "#" number exactly, alongside the usual EN/RU
- * name substring match — see SessionPrepUtils.filterItems(). */
+/** Category/Source/search only narrow the set; the surviving items are then
+ * ordered by SessionPrepUtils.sortItemsForPrep() — book roll number (1 -> 99),
+ * then Source (core -> Hope and Fear), then Kind (item -> consumable), then
+ * alphabetically. A purely numeric query (e.g. "3") matches the item's book
+ * "#" number exactly, alongside the usual EN/RU name substring match — see
+ * SessionPrepUtils.filterItems(). */
 function prepFilteredItems() {
-  return SessionPrepUtils.filterItems(sessionPrepItems(), {
+  const filtered = SessionPrepUtils.filterItems(sessionPrepItems(), {
     search: state.sessionPrepUI.itemSearch,
     category: state.sessionPrepUI.itemCategory,
     source: state.sessionPrepUI.itemSource,
   }, itemSearchFields, itemSearchRoll);
+  const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
+  return SessionPrepUtils.sortItemsForPrep(filtered, (a, b) => collator.compare(itemField(a, 'name'), itemField(b, 'name')));
 }
 
 /** Every item matching the current Category/Source alone (before the
@@ -3854,13 +3858,15 @@ function centralEnvCardHtml(env) {
     </div>`;
 }
 
+/** Selected environments render in the same order as the "All Environments"
+ * picker (Tier ascending, then alphabetically), not selection order — see
+ * prepFilteredEnvs(). */
 function centralEnvListHtml(session) {
   if (!session.environmentIds.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_environments'))}</p>`;
-  const cards = session.environmentIds.map(id => {
-    const env = allEnvs().find(e => e.id === id);
-    return env ? centralEnvCardHtml(env) : '';
-  }).join('');
-  return `<div class="prep-central-env-grid">${cards}</div>`;
+  const envs = session.environmentIds.map(id => allEnvs().find(e => e.id === id)).filter(Boolean);
+  const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
+  const sorted = SessionPrepUtils.sortByTierThenName(envs, env => env.tier, (a, b) => collator.compare(envName(a), envName(b)));
+  return `<div class="prep-central-env-grid">${sorted.map(centralEnvCardHtml).join('')}</div>`;
 }
 
 function envSelectedCountText(session) {
@@ -3941,13 +3947,17 @@ function centralAdvThumbHtml(adv) {
   return `<span class="prep-adv-thumb"><img src="${escapeAttr(adv.art.thumb)}" alt="" loading="lazy" decoding="async" data-adv-thumb-img></span>`;
 }
 
+/** Selected adversaries render in the same order as the "All Adversaries"
+ * picker (Tier ascending, then alphabetically), not selection order — see
+ * prepFilteredAdversaries(). */
 function centralAdvListHtml(session) {
   if (!session.adversaryIds.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_adversaries'))}</p>`;
-  return session.adversaryIds.map(id => {
-    const adv = state.sessionPrepCatalog.adversaryById.get(id);
-    if (!adv) return '';
-    return centralSimpleRowHtml({ id: adv.id, name: spName(adv), thumb: centralAdvThumbHtml(adv), kind: 'adv', meta: advMetaText(adv) });
-  }).join('');
+  const advs = session.adversaryIds.map(id => state.sessionPrepCatalog.adversaryById.get(id)).filter(Boolean);
+  const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
+  const sorted = SessionPrepUtils.sortByTierThenName(advs, adv => adv.tier, (a, b) => collator.compare(spName(a), spName(b)));
+  return sorted.map(adv =>
+    centralSimpleRowHtml({ id: adv.id, name: spName(adv), thumb: centralAdvThumbHtml(adv), kind: 'adv', meta: advMetaText(adv) })
+  ).join('');
 }
 
 /** The FreshCutGrass encounter name for the current session: the GM's own
@@ -4027,13 +4037,15 @@ function centralItemCardHtml(id, item) {
     </div>`;
 }
 
+/** Selected items render in the same order as the Items picker (roll number,
+ * then Source, then Kind, then alphabetically), not selection order — see
+ * prepFilteredItems(). */
 function centralItemListHtml(session) {
   if (!session.itemIds.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_items'))}</p>`;
-  const cards = session.itemIds.map(id => {
-    const item = itemById(id);
-    return item ? centralItemCardHtml(id, item) : '';
-  }).join('');
-  return `<div class="prep-central-item-grid">${cards}</div>`;
+  const items = session.itemIds.map(id => { const item = itemById(id); return item ? Object.assign({ id }, item) : null; }).filter(Boolean);
+  const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
+  const sorted = SessionPrepUtils.sortItemsForPrep(items, (a, b) => collator.compare(itemField(a, 'name'), itemField(b, 'name')));
+  return `<div class="prep-central-item-grid">${sorted.map(item => centralItemCardHtml(item.id, item)).join('')}</div>`;
 }
 
 function refreshCentralItems() {

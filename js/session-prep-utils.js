@@ -444,6 +444,52 @@
     });
   }
 
+  /* ---------------- display sort (pickers + central lists) ----------------
+   * The Session Prep environment/adversary tables (both the "All
+   * Environments"/"All Adversaries" pickers and the central Selected lists)
+   * share one order: Tier ascending (1 -> 4) first, then alphabetically by
+   * the caller's already-localized name. Locale-aware name comparison
+   * (Intl.Collator) lives in js/app.js, not here — this file stays free of
+   * any i18n/Intl dependency, so `compareNames(a, b)` is injected the same
+   * way filterEntries() injects `getFields`. Never mutates `entries`. */
+  function sortByTierThenName(entries, getTier, compareNames) {
+    return (entries || []).slice().sort(function (a, b) {
+      var diff = getTier(a) - getTier(b);
+      return diff !== 0 ? diff : compareNames(a, b);
+    });
+  }
+
+  /** Book source rank for the Items table sort below: 'core' before 'hnf',
+   * anything else (there is no third source today) sorts after both rather
+   * than throwing. */
+  function itemSourceRank(src) {
+    if (src === 'core') return 0;
+    if (src === 'hnf') return 1;
+    return 2;
+  }
+
+  /** Item Kind rank for the same sort: plain items before consumables. */
+  function itemKindRank(kind) {
+    return kind === 'consumable' ? 1 : 0;
+  }
+
+  /** The Items table's own sort order (deliberately different from
+   * sortByTierThenName() above — items carry no Tier): book roll number
+   * ascending (1 -> 99) first, then book Source (core -> Hope and Fear),
+   * then Kind (item -> consumable), then alphabetically by the caller's
+   * already-localized name. `compareNames(a, b)` is injected for the same
+   * reason as sortByTierThenName(). Never mutates `items`. */
+  function sortItemsForPrep(items, compareNames) {
+    return (items || []).slice().sort(function (a, b) {
+      if (a.roll !== b.roll) return a.roll - b.roll;
+      var sourceDiff = itemSourceRank(a.src) - itemSourceRank(b.src);
+      if (sourceDiff !== 0) return sourceDiff;
+      var kindDiff = itemKindRank(a.kind) - itemKindRank(b.kind);
+      if (kindDiff !== 0) return kindDiff;
+      return compareNames(a, b);
+    });
+  }
+
   /* ---------------- item filters (Category / Source) ---------------- */
 
   /** Filters Session Prep's item/consumable catalogue by category
@@ -501,6 +547,10 @@
     buildAdversarySearchText: buildAdversarySearchText,
     buildAdversarySearchIndex: buildAdversarySearchIndex,
     filterAdversariesByToolbar: filterAdversariesByToolbar,
+    sortByTierThenName: sortByTierThenName,
+    itemSourceRank: itemSourceRank,
+    itemKindRank: itemKindRank,
+    sortItemsForPrep: sortItemsForPrep,
     filterItems: filterItems,
   };
 });
