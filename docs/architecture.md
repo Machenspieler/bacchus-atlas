@@ -328,8 +328,14 @@ separators only *between* rows. Sections are semantic `<section>`s with
   opens an empty overlay), a `.prep-sel-main` `<a target="_blank" rel="noopener noreferrer">`
   built by `adversaryFreshCutGrassUrl()` (a real link, so Cmd/Ctrl-click,
   middle-click and "copy link" work) with a secondary `↗` beside the name,
-  and remove. DOM order is tab order: primary action → external link →
-  remove. Tooltips come from the shared `data-tip` system
+  and remove. The "All Adversaries" picker row uses the same three zones
+  (art button → `openAdversaryArtOverlay()`, FreshCutGrass link, checkbox)
+  and the same `adversaryFreshCutGrassUrl()` + `adversaryExtIconHtml()`
+  (`↗`); an adversary with no URL renders plain text with no link and no
+  `↗`. The Environment and Adversary picker "{n} of {total}" counters are
+  hidden at `max-width: 1536px` (CSS only, the text is still updated; the
+  toolbar grid drops that track). DOM order is tab order: primary action →
+  external link → remove. Tooltips come from the shared `data-tip` system
   (`prep_tip_*` keys); the `aria-label`s stay name-specific.
 - **Counts:** only environments have a configured cap
   (`SessionPrepUtils.MAX_ENVIRONMENTS`), so only that header reads `n/3`;

@@ -2535,6 +2535,11 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   font-family: inherit;
 }
 .prep-adv-link:hover .prep-row-name { color: var(--hope-soft); }
+/* Name + the shared ↗ cue (see .prep-sel-ext) on one line inside the link;
+   the name ellipsizes first, the glyph never shrinks or wraps away. */
+.prep-adv-title { display: flex; align-items: baseline; gap: var(--s-1); min-width: 0; }
+.prep-adv-title .prep-row-name { flex: 0 1 auto; min-width: 0; }
+.prep-adv-link:hover .prep-sel-ext, .prep-adv-link:focus-visible .prep-sel-ext { opacity: 1; color: var(--hope-soft); }
 .prep-adv-link:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); border-radius: var(--r-sm); }
 
 /* ---- thumbnails: biome art (environments) or transparent-background PNG
@@ -2564,7 +2569,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    distinctly. Reset to a plain box first since it's a <button>, not a
    <span>. */
 .prep-adv-thumb-btn {
-  border: none; padding: 7.5px; cursor: pointer;
+  border: none; padding: 7.5px; cursor: zoom-in;
   transition: background var(--t-fast) var(--ease-out);
 }
 .prep-adv-thumb-btn img { transition: transform var(--t-fast) var(--ease-out); }
@@ -2811,6 +2816,18 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .ms-clear { flex: none; white-space: nowrap; margin-top: var(--s-1); }
 @container prep-adv-col (max-width: 360px) {
   .prep-adv-toolbar .prep-count { display: none; }
+  .prep-adv-toolbar { grid-template-columns: minmax(0, 1fr) auto auto; }
+}
+/* At MacBook widths and below the Environment/Adversary "{n} of {total}"
+   counters cost more horizontal space than they're worth. Hidden with
+   display:none (no placeholder, no min-width) and the grid loses that
+   track so no empty column/gap is left behind; the text is still kept up
+   to date by refreshEnvPicker()/refreshAdvPicker(). The Items counter and
+   the central "3/3" counters are different classes and stay. */
+@media (max-width: 1536px) {
+  .prep-env-toolbar .prep-count, .prep-adv-toolbar .prep-count { display: none; }
+  .prep-env-toolbar { grid-template-columns: minmax(0, 1fr) auto; }
+  .prep-adv-toolbar { grid-template-columns: minmax(0, 1fr) auto auto; }
 }
 
 /* ---- compact "All Items" toolbar (Type + Source + search + dice + view + counter, one row) ----

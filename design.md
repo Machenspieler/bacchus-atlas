@@ -224,6 +224,7 @@ category:
 | `min-width: 641px` | tablet and up: toolbar filters expand inline |
 | `max-width: 480px` / `400px` | further compaction of specific controls (tier pills, search field) |
 | `max-width: 760px` / `900px` | Session Prep's picker columns stack |
+| `max-width: 1536px` | Session Prep's Environment/Adversary picker result counters hide (Items and central counters stay) |
 | `min-width: 1200px` / `max-width: 1199px` | Session Prep's three-column layout threshold |
 | `min-width: 1440px`+ (1480/1836/2192/2548px) | catalog grid gains extra columns on very wide screens |
 

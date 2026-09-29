@@ -3445,7 +3445,16 @@ function advMetaText(adv) {
  * export, which has no id/slug field). Always built from the canonical
  * English name, regardless of the active UI language. */
 function adversaryFreshCutGrassUrl(adv) {
-  return buildFreshCutGrassEncounterUrl(adv.name.en, [adv.name.en]);
+  const enName = adv && adv.name && adv.name.en;
+  return enName ? buildFreshCutGrassEncounterUrl(enName, [enName]) : null;
+}
+
+/** The one "opens FreshCutGrass in a new tab" cue for adversary names —
+ * shared by the central selected-adversary row and the "All Adversaries"
+ * picker row, so the glyph, its markup, and (via .prep-sel-ext) its
+ * size/opacity/hover behavior have a single source of truth. */
+function adversaryExtIconHtml() {
+  return '<span class="prep-sel-ext" aria-hidden="true">↗</span>';
 }
 
 /** Area 2 (artwork) of an adversary picker row: a real, focusable `<button>`
@@ -3471,15 +3480,21 @@ function advPickerRowHtml(adv, session) {
   const name = spName(adv);
   const fcgUrl = adversaryFreshCutGrassUrl(adv);
   const fcgLabel = t('prep_open_adversary_freshcutgrass').replace('{name}', name);
+  const nameHtml = `<span class="prep-row-name">${escapeHtml(name)}</span>`;
+  const metaHtml = `<span class="prep-row-meta">${escapeHtml(advMetaText(adv))}</span>`;
+  // No FreshCutGrass URL: plain text, no link and no ↗ — never a broken link.
+  const text = fcgUrl
+    ? `<a class="prep-row-text prep-adv-link" href="${escapeAttr(fcgUrl)}" target="_blank" rel="noopener noreferrer"
+         aria-label="${escapeAttr(fcgLabel)}">
+        <span class="prep-adv-title">${nameHtml}${adversaryExtIconHtml()}</span>
+        ${metaHtml}
+      </a>`
+    : `<div class="prep-row-text prep-adv-link">${nameHtml}${metaHtml}</div>`;
   return `
     <div class="prep-row prep-adv-row" data-adv-id="${escapeAttr(adv.id)}" role="listitem">
       ${prepSelectionCellHtml('data-sp-toggle-adv', adv.id, checked, name)}
       ${prepAdvThumbHtml(adv, name)}
-      <a class="prep-row-text prep-adv-link" href="${escapeAttr(fcgUrl)}" target="_blank" rel="noopener noreferrer"
-         aria-label="${escapeAttr(fcgLabel)}">
-        <span class="prep-row-name">${escapeHtml(name)}</span>
-        <span class="prep-row-meta">${escapeHtml(advMetaText(adv))}</span>
-      </a>
+      ${text}
     </div>`;
 }
 
@@ -4245,7 +4260,7 @@ function selectedEntityHtml({ layout, id, thumb, name, meta, removeAttr, removeL
   const text = `
         <span class="prep-sel-body">
           <span class="prep-sel-title">
-            <span class="prep-sel-name" data-sel-clamp>${escapeHtml(name)}</span>${link ? '<span class="prep-sel-ext" aria-hidden="true">↗</span>' : ''}
+            <span class="prep-sel-name" data-sel-clamp>${escapeHtml(name)}</span>${link ? adversaryExtIconHtml() : ''}
           </span>
           <span class="prep-sel-meta" data-sel-clamp>${escapeHtml(meta)}</span>
         </span>`;
@@ -4255,6 +4270,9 @@ function selectedEntityHtml({ layout, id, thumb, name, meta, removeAttr, removeL
       <a class="prep-sel-main prep-sel-link" href="${escapeAttr(link.href)}" target="_blank" rel="noopener noreferrer"
          data-tip="${escapeAttr(link.tip)}" aria-label="${escapeAttr(link.label)}">${text}
       </a>`;
+  } else if (layout === 'row') {
+    // An adversary with no FreshCutGrass URL: plain text, never a dead link.
+    main = `<div class="prep-sel-main" style="cursor:default">${thumb}${text}</div>`;
   } else {
     main = `<button type="button" class="prep-sel-main" ${openAttr}="${escapeAttr(id)}" aria-label="${escapeAttr(openLabel)}">
         ${thumb}${text}
@@ -4382,6 +4400,7 @@ function centralAdvListHtml(session) {
   const sorted = SessionPrepUtils.sortByTierThenName(advs, adv => adv.tier, (a, b) => collator.compare(spName(a), spName(b)));
   const rows = sorted.map(adv => {
     const name = spName(adv);
+    const fcgUrl = adversaryFreshCutGrassUrl(adv);
     return selectedEntityHtml({
       layout: 'row', id: adv.id, name,
       thumb: centralThumbHtml('adv', adv.art && adv.art.thumb, adv.art && {
@@ -4390,8 +4409,8 @@ function centralAdvListHtml(session) {
         tip: t('prep_tip_open_adversary_image'),
       }),
       meta: advMetaText(adv),
-      link: {
-        href: adversaryFreshCutGrassUrl(adv),
+      link: fcgUrl && {
+        href: fcgUrl,
         label: t('prep_open_adversary_freshcutgrass').replace('{name}', name),
         tip: t('prep_tip_open_adversary_freshcutgrass'),
       },
