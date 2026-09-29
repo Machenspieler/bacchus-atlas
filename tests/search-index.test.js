@@ -455,7 +455,7 @@ test('production data/environments.json builds a complete, valid index', () => {
 
 test('envMatchesFilters() in js/app.js no longer traverses features or joins search text', () => {
   const src = fs.readFileSync(path.join(__dirname, '../js/app.js'), 'utf8');
-  const match = src.match(/function envMatchesFilters\([\s\S]*?\n}\n/);
+  const match = src.match(/function envMatchesFilters\([\s\S]*?\r?\n}\r?\n/);
   assert.ok(match, 'envMatchesFilters() not found in js/app.js');
   const body = match[0];
   assert.equal(/env\.features/.test(body), false, 'still traverses env.features');
@@ -475,7 +475,7 @@ test('js/app.js builds the search index once via setEnvironmentCatalog / SearchI
 
 test('query preparation happens in sortedFilteredEnvs(), outside the per-environment filter callback', () => {
   const src = fs.readFileSync(path.join(__dirname, '../js/app.js'), 'utf8');
-  const match = src.match(/function sortedFilteredEnvs\([\s\S]*?\n}\n/);
+  const match = src.match(/function sortedFilteredEnvs\([\s\S]*?\r?\n}\r?\n/);
   assert.ok(match, 'sortedFilteredEnvs() not found in js/app.js');
   assert.ok(match[0].includes('SearchIndex.prepareSearchQuery'), 'query is not prepared once per filtering pass');
 });
