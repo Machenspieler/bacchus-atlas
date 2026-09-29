@@ -187,12 +187,14 @@ multiselect (`state.sessionPrepUI.envFilters.tiers`, OR within the set,
 same Set-based shape as `advFilters.tiers`) with the tokenized query
 against that precomputed text — never rebuilt per keystroke.
 
-The toolbar itself lives *inside* `.prep-picker-list` (the env picker's own
-scroll container) as its sticky `position: sticky; top: 0` first child,
-rather than above it — the same sticky-inside-its-own-scroll-container
-pattern `.prep-central-section h3` already uses — so it stays visible while
-`#prep-env-list` (the row list, one level deeper here than the adversary
-picker's equivalent) scrolls underneath. `refreshEnvPicker()` only ever
+The toolbar itself lives *inside* `.prep-picker-list` as a plain static
+block stacked above `#prep-env-list` (the row list, one level deeper here
+than the adversary picker's equivalent) — `#prep-env-list` is the only
+element that scrolls (its own `max-height`/`overflow-y: auto`), not the
+toolbar-plus-list wrapper, so the native scrollbar's track spans just the
+rows and never overlaps the toolbar row above it. Because the toolbar sits
+outside that scroll container entirely, it stays visible without needing
+`position: sticky`. `refreshEnvPicker()` only ever
 replaces `#prep-env-list`'s innerHTML and `#prep-env-count`'s text, never
 the toolbar wrapper, so the search input and the four pentagonal Tier
 buttons (`.rank-icon`, the same control the main catalog toolbar and the
@@ -205,8 +207,9 @@ a rebuild, for the same reason.
 
 The `#/session-prep` adversary picker's toolbar (`advToolbarHtml()`) is
 structurally the same pattern as the environment toolbar above — search,
-Tier buttons, and a right-aligned "{n} of {total}" count, sticky inside
-`.prep-picker-list` — plus one more control: a Type multiselect
+Tier buttons, and a right-aligned "{n} of {total}" count, stacked as a
+plain static block above `#prep-adv-list` inside `.prep-picker-list` —
+plus one more control: a Type multiselect
 (`SessionPrepUtils.ADVERSARY_TYPES`, the ten official Adversary Types)
 between the Tier buttons and the count, built on the same shared
 `bindMultiSelectField()` every other Type/Biome/Source dropdown in the app

@@ -2239,8 +2239,13 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   letter-spacing: var(--tracking-display); color: var(--parchment);
 }
 /* Catalog counters ("{n} of {total}") share one key and one look across all
-   three pickers — see prep_results_count in data/i18n.json. */
-.prep-count { font-size: var(--fs-sm); color: var(--muted); font-family: var(--font-mono); white-space: nowrap; }
+   three pickers — see prep_results_count in data/i18n.json. A fixed
+   min-width (sized for "270 of 270" / "270 из 270", 10 characters) stops
+   the digit count changing as the user types/filters from reflowing the
+   whole toolbar row around it — see .prep-env-toolbar/.prep-adv-toolbar
+   below, where this counter is the last track in a grid row shared with
+   the search field and Tier buttons. */
+.prep-count { font-size: var(--fs-sm); color: var(--muted); font-family: var(--font-mono); white-space: nowrap; min-width: 10ch; }
 
 /* .search-field's `flex: 0 1 260px` sets a *width* basis in the toolbar's
    row-direction flexbox; every .prep-search lives in a column-direction flex
@@ -2251,26 +2256,31 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 /* Reuses the main catalog's .search-clear-btn (css rule elsewhere in this
    file) — visible only while that picker's search text is non-empty. */
 .prep-search .search-clear-btn { right: var(--s-1); }
-.prep-picker-list {
-  display: flex; flex-direction: column; gap: 2px;
-  max-height: 460px; overflow-y: auto; padding-right: 2px;
-  scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
-}
-.prep-picker-list::-webkit-scrollbar { width: 8px; }
-.prep-picker-list::-webkit-scrollbar-track { background: transparent; }
-.prep-picker-list::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
-.prep-picker-list::-webkit-scrollbar-thumb:hover { background: rgba(185,173,145,0.56); }
+.prep-picker-list { display: flex; flex-direction: column; gap: var(--s-2); min-height: 0; }
 .prep-empty { margin: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--muted); font-style: italic; }
 
+/* Only the row list itself scrolls — the toolbar above it (search/Tier/
+   counter) is a plain static block outside this scroll container, so the
+   native scrollbar's track spans just the rows and never overlaps the
+   toolbar row above it. */
+#prep-env-list, #prep-adv-list {
+  max-height: 410px; overflow-y: auto; padding-right: 2px;
+  scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
+}
+#prep-env-list::-webkit-scrollbar, #prep-adv-list::-webkit-scrollbar { width: 8px; }
+#prep-env-list::-webkit-scrollbar-track, #prep-adv-list::-webkit-scrollbar-track { background: transparent; }
+#prep-env-list::-webkit-scrollbar-thumb, #prep-adv-list::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
+#prep-env-list::-webkit-scrollbar-thumb:hover, #prep-adv-list::-webkit-scrollbar-thumb:hover { background: rgba(185,173,145,0.56); }
+
 /* ---- compact "All Environments" toolbar (search + Tier + counter, one row) ----
-   Lives as the sticky first child *inside* .prep-picker-list itself, not
-   above it — that's what keeps it visible while the row list beneath it
-   scrolls, the same sticky-inside-its-own-scroll-container pattern
-   .prep-central-section h3 already uses. #prep-env-list is one level
-   deeper than .prep-picker-list here (unlike the adversary picker, where
-   .prep-picker-list *is* the row list directly), so it needs its own
-   flex/gap rule to lay out rows the way .prep-picker-list's own gap does
-   for adversaries. */
+   A plain static block stacked above #prep-env-list (its sibling inside
+   .prep-picker-list) rather than a sticky header sharing that list's own
+   scroll container — since it never scrolls past, it stays visible without
+   needing position:sticky, and the list's scrollbar never has to span
+   behind it. #prep-env-list is one level deeper than .prep-picker-list
+   here (unlike the adversary picker, where .prep-picker-list holds the
+   toolbar and #prep-adv-list directly as its two children too), so it
+   needs its own flex/gap rule to lay out rows. */
 /* The env picker is the narrowest of Session Prep's three columns
    (.prep-main's `minmax(260px, 0.85fr)` track), so the search field is the
    one flexible/shrinkable track (`minmax(0, 1fr)`, floored by its own
@@ -2279,11 +2289,15 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    shrinking, rather than a fixed min-width on the search track fighting
    them for space and forcing every track to compress. */
 .prep-env-toolbar {
-  position: sticky; top: 0; z-index: 1;
+  /* flex: none — without it, this flex item (a child of .prep-picker-list's
+     column flex) can shrink below its own content's natural height (the
+     35px search input) down to just its min-height, which pushes the
+     border-bottom above the still-overflowing rank icons/search field
+     instead of clearing them; only #prep-env-list should flex/shrink. */
+  flex: none;
   display: grid; grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center; gap: var(--s-2);
-  min-height: 40px; padding-block: var(--s-2);
-  background: var(--ink-card);
+  min-height: 40px; padding: var(--s-2) 0 var(--s-3);
   border-bottom: 1px solid var(--line-faint);
 }
 .prep-env-toolbar .prep-search { min-width: 0; }
@@ -2508,20 +2522,22 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-central-row-meta { font-size: var(--fs-sm); line-height: 1.4; color: var(--muted); }
 
 /* ---- compact "All Adversaries" toolbar (search + Tier + Type + counter, one row) ----
-   Same sticky-inside-its-own-scroll-container structure as .prep-env-toolbar
-   above (search, Tier buttons, counter) plus one more `auto` track for the
-   Type multiselect trigger between them — every non-search track sizes to
-   its own content first, so the search field is the one track that actually
-   shrinks. .prep-col-adv is a size container so the count (the least
-   important element — see CLAUDE.md) can hide via a container query before
-   anything else has to shrink below a usable size or wrap. */
+   Same plain-static-block-above-its-own-scrolling-list structure as
+   .prep-env-toolbar above (search, Tier buttons, counter) plus one more
+   `auto` track for the Type multiselect trigger between them — every
+   non-search track sizes to its own content first, so the search field is
+   the one track that actually shrinks. .prep-col-adv is a size container
+   so the count (the least important element — see CLAUDE.md) can hide via
+   a container query before anything else has to shrink below a usable
+   size or wrap. */
 .prep-col-adv { container-type: inline-size; container-name: prep-adv-col; }
 .prep-adv-toolbar {
-  position: sticky; top: 0; z-index: 1;
+  /* flex: none — same reason as .prep-env-toolbar above: only #prep-adv-list
+     should shrink/grow as a flex item of .prep-picker-list. */
+  flex: none;
   display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto;
   align-items: center; gap: var(--s-2);
-  min-height: 40px; padding-block: var(--s-2);
-  background: var(--ink-card);
+  min-height: 40px; padding: var(--s-2) 0 var(--s-3);
   border-bottom: 1px solid var(--line-faint);
 }
 .prep-adv-toolbar .prep-search { min-width: 0; }
@@ -2761,6 +2777,11 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   body[data-route="session-prep"] .prep-picker-list {
     flex: 1 1 auto;
     min-height: 0;
+  }
+  body[data-route="session-prep"] #prep-env-list,
+  body[data-route="session-prep"] #prep-adv-list {
+    flex: 1 1 auto;
+    min-height: 0;
     max-height: none;
   }
 }
@@ -2782,12 +2803,8 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 
 /* ---- phone: no nested scroll areas, 44px touch targets ---- */
 @media (max-width: 760px) {
-  .prep-picker-list { max-height: none; overflow: visible; }
-  /* .prep-picker-list is no longer a scroll container at this width, so a
-     sticky toolbar would instead stick to the next real scrolling ancestor
-     (the page itself) and stay pinned past its own section — falling back
-     to a plain flowed block here is the safer, best-effort mobile result. */
-  .prep-env-toolbar, .prep-adv-toolbar { position: static; display: flex; flex-wrap: wrap; row-gap: var(--s-2); }
+  #prep-env-list, #prep-adv-list { max-height: none; overflow: visible; }
+  .prep-env-toolbar, .prep-adv-toolbar { display: flex; flex-wrap: wrap; row-gap: var(--s-2); }
   .prep-env-toolbar .prep-search, .prep-adv-toolbar .prep-search { flex: 1 1 160px; }
   .prep-remove-btn { width: 44px; height: 44px; }
   .prep-checkbox-hit { width: 44px; height: 44px; }
