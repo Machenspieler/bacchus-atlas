@@ -122,6 +122,28 @@ test('resolveSessionTitle falls back for an empty or whitespace-only value', () 
   assert.equal(SPU.resolveSessionTitle(null, 'New session'), 'New session');
 });
 
+/* ---------------- resolveSessionRename ---------------- */
+
+test('resolveSessionRename rejects an empty or whitespace-only value and keeps the previous title', () => {
+  assert.deepEqual(SPU.resolveSessionRename('Cursed Temple', ''), { status: 'invalid', value: 'Cursed Temple' });
+  assert.deepEqual(SPU.resolveSessionRename('Cursed Temple', '   '), { status: 'invalid', value: 'Cursed Temple' });
+  assert.deepEqual(SPU.resolveSessionRename('Cursed Temple', null), { status: 'invalid', value: 'Cursed Temple' });
+});
+
+test('resolveSessionRename reports an unchanged title (after trimming) as unchanged', () => {
+  assert.deepEqual(SPU.resolveSessionRename('Cursed Temple', '  Cursed Temple '), { status: 'unchanged', value: 'Cursed Temple' });
+});
+
+test('resolveSessionRename returns the trimmed new title as changed', () => {
+  assert.deepEqual(SPU.resolveSessionRename('Cursed Temple', '  Sunken Vault '), { status: 'changed', value: 'Sunken Vault' });
+});
+
+test('resolveSessionRename clamps to maxLength', () => {
+  const result = SPU.resolveSessionRename('a', 'b'.repeat(200), 120);
+  assert.equal(result.status, 'changed');
+  assert.equal(result.value.length, 120);
+});
+
 /* ---------------- toggleId / removeId (generic binary selection) ---------------- */
 
 test('toggleId adds a string id that is not yet present', () => {

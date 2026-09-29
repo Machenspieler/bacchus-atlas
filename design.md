@@ -199,6 +199,19 @@ adversary pickers are unaffected and keep the always-visible checkbox. See
 the "Session Prep" section of `CLAUDE.md` for the full interaction contract;
 this file only covers its visual departure from the rest of the app.
 
+**Session Bar** (`.prep-session-bar`): the one place Session Prep breaks its
+own `--font-ui` rule — the active session's name is set in `--font-display`
+(`--fs-xl`, `--fs-lg` on phones) because it is a *title*, not a control
+label; everything else in the bar (status, buttons, menus) stays `--font-ui`.
+The bar is a dark, restrained local surface (`--sp-bar-bg`, a translucent
+`--ink` gradient with a faint gold wash, `--line-faint` border) laid over the
+atlas watermark so the artwork stays visible but never competes with the
+controls. Save status is muted text with a 14px icon (gold check on success,
+Fear alert on failure, neutral dot before the first save); Delete in the
+actions menu is the only Fear-coloured item and sits below a divider. On
+phones it becomes two rows (title + New/actions, then status) with 40px
+controls reaching a 44px hit area through `::after`.
+
 ## Responsive breakpoints
 
 The layout uses a small, deliberate set of breakpoints rather than a generic

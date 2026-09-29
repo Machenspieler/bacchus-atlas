@@ -79,7 +79,27 @@ locally") before starting.
       persistent "Limit reached" status appears, and removing one
       re-enables the rest without losing search text/scroll position.
 - [ ] Header chrome collapse/expand (see "Header" above) from within
-      Session Prep specifically.
+      Session Prep specifically — the Session Bar hides in compact mode and
+      returns in expanded mode.
+- [ ] **Session Bar**: the active session name appears once (no separate
+      title field or select); at 2048/1440/768/390px the bar is one compact
+      block (~80–90px, two rows on phones) aligned with the columns below,
+      with no horizontal overflow, in both languages and with a very long
+      session name (truncates with ellipsis + full-name tooltip).
+- [ ] **Session Bar menus**: the title opens the session menu (current
+      session checked; scrolls past ~340px; stays inside the viewport);
+      the ⋯ button opens Rename/Duplicate/Delete. Only one is open at a
+      time; outside click and Escape close them and Escape returns focus to
+      the trigger; Arrow/Home/End move through items.
+- [ ] **Session rename**: pencil and menu "Rename" both start the inline
+      input (text selected, no layout shift); Enter/blur saves (trimmed),
+      Escape cancels, an empty name restores the previous one.
+- [ ] **Session delete**: Delete opens a dialog naming the session with
+      Cancel focused; Escape/Cancel leave data untouched; Delete removes only
+      that session; with one session left, Delete is disabled with a hint.
+- [ ] **Save status**: directly under the title; "Saved locally · HH:MM" after
+      an edit, and the failure wording (with the storage-failure toast) when
+      the browser blocks writes.
 - [ ] **Adversary catalogue reports 264**: the "All Adversaries" count reads
       264 of 264 with no filters active, and hides first (not the search
       field or Tier/Type controls) as the adversary column narrows.

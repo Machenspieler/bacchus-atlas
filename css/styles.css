@@ -2075,8 +2075,8 @@ body[data-route="session-prep"] #footer {
 /* ---- Session Prep header mode: one source of truth ----
    Expanded and compact are two genuinely distinct layouts, not one hiding a
    single subtitle — compact turns the global header into a dense toolbar
-   AND the session name/save-status row below it into a single compact
-   strip, both driven by the one `data-sp-header-mode` attribute
+   AND the Session Bar below it (which it hides outright), both driven by the
+   one `data-sp-header-mode` attribute
    initSessionPrepChrome()/applySessionPrepChromeDom() (js/app.js) set on
    <body> in response to a deliberate click of .sp-chrome-toggle — never
    automatically, and never two independent states to fall out of sync.
@@ -2088,49 +2088,191 @@ body[data-route="session-prep"] {
   --sp-workspace-gap: 10px;
 }
 
-/* ---- session switcher (switch / new / duplicate / delete) ----
-   Deliberately a plain sibling of .prep-session-header, not a child of it —
-   see sessionSwitcherHtml() in js/app.js — so it never has to participate in
-   that element's expanded/compact grid layout below. Minimal styling for
-   this stage: reuses .field/.field select (toolbar) and .btn/.btn-ghost
-   (shared button system) rather than introducing new visual treatment. */
-.prep-session-switcher {
-  display: flex; align-items: flex-end; flex-wrap: wrap; gap: var(--s-3);
-  margin-bottom: var(--s-4);
+/* ---- Session Bar: title / switcher / rename / New / actions / save status ----
+   One compact surface that replaces the old "saved sessions" select row and
+   the separate session-title field (see sessionBarHtml() in js/app.js). First
+   child of .prep-wrap, so it spans exactly the same width as the three
+   columns below it. The atlas watermark stays visible around it but is
+   dimmed *behind* the bar by a dark local gradient, so title, icons and
+   status keep their contrast. Uses only existing tokens; --sp-bar-* below
+   just name the two surface values this one component needs. */
+body[data-route="session-prep"] {
+  --sp-bar-bg:
+    linear-gradient(180deg, rgba(20,17,15,0.80), rgba(20,17,15,0.90)),
+    radial-gradient(ellipse at 0% 0%, rgba(217,164,65,0.08), transparent 55%);
+  --sp-bar-border: var(--line-faint);
 }
-.prep-session-select-field { min-width: 220px; }
-.prep-session-select-field select { width: 100%; }
-.prep-session-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+/* contain: inline-size — a long, nowrap session name must not push the
+   bar's *intrinsic* width up through .prep-wrap (a grid item with an automatic
+   minimum) and widen the whole page. The bar takes its width from the wrap
+   instead, and the title truncates inside it. */
+.prep-session-bar {
+  position: relative; min-width: 0; contain: inline-size;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
+  padding: var(--s-3) var(--s-5);
+  background: var(--sp-bar-bg);
+  border: 1px solid var(--sp-bar-border); border-radius: var(--r-lg);
+}
+.prep-session-identity { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--s-1); }
+.prep-session-titlerow { display: flex; align-items: center; gap: var(--s-2); min-width: 0; }
+.prep-session-title-wrap { position: relative; min-width: 0; max-width: 100%; display: flex; }
 
-/* ---- session name + save status (workspace-level, not the header chrome) ----
-   Renders as the first child of .prep-wrap (see renderSessionPrepPage() in
-   js/app.js) so it aligns with the same wide workspace shell as the three
-   catalogues below it, rather than the header's narrower 1180px container.
-   Hidden outright in compact mode along with the switcher row below —
-   see the compact-mode rule further down. */
-.prep-session-header {
-  display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: var(--s-3);
-  padding-bottom: var(--s-3); border-bottom: 1px solid var(--line-faint);
-  transition: padding var(--t-base) var(--ease-out);
+/* The title is a title, not a form control: display face, no box, only a
+   hairline underline on hover so it still reads as interactive. The rename
+   input below shares its exact font/padding/border metrics, so swapping one
+   for the other never changes the row's height. */
+.prep-session-title-btn,
+.prep-session-title-input {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: var(--fs-xl); line-height: var(--lh-xl); letter-spacing: var(--tracking-display);
+  color: var(--parchment);
+  padding: var(--s-1) 0; margin: 0;
+  background: transparent; border: none; border-bottom: 1px solid transparent; border-radius: 0;
 }
-.prep-title-field { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 2px; }
-.prep-title-label {
+.prep-session-title-btn {
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  min-width: 0; max-width: 100%; cursor: pointer; text-align: left;
+  transition: border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+.prep-session-title-btn[hidden], .prep-session-title-input[hidden] { display: none; }
+.prep-session-title-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prep-session-title-btn svg {
+  flex: none; width: var(--icon-md); height: var(--icon-md); color: var(--muted);
+  transition: color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+}
+.prep-session-title-btn:hover { border-bottom-color: var(--line-strong); }
+.prep-session-title-btn:hover svg { color: var(--hope-soft); }
+.prep-session-title-btn[aria-expanded="true"] svg { color: var(--hope-soft); transform: rotate(180deg); }
+.prep-session-title-btn:focus-visible { border-radius: var(--r-sm); }
+.prep-session-title-input {
+  min-width: 0; max-width: 100%;
+  border-bottom-color: var(--hope);
+  text-overflow: ellipsis;
+}
+.prep-session-title-input:focus { outline: none; }
+
+/* Icon-only buttons (pencil, actions). Visible size stays small; the hit area
+   grows past it with ::after, same technique as .sp-chrome-toggle. */
+.prep-session-icon-btn {
+  position: relative; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  width: var(--h-sm); height: var(--h-sm); padding: 0;
+  background: transparent; color: var(--muted);
+  border: 1px solid transparent; border-radius: var(--r-sm); cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+.prep-session-icon-btn::after { content: ""; position: absolute; inset: -6px; }
+.prep-session-icon-btn[hidden] { display: none; }
+.prep-session-icon-btn svg { width: var(--icon-md); height: var(--icon-md); }
+.prep-session-icon-btn:hover, .prep-session-icon-btn[aria-expanded="true"] {
+  color: var(--hope-soft); background: var(--ink-raised); border-color: var(--line);
+}
+
+/* Save status: directly under the title, quiet. Never colour-only — the icon
+   and the wording change with the state. */
+.prep-save-status {
+  margin: 0; display: flex; align-items: center; gap: var(--s-1);
+  min-width: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--muted);
+}
+.prep-save-icon { flex: none; display: inline-flex; align-items: center; justify-content: center; width: var(--icon-sm); height: var(--icon-sm); }
+.prep-save-icon svg { width: var(--icon-sm); height: var(--icon-sm); }
+.prep-save-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prep-save-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.7; }
+.prep-save-status[data-state="ok"] .prep-save-icon { color: var(--hope); opacity: 0.85; }
+.prep-save-status[data-state="error"] { color: var(--fear-soft); }
+
+.prep-session-actions { flex: none; display: flex; align-items: center; gap: var(--s-2); }
+.prep-session-more-wrap { position: relative; }
+.prep-session-new-btn { height: var(--h-md); padding: 0 var(--s-4) 0 var(--s-3); gap: var(--s-2); font-family: var(--font-ui); font-size: var(--fs-base); }
+.prep-session-new-btn svg { width: var(--icon-md); height: var(--icon-md); color: var(--hope); }
+.prep-session-more-btn { width: var(--h-md); height: var(--h-md); }
+
+/* ---- menus (session selector + actions) ---- */
+.prep-menu {
+  position: absolute; top: calc(100% + var(--s-1)); left: 0; z-index: 20;
+  width: max-content; min-width: 240px; max-width: min(360px, calc(100vw - var(--s-4) * 2));
+  max-height: min(340px, var(--menu-room, 340px));
+  flex-direction: column; padding: var(--s-1);
+  background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-lg);
+  box-shadow: var(--e-3);
+  font-family: var(--font-ui); font-size: var(--fs-base);
+  animation: modal-in var(--t-fast) var(--ease-enter);
+}
+.prep-menu:not([hidden]) { display: flex; }
+.prep-session-actions-menu { left: auto; right: 0; min-width: 200px; }
+.prep-menu-heading {
+  flex: none; padding: var(--s-2) var(--s-3) var(--s-1);
   font-size: var(--fs-xs); color: var(--muted); text-transform: uppercase; letter-spacing: var(--tracking-caps);
 }
-#prep-session-title {
-  width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--line-faint);
-  font-family: var(--font-display); font-weight: 400; font-size: var(--fs-xl); color: var(--parchment);
-  padding: var(--s-1) 0;
-  transition: border-color var(--t-fast) var(--ease-out), font-size var(--t-base) var(--ease-out), padding var(--t-base) var(--ease-out);
+.prep-menu-list {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  display: flex; flex-direction: column; gap: 1px;
+  scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
 }
-#prep-session-title:hover { border-bottom-color: var(--line-strong); }
-#prep-session-title:focus { border-bottom-color: var(--hope); outline: none; }
-#prep-session-title::placeholder { color: var(--muted); font-family: var(--font-body); font-size: var(--fs-md); }
-/* Never blank — a neutral "autosave is on" message, then "Saved…HH:MM", then
-   a clear error style on a failed write (never color alone: the text itself
-   changes too). */
-.prep-save-status { margin: 0; font-size: var(--fs-sm); color: var(--muted); white-space: nowrap; }
-.prep-save-status[data-state="error"] { color: var(--fear-soft); }
+.prep-menu-list::-webkit-scrollbar { width: 8px; }
+.prep-menu-list::-webkit-scrollbar-track { background: transparent; }
+.prep-menu-list::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.34); border: 2px solid var(--ink-raised); border-radius: var(--r-pill); }
+@media (forced-colors: active) { .prep-menu-list { scrollbar-color: auto; } }
+.prep-menu-sep { flex: none; height: 1px; margin: var(--s-1) var(--s-2); background: var(--line-faint); }
+.prep-menu-item {
+  flex: none; display: flex; align-items: center; gap: var(--s-2);
+  width: 100%; min-height: var(--h-md); padding: var(--s-2) var(--s-3);
+  background: transparent; border: none; border-radius: var(--r-sm);
+  font: inherit; color: var(--parchment); text-align: left; cursor: pointer;
+  transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+.prep-menu-item:hover, .prep-menu-item:focus-visible { background: rgba(255,255,255,0.06); color: var(--hope-soft); }
+.prep-menu-item:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
+.prep-menu-item[aria-checked="true"] { background: rgba(217,164,65,0.12); color: var(--hope-soft); }
+.prep-menu-item[aria-checked="true"]:hover { background: rgba(217,164,65,0.2); }
+.prep-menu-check { flex: none; display: inline-flex; width: var(--icon-md); height: var(--icon-md); color: var(--hope); }
+.prep-menu-check svg { width: var(--icon-md); height: var(--icon-md); }
+.prep-menu-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Delete uses the Fear tokens the rest of the app reserves for destructive
+   actions; the divider above it is what separates it from the safe ones. */
+.prep-menu-item.is-danger { color: var(--fear-soft); }
+.prep-menu-item.is-danger:hover, .prep-menu-item.is-danger:focus-visible { background: rgba(156,43,59,0.14); color: var(--fear-soft); }
+.prep-menu-item.is-disabled, .prep-menu-item.is-disabled:hover, .prep-menu-item.is-disabled:focus-visible {
+  color: var(--muted); background: transparent; cursor: not-allowed; opacity: 0.7;
+}
+
+/* Delete confirmation (reuses .modal / .modal-sm / .modal-header). */
+.prep-confirm-body { margin: 0 0 var(--s-5); color: var(--parchment-dim); font-family: var(--font-ui); font-size: var(--fs-base); line-height: var(--lh-base); }
+.prep-confirm-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: var(--s-2); }
+.prep-confirm-actions .btn { font-family: var(--font-ui); }
+
+/* Touch: 40px visible controls whose hit area reaches 44px via ::after. */
+@media (max-width: 760px), (pointer: coarse) {
+  .prep-menu-item { min-height: 44px; }
+  .prep-session-icon-btn { width: var(--h-md); height: var(--h-md); }
+  .prep-session-icon-btn::after { inset: -2px; }
+  .prep-session-new-btn { height: var(--h-md); }
+}
+/* Very narrow phones: "New" keeps its icon, tooltip and accessible name, but
+   drops its visible word so the session title gets the room. */
+@media (max-width: 480px) {
+  .prep-session-new-btn { width: var(--h-md); padding: 0; }
+  .prep-session-new-btn span {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+  }
+}
+/* Phone: two compact rows — title (+ pencil) with New/actions on the right,
+   then the save status directly under the title. The identity wrapper drops
+   out of layout so its two children can sit in the bar's own grid areas. */
+@media (max-width: 760px) {
+  .prep-session-bar {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
+    grid-template-areas: "title actions" "status status";
+    gap: 0 var(--s-2); padding: var(--s-2) var(--s-3);
+  }
+  .prep-session-identity { display: contents; }
+  .prep-session-titlerow { grid-area: title; }
+  .prep-save-status { grid-area: status; }
+  .prep-session-actions { grid-area: actions; }
+  .prep-session-new-btn { padding: 0 var(--s-3) 0 var(--s-2); }
+  .prep-session-title-btn, .prep-session-title-input { font-size: var(--fs-lg); line-height: var(--lh-lg); }
+}
 
 /* ---- Session Prep chrome (expanded / compact toggle) ----
    #session-prep-chrome (in index.html) wraps the shared site header. It
@@ -2175,11 +2317,10 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .lang-switch {
   transition: height var(--t-base) var(--ease-out);
 }
 
-/* ---- compact mode: session name/save-status and the switcher row both
-   come out of layout entirely, not merely shrunk. Both are session
-   *management* — a GM mid-session wants the workspace, not this chrome. */
-body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-session-header,
-body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-session-switcher {
+/* ---- compact mode: the Session Bar comes out of layout entirely, not
+   merely shrunk. It is session *management* — a GM mid-session wants the
+   workspace, not this chrome. */
+body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-session-bar {
   display: none;
 }
 
@@ -2867,7 +3008,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
     min-height: 0;
     min-width: 0;
   }
-  body[data-route="session-prep"] .prep-session-header,
+  body[data-route="session-prep"] .prep-session-bar,
   body[data-route="session-prep"] .prep-items-panel {
     flex: none;
     min-width: 0;
@@ -2941,7 +3082,6 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   .prep-env-toolbar .prep-search, .prep-adv-toolbar .prep-search { flex: 1 1 160px; }
   .prep-remove-btn { width: 44px; height: 44px; }
   .prep-checkbox-hit { width: 44px; height: 44px; }
-  .prep-session-header { align-items: stretch; }
 }
 @media (hover: none), (pointer: coarse) {
   .prep-checkbox-hit { width: 44px; height: 44px; }

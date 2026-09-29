@@ -146,12 +146,33 @@ global to keep in sync with it.
   This runs on every load (idempotent: a store already at v2 with nothing to
   fix is returned unchanged) and repairs an `activeSessionId` that doesn't
   match any surviving session by pointing it at the first one.
-- **Minimal UI**: a native `<select>` session switcher plus New/Duplicate/
-  Delete buttons (`sessionSwitcherHtml()`/`bindSessionPrepSwitcher()`), as a
-  plain sibling of `.prep-session-header` rather than inside it. Delete asks
-  for confirmation (`confirm()`, naming the session) before calling
-  `deleteSessionPrepSession()`. This is deliberately minimal — a full visual
-  pass on Session Prep's header is separate future work.
+- **Session Bar** (`sessionBarHtml()`/`bindSessionBar()`, first child of
+  `.prep-wrap`): one compact bar replacing the old switcher row + title
+  field. The active session's name appears exactly once, as a title-styled
+  button that opens the session menu (a `role="menu"` of `menuitemradio`
+  rows, the current one checked, plus a "Create new session" footer). A
+  pencil and the actions menu's "Rename" both call `beginSessionRename()`
+  (inline input, same line box as the title, Enter/blur commit, Escape
+  cancel); New/Duplicate also start it so the GM can name the fresh session.
+  "+ New" is the only always-visible collection action; Duplicate and Delete
+  live only in the actions (⋯) menu, Delete behind
+  `openSessionDeleteConfirm()` (an `alertdialog` built on
+  `registerOverlay()`, Cancel focused first) and disabled — with a hint —
+  while only one session exists. The bar is presentation only: every action
+  calls the lifecycle functions above, then `updateSaveStatusDisplay()` and,
+  where the active session changed, a full `renderSessionPrepPage()`.
+  Rename validation is the pure `SessionPrepUtils.resolveSessionRename()`
+  (an empty name is rejected and the previous name restored, never replaced
+  by the placeholder). Both menus share `bindSessionMenu()` (one open at a
+  time, outside click/Escape/Tab close, arrow/Home/End navigation, focus
+  returned to the trigger, viewport clamping via `positionSessionMenu()`).
+  The bar is hidden by the same `data-sp-header-mode="compact"` switch as
+  the site header chrome.
+- **Save status** sits directly under the title and reflects only real
+  `persist()` outcomes (`sessionSaveStatusView()`): `ready` (before the first
+  write this visit), `ok` ("Saved locally · HH:MM"), `error`. There is no
+  "Saving…" state — SafeStorage writes are synchronous, so it could never be
+  observed, only faked.
 
 ## Environment search index
 

@@ -841,6 +841,10 @@ const ICON_CHEVRON_UP = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"
 const ICON_CHEVRON_DOWN = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_SEARCH_EMPTY = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="m15.5 15.5 4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 10.5h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 const ICON_BOOKMARK = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 3.5h11a1 1 0 0 1 1 1v16l-6.5-4-6.5 4v-16a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+const ICON_PENCIL = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 19.5l.9-3.9L16.2 4.8a1.6 1.6 0 0 1 2.3 0l.7.7a1.6 1.6 0 0 1 0 2.3L8.4 18.6l-3.9.9z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m14.6 6.4 3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+const ICON_PLUS = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const ICON_MORE = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="5.5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="18.5" cy="12" r="1.6" fill="currentColor"/></svg>`;
+const ICON_CHECK_PLAIN = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5.5 12.5 4.3 4.3 8.7-9.3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_TRASH = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 6.5h15M9.8 6.5V4.9a1 1 0 0 1 1-1h2.4a1 1 0 0 1 1 1v1.6M6.8 6.5l.8 12.3a1 1 0 0 0 1 .9h6.8a1 1 0 0 0 1-.9l.8-12.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.4 10.2v6M13.6 10.2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
 const ICON_COMPASS =`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="m15 9-2.1 4.9L8 16l2.1-4.9L15 9z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
 const ICON_HEX = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.6 20.1 7v10L12 21.4 3.9 17V7L12 2.6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
@@ -3161,32 +3165,42 @@ function updateSessionPrepSession(mutator) {
   return { session: mutated, result };
 }
 
-/** The save-status line is never blank: before the first mutation this
- * visit it explains that autosave is on, after a successful save it shows
- * when, and after a failure it explains that. */
-function sessionSaveStatusText() {
-  if (state.sessionPrepUI.saveFailed) return t('session_save_failed');
-  if (!state.sessionPrepUI.lastSavedAt) return t('session_autosave_ready');
-  const time = state.sessionPrepUI.lastSavedAt.toLocaleTimeString(state.lang === 'ru' ? 'ru-RU' : 'en-US', {
-    hour: '2-digit', minute: '2-digit',
+/** The save-status line is never blank and only ever reflects a real
+ * persist() outcome: before the first mutation this visit it says autosave is
+ * on (`ready`), after a successful write it shows when (`ok`), and after a
+ * failed one it says so (`error`). There is deliberately no "Saving…" state:
+ * SafeStorage writes are synchronous, so a pending state would never be
+ * observable and could only ever be faked. */
+function sessionSaveStatusView() {
+  const ui = state.sessionPrepUI;
+  if (ui.saveFailed) return { kind: 'error', text: t('session_save_failed'), tip: t('session_save_failed_tip') };
+  if (!ui.lastSavedAt) return { kind: 'ready', text: t('session_autosave_ready'), tip: t('session_autosave_ready_tip') };
+  const time = ui.lastSavedAt.toLocaleTimeString(state.lang === 'ru' ? 'ru-RU' : 'en-US', {
+    hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
   });
-  return `${t('session_saved_local')} · ${time}`;
+  return { kind: 'ok', text: `${t('session_saved_local')} · ${time}`, tip: t('session_saved_local_tip') };
+}
+
+/** Fills the status element from sessionSaveStatusView(): a 14px state icon
+ * (check / alert / a neutral dot before the first save) plus the text. The
+ * state is never colour-only — the icon and the wording both change with it. */
+function paintSaveStatus(el) {
+  const view = sessionSaveStatusView();
+  const icon = view.kind === 'ok' ? ICON_CHECK : view.kind === 'error' ? ICON_ALERT : '<span class="prep-save-dot"></span>';
+  el.dataset.state = view.kind;
+  el.dataset.tip = view.tip;
+  el.innerHTML = `<span class="prep-save-icon" aria-hidden="true">${icon}</span><span class="prep-save-text">${escapeHtml(view.text)}</span>`;
 }
 
 /** Only ever called right after a persist() attempt — never speculatively —
  * so "Saved" never appears before SafeStorage has actually reported success.
- * `data-state` drives the error styling in css/styles.css; the status line
- * itself lives in the workspace (see sessionHeaderHtml()), so it stays
- * visible in both the expanded and compact header modes without any extra
- * plumbing here. */
+ * The status line lives in the Session Bar (see sessionBarHtml()), directly
+ * under the session title. */
 function updateSaveStatusDisplay(result) {
   state.sessionPrepUI.saveFailed = !result.ok;
   if (result.ok) state.sessionPrepUI.lastSavedAt = new Date();
   const statusEl = document.getElementById('prep-save-status');
-  if (statusEl) {
-    statusEl.textContent = sessionSaveStatusText();
-    statusEl.dataset.state = result.ok ? 'ok' : 'error';
-  }
+  if (statusEl) paintSaveStatus(statusEl);
 }
 
 /* ---------------- session lifecycle (create / switch / rename / duplicate / delete) ----------------
@@ -4410,135 +4424,391 @@ function centralSectionHtml(session) {
     </section>`;
 }
 
-/* ---------------- session switcher (switch / new / duplicate / delete) ---------------- */
+/* ---------------- session bar (title / switcher / rename / actions) ----------------
+ *
+ * One compact bar replaces the old switcher row + title field. The active
+ * session's name is shown exactly once, as a title-styled button that opens
+ * the session menu; the pencil and the actions menu's "Rename" both swap that
+ * title for an inline input; "+ New" is the only always-visible
+ * collection-level action; Duplicate and Delete live only in the actions
+ * menu, Delete behind a confirmation dialog.
+ *
+ * This is presentation only. Every state change goes through the existing
+ * lifecycle functions above (createSessionPrepSession/switchSessionPrepSession/
+ * duplicateSessionPrepSession/deleteSessionPrepSession/updateSessionPrepSession),
+ * each followed by updateSaveStatusDisplay(result) and — for the ones that
+ * change *which* session is active — a full renderSessionPrepPage(), exactly
+ * as the old buttons did. */
 
-/** A plain native `<select>` — not the app's Type/Biome-style multiselect
- * dropdown, since this is single-choice ("which saved session is active"),
- * not a filter — gives keyboard operation, screen-reader semantics, and the
- * mobile wheel picker for free, matching `.field select` styling already
- * defined in css/styles.css. Sits above `.prep-session-header` as its own
- * sibling rather than inside it, so it never has to participate in that
- * element's expanded/compact `data-sp-header-mode` grid layout. */
-function sessionSwitcherHtml(session) {
-  const options = state.sessionPrep.sessions.map(s =>
-    `<option value="${escapeAttr(s.id)}"${s.id === session.id ? ' selected' : ''}>${escapeHtml(sessionDisplayTitle(s))}</option>`
-  ).join('');
+const SESSION_TITLE_MAX = 120;
+
+function sessionBarEl(id) { return document.getElementById(id); }
+
+function sessionBarHtml(session) {
+  const sessions = state.sessionPrep.sessions;
+  const title = sessionDisplayTitle(session);
+  const onlyOne = sessions.length <= 1;
+  const sessionItems = sessions.map(s => {
+    const current = s.id === session.id;
+    return `<button type="button" class="prep-menu-item" role="menuitemradio" tabindex="-1"
+                    aria-checked="${current}" data-sp-switch="${escapeAttr(s.id)}">
+              <span class="prep-menu-check" aria-hidden="true">${current ? ICON_CHECK_PLAIN : ''}</span>
+              <span class="prep-menu-label">${escapeHtml(sessionDisplayTitle(s))}</span>
+            </button>`;
+  }).join('');
+  const deleteAttrs = onlyOne
+    ? ` aria-disabled="true" data-tip="${escapeAttr(t('session_delete_only_one'))}"`
+    : '';
   return `
-    <div class="prep-session-switcher" id="prep-session-switcher">
-      <div class="field prep-session-select-field">
-        <label class="prep-title-label" for="prep-session-select">${escapeHtml(t('session_switcher_label'))}</label>
-        <select id="prep-session-select" aria-label="${escapeAttr(t('session_switcher_label'))}">${options}</select>
+    <div class="prep-session-bar" id="prep-session-bar">
+      <div class="prep-session-identity">
+        <div class="prep-session-titlerow">
+          <div class="prep-session-title-wrap" id="prep-session-title-wrap">
+            <button type="button" class="prep-session-title-btn" id="prep-session-title-btn"
+                    aria-haspopup="menu" aria-expanded="false" aria-controls="prep-session-menu"
+                    aria-label="${escapeAttr(t('session_open_selector') + ': ' + title)}">
+              <span class="prep-session-title-text">${escapeHtml(title)}</span>${ICON_CHEVRON_DOWN}
+            </button>
+            <input type="text" class="prep-session-title-input" id="prep-session-title-input" hidden
+                   maxlength="${SESSION_TITLE_MAX}" autocomplete="off" spellcheck="false"
+                   aria-label="${escapeAttr(t('session_name_label'))}">
+            <div class="prep-menu prep-session-menu" id="prep-session-menu" role="menu" hidden
+                 aria-labelledby="prep-session-title-btn">
+              <div class="prep-menu-heading" id="prep-session-menu-heading">${escapeHtml(t('session_list_heading'))}</div>
+              <div class="prep-menu-list" role="group" aria-labelledby="prep-session-menu-heading">${sessionItems}</div>
+              <div class="prep-menu-sep" role="separator"></div>
+              <button type="button" class="prep-menu-item" role="menuitem" tabindex="-1" data-sp-menu-create>
+                <span class="prep-menu-check" aria-hidden="true">${ICON_PLUS}</span>
+                <span class="prep-menu-label">${escapeHtml(t('session_create_new'))}</span>
+              </button>
+            </div>
+          </div>
+          <button type="button" class="prep-session-icon-btn prep-session-rename-btn" id="prep-session-rename-btn"
+                  aria-label="${escapeAttr(t('session_rename_current'))}" data-tip="${escapeAttr(t('session_rename_current'))}">${ICON_PENCIL}</button>
+        </div>
+        <p class="prep-save-status" id="prep-save-status" role="status" aria-live="polite"></p>
       </div>
       <div class="prep-session-actions">
-        <button type="button" class="btn btn-sm btn-ghost" id="prep-session-new">${escapeHtml(t('session_new'))}</button>
-        <button type="button" class="btn btn-sm btn-ghost" id="prep-session-duplicate">${escapeHtml(t('session_duplicate'))}</button>
-        <button type="button" class="btn btn-sm btn-ghost" id="prep-session-delete">${escapeHtml(t('session_delete'))}</button>
+        <button type="button" class="btn btn-ghost prep-session-new-btn" id="prep-session-new-btn"
+                aria-label="${escapeAttr(t('session_new_aria'))}" data-tip="${escapeAttr(t('session_create_new'))}">${ICON_PLUS}<span>${escapeHtml(t('session_new'))}</span></button>
+        <div class="prep-session-more-wrap" id="prep-session-more-wrap">
+          <button type="button" class="prep-session-icon-btn prep-session-more-btn" id="prep-session-more-btn"
+                  aria-haspopup="menu" aria-expanded="false" aria-controls="prep-session-actions-menu"
+                  aria-label="${escapeAttr(t('session_actions_open'))}" data-tip="${escapeAttr(t('session_actions_open'))}">${ICON_MORE}</button>
+          <div class="prep-menu prep-session-actions-menu" id="prep-session-actions-menu" role="menu" hidden
+               aria-labelledby="prep-session-more-btn">
+            <button type="button" class="prep-menu-item" role="menuitem" tabindex="-1" data-sp-menu-rename>
+              <span class="prep-menu-label">${escapeHtml(t('session_rename'))}</span>
+            </button>
+            <button type="button" class="prep-menu-item" role="menuitem" tabindex="-1" data-sp-menu-duplicate>
+              <span class="prep-menu-label">${escapeHtml(t('session_duplicate'))}</span>
+            </button>
+            <div class="prep-menu-sep" role="separator"></div>
+            <button type="button" class="prep-menu-item is-danger${onlyOne ? ' is-disabled' : ''}" role="menuitem" tabindex="-1"
+                    data-sp-menu-delete${deleteAttrs}>
+              <span class="prep-menu-label">${escapeHtml(t('session_delete'))}</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>`;
 }
 
-/** Focuses and selects the session title field — used right after creating
- * or duplicating a session, so the GM can immediately type a name over the
- * default/copied one without an extra click. */
-function focusSessionTitleForRename() {
-  const input = document.getElementById('prep-session-title');
-  if (input) { input.focus(); input.select(); }
+/* -- menus: one open at a time, outside click / Escape / arrow keys -- */
+
+let activeSessionMenu = null;
+function closeActiveSessionMenu(returnFocus) {
+  if (activeSessionMenu) activeSessionMenu.close(returnFocus);
 }
 
-function bindSessionPrepSwitcher() {
-  const select = document.getElementById('prep-session-select');
-  if (select) {
-    select.addEventListener('change', () => {
-      const result = switchSessionPrepSession(select.value);
-      if (!result) return;
-      updateSaveStatusDisplay(result);
-      renderSessionPrepPage();
-    });
-  }
-  const newBtn = document.getElementById('prep-session-new');
-  if (newBtn) newBtn.addEventListener('click', () => {
-    const result = createSessionPrepSession();
-    updateSaveStatusDisplay(result);
-    renderSessionPrepPage();
-    focusSessionTitleForRename();
-  });
-  const dupBtn = document.getElementById('prep-session-duplicate');
-  if (dupBtn) dupBtn.addEventListener('click', () => {
-    const session = activeSessionPrep();
-    if (!session) return;
-    const result = duplicateSessionPrepSession(session.id);
-    if (!result) return;
-    updateSaveStatusDisplay(result);
-    renderSessionPrepPage();
-    focusSessionTitleForRename();
-  });
-  const delBtn = document.getElementById('prep-session-delete');
-  if (delBtn) delBtn.addEventListener('click', () => {
-    const session = activeSessionPrep();
-    if (!session) return;
-    if (!confirm(t('session_delete_confirm').replace('{name}', sessionDisplayTitle(session)))) return;
-    const result = deleteSessionPrepSession(session.id);
-    updateSaveStatusDisplay(result);
-    renderSessionPrepPage();
-  });
+/** Keeps an opened menu inside the viewport: nudged sideways if it would
+ * overflow either edge, and capped to the room left below its top edge (the
+ * CSS max-height — ~340px — still applies when there is more room). */
+function positionSessionMenu(panel) {
+  panel.style.translate = '';
+  panel.style.removeProperty('--menu-room');
+  const margin = 8;
+  const r = panel.getBoundingClientRect();
+  let shift = 0;
+  if (r.right > window.innerWidth - margin) shift = window.innerWidth - margin - r.right;
+  if (r.left + shift < margin) shift = margin - r.left;
+  if (shift) panel.style.translate = `${Math.round(shift)}px 0`;
+  panel.style.setProperty('--menu-room', `${Math.max(160, Math.floor(window.innerHeight - r.top - margin))}px`);
 }
 
-/* ---------------- session header (title + save status) ---------------- */
-
-function sessionHeaderHtml(session) {
-  return `
-    ${sessionSwitcherHtml(session)}
-    <div class="prep-session-header" id="prep-session-header">
-      <div class="prep-title-field">
-        <label class="prep-title-label" for="prep-session-title">${escapeHtml(t('session_name_label'))}</label>
-        <input type="text" id="prep-session-title" maxlength="120"
-               placeholder="${escapeAttr(t('session_name_placeholder'))}" value="${escapeAttr(session.title)}">
-      </div>
-      <p class="prep-save-status" id="prep-save-status" role="status" aria-live="polite"
-         data-state="${state.sessionPrepUI.saveFailed ? 'error' : 'ok'}">${escapeHtml(sessionSaveStatusText())}</p>
-    </div>`;
+/** A tooltip carrying the full text, only for a label the layout has
+ * actually truncated. Reads layout, so it must run while the element is
+ * rendered (a `hidden` menu has zero widths). */
+function syncTruncationTip(labelEl, holderEl, fullText) {
+  if (!labelEl || !holderEl) return;
+  if (labelEl.scrollWidth > labelEl.clientWidth) holderEl.dataset.tip = fullText;
+  else delete holderEl.dataset.tip;
 }
 
-/** Keeps the switcher's own option label for `session` in sync with a title
- * edit, without a full renderSessionPrepPage() — the same targeted-refresh
- * approach every other Session Prep field change already uses. */
-function refreshSessionSwitcherOption(session) {
-  const select = document.getElementById('prep-session-select');
-  if (!select) return;
-  const option = select.querySelector(`option[value="${escapeSelectorAttrValue(session.id)}"]`);
-  if (option) option.textContent = sessionDisplayTitle(session);
-}
-
-const SESSION_TITLE_DEBOUNCE_MS = 300;
-
-function saveSessionTitle(rawValue) {
-  const title = String(rawValue == null ? '' : rawValue).slice(0, 120);
+function syncSessionTitleTip() {
+  const btn = sessionBarEl('prep-session-title-btn');
   const session = activeSessionPrep();
-  if (!session || session.title === title) return;
-  const { result, session: saved } = updateSessionPrepSession(s => Object.assign({}, s, { title }));
+  if (!btn || !session) return;
+  syncTruncationTip(btn.querySelector('.prep-session-title-text'), btn, sessionDisplayTitle(session));
+}
+
+function syncSessionMenuTips() {
+  const menu = sessionBarEl('prep-session-menu');
+  if (!menu) return;
+  menu.querySelectorAll('[data-sp-switch]').forEach(item => {
+    const label = item.querySelector('.prep-menu-label');
+    syncTruncationTip(label, item, label.textContent);
+  });
+}
+
+window.addEventListener('resize', syncSessionTitleTip);
+
+/** `root` holds trigger + panel (an outside click is one that lands outside
+ * it). `initialItem(items)` picks what receives focus when the menu opens. */
+function bindSessionMenu({ root, trigger, panel, initialItem, onOpen }) {
+  const controller = { close, isOpen: () => !panel.hidden };
+  const items = () => Array.from(panel.querySelectorAll('[role^="menuitem"]'));
+
+  function open() {
+    closeActiveMultiSelect();
+    closeActiveSessionMenu();
+    hideTip();
+    panel.hidden = false;
+    trigger.setAttribute('aria-expanded', 'true');
+    positionSessionMenu(panel);
+    if (onOpen) onOpen();
+    document.addEventListener('click', onDocClick);
+    document.addEventListener('keydown', onDocKeydown);
+    activeSessionMenu = controller;
+    const list = items();
+    const first = initialItem ? initialItem(list) : list[0];
+    if (first) first.focus({ preventScroll: true });
+    if (first && first.scrollIntoView) first.scrollIntoView({ block: 'nearest' });
+  }
+  function close(returnFocus) {
+    panel.hidden = true;
+    trigger.setAttribute('aria-expanded', 'false');
+    document.removeEventListener('click', onDocClick);
+    document.removeEventListener('keydown', onDocKeydown);
+    if (activeSessionMenu === controller) activeSessionMenu = null;
+    if (returnFocus) trigger.focus();
+  }
+  function onDocClick(e) { if (!root.contains(e.target)) close(); }
+  function onDocKeydown(e) {
+    if (e.key === 'Escape') { e.preventDefault(); close(true); return; }
+    if (e.key === 'Tab') { close(true); return; }
+    const list = items();
+    if (!list.length) return;
+    const i = list.indexOf(document.activeElement);
+    let next = null;
+    if (e.key === 'ArrowDown') next = list[i < 0 ? 0 : (i + 1) % list.length];
+    else if (e.key === 'ArrowUp') next = list[i < 0 ? list.length - 1 : (i - 1 + list.length) % list.length];
+    else if (e.key === 'Home') next = list[0];
+    else if (e.key === 'End') next = list[list.length - 1];
+    if (next) { e.preventDefault(); next.focus({ preventScroll: true }); next.scrollIntoView({ block: 'nearest' }); }
+  }
+
+  trigger.addEventListener('click', () => { controller.isOpen() ? close() : open(); });
+  trigger.addEventListener('keydown', e => {
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && !controller.isOpen()) { e.preventDefault(); open(); }
+  });
+  return controller;
+}
+
+/* -- lifecycle wrappers: existing handlers + save status + full re-render -- */
+
+function focusSessionTitleButton() {
+  const btn = sessionBarEl('prep-session-title-btn');
+  if (btn) btn.focus({ preventScroll: true });
+}
+
+function sessionBarCreate() {
+  const result = createSessionPrepSession();
+  updateSaveStatusDisplay(result);
+  renderSessionPrepPage();
+  beginSessionRename();
+}
+
+function sessionBarSwitch(sessionId) {
+  const result = switchSessionPrepSession(sessionId);
+  if (result) {
+    updateSaveStatusDisplay(result);
+    renderSessionPrepPage();
+  }
+  focusSessionTitleButton();
+}
+
+function sessionBarDuplicate() {
+  const session = activeSessionPrep();
+  if (!session) return;
+  const result = duplicateSessionPrepSession(session.id);
+  if (!result) return;
+  updateSaveStatusDisplay(result);
+  renderSessionPrepPage();
+  beginSessionRename();
+}
+
+/** Confirmation dialog for Delete session — registerOverlay() supplies the
+ * focus trap, Escape, scroll lock and focus restore (to `opener`, the actions
+ * button, which the caller focused before opening this). Cancel gets initial
+ * focus: the safe action. */
+function openSessionDeleteConfirm(session) {
+  const name = sessionDisplayTitle(session);
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.dataset.overlayKind = 'popup';
+  overlay.innerHTML = `
+    <div class="modal modal-sm" data-overlay-card role="alertdialog" aria-modal="true"
+         aria-labelledby="prep-delete-title" aria-describedby="prep-delete-body">
+      <div class="modal-header">
+        <h2 id="prep-delete-title">${escapeHtml(t('session_delete_confirm_title').replace('{name}', name))}</h2>
+      </div>
+      <div class="modal-body">
+        <p class="prep-confirm-body" id="prep-delete-body">${escapeHtml(t('session_delete_confirm_body'))}</p>
+        <div class="prep-confirm-actions">
+          <button type="button" class="btn btn-ghost" data-sp-confirm-cancel>${escapeHtml(t('cancel'))}</button>
+          <button type="button" class="btn btn-danger" data-sp-confirm-delete>${escapeHtml(t('delete'))}</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  const teardown = registerOverlay(overlay, close);
+  function close() { overlay.remove(); teardown(); }
+
+  overlay.querySelector('[data-sp-confirm-cancel]').addEventListener('click', close);
+  overlay.querySelector('[data-sp-confirm-delete]').addEventListener('click', () => {
+    const result = deleteSessionPrepSession(session.id);
+    close();
+    updateSaveStatusDisplay(result);
+    renderSessionPrepPage();
+    focusSessionTitleButton();
+  });
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+  overlay.querySelector('[data-sp-confirm-cancel]').focus();
+}
+
+/* -- inline rename -- */
+
+/** Swaps the title button for an input holding the current name, at the same
+ * line box so nothing below or beside it moves vertically. Used by the pencil,
+ * the actions menu's Rename, and right after New / Duplicate (so the GM can
+ * type a name over the default/copied one, as before). */
+function beginSessionRename() {
+  const btn = sessionBarEl('prep-session-title-btn');
+  const input = sessionBarEl('prep-session-title-input');
+  const pencil = sessionBarEl('prep-session-rename-btn');
+  const session = activeSessionPrep();
+  if (!btn || !input || !pencil || !session || !input.hidden) return;
+  closeActiveSessionMenu();
+  hideTip();
+  input.value = sessionDisplayTitle(session);
+  input.style.width = `${Math.max(btn.offsetWidth, 240)}px`;
+  btn.hidden = true;
+  pencil.hidden = true;
+  input.hidden = false;
+  input.focus();
+  input.select();
+}
+
+/** Enter/blur commit, Escape cancels. The input is hidden first so the blur
+ * that hiding a focused element can fire finds nothing left to do. An empty
+ * result never persists and never replaces the name with the placeholder —
+ * the previous name simply stays (SessionPrepUtils.resolveSessionRename()). */
+function finishSessionRename(commit, returnFocus) {
+  const btn = sessionBarEl('prep-session-title-btn');
+  const input = sessionBarEl('prep-session-title-input');
+  const pencil = sessionBarEl('prep-session-rename-btn');
+  if (!btn || !input || !pencil || input.hidden) return;
+  const raw = input.value;
+  input.hidden = true;
+  btn.hidden = false;
+  pencil.hidden = false;
+  const session = activeSessionPrep();
+  if (commit && session) {
+    const outcome = SessionPrepUtils.resolveSessionRename(sessionDisplayTitle(session), raw, SESSION_TITLE_MAX);
+    if (outcome.status === 'changed') saveSessionTitle(outcome.value);
+  }
+  syncSessionTitleTip();
+  if (returnFocus) btn.focus({ preventScroll: true });
+}
+
+/** Refreshes the bar's own copies of one session's name (title text, the
+ * button's accessible name, its menu row) after a rename, without a full
+ * renderSessionPrepPage() — the same targeted-refresh approach every other
+ * Session Prep field change already uses. */
+function refreshSessionBarTitle(session) {
+  const title = sessionDisplayTitle(session);
+  const btn = sessionBarEl('prep-session-title-btn');
+  if (btn) {
+    btn.querySelector('.prep-session-title-text').textContent = title;
+    btn.setAttribute('aria-label', `${t('session_open_selector')}: ${title}`);
+  }
+  const item = document.querySelector(`[data-sp-switch="${escapeSelectorAttrValue(session.id)}"] .prep-menu-label`);
+  if (item) item.textContent = title;
+  syncSessionTitleTip();
+}
+
+function saveSessionTitle(title) {
+  const next = String(title == null ? '' : title).slice(0, SESSION_TITLE_MAX);
+  const session = activeSessionPrep();
+  if (!session || session.title === next) return;
+  const { result, session: saved } = updateSessionPrepSession(s => Object.assign({}, s, { title: next }));
   updateSaveStatusDisplay(result);
   refreshFreshCutGrassLink();
-  if (saved) refreshSessionSwitcherOption(saved);
+  if (saved) refreshSessionBarTitle(saved);
 }
 
-function bindSessionPrepTitleInput() {
-  const input = document.getElementById('prep-session-title');
-  if (!input) return;
-  let debounceTimer = null;
-  input.addEventListener('input', () => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => saveSessionTitle(input.value), SESSION_TITLE_DEBOUNCE_MS);
+function bindSessionBar() {
+  const bar = sessionBarEl('prep-session-bar');
+  if (!bar) return;
+  const statusEl = sessionBarEl('prep-save-status');
+  if (statusEl) paintSaveStatus(statusEl);
+
+  const titleWrap = sessionBarEl('prep-session-title-wrap');
+  const titleBtn = sessionBarEl('prep-session-title-btn');
+  const menu = sessionBarEl('prep-session-menu');
+  bindSessionMenu({
+    root: titleWrap, trigger: titleBtn, panel: menu,
+    initialItem: list => list.find(el => el.getAttribute('aria-checked') === 'true') || list[0],
+    onOpen: syncSessionMenuTips,
   });
-  input.addEventListener('blur', () => {
-    clearTimeout(debounceTimer);
-    // A session's stored title is never left empty/whitespace-only — unlike
-    // the debounced mid-typing save above (which can transiently persist an
-    // empty string while a GM is still typing), blur is the "done editing"
-    // commit point, so this is where the localized default is substituted.
-    const resolved = SessionPrepUtils.resolveSessionTitle(input.value, t('session_name_placeholder'));
-    if (resolved !== input.value) input.value = resolved;
-    saveSessionTitle(resolved);
+  menu.addEventListener('click', e => {
+    const item = e.target.closest('.prep-menu-item');
+    if (!item) return;
+    closeActiveSessionMenu(true);
+    if (item.hasAttribute('data-sp-menu-create')) sessionBarCreate();
+    else if (item.dataset.spSwitch) sessionBarSwitch(item.dataset.spSwitch);
   });
+
+  const moreWrap = sessionBarEl('prep-session-more-wrap');
+  const moreBtn = sessionBarEl('prep-session-more-btn');
+  const actionsMenu = sessionBarEl('prep-session-actions-menu');
+  bindSessionMenu({ root: moreWrap, trigger: moreBtn, panel: actionsMenu });
+  actionsMenu.addEventListener('click', e => {
+    const item = e.target.closest('.prep-menu-item');
+    if (!item) return;
+    if (item.getAttribute('aria-disabled') === 'true') return;
+    closeActiveSessionMenu(true);
+    if (item.hasAttribute('data-sp-menu-rename')) beginSessionRename();
+    else if (item.hasAttribute('data-sp-menu-duplicate')) sessionBarDuplicate();
+    else if (item.hasAttribute('data-sp-menu-delete')) {
+      const session = activeSessionPrep();
+      if (session) openSessionDeleteConfirm(session);
+    }
+  });
+
+  sessionBarEl('prep-session-new-btn').addEventListener('click', sessionBarCreate);
+  sessionBarEl('prep-session-rename-btn').addEventListener('click', beginSessionRename);
+
+  const input = sessionBarEl('prep-session-title-input');
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); finishSessionRename(true, true); }
+    else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); finishSessionRename(false, true); }
+  });
+  input.addEventListener('blur', () => finishSessionRename(true, false));
+
+  syncSessionTitleTip();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncSessionTitleTip);
 }
 
 const SESSION_PREP_SEARCH_DEBOUNCE_MS = 200;
@@ -4617,8 +4887,7 @@ function bindSessionPrepSearchAndTitle() {
   bindSessionPrepSearchField('env');
   bindSessionPrepSearchField('adv');
   bindSessionPrepSearchField('item');
-  bindSessionPrepTitleInput();
-  bindSessionPrepSwitcher();
+  bindSessionBar();
 }
 
 /* ---------------- catalogue load failure + retry ---------------- */
@@ -4866,9 +5135,9 @@ function bindSessionPrepDelegation(el) {
  * adds, between two CSS-driven variants of the *same* #header markup
  * renderHeader() always produces (see the "Session Prep chrome" rules in
  * css/styles.css) — never a second copy of the header. The one toggle also
- * drives the session title/save-status strip and the session switcher row
- * (sessionHeaderHtml()/sessionSwitcherHtml(), in the workspace, not this
- * chrome) out of layout entirely — both areas read the single
+ * drives the Session Bar (title, save status, New/actions —
+ * sessionBarHtml(), in the workspace, not this chrome) out of layout
+ * entirely — both areas read the single
  * `data-sp-header-mode` attribute this controller sets on <body>, so there
  * is exactly one source of truth for the mode, never two independent
  * states to fall out of sync.
@@ -4915,7 +5184,7 @@ let sessionPrepChromeState = null;
 
 /** Reflects the current mode onto the DOM: the `data-sp-header-mode`
  * attribute on <body> (drives every compact-mode CSS rule in
- * css/styles.css, for both the global header and the session-title strip)
+ * css/styles.css, for both the global header and the Session Bar)
  * and the toggle's icon/aria-expanded/label. Called on every mode change and
  * once more at the end of every renderSessionPrepPage(), so a language
  * switch keeps the toggle's text current without recreating the button. */
@@ -4965,7 +5234,7 @@ function initSessionPrepChrome() {
     toggleEl.type = 'button';
     toggleEl.id = 'sp-chrome-toggle';
     toggleEl.className = 'sp-chrome-toggle';
-    toggleEl.setAttribute('aria-controls', 'session-prep-chrome prep-session-header prep-session-switcher');
+    toggleEl.setAttribute('aria-controls', 'session-prep-chrome prep-session-bar');
     c = { mode: storedSessionPrepHeaderMode(), toggleEl };
     toggleEl.addEventListener('click', () => {
       sessionPrepChromeSetMode(c.mode === 'compact' ? 'expanded' : 'compact');
@@ -5019,13 +5288,13 @@ function renderSessionPrepPage() {
     return;
   }
   const session = activeSessionPrep();
-  // The session name/save-status row is part of the workspace, not the
-  // collapsible header chrome — see the "Session Prep" section of
-  // CLAUDE.md — so it's the first child of .prep-wrap and stays visible
-  // regardless of the chrome's collapsed state.
+  // The Session Bar is part of the workspace, not the site header chrome,
+  // so it's the first child of .prep-wrap — but it is still hidden by the
+  // same `data-sp-header-mode="compact"` switch as the header (see the
+  // compact-mode rules in css/styles.css).
   el.innerHTML = `
     <div class="prep-wrap">
-      ${sessionHeaderHtml(session)}
+      ${sessionBarHtml(session)}
       <div class="prep-main">
         ${envPickerColumnHtml(session)}
         ${centralSectionHtml(session)}

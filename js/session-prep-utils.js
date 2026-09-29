@@ -144,6 +144,25 @@
     return trimmed || fallback;
   }
 
+  /** Resolves an inline rename attempt (the Session Bar's pencil / Rename
+   * menu item) against the title the bar currently shows. Unlike
+   * resolveSessionTitle() above — which substitutes the localized default for
+   * an empty value — an empty rename here is rejected outright so the caller
+   * restores the previous name instead of silently overwriting it with the
+   * placeholder. Same status vocabulary as ListUtils.resolveListRename():
+   * 'invalid' (trims to nothing; `value` is `currentTitle`), 'unchanged'
+   * (trims to exactly `currentTitle`), 'changed' (`value` is the trimmed new
+   * title, clamped to `maxLength`). `currentTitle` is the *displayed* title,
+   * so a session whose stored title is still '' (showing the placeholder)
+   * compares equal to that placeholder rather than persisting it. */
+  function resolveSessionRename(currentTitle, rawValue, maxLength) {
+    var trimmed = String(rawValue == null ? '' : rawValue).trim();
+    if (!trimmed) return { status: 'invalid', value: currentTitle };
+    if (typeof maxLength === 'number' && trimmed.length > maxLength) trimmed = trimmed.slice(0, maxLength).trim();
+    if (trimmed === currentTitle) return { status: 'unchanged', value: currentTitle };
+    return { status: 'changed', value: trimmed };
+  }
+
   /* ---------------- id-list normalization ---------------- */
 
   /** Drops duplicates, keeping the first occurrence's position. Used for
@@ -584,6 +603,7 @@
     setActiveSession: setActiveSession,
     removeSession: removeSession,
     resolveSessionTitle: resolveSessionTitle,
+    resolveSessionRename: resolveSessionRename,
     normalizeIdList: normalizeIdList,
     toggleId: toggleId,
     removeId: removeId,
