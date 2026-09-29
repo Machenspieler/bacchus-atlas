@@ -300,72 +300,165 @@ test('matchesItemSearch is false when the query matches neither name nor roll', 
   assert.equal(SPU.matchesItemSearch('dragon', prepItemFields(PREP_ITEMS[0]), PREP_ITEMS[0].roll), false);
 });
 
-/* ---------------- environment + biome search (Session Prep) ---------------- */
+/* ---------------- environment search (compact "All Environments" toolbar) ---------------- */
 
-const PREP_I18N_EN = {
-  biome_forest: 'Forest',
-  biome_settlement: 'Settlement',
-  biome_aquatic: 'Aquatic',
+const TOOLBAR_I18N_EN = {
+  type_exploration: 'Exploration', type_social: 'Social',
+  biome_forest: 'Forest', biome_settlement: 'Settlement', biome_underground: 'Underground', biome_aquatic: 'Aquatic',
 };
-const PREP_I18N_RU = {
-  biome_forest: 'Лесное',
-  biome_settlement: 'Поселение',
-  biome_aquatic: 'Водное',
+const TOOLBAR_I18N_RU = {
+  type_exploration: 'Исследование', type_social: 'Социальный',
+  biome_forest: 'Лесное', biome_settlement: 'Поселение', biome_underground: 'Подземелье', biome_aquatic: 'Водное',
 };
 
-const PREP_ENVS = [
-  { id: 'moonlit-glade', name: { en: 'Moonlit Glade', ru: 'Лунная Поляна' }, biomes: ['forest'] },
-  { id: 'market-square', name: { en: 'Market Square', ru: 'Рыночная Площадь' }, biomes: ['settlement'] },
-  { id: 'sunken-reef', name: { en: 'Sunken Reef', ru: 'Затонувший Риф' }, biomes: ['aquatic', 'settlement'] },
+const TOOLBAR_ENVS = [
+  { id: 'moonlit-glade', name: { en: 'Moonlit Glade', ru: 'Лунная Поляна' }, tier: 1, type: 'exploration', biomes: ['forest'] },
+  { id: 'market-square', name: { en: 'Market Square', ru: 'Рыночная Площадь' }, tier: 2, type: 'social', biomes: ['settlement'] },
+  { id: 'sunken-reef', name: { en: 'Sunken Reef', ru: 'Затонувший Риф' }, tier: 3, type: 'exploration', biomes: ['aquatic', 'settlement'] },
+  { id: 'forgotten-crypt', name: { en: 'Forgotten Crypt', ru: 'Забытый Склеп' }, tier: 3, type: 'exploration', biomes: ['underground'] },
+  { id: 'tierless-rift', name: { en: 'Tierless Rift', ru: 'Безранговый Разлом' }, tier: null, type: 'event', biomes: [] },
 ];
 
-function prepFields(env) {
-  return SPU.environmentSearchFields(env, PREP_I18N_EN, PREP_I18N_RU);
+function toolbarIndex() {
+  return SPU.buildEnvironmentSearchIndex(TOOLBAR_ENVS, TOOLBAR_I18N_EN, TOOLBAR_I18N_RU);
 }
 
-test('environmentSearchFields matches by English environment name', () => {
-  const result = SPU.filterEntries(PREP_ENVS, 'Moonlit', prepFields);
-  assert.deepEqual(result.map(e => e.id), ['moonlit-glade']);
+function toolbarFilter(options) {
+  return SPU.filterEnvironmentsByToolbar(TOOLBAR_ENVS, toolbarIndex(), options);
+}
+
+test('partial English name match', () => {
+  assert.deepEqual(toolbarFilter({ search: 'moon' }).map(e => e.id), ['moonlit-glade']);
 });
 
-test('environmentSearchFields matches by Russian environment name', () => {
-  const result = SPU.filterEntries(PREP_ENVS, 'Поляна', prepFields);
-  assert.deepEqual(result.map(e => e.id), ['moonlit-glade']);
+test('full English name match', () => {
+  assert.deepEqual(toolbarFilter({ search: 'Moonlit Glade' }).map(e => e.id), ['moonlit-glade']);
 });
 
-test('environmentSearchFields matches by canonical biome key', () => {
-  const result = SPU.filterEntries(PREP_ENVS, 'forest', prepFields);
-  assert.deepEqual(result.map(e => e.id), ['moonlit-glade']);
+test('partial Russian name match', () => {
+  assert.deepEqual(toolbarFilter({ search: 'полян' }).map(e => e.id), ['moonlit-glade']);
 });
 
-test('environmentSearchFields matches by English biome label even when absent from the name', () => {
-  const result = SPU.filterEntries(PREP_ENVS, 'Settlement', prepFields);
-  assert.deepEqual(result.map(e => e.id).sort(), ['market-square', 'sunken-reef']);
+test('full Russian name match', () => {
+  assert.deepEqual(toolbarFilter({ search: 'Лунная Поляна' }).map(e => e.id), ['moonlit-glade']);
 });
 
-test('environmentSearchFields matches by Russian biome label', () => {
-  const result = SPU.filterEntries(PREP_ENVS, 'поселение', prepFields);
-  assert.deepEqual(result.map(e => e.id).sort(), ['market-square', 'sunken-reef']);
+test('search by bare numeric tier', () => {
+  assert.deepEqual(toolbarFilter({ search: '2' }).map(e => e.id), ['market-square']);
 });
 
-test('environmentSearchFields matching is case-insensitive', () => {
-  const upper = SPU.filterEntries(PREP_ENVS, 'FOREST', prepFields);
-  const lower = SPU.filterEntries(PREP_ENVS, 'forest', prepFields);
+test('search by "tier N"', () => {
+  assert.deepEqual(toolbarFilter({ search: 'tier 2' }).map(e => e.id), ['market-square']);
+});
+
+test('search by "rank N"', () => {
+  assert.deepEqual(toolbarFilter({ search: 'rank 2' }).map(e => e.id), ['market-square']);
+});
+
+test('search by "ранг N"', () => {
+  assert.deepEqual(toolbarFilter({ search: 'ранг 2' }).map(e => e.id), ['market-square']);
+});
+
+test('English type search', () => {
+  assert.deepEqual(toolbarFilter({ search: 'social' }).map(e => e.id), ['market-square']);
+});
+
+test('Russian type search', () => {
+  assert.deepEqual(toolbarFilter({ search: 'социал' }).map(e => e.id), ['market-square']);
+});
+
+test('English biome search', () => {
+  assert.deepEqual(toolbarFilter({ search: 'underg' }).map(e => e.id), ['forgotten-crypt']);
+});
+
+test('Russian biome search', () => {
+  assert.deepEqual(toolbarFilter({ search: 'подзем' }).map(e => e.id), ['forgotten-crypt']);
+});
+
+test('multi-token AND matching across different fields (tier + biome + type)', () => {
+  // "3" -> tier, "подзем" -> biome, "исслед" -> type, all on forgotten-crypt only.
+  const result = toolbarFilter({ search: '3 подзем исслед' });
+  assert.deepEqual(result.map(e => e.id), ['forgotten-crypt']);
+});
+
+test('multi-token query with no common match returns nothing', () => {
+  assert.deepEqual(toolbarFilter({ search: 'moonlit settlement' }), []);
+});
+
+test('case-insensitive matching', () => {
+  const upper = toolbarFilter({ search: 'MOONLIT' });
+  const lower = toolbarFilter({ search: 'moonlit' });
   assert.deepEqual(upper.map(e => e.id), lower.map(e => e.id));
   assert.deepEqual(upper.map(e => e.id), ['moonlit-glade']);
 });
 
-test('an environment matching on more than one field is returned only once', () => {
-  // "settlement" matches both the raw biome id and its EN label for the same entries.
-  const result = SPU.filterEntries(PREP_ENVS, 'settlement', prepFields);
-  const ids = result.map(e => e.id);
-  assert.deepEqual(ids.sort(), ['market-square', 'sunken-reef']);
-  assert.equal(new Set(ids).size, ids.length);
+test('ё and е are treated as equivalent', () => {
+  // Query typed with plain "е" must still find data spelled with "ё".
+  const yoEnv = [{ id: 'dead-woods', name: { en: 'Dead Woods', ru: 'Мёртвый Лес' }, tier: 1, type: 'exploration', biomes: ['forest'] }];
+  const index = SPU.buildEnvironmentSearchIndex(yoEnv, TOOLBAR_I18N_EN, TOOLBAR_I18N_RU);
+  const result = SPU.filterEnvironmentsByToolbar(yoEnv, index, { search: 'мертвый' });
+  assert.deepEqual(result.map(e => e.id), ['dead-woods']);
 });
 
-test('an empty biome/name query returns the full environment catalogue', () => {
-  const result = SPU.filterEntries(PREP_ENVS, '', prepFields);
-  assert.deepEqual(result.map(e => e.id), PREP_ENVS.map(e => e.id));
+test('punctuation and repeated whitespace are normalized away', () => {
+  const punctuated = toolbarFilter({ search: 'moonlit,   glade!!' });
+  assert.deepEqual(punctuated.map(e => e.id), ['moonlit-glade']);
+});
+
+test('environments with a missing Russian name are still matched by English fields', () => {
+  const noRuName = [{ id: 'en-only', name: { en: 'Silent Vale' }, tier: 1, type: 'exploration', biomes: [] }];
+  const index = SPU.buildEnvironmentSearchIndex(noRuName, TOOLBAR_I18N_EN, TOOLBAR_I18N_RU);
+  const result = SPU.filterEnvironmentsByToolbar(noRuName, index, { search: 'silent' });
+  assert.deepEqual(result.map(e => e.id), ['en-only']);
+});
+
+test('environments with missing or empty biome data never throw and are matched by name', () => {
+  const noBiomes = [{ id: 'no-biomes', name: { en: 'Blank Slate', ru: '' }, tier: null, type: null }];
+  const index = SPU.buildEnvironmentSearchIndex(noBiomes, TOOLBAR_I18N_EN, TOOLBAR_I18N_RU);
+  assert.doesNotThrow(() => SPU.filterEnvironmentsByToolbar(noBiomes, index, { search: 'blank' }));
+  const result = SPU.filterEnvironmentsByToolbar(noBiomes, index, { search: 'blank' });
+  assert.deepEqual(result.map(e => e.id), ['no-biomes']);
+});
+
+test('a query producing no matches returns an empty array', () => {
+  assert.deepEqual(toolbarFilter({ search: 'nonexistentplace' }), []);
+});
+
+test('an empty query returns the full environment catalogue', () => {
+  assert.deepEqual(toolbarFilter({ search: '' }).map(e => e.id), TOOLBAR_ENVS.map(e => e.id));
+});
+
+test('filterEnvironmentsByToolbar never mutates the input array', () => {
+  const before = TOOLBAR_ENVS.map(e => e.id);
+  toolbarFilter({ search: 'moon', tiers: new Set([1]) });
+  assert.deepEqual(TOOLBAR_ENVS.map(e => e.id), before);
+});
+
+/* ---------------- environment Tier multiselect (compact toolbar) ---------------- */
+
+test('no selected Tier means all tiers are allowed', () => {
+  assert.deepEqual(toolbarFilter({}).map(e => e.id), TOOLBAR_ENVS.map(e => e.id));
+});
+
+test('selecting one Tier filters to that Tier only', () => {
+  assert.deepEqual(toolbarFilter({ tiers: new Set([2]) }).map(e => e.id), ['market-square']);
+});
+
+test('selecting multiple Tiers ORs them together', () => {
+  const result = toolbarFilter({ tiers: new Set([1, 2]) });
+  assert.deepEqual(result.map(e => e.id).sort(), ['market-square', 'moonlit-glade']);
+});
+
+test('Tier selection ANDs with the text search', () => {
+  const result = toolbarFilter({ tiers: new Set([3]), search: 'crypt' });
+  assert.deepEqual(result.map(e => e.id), ['forgotten-crypt']);
+  const noMatch = toolbarFilter({ tiers: new Set([1]), search: 'crypt' });
+  assert.deepEqual(noMatch, []);
+});
+
+test('a tier-agnostic (null tier) environment never matches a Tier filter', () => {
+  const result = toolbarFilter({ tiers: new Set([1, 2, 3, 4]) });
+  assert.equal(result.some(e => e.id === 'tierless-rift'), false);
 });
 
 /* ---------------- id-list normalization ---------------- */

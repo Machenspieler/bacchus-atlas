@@ -260,22 +260,95 @@
     return items.filter(function (item) { return matchesItemSearch(q, getFields(item), getRoll(item)); });
   }
 
-  /** Searchable fields for one environment in the Session Prep picker: its
-   * bilingual name plus, for every biome id it carries, the raw biome id
-   * itself and its EN/RU localized label — read from the supplied i18n
-   * dictionaries' `biome_<id>` keys (both languages at once, regardless of
-   * which one is currently displayed), never a biome name hardcoded here.
-   * `i18nEn`/`i18nRu` are plain `{ key: value }` dictionaries, e.g.
-   * `state.i18n.en`/`state.i18n.ru` in js/app.js — this stays a pure
-   * function of its arguments, with no access to application state itself.
-   * See "Biome tagging" in CLAUDE.md for the fixed set of biome ids. */
-  function environmentSearchFields(env, i18nEn, i18nRu) {
+  /* ---------------- environment search (compact "All Environments" toolbar) ----------------
+   * A single reusable normalizer feeds both sides of the match: the indexed
+   * text built once per environment (below) and every raw query typed into
+   * the search field. Lowercases, applies Unicode NFKC, folds ё -> е, and
+   * replaces every run of punctuation/separators/hyphens/whitespace with one
+   * space (trimmed) — so "Tier-1", "tier  1" and "Tier 1" all normalize
+   * identically. No fuzzy matching or typo correction: this is deterministic
+   * substring matching only. */
+  function normalizeSearchToken(value) {
+    var str = String(value == null ? '' : value);
+    if (typeof str.normalize === 'function') str = str.normalize('NFKC');
+    str = str.toLowerCase().replace(/ё/g, 'е');
+    str = str.replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+    return str;
+  }
+
+  /** Splits a normalized query into AND-matched tokens. Empty for a blank
+   * query, so callers can treat "no tokens" as "match everything" without a
+   * separate empty check. */
+  function tokenizeEnvironmentQuery(query) {
+    var normalized = normalizeSearchToken(query);
+    return normalized ? normalized.split(' ') : [];
+  }
+
+  /** The raw (unnormalized) fields one environment contributes to its
+   * compact-toolbar search text: bilingual name, tier (as a bare number and
+   * as every "tier N"/"rank N"/"ранг N" alias — see the Session Prep header
+   * spec), canonical type + its EN/RU label, and every biome id it carries
+   * plus its EN/RU label. `i18nEn`/`i18nRu` are plain `{ key: value }`
+   * dictionaries (e.g. `state.i18n.en`/`state.i18n.ru` in js/app.js) — this
+   * stays a pure function of its arguments, with no access to application
+   * state itself. Lore, features, story seeds, source text, and adversaries
+   * are deliberately excluded — see "Search Field" in the compact-header
+   * spec for what this search covers and what it doesn't. See "Biome
+   * tagging" in CLAUDE.md for the fixed set of biome ids. */
+  function environmentIndexRawFields(env, i18nEn, i18nRu) {
     var enDict = i18nEn || {};
     var ruDict = i18nRu || {};
+    var tier = env.tier;
+    var tierFields = (tier === 0 || tier) ? [
+      String(tier), 'tier ' + tier, 'rank ' + tier, 'ранг ' + tier,
+    ] : [];
+    var typeFields = env.type ? [env.type, enDict['type_' + env.type], ruDict['type_' + env.type]] : [];
     var biomeFields = (env.biomes || []).flatMap(function (id) {
       return [id, enDict['biome_' + id], ruDict['biome_' + id]];
     });
-    return [env.name && env.name.en, env.name && env.name.ru].concat(biomeFields);
+    return [env.name && env.name.en, env.name && env.name.ru].concat(tierFields, typeFields, biomeFields);
+  }
+
+  /** The precomputed, locale-independent search text for one environment —
+   * every field above, normalized once and joined with spaces. */
+  function buildEnvironmentSearchText(env, i18nEn, i18nRu) {
+    return normalizeSearchToken(environmentIndexRawFields(env, i18nEn, i18nRu).filter(Boolean).join(' '));
+  }
+
+  /** One record per environment, keyed by id — built once when the catalogue
+   * loads (or changes), never rebuilt per keystroke or per filter pass. See
+   * "Precomputed Search Index" in the compact-header spec. */
+  function buildEnvironmentSearchIndex(environments, i18nEn, i18nRu) {
+    var index = new Map();
+    (environments || []).forEach(function (env) {
+      index.set(env.id, buildEnvironmentSearchText(env, i18nEn, i18nRu));
+    });
+    return index;
+  }
+
+  /** AND across tokens, OR across the fields already folded into `searchText`
+   * — an empty token list (blank query) matches everything. */
+  function matchesEnvironmentTokens(searchText, tokens) {
+    if (!tokens || !tokens.length) return true;
+    return tokens.every(function (token) { return searchText.indexOf(token) !== -1; });
+  }
+
+  /** The compact toolbar's full filter: a Tier multiselect (`options.tiers`,
+   * OR within the set, no restriction when empty) ANDed with the tokenized
+   * text query, matched against the precomputed `index`
+   * (`buildEnvironmentSearchIndex()`). `options.tokens` lets a caller
+   * tokenize once and reuse it (e.g. across a memoized filter pass);
+   * otherwise it's derived from `options.search`. Never mutates
+   * `environments`; ordering is preserved (no relevance sort). */
+  function filterEnvironmentsByToolbar(environments, index, options) {
+    var opts = options || {};
+    var tiers = toSet(opts.tiers);
+    var tokens = opts.tokens || tokenizeEnvironmentQuery(opts.search);
+    var byIndex = index || new Map();
+    return (environments || []).filter(function (env) {
+      if (tiers.size && !tiers.has(env.tier)) return false;
+      return matchesEnvironmentTokens(byIndex.get(env.id) || '', tokens);
+    });
   }
 
   /* ---------------- adversary filters (Tier / Type / Selected only) ---------------- */
@@ -361,7 +434,12 @@
     isNumericQuery: isNumericQuery,
     matchesItemSearch: matchesItemSearch,
     filterItemEntries: filterItemEntries,
-    environmentSearchFields: environmentSearchFields,
+    normalizeSearchToken: normalizeSearchToken,
+    tokenizeEnvironmentQuery: tokenizeEnvironmentQuery,
+    buildEnvironmentSearchText: buildEnvironmentSearchText,
+    buildEnvironmentSearchIndex: buildEnvironmentSearchIndex,
+    matchesEnvironmentTokens: matchesEnvironmentTokens,
+    filterEnvironmentsByToolbar: filterEnvironmentsByToolbar,
     ADVERSARY_TIERS: ADVERSARY_TIERS,
     ADVERSARY_TYPES: ADVERSARY_TYPES,
     filterAdversaries: filterAdversaries,

@@ -77,6 +77,10 @@ const state = {
   // catalog toolbar's own state.filters shape.
   sessionPrepUI: {
     envSearch: '', advSearch: '', itemSearch: '',
+    // Tier multiselect for the compact "All Environments" toolbar — OR
+    // within the set, empty means no restriction, ANDed with envSearch.
+    // Same Set-based shape as advFilters.tiers below.
+    envFilters: { tiers: new Set() },
     advFiltersOpen: false,
     advFilters: { tiers: new Set(), types: new Set(), selectedOnly: false },
     itemCategory: 'item',
@@ -198,6 +202,12 @@ function allEnvs() {
 function setEnvironmentCatalog(environments) {
   state.builtinEnvs = environments;
   state.environmentSearchIndex = SearchIndex.buildEnvironmentSearchIndex(environments);
+  // Session Prep's compact "All Environments" toolbar search — name/tier/
+  // type/biome only, both languages at once regardless of state.lang. Built
+  // once here (state.i18n is already loaded by the time init() calls this —
+  // see js/app.js's init()), never rebuilt per keystroke or language switch.
+  state.environmentPrepSearchIndex = SessionPrepUtils.buildEnvironmentSearchIndex(
+    environments, state.i18n.en, state.i18n.ru);
 }
 
 /* The members of a list, in catalog order. Taken off the catalog rather than off
@@ -3229,8 +3239,10 @@ function updatePrepToggleLabel(attr, id, checked, name) {
 /* ---------------- environments picker ---------------- */
 
 function prepFilteredEnvs() {
-  const filtered = SessionPrepUtils.filterEntries(allEnvs(), state.sessionPrepUI.envSearch,
-    env => SessionPrepUtils.environmentSearchFields(env, state.i18n.en, state.i18n.ru));
+  const filtered = SessionPrepUtils.filterEnvironmentsByToolbar(allEnvs(), state.environmentPrepSearchIndex, {
+    tiers: state.sessionPrepUI.envFilters.tiers,
+    search: state.sessionPrepUI.envSearch,
+  });
   const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
   return filtered.sort((a, b) => collator.compare(envName(a), envName(b)));
 }
@@ -3274,25 +3286,51 @@ function envPickerRowHtml(env, session) {
 
 function envPickerListHtml(session) {
   const envs = prepFilteredEnvs();
-  if (!envs.length) return `<p class="prep-empty">${escapeHtml(t('no_results'))}</p>`;
+  if (!envs.length) return `<p class="prep-empty">${escapeHtml(t('prep_environment_no_results'))}</p>`;
   return envs.map(env => envPickerRowHtml(env, session)).join('');
 }
 
+/** The four pentagonal Tier toggle buttons in the compact toolbar — reuses
+ * the .rank-icon control the main catalog toolbar and the Session Prep
+ * adversary picker both already use for the same OR-multiselect Tier
+ * filter, so this is the third caller of that same visual language rather
+ * than a new one. Multi-selection: no button pressed means every Tier is
+ * allowed (see filterEnvironmentsByToolbar()). */
+function envTierButtonsHtml() {
+  const active = state.sessionPrepUI.envFilters.tiers;
+  return SessionPrepUtils.ADVERSARY_TIERS.map(tier => `
+    <button type="button" class="rank-icon rank-icon-sm${active.has(tier) ? ' active' : ''}"
+            data-sp-env-tier="${tier}" aria-pressed="${active.has(tier)}"
+            aria-label="${escapeAttr(t('tier_label'))} ${tier}"><span>${tier}</span></button>`).join('');
+}
+
+/** The compact "All Environments" toolbar: a search field, the four Tier
+ * buttons, flexible space, and a "{n} of {total}" counter — replaces the
+ * separate visible heading + search row the picker used to have (the
+ * heading survives as an .sr-only <h2>, still the section's accessible
+ * name via aria-labelledby). Lives as the sticky first child inside
+ * .prep-picker-list itself (see the CSS) rather than above it, so it stays
+ * visible while the row list scrolls underneath — refreshEnvPicker() below
+ * only ever replaces #prep-env-list/#prep-env-count, never this toolbar
+ * wrapper, so the search input and Tier buttons never lose focus or get
+ * rebuilt out from under an in-progress interaction. */
 function envPickerColumnHtml(session) {
   return `
     <section class="prep-col prep-col-env" aria-labelledby="prep-env-heading">
-      <div class="prep-col-head">
-        <h2 id="prep-env-heading">${t('prep_all_environments')}</h2>
-        <span class="prep-count" id="prep-env-count">${escapeHtml(envCountText())}</span>
+      <h2 id="prep-env-heading" class="sr-only">${t('prep_all_environments')}</h2>
+      <div class="prep-picker-list">
+        <div class="prep-env-toolbar">
+          <div class="field search-field prep-search prep-env-search">
+            <input type="search" id="prep-env-search" aria-label="${escapeAttr(t('prep_environment_search'))}"
+                   placeholder="${escapeAttr(t('prep_environment_search'))}" value="${escapeAttr(state.sessionPrepUI.envSearch)}">
+          </div>
+          <div class="rank-pills prep-env-tiers" role="group" aria-label="${escapeAttr(t('filter_tier'))}">
+            ${envTierButtonsHtml()}
+          </div>
+          <span class="prep-count" id="prep-env-count" role="status" aria-live="polite">${escapeHtml(envCountText())}</span>
+        </div>
+        <div id="prep-env-list" role="list" aria-labelledby="prep-env-heading">${envPickerListHtml(session)}</div>
       </div>
-      <div class="field search-field prep-search">
-        <input type="text" id="prep-env-search" aria-label="${escapeAttr(t('prep_environment_search'))}"
-               placeholder="${escapeAttr(t('prep_environment_search'))}" value="${escapeAttr(state.sessionPrepUI.envSearch)}">
-        <button type="button" class="search-clear-btn" id="prep-env-search-clear" data-sp-clear-search="env"
-                aria-label="${escapeAttr(t('prep_clear_environment_search'))}"
-                style="${state.sessionPrepUI.envSearch ? '' : 'display:none;'}">×</button>
-      </div>
-      <div class="prep-picker-list" id="prep-env-list" role="list">${envPickerListHtml(session)}</div>
     </section>`;
 }
 
@@ -4122,8 +4160,13 @@ const SESSION_PREP_SEARCH_DEBOUNCE_MS = 200;
  * `state.sessionPrepUI`, and the DOM ids of its search input and clear
  * button. `data-sp-clear-search` values in the picker templates above (env/
  * adv/item) match these keys exactly. */
+/** The env entry has no `clearId`: its compact toolbar uses a native
+ * <input type="search">, whose own clear control already fires an `input`
+ * event handled the same way a keystroke is — no custom button to track.
+ * clearSessionPrepSearch()/bindSessionPrepSearchField() below both already
+ * guard every clearBtn lookup, so an absent id here is a no-op, not a bug. */
 const SESSION_PREP_SEARCH_FIELDS = {
-  env: { stateKey: 'envSearch', inputId: 'prep-env-search', clearId: 'prep-env-search-clear' },
+  env: { stateKey: 'envSearch', inputId: 'prep-env-search' },
   adv: { stateKey: 'advSearch', inputId: 'prep-adv-search', clearId: 'prep-adv-search-clear' },
   item: { stateKey: 'itemSearch', inputId: 'prep-item-search', clearId: 'prep-item-search-clear' },
 };
@@ -4252,6 +4295,21 @@ function bindSessionPrepDelegation(el) {
   });
 
   el.addEventListener('click', e => {
+    // The compact toolbar's Tier buttons live outside #prep-env-list (never
+    // touched by refreshEnvPicker()'s innerHTML replacement), so their
+    // pressed state is toggled directly on the clicked element rather than
+    // through a rebuild — the row list and counter still refresh below.
+    const envTier = e.target.closest('[data-sp-env-tier]');
+    if (envTier) {
+      const tier = Number(envTier.dataset.spEnvTier);
+      toggleSetValue(state.sessionPrepUI.envFilters.tiers, tier);
+      const pressed = state.sessionPrepUI.envFilters.tiers.has(tier);
+      envTier.classList.toggle('active', pressed);
+      envTier.setAttribute('aria-pressed', String(pressed));
+      refreshEnvPicker();
+      return;
+    }
+
     const openEnv = e.target.closest('[data-sp-open-env]');
     if (openEnv) { navigate(envHash(openEnv.dataset.spOpenEnv, state.route)); return; }
 

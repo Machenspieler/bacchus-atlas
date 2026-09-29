@@ -376,7 +376,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 .field { display: flex; flex-direction: column; gap: var(--s-2); }
 .field-control { min-height: var(--h-md); display: flex; align-items: center; }
 
-.field input[type="text"], .field select, .new-list-row input {
+.field input[type="text"], .field input[type="search"], .field select, .new-list-row input {
   height: var(--h-md); padding: 0 var(--s-3);
   font-family: var(--font-body); font-size: var(--fs-base);
   background-color: var(--ink-raised);
@@ -384,13 +384,21 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
   min-width: 150px;
   transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
 }
-.field input[type="text"]:hover, .field select:hover, .new-list-row input:hover {
+.field input[type="text"]:hover, .field input[type="search"]:hover, .field select:hover, .new-list-row input:hover {
   border-color: var(--line-strong);
 }
-.field input[type="text"]:focus, .field select:focus, .new-list-row input:focus {
+.field input[type="text"]:focus, .field input[type="search"]:focus, .field select:focus, .new-list-row input:focus {
   border-color: var(--hope);
 }
 .field input::placeholder, .new-list-row input::placeholder { color: var(--muted); }
+/* A native type="search" ships its own rounded/inset chrome in WebKit and
+ * its own decoration + cancel-button pseudo-elements; appearance:none drops
+ * the chrome (so it matches every other .field input) while leaving the
+ * cancel button itself alone so the browser's native "clear" affordance
+ * still renders and works. */
+.field input[type="search"] { appearance: none; -webkit-appearance: none; }
+.field input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+.field input[type="search"]::-webkit-search-cancel-button { cursor: pointer; }
 
 /* appearance:none keeps the closed control inside the theme; the element stays a
  * real <select>, so the mobile wheel picker and keyboard behaviour are untouched. */
@@ -2228,7 +2236,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    container instead (.prep-col / .prep-items-panel), where that same
    flex-basis is read as a height, stretching the field to 260px tall. */
 .prep-search { margin: 0; flex: none; position: relative; }
-.prep-search input[type="text"] { height: 35px; font-size: var(--fs-base); }
+.prep-search input[type="text"], .prep-search input[type="search"] { height: 35px; font-size: var(--fs-base); }
 /* Reuses the main catalog's .search-clear-btn (css rule elsewhere in this
    file) — visible only while that picker's search text is non-empty. */
 .prep-search .search-clear-btn { right: var(--s-1); }
@@ -2242,6 +2250,35 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-picker-list::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
 .prep-picker-list::-webkit-scrollbar-thumb:hover { background: rgba(185,173,145,0.56); }
 .prep-empty { margin: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--muted); font-style: italic; }
+
+/* ---- compact "All Environments" toolbar (search + Tier + counter, one row) ----
+   Lives as the sticky first child *inside* .prep-picker-list itself, not
+   above it — that's what keeps it visible while the row list beneath it
+   scrolls, the same sticky-inside-its-own-scroll-container pattern
+   .prep-central-section h3 already uses. #prep-env-list is one level
+   deeper than .prep-picker-list here (unlike the adversary picker, where
+   .prep-picker-list *is* the row list directly), so it needs its own
+   flex/gap rule to lay out rows the way .prep-picker-list's own gap does
+   for adversaries. */
+/* The env picker is the narrowest of Session Prep's three columns
+   (.prep-main's `minmax(260px, 0.85fr)` track), so the search field is the
+   one flexible/shrinkable track (`minmax(0, 1fr)`, floored by its own
+   min-width below) while the Tier buttons and counter get plain `auto`
+   tracks sized to their own content first — that's what keeps them from
+   shrinking, rather than a fixed min-width on the search track fighting
+   them for space and forcing every track to compress. */
+.prep-env-toolbar {
+  position: sticky; top: 0; z-index: 1;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center; gap: var(--s-2);
+  min-height: 40px; padding-block: var(--s-2);
+  background: var(--ink-card);
+  border-bottom: 1px solid var(--line-faint);
+}
+.prep-env-toolbar .prep-search { min-width: 0; }
+.prep-env-toolbar .prep-search input { min-width: 56px; }
+.prep-env-toolbar .prep-count { text-align: right; }
+#prep-env-list { display: flex; flex-direction: column; gap: 2px; }
 
 /* ---- shared selection checkbox (environments, adversaries, items) ----
    A permanently visible ~20px checkbox is the only control that adds or
@@ -2666,6 +2703,12 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 /* ---- phone: no nested scroll areas, 44px touch targets ---- */
 @media (max-width: 760px) {
   .prep-picker-list { max-height: none; overflow: visible; }
+  /* .prep-picker-list is no longer a scroll container at this width, so a
+     sticky toolbar would instead stick to the next real scrolling ancestor
+     (the page itself) and stay pinned past its own section — falling back
+     to a plain flowed block here is the safer, best-effort mobile result. */
+  .prep-env-toolbar { position: static; display: flex; flex-wrap: wrap; row-gap: var(--s-2); }
+  .prep-env-toolbar .prep-search { flex: 1 1 160px; }
   .prep-remove-btn { width: 44px; height: 44px; }
   .prep-checkbox-hit { width: 44px; height: 44px; }
   .prep-session-header { align-items: stretch; }

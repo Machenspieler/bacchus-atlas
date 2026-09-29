@@ -167,6 +167,40 @@ never rebuild text haystacks or traverse `env.features` itself. See
 `buildEnvironmentSearchRecord()` in `js/search-index.js` for exactly which
 fields are alias-eligible vs. literal-only vs. excluded.
 
+## Session Prep's compact "All Environments" toolbar
+
+The `#/session-prep` environment picker's search/Tier/counter row is a
+second, narrower environment search index — deliberately separate from
+`js/search-index.js`'s main-catalog one above, since it covers a different,
+smaller field set (name/tier/type/biome only, never lore/features/story
+seeds/source/adversaries) and needs multi-token AND matching plus tier
+aliases the main catalog's alias-group search doesn't. `js/session-prep-utils.js`
+owns it: `buildEnvironmentSearchIndex()` builds a `Map<envId, searchText>`
+once (in `setEnvironmentCatalog()`, alongside the main index — state.i18n is
+already loaded by the time that runs, see "Application startup" above), each
+record already carrying both EN/RU name, every `tier N`/`rank N`/`ранг N`
+alias for that environment's tier, its type's canonical id + EN/RU label,
+and each biome id + EN/RU label, all pre-normalized through the shared
+`normalizeSearchToken()` (Unicode NFKC, ё→е folding, punctuation/whitespace
+collapsed to single spaces). `filterEnvironmentsByToolbar()` ANDs a Tier
+multiselect (`state.sessionPrepUI.envFilters.tiers`, OR within the set,
+same Set-based shape as `advFilters.tiers`) with the tokenized query
+against that precomputed text — never rebuilt per keystroke.
+
+The toolbar itself lives *inside* `.prep-picker-list` (the env picker's own
+scroll container) as its sticky `position: sticky; top: 0` first child,
+rather than above it — the same sticky-inside-its-own-scroll-container
+pattern `.prep-central-section h3` already uses — so it stays visible while
+`#prep-env-list` (the row list, one level deeper here than the adversary
+picker's equivalent) scrolls underneath. `refreshEnvPicker()` only ever
+replaces `#prep-env-list`'s innerHTML and `#prep-env-count`'s text, never
+the toolbar wrapper, so the search input and the four pentagonal Tier
+buttons (`.rank-icon`, the same control the main catalog toolbar and the
+adversary picker's own Tier filter already use) never lose focus or get
+rebuilt mid-interaction; a Tier button's pressed state is toggled directly
+on the clicked element in `bindSessionPrepDelegation()` rather than through
+a rebuild, for the same reason.
+
 ## Main catalog progressive loading
 
 The main catalog (`state.route.name === 'catalog'` only — never the
