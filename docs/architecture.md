@@ -201,6 +201,89 @@ rebuilt mid-interaction; a Tier button's pressed state is toggled directly
 on the clicked element in `bindSessionPrepDelegation()` rather than through
 a rebuild, for the same reason.
 
+## Session Prep's compact "All Adversaries" toolbar
+
+The `#/session-prep` adversary picker's toolbar (`advToolbarHtml()`) is
+structurally the same pattern as the environment toolbar above — search,
+Tier buttons, and a right-aligned "{n} of {total}" count, sticky inside
+`.prep-picker-list` — plus one more control: a Type multiselect
+(`SessionPrepUtils.ADVERSARY_TYPES`, the ten official Adversary Types)
+between the Tier buttons and the count, built on the same shared
+`bindMultiSelectField()` every other Type/Biome/Source dropdown in the app
+already uses. It replaced an earlier visible heading + separate search row +
+collapsible Filters disclosure + "Selected only" checkbox + standalone
+"Clear filters" button — all retired; there is no `advFiltersOpen` or
+`selectedOnly` state left anywhere in `state.sessionPrepUI`.
+
+`js/session-prep-utils.js` owns the search side: `buildAdversarySearchIndex()`
+builds a `Map<advId, searchText>` once (in `setSessionPrepCatalog()`,
+alongside `state.adversaryPrepSearchIndex` — state.i18n is already loaded by
+the time that runs), each record carrying both EN/RU name, a richer set of
+Tier aliases than the environment index's own
+(`adversaryTierAliasFields()`: bare digit, `tier N`/`tierN`/`tN`,
+`ранг N`/`рангN`, `тир N`/`тирN` — covering `tier1`/`t1`/`тир 1`/`тир1`,
+which the environment toolbar's own aliases don't need to), the raw Type
+key, and its EN/RU label. `filterAdversariesByToolbar()` ANDs a Tier
+multiselect and a Type multiselect (`state.sessionPrepUI.advFilters.tiers`/
+`.types`, each OR within its own set, same Set-based shape as the
+environment toolbar's `envFilters.tiers`) with the tokenized query against
+that precomputed text — reusing the same `tokenizeEnvironmentQuery()`/
+`matchesEnvironmentTokens()` machinery the environment toolbar's own
+`filterEnvironmentsByToolbar()` uses (neither is actually
+environment-specific; they just operate on a precomputed string and a
+token list). The old `filterAdversaries()`/"Selected only" filtering no
+longer exists.
+
+`refreshAdvPicker()` only ever replaces `#prep-adv-list`/`#prep-adv-count`,
+never the toolbar wrapper, so the search input, Tier buttons, and an open
+Type dropdown all survive a filter/search change; a Tier click updates its
+own pressed state directly in `bindSessionPrepDelegation()` (bound once,
+delegated) rather than through a rebuild, the same as the environment
+toolbar's Tier buttons. `.prep-col-adv` is a CSS size container
+(`container-type: inline-size`) so the count — the least important toolbar
+element — hides via a container query before any other control has to
+shrink or wrap.
+
+Each row in this picker (`advPickerRowHtml()`) has three isolated action
+zones, never a whole-row click target: the selection checkbox (unchanged);
+an artwork thumbnail that is a real `<button>` (`prepAdvThumbHtml()`) when
+the adversary has local art (`adv.art`), opening a focused art overlay
+(`openAdversaryArtOverlay()`, reusing `registerOverlay()` — the same focus-
+trap/Escape/scroll-lock/focus-restore primitive `openItemDetail()` uses —
+rather than duplicating that lifecycle) and otherwise the same
+non-interactive fallback icon as before; and one `<a target="_blank"
+rel="noopener noreferrer">` wrapping the name and "Tier N · Type" meta,
+opening that adversary's own FreshCutGrass encounter
+(`adversaryFreshCutGrassUrl()`, built from `adv.name.en` alone — the same
+single-adversary encounter-URL pattern `potentialAdversaryLinkHtml()`
+already uses elsewhere, since FreshCutGrass exposes no stable per-adversary
+detail route). The central "Selected Adversaries" list keeps its existing
+plain, non-interactive thumbnail (`centralAdvThumbHtml()`) — this redesign
+is scoped to the All Adversaries picker only.
+
+### Adversary artwork data and generation
+
+An adversary record in `data/session-prep.json` optionally carries
+`art: { thumb, full }` (both required together; never a bare `image`
+string, which is now a rejected legacy field — see
+`SESSION_PREP_ADVERSARY_FORBIDDEN_KEYS` in `scripts/validate-data.js`).
+Both paths point at pre-generated WebP derivatives under
+`img/adversaries/session-prep/generated/{thumbs,full}/<source-stem>.webp`,
+produced offline by `scripts/generate-adversary-art.js` (a dev-only tool
+using the `sharp` npm package — this project's only devDependency; nothing
+under `dist/` or the runtime `js/`/`css/` references it, and `node_modules/`
+is gitignored) from the original artwork already committed directly under
+`img/adversaries/session-prep/`. Thumbnails are capped at a 128×128 box;
+full images at a 1536px long edge; both preserve aspect ratio and
+transparency and never upscale. Filenames are the source file's own stem,
+not a content hash — deterministic and stable, and consistent with every
+other image in this project, none of which participate in
+`scripts/lib/asset-versioning.js`'s content-hash scheme (only `css`/`js`/
+`data` are hashed there). `scripts/import-session-prep-adversaries.js`
+derives the same `{ thumb, full }` pair from its existing source-image
+mapping (`deriveArtPaths()`), so a future catalogue regeneration keeps
+producing the current schema rather than reintroducing `image`.
+
 ## Main catalog progressive loading
 
 The main catalog (`state.route.name === 'catalog'` only — never the

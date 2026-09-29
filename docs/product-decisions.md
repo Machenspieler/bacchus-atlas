@@ -136,20 +136,25 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 ## PD-005: Session Prep's adversary catalogue is full-SRD, picker-metadata-only
 
 - **Status:** Active
-- **Date:** 2026-09-28
+- **Date:** 2026-09-28 (art schema amended 2026-09-29 — see below)
 - **Decision:** Session Prep's adversary picker (`data/session-prep.json`'s
   `adversaries` array) covers all 264 adversaries in the official Daggerheart
   SRD 2.0, each carrying only picker metadata — id, English/Russian name,
   Tier (1-4), official Adversary Type (one of ten fixed keys: bruiser,
   horde, leader, minion, ranged, skulk, social, solo, standard, support),
-  and an optional local image. It never carries a full stat block, a
+  and optional local artwork (`art: { thumb, full }`, both pre-generated
+  WebP derivatives — see `scripts/generate-adversary-art.js` and
+  "Session Prep's compact 'All Adversaries' toolbar" in
+  [architecture.md](architecture.md); a bare `image` string is a retired
+  shape, now a forbidden field). It never carries a full stat block, a
   source/book attribution, or Core-vs-Hope & Fear membership.
 - **Implications:**
   - `scripts/validate-data.js` hard-fails the build if the array isn't
     exactly 264 records, if any record is missing Tier/Type/a non-empty
-    English or Russian name, or if a record carries a forbidden
-    stat-block-shaped field (`role`, `source`, `book`, `difficulty`, `hp`,
-    `stress`, `attacks`, `features`, `description`, etc. — see
+    English or Russian name, if `art` is present without both `thumb` and
+    `full`, or if a record carries a forbidden stat-block-shaped field
+    (`role`, `source`, `book`, `difficulty`, `hp`, `stress`, `attacks`,
+    `features`, `description`, the retired `image`, etc. — see
     `SESSION_PREP_ADVERSARY_FORBIDDEN_KEYS`).
   - The 17 adversary ids from the original MVP
     (`SESSION_PREP_MVP_IDS`/`scripts/validate-data.js`) are permanent and

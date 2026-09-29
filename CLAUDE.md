@@ -58,6 +58,14 @@ versions; there is no compilation, transpilation, or bundling step. See
 script load order, state ownership, rendering boundaries, and the build
 pipeline in detail).
 
+`package.json` exists only for one dev-only offline tool
+(`scripts/generate-adversary-art.js`, which uses `sharp` to pre-generate
+Session Prep adversary art derivatives — see
+[docs/architecture.md](docs/architecture.md)'s "Adversary artwork data and
+generation"); nothing under `dist/` or the runtime `js/`/`css/` loads
+anything from `node_modules/` (gitignored), and this doesn't relax the
+"no runtime dependency" rule above.
+
 ## Critical invariants
 
 The rules below apply to nearly every change in their area. Each links to

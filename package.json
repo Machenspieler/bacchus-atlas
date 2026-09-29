@@ -1,0 +1,13 @@
+{
+  "name": "daggerheart-codex",
+  "private": true,
+  "description": "Bacchus's Atlas — dev-only tooling manifest. The runtime site itself stays framework-free and dependency-free; nothing under devDependencies is loaded by index.html/js/app.js or shipped to dist/.",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "validate-data": "node scripts/validate-data.js",
+    "generate-adversary-art": "node scripts/generate-adversary-art.js"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.5"
+  }
+}

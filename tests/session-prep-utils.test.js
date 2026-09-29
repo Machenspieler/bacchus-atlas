@@ -471,85 +471,183 @@ test('normalizeIdList drops non-string and empty entries', () => {
   assert.deepEqual(SPU.normalizeIdList(['a', null, '', 42, 'b']), ['a', 'b']);
 });
 
-/* ---------------- adversary filters (Tier / Type / Selected only) ---------------- */
+/* ---------------- adversary search + Tier/Type filters (compact "All Adversaries" toolbar) ---------------- */
 
-const PREP_ADVS = [
+const ADV_I18N_EN = {
+  adversary_type_solo: 'Solo', adversary_type_bruiser: 'Bruiser', adversary_type_social: 'Social',
+  adversary_type_skulk: 'Skulk',
+};
+const ADV_I18N_RU = {
+  adversary_type_solo: 'Одиночка', adversary_type_bruiser: 'Громила', adversary_type_social: 'Социальный',
+  adversary_type_skulk: 'Скрытный',
+};
+
+const TOOLBAR_ADVS = [
   { id: 'acid-burrower', name: { en: 'Acid Burrower', ru: 'Кислотный Землекоп' }, tier: 1, type: 'solo' },
   { id: 'bugboar', name: { en: 'Bugboar', ru: 'Багбор' }, tier: 1, type: 'bruiser' },
-  { id: 'construct', name: { en: 'Construct', ru: 'Конструкт' }, tier: 1, type: 'solo' },
-  { id: 'courtier', name: { en: 'Courtier', ru: 'Придворный' }, tier: 2, type: 'social' },
   { id: 'dire-wolf', name: { en: 'Dire Wolf', ru: 'Лютоволк' }, tier: 1, type: 'skulk' },
+  { id: 'courtier', name: { en: 'Courtier', ru: 'Придворный' }, tier: 2, type: 'social' },
+  { id: 'sea-hex', name: { en: 'Sea Hex', ru: 'Морская Ведьма' }, tier: 2, type: 'solo' },
 ];
 
-test('filterAdversaries with no filters returns the full catalogue', () => {
-  const result = SPU.filterAdversaries(PREP_ADVS, {});
-  assert.deepEqual(result.map(a => a.id), PREP_ADVS.map(a => a.id));
+function advIndex(advs = TOOLBAR_ADVS) {
+  return SPU.buildAdversarySearchIndex(advs, ADV_I18N_EN, ADV_I18N_RU);
+}
+
+function advToolbarFilter(options, advs = TOOLBAR_ADVS) {
+  return SPU.filterAdversariesByToolbar(advs, advIndex(advs), options);
+}
+
+test('partial English adversary name match', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'acid' }).map(a => a.id), ['acid-burrower']);
 });
 
-test('filterAdversaries matches by English name', () => {
-  const result = SPU.filterAdversaries(PREP_ADVS, { search: 'bugboar' });
-  assert.deepEqual(result.map(a => a.id), ['bugboar']);
+test('complete English adversary name match', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'Acid Burrower' }).map(a => a.id), ['acid-burrower']);
 });
 
-test('filterAdversaries matches by Russian name', () => {
-  const result = SPU.filterAdversaries(PREP_ADVS, { search: 'Лютоволк' });
-  assert.deepEqual(result.map(a => a.id), ['dire-wolf']);
+test('a fragment inside the name (not just a prefix) still matches', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'burrow' }).map(a => a.id), ['acid-burrower']);
 });
 
-test('filterAdversaries search is case-insensitive', () => {
-  const result = SPU.filterAdversaries(PREP_ADVS, { search: 'BUGBOAR' });
-  assert.deepEqual(result.map(a => a.id), ['bugboar']);
+test('partial Russian adversary name match', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'землек' }).map(a => a.id), ['acid-burrower']);
 });
 
-test('filterAdversaries filters by a single Tier', () => {
-  const result = SPU.filterAdversaries(PREP_ADVS, { tiers: [2] });
-  assert.deepEqual(result.map(a => a.id), ['courtier']);
+test('complete Russian adversary name match', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'Кислотный Землекоп' }).map(a => a.id), ['acid-burrower']);
 });
 
-test('filterAdversaries ORs multiple Tier values', () => {
-  const result = SPU.filterAdversaries(PREP_ADVS, { tiers: [2] }).concat(); // sanity
-  const orResult = SPU.filterAdversaries(PREP_ADVS, { tiers: new Set([1, 2]) });
-  assert.deepEqual(orResult.map(a => a.id), PREP_ADVS.map(a => a.id));
+test('adversary search is case-insensitive', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'ACID' }).map(a => a.id), advToolbarFilter({ search: 'acid' }).map(a => a.id));
 });
 
-test('filterAdversaries filters by a single Type', () => {
-  const result = SPU.filterAdversaries(PREP_ADVS, { types: ['bruiser'] });
-  assert.deepEqual(result.map(a => a.id), ['bugboar']);
+test('punctuation and repeated whitespace are normalized away', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'acid,,,   burrower!!' }).map(a => a.id), ['acid-burrower']);
 });
 
-test('filterAdversaries ORs multiple Type values', () => {
-  const result = SPU.filterAdversaries(PREP_ADVS, { types: ['bruiser', 'social'] });
+test('ё and е are treated as equivalent in adversary search', () => {
+  const yoAdv = [{ id: 'restless-spirit', name: { en: 'Restless Spirit', ru: 'Мёртвый Дух' }, tier: 1, type: 'skulk' }];
+  const result = SPU.filterAdversariesByToolbar(yoAdv, SPU.buildAdversarySearchIndex(yoAdv, ADV_I18N_EN, ADV_I18N_RU), { search: 'мертвый' });
+  assert.deepEqual(result.map(a => a.id), ['restless-spirit']);
+});
+
+test('English Tier alias "tier N"', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'tier 1' }).map(a => a.id).sort(), ['acid-burrower', 'bugboar', 'dire-wolf']);
+});
+
+test('English Tier alias "tierN" (no space)', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'tier1' }).map(a => a.id).sort(), ['acid-burrower', 'bugboar', 'dire-wolf']);
+});
+
+test('English Tier alias "tN"', () => {
+  assert.deepEqual(advToolbarFilter({ search: 't1' }).map(a => a.id).sort(), ['acid-burrower', 'bugboar', 'dire-wolf']);
+});
+
+test('Russian Tier alias "тир N"', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'тир 1' }).map(a => a.id).sort(), ['acid-burrower', 'bugboar', 'dire-wolf']);
+});
+
+test('Russian Tier alias "тирN" (no space)', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'тир1' }).map(a => a.id).sort(), ['acid-burrower', 'bugboar', 'dire-wolf']);
+});
+
+test('Russian Tier alias "ранг N" (the RU UI\'s own Tier label)', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'ранг 2' }).map(a => a.id).sort(), ['courtier', 'sea-hex']);
+});
+
+test('an exact bare Tier query (1-4) matches every adversary at that Tier', () => {
+  assert.deepEqual(advToolbarFilter({ search: '2' }).map(a => a.id).sort(), ['courtier', 'sea-hex']);
+});
+
+test('English Type label search', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'solo' }).map(a => a.id).sort(), ['acid-burrower', 'sea-hex']);
+});
+
+test('Russian Type label search', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'одиночка' }).map(a => a.id).sort(), ['acid-burrower', 'sea-hex']);
+});
+
+test('raw Type key search', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'skulk' }).map(a => a.id), ['dire-wolf']);
+});
+
+test('multi-token AND: "tier 2 solo" matches only the Tier-2 Solo adversary', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'tier 2 solo' }).map(a => a.id), ['sea-hex']);
+});
+
+test('multi-token AND via Russian aliases: "тир 2 одиночка"', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'тир 2 одиночка' }).map(a => a.id), ['sea-hex']);
+});
+
+test('a multi-token query with no common match returns nothing', () => {
+  assert.deepEqual(advToolbarFilter({ search: 'bugboar solo' }), []);
+});
+
+test('an empty query returns the full adversary catalogue', () => {
+  assert.deepEqual(advToolbarFilter({ search: '' }).map(a => a.id), TOOLBAR_ADVS.map(a => a.id));
+});
+
+test('adversary search index is reused across repeated filter calls rather than rebuilt from the live record', () => {
+  const advs = [{ id: 'acid-burrower', name: { en: 'Acid Burrower', ru: 'Кислотный Землекоп' }, tier: 1, type: 'solo' }];
+  const index = SPU.buildAdversarySearchIndex(advs, ADV_I18N_EN, ADV_I18N_RU);
+  // Mutating the record after the index is built must not affect a search
+  // against the (unchanged) precomputed index — proof the index is a
+  // once-built snapshot, never recomputed inside filterAdversariesByToolbar().
+  advs[0].name.en = 'Totally Renamed Creature';
+  const result = SPU.filterAdversariesByToolbar(advs, index, { search: 'acid' });
+  assert.deepEqual(result.map(a => a.id), ['acid-burrower']);
+});
+
+test('filterAdversariesByToolbar never mutates the input array', () => {
+  const before = TOOLBAR_ADVS.map(a => a.id);
+  advToolbarFilter({ search: 'acid', tiers: new Set([1]) });
+  assert.deepEqual(TOOLBAR_ADVS.map(a => a.id), before);
+});
+
+test('no selected Tier or Type means every adversary is allowed', () => {
+  assert.deepEqual(advToolbarFilter({}).map(a => a.id), TOOLBAR_ADVS.map(a => a.id));
+});
+
+test('selecting one Tier filters to that Tier only', () => {
+  assert.deepEqual(advToolbarFilter({ tiers: new Set([2]) }).map(a => a.id).sort(), ['courtier', 'sea-hex']);
+});
+
+test('selecting multiple Tiers ORs them together', () => {
+  const result = advToolbarFilter({ tiers: new Set([1, 2]) });
+  assert.deepEqual(result.map(a => a.id).sort(), TOOLBAR_ADVS.map(a => a.id).sort());
+});
+
+test('selecting one Type filters to that Type only', () => {
+  assert.deepEqual(advToolbarFilter({ types: new Set(['bruiser']) }).map(a => a.id), ['bugboar']);
+});
+
+test('selecting multiple Types ORs them together', () => {
+  const result = advToolbarFilter({ types: new Set(['bruiser', 'social']) });
   assert.deepEqual(result.map(a => a.id).sort(), ['bugboar', 'courtier']);
 });
 
-test('filterAdversaries ANDs Tier and Type', () => {
-  const result = SPU.filterAdversaries(PREP_ADVS, { tiers: [1], types: ['solo'] });
-  assert.deepEqual(result.map(a => a.id).sort(), ['acid-burrower', 'construct']);
+test('Tier and Type selections AND together', () => {
+  assert.deepEqual(advToolbarFilter({ tiers: new Set([1]), types: new Set(['solo']) }).map(a => a.id), ['acid-burrower']);
 });
 
-test('filterAdversaries ANDs text search with Tier/Type filters', () => {
-  const result = SPU.filterAdversaries(PREP_ADVS, { search: 'construct', tiers: [1], types: ['solo'] });
-  assert.deepEqual(result.map(a => a.id), ['construct']);
-  const noMatch = SPU.filterAdversaries(PREP_ADVS, { search: 'construct', tiers: [2] });
+test('Search, Tier, and Type all AND together', () => {
+  const result = advToolbarFilter({ search: 'sea', tiers: new Set([2]), types: new Set(['solo']) });
+  assert.deepEqual(result.map(a => a.id), ['sea-hex']);
+  const noMatch = advToolbarFilter({ search: 'sea', tiers: new Set([1]) });
   assert.deepEqual(noMatch, []);
 });
 
-test('filterAdversaries Selected only keeps only ids in selectedIds', () => {
-  const result = SPU.filterAdversaries(PREP_ADVS, { selectedOnly: true, selectedIds: ['bugboar', 'courtier'] });
-  assert.deepEqual(result.map(a => a.id).sort(), ['bugboar', 'courtier']);
+test('an empty Tier/Type group imposes no restriction on its own', () => {
+  assert.deepEqual(advToolbarFilter({ tiers: new Set(), types: new Set() }).map(a => a.id), TOOLBAR_ADVS.map(a => a.id));
 });
 
-test('filterAdversaries Selected only combines with Tier and Type', () => {
-  const result = SPU.filterAdversaries(PREP_ADVS, {
-    selectedOnly: true, selectedIds: ['bugboar', 'courtier', 'dire-wolf'], tiers: [1],
-  });
-  assert.deepEqual(result.map(a => a.id).sort(), ['bugboar', 'dire-wolf']);
-});
-
-test('filterAdversaries never mutates the input array or selection', () => {
-  const before = PREP_ADVS.map(a => a.id);
-  SPU.filterAdversaries(PREP_ADVS, { tiers: [1], types: ['solo'], selectedOnly: true, selectedIds: ['construct'] });
-  assert.deepEqual(PREP_ADVS.map(a => a.id), before);
+test('filterAdversariesByToolbar never mutates the Tier/Type filter Sets it is given', () => {
+  const tiers = new Set([1]);
+  const types = new Set(['solo']);
+  advToolbarFilter({ tiers, types });
+  assert.deepEqual([...tiers], [1]);
+  assert.deepEqual([...types], ['solo']);
 });
 
 test('ADVERSARY_TIERS and ADVERSARY_TYPES expose the fixed enums', () => {

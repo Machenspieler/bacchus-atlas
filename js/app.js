@@ -64,6 +64,12 @@ const state = {
   // above (the complete item encyclopedia); see the "Session Prep" sections
   // in CLAUDE.md.
   sessionPrepCatalog: { adversaries: [], itemIds: [], adversaryById: new Map() },
+  // The compact "All Adversaries" toolbar's own precomputed search index
+  // (name/Tier-alias/Type, EN+RU at once) — built once in
+  // setSessionPrepCatalog(), the same "built once alongside the catalogue
+  // it indexes" pattern environmentPrepSearchIndex uses above. See
+  // "Session Prep's compact 'All Adversaries' toolbar" in docs/architecture.md.
+  adversaryPrepSearchIndex: new Map(),
   sessionPrepLoadFailed: false,
   sessionPrep: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.sessionPrep, {
     fallback: () => SessionPrepUtils.createDefaultStore(),
@@ -81,8 +87,11 @@ const state = {
     // within the set, empty means no restriction, ANDed with envSearch.
     // Same Set-based shape as advFilters.tiers below.
     envFilters: { tiers: new Set() },
-    advFiltersOpen: false,
-    advFilters: { tiers: new Set(), types: new Set(), selectedOnly: false },
+    // Same shape for the compact "All Adversaries" toolbar's Tier/Type
+    // multiselects — OR within each set, ANDed with advSearch and each
+    // other. No "Selected only"/disclosure state here anymore (retired —
+    // see the compact-toolbar redesign in docs/architecture.md).
+    advFilters: { tiers: new Set(), types: new Set() },
     itemCategory: 'item',
     itemSource: 'all',
     lastSavedAt: null, saveFailed: false,
@@ -3078,6 +3087,11 @@ function setSessionPrepCatalog(data) {
     itemIds,
     adversaryById: new Map(adversaries.map(a => [a.id, a])),
   };
+  // state.i18n is already loaded by the time init()/retrySessionPrepCatalog()
+  // call this — same guarantee setEnvironmentCatalog() relies on for its own
+  // environmentPrepSearchIndex.
+  state.adversaryPrepSearchIndex = SessionPrepUtils.buildAdversarySearchIndex(
+    adversaries, state.i18n.en, state.i18n.ru);
   state.sessionPrepLoadFailed = false;
 }
 
@@ -3344,32 +3358,22 @@ function refreshEnvPicker() {
 
 /* ---------------- adversaries picker ---------------- */
 
-/** Tier/Type/Selected-only ANDed with the free-text search — see
- * SessionPrepUtils.filterAdversaries() for the exact AND/OR contract. */
+/** Tier/Type (each OR within its own set) ANDed with the tokenized free-text
+ * search against the precomputed adversaryPrepSearchIndex — see
+ * SessionPrepUtils.filterAdversariesByToolbar() for the exact contract. */
 function prepFilteredAdversaries() {
-  const session = activeSessionPrep();
-  const filtered = SessionPrepUtils.filterAdversaries(state.sessionPrepCatalog.adversaries, {
-    search: state.sessionPrepUI.advSearch,
-    tiers: state.sessionPrepUI.advFilters.tiers,
-    types: state.sessionPrepUI.advFilters.types,
-    selectedOnly: state.sessionPrepUI.advFilters.selectedOnly,
-    selectedIds: session ? session.adversaryIds : [],
-  });
+  const filtered = SessionPrepUtils.filterAdversariesByToolbar(
+    state.sessionPrepCatalog.adversaries, state.adversaryPrepSearchIndex, {
+      search: state.sessionPrepUI.advSearch,
+      tiers: state.sessionPrepUI.advFilters.tiers,
+      types: state.sessionPrepUI.advFilters.types,
+    });
   const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
   return filtered.sort((a, b) => collator.compare(spName(a), spName(b)));
 }
 
 function advCountText() {
   return t('prep_results_count').replace('{n}', prepFilteredAdversaries().length).replace('{total}', state.sessionPrepCatalog.adversaries.length);
-}
-
-/** How many of the three adversary filter groups (Tier, Type, Selected
- * only) are currently narrowing the list — shown next to the Filters
- * disclosure, the same "filter-count" pattern the main catalog toolbar
- * uses for its own Tier/Type/Biome/Source groups. */
-function advActiveFilterGroupCount() {
-  const f = state.sessionPrepUI.advFilters;
-  return (f.tiers.size ? 1 : 0) + (f.types.size ? 1 : 0) + (f.selectedOnly ? 1 : 0);
 }
 
 function advTypesTriggerLabel() {
@@ -3384,28 +3388,52 @@ function advMetaText(adv) {
   return `${t('tier_label')} ${adv.tier} · ${t('adversary_type_' + adv.type)}`;
 }
 
-/** A missing image entry, and a present-but-broken one at runtime (the
- * delegated 'error' listener below swaps its wrapper's contents), both land
- * on the same designed fallback — never a broken-image icon. */
-function prepAdvThumbHtml(adv) {
-  if (!adv.image) return `<span class="prep-adv-thumb prep-thumb-fallback" aria-hidden="true">${ICON_ADVERSARY_FALLBACK}</span>`;
-  return `<span class="prep-adv-thumb"><img src="${escapeAttr(adv.image)}" alt="" loading="lazy" decoding="async" data-adv-thumb-img></span>`;
+/** The single-adversary FreshCutGrass link for a picker row's name/meta
+ * zone: a one-adversary encounter built from that name alone, the same
+ * pattern potentialAdversaryLinkHtml() already uses for a single name in an
+ * environment's Potential Adversaries text (FreshCutGrass exposes no stable
+ * per-adversary detail route — confirmed against its own adversary data
+ * export, which has no id/slug field). Always built from the canonical
+ * English name, regardless of the active UI language. */
+function adversaryFreshCutGrassUrl(adv) {
+  return buildFreshCutGrassEncounterUrl(adv.name.en, [adv.name.en]);
 }
 
+/** Area 2 (artwork) of an adversary picker row: a real, focusable `<button>`
+ * when local art exists (opens the art overlay), or the same non-interactive
+ * fallback icon `<span>` as before when it doesn't — never a button with
+ * nothing to open. A present-but-broken thumbnail at runtime (the delegated
+ * 'error' listener below) swaps this same button's contents for the
+ * fallback and strips the id that makes it clickable, so a broken image
+ * never opens an empty overlay either. */
+function prepAdvThumbHtml(adv, name) {
+  if (!adv.art) return `<span class="prep-adv-thumb prep-thumb-fallback" aria-hidden="true">${ICON_ADVERSARY_FALLBACK}</span>`;
+  const label = t('prep_open_adversary_image').replace('{name}', name);
+  return `<button type="button" class="prep-adv-thumb prep-adv-thumb-btn" data-sp-open-adv-art="${escapeAttr(adv.id)}" aria-label="${escapeAttr(label)}">
+    <img src="${escapeAttr(adv.art.thumb)}" alt="" loading="lazy" decoding="async" data-adv-thumb-img>
+  </button>`;
+}
+
+/** Three isolated action zones — checkbox (selection), artwork button (the
+ * art overlay), and one link wrapping name+meta (FreshCutGrass) — never a
+ * whole-row click target. See the "All Adversaries" row spec in CLAUDE.md. */
 function advPickerRowHtml(adv, session) {
   const checked = session.adversaryIds.includes(adv.id);
   const name = spName(adv);
+  const fcgUrl = adversaryFreshCutGrassUrl(adv);
+  const fcgLabel = t('prep_open_adversary_freshcutgrass').replace('{name}', name);
   return `
-    <div class="prep-row prep-adv-row" data-adv-id="${escapeAttr(adv.id)}">
+    <div class="prep-row prep-adv-row" data-adv-id="${escapeAttr(adv.id)}" role="listitem">
       <label class="prep-checkbox-hit">
         <input type="checkbox" class="prep-select-checkbox" data-sp-toggle-adv="${escapeAttr(adv.id)}"
                ${checked ? 'checked' : ''} aria-label="${escapeAttr(prepToggleLabel(name, checked))}">
       </label>
-      ${prepAdvThumbHtml(adv)}
-      <span class="prep-row-text">
+      ${prepAdvThumbHtml(adv, name)}
+      <a class="prep-row-text prep-adv-link" href="${escapeAttr(fcgUrl)}" target="_blank" rel="noopener noreferrer"
+         aria-label="${escapeAttr(fcgLabel)}">
         <span class="prep-row-name">${escapeHtml(name)}</span>
         <span class="prep-row-meta">${escapeHtml(advMetaText(adv))}</span>
-      </span>
+      </a>
     </div>`;
 }
 
@@ -3415,71 +3443,70 @@ function advPickerListHtml(session) {
   return advs.map(adv => advPickerRowHtml(adv, session)).join('');
 }
 
-function advFiltersHtml() {
-  const f = state.sessionPrepUI.advFilters;
-  const activeCount = advActiveFilterGroupCount();
-  return `
-    <div class="toolbar prep-adv-toolbar" data-filters-open="${state.sessionPrepUI.advFiltersOpen}">
-      <button type="button" class="btn filter-toggle" id="sp-adv-filter-toggle"
-              aria-expanded="${state.sessionPrepUI.advFiltersOpen}" aria-controls="sp-adv-toolbar-filters">
-        ${t('filters_label')}
-        ${activeCount ? `<span class="filter-count" aria-label="${escapeAttr(t('filters_active').replace('{n}', activeCount))}">${activeCount}</span>` : ''}
-      </button>
-      <div class="toolbar-filters" id="sp-adv-toolbar-filters">
-        <div class="field">
-          <div class="rank-pills field-control" id="sp-adv-tiers" role="group" aria-label="${escapeAttr(t('filter_tier'))}">
-            ${SessionPrepUtils.ADVERSARY_TIERS.map(tier => `<button type="button" class="rank-icon ${f.tiers.has(tier) ? 'active' : ''}" data-sp-adv-tier="${tier}" aria-pressed="${f.tiers.has(tier)}" aria-label="${escapeAttr(t('tier_label'))} ${tier}"><span>${tier}</span></button>`).join('')}
-          </div>
-        </div>
-        <div class="field ms-field" id="sp-adv-types-field">
-          <button type="button" class="ms-trigger field-control" id="sp-adv-types-btn"
-                  aria-expanded="false" aria-controls="sp-adv-types-panel">
-            <span class="ms-trigger-label">${escapeHtml(advTypesTriggerLabel())}</span>
-          </button>
-          <div class="ms-panel" id="sp-adv-types-panel" role="group" aria-label="${escapeAttr(t('filter_type'))}" hidden>
-            ${SessionPrepUtils.ADVERSARY_TYPES.map(type => `
-            <label class="ms-row">
-              <input type="checkbox" class="ms-checkbox sr-only" data-sp-adv-type="${type}" ${f.types.has(type) ? 'checked' : ''}>
-              <span class="ms-row-label">${escapeHtml(t('adversary_type_' + type))}</span>
-            </label>`).join('')}
-          </div>
-        </div>
-        <label class="field prep-selected-only-field">
-          <input type="checkbox" id="sp-adv-selected-only" ${f.selectedOnly ? 'checked' : ''}>
-          <span>${escapeHtml(t('prep_selected_only'))}</span>
-        </label>
-        ${activeCount ? `<button type="button" class="btn btn-ghost btn-sm" id="sp-adv-clear-filters">${escapeHtml(t('clear_filters'))}</button>` : ''}
-      </div>
-    </div>`;
+/** The four pentagonal Tier toggle buttons — same OR-multiselect control and
+ * visual language as envTierButtonsHtml()'s own copy for the environment
+ * toolbar (and the main catalog toolbar before that). */
+function advTierButtonsHtml() {
+  const active = state.sessionPrepUI.advFilters.tiers;
+  return SessionPrepUtils.ADVERSARY_TIERS.map(tier => `
+    <button type="button" class="rank-icon rank-icon-sm${active.has(tier) ? ' active' : ''}"
+            data-sp-adv-tier="${tier}" aria-pressed="${active.has(tier)}"
+            aria-label="${escapeAttr(t('tier_label'))} ${tier}"><span>${tier}</span></button>`).join('');
 }
 
-function advPickerColumnHtml(session) {
+/** The compact "All Adversaries" toolbar: search, the four Tier buttons, the
+ * Type multiselect trigger, and the "{n} of {total}" count — replaces the
+ * old visible heading + search row + Filters disclosure + Selected-only +
+ * Clear filters entirely (see docs/architecture.md). Lives as the sticky
+ * first child inside .prep-picker-list, same pattern envPickerColumnHtml()
+ * uses. refreshAdvPicker() below only ever replaces #prep-adv-list/
+ * #prep-adv-count, never this toolbar, so the search input, Tier buttons,
+ * and an open Type dropdown all survive a filter/search change — a Tier
+ * click updates its own pressed state directly in
+ * bindSessionPrepDelegation() rather than through a rebuild, for the same
+ * reason the environment toolbar's Tier buttons do. */
+function advToolbarHtml() {
+  const f = state.sessionPrepUI.advFilters;
   return `
-    <section class="prep-col prep-col-adv" aria-labelledby="prep-adv-heading">
-      <div class="prep-col-head">
-        <h2 id="prep-adv-heading">${t('prep_all_adversaries')}</h2>
-        <span class="prep-count" id="prep-adv-count">${escapeHtml(advCountText())}</span>
-      </div>
-      <div class="field search-field prep-search">
+    <div class="prep-adv-toolbar">
+      <div class="field search-field prep-search prep-adv-search">
         <input type="text" id="prep-adv-search" aria-label="${escapeAttr(t('prep_adversary_search'))}"
                placeholder="${escapeAttr(t('prep_adversary_search'))}" value="${escapeAttr(state.sessionPrepUI.advSearch)}">
         <button type="button" class="search-clear-btn" id="prep-adv-search-clear" data-sp-clear-search="adv"
                 aria-label="${escapeAttr(t('prep_clear_adversary_search'))}"
                 style="${state.sessionPrepUI.advSearch ? '' : 'display:none;'}">×</button>
       </div>
-      <div id="sp-adv-filters-wrap">${advFiltersHtml()}</div>
-      <div class="prep-picker-list" id="prep-adv-list" role="list">${advPickerListHtml(session)}</div>
-    </section>`;
+      <div class="rank-pills prep-adv-tiers" role="group" aria-label="${escapeAttr(t('filter_tier'))}">
+        ${advTierButtonsHtml()}
+      </div>
+      <div class="field ms-field" id="sp-adv-types-field">
+        <button type="button" class="ms-trigger field-control" id="sp-adv-types-btn"
+                aria-expanded="false" aria-controls="sp-adv-types-panel">
+          <span class="ms-trigger-label">${escapeHtml(advTypesTriggerLabel())}</span>
+        </button>
+        <div class="ms-panel" id="sp-adv-types-panel" role="group" aria-label="${escapeAttr(t('filter_type'))}" hidden>
+          ${SessionPrepUtils.ADVERSARY_TYPES.map(type => `
+          <label class="ms-row">
+            <input type="checkbox" class="ms-checkbox sr-only" data-sp-adv-type="${type}" ${f.types.has(type) ? 'checked' : ''}>
+            <span class="ms-row-label">${escapeHtml(t('adversary_type_' + type))}</span>
+          </label>`).join('')}
+          <button type="button" class="btn btn-ghost btn-sm ms-clear" id="sp-adv-clear-types"
+                  style="${f.types.size ? '' : 'display:none;'}">${escapeHtml(t('prep_clear_adversary_types'))}</button>
+        </div>
+      </div>
+      <span class="prep-count" id="prep-adv-count" role="status" aria-live="polite">${escapeHtml(advCountText())}</span>
+    </div>`;
 }
 
-/** Re-renders just the filter toolbar (trigger label, active-filter count,
- * pressed/checked states) — called after a Tier/Type/Selected-only change,
- * alongside refreshAdvPicker(), so the two never fall out of sync without
- * a full page rebuild. */
-function refreshAdvFilters() {
-  const wrap = document.getElementById('sp-adv-filters-wrap');
-  if (wrap) wrap.innerHTML = advFiltersHtml();
-  bindAdvFilterControls();
+function advPickerColumnHtml(session) {
+  return `
+    <section class="prep-col prep-col-adv" aria-labelledby="prep-adv-heading">
+      <h2 id="prep-adv-heading" class="sr-only">${t('prep_all_adversaries')}</h2>
+      <div class="prep-picker-list">
+        ${advToolbarHtml()}
+        <div id="prep-adv-list" role="list" aria-labelledby="prep-adv-heading">${advPickerListHtml(session)}</div>
+      </div>
+    </section>`;
 }
 
 function refreshAdvPicker() {
@@ -3490,32 +3517,13 @@ function refreshAdvPicker() {
   if (count) count.textContent = advCountText();
 }
 
-/** Binds the adversary Tier/Type/Selected-only filter controls. Rebound
- * every time #sp-adv-filters-wrap's markup is regenerated (the initial
- * render, and every refreshAdvFilters() call after a Tier/Selected-only/
- * Clear change) — same rebind-per-rebuild pattern bindSessionPrepSearchField()
- * uses, since these elements themselves get recreated each time. A Tier
- * toggle or Selected-only change re-renders the whole filter toolbar (so its
- * active-filter count/pressed state stays in sync); a Type checkbox change
- * only updates its own trigger label and the adversary list, deliberately
- * not the toolbar, so the open Type panel survives the change — same
- * asymmetry the main catalog toolbar's own Tier/Type dropdowns have. */
-function bindAdvFilterControls() {
-  const toggle = document.getElementById('sp-adv-filter-toggle');
-  if (toggle) {
-    toggle.addEventListener('click', () => {
-      state.sessionPrepUI.advFiltersOpen = !state.sessionPrepUI.advFiltersOpen;
-      refreshAdvFilters();
-      const reToggle = document.getElementById('sp-adv-filter-toggle');
-      if (reToggle) reToggle.focus();
-    });
-  }
-  document.querySelectorAll('#sp-adv-tiers .rank-icon').forEach(btn => btn.addEventListener('click', () => {
-    const tier = Number(btn.dataset.spAdvTier);
-    toggleSetValue(state.sessionPrepUI.advFilters.tiers, tier);
-    refreshAdvFilters();
-    refreshAdvPicker();
-  }));
+/** Binds the adversary Type multiselect. Rebound once per full
+ * renderSessionPrepPage() (the only time the toolbar's own markup is
+ * (re)created) — the Tier buttons and search field need no separate bind
+ * call here: Tier clicks are handled by the delegated listener in
+ * bindSessionPrepDelegation() (bound once, outlives any refreshAdvPicker()),
+ * and the search input goes through bindSessionPrepSearchField('adv'). */
+function bindAdvToolbarControls() {
   const typesField = document.getElementById('sp-adv-types-field');
   if (typesField) {
     bindMultiSelectField({
@@ -3523,28 +3531,53 @@ function bindAdvFilterControls() {
       trigger: document.getElementById('sp-adv-types-btn'),
       panel: document.getElementById('sp-adv-types-panel'),
       onToggle(cb) { setSetValue(state.sessionPrepUI.advFilters.types, cb.dataset.spAdvType, cb.checked); },
-      updateLabel(trigger) { trigger.querySelector('.ms-trigger-label').textContent = advTypesTriggerLabel(); },
+      updateLabel(trigger) {
+        trigger.querySelector('.ms-trigger-label').textContent = advTypesTriggerLabel();
+        const clearBtn = document.getElementById('sp-adv-clear-types');
+        if (clearBtn) clearBtn.style.display = state.sessionPrepUI.advFilters.types.size ? '' : 'none';
+      },
       onChange: refreshAdvPicker,
     });
   }
-  const selectedOnly = document.getElementById('sp-adv-selected-only');
-  if (selectedOnly) {
-    selectedOnly.addEventListener('change', () => {
-      state.sessionPrepUI.advFilters.selectedOnly = selectedOnly.checked;
-      refreshAdvFilters();
-      refreshAdvPicker();
-    });
-  }
-  const clearBtn = document.getElementById('sp-adv-clear-filters');
-  if (clearBtn) {
-    clearBtn.addEventListener('click', () => {
-      state.sessionPrepUI.advFilters.tiers.clear();
-      state.sessionPrepUI.advFilters.types.clear();
-      state.sessionPrepUI.advFilters.selectedOnly = false;
-      refreshAdvFilters();
-      refreshAdvPicker();
-    });
-  }
+}
+
+/* ---------------- adversary artwork overlay ---------------- */
+
+/** A focused artwork viewer only — close button, the large image, a
+ * caption — never the adversary's stat block (Session Prep's adversary
+ * catalogue is picker metadata only, see docs/product-decisions.md PD-005).
+ * Reuses registerOverlay() for focus trap/Escape/scroll-lock/focus-restore
+ * (same primitive openItemDetail() above uses) rather than duplicating that
+ * lifecycle; styled as its own small card rather than reusing
+ * .loot-modal-card's share/craft/copy chrome, none of which applies here. */
+function openAdversaryArtOverlay(advId) {
+  const adv = state.sessionPrepCatalog.adversaryById.get(advId);
+  if (!adv || !adv.art) return;
+  const name = spName(adv);
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay adv-art-overlay';
+  overlay.dataset.overlayKind = 'adv-art';
+  overlay.innerHTML = `
+    <div class="adv-art-modal-card" data-overlay-card role="dialog" aria-modal="true" aria-label="${escapeAttr(name)}">
+      <button type="button" class="modal-close adv-art-close" aria-label="${escapeAttr(t('close'))}">&times;</button>
+      <div class="adv-art-media">
+        <img src="${escapeAttr(adv.art.full)}" alt="${escapeAttr(name)}" data-adv-art-img>
+      </div>
+      <p class="adv-art-caption">${escapeHtml(name)}</p>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  const media = overlay.querySelector('.adv-art-media');
+  media.querySelector('img').addEventListener('error', () => {
+    media.innerHTML = `<span class="adv-art-fallback">${ICON_ADVERSARY_FALLBACK}<span>${escapeHtml(t('prep_adversary_art_unavailable'))}</span></span>`;
+  });
+
+  const teardown = registerOverlay(overlay, close);
+  function close() { overlay.remove(); teardown(); }
+
+  overlay.querySelector('.adv-art-close').addEventListener('click', close);
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
 }
 
 /* ---------------- items panel ---------------- */
@@ -3701,8 +3734,7 @@ function refreshItemGrid() {
 
 /** Rebuilds the Category/Source toggle (active-state highlighting) and
  * rebinds its buttons — called after every Category/Source change,
- * alongside refreshItemGrid(), the same rebuild-and-rebind pattern
- * refreshAdvFilters()/bindAdvFilterControls() use. */
+ * alongside refreshItemGrid(). */
 function refreshItemFilters() {
   const wrap = document.getElementById('sp-item-filters-wrap');
   if (wrap) wrap.innerHTML = itemFiltersHtml();
@@ -3898,12 +3930,23 @@ function advWarningHtml(session) {
   return `<p class="prep-warning" role="status">${escapeHtml(t('prep_adversary_large_warning').replace('{n}', session.adversaryIds.length))}</p>`;
 }
 
+/** Non-interactive art for the central Selected Adversaries row — unlike
+ * the All Adversaries picker's own thumbnail button (prepAdvThumbHtml()),
+ * central rows keep their existing plain-image treatment; this redesign is
+ * scoped to the All Adversaries picker only (see CLAUDE.md/the "do not
+ * change the central Selected Adversaries UX beyond necessary
+ * synchronization" non-goal). Same missing/broken-art fallback either way. */
+function centralAdvThumbHtml(adv) {
+  if (!adv.art) return `<span class="prep-adv-thumb prep-thumb-fallback" aria-hidden="true">${ICON_ADVERSARY_FALLBACK}</span>`;
+  return `<span class="prep-adv-thumb"><img src="${escapeAttr(adv.art.thumb)}" alt="" loading="lazy" decoding="async" data-adv-thumb-img></span>`;
+}
+
 function centralAdvListHtml(session) {
   if (!session.adversaryIds.length) return `<p class="prep-empty">${escapeHtml(t('prep_no_adversaries'))}</p>`;
   return session.adversaryIds.map(id => {
     const adv = state.sessionPrepCatalog.adversaryById.get(id);
     if (!adv) return '';
-    return centralSimpleRowHtml({ id: adv.id, name: spName(adv), thumb: prepAdvThumbHtml(adv), kind: 'adv', meta: advMetaText(adv) });
+    return centralSimpleRowHtml({ id: adv.id, name: spName(adv), thumb: centralAdvThumbHtml(adv), kind: 'adv', meta: advMetaText(adv) });
   }).join('');
 }
 
@@ -4310,6 +4353,35 @@ function bindSessionPrepDelegation(el) {
       return;
     }
 
+    // Same no-rebuild pattern as the environment toolbar's Tier buttons
+    // above: the adversary toolbar's Tier buttons live outside #prep-adv-list
+    // (never touched by refreshAdvPicker()'s innerHTML replacement), so
+    // pressed state is toggled directly here rather than through a rebuild.
+    const advTier = e.target.closest('[data-sp-adv-tier]');
+    if (advTier) {
+      const tier = Number(advTier.dataset.spAdvTier);
+      toggleSetValue(state.sessionPrepUI.advFilters.tiers, tier);
+      const pressed = state.sessionPrepUI.advFilters.tiers.has(tier);
+      advTier.classList.toggle('active', pressed);
+      advTier.setAttribute('aria-pressed', String(pressed));
+      refreshAdvPicker();
+      return;
+    }
+
+    const clearAdvTypes = e.target.closest('#sp-adv-clear-types');
+    if (clearAdvTypes) {
+      state.sessionPrepUI.advFilters.types.clear();
+      document.querySelectorAll('#sp-adv-types-panel .ms-checkbox').forEach(cb => { cb.checked = false; });
+      const trigger = document.getElementById('sp-adv-types-btn');
+      if (trigger) trigger.querySelector('.ms-trigger-label').textContent = advTypesTriggerLabel();
+      clearAdvTypes.style.display = 'none';
+      refreshAdvPicker();
+      return;
+    }
+
+    const openAdvArt = e.target.closest('[data-sp-open-adv-art]');
+    if (openAdvArt) { openAdversaryArtOverlay(openAdvArt.dataset.spOpenAdvArt); return; }
+
     const openEnv = e.target.closest('[data-sp-open-env]');
     if (openEnv) { navigate(envHash(openEnv.dataset.spOpenEnv, state.route)); return; }
 
@@ -4372,14 +4444,27 @@ function bindSessionPrepDelegation(el) {
   /* 'error' does not bubble, so it is only observable here via the capture
    * phase — the one deliberate exception to this file's usual bubble-phase
    * delegation. Swaps a failed adversary/item image for the same designed
-   * fallback a missing `image`/url gets at build time; never a broken-image
-   * icon on screen. */
+   * fallback a missing `art`/url gets at build time; never a broken-image
+   * icon on screen. The adversary thumb wrapper may be a real <button>
+   * (art.thumb present) — a broken image at runtime gets the exact same
+   * non-interactive fallback a missing art field gets, so it never opens an
+   * empty overlay: the button loses its open-art id/label and its own class,
+   * and an existing artwork overlay for this adversary (if the image failed
+   * only after the overlay was already open) is closed rather than left
+   * showing a broken full image. */
   el.addEventListener('error', e => {
     const target = e.target;
     if (!target || !target.matches) return;
     if (target.matches('[data-adv-thumb-img]')) {
       const wrap = target.closest('.prep-adv-thumb');
-      if (wrap) wrap.innerHTML = ICON_ADVERSARY_FALLBACK;
+      if (wrap) {
+        wrap.innerHTML = ICON_ADVERSARY_FALLBACK;
+        wrap.classList.remove('prep-adv-thumb-btn');
+        wrap.classList.add('prep-thumb-fallback');
+        wrap.removeAttribute('data-sp-open-adv-art');
+        wrap.removeAttribute('aria-label');
+        if (wrap.tagName === 'BUTTON') wrap.disabled = true;
+      }
     } else if (target.matches('[data-item-thumb-img]')) {
       const wrap = target.closest('.prep-item-thumb');
       if (wrap) wrap.innerHTML = ICON_ITEM_FALLBACK;
@@ -4562,7 +4647,7 @@ function renderSessionPrepPage() {
     </div>`;
   bindSessionPrepDelegation(el);
   bindSessionPrepSearchAndTitle();
-  bindAdvFilterControls();
+  bindAdvToolbarControls();
   bindItemFilterControls();
   initSessionPrepItemNav();
   applySessionPrepChromeDom();

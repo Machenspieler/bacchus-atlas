@@ -25,3 +25,8 @@ img/logo_tr.png
 # Build output of scripts/build.js — .github/workflows/deploy.yml generates
 # this fresh on every deploy; it's never meant to be committed.
 dist/
+
+# Dev-only tooling (package.json's devDependencies, currently just `sharp`
+# for scripts/generate-adversary-art.js) — never loaded by the runtime site
+# itself, reinstalled locally with `npm install` as needed.
+node_modules/

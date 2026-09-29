@@ -2334,10 +2334,18 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-row-open:hover .prep-row-name { color: var(--hope-soft); }
 .prep-row-meta { font-size: var(--fs-sm); line-height: 1.4; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* Adversary rows: bare checkbox + non-interactive thumbnail/name — never a
-   whole-row <label>, since checking or unchecking is the only interaction
-   the row supports (no detail view exists for adversaries here). */
+/* Adversary rows: three isolated action zones — checkbox (selection), the
+   artwork thumbnail (a real <button> opening the art overlay when local art
+   exists, see .prep-adv-thumb-btn below), and one link wrapping name+meta
+   (opens the adversary's own FreshCutGrass encounter in a new tab, see
+   .prep-adv-link below) — never a whole-row click target. */
 .prep-adv-row .prep-row-name { font-size: var(--fs-base); line-height: 1.4; color: var(--parchment); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prep-adv-link {
+  all: unset; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; cursor: pointer;
+  font-family: inherit;
+}
+.prep-adv-link:hover .prep-row-name { color: var(--hope-soft); }
+.prep-adv-link:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); border-radius: var(--r-sm); }
 
 /* ---- thumbnails: biome art (environments) or transparent-background PNG
    (adversaries/items), with a fallback that is never a broken-image icon ---- */
@@ -2358,6 +2366,58 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   display: flex; align-items: center; justify-content: center; background: var(--ink-raised);
 }
 .prep-thumb-fallback svg { width: 62%; height: 62%; color: var(--muted); }
+
+/* A real <button> variant of .prep-adv-thumb, used only when local art
+   exists — opens the art overlay. A subtle zoom-in affordance on hover/focus
+   is the only visual difference from the always-visible checkbox and the
+   FreshCutGrass name/meta link, so the three action zones each read
+   distinctly. Reset to a plain box first since it's a <button>, not a
+   <span>. */
+.prep-adv-thumb-btn {
+  border: none; padding: 7.5px; cursor: pointer;
+  transition: background var(--t-fast) var(--ease-out);
+}
+.prep-adv-thumb-btn img { transition: transform var(--t-fast) var(--ease-out); }
+.prep-adv-thumb-btn:hover, .prep-adv-thumb-btn:focus-visible { background: var(--ink-hover); }
+.prep-adv-thumb-btn:hover img, .prep-adv-thumb-btn:focus-visible img { transform: scale(1.08); }
+.prep-adv-thumb-btn:focus-visible { outline: var(--focus-ring); outline-offset: 1px; }
+.prep-adv-thumb-btn:disabled { cursor: default; }
+.prep-adv-thumb-btn:disabled:hover img { transform: none; }
+
+/* ---- adversary artwork overlay: image + caption + close only, no stat
+   block — see openAdversaryArtOverlay() in js/app.js. Dark neutral card so
+   both opaque and transparent artwork read cleanly, sized to stay well
+   inside the viewport at any window size. ---- */
+.adv-art-modal-card {
+  width: min(94vw, 1100px); max-height: 92vh;
+  display: flex; flex-direction: column; gap: var(--s-3);
+  background: var(--ink-card); border: 1px solid var(--line-strong); border-radius: var(--r-lg);
+  padding: var(--s-4); box-shadow: var(--e-4); position: relative;
+}
+.adv-art-modal-card:focus { outline: none; }
+.adv-art-close {
+  position: absolute; right: var(--s-3); top: var(--s-3); z-index: 1;
+  width: var(--h-xs); height: var(--h-xs);
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(20,17,15,0.72); border: 1px solid var(--line); border-radius: 50%;
+  color: var(--parchment-dim); font-size: var(--fs-lg); line-height: 1; cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+.adv-art-close:hover { color: var(--hope-soft); border-color: var(--hope); }
+.adv-art-media {
+  flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center;
+  background: #0a0806; border-radius: var(--r-md); overflow: hidden;
+}
+.adv-art-media img { max-width: 100%; max-height: min(80vh, 1000px); object-fit: contain; display: block; }
+.adv-art-fallback {
+  display: flex; flex-direction: column; align-items: center; gap: var(--s-2);
+  color: var(--muted); font-size: var(--fs-sm); padding: var(--s-6);
+}
+.adv-art-fallback svg { width: 64px; height: 64px; }
+.adv-art-caption {
+  margin: 0; text-align: center; font-family: var(--font-display); font-weight: 400;
+  font-size: var(--fs-md); letter-spacing: var(--tracking-display); color: var(--parchment);
+}
 
 /* ---- central preparation: environments / adversaries / items ----
    Each h3 is a full-bleed sticky bar, position:sticky within .prep-central's
@@ -2447,21 +2507,30 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 }
 .prep-central-row-meta { font-size: var(--fs-sm); line-height: 1.4; color: var(--muted); }
 
-/* Adversary picker/central "Tier N · Type" meta line and the Filters
-   disclosure above it. Unlike the main catalog toolbar (which only
-   disclosures its filter groups below a phone-width breakpoint — see the
-   "no-page-scroll" media block further down), Session Prep's adversary
-   column is narrow at every viewport, so the disclosure is always
-   collapsed-by-default here rather than only on a phone. */
-.prep-adv-toolbar { margin: var(--s-1) 0 var(--s-2); }
-.prep-adv-toolbar .filter-toggle { display: inline-flex; }
-.prep-adv-toolbar .toolbar-filters {
-  display: none; justify-content: flex-start; margin-top: var(--s-2);
+/* ---- compact "All Adversaries" toolbar (search + Tier + Type + counter, one row) ----
+   Same sticky-inside-its-own-scroll-container structure as .prep-env-toolbar
+   above (search, Tier buttons, counter) plus one more `auto` track for the
+   Type multiselect trigger between them — every non-search track sizes to
+   its own content first, so the search field is the one track that actually
+   shrinks. .prep-col-adv is a size container so the count (the least
+   important element — see CLAUDE.md) can hide via a container query before
+   anything else has to shrink below a usable size or wrap. */
+.prep-col-adv { container-type: inline-size; container-name: prep-adv-col; }
+.prep-adv-toolbar {
+  position: sticky; top: 0; z-index: 1;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto;
+  align-items: center; gap: var(--s-2);
+  min-height: 40px; padding-block: var(--s-2);
+  background: var(--ink-card);
+  border-bottom: 1px solid var(--line-faint);
 }
-.prep-adv-toolbar[data-filters-open="true"] .toolbar-filters { display: flex; }
-.prep-selected-only-field {
-  display: flex; align-items: center; gap: var(--s-2); min-height: var(--h-md);
-  font-size: var(--fs-sm); color: var(--parchment); cursor: pointer;
+.prep-adv-toolbar .prep-search { min-width: 0; }
+.prep-adv-toolbar .prep-search input { min-width: 56px; }
+.prep-adv-toolbar .prep-count { text-align: right; }
+#prep-adv-list { display: flex; flex-direction: column; gap: 2px; }
+.ms-clear { flex: none; white-space: nowrap; margin-top: var(--s-1); }
+@container prep-adv-col (max-width: 360px) {
+  .prep-adv-toolbar .prep-count { display: none; }
 }
 
 /* Selected-adversaries heading's "Open in FreshCutGrass" export link —
@@ -2718,8 +2787,8 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
      sticky toolbar would instead stick to the next real scrolling ancestor
      (the page itself) and stay pinned past its own section — falling back
      to a plain flowed block here is the safer, best-effort mobile result. */
-  .prep-env-toolbar { position: static; display: flex; flex-wrap: wrap; row-gap: var(--s-2); }
-  .prep-env-toolbar .prep-search { flex: 1 1 160px; }
+  .prep-env-toolbar, .prep-adv-toolbar { position: static; display: flex; flex-wrap: wrap; row-gap: var(--s-2); }
+  .prep-env-toolbar .prep-search, .prep-adv-toolbar .prep-search { flex: 1 1 160px; }
   .prep-remove-btn { width: 44px; height: 44px; }
   .prep-checkbox-hit { width: 44px; height: 44px; }
   .prep-session-header { align-items: stretch; }

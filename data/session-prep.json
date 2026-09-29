@@ -9,7 +9,10 @@
       },
       "tier": 1,
       "type": "solo",
-      "image": "img/adversaries/session-prep/acid-burrower.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/acid-burrower.webp",
+        "full": "img/adversaries/session-prep/generated/full/acid-burrower.webp"
+      }
     },
     {
       "id": "adult-flickerfly",
@@ -19,7 +22,10 @@
       },
       "tier": 3,
       "type": "solo",
-      "image": "img/adversaries/session-prep/adult-flickerfly.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/adult-flickerfly.webp",
+        "full": "img/adversaries/session-prep/generated/full/adult-flickerfly.webp"
+      }
     },
     {
       "id": "ahuizotl",
@@ -29,7 +35,10 @@
       },
       "tier": 1,
       "type": "skulk",
-      "image": "img/adversaries/session-prep/063_ahuizotl.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/063_ahuizotl.webp",
+        "full": "img/adversaries/session-prep/generated/full/063_ahuizotl.webp"
+      }
     },
     {
       "id": "apprentice-assassin",
@@ -39,7 +48,10 @@
       },
       "tier": 2,
       "type": "minion",
-      "image": "img/adversaries/session-prep/apprentice-assassin.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/apprentice-assassin.webp",
+        "full": "img/adversaries/session-prep/generated/full/apprentice-assassin.webp"
+      }
     },
     {
       "id": "arch-necromancer",
@@ -49,7 +61,10 @@
       },
       "tier": 4,
       "type": "leader",
-      "image": "img/adversaries/session-prep/arch-necromancer.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/arch-necromancer.webp",
+        "full": "img/adversaries/session-prep/generated/full/arch-necromancer.webp"
+      }
     },
     {
       "id": "archer-guard",
@@ -86,7 +101,10 @@
       },
       "tier": 2,
       "type": "skulk",
-      "image": "img/adversaries/session-prep/assassin-poisoner.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/assassin-poisoner.webp",
+        "full": "img/adversaries/session-prep/generated/full/assassin-poisoner.webp"
+      }
     },
     {
       "id": "atototl",
@@ -114,7 +132,10 @@
       },
       "tier": 2,
       "type": "standard",
-      "image": "img/adversaries/session-prep/071_basilisk.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/071_basilisk.webp",
+        "full": "img/adversaries/session-prep/generated/full/071_basilisk.webp"
+      }
     },
     {
       "id": "battle-box",
@@ -124,7 +145,10 @@
       },
       "tier": 2,
       "type": "solo",
-      "image": "img/adversaries/session-prep/battle-box.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/battle-box.webp",
+        "full": "img/adversaries/session-prep/generated/full/battle-box.webp"
+      }
     },
     {
       "id": "bear",
@@ -170,7 +194,10 @@
       },
       "tier": 1,
       "type": "bruiser",
-      "image": "img/adversaries/session-prep/brawny-zombie.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/brawny-zombie.webp",
+        "full": "img/adversaries/session-prep/generated/full/brawny-zombie.webp"
+      }
     },
     {
       "id": "bugboar",
@@ -180,7 +207,10 @@
       },
       "tier": 1,
       "type": "bruiser",
-      "image": "img/adversaries/session-prep/063_bugboar.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/063_bugboar.webp",
+        "full": "img/adversaries/session-prep/generated/full/063_bugboar.webp"
+      }
     },
     {
       "id": "catrin",
@@ -226,7 +256,10 @@
       },
       "tier": 4,
       "type": "minion",
-      "image": "img/adversaries/session-prep/091_cephilith_hatchling.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/091_cephilith_hatchling.webp",
+        "full": "img/adversaries/session-prep/generated/full/091_cephilith_hatchling.webp"
+      }
     },
     {
       "id": "cephilith-novitiate",
@@ -254,7 +287,10 @@
       },
       "tier": 4,
       "type": "solo",
-      "image": "img/adversaries/session-prep/092_cephilith_titan.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/092_cephilith_titan.webp",
+        "full": "img/adversaries/session-prep/generated/full/092_cephilith_titan.webp"
+      }
     },
     {
       "id": "chaos-skull",
@@ -264,7 +300,10 @@
       },
       "tier": 2,
       "type": "ranged",
-      "image": "img/adversaries/session-prep/chaos-skull.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/chaos-skull.webp",
+        "full": "img/adversaries/session-prep/generated/full/chaos-skull.webp"
+      }
     },
     {
       "id": "chicken-foot-hut",
@@ -283,7 +322,10 @@
       },
       "tier": 3,
       "type": "bruiser",
-      "image": "img/adversaries/session-prep/082_chimera.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/082_chimera.webp",
+        "full": "img/adversaries/session-prep/generated/full/082_chimera.webp"
+      }
     },
     {
       "id": "cipactli",
@@ -365,7 +407,10 @@
       },
       "tier": 3,
       "type": "skulk",
-      "image": "img/adversaries/session-prep/083_cryptimoth.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/083_cryptimoth.webp",
+        "full": "img/adversaries/session-prep/generated/full/083_cryptimoth.webp"
+      }
     },
     {
       "id": "cult-adept",
@@ -411,7 +456,10 @@
       },
       "tier": 1,
       "type": "minion",
-      "image": "img/adversaries/session-prep/064_darkweave_adversaries.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/064_darkweave_adversaries.webp",
+        "full": "img/adversaries/session-prep/generated/full/064_darkweave_adversaries.webp"
+      }
     },
     {
       "id": "darkweave-queen",
@@ -421,7 +469,10 @@
       },
       "tier": 1,
       "type": "solo",
-      "image": "img/adversaries/session-prep/064_darkweave_adversaries.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/064_darkweave_adversaries.webp",
+        "full": "img/adversaries/session-prep/generated/full/064_darkweave_adversaries.webp"
+      }
     },
     {
       "id": "darkweave-spinner",
@@ -431,7 +482,10 @@
       },
       "tier": 1,
       "type": "standard",
-      "image": "img/adversaries/session-prep/064_darkweave_adversaries.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/064_darkweave_adversaries.webp",
+        "full": "img/adversaries/session-prep/generated/full/064_darkweave_adversaries.webp"
+      }
     },
     {
       "id": "darkweave-swarmlings",
@@ -441,7 +495,10 @@
       },
       "tier": 1,
       "type": "horde",
-      "image": "img/adversaries/session-prep/064_darkweave_adversaries.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/064_darkweave_adversaries.webp",
+        "full": "img/adversaries/session-prep/generated/full/064_darkweave_adversaries.webp"
+      }
     },
     {
       "id": "deep-dweller",
@@ -451,7 +508,10 @@
       },
       "tier": 3,
       "type": "leader",
-      "image": "img/adversaries/session-prep/084_deep_dweller.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/084_deep_dweller.webp",
+        "full": "img/adversaries/session-prep/generated/full/084_deep_dweller.webp"
+      }
     },
     {
       "id": "deeproot-defender",
@@ -470,7 +530,10 @@
       },
       "tier": 4,
       "type": "solo",
-      "image": "img/adversaries/session-prep/093_demon_lord_berzug.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/093_demon_lord_berzug.webp",
+        "full": "img/adversaries/session-prep/generated/full/093_demon_lord_berzug.webp"
+      }
     },
     {
       "id": "demon-of-avarice",
@@ -480,7 +543,10 @@
       },
       "tier": 3,
       "type": "support",
-      "image": "img/adversaries/session-prep/demon-of-avarice.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/demon-of-avarice.webp",
+        "full": "img/adversaries/session-prep/generated/full/demon-of-avarice.webp"
+      }
     },
     {
       "id": "demon-of-despair",
@@ -490,7 +556,10 @@
       },
       "tier": 3,
       "type": "skulk",
-      "image": "img/adversaries/session-prep/demon-of-despair.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/demon-of-despair.webp",
+        "full": "img/adversaries/session-prep/generated/full/demon-of-despair.webp"
+      }
     },
     {
       "id": "demon-of-hubris",
@@ -500,7 +569,10 @@
       },
       "tier": 3,
       "type": "leader",
-      "image": "img/adversaries/session-prep/demon-of-hubris.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/demon-of-hubris.webp",
+        "full": "img/adversaries/session-prep/generated/full/demon-of-hubris.webp"
+      }
     },
     {
       "id": "demon-of-jealousy",
@@ -510,7 +582,10 @@
       },
       "tier": 3,
       "type": "ranged",
-      "image": "img/adversaries/session-prep/demon-of-jealousy.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/demon-of-jealousy.webp",
+        "full": "img/adversaries/session-prep/generated/full/demon-of-jealousy.webp"
+      }
     },
     {
       "id": "demon-of-wrath",
@@ -520,7 +595,10 @@
       },
       "tier": 3,
       "type": "bruiser",
-      "image": "img/adversaries/session-prep/demon-of-wrath.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/demon-of-wrath.webp",
+        "full": "img/adversaries/session-prep/generated/full/demon-of-wrath.webp"
+      }
     },
     {
       "id": "demonic-hound-pack",
@@ -530,7 +608,10 @@
       },
       "tier": 2,
       "type": "horde",
-      "image": "img/adversaries/session-prep/demonic-hound-pack.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/demonic-hound-pack.webp",
+        "full": "img/adversaries/session-prep/generated/full/demonic-hound-pack.webp"
+      }
     },
     {
       "id": "dire-bat",
@@ -540,7 +621,10 @@
       },
       "tier": 3,
       "type": "skulk",
-      "image": "img/adversaries/session-prep/head-vampire-and-dire-bat.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/head-vampire-and-dire-bat.webp",
+        "full": "img/adversaries/session-prep/generated/full/head-vampire-and-dire-bat.webp"
+      }
     },
     {
       "id": "dire-pangolati",
@@ -550,7 +634,10 @@
       },
       "tier": 2,
       "type": "bruiser",
-      "image": "img/adversaries/session-prep/072_dire_pangolati.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/072_dire_pangolati.webp",
+        "full": "img/adversaries/session-prep/generated/full/072_dire_pangolati.webp"
+      }
     },
     {
       "id": "dire-wolf",
@@ -569,7 +656,10 @@
       },
       "tier": 2,
       "type": "skulk",
-      "image": "img/adversaries/session-prep/072_doppelhound.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/072_doppelhound.webp",
+        "full": "img/adversaries/session-prep/generated/full/072_doppelhound.webp"
+      }
     },
     {
       "id": "dragon-knight",
@@ -669,7 +759,10 @@
       },
       "tier": 2,
       "type": "solo",
-      "image": "img/adversaries/session-prep/073_entombed_cat_beast.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/073_entombed_cat_beast.webp",
+        "full": "img/adversaries/session-prep/generated/full/073_entombed_cat_beast.webp"
+      }
     },
     {
       "id": "entombed-elite-guard",
@@ -679,7 +772,10 @@
       },
       "tier": 2,
       "type": "standard",
-      "image": "img/adversaries/session-prep/074_entombed_elite_guard.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/074_entombed_elite_guard.webp",
+        "full": "img/adversaries/session-prep/generated/full/074_entombed_elite_guard.webp"
+      }
     },
     {
       "id": "entombed-empress",
@@ -689,7 +785,10 @@
       },
       "tier": 2,
       "type": "leader",
-      "image": "img/adversaries/session-prep/074_entombed_empress.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/074_entombed_empress.webp",
+        "full": "img/adversaries/session-prep/generated/full/074_entombed_empress.webp"
+      }
     },
     {
       "id": "entombed-necropriest",
@@ -717,7 +816,10 @@
       },
       "tier": 2,
       "type": "minion",
-      "image": "img/adversaries/session-prep/074_entombed_stonemason.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/074_entombed_stonemason.webp",
+        "full": "img/adversaries/session-prep/generated/full/074_entombed_stonemason.webp"
+      }
     },
     {
       "id": "failed-experiment",
@@ -763,7 +865,10 @@
       },
       "tier": 4,
       "type": "solo",
-      "image": "img/adversaries/session-prep/fallen-warlord-realm-breaker.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/fallen-warlord-realm-breaker.webp",
+        "full": "img/adversaries/session-prep/generated/full/fallen-warlord-realm-breaker.webp"
+      }
     },
     {
       "id": "fallen-warlord-undefeated-champion",
@@ -773,7 +878,10 @@
       },
       "tier": 4,
       "type": "solo",
-      "image": "img/adversaries/session-prep/fallen-warlord-undefeated-champion.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/fallen-warlord-undefeated-champion.webp",
+        "full": "img/adversaries/session-prep/generated/full/fallen-warlord-undefeated-champion.webp"
+      }
     },
     {
       "id": "fellmounted-shadow-king",
@@ -819,7 +927,10 @@
       },
       "tier": 2,
       "type": "bruiser",
-      "image": "img/adversaries/session-prep/075_fowlbear.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/075_fowlbear.webp",
+        "full": "img/adversaries/session-prep/generated/full/075_fowlbear.webp"
+      }
     },
     {
       "id": "frost-titan",
@@ -901,7 +1012,10 @@
       },
       "tier": 2,
       "type": "bruiser",
-      "image": "img/adversaries/session-prep/giant-brawler.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/giant-brawler.webp",
+        "full": "img/adversaries/session-prep/generated/full/giant-brawler.webp"
+      }
     },
     {
       "id": "giant-eagle",
@@ -965,7 +1079,10 @@
       },
       "tier": 1,
       "type": "standard",
-      "image": "img/adversaries/session-prep/glass-snake.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/glass-snake.webp",
+        "full": "img/adversaries/session-prep/generated/full/glass-snake.webp"
+      }
     },
     {
       "id": "gobstalker",
@@ -975,7 +1092,10 @@
       },
       "tier": 2,
       "type": "solo",
-      "image": "img/adversaries/session-prep/076_gobstalker.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/076_gobstalker.webp",
+        "full": "img/adversaries/session-prep/generated/full/076_gobstalker.webp"
+      }
     },
     {
       "id": "gorgon",
@@ -985,7 +1105,10 @@
       },
       "tier": 2,
       "type": "solo",
-      "image": "img/adversaries/session-prep/gorgon.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/gorgon.webp",
+        "full": "img/adversaries/session-prep/generated/full/gorgon.webp"
+      }
     },
     {
       "id": "greater-earth-elemental",
@@ -995,7 +1118,10 @@
       },
       "tier": 3,
       "type": "bruiser",
-      "image": "img/adversaries/session-prep/greater-earth-elemental.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/greater-earth-elemental.webp",
+        "full": "img/adversaries/session-prep/generated/full/greater-earth-elemental.webp"
+      }
     },
     {
       "id": "greater-water-elemental",
@@ -1014,7 +1140,10 @@
       },
       "tier": 1,
       "type": "skulk",
-      "image": "img/adversaries/session-prep/green-ooze.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/green-ooze.webp",
+        "full": "img/adversaries/session-prep/generated/full/green-ooze.webp"
+      }
     },
     {
       "id": "griffin",
@@ -1033,7 +1162,10 @@
       },
       "tier": 1,
       "type": "horde",
-      "image": "img/adversaries/session-prep/065_grimmling_warband.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/065_grimmling_warband.webp",
+        "full": "img/adversaries/session-prep/generated/full/065_grimmling_warband.webp"
+      }
     },
     {
       "id": "guahalan-alebrujo",
@@ -1043,7 +1175,10 @@
       },
       "tier": 2,
       "type": "solo",
-      "image": "img/adversaries/session-prep/078_guahalan_alebrujo.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/078_guahalan_alebrujo.webp",
+        "full": "img/adversaries/session-prep/generated/full/078_guahalan_alebrujo.webp"
+      }
     },
     {
       "id": "guahalan-fang-lord",
@@ -1053,7 +1188,10 @@
       },
       "tier": 2,
       "type": "leader",
-      "image": "img/adversaries/session-prep/077_guahalan_fang_lord.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/077_guahalan_fang_lord.webp",
+        "full": "img/adversaries/session-prep/generated/full/077_guahalan_fang_lord.webp"
+      }
     },
     {
       "id": "guahalan-shifter",
@@ -1063,7 +1201,10 @@
       },
       "tier": 2,
       "type": "standard",
-      "image": "img/adversaries/session-prep/077_guahalan_shifter.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/077_guahalan_shifter.webp",
+        "full": "img/adversaries/session-prep/generated/full/077_guahalan_shifter.webp"
+      }
     },
     {
       "id": "guahalan-spirit-beast",
@@ -1073,7 +1214,10 @@
       },
       "tier": 2,
       "type": "minion",
-      "image": "img/adversaries/session-prep/077_guahalan_spirit_beast.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/077_guahalan_spirit_beast.webp",
+        "full": "img/adversaries/session-prep/generated/full/077_guahalan_spirit_beast.webp"
+      }
     },
     {
       "id": "guahalan-spirit-singer",
@@ -1083,7 +1227,10 @@
       },
       "tier": 2,
       "type": "support",
-      "image": "img/adversaries/session-prep/078_guahalan_spirit_singer.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/078_guahalan_spirit_singer.webp",
+        "full": "img/adversaries/session-prep/generated/full/078_guahalan_spirit_singer.webp"
+      }
     },
     {
       "id": "hallowed-archer",
@@ -1120,7 +1267,10 @@
       },
       "tier": 4,
       "type": "skulk",
-      "image": "img/adversaries/session-prep/095_the_harbingers.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/095_the_harbingers.webp",
+        "full": "img/adversaries/session-prep/generated/full/095_the_harbingers.webp"
+      }
     },
     {
       "id": "harbinger-of-famine",
@@ -1130,7 +1280,10 @@
       },
       "tier": 4,
       "type": "support",
-      "image": "img/adversaries/session-prep/095_the_harbingers.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/095_the_harbingers.webp",
+        "full": "img/adversaries/session-prep/generated/full/095_the_harbingers.webp"
+      }
     },
     {
       "id": "harbinger-of-pestilence",
@@ -1140,7 +1293,10 @@
       },
       "tier": 4,
       "type": "leader",
-      "image": "img/adversaries/session-prep/095_the_harbingers.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/095_the_harbingers.webp",
+        "full": "img/adversaries/session-prep/generated/full/095_the_harbingers.webp"
+      }
     },
     {
       "id": "harbinger-of-war",
@@ -1150,7 +1306,10 @@
       },
       "tier": 4,
       "type": "bruiser",
-      "image": "img/adversaries/session-prep/095_the_harbingers.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/095_the_harbingers.webp",
+        "full": "img/adversaries/session-prep/generated/full/095_the_harbingers.webp"
+      }
     },
     {
       "id": "harpy",
@@ -1187,7 +1346,10 @@
       },
       "tier": 3,
       "type": "leader",
-      "image": "img/adversaries/session-prep/head-vampire-and-dire-bat.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/head-vampire-and-dire-bat.webp",
+        "full": "img/adversaries/session-prep/generated/full/head-vampire-and-dire-bat.webp"
+      }
     },
     {
       "id": "high-seraph",
@@ -1233,7 +1395,10 @@
       },
       "tier": 3,
       "type": "solo",
-      "image": "img/adversaries/session-prep/hydra.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/hydra.webp",
+        "full": "img/adversaries/session-prep/generated/full/hydra.webp"
+      }
     },
     {
       "id": "jack-o-lantern",
@@ -1252,7 +1417,10 @@
       },
       "tier": 1,
       "type": "standard",
-      "image": "img/adversaries/session-prep/jagged-knife-bandit.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/jagged-knife-bandit.webp",
+        "full": "img/adversaries/session-prep/generated/full/jagged-knife-bandit.webp"
+      }
     },
     {
       "id": "jagged-knife-hexer",
@@ -1262,7 +1430,10 @@
       },
       "tier": 1,
       "type": "support",
-      "image": "img/adversaries/session-prep/jagged-knife-hexer.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/jagged-knife-hexer.webp",
+        "full": "img/adversaries/session-prep/generated/full/jagged-knife-hexer.webp"
+      }
     },
     {
       "id": "jagged-knife-kneebreaker",
@@ -1290,7 +1461,10 @@
       },
       "tier": 1,
       "type": "leader",
-      "image": "img/adversaries/session-prep/jagged-knife-lieutenant.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/jagged-knife-lieutenant.webp",
+        "full": "img/adversaries/session-prep/generated/full/jagged-knife-lieutenant.webp"
+      }
     },
     {
       "id": "jagged-knife-shadow",
@@ -1318,7 +1492,10 @@
       },
       "tier": 2,
       "type": "solo",
-      "image": "img/adversaries/session-prep/juvenile-flickerfly.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/juvenile-flickerfly.webp",
+        "full": "img/adversaries/session-prep/generated/full/juvenile-flickerfly.webp"
+      }
     },
     {
       "id": "kelpie",
@@ -1337,7 +1514,10 @@
       },
       "tier": 2,
       "type": "leader",
-      "image": "img/adversaries/session-prep/knight-of-the-realm.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/knight-of-the-realm.webp",
+        "full": "img/adversaries/session-prep/generated/full/knight-of-the-realm.webp"
+      }
     },
     {
       "id": "kraken",
@@ -1347,7 +1527,10 @@
       },
       "tier": 4,
       "type": "solo",
-      "image": "img/adversaries/session-prep/kraken.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/kraken.webp",
+        "full": "img/adversaries/session-prep/generated/full/kraken.webp"
+      }
     },
     {
       "id": "lamia",
@@ -1366,7 +1549,10 @@
       },
       "tier": 3,
       "type": "skulk",
-      "image": "img/adversaries/session-prep/086_lamplight_beguiler.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/086_lamplight_beguiler.webp",
+        "full": "img/adversaries/session-prep/generated/full/086_lamplight_beguiler.webp"
+      }
     },
     {
       "id": "landshark",
@@ -1376,7 +1562,10 @@
       },
       "tier": 2,
       "type": "bruiser",
-      "image": "img/adversaries/session-prep/079_landshark.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/079_landshark.webp",
+        "full": "img/adversaries/session-prep/generated/full/079_landshark.webp"
+      }
     },
     {
       "id": "landshark-behemoth",
@@ -1386,7 +1575,10 @@
       },
       "tier": 2,
       "type": "solo",
-      "image": "img/adversaries/session-prep/079_landshark_behemoth.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/079_landshark_behemoth.webp",
+        "full": "img/adversaries/session-prep/generated/full/079_landshark_behemoth.webp"
+      }
     },
     {
       "id": "manticore",
@@ -1423,7 +1615,10 @@
       },
       "tier": 2,
       "type": "leader",
-      "image": "img/adversaries/session-prep/master-assassin.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/master-assassin.webp",
+        "full": "img/adversaries/session-prep/generated/full/master-assassin.webp"
+      }
     },
     {
       "id": "mechanorb",
@@ -1433,7 +1628,10 @@
       },
       "tier": 1,
       "type": "standard",
-      "image": "img/adversaries/session-prep/066_mechanorb.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/066_mechanorb.webp",
+        "full": "img/adversaries/session-prep/generated/full/066_mechanorb.webp"
+      }
     },
     {
       "id": "merchant",
@@ -1461,7 +1659,10 @@
       },
       "tier": 1,
       "type": "solo",
-      "image": "img/adversaries/session-prep/minor-chaos-elemental.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/minor-chaos-elemental.webp",
+        "full": "img/adversaries/session-prep/generated/full/minor-chaos-elemental.webp"
+      }
     },
     {
       "id": "minor-demon",
@@ -1471,7 +1672,10 @@
       },
       "tier": 1,
       "type": "solo",
-      "image": "img/adversaries/session-prep/minor-demon.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/minor-demon.webp",
+        "full": "img/adversaries/session-prep/generated/full/minor-demon.webp"
+      }
     },
     {
       "id": "minor-fire-elemental",
@@ -1481,7 +1685,10 @@
       },
       "tier": 1,
       "type": "solo",
-      "image": "img/adversaries/session-prep/minor-fire-elemental.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/minor-fire-elemental.webp",
+        "full": "img/adversaries/session-prep/generated/full/minor-fire-elemental.webp"
+      }
     },
     {
       "id": "minor-treant",
@@ -1491,7 +1698,10 @@
       },
       "tier": 1,
       "type": "minion",
-      "image": "img/adversaries/session-prep/minor-treant.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/minor-treant.webp",
+        "full": "img/adversaries/session-prep/generated/full/minor-treant.webp"
+      }
     },
     {
       "id": "minotaur-wrecker",
@@ -1501,7 +1711,10 @@
       },
       "tier": 2,
       "type": "bruiser",
-      "image": "img/adversaries/session-prep/minotaur.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/minotaur.webp",
+        "full": "img/adversaries/session-prep/generated/full/minotaur.webp"
+      }
     },
     {
       "id": "monarch",
@@ -1529,7 +1742,10 @@
       },
       "tier": 1,
       "type": "solo",
-      "image": "img/adversaries/session-prep/066_mountain_troll.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/066_mountain_troll.webp",
+        "full": "img/adversaries/session-prep/generated/full/066_mountain_troll.webp"
+      }
     },
     {
       "id": "night-children",
@@ -1539,7 +1755,10 @@
       },
       "tier": 3,
       "type": "horde",
-      "image": "img/adversaries/session-prep/086_night_children.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/086_night_children.webp",
+        "full": "img/adversaries/session-prep/generated/full/086_night_children.webp"
+      }
     },
     {
       "id": "oak-treant",
@@ -1567,7 +1786,10 @@
       },
       "tier": 4,
       "type": "solo",
-      "image": "img/adversaries/session-prep/oracle-of-doom.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/oracle-of-doom.webp",
+        "full": "img/adversaries/session-prep/generated/full/oracle-of-doom.webp"
+      }
     },
     {
       "id": "outer-realms-abomination",
@@ -1613,7 +1835,10 @@
       },
       "tier": 3,
       "type": "social",
-      "image": "img/adversaries/session-prep/087_pain_priest.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/087_pain_priest.webp",
+        "full": "img/adversaries/session-prep/generated/full/087_pain_priest.webp"
+      }
     },
     {
       "id": "panther",
@@ -1632,7 +1857,10 @@
       },
       "tier": 1,
       "type": "solo",
-      "image": "img/adversaries/session-prep/patchwork-zombie-hulk.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/patchwork-zombie-hulk.webp",
+        "full": "img/adversaries/session-prep/generated/full/patchwork-zombie-hulk.webp"
+      }
     },
     {
       "id": "perfected-zombie",
@@ -1669,7 +1897,10 @@
       },
       "tier": 3,
       "type": "ranged",
-      "image": "img/adversaries/session-prep/087_phoenix.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/087_phoenix.webp",
+        "full": "img/adversaries/session-prep/generated/full/087_phoenix.webp"
+      }
     },
     {
       "id": "pirate-captain",
@@ -1724,7 +1955,10 @@
       },
       "tier": 1,
       "type": "horde",
-      "image": "img/adversaries/session-prep/067_rabble_mawb.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/067_rabble_mawb.webp",
+        "full": "img/adversaries/session-prep/generated/full/067_rabble_mawb.webp"
+      }
     },
     {
       "id": "ravenous-mockery",
@@ -1734,7 +1968,10 @@
       },
       "tier": 2,
       "type": "standard",
-      "image": "img/adversaries/session-prep/079_ravenous_mockery.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/079_ravenous_mockery.webp",
+        "full": "img/adversaries/session-prep/generated/full/079_ravenous_mockery.webp"
+      }
     },
     {
       "id": "red-ooze",
@@ -1744,7 +1981,10 @@
       },
       "tier": 1,
       "type": "skulk",
-      "image": "img/adversaries/session-prep/red-ooze.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/red-ooze.webp",
+        "full": "img/adversaries/session-prep/generated/full/red-ooze.webp"
+      }
     },
     {
       "id": "redcap-biters",
@@ -1772,7 +2012,10 @@
       },
       "tier": 1,
       "type": "standard",
-      "image": "img/adversaries/session-prep/068_redcap_butcher.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/068_redcap_butcher.webp",
+        "full": "img/adversaries/session-prep/generated/full/068_redcap_butcher.webp"
+      }
     },
     {
       "id": "redcap-candlemaker",
@@ -1782,7 +2025,10 @@
       },
       "tier": 1,
       "type": "leader",
-      "image": "img/adversaries/session-prep/068_redcap_candlemaker.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/068_redcap_candlemaker.webp",
+        "full": "img/adversaries/session-prep/generated/full/068_redcap_candlemaker.webp"
+      }
     },
     {
       "id": "redcap-skinner",
@@ -1792,7 +2038,10 @@
       },
       "tier": 1,
       "type": "minion",
-      "image": "img/adversaries/session-prep/068_redcap_skinner.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/068_redcap_skinner.webp",
+        "full": "img/adversaries/session-prep/generated/full/068_redcap_skinner.webp"
+      }
     },
     {
       "id": "roc",
@@ -1811,7 +2060,10 @@
       },
       "tier": 1,
       "type": "minion",
-      "image": "img/adversaries/session-prep/rotted-zombie.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/rotted-zombie.webp",
+        "full": "img/adversaries/session-prep/generated/full/rotted-zombie.webp"
+      }
     },
     {
       "id": "royal-advisor",
@@ -1857,7 +2109,10 @@
       },
       "tier": 3,
       "type": "bruiser",
-      "image": "img/adversaries/session-prep/088_sandwyrm.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/088_sandwyrm.webp",
+        "full": "img/adversaries/session-prep/generated/full/088_sandwyrm.webp"
+      }
     },
     {
       "id": "sawtoothed-gillbeast",
@@ -1867,7 +2122,10 @@
       },
       "tier": 1,
       "type": "standard",
-      "image": "img/adversaries/session-prep/069_sawtoothed_gillbeast.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/069_sawtoothed_gillbeast.webp",
+        "full": "img/adversaries/session-prep/generated/full/069_sawtoothed_gillbeast.webp"
+      }
     },
     {
       "id": "scarecrow",
@@ -1958,7 +2216,10 @@
       },
       "tier": 1,
       "type": "ranged",
-      "image": "img/adversaries/session-prep/skeleton-archer.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/skeleton-archer.webp",
+        "full": "img/adversaries/session-prep/generated/full/skeleton-archer.webp"
+      }
     },
     {
       "id": "skeleton-dredge",
@@ -1968,7 +2229,10 @@
       },
       "tier": 1,
       "type": "minion",
-      "image": "img/adversaries/session-prep/skeleton-dredge.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/skeleton-dredge.webp",
+        "full": "img/adversaries/session-prep/generated/full/skeleton-dredge.webp"
+      }
     },
     {
       "id": "skeleton-knight",
@@ -1978,7 +2242,10 @@
       },
       "tier": 1,
       "type": "bruiser",
-      "image": "img/adversaries/session-prep/skeleton-knight.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/skeleton-knight.webp",
+        "full": "img/adversaries/session-prep/generated/full/skeleton-knight.webp"
+      }
     },
     {
       "id": "skeleton-warrior",
@@ -1988,7 +2255,10 @@
       },
       "tier": 1,
       "type": "standard",
-      "image": "img/adversaries/session-prep/skeleton-warrior.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/skeleton-warrior.webp",
+        "full": "img/adversaries/session-prep/generated/full/skeleton-warrior.webp"
+      }
     },
     {
       "id": "soul-shattered-mage",
@@ -1998,7 +2268,10 @@
       },
       "tier": 1,
       "type": "solo",
-      "image": "img/adversaries/session-prep/069_soul_shattered_mage.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/069_soul_shattered_mage.webp",
+        "full": "img/adversaries/session-prep/generated/full/069_soul_shattered_mage.webp"
+      }
     },
     {
       "id": "spectral-archer",
@@ -2044,7 +2317,10 @@
       },
       "tier": 1,
       "type": "bruiser",
-      "image": "img/adversaries/session-prep/069_spellbound_armor.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/069_spellbound_armor.webp",
+        "full": "img/adversaries/session-prep/generated/full/069_spellbound_armor.webp"
+      }
     },
     {
       "id": "sprite",
@@ -2054,7 +2330,10 @@
       },
       "tier": 2,
       "type": "minion",
-      "image": "img/adversaries/session-prep/080_sprite.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/080_sprite.webp",
+        "full": "img/adversaries/session-prep/generated/full/080_sprite.webp"
+      }
     },
     {
       "id": "spy",
@@ -2091,7 +2370,10 @@
       },
       "tier": 2,
       "type": "skulk",
-      "image": "img/adversaries/session-prep/stonewraith.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/stonewraith.webp",
+        "full": "img/adversaries/session-prep/generated/full/stonewraith.webp"
+      }
     },
     {
       "id": "storm-titan",
@@ -2110,7 +2392,10 @@
       },
       "tier": 4,
       "type": "solo",
-      "image": "img/adversaries/session-prep/097_supreme_demiurge_adonix.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/097_supreme_demiurge_adonix.webp",
+        "full": "img/adversaries/session-prep/generated/full/097_supreme_demiurge_adonix.webp"
+      }
     },
     {
       "id": "swarm-of-rats",
@@ -2174,7 +2459,10 @@
       },
       "tier": 1,
       "type": "skulk",
-      "image": "img/adversaries/session-prep/tiny-red-ooze.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/tiny-red-ooze.webp",
+        "full": "img/adversaries/session-prep/generated/full/tiny-red-ooze.webp"
+      }
     },
     {
       "id": "treant-sapling",
@@ -2193,7 +2481,10 @@
       },
       "tier": 2,
       "type": "bruiser",
-      "image": "img/adversaries/session-prep/080_triceratops.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/080_triceratops.webp",
+        "full": "img/adversaries/session-prep/generated/full/080_triceratops.webp"
+      }
     },
     {
       "id": "tyrannosaurus",
@@ -2221,7 +2512,10 @@
       },
       "tier": 2,
       "type": "standard",
-      "image": "img/adversaries/session-prep/081_urco.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/081_urco.webp",
+        "full": "img/adversaries/session-prep/generated/full/081_urco.webp"
+      }
     },
     {
       "id": "valdenhax",
@@ -2231,7 +2525,10 @@
       },
       "tier": 2,
       "type": "leader",
-      "image": "img/adversaries/session-prep/081_valdenhax.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/081_valdenhax.webp",
+        "full": "img/adversaries/session-prep/generated/full/081_valdenhax.webp"
+      }
     },
     {
       "id": "vampire",
@@ -2259,7 +2556,10 @@
       },
       "tier": 3,
       "type": "solo",
-      "image": "img/adversaries/session-prep/089_vampire_lord_hellwing.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/089_vampire_lord_hellwing.webp",
+        "full": "img/adversaries/session-prep/generated/full/089_vampire_lord_hellwing.webp"
+      }
     },
     {
       "id": "vault-guardian-gaoler",
@@ -2287,7 +2587,10 @@
       },
       "tier": 3,
       "type": "ranged",
-      "image": "img/adversaries/session-prep/vault-guardian-turret.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/vault-guardian-turret.webp",
+        "full": "img/adversaries/session-prep/generated/full/vault-guardian-turret.webp"
+      }
     },
     {
       "id": "viper",
@@ -2315,7 +2618,10 @@
       },
       "tier": 4,
       "type": "solo",
-      "image": "img/adversaries/session-prep/volcanic-dragon-ashen-tyrant.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/volcanic-dragon-ashen-tyrant.webp",
+        "full": "img/adversaries/session-prep/generated/full/volcanic-dragon-ashen-tyrant.webp"
+      }
     },
     {
       "id": "volcanic-dragon-molten-scourge",
@@ -2325,7 +2631,10 @@
       },
       "tier": 4,
       "type": "solo",
-      "image": "img/adversaries/session-prep/volcanic-dragon-molten-scourge.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/volcanic-dragon-molten-scourge.webp",
+        "full": "img/adversaries/session-prep/generated/full/volcanic-dragon-molten-scourge.webp"
+      }
     },
     {
       "id": "volcanic-dragon-obsidian-predator",
@@ -2335,7 +2644,10 @@
       },
       "tier": 4,
       "type": "solo",
-      "image": "img/adversaries/session-prep/volcanic-dragon-obsidian-predator.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/volcanic-dragon-obsidian-predator.webp",
+        "full": "img/adversaries/session-prep/generated/full/volcanic-dragon-obsidian-predator.webp"
+      }
     },
     {
       "id": "war-wizard",
@@ -2345,7 +2657,10 @@
       },
       "tier": 2,
       "type": "ranged",
-      "image": "img/adversaries/session-prep/war-wizard.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/war-wizard.webp",
+        "full": "img/adversaries/session-prep/generated/full/war-wizard.webp"
+      }
     },
     {
       "id": "water-mother",
@@ -2364,7 +2679,10 @@
       },
       "tier": 1,
       "type": "solo",
-      "image": "img/adversaries/session-prep/070_waxwork_creation.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/070_waxwork_creation.webp",
+        "full": "img/adversaries/session-prep/generated/full/070_waxwork_creation.webp"
+      }
     },
     {
       "id": "weaponmaster",
@@ -2419,7 +2737,10 @@
       },
       "tier": 3,
       "type": "standard",
-      "image": "img/adversaries/session-prep/090_wyvern.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/090_wyvern.webp",
+        "full": "img/adversaries/session-prep/generated/full/090_wyvern.webp"
+      }
     },
     {
       "id": "xero-the-castle-killer",
@@ -2429,7 +2750,10 @@
       },
       "tier": 4,
       "type": "solo",
-      "image": "img/adversaries/session-prep/098_xero_the_castle_killer.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/098_xero_the_castle_killer.webp",
+        "full": "img/adversaries/session-prep/generated/full/098_xero_the_castle_killer.webp"
+      }
     },
     {
       "id": "young-dryad",
@@ -2457,7 +2781,10 @@
       },
       "tier": 3,
       "type": "solo",
-      "image": "img/adversaries/session-prep/young-ice-dragon.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/young-ice-dragon.webp",
+        "full": "img/adversaries/session-prep/generated/full/young-ice-dragon.webp"
+      }
     },
     {
       "id": "yufo",
@@ -2467,7 +2794,10 @@
       },
       "tier": 1,
       "type": "social",
-      "image": "img/adversaries/session-prep/070_yufo.png"
+      "art": {
+        "thumb": "img/adversaries/session-prep/generated/thumbs/070_yufo.webp",
+        "full": "img/adversaries/session-prep/generated/full/070_yufo.webp"
+      }
     },
     {
       "id": "zombie-legion",

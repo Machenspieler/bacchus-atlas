@@ -235,14 +235,17 @@
     "prep_clear_item_search": "Clear item search",
     "prep_item_nav_prev": "Scroll items left",
     "prep_item_nav_next": "Scroll items right",
-    "prep_selected_only": "Selected only",
     "prep_category_label": "Category",
     "prep_category_items": "Items",
     "prep_category_consumables": "Consumables",
     "prep_item_source_all": "All sources",
     "prep_open_freshcutgrass": "Open in FreshCutGrass",
     "prep_open_freshcutgrass_tip": "Open {n} selected adversaries in FreshCutGrass in a new tab",
-    "prep_freshcutgrass_default_title": "Session Prep Encounter"
+    "prep_freshcutgrass_default_title": "Session Prep Encounter",
+    "prep_open_adversary_image": "Open image for {name}",
+    "prep_adversary_art_unavailable": "Artwork unavailable",
+    "prep_open_adversary_freshcutgrass": "Open {name} on FreshCutGrass (opens in a new tab)",
+    "prep_clear_adversary_types": "Clear types"
   },
   "ru": {
     "app_title": "Атлас Бахуса",
@@ -480,13 +483,16 @@
     "prep_clear_item_search": "Очистить поиск предметов",
     "prep_item_nav_prev": "Прокрутить предметы влево",
     "prep_item_nav_next": "Прокрутить предметы вправо",
-    "prep_selected_only": "Только выбранные",
     "prep_category_label": "Категория",
     "prep_category_items": "Предметы",
     "prep_category_consumables": "Расходники",
     "prep_item_source_all": "Все источники",
     "prep_open_freshcutgrass": "Открыть в FreshCutGrass",
     "prep_open_freshcutgrass_tip": "Открыть {n} выбранных противников в FreshCutGrass в новой вкладке",
-    "prep_freshcutgrass_default_title": "Встреча из подготовки к сессии"
+    "prep_freshcutgrass_default_title": "Встреча из подготовки к сессии",
+    "prep_open_adversary_image": "Открыть изображение: {name}",
+    "prep_adversary_art_unavailable": "Изображение недоступно",
+    "prep_open_adversary_freshcutgrass": "Открыть «{name}» на FreshCutGrass (в новой вкладке)",
+    "prep_clear_adversary_types": "Сбросить типы"
   }
 }

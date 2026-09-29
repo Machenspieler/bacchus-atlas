@@ -81,11 +81,36 @@ locally") before starting.
 - [ ] Header chrome collapse/expand (see "Header" above) from within
       Session Prep specifically.
 - [ ] **Adversary catalogue reports 264**: the "All Adversaries" count reads
-      264 of 264 with no filters active.
+      264 of 264 with no filters active, and hides first (not the search
+      field or Tier/Type controls) as the adversary column narrows.
+- [ ] **Adversary compact toolbar**: search field, four Tier buttons, and
+      the Type dropdown all fit one row at 1920×1080/1440×900/1366×768/
+      1280×800; no visible heading, no "Selected only", no standalone
+      "Clear filters" button remain.
 - [ ] **Adversary Tier/Type filters**: Tier values OR together, Type values
-      OR together, Tier and Type AND together, "Selected only" combines with
-      both, "Clear filters" resets all three and hides itself, the Filters
-      disclosure is collapsed by default and toggles open/closed.
+      OR together, Tier and Type AND together with each other and with the
+      search text. The Type dropdown's own "Clear types" action appears
+      only once a Type is selected, doesn't close the dropdown, and a Tier
+      click keeps keyboard focus on the same Tier button.
+- [ ] **Adversary smart search**: an English name fragment, a Russian name
+      fragment, `tier 2`/`tier2`/`t2`/`тир 2`/`тир2`, a bare `2`, an English
+      Type (`solo`), a Russian Type (`одиночка`), and a combined query
+      (`tier 2 solo` / `тир 2 одиночка`) each return the expected adversaries
+      regardless of the active UI language.
+- [ ] **Adversary row action zones**: the checkbox toggles selection only;
+      an adversary with local art shows a thumbnail *button* that opens the
+      art overlay without changing selection; an adversary without art
+      shows the plain fallback icon (never clickable); clicking the name/
+      meta text opens that adversary's own FreshCutGrass encounter in a new
+      tab (canonical English name, even in the Russian UI) without changing
+      selection.
+- [ ] **Adversary art overlay**: opens on thumbnail click, shows only the
+      large image and the adversary's name (no stat block); the full image
+      is not requested until the overlay opens (check the network panel);
+      Escape/backdrop/close button all dismiss it; focus returns to the
+      thumbnail button that opened it; an adversary sharing group art with
+      others (e.g. the four Darkweave adversaries) shows the same image for
+      each.
 - [ ] **FreshCutGrass export**: "Open in FreshCutGrass" is absent with zero
       adversaries selected, appears the moment one is selected, opens in a
       new tab, and its accessible label/tooltip announces the destination

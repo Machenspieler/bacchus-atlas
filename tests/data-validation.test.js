@@ -657,20 +657,56 @@ test('a malformed session-prep bilingual name fails', () => {
   assert.ok(errorsOf(result).some(d => d.path === '$.adversaries[0].name'));
 });
 
-test('a missing referenced local session-prep adversary image fails', () => {
+test('a missing referenced local session-prep adversary art file fails', () => {
   const sp = sessionPrepFixtureBase();
-  sp.adversaries[0].image = 'img/adversaries/session-prep/does-not-exist.png';
+  sp.adversaries[0].art = {
+    thumb: 'img/adversaries/session-prep/generated/thumbs/does-not-exist.webp',
+    full: 'img/adversaries/session-prep/generated/full/does-not-exist.webp',
+  };
   const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
   const result = validateRepositoryData(dir);
-  assert.ok(errorsOf(result).some(d => d.path === '$.adversaries[0].image' && /does not point to an existing file/.test(d.message)));
+  assert.ok(errorsOf(result).some(d => d.path === '$.adversaries[0].art.thumb' && /does not point to an existing file/.test(d.message)));
+  assert.ok(errorsOf(result).some(d => d.path === '$.adversaries[0].art.full' && /does not point to an existing file/.test(d.message)));
 });
 
-test('an existing local session-prep adversary image passes', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'atlas-validate-'));
-  fs.mkdirSync(path.join(dir, 'img/adversaries/session-prep'), { recursive: true });
-  fs.writeFileSync(path.join(dir, 'img/adversaries/session-prep/test.png'), 'fake-png-bytes');
+test('an adversary art object missing "full" fails', () => {
   const sp = sessionPrepFixtureBase();
-  sp.adversaries[0].image = 'img/adversaries/session-prep/test.png';
+  sp.adversaries[0].art = { thumb: 'img/adversaries/session-prep/generated/thumbs/test.webp' };
+  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => d.path === '$.adversaries[0].art.full' && /must be a non-empty string/.test(d.message)));
+});
+
+test('an adversary art path with ".." fails', () => {
+  const sp = sessionPrepFixtureBase();
+  sp.adversaries[0].art = {
+    thumb: '../outside/thumb.webp',
+    full: 'img/adversaries/session-prep/generated/full/test.webp',
+  };
+  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => d.path === '$.adversaries[0].art.thumb' && /must not contain "\.\."/.test(d.message)));
+});
+
+test('a legacy "image" field on a session-prep adversary fails', () => {
+  const sp = sessionPrepFixtureBase();
+  sp.adversaries[0].image = 'img/adversaries/session-prep/acid-burrower.png';
+  const dir = buildFixture({ sessionPrep: sp, i18n: sessionPrepI18n });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => d.path === '$.adversaries[0].image' && /must not carry a "image" field/.test(d.message)));
+});
+
+test('an existing local session-prep adversary art (thumb + full) passes', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'atlas-validate-'));
+  fs.mkdirSync(path.join(dir, 'img/adversaries/session-prep/generated/thumbs'), { recursive: true });
+  fs.mkdirSync(path.join(dir, 'img/adversaries/session-prep/generated/full'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'img/adversaries/session-prep/generated/thumbs/test.webp'), 'fake-webp-bytes');
+  fs.writeFileSync(path.join(dir, 'img/adversaries/session-prep/generated/full/test.webp'), 'fake-webp-bytes');
+  const sp = sessionPrepFixtureBase();
+  sp.adversaries[0].art = {
+    thumb: 'img/adversaries/session-prep/generated/thumbs/test.webp',
+    full: 'img/adversaries/session-prep/generated/full/test.webp',
+  };
   const defaults = {
     environments: { environments: [defaultEnvironment()] },
     regions: { regions: [] },

@@ -31,10 +31,14 @@
         committed manual Russian translations, for the ids daggerheart.ru
         doesn't cover. Never overwrites a daggerheart.ru or existing
         translation.
-     4. IMAGE_MAPPING below — an explicit, hand-reviewed slug -> local art
-        path table for img/adversaries/session-prep/*, committed here
-        because it IS this project's own data (unlike the raw research
-        inputs above).
+     4. IMAGE_MAPPING below — an explicit, hand-reviewed slug -> local
+        source-art path table for img/adversaries/session-prep/*,
+        committed here because it IS this project's own data (unlike the
+        raw research inputs above). Each mapped source path is turned into
+        an `art: { thumb, full }` pair pointing at the pre-generated
+        derivatives under img/adversaries/session-prep/generated/ (see
+        scripts/generate-adversary-art.js) — run that script first if a
+        source file listed here doesn't have derivatives yet.
 
    Never fetches anything over the network. Never silently overwrites a
    translation. Writes data/session-prep.json and a translation-audit
@@ -131,13 +135,15 @@ const IMAGE_MAPPING = {
 /** Every other image maps 1:1 by filename: a plain `<slug>.<ext>` file, or
  * a `<page-number>_<slug-with-underscores>.<ext>` crop of the source book —
  * both scanned directly off disk rather than hand-listed a second time, so
- * adding a new art file later needs no code change here. */
+ * adding a new art file later needs no code change here. Skips the
+ * generated/ subdirectory itself (thumb/full derivatives, not sources). */
 function scanImageDirectory() {
   const dir = path.join(ROOT, 'img', 'adversaries', 'session-prep');
   const mapping = Object.assign({}, IMAGE_MAPPING);
   if (!fs.existsSync(dir)) return mapping;
-  fs.readdirSync(dir).forEach(filename => {
-    if (filename.startsWith('.')) return;
+  fs.readdirSync(dir, { withFileTypes: true }).forEach(entry => {
+    if (!entry.isFile() || entry.name.startsWith('.')) return;
+    const filename = entry.name;
     const ext = path.extname(filename);
     const base = filename.slice(0, -ext.length);
     const m = base.match(/^(\d{3})_(.+)$/);
@@ -146,6 +152,19 @@ function scanImageDirectory() {
     if (!mapping[slug]) mapping[slug] = `img/adversaries/session-prep/${filename}`;
   });
   return mapping;
+}
+
+/** A mapped source path (e.g. img/adversaries/session-prep/foo.png) to the
+ * `{ thumb, full }` pair scripts/generate-adversary-art.js derives from it
+ * — same source-stem-based, deterministic naming that script uses, so this
+ * never has to be regenerated to stay in sync with it. */
+function deriveArtPaths(sourcePath) {
+  const base = path.basename(sourcePath);
+  const stem = base.slice(0, -path.extname(base).length);
+  return {
+    thumb: `img/adversaries/session-prep/generated/thumbs/${stem}.webp`,
+    full: `img/adversaries/session-prep/generated/full/${stem}.webp`,
+  };
 }
 
 function main() {
@@ -225,8 +244,9 @@ function main() {
     if (status === 'manual-translation-required' || status === 'ambiguous-match' || status === 'unresolved') return;
 
     const record = { id, name: { en: entry.name, ru }, tier: entry.tier, type: entry.type };
-    const image = (existing && existing.image) || imageMapping[id];
-    if (image) record.image = image;
+    const sourceImage = imageMapping[id];
+    if (existing && existing.art) record.art = existing.art;
+    else if (sourceImage) record.art = deriveArtPaths(sourceImage);
     finalAdversaries.push(record);
   });
 
@@ -282,4 +302,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { slugify, scanImageDirectory, MVP_IDS };
+module.exports = { slugify, scanImageDirectory, deriveArtPaths, MVP_IDS };

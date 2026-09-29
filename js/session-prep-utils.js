@@ -351,7 +351,7 @@
     });
   }
 
-  /* ---------------- adversary filters (Tier / Type / Selected only) ---------------- */
+  /* ---------------- adversary filters (Tier / Type) ---------------- */
 
   var ADVERSARY_TIERS = [1, 2, 3, 4];
   var ADVERSARY_TYPES = ['bruiser', 'horde', 'leader', 'minion', 'ranged', 'skulk', 'social', 'solo', 'standard', 'support'];
@@ -363,29 +363,84 @@
     return s;
   }
 
-  /** Filters the full adversary catalogue by every active Session Prep
-   * filter at once: free-text search (name.en/name.ru, see filterEntries()),
-   * a Tier multiselect (`options.tiers`, values OR together, empty = no
-   * restriction), a Type multiselect (`options.types`, same OR/empty rule),
-   * and "Selected only" (`options.selectedOnly` + `options.selectedIds`) —
-   * every group ANDs with the others, so an entirely empty filter set
-   * returns the full, unfiltered catalogue. Never mutates `adversaries` or
-   * `options`; a filtered-out entry is simply absent from the result, never
-   * flagged as unselected. */
-  function filterAdversaries(adversaries, options) {
+  /* ---------------- adversary search (compact "All Adversaries" toolbar) ----------------
+   * Same precomputed-index shape as the environment toolbar's own
+   * buildEnvironmentSearchIndex()/filterEnvironmentsByToolbar() above (built
+   * once, reused across every keystroke/filter pass), reusing that same
+   * normalizeSearchToken()/tokenizeEnvironmentQuery()/matchesEnvironmentTokens()
+   * machinery — none of it is actually environment-specific, it just
+   * operates on a precomputed searchText string and a token list. Kept as a
+   * separate index/builder rather than folding adversaries into the
+   * environment one because the alias set a bare "1"/"tier1"/"t1"/"тир 1"
+   * adversary query needs is richer than what the environment toolbar's own
+   * "tier N"/"rank N"/"ранг N" aliases cover — see
+   * adversaryTierAliasFields() below — and changing the environment
+   * aliases to match would be an unrelated behavior change to that picker. */
+
+  /** Every alias form a bare Tier query should hit for adversary search:
+   * the bare digit, "tier N"/"tierN"/"tN" (English, spaced and unspaced),
+   * "ранг N"/"рангN" (the RU UI's own word for Tier — see tier_label), and
+   * "тир N"/"тирN" (a common RU transliteration of "tier", requested
+   * separately from "ранг" in the search spec). Every literal form is
+   * indexed as its own field rather than relying on suffix stripping, so a
+   * query token only ever needs a plain substring match against the
+   * precomputed searchText. */
+  function adversaryTierAliasFields(tier) {
+    return [
+      String(tier),
+      'tier ' + tier, 'tier' + tier, 't' + tier,
+      'ранг ' + tier, 'ранг' + tier,
+      'тир ' + tier, 'тир' + tier,
+    ];
+  }
+
+  /** The raw (unnormalized) fields one adversary contributes to its
+   * compact-toolbar search text: bilingual name, every Tier alias above,
+   * the raw Type key, and its EN/RU Type label. `i18nEn`/`i18nRu` are plain
+   * `{ key: value }` dictionaries (e.g. state.i18n.en/state.i18n.ru) —
+   * stays a pure function of its arguments, no application state access. */
+  function adversaryIndexRawFields(adv, i18nEn, i18nRu) {
+    var enDict = i18nEn || {};
+    var ruDict = i18nRu || {};
+    var tier = adv.tier;
+    var tierFields = (tier === 0 || tier) ? adversaryTierAliasFields(tier) : [];
+    var typeFields = adv.type ? [adv.type, enDict['adversary_type_' + adv.type], ruDict['adversary_type_' + adv.type]] : [];
+    return [adv.name && adv.name.en, adv.name && adv.name.ru].concat(tierFields, typeFields);
+  }
+
+  /** The precomputed, locale-independent search text for one adversary —
+   * every field above, normalized once and joined with spaces. */
+  function buildAdversarySearchText(adv, i18nEn, i18nRu) {
+    return normalizeSearchToken(adversaryIndexRawFields(adv, i18nEn, i18nRu).filter(Boolean).join(' '));
+  }
+
+  /** One record per adversary, keyed by id — built once when the Session
+   * Prep catalogue loads, never rebuilt per keystroke or per filter pass. */
+  function buildAdversarySearchIndex(adversaries, i18nEn, i18nRu) {
+    var index = new Map();
+    (adversaries || []).forEach(function (adv) {
+      index.set(adv.id, buildAdversarySearchText(adv, i18nEn, i18nRu));
+    });
+    return index;
+  }
+
+  /** The compact toolbar's full adversary filter: a Tier multiselect
+   * (`options.tiers`, OR within the set) and a Type multiselect
+   * (`options.types`, OR within the set) each AND the tokenized text query
+   * (AND across tokens), matched against the precomputed `index`
+   * (buildAdversarySearchIndex()). An empty Tier/Type group imposes no
+   * restriction. Never mutates `adversaries`; ordering is preserved (no
+   * relevance sort — the caller applies its own localized sort). */
+  function filterAdversariesByToolbar(adversaries, index, options) {
     var opts = options || {};
     var tiers = toSet(opts.tiers);
     var types = toSet(opts.types);
-    var selectedOnly = !!opts.selectedOnly;
-    var selectedIds = toSet(opts.selectedIds);
-    var bySearch = filterEntries(adversaries, opts.search, function (a) {
-      return [a.name && a.name.en, a.name && a.name.ru];
-    });
-    return bySearch.filter(function (adv) {
+    var tokens = opts.tokens || tokenizeEnvironmentQuery(opts.search);
+    var byIndex = index || new Map();
+    return (adversaries || []).filter(function (adv) {
       if (tiers.size && !tiers.has(adv.tier)) return false;
       if (types.size && !types.has(adv.type)) return false;
-      if (selectedOnly && !selectedIds.has(adv.id)) return false;
-      return true;
+      return matchesEnvironmentTokens(byIndex.get(adv.id) || '', tokens);
     });
   }
 
@@ -442,7 +497,10 @@
     filterEnvironmentsByToolbar: filterEnvironmentsByToolbar,
     ADVERSARY_TIERS: ADVERSARY_TIERS,
     ADVERSARY_TYPES: ADVERSARY_TYPES,
-    filterAdversaries: filterAdversaries,
+    adversaryTierAliasFields: adversaryTierAliasFields,
+    buildAdversarySearchText: buildAdversarySearchText,
+    buildAdversarySearchIndex: buildAdversarySearchIndex,
+    filterAdversariesByToolbar: filterAdversariesByToolbar,
     filterItems: filterItems,
   };
 });

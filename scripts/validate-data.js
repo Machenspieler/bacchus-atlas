@@ -783,6 +783,27 @@ function hasSupportedImageExtension(filename) {
   return SESSION_PREP_IMAGE_EXTENSIONS.some(ext => lower.endsWith(ext));
 }
 
+/** Validates one of an adversary's two required `art` paths (`thumb` or
+ * `full` — see scripts/generate-adversary-art.js for how both are
+ * produced): must be a non-empty local path with no "..", a supported
+ * raster extension, and (when `rootPath` is available) point at a file
+ * that actually exists. `art` itself is optional on a record, but once
+ * present both `thumb` and `full` are required — a one-sided pair is
+ * always an error, never silently tolerated. */
+function validateAdversaryArtPath(art, key, artPath, idLabel, reporter, rootPath) {
+  const p = `${artPath}.${key}`;
+  const value = art[key];
+  if (!isNonEmptyString(value)) {
+    reporter.error(p, `Adversary "${idLabel}" art.${key} must be a non-empty string.`, idLabel);
+  } else if (value.includes('..')) {
+    reporter.error(p, `Adversary "${idLabel}" art.${key} path "${value}" must not contain "..".`, idLabel);
+  } else if (!hasSupportedImageExtension(value)) {
+    reporter.error(p, `Adversary "${idLabel}" art.${key} "${value}" must end in one of: ${SESSION_PREP_IMAGE_EXTENSIONS.join(', ')}.`, idLabel);
+  } else if (rootPath && !fs.existsSync(path.join(rootPath, value))) {
+    reporter.error(p, `Adversary "${idLabel}" art.${key} path "${value}" does not point to an existing file.`, idLabel);
+  }
+}
+
 /* The production adversary catalogue's exact required size (all of Daggerheart
  * SRD 2.0's adversaries) and the ten official Adversary Type keys — see the
  * "Session Prep" adversary catalogue section of CLAUDE.md. Exported so tests
@@ -809,6 +830,10 @@ const SESSION_PREP_ADVERSARY_FORBIDDEN_KEYS = [
   'role', 'source', 'book', 'collection', 'coreOrHopeFear', 'statBlockId', 'statBlock',
   'description', 'freshcutgrassName', 'difficulty', 'thresholds', 'hp', 'stress',
   'attack_modifier', 'attacks', 'experiences', 'features',
+  // Retired schema: local artwork is now `art: { thumb, full }` (both
+  // pre-generated derivatives — see scripts/generate-adversary-art.js),
+  // never a single runtime image path.
+  'image',
 ];
 
 const PLACEHOLDER_TEXT_RE = /\b(TODO|TBD|UNKNOWN|TRANSLATE)\b/i;
@@ -885,15 +910,12 @@ function validateSessionPrep(data, file, diagnostics, rootPath, validItemIds) {
         reporter.error(`${p}.type`, `Adversary "${idLabel}" has invalid type ${JSON.stringify(adv.type)}; must be one of: ${ADVERSARY_TYPES.join(', ')}.`, idLabel);
       }
 
-      if (adv.image !== undefined) {
-        if (!isNonEmptyString(adv.image)) {
-          reporter.error(`${p}.image`, `Adversary "${idLabel}" image must be a non-empty string when present.`, idLabel);
-        } else if (adv.image.includes('..')) {
-          reporter.error(`${p}.image`, `Adversary "${idLabel}" image path "${adv.image}" must not contain "..".`, idLabel);
-        } else if (!hasSupportedImageExtension(adv.image)) {
-          reporter.error(`${p}.image`, `Adversary "${idLabel}" image "${adv.image}" must end in one of: ${SESSION_PREP_IMAGE_EXTENSIONS.join(', ')}.`, idLabel);
-        } else if (rootPath && !fs.existsSync(path.join(rootPath, adv.image))) {
-          reporter.error(`${p}.image`, `Adversary "${idLabel}" image path "${adv.image}" does not point to an existing file.`, idLabel);
+      if (adv.art !== undefined) {
+        if (!isPlainObject(adv.art)) {
+          reporter.error(`${p}.art`, `Adversary "${idLabel}" art must be an object with "thumb" and "full" paths.`, idLabel);
+        } else {
+          validateAdversaryArtPath(adv.art, 'thumb', `${p}.art`, idLabel, reporter, rootPath);
+          validateAdversaryArtPath(adv.art, 'full', `${p}.art`, idLabel, reporter, rootPath);
         }
       }
     });
