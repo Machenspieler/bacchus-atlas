@@ -876,6 +876,17 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
   transition: opacity var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
 }
 .tooltip.is-open { opacity: 1; transform: none; }
+/* Opt-in rich mode (data-tip-rich, see showTip() in js/app.js) — a wider
+   box that actually wraps prose, for the item browser's dice rarity
+   tooltips (bold headings, separate paragraphs) instead of the default
+   single-line-ish plain-text tip. */
+.tooltip.tooltip-rich {
+  max-width: 320px; white-space: normal; text-align: left;
+  font-size: var(--fs-sm); line-height: var(--lh-sm);
+}
+.tooltip-rich p { margin: 0 0 var(--s-2); }
+.tooltip-rich p:last-child { margin-bottom: 0; }
+.tooltip-rich strong { color: var(--hope-soft); }
 
 /* ---------- environment backdrop ---------- */
 /* The painting a stat block is read against: full screen, blurred, and pinned to
@@ -2571,12 +2582,37 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-freshcutgrass-wrap:empty { display: none; }
 .prep-freshcutgrass-link { flex: none; }
 
-/* Items panel: Category (Items/Consumables) and Source (All/Core/Hope &
-   Fear) toggles, each a small group of pressed/unpressed buttons — same
-   btn-sm/btn-ghost/btn-primary recipe as everywhere else, so "selected"
-   reads the same way active filters do elsewhere in the app. */
-.prep-item-filters { display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-4); align-items: center; margin-bottom: var(--s-2); }
-.prep-item-category-toggle, .prep-item-source-toggle { display: flex; gap: var(--s-2); flex-wrap: wrap; }
+/* ---- compact "All Items" toolbar (Type + Source + search + dice + view + counter, one row) ----
+   Same structural pattern as .prep-env-toolbar/.prep-adv-toolbar above —
+   a CSS grid row, one flexible `minmax(0,1fr)` track (the search field),
+   every other track sized to its own content first — applied to the
+   Items panel's own full-width toolbar instead of a column's nested
+   picker list. Every group after the first gets a left border instead of
+   a dedicated separator element, for the "subtle vertical separator
+   between groups" requirement. */
+.item-toolbar {
+  display: grid; grid-template-columns: auto auto minmax(0,1fr) auto auto auto;
+  align-items: center; gap: var(--s-2);
+  min-height: 40px; padding-bottom: var(--s-1);
+}
+.item-toolbar-group {
+  display: flex; gap: var(--s-2); align-items: center; flex-wrap: nowrap;
+}
+.item-toolbar-group + .item-toolbar-group,
+.item-toolbar-search + .item-toolbar-group,
+.item-toolbar-group + .item-toolbar-count {
+  border-left: 1px solid var(--line-faint); padding-left: var(--s-3);
+}
+.item-toolbar .prep-search.item-toolbar-search { min-width: 0; }
+.item-toolbar .prep-search.item-toolbar-search input { min-width: 90px; }
+.item-toolbar-count { text-align: right; }
+/* .prep-items-panel is a size container so the counter — the least
+   important toolbar element, see CLAUDE.md/docs/architecture.md — can
+   hide via a container query before any other control has to shrink or
+   wrap, same convention .prep-col-adv already established. */
+@container prep-items-panel (max-width: 640px) {
+  .item-toolbar-count { display: none; }
+}
 
 /* 24px on the card, larger under a finger — same recipe as .list-card-del. */
 .prep-remove-btn {
@@ -2598,8 +2634,12 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   border-radius: var(--r-sm); background: rgba(217,164,65,0.06); font-size: var(--fs-sm); color: var(--parchment-dim);
 }
 
-/* ---- items panel (full width, below the three columns) ---- */
+/* ---- items panel (full width, below the three columns) ----
+   A size container so the compact toolbar's counter (the least important
+   element) can hide via a container query before any other control has
+   to shrink or wrap — see @container prep-items-panel above. */
 .prep-items-panel {
+  container-type: inline-size; container-name: prep-items-panel;
   grid-column: 1 / -1;
   display: flex; flex-direction: column; gap: var(--s-2);
   background: var(--ink-card); border: 1px solid var(--line-faint); border-radius: var(--r-md);
@@ -2611,6 +2651,12 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    scrolling for free; the arrows are just an explicit, user-controlled
    alternative — the strip never moves on its own. */
 .prep-item-strip-wrap { position: relative; display: flex; align-items: center; gap: var(--s-2); }
+/* The Gallery/Compact switch toggles this element's `hidden` attribute
+   (setItemViewMode() in js/app.js) — without this, the `display: flex`
+   above (author-origin CSS) would keep beating the browser's own
+   UA-origin `[hidden] { display: none }` default, and both strips would
+   render at once. */
+.prep-item-strip-wrap[hidden] { display: none; }
 .prep-item-nav-btn {
   flex: none; width: var(--h-md); height: var(--h-md); padding: 0;
   display: flex; align-items: center; justify-content: center;
@@ -2716,6 +2762,69 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   opacity: 1; transform: translate(0, 0) scale(1);
 }
 
+/* ---- dice roll-and-filter buttons ----
+   Fixed width so a two-digit transient result (see rollSessionPrepItemDice()
+   in js/app.js) never shifts the rest of the toolbar; icon + label swap for
+   icon + bare number during the ~1.2s reveal, same button, same footprint. */
+.dice-roll-btn {
+  width: 58px; padding: 0 var(--s-1); gap: 3px; flex: none;
+  font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+}
+.dice-roll-icon { display: inline-flex; width: var(--icon-sm); height: var(--icon-sm); flex: none; }
+.dice-roll-icon svg { width: 100%; height: 100%; }
+.dice-roll-label { overflow: hidden; white-space: nowrap; }
+/* Gold fill for the button currently holding the active roll filter —
+   reuses .btn.active's existing treatment, never a new color. */
+.dice-roll-btn.is-active {
+  background: rgba(217,164,65,0.14); border-color: var(--hope); color: var(--hope-soft);
+}
+.dice-roll-btn.is-active:hover { background: rgba(217,164,65,0.2); }
+@keyframes dice-roll-pop { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+.dice-roll-btn.is-rolling .dice-roll-label { animation: dice-roll-pop var(--t-base) var(--ease-out); }
+
+/* ---- Gallery/Compact view switch ---- */
+.item-view-btn { width: var(--h-sm); padding: 0; flex: none; }
+.item-view-btn svg { width: var(--icon-md); height: var(--icon-md); }
+
+/* ---- compact view: two-row horizontal grid (see the Gallery strip above
+   for the equivalent single-row treatment) — items flow down each column
+   before starting the next, so scrolling right reveals more pairs rather
+   than more rows. Same manual prev/next arrows + native
+   wheel/trackpad/touch/scrollbar scrolling as the Gallery strip, reusing
+   .prep-item-strip-wrap/.prep-item-nav-btn as-is. */
+.prep-item-compact-grid {
+  flex: 1 1 auto; min-width: 0;
+  display: grid; grid-template-rows: repeat(2, minmax(0, auto));
+  /* minmax()'s floor, not just its ceiling, has to be wide enough on its
+     own: .prep-row-name/.prep-row-meta's overflow:hidden makes them
+     contribute ~0 to the track's intrinsic/max-content size, so an
+     implicit column track here never grows past its *minimum* just
+     because the (clipped) text would want more room. At a 200px floor,
+     the checkbox hit-area (36px) plus a 60px thumbnail leaves only
+     ~66px for text — too narrow for "Item · Core · #1" — so the floor
+     is 240px, wide enough for that meta line at this row's actual
+     padding/gap/thumbnail sizing (measured, not guessed).
+   */
+  grid-auto-flow: column; grid-auto-columns: minmax(240px, 260px);
+  gap: var(--s-2) var(--s-3); overflow-x: auto; overflow-y: hidden;
+  -webkit-overflow-scrolling: touch; padding-bottom: var(--s-2);
+  scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
+}
+.prep-item-compact-grid::-webkit-scrollbar { height: 8px; }
+.prep-item-compact-grid::-webkit-scrollbar-track { background: transparent; }
+.prep-item-compact-grid::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
+.prep-item-compact-grid::-webkit-scrollbar-thumb:hover { background: rgba(185,173,145,0.56); }
+/* .prep-row/.prep-row-open/.prep-row-text/.prep-row-name/.prep-row-meta
+   (the environment/adversary picker rows' own two-line name+meta layout)
+   are reused as-is here — this only adds what a grid *column item* needs
+   on top of that: a background/border so each record reads as its own
+   tile in the two-row flow, and a touch-friendly minimum height. */
+.prep-item-compact-row {
+  padding: var(--s-2); border: 1px solid var(--line-faint); border-radius: var(--r-sm);
+  background: var(--ink-raised); min-height: 44px;
+}
+.prep-item-compact-row:hover { background: var(--ink-hover); }
+
 /* ---- large screens (≥1200px, the three-column layout) only: the whole page
    fits in the viewport with no page-level scroll. Every ancestor from body
    down to .prep-main is given a definite, shrinkable height AND width (flex/
@@ -2814,6 +2923,15 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    then items — the single stack order the mobile spec calls for ---- */
 @media (max-width: 900px) {
   .prep-main { grid-template-columns: 1fr; grid-template-areas: "central" "env" "adv"; }
+  /* The Items toolbar carries far more controls than the env/adv ones
+     (six groups, not three) — its CSS-grid row (sized for the desktop/
+     laptop widths this panel is optimized for) genuinely runs out of
+     room below ~900px and would otherwise overflow/overlap rather than
+     degrade gracefully. Same flex-wrap fallback the env/adv toolbars use
+     below their own (narrower) breakpoint. */
+  .item-toolbar { display: flex; flex-wrap: wrap; row-gap: var(--s-2); }
+  .item-toolbar .item-toolbar-search { flex: 1 1 160px; }
+  .item-toolbar-group, .item-toolbar-count { border-left: none; padding-left: 0; }
 }
 
 /* ---- phone: no nested scroll areas, 44px touch targets ---- */

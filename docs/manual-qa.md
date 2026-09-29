@@ -117,9 +117,53 @@ locally") before starting.
       and adversary count. Decode the link's payload and confirm it uses
       `name.en` (never the Russian label) at `q: 1`, with no environment or
       item data included.
-- [ ] **Item Category/Source controls**: Items/Consumables each report 120;
-      Core/Hope & Fear/All sources narrow correctly; switching category or
-      source never clears an existing item selection.
+- [ ] **Items compact toolbar**: Type buttons (Items/Consumables), Source
+      buttons (Core/Hope & Fear), search, five dice buttons, and the
+      Gallery/Compact switch all fit one row at 1920×1080/1440×900/
+      1366×768/1280×800; a subtle vertical separator sits at least between
+      the Type and Source groups; the counter (and only the counter) hides
+      first as the panel narrows.
+- [ ] **Item Type/Source multiselect**: Items/Consumables each report 120
+      and never change when Source/search/a roll is applied; neither
+      pressed shows both Kinds, one pressed restricts, both pressed shows
+      both again — identical behavior for Core/Hope & Fear; Type and
+      Source AND together and with the search text; switching either never
+      clears an existing item selection.
+- [ ] **Item smart search**: a partial English name, a partial Russian
+      name, an English Kind alias (`item`/`items`), a Russian Kind alias
+      (`предмет`/`предметы`/`расходник`/`расходники`), a Source alias
+      (`core`/`hope and fear`/`hope & fear`, and the bare word `hope`),
+      exact `30`, exact `#30`, inclusive range `1-10` (and `1–10`/`1—10`/
+      `1 - 10`/`#1-10`/the reversed `10-1`), and combined queries (`core
+      consumable 1-10`, `hope item #30`, `расходник 20-30`) each return the
+      expected records regardless of the active UI language; a malformed
+      numeric query (`1-`, `abc-def`) never throws or breaks the toolbar.
+- [ ] **Item dice roll-and-filter buttons**: each of 1d12-5d12 rolls the
+      right number of dice, immediately filters to the resulting item
+      number (ANDed with any active Type/Source/search), and temporarily
+      shows the rolled number in place of its own label for ~1.2s before
+      reverting — the roll filter stays active after reverting, the search
+      field is never written to, and the button is never disabled.
+      Clicking the same button rerolls; clicking a different button while
+      one is still showing its number moves the transient number and
+      restores the first button immediately; rapid repeated clicks always
+      show the newest result. Each button's tooltip (hover and keyboard
+      focus) shows the correct rarity guidance for its dice count, plus a
+      "Last roll: N" line once it holds the active filter, and stays inside
+      the viewport in both languages.
+- [ ] **Item clear-all control**: appears in the search field whenever
+      search/Type/Source/a roll is active, and clicking it resets all four
+      (search text, both multiselects, the roll filter, any pending
+      reveal) but leaves the current Gallery/Compact view untouched.
+- [ ] **Item Gallery view** (default): unchanged from before this
+      redesign — same large art tiles, hover/selection/click behavior.
+- [ ] **Item Compact view**: two-line records (thumbnail, name, "Item ·
+      Core · #1"-style meta with the item number always visible even when
+      a long Russian name/source combination truncates the rest); flows
+      into exactly two horizontal rows with native scrolling and no nested
+      vertical scrollbar; clicking a compact record opens the same detail
+      overlay as its gallery card; a long name still exposes its full text
+      via hover/focus (native `title`).
 - [ ] A selected adversary/item's Tier/Type/source meta line in both the
       picker row and the central selected list.
 

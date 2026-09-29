@@ -70,6 +70,11 @@ const state = {
   // it indexes" pattern environmentPrepSearchIndex uses above. See
   // "Session Prep's compact 'All Adversaries' toolbar" in docs/architecture.md.
   adversaryPrepSearchIndex: new Map(),
+  // The compact "All Items" toolbar's own precomputed search index (name +
+  // Kind/Source alias words, EN+RU at once) — same "built once alongside
+  // the catalogue it indexes" pattern as environmentPrepSearchIndex/
+  // adversaryPrepSearchIndex above, built in setSessionPrepCatalog().
+  itemBrowserSearchIndex: new Map(),
   sessionPrepLoadFailed: false,
   sessionPrep: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.sessionPrep, {
     fallback: () => SessionPrepUtils.createDefaultStore(),
@@ -92,8 +97,19 @@ const state = {
     // other. No "Selected only"/disclosure state here anymore (retired —
     // see the compact-toolbar redesign in docs/architecture.md).
     advFilters: { tiers: new Set(), types: new Set() },
-    itemCategory: 'item',
-    itemSource: 'all',
+    // Compact "All Items" toolbar: Kind ('item'/'consumable') and Source
+    // ('core'/'hnf') multiselects, same OR-within-set/AND-across-groups
+    // shape as envFilters/advFilters above. itemRollFilter is the active
+    // dice-roll-and-filter result ({diceCount, total} or null);
+    // itemTransientRoll is the ~1.2s on-button display of the same roll —
+    // kept as a separate field on purpose (see js/session-prep-utils.js
+    // and docs/architecture.md) so clearing the transient display after
+    // its timeout never accidentally clears the still-active filter.
+    // itemViewMode is Gallery/Compact — transient, never persisted, same
+    // as every other field here.
+    itemTypes: new Set(), itemSources: new Set(),
+    itemRollFilter: null, itemTransientRoll: null,
+    itemViewMode: 'gallery',
     lastSavedAt: null, saveFailed: false,
   },
   journey: JOURNEY_EMPTY,
@@ -837,6 +853,11 @@ const ICON_ITEM_FALLBACK = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="tr
 const ICON_TABLE_ENVIRONMENTS = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.35" stroke-width="1.35" opacity="0.42"/><path d="M12 2.25l1.05 3.18L12 7.45l-1.05-2.02L12 2.25Z" fill="currentColor" stroke="none"/><path d="M21.75 12l-3.18 1.05L16.55 12l2.02-1.05L21.75 12Z" fill="currentColor" stroke="none" opacity="0.9"/><path d="M12 21.75l-1.05-3.18L12 16.55l1.05 2.02L12 21.75Z" fill="currentColor" stroke="none" opacity="0.9"/><path d="M2.25 12l3.18-1.05L7.45 12l-2.02 1.05L2.25 12Z" fill="currentColor" stroke="none" opacity="0.9"/><path d="M5.15 16.45 8.75 11.7l2.15 2.55 3.25-5.15 4.7 7.35" stroke-width="1.55"/><path d="m12.95 11 1.2-1.9 1.3 2.04" stroke-width="1.15" opacity="0.72"/><path d="M5.4 16.45h13.2" stroke-width="1.55"/><path d="M9.4 18.15c.7-.62 1.36-1.05 2.08-1.25.8-.23 1.42-.12 2.02.13.53.22 1.07.32 1.72.08" stroke-width="1.05" opacity="0.62"/></g></svg>`;
 const ICON_TABLE_ADVERSARIES = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8.15 7.35C6.35 6.1 5.1 4.05 5.45 2.35 3.55 2.98 2.6 4.9 3.2 7.15c.38 1.4 1.45 2.52 2.82 3.02" stroke-width="1.45"/><path d="M15.85 7.35c1.8-1.25 3.05-3.3 2.7-5 1.9.63 2.85 2.55 2.25 4.8-.38 1.4-1.45 2.52-2.82 3.02" stroke-width="1.45"/><path d="M7.45 7.55C8.55 6.08 10.17 5.3 12 5.3s3.45.78 4.55 2.25c1 1.34 1.44 3.03 1.05 4.67-.35 1.48-1.25 2.78-2.55 3.62l-.35 3.18-2.7 2-2.7-2-.35-3.18c-1.3-.84-2.2-2.14-2.55-3.62-.39-1.64.05-3.33 1.05-4.67Z" fill="currentColor" fill-opacity="0.12" stroke-width="1.5"/><path d="M8.25 10.2c.72-.58 1.65-.82 2.55-.57l-.38 2.55-2.4-.47.23-1.51Z" fill="currentColor" stroke="none"/><path d="M15.75 10.2c-.72-.58-1.65-.82-2.55-.57l.38 2.55 2.4-.47-.23-1.51Z" fill="currentColor" stroke="none"/><path d="m12 12.55-1.05 1.55L12 14.7l1.05-.6L12 12.55Z" fill="currentColor" stroke="none" opacity="0.92"/><path d="M9.05 15.85 10.2 17l.4 2.4M14.95 15.85 13.8 17l-.4 2.4" stroke-width="1.15"/><path d="M10.25 17.1h3.5M12 17.1v3.32" stroke-width="1.05" opacity="0.76"/><path d="m7.2 7.15-1.45-.95M16.8 7.15l1.45-.95" stroke-width="1.05" opacity="0.62"/></g></svg>`;
 const ICON_TABLE_ITEMS = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9.2 3h5.6v2.1l-.95 1.08v2.16c2.63.78 4.55 3.22 4.55 6.11A6.4 6.4 0 0 1 12 20.85a6.4 6.4 0 0 1-6.4-6.4c0-2.89 1.92-5.33 4.55-6.11V6.18L9.2 5.1V3Z" fill="currentColor" fill-opacity="0.1" stroke-width="1.5"/><path d="M9.2 5.1h5.6M10.15 8.34h3.7" stroke-width="1.15" opacity="0.7"/><path d="M6.38 14.75c1.15-.93 2.4-.98 3.75-.24 1.52.83 2.87 1.03 4.25.25 1.07-.61 2.13-.7 3.18-.28" stroke-width="1.35"/><path d="M7.15 15.95c.56 2.18 2.52 3.78 4.85 3.78 2.27 0 4.2-1.52 4.81-3.6-1.02-.3-1.97-.14-2.92.39-1.31.74-2.74.62-4.26-.19-.9-.48-1.72-.61-2.48-.38Z" fill="currentColor" fill-opacity="0.28" stroke="none"/><circle cx="9.1" cy="13.2" r="0.62" fill="currentColor" stroke="none" opacity="0.88"/><circle cx="14.85" cy="17.55" r="0.48" fill="currentColor" stroke="none" opacity="0.78"/><path d="M10.2 2h3.6" stroke-width="1.35"/></g></svg>`;
+// Items panel's Gallery/Compact view switch — a plain 2x2 grid vs. a
+// three-line list, the same visual shorthand grid/list icons use
+// elsewhere on the web; no icon package, matching every other ICON_* here.
+const ICON_VIEW_GALLERY = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/></svg>`;
+const ICON_VIEW_COMPACT = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
 
 /** One empty/error state for the whole app: an icon, a headline, a line of help
  * and — the part the old dashed box was missing — the action that resolves it. */
@@ -977,11 +998,22 @@ function placeTip(target, el) {
   el.style.top = `${Math.round(above < 8 ? r.bottom + 8 : above)}px`;
 }
 
+/** Plain text (`data-tip`, the common case) is set via textContent, same
+ * as always. `data-tip-rich` opts a trigger into a multi-paragraph HTML
+ * rendering instead (used only by the item browser's dice buttons, whose
+ * rarity-guidance tooltip needs bold headings and separate paragraphs —
+ * see itemDiceTooltipHtml()); its value is always built from static
+ * i18n strings through escapeAttr()/escapeHtml() before reaching here,
+ * never from user input, the same trust boundary every other innerHTML
+ * call site in this file already relies on. */
 function showTip(target) {
+  const rich = target.dataset.tipRich;
   const text = target.dataset.tip;
-  if (!text) return;
+  if (!rich && !text) return;
   const el = tipNode();
-  el.textContent = text;
+  el.classList.toggle('tooltip-rich', !!rich);
+  if (rich) el.innerHTML = rich;
+  else el.textContent = text;
   placeTip(target, el);
   el.classList.add('is-open');
   tipTarget = target;
@@ -997,13 +1029,13 @@ function hideTip() {
 // would stick around with nothing to dismiss it.
 document.addEventListener('pointerover', e => {
   if (e.pointerType !== 'mouse') return;
-  const target = e.target.closest?.('[data-tip]');
+  const target = e.target.closest?.('[data-tip], [data-tip-rich]');
   if (!target || target === tipTarget) return;
   clearTimeout(tipTimer);
   tipTimer = setTimeout(() => showTip(target), TIP_DELAY_MS);
 });
 document.addEventListener('pointerout', e => {
-  if (e.target.closest?.('[data-tip]')) hideTip();
+  if (e.target.closest?.('[data-tip], [data-tip-rich]')) hideTip();
 });
 // No delay for the keyboard: focus is already a deliberate act. Deferred to
 // the end of the task because moving focus can scroll the element into view,
@@ -1014,7 +1046,7 @@ document.addEventListener('pointerout', e => {
 // track programmatic focus while the window is in the background.
 let tipFocusTarget = null;
 document.addEventListener('focusin', e => {
-  const target = e.target.closest?.('[data-tip]');
+  const target = e.target.closest?.('[data-tip], [data-tip-rich]');
   if (!target) return;
   clearTimeout(tipTimer);
   tipFocusTarget = target;
@@ -1375,6 +1407,7 @@ function render() {
   // that tears both down when navigating to any *other* route.
   if (state.route.name !== 'session-prep') {
     destroySessionPrepItemNav();
+    destroySessionPrepItemDice();
     destroySessionPrepChrome();
   }
   // Progressive loading is main-catalog-only (never Lists, Journey, or
@@ -3093,6 +3126,11 @@ function setSessionPrepCatalog(data) {
   state.adversaryPrepSearchIndex = SessionPrepUtils.buildAdversarySearchIndex(
     adversaries, state.i18n.en, state.i18n.ru);
   state.sessionPrepLoadFailed = false;
+  // sessionPrepItems() below resolves itemIds against the already-loaded
+  // itemCatalog (setItemCatalog() always runs first in init()), so the
+  // Items toolbar's own search index can be built here too, right
+  // alongside the adversary one above.
+  state.itemBrowserSearchIndex = SessionPrepUtils.buildItemSearchIndex(sessionPrepItems());
 }
 
 /** Session Prep's items are ids into the shared item catalog (see itemById()
@@ -3590,68 +3628,183 @@ function openAdversaryArtOverlay(advId) {
 
 /* ---------------- items panel ---------------- */
 
-function itemSearchFields(item) { return [item.en?.name, item.ru?.name]; }
-function itemSearchRoll(item) { return item.roll; }
+/** The compact "All Items" toolbar's full filter, read off
+ * `state.sessionPrepUI` — types/sources (Sets), the raw search text, and
+ * the active dice-roll filter's total (or null). Threaded through
+ * SessionPrepUtils.filterItemsByToolbar() against the precomputed
+ * state.itemBrowserSearchIndex. */
+function itemBrowserFilterOptions() {
+  const ui = state.sessionPrepUI;
+  return {
+    types: ui.itemTypes,
+    sources: ui.itemSources,
+    search: ui.itemSearch,
+    rollTotal: ui.itemRollFilter ? ui.itemRollFilter.total : null,
+  };
+}
 
-/** Category/Source/search only narrow the set; the surviving items are then
- * ordered by SessionPrepUtils.sortItemsForPrep() — book roll number (1 -> 99),
- * then Source (core -> Hope and Fear), then Kind (item -> consumable), then
- * alphabetically. A purely numeric query (e.g. "3") matches the item's book
- * "#" number exactly, alongside the usual EN/RU name substring match — see
- * SessionPrepUtils.filterItems(). */
+/** Type/Source/search/roll only narrow the set; the surviving items are
+ * then ordered by SessionPrepUtils.sortItemsForPrep() — book roll number
+ * (1 -> 99), then Source (core -> Hope and Fear), then Kind (item ->
+ * consumable), then alphabetically — see
+ * SessionPrepUtils.filterItemsByToolbar() for the filter itself. */
 function prepFilteredItems() {
-  const filtered = SessionPrepUtils.filterItems(sessionPrepItems(), {
-    search: state.sessionPrepUI.itemSearch,
-    category: state.sessionPrepUI.itemCategory,
-    source: state.sessionPrepUI.itemSource,
-  }, itemSearchFields, itemSearchRoll);
+  const filtered = SessionPrepUtils.filterItemsByToolbar(
+    sessionPrepItems(), state.itemBrowserSearchIndex, itemBrowserFilterOptions());
   const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
   return SessionPrepUtils.sortItemsForPrep(filtered, (a, b) => collator.compare(itemField(a, 'name'), itemField(b, 'name')));
 }
 
-/** Every item matching the current Category/Source alone (before the
- * text/roll search) — the "{total}" half of "{n} of {total}" below, so
- * switching category shows e.g. "of 120" (or "of 60" once a source is also
- * picked) rather than the grand 240-item catalogue. */
-function itemScopeCount() {
-  return SessionPrepUtils.filterItems(sessionPrepItems(), {
-    category: state.sessionPrepUI.itemCategory,
-    source: state.sessionPrepUI.itemSource,
-  }, itemSearchFields, itemSearchRoll).length;
-}
-
+/** "{n} of {total}" — {total} is always the grand 240-item Session Prep
+ * catalogue, unaffected by any active filter (a deliberate simplification
+ * from the old Category/Source-scoped count: see docs/architecture.md). */
 function itemCountText() {
-  return t('prep_results_count').replace('{n}', prepFilteredItems().length).replace('{total}', itemScopeCount());
+  return t('prep_results_count').replace('{n}', prepFilteredItems().length).replace('{total}', sessionPrepItems().length);
 }
 
+/** Stable catalogue totals for the two Type buttons' own labels
+ * ("Items — 120"/"Consumables — 120") — never affected by Source/search/
+ * roll, per the compact toolbar's own requirement that these counts stay
+ * put while every other filter changes. */
 function itemCategoryTotalCount(category) {
   return sessionPrepItems().filter(i => i.kind === category).length;
 }
 
-function itemCategoryButtonHtml(category, label) {
-  const active = state.sessionPrepUI.itemCategory === category;
-  return `<button type="button" class="btn btn-sm ${active ? 'btn-primary' : 'btn-ghost'}"
-                   data-sp-item-category="${category}" aria-pressed="${active}">${escapeHtml(label)} — ${itemCategoryTotalCount(category)}</button>`;
+/** True while any of search/Type/Source/roll narrows the Items panel —
+ * drives the one combined clear control living inside the search field
+ * (see clearItemBrowserFilters() below). Reads the search input's live
+ * value when the DOM element already exists (covers a keystroke not yet
+ * debounced into state.sessionPrepUI.itemSearch), falling back to state
+ * for the very first render before that element exists. */
+function itemNonSearchItemFiltersActive() {
+  const ui = state.sessionPrepUI;
+  return !!(ui.itemTypes.size || ui.itemSources.size || ui.itemRollFilter);
+}
+function itemBrowserHasActiveFilters() {
+  const input = document.getElementById('prep-item-search');
+  const hasSearchText = input ? !!input.value : !!state.sessionPrepUI.itemSearch;
+  return hasSearchText || itemNonSearchItemFiltersActive();
 }
 
-function itemSourceButtonHtml(source, label) {
-  const active = state.sessionPrepUI.itemSource === source;
+/** Independent multiselect: aria-pressed reflects Set membership, not a
+ * single active value — "Items"/"Consumables" (or "Core"/"Hope & Fear"
+ * below) can both be pressed, one, or neither (no restriction) at once. */
+function itemTypeButtonHtml(type, label) {
+  const active = state.sessionPrepUI.itemTypes.has(type);
+  return `<button type="button" class="btn btn-sm ${active ? 'btn-primary' : 'btn-ghost'}"
+                   data-sp-item-type="${type}" aria-pressed="${active}">${escapeHtml(label)} — ${itemCategoryTotalCount(type)}</button>`;
+}
+
+function itemSourceToggleButtonHtml(source, label) {
+  const active = state.sessionPrepUI.itemSources.has(source);
   return `<button type="button" class="btn btn-sm ${active ? 'btn-primary' : 'btn-ghost'}"
                    data-sp-item-source="${source}" aria-pressed="${active}">${escapeHtml(label)}</button>`;
 }
 
-function itemFiltersHtml() {
+/** The five roll-and-filter dice buttons. `itemRollFilter` (the active,
+ * persistent filter) and `itemTransientRoll` (the ~1.2s on-button reveal)
+ * are deliberately separate fields — see js/session-prep-utils.js and
+ * docs/architecture.md — so this button can be "active" (gold, holding
+ * the current filter) independently of whether it's also mid-reveal right
+ * now. */
+const ITEM_DICE_COUNTS = [1, 2, 3, 4, 5];
+
+/** The rarity-guidance tooltip body for one dice count (data/i18n.json's
+ * prep_dice_rarity_1..5, already a small rich-HTML fragment: bold
+ * headings, separate paragraphs), plus a trailing "Last roll: N" line
+ * when this exact button currently holds the active roll filter. */
+function itemDiceTooltipHtml(diceCount) {
+  const active = state.sessionPrepUI.itemRollFilter;
+  const rarity = t('prep_dice_rarity_' + diceCount);
+  if (active && active.diceCount === diceCount) {
+    return rarity + `<p><strong>${escapeHtml(t('prep_dice_last_roll').replace('{n}', active.total))}</strong></p>`;
+  }
+  return rarity;
+}
+
+function itemDiceAriaLabel(diceCount) {
+  const active = state.sessionPrepUI.itemRollFilter;
+  if (active && active.diceCount === diceCount) {
+    return t('prep_dice_roll_label_active').replace('{n}', diceCount).replace('{result}', active.total);
+  }
+  return t('prep_dice_roll_label').replace('{n}', diceCount);
+}
+
+function itemDiceLabelText(diceCount) {
+  const transient = state.sessionPrepUI.itemTransientRoll;
+  if (transient && transient.diceCount === diceCount) return String(transient.total);
+  return `${diceCount}d12`;
+}
+
+/** Fixed-size button (`.dice-roll-btn`, see css/styles.css) so a two-digit
+ * transient result never shifts the row; `diceIconSVG()` is the app's one
+ * existing generic die glyph (see makeDiceButton() below), reused rather
+ * than a new icon. `data-tip-rich` (not `data-tip`) opts this trigger into
+ * the tooltip system's rich/multi-paragraph rendering — see showTip(). */
+function itemDiceButtonHtml(diceCount) {
+  const ui = state.sessionPrepUI;
+  const active = !!(ui.itemRollFilter && ui.itemRollFilter.diceCount === diceCount);
+  const transient = !!(ui.itemTransientRoll && ui.itemTransientRoll.diceCount === diceCount);
+  return `<button type="button" class="btn btn-sm dice-roll-btn${active ? ' is-active' : ''}${transient ? ' is-rolling' : ''}"
+                   data-sp-item-dice="${diceCount}" data-tip-rich="${escapeAttr(itemDiceTooltipHtml(diceCount))}"
+                   aria-label="${escapeAttr(itemDiceAriaLabel(diceCount))}">
+            <span class="dice-roll-icon" aria-hidden="true">${diceIconSVG()}</span>
+            <span class="dice-roll-label">${escapeHtml(itemDiceLabelText(diceCount))}</span>
+          </button>`;
+}
+
+function itemDiceGroupHtml() {
+  return `<div class="item-toolbar-group dice-group" id="sp-item-dice-group" role="group" aria-label="${escapeAttr(t('prep_dice_group_label'))}">
+            ${ITEM_DICE_COUNTS.map(itemDiceButtonHtml).join('')}
+          </div>`;
+}
+
+function itemViewToggleButtonHtml(mode, label, icon) {
+  const active = state.sessionPrepUI.itemViewMode === mode;
+  return `<button type="button" class="btn btn-sm ${active ? 'btn-primary' : 'btn-ghost'} item-view-btn"
+                   data-sp-item-view="${mode}" aria-pressed="${active}" aria-label="${escapeAttr(label)}"
+                   data-tip="${escapeAttr(label)}">${icon}</button>`;
+}
+
+function itemViewToggleGroupHtml() {
+  return `<div class="item-toolbar-group view-toggle-group" role="group" aria-label="${escapeAttr(t('prep_view_mode_label'))}">
+            ${itemViewToggleButtonHtml('gallery', t('prep_view_gallery'), ICON_VIEW_GALLERY)}
+            ${itemViewToggleButtonHtml('compact', t('prep_view_compact'), ICON_VIEW_COMPACT)}
+          </div>`;
+}
+
+/** The compact "All Items" toolbar: Type multiselect, Source multiselect,
+ * search, five dice buttons, the Gallery/Compact switch, and a "{n} of
+ * {total}" counter — one CSS-grid row, same structural pattern as
+ * advToolbarHtml()/envPickerColumnHtml()'s own toolbars (see
+ * "Session Prep's compact 'All Items' toolbar" in docs/architecture.md).
+ * Unlike those two, this toolbar is not nested inside a scrolling
+ * `.prep-picker-list` — the Items panel has no vertical list to scroll
+ * past, only the horizontal gallery/compact strip below it — but the same
+ * "toolbar controls mutate themselves directly, refresh*() never touches
+ * them" discipline applies: refreshItemGrid() below only ever replaces
+ * the active grid + the counter, never this toolbar. */
+function itemToolbarHtml() {
   return `
-    <div class="prep-item-filters">
-      <div class="prep-item-category-toggle" role="group" aria-label="${escapeAttr(t('prep_category_label'))}">
-        ${itemCategoryButtonHtml('item', t('prep_category_items'))}
-        ${itemCategoryButtonHtml('consumable', t('prep_category_consumables'))}
+    <div class="item-toolbar" id="sp-item-toolbar">
+      <div class="item-toolbar-group" role="group" aria-label="${escapeAttr(t('prep_category_label'))}">
+        ${itemTypeButtonHtml('item', t('prep_category_items'))}
+        ${itemTypeButtonHtml('consumable', t('prep_category_consumables'))}
       </div>
-      <div class="prep-item-source-toggle" role="group" aria-label="${escapeAttr(t('filter_source'))}">
-        ${itemSourceButtonHtml('all', t('prep_item_source_all'))}
-        ${itemSourceButtonHtml('core', t('item_src_core'))}
-        ${itemSourceButtonHtml('hnf', t('item_src_hnf'))}
+      <div class="item-toolbar-group" role="group" aria-label="${escapeAttr(t('filter_source'))}">
+        ${itemSourceToggleButtonHtml('core', t('item_src_core'))}
+        ${itemSourceToggleButtonHtml('hnf', t('item_src_hnf'))}
       </div>
+      <div class="field search-field prep-search item-toolbar-search">
+        <input type="text" id="prep-item-search" aria-label="${escapeAttr(t('prep_item_search'))}"
+               placeholder="${escapeAttr(t('prep_item_search'))}" value="${escapeAttr(state.sessionPrepUI.itemSearch)}">
+        <button type="button" class="search-clear-btn" id="prep-item-search-clear" data-sp-clear-search="item"
+                aria-label="${escapeAttr(t('prep_clear_item_filters'))}" data-tip="${escapeAttr(t('prep_clear_item_filters'))}"
+                style="${itemBrowserHasActiveFilters() ? '' : 'display:none;'}">×</button>
+      </div>
+      ${itemDiceGroupHtml()}
+      ${itemViewToggleGroupHtml()}
+      <span class="prep-count item-toolbar-count" id="prep-item-total-count" role="status" aria-live="polite">${escapeHtml(itemCountText())}</span>
     </div>`;
 }
 
@@ -3687,15 +3840,34 @@ function prepToggleLabel(name, checked) {
  * checkbox described in CLAUDE.md's "Session Prep" section). The preview
  * button (opens detail) and the checkbox (selects) stay two separate
  * sibling controls either way — never one toggling the other. */
+/** "Item · Core · #1" — the gallery card's data-tip tooltip, which has a
+ * generous ~240px max-width to render this in (see css/styles.css's
+ * .tooltip) and so never needs to protect any one part of it from
+ * truncation. */
+function itemMetaText(item) {
+  const kind = item.kind === 'consumable' ? 'consumable' : 'item';
+  return `${t('item_kind_' + kind)} · ${t('item_src_' + item.src)} · #${item.roll}`;
+}
+
+/** The compact row's own always-visible second line — same three facts as
+ * itemMetaText() above, but roll-number-first: this line's fixed-width box
+ * (see .prep-item-compact-row in css/styles.css) can be narrower than the
+ * longest EN/RU Kind+Source combination ("Consumable · Hope & Fear"), and
+ * an ellipsis always truncates from the end — leading with "#N" means the
+ * one detail that AND-composes with an active dice-roll filter survives
+ * truncation even when Kind/Source don't fully fit. */
+function compactItemMetaText(item) {
+  const kind = item.kind === 'consumable' ? 'consumable' : 'item';
+  return `#${item.roll} · ${t('item_kind_' + kind)} · ${t('item_src_' + item.src)}`;
+}
+
 function itemCardHtml(item, session) {
   const checked = session.itemIds.includes(item.id);
   const name = itemField(item, 'name');
-  const kind = item.kind === 'consumable' ? 'consumable' : 'item';
-  const tip = `${t('item_kind_' + kind)} · ${t('item_src_' + item.src)} · #${item.roll}`;
   return `
     <div class="prep-item-card${checked ? ' is-selected' : ''}" data-item-id="${escapeAttr(item.id)}">
       <button type="button" class="prep-item-icon-btn" data-sp-open-item="${escapeAttr(item.id)}"
-              data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(t('prep_open_item_detail').replace('{name}', name))}">
+              data-tip="${escapeAttr(itemMetaText(item))}" aria-label="${escapeAttr(t('prep_open_item_detail').replace('{name}', name))}">
         ${prepItemThumbHtml(item)}
         <span class="prep-item-name-overlay">${escapeHtml(name)}</span>
       </button>
@@ -3708,66 +3880,215 @@ function itemCardHtml(item, session) {
 
 function itemCardsHtml(session) {
   const items = prepFilteredItems();
-  if (!items.length) return `<p class="prep-empty">${escapeHtml(t('no_results'))}</p>`;
+  if (!items.length) return `<p class="prep-empty">${escapeHtml(t('prep_item_no_results'))}</p>`;
   return items.map(item => itemCardHtml(item, session)).join('');
 }
 
+/** Compact view's two-line record: thumbnail + name (ellipsis, with a
+ * native `title` for the full name on hover/focus — no second tooltip
+ * system needed for that) on the first line, "Item · Core · #1" on the
+ * second. Reuses data-sp-open-item/data-sp-toggle-item, so the existing
+ * delegated handlers in bindSessionPrepDelegation() need no change to
+ * support this view — clicking the name opens the same openItemDetail()
+ * overlay the gallery card's icon button does; the checkbox is a
+ * separate, always-visible sibling control, same convention as the
+ * environment/adversary picker rows (there is no hover-art surface to
+ * hide it behind here, unlike the gallery tile). */
+function compactItemRowHtml(item, session) {
+  const checked = session.itemIds.includes(item.id);
+  const name = itemField(item, 'name');
+  return `
+    <div class="prep-row prep-item-compact-row" data-item-id="${escapeAttr(item.id)}">
+      <label class="prep-checkbox-hit">
+        <input type="checkbox" class="prep-select-checkbox" data-sp-toggle-item="${escapeAttr(item.id)}" ${checked ? 'checked' : ''}
+               aria-label="${escapeAttr(prepToggleLabel(name, checked))}">
+      </label>
+      <button type="button" class="prep-row-open" data-sp-open-item="${escapeAttr(item.id)}"
+              aria-label="${escapeAttr(t('prep_open_item_detail').replace('{name}', name))}">
+        ${prepItemThumbHtml(item)}
+        <span class="prep-row-text">
+          <span class="prep-row-name" title="${escapeAttr(name)}">${escapeHtml(name)}</span>
+          <span class="prep-row-meta">${escapeHtml(compactItemMetaText(item))}</span>
+        </span>
+      </button>
+    </div>`;
+}
+
+function compactItemGridHtml(session) {
+  const items = prepFilteredItems();
+  if (!items.length) return `<p class="prep-empty">${escapeHtml(t('prep_item_no_results'))}</p>`;
+  return items.map(item => compactItemRowHtml(item, session)).join('');
+}
+
+/** The Items panel: an .sr-only heading (the visible heading was retired
+ * along with the old stacked filters/search rows — see itemToolbarHtml()),
+ * the compact toolbar, and both view strips as siblings — only one
+ * visible at a time (`hidden`, toggled by setItemViewMode()), each with
+ * its own prev/next nav-arrow pair so initSessionPrepItemNav() can target
+ * whichever is active without the two interfering. Gallery
+ * (`#prep-item-grid`) is untouched from before this redesign; Compact
+ * (`#prep-item-compact-grid`) is new. */
 function itemsPanelHtml(session) {
+  const galleryHidden = state.sessionPrepUI.itemViewMode !== 'gallery';
+  const compactHidden = state.sessionPrepUI.itemViewMode !== 'compact';
   return `
     <section class="prep-items-panel" aria-labelledby="prep-items-heading">
-      <div class="prep-col-head">
-        <h2 id="prep-items-heading">${t('prep_items')}</h2>
-        <span class="prep-count" id="prep-item-total-count">${escapeHtml(itemCountText())}</span>
-      </div>
-      <div id="sp-item-filters-wrap">${itemFiltersHtml()}</div>
-      <div class="field search-field prep-search">
-        <input type="text" id="prep-item-search" aria-label="${escapeAttr(t('prep_item_search'))}"
-               placeholder="${escapeAttr(t('prep_item_search'))}" value="${escapeAttr(state.sessionPrepUI.itemSearch)}">
-        <button type="button" class="search-clear-btn" id="prep-item-search-clear" data-sp-clear-search="item"
-                aria-label="${escapeAttr(t('prep_clear_item_search'))}"
-                style="${state.sessionPrepUI.itemSearch ? '' : 'display:none;'}">×</button>
-      </div>
-      <div class="prep-item-strip-wrap">
+      <h2 id="prep-items-heading" class="sr-only">${t('prep_items')}</h2>
+      ${itemToolbarHtml()}
+      <div class="prep-item-strip-wrap" id="sp-item-gallery-wrap" ${galleryHidden ? 'hidden' : ''}>
         <button type="button" class="prep-item-nav-btn" data-sp-item-nav="prev" aria-label="${escapeAttr(t('prep_item_nav_prev'))}" hidden>${ICON_CHEVRON_UP}</button>
         <div class="prep-item-grid" id="prep-item-grid">${itemCardsHtml(session)}</div>
+        <button type="button" class="prep-item-nav-btn" data-sp-item-nav="next" aria-label="${escapeAttr(t('prep_item_nav_next'))}" hidden>${ICON_CHEVRON_UP}</button>
+      </div>
+      <div class="prep-item-strip-wrap prep-item-compact-wrap" id="sp-item-compact-wrap" ${compactHidden ? 'hidden' : ''}>
+        <button type="button" class="prep-item-nav-btn" data-sp-item-nav="prev" aria-label="${escapeAttr(t('prep_item_nav_prev'))}" hidden>${ICON_CHEVRON_UP}</button>
+        <div class="prep-item-compact-grid" id="prep-item-compact-grid">${compactItemGridHtml(session)}</div>
         <button type="button" class="prep-item-nav-btn" data-sp-item-nav="next" aria-label="${escapeAttr(t('prep_item_nav_next'))}" hidden>${ICON_CHEVRON_UP}</button>
       </div>
     </section>`;
 }
 
+/** Which of the two view strips' grid element is currently active — the
+ * one refreshItemGrid()/initSessionPrepItemNav() should target. */
+function activeItemGridId() {
+  return state.sessionPrepUI.itemViewMode === 'compact' ? 'prep-item-compact-grid' : 'prep-item-grid';
+}
+
+/** Rebuilds only the currently active grid (gallery or compact) plus the
+ * toolbar's counter — never the toolbar itself, same discipline
+ * refreshEnvPicker()/refreshAdvPicker() already follow — so the search
+ * input, Type/Source/dice/view buttons never lose focus or get rebuilt
+ * out from under an in-progress interaction. Called after every
+ * filter-affecting change: Type/Source toggle, a committed search edit,
+ * a dice roll, or Clear. */
 function refreshItemGrid() {
   const session = activeSessionPrep();
-  const grid = document.getElementById('prep-item-grid');
-  if (grid) grid.innerHTML = itemCardsHtml(session);
+  const grid = document.getElementById(activeItemGridId());
+  if (grid) {
+    grid.innerHTML = state.sessionPrepUI.itemViewMode === 'compact'
+      ? compactItemGridHtml(session) : itemCardsHtml(session);
+  }
   const count = document.getElementById('prep-item-total-count');
   if (count) count.textContent = itemCountText();
   refreshSessionPrepItemNav();
 }
 
-/** Rebuilds the Category/Source toggle (active-state highlighting) and
- * rebinds its buttons — called after every Category/Source change,
- * alongside refreshItemGrid(). */
-function refreshItemFilters() {
-  const wrap = document.getElementById('sp-item-filters-wrap');
-  if (wrap) wrap.innerHTML = itemFiltersHtml();
-  bindItemFilterControls();
+/** Shows/hides the clear-all-filters control inside the search field —
+ * called after every Type/Source/dice/Clear change (search itself is
+ * handled inline by bindSessionPrepSearchField('item')'s own input
+ * listener, which already knows the field's live value). */
+function updateItemClearButtonVisibility() {
+  const btn = document.getElementById('prep-item-search-clear');
+  if (btn) btn.style.display = itemBrowserHasActiveFilters() ? '' : 'none';
 }
 
-function bindItemFilterControls() {
-  document.querySelectorAll('[data-sp-item-category]').forEach(btn => btn.addEventListener('click', () => {
-    const category = btn.dataset.spItemCategory;
-    if (state.sessionPrepUI.itemCategory === category) return;
-    state.sessionPrepUI.itemCategory = category;
-    refreshItemFilters();
-    refreshItemGrid();
-  }));
-  document.querySelectorAll('[data-sp-item-source]').forEach(btn => btn.addEventListener('click', () => {
-    const source = btn.dataset.spItemSource;
-    if (state.sessionPrepUI.itemSource === source) return;
-    state.sessionPrepUI.itemSource = source;
-    refreshItemFilters();
-    refreshItemGrid();
-  }));
+/** Switches Gallery/Compact: toggles both strips' `hidden`, the two view
+ * buttons' pressed state, rebuilds the newly-active grid (filters may
+ * have changed while it was hidden — refreshItemGrid() only ever
+ * refreshes the *active* one) and re-points the nav-arrow controller at
+ * it. Deliberately never touched by clearItemBrowserFilters() — the view
+ * a GM is looking at is not itself a "filter". */
+function setItemViewMode(mode) {
+  if (state.sessionPrepUI.itemViewMode === mode) return;
+  state.sessionPrepUI.itemViewMode = mode;
+  const galleryWrap = document.getElementById('sp-item-gallery-wrap');
+  const compactWrap = document.getElementById('sp-item-compact-wrap');
+  if (galleryWrap) galleryWrap.hidden = mode !== 'gallery';
+  if (compactWrap) compactWrap.hidden = mode !== 'compact';
+  document.querySelectorAll('[data-sp-item-view]').forEach(btn => {
+    const active = btn.dataset.spItemView === mode;
+    btn.classList.toggle('btn-primary', active);
+    btn.classList.toggle('btn-ghost', !active);
+    btn.setAttribute('aria-pressed', String(active));
+  });
+  refreshItemGrid();
+  initSessionPrepItemNav(activeItemGridId());
+}
+
+/* ---------------- item dice roll-and-filter buttons ----------------
+ * Rolling a die never rebuilds the toolbar or the item grid's DOM
+ * identity beyond what refreshItemGrid() already does for any filter
+ * change — only this one button's own label/aria-label/tooltip attribute
+ * are mutated directly, so rapid repeat clicks (same or a different
+ * button) never lose focus and never touch the search field. */
+
+const ITEM_DICE_TRANSIENT_MS = 1200;
+let itemDiceTimer = null;
+
+function updateItemDiceButton(diceCount) {
+  const btn = document.querySelector(`[data-sp-item-dice="${diceCount}"]`);
+  if (!btn) return;
+  const ui = state.sessionPrepUI;
+  const active = !!(ui.itemRollFilter && ui.itemRollFilter.diceCount === diceCount);
+  const transient = !!(ui.itemTransientRoll && ui.itemTransientRoll.diceCount === diceCount);
+  btn.classList.toggle('is-active', active);
+  btn.classList.toggle('is-rolling', transient);
+  btn.dataset.tipRich = itemDiceTooltipHtml(diceCount);
+  btn.setAttribute('aria-label', itemDiceAriaLabel(diceCount));
+  const label = btn.querySelector('.dice-roll-label');
+  if (label) label.textContent = itemDiceLabelText(diceCount);
+}
+
+function updateAllItemDiceButtons() {
+  ITEM_DICE_COUNTS.forEach(updateItemDiceButton);
+}
+
+/** Rolls `diceCount`d12, replaces the active roll filter with the new
+ * total, shows it in place of the clicked button's own label for
+ * ITEM_DICE_TRANSIENT_MS, then reverts — the filter itself stays active
+ * after reverting. Clicking the already-active button rerolls (no
+ * special case: this always overwrites itemRollFilter/itemTransientRoll
+ * and restarts the timer). Never disabled, never debounced. */
+function rollSessionPrepItemDice(diceCount) {
+  clearTimeout(itemDiceTimer);
+  const total = SessionPrepUtils.rollNd12(diceCount);
+  state.sessionPrepUI.itemRollFilter = { diceCount, total };
+  state.sessionPrepUI.itemTransientRoll = { diceCount, total };
+  updateAllItemDiceButtons();
+  updateItemClearButtonVisibility();
+  refreshItemGrid();
+  itemDiceTimer = setTimeout(() => {
+    state.sessionPrepUI.itemTransientRoll = null;
+    itemDiceTimer = null;
+    updateAllItemDiceButtons();
+  }, ITEM_DICE_TRANSIENT_MS);
+}
+
+/** Clears the pending reveal timer — called wherever render() already
+ * tears down destroySessionPrepItemNav() on leaving the session-prep
+ * route, so no timer outlives the page. */
+function destroySessionPrepItemDice() {
+  clearTimeout(itemDiceTimer);
+  itemDiceTimer = null;
+}
+
+/** The Items panel's one combined "reset everything" control (lives
+ * inside the search field, reusing .search-clear-btn — see
+ * itemToolbarHtml()): resets search, both multiselects, the active roll
+ * filter, and any pending reveal timer, but deliberately leaves
+ * itemViewMode untouched. Every toolbar control it affects is mutated
+ * directly (same discipline as the rest of this toolbar), so this never
+ * rebuilds the toolbar wrapper itself. */
+function clearItemBrowserFilters() {
+  const ui = state.sessionPrepUI;
+  ui.itemSearch = '';
+  ui.itemTypes.clear();
+  ui.itemSources.clear();
+  ui.itemRollFilter = null;
+  ui.itemTransientRoll = null;
+  clearTimeout(itemDiceTimer);
+  itemDiceTimer = null;
+  const input = document.getElementById('prep-item-search');
+  if (input) input.value = '';
+  document.querySelectorAll('[data-sp-item-type], [data-sp-item-source]').forEach(btn => {
+    btn.classList.remove('btn-primary');
+    btn.classList.add('btn-ghost');
+    btn.setAttribute('aria-pressed', 'false');
+  });
+  updateAllItemDiceButtons();
+  updateItemClearButtonVisibility();
+  refreshItemGrid();
+  if (input) input.focus();
 }
 
 /* ---------------- item strip manual navigation ----------------
@@ -3810,14 +4131,17 @@ function refreshSessionPrepItemNav() {
   if (s.nextBtn) { s.nextBtn.hidden = !overflowing; s.nextBtn.disabled = s.el.scrollLeft >= max; }
 }
 
-/** Builds the one controller instance for #prep-item-grid and its two arrow
- * buttons (siblings in .prep-item-strip-wrap — see itemsPanelHtml()). Safe
- * to call any number of times — it always tears down a previous instance
- * first — but renderSessionPrepPage() is the only call site, since that's
- * the only place these elements are (re)created. */
-function initSessionPrepItemNav() {
+/** Builds the one controller instance for the *currently active* view's
+ * grid (`gridId`: 'prep-item-grid' for Gallery, 'prep-item-compact-grid'
+ * for Compact — see activeItemGridId()) and its two arrow buttons
+ * (siblings within that grid's own .prep-item-strip-wrap — see
+ * itemsPanelHtml()). Safe to call any number of times — it always tears
+ * down a previous instance first. Called once from renderSessionPrepPage()
+ * (the only place these elements are (re)created) and again from
+ * setItemViewMode() every time the active grid element itself changes. */
+function initSessionPrepItemNav(gridId = 'prep-item-grid') {
   destroySessionPrepItemNav();
-  const el = document.getElementById('prep-item-grid');
+  const el = document.getElementById(gridId);
   if (!el) return;
   const wrap = el.parentElement;
   const prevBtn = wrap && wrap.querySelector('[data-sp-item-nav="prev"]');
@@ -4245,6 +4569,11 @@ function refreshSessionPrepPicker(which) {
  * the input — shared by the clear button's click (delegated, see
  * bindSessionPrepDelegation()) and an Escape keypress in the field itself. */
 function clearSessionPrepSearch(which) {
+  // Items has more to reset than a bare search field — Type/Source
+  // multiselects and the active dice-roll filter too — see the request's
+  // own "one combined clear control" requirement and
+  // clearItemBrowserFilters()'s own doc comment.
+  if (which === 'item') { clearItemBrowserFilters(); return; }
   const cfg = SESSION_PREP_SEARCH_FIELDS[which];
   if (!cfg) return;
   state.sessionPrepUI[cfg.stateKey] = '';
@@ -4269,7 +4598,10 @@ function bindSessionPrepSearchField(which) {
   const clearBtn = document.getElementById(cfg.clearId);
   let timer = null;
   input.addEventListener('input', () => {
-    if (clearBtn) clearBtn.style.display = input.value ? '' : 'none';
+    // Items' clear button also has to stay visible when a Type/Source/
+    // dice filter is active with no search text typed at all — see
+    // itemBrowserHasActiveFilters()/itemNonSearchItemFiltersActive().
+    if (clearBtn) clearBtn.style.display = (input.value || (which === 'item' && itemNonSearchItemFiltersActive())) ? '' : 'none';
     clearTimeout(timer);
     timer = setTimeout(() => { state.sessionPrepUI[cfg.stateKey] = input.value; refreshSessionPrepPicker(which); }, SESSION_PREP_SEARCH_DEBOUNCE_MS);
   });
@@ -4350,7 +4682,7 @@ function bindSessionPrepDelegation(el) {
       }));
       updateSaveStatusDisplay(result);
       refreshCentralItems();
-      const card = itemCb.closest('.prep-item-card');
+      const card = itemCb.closest('.prep-item-card, .prep-item-compact-row');
       if (card) card.classList.toggle('is-selected', itemCb.checked);
       const item = itemById(itemId);
       if (item) updatePrepToggleLabel('data-sp-toggle-item', itemId, itemCb.checked, itemField(item, 'name'));
@@ -4446,10 +4778,45 @@ function bindSessionPrepDelegation(el) {
       syncPickerCheckbox('data-sp-toggle-item', itemId, false);
       const item = itemById(itemId);
       if (item) updatePrepToggleLabel('data-sp-toggle-item', itemId, false, itemField(item, 'name'));
-      const card = document.querySelector(`.prep-item-card[data-item-id="${escapeSelectorAttrValue(itemId)}"]`);
-      if (card) card.classList.remove('is-selected');
+      document.querySelectorAll(`.prep-item-card[data-item-id="${escapeSelectorAttrValue(itemId)}"], .prep-item-compact-row[data-item-id="${escapeSelectorAttrValue(itemId)}"]`)
+        .forEach(card => card.classList.remove('is-selected'));
       return;
     }
+
+    // Independent multiselect, same direct-mutate-not-rebuild pattern as
+    // the Tier buttons above: toggling a Type/Source button never touches
+    // the toolbar itself, only the active grid + counter below it.
+    const itemType = e.target.closest('[data-sp-item-type]');
+    if (itemType) {
+      const type = itemType.dataset.spItemType;
+      toggleSetValue(state.sessionPrepUI.itemTypes, type);
+      const pressed = state.sessionPrepUI.itemTypes.has(type);
+      itemType.classList.toggle('btn-primary', pressed);
+      itemType.classList.toggle('btn-ghost', !pressed);
+      itemType.setAttribute('aria-pressed', String(pressed));
+      updateItemClearButtonVisibility();
+      refreshItemGrid();
+      return;
+    }
+
+    const itemSource = e.target.closest('[data-sp-item-source]');
+    if (itemSource) {
+      const source = itemSource.dataset.spItemSource;
+      toggleSetValue(state.sessionPrepUI.itemSources, source);
+      const pressed = state.sessionPrepUI.itemSources.has(source);
+      itemSource.classList.toggle('btn-primary', pressed);
+      itemSource.classList.toggle('btn-ghost', !pressed);
+      itemSource.setAttribute('aria-pressed', String(pressed));
+      updateItemClearButtonVisibility();
+      refreshItemGrid();
+      return;
+    }
+
+    const itemDice = e.target.closest('[data-sp-item-dice]');
+    if (itemDice) { rollSessionPrepItemDice(Number(itemDice.dataset.spItemDice)); return; }
+
+    const itemView = e.target.closest('[data-sp-item-view]');
+    if (itemView) { setItemViewMode(itemView.dataset.spItemView); return; }
 
     const navBtn = e.target.closest('[data-sp-item-nav]');
     if (navBtn) { scrollSessionPrepItemStrip(navBtn.dataset.spItemNav === 'next' ? 1 : -1); return; }
@@ -4631,6 +4998,7 @@ function destroySessionPrepChrome() {
  * end. This is the only place either happens. */
 function renderSessionPrepPage() {
   destroySessionPrepItemNav();
+  destroySessionPrepItemDice();
   initSessionPrepChrome();
   document.getElementById('toolbar').innerHTML = '';
   document.getElementById('result-count').innerHTML = '';
@@ -4668,8 +5036,7 @@ function renderSessionPrepPage() {
   bindSessionPrepDelegation(el);
   bindSessionPrepSearchAndTitle();
   bindAdvToolbarControls();
-  bindItemFilterControls();
-  initSessionPrepItemNav();
+  initSessionPrepItemNav(activeItemGridId());
   applySessionPrepChromeDom();
 }
 

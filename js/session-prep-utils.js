@@ -203,63 +203,6 @@
     };
   }
 
-  /* ---------------- search ---------------- */
-
-  function normalizeSearchText(value) {
-    return String(value == null ? '' : value).toLowerCase().trim().replace(/\s+/g, ' ');
-  }
-
-  /** True when `query` is empty (matches everything) or is found as a
-   * substring of any of `fields`, all case-insensitively. Used to search a
-   * catalogue entry across its English and Russian names at once, so
-   * switching the display language never makes the other language
-   * unsearchable. */
-  function matchesSearch(query, fields) {
-    var q = normalizeSearchText(query);
-    if (!q) return true;
-    for (var i = 0; i < fields.length; i++) {
-      if (normalizeSearchText(fields[i]).indexOf(q) !== -1) return true;
-    }
-    return false;
-  }
-
-  /** Filters `entries` by `query`, using `getFields(entry)` to produce the
-   * array of searchable strings for each entry (typically `[name.en,
-   * name.ru]`). Returns `entries` itself, unfiltered, for an empty query. */
-  function filterEntries(entries, query, getFields) {
-    var q = normalizeSearchText(query);
-    if (!q) return entries.slice();
-    return entries.filter(function (entry) { return matchesSearch(q, getFields(entry)); });
-  }
-
-  /** True when `query` is a plain, non-empty run of digits ("3", "28") with
-   * no other characters. Used to tell a numeric item search apart from a
-   * name search sharing the same input. */
-  function isNumericQuery(query) {
-    return /^\d+$/.test(query);
-  }
-
-  /** Item search: substring match against `fields` (name.en/name.ru), like
-   * matchesSearch(), OR — for a purely numeric query — an exact match
-   * against the item's book roll number. Exact, not substring: "have this
-   * number as their number in the book" means equality, so searching "1"
-   * must not also pull in every item numbered 10-19/21/31/etc. */
-  function matchesItemSearch(query, fields, roll) {
-    var q = normalizeSearchText(query);
-    if (!q) return true;
-    if (matchesSearch(q, fields)) return true;
-    return isNumericQuery(q) && roll != null && String(roll) === q;
-  }
-
-  /** Filters `items` by `query`, matching by name (`getFields`) or, for a
-   * numeric query, by exact book roll number (`getRoll`). Same empty-query
-   * contract as filterEntries(): returns `items` itself, unfiltered. */
-  function filterItemEntries(items, query, getFields, getRoll) {
-    var q = normalizeSearchText(query);
-    if (!q) return items.slice();
-    return items.filter(function (item) { return matchesItemSearch(q, getFields(item), getRoll(item)); });
-  }
-
   /* ---------------- environment search (compact "All Environments" toolbar) ----------------
    * A single reusable normalizer feeds both sides of the match: the indexed
    * text built once per environment (below) and every raw query typed into
@@ -490,26 +433,143 @@
     });
   }
 
-  /* ---------------- item filters (Category / Source) ---------------- */
+  /* ---------------- item search + filters (compact "All Items" toolbar) ----------------
+   * Reuses the same precomputed-index + normalizeSearchToken()/
+   * tokenizeEnvironmentQuery()/matchesEnvironmentTokens() machinery the
+   * environment/adversary toolbars above already established — none of it
+   * is actually environment-specific. The one genuinely new piece is
+   * numeric/range extraction (an exact book roll number, "#30", "1-10",
+   * a reversed range): it has to run on a *lightly* normalized copy of
+   * the raw query — case-folded and with every Unicode dash variant
+   * collapsed to a plain "-" — before normalizeSearchToken() gets a
+   * chance to erase that dash into a bare space, which would make "1-10"
+   * and "1 10" indistinguishable by the time a range regex saw it. */
 
-  /** Filters Session Prep's item/consumable catalogue by category
-   * (`options.category`: 'item' | 'consumable' | falsy for no restriction),
-   * source (`options.source`: 'core' | 'hnf' | 'all'/falsy for no
-   * restriction), and free-text-or-exact-roll search (see
-   * matchesItemSearch()/filterItemEntries()) — every group ANDs with the
-   * others. `getFields`/`getRoll` mirror filterItemEntries()'s own contract
-   * (typically `i => [i.en?.name, i.ru?.name]` / `i => i.roll`). Never
-   * mutates `items`. */
-  function filterItems(items, options, getFields, getRoll) {
-    var opts = options || {};
-    var category = opts.category || null;
-    var source = opts.source && opts.source !== 'all' ? opts.source : null;
-    var bySearch = filterItemEntries(items, opts.search, getFields, getRoll);
-    return bySearch.filter(function (item) {
-      if (category && item.kind !== category) return false;
-      if (source && item.src !== source) return false;
-      return true;
+  var ITEM_KIND_ALIASES = {
+    item: ['item', 'items', 'предмет', 'предметы'],
+    consumable: ['consumable', 'consumables', 'расходник', 'расходники'],
+  };
+  var ITEM_SOURCE_ALIASES = {
+    core: ['core'],
+    hnf: ['hope and fear', 'hope & fear'],
+  };
+
+  /** The raw (unnormalized) fields one item contributes to its
+   * compact-toolbar search text: bilingual name plus every EN/RU alias
+   * word for its own Kind and Source. `item.kind`/`item.src` are always
+   * one of the fixed keys above, so — unlike the environment/adversary
+   * indexes — this never needs an i18n dictionary; the alias lists above
+   * already are the localized vocabulary. */
+  function itemIndexRawFields(item) {
+    var kindAliases = ITEM_KIND_ALIASES[item.kind] || [];
+    var srcAliases = ITEM_SOURCE_ALIASES[item.src] || [];
+    return [item.en && item.en.name, item.ru && item.ru.name].concat(kindAliases, srcAliases);
+  }
+
+  /** The precomputed, locale-independent search text for one item — every
+   * field above, normalized once (through the same normalizeSearchToken()
+   * the environment/adversary toolbars use) and joined with spaces. */
+  function buildItemSearchText(item) {
+    return normalizeSearchToken(itemIndexRawFields(item).filter(Boolean).join(' '));
+  }
+
+  /** One record per item, keyed by id — built once when the Session Prep
+   * catalogue loads, never rebuilt per keystroke or per filter pass. */
+  function buildItemSearchIndex(items) {
+    var index = new Map();
+    (items || []).forEach(function (item) { index.set(item.id, buildItemSearchText(item)); });
+    return index;
+  }
+
+  /** Collapses only case and Unicode dash variants — deliberately not the
+   * full normalizeSearchToken() punctuation strip, which would erase the
+   * "-" a range query needs before extractItemNumberCriteria() below ever
+   * sees it. */
+  function lightlyNormalizeItemQuery(value) {
+    var str = String(value == null ? '' : value);
+    if (typeof str.normalize === 'function') str = str.normalize('NFKC');
+    return str.toLowerCase().replace(/[\u2010-\u2015\u2212]/g, '-');
+  }
+
+  /** Pulls every numeric/range criterion out of a raw item-browser query,
+   * returning what's left (`rest`) for keyword tokenizing. A range
+   * ("1-10", "#1-10", "1 - 10", any Unicode dash) is captured as
+   * `[lo, hi]`, swapped into ascending order when typed reversed
+   * ("10-1"); a bare or "#"-prefixed number left standing alone afterward
+   * is an exact criterion. Never throws on malformed input ("1-",
+   * "abc-def") — every step is a regex replace against an
+   * already-matched run of digits, never an unguarded parseInt. */
+  function extractItemNumberCriteria(rawQuery) {
+    var exacts = [];
+    var ranges = [];
+    var working = lightlyNormalizeItemQuery(rawQuery);
+    working = working.replace(/#?(\d+)\s*-\s*(\d+)/g, function (match, a, b) {
+      var lo = Number(a), hi = Number(b);
+      ranges.push(lo <= hi ? [lo, hi] : [hi, lo]);
+      return ' ';
     });
+    working = working.replace(/#(\d+)/g, function (match, a) {
+      exacts.push(Number(a));
+      return ' ';
+    });
+    working = working.replace(/\b(\d+)\b/g, function (match, a) {
+      exacts.push(Number(a));
+      return ' ';
+    });
+    return { exacts: exacts, ranges: ranges, rest: working };
+  }
+
+  /** True when `roll` satisfies the numeric half of a parsed query: no
+   * numeric criteria at all imposes no restriction; otherwise `roll` must
+   * equal one of the exact numbers or fall inside one of the ranges — OR
+   * within the numeric group, the same convention every other multiselect
+   * filter in this file already uses. */
+  function itemNumberCriteriaMatches(criteria, roll) {
+    if (!criteria.exacts.length && !criteria.ranges.length) return true;
+    if (criteria.exacts.indexOf(roll) !== -1) return true;
+    return criteria.ranges.some(function (range) { return roll >= range[0] && roll <= range[1]; });
+  }
+
+  /** The compact toolbar's full item filter: a Kind multiselect
+   * (`options.types`, values 'item'/'consumable', OR within the set), a
+   * Source multiselect (`options.sources`, values 'core'/'hnf', OR within
+   * the set), an active dice-roll filter (`options.rollTotal`, exact
+   * `item.roll` equality), and the search query — itself split into
+   * numeric/range criteria (OR within that group) ANDed with whatever
+   * keyword text remains (tokenized via tokenizeEnvironmentQuery(),
+   * matched via matchesEnvironmentTokens() against the precomputed
+   * `haystackIndex`, AND across tokens) — every group ANDs with every
+   * other. An empty Kind/Source group or a `null` `rollTotal` imposes no
+   * restriction of its own. Never mutates `items`; ordering is
+   * preserved — the caller still applies its own sort
+   * (sortItemsForPrep()) afterward, same as filterAdversariesByToolbar()
+   * leaves sorting to its own caller. */
+  function filterItemsByToolbar(items, haystackIndex, options) {
+    var opts = options || {};
+    var types = toSet(opts.types);
+    var sources = toSet(opts.sources);
+    var criteria = extractItemNumberCriteria(opts.search);
+    var tokens = tokenizeEnvironmentQuery(criteria.rest);
+    var byIndex = haystackIndex || new Map();
+    var rollTotal = opts.rollTotal == null ? null : opts.rollTotal;
+    return (items || []).filter(function (item) {
+      if (types.size && !types.has(item.kind)) return false;
+      if (sources.size && !sources.has(item.src)) return false;
+      if (rollTotal != null && item.roll !== rollTotal) return false;
+      if (!itemNumberCriteriaMatches(criteria, item.roll)) return false;
+      return matchesEnvironmentTokens(byIndex.get(item.id) || '', tokens);
+    });
+  }
+
+  /** Sum of `diceCount` independent 1-12 draws — the item browser's dice
+   * roll-and-filter buttons. `randomFn` defaults to Math.random and is
+   * injectable so a caller (a test) can supply a deterministic sequence
+   * without monkeypatching the global. */
+  function rollNd12(diceCount, randomFn) {
+    var rf = randomFn || Math.random;
+    var total = 0;
+    for (var i = 0; i < diceCount; i++) total += 1 + Math.floor(rf() * 12);
+    return total;
   }
 
   return {
@@ -529,12 +589,6 @@
     removeId: removeId,
     toggleEnvironment: toggleEnvironment,
     removeEnvironment: removeEnvironment,
-    normalizeSearchText: normalizeSearchText,
-    matchesSearch: matchesSearch,
-    filterEntries: filterEntries,
-    isNumericQuery: isNumericQuery,
-    matchesItemSearch: matchesItemSearch,
-    filterItemEntries: filterItemEntries,
     normalizeSearchToken: normalizeSearchToken,
     tokenizeEnvironmentQuery: tokenizeEnvironmentQuery,
     buildEnvironmentSearchText: buildEnvironmentSearchText,
@@ -551,6 +605,13 @@
     itemSourceRank: itemSourceRank,
     itemKindRank: itemKindRank,
     sortItemsForPrep: sortItemsForPrep,
-    filterItems: filterItems,
+    ITEM_KIND_ALIASES: ITEM_KIND_ALIASES,
+    ITEM_SOURCE_ALIASES: ITEM_SOURCE_ALIASES,
+    buildItemSearchText: buildItemSearchText,
+    buildItemSearchIndex: buildItemSearchIndex,
+    extractItemNumberCriteria: extractItemNumberCriteria,
+    itemNumberCriteriaMatches: itemNumberCriteriaMatches,
+    filterItemsByToolbar: filterItemsByToolbar,
+    rollNd12: rollNd12,
   };
 });

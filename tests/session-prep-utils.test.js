@@ -207,99 +207,6 @@ test('toggleEnvironment/removeEnvironment do not mutate the input session', () =
   assert.equal(JSON.stringify(session), snapshot);
 });
 
-/* ---------------- search ---------------- */
-
-test('normalizeSearchText lowercases and trims', () => {
-  assert.equal(SPU.normalizeSearchText('  Cave Ogre  '), 'cave ogre');
-  assert.equal(SPU.normalizeSearchText(null), '');
-  assert.equal(SPU.normalizeSearchText(undefined), '');
-});
-
-test('matchesSearch finds a match in either field, case-insensitively', () => {
-  assert.equal(SPU.matchesSearch('ogre', ['Cave Ogre', 'Пещерный Огр']), true);
-  assert.equal(SPU.matchesSearch('огр', ['Cave Ogre', 'Пещерный Огр']), true);
-  assert.equal(SPU.matchesSearch('dragon', ['Cave Ogre', 'Пещерный Огр']), false);
-});
-
-test('an empty query matches everything', () => {
-  assert.equal(SPU.matchesSearch('', ['anything']), true);
-  assert.equal(SPU.matchesSearch('   ', ['anything']), true);
-});
-
-test('EN and RU search values both find the same catalogue entry', () => {
-  const entries = [
-    { id: 'cave-ogre', name: { en: 'Cave Ogre', ru: 'Пещерный Огр' } },
-    { id: 'dire-wolf', name: { en: 'Dire Wolf', ru: 'Лютоволк' } },
-  ];
-  const getFields = e => [e.name.en, e.name.ru];
-  const byEn = SPU.filterEntries(entries, 'cave', getFields);
-  const byRu = SPU.filterEntries(entries, 'огр', getFields);
-  assert.deepEqual(byEn.map(e => e.id), ['cave-ogre']);
-  assert.deepEqual(byRu.map(e => e.id), ['cave-ogre']);
-});
-
-test('filterEntries returns every entry for an empty query', () => {
-  const entries = [{ id: 'a', name: { en: 'A', ru: '' } }, { id: 'b', name: { en: 'B', ru: '' } }];
-  const result = SPU.filterEntries(entries, '', e => [e.name.en, e.name.ru]);
-  assert.deepEqual(result.map(e => e.id), ['a', 'b']);
-});
-
-test('normalizeSearchText collapses repeated internal whitespace', () => {
-  assert.equal(SPU.normalizeSearchText('cave   ogre'), 'cave ogre');
-  assert.equal(SPU.normalizeSearchText('  forest\t\tbiome  '), 'forest biome');
-});
-
-/* ---------------- item search by book roll number ---------------- */
-
-const PREP_ITEMS = [
-  { id: 'ci3', roll: 3, en: { name: 'Charging Quiver' }, ru: { name: 'Заряженный Колчан' } },
-  { id: 'di13', roll: 13, en: { name: 'Bag of Holding' }, ru: { name: 'Мешок Бездонный' } },
-  { id: 'wc28', roll: 28, en: { name: 'Potion of Fortitude' }, ru: { name: 'Зелье Стойкости' } },
-];
-function prepItemFields(item) { return [item.en.name, item.ru.name]; }
-function prepItemRoll(item) { return item.roll; }
-
-test('isNumericQuery accepts only plain digit runs', () => {
-  assert.equal(SPU.isNumericQuery('3'), true);
-  assert.equal(SPU.isNumericQuery('28'), true);
-  assert.equal(SPU.isNumericQuery('#3'), false);
-  assert.equal(SPU.isNumericQuery('3 '), false);
-  assert.equal(SPU.isNumericQuery(''), false);
-});
-
-test('a numeric query matches an item by its exact book roll number', () => {
-  const result = SPU.filterItemEntries(PREP_ITEMS, '3', prepItemFields, prepItemRoll);
-  assert.deepEqual(result.map(i => i.id), ['ci3']);
-});
-
-test('a numeric query does not substring-match a different roll number', () => {
-  // "3" must not also pull in roll 13 or 28 just because they contain "3".
-  const result = SPU.filterItemEntries(PREP_ITEMS, '3', prepItemFields, prepItemRoll);
-  assert.deepEqual(result.map(i => i.id), ['ci3']);
-});
-
-test('a numeric query still matches a multi-digit roll number exactly', () => {
-  const result = SPU.filterItemEntries(PREP_ITEMS, '28', prepItemFields, prepItemRoll);
-  assert.deepEqual(result.map(i => i.id), ['wc28']);
-});
-
-test('a non-numeric query still matches item names as usual', () => {
-  const byEn = SPU.filterItemEntries(PREP_ITEMS, 'quiver', prepItemFields, prepItemRoll);
-  const byRu = SPU.filterItemEntries(PREP_ITEMS, 'колчан', prepItemFields, prepItemRoll);
-  assert.deepEqual(byEn.map(i => i.id), ['ci3']);
-  assert.deepEqual(byRu.map(i => i.id), ['ci3']);
-});
-
-test('an empty query returns every item unfiltered', () => {
-  const result = SPU.filterItemEntries(PREP_ITEMS, '', prepItemFields, prepItemRoll);
-  assert.deepEqual(result.map(i => i.id), PREP_ITEMS.map(i => i.id));
-});
-
-test('matchesItemSearch is false when the query matches neither name nor roll', () => {
-  assert.equal(SPU.matchesItemSearch('99', prepItemFields(PREP_ITEMS[0]), PREP_ITEMS[0].roll), false);
-  assert.equal(SPU.matchesItemSearch('dragon', prepItemFields(PREP_ITEMS[0]), PREP_ITEMS[0].roll), false);
-});
-
 /* ---------------- environment search (compact "All Environments" toolbar) ---------------- */
 
 const TOOLBAR_I18N_EN = {
@@ -657,56 +564,221 @@ test('ADVERSARY_TIERS and ADVERSARY_TYPES expose the fixed enums', () => {
   assert.ok(SPU.ADVERSARY_TYPES.includes('support'));
 });
 
-/* ---------------- item filters (Category / Source) ---------------- */
+/* ---------------- item search + filters (compact "All Items" toolbar) ---------------- */
 
 const PREP_LOOT_ITEMS = [
   { id: 'ci1', kind: 'item', src: 'core', roll: 1, en: { name: 'Premium Bedroll' }, ru: { name: 'Спальный Мешок' } },
   { id: 'cc1', kind: 'consumable', src: 'core', roll: 1, en: { name: 'Minor Health Potion' }, ru: { name: 'Зелье Лечения' } },
   { id: 'hi1', kind: 'item', src: 'hnf', roll: 1, en: { name: 'Wondrous Compass' }, ru: { name: 'Чудесный Компас' } },
   { id: 'hc1', kind: 'consumable', src: 'hnf', roll: 1, en: { name: 'Vial of Starlight' }, ru: { name: 'Флакон Звёздного Света' } },
+  { id: 'ci30', kind: 'item', src: 'core', roll: 30, en: { name: 'Torch' }, ru: { name: 'Факел' } },
+  { id: 'cc30', kind: 'consumable', src: 'core', roll: 30, en: { name: 'Minor Poison' }, ru: { name: 'Малый Яд' } },
+  { id: 'hi30', kind: 'item', src: 'hnf', roll: 30, en: { name: 'Wondrous Lantern' }, ru: { name: 'Чудесный Фонарь' } },
+  { id: 'hc30', kind: 'consumable', src: 'hnf', roll: 30, en: { name: 'Venom Vial' }, ru: { name: 'Флакон Яда' } },
 ];
-const lootItemFields = i => [i.en?.name, i.ru?.name];
-const lootItemRoll = i => i.roll;
 
-test('filterItems with no filters returns every item', () => {
-  const result = SPU.filterItems(PREP_LOOT_ITEMS, {}, lootItemFields, lootItemRoll);
-  assert.deepEqual(result.map(i => i.id), PREP_LOOT_ITEMS.map(i => i.id));
+function itemIndex(items = PREP_LOOT_ITEMS) {
+  return SPU.buildItemSearchIndex(items);
+}
+
+function itemToolbarFilter(options, items = PREP_LOOT_ITEMS) {
+  return SPU.filterItemsByToolbar(items, itemIndex(items), options);
+}
+
+test('no selected Kind means both Items and Consumables show', () => {
+  assert.deepEqual(itemToolbarFilter({}).map(i => i.id), PREP_LOOT_ITEMS.map(i => i.id));
 });
 
-test('filterItems category "item" returns only items, not consumables', () => {
-  const result = SPU.filterItems(PREP_LOOT_ITEMS, { category: 'item' }, lootItemFields, lootItemRoll);
-  assert.deepEqual(result.map(i => i.id).sort(), ['ci1', 'hi1']);
+test('selecting only "item" restricts to items', () => {
+  const result = itemToolbarFilter({ types: new Set(['item']) });
+  assert.deepEqual(result.map(i => i.id).sort(), ['ci1', 'ci30', 'hi1', 'hi30']);
 });
 
-test('filterItems category "consumable" returns only consumables', () => {
-  const result = SPU.filterItems(PREP_LOOT_ITEMS, { category: 'consumable' }, lootItemFields, lootItemRoll);
-  assert.deepEqual(result.map(i => i.id).sort(), ['cc1', 'hc1']);
+test('selecting only "consumable" restricts to consumables', () => {
+  const result = itemToolbarFilter({ types: new Set(['consumable']) });
+  assert.deepEqual(result.map(i => i.id).sort(), ['cc1', 'cc30', 'hc1', 'hc30']);
 });
 
-test('filterItems source "core" excludes Hope & Fear items', () => {
-  const result = SPU.filterItems(PREP_LOOT_ITEMS, { source: 'core' }, lootItemFields, lootItemRoll);
-  assert.deepEqual(result.map(i => i.id).sort(), ['cc1', 'ci1']);
+test('selecting both Kinds shows both, same as neither selected', () => {
+  const both = itemToolbarFilter({ types: new Set(['item', 'consumable']) });
+  const neither = itemToolbarFilter({});
+  assert.deepEqual(both.map(i => i.id).sort(), neither.map(i => i.id).sort());
 });
 
-test('filterItems source "hnf" excludes Core items', () => {
-  const result = SPU.filterItems(PREP_LOOT_ITEMS, { source: 'hnf' }, lootItemFields, lootItemRoll);
-  assert.deepEqual(result.map(i => i.id).sort(), ['hc1', 'hi1']);
+test('no selected Source means both Core and Hope & Fear show', () => {
+  assert.deepEqual(itemToolbarFilter({ sources: new Set() }).map(i => i.id), PREP_LOOT_ITEMS.map(i => i.id));
 });
 
-test('filterItems category and source combine with AND', () => {
-  const result = SPU.filterItems(PREP_LOOT_ITEMS, { category: 'item', source: 'hnf' }, lootItemFields, lootItemRoll);
-  assert.deepEqual(result.map(i => i.id), ['hi1']);
+test('selecting only "core" restricts to Core records', () => {
+  const result = itemToolbarFilter({ sources: new Set(['core']) });
+  assert.deepEqual(result.map(i => i.id).sort(), ['cc1', 'cc30', 'ci1', 'ci30']);
 });
 
-test('filterItems combines category/source with a name search', () => {
-  const result = SPU.filterItems(PREP_LOOT_ITEMS, { category: 'item', source: 'core', search: 'bedroll' }, lootItemFields, lootItemRoll);
-  assert.deepEqual(result.map(i => i.id), ['ci1']);
-  const noMatch = SPU.filterItems(PREP_LOOT_ITEMS, { category: 'consumable', source: 'core', search: 'bedroll' }, lootItemFields, lootItemRoll);
+test('selecting only "hnf" restricts to Hope & Fear records', () => {
+  const result = itemToolbarFilter({ sources: new Set(['hnf']) });
+  assert.deepEqual(result.map(i => i.id).sort(), ['hc1', 'hc30', 'hi1', 'hi30']);
+});
+
+test('selecting both Sources shows both, same as neither selected', () => {
+  const both = itemToolbarFilter({ sources: new Set(['core', 'hnf']) });
+  const neither = itemToolbarFilter({});
+  assert.deepEqual(both.map(i => i.id).sort(), neither.map(i => i.id).sort());
+});
+
+test('Kind and Source selections AND together', () => {
+  const result = itemToolbarFilter({ types: new Set(['consumable']), sources: new Set(['hnf']) });
+  assert.deepEqual(result.map(i => i.id).sort(), ['hc1', 'hc30']);
+});
+
+test('partial English name match', () => {
+  assert.deepEqual(itemToolbarFilter({ search: 'venom' }).map(i => i.id), ['hc30']);
+});
+
+test('partial Russian name match', () => {
+  assert.deepEqual(itemToolbarFilter({ search: 'факел' }).map(i => i.id), ['ci30']);
+});
+
+test('English Kind alias ("item"/"items")', () => {
+  const singular = itemToolbarFilter({ search: 'item' }).map(i => i.id).sort();
+  const plural = itemToolbarFilter({ search: 'items' }).map(i => i.id).sort();
+  const expected = ['ci1', 'ci30', 'hi1', 'hi30'];
+  assert.deepEqual(singular, expected);
+  assert.deepEqual(plural, expected);
+});
+
+test('Russian Kind alias ("расходник"/"расходники")', () => {
+  const singular = itemToolbarFilter({ search: 'расходник' }).map(i => i.id).sort();
+  const plural = itemToolbarFilter({ search: 'расходники' }).map(i => i.id).sort();
+  const expected = ['cc1', 'cc30', 'hc1', 'hc30'];
+  assert.deepEqual(singular, expected);
+  assert.deepEqual(plural, expected);
+});
+
+test('Source search ("core", "hope and fear", "hope & fear")', () => {
+  assert.deepEqual(itemToolbarFilter({ search: 'core' }).map(i => i.id).sort(), ['cc1', 'cc30', 'ci1', 'ci30']);
+  const expectedHnf = ['hc1', 'hc30', 'hi1', 'hi30'];
+  assert.deepEqual(itemToolbarFilter({ search: 'hope and fear' }).map(i => i.id).sort(), expectedHnf);
+  assert.deepEqual(itemToolbarFilter({ search: 'hope & fear' }).map(i => i.id).sort(), expectedHnf);
+});
+
+test('a bare word that is a substring of a multi-word alias still matches ("hope")', () => {
+  assert.deepEqual(itemToolbarFilter({ search: 'hope' }).map(i => i.id).sort(), ['hc1', 'hc30', 'hi1', 'hi30']);
+});
+
+test('exact roll-number search ("30")', () => {
+  assert.deepEqual(itemToolbarFilter({ search: '30' }).map(i => i.id).sort(), ['cc30', 'ci30', 'hc30', 'hi30']);
+});
+
+test('exact roll-number search does not substring-match a different number', () => {
+  // "1" must not also pull in a roll of 30 or vice versa.
+  assert.deepEqual(itemToolbarFilter({ search: '1' }).map(i => i.id).sort(), ['cc1', 'ci1', 'hc1', 'hi1']);
+});
+
+test('"#"-prefixed exact roll-number search ("#30")', () => {
+  assert.deepEqual(itemToolbarFilter({ search: '#30' }).map(i => i.id).sort(), ['cc30', 'ci30', 'hc30', 'hi30']);
+});
+
+test('inclusive range search ("1-10")', () => {
+  const result = itemToolbarFilter({ search: '1-10' });
+  assert.deepEqual(result.map(i => i.id).sort(), ['cc1', 'ci1', 'hc1', 'hi1']);
+});
+
+test('a reversed range is normalized back to ascending ("10-1")', () => {
+  const forward = itemToolbarFilter({ search: '1-10' }).map(i => i.id).sort();
+  const reversed = itemToolbarFilter({ search: '10-1' }).map(i => i.id).sort();
+  assert.deepEqual(reversed, forward);
+});
+
+test('Unicode dash variants in a range are all treated the same ("1–10", "1—10", "1 - 10", "#1-10")', () => {
+  const expected = itemToolbarFilter({ search: '1-10' }).map(i => i.id).sort();
+  assert.deepEqual(itemToolbarFilter({ search: '1–10' }).map(i => i.id).sort(), expected);
+  assert.deepEqual(itemToolbarFilter({ search: '1—10' }).map(i => i.id).sort(), expected);
+  assert.deepEqual(itemToolbarFilter({ search: '1 - 10' }).map(i => i.id).sort(), expected);
+  assert.deepEqual(itemToolbarFilter({ search: '#1-10' }).map(i => i.id).sort(), expected);
+});
+
+test('combined query: "core consumable 1-10"', () => {
+  assert.deepEqual(itemToolbarFilter({ search: 'core consumable 1-10' }).map(i => i.id), ['cc1']);
+});
+
+test('combined query: "hope item #30"', () => {
+  assert.deepEqual(itemToolbarFilter({ search: 'hope item #30' }).map(i => i.id), ['hi30']);
+});
+
+test('combined query: "расходник 20-30"', () => {
+  assert.deepEqual(itemToolbarFilter({ search: 'расходник 20-30' }).map(i => i.id).sort(), ['cc30', 'hc30']);
+});
+
+test('an active dice-roll filter ANDs with type/source/search', () => {
+  const result = itemToolbarFilter({ types: new Set(['consumable']), sources: new Set(['core']), search: 'poison', rollTotal: 30 });
+  assert.deepEqual(result.map(i => i.id), ['cc30']);
+  const noMatch = itemToolbarFilter({ rollTotal: 1, search: '30' });
   assert.deepEqual(noMatch, []);
 });
 
-test('filterItems source "all" is the same as no source filter', () => {
-  const all = SPU.filterItems(PREP_LOOT_ITEMS, { source: 'all' }, lootItemFields, lootItemRoll);
-  const none = SPU.filterItems(PREP_LOOT_ITEMS, {}, lootItemFields, lootItemRoll);
-  assert.deepEqual(all.map(i => i.id), none.map(i => i.id));
+test('invalid numeric syntax does not throw and returns a sane result', () => {
+  assert.doesNotThrow(() => itemToolbarFilter({ search: '1-' }));
+  assert.doesNotThrow(() => itemToolbarFilter({ search: 'abc-def' }));
+  assert.deepEqual(itemToolbarFilter({ search: 'abc-def' }), []);
+});
+
+test('filterItemsByToolbar never mutates the input array or the filter Sets', () => {
+  const before = PREP_LOOT_ITEMS.map(i => i.id);
+  const types = new Set(['item']);
+  const sources = new Set(['core']);
+  itemToolbarFilter({ types, sources, search: 'torch' });
+  assert.deepEqual(PREP_LOOT_ITEMS.map(i => i.id), before);
+  assert.deepEqual([...types], ['item']);
+  assert.deepEqual([...sources], ['core']);
+});
+
+test('buildItemSearchIndex builds one Map entry per item', () => {
+  const index = SPU.buildItemSearchIndex(PREP_LOOT_ITEMS);
+  assert.ok(index instanceof Map);
+  assert.equal(index.size, PREP_LOOT_ITEMS.length);
+});
+
+test('the item search index is reused rather than rebuilt from the live record', () => {
+  const items = [{ id: 'ci1', kind: 'item', src: 'core', roll: 1, en: { name: 'Premium Bedroll' }, ru: { name: '' } }];
+  const index = SPU.buildItemSearchIndex(items);
+  items[0].en.name = 'Totally Renamed Item';
+  const result = SPU.filterItemsByToolbar(items, index, { search: 'bedroll' });
+  assert.deepEqual(result.map(i => i.id), ['ci1']);
+});
+
+/* ---------------- extractItemNumberCriteria ---------------- */
+
+test('extractItemNumberCriteria parses a bare exact number', () => {
+  assert.deepEqual(SPU.extractItemNumberCriteria('30'), { exacts: [30], ranges: [], rest: ' ' });
+});
+
+test('extractItemNumberCriteria parses a "#"-prefixed exact number', () => {
+  assert.deepEqual(SPU.extractItemNumberCriteria('#30').exacts, [30]);
+});
+
+test('extractItemNumberCriteria parses an inclusive range and normalizes a reversed one', () => {
+  assert.deepEqual(SPU.extractItemNumberCriteria('1-10').ranges, [[1, 10]]);
+  assert.deepEqual(SPU.extractItemNumberCriteria('10-1').ranges, [[1, 10]]);
+});
+
+test('extractItemNumberCriteria never throws on malformed input', () => {
+  assert.doesNotThrow(() => SPU.extractItemNumberCriteria('1-'));
+  assert.doesNotThrow(() => SPU.extractItemNumberCriteria('abc-def'));
+  assert.doesNotThrow(() => SPU.extractItemNumberCriteria(''));
+  assert.doesNotThrow(() => SPU.extractItemNumberCriteria(null));
+});
+
+/* ---------------- rollNd12 ---------------- */
+
+test('rollNd12 sums diceCount independent 1-12 draws', () => {
+  assert.equal(SPU.rollNd12(3, () => 0.8), 30);
+  assert.equal(SPU.rollNd12(1, () => 0), 1);
+  assert.equal(SPU.rollNd12(1, () => 0.999999), 12);
+});
+
+test('rollNd12 defaults to Math.random and stays within the valid range', () => {
+  for (let i = 0; i < 20; i++) {
+    const total = SPU.rollNd12(5);
+    assert.ok(total >= 5 && total <= 60, `${total} out of range`);
+  }
 });
