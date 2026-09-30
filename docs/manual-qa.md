@@ -132,7 +132,7 @@ locally") before starting.
       the ⋯ button opens Rename/Duplicate/Delete. Only one is open at a
       time; outside click and Escape close them and Escape returns focus to
       the trigger; Arrow/Home/End move through items.
-- [ ] **Prep rename**: pencil and menu "Rename" both start the inline
+- [ ] **Prep rename**: menu "Rename" (no pencil beside the title) starts the inline
       input (text selected, no layout shift); Enter/blur saves (trimmed),
       Escape cancels, an empty name restores the previous one.
 - [ ] **Prep delete**: Delete opens a dialog naming the prep with

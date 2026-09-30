@@ -161,8 +161,8 @@ global to keep in sync with it.
   `.prep-wrap`): one compact bar replacing the old switcher row + title
   field. The active prep's name appears exactly once, as a title-styled
   button that opens the prep menu (a `role="menu"` of `menuitemradio`
-  rows, the current one checked, plus a "Create new prep" footer). A
-  pencil and the actions menu's "Rename" both call `beginPrepRename()`
+  rows, the current one checked; it holds no create or manage actions).
+  The actions menu's "Rename" calls `beginPrepRename()`
   (inline input, same line box as the title, Enter/blur commit, Escape
   cancel); New/Duplicate also start it so the GM can name the fresh prep.
   "+ New" is the only always-visible collection action; Duplicate and Delete

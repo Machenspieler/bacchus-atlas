@@ -144,7 +144,7 @@
     return trimmed || fallback;
   }
 
-  /** Resolves an inline rename attempt (the Prep Bar's pencil / Rename
+  /** Resolves an inline rename attempt (the Prep Bar's Rename
    * menu item) against the title the bar currently shows. Unlike
    * resolvePrepTitle() above — which substitutes the localized default for
    * an empty value — an empty rename here is rejected outright so the caller

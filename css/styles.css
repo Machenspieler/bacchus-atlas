@@ -2161,7 +2161,7 @@ body[data-route="prep"] {
 }
 .prep-title-input:focus { outline: none; }
 
-/* Icon-only buttons (pencil, actions). Visible size stays small; the hit area
+/* Icon-only buttons (actions). Visible size stays small; the hit area
    grows past it with ::after, same technique as .sp-chrome-toggle. */
 .prep-icon-btn {
   position: relative; flex: none;
@@ -2267,7 +2267,7 @@ body[data-route="prep"] {
     clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
   }
 }
-/* Phone: two compact rows — title (+ pencil) with New/actions on the right,
+/* Phone: two compact rows — title with New/actions on the right,
    then the save status directly under the title. The identity wrapper drops
    out of layout so its two children can sit in the bar's own grid areas. */
 @media (max-width: 760px) {

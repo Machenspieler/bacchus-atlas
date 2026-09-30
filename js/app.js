@@ -842,7 +842,6 @@ const ICON_CHEVRON_UP = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"
 const ICON_CHEVRON_DOWN = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_SEARCH_EMPTY = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="m15.5 15.5 4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 10.5h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 const ICON_BOOKMARK = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 3.5h11a1 1 0 0 1 1 1v16l-6.5-4-6.5 4v-16a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
-const ICON_PENCIL = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 19.5l.9-3.9L16.2 4.8a1.6 1.6 0 0 1 2.3 0l.7.7a1.6 1.6 0 0 1 0 2.3L8.4 18.6l-3.9.9z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m14.6 6.4 3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 const ICON_PLUS = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
 const ICON_MORE = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="5.5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="18.5" cy="12" r="1.6" fill="currentColor"/></svg>`;
 const ICON_CHECK_PLAIN = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5.5 12.5 4.3 4.3 8.7-9.3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -4553,7 +4552,7 @@ function centralSectionHtml(prep) {
  *
  * One compact bar replaces the old switcher row + title field. The active
  * prep's name is shown exactly once, as a title-styled button that opens
- * the prep menu; the pencil and the actions menu's "Rename" both swap that
+ * the prep menu; the actions menu's "Rename" swaps that
  * title for an inline input; "+ New" is the only always-visible
  * collection-level action; Duplicate and Delete live only in the actions
  * menu, Delete behind a confirmation dialog.
@@ -4601,15 +4600,8 @@ function prepBarHtml(prep) {
                  aria-labelledby="prep-title-btn">
               <div class="prep-menu-heading" id="prep-menu-heading">${escapeHtml(t('prep_list_heading'))}</div>
               <div class="prep-menu-list" role="group" aria-labelledby="prep-menu-heading">${prepItems}</div>
-              <div class="prep-menu-sep" role="separator"></div>
-              <button type="button" class="prep-menu-item" role="menuitem" tabindex="-1" data-sp-menu-create>
-                <span class="prep-menu-check" aria-hidden="true">${ICON_PLUS}</span>
-                <span class="prep-menu-label">${escapeHtml(t('prep_create_new'))}</span>
-              </button>
             </div>
           </div>
-          <button type="button" class="prep-icon-btn prep-rename-btn" id="prep-rename-btn"
-                  aria-label="${escapeAttr(t('prep_rename_current'))}" data-tip="${escapeAttr(t('prep_rename_current'))}">${ICON_PENCIL}</button>
         </div>
         <p class="prep-save-status" id="prep-save-status" role="status" aria-live="polite"></p>
       </div>
@@ -4815,21 +4807,19 @@ function openPrepDeleteConfirm(prep) {
 /* -- inline rename -- */
 
 /** Swaps the title button for an input holding the current name, at the same
- * line box so nothing below or beside it moves vertically. Used by the pencil,
- * the actions menu's Rename, and right after New / Duplicate (so the GM can
+ * line box so nothing below or beside it moves vertically. Used by the
+ * actions menu's Rename, and right after New / Duplicate (so the GM can
  * type a name over the default/copied one, as before). */
 function beginPrepRename() {
   const btn = prepBarEl('prep-title-btn');
   const input = prepBarEl('prep-title-input');
-  const pencil = prepBarEl('prep-rename-btn');
   const prep = activePrep();
-  if (!btn || !input || !pencil || !prep || !input.hidden) return;
+  if (!btn || !input || !prep || !input.hidden) return;
   closeActivePrepMenu();
   hideTip();
   input.value = prepDisplayTitle(prep);
   input.style.width = `${Math.max(btn.offsetWidth, 240)}px`;
   btn.hidden = true;
-  pencil.hidden = true;
   input.hidden = false;
   input.focus();
   input.select();
@@ -4842,12 +4832,10 @@ function beginPrepRename() {
 function finishPrepRename(commit, returnFocus) {
   const btn = prepBarEl('prep-title-btn');
   const input = prepBarEl('prep-title-input');
-  const pencil = prepBarEl('prep-rename-btn');
-  if (!btn || !input || !pencil || input.hidden) return;
+  if (!btn || !input || input.hidden) return;
   const raw = input.value;
   input.hidden = true;
   btn.hidden = false;
-  pencil.hidden = false;
   const prep = activePrep();
   if (commit && prep) {
     const outcome = PrepUtils.resolvePrepRename(prepDisplayTitle(prep), raw, PREP_TITLE_MAX);
@@ -4901,8 +4889,7 @@ function bindPrepBar() {
     const item = e.target.closest('.prep-menu-item');
     if (!item) return;
     closeActivePrepMenu(true);
-    if (item.hasAttribute('data-sp-menu-create')) prepBarCreate();
-    else if (item.dataset.spSwitch) prepBarSwitch(item.dataset.spSwitch);
+    if (item.dataset.spSwitch) prepBarSwitch(item.dataset.spSwitch);
   });
 
   const moreWrap = prepBarEl('prep-more-wrap');
@@ -4923,7 +4910,6 @@ function bindPrepBar() {
   });
 
   prepBarEl('prep-new-btn').addEventListener('click', prepBarCreate);
-  prepBarEl('prep-rename-btn').addEventListener('click', beginPrepRename);
 
   const input = prepBarEl('prep-title-input');
   input.addEventListener('keydown', e => {
