@@ -866,8 +866,10 @@ const tableIconHtml = name => `<img class="prep-central-icon" src="img/ui/sectio
  * the neutral Prep section icon (below) and the quick add-to-current-Prep
  * action (envPrepButtonHtml()). */
 const ENV_SYMBOL_BODY = `<path d="M12.75 20.57A8.6 8.6 0 1 1 20.57 12.75" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M12 .8l1.6 2.6h-3.2zM.8 12l2.6-1.6v3.2zM23.2 12l-2.6-1.6v3.2z" fill="currentColor"/><path d="M5.2 14.4 10.2 6.6l5 7.8zM12.2 14.4l2.4-3.8 2.4 3.8z" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/><path d="M10.2 15.9c3 .7-.6 2.5-2.4 4.2l4.2.5c-1.6-1.8 2-3.2-.1-4.7z" fill="currentColor" stroke="currentColor" stroke-width=".8" stroke-linejoin="round"/>`;
-/* Neutral: no badge, decorative. Sized/coloured by .prep-central-icon--env. */
-const ICON_TABLE_ENVIRONMENTS = `<svg class="prep-central-icon prep-central-icon--env" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">${ENV_SYMBOL_BODY}</svg>`;
+/* Neutral: no badge, decorative. Sized/coloured by .prep-central-icon--env. With
+ * no badge to seat, the ring's lower-right gap would just look clipped, so this
+ * variant closes the ring. */
+const ICON_TABLE_ENVIRONMENTS = `<svg class="prep-central-icon prep-central-icon--env" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">${ENV_SYMBOL_BODY}<path d="M20.57 12.75A8.6 8.6 0 0 1 12.75 20.57" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`;
 /* Stateful: the same body plus a lower-right badge that carries both glyphs;
  * CSS shows the plus or the check from the button's own state class, so a
  * state change never rebuilds the SVG. */

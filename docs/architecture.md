@@ -451,7 +451,7 @@ new persisted key and no second copy of the limit.
   row visible but disabled with the reason as text.
 - **The Environment symbol** (`ENV_SYMBOL_BODY`) is a single hand-drawn
   24×24 `currentColor` SVG body used twice: the neutral Prep section icon
-  (`ICON_TABLE_ENVIRONMENTS`, no badge) and the action icon
+  (`ICON_TABLE_ENVIRONMENTS`, no badge, ring closed) and the action icon
   (`ICON_ENV_ACTION`, with a lower-right badge holding both the plus and the
   check glyph; CSS shows one from the button's state class). The ring is open
   at the lower right so the badge never covers the symbol. Adversaries and
