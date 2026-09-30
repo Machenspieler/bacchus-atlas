@@ -2661,14 +2661,16 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
   letter-spacing: var(--tracking-display); color: var(--parchment);
 }
 .prep-central-title span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.prep-central-title svg { width: var(--icon-md); height: var(--icon-md); flex: none; color: var(--hope); }
+/* Section icon: custom illustrated asset (img/ui/section-*.png), one shared
+   16px box for all three; keeps its own colours — no filter, tint or plate. */
+.prep-central-icon { display: block; width: var(--icon-md); height: var(--icon-md); flex: none; object-fit: contain; }
 /* Title, dot and count form one baseline-aligned group: the serif title and
    the monospace count share a baseline instead of each being box-centred. The
    icon stays centred on its text. The group takes the free space, so the
    action (and the Battle Points slot) sit at the far end. */
 .prep-central-lead { display: flex; align-items: baseline; gap: 6px; flex: 1 1 auto; min-width: 0; }
 .prep-central-lead .prep-central-title { flex: 0 1 auto; align-items: baseline; }
-.prep-central-lead .prep-central-title svg { align-self: center; }
+.prep-central-lead .prep-central-title .prep-central-icon { align-self: center; }
 .prep-central-dot { flex: none; color: var(--muted); }
 /* Gold marks "limit reached" only: the pill shape (border + tint) is the
    non-colour cue, the sr-only text inside carries it for assistive tech. */
