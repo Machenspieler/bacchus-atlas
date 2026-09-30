@@ -2841,7 +2841,7 @@ body:not([data-route="prep"]) .header-actions::after {
 }
 .prep-central-title:focus { outline: none; }
 .prep-central-clear {
-  flex: none; align-self: center; width: 28px; height: 28px; margin-block: -6px; padding: 0;
+  flex: none; align-self: center; position: relative; top: 1px; width: 28px; height: 28px; margin-block: -6px; padding: 0;
   display: flex; align-items: center; justify-content: center;
   border: 1px solid transparent; border-radius: var(--r-sm);
   background: transparent; color: var(--muted); opacity: 0.75; cursor: pointer;
