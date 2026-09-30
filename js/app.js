@@ -4560,7 +4560,7 @@ function refreshClearAllSlot(kind, count) {
   if (el) el.outerHTML = clearAllSlotHtml(kind, count);
 }
 
-/** " · Roll 4–6, 10–11" for the selected items; empty when none is selected.
+/** " · Roll 4–11" for the selected items; empty when none is selected.
  * Derived from prep.itemIds each time — never stored. */
 function itemRollMetaHtml(prep) {
   const rolls = [];

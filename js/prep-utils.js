@@ -463,21 +463,15 @@
     });
   }
 
-  /** Roll coverage of a set of items as compressed inclusive ranges, e.g.
-   * [4,5,6,10,11] -> "4–6, 10–11". Item rolls are single integers that any
-   * subset of items can leave gaps between, so a bare min–max would claim
-   * rolls nobody selected. Returns '' when there is no valid roll. */
+  /** Roll span of a set of items as one inclusive "min–max" range, e.g.
+   * [4,5,6,10,11] -> "4–11"; a single distinct roll renders bare ("4").
+   * Returns '' when there is no valid roll. */
   function formatRollCoverage(rolls) {
-    var sorted = Array.from(new Set((rolls || []).filter(function (r) { return Number.isFinite(r); })))
-      .sort(function (a, b) { return a - b; });
-    var parts = [];
-    for (var i = 0; i < sorted.length;) {
-      var j = i;
-      while (j + 1 < sorted.length && sorted[j + 1] === sorted[j] + 1) j++;
-      parts.push(i === j ? String(sorted[i]) : sorted[i] + '–' + sorted[j]);
-      i = j + 1;
-    }
-    return parts.join(', ');
+    var valid = (rolls || []).filter(function (r) { return Number.isFinite(r); });
+    if (!valid.length) return '';
+    var min = Math.min.apply(null, valid);
+    var max = Math.max.apply(null, valid);
+    return min === max ? String(min) : min + '–' + max;
   }
 
   /* ---------------- item search + filters (compact "All Items" toolbar) ----------------
