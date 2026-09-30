@@ -56,7 +56,7 @@
         <p>Для загрузки атласа необходимо включить JavaScript. / JavaScript is required to load the atlas.</p>
       </div>
     </noscript>
-    <div class="catalog-bar">
+    <div class="catalog-bar-wrap"><div class="catalog-bar">
       <div id="toolbar" aria-busy="true">
         <div class="skeleton-toolbar initial-loading-shell" data-initial-loading="toolbar" aria-hidden="true">
           <div class="sk sk-field wide"></div>
@@ -68,7 +68,7 @@
       <div class="result-count" id="result-count" role="status" aria-live="polite">
         <span class="sr-only">Загрузка… / Loading…</span>
       </div>
-    </div>
+    </div></div>
     <!-- The catalog is rendered client-side only, after js/app.js fetches
          data/environments.json. Until then this holds only generic
          skeleton cards, never real environment data. -->

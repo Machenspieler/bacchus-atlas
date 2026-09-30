@@ -35,13 +35,16 @@ directly unit-testable in `tests/*.test.js` without a DOM or bundler.
 
 ## Catalog toolbar row
 
-`#toolbar` and `#result-count` are siblings inside `.catalog-bar`, a wrapping
-flex row. `#toolbar` is `display: contents`, so the filter `.toolbar` and the
-status (`Showing X of Y · Clear filters`) are items of one row; from 901px up
-the status is pushed right with `margin-left: auto`, and only it wraps below
-when the controls plus status don't fit. Controls are never shrunk (the
-toolbar is `flex: 0 0 auto; width: max-content`, with pills/fields
-non-shrinking). At 900px and below each takes its own row, as before.
+`#toolbar` and `#result-count` are siblings inside `.catalog-bar` (itself inside
+`.catalog-bar-wrap`, the container-query target). `#toolbar` is
+`display: contents`, so the filter `.toolbar` and the status
+(`Showing X of Y · Clear filters`) are grid items. From 901px up the grid is
+`1fr auto 1fr`: the controls sit in the middle column, centred on the content
+area regardless of the status, which sits right-aligned in the third column.
+When the wrap is narrower than 1440px (942px controls plus a ~234px status
+column each side) the grid collapses to one column and only the status drops
+below, still right-aligned; under 980px the controls may wrap as a group.
+Controls are never shrunk. At 900px and below each takes its own flex row.
 
 ## Application startup (`init()` in `js/app.js`)
 
