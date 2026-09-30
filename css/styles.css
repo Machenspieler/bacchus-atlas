@@ -2734,7 +2734,8 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
 .bp-spent { display: inline-block; min-width: 5ch; text-align: right; color: var(--parchment); font-size: var(--fs-base); }
 .bp-avail { display: inline-block; min-width: 2ch; text-align: left; font-size: var(--fs-base); }
 .bp-num2 { display: inline-block; min-width: 2ch; text-align: left; }
-.bp-sep, .bp-avail, .bp-rem { color: var(--muted); }
+.bp-sep, .bp-rem { color: var(--muted); }
+.bp-avail { color: var(--parchment); }
 .bp-sep { margin-inline: -1px; font-size: var(--fs-base); }
 .bp-rem { display: inline-block; min-width: 18ch; margin-left: 2px; font-size: var(--fs-xs); }
 .bp-warn-icon { display: inline-flex; color: var(--hope-soft); }
