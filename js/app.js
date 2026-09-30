@@ -837,6 +837,7 @@ function renderFatalError(err) {
 /* ---------------- shared UI primitives ---------------- */
 
 const ICON_ALERT = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5 22 20H2L12 3.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 10v4.5M12 17.2v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const ICON_MINUS = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M8 12h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
 const ICON_CHECK = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="m8 12.2 2.7 2.6L16 9.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_CHEVRON_UP = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 15 6-6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_CHEVRON_DOWN = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -910,7 +911,7 @@ function showToast(message, kind = 'success', durationMs = 3200) {
   }
   const toast = document.createElement('div');
   toast.className = kind === 'error' ? 'toast is-error' : 'toast';
-  toast.innerHTML = `${kind === 'error' ? ICON_ALERT : ICON_CHECK}<span></span>`;
+  toast.innerHTML = `${kind === 'error' ? ICON_ALERT : kind === 'removed' ? ICON_MINUS : ICON_CHECK}<span></span>`;
   toast.querySelector('span').textContent = message;
   stack.appendChild(toast);
   const timer = setTimeout(() => toast.remove(), durationMs);
@@ -2389,7 +2390,7 @@ function toggleEnvironmentInActivePrep(envId) {
     const key = selected ? 'prep_env_added_toast' : 'prep_env_removed_toast';
     showToast(t(key)
       .replace('{environment}', () => envName(env))
-      .replace('{prep}', () => prepDisplayTitle(saved)));
+      .replace('{prep}', () => prepDisplayTitle(saved)), selected ? 'success' : 'removed');
   }
   return { selected, result };
 }
@@ -2784,7 +2785,7 @@ function openAddToListPopup(envId, { expanded = false } = {}) {
       // A failed write already reported its own warning inside persist() —
       // showing "Added"/"Removed" on top of that would be a false success.
       if (result.ok) {
-        showToast((cb.checked ? t('added_to_list') : t('removed_from_list')).replace('{n}', list ? list.name : ''));
+        showToast((cb.checked ? t('added_to_list') : t('removed_from_list')).replace('{n}', list ? list.name : ''), cb.checked ? 'success' : 'removed');
       }
       // Unticking is not the job finishing, and it also undoes a tick that has
       // a close already pending — either way the popup stays up.
