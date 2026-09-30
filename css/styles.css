@@ -2434,6 +2434,15 @@ body[data-route="prep"][data-sp-header-mode="compact"] .prep-wrap {
 .sp-chrome-toggle:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); color: var(--hope-soft); }
 body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
   width: 28px; height: 28px;
+  /* keep the 32px footprint so the nav/language switch beside it never move */
+  margin-inline: calc((var(--h-sm) - 28px) / 2);
+}
+
+/* The toggle only exists on Prep. Every other route reserves the same slot at
+   the end of the actions row, so the nav and language switch sit in the same
+   place on every route instead of jumping when the toggle appears. */
+body:not([data-route="prep"]) .header-actions::after {
+  content: ""; flex: none; width: var(--h-sm); height: 1px;
 }
 
 /* ---- three-column composition ---- */
