@@ -2362,10 +2362,22 @@ body[data-route="prep"][data-sp-header-mode="compact"] .header-inner {
    an ancestor of the button would remove that hit area (and the button's
    own focusability) along with the text, leaving the visible logo dead to
    both click and keyboard. aria-label on the button (see renderHeader() in
-   js/app.js) keeps its accessible name once .brand-title-text is hidden. */
-body[data-route="prep"][data-sp-header-mode="compact"] .brand-title-text,
+   js/app.js) keeps its accessible name if .brand-title-text is hidden.
+   Compact keeps a reduced single-line lockup — logo + title — so the
+   wordmark isn't lost; only the subtitle/compat line (.brand-meta) comes
+   out. The title sits inside #brand-home's h1, so it stays part of the one
+   brand link. On a phone (≤640px) the title is dropped again, the one place
+   there is real layout pressure against the nav. */
 body[data-route="prep"][data-sp-header-mode="compact"] .brand-meta {
   display: none;
+}
+body[data-route="prep"][data-sp-header-mode="compact"] .brand-text h1 {
+  font-size: var(--fs-base); line-height: 1.15; letter-spacing: 0.06em;
+}
+@media (max-width: 640px) {
+  body[data-route="prep"][data-sp-header-mode="compact"] .brand-title-text {
+    display: none;
+  }
 }
 body[data-route="prep"][data-sp-header-mode="compact"] .brand-mark {
   height: 28px;
