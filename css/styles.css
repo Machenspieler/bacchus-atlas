@@ -3169,11 +3169,13 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
    in js/app.js) never shifts the rest of the toolbar; icon + label swap for
    icon + bare number during the ~1.2s reveal, same button, same footprint. */
 .dice-roll-btn {
-  width: 58px; padding: 0 var(--s-1); gap: 3px; flex: none;
+  width: 66px; padding: 0 var(--s-1); gap: 5px; flex: none;
   font-family: var(--font-mono); font-variant-numeric: tabular-nums;
 }
-.dice-roll-icon { display: inline-flex; width: var(--icon-sm); height: var(--icon-sm); flex: none; }
-.dice-roll-icon svg { width: 100%; height: 100%; }
+/* One illustrated d12 (img/ui/d12-roll.png, trimmed of transparent padding)
+   on every button; keeps its own colors in every state, so it is not tinted
+   by the active gold — the button styling carries that. */
+.dice-roll-icon { display: block; width: 19px; height: 19px; flex: none; object-fit: contain; }
 .dice-roll-label { overflow: hidden; white-space: nowrap; }
 /* Gold fill for the button currently holding the active roll filter —
    reuses .btn.active's existing treatment, never a new color. */

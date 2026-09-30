@@ -3761,9 +3761,9 @@ function itemDiceLabelText(diceCount) {
 }
 
 /** Fixed-size button (`.dice-roll-btn`, see css/styles.css) so a two-digit
- * transient result never shifts the row; `diceIconSVG()` is the app's one
- * existing generic die glyph (see makeDiceButton() below), reused rather
- * than a new icon. `data-tip-rich` (not `data-tip`) opts this trigger into
+ * transient result never shifts the row; the icon is the one illustrated
+ * d12 (img/ui/d12-roll.png) on all five buttons — decorative, the count
+ * lives in the label. `data-tip-rich` (not `data-tip`) opts this trigger into
  * the tooltip system's rich/multi-paragraph rendering — see showTip(). */
 function itemDiceButtonHtml(diceCount) {
   const ui = state.prepUI;
@@ -3772,7 +3772,7 @@ function itemDiceButtonHtml(diceCount) {
   return `<button type="button" class="btn btn-sm dice-roll-btn${active ? ' is-active' : ''}${transient ? ' is-rolling' : ''}"
                    data-sp-item-dice="${diceCount}" data-tip-rich="${escapeAttr(itemDiceTooltipHtml(diceCount))}"
                    aria-label="${escapeAttr(itemDiceAriaLabel(diceCount))}">
-            <span class="dice-roll-icon" aria-hidden="true">${diceIconSVG()}</span>
+            <img class="dice-roll-icon" src="img/ui/d12-roll.png" alt="" draggable="false">
             <span class="dice-roll-label">${escapeHtml(itemDiceLabelText(diceCount))}</span>
           </button>`;
 }
