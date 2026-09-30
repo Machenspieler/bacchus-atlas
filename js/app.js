@@ -4120,7 +4120,8 @@ function clearItemBrowserFilters() {
   updateAllItemDiceButtons();
   updateItemClearButtonVisibility();
   refreshItemGrid();
-  if (input) input.focus();
+  // No refocus of the search input: this clears Type/Source/dice too, so
+  // focusing the search field would light it up as if it were the active filter.
 }
 
 /* ---------------- item strip manual navigation ----------------
