@@ -106,7 +106,7 @@ locally") before starting.
       removes without opening anything. An adversary thumbnail opens the art
       overlay only; its name/meta link opens FreshCutGrass in a new tab (Cmd/
       Ctrl-click and middle-click work) without opening the overlay; × removes
-      only that adversary. A fallback-icon adversary has no thumbnail button.
+      only that adversary. A fallback-image adversary has no thumbnail button.
       Tab order per adversary: image → link → ×; every stop shows a focus
       ring; Enter/Space work on the buttons; tooltips and labels in both RU
       and EN; no layout shift on hover/focus; long names clamp.

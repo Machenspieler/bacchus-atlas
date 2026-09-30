@@ -2571,6 +2571,8 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
   display: flex; align-items: center; justify-content: center; background: var(--ink-raised);
 }
 .prep-thumb-fallback svg { width: 62%; height: 62%; color: var(--muted); }
+/* Adversary fallback is a picture (img/adv_fallback.png), not an icon. */
+.prep-thumb-fallback img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
 /* A real <button> variant of .prep-adv-thumb, used only when local art
    exists — opens the art overlay. A subtle zoom-in affordance on hover/focus
@@ -2619,6 +2621,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
   color: var(--muted); font-size: var(--fs-sm); padding: var(--s-6);
 }
 .adv-art-fallback svg { width: 64px; height: 64px; }
+.adv-art-fallback img { width: 160px; height: 160px; object-fit: contain; }
 .adv-art-caption {
   margin: 0; display: flex; align-items: center; justify-content: center; gap: var(--s-2);
   font-family: var(--font-display); font-weight: 400;
@@ -2701,6 +2704,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
 .prep-sel-thumb[data-kind="env"] img { object-fit: cover; }
 .prep-sel-thumb.is-fallback { background: var(--ink); }
 .prep-sel-thumb.is-fallback svg { width: 60%; height: 60%; color: var(--muted); }
+.prep-sel-thumb.is-fallback img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .prep-sel-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
 .prep-sel-name {
   font-size: var(--fs-card-copy); line-height: 17px; font-weight: 500; color: var(--parchment);
