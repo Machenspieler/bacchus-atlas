@@ -69,7 +69,7 @@ locally") before starting.
       pointer across the pair.
 - [ ] Available: muted symbol + plus badge, `aria-pressed="false"`, tooltip
       "Add to current Prep" / "Добавить в текущую подготовку".
-- [ ] Selected: gold symbol + check badge + gold fill/border,
+- [ ] Selected: gold symbol + check badge (no frame at rest; frame on hover only),
       `aria-pressed="true"`, tooltip "Remove from current Prep" /
       "Убрать из текущей подготовки" — still clickable at 3/3.
 - [ ] Full (3/3, not selected): dimmed, plus badge kept, no hover response,

@@ -139,10 +139,10 @@ click between the icons cannot reach the neighbour. Muted at rest, gold on
 hover. The Prep button draws the reusable Environment symbol (an open compass
 ring with N/W/E points, a main and a smaller mountain, a winding road; 24×24,
 `currentColor`, no gradients) with a lower-right badge carried in the ring's
-gap: **plus** = available, **check** = selected (gold fill + border, still
+gap: **plus** = available, **check** = selected (gold symbol, frame only on hover, still
 removable at the cap), plus but dimmed with no hover and `not-allowed` =
 unavailable because the Prep is full. State is always badge glyph +
-`aria-pressed` + fill together, never colour alone. The same symbol without
+`aria-pressed` + gold colour together, never colour alone. The same symbol without
 the badge is the neutral Prep "Environments" section icon.
 
 ### Buttons (`.btn`)

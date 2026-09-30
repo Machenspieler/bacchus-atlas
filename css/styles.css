@@ -748,7 +748,7 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
  * lower-right badge; state is never colour alone — the badge glyph (plus /
  * check), aria-pressed and the fill all move together (see envPrepActionView()
  * in js/app.js). Three states: available (muted, plus), selected (gold, check,
- * gold fill + border), unavailable because the Prep is full (dimmed, plus, no
+ * no frame at rest), unavailable because the Prep is full (dimmed, plus, no
  * hover response, not-allowed cursor). The unavailable button stays focusable
  * (aria-disabled) so its reason is reachable from the keyboard. */
 .env-action-icon { display: block; width: 20px; height: 20px; pointer-events: none; overflow: visible; }
@@ -759,10 +759,10 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
 }
 .env-prep-btn:not(.is-selected) .env-badge-check { display: none; }
 .env-prep-btn.is-selected .env-badge-plus { display: none; }
-.env-prep-btn.is-selected {
-  color: var(--hope); background: rgba(217,164,65,0.14); border-color: rgba(217,164,65,0.5);
-}
-.env-prep-btn.is-selected:hover { color: var(--hope-soft); border-color: var(--hope); background: rgba(217,164,65,0.2); }
+/* Selected reads from the gold symbol + check badge alone; the frame and fill
+ * appear only on hover, like every other button in the group. */
+.env-prep-btn.is-selected { color: var(--hope); }
+.env-prep-btn.is-selected:hover { color: var(--hope-soft); border-color: var(--hope); background: rgba(217,164,65,0.1); }
 .env-prep-btn.is-unavailable, .env-prep-btn.is-unavailable:hover {
   color: var(--muted); opacity: 0.45; cursor: not-allowed;
   border-color: transparent; background: transparent;
