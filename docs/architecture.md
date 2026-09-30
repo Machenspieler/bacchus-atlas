@@ -21,13 +21,13 @@ js/data-version.js      — versionedDataUrl() for data/*.json fetches
 js/route-utils.js       — location.hash parsing/building
 js/list-utils.js        — Lists name validation
 js/search-index.js      — environment search index builder
-js/session-prep-utils.js — Session Prep pure selection/search/filter logic
-js/freshcutgrass-utils.js — FreshCutGrass encounter-URL encoder (shared by env detail + Session Prep)
+js/prep-utils.js — Prep pure selection/search/filter logic
+js/freshcutgrass-utils.js — FreshCutGrass encounter-URL encoder (shared by env detail + Prep)
 js/app.js               — everything else: state, rendering, event wiring
 ```
 
 Everything above `js/app.js` is a dependency-free module exposing a global
-(`SafeStorage`, `RouteUtils`, `ListUtils`, `SearchIndex`, `SessionPrepUtils`, `FreshCutGrassUtils`)
+(`SafeStorage`, `RouteUtils`, `ListUtils`, `SearchIndex`, `PrepUtils`, `FreshCutGrassUtils`)
 that also works under plain Node `require()` — that's what makes each one
 directly unit-testable in `tests/*.test.js` without a DOM or bundler.
 
@@ -49,11 +49,11 @@ skeleton afterward.
 
 One module-level `state` object holds everything: `lang`, the loaded
 catalogs (`builtinEnvs`, `regions`, `itemCatalog`, `adversaryCatalog`,
-`sessionPrepCatalog`), the search index (`environmentSearchIndex`, a
+`prepCatalog`), the search index (`environmentSearchIndex`, a
 `Map<envId, record>` built once — see below), every persisted slice loaded
 through `SafeStorage` at construction time (`lists`, `envLists`, `journey*`,
-`sessionPrep`), transient UI-only state that is deliberately never persisted
-(`filtersOpen`, `sessionPrepUI`, `journeyDraft`), and the current parsed
+`prep`), transient UI-only state that is deliberately never persisted
+(`filtersOpen`, `prepUI`, `journeyDraft`), and the current parsed
 route (`state.route`, from `readCurrentRoute()`).
 
 There is no separate "store" abstraction or reducer — functions read and
@@ -67,7 +67,7 @@ for the safety contract. `js/app.js` reads the current route only through
 `readCurrentRoute()`, which repairs a malformed hash via
 `repairHash()`/`history.replaceState()` before returning a safe fallback.
 An environment overlay (`/env/<id>`) is a suffix on whichever base route is
-behind it (catalog, Lists overview, a single list, Journey, Session Prep),
+behind it (catalog, Lists overview, a single list, Journey, Prep),
 not a route of its own — `applyDetailRoute()` opens/closes the overlay
 without touching the base route's own state.
 
@@ -75,15 +75,15 @@ without touching the base route's own state.
 
 `render()` dispatches on `state.route.name` to one of the page renderers —
 `renderGrid()`/`renderToolbar()` (catalog), `renderListsHome()`,
-`renderJourneyPage()`, `renderSessionPrepPage()` — each of which owns a
+`renderJourneyPage()`, `renderPrepPage()` — each of which owns a
 top-level DOM region (`#toolbar`, `#grid-wrap`, `#footer`) and replaces its
 contents wholesale on a full render. `renderHeader()` owns the persistent
-`#header`/`#session-prep-chrome` chrome shared by every route.
+`#header`/`#prep-chrome` chrome shared by every route.
 
 Two pages avoid a full rerender per interaction instead of replacing
 themselves wholesale each time:
 
-- **Session Prep** (`renderSessionPrepPage()` builds the page once per route
+- **Prep** (`renderPrepPage()` builds the page once per route
   entry/language switch/catalog retry; a checkbox toggle, remove, or search
   edit afterward goes through a targeted `refresh*()` —
   `refreshCentralEnvironments()`, `refreshCentralAdversaries()`,
@@ -91,15 +91,15 @@ themselves wholesale each time:
   `refreshItemGrid()` — that replaces only the list/count it affects, so
   search text, scroll position, and focus survive a selection change).
   Click/change/error listeners are delegated once per `#grid-wrap` lifetime
-  (`bindSessionPrepDelegation()`); the pure selection/search logic behind
-  every one of these lives in `js/session-prep-utils.js`
+  (`bindPrepDelegation()`); the pure selection/search logic behind
+  every one of these lives in `js/prep-utils.js`
   (`toggleId`/`removeId`/`toggleEnvironment`/`removeEnvironment` — see
   [docs/product-decisions.md](product-decisions.md) PD-001/PD-002 for what
-  this logic deliberately does not do). Session Prep supports multiple
-  independent saved sessions (see "Session Prep multi-session model" below);
+  this logic deliberately does not do). Prep supports multiple
+  independent saved preps (see "Prep multi-prep model" below);
   switching, creating, duplicating, or deleting one goes through a full
-  `renderSessionPrepPage()`, never a targeted `refresh*()`, since the active
-  session itself changed rather than one of its fields.
+  `renderPrepPage()`, never a targeted `refresh*()`, since the active
+  prep itself changed rather than one of its fields.
 - **Lists rename** goes through `bindListRename()`/`commitListRename()`,
   resolved via the pure `ListUtils.resolveListRename()` — see
   [.claude/rules/browser-state.md](../.claude/rules/browser-state.md).
@@ -109,67 +109,76 @@ is behind it (`syncDetail()`/`applyDetailRoute()`), rendered against a
 blurred backdrop of the environment's own art when one exists
 (`syncEnvBackdrop()`).
 
-## Session Prep multi-session model
+## Prep multi-prep model
 
-`state.sessionPrep` (persisted as `dhcodex_session_prep`) is a *store*, not a
+> **Compatibility artifacts.** This feature was once called "Session Prep".
+> The `dhcodex_session_prep` / `dhcodex_session_prep_header_mode` storage keys
+> and the persisted `activeSessionId` / `sessions` field names are kept
+> deliberately: renaming them would need a data migration for no user-visible
+> value, and a mistake would lose saved preps. All code and UI say "prep";
+> only these persisted names and the legacy `#/session-prep` route (which
+> `RouteUtils.parseRouteHash()` resolves to `#/prep` and repairs in place)
+> remain. Do not "clean them up" without a real migration.
+
+`state.prep` (persisted as `dhcodex_session_prep`) is a *store*, not a
 single preparation: `{ schemaVersion: 2, activeSessionId, sessions: [...] }`,
-each session carrying its own `id`/`title`/`createdAt`/`updatedAt`/
-`environmentIds`/`adversaryIds`/`itemIds`. `activeSessionPrep()`
-(`SessionPrepUtils.getActiveSession()`) is the one source of truth the whole
+each prep carrying its own `id`/`title`/`createdAt`/`updatedAt`/
+`environmentIds`/`adversaryIds`/`itemIds`. `activePrep()`
+(`PrepUtils.getActivePrep()`) is the one source of truth the whole
 page renders from — there is no separate `selectedEnvironmentIds`-style
 global to keep in sync with it.
 
-- **Same-session edits** (a picker toggle, a remove, a title keystroke) go
-  through `updateSessionPrepSession()`, which mutates only the active
-  session's own fields and stamps `updatedAt` — unchanged by multi-session
+- **Same-prep edits** (a picker toggle, a remove, a title keystroke) go
+  through `updatePrep()`, which mutates only the active
+  prep's own fields and stamps `updatedAt` — unchanged by multi-prep
   support.
-- **Session lifecycle** (which sessions exist, which one is active) is
+- **Prep lifecycle** (which preps exist, which one is active) is
   centralized in a small set of `js/app.js` functions, each persisting once:
-  `createSessionPrepSession()`, `switchSessionPrepSession(id)`,
-  `duplicateSessionPrepSession(id)`, `deleteSessionPrepSession(id)` — backed
-  by pure store-shape helpers in `js/session-prep-utils.js`:
-  `addSession()`, `setActiveSession()`, `removeSession()`. `removeSession()`
-  itself may return zero sessions (deleting the last one); guaranteeing at
-  least one session always exists again is `deleteSessionPrepSession()`'s
+  `createPrep()`, `switchPrep(id)`,
+  `duplicatePrep(id)`, `deletePrep(id)` — backed
+  by pure store-shape helpers in `js/prep-utils.js`:
+  `addPrep()`, `setActivePrep()`, `removePrep()`. `removePrep()`
+  itself may return zero preps (deleting the last one); guaranteeing at
+  least one prep always exists again is `deletePrep()`'s
   job, not that helper's. Renaming reuses the existing title field/
-  `updateSessionPrepSession()`; on blur, an empty/whitespace-only title
-  resolves to the localized default (`SessionPrepUtils.resolveSessionTitle()`)
+  `updatePrep()`; on blur, an empty/whitespace-only title
+  resolves to the localized default (`PrepUtils.resolvePrepTitle()`)
   rather than being stored empty.
-- **Session order** is creation order — `addSession()` always appends and
-  never reorders `sessions` on an edit, so a session's position in the
+- **Prep order** is creation order — `addPrep()` always appends and
+  never reorders `preps` on an edit, so a prep's position in the
   switcher never jumps around from autosaving.
 - **Migration**: a stored v1 (single legacy preparation, `primaryEnvironmentId`
   + quantity-bearing `adversaries`/`items`) or a malformed store is sanitized/
-  upgraded to v2 by `SafeStorage.validators.sessionPrep`
-  (`sanitizeSessionPrep()`/`migrateSessionPrepSessionV1ToV2()` in
+  upgraded to v2 by `SafeStorage.validators.prep`
+  (`sanitizePrep()`/`migratePrepV1ToV2()` in
   `js/safe-storage.js`) — see [.claude/rules/browser-state.md](../.claude/rules/browser-state.md).
   This runs on every load (idempotent: a store already at v2 with nothing to
   fix is returned unchanged) and repairs an `activeSessionId` that doesn't
-  match any surviving session by pointing it at the first one.
-- **Session Bar** (`sessionBarHtml()`/`bindSessionBar()`, first child of
+  match any surviving prep by pointing it at the first one.
+- **Prep Bar** (`prepBarHtml()`/`bindPrepBar()`, first child of
   `.prep-wrap`): one compact bar replacing the old switcher row + title
-  field. The active session's name appears exactly once, as a title-styled
-  button that opens the session menu (a `role="menu"` of `menuitemradio`
-  rows, the current one checked, plus a "Create new session" footer). A
-  pencil and the actions menu's "Rename" both call `beginSessionRename()`
+  field. The active prep's name appears exactly once, as a title-styled
+  button that opens the prep menu (a `role="menu"` of `menuitemradio`
+  rows, the current one checked, plus a "Create new prep" footer). A
+  pencil and the actions menu's "Rename" both call `beginPrepRename()`
   (inline input, same line box as the title, Enter/blur commit, Escape
-  cancel); New/Duplicate also start it so the GM can name the fresh session.
+  cancel); New/Duplicate also start it so the GM can name the fresh prep.
   "+ New" is the only always-visible collection action; Duplicate and Delete
   live only in the actions (⋯) menu, Delete behind
-  `openSessionDeleteConfirm()` (an `alertdialog` built on
+  `openPrepDeleteConfirm()` (an `alertdialog` built on
   `registerOverlay()`, Cancel focused first) and disabled — with a hint —
-  while only one session exists. The bar is presentation only: every action
+  while only one prep exists. The bar is presentation only: every action
   calls the lifecycle functions above, then `updateSaveStatusDisplay()` and,
-  where the active session changed, a full `renderSessionPrepPage()`.
-  Rename validation is the pure `SessionPrepUtils.resolveSessionRename()`
+  where the active prep changed, a full `renderPrepPage()`.
+  Rename validation is the pure `PrepUtils.resolvePrepRename()`
   (an empty name is rejected and the previous name restored, never replaced
-  by the placeholder). Both menus share `bindSessionMenu()` (one open at a
+  by the placeholder). Both menus share `bindPrepMenu()` (one open at a
   time, outside click/Escape/Tab close, arrow/Home/End navigation, focus
-  returned to the trigger, viewport clamping via `positionSessionMenu()`).
+  returned to the trigger, viewport clamping via `positionPrepMenu()`).
   The bar is hidden by the same `data-sp-header-mode="compact"` switch as
   the site header chrome.
 - **Save status** sits directly under the title and reflects only real
-  `persist()` outcomes (`sessionSaveStatusView()`): `ready` (before the first
+  `persist()` outcomes (`prepSaveStatusView()`): `ready` (before the first
   write this visit), `ok` ("Saved locally · HH:MM"), `error`. There is no
   "Saving…" state — SafeStorage writes are synchronous, so it could never be
   observed, only faked.
@@ -188,14 +197,14 @@ never rebuild text haystacks or traverse `env.features` itself. See
 `buildEnvironmentSearchRecord()` in `js/search-index.js` for exactly which
 fields are alias-eligible vs. literal-only vs. excluded.
 
-## Session Prep's compact "All Environments" toolbar
+## Prep's compact "All Environments" toolbar
 
-The `#/session-prep` environment picker's search/Tier/counter row is a
+The `#/prep` environment picker's search/Tier/counter row is a
 second, narrower environment search index — deliberately separate from
 `js/search-index.js`'s main-catalog one above, since it covers a different,
 smaller field set (name/tier/type/biome only, never lore/features/story
 seeds/source/adversaries) and needs multi-token AND matching plus tier
-aliases the main catalog's alias-group search doesn't. `js/session-prep-utils.js`
+aliases the main catalog's alias-group search doesn't. `js/prep-utils.js`
 owns it: `buildEnvironmentSearchIndex()` builds a `Map<envId, searchText>`
 once (in `setEnvironmentCatalog()`, alongside the main index — state.i18n is
 already loaded by the time that runs, see "Application startup" above), each
@@ -204,7 +213,7 @@ alias for that environment's tier, its type's canonical id + EN/RU label,
 and each biome id + EN/RU label, all pre-normalized through the shared
 `normalizeSearchToken()` (Unicode NFKC, ё→е folding, punctuation/whitespace
 collapsed to single spaces). `filterEnvironmentsByToolbar()` ANDs a Tier
-multiselect (`state.sessionPrepUI.envFilters.tiers`, OR within the set,
+multiselect (`state.prepUI.envFilters.tiers`, OR within the set,
 same Set-based shape as `advFilters.tiers`) with the tokenized query
 against that precomputed text — never rebuilt per keystroke.
 
@@ -221,26 +230,26 @@ the toolbar wrapper, so the search input and the four pentagonal Tier
 buttons (`.rank-icon`, the same control the main catalog toolbar and the
 adversary picker's own Tier filter already use) never lose focus or get
 rebuilt mid-interaction; a Tier button's pressed state is toggled directly
-on the clicked element in `bindSessionPrepDelegation()` rather than through
+on the clicked element in `bindPrepDelegation()` rather than through
 a rebuild, for the same reason.
 
-## Session Prep's compact "All Adversaries" toolbar
+## Prep's compact "All Adversaries" toolbar
 
-The `#/session-prep` adversary picker's toolbar (`advToolbarHtml()`) is
+The `#/prep` adversary picker's toolbar (`advToolbarHtml()`) is
 structurally the same pattern as the environment toolbar above — search,
 Tier buttons, and a right-aligned "{n} of {total}" count, stacked as a
 plain static block above `#prep-adv-list` inside `.prep-picker-list` —
 plus one more control: a Type multiselect
-(`SessionPrepUtils.ADVERSARY_TYPES`, the ten official Adversary Types)
+(`PrepUtils.ADVERSARY_TYPES`, the ten official Adversary Types)
 between the Tier buttons and the count, built on the same shared
 `bindMultiSelectField()` every other Type/Biome/Source dropdown in the app
 already uses. It replaced an earlier visible heading + separate search row +
 collapsible Filters disclosure + "Selected only" checkbox + standalone
 "Clear filters" button — all retired; there is no `advFiltersOpen` or
-`selectedOnly` state left anywhere in `state.sessionPrepUI`.
+`selectedOnly` state left anywhere in `state.prepUI`.
 
-`js/session-prep-utils.js` owns the search side: `buildAdversarySearchIndex()`
-builds a `Map<advId, searchText>` once (in `setSessionPrepCatalog()`,
+`js/prep-utils.js` owns the search side: `buildAdversarySearchIndex()`
+builds a `Map<advId, searchText>` once (in `setPrepCatalog()`,
 alongside `state.adversaryPrepSearchIndex` — state.i18n is already loaded by
 the time that runs), each record carrying both EN/RU name, a richer set of
 Tier aliases than the environment index's own
@@ -248,7 +257,7 @@ Tier aliases than the environment index's own
 `ранг N`/`рангN`, `тир N`/`тирN` — covering `tier1`/`t1`/`тир 1`/`тир1`,
 which the environment toolbar's own aliases don't need to), the raw Type
 key, and its EN/RU label. `filterAdversariesByToolbar()` ANDs a Tier
-multiselect and a Type multiselect (`state.sessionPrepUI.advFilters.tiers`/
+multiselect and a Type multiselect (`state.prepUI.advFilters.tiers`/
 `.types`, each OR within its own set, same Set-based shape as the
 environment toolbar's `envFilters.tiers`) with the tokenized query against
 that precomputed text — reusing the same `tokenizeEnvironmentQuery()`/
@@ -261,7 +270,7 @@ longer exists.
 `refreshAdvPicker()` only ever replaces `#prep-adv-list`/`#prep-adv-count`,
 never the toolbar wrapper, so the search input, Tier buttons, and an open
 Type dropdown all survive a filter/search change; a Tier click updates its
-own pressed state directly in `bindSessionPrepDelegation()` (bound once,
+own pressed state directly in `bindPrepDelegation()` (bound once,
 delegated) rather than through a rebuild, the same as the environment
 toolbar's Tier buttons. `.prep-col-adv` is a CSS size container
 (`container-type: inline-size`) so the count — the least important toolbar
@@ -285,7 +294,7 @@ detail route). The central adversaries list keeps a plain, non-interactive
 thumbnail (`centralThumbHtml('adv', …)`) — this redesign is scoped to the
 All Adversaries picker only.
 
-### Session Prep's selection cell
+### Prep's selection cell
 
 Every selection checkbox (environment rows, adversary rows, compact item
 rows and the gallery item tile) is built by `prepSelectionCellHtml()` — a
@@ -298,9 +307,9 @@ row padding/gap at no layout cost), `--sel-gap` and
 larger target is kept on purpose). The layout is 4px row padding → 20px column
 → 4px gap → thumbnail; change a number there, never per picker.
 
-### Session Prep's central selected-content panel
+### Prep's central selected-content panel
 
-`centralSectionHtml()` renders one compact "session manifest" — Environments,
+`centralSectionHtml()` renders one compact "prep manifest" — Environments,
 Adversaries, Items — from a single selected-entity primitive rather than
 three bespoke layouts: `selectedEntityHtml()` (name ≤2 lines, one-line meta,
 semantic remove `<button>`), `centralThumbHtml(kind, src)` (fixed 38–40px
@@ -343,7 +352,7 @@ narrower, so it stays one column there). Sections are semantic `<section>`s with
   external link → remove. Tooltips come from the shared `data-tip` system
   (`prep_tip_*` keys); the `aria-label`s stay name-specific.
 - **Counts:** only environments have a configured cap
-  (`SessionPrepUtils.MAX_ENVIRONMENTS`), so only that header reads `n/3`;
+  (`PrepUtils.MAX_ENVIRONMENTS`), so only that header reads `n/3`;
   adversaries and items are uncapped (PD-002) and show a plain number. At the
   cap the pill turns gold with a tooltip; the limit sentence is also in
   `.sr-only` text, so it never depends on colour alone. There is no permanent
@@ -361,23 +370,23 @@ narrower, so it stays one column there). Sections are semantic `<section>`s with
 
 ### Adversary artwork data and generation
 
-An adversary record in `data/session-prep.json` optionally carries
+An adversary record in `data/prep.json` optionally carries
 `art: { thumb, full }` (both required together; never a bare `image`
 string, which is now a rejected legacy field — see
-`SESSION_PREP_ADVERSARY_FORBIDDEN_KEYS` in `scripts/validate-data.js`).
+`PREP_ADVERSARY_FORBIDDEN_KEYS` in `scripts/validate-data.js`).
 Both paths point at pre-generated WebP derivatives under
-`img/adversaries/session-prep/generated/{thumbs,full}/<source-stem>.webp`,
+`img/adversaries/prep/generated/{thumbs,full}/<source-stem>.webp`,
 produced offline by `scripts/generate-adversary-art.js` (a dev-only tool
 using the `sharp` npm package — this project's only devDependency; nothing
 under `dist/` or the runtime `js/`/`css/` references it, and `node_modules/`
 is gitignored) from the original artwork already committed directly under
-`img/adversaries/session-prep/`. Thumbnails are capped at a 128×128 box;
+`img/adversaries/prep/`. Thumbnails are capped at a 128×128 box;
 full images at a 1536px long edge; both preserve aspect ratio and
 transparency and never upscale. Filenames are the source file's own stem,
 not a content hash — deterministic and stable, and consistent with every
 other image in this project, none of which participate in
 `scripts/lib/asset-versioning.js`'s content-hash scheme (only `css`/`js`/
-`data` are hashed there). `scripts/import-session-prep-adversaries.js`
+`data` are hashed there). `scripts/import-prep-adversaries.js`
 derives the same `{ thumb, full }` pair from its existing source-image
 mapping (`deriveArtPaths()`), so a future catalogue regeneration keeps
 producing the current schema rather than reintroducing `image`.
@@ -385,7 +394,7 @@ producing the current schema rather than reintroducing `image`.
 ## Main catalog progressive loading
 
 The main catalog (`state.route.name === 'catalog'` only — never the
-single-list view, Lists, Journey, or Session Prep) renders a slice of
+single-list view, Lists, Journey, or Prep) renders a slice of
 `sortedFilteredEnvs()` rather than the whole result set once it passes 30
 environments, revealing more via a "Show more" control below the grid
 (`#catalog-more`, filled by `renderCatalogMore()`). The constants and
@@ -416,7 +425,7 @@ the DOM/state wiring lives in `js/app.js`:
 - **`initCatalogGridObserver()`** attaches one `ResizeObserver` to
   `#grid-wrap` at startup and never tears it down — that element is a
   permanent part of the static shell (only its innerHTML changes across
-  routes), unlike the Session Prep item nav's create/destroy pair. Its
+  routes), unlike the Prep item nav's create/destroy pair. Its
   callback is a no-op off the catalog route and debounced
   (`CATALOG_RESIZE_DEBOUNCE_MS`) so a dragged window edge doesn't rebuild
   the grid on every intermediate frame.
@@ -424,7 +433,7 @@ the DOM/state wiring lives in `js/app.js`:
 ## Random Environment card
 
 The main catalog's first grid item (`state.route.name === 'catalog'` only —
-never the single-list view, Lists, Journey, or Session Prep) is an action
+never the single-list view, Lists, Journey, or Prep) is an action
 card, not a real environment record: `randomCardHtml()` in `js/app.js`
 builds it directly in `renderGrid()`, prepended to the rendered card slice,
 and it is never added to `state.builtinEnvs`/`state.environmentSearchIndex`
@@ -450,7 +459,7 @@ falls back to an unversioned path in source/dev, where the version meta tag
 is empty). `getJSON()` wraps `fetch()` + `.json()` for all of these calls.
 Catalogs are assigned via a single setter each
 (`setEnvironmentCatalog()`, `setItemCatalog()`, `setAdversaryCatalog()`,
-`setSessionPrepCatalog()`) so catalog assignment and any derived index
+`setPrepCatalog()`) so catalog assignment and any derived index
 (search index, item name index) happen together, once.
 
 ## Localization
@@ -472,7 +481,7 @@ and `localStorage` — see [.claude/rules/browser-state.md](../.claude/rules/bro
 for the read/write/migration contract. `LS_KEYS` (top of `js/app.js`) is the
 full list of persisted keys: language, lists, environment-to-list
 membership, the storage-notice dismissal flag, the two Journey tables, and
-Session Prep's multi-session store (see "Session Prep multi-session model"
+Prep's multi-prep store (see "Prep multi-prep model"
 above). `persist()`/`persistRaw()`/`persistBatch()`
 in `js/app.js` wrap `SafeStorage`'s write functions and centralize
 write-failure reporting (`reportStorageWriteFailure()`).
@@ -489,7 +498,7 @@ directly rather than driving it through the DOM:
 | `js/route-utils.js` | hash parsing, building, and safe decoding |
 | `js/list-utils.js` | list name normalization and rename resolution |
 | `js/search-index.js` | environment search record building and matching |
-| `js/session-prep-utils.js` | Session Prep default shape, session lifecycle (add/switch/remove session, title resolution), selection toggling, search/Tier/Type/Category/Source filtering |
+| `js/prep-utils.js` | Prep default shape, prep lifecycle (add/switch/remove prep, title resolution), selection toggling, search/Tier/Type/Category/Source filtering |
 | `js/freshcutgrass-utils.js` | FreshCutGrass encounter URL encoding |
 | `js/random-environment-utils.js` | Random Environment card's Tier-badge derivation and pool pick |
 
@@ -521,7 +530,7 @@ stays copy-only.
 | Hash routing | `js/route-utils.js` | `tests/routing.test.js` |
 | List rename resolution | `js/list-utils.js` | `tests/list-rename.test.js` |
 | Environment search index | `js/search-index.js` | `tests/search-index.test.js` |
-| Session Prep selection/search/filter logic | `js/session-prep-utils.js` | `tests/session-prep-utils.test.js` |
+| Prep selection/search/filter logic | `js/prep-utils.js` | `tests/prep-utils.test.js` |
 | FreshCutGrass URL encoding | `js/freshcutgrass-utils.js` | `tests/freshcutgrass-utils.test.js` |
 | Initial loading shell lifecycle | `js/app.js` (`beginInitialLoading()` etc.) | `tests/loading-state.test.js` |
 | Random Environment card Tier badge/pick | `js/random-environment-utils.js` | `tests/random-environment-utils.test.js` |

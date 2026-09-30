@@ -53,7 +53,7 @@
   --font-display: 'Forum', 'Times New Roman', serif;   /* 400 only — no bold face exists */
   --font-body: 'Spectral', Georgia, serif;
   --font-mono: 'JetBrains Mono', 'Courier New', monospace;
-  /* Session Prep's own dense-UI typeface — a readable system sans, never
+  /* Prep's own dense-UI typeface — a readable system sans, never
      used on the brand or the reading pages elsewhere in the app. */
   --font-ui: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
@@ -107,7 +107,7 @@
   --focus-ring: 2px solid var(--hope);
   --focus-offset: 2px;
 
-  /* ---- Session Prep selection cell (shared by the environment, adversary
+  /* ---- Prep selection cell (shared by the environment, adversary
      and item pickers): 4px row padding → 32px hit area holding an 18px
      checkbox → 4px gap → thumbnail. One set of numbers, never per picker. */
   --sel-box: 18px;
@@ -150,7 +150,7 @@ body[data-route="catalog"]::before,
 body[data-route="lists"]::before,
 body[data-route="list"]::before,
 body[data-route="journey"]::before,
-body[data-route="session-prep"]::before {
+body[data-route="prep"]::before {
   --catalog-art-opacity: 0.26;
   --catalog-art-size: min(1024px, 82vw, 100vh);
   --catalog-art-brightness: 0.75;
@@ -175,7 +175,7 @@ body[data-route="session-prep"]::before {
   body[data-route="lists"]::before,
   body[data-route="list"]::before,
   body[data-route="journey"]::before,
-  body[data-route="session-prep"]::before {
+  body[data-route="prep"]::before {
     --catalog-art-opacity: 0.14;
     --catalog-art-size: min(140vw, 640px);
     --catalog-art-brightness: 0.6;
@@ -187,7 +187,7 @@ body[data-route="session-prep"]::before {
   body[data-route="lists"]::before,
   body[data-route="list"]::before,
   body[data-route="journey"]::before,
-  body[data-route="session-prep"]::before { display: none; }
+  body[data-route="prep"]::before { display: none; }
 }
 
 a { color: var(--hope-soft); text-decoration: none; }
@@ -617,7 +617,7 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
 .result-count button:hover { color: var(--parchment); }
 
 /* Below the main catalog grid only — never rendered on Lists, Journey, or
- * Session Prep. Empty whenever the whole result set already fits, so
+ * Prep. Empty whenever the whole result set already fits, so
  * :empty collapses it to nothing rather than leaving a stray gap. */
 .catalog-more {
   display: flex; flex-direction: column; align-items: center; gap: var(--s-3);
@@ -2024,9 +2024,9 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
   .nav-btn > span { display: none; }
 }
 
-/* ---------- Session Prep (#/session-prep) ----------
+/* ---------- Prep (#/prep) ----------
    Every rule here is prefixed .prep- to stay clear of the rest of the
-   stylesheet — see the "Session Prep" sections in CLAUDE.md. Reuses existing
+   stylesheet — see the "Prep" sections in CLAUDE.md. Reuses existing
    tokens/components wherever possible: .field/.btn/.btn-sm/.btn-ghost for
    inputs and buttons. Environments, adversaries, and items are all binary
    selections — every real checkbox on this page shares one visual/sizing
@@ -2052,28 +2052,28 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
    soon as .shell becomes a flex item (≥1200px), not only once max-width is
    dropped at ≥1440px. */
 @media (min-width: 1200px) {
-  body[data-route="session-prep"] .shell {
+  body[data-route="prep"] .shell {
     width: 100%;
   }
 }
-body[data-route="session-prep"] .shell {
+body[data-route="prep"] .shell {
   max-width: 1440px;
 }
 @media (min-width: 1440px) {
-  body[data-route="session-prep"] .shell {
+  body[data-route="prep"] .shell {
     max-width: none;
   }
 }
 
-/* The site footer belongs to the catalog/reading pages; Session Prep is a
+/* The site footer belongs to the catalog/reading pages; Prep is a
    dense working tool and the vertical space is worth more as table room. */
-body[data-route="session-prep"] #footer {
+body[data-route="prep"] #footer {
   display: none;
 }
 
-/* Session Prep is a dense working tool — everywhere inside .prep-wrap uses a
+/* Prep is a dense working tool — everywhere inside .prep-wrap uses a
    readable system UI typeface rather than the site's decorative display/body
-   faces. Individual headings and the large editable session title below
+   faces. Individual headings and the large editable prep title below
    explicitly opt back into --font-display, so the brand and the reading
    pages elsewhere in the app are completely unaffected. */
 .prep-wrap {
@@ -2082,88 +2082,88 @@ body[data-route="session-prep"] #footer {
   transition: margin-top var(--t-base) var(--ease-out), gap var(--t-base) var(--ease-out);
 }
 
-/* ---- Session Prep header mode: one source of truth ----
+/* ---- Prep header mode: one source of truth ----
    Expanded and compact are two genuinely distinct layouts, not one hiding a
    single subtitle — compact turns the global header into a dense toolbar
-   AND the Session Bar below it (which it hides outright), both driven by the
+   AND the Prep Bar below it (which it hides outright), both driven by the
    one `data-sp-header-mode` attribute
-   initSessionPrepChrome()/applySessionPrepChromeDom() (js/app.js) set on
+   initPrepChrome()/applyPrepChromeDom() (js/app.js) set on
    <body> in response to a deliberate click of .sp-chrome-toggle — never
    automatically, and never two independent states to fall out of sync.
    These custom properties collect the compact-mode target dimensions the
    rules below implement, so the three numbers stay defined in one place. */
-body[data-route="session-prep"] {
+body[data-route="prep"] {
   --sp-toolbar-h: 45px;
   --sp-strip-h: 38px;
   --sp-workspace-gap: 10px;
 }
 
-/* ---- Session Bar: title / switcher / rename / New / actions / save status ----
-   One compact surface that replaces the old "saved sessions" select row and
-   the separate session-title field (see sessionBarHtml() in js/app.js). First
+/* ---- Prep Bar: title / switcher / rename / New / actions / save status ----
+   One compact surface that replaces the old "saved preps" select row and
+   the separate prep-title field (see prepBarHtml() in js/app.js). First
    child of .prep-wrap, so it spans exactly the same width as the three
    columns below it. The atlas watermark stays visible around it but is
    dimmed *behind* the bar by a dark local gradient, so title, icons and
    status keep their contrast. Uses only existing tokens; --sp-bar-* below
    just name the two surface values this one component needs. */
-body[data-route="session-prep"] {
+body[data-route="prep"] {
   --sp-bar-bg:
     linear-gradient(180deg, rgba(20,17,15,0.80), rgba(20,17,15,0.90)),
     radial-gradient(ellipse at 0% 0%, rgba(217,164,65,0.08), transparent 55%);
   --sp-bar-border: var(--line-faint);
 }
-/* contain: inline-size — a long, nowrap session name must not push the
+/* contain: inline-size — a long, nowrap prep name must not push the
    bar's *intrinsic* width up through .prep-wrap (a grid item with an automatic
    minimum) and widen the whole page. The bar takes its width from the wrap
    instead, and the title truncates inside it. */
-.prep-session-bar {
+.prep-bar {
   position: relative; min-width: 0; contain: inline-size;
   display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
   padding: var(--s-3) var(--s-5);
   background: var(--sp-bar-bg);
   border: 1px solid var(--sp-bar-border); border-radius: var(--r-lg);
 }
-.prep-session-identity { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--s-1); }
-.prep-session-titlerow { display: flex; align-items: center; gap: var(--s-2); min-width: 0; }
-.prep-session-title-wrap { position: relative; min-width: 0; max-width: 100%; display: flex; }
+.prep-identity { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--s-1); }
+.prep-titlerow { display: flex; align-items: center; gap: var(--s-2); min-width: 0; }
+.prep-title-wrap { position: relative; min-width: 0; max-width: 100%; display: flex; }
 
 /* The title is a title, not a form control: display face, no box, only a
    hairline underline on hover so it still reads as interactive. The rename
    input below shares its exact font/padding/border metrics, so swapping one
    for the other never changes the row's height. */
-.prep-session-title-btn,
-.prep-session-title-input {
+.prep-title-btn,
+.prep-title-input {
   font-family: var(--font-display); font-weight: 400;
   font-size: var(--fs-xl); line-height: var(--lh-xl); letter-spacing: var(--tracking-display);
   color: var(--parchment);
   padding: var(--s-1) 0; margin: 0;
   background: transparent; border: none; border-bottom: 1px solid transparent; border-radius: 0;
 }
-.prep-session-title-btn {
+.prep-title-btn {
   display: inline-flex; align-items: center; gap: var(--s-2);
   min-width: 0; max-width: 100%; cursor: pointer; text-align: left;
   transition: border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
 }
-.prep-session-title-btn[hidden], .prep-session-title-input[hidden] { display: none; }
-.prep-session-title-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.prep-session-title-btn svg {
+.prep-title-btn[hidden], .prep-title-input[hidden] { display: none; }
+.prep-title-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prep-title-btn svg {
   flex: none; width: var(--icon-md); height: var(--icon-md); color: var(--muted);
   transition: color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
 }
-.prep-session-title-btn:hover { border-bottom-color: var(--line-strong); }
-.prep-session-title-btn:hover svg { color: var(--hope-soft); }
-.prep-session-title-btn[aria-expanded="true"] svg { color: var(--hope-soft); transform: rotate(180deg); }
-.prep-session-title-btn:focus-visible { border-radius: var(--r-sm); }
-.prep-session-title-input {
+.prep-title-btn:hover { border-bottom-color: var(--line-strong); }
+.prep-title-btn:hover svg { color: var(--hope-soft); }
+.prep-title-btn[aria-expanded="true"] svg { color: var(--hope-soft); transform: rotate(180deg); }
+.prep-title-btn:focus-visible { border-radius: var(--r-sm); }
+.prep-title-input {
   min-width: 0; max-width: 100%;
   border-bottom-color: var(--hope);
   text-overflow: ellipsis;
 }
-.prep-session-title-input:focus { outline: none; }
+.prep-title-input:focus { outline: none; }
 
 /* Icon-only buttons (pencil, actions). Visible size stays small; the hit area
    grows past it with ::after, same technique as .sp-chrome-toggle. */
-.prep-session-icon-btn {
+.prep-icon-btn {
   position: relative; flex: none;
   display: flex; align-items: center; justify-content: center;
   width: var(--h-sm); height: var(--h-sm); padding: 0;
@@ -2171,10 +2171,10 @@ body[data-route="session-prep"] {
   border: 1px solid transparent; border-radius: var(--r-sm); cursor: pointer;
   transition: color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
 }
-.prep-session-icon-btn::after { content: ""; position: absolute; inset: -6px; }
-.prep-session-icon-btn[hidden] { display: none; }
-.prep-session-icon-btn svg { width: var(--icon-md); height: var(--icon-md); }
-.prep-session-icon-btn:hover, .prep-session-icon-btn[aria-expanded="true"] {
+.prep-icon-btn::after { content: ""; position: absolute; inset: -6px; }
+.prep-icon-btn[hidden] { display: none; }
+.prep-icon-btn svg { width: var(--icon-md); height: var(--icon-md); }
+.prep-icon-btn:hover, .prep-icon-btn[aria-expanded="true"] {
   color: var(--hope-soft); background: var(--ink-raised); border-color: var(--line);
 }
 
@@ -2191,13 +2191,13 @@ body[data-route="session-prep"] {
 .prep-save-status[data-state="ok"] .prep-save-icon { color: var(--hope); opacity: 0.85; }
 .prep-save-status[data-state="error"] { color: var(--fear-soft); }
 
-.prep-session-actions { flex: none; display: flex; align-items: center; gap: var(--s-2); }
-.prep-session-more-wrap { position: relative; }
-.prep-session-new-btn { height: var(--h-md); padding: 0 var(--s-4) 0 var(--s-3); gap: var(--s-2); font-family: var(--font-ui); font-size: var(--fs-base); }
-.prep-session-new-btn svg { width: var(--icon-md); height: var(--icon-md); color: var(--hope); }
-.prep-session-more-btn { width: var(--h-md); height: var(--h-md); }
+.prep-actions { flex: none; display: flex; align-items: center; gap: var(--s-2); }
+.prep-more-wrap { position: relative; }
+.prep-new-btn { height: var(--h-md); padding: 0 var(--s-4) 0 var(--s-3); gap: var(--s-2); font-family: var(--font-ui); font-size: var(--fs-base); }
+.prep-new-btn svg { width: var(--icon-md); height: var(--icon-md); color: var(--hope); }
+.prep-more-btn { width: var(--h-md); height: var(--h-md); }
 
-/* ---- menus (session selector + actions) ---- */
+/* ---- menus (prep selector + actions) ---- */
 .prep-menu {
   position: absolute; top: calc(100% + var(--s-1)); left: 0; z-index: 20;
   width: max-content; min-width: 240px; max-width: min(360px, calc(100vw - var(--s-4) * 2));
@@ -2209,7 +2209,7 @@ body[data-route="session-prep"] {
   animation: modal-in var(--t-fast) var(--ease-enter);
 }
 .prep-menu:not([hidden]) { display: flex; }
-.prep-session-actions-menu { left: auto; right: 0; min-width: 200px; }
+.prep-actions-menu { left: auto; right: 0; min-width: 200px; }
 .prep-menu-heading {
   flex: none; padding: var(--s-2) var(--s-3) var(--s-1);
   font-size: var(--fs-xs); color: var(--muted); text-transform: uppercase; letter-spacing: var(--tracking-caps);
@@ -2254,15 +2254,15 @@ body[data-route="session-prep"] {
 /* Touch: 40px visible controls whose hit area reaches 44px via ::after. */
 @media (max-width: 760px), (pointer: coarse) {
   .prep-menu-item { min-height: 44px; }
-  .prep-session-icon-btn { width: var(--h-md); height: var(--h-md); }
-  .prep-session-icon-btn::after { inset: -2px; }
-  .prep-session-new-btn { height: var(--h-md); }
+  .prep-icon-btn { width: var(--h-md); height: var(--h-md); }
+  .prep-icon-btn::after { inset: -2px; }
+  .prep-new-btn { height: var(--h-md); }
 }
 /* Very narrow phones: "New" keeps its icon, tooltip and accessible name, but
-   drops its visible word so the session title gets the room. */
+   drops its visible word so the prep title gets the room. */
 @media (max-width: 480px) {
-  .prep-session-new-btn { width: var(--h-md); padding: 0; }
-  .prep-session-new-btn span {
+  .prep-new-btn { width: var(--h-md); padding: 0; }
+  .prep-new-btn span {
     position: absolute; width: 1px; height: 1px; overflow: hidden;
     clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
   }
@@ -2271,21 +2271,21 @@ body[data-route="session-prep"] {
    then the save status directly under the title. The identity wrapper drops
    out of layout so its two children can sit in the bar's own grid areas. */
 @media (max-width: 760px) {
-  .prep-session-bar {
+  .prep-bar {
     display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
     grid-template-areas: "title actions" "status status";
     gap: 0 var(--s-2); padding: var(--s-2) var(--s-3);
   }
-  .prep-session-identity { display: contents; }
-  .prep-session-titlerow { grid-area: title; }
+  .prep-identity { display: contents; }
+  .prep-titlerow { grid-area: title; }
   .prep-save-status { grid-area: status; }
-  .prep-session-actions { grid-area: actions; }
-  .prep-session-new-btn { padding: 0 var(--s-3) 0 var(--s-2); }
-  .prep-session-title-btn, .prep-session-title-input { font-size: var(--fs-lg); line-height: var(--lh-lg); }
+  .prep-actions { grid-area: actions; }
+  .prep-new-btn { padding: 0 var(--s-3) 0 var(--s-2); }
+  .prep-title-btn, .prep-title-input { font-size: var(--fs-lg); line-height: var(--lh-lg); }
 }
 
-/* ---- Session Prep chrome (expanded / compact toggle) ----
-   #session-prep-chrome (in index.html) wraps the shared site header. It
+/* ---- Prep chrome (expanded / compact toggle) ----
+   #prep-chrome (in index.html) wraps the shared site header. It
    stays display:contents on every route, including this one — the compact
    look below is a pure CSS variant of the one #header markup renderHeader()
    always produces, never a second copy of the header, and never automatic:
@@ -2293,10 +2293,10 @@ body[data-route="session-prep"] {
    Expanded mode (the default markup, no rules needed here) keeps the full
    branded presentation; every rule below only applies once
    body[data-sp-header-mode="compact"], and both the global header and the
-   session strip above key off that one attribute. */
-#session-prep-chrome { display: contents; }
+   prep strip above key off that one attribute. */
+#prep-chrome { display: contents; }
 
-body[data-route="session-prep"][data-sp-header-mode="compact"] .header-inner {
+body[data-route="prep"][data-sp-header-mode="compact"] .header-inner {
   padding-block: var(--s-2);
   min-height: var(--sp-toolbar-h);
   transition: padding var(--t-base) var(--ease-out);
@@ -2313,24 +2313,24 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .header-inner {
    own focusability) along with the text, leaving the visible logo dead to
    both click and keyboard. aria-label on the button (see renderHeader() in
    js/app.js) keeps its accessible name once .brand-title-text is hidden. */
-body[data-route="session-prep"][data-sp-header-mode="compact"] .brand-title-text,
-body[data-route="session-prep"][data-sp-header-mode="compact"] .brand-meta {
+body[data-route="prep"][data-sp-header-mode="compact"] .brand-title-text,
+body[data-route="prep"][data-sp-header-mode="compact"] .brand-meta {
   display: none;
 }
-body[data-route="session-prep"][data-sp-header-mode="compact"] .brand-mark {
+body[data-route="prep"][data-sp-header-mode="compact"] .brand-mark {
   height: 28px;
   transition: height var(--t-base) var(--ease-out);
 }
-body[data-route="session-prep"][data-sp-header-mode="compact"] .header-actions .btn,
-body[data-route="session-prep"][data-sp-header-mode="compact"] .lang-switch {
+body[data-route="prep"][data-sp-header-mode="compact"] .header-actions .btn,
+body[data-route="prep"][data-sp-header-mode="compact"] .lang-switch {
   height: 28px;
   transition: height var(--t-base) var(--ease-out);
 }
 
-/* ---- compact mode: the Session Bar comes out of layout entirely, not
-   merely shrunk. It is session *management* — a GM mid-session wants the
+/* ---- compact mode: the Prep Bar comes out of layout entirely, not
+   merely shrunk. It is prep *management* — a GM mid-prep wants the
    workspace, not this chrome. */
-body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-session-bar {
+body[data-route="prep"][data-sp-header-mode="compact"] .prep-bar {
   display: none;
 }
 
@@ -2338,12 +2338,12 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-session-bar
    the ≥1200px "no page-level scroll" block further down, where every
    ancestor from body to .prep-main already has a definite, shrinkable
    height, so removing these two rows directly grows .prep-main's share. */
-body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-wrap {
+body[data-route="prep"][data-sp-header-mode="compact"] .prep-wrap {
   margin-top: var(--sp-workspace-gap); gap: var(--sp-workspace-gap);
 }
 
 /* A normal flex child of #header's own .header-actions (alongside the nav
-   and language switch) — see initSessionPrepChrome() in js/app.js — so it
+   and language switch) — see initPrepChrome() in js/app.js — so it
    is laid out correctly by flexbox at every viewport width for free. Never
    absolutely/fixed-positioned over the header, so it can never be clipped
    by, or straddle the edge of, a header whose height changes between the
@@ -2366,7 +2366,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-wrap {
 .sp-chrome-toggle svg { width: var(--icon-md); height: var(--icon-md); }
 .sp-chrome-toggle:hover { color: var(--hope-soft); border-color: var(--line-strong); background: var(--ink-hover); }
 .sp-chrome-toggle:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); color: var(--hope-soft); }
-body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
+body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
   width: 28px; height: 28px;
 }
 
@@ -2383,7 +2383,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-col-adv { grid-area: adv; }
 
 /* Quieter outer catalogues vs. the brighter, gold-accented central panel —
-   see "Visual priorities" in the Session Prep spec. */
+   see "Visual priorities" in the Prep spec. */
 .prep-col {
   min-width: 0; display: flex; flex-direction: column; gap: var(--s-2);
   background: var(--ink-card); border: 1px solid var(--line-faint); border-radius: var(--r-md);
@@ -2455,7 +2455,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    here (unlike the adversary picker, where .prep-picker-list holds the
    toolbar and #prep-adv-list directly as its two children too), so it
    needs its own flex/gap rule to lay out rows. */
-/* The env picker is the narrowest of Session Prep's three columns
+/* The env picker is the narrowest of Prep's three columns
    (.prep-main's `minmax(260px, 0.85fr)` track), so the search field is the
    one flexible/shrinkable track (`minmax(0, 1fr)`, floored by its own
    min-width below) while the Tier buttons and counter get plain `auto`
@@ -2635,7 +2635,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .adv-art-copy:hover { color: var(--hope-soft); background: var(--ink-hover); }
 
 /* ---- central preparation: environments / adversaries / items ----
-   A compact session manifest built from one shared selected-entity
+   A compact prep manifest built from one shared selected-entity
    primitive (.prep-sel: thumbnail + name + meta + remove). Environments and
    items are bordered cards in a 2-column grid, adversaries are compact
    bordered tiles in a container-query grid (1 → 2 columns). Every dimension below comes from the small
@@ -2906,7 +2906,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   padding: 12px var(--s-4) var(--s-4);
 }
 /* Wraps the strip with its two manual prev/next arrows (hidden entirely
-   while there is nothing to scroll to — see refreshSessionPrepItemNav() in
+   while there is nothing to scroll to — see refreshPrepItemNav() in
    js/app.js). Native overflow-x still gives trackpad/wheel/touch/scrollbar
    scrolling for free; the arrows are just an explicit, user-controlled
    alternative — the strip never moves on its own. */
@@ -2935,14 +2935,14 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 /* Art-first tile strip: square tiles dominated by item artwork, with name
    and selection as contextual overlays rather than permanent card chrome —
    this is the one exception to the "permanently visible checkbox" recipe
-   used everywhere else in Session Prep (env/adv rows, see the shared
+   used everywhere else in Prep (env/adv rows, see the shared
    .prep-select-checkbox comment above), scoped to `.prep-item-card` alone
    so it never touches those other pickers. Real interactive controls in
    source order; native overflow gives trackpad/shift-wheel/scrollbar-drag/
    touch-swipe scrolling for free, with momentum scrolling opted into
    explicitly for iOS Safari. */
 .prep-item-grid {
-  --session-prep-item-tile-size: clamp(108px, 6.8vw, 128px);
+  --prep-item-tile-size: clamp(108px, 6.8vw, 128px);
   flex: 1 1 auto; min-width: 0;
   display: flex; flex-wrap: nowrap; align-items: flex-start;
   gap: var(--s-3); overflow-x: auto; -webkit-overflow-scrolling: touch;
@@ -2960,7 +2960,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    artwork's corners rounded instead. */
 .prep-item-card {
   position: relative; flex: none;
-  width: var(--session-prep-item-tile-size); aspect-ratio: 1 / 1;
+  width: var(--prep-item-tile-size); aspect-ratio: 1 / 1;
   border: 1px solid var(--line); border-radius: var(--r-md);
   background: var(--ink-raised);
   transition: border-color var(--t-fast) var(--ease-out), box-shadow var(--t-fast) var(--ease-out);
@@ -3023,7 +3023,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 }
 
 /* ---- dice roll-and-filter buttons ----
-   Fixed width so a two-digit transient result (see rollSessionPrepItemDice()
+   Fixed width so a two-digit transient result (see rollPrepItemDice()
    in js/app.js) never shifts the rest of the toolbar; icon + label swap for
    icon + bare number during the ~1.2s reveal, same button, same footprint. */
 .dice-roll-btn {
@@ -3097,13 +3097,13 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    direction. Narrower layouts (tablet/phone, below) keep the normal page
    scroll. */
 @media (min-width: 1200px) {
-  body[data-route="session-prep"] {
+  body[data-route="prep"] {
     height: 100vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
   }
-  body[data-route="session-prep"] #main {
+  body[data-route="prep"] #main {
     flex: 1 1 auto;
     min-height: 0;
     min-width: 0;
@@ -3111,28 +3111,28 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
     flex-direction: column;
     padding-bottom: var(--s-4);
   }
-  body[data-route="session-prep"] #toolbar,
-  body[data-route="session-prep"] #result-count {
+  body[data-route="prep"] #toolbar,
+  body[data-route="prep"] #result-count {
     display: none;
   }
-  body[data-route="session-prep"] #grid-wrap {
+  body[data-route="prep"] #grid-wrap {
     flex: 1 1 auto;
     min-height: 0;
     min-width: 0;
     display: flex;
     flex-direction: column;
   }
-  body[data-route="session-prep"] .prep-wrap {
+  body[data-route="prep"] .prep-wrap {
     flex: 1 1 auto;
     min-height: 0;
     min-width: 0;
   }
-  body[data-route="session-prep"] .prep-session-bar,
-  body[data-route="session-prep"] .prep-items-panel {
+  body[data-route="prep"] .prep-bar,
+  body[data-route="prep"] .prep-items-panel {
     flex: none;
     min-width: 0;
   }
-  body[data-route="session-prep"] .prep-main {
+  body[data-route="prep"] .prep-main {
     flex: 1 1 auto;
     min-height: 0;
     min-width: 0;
@@ -3142,29 +3142,29 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   /* Each column stretches to the row's full height; only the picker list
      inside env/adv scrolls (below), so the column itself clips rather than
      also scrolling — one scrollbar per block, not two nested ones. */
-  body[data-route="session-prep"] .prep-col {
+  body[data-route="prep"] .prep-col {
     min-height: 0;
     overflow: hidden;
   }
   /* Selected-items summary has no single inner list to delegate to, so the
      whole column scrolls if its three sections together run long. */
-  body[data-route="session-prep"] .prep-central {
+  body[data-route="prep"] .prep-central {
     min-height: 0;
     overflow-y: auto;
     scroll-padding-top: 40px;
     scrollbar-gutter: stable;
     scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
   }
-  body[data-route="session-prep"] .prep-central::-webkit-scrollbar { width: 8px; }
-  body[data-route="session-prep"] .prep-central::-webkit-scrollbar-track { background: transparent; }
-  body[data-route="session-prep"] .prep-central::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
-  body[data-route="session-prep"] .prep-central::-webkit-scrollbar-thumb:hover { background: rgba(185,173,145,0.56); }
-  body[data-route="session-prep"] .prep-picker-list {
+  body[data-route="prep"] .prep-central::-webkit-scrollbar { width: 8px; }
+  body[data-route="prep"] .prep-central::-webkit-scrollbar-track { background: transparent; }
+  body[data-route="prep"] .prep-central::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
+  body[data-route="prep"] .prep-central::-webkit-scrollbar-thumb:hover { background: rgba(185,173,145,0.56); }
+  body[data-route="prep"] .prep-picker-list {
     flex: 1 1 auto;
     min-height: 0;
   }
-  body[data-route="session-prep"] #prep-env-list,
-  body[data-route="session-prep"] #prep-adv-list {
+  body[data-route="prep"] #prep-env-list,
+  body[data-route="prep"] #prep-adv-list {
     flex: 1 1 auto;
     min-height: 0;
     max-height: none;

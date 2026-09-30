@@ -19,6 +19,7 @@
   'use strict';
 
   const ENV_SUFFIX_PATTERN = /\/env\/([^/]+)$/;
+  const LEGACY_PREP_HASH = '#/session-prep';
   const LIST_ID_PATTERN = /^#\/lists\/(.+)$/;
 
   /**
@@ -50,7 +51,7 @@
    * Lists overview while a valid environment suffix on it is preserved.
    *
    * Returns { route, malformed, canonicalHash }:
-   *   route: { name: 'catalog'|'lists'|'list'|'journey'|'session-prep', id?, env }
+   *   route: { name: 'catalog'|'lists'|'list'|'journey'|'prep', id?, env }
    *   malformed: whether any segment failed to decode
    *   canonicalHash: the safe hash the address should be repaired to, or
    *     null when nothing was malformed
@@ -59,6 +60,7 @@
     let working = typeof hash === 'string' ? hash : '';
     let env = null;
     let malformed = false;
+    let legacy = false;
 
     const envMatch = working.match(ENV_SUFFIX_PATTERN);
     if (envMatch) {
@@ -78,8 +80,14 @@
       route = { name: 'lists', env: env };
     } else if (working === '#/journey') {
       route = { name: 'journey', env: env };
-    } else if (working === '#/session-prep') {
-      route = { name: 'session-prep', env: env };
+    } else if (working === '#/prep') {
+      route = { name: 'prep', env: env };
+    } else if (working === LEGACY_PREP_HASH) {
+      // Compatibility artifact: this feature was once called "Session Prep"
+      // and lived at #/session-prep. Old bookmarks resolve to the Prep page
+      // and the address is repaired to the canonical #/prep.
+      route = { name: 'prep', env: env };
+      legacy = true;
     } else {
       route = { name: 'catalog', env: env };
     }
@@ -87,7 +95,7 @@
     return {
       route: route,
       malformed: malformed,
-      canonicalHash: malformed ? routeToHash(route) : null,
+      canonicalHash: malformed || legacy ? routeToHash(route) : null,
     };
   }
 
@@ -96,7 +104,7 @@
     if (route.name === 'list') return '#/lists/' + encodeURIComponent(route.id);
     if (route.name === 'lists') return '#/lists';
     if (route.name === 'journey') return '#/journey';
-    if (route.name === 'session-prep') return '#/session-prep';
+    if (route.name === 'prep') return '#/prep';
     return '';
   }
 

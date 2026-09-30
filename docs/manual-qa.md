@@ -12,15 +12,15 @@ locally") before starting.
 
 ## Header
 
-- [ ] Expanded state (every route except Session Prep): title, subtitle,
+- [ ] Expanded state (every route except Prep): title, subtitle,
       compatibility label, nav links all visible and correctly ordered.
-- [ ] Session Prep's collapsed chrome: toggling it visibly and meaningfully
+- [ ] Prep's collapsed chrome: toggling it visibly and meaningfully
       shrinks the header — not just a cosmetic tweak. Toggle back to
       expanded and confirm it restores exactly.
 
 ## Navigation
 
-- [ ] Desktop: all header nav links (Lists, Session Prep, Journey, RU/EN)
+- [ ] Desktop: all header nav links (Lists, Prep, Journey, RU/EN)
       reachable by mouse and by keyboard (Tab + Enter), visible focus ring
       on each.
 - [ ] Mobile width: nav still reachable, no overlap/clipping.
@@ -57,7 +57,7 @@ locally") before starting.
 - [ ] Simulated storage failure on a valid rename: change stays in memory,
       `storage_write_failed_warning` toast shows instead of a success toast.
 
-## Session Prep
+## Prep
 
 - [ ] Empty (no selections yet): all three counters read zero, no stray
       "selected" styling anywhere.
@@ -80,7 +80,7 @@ locally") before starting.
       limit reached" / «Достигнут максимальный лимит»; no permanent text
       line), and removing one re-enables the rest without losing search
       text/scroll position.
-- [ ] **Central selected-content panel** (see docs/architecture.md "Session
+- [ ] **Central selected-content panel** (see docs/architecture.md "Prep
       Prep's central selected-content panel"): at ~1536×760 with 3
       environments, 3 adversaries and 4 items the panel fits with no
       vertical scrollbar; with many items only the panel scrolls (no nested
@@ -111,24 +111,24 @@ locally") before starting.
       ring; Enter/Space work on the buttons; tooltips and labels in both RU
       and EN; no layout shift on hover/focus; long names clamp.
 - [ ] Header chrome collapse/expand (see "Header" above) from within
-      Session Prep specifically — the Session Bar hides in compact mode and
+      Prep specifically — the Prep Bar hides in compact mode and
       returns in expanded mode.
-- [ ] **Session Bar**: the active session name appears once (no separate
+- [ ] **Prep Bar**: the active prep name appears once (no separate
       title field or select); at 2048/1440/768/390px the bar is one compact
       block (~80–90px, two rows on phones) aligned with the columns below,
       with no horizontal overflow, in both languages and with a very long
-      session name (truncates with ellipsis + full-name tooltip).
-- [ ] **Session Bar menus**: the title opens the session menu (current
-      session checked; scrolls past ~340px; stays inside the viewport);
+      prep name (truncates with ellipsis + full-name tooltip).
+- [ ] **Prep Bar menus**: the title opens the prep menu (current
+      prep checked; scrolls past ~340px; stays inside the viewport);
       the ⋯ button opens Rename/Duplicate/Delete. Only one is open at a
       time; outside click and Escape close them and Escape returns focus to
       the trigger; Arrow/Home/End move through items.
-- [ ] **Session rename**: pencil and menu "Rename" both start the inline
+- [ ] **Prep rename**: pencil and menu "Rename" both start the inline
       input (text selected, no layout shift); Enter/blur saves (trimmed),
       Escape cancels, an empty name restores the previous one.
-- [ ] **Session delete**: Delete opens a dialog naming the session with
+- [ ] **Prep delete**: Delete opens a dialog naming the prep with
       Cancel focused; Escape/Cancel leave data untouched; Delete removes only
-      that session; with one session left, Delete is disabled with a hint.
+      that prep; with one prep left, Delete is disabled with a hint.
 - [ ] **Save status**: directly under the title; "Saved locally · HH:MM" after
       an edit, and the failure wording (with the storage-failure toast) when
       the browser blocks writes.
@@ -224,7 +224,7 @@ locally") before starting.
 
 - [ ] English: full pass over whatever changed.
 - [ ] Russian: full pass over whatever changed.
-- [ ] A long Russian string (a long environment/list/session name) doesn't
+- [ ] A long Russian string (a long environment/list/prep name) doesn't
       clip or overflow.
 - [ ] Fallback behavior: a key or field missing in one language falls back
       to English rather than rendering blank.

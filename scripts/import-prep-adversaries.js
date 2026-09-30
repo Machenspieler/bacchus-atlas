@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* ============================================================
-   Bacchus's Atlas — import-session-prep-adversaries.js
-   One-time import/audit tool that (re)builds data/session-prep.json's
+   Bacchus's Atlas — import-prep-adversaries.js
+   One-time import/audit tool that (re)builds data/prep.json's
    `adversaries` array from:
 
      1. A canonical Daggerheart SRD 2.0 adversary list (English name, Tier,
@@ -15,7 +15,7 @@
         --canonical at your own copy.
      2. daggerheart.ru's own adversary listing (https://daggerheart.ru/adversary,
         with the site's own "На Русском" language toggle switched on — a
-        session-scoped cookie, not a URL prefix, which is why an earlier,
+        prep-scoped cookie, not a URL prefix, which is why an earlier,
         archive.org-only research pass wrongly concluded the site had no
         adversary translations at all). Matched by English slug (the site's
         own `/adversary/<slug>` URL), which matched 129 of the 264 canonical
@@ -32,22 +32,22 @@
         doesn't cover. Never overwrites a daggerheart.ru or existing
         translation.
      4. IMAGE_MAPPING below — an explicit, hand-reviewed slug -> local
-        source-art path table for img/adversaries/session-prep/*,
+        source-art path table for img/adversaries/prep/*,
         committed here because it IS this project's own data (unlike the
         raw research inputs above). Each mapped source path is turned into
         an `art: { thumb, full }` pair pointing at the pre-generated
-        derivatives under img/adversaries/session-prep/generated/ (see
+        derivatives under img/adversaries/prep/generated/ (see
         scripts/generate-adversary-art.js) — run that script first if a
         source file listed here doesn't have derivatives yet.
 
    Never fetches anything over the network. Never silently overwrites a
-   translation. Writes data/session-prep.json and a translation-audit
+   translation. Writes data/prep.json and a translation-audit
    report (see --audit-out) so the merge is fully reviewable before commit.
 
    Usage:
-     node scripts/import-session-prep-adversaries.js [--canonical=path] [--ru-site=path] [--dry-run] [--audit-out=path]
+     node scripts/import-prep-adversaries.js [--canonical=path] [--ru-site=path] [--dry-run] [--audit-out=path]
 
-   Exits non-zero (and does not write data/session-prep.json) if any
+   Exits non-zero (and does not write data/prep.json) if any
    adversary ends up unresolved / ambiguous / manual-translation-required —
    see "PRODUCTION COMPLETION" in the completion report for what "done"
    requires.
@@ -64,7 +64,7 @@ function parseArgs(argv) {
     canonical: '/tmp/daggerheart-research/adversaries-canonical.json',
     ruSite: '/tmp/daggerheart-research/adversary-translations-ru-site.json',
     dryRun: false,
-    auditOut: path.join(ROOT, 'tmp', 'session-prep-adversary-translation-audit.json'),
+    auditOut: path.join(ROOT, 'tmp', 'prep-adversary-translation-audit.json'),
   };
   argv.forEach(arg => {
     if (arg === '--dry-run') out.dryRun = true;
@@ -98,8 +98,8 @@ function slugify(name) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 }
 
-/* The 17 original Session Prep MVP ids — must never be renamed. Mirrors
- * scripts/validate-data.js's SESSION_PREP_MVP_IDS; duplicated here (rather
+/* The 17 original Prep MVP ids — must never be renamed. Mirrors
+ * scripts/validate-data.js's PREP_MVP_IDS; duplicated here (rather
  * than required cross-file) so this script stays a standalone, readable
  * one-time tool. */
 const MVP_IDS = [
@@ -108,7 +108,7 @@ const MVP_IDS = [
   'darkweave-swarmlings', 'deeproot-defender', 'dire-wolf', 'elk', 'falcon',
 ];
 
-/* Explicit slug -> local art path mapping for img/adversaries/session-prep/.
+/* Explicit slug -> local art path mapping for img/adversaries/prep/.
  * Hand-reviewed against the folder's actual filenames (see the completion
  * report for how each was matched, including the handful of "group art"
  * images — one piece of art intentionally shared by every member of a named
@@ -118,18 +118,18 @@ const MVP_IDS = [
  * 264 adversaries have local art; every other one uses the designed
  * fallback icon. */
 const IMAGE_MAPPING = {
-  'darkweave-crawler': 'img/adversaries/session-prep/064_darkweave_adversaries.png',
-  'darkweave-queen': 'img/adversaries/session-prep/064_darkweave_adversaries.png',
-  'darkweave-spinner': 'img/adversaries/session-prep/064_darkweave_adversaries.png',
-  'darkweave-swarmlings': 'img/adversaries/session-prep/064_darkweave_adversaries.png',
-  'vampire-lord': 'img/adversaries/session-prep/089_vampire_lord_hellwing.png',
-  'harbinger-of-death': 'img/adversaries/session-prep/095_the_harbingers.png',
-  'harbinger-of-famine': 'img/adversaries/session-prep/095_the_harbingers.png',
-  'harbinger-of-pestilence': 'img/adversaries/session-prep/095_the_harbingers.png',
-  'harbinger-of-war': 'img/adversaries/session-prep/095_the_harbingers.png',
-  'head-vampire': 'img/adversaries/session-prep/head-vampire-and-dire-bat.png',
-  'dire-bat': 'img/adversaries/session-prep/head-vampire-and-dire-bat.png',
-  'minotaur-wrecker': 'img/adversaries/session-prep/minotaur.png',
+  'darkweave-crawler': 'img/adversaries/prep/064_darkweave_adversaries.png',
+  'darkweave-queen': 'img/adversaries/prep/064_darkweave_adversaries.png',
+  'darkweave-spinner': 'img/adversaries/prep/064_darkweave_adversaries.png',
+  'darkweave-swarmlings': 'img/adversaries/prep/064_darkweave_adversaries.png',
+  'vampire-lord': 'img/adversaries/prep/089_vampire_lord_hellwing.png',
+  'harbinger-of-death': 'img/adversaries/prep/095_the_harbingers.png',
+  'harbinger-of-famine': 'img/adversaries/prep/095_the_harbingers.png',
+  'harbinger-of-pestilence': 'img/adversaries/prep/095_the_harbingers.png',
+  'harbinger-of-war': 'img/adversaries/prep/095_the_harbingers.png',
+  'head-vampire': 'img/adversaries/prep/head-vampire-and-dire-bat.png',
+  'dire-bat': 'img/adversaries/prep/head-vampire-and-dire-bat.png',
+  'minotaur-wrecker': 'img/adversaries/prep/minotaur.png',
 };
 
 /** Every other image maps 1:1 by filename: a plain `<slug>.<ext>` file, or
@@ -138,7 +138,7 @@ const IMAGE_MAPPING = {
  * adding a new art file later needs no code change here. Skips the
  * generated/ subdirectory itself (thumb/full derivatives, not sources). */
 function scanImageDirectory() {
-  const dir = path.join(ROOT, 'img', 'adversaries', 'session-prep');
+  const dir = path.join(ROOT, 'img', 'adversaries', 'prep');
   const mapping = Object.assign({}, IMAGE_MAPPING);
   if (!fs.existsSync(dir)) return mapping;
   fs.readdirSync(dir, { withFileTypes: true }).forEach(entry => {
@@ -149,12 +149,12 @@ function scanImageDirectory() {
     const m = base.match(/^(\d{3})_(.+)$/);
     const rest = m ? m[2] : base;
     const slug = rest.replace(/_/g, '-');
-    if (!mapping[slug]) mapping[slug] = `img/adversaries/session-prep/${filename}`;
+    if (!mapping[slug]) mapping[slug] = `img/adversaries/prep/${filename}`;
   });
   return mapping;
 }
 
-/** A mapped source path (e.g. img/adversaries/session-prep/foo.png) to the
+/** A mapped source path (e.g. img/adversaries/prep/foo.png) to the
  * `{ thumb, full }` pair scripts/generate-adversary-art.js derives from it
  * — same source-stem-based, deterministic naming that script uses, so this
  * never has to be regenerated to stay in sync with it. */
@@ -162,8 +162,8 @@ function deriveArtPaths(sourcePath) {
   const base = path.basename(sourcePath);
   const stem = base.slice(0, -path.extname(base).length);
   return {
-    thumb: `img/adversaries/session-prep/generated/thumbs/${stem}.webp`,
-    full: `img/adversaries/session-prep/generated/full/${stem}.webp`,
+    thumb: `img/adversaries/prep/generated/thumbs/${stem}.webp`,
+    full: `img/adversaries/prep/generated/full/${stem}.webp`,
   };
 }
 
@@ -189,9 +189,9 @@ function main() {
     });
   }
 
-  const sessionPrepPath = path.join(ROOT, 'data', 'session-prep.json');
-  const currentSessionPrep = readJson(sessionPrepPath);
-  const currentById = new Map(currentSessionPrep.adversaries.map(a => [a.id, a]));
+  const prepPath = path.join(ROOT, 'data', 'prep.json');
+  const currentPrep = readJson(prepPath);
+  const currentById = new Map(currentPrep.adversaries.map(a => [a.id, a]));
 
   const imageMapping = scanImageDirectory();
 
@@ -291,13 +291,13 @@ function main() {
   }
 
   if (opts.dryRun) {
-    console.log('--dry-run: not writing data/session-prep.json.');
+    console.log('--dry-run: not writing data/prep.json.');
     return;
   }
 
-  const nextSessionPrep = Object.assign({}, currentSessionPrep, { adversaries: finalAdversaries });
-  fs.writeFileSync(sessionPrepPath, JSON.stringify(nextSessionPrep, null, 2) + '\n');
-  console.log(`Wrote ${finalAdversaries.length} adversaries to data/session-prep.json.`);
+  const nextPrep = Object.assign({}, currentPrep, { adversaries: finalAdversaries });
+  fs.writeFileSync(prepPath, JSON.stringify(nextPrep, null, 2) + '\n');
+  console.log(`Wrote ${finalAdversaries.length} adversaries to data/prep.json.`);
 }
 
 if (require.main === module) main();

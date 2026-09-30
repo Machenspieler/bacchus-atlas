@@ -35,12 +35,12 @@
 </head>
 <body>
   <!-- Static fallback shown before js/app.js runs. renderHeader() overwrites
-       this on first render. #session-prep-chrome is display:contents on
+       this on first render. #prep-chrome is display:contents on
        every other route (a no-op wrapper) and only becomes a manually
-       toggled expanded/compact toolbar on #/session-prep — see the "Session
-       Prep chrome" rules in css/styles.css and initSessionPrepChrome() in
+       toggled expanded/compact toolbar on #/prep — see the "Prep
+       Prep chrome" rules in css/styles.css and initPrepChrome() in
        js/app.js. -->
-  <div id="session-prep-chrome">
+  <div id="prep-chrome">
     <header class="site-header" id="header">
       <h1>Атлас Бахуса</h1>
       <p>Окружения, путешествия и опасности · Daggerheart™ Compatible</p>
@@ -78,7 +78,7 @@
       <div class="sk sk-card" aria-hidden="true"></div>
       <div class="sk sk-card" aria-hidden="true"></div>
     </div>
-    <!-- Main catalog only (never Lists/Journey/Session Prep): the progressive
+    <!-- Main catalog only (never Lists/Journey/Prep): the progressive
          "Show more" status and button, filled in by renderCatalogMore() in
          js/app.js. Empty on every other route and whenever the whole result
          set already fits. -->
@@ -92,7 +92,7 @@
   <script src="js/search-index.js" data-cache-version="ui"></script>
   <script src="js/catalog-progressive.js" data-cache-version="ui"></script>
   <script src="js/random-environment-utils.js" data-cache-version="ui"></script>
-  <script src="js/session-prep-utils.js" data-cache-version="ui"></script>
+  <script src="js/prep-utils.js" data-cache-version="ui"></script>
   <script src="js/freshcutgrass-utils.js" data-cache-version="ui"></script>
   <script src="js/app.js" data-cache-version="ui"></script>
 </body>

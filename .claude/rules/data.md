@@ -22,7 +22,7 @@ for the environment schema in full before editing `data/environments.json`.
   renders.
 - **Stable IDs never depend on the Russian translation.** An environment's
   `id` is derived from (or matches) its English name; renaming or refining
-  the `ru` field must never change `id`, since routes, lists, and Session
+  the `ru` field must never change `id`, since routes, lists, and Prep
   Prep selections all reference it.
 - **Don't invent a missing optional field.** `lore`, `biomes`, `source`,
   `featured_adversaries`, `story_seeds`, `rawText`, and an absent/empty `ru`

@@ -70,7 +70,7 @@ rendering, so a value starting with it stutters ("Сложность Сложн�
 
 ## Item rarity tiers
 
-Used by Session Prep's item-browser dice tooltips (`prep_dice_rarity_1..5`
+Used by Prep's item-browser dice tooltips (`prep_dice_rarity_1..5`
 in `data/i18n.json`) — no official RU rulebook is present in this repo, so
 these are this project's own best-judgment renderings pending a
 native-speaker/rulebook sanity check:

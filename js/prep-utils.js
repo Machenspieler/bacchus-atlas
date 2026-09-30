@@ -1,41 +1,41 @@
 /* ============================================================
-   Bacchus's Atlas — session-prep-utils.js
-   Pure, dependency-free helpers for the Session Prep page (#/session-prep):
-   the default persisted shape, active-session lookup, environment/adversary/
+   Bacchus's Atlas — prep-utils.js
+   Pure, dependency-free helpers for the Prep page (#/prep):
+   the default persisted shape, active-prep lookup, environment/adversary/
    item selection rules (the three-environment cap, toggle-on-select) and
    search-query normalization.
 
    Every selection — environment, adversary, item — is binary: selected or
    not. There is no primary environment and no quantity anywhere in this
-   file; see the "Session Prep" sections in CLAUDE.md.
+   file; see the "Prep" sections in CLAUDE.md.
 
    No DOM, no application state, no i18n, no persistence — same shape as
    js/route-utils.js and js/list-utils.js, loaded as a plain <script> in the
    browser (before js/app.js, data-cache-version="ui") and required() as-is
-   from a Node test (see tests/session-prep-utils.test.js).
+   from a Node test (see tests/prep-utils.test.js).
 
    js/safe-storage.js validates a stored value's *shape* independently (its
-   own sanitizeSessionPrep, mirroring sanitizeLists/sanitizeRegionEntry, and
+   own sanitizePrep, mirroring sanitizeLists/sanitizeRegionEntry, and
    owns the v1->v2 schema migration) — this file is about the *rules* the UI
    applies while the page is open, not about recovering or upgrading a
    stored localStorage value.
    ============================================================ */
 (function (root, factory) {
   if (typeof module !== 'undefined' && module.exports) module.exports = factory();
-  else root.SessionPrepUtils = factory();
+  else root.PrepUtils = factory();
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
   var MAX_ENVIRONMENTS = 3;
   var SCHEMA_VERSION = 2;
-  var DEFAULT_SESSION_ID = 'default';
+  var DEFAULT_PREP_ID = 'default';
 
   /* ---------------- default shape ---------------- */
 
-  function createDefaultSession(id, now) {
+  function createDefaultPrep(id, now) {
     var timestamp = now || new Date().toISOString();
     return {
-      id: id || DEFAULT_SESSION_ID,
+      id: id || DEFAULT_PREP_ID,
       title: '',
       createdAt: timestamp,
       updatedAt: timestamp,
@@ -48,13 +48,13 @@
   function createDefaultStore(now) {
     return {
       schemaVersion: SCHEMA_VERSION,
-      activeSessionId: DEFAULT_SESSION_ID,
-      sessions: [createDefaultSession(DEFAULT_SESSION_ID, now)],
+      activeSessionId: DEFAULT_PREP_ID,
+      sessions: [createDefaultPrep(DEFAULT_PREP_ID, now)],
     };
   }
 
-  /** The session the UI operates on for this MVP. Never mutates `store`. */
-  function getActiveSession(store) {
+  /** The prep the UI operates on for this MVP. Never mutates `store`. */
+  function getActivePrep(store) {
     if (!store || !Array.isArray(store.sessions)) return null;
     var found = null;
     for (var i = 0; i < store.sessions.length; i++) {
@@ -63,64 +63,64 @@
     return found || store.sessions[0] || null;
   }
 
-  /** Replaces the active session in `store` with `session`, returning a new
-   * store object. `store` and `session` are never mutated in place. */
-  function withActiveSession(store, session) {
-    var sessions = store.sessions.map(function (s) { return s.id === session.id ? session : s; });
-    return Object.assign({}, store, { sessions: sessions });
+  /** Replaces the active prep in `store` with `prep`, returning a new
+   * store object. `store` and `prep` are never mutated in place. */
+  function withActivePrep(store, prep) {
+    var preps = store.sessions.map(function (s) { return s.id === prep.id ? prep : s; });
+    return Object.assign({}, store, { sessions: preps });
   }
 
-  /* ---------------- session lifecycle (create / switch / duplicate / delete) ----------------
-   * These are the pure, storage-shape half of Session Prep's multi-session
+  /* ---------------- prep lifecycle (create / switch / duplicate / delete) ----------------
+   * These are the pure, storage-shape half of Prep's multi-prep
    * lifecycle — id generation, timestamps, and the "never end up with zero
-   * sessions" guarantee are the caller's job (js/app.js), same division as
-   * updateSessionPrepSession() already draws for a same-session edit: this
-   * file decides what the resulting `sessions`/`activeSessionId` look like,
+   * preps" guarantee are the caller's job (js/app.js), same division as
+   * updatePrep() already draws for a same-prep edit: this
+   * file decides what the resulting `preps`/`activeSessionId` look like,
    * never how an id or a timestamp is produced. */
 
-  /** Appends `session` (built by the caller, e.g. via createDefaultSession())
-   * and makes it the active session. Used for both "new session" and
-   * "duplicate session" — the caller decides `session`'s starting fields,
+  /** Appends `prep` (built by the caller, e.g. via createDefaultPrep())
+   * and makes it the active prep. Used for both "new prep" and
+   * "duplicate prep" — the caller decides `prep`'s starting fields,
    * this just handles the store-level append + activate. Never mutates
-   * `store` or its `sessions` array. */
-  function addSession(store, session) {
+   * `store` or its `preps` array. */
+  function addPrep(store, prep) {
     return Object.assign({}, store, {
-      sessions: store.sessions.concat([session]),
-      activeSessionId: session.id,
+      sessions: store.sessions.concat([prep]),
+      activeSessionId: prep.id,
     });
   }
 
-  /** Switches the active session to `sessionId`. A no-op (returns `store`
-   * itself, not a copy) when `sessionId` doesn't match any session in the
+  /** Switches the active prep to `prepId`. A no-op (returns `store`
+   * itself, not a copy) when `prepId` doesn't match any prep in the
    * store, so a caller can tell "nothing changed" apart from "switched" by
    * identity comparison. */
-  function setActiveSession(store, sessionId) {
+  function setActivePrep(store, prepId) {
     if (!store || !Array.isArray(store.sessions)) return store;
-    if (store.activeSessionId === sessionId) return store;
-    var exists = store.sessions.some(function (s) { return s.id === sessionId; });
+    if (store.activeSessionId === prepId) return store;
+    var exists = store.sessions.some(function (s) { return s.id === prepId; });
     if (!exists) return store;
-    return Object.assign({}, store, { activeSessionId: sessionId });
+    return Object.assign({}, store, { activeSessionId: prepId });
   }
 
-  /** Removes the session `sessionId` from `store`. If it was the active
-   * session, activates the next session in list order, falling back to the
+  /** Removes the prep `prepId` from `store`. If it was the active
+   * prep, activates the next prep in list order, falling back to the
    * previous one for the last entry — never leaves `activeSessionId`
-   * pointing at a session that no longer exists. Deliberately allows the
-   * result to end up with an empty `sessions` array (deleting the only
-   * remaining session): guaranteeing at least one session always exists
+   * pointing at a prep that no longer exists. Deliberately allows the
+   * result to end up with an empty `preps` array (deleting the only
+   * remaining prep): guaranteeing at least one prep always exists
    * again afterward is the caller's job (see js/app.js's
-   * deleteSessionPrepSession()), the same way this file never invents an id
-   * or timestamp for a session it creates. A no-op (returns `store` itself)
-   * when `sessionId` isn't found. */
-  function removeSession(store, sessionId) {
+   * deletePrep()), the same way this file never invents an id
+   * or timestamp for a prep it creates. A no-op (returns `store` itself)
+   * when `prepId` isn't found. */
+  function removePrep(store, prepId) {
     if (!store || !Array.isArray(store.sessions)) return store;
     var idx = -1;
     for (var i = 0; i < store.sessions.length; i++) {
-      if (store.sessions[i] && store.sessions[i].id === sessionId) { idx = i; break; }
+      if (store.sessions[i] && store.sessions[i].id === prepId) { idx = i; break; }
     }
     if (idx === -1) return store;
     var remaining = store.sessions.slice(0, idx).concat(store.sessions.slice(idx + 1));
-    if (store.activeSessionId !== sessionId) {
+    if (store.activeSessionId !== prepId) {
       return Object.assign({}, store, { sessions: remaining });
     }
     var replacement = remaining.length ? (store.sessions[idx + 1] || store.sessions[idx - 1]) : null;
@@ -130,32 +130,32 @@
     });
   }
 
-  /* ---------------- session title ---------------- */
+  /* ---------------- prep title ---------------- */
 
   /** Resolves a raw title edit to what should actually be stored: trims
    * surrounding whitespace, and falls back to `fallback` (the caller's
-   * localized default session name) when that leaves nothing — a session
+   * localized default prep name) when that leaves nothing — a prep
    * title is never persisted as empty/whitespace-only. Mirrors
    * ListUtils.resolveListRename()'s trim-and-decide role for list renames,
-   * but a Session Prep title has no "invalid" case of its own to reject: any
+   * but a Prep title has no "invalid" case of its own to reject: any
    * non-empty trimmed value is accepted as-is, duplicates included. */
-  function resolveSessionTitle(rawValue, fallback) {
+  function resolvePrepTitle(rawValue, fallback) {
     var trimmed = String(rawValue == null ? '' : rawValue).trim();
     return trimmed || fallback;
   }
 
-  /** Resolves an inline rename attempt (the Session Bar's pencil / Rename
+  /** Resolves an inline rename attempt (the Prep Bar's pencil / Rename
    * menu item) against the title the bar currently shows. Unlike
-   * resolveSessionTitle() above — which substitutes the localized default for
+   * resolvePrepTitle() above — which substitutes the localized default for
    * an empty value — an empty rename here is rejected outright so the caller
    * restores the previous name instead of silently overwriting it with the
    * placeholder. Same status vocabulary as ListUtils.resolveListRename():
    * 'invalid' (trims to nothing; `value` is `currentTitle`), 'unchanged'
    * (trims to exactly `currentTitle`), 'changed' (`value` is the trimmed new
    * title, clamped to `maxLength`). `currentTitle` is the *displayed* title,
-   * so a session whose stored title is still '' (showing the placeholder)
+   * so a prep whose stored title is still '' (showing the placeholder)
    * compares equal to that placeholder rather than persisting it. */
-  function resolveSessionRename(currentTitle, rawValue, maxLength) {
+  function resolvePrepRename(currentTitle, rawValue, maxLength) {
     var trimmed = String(rawValue == null ? '' : rawValue).trim();
     if (!trimmed) return { status: 'invalid', value: currentTitle };
     if (typeof maxLength === 'number' && trimmed.length > maxLength) trimmed = trimmed.slice(0, maxLength).trim();
@@ -196,17 +196,17 @@
   /* ---------------- environments ---------------- */
 
   /** Checkbox semantics: absent + room -> add; present -> remove; absent +
-   * at the cap -> rejected, `session` returned unchanged alongside
+   * at the cap -> rejected, `prep` returned unchanged alongside
    * `limitReached: true` so the caller can show the localized explanation
    * without mutating anything. No primary-environment concept — order is
    * preserved but carries no special meaning. */
-  function toggleEnvironment(session, envId) {
-    if (session.environmentIds.indexOf(envId) !== -1) return removeEnvironment(session, envId);
-    if (session.environmentIds.length >= MAX_ENVIRONMENTS) {
-      return { session: session, changed: false, limitReached: true };
+  function toggleEnvironment(prep, envId) {
+    if (prep.environmentIds.indexOf(envId) !== -1) return removeEnvironment(prep, envId);
+    if (prep.environmentIds.length >= MAX_ENVIRONMENTS) {
+      return { prep: prep, changed: false, limitReached: true };
     }
     return {
-      session: Object.assign({}, session, { environmentIds: toggleId(session.environmentIds, envId) }),
+      prep: Object.assign({}, prep, { environmentIds: toggleId(prep.environmentIds, envId) }),
       changed: true,
       limitReached: false,
     };
@@ -214,9 +214,9 @@
 
   /** Explicit removal — the central list's Remove button, or an unchecked
    * source checkbox. Always removes, never reports a limit. */
-  function removeEnvironment(session, envId) {
+  function removeEnvironment(prep, envId) {
     return {
-      session: Object.assign({}, session, { environmentIds: removeId(session.environmentIds, envId) }),
+      prep: Object.assign({}, prep, { environmentIds: removeId(prep.environmentIds, envId) }),
       changed: true,
       limitReached: false,
     };
@@ -248,7 +248,7 @@
 
   /** The raw (unnormalized) fields one environment contributes to its
    * compact-toolbar search text: bilingual name, tier (as a bare number and
-   * as every "tier N"/"rank N"/"ранг N" alias — see the Session Prep header
+   * as every "tier N"/"rank N"/"ранг N" alias — see the Prep header
    * spec), canonical type + its EN/RU label, and every biome id it carries
    * plus its EN/RU label. `i18nEn`/`i18nRu` are plain `{ key: value }`
    * dictionaries (e.g. `state.i18n.en`/`state.i18n.ru` in js/app.js) — this
@@ -376,7 +376,7 @@
     return normalizeSearchToken(adversaryIndexRawFields(adv, i18nEn, i18nRu).filter(Boolean).join(' '));
   }
 
-  /** One record per adversary, keyed by id — built once when the Session
+  /** One record per adversary, keyed by id — built once when the Prep
    * Prep catalogue loads, never rebuilt per keystroke or per filter pass. */
   function buildAdversarySearchIndex(adversaries, i18nEn, i18nRu) {
     var index = new Map();
@@ -407,7 +407,7 @@
   }
 
   /* ---------------- display sort (pickers + central lists) ----------------
-   * The Session Prep environment/adversary tables (both the "All
+   * The Prep environment/adversary tables (both the "All
    * Environments"/"All Adversaries" pickers and the central Selected lists)
    * share one order: Tier ascending (1 -> 4) first, then alphabetically by
    * the caller's already-localized name. Locale-aware name comparison
@@ -492,7 +492,7 @@
     return normalizeSearchToken(itemIndexRawFields(item).filter(Boolean).join(' '));
   }
 
-  /** One record per item, keyed by id — built once when the Session Prep
+  /** One record per item, keyed by id — built once when the Prep
    * catalogue loads, never rebuilt per keystroke or per filter pass. */
   function buildItemSearchIndex(items) {
     var index = new Map();
@@ -594,16 +594,16 @@
   return {
     MAX_ENVIRONMENTS: MAX_ENVIRONMENTS,
     SCHEMA_VERSION: SCHEMA_VERSION,
-    DEFAULT_SESSION_ID: DEFAULT_SESSION_ID,
-    createDefaultSession: createDefaultSession,
+    DEFAULT_PREP_ID: DEFAULT_PREP_ID,
+    createDefaultPrep: createDefaultPrep,
     createDefaultStore: createDefaultStore,
-    getActiveSession: getActiveSession,
-    withActiveSession: withActiveSession,
-    addSession: addSession,
-    setActiveSession: setActiveSession,
-    removeSession: removeSession,
-    resolveSessionTitle: resolveSessionTitle,
-    resolveSessionRename: resolveSessionRename,
+    getActivePrep: getActivePrep,
+    withActivePrep: withActivePrep,
+    addPrep: addPrep,
+    setActivePrep: setActivePrep,
+    removePrep: removePrep,
+    resolvePrepTitle: resolvePrepTitle,
+    resolvePrepRename: resolvePrepRename,
     normalizeIdList: normalizeIdList,
     toggleId: toggleId,
     removeId: removeId,

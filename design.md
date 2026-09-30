@@ -33,7 +33,7 @@ replacement for it — when the two disagree, the CSS (and its tests) win.
 - **The book, not the app.** Display type is a classical inscriptional face
   (Forum) used only for names/headings; body copy is a literary serif
   (Spectral); numbers, dice, and stats get a monospace face (JetBrains Mono)
-  so values in a column actually line up. Session Prep is the one screen that
+  so values in a column actually line up. Prep is the one screen that
   breaks from this on purpose (see below) because it's a dense working tool,
   not a page to read.
 
@@ -57,7 +57,7 @@ hard-code a hex value anywhere else.
 
 A soft radial wash of gold and crimson (`body`'s `background-image`) sits
 behind everything, plus a single fixed watermark of the atlas illustration on
-the main catalog-shaped routes only (`body[data-route="catalog|lists|list|journey|session-prep"]::before`)
+the main catalog-shaped routes only (`body[data-route="catalog|lists|list|journey|prep"]::before`)
 — scoped to routes, not URLs, and switched off automatically when a modal or
 an environment backdrop already owns the screen. It's disabled entirely under
 `forced-colors: active`.
@@ -72,7 +72,7 @@ an environment backdrop already owns the screen. It's disabled entirely under
 | `--font-display` | Forum, 400 weight only (no bold cut exists) | environment/card/detail titles, the site `<h1>` |
 | `--font-body` | Spectral | body copy, buttons, form fields |
 | `--font-mono` | JetBrains Mono | dice notation, stat numbers, counters |
-| `--font-ui` | system sans (`system-ui`, Segoe UI, …) | **Session Prep only** — see below |
+| `--font-ui` | system sans (`system-ui`, Segoe UI, …) | **Prep only** — see below |
 
 Fonts are requested via a `<link>` in `index.html` with `preconnect`, not an
 `@import` inside `styles.css` — an `@import` can't start downloading until
@@ -84,7 +84,7 @@ its own line-height (`--lh-*`). Display type uses `--tracking-display`
 (0.02em); all-caps labels use the wider `--tracking-caps` (0.1em) because
 uppercase inscriptional caps need tracking to read, not weight.
 
-**Session Prep's exception:** it's a dense working tool (three simultaneous
+**Prep's exception:** it's a dense working tool (three simultaneous
 pickers, checkboxes, counters), not a page meant to be read start to finish,
 so it uses `--font-ui` instead of the display/body serif pairing. This
 typeface never appears on the brand (header, `<h1>`) or on any reading page
@@ -101,7 +101,7 @@ elsewhere in the app.
   shadow (tight + diffuse) rather than one blurred rectangle — used for card
   rest/hover, modals, and the environment detail overlay in increasing order.
 - **Motion** has two timing tokens (`--t-fast` 120ms, `--t-base` 180ms,
-  `--t-slow` 260ms) and two eases (`--ease-out`, `--ease-enter`). Session
+  `--t-slow` 260ms) and two eases (`--ease-out`, `--ease-enter`). Prep
   Prep's item strip explicitly respects `prefers-reduced-motion` and has no
   autoplay/idle-timer animation of any kind — nothing in that controller
   moves except a direct user action.
@@ -185,10 +185,10 @@ same tokens, same corner radius — because it's the same kind of object
 projects. Kept scoped to its own card boundary; nothing about it leaks into
 the environment card's own conventions.
 
-### Session Prep (`#/session-prep`)
+### Prep (`#/prep`)
 The one screen that departs from the reading-page idiom on purpose: `--font-ui`
 instead of the serif/display pairing, a collapsible header chrome
-(`#session-prep-chrome[data-collapsed]`), and a permanently-visible ~20px
+(`#prep-chrome[data-collapsed]`), and a permanently-visible ~20px
 checkbox (18px inside a 32px hit area — the shared `--sel-*` tokens) as the *only* control that adds or
 removes a selection anywhere on the page — never a whole row/card silently
 toggling on click. The item catalog's tiles (`.prep-item-card`) are the one
@@ -196,11 +196,11 @@ exception to "permanently visible": there, the tile is an art-first square
 dominated by the item's artwork, and the checkbox slides in on hover/
 `:focus-within` instead of sitting in the tile at rest — the environment and
 adversary pickers are unaffected and keep the always-visible checkbox. See
-the "Session Prep" section of `CLAUDE.md` for the full interaction contract;
+the "Prep" section of `CLAUDE.md` for the full interaction contract;
 this file only covers its visual departure from the rest of the app.
 
-**Session Bar** (`.prep-session-bar`): the one place Session Prep breaks its
-own `--font-ui` rule — the active session's name is set in `--font-display`
+**Prep Bar** (`.prep-bar`): the one place Prep breaks its
+own `--font-ui` rule — the active prep's name is set in `--font-display`
 (`--fs-xl`, `--fs-lg` on phones) because it is a *title*, not a control
 label; everything else in the bar (status, buttons, menus) stays `--font-ui`.
 The bar is a dark, restrained local surface (`--sp-bar-bg`, a translucent
@@ -223,9 +223,9 @@ category:
 | `max-width: 641px` | phone: toolbar filters collapse into a disclosure, watermark shrinks/dims |
 | `min-width: 641px` | tablet and up: toolbar filters expand inline |
 | `max-width: 480px` / `400px` | further compaction of specific controls (tier pills, search field) |
-| `max-width: 760px` / `900px` | Session Prep's picker columns stack |
-| `max-width: 1536px` | Session Prep's Environment/Adversary picker result counters hide (Items and central counters stay) |
-| `min-width: 1200px` / `max-width: 1199px` | Session Prep's three-column layout threshold |
+| `max-width: 760px` / `900px` | Prep's picker columns stack |
+| `max-width: 1536px` | Prep's Environment/Adversary picker result counters hide (Items and central counters stay) |
+| `min-width: 1200px` / `max-width: 1199px` | Prep's three-column layout threshold |
 | `min-width: 1440px`+ (1480/1836/2192/2548px) | catalog grid gains extra columns on very wide screens |
 
 ## Accessibility constraints
@@ -243,7 +243,7 @@ category:
   inflating the visible control itself.
 - `forced-colors: active` and `prefers-reduced-motion` are both explicitly
   respected, not just inherited by accident (see the atlas watermark and the
-  Session Prep item-strip scrolling respectively).
+  Prep item-strip scrolling respectively).
 
 ## Anti-patterns — do not reintroduce
 
@@ -255,7 +255,7 @@ category:
   treatment.
 - Don't add a second reading typeface (serif or otherwise) outside the
   Forum/Spectral/JetBrains Mono trio, and don't use `--font-ui` outside
-  Session Prep.
+  Prep.
 - Don't add `content-visibility` or a similar layout-estimate optimization to
   `.card` — it was tried and measured to make the scrollbar lie.
 - Don't reach for a native `<select multiple>` for a new multi-choice filter

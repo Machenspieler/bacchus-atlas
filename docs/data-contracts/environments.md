@@ -48,7 +48,7 @@ authority and correct this document.
 
 | Field | Shape | Notes |
 | --- | --- | --- |
-| `id` | slug string | Stable across renames — routes, Lists, and Session Prep selections all reference it. Never derive it from the Russian name. |
+| `id` | slug string | Stable across renames — routes, Lists, and Prep selections all reference it. Never derive it from the Russian name. |
 | `tier` | integer (1–4 in current data) | May be `null` for an explicitly tier-agnostic environment (rare — confirm intent before doing this). |
 | `type` | one of `traversal \| social \| event \| exploration` | Enforced by the validator; translated for display via `type_*` keys in `data/i18n.json`. |
 | `name` | `{ en, ru }` | Both required. Check the whole file for a duplicate normalized `ru` name before merging a new one (a silent collision has happened before — see [docs/translation-glossary.md](../translation-glossary.md)). |
@@ -155,7 +155,7 @@ name with no matching item/adversary link stays plain text.
 `cardHtml()` (catalog card), the detail overlay (`applyDetailRoute()` /
 `detailViewState()`), `sortedFilteredEnvs()`/`envMatchesFilters()` (search
 and filtering, via the search index — see
-[docs/architecture.md](../architecture.md)), and Session Prep's environment
+[docs/architecture.md](../architecture.md)), and Prep's environment
 picker (`envPickerRowHtml()`, `centralEnvCardHtml()`) all read from the same
 in-memory `state.builtinEnvs` array — there is no separate transformed copy
 of environment data for any of these consumers.

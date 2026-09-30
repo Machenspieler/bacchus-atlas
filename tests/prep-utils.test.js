@@ -1,10 +1,10 @@
 /* ============================================================
-   Bacchus's Atlas — tests/session-prep-utils.test.js
-   Dependency-free regression tests for js/session-prep-utils.js. Run with:
+   Bacchus's Atlas — tests/prep-utils.test.js
+   Dependency-free regression tests for js/prep-utils.js. Run with:
 
-     node --test tests/session-prep-utils.test.js
+     node --test tests/prep-utils.test.js
 
-   SessionPrepUtils is pure (no DOM, no application state, no i18n), so it
+   PrepUtils is pure (no DOM, no application state, no i18n), so it
    is exercised directly here — same shape as tests/list-rename.test.js.
    Every selection (environment/adversary/item) is binary: there is no
    primary environment and no quantity anywhere in this module.
@@ -14,132 +14,132 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const SPU = require('../js/session-prep-utils.js');
+const SPU = require('../js/prep-utils.js');
 
-function baseSession(overrides = {}) {
-  return Object.assign(SPU.createDefaultSession('default', '2024-01-01T00:00:00.000Z'), overrides);
+function basePrep(overrides = {}) {
+  return Object.assign(SPU.createDefaultPrep('default', '2024-01-01T00:00:00.000Z'), overrides);
 }
 
 /* ---------------- default shape ---------------- */
 
-test('createDefaultStore has one default session with no primary environment and no quantity objects', () => {
+test('createDefaultStore has one default prep with no primary environment and no quantity objects', () => {
   const store = SPU.createDefaultStore('2024-01-01T00:00:00.000Z');
   assert.equal(store.schemaVersion, 2);
   assert.equal(store.activeSessionId, 'default');
   assert.equal(store.sessions.length, 1);
-  const session = store.sessions[0];
-  assert.deepEqual(session.environmentIds, []);
-  assert.deepEqual(session.adversaryIds, []);
-  assert.deepEqual(session.itemIds, []);
-  assert.equal('primaryEnvironmentId' in session, false);
-  assert.equal('adversaries' in session, false);
-  assert.equal('items' in session, false);
+  const prep = store.sessions[0];
+  assert.deepEqual(prep.environmentIds, []);
+  assert.deepEqual(prep.adversaryIds, []);
+  assert.deepEqual(prep.itemIds, []);
+  assert.equal('primaryEnvironmentId' in prep, false);
+  assert.equal('adversaries' in prep, false);
+  assert.equal('items' in prep, false);
 });
 
-test('getActiveSession finds the session matching activeSessionId', () => {
-  const store = { activeSessionId: 'b', sessions: [baseSession({ id: 'a' }), baseSession({ id: 'b' })] };
-  assert.equal(SPU.getActiveSession(store).id, 'b');
+test('getActivePrep finds the prep matching activeSessionId', () => {
+  const store = { activeSessionId: 'b', sessions: [basePrep({ id: 'a' }), basePrep({ id: 'b' })] };
+  assert.equal(SPU.getActivePrep(store).id, 'b');
 });
 
-test('getActiveSession falls back to the first session for an unknown activeSessionId', () => {
-  const store = { activeSessionId: 'ghost', sessions: [baseSession({ id: 'a' })] };
-  assert.equal(SPU.getActiveSession(store).id, 'a');
+test('getActivePrep falls back to the first prep for an unknown activeSessionId', () => {
+  const store = { activeSessionId: 'ghost', sessions: [basePrep({ id: 'a' })] };
+  assert.equal(SPU.getActivePrep(store).id, 'a');
 });
 
-test('getActiveSession returns null for a store with no sessions', () => {
-  assert.equal(SPU.getActiveSession({ activeSessionId: 'default', sessions: [] }), null);
-  assert.equal(SPU.getActiveSession(null), null);
+test('getActivePrep returns null for a store with no preps', () => {
+  assert.equal(SPU.getActivePrep({ activeSessionId: 'default', sessions: [] }), null);
+  assert.equal(SPU.getActivePrep(null), null);
 });
 
-/* ---------------- session lifecycle (create / switch / duplicate / delete) ---------------- */
+/* ---------------- prep lifecycle (create / switch / duplicate / delete) ---------------- */
 
-test('addSession appends the new session and makes it active', () => {
-  const store = { schemaVersion: 2, activeSessionId: 'a', sessions: [baseSession({ id: 'a' })] };
-  const next = SPU.addSession(store, baseSession({ id: 'b' }));
+test('addPrep appends the new prep and makes it active', () => {
+  const store = { schemaVersion: 2, activeSessionId: 'a', sessions: [basePrep({ id: 'a' })] };
+  const next = SPU.addPrep(store, basePrep({ id: 'b' }));
   assert.equal(next.sessions.length, 2);
   assert.equal(next.activeSessionId, 'b');
   assert.equal(store.sessions.length, 1, 'original store is not mutated');
 });
 
-test('setActiveSession switches to an existing session', () => {
-  const store = { activeSessionId: 'a', sessions: [baseSession({ id: 'a' }), baseSession({ id: 'b' })] };
-  const next = SPU.setActiveSession(store, 'b');
+test('setActivePrep switches to an existing prep', () => {
+  const store = { activeSessionId: 'a', sessions: [basePrep({ id: 'a' }), basePrep({ id: 'b' })] };
+  const next = SPU.setActivePrep(store, 'b');
   assert.equal(next.activeSessionId, 'b');
 });
 
-test('setActiveSession is a no-op (returns the same store) for an unknown session id', () => {
-  const store = { activeSessionId: 'a', sessions: [baseSession({ id: 'a' })] };
-  assert.equal(SPU.setActiveSession(store, 'ghost'), store);
+test('setActivePrep is a no-op (returns the same store) for an unknown prep id', () => {
+  const store = { activeSessionId: 'a', sessions: [basePrep({ id: 'a' })] };
+  assert.equal(SPU.setActivePrep(store, 'ghost'), store);
 });
 
-test('setActiveSession is a no-op for the already-active session', () => {
-  const store = { activeSessionId: 'a', sessions: [baseSession({ id: 'a' })] };
-  assert.equal(SPU.setActiveSession(store, 'a'), store);
+test('setActivePrep is a no-op for the already-active prep', () => {
+  const store = { activeSessionId: 'a', sessions: [basePrep({ id: 'a' })] };
+  assert.equal(SPU.setActivePrep(store, 'a'), store);
 });
 
-test('removeSession drops a non-active session without changing activeSessionId', () => {
-  const store = { activeSessionId: 'a', sessions: [baseSession({ id: 'a' }), baseSession({ id: 'b' })] };
-  const next = SPU.removeSession(store, 'b');
+test('removePrep drops a non-active prep without changing activeSessionId', () => {
+  const store = { activeSessionId: 'a', sessions: [basePrep({ id: 'a' }), basePrep({ id: 'b' })] };
+  const next = SPU.removePrep(store, 'b');
   assert.deepEqual(next.sessions.map(s => s.id), ['a']);
   assert.equal(next.activeSessionId, 'a');
 });
 
-test('removeSession activates the next session in list order when the active session is removed', () => {
-  const store = { activeSessionId: 'b', sessions: [baseSession({ id: 'a' }), baseSession({ id: 'b' }), baseSession({ id: 'c' })] };
-  const next = SPU.removeSession(store, 'b');
+test('removePrep activates the next prep in list order when the active prep is removed', () => {
+  const store = { activeSessionId: 'b', sessions: [basePrep({ id: 'a' }), basePrep({ id: 'b' }), basePrep({ id: 'c' })] };
+  const next = SPU.removePrep(store, 'b');
   assert.deepEqual(next.sessions.map(s => s.id), ['a', 'c']);
   assert.equal(next.activeSessionId, 'c');
 });
 
-test('removeSession falls back to the previous session when the active session is the last one', () => {
-  const store = { activeSessionId: 'c', sessions: [baseSession({ id: 'a' }), baseSession({ id: 'b' }), baseSession({ id: 'c' })] };
-  const next = SPU.removeSession(store, 'c');
+test('removePrep falls back to the previous prep when the active prep is the last one', () => {
+  const store = { activeSessionId: 'c', sessions: [basePrep({ id: 'a' }), basePrep({ id: 'b' }), basePrep({ id: 'c' })] };
+  const next = SPU.removePrep(store, 'c');
   assert.deepEqual(next.sessions.map(s => s.id), ['a', 'b']);
   assert.equal(next.activeSessionId, 'b');
 });
 
-test('removeSession deleting the only session leaves an empty sessions array and no active session', () => {
-  const store = { activeSessionId: 'a', sessions: [baseSession({ id: 'a' })] };
-  const next = SPU.removeSession(store, 'a');
+test('removePrep deleting the only prep leaves an empty preps array and no active prep', () => {
+  const store = { activeSessionId: 'a', sessions: [basePrep({ id: 'a' })] };
+  const next = SPU.removePrep(store, 'a');
   assert.deepEqual(next.sessions, []);
   assert.equal(next.activeSessionId, null);
 });
 
-test('removeSession is a no-op for an unknown session id', () => {
-  const store = { activeSessionId: 'a', sessions: [baseSession({ id: 'a' })] };
-  assert.equal(SPU.removeSession(store, 'ghost'), store);
+test('removePrep is a no-op for an unknown prep id', () => {
+  const store = { activeSessionId: 'a', sessions: [basePrep({ id: 'a' })] };
+  assert.equal(SPU.removePrep(store, 'ghost'), store);
 });
 
-/* ---------------- resolveSessionTitle ---------------- */
+/* ---------------- resolvePrepTitle ---------------- */
 
-test('resolveSessionTitle trims surrounding whitespace', () => {
-  assert.equal(SPU.resolveSessionTitle('  Sunken Temple  ', 'New session'), 'Sunken Temple');
+test('resolvePrepTitle trims surrounding whitespace', () => {
+  assert.equal(SPU.resolvePrepTitle('  Sunken Temple  ', 'New prep'), 'Sunken Temple');
 });
 
-test('resolveSessionTitle falls back for an empty or whitespace-only value', () => {
-  assert.equal(SPU.resolveSessionTitle('', 'New session'), 'New session');
-  assert.equal(SPU.resolveSessionTitle('   ', 'New session'), 'New session');
-  assert.equal(SPU.resolveSessionTitle(null, 'New session'), 'New session');
+test('resolvePrepTitle falls back for an empty or whitespace-only value', () => {
+  assert.equal(SPU.resolvePrepTitle('', 'New prep'), 'New prep');
+  assert.equal(SPU.resolvePrepTitle('   ', 'New prep'), 'New prep');
+  assert.equal(SPU.resolvePrepTitle(null, 'New prep'), 'New prep');
 });
 
-/* ---------------- resolveSessionRename ---------------- */
+/* ---------------- resolvePrepRename ---------------- */
 
-test('resolveSessionRename rejects an empty or whitespace-only value and keeps the previous title', () => {
-  assert.deepEqual(SPU.resolveSessionRename('Cursed Temple', ''), { status: 'invalid', value: 'Cursed Temple' });
-  assert.deepEqual(SPU.resolveSessionRename('Cursed Temple', '   '), { status: 'invalid', value: 'Cursed Temple' });
-  assert.deepEqual(SPU.resolveSessionRename('Cursed Temple', null), { status: 'invalid', value: 'Cursed Temple' });
+test('resolvePrepRename rejects an empty or whitespace-only value and keeps the previous title', () => {
+  assert.deepEqual(SPU.resolvePrepRename('Cursed Temple', ''), { status: 'invalid', value: 'Cursed Temple' });
+  assert.deepEqual(SPU.resolvePrepRename('Cursed Temple', '   '), { status: 'invalid', value: 'Cursed Temple' });
+  assert.deepEqual(SPU.resolvePrepRename('Cursed Temple', null), { status: 'invalid', value: 'Cursed Temple' });
 });
 
-test('resolveSessionRename reports an unchanged title (after trimming) as unchanged', () => {
-  assert.deepEqual(SPU.resolveSessionRename('Cursed Temple', '  Cursed Temple '), { status: 'unchanged', value: 'Cursed Temple' });
+test('resolvePrepRename reports an unchanged title (after trimming) as unchanged', () => {
+  assert.deepEqual(SPU.resolvePrepRename('Cursed Temple', '  Cursed Temple '), { status: 'unchanged', value: 'Cursed Temple' });
 });
 
-test('resolveSessionRename returns the trimmed new title as changed', () => {
-  assert.deepEqual(SPU.resolveSessionRename('Cursed Temple', '  Sunken Vault '), { status: 'changed', value: 'Sunken Vault' });
+test('resolvePrepRename returns the trimmed new title as changed', () => {
+  assert.deepEqual(SPU.resolvePrepRename('Cursed Temple', '  Sunken Vault '), { status: 'changed', value: 'Sunken Vault' });
 });
 
-test('resolveSessionRename clamps to maxLength', () => {
-  const result = SPU.resolveSessionRename('a', 'b'.repeat(200), 120);
+test('resolvePrepRename clamps to maxLength', () => {
+  const result = SPU.resolvePrepRename('a', 'b'.repeat(200), 120);
   assert.equal(result.status, 'changed');
   assert.equal(result.value.length, 120);
 });
@@ -178,55 +178,55 @@ test('removeId is a no-op (still returns a new array) when the id is absent', ()
 /* ---------------- environments: selection, no primary ---------------- */
 
 test('selecting an environment adds its id, with no primary concept', () => {
-  const result = SPU.toggleEnvironment(baseSession(), 'env-a');
+  const result = SPU.toggleEnvironment(basePrep(), 'env-a');
   assert.equal(result.changed, true);
-  assert.deepEqual(result.session.environmentIds, ['env-a']);
-  assert.equal('primaryEnvironmentId' in result.session, false);
+  assert.deepEqual(result.prep.environmentIds, ['env-a']);
+  assert.equal('primaryEnvironmentId' in result.prep, false);
 });
 
 test('a second and third selected environment are both added in order', () => {
-  let session = baseSession({ environmentIds: ['env-a'] });
-  const second = SPU.toggleEnvironment(session, 'env-b');
-  assert.deepEqual(second.session.environmentIds, ['env-a', 'env-b']);
-  const third = SPU.toggleEnvironment(second.session, 'env-c');
-  assert.deepEqual(third.session.environmentIds, ['env-a', 'env-b', 'env-c']);
+  let prep = basePrep({ environmentIds: ['env-a'] });
+  const second = SPU.toggleEnvironment(prep, 'env-b');
+  assert.deepEqual(second.prep.environmentIds, ['env-a', 'env-b']);
+  const third = SPU.toggleEnvironment(second.prep, 'env-c');
+  assert.deepEqual(third.prep.environmentIds, ['env-a', 'env-b', 'env-c']);
 });
 
-test('a fourth environment selection is rejected and leaves the session unchanged', () => {
-  const session = baseSession({ environmentIds: ['a', 'b', 'c'] });
-  const result = SPU.toggleEnvironment(session, 'd');
+test('a fourth environment selection is rejected and leaves the prep unchanged', () => {
+  const prep = basePrep({ environmentIds: ['a', 'b', 'c'] });
+  const result = SPU.toggleEnvironment(prep, 'd');
   assert.equal(result.changed, false);
   assert.equal(result.limitReached, true);
-  assert.equal(result.session, session, 'the session reference must be unchanged, not a mutated copy');
-  assert.deepEqual(result.session.environmentIds, ['a', 'b', 'c']);
+  assert.equal(result.prep, prep, 'the prep reference must be unchanged, not a mutated copy');
+  assert.deepEqual(result.prep.environmentIds, ['a', 'b', 'c']);
 });
 
 test('toggling an already-selected environment removes it', () => {
-  const session = baseSession({ environmentIds: ['a', 'b'] });
-  const result = SPU.toggleEnvironment(session, 'b');
-  assert.deepEqual(result.session.environmentIds, ['a']);
+  const prep = basePrep({ environmentIds: ['a', 'b'] });
+  const result = SPU.toggleEnvironment(prep, 'b');
+  assert.deepEqual(result.prep.environmentIds, ['a']);
 });
 
 test('removeEnvironment removes only the named environment', () => {
-  const session = baseSession({ environmentIds: ['a', 'b', 'c'] });
-  const result = SPU.removeEnvironment(session, 'b');
-  assert.deepEqual(result.session.environmentIds, ['a', 'c']);
+  const prep = basePrep({ environmentIds: ['a', 'b', 'c'] });
+  const result = SPU.removeEnvironment(prep, 'b');
+  assert.deepEqual(result.prep.environmentIds, ['a', 'c']);
   assert.equal(result.changed, true);
   assert.equal(result.limitReached, false);
 });
 
 test('removing the last environment leaves an empty selection', () => {
-  const session = baseSession({ environmentIds: ['a'] });
-  const result = SPU.removeEnvironment(session, 'a');
-  assert.deepEqual(result.session.environmentIds, []);
+  const prep = basePrep({ environmentIds: ['a'] });
+  const result = SPU.removeEnvironment(prep, 'a');
+  assert.deepEqual(result.prep.environmentIds, []);
 });
 
-test('toggleEnvironment/removeEnvironment do not mutate the input session', () => {
-  const session = baseSession({ environmentIds: ['a'] });
-  const snapshot = JSON.stringify(session);
-  SPU.toggleEnvironment(session, 'b');
-  SPU.removeEnvironment(session, 'a');
-  assert.equal(JSON.stringify(session), snapshot);
+test('toggleEnvironment/removeEnvironment do not mutate the input prep', () => {
+  const prep = basePrep({ environmentIds: ['a'] });
+  const snapshot = JSON.stringify(prep);
+  SPU.toggleEnvironment(prep, 'b');
+  SPU.removeEnvironment(prep, 'a');
+  assert.equal(JSON.stringify(prep), snapshot);
 });
 
 /* ---------------- environment search (compact "All Environments" toolbar) ---------------- */

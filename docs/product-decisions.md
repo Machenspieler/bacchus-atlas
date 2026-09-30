@@ -17,16 +17,16 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 
 ---
 
-## PD-001: Session Prep environments have no primary state
+## PD-001: Prep environments have no primary state
 
 - **Status:** Active
 - **Date:** 2026-09-28
-- **Decision:** Selected environments in Session Prep (`#/session-prep`) are
+- **Decision:** Selected environments in Prep (`#/prep`) are
   an unordered-in-meaning collection of selections. No environment is ever
   "the" primary, main, or default one.
 - **Implications:**
   - Selected environments are stored as a plain array of ids
-    (`session.environmentIds` in `data/session-prep` schema v2) with no
+    (`prep.environmentIds` in `data/prep` schema v2) with no
     primary-id field alongside it.
   - Selection order may still exist for presentation (the order a GM picked
     things in) but must never be read as priority, importance, or a default
@@ -34,34 +34,34 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   - The interface exposes exactly one control per environment — the
     selection checkbox (`.prep-select-checkbox`) — and never a "Make
     primary" action, star, or promotion affordance.
-  - The three-environment cap (`SessionPrepUtils.toggleEnvironment()`) is the
-    only limit Session Prep enforces on environment selection; there is no
+  - The three-environment cap (`PrepUtils.toggleEnvironment()`) is the
+    only limit Prep enforces on environment selection; there is no
     promotion logic when an environment is added, removed, or reordered.
   - Loaders and validators must treat a legacy `primaryEnvironmentId` field
     as dead data: `js/safe-storage.js`'s v1 → v2 migration
-    (`migrateSessionPrepSessionV1ToV2()`) drops it silently rather than
+    (`migratePrepV1ToV2()`) drops it silently rather than
     erroring or trying to preserve it as a hint.
 - **Explicitly excluded:** `primaryEnvironmentId`, "primary environment",
   "main environment", first-selected-becomes-primary behavior, a "Make
   primary" control, and any rendering that visually distinguishes one
   selected environment from the others as more important.
-- **Supersedes:** Schema v1 (`data/session-prep` local storage, pre this
-  decision) carried `primaryEnvironmentId` on a session. That field, and any
+- **Supersedes:** Schema v1 (`data/prep` local storage, pre this
+  decision) carried `primaryEnvironmentId` on a prep. That field, and any
   UI that read or set it, no longer exists in the shipped product; only the
   migration path in `js/safe-storage.js` still references it, to consume and
   discard it safely from old browser storage.
 
-## PD-002: Session Prep items have no quantity
+## PD-002: Prep items have no quantity
 
 - **Status:** Active
 - **Date:** 2026-09-28
-- **Decision:** A Session Prep item selection is binary — selected or not
+- **Decision:** A Prep item selection is binary — selected or not
   selected. There is no concept of "how many" of an item is prepared.
 - **Implications:**
   - Selected items are stored as a deduplicated array of ids
-    (`session.itemIds`), never as `{ id, quantity }` pairs.
+    (`prep.itemIds`), never as `{ id, quantity }` pairs.
   - Selecting an already-selected item is a no-op with respect to count —
-    `SessionPrepUtils.toggleId()` adds an id at most once and `.length` is
+    `PrepUtils.toggleId()` adds an id at most once and `.length` is
     always the count of unique items, never a summed quantity.
   - The interface has exactly one control per item card — the selection
     checkbox — and never a stepper, +/- button, or a quantity badge.
@@ -77,7 +77,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   is not simply the number of unique selected item ids.
 - **Does not apply to:** adversary counts, dice quantities in rules text
   (`2d4`, "spend a Fear"), or any other legitimate quantity concept in the
-  app outside Session Prep's own item selections — those are unaffected by
+  app outside Prep's own item selections — those are unaffected by
   this decision.
 - **Supersedes:** Schema v1 stored `adversaries`/`items` as
   `{ id, quantity }[]` arrays with increment/decrement UI. That storage
@@ -133,18 +133,18 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   logo or artwork.
 - **Supersedes:** n/a.
 
-## PD-005: Session Prep's adversary catalogue is full-SRD, picker-metadata-only
+## PD-005: Prep's adversary catalogue is full-SRD, picker-metadata-only
 
 - **Status:** Active
 - **Date:** 2026-09-28 (art schema amended 2026-09-29 — see below)
-- **Decision:** Session Prep's adversary picker (`data/session-prep.json`'s
+- **Decision:** Prep's adversary picker (`data/prep.json`'s
   `adversaries` array) covers all 264 adversaries in the official Daggerheart
   SRD 2.0, each carrying only picker metadata — id, English/Russian name,
   Tier (1-4), official Adversary Type (one of ten fixed keys: bruiser,
   horde, leader, minion, ranged, skulk, social, solo, standard, support),
   and optional local artwork (`art: { thumb, full }`, both pre-generated
   WebP derivatives — see `scripts/generate-adversary-art.js` and
-  "Session Prep's compact 'All Adversaries' toolbar" in
+  "Prep's compact 'All Adversaries' toolbar" in
   [architecture.md](architecture.md); a bare `image` string is a retired
   shape, now a forbidden field). It never carries a full stat block, a
   source/book attribution, or Core-vs-Hope & Fear membership.
@@ -155,10 +155,10 @@ what it explicitly rules out, and — when identifiable — what it replaced.
     `full`, or if a record carries a forbidden stat-block-shaped field
     (`role`, `source`, `book`, `difficulty`, `hp`, `stress`, `attacks`,
     `features`, `description`, the retired `image`, etc. — see
-    `SESSION_PREP_ADVERSARY_FORBIDDEN_KEYS`).
+    `PREP_ADVERSARY_FORBIDDEN_KEYS`).
   - The 17 adversary ids from the original MVP
-    (`SESSION_PREP_MVP_IDS`/`scripts/validate-data.js`) are permanent and
-    must never be renamed or removed — a GM's already-saved Session Prep
+    (`PREP_MVP_IDS`/`scripts/validate-data.js`) are permanent and
+    must never be renamed or removed — a GM's already-saved Prep
     selection must keep resolving.
   - English name/Tier/Type were sourced from a GitHub mirror of the
     official Daggerheart SRD 2.0 text (matthttam/daggerheart-srd-2.0),
@@ -179,7 +179,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
     from), (3) `data/adversary-translations-manual.json`, this project's
     own literary translations for the ids daggerheart.ru doesn't cover. No
     adversary ships with an empty or placeholder Russian name.
-  - `scripts/import-session-prep-adversaries.js` is the one-time,
+  - `scripts/import-prep-adversaries.js` is the one-time,
     dependency-free tool that (re)builds the array from these sources and
     writes a translation-status audit report; it refuses to write anything
     if a record is left unresolved/ambiguous.
@@ -192,34 +192,34 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   record, a Core-vs-Hope & Fear filter or badge for adversaries, importing
   or displaying Difficulty/HP/Stress/attacks/features/Experiences/
   descriptions, renaming any of the 17 original MVP ids.
-- **Supersedes:** the original Session Prep MVP's 17-adversary hand-picked
+- **Supersedes:** the original Prep MVP's 17-adversary hand-picked
   subset (no Tier/Type fields at all) — see git history predating this
   decision for that shape.
 
-## PD-006: Session Prep's item catalogue is the full 240-entry loot table
+## PD-006: Prep's item catalogue is the full 240-entry loot table
 
 - **Status:** Active
 - **Date:** 2026-09-28
-- **Decision:** Session Prep's item picker (`data/session-prep.json`'s
+- **Decision:** Prep's item picker (`data/prep.json`'s
   `items` array) references exactly 240 ids: `ci1`-`ci60` (Core Items),
   `cc1`-`cc60` (Core Consumables), `hi1`-`hi60` (Hope & Fear Items),
   `hc1`-`hc60` (Hope & Fear Consumables) — the Daggerheart Loot Generator's
   complete roll-table loot, not just the original MVP's `ci1`-`ci10`
   subset. The full metadata for every one of these ids is merged into the
-  shared `data/items.json` catalogue (which keeps its other, non-Session-
+  shared `data/items.json` catalogue (which keeps its other, non-Prep-
   Prep entries — aliases, environment-linked items — unchanged);
-  `session-prep.json` itself still only ever stores the ordered id list.
+  `prep.json` itself still only ever stores the ordered id list.
 - **Implications:**
   - `scripts/validate-data.js` hard-fails the build if the array isn't
     exactly 240 entries, or if any of the four prefix groups is missing a
     roll number 1-60 or has one outside that range.
-  - Session Prep's item picker gained a Category toggle (Items/
+  - Prep's item picker gained a Category toggle (Items/
     Consumables) and a Source toggle (All/Core/Hope & Fear), each
     combining with the existing name-or-exact-roll-number search — see
-    `SessionPrepUtils.filterItems()`.
+    `PrepUtils.filterItems()`.
   - The `ci1`-`ci10` ids from the original MVP resolve exactly as before
     (same metadata, unchanged) — nothing about them was touched by this
     expansion.
 - **Explicitly excluded:** item quantities (still PD-002), a second
-  storage key or duplicated item metadata inside `session-prep.json`.
-- **Supersedes:** the original Session Prep MVP's `ci1`-`ci10` subset.
+  storage key or duplicated item metadata inside `prep.json`.
+- **Supersedes:** the original Prep MVP's `ci1`-`ci10` subset.
