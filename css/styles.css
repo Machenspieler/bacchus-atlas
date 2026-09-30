@@ -1030,7 +1030,7 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
  * it and the close button to hold the two apart — so the title claims the free
  * space itself and the × keeps the far corner. The detail card wraps its title
  * in .modal-title-row instead and leans on the tier row below for the same job. */
-.modal-header > h2 { margin-right: auto; }
+.modal-header > h2 { margin-right: auto; flex: 1 1 0; min-width: 0; }
 /* The action group sits level with the title's first line (25px * 1.15 = ~29px
  * line box, buttons 28px) and stays together however many lines the name takes. */
 .modal-title-row .env-actions { margin-top: 1px; }
