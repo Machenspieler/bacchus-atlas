@@ -3824,10 +3824,10 @@ function itemToolbarHtml() {
       <div class="field search-field prep-search item-toolbar-search">
         <input type="text" id="prep-item-search" aria-label="${escapeAttr(t('prep_item_search'))}"
                placeholder="${escapeAttr(t('prep_item_search'))}" value="${escapeAttr(state.prepUI.itemSearch)}">
-        <button type="button" class="search-clear-btn" id="prep-item-search-clear" data-sp-clear-search="item"
-                aria-label="${escapeAttr(t('prep_clear_item_filters'))}" data-tip="${escapeAttr(t('prep_clear_item_filters'))}"
-                style="${itemBrowserHasActiveFilters() ? '' : 'display:none;'}">×</button>
       </div>
+      <button type="button" class="btn btn-ghost item-clear-btn" id="prep-item-search-clear" data-sp-clear-search="item"
+              aria-label="${escapeAttr(t('prep_clear_item_filters'))}" data-tip="${escapeAttr(t('prep_clear_item_filters'))}"
+              style="${itemBrowserHasActiveFilters() ? '' : 'visibility:hidden;'}">×</button>
       ${itemDiceGroupHtml()}
       ${itemViewToggleGroupHtml()}
       <span class="prep-count item-toolbar-count" id="prep-item-total-count" role="status" aria-live="polite">${escapeHtml(itemCountText())}</span>
@@ -4006,13 +4006,13 @@ function refreshItemGrid() {
   refreshPrepItemNav();
 }
 
-/** Shows/hides the clear-all-filters control inside the search field —
+/** Shows/hides the clear-all-filters button beside the search field —
  * called after every Type/Source/dice/Clear change (search itself is
  * handled inline by bindPrepSearchField('item')'s own input
  * listener, which already knows the field's live value). */
 function updateItemClearButtonVisibility() {
   const btn = document.getElementById('prep-item-search-clear');
-  if (btn) btn.style.display = itemBrowserHasActiveFilters() ? '' : 'none';
+  if (btn) btn.style.visibility = itemBrowserHasActiveFilters() ? '' : 'hidden';
 }
 
 /** Switches Gallery/Compact: toggles both strips' `hidden`, the two view
@@ -4996,7 +4996,14 @@ function bindPrepSearchField(which) {
     // Items' clear button also has to stay visible when a Type/Source/
     // dice filter is active with no search text typed at all — see
     // itemBrowserHasActiveFilters()/itemNonSearchItemFiltersActive().
-    if (clearBtn) clearBtn.style.display = (input.value || (which === 'item' && itemNonSearchItemFiltersActive())) ? '' : 'none';
+    if (clearBtn) {
+      const show = !!(input.value || (which === 'item' && itemNonSearchItemFiltersActive()));
+      // Items' clear control is a standalone toolbar button that keeps its
+      // grid cell while idle (visibility), so showing it never shifts the
+      // search field; adv's in-field × is simply display-toggled.
+      if (which === 'item') clearBtn.style.visibility = show ? '' : 'hidden';
+      else clearBtn.style.display = show ? '' : 'none';
+    }
     clearTimeout(timer);
     timer = setTimeout(() => { state.prepUI[cfg.stateKey] = input.value; refreshPrepPicker(which); }, PREP_SEARCH_DEBOUNCE_MS);
   });

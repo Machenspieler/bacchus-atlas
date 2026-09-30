@@ -204,10 +204,18 @@ locally") before starting.
       focus) shows the correct rarity guidance for its dice count, plus a
       "Last roll: N" line once it holds the active filter, and stays inside
       the viewport in both languages.
-- [ ] **Item clear-all control**: appears in the search field whenever
-      search/Type/Source/a roll is active, and clicking it resets all four
+- [ ] **Item clear-all control**: a separate square [×] button right after
+      the search field (not inside it), visible whenever
+      search/Type/Source/a roll is active; it keeps its grid cell while hidden,
+      so the search field never resizes. Clicking it resets all four
       (search text, both multiselects, the roll filter, any pending
       reveal) but leaves the current Gallery/Compact view untouched.
+- [ ] **Item strip doesn't jump while filtering** (both views): typing a
+      search that leaves 1 / a few / zero results keeps the panel's height
+      (scrollbar space is always reserved, Compact keeps two rows, "no
+      results" takes a tile's height), the tiles don't slide sideways when
+      the prev/next arrows stop being needed, and the toolbar counter stays
+      one width.
 - [ ] **Item Gallery view** (default): unchanged from before this
       redesign — same large art tiles, hover/selection/click behavior.
 - [ ] **Item Compact view**: two-line records (thumbnail, name, "Item ·

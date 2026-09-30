@@ -3000,7 +3000,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
    a dedicated separator element, for the "subtle vertical separator
    between groups" requirement. */
 .item-toolbar {
-  display: grid; grid-template-columns: auto auto minmax(0,1fr) auto auto auto;
+  display: grid; grid-template-columns: auto auto minmax(0,1fr) auto auto auto auto;
   align-items: center; gap: var(--s-2);
   min-height: 40px; padding-bottom: var(--s-1);
 }
@@ -3008,13 +3008,24 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
   display: flex; gap: var(--s-2); align-items: center; flex-wrap: nowrap;
 }
 .item-toolbar-group + .item-toolbar-group,
-.item-toolbar-search + .item-toolbar-group,
+.item-clear-btn + .item-toolbar-group,
 .item-toolbar-group + .item-toolbar-count {
   border-left: 1px solid var(--line-faint); padding-left: var(--s-3);
 }
 .item-toolbar .prep-search.item-toolbar-search { min-width: 0; }
 .item-toolbar .prep-search.item-toolbar-search input { min-width: 90px; }
-.item-toolbar-count { text-align: right; }
+/* .prep-count's 10ch floor is border-box, so this column's own divider and
+   padding ate into it and "0 of 240" came out narrower than "240 of 240",
+   resizing the search field on every keystroke. */
+.item-toolbar-count { text-align: right; min-width: calc(10ch + var(--s-3) + 1px); }
+/* Standalone square "clear all item filters" button right after the search
+   field — same height as the search input (.prep-search input, 35px). It
+   keeps its grid cell while no filter is active (JS toggles `visibility`,
+   never `display`), so the search field doesn't resize when it appears. */
+.item-clear-btn {
+  width: 35px; height: 35px; padding: 0; flex: none;
+  font-size: var(--fs-md); line-height: 1;
+}
 /* .prep-items-panel is a size container so the counter — the least
    important toolbar element, see CLAUDE.md/docs/architecture.md — can
    hide via a container query before any other control has to shrink or
@@ -3066,7 +3077,10 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
 .prep-item-nav-btn:hover:not(:disabled) { border-color: var(--hope); color: var(--hope-soft); }
 .prep-item-nav-btn:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
 .prep-item-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-.prep-item-nav-btn[hidden] { display: none; }
+/* Hidden arrows (nothing to scroll) still occupy their slot — `visibility`,
+   not `display` — so the tile strip doesn't shift sideways by two arrow
+   widths whenever a filter narrows the list to fit. */
+.prep-item-nav-btn[hidden] { display: flex; visibility: hidden; }
 
 /* Art-first tile strip: square tiles dominated by item artwork, with name
    and selection as contextual overlays rather than permanent card chrome —
@@ -3081,10 +3095,17 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
   --prep-item-tile-size: clamp(108px, 6.8vw, 128px);
   flex: 1 1 auto; min-width: 0;
   display: flex; flex-wrap: nowrap; align-items: flex-start;
-  gap: var(--s-3); overflow-x: auto; -webkit-overflow-scrolling: touch;
+  gap: var(--s-3); overflow-x: scroll; -webkit-overflow-scrolling: touch;
   padding-bottom: var(--s-2);
+  /* overflow-x: scroll (not auto) permanently reserves the scrollbar's
+     height — the track is transparent and the thumb only exists while
+     there is something to scroll — so filtering never makes the panel jump
+     when the scrollbar would otherwise appear/disappear. */
   scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
 }
+/* The "no results" line takes one tile's height, so an empty result doesn't
+   collapse the strip either. */
+.prep-item-grid > .prep-empty { min-height: var(--prep-item-tile-size); display: flex; align-items: center; }
 .prep-item-grid::-webkit-scrollbar { height: 8px; }
 .prep-item-grid::-webkit-scrollbar-track { background: transparent; }
 .prep-item-grid::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
@@ -3200,7 +3221,11 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
    .prep-item-strip-wrap/.prep-item-nav-btn as-is. */
 .prep-item-compact-grid {
   flex: 1 1 auto; min-width: 0;
-  display: grid; grid-template-rows: repeat(2, minmax(0, auto));
+  /* Fixed two-row height (a row is its 60px thumb + padding + border): the
+     strip keeps the same height whether 1 or 100 records match, instead of
+     collapsing to one row / an empty line as the filters narrow. */
+  --prep-compact-row-h: 78px;
+  display: grid; grid-template-rows: repeat(2, var(--prep-compact-row-h));
   /* minmax()'s floor, not just its ceiling, has to be wide enough on its
      own: .prep-row-name/.prep-row-meta's overflow:hidden makes them
      contribute ~0 to the track's intrinsic/max-content size, so an
@@ -3212,10 +3237,11 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
      padding/gap/thumbnail sizing (measured, not guessed).
    */
   grid-auto-flow: column; grid-auto-columns: minmax(240px, 260px);
-  gap: var(--s-2) var(--s-3); overflow-x: auto; overflow-y: hidden;
+  gap: var(--s-2) var(--s-3); overflow-x: scroll; overflow-y: hidden;
   -webkit-overflow-scrolling: touch; padding-bottom: var(--s-2);
   scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
 }
+.prep-item-compact-grid > .prep-empty { grid-row: 1 / -1; align-self: center; }
 .prep-item-compact-grid::-webkit-scrollbar { height: 8px; }
 .prep-item-compact-grid::-webkit-scrollbar-track { background: transparent; }
 .prep-item-compact-grid::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
