@@ -3020,8 +3020,8 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
 .item-toolbar-count { text-align: right; min-width: calc(10ch + var(--s-3) + 1px); }
 /* Standalone square "clear all item filters" button right after the search
    field — same height as the search input (.prep-search input, 35px). It
-   keeps its grid cell while no filter is active (JS toggles `visibility`,
-   never `display`), so the search field doesn't resize when it appears. */
+   is always present and `disabled` (the shared .btn:disabled look) while
+   there is nothing to clear, so the toolbar never shifts. */
 .item-clear-btn {
   width: 35px; height: 35px; padding: 0; flex: none;
   font-size: var(--fs-md); line-height: 1;

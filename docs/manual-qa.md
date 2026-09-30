@@ -205,8 +205,8 @@ locally") before starting.
       "Last roll: N" line once it holds the active filter, and stays inside
       the viewport in both languages.
 - [ ] **Item clear-all control**: a separate square [×] button right after
-      the search field (not inside it), visible whenever
-      search/Type/Source/a roll is active; it keeps its grid cell while hidden,
+      the search field (not inside it), enabled whenever
+      search/Type/Source/a roll is active; it stays on screen, disabled, when nothing is active,
       so the search field never resizes. Clicking it resets all four
       (search text, both multiselects, the roll filter, any pending
       reveal) but leaves the current Gallery/Compact view untouched.
