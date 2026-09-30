@@ -84,11 +84,13 @@
       : input;
     return `
       <div class="bp-stepper" role="group" aria-label="${escapeAttr(t('bp_characters_group'))}" data-where="${where}">
-        <button type="button" class="bp-step" data-bp-act="dec" aria-label="${escapeAttr(dec)}">−</button>
+        <button type="button" class="bp-step" data-bp-act="dec" aria-label="${escapeAttr(dec)}">${ICON_MINUS}</button>
         ${middle}
-        <button type="button" class="bp-step" data-bp-act="inc" aria-label="${escapeAttr(inc)}">+</button>
+        <button type="button" class="bp-step" data-bp-act="inc" aria-label="${escapeAttr(inc)}">${ICON_PLUS}</button>
       </div>`;
   }
+
+  const ICON_MINUS = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 12h13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
 
   const TRIGGER_ATTRS = 'id="bp-trigger" data-bp-act="toggle" aria-haspopup="dialog" aria-expanded="false" aria-controls="bp-popover"';
 
