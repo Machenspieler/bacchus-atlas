@@ -1260,8 +1260,12 @@ function setLang(lang) {
  * card that is no longer the one it was opened from. */
 function syncLangFloat() {
   const blocked = overlayStack.some(o => o.dataset.overlayKind === 'popup');
+  // Read off the stack rather than openDetailId/openItemId: an item card opened
+  // from Prep has no environment card beneath it, and those variables are set
+  // only after registerOverlay() has already called this.
+  const cardOpen = overlayStack.some(o => o.dataset.overlayKind === 'detail' || o.dataset.overlayKind === 'item');
   let el = document.getElementById('lang-float');
-  if (openDetailId === null || blocked) {
+  if (!cardOpen || blocked) {
     el?.remove();
     document.body.classList.remove('has-lang-float');
     return;
@@ -1289,7 +1293,8 @@ function syncLangFloat() {
 function updateLangFloatOffset() {
   const el = document.getElementById('lang-float');
   if (!el) return;
-  const scroller = document.getElementById('detail-modal')?.closest('.modal-overlay');
+  const scroller = document.getElementById('detail-modal')?.closest('.modal-overlay')
+    ?? overlayStack.find(o => o.dataset.overlayKind === 'item');
   const width = scroller ? scroller.offsetWidth - scroller.clientWidth : 0;
   el.style.setProperty('--sbw', `${Math.max(0, width)}px`);
 }
