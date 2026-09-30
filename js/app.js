@@ -4320,12 +4320,11 @@ function setCentralCount(id, count, max) {
 
 function centralHeadHtml({ titleId, icon, title, countHtml, midHtml = '', actionHtml = '' }) {
   const titleHtml = `<h3 class="prep-central-title" id="${titleId}">${icon}<span>${escapeHtml(title)}</span></h3>`;
-  // Battle Points prototype mode only: title, a dot and the count share one
-  // baseline-aligned group, so the serif title and the monospace count sit on
-  // the same line instead of each being box-centred.
-  const lead = midHtml
-    ? `<div class="prep-central-lead">${titleHtml}<span class="prep-central-dot" aria-hidden="true">·</span>${countHtml}</div>`
-    : titleHtml + countHtml;
+  // Title, a dot and the count share one baseline-aligned group, so the serif
+  // title and the monospace count sit on the same line instead of each being
+  // box-centred. The group takes the free space; `midHtml` (Battle Points
+  // prototype slot) and `actionHtml` sit after it.
+  const lead = `<div class="prep-central-lead">${titleHtml}<span class="prep-central-dot" aria-hidden="true">·</span>${countHtml}</div>`;
   return `
     <div class="prep-central-head${midHtml ? ' prep-central-head--mid' : ''}">
       ${lead}${midHtml}${actionHtml}

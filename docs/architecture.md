@@ -344,7 +344,7 @@ three bespoke layouts: `selectedEntityHtml()` (name ≤2 lines, one-line meta,
 semantic remove `<button>`), `centralThumbHtml(kind, src)` (fixed 38–40px
 wrapper, `object-fit: contain`, icon fallback; the `data-sel-thumb-img`
 error listener swaps a broken image for it), `centralHeadHtml()` and
-`centralCountHtml()`. Environments and items are `.prep-sel--card` tiles in
+`centralCountHtml()`. Each section header is one `.prep-central-lead` group — title, a muted `·`, then the count — aligned on a shared text baseline (the icon stays centred on its text); the group takes the free space and any action sits after it. Environments and items are `.prep-sel--card` tiles in
 a grid; adversaries are compact `.prep-sel--row` tiles (48px, one-line name
 and meta, ellipsized) in `.prep-sel-grid--adv`: one column by default, two
 once the `prep-central` container is ≥528px wide (a container query, not a

@@ -2662,6 +2662,14 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
 }
 .prep-central-title span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .prep-central-title svg { width: var(--icon-md); height: var(--icon-md); flex: none; color: var(--hope); }
+/* Title, dot and count form one baseline-aligned group: the serif title and
+   the monospace count share a baseline instead of each being box-centred. The
+   icon stays centred on its text. The group takes the free space, so the
+   action (and the Battle Points slot) sit at the far end. */
+.prep-central-lead { display: flex; align-items: baseline; gap: 6px; flex: 1 1 auto; min-width: 0; }
+.prep-central-lead .prep-central-title { flex: 0 1 auto; align-items: baseline; }
+.prep-central-lead .prep-central-title svg { align-self: center; }
+.prep-central-dot { flex: none; color: var(--muted); }
 /* Gold marks "limit reached" only: the pill shape (border + tint) is the
    non-colour cue, the sr-only text inside carries it for assistive tech. */
 .prep-central-count {
@@ -2670,6 +2678,10 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
   border: 1px solid transparent; border-radius: var(--r-pill);
 }
 .prep-central-count { font-variant-numeric: tabular-nums; }
+.prep-central-lead .prep-central-count { min-width: 0; padding-inline: 0; text-align: left; }
+/* The limit pill keeps its padding; its trailing side is pulled back so the
+   header does not grow, and it never crowds the dot. */
+.prep-central-lead .prep-central-count.is-limit { padding-inline: 6px; margin-left: 0; margin-right: -6px; }
 .prep-central-count.is-limit { color: var(--hope-soft); border-color: rgba(217,164,65,0.45); background: rgba(217,164,65,0.08); }
 .prep-central-body { padding-block: var(--pc-pad-y); }
 .prep-central-section .prep-empty { padding-block: 2px; }
@@ -2687,11 +2699,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
    Only rendered on "#/prep?battlePointsPrototype=1"; with the flag off none
    of these selectors matches anything. Throwaway comparison UI — variants
    A/B/C share the summary button and the popover below. */
-.prep-central-lead { display: flex; align-items: baseline; gap: 6px; flex: 0 1 auto; min-width: 0; }
-.prep-central-head--mid .prep-central-title { flex: 0 1 auto; align-items: baseline; }
-.prep-central-head--mid .prep-central-title svg { align-self: center; }
-.prep-central-dot { flex: none; color: var(--muted); }
-.prep-central-head--mid .prep-central-count { min-width: 0; padding-inline: 0; text-align: left; }
+.prep-central-head--mid .prep-central-lead { flex: 0 1 auto; }
 .bp-slot { flex: 0 1 auto; min-width: 0; margin-left: auto; }
 .bp-slot:empty { display: none; }
 .bp {
