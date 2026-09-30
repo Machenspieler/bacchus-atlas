@@ -23,6 +23,8 @@ js/list-utils.js        — Lists name validation
 js/search-index.js      — environment search index builder
 js/prep-utils.js — Prep pure selection/search/filter logic
 js/freshcutgrass-utils.js — FreshCutGrass encounter-URL encoder (shared by env detail + Prep)
+js/battle-points.js     — Battle Points arithmetic (pure; used by the Prep header prototypes)
+js/battle-points-prototype.js — EPHEMERAL Battle Points header prototypes (flag-gated, removable)
 js/app.js               — everything else: state, rendering, event wiring
 ```
 
@@ -182,6 +184,33 @@ global to keep in sync with it.
   write this visit), `ok` ("Saved locally · HH:MM"), `error`. There is no
   "Saving…" state — SafeStorage writes are synchronous, so it could never be
   observed, only faked.
+
+## Battle Points header prototypes (temporary)
+
+Review-only prototypes of a Battle Points summary in the Prep "Adversaries"
+section header. **Not a shipped feature** and no product decision yet (final
+variant, and whether it hides when empty, are open).
+
+- Opt-in URL: `#/prep?battlePointsPrototype=1`. `RouteUtils.parseRouteHash()`
+  treats any `#/prep?…` as the Prep route; `RouteUtils.hasBattlePointsPrototypeFlag()`
+  is the only test for the flag. Plain `#/prep` (or leaving Prep) clears it;
+  an environment overlay opened from a flagged page keeps it.
+- With the flag off, `BattlePointsPrototype.stripHtml()/slotHtml()` return `''`
+  and `mount()`/`refresh()` do nothing: the ordinary Prep DOM is unchanged.
+- All prototype state (variant A/B/C, data source, empty-state behaviour,
+  character count, style/checkbox adjustments) lives in `js/battle-points-prototype.js`
+  and is never persisted — no SafeStorage key, no Prep schema change, no
+  effect on FreshCutGrass export. A reload resets it.
+- Calculation is the pure `BattlePoints.calculate()`; adversaries are counted by
+  the canonical `adv.type` id, never a translated label. Prep has no
+  quantity (PD-002), so every selected adversary counts once.
+- Controls are rendered once and patched in place (`update()`), so focus is
+  never lost. The popover is `position: fixed`, so opening it never shifts layout.
+- `node scripts/battle-points-screenshots.js` regenerates
+  `artifacts/battle-points-prototypes/` (git-ignored) and prints a layout report.
+- Removing the prototypes: delete `js/battle-points-prototype.js`, its
+  `<script>` tag, the three `BattlePointsPrototype.*` hooks and `midHtml` in
+  `js/app.js`, the `bp-*` block in `css/styles.css`, and the `bp_*` i18n keys.
 
 ## Environment search index
 
@@ -500,6 +529,7 @@ directly rather than driving it through the DOM:
 | `js/search-index.js` | environment search record building and matching |
 | `js/prep-utils.js` | Prep default shape, prep lifecycle (add/switch/remove prep, title resolution), selection toggling, search/Tier/Type/Category/Source filtering |
 | `js/freshcutgrass-utils.js` | FreshCutGrass encounter URL encoding |
+| `js/battle-points.js` | Battle Points base budget, per-type cost, automatic/manual adjustments, number formatting |
 | `js/random-environment-utils.js` | Random Environment card's Tier-badge derivation and pool pick |
 
 ## Build and deployment flow
@@ -532,6 +562,7 @@ stays copy-only.
 | Environment search index | `js/search-index.js` | `tests/search-index.test.js` |
 | Prep selection/search/filter logic | `js/prep-utils.js` | `tests/prep-utils.test.js` |
 | FreshCutGrass URL encoding | `js/freshcutgrass-utils.js` | `tests/freshcutgrass-utils.test.js` |
+| Battle Points calculation | `js/battle-points.js` | `tests/battle-points.test.js` |
 | Initial loading shell lifecycle | `js/app.js` (`beginInitialLoading()` etc.) | `tests/loading-state.test.js` |
 | Random Environment card Tier badge/pick | `js/random-environment-utils.js` | `tests/random-environment-utils.test.js` |
 

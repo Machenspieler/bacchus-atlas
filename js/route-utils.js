@@ -20,6 +20,8 @@
 
   const ENV_SUFFIX_PATTERN = /\/env\/([^/]+)$/;
   const LEGACY_PREP_HASH = '#/session-prep';
+  const PREP_QUERY_PATTERN = /^(#\/prep)\?.*$/;
+  const PROTOTYPE_FLAG_PATTERN = /^#\/prep\?(?:.*&)?battlePointsPrototype=1(?:&.*)?(?:\/env\/[^/]*)?$/;
   const LIST_ID_PATTERN = /^#\/lists\/(.+)$/;
 
   /**
@@ -70,6 +72,13 @@
       working = working.slice(0, envMatch.index) || '#';
     }
 
+    // Prototype flag: "#/prep?battlePointsPrototype=1" is still the Prep
+    // route — the query only toggles the ephemeral Battle Points prototype
+    // strip (see hasBattlePointsPrototypeFlag()) and never reaches a
+    // canonical hash.
+    const prepQuery = working.match(PREP_QUERY_PATTERN);
+    if (prepQuery) working = prepQuery[1];
+
     let route;
     const listMatch = working.match(LIST_ID_PATTERN);
     if (listMatch) {
@@ -97,6 +106,12 @@
       malformed: malformed,
       canonicalHash: malformed || legacy ? routeToHash(route) : null,
     };
+  }
+
+  /** Whether a raw hash carries the Battle Points prototype flag. Pure string
+   * test — nothing is decoded. */
+  function hasBattlePointsPrototypeFlag(hash) {
+    return typeof hash === 'string' && PROTOTYPE_FLAG_PATTERN.test(hash);
   }
 
   /** The address of the route behind the card, without any card on it. */
@@ -129,5 +144,6 @@
     baseHash: baseHash,
     envHash: envHash,
     routeToHash: routeToHash,
+    hasBattlePointsPrototypeFlag: hasBattlePointsPrototypeFlag,
   };
 });

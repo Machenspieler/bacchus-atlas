@@ -4318,11 +4318,11 @@ function setCentralCount(id, count, max) {
   if (el) el.outerHTML = centralCountHtml(id, count, max);
 }
 
-function centralHeadHtml({ titleId, icon, title, countHtml, actionHtml = '' }) {
+function centralHeadHtml({ titleId, icon, title, countHtml, midHtml = '', actionHtml = '' }) {
   return `
-    <div class="prep-central-head">
+    <div class="prep-central-head${midHtml ? ' prep-central-head--mid' : ''}">
       <h3 class="prep-central-title" id="${titleId}">${icon}<span>${escapeHtml(title)}</span></h3>
-      ${countHtml}${actionHtml}
+      ${countHtml}${midHtml}${actionHtml}
     </div>`;
 }
 
@@ -4477,6 +4477,7 @@ function refreshCentralAdversaries() {
   const warning = document.getElementById('prep-central-adv-warning');
   if (warning) warning.innerHTML = advWarningHtml(prep);
   refreshFreshCutGrassLink();
+  BattlePointsPrototype.refresh();
   syncCentralTruncationTips();
 }
 
@@ -4520,6 +4521,7 @@ function centralSectionHtml(prep) {
   return `
     <section class="prep-central" aria-labelledby="prep-central-heading">
       <h2 id="prep-central-heading" class="sr-only">${t('prep_title')}</h2>
+      ${BattlePointsPrototype.stripHtml()}
       <section class="prep-central-section" data-sp-section="environments" aria-labelledby="prep-central-env-title">
         ${centralHeadHtml({ titleId: 'prep-central-env-title', icon: ICON_TABLE_ENVIRONMENTS, title: t('prep_central_environments'), countHtml: centralEnvCountHtml(prep) })}
         <div class="prep-central-body" id="prep-central-env-list">${centralEnvListHtml(prep)}</div>
@@ -4527,6 +4529,7 @@ function centralSectionHtml(prep) {
       <section class="prep-central-section" data-sp-section="adversaries" aria-labelledby="prep-central-adv-title">
         ${centralHeadHtml({ titleId: 'prep-central-adv-title', icon: ICON_TABLE_ADVERSARIES, title: t('prep_central_adversaries'),
           countHtml: centralCountHtml('prep-central-adv-count', prep.adversaryIds.length, null),
+          midHtml: BattlePointsPrototype.slotHtml(),
           actionHtml: `<span class="prep-freshcutgrass-wrap" id="prep-freshcutgrass-wrap">${freshCutGrassLinkHtml(prep)}</span>` })}
         <div id="prep-central-adv-warning">${advWarningHtml(prep)}</div>
         <div class="prep-central-body" id="prep-central-adv-list">${centralAdvListHtml(prep)}</div>
@@ -5439,6 +5442,7 @@ function renderPrepPage() {
   bindAdvToolbarControls();
   initPrepItemNav(activeItemGridId());
   applyPrepChromeDom();
+  BattlePointsPrototype.mount();
   syncCentralTruncationTips();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncCentralTruncationTips);
 }
