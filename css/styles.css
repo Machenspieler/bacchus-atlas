@@ -2397,14 +2397,59 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
   --pc-gap: var(--s-2);        /* 8px   gap between cards and card parts   */
   --pc-head-h: 36px;           /*       section header                     */
   --pc-thumb: 40px;
+  --pc-thumb-row: 36px;        /*       adversary tile thumbnail           */
   --pc-card-h: 56px;
   --pc-row-h: 48px;
   --pc-pad-x-row: 8px;         /*       adversary tile side padding        */
+  --pc-row-gap: 6px;           /*       adversary tile row gap             */
   --pc-remove: 32px;
+  --pc-remove-room: 24px;      /*       card text's reserve for the remove button */
+  --pc-scroll-pad: 40px;       /*       keeps a sticky header off scrolled-to content */
+  --pc-title-size: var(--fs-md);        /* section heading                  */
+  --pc-icon: var(--icon-md);            /* section heading icon             */
+  --pc-count-size: var(--fs-xs);        /* section heading counter          */
+  --pc-name-size: var(--fs-card-copy);  /* card title                       */
+  --pc-name-lh: 17px;
+  --pc-meta-size: var(--fs-xs);         /* card metadata                    */
+  --pc-meta-lh: 15px;
   container: prep-central / inline-size;
   min-width: 0; display: flex; flex-direction: column;
   background: var(--ink-raised); border: 1px solid var(--line-strong); border-top-color: rgba(217,164,65,0.55);
   border-radius: var(--r-lg); padding: 0 var(--pc-pad-x); box-shadow: var(--e-2);
+}
+/* Comfortable density for large monitors (e.g. 1920x1080 at 100% zoom): the
+   same three-column layout and column widths, with only the central
+   workspace's own content ~8-12% larger. Needs both width AND height — a wide
+   but short window (or a 1536x864 laptop viewport) keeps the compact values
+   above. Nothing here but token overrides, so the rules below stay the one
+   source of truth for structure. The sidebars/Items strip don't read --pc-*. */
+@media (min-width: 1800px) and (min-height: 900px) {
+  .prep-central {
+    /* --pc-pad-x is deliberately NOT overridden: it sets the panel's content
+       width, which the `@container prep-central (max-width: 760px)` Battle
+       Points rules measure — at 1920px that box is exactly 760px, so any
+       extra side padding would drop the "Characters" label. */
+    --pc-pad-y: 8px;           /* section body padding: +2 above and below */
+    --pc-pad-card: 8px;
+    --pc-gap: 10px;
+    --pc-head-h: 40px;
+    --pc-thumb: 44px;
+    --pc-thumb-row: 40px;
+    --pc-card-h: 62px;
+    --pc-row-h: 52px;
+    --pc-pad-x-row: 10px;
+    --pc-row-gap: 8px;
+    --pc-remove: 34px;
+    --pc-remove-room: 22px;    /* card padding grew by 2, so the total reserve stays 30px */
+    --pc-scroll-pad: 44px;
+    --pc-title-size: 18px;
+    --pc-icon: 18px;
+    --pc-count-size: 13px;
+    --pc-name-size: 15px;
+    --pc-name-lh: 18px;
+    --pc-meta-size: 13px;
+    --pc-meta-lh: 16px;
+  }
 }
 
 .prep-col-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2); flex-wrap: wrap; }
@@ -2657,13 +2702,13 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
 }
 .prep-central-title {
   flex: 1 1 auto; min-width: 0; margin: 0; display: flex; align-items: center; gap: 6px;
-  font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md); line-height: 1.2;
+  font-family: var(--font-display); font-weight: 400; font-size: var(--pc-title-size); line-height: 1.2;
   letter-spacing: var(--tracking-display); color: var(--parchment);
 }
 .prep-central-title span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* Section icon: custom illustrated asset (img/ui/section-*.png), one shared
    16px box for all three; keeps its own colours — no filter, tint or plate. */
-.prep-central-icon { display: block; width: var(--icon-md); height: var(--icon-md); flex: none; object-fit: contain; }
+.prep-central-icon { display: block; width: var(--pc-icon); height: var(--pc-icon); flex: none; object-fit: contain; }
 /* Title, dot and count form one baseline-aligned group: the serif title and
    the monospace count share a baseline instead of each being box-centred. The
    icon stays centred on its text. The group takes the free space, so the
@@ -2676,7 +2721,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
    non-colour cue, the sr-only text inside carries it for assistive tech. */
 .prep-central-count {
   flex: none; padding: 0 6px; min-width: 2.25em; text-align: center;
-  font-size: var(--fs-xs); line-height: 18px; font-family: var(--font-mono); color: var(--muted);
+  font-size: var(--pc-count-size); line-height: 18px; font-family: var(--font-mono); color: var(--muted);
   border: 1px solid transparent; border-radius: var(--r-pill);
 }
 .prep-central-count { font-variant-numeric: tabular-nums; }
@@ -2839,12 +2884,12 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
 .prep-sel-thumb.is-fallback img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .prep-sel-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
 .prep-sel-name {
-  font-size: var(--fs-card-copy); line-height: 17px; font-weight: 500; color: var(--parchment);
+  font-size: var(--pc-name-size); line-height: var(--pc-name-lh); font-weight: 500; color: var(--parchment);
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2;
   overflow: hidden; overflow-wrap: anywhere;
 }
 .prep-sel-meta {
-  margin-top: 1px; font-size: var(--fs-xs); line-height: 15px; color: var(--muted);
+  margin-top: 1px; font-size: var(--pc-meta-size); line-height: var(--pc-meta-lh); color: var(--muted);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .prep-sel-remove {
@@ -2903,7 +2948,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
   border-color: var(--line-strong); background: var(--ink-hover);
   box-shadow: inset 0 0 0 1px rgba(217,164,65,0.08);
 }
-.prep-sel--card .prep-sel-body { padding-right: 24px; }
+.prep-sel--card .prep-sel-body { padding-right: var(--pc-remove-room); }
 .prep-sel--card .prep-sel-remove { position: absolute; top: 1px; right: 1px; }
 
 /* Row layout (adversaries): a fixed-height compact tile in a responsive grid
@@ -2917,7 +2962,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
 }
 .prep-sel--row:hover { border-color: var(--line-strong); background: var(--ink-hover); }
 .prep-sel--row .prep-sel-name { -webkit-line-clamp: 1; line-clamp: 1; }
-.prep-sel--row .prep-sel-thumb { --pc-thumb: 36px; }
+.prep-sel--row .prep-sel-thumb { --pc-thumb: var(--pc-thumb-row); }
 /* min-width:0 all the way down so the name (not the ↗ or the remove button)
    is what gives way; the ↗ is flex:none and stays right after the name. */
 .prep-sel--row .prep-sel-main, .prep-sel--row .prep-sel-body, .prep-sel--row .prep-sel-title { min-width: 0; }
@@ -2930,7 +2975,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
 /* Adversaries: one column until the central panel can hold two ≥260px tiles
    side by side (see the @container rules below). Row gap is tighter than the
    column gap — the tiles are short. */
-.prep-sel-grid--adv { grid-template-columns: minmax(0, 1fr); gap: 6px var(--pc-gap); }
+.prep-sel-grid--adv { grid-template-columns: minmax(0, 1fr); gap: var(--pc-row-gap) var(--pc-gap); }
 
 /* The center column narrows before the page does (laptop widths, the
    two-column tablet layout): step down the grids instead of squeezing names
@@ -3323,7 +3368,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
   body[data-route="prep"] .prep-central {
     min-height: 0;
     overflow-y: auto;
-    scroll-padding-top: 40px;
+    scroll-padding-top: var(--pc-scroll-pad);
     scrollbar-gutter: stable;
     scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
   }

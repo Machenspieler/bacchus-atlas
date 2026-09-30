@@ -357,6 +357,13 @@ narrower, so it stays one column there). Sections are semantic `<section>`s with
   two lines (adversaries: one) and `syncCentralTruncationTips()` attaches the
   full text as a `data-tip` tooltip only where the layout actually clipped
   it (re-run after every central refresh, on resize, and when fonts load).
+  The token set also covers type sizes (`--pc-title-size`, `--pc-name-size`,
+  `--pc-meta-size`, …) and the section icon, so the large-monitor
+  *comfortable density* (`@media (min-width: 1800px) and (min-height: 900px)`,
+  CSS-only, directly under the `.prep-central` rule) is nothing but a token
+  override block. `--pc-pad-x` is excluded on purpose: it sets the panel's
+  content width, which the Battle Points `@container prep-central
+  (max-width: 760px)` rules measure (exactly 760px at 1920).
 - **Interaction zones are sibling elements, never nested** (and never one big
   wrapper with `stopPropagation()` on its children). Card layout
   (environments, items): one `.prep-sel-main` `<button>` covering the

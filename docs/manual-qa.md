@@ -89,6 +89,15 @@ locally") before starting.
       empty state is one short line per section; every remove button is a
       32×32 button with a localized name («Удалить окружение «…»») and a
       visible keyboard focus ring; RU/EN both hold at 1536, 1280 and 900.
+- [ ] **Central comfortable density** (`min-width: 1800px` and
+      `min-height: 900px`): at 1920×1080 the central cards, thumbnails,
+      headings and remove buttons are visibly (~8–12%) larger than at
+      1536×864, with 3 environment cards still on one row and adversaries/
+      items still in two columns; the Battle Points group keeps its label and
+      one line; only the centre changes — the left/right pickers and the
+      Items strip are pixel-identical between the two sizes. Check the edge
+      of the query too: 1799×900 and 1800×899 stay compact, 1800×900 and
+      1920×950 are comfortable, with no horizontal scrollbar at any of them.
 - [ ] **Selected-adversary grid**: 4+ selected adversaries form a two-column
       grid at 1536 and 1440 (central panel ≥528px) and fall back to one column
       at 1280; tiles stay 48px tall, a long name/meta ellipsizes with the ↗
