@@ -857,3 +857,13 @@ test('rollNd12 defaults to Math.random and stays within the valid range', () => 
     assert.ok(total >= 5 && total <= 60, `${total} out of range`);
   }
 });
+
+test('formatRollCoverage compresses item rolls into ranges without inventing gaps', () => {
+  const f = SPU.formatRollCoverage;
+  assert.equal(f([]), '');
+  assert.equal(f([4]), '4');
+  assert.equal(f([4, 4]), '4');
+  assert.equal(f([4, 5]), '4\u20135');
+  assert.equal(f([11, 4, 6, 5, 10]), '4\u20136, 10\u201311');
+  assert.equal(f([1, 3, 4, 8]), '1, 3\u20134, 8');
+});

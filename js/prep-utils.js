@@ -463,6 +463,23 @@
     });
   }
 
+  /** Roll coverage of a set of items as compressed inclusive ranges, e.g.
+   * [4,5,6,10,11] -> "4–6, 10–11". Item rolls are single integers that any
+   * subset of items can leave gaps between, so a bare min–max would claim
+   * rolls nobody selected. Returns '' when there is no valid roll. */
+  function formatRollCoverage(rolls) {
+    var sorted = Array.from(new Set((rolls || []).filter(function (r) { return Number.isFinite(r); })))
+      .sort(function (a, b) { return a - b; });
+    var parts = [];
+    for (var i = 0; i < sorted.length;) {
+      var j = i;
+      while (j + 1 < sorted.length && sorted[j + 1] === sorted[j] + 1) j++;
+      parts.push(i === j ? String(sorted[i]) : sorted[i] + '–' + sorted[j]);
+      i = j + 1;
+    }
+    return parts.join(', ');
+  }
+
   /* ---------------- item search + filters (compact "All Items" toolbar) ----------------
    * Reuses the same precomputed-index + normalizeSearchToken()/
    * tokenizeEnvironmentQuery()/matchesEnvironmentTokens() machinery the
@@ -637,6 +654,7 @@
     itemSourceRank: itemSourceRank,
     itemKindRank: itemKindRank,
     sortItemsForPrep: sortItemsForPrep,
+    formatRollCoverage: formatRollCoverage,
     ITEM_KIND_ALIASES: ITEM_KIND_ALIASES,
     ITEM_SOURCE_ALIASES: ITEM_SOURCE_ALIASES,
     buildItemSearchText: buildItemSearchText,

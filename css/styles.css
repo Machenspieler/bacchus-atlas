@@ -2808,6 +2808,24 @@ body:not([data-route="prep"]) .header-actions::after {
    header does not grow, and it never crowds the dot. */
 .prep-central-lead .prep-central-count.is-limit { padding-inline: 6px; margin-left: 0; margin-right: -6px; }
 .prep-central-count.is-limit { color: var(--hope-soft); border-color: rgba(217,164,65,0.45); background: rgba(217,164,65,0.08); }
+/* Roll coverage + clear-all live in the lead group, after the count: muted
+   header metadata and a tertiary icon button, never a pill or a far-right control. */
+.prep-central-roll-slot, .prep-central-clear-slot { display: contents; }
+.prep-central-roll {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: var(--pc-count-size); line-height: 18px; font-family: var(--font-mono); color: var(--muted);
+}
+.prep-central-title:focus { outline: none; }
+.prep-central-clear {
+  flex: none; align-self: center; width: 28px; height: 28px; margin-block: -6px; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid transparent; border-radius: var(--r-sm);
+  background: transparent; color: var(--muted); opacity: 0.75; cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out), opacity var(--t-fast) var(--ease-out);
+}
+.prep-central-clear svg { width: 15px; height: 15px; display: block; }
+.prep-central-clear:hover { opacity: 1; color: var(--fear-soft); background: rgba(156,43,59,0.14); }
+.prep-central-clear:focus-visible { opacity: 1; outline: var(--focus-ring); outline-offset: 1px; color: var(--fear-soft); background: rgba(156,43,59,0.14); }
 .prep-central-body { padding-block: var(--pc-pad-y); }
 .prep-central-section .prep-empty { padding-block: 2px; }
 .prep-central-section .prep-warning { margin-block: 0 var(--pc-pad-y); }

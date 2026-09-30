@@ -4545,13 +4545,41 @@ function setCentralCount(id, count, max) {
   if (el) el.outerHTML = centralCountHtml(id, count, max);
 }
 
-function centralHeadHtml({ titleId, icon, title, countHtml, midHtml = '', actionHtml = '' }) {
-  const titleHtml = `<h3 class="prep-central-title" id="${titleId}">${icon}<span>${escapeHtml(title)}</span></h3>`;
+/** Tertiary "clear all" trash button for a category header; absent (never
+ * disabled) when the category is empty. `kind` is environments|adversaries|items. */
+function clearAllSlotHtml(kind, count) {
+  const label = t('prep_clear_all_' + kind);
+  const btn = count
+    ? `<button type="button" class="prep-central-clear" data-sp-clear-all="${kind}"
+         aria-label="${escapeAttr(label)}" data-tip="${escapeAttr(label)}">${ICON_TRASH}</button>`
+    : '';
+  return `<span class="prep-central-clear-slot" id="prep-central-${kind}-clear">${btn}</span>`;
+}
+
+function refreshClearAllSlot(kind, count) {
+  const el = document.getElementById(`prep-central-${kind}-clear`);
+  if (el) el.outerHTML = clearAllSlotHtml(kind, count);
+}
+
+/** " · Roll 4–6, 10–11" for the selected items; empty when none is selected.
+ * Derived from prep.itemIds each time — never stored. */
+function itemRollMetaHtml(prep) {
+  const rolls = [];
+  new Set(prep.itemIds).forEach(id => { const item = itemById(id); if (item) rolls.push(item.roll); });
+  const range = PrepUtils.formatRollCoverage(rolls);
+  const inner = range
+    ? `<span class="prep-central-dot" aria-hidden="true">·</span><span class="prep-central-roll">${escapeHtml(t('prep_central_roll').replace('{range}', range))}</span>`
+    : '';
+  return `<span class="prep-central-roll-slot" id="prep-central-item-roll">${inner}</span>`;
+}
+
+function centralHeadHtml({ titleId, icon, title, countHtml, metaHtml = '', clearHtml = '', midHtml = '', actionHtml = '' }) {
+  const titleHtml = `<h3 class="prep-central-title" id="${titleId}" tabindex="-1">${icon}<span>${escapeHtml(title)}</span></h3>`;
   // Title, a dot and the count share one baseline-aligned group, so the serif
   // title and the monospace count sit on the same line instead of each being
   // box-centred. The group takes the free space; `midHtml` (Battle Points
   // slot) and `actionHtml` sit after it.
-  const lead = `<div class="prep-central-lead">${titleHtml}<span class="prep-central-dot" aria-hidden="true">·</span>${countHtml}</div>`;
+  const lead = `<div class="prep-central-lead">${titleHtml}<span class="prep-central-dot" aria-hidden="true">·</span>${countHtml}${metaHtml}${clearHtml}</div>`;
   return `
     <div class="prep-central-head${midHtml ? ' prep-central-head--mid' : ''}">
       ${lead}${midHtml}${actionHtml}
@@ -4610,6 +4638,7 @@ function refreshCentralEnvironments() {
   const list = document.getElementById('prep-central-env-list');
   if (list) list.innerHTML = centralEnvListHtml(prep);
   setCentralCount('prep-central-env-count', prep.environmentIds.length, PrepUtils.MAX_ENVIRONMENTS);
+  refreshClearAllSlot('environments', prep.environmentIds.length);
   refreshEnvCheckboxDisabled(prep);
   syncCentralTruncationTips();
 }
@@ -4706,6 +4735,7 @@ function refreshCentralAdversaries() {
   const list = document.getElementById('prep-central-adv-list');
   if (list) list.innerHTML = centralAdvListHtml(prep);
   setCentralCount('prep-central-adv-count', prep.adversaryIds.length, null);
+  refreshClearAllSlot('adversaries', prep.adversaryIds.length);
   const warning = document.getElementById('prep-central-adv-warning');
   if (warning) warning.innerHTML = advWarningHtml(prep);
   refreshFreshCutGrassLink();
@@ -4746,7 +4776,49 @@ function refreshCentralItems() {
   const list = document.getElementById('prep-central-item-list');
   if (list) list.innerHTML = centralItemListHtml(prep);
   setCentralCount('prep-central-item-count', prep.itemIds.length, null);
+  const roll = document.getElementById('prep-central-item-roll');
+  if (roll) roll.outerHTML = itemRollMetaHtml(prep);
+  refreshClearAllSlot('items', prep.itemIds.length);
   syncCentralTruncationTips();
+}
+
+/** Empties one category of the active prep through the same updatePrep() path
+ * a single "×" removal uses, then brings the picker checkboxes into line. */
+function clearPrepCategory(kind) {
+  const field = { environments: 'environmentIds', adversaries: 'adversaryIds', items: 'itemIds' }[kind];
+  const prep = activePrep();
+  if (!field || !prep || !prep[field].length) return;
+  const removed = prep[field];
+  const { result } = updatePrep(p => Object.assign({}, p, { [field]: [] }));
+  updateSaveStatusDisplay(result);
+  if (kind === 'environments') {
+    refreshCentralEnvironments();
+    removed.forEach(id => {
+      syncPickerCheckbox('data-sp-toggle-env', id, false);
+      const env = allEnvs().find(e => e.id === id);
+      if (env) updatePrepToggleLabel('data-sp-toggle-env', id, false, envName(env));
+    });
+    syncEnvPrepControls();
+  } else if (kind === 'adversaries') {
+    refreshCentralAdversaries();
+    removed.forEach(id => {
+      syncPickerCheckbox('data-sp-toggle-adv', id, false);
+      const adv = state.prepCatalog.adversaryById.get(id);
+      if (adv) updatePrepToggleLabel('data-sp-toggle-adv', id, false, spName(adv));
+    });
+  } else {
+    refreshCentralItems();
+    removed.forEach(id => {
+      syncPickerCheckbox('data-sp-toggle-item', id, false);
+      const item = itemById(id);
+      if (item) updatePrepToggleLabel('data-sp-toggle-item', id, false, itemField(item, 'name'));
+    });
+    document.querySelectorAll('.prep-item-card.is-selected, .prep-item-compact-row.is-selected')
+      .forEach(card => card.classList.remove('is-selected'));
+  }
+  // The trash button just left the DOM; keep keyboard focus in this section.
+  const titleId = { environments: 'env', adversaries: 'adv', items: 'item' }[kind];
+  document.getElementById('prep-central-' + titleId + '-title')?.focus({ preventScroll: true });
 }
 
 function centralSectionHtml(prep) {
@@ -4754,12 +4826,13 @@ function centralSectionHtml(prep) {
     <section class="prep-central" aria-labelledby="prep-central-heading">
       <h2 id="prep-central-heading" class="sr-only">${t('prep_title')}</h2>
       <section class="prep-central-section" data-sp-section="environments" aria-labelledby="prep-central-env-title">
-        ${centralHeadHtml({ titleId: 'prep-central-env-title', icon: ICON_TABLE_ENVIRONMENTS, title: t('prep_central_environments'), countHtml: centralEnvCountHtml(prep) })}
+        ${centralHeadHtml({ titleId: 'prep-central-env-title', icon: ICON_TABLE_ENVIRONMENTS, title: t('prep_central_environments'), countHtml: centralEnvCountHtml(prep), clearHtml: clearAllSlotHtml('environments', prep.environmentIds.length) })}
         <div class="prep-central-body" id="prep-central-env-list">${centralEnvListHtml(prep)}</div>
       </section>
       <section class="prep-central-section" data-sp-section="adversaries" aria-labelledby="prep-central-adv-title">
         ${centralHeadHtml({ titleId: 'prep-central-adv-title', icon: ICON_TABLE_ADVERSARIES, title: t('prep_central_adversaries'),
           countHtml: centralCountHtml('prep-central-adv-count', prep.adversaryIds.length, null),
+          clearHtml: clearAllSlotHtml('adversaries', prep.adversaryIds.length),
           midHtml: BattlePointsUI.slotHtml(),
           actionHtml: `<span class="prep-freshcutgrass-wrap" id="prep-freshcutgrass-wrap">${freshCutGrassLinkHtml(prep)}</span>` })}
         <div id="prep-central-adv-warning">${advWarningHtml(prep)}</div>
@@ -4767,7 +4840,8 @@ function centralSectionHtml(prep) {
       </section>
       <section class="prep-central-section" data-sp-section="items" aria-labelledby="prep-central-item-title">
         ${centralHeadHtml({ titleId: 'prep-central-item-title', icon: ICON_TABLE_ITEMS, title: t('prep_central_items'),
-          countHtml: centralCountHtml('prep-central-item-count', prep.itemIds.length, null) })}
+          countHtml: centralCountHtml('prep-central-item-count', prep.itemIds.length, null),
+          metaHtml: itemRollMetaHtml(prep), clearHtml: clearAllSlotHtml('items', prep.itemIds.length) })}
         <div class="prep-central-body" id="prep-central-item-list">${centralItemListHtml(prep)}</div>
       </section>
     </section>`;
@@ -5349,6 +5423,9 @@ function bindPrepDelegation(el) {
 
     const openEnv = e.target.closest('[data-sp-open-env]');
     if (openEnv) { navigate(envHash(openEnv.dataset.spOpenEnv, state.route)); return; }
+
+    const clearAll = e.target.closest('[data-sp-clear-all]');
+    if (clearAll) { clearPrepCategory(clearAll.dataset.spClearAll); return; }
 
     const removeEnv = e.target.closest('[data-sp-remove-env]');
     if (removeEnv) {
