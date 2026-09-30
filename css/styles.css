@@ -2687,7 +2687,11 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
    Only rendered on "#/prep?battlePointsPrototype=1"; with the flag off none
    of these selectors matches anything. Throwaway comparison UI — variants
    A/B/C share the summary button and the popover below. */
-.prep-central-head--mid .prep-central-title { flex: 0 1 auto; }
+.prep-central-lead { display: flex; align-items: baseline; gap: 6px; flex: 0 1 auto; min-width: 0; }
+.prep-central-head--mid .prep-central-title { flex: 0 1 auto; align-items: baseline; }
+.prep-central-head--mid .prep-central-title svg { align-self: center; }
+.prep-central-dot { flex: none; color: var(--muted); }
+.prep-central-head--mid .prep-central-count { min-width: 0; padding-inline: 0; text-align: left; }
 .bp-slot { flex: 0 1 auto; min-width: 0; margin-left: auto; }
 .bp-slot:empty { display: none; }
 .bp {
