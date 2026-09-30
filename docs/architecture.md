@@ -33,6 +33,16 @@ Everything above `js/app.js` is a dependency-free module exposing a global
 that also works under plain Node `require()` — that's what makes each one
 directly unit-testable in `tests/*.test.js` without a DOM or bundler.
 
+## Catalog toolbar row
+
+`#toolbar` and `#result-count` are siblings inside `.catalog-bar`, a wrapping
+flex row. `#toolbar` is `display: contents`, so the filter `.toolbar` and the
+status (`Showing X of Y · Clear filters`) are items of one row; from 901px up
+the status is pushed right with `margin-left: auto`, and only it wraps below
+when the controls plus status don't fit. Controls are never shrunk (the
+toolbar is `flex: 0 0 auto; width: max-content`, with pills/fields
+non-shrinking). At 900px and below each takes its own row, as before.
+
 ## Application startup (`init()` in `js/app.js`)
 
 `init()` starts the i18n fetch and the application-data fetches together —

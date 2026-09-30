@@ -619,6 +619,30 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
   text-decoration: underline; text-underline-offset: 2px;
 }
 .result-count button:hover { color: var(--parchment); }
+/* The separator is inline-block so the button's underline doesn't run under it. */
+.result-count button::before {
+  content: "·"; display: inline-block; margin-right: var(--s-2);
+  color: var(--muted); text-decoration: none;
+}
+
+/* #toolbar and #result-count share one flex row: #toolbar dissolves so the
+ * list bar and the filter toolbar become items of .catalog-bar. Below 901px
+ * each of them takes a full row (the status wraps underneath, as before). */
+.catalog-bar { display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--s-4); }
+#toolbar { display: contents; }
+.catalog-bar .toolbar, .catalog-bar .list-context-bar, .catalog-bar .skeleton-toolbar { flex: 1 1 100%; }
+@media (min-width: 901px) {
+  /* Controls keep their size: the toolbar sizes to its content and the status
+   * cluster is pushed right. Only if both cannot fit does the status wrap. */
+  .catalog-bar .toolbar { flex: 0 0 auto; width: max-content; max-width: 100%; justify-content: flex-start; flex-wrap: nowrap; }
+  .catalog-bar .toolbar-filters { flex-wrap: nowrap; }
+  .catalog-bar .toolbar-filters > .field, .catalog-bar .search-field { flex-shrink: 0; }
+  .catalog-bar .rank-pills { flex-wrap: nowrap; }
+  /* Same vertical margins as .toolbar so the two centre on one line. */
+  .catalog-bar .result-count {
+    margin: var(--s-6) 0 var(--s-5) auto; flex-wrap: nowrap; white-space: nowrap;
+  }
+}
 
 /* Below the main catalog grid only — never rendered on Lists, Journey, or
  * Prep. Empty whenever the whole result set already fits, so
