@@ -2699,7 +2699,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
 .bp-pc { display: inline-flex; align-items: center; gap: var(--s-2); }
 .bp-pc-label { color: var(--muted); font-size: var(--fs-xs); }
 .bp-stepper {
-  display: inline-flex; align-items: stretch; height: 28px; flex: none;
+  display: inline-flex; align-items: stretch; height: 30px; flex: none;
   border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--ink); overflow: hidden;
 }
 .bp-step {
@@ -2719,7 +2719,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
 .bp-pc-input:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
 
 .bp-summary {
-  display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 var(--s-3); flex: none;
+  display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 var(--s-3); flex: none;
   background: var(--ink); border: 1px solid var(--line); border-radius: var(--r-sm); cursor: pointer;
   font-variant-numeric: tabular-nums;
   transition: background var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
@@ -2731,7 +2731,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
 /* Every number that changes is tabular and sits in a reserved-width box, so
    going 8 -> 10 -> 11.25 never resizes the button (the slot is right-aligned,
    so a width change would shove the stepper and title around). */
-.bp-spent { display: inline-block; min-width: 5ch; text-align: right; color: var(--parchment); font-size: var(--fs-base); }
+.bp-spent { display: inline-block; min-width: 4.4ch; text-align: right; color: var(--parchment); font-size: var(--fs-base); }
 .bp-avail { display: inline-block; min-width: 2ch; text-align: left; font-size: var(--fs-base); }
 .bp-num2 { display: inline-block; min-width: 2ch; text-align: left; }
 .bp-sep, .bp-rem { color: var(--muted); }
@@ -2756,8 +2756,8 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
 .bp--b .bp-pc-unit { color: var(--muted); font-size: var(--fs-xs); padding-right: 4px; }
 
 /* C: the smallest footprint, a two-level button with a caret. */
-.bp--c .bp-summary { height: 32px; padding: 0 var(--s-2) 0 var(--s-3); gap: var(--s-2); }
-.bp-c-lines { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; }
+.bp--c .bp-summary { height: 30px; padding: 0 var(--s-2) 0 var(--s-3); gap: var(--s-2); }
+.bp-c-lines { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1; }
 .bp-c-main { display: inline-flex; align-items: center; gap: 5px; }
 .bp-c-sub { color: var(--muted); font-size: var(--fs-micro); }
 .bp-c-caret { display: inline-flex; color: var(--muted); }
