@@ -1,7 +1,7 @@
 /* ============================================================
    Bacchus's Atlas — battle-points.js
    Pure, dependency-free Battle Points arithmetic (Daggerheart Battle
-   Guide) for the Prep adversaries header prototypes. No DOM, no
+   Guide) for the Prep Adversaries header (js/battle-points-ui.js). No DOM, no
    application state, no storage — so it can be loaded as a plain
    <script> and required() from a Node test (tests/battle-points.test.js),
    the same shape as js/prep-utils.js.

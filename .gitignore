@@ -31,7 +31,3 @@ dist/
 # itself, reinstalled locally with `npm install` as needed.
 node_modules/
 
-# Review screenshots from scripts/battle-points-screenshots.js — kept local:
-# scripts/build.js copies every top-level directory, so tracked screenshots
-# would be published in dist/.
-artifacts/

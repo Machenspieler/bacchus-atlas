@@ -14,6 +14,7 @@ const LS_KEYS = {
   journeySanctuaries: 'dhcodex_journey_sanctuaries',
   prep: 'dhcodex_session_prep',
   prepHeaderMode: 'dhcodex_session_prep_header_mode',
+  battlePointsPcs: 'dhcodex_battle_points_pcs',
 };
 
 const BIOMES = ['underground', 'aquatic', 'wetland', 'grassland', 'tropical', 'forest', 'drylands', 'rolling', 'mountain', 'frozen', 'badlands', 'settlement', 'universal'];
@@ -4323,7 +4324,7 @@ function centralHeadHtml({ titleId, icon, title, countHtml, midHtml = '', action
   // Title, a dot and the count share one baseline-aligned group, so the serif
   // title and the monospace count sit on the same line instead of each being
   // box-centred. The group takes the free space; `midHtml` (Battle Points
-  // prototype slot) and `actionHtml` sit after it.
+  // slot) and `actionHtml` sit after it.
   const lead = `<div class="prep-central-lead">${titleHtml}<span class="prep-central-dot" aria-hidden="true">·</span>${countHtml}</div>`;
   return `
     <div class="prep-central-head${midHtml ? ' prep-central-head--mid' : ''}">
@@ -4482,7 +4483,7 @@ function refreshCentralAdversaries() {
   const warning = document.getElementById('prep-central-adv-warning');
   if (warning) warning.innerHTML = advWarningHtml(prep);
   refreshFreshCutGrassLink();
-  BattlePointsPrototype.refresh();
+  BattlePointsUI.refresh();
   syncCentralTruncationTips();
 }
 
@@ -4526,7 +4527,6 @@ function centralSectionHtml(prep) {
   return `
     <section class="prep-central" aria-labelledby="prep-central-heading">
       <h2 id="prep-central-heading" class="sr-only">${t('prep_title')}</h2>
-      ${BattlePointsPrototype.stripHtml()}
       <section class="prep-central-section" data-sp-section="environments" aria-labelledby="prep-central-env-title">
         ${centralHeadHtml({ titleId: 'prep-central-env-title', icon: ICON_TABLE_ENVIRONMENTS, title: t('prep_central_environments'), countHtml: centralEnvCountHtml(prep) })}
         <div class="prep-central-body" id="prep-central-env-list">${centralEnvListHtml(prep)}</div>
@@ -4534,7 +4534,7 @@ function centralSectionHtml(prep) {
       <section class="prep-central-section" data-sp-section="adversaries" aria-labelledby="prep-central-adv-title">
         ${centralHeadHtml({ titleId: 'prep-central-adv-title', icon: ICON_TABLE_ADVERSARIES, title: t('prep_central_adversaries'),
           countHtml: centralCountHtml('prep-central-adv-count', prep.adversaryIds.length, null),
-          midHtml: BattlePointsPrototype.slotHtml(),
+          midHtml: BattlePointsUI.slotHtml(),
           actionHtml: `<span class="prep-freshcutgrass-wrap" id="prep-freshcutgrass-wrap">${freshCutGrassLinkHtml(prep)}</span>` })}
         <div id="prep-central-adv-warning">${advWarningHtml(prep)}</div>
         <div class="prep-central-body" id="prep-central-adv-list">${centralAdvListHtml(prep)}</div>
@@ -5447,7 +5447,7 @@ function renderPrepPage() {
   bindAdvToolbarControls();
   initPrepItemNav(activeItemGridId());
   applyPrepChromeDom();
-  BattlePointsPrototype.mount();
+  BattlePointsUI.mount();
   syncCentralTruncationTips();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncCentralTruncationTips);
 }

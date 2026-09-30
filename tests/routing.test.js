@@ -440,27 +440,3 @@ test('the legacy route keeps a valid environment overlay while being repaired', 
   assert.equal(parsed.route.env, 'ancient-grove');
   assert.equal(parsed.canonicalHash, '#/prep/env/ancient-grove');
 });
-
-/* ---------------- Battle Points prototype flag ---------------- */
-
-test('"#/prep?battlePointsPrototype=1" is still the Prep route and needs no repair', () => {
-  const r = parseRouteHash('#/prep?battlePointsPrototype=1');
-  assert.deepEqual(r.route, { name: 'prep', env: null });
-  assert.equal(r.malformed, false);
-  assert.equal(r.canonicalHash, null);
-});
-
-test('a prototype query keeps an environment overlay', () => {
-  const r = parseRouteHash('#/prep?battlePointsPrototype=1/env/bone-orchard');
-  assert.deepEqual(r.route, { name: 'prep', env: 'bone-orchard' });
-});
-
-test('hasBattlePointsPrototypeFlag only matches the Prep prototype query', () => {
-  const { hasBattlePointsPrototypeFlag: has } = RouteUtils;
-  assert.equal(has('#/prep?battlePointsPrototype=1'), true);
-  assert.equal(has('#/prep?x=2&battlePointsPrototype=1'), true);
-  assert.equal(has('#/prep'), false);
-  assert.equal(has('#/prep?battlePointsPrototype=0'), false);
-  assert.equal(has('#/lists?battlePointsPrototype=1'), false);
-  assert.equal(has(undefined), false);
-});

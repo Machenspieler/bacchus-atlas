@@ -223,3 +223,30 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Explicitly excluded:** item quantities (still PD-002), a second
   storage key or duplicated item metadata inside `prep.json`.
 - **Supersedes:** the original Prep MVP's `ci1`-`ci10` subset.
+
+## PD-007: Prep shows Battle Points in the Adversaries header, always
+
+- **Status:** Active
+- **Date:** 2026-09-30
+- **Decision:** The Prep Adversaries section header carries a Battle Points
+  summary (Daggerheart Battle Guide budgeting): a character stepper
+  (`Characters [−] 4 [+]`, 1-20, default 4) and a `BP spent / available`
+  button opening a breakdown popover (base budget, encounter style,
+  manual and automatic adjustments, cost per adversary type). It is shown
+  **always**, including `BP 0 / 14` with no adversaries selected, and the
+  empty encounter never receives the "no Bruiser/Horde/Leader/Solo" +1.
+  Chosen after comparing three prototypes (inline stepper, segmented
+  control, summary-first popover): the stepper is directly visible and
+  editable, at a cost of the widest header footprint.
+- **Implications:**
+  - Battle Points are advisory. Exceeding the budget shows a restrained
+    amber warning and never blocks adding adversaries, disables a control,
+    asks for confirmation, or marks the prep invalid.
+  - Only the character count persists (its own raw key, not the Prep
+    schema); style and the two manual checkboxes reset on reload. Nothing is
+    part of the saved Prep, duplication, or the FreshCutGrass export.
+  - No adversary quantity is introduced (PD-002): each selected adversary
+    counts once, so a Minion group is priced as 1 ÷ characters per Minion.
+  - Adversary types are the canonical `adv.type` ids, never translated labels.
+- **Explicitly excluded:** per-prep character counts, persisted manual
+  adjustments, and any blocking behaviour.

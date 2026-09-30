@@ -2695,10 +2695,11 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
 .prep-freshcutgrass-wrap:empty { display: none; }
 .prep-freshcutgrass-link { flex: none; height: 30px; padding: 0 10px; white-space: nowrap; }
 
-/* ---- Battle Points prototypes (js/battle-points-prototype.js) ----
-   Only rendered on "#/prep?battlePointsPrototype=1"; with the flag off none
-   of these selectors matches anything. Throwaway comparison UI — variants
-   A/B/C share the summary button and the popover below. */
+/* ---- Battle Points (js/battle-points-ui.js) ----
+   Summary + character stepper in the Adversaries header, and the breakdown
+   popover. All one 13px size (hierarchy by colour only), one 30px control
+   height matching the FreshCutGrass link, and every changing figure in a
+   fixed-width box so nothing resizes or shifts as numbers change. */
 .prep-central-head--mid .prep-central-lead { flex: 0 1 auto; }
 .bp-slot { flex: 0 1 auto; min-width: 0; margin-left: auto; }
 .bp-slot:empty { display: none; }
@@ -2746,50 +2747,25 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
    so a width change would shove the stepper and title around). */
 .bp-spent { display: inline-block; min-width: 4.4ch; text-align: right; color: var(--parchment); }
 .bp-avail { display: inline-block; min-width: 2ch; text-align: left; }
-.bp-num2 { display: inline-block; min-width: 2ch; text-align: left; }
-.bp-sep, .bp-rem { color: var(--muted); }
+.bp-sep { color: var(--muted); }
 .bp-avail { color: var(--parchment); }
 .bp-sep { margin-inline: -1px; }
-.bp-rem { display: inline-block; min-width: 18ch; margin-left: 2px; }
 .bp-warn-icon { display: inline-flex; color: var(--hope-soft); }
 .bp-warn-icon svg { width: var(--icon-sm); height: var(--icon-sm); }
 /* Over budget is advisory: amber tint + icon, never destructive red. */
 .bp-summary.is-over { border-color: rgba(217,164,65,0.45); background: rgba(217,164,65,0.08); }
 .bp-summary.is-over .bp-spent { color: var(--hope-soft); text-decoration: underline dotted; text-underline-offset: 3px; }
 
-/* B: one segmented container; the inner controls lose their own borders. */
-.bp--b { gap: 0; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--ink); overflow: hidden; height: 30px; }
-.bp--b .bp-stepper, .bp--b .bp-summary { height: 100%; border: 0; border-radius: 0; background: transparent; }
-.bp--b .bp-summary { border-left: 1px solid var(--line); padding-inline: var(--s-3); }
-.bp--b .bp-summary:hover { background: var(--ink-hover); }
-.bp--b .bp-summary.is-over { background: rgba(217,164,65,0.08); }
-.bp--b .bp-summary:focus-visible { outline-offset: -2px; }
-.bp--b .bp-pc-field { display: inline-flex; align-items: center; gap: 5px; padding-inline: 4px; border-inline: 1px solid var(--line-faint); }
-.bp--b .bp-pc-input { width: 2em; border: 0; }
-.bp--b .bp-pc-unit { color: var(--muted); padding-right: 4px; }
-
-/* C: the smallest footprint, a two-level button with a caret. */
-.bp--c .bp-summary { height: 30px; padding: 0 var(--s-2) 0 var(--s-3); gap: var(--s-2); }
-.bp-c-lines { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.05; }
-.bp-c-main { display: inline-flex; align-items: center; gap: 5px; }
-.bp-c-sub { color: var(--muted); }
-.bp-c-caret { display: inline-flex; color: var(--muted); }
-.bp-c-caret svg { width: var(--icon-md); height: var(--icon-md); }
-.bp-summary[aria-expanded="true"] .bp-c-caret { transform: rotate(180deg); }
-
-/* Constrained container (laptop): drop the secondary text, keep the numbers. */
+/* Constrained container (laptop): drop the label, keep the numbers. */
 @container prep-central (max-width: 760px) {
-  .bp-rem, .bp--b .bp-pc-unit, .bp-pc-label { display: none; }
+  .bp-pc-label { display: none; }
   .bp { gap: var(--s-2); }
-  .bp--b { gap: 0; }
   .bp-step { width: 24px; }
   .bp-pc-input { width: 2.2em; }
-  .bp--b .bp-pc-input { width: 2em; }
   .bp-summary { padding-inline: 10px; }
-  .bp--c .bp-summary { padding-inline: 10px var(--s-2); }
 }
 
-/* ---- shared popover (position: fixed, so opening never shifts layout) ---- */
+/* ---- popover (position: fixed, so opening never shifts layout) ---- */
 .bp-popover {
   position: fixed; z-index: 30; overflow-y: auto; padding: var(--s-3);
   background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-lg); box-shadow: var(--e-3);
@@ -2835,22 +2811,6 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
 .bp-pop-row.is-over .bp-warn-icon { margin-right: var(--s-1); vertical-align: -2px; }
 .bp-pop-empty { margin: 2px 0; color: var(--muted); }
 .bp-pop-note { margin: var(--s-3) 0 0; color: var(--muted); }
-
-/* ---- prototype controls strip (review tooling, not proposed UI) ---- */
-.bp-proto {
-  display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: var(--s-2) 0;
-  border-bottom: 1px dashed var(--line); font-family: var(--font-ui); font-size: var(--fs-xs); color: var(--muted);
-}
-.bp-proto-tag { color: var(--hope-soft); text-transform: uppercase; letter-spacing: var(--tracking-caps); }
-.bp-proto-group { display: inline-flex; align-items: center; gap: var(--s-1); }
-.bp-proto-label { margin-right: var(--s-1); }
-.bp-proto-btn {
-  height: 24px; padding: 0 var(--s-2); border: 1px solid var(--line); border-radius: var(--r-sm);
-  background: var(--ink); color: var(--parchment-dim); font: inherit; cursor: pointer;
-}
-.bp-proto-btn:hover { background: var(--ink-hover); }
-.bp-proto-btn:focus-visible { outline: var(--focus-ring); outline-offset: 1px; }
-.bp-proto-btn[aria-pressed="true"] { border-color: rgba(217,164,65,0.55); background: rgba(217,164,65,0.14); color: var(--hope-soft); }
 
 /* ---- shared selected-entity primitive ---- */
 .prep-sel-list { list-style: none; margin: 0; padding: 0; }

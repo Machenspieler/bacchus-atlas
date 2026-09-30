@@ -23,8 +23,8 @@ js/list-utils.js        — Lists name validation
 js/search-index.js      — environment search index builder
 js/prep-utils.js — Prep pure selection/search/filter logic
 js/freshcutgrass-utils.js — FreshCutGrass encounter-URL encoder (shared by env detail + Prep)
-js/battle-points.js     — Battle Points arithmetic (pure; used by the Prep header prototypes)
-js/battle-points-prototype.js — EPHEMERAL Battle Points header prototypes (flag-gated, removable)
+js/battle-points.js     — Battle Points arithmetic (pure)
+js/battle-points-ui.js  — Battle Points summary + popover in the Prep Adversaries header
 js/app.js               — everything else: state, rendering, event wiring
 ```
 
@@ -185,32 +185,31 @@ global to keep in sync with it.
   "Saving…" state — SafeStorage writes are synchronous, so it could never be
   observed, only faked.
 
-## Battle Points header prototypes (temporary)
+## Battle Points
 
-Review-only prototypes of a Battle Points summary in the Prep "Adversaries"
-section header. **Not a shipped feature** and no product decision yet (final
-variant, and whether it hides when empty, are open).
+A Battle Points summary lives in the Prep "Adversaries" section header (see
+[PD-007](product-decisions.md)): `Characters [−] 4 [+]` and a `BP spent / available`
+button that opens a breakdown popover.
 
-- Opt-in URL: `#/prep?battlePointsPrototype=1`. `RouteUtils.parseRouteHash()`
-  treats any `#/prep?…` as the Prep route; `RouteUtils.hasBattlePointsPrototypeFlag()`
-  is the only test for the flag. Plain `#/prep` (or leaving Prep) clears it;
-  an environment overlay opened from a flagged page keeps it.
-- With the flag off, `BattlePointsPrototype.stripHtml()/slotHtml()` return `''`
-  and `mount()`/`refresh()` do nothing: the ordinary Prep DOM is unchanged.
-- All prototype state (variant A/B/C, data source, empty-state behaviour,
-  character count, style/checkbox adjustments) lives in `js/battle-points-prototype.js`
-  and is never persisted — no SafeStorage key, no Prep schema change, no
-  effect on FreshCutGrass export. A reload resets it.
-- Calculation is the pure `BattlePoints.calculate()`; adversaries are counted by
-  the canonical `adv.type` id, never a translated label. Prep has no
-  quantity (PD-002), so every selected adversary counts once.
-- Controls are rendered once and patched in place (`update()`), so focus is
-  never lost. The popover is `position: fixed`, so opening it never shifts layout.
-- `node scripts/battle-points-screenshots.js` regenerates
-  `artifacts/battle-points-prototypes/` (git-ignored) and prints a layout report.
-- Removing the prototypes: delete `js/battle-points-prototype.js`, its
-  `<script>` tag, the three `BattlePointsPrototype.*` hooks and `midHtml` in
-  `js/app.js`, the `bp-*` block in `css/styles.css`, and the `bp_*` i18n keys.
+- **Arithmetic** is the pure `js/battle-points.js` (`BattlePoints.calculate()`,
+  `formatBP()`, `parsePcsInput()`), unit-tested in `tests/battle-points.test.js`.
+  Adversaries are counted by the canonical `adv.type` id, never a translated
+  label. Prep has no quantity (PD-002), so every selected adversary counts once.
+- **DOM layer** is `js/battle-points-ui.js` (`BattlePointsUI`). `js/app.js` only
+  calls `slotHtml()` (via `centralHeadHtml()`'s `midHtml`), `mount()` at the end of
+  `renderPrepPage()`, and `refresh()` from `refreshCentralAdversaries()`.
+- **Rendering**: controls are rendered once and patched in place (`update()`), so
+  focus is never lost mid-click or mid-typing. The popover is `position: fixed`,
+  clamped to the viewport, so opening it never shifts layout. Every changing figure
+  sits in a fixed-width box so the right-aligned summary never resizes.
+- **Persistence**: only the character count, in its own raw key
+  `LS_KEYS.battlePointsPcs` (`dhcodex_battle_points_pcs`), written with `persistRaw()`
+  and read once per page load with `SafeStorage.readRawFlag()` (anything that is not
+  an integer 1-20 reads as the default 4). Encounter style and the two manual-adjustment
+  checkboxes are per-session view state. Nothing is written to the saved Prep (no schema
+  change) and nothing reaches the FreshCutGrass export.
+- **Advisory only**: over budget shows an amber tint and dotted underline — it never
+  blocks, disables, or confirms anything.
 
 ## Environment search index
 
