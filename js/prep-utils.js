@@ -212,6 +212,17 @@
     };
   }
 
+  /** What a quick "add to / remove from the current Prep" control should
+   * offer for one environment: 'selected' (already in — always removable,
+   * even at the cap), 'full' (absent and the cap is reached — unavailable),
+   * or 'available' (absent, room left). Derived from the same length check
+   * toggleEnvironment() uses, so a control and the mutation it triggers can
+   * never disagree about the limit. */
+  function environmentActionState(prep, envId) {
+    if (prep.environmentIds.indexOf(envId) !== -1) return 'selected';
+    return prep.environmentIds.length >= MAX_ENVIRONMENTS ? 'full' : 'available';
+  }
+
   /** Explicit removal — the central list's Remove button, or an unchecked
    * source checkbox. Always removes, never reports a limit. */
   function removeEnvironment(prep, envId) {
@@ -608,6 +619,7 @@
     toggleId: toggleId,
     removeId: removeId,
     toggleEnvironment: toggleEnvironment,
+    environmentActionState: environmentActionState,
     removeEnvironment: removeEnvironment,
     normalizeSearchToken: normalizeSearchToken,
     tokenizeEnvironmentQuery: tokenizeEnvironmentQuery,

@@ -130,6 +130,21 @@ out: card heights vary 176–235px, so a single intrinsic-size estimate over-
 or under-shoots by 12–18% depending on viewport, and a scrollbar that lies
 about catalogue length costs more than the skipped paint saves.
 
+### Environment action group (`.env-actions`)
+Top-right of every environment card and in the detail card's title row:
+`[.env-prep-btn][.card-add-btn]` — add/remove from the current Prep, then the
+bookmark (list membership). Two 28px square buttons that touch but never
+overlap; there is deliberately **no** `::after` hit-area enlargement here, so a
+click between the icons cannot reach the neighbour. Muted at rest, gold on
+hover. The Prep button draws the reusable Environment symbol (an open compass
+ring with N/W/E points, a main and a smaller mountain, a winding road; 24×24,
+`currentColor`, no gradients) with a lower-right badge carried in the ring's
+gap: **plus** = available, **check** = selected (gold fill + border, still
+removable at the cap), plus but dimmed with no hover and `not-allowed` =
+unavailable because the Prep is full. State is always badge glyph +
+`aria-pressed` + fill together, never colour alone. The same symbol without
+the badge is the neutral Prep "Environments" section icon.
+
 ### Buttons (`.btn`)
 One base class, four modifiers: `.btn-primary` (gold fill, the only
 affirmative surface), `.btn-ghost` (transparent), `.btn-danger` (fear-red

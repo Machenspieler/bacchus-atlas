@@ -403,6 +403,60 @@ narrower, so it stays one column there). Sections are semantic `<section>`s with
 - The FreshCutGrass link label is the product name only ("FreshCutGrass ↗",
   both languages); its localized sentence is the `aria-label` and tooltip.
 
+### Quick add to the current Prep (outside `#/prep`)
+
+An environment can be added to / removed from the **active** Prep from three
+places besides the Prep picker: the catalog and Lists cards, the detail
+overlay's title row, and the expanded "Add to…" dialog (the detail card's
+bottom button). This is an *entry point*, not a second store — there is no
+new persisted key and no second copy of the limit.
+
+- **One mutation path:** `toggleEnvironmentInActivePrep(envId)` in
+  `js/app.js`. It reads `activePrep()`, calls `PrepUtils.toggleEnvironment()`,
+  handles `limitReached` defensively (a stale control re-syncs and shows the
+  `prep_env_full` sentence as an error toast — no mutation), persists through
+  `updatePrep()` (→ `persist()` → SafeStorage), then
+  `updateSaveStatusDisplay(result)`, `syncEnvPrepControls()` and
+  `syncPrepPageForEnvironment()`. The success toast
+  (`prep_env_added_toast` / `prep_env_removed_toast`, using
+  `prepDisplayTitle()`) is shown only if `result.ok`; a failed write has
+  already reported itself.
+- **State model is pure:** `PrepUtils.environmentActionState(prep, envId)` →
+  `'selected'` (always removable, even 3/3), `'full'` (absent at the cap),
+  `'available'`. It shares its length check with `toggleEnvironment()` and
+  reads `MAX_ENVIRONMENTS`; JS never hardcodes 3 (the count in the tooltip is
+  `{n}`/`{max}` substituted at runtime).
+- **Synchronization, not re-rendering:** `syncEnvPrepControls()` walks every
+  rendered `[data-env-prep-toggle]` button and rewrites `aria-pressed`,
+  `aria-disabled`, the `is-selected`/`is-unavailable` classes, `aria-label`
+  and `data-tip` (and refreshes a tooltip that is currently showing), then
+  repaints the expanded dialog's Prep row. It is deliberately global: adding
+  the third environment changes every *other* unselected button. Catalog
+  cards are never rebuilt for this, so focus, scroll and the overlay
+  lifecycle survive. The picker's own change/remove handlers call it too, so
+  all instances stay in step whichever surface changed the Prep.
+  `syncPrepPageForEnvironment()` updates the Prep page behind an overlay
+  opened above `#/prep` — picker checkbox and label **first**, then
+  `refreshCentralEnvironments()`, because that re-derives each picker row's
+  `disabled` from the checkboxes' own `checked`.
+- **The unavailable state is `aria-disabled`, not `disabled`:** the button
+  stays focusable so the reason is reachable from the keyboard;
+  `handleEnvPrepToggleClick()` is the explicit activation guard.
+- **Expanded dialog:** `openAddToListPopup(envId, { expanded: true })` shares
+  the renderer with the list-only popup. It adds a "Current Prep" row
+  (checkbox, `prepDisplayTitle()`, `n/max`) and a "Lists" section, applies every
+  change immediately, and never self-closes (the list-only popup still closes
+  itself shortly after a list add). `repaintAtlPrepRow` is the module-level hook
+  `syncEnvPrepControls()` uses to reach it while open. A full Prep leaves the
+  row visible but disabled with the reason as text.
+- **The Environment symbol** (`ENV_SYMBOL_BODY`) is a single hand-drawn
+  24×24 `currentColor` SVG body used twice: the neutral Prep section icon
+  (`ICON_TABLE_ENVIRONMENTS`, no badge) and the action icon
+  (`ICON_ENV_ACTION`, with a lower-right badge holding both the plus and the
+  check glyph; CSS shows one from the button's state class). The ring is open
+  at the lower right so the badge never covers the symbol. Adversaries and
+  Items keep their raster section icons.
+
 ### Adversary artwork data and generation
 
 An adversary record in `data/prep.json` optionally carries

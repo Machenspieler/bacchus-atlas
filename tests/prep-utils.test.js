@@ -229,6 +229,59 @@ test('toggleEnvironment/removeEnvironment do not mutate the input prep', () => {
   assert.equal(JSON.stringify(prep), snapshot);
 });
 
+/* ---------------- environments: quick "current Prep" action state ---------------- */
+
+test('environmentActionState: an unselected environment with room is available', () => {
+  assert.equal(SPU.environmentActionState(basePrep(), 'a'), 'available');
+  assert.equal(SPU.environmentActionState(basePrep({ environmentIds: ['b'] }), 'a'), 'available');
+});
+
+test('environmentActionState: adding the last free slot flips every other environment to full', () => {
+  const two = basePrep({ environmentIds: ['a', 'b'] });
+  assert.equal(SPU.environmentActionState(two, 'c'), 'available');
+  const three = SPU.toggleEnvironment(two, 'c').prep;
+  assert.deepEqual(three.environmentIds, ['a', 'b', 'c']);
+  assert.equal(SPU.environmentActionState(three, 'd'), 'full');
+  assert.equal(SPU.environmentActionState(three, 'e'), 'full');
+});
+
+test('environmentActionState: an unselected environment at the cap is full and cannot be added', () => {
+  const prep = basePrep({ environmentIds: ['a', 'b', 'c'] });
+  assert.equal(SPU.environmentActionState(prep, 'd'), 'full');
+  const outcome = SPU.toggleEnvironment(prep, 'd');
+  assert.equal(outcome.limitReached, true);
+  assert.equal(outcome.changed, false);
+});
+
+test('environmentActionState: a selected environment stays removable at the cap', () => {
+  const prep = basePrep({ environmentIds: ['a', 'b', 'c'] });
+  assert.equal(SPU.environmentActionState(prep, 'b'), 'selected');
+  assert.equal(SPU.toggleEnvironment(prep, 'b').limitReached, false);
+});
+
+test('environmentActionState: removing from a full prep re-opens every other environment', () => {
+  const full = basePrep({ environmentIds: ['a', 'b', 'c'] });
+  const after = SPU.toggleEnvironment(full, 'a').prep;
+  assert.deepEqual(after.environmentIds, ['b', 'c']);
+  assert.equal(SPU.environmentActionState(after, 'a'), 'available');
+  assert.equal(SPU.environmentActionState(after, 'd'), 'available');
+  assert.equal(SPU.environmentActionState(after, 'b'), 'selected');
+});
+
+test('toggling the same environment repeatedly never duplicates its id', () => {
+  let prep = basePrep();
+  for (let i = 0; i < 5; i++) prep = SPU.toggleEnvironment(prep, 'a').prep;
+  assert.deepEqual(prep.environmentIds, ['a']);
+  const twice = SPU.toggleEnvironment(SPU.toggleEnvironment(basePrep({ environmentIds: ['a'] }), 'b').prep, 'b').prep;
+  assert.deepEqual(twice.environmentIds, ['a']);
+});
+
+test('the cap used by environmentActionState is PrepUtils.MAX_ENVIRONMENTS, not a copy', () => {
+  const ids = Array.from({ length: SPU.MAX_ENVIRONMENTS - 1 }, (_, i) => 'e' + i);
+  assert.equal(SPU.environmentActionState(basePrep({ environmentIds: ids }), 'x'), 'available');
+  assert.equal(SPU.environmentActionState(basePrep({ environmentIds: ids.concat('y') }), 'x'), 'full');
+});
+
 /* ---------------- environment search (compact "All Environments" toolbar) ---------------- */
 
 const TOOLBAR_I18N_EN = {

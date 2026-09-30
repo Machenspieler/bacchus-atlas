@@ -852,11 +852,26 @@ const ICON_REROLL = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><pa
 const ICON_CHECKLIST = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="1.6" stroke="currentColor" stroke-width="1.6"/><path d="M9 4V3.3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1V4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="m7.8 9.6 1.1 1.1 1.7-1.9M7.8 14.3l1.1 1.1 1.7-1.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 9.4h4.2M13 14.1h4.2M8 17.9h9.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
 const ICON_ADVERSARY_FALLBACK = `<img src="img/adv_fallback.png" alt="" loading="lazy" decoding="async" draggable="false">`;
 const ICON_ITEM_FALLBACK = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 10.5h15v8a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1v-8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M4 8a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2.5H4V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 10.5v9" stroke="currentColor" stroke-width="1.4"/></svg>`;
-// Prep table-header section icons: three custom illustrated assets (img/ui/,
-// trimmed square derivatives), decorative — the adjacent <span> title names
-// the section. Distinct from the thumbnail-fallback icons above.
+// Prep table-header section icons, decorative — the adjacent <span> title names
+// the section. Adversaries and Items are illustrated raster assets (img/ui/,
+// trimmed square derivatives); Environments is the inline SVG symbol below.
+// Distinct from the thumbnail-fallback icons above.
 const tableIconHtml = name => `<img class="prep-central-icon" src="img/ui/section-${name}.png" alt="" aria-hidden="true" draggable="false">`;
-const ICON_TABLE_ENVIRONMENTS = tableIconHtml('environments');
+/* The canonical Environment symbol: a simplified, action-ready adaptation of
+ * the Environments section illustration — an incomplete compass ring with three
+ * points (N, W, E), a main and a smaller mountain, and one broad winding road.
+ * 24x24, transparent, currentColor only: no gradients/filters/raster, so it holds at 16-20px. The ring is deliberately
+ * open at the lower right: that gap is where the stateful action icon seats its
+ * plus/check badge without covering any of the symbol. One body, two uses —
+ * the neutral Prep section icon (below) and the quick add-to-current-Prep
+ * action (envPrepButtonHtml()). */
+const ENV_SYMBOL_BODY = `<path d="M12.75 20.57A8.6 8.6 0 1 1 20.57 12.75" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M12 .8l1.6 2.6h-3.2zM.8 12l2.6-1.6v3.2zM23.2 12l-2.6-1.6v3.2z" fill="currentColor"/><path d="M5.2 14.4 10.2 6.6l5 7.8zM12.2 14.4l2.4-3.8 2.4 3.8z" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/><path d="M10.2 15.9c3 .7-.6 2.5-2.4 4.2l4.2.5c-1.6-1.8 2-3.2-.1-4.7z" fill="currentColor" stroke="currentColor" stroke-width=".8" stroke-linejoin="round"/>`;
+/* Neutral: no badge, decorative. Sized/coloured by .prep-central-icon--env. */
+const ICON_TABLE_ENVIRONMENTS = `<svg class="prep-central-icon prep-central-icon--env" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">${ENV_SYMBOL_BODY}</svg>`;
+/* Stateful: the same body plus a lower-right badge that carries both glyphs;
+ * CSS shows the plus or the check from the button's own state class, so a
+ * state change never rebuilds the SVG. */
+const ICON_ENV_ACTION = `<svg class="env-action-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">${ENV_SYMBOL_BODY}<circle class="env-badge-dot" cx="19" cy="19" r="4.3"/><path class="env-badge-glyph env-badge-plus" d="M19 17v4M17 19h4"/><path class="env-badge-glyph env-badge-check" d="m16.9 19.2 1.5 1.5 2.7-3"/></svg>`;
 const ICON_TABLE_ADVERSARIES = tableIconHtml('adversaries');
 const ICON_TABLE_ITEMS = tableIconHtml('items');
 // Items panel's Gallery/Compact view switch — a plain 2x2 grid vs. a
@@ -2063,6 +2078,8 @@ function bindGridDelegation(el) {
     if (random) { e.preventDefault(); handleRandomCardActivate(); return; }
     const add = e.target.closest('[data-add-to-list]');
     if (add) { e.preventDefault(); openAddToListPopup(add.dataset.addToList); return; }
+    const prepToggle = e.target.closest('[data-env-prep-toggle]');
+    if (prepToggle) { e.preventDefault(); handleEnvPrepToggleClick(prepToggle); return; }
     const open = e.target.closest('[data-open-env]');
     if (open) {
       // A plain left click drives the in-page router; ctrl/cmd/shift-click and
@@ -2155,15 +2172,18 @@ function cardHtml(env) {
       <div class="card-body">
         <div class="card-top">
           <h3 class="card-title"><a class="card-open" href="${envHash(env.id)}" data-open-env="${env.id}">${escapeHtml(envName(env))}</a></h3>
-          <button
-            type="button"
-            class="card-add-btn card-add-btn--catalog${isEnvInAnyList(env.id) ? ' is-listed' : ''}"
-            data-add-to-list="${env.id}"
-            data-env-list-indicator="${env.id}"
-            aria-label="${escapeAttr(t('add_to_list'))}"
-            data-tip="${escapeAttr(t('add_to_list'))}"
-            aria-haspopup="dialog"
-          >${ICON_BOOKMARK}</button>
+          <div class="env-actions">
+            ${envPrepButtonHtml(env)}
+            <button
+              type="button"
+              class="card-add-btn${isEnvInAnyList(env.id) ? ' is-listed' : ''}"
+              data-add-to-list="${env.id}"
+              data-env-list-indicator="${env.id}"
+              aria-label="${escapeAttr(t('add_to_list'))}"
+              data-tip="${escapeAttr(t('add_to_list'))}"
+              aria-haspopup="dialog"
+            >${ICON_BOOKMARK}</button>
+          </div>
         </div>
         ${loreText ? `<p class="card-lore">${escapeHtml(loreText)}</p>` : ''}
         ${impulses.length ? `<div class="card-impulses"><span class="card-impulses-label">${t('impulses_label')}:</span> ${escapeHtml(impulses.join(', '))}</div>` : ''}
@@ -2254,6 +2274,133 @@ function syncEnvListIndicators(envId) {
   const listed = isEnvInAnyList(envId);
   document.querySelectorAll(`[data-env-list-indicator="${CSS.escape(envId)}"]`)
     .forEach(button => button.classList.toggle('is-listed', listed));
+}
+
+/* ---------------- quick "current Prep" action for an environment ----------------
+ * Entry points outside the Prep picker: the catalog/Lists card, the detail
+ * overlay's title row, and the expanded "Add to…" dialog. All of them mutate
+ * through toggleEnvironmentInActivePrep() and stay in step through
+ * syncEnvPrepControls() — see docs/architecture.md, "Quick add to the current
+ * Prep". */
+
+/** What one quick-action button should currently say and do, from the pure
+ * PrepUtils.environmentActionState(). `disabled` is the full state: rendered as
+ * aria-disabled (not the disabled attribute) so the reason stays reachable by
+ * keyboard focus, with an explicit activation guard in the click handler. */
+function envPrepActionView(env, prep) {
+  const status = PrepUtils.environmentActionState(prep, env.id);
+  const tip = status === 'selected' ? t('prep_env_remove_current')
+    : status === 'full' ? envPrepFullText(prep)
+    : t('prep_env_add_current');
+  return {
+    status,
+    selected: status === 'selected',
+    disabled: status === 'full',
+    tip,
+    label: t('prep_env_action_label').replace('{action}', () => tip).replace('{name}', () => envName(env)),
+  };
+}
+
+function envPrepFullText(prep) {
+  return t('prep_env_full')
+    .replace('{n}', prep.environmentIds.length)
+    .replace('{max}', PrepUtils.MAX_ENVIRONMENTS);
+}
+
+function envPrepButtonClass(view) {
+  return 'env-prep-btn' + (view.selected ? ' is-selected' : '') + (view.disabled ? ' is-unavailable' : '');
+}
+
+function envPrepButtonHtml(env) {
+  const prep = activePrep();
+  if (!prep) return '';
+  const view = envPrepActionView(env, prep);
+  return `<button type="button" class="${envPrepButtonClass(view)}" data-env-prep-toggle="${escapeAttr(env.id)}"
+            aria-pressed="${view.selected}" aria-disabled="${view.disabled}"
+            aria-label="${escapeAttr(view.label)}" data-tip="${escapeAttr(view.tip)}">${ICON_ENV_ACTION}</button>`;
+}
+
+/** The dialog's Prep row repaints itself through this while it is open, so a
+ * toggle from anywhere reaches it without the dialog knowing about the
+ * others. Null whenever no expanded dialog is up. */
+let repaintAtlPrepRow = null;
+
+/** Re-evaluates every rendered quick-action control from the active Prep.
+ * Deliberately global rather than per-environment: adding the last free slot
+ * (or freeing one) changes the availability of every *other* unselected
+ * environment too. No re-render — attributes and classes only — so focus,
+ * scroll and the overlay lifecycle are untouched. */
+function syncEnvPrepControls() {
+  const prep = activePrep();
+  if (!prep) return;
+  const buttons = document.querySelectorAll('[data-env-prep-toggle]');
+  if (buttons.length) {
+    const byId = new Map(allEnvs().map(e => [e.id, e]));
+    buttons.forEach(btn => {
+      const env = byId.get(btn.dataset.envPrepToggle);
+      if (!env) return;
+      const view = envPrepActionView(env, prep);
+      btn.className = envPrepButtonClass(view);
+      btn.setAttribute('aria-pressed', String(view.selected));
+      btn.setAttribute('aria-disabled', String(view.disabled));
+      btn.setAttribute('aria-label', view.label);
+      btn.dataset.tip = view.tip;
+      // A tooltip already up (hovered or focused) would keep the old wording.
+      if (tipTarget === btn) showTip(btn);
+    });
+  }
+  if (repaintAtlPrepRow) repaintAtlPrepRow();
+}
+
+/** A button's activation guard: an aria-disabled button is still focusable and
+ * clickable, so the click is swallowed here and nothing mutates. */
+function handleEnvPrepToggleClick(btn) {
+  if (btn.getAttribute('aria-disabled') === 'true') return;
+  toggleEnvironmentInActivePrep(btn.dataset.envPrepToggle);
+}
+
+/** The one application-level path that adds/removes an environment in the
+ * active Prep from outside the Prep picker. Persists through updatePrep()
+ * (SafeStorage), then brings every dependent surface into line; the success
+ * toast is only shown if the write actually succeeded — a failed write has
+ * already reported itself. */
+function toggleEnvironmentInActivePrep(envId) {
+  const prep = activePrep();
+  const env = allEnvs().find(e => e.id === envId);
+  if (!prep || !env) return null;
+  const outcome = PrepUtils.toggleEnvironment(prep, envId);
+  if (outcome.limitReached) {
+    // Only reachable from a stale control: re-sync it and say why.
+    syncEnvPrepControls();
+    showToast(envPrepFullText(prep), 'error');
+    return null;
+  }
+  const { prep: saved, result } = updatePrep(() => outcome.prep);
+  updateSaveStatusDisplay(result);
+  const selected = saved.environmentIds.includes(envId);
+  syncEnvPrepControls();
+  syncPrepPageForEnvironment(envId, selected);
+  if (result.ok) {
+    const key = selected ? 'prep_env_added_toast' : 'prep_env_removed_toast';
+    showToast(t(key)
+      .replace('{environment}', () => envName(env))
+      .replace('{prep}', () => prepDisplayTitle(saved)));
+  }
+  return { selected, result };
+}
+
+/** The Prep page's own view of one environment — central list, count, the
+ * picker checkbox and its label, and every other row's disabled state — for
+ * when the change came from an overlay opened above #/prep. Each piece is a
+ * no-op when its element is not currently rendered. */
+function syncPrepPageForEnvironment(envId, selected) {
+  // The checkbox first: refreshCentralEnvironments() re-derives every picker
+  // row's disabled state from each checkbox's own `checked`, so the one that
+  // just changed has to already read correctly.
+  syncPickerCheckbox('data-sp-toggle-env', envId, selected);
+  const env = allEnvs().find(e => e.id === envId);
+  if (env) updatePrepToggleLabel('data-sp-toggle-env', envId, selected, envName(env));
+  if (document.getElementById('prep-central-env-list')) refreshCentralEnvironments();
 }
 
 function listEnvCount(listId) {
@@ -2499,7 +2646,15 @@ function listCardHtml(list) {
  * card leaving still feels like a consequence of the click. */
 const ATL_CLOSE_DELAY_MS = 450;
 
-function openAddToListPopup(envId) {
+/* Two modes, one renderer. The compact bookmark buttons open the list-only
+ * popup, which still gets out of the way once the environment lands in a list.
+ * The detail card's bottom "Add to…" button opens the expanded destination
+ * dialog — a "Current Prep" row above the lists — which never closes itself:
+ * the point is to let one visit put the environment in the Prep *and* in
+ * several lists. It closes only by its × button, Escape or the backdrop. */
+function openAddToListPopup(envId, { expanded = false } = {}) {
+  const env = allEnvs().find(e => e.id === envId);
+  const prep = expanded ? activePrep() : null;
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   // Named so syncLangFloat() knows to stand the floating switch down while this
@@ -2515,15 +2670,37 @@ function openAddToListPopup(envId) {
       </label>`).join('') || `<p class="hint">${t('no_lists_yet')}</p>`;
   }
 
+  const title = expanded && env
+    ? t('add_env_dialog_title').replace('{name}', () => envName(env))
+    : t('add_to_list');
+
+  /* The "Current Prep" row: the same three-slot Prep the picker edits, shown
+   * as one checkbox row with the active Prep's title and its n/max count. */
+  const prepSectionHtml = prep ? `
+        <section class="atl-section" aria-labelledby="atl-prep-heading">
+          <h3 class="atl-section-label" id="atl-prep-heading">${t('atl_section_prep')}</h3>
+          <label class="atl-row atl-prep-row" id="atl-prep-row">
+            <input type="checkbox" id="atl-prep-toggle">
+            <span class="atl-prep-title" id="atl-prep-title"></span>
+            <span class="atl-prep-count" id="atl-prep-count"></span>
+          </label>
+          <p class="atl-hint" id="atl-prep-hint" hidden></p>
+        </section>
+        <hr class="atl-sep">` : '';
+
   overlay.innerHTML = `
     <div class="modal modal-sm" data-overlay-card
          role="dialog" aria-modal="true" aria-labelledby="atl-title">
       <div class="modal-header">
-        <h2 id="atl-title">${t('add_to_list')}</h2>
+        <h2 id="atl-title">${escapeHtml(title)}</h2>
         <button type="button" class="modal-close" aria-label="${t('close')}">&times;</button>
       </div>
       <div class="modal-body">
-        <div id="atl-list">${listRowsHtml()}</div>
+        ${prepSectionHtml}
+        <section class="atl-section"${expanded ? ' aria-labelledby="atl-lists-heading"' : ''}>
+          ${expanded ? `<h3 class="atl-section-label" id="atl-lists-heading">${t('atl_section_lists')}</h3>` : ''}
+          <div id="atl-list">${listRowsHtml()}</div>
+        </section>
         <div style="margin-top:var(--s-4)">
           <div class="new-list-row">
             <input type="text" id="atl-new-input" placeholder="${t('new_list_name')}"
@@ -2548,8 +2725,46 @@ function openAddToListPopup(envId) {
    * so it gets out of the way rather than waiting to be dismissed. The pause is
    * for the checkbox to be seen ticking and the toast to arrive under it. */
   function closeAfterAdd() {
+    if (expanded) return;
     clearTimeout(closeTimer);
     closeTimer = setTimeout(() => closeOverlayAnimated(overlay, close), ATL_CLOSE_DELAY_MS);
+  }
+
+  /* Expanded mode only: keeps the Prep row a mirror of the active Prep. Reached
+   * through syncEnvPrepControls() after any toggle from anywhere, and once here
+   * to paint the initial state. A full Prep leaves the row visible but
+   * unavailable, with the reason as text (and a tooltip); a selected
+   * environment stays removable even at the cap. */
+  function paintPrepRow() {
+    const current = activePrep();
+    const cb = overlay.querySelector('#atl-prep-toggle');
+    if (!current || !cb) return;
+    const status = PrepUtils.environmentActionState(current, envId);
+    const full = status === 'full';
+    const max = PrepUtils.MAX_ENVIRONMENTS;
+    const count = current.environmentIds.length;
+    cb.checked = status === 'selected';
+    cb.disabled = full;
+    if (full) cb.setAttribute('aria-describedby', 'atl-prep-hint'); else cb.removeAttribute('aria-describedby');
+    const row = overlay.querySelector('#atl-prep-row');
+    row.classList.toggle('is-unavailable', full);
+    if (full) row.dataset.tip = envPrepFullText(current); else delete row.dataset.tip;
+    overlay.querySelector('#atl-prep-title').textContent = prepDisplayTitle(current);
+    overlay.querySelector('#atl-prep-count').innerHTML =
+      `<span aria-hidden="true">${count}/${max}</span><span class="sr-only">${escapeHtml(t('prep_env_count_label').replace('{n}', count).replace('{max}', max))}</span>`;
+    const hint = overlay.querySelector('#atl-prep-hint');
+    hint.hidden = !full;
+    hint.textContent = full ? envPrepFullText(current) : '';
+  }
+  if (prep) {
+    paintPrepRow();
+    repaintAtlPrepRow = paintPrepRow;
+    overlay.querySelector('#atl-prep-toggle').addEventListener('change', () => {
+      toggleEnvironmentInActivePrep(envId);
+      // A refused or failed toggle leaves state unchanged; repaint so the
+      // checkbox can never show something the Prep does not hold.
+      paintPrepRow();
+    });
   }
 
   function bindToggle(cb) {
@@ -2577,11 +2792,13 @@ function openAddToListPopup(envId) {
     if (closed) return;
     closed = true;
     clearTimeout(closeTimer);
+    if (repaintAtlPrepRow === paintPrepRow) repaintAtlPrepRow = null;
     overlay.remove();
     teardown();
     // Only the list routes show anything that membership changes; re-rendering
-    // the catalog here would throw away the focus teardown just restored.
-    if (state.route.name !== 'catalog') render();
+    // the catalog here would throw away the focus teardown just restored, and
+    // Prep is kept current in place by syncPrepPageForEnvironment().
+    if (state.route.name !== 'catalog' && state.route.name !== 'prep') render();
   }
 
   overlay.querySelector('.modal-close').addEventListener('click', close);
@@ -5048,6 +5265,7 @@ function bindPrepDelegation(el) {
       refreshCentralEnvironments();
       const env = allEnvs().find(e => e.id === envId);
       if (env) updatePrepToggleLabel('data-sp-toggle-env', envId, envCb.checked, envName(env));
+      syncEnvPrepControls();
       return;
     }
     const advCb = e.target.closest('[data-sp-toggle-adv]');
@@ -5135,6 +5353,7 @@ function bindPrepDelegation(el) {
       syncPickerCheckbox('data-sp-toggle-env', envId, false);
       const env = allEnvs().find(e => e.id === envId);
       if (env) updatePrepToggleLabel('data-sp-toggle-env', envId, false, envName(env));
+      syncEnvPrepControls();
       return;
     }
 
@@ -5855,7 +6074,10 @@ function openDetailOverlay(envId, carry = null) {
       <div class="modal-header">
         <div class="modal-title-row">
           <h2 id="detail-title">${escapeHtml(envName(env))}</h2>
-          <button type="button" class="card-add-btn${isEnvInAnyList(env.id) ? ' is-listed' : ''}" id="detail-add-to-list" data-env-list-indicator="${env.id}" aria-label="${t('add_to_list')}" data-tip="${t('add_to_list')}">${ICON_BOOKMARK}</button>
+          <div class="env-actions">
+            ${envPrepButtonHtml(env)}
+            <button type="button" class="card-add-btn${isEnvInAnyList(env.id) ? ' is-listed' : ''}" id="detail-add-to-list" data-env-list-indicator="${env.id}" aria-label="${t('add_to_list')}" data-tip="${t('add_to_list')}" aria-haspopup="dialog">${ICON_BOOKMARK}</button>
+          </div>
         </div>
         <div class="rank-pills detail-tier-pills" id="detail-tier-pills" role="group" aria-label="${t('view_as_tier')}">${tierPillsHtml}</div>
         <button type="button" class="modal-close" aria-label="${t('close')}">&times;</button>
@@ -5896,7 +6118,7 @@ function openDetailOverlay(envId, carry = null) {
         <div class="detail-footer">
           ${biomesHtml}
           ${sourceHtml}
-          <button type="button" class="btn" id="detail-add-to-list-bottom">${t('add_to_list')}</button>
+          <button type="button" class="btn" id="detail-add-to-list-bottom" aria-haspopup="dialog">${t('add_to_ellipsis')}</button>
         </div>
       </div>
     </div>`;
@@ -6021,7 +6243,8 @@ function openDetailOverlay(envId, carry = null) {
   }));
 
   overlay.querySelector('#detail-add-to-list').addEventListener('click', () => openAddToListPopup(env.id));
-  overlay.querySelector('#detail-add-to-list-bottom').addEventListener('click', () => openAddToListPopup(env.id));
+  overlay.querySelector('#detail-add-to-list-bottom').addEventListener('click', () => openAddToListPopup(env.id, { expanded: true }));
+  overlay.querySelectorAll('[data-env-prep-toggle]').forEach(btn => btn.addEventListener('click', () => handleEnvPrepToggleClick(btn)));
 }
 
 /* ---------------- item card ---------------- */

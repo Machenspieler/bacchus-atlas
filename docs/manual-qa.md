@@ -47,6 +47,58 @@ locally") before starting.
 - [ ] Dice buttons, Fear-cost emphasis, and condition-name emphasis render
       and the dice buttons roll correctly.
 
+- [ ] Header: the Prep action and the bookmark sit beside the title (Prep
+      action first), level with the title's first line; a long name wraps
+      without the buttons detaching or touching the tier pills / ×.
+- [ ] Header Prep action matches the card's state, and toggling it updates
+      the card behind (and, when opened above `#/prep`, the central
+      Environments list, its count, and the picker checkbox).
+- [ ] Bottom button reads "Add to…" / "Добавить в…" and opens the expanded
+      dialog (see "Add to… dialog" below).
+
+## Environment quick actions (catalog and Lists cards) — RU and EN
+
+- [ ] Every real card shows [Prep action][bookmark], bookmark at the far
+      right and closer to the corner than before; the Random Environment card
+      has neither.
+- [ ] Long names (RU especially) never run under the buttons, on one-line and
+      two-line titles.
+- [ ] Clicking the Prep action does not open the overlay; clicking the
+      bookmark opens the list popup; a click exactly between the two icons
+      hits neither (the boxes are adjacent, not overlapping) — sweep the
+      pointer across the pair.
+- [ ] Available: muted symbol + plus badge, `aria-pressed="false"`, tooltip
+      "Add to current Prep" / "Добавить в текущую подготовку".
+- [ ] Selected: gold symbol + check badge + gold fill/border,
+      `aria-pressed="true"`, tooltip "Remove from current Prep" /
+      "Убрать из текущей подготовки" — still clickable at 3/3.
+- [ ] Full (3/3, not selected): dimmed, plus badge kept, no hover response,
+      not-allowed cursor, `aria-disabled="true"`, focusable with the reason
+      as tooltip ("… уже выбрано 3 из 3 окружений"); clicking does nothing
+      and changes no state. Removing one selected environment re-enables all
+      the others immediately, with no catalog re-render (scroll and focus
+      unchanged).
+- [ ] Toasts name the environment and the Prep's display title
+      (untitled Prep → "Untitled"/"Без названия"); a simulated storage
+      failure shows the storage warning and **no** success toast.
+- [ ] Reload keeps the Prep membership.
+
+## Add to… dialog (detail overlay's bottom button)
+
+- [ ] Title "Add “Name”" / "Добавить «Name»"; sections "Current Prep" and
+      "Lists" with a rule between them.
+- [ ] Prep row: checkbox mirrors membership, shows the active Prep's title and
+      `n/3`; toggling adds/removes immediately (matching buttons behind it
+      change too).
+- [ ] At 3/3 with the environment not selected the row stays visible, is
+      disabled, and states why; when selected it stays enabled.
+- [ ] List checkboxes and "create list" still work, the new list is ticked;
+      the dialog stays open after **every** change and closes only by ×,
+      Escape or a backdrop click, with focus back where it started. Focus is
+      trapped while open.
+- [ ] The compact bookmark popup is unchanged (list-only, closes itself after
+      adding).
+
 ## Lists
 
 - [ ] Empty state (no lists yet).
@@ -62,6 +114,11 @@ locally") before starting.
 - [ ] Empty (no selections yet): all three counters read zero, no stray
       "selected" styling anywhere.
 - [ ] Partial (one or two environments, some adversaries/items selected).
+- [ ] The central Environments heading shows the neutral SVG symbol (gold, no
+      plus/check); the Adversaries and Items icons are unchanged.
+- [ ] Opening an environment overlay from Prep and removing/adding it via the
+      header action updates the central list, the count, the picker checkbox
+      and every other picker row's disabled state behind it.
 - [ ] Populated (three environments — the cap — plus several
       adversaries/items).
 - [ ] Long labels: a long environment/adversary/item name doesn't break the
