@@ -123,6 +123,10 @@
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+/* Reserve the scrollbar's width on every route so pages that do and don't
+   scroll lay out identically — otherwise the centered header shifts a few
+   pixels on navigation. */
+html { scrollbar-gutter: stable; }
 
 body {
   background: var(--ink);
