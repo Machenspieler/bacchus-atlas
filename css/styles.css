@@ -637,7 +637,7 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
 @media (min-width: 901px) {
   /* Three columns (1fr auto 1fr): controls in the middle one, so the status in
    * the right column never shifts their centre. Controls keep their size. */
-  .catalog-bar { display: grid; grid-template-columns: 1fr auto 1fr; }
+  .catalog-bar { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
   .catalog-bar .list-context-bar, .catalog-bar .skeleton-toolbar { grid-column: 1 / -1; }
   .catalog-bar .toolbar {
     grid-column: 2; width: max-content; max-width: 100%;
