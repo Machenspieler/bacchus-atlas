@@ -2105,8 +2105,6 @@ function clearAllFilters() {
   resetCatalogVisibility();
   renderToolbar();
   renderGrid();
-  const search = document.getElementById('f-search');
-  if (search) search.focus();
 }
 
 function hasActiveFilters() {
