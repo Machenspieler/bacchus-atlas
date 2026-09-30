@@ -120,8 +120,7 @@
 
   function summaryInner(r) {
     const over = r.overBudget;
-    const warn = over ? `<span class="bp-warn-icon">${ICON_ALERT}</span>` : '';
-    const figures = `<span class="bp-abbr">${escapeHtml(t('bp_abbr'))}</span>${warn}<span class="bp-spent">${fmt(r.spent)}</span><span class="bp-sep">/</span><span class="bp-avail">${fmt(r.available)}</span>`;
+    const figures = `<span class="bp-abbr">${escapeHtml(t('bp_abbr'))}</span><span class="bp-spent">${fmt(r.spent)}</span><span class="bp-sep">/</span><span class="bp-avail">${fmt(r.available)}</span>`;
     if (proto.variant === 'B') {
       const rest = over
         ? fill('bp_over_short', { n: fmt(-r.remaining) })
@@ -129,7 +128,7 @@
       return `${figures}<span class="bp-rem"><span aria-hidden="true">·</span> ${escapeHtml(rest)}</span>`;
     }
     if (proto.variant === 'C') {
-      return `<span class="bp-c-lines"><span class="bp-c-main">${figures}</span><span class="bp-c-sub">${escapeHtml(fill('bp_characters_count', { n: proto.pcs }))}</span></span><span class="bp-c-caret">${ICON_CHEVRON_DOWN}</span>`;
+      return `<span class="bp-c-lines"><span class="bp-c-main">${figures}</span><span class="bp-c-sub">${escapeHtml(t('bp_characters_count')).replace('{n}', `<span class="bp-num2">${proto.pcs}</span>`)}</span></span><span class="bp-c-caret">${ICON_CHEVRON_DOWN}</span>`;
     }
     return figures;
   }
