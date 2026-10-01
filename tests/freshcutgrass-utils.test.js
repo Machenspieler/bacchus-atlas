@@ -1,6 +1,6 @@
 /* Pure-logic tests for js/freshcutgrass-utils.js (FreshCutGrassUtils) — the
  * one FreshCutGrass URL encoder shared by the environment detail page's
- * "Potential Adversaries" links and Session Prep's "Open in FreshCutGrass"
+ * "Potential Adversaries" links and Prep's "Open in FreshCutGrass"
  * export. No DOM, no fetch: builds a URL, decodes its own payload back out,
  * and asserts on the decoded JSON — see the "FreshCutGrass export" section
  * of CLAUDE.md for the contract this locks in. */

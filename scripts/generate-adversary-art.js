@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /* ============================================================
    Bacchus's Atlas — generate-adversary-art.js
-   Dev-only, offline image derivative generator for Session Prep's
+   Dev-only, offline image derivative generator for Prep's
    adversary artwork. Reads every unique original file directly under
-   img/adversaries/session-prep/ (never the generated/ subdir itself) and
+   img/adversaries/prep/ (never the generated/ subdir itself) and
    writes two deterministically-named WebP derivatives per source:
 
-     img/adversaries/session-prep/generated/thumbs/<source-stem>.webp
+     img/adversaries/prep/generated/thumbs/<source-stem>.webp
        — max 128x128 bounding box, for the ~48-64px picker thumbnail.
-     img/adversaries/session-prep/generated/full/<source-stem>.webp
+     img/adversaries/prep/generated/full/<source-stem>.webp
        — max 1536px long edge, for the large art overlay.
 
    Both preserve aspect ratio and transparency, never crop, never upscale
@@ -19,7 +19,7 @@
    so a stem-based name is consistent with how every other image in this
    project already ships (unversioned, cached by path). Several adversary
    ids intentionally share one group art file (see IMAGE_MAPPING in
-   scripts/import-session-prep-adversaries.js) — since the mapping always
+   scripts/import-prep-adversaries.js) — since the mapping always
    points every one of them at the same source filename, they naturally
    resolve to the same generated derivative with no extra bookkeeping here.
 
@@ -39,7 +39,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const SRC_DIR = path.join(ROOT, 'img', 'adversaries', 'session-prep');
+const SRC_DIR = path.join(ROOT, 'img', 'adversaries', 'prep');
 const OUT_DIR = path.join(SRC_DIR, 'generated');
 const THUMBS_DIR = path.join(OUT_DIR, 'thumbs');
 const FULL_DIR = path.join(OUT_DIR, 'full');
@@ -81,7 +81,7 @@ async function generate() {
 
     await sharp(srcPath)
       .resize({ width: FULL_LONG_EDGE, height: FULL_LONG_EDGE, fit: 'inside', withoutEnlargement: true })
-      .webp({ quality: 88 })
+      .webp({ quality: 92 })
       .toFile(path.join(FULL_DIR, `${stem}.webp`));
     fullWritten++;
   }

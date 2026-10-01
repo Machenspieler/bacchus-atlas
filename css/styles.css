@@ -53,7 +53,7 @@
   --font-display: 'Forum', 'Times New Roman', serif;   /* 400 only — no bold face exists */
   --font-body: 'Spectral', Georgia, serif;
   --font-mono: 'JetBrains Mono', 'Courier New', monospace;
-  /* Session Prep's own dense-UI typeface — a readable system sans, never
+  /* Prep's own dense-UI typeface — a readable system sans, never
      used on the brand or the reading pages elsewhere in the app. */
   --font-ui: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
@@ -107,12 +107,26 @@
   --focus-ring: 2px solid var(--hope);
   --focus-offset: 2px;
 
+  /* ---- Prep selection cell (shared by the environment, adversary
+     and item pickers): 4px row padding → 32px hit area holding an 18px
+     checkbox → 4px gap → thumbnail. One set of numbers, never per picker. */
+  --sel-box: 18px;
+  --sel-col: 20px;         /* the column the checkbox actually occupies in a row */
+  --sel-hit: 32px;         /* click height; width = column + the row padding/gap it overlaps */
+  --sel-hit-touch: 44px;   /* coarse pointers / phones keep the WCAG-sized target */
+  --sel-gap: var(--s-1);
+  --sel-pad: var(--s-1);
+
   /* Native chrome — scrollbars, the select popup, autofill — follows the theme. */
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+/* Reserve the scrollbar's width on every route so pages that do and don't
+   scroll lay out identically — otherwise the centered header shifts a few
+   pixels on navigation. */
+html { scrollbar-gutter: stable; }
 
 body {
   background: var(--ink);
@@ -140,7 +154,7 @@ body[data-route="catalog"]::before,
 body[data-route="lists"]::before,
 body[data-route="list"]::before,
 body[data-route="journey"]::before,
-body[data-route="session-prep"]::before {
+body[data-route="prep"]::before {
   --catalog-art-opacity: 0.26;
   --catalog-art-size: min(1024px, 82vw, 100vh);
   --catalog-art-brightness: 0.75;
@@ -165,7 +179,7 @@ body[data-route="session-prep"]::before {
   body[data-route="lists"]::before,
   body[data-route="list"]::before,
   body[data-route="journey"]::before,
-  body[data-route="session-prep"]::before {
+  body[data-route="prep"]::before {
     --catalog-art-opacity: 0.14;
     --catalog-art-size: min(140vw, 640px);
     --catalog-art-brightness: 0.6;
@@ -177,7 +191,7 @@ body[data-route="session-prep"]::before {
   body[data-route="lists"]::before,
   body[data-route="list"]::before,
   body[data-route="journey"]::before,
-  body[data-route="session-prep"]::before { display: none; }
+  body[data-route="prep"]::before { display: none; }
 }
 
 a { color: var(--hope-soft); text-decoration: none; }
@@ -605,9 +619,55 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
   text-decoration: underline; text-underline-offset: 2px;
 }
 .result-count button:hover { color: var(--parchment); }
+/* The separator is inline-block so the button's underline doesn't run under it. */
+.result-count button::before {
+  content: "·"; display: inline-block; margin-right: var(--s-2);
+  color: var(--muted); text-decoration: none;
+}
+
+/* #toolbar dissolves so the list bar, the filter toolbar and the status become
+ * items of .catalog-bar. Below 901px they are full-width flex rows (the status
+ * wraps underneath, as before). */
+.catalog-bar { display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--s-4); }
+/* A container query can't style its own container, so the query target is the
+ * wrapper around the grid. */
+.catalog-bar-wrap { container-type: inline-size; }
+#toolbar { display: contents; }
+.catalog-bar .toolbar, .catalog-bar .list-context-bar, .catalog-bar .skeleton-toolbar { flex: 1 1 100%; }
+@media (min-width: 901px) {
+  /* Three columns (1fr auto 1fr): controls in the middle one, so the status in
+   * the right column never shifts their centre. Controls keep their size. */
+  .catalog-bar { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+  .catalog-bar .list-context-bar, .catalog-bar .skeleton-toolbar { grid-column: 1 / -1; }
+  .catalog-bar .toolbar {
+    grid-column: 2; width: max-content; max-width: 100%;
+    justify-content: center; flex-wrap: nowrap;
+  }
+  .catalog-bar .toolbar-filters { flex-wrap: nowrap; }
+  .catalog-bar .toolbar-filters > .field, .catalog-bar .search-field { flex-shrink: 0; }
+  .catalog-bar .rank-pills { flex-wrap: nowrap; }
+  /* Same vertical margins as .toolbar so the two centre on one line. */
+  .catalog-bar .result-count {
+    grid-column: 3; justify-self: end; margin: var(--s-6) 0 var(--s-5);
+    flex-wrap: nowrap; white-space: nowrap;
+  }
+}
+/* The toolbar (942px) plus a status-wide column (234px, longest RU state, with
+ * ~16px clearance) on each side needs 1440px; below that only the status
+ * drops below the centred controls. */
+@container (max-width: 1439px) {
+  .catalog-bar { grid-template-columns: 1fr; }
+  .catalog-bar .toolbar { grid-column: 1; justify-self: center; margin-bottom: var(--s-3); }
+  .catalog-bar .result-count { grid-column: 1; margin-top: 0; }
+}
+/* Too narrow even for the controls alone: they may wrap as a group. */
+@container (max-width: 980px) {
+  .catalog-bar .toolbar, .catalog-bar .toolbar-filters { flex-wrap: wrap; width: auto; }
+  .catalog-bar .toolbar-filters { justify-content: center; }
+}
 
 /* Below the main catalog grid only — never rendered on Lists, Journey, or
- * Session Prep. Empty whenever the whole result set already fits, so
+ * Prep. Empty whenever the whole result set already fits, so
  * :empty collapses it to nothing rather than leaving a stray gap. */
 .catalog-more {
   display: flex; flex-direction: column; align-items: center; gap: var(--s-3);
@@ -701,28 +761,62 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
 .card-open::after { content: ""; position: absolute; inset: 0; z-index: 1; }
 .card-open:focus-visible { outline: none; }
 
-.card-add-btn {
+/* The environment action group: [add/remove from current Prep] [add to list],
+ * on the catalog/Lists card and in the detail card's title row. Two square
+ * buttons that share one shape; each is its own hit area (no ::after
+ * enlargement — two neighbours with overlapping invisible targets would let a
+ * click between the icons hit the wrong one), so the visible box *is* the
+ * target. On the card the group is pulled toward the corner with negative
+ * margins, and stays a flex sibling of the title, which is what reserves its
+ * width — a long name wraps instead of running underneath. */
+.env-actions { display: flex; align-items: center; flex: none; }
+.card-top .env-actions { margin: -6px -8px 0 0; }
+
+.card-add-btn, .env-prep-btn {
   position: relative; z-index: 2;
-  flex: none; width: var(--h-xs); height: var(--h-xs); border-radius: 50%;
-  border: 1px solid var(--line);
-  background: transparent; color: var(--muted); font-size: var(--fs-base); line-height: 1; cursor: pointer;
+  flex: none; width: 28px; height: 28px; border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  background: transparent; color: var(--muted); line-height: 1; cursor: pointer;
   display: flex; align-items: center; justify-content: center; padding: 0;
   transition: border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out),
-              background var(--t-fast) var(--ease-out);
+              background var(--t-fast) var(--ease-out), opacity var(--t-fast) var(--ease-out);
 }
-.card-add-btn:hover { border-color: var(--hope); color: var(--hope); background: rgba(217,164,65,0.1); }
-/* Keeps the 24px visual size the card wants while giving the finger 44px. */
-.card-add-btn::after { content: ""; position: absolute; inset: -10px; }
-.card-add-btn svg { display: block; width: var(--icon-md); height: var(--icon-md); pointer-events: none; }
-/* Borderless resting state, per the mockup — the circular border is a modal
- * affordance, not a catalog one. Hover keeps the shared gold treatment. */
-.card-add-btn--catalog { border-color: transparent; }
+.card-add-btn:hover, .env-prep-btn:hover { border-color: var(--hope); color: var(--hope); background: rgba(217,164,65,0.1); }
+.card-add-btn svg { display: block; width: 18px; height: 18px; pointer-events: none; }
+@media (pointer: coarse) {
+  .card-add-btn, .env-prep-btn { width: 40px; height: 40px; }
+  .card-top .env-actions { margin: -12px -14px 0 0; }
+}
 
 /* Aggregated across all lists — filled once an environment is saved to any
  * of them, not just the one the popup happens to be showing. */
 .card-add-btn.is-listed { color: var(--hope); }
 .card-add-btn.is-listed svg path { fill: currentColor; }
 .card-add-btn.is-listed:hover { color: var(--hope-soft); }
+
+/* Quick add/remove for the current Prep. The Environment symbol with a
+ * lower-right badge; state is never colour alone — the badge glyph (plus /
+ * check), aria-pressed and the fill all move together (see envPrepActionView()
+ * in js/app.js). Three states: available (muted, plus), selected (gold, check,
+ * no frame at rest), unavailable because the Prep is full (dimmed, plus, no
+ * hover response, not-allowed cursor). The unavailable button stays focusable
+ * (aria-disabled) so its reason is reachable from the keyboard. */
+.env-action-icon { display: block; width: 20px; height: 20px; pointer-events: none; overflow: visible; }
+.env-badge-dot { fill: currentColor; }
+.env-badge-glyph {
+  fill: none; stroke: var(--env-badge-glyph, var(--ink-card));
+  stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
+}
+.env-prep-btn:not(.is-selected) .env-badge-check { display: none; }
+.env-prep-btn.is-selected .env-badge-plus { display: none; }
+/* Selected reads from the gold symbol + check badge alone; the frame and fill
+ * appear only on hover, like every other button in the group. */
+.env-prep-btn.is-selected { color: var(--hope); }
+.env-prep-btn.is-selected:hover { color: var(--hope-soft); border-color: var(--hope); background: rgba(217,164,65,0.1); }
+.env-prep-btn.is-unavailable, .env-prep-btn.is-unavailable:hover {
+  color: var(--muted); opacity: 0.45; cursor: not-allowed;
+  border-color: transparent; background: transparent;
+}
 
 .card-lore,
 .card-impulses {
@@ -849,6 +943,7 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
 }
 .toast.is-error { border-left-color: var(--fear-soft); }
 .toast svg { width: var(--icon-md); height: var(--icon-md); flex: none; color: var(--hope); }
+.toast span { white-space: pre-line; }
 .toast.is-error svg { color: var(--fear-soft); }
 @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 /* Toasts stack out of the same corner the back-to-top button claims, and they
@@ -876,6 +971,17 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
   transition: opacity var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
 }
 .tooltip.is-open { opacity: 1; transform: none; }
+/* Opt-in rich mode (data-tip-rich, see showTip() in js/app.js) — a wider
+   box that actually wraps prose, for the item browser's dice rarity
+   tooltips (bold headings, separate paragraphs) instead of the default
+   single-line-ish plain-text tip. */
+.tooltip.tooltip-rich {
+  max-width: 320px; white-space: normal; text-align: left;
+  font-size: var(--fs-sm); line-height: var(--lh-sm);
+}
+.tooltip-rich p { margin: 0 0 var(--s-2); }
+.tooltip-rich p:last-child { margin-bottom: 0; }
+.tooltip-rich strong { color: var(--hope-soft); }
 
 /* ---------- environment backdrop ---------- */
 /* The painting a stat block is read against: full screen, blurred, and pinned to
@@ -946,8 +1052,7 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 /* A card taken down and put straight back up in the other language. It never
  * left the screen, so it does not arrive again: the entrance animation here
  * would read as a blink over what is really a change of text. */
-.modal-overlay.is-rebuild .modal,
-.modal-overlay.is-rebuild .loot-modal-card { animation: none; }
+.modal-overlay.is-rebuild .modal { animation: none; }
 /* An overlay that closes itself rather than being dismissed. A click has
  * already answered for itself, so nothing else in the app animates on the way
  * out; this one would just vanish unexplained. Mirror of modal-in, leaving:
@@ -964,7 +1069,7 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
   display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-4);
   padding: var(--s-5) var(--s-6) var(--s-4); border-bottom: 1px solid var(--line);
 }
-.modal-title-row { display: flex; align-items: center; gap: var(--s-3); margin: 0; flex: 0 1 auto; min-width: 0; }
+.modal-title-row { display: flex; align-items: flex-start; gap: var(--s-3); margin: 0; flex: 0 1 auto; min-width: 0; }
 .modal-header h2 {
   font-family: var(--font-display); font-weight: 400;
   font-size: var(--fs-xl); line-height: var(--lh-xl);
@@ -975,8 +1080,10 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
  * it and the close button to hold the two apart — so the title claims the free
  * space itself and the × keeps the far corner. The detail card wraps its title
  * in .modal-title-row instead and leans on the tier row below for the same job. */
-.modal-header > h2 { margin-right: auto; }
-.modal-title-row .card-add-btn { flex: none; width: 26px; height: 26px; font-size: var(--fs-md); }
+.modal-header > h2 { margin-right: auto; flex: 1 1 0; min-width: 0; }
+/* The action group sits level with the title's first line (25px * 1.15 = ~29px
+ * line box, buttons 28px) and stays together however many lines the name takes. */
+.modal-title-row .env-actions { margin-top: 1px; }
 /* margin-right:auto keeps the tier row next to the name and the close button
  * pinned to the far edge, well clear of the tier 4 pill. */
 .detail-tier-pills { gap: var(--s-2); margin-right: auto; }
@@ -1119,6 +1226,7 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 .feature-desc p:last-child { margin-bottom: 0; }
 .feature-bullets { margin: 0 0 var(--s-2); padding-left: 22px; list-style: disc; color: var(--parchment-dim); }
 .feature-bullets li { margin: 3px 0; }
+ol.feature-bullets { list-style: decimal; }
 .feature-bullets:last-child { margin-bottom: 0; }
 /* Hanging indent: the lozenge sits in its own gutter so a wrapped second line
  * starts under the first line's text rather than under the glyph. */
@@ -1298,140 +1406,58 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 .story-seed-body p:last-child { margin-bottom: 0; }
 .story-seed-prompt { margin-top: var(--s-2); }
 
-/* The item card is a copy of the loot generator's, tokens and all. Its palette
- * is scoped to .loot-overlay rather than :root so the plum surface, the Inter
- * stack and the 14px corners stay inside this one card and never leak into the
- * parchment theme around it. Values are that site's, kept verbatim so the two
- * cards can be compared side by side — with two corrections: the weights are
- * rounded to faces that exist, and the overlay treatment is ours, so the
- * transition in and out of the card feels like one app. */
-.loot-overlay {
-  --lt-bg: #0e0c15;
-  --lt-surface: #1a1626;
-  --lt-surface2: #221d31;
-  --lt-line: #312a45;
-  --lt-line2: #3f3758;
-  --lt-txt: #ece8f6;
-  --lt-muted: #9b93b3;
-  --lt-muted2: #8a83a3;
-  --lt-gold: #d8ab5e;
-  --lt-gold-soft: #f0d091;
-  --lt-item: #7a8ee0;
-  --lt-cons: #9ec96a;
-  --lt-radius: 14px;
-  --lt-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --lt-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-
-  align-items: center; padding: var(--s-5) var(--s-4);
+/* The item card is the atlas's own modal (.modal, .modal-header, chips, .btn) —
+ * the loot generator's plum palette and Inter stack are gone. Only what an item
+ * needs beyond that lives here: the artwork, the chip row, the craft chain. */
+.loot-modal { max-width: 520px; }
+.loot-modal .modal-header { flex-wrap: nowrap; }
+.loot-modal .modal-title-row { flex: 1 1 0; }
+.loot-media {
+  width: 100%; aspect-ratio: 1; max-height: 360px; margin: 0 0 var(--s-4);
+  background: var(--ink); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden;
 }
-.loot-modal-card {
-  position: relative; width: min(440px, 100%); max-height: 88vh; overflow: auto;
-  overscroll-behavior: contain;
-  border-radius: var(--lt-radius); animation: loot-pop var(--t-slow) var(--ease-enter) both;
-}
-.loot-modal-card:focus { outline: none; }
-@keyframes loot-pop {
-  from { opacity: 0; transform: translateY(10px) scale(0.985); }
-  to { opacity: 1; transform: none; }
-}
-.loot-x {
-  position: absolute; right: 10px; top: 10px; z-index: 5; width: 34px; height: 34px; border-radius: 50%;
-  border: 1px solid var(--lt-line2); background: rgba(10,8,16,0.8); color: var(--lt-txt);
-  font-size: 22px; line-height: 1; cursor: pointer; backdrop-filter: blur(6px); font-family: var(--lt-ui);
-}
-.loot-x:hover { border-color: var(--lt-gold); color: var(--lt-gold); }
-
-.loot-card {
-  background: linear-gradient(180deg, var(--lt-surface2), var(--lt-surface));
-  border: 1px solid var(--lt-line); border-radius: var(--lt-radius); overflow: hidden;
-  display: flex; flex-direction: column; box-shadow: var(--e-4);
-  color: var(--lt-txt); font: 15.5px/1.6 var(--lt-ui);
-}
-.loot-media { width: 100%; aspect-ratio: 1; max-height: 420px; background: #0a0810; overflow: hidden; flex: none; }
 .loot-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.loot-body { padding: 13px 15px 14px; display: flex; flex-direction: column; gap: var(--s-2); min-width: 0; }
-.loot-meta { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
-.loot-badge {
-  font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase;
-  padding: 3px 7px; border-radius: 6px; background: rgba(10,8,16,0.5);
-  border: 1px solid var(--lt-line2); color: var(--lt-muted);
-}
-.loot-badge.thing { color: var(--lt-item); border-color: #7a8ee073; }
-.loot-badge.cons { color: var(--lt-cons); border-color: #9ec96a73; }
-.loot-badge.src { color: #a5a5b2; }
-.loot-badge.num {
-  font-family: var(--lt-mono); font-size: 11px; letter-spacing: 0;
-  color: var(--lt-gold-soft); border-color: rgba(216,171,94,0.5);
-}
-.loot-name {
-  margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.28;
-  display: flex; align-items: baseline; gap: 7px; font-family: var(--lt-ui); color: var(--lt-txt);
-}
-.loot-name > span { min-width: 0; overflow-wrap: break-word; }
-/* Sits on the name's line rather than under it: it copies the address of this
- * entry, and the name is what it is the address of. Pinned to the top of the
- * row rather than to the baseline the row is aligned on — a 19px cap height
- * would hang the icon off the bottom of the text, and against a name long
- * enough to wrap, centring would leave it floating between the two lines. */
+.loot-meta { display: flex; gap: var(--s-2); flex-wrap: wrap; align-items: center; }
+.loot-roll { color: var(--hope-soft); border-color: var(--hope); }
+/* Item vs consumable: consumables take the teal chip, items the brighter parchment
+ * one, so the two kinds read apart without borrowing gold or fear-red. */
+.loot-kind-item { color: var(--parchment); border-color: var(--line-strong); }
+/* Sits on the title's first line: it copies the address of this entry, and the
+ * title is what it is the address of. */
 .loot-name-act {
-  flex: none; align-self: flex-start; margin-top: -1px;
+  flex: none; align-self: flex-start; margin-top: 1px;
   display: inline-flex; align-items: center; justify-content: center;
-  width: 26px; height: 26px; padding: 0; border: 0; border-radius: 7px;
-  background: none; color: var(--lt-muted); cursor: pointer; font: inherit;
+  width: 28px; height: 28px; padding: 0; border: 0; border-radius: var(--r-sm);
+  background: none; color: var(--muted); cursor: pointer;
   transition: color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
 }
-.loot-name-act:hover { color: var(--lt-gold); background: rgba(216,171,94,0.12); }
-.loot-name-act svg { width: 15px; height: 15px; fill: currentColor; }
-.loot-desc { margin: 0; color: #cfc8e0; font-size: 14px; line-height: 1.62; }
-.loot-desc p { margin: 0 0 7px; }
-.loot-desc p:last-child { margin-bottom: 0; }
-/* The roll buttons are ours, not theirs — restyled into their palette so they
- * read as part of this card rather than as a graft from the page behind it. */
-.loot-desc .dice-btn {
-  font-family: var(--lt-mono); font-size: 12px; font-weight: 600;
-  background: rgba(10,8,16,0.5); border-color: rgba(216,171,94,0.5); color: var(--lt-gold-soft);
-  border-radius: 6px; padding: 1px 7px 1px 5px;
-}
-.loot-desc .dice-btn:hover { background: rgba(216,171,94,0.14); }
+.loot-name-act:hover { color: var(--hope-soft); background: var(--ink-raised); }
+.loot-name-act svg { width: var(--icon-md); height: var(--icon-md); fill: currentColor; }
+.loot-desc { margin-top: var(--s-4); }
 
-.loot-craft { display: flex; flex-direction: column; gap: 3px; margin: -1px 0 1px; }
+.loot-craft { display: flex; flex-direction: column; gap: var(--s-1); margin-top: var(--s-4); }
 .loot-craft p {
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 5px; margin: 0;
-  font-size: 12.5px; line-height: 1.45; min-width: 0;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--s-2); margin: 0;
+  font-size: var(--fs-sm); line-height: var(--lh-sm); min-width: 0;
 }
-.loot-craft svg { width: 13px; height: 13px; flex: none; align-self: center; fill: var(--lt-muted2); }
+.loot-craft svg { width: 13px; height: 13px; flex: none; align-self: center; fill: var(--muted); }
 .loot-craft-l {
-  color: var(--lt-muted2); text-transform: uppercase; letter-spacing: 0.05em;
-  font-size: 10.5px; white-space: nowrap;
+  font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted);
+  text-transform: uppercase; letter-spacing: var(--tracking-caps); white-space: nowrap;
 }
 .loot-craft-a {
   background: none; border: 0; padding: 0; cursor: pointer; font: inherit; min-width: 0; text-align: left;
-  color: var(--lt-gold-soft); border-bottom: 1px dotted rgba(240,208,145,0.45);
+  color: var(--teal-soft); border-bottom: 1px dotted var(--teal);
 }
 .loot-craft-a:hover { border-bottom-style: solid; }
 
-.loot-acts { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: auto; padding-top: 3px; }
-/* The three short buttons and the way out of the site are two rows, not one
- * wrapping line: sharing a row, the long "open in the generator" label is what
- * would decide where the short three break. The first row has already taken up
- * the slack, so the second asks for no space of its own. */
-.loot-acts + .loot-acts { margin-top: 0; padding-top: 0; }
-.loot-btn {
-  display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
-  border: 1px solid var(--lt-line2); background: var(--lt-surface); color: var(--lt-txt);
-  height: 32px; padding: 0 11px; border-radius: 8px;
-  font-size: 12.5px; font-weight: 600; white-space: nowrap;
-  transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+.loot-acts {
+  display: flex; gap: var(--s-2); flex-wrap: wrap; align-items: center;
+  margin-top: var(--s-5); padding-top: var(--s-4); border-top: 1px solid var(--line);
 }
-.loot-btn:hover { border-color: var(--lt-gold); background: var(--lt-surface2); text-decoration: none; }
-.loot-btn svg { width: 15px; height: 15px; flex: none; fill: currentColor; }
-/* A button does not inherit the card's face the way the anchor beside it does. */
-button.loot-btn { font-family: var(--lt-ui); line-height: 1; cursor: pointer; }
-/* The attribution says out loud what the borrowed styling only implies. */
-.loot-src-note {
-  margin: 0; font-family: var(--lt-ui); font-size: 11px; line-height: 1.4;
-  color: var(--lt-muted2); letter-spacing: 0.02em;
-}
+.loot-acts .btn { text-decoration: none; }
+.loot-acts .btn svg { width: var(--icon-md); height: var(--icon-md); flex: none; fill: currentColor; }
+.loot-modal .loot-src-note { margin-top: var(--s-4); }
 
 .dice-result-pop {
   position: fixed; z-index: 200; background: var(--ink-card); border: 1px solid var(--hope);
@@ -1646,6 +1672,20 @@ button.loot-btn { font-family: var(--lt-ui); line-height: 1; cursor: pointer; }
   border-radius: var(--r-sm);
 }
 .atl-row:hover { color: var(--hope-soft); }
+/* Expanded "Add to…" dialog: a Current Prep section, a rule, then the lists. */
+.atl-section-label {
+  font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 400;
+  letter-spacing: var(--tracking-caps); text-transform: uppercase;
+  color: var(--teal-soft); margin: 0 0 var(--s-1);
+}
+.atl-sep { border: 0; border-top: 1px solid var(--line-faint); margin: var(--s-3) 0; }
+.atl-prep-title { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.atl-prep-count { flex: none; font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); }
+.atl-hint { margin: 0 0 var(--s-2); padding-left: calc(18px + var(--s-3)); font-size: var(--fs-xs); color: var(--muted); }
+.atl-row.is-unavailable, .atl-row.is-unavailable:hover { color: var(--muted); cursor: not-allowed; }
+.atl-row.is-unavailable input[type="checkbox"], .atl-row.is-unavailable:hover input[type="checkbox"] {
+  opacity: 0.5; cursor: not-allowed; border-color: var(--line-strong);
+}
 /* The OS checkbox rendered light-on-light against the card; this is the same
  * control with the theme's own box drawn on it. */
 .atl-row input[type="checkbox"] {
@@ -1961,9 +2001,6 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
   body.has-lang-float .modal-header {
     padding-inline-end: calc(max(var(--s-4), env(safe-area-inset-right)) + 100px);
   }
-  /* The quoted item card keeps its own size and centres, so on a short screen
-   * its round × can reach up under the switch. Push the card down clear of it. */
-  body.has-lang-float .loot-overlay { padding-top: var(--s-9); }
 
   /* Name and close on the first line, the tier row on its own below: a 32-char
    * name plus four pills plus the close button never fit a phone. The basis has
@@ -2003,9 +2040,9 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
   .nav-btn > span { display: none; }
 }
 
-/* ---------- Session Prep (#/session-prep) ----------
+/* ---------- Prep (#/prep) ----------
    Every rule here is prefixed .prep- to stay clear of the rest of the
-   stylesheet — see the "Session Prep" sections in CLAUDE.md. Reuses existing
+   stylesheet — see the "Prep" sections in CLAUDE.md. Reuses existing
    tokens/components wherever possible: .field/.btn/.btn-sm/.btn-ghost for
    inputs and buttons. Environments, adversaries, and items are all binary
    selections — every real checkbox on this page shares one visual/sizing
@@ -2031,28 +2068,28 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
    soon as .shell becomes a flex item (≥1200px), not only once max-width is
    dropped at ≥1440px. */
 @media (min-width: 1200px) {
-  body[data-route="session-prep"] .shell {
+  body[data-route="prep"] .shell {
     width: 100%;
   }
 }
-body[data-route="session-prep"] .shell {
+body[data-route="prep"] .shell {
   max-width: 1440px;
 }
 @media (min-width: 1440px) {
-  body[data-route="session-prep"] .shell {
+  body[data-route="prep"] .shell {
     max-width: none;
   }
 }
 
-/* The site footer belongs to the catalog/reading pages; Session Prep is a
+/* The site footer belongs to the catalog/reading pages; Prep is a
    dense working tool and the vertical space is worth more as table room. */
-body[data-route="session-prep"] #footer {
+body[data-route="prep"] #footer {
   display: none;
 }
 
-/* Session Prep is a dense working tool — everywhere inside .prep-wrap uses a
+/* Prep is a dense working tool — everywhere inside .prep-wrap uses a
    readable system UI typeface rather than the site's decorative display/body
-   faces. Individual headings and the large editable session title below
+   faces. Individual headings and the large editable prep title below
    explicitly opt back into --font-display, so the brand and the reading
    pages elsewhere in the app are completely unaffected. */
 .prep-wrap {
@@ -2061,79 +2098,249 @@ body[data-route="session-prep"] #footer {
   transition: margin-top var(--t-base) var(--ease-out), gap var(--t-base) var(--ease-out);
 }
 
-/* ---- Session Prep header mode: one source of truth ----
+/* ---- Prep header mode: one source of truth ----
    Expanded and compact are two genuinely distinct layouts, not one hiding a
    single subtitle — compact turns the global header into a dense toolbar
-   AND the session name/save-status row below it into a single compact
-   strip, both driven by the one `data-sp-header-mode` attribute
-   initSessionPrepChrome()/applySessionPrepChromeDom() (js/app.js) set on
-   <body> in response to a deliberate click of .sp-chrome-toggle — never
+   AND the Prep Bar below it (which it hides outright), both driven by the
+   one `data-sp-header-mode` attribute
+   initPrepChrome()/applyPrepChromeDom() (js/app.js) set on
+   <body> in response to a deliberate click of .sp-session-control — never
    automatically, and never two independent states to fall out of sync.
    These custom properties collect the compact-mode target dimensions the
    rules below implement, so the three numbers stay defined in one place. */
-body[data-route="session-prep"] {
+body[data-route="prep"] {
   --sp-toolbar-h: 45px;
   --sp-strip-h: 38px;
   --sp-workspace-gap: 10px;
 }
 
-/* ---- session switcher (switch / new / duplicate / delete) ----
-   Deliberately a plain sibling of .prep-session-header, not a child of it —
-   see sessionSwitcherHtml() in js/app.js — so it never has to participate in
-   that element's expanded/compact grid layout below. Minimal styling for
-   this stage: reuses .field/.field select (toolbar) and .btn/.btn-ghost
-   (shared button system) rather than introducing new visual treatment. */
-.prep-session-switcher {
-  display: flex; align-items: flex-end; flex-wrap: wrap; gap: var(--s-3);
-  margin-bottom: var(--s-4);
+/* ---- Prep Bar: title / switcher / rename / New / actions / save status ----
+   One compact surface that replaces the old "saved preps" select row and
+   the separate prep-title field (see prepBarHtml() in js/app.js). First
+   child of .prep-wrap, so it spans exactly the same width as the three
+   columns below it. The atlas watermark stays visible around it but is
+   dimmed *behind* the bar by a dark local gradient, so title, icons and
+   status keep their contrast. Uses only existing tokens; --sp-bar-* below
+   just name the two surface values this one component needs. */
+body[data-route="prep"] {
+  --sp-bar-bg:
+    linear-gradient(180deg, rgba(20,17,15,0.80), rgba(20,17,15,0.90)),
+    radial-gradient(ellipse at 0% 0%, rgba(217,164,65,0.08), transparent 55%);
+  --sp-bar-border: var(--line-faint);
 }
-.prep-session-select-field { min-width: 220px; }
-.prep-session-select-field select { width: 100%; }
-.prep-session-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+/* contain: inline-size — a long, nowrap prep name must not push the
+   bar's *intrinsic* width up through .prep-wrap (a grid item with an automatic
+   minimum) and widen the whole page. The bar takes its width from the wrap
+   instead, and the title truncates inside it. */
+.prep-bar {
+  position: relative; min-width: 0; contain: inline-size;
+  display: grid; align-items: center; gap: var(--s-4);
+  grid-template-columns: minmax(220px, 340px) minmax(0, 1fr) max-content;
+  padding: var(--s-3) var(--s-5);
+  background: var(--sp-bar-bg);
+  border: 1px solid var(--sp-bar-border); border-radius: var(--r-lg);
+}
+.prep-identity { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--s-1); }
+.prep-titlerow { display: flex; align-items: center; gap: var(--s-2); min-width: 0; }
+.prep-title-wrap { position: relative; min-width: 0; max-width: 100%; display: flex; }
 
-/* ---- session name + save status (workspace-level, not the header chrome) ----
-   Renders as the first child of .prep-wrap (see renderSessionPrepPage() in
-   js/app.js) so it aligns with the same wide workspace shell as the three
-   catalogues below it, rather than the header's narrower 1180px container.
-   Hidden outright in compact mode along with the switcher row below —
-   see the compact-mode rule further down. */
-.prep-session-header {
-  display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: var(--s-3);
-  padding-bottom: var(--s-3); border-bottom: 1px solid var(--line-faint);
-  transition: padding var(--t-base) var(--ease-out);
+/* The title is a title, not a form control: display face, no box, only a
+   hairline underline on hover so it still reads as interactive. The rename
+   input below shares its exact font/padding/border metrics, so swapping one
+   for the other never changes the row's height. */
+.prep-title-btn,
+.prep-title-input {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: var(--fs-xl); line-height: var(--lh-xl); letter-spacing: var(--tracking-display);
+  color: var(--parchment);
+  padding: var(--s-1) 0; margin: 0;
+  background: transparent; border: none; border-bottom: 1px solid transparent; border-radius: 0;
 }
-.prep-title-field { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 2px; }
-.prep-title-label {
-  font-size: var(--fs-xs); color: var(--muted); text-transform: uppercase; letter-spacing: var(--tracking-caps);
+.prep-title-btn {
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  min-width: 0; max-width: 100%; cursor: pointer; text-align: left;
+  transition: border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
 }
-#prep-session-title {
-  width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--line-faint);
-  font-family: var(--font-display); font-weight: 400; font-size: var(--fs-xl); color: var(--parchment);
-  padding: var(--s-1) 0;
-  transition: border-color var(--t-fast) var(--ease-out), font-size var(--t-base) var(--ease-out), padding var(--t-base) var(--ease-out);
+.prep-title-btn[hidden], .prep-title-input[hidden] { display: none; }
+.prep-title-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prep-title-btn svg {
+  flex: none; width: var(--icon-md); height: var(--icon-md); color: var(--muted);
+  transition: color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
 }
-#prep-session-title:hover { border-bottom-color: var(--line-strong); }
-#prep-session-title:focus { border-bottom-color: var(--hope); outline: none; }
-#prep-session-title::placeholder { color: var(--muted); font-family: var(--font-body); font-size: var(--fs-md); }
-/* Never blank — a neutral "autosave is on" message, then "Saved…HH:MM", then
-   a clear error style on a failed write (never color alone: the text itself
-   changes too). */
-.prep-save-status { margin: 0; font-size: var(--fs-sm); color: var(--muted); white-space: nowrap; }
+.prep-title-btn:hover { border-bottom-color: var(--line-strong); }
+.prep-title-btn:hover svg { color: var(--hope-soft); }
+.prep-title-btn[aria-expanded="true"] svg { color: var(--hope-soft); transform: rotate(180deg); }
+.prep-title-btn:focus-visible { border-radius: var(--r-sm); }
+.prep-title-input {
+  min-width: 0; max-width: 100%;
+  border-bottom-color: var(--hope);
+  text-overflow: ellipsis;
+}
+.prep-title-input:focus { outline: none; }
+
+/* Icon-only buttons (actions). Visible size stays small; the hit area
+   grows past it with ::after, same technique as .sp-session-control. */
+.prep-icon-btn {
+  position: relative; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  width: var(--h-sm); height: var(--h-sm); padding: 0;
+  background: transparent; color: var(--muted);
+  border: 1px solid transparent; border-radius: var(--r-sm); cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+.prep-icon-btn::after { content: ""; position: absolute; inset: -6px; }
+.prep-icon-btn[hidden] { display: none; }
+.prep-icon-btn svg { width: var(--icon-md); height: var(--icon-md); }
+.prep-icon-btn:hover, .prep-icon-btn[aria-expanded="true"] {
+  color: var(--hope-soft); background: var(--ink-raised); border-color: var(--line);
+}
+
+/* Save status: directly under the title, quiet. Never colour-only — the icon
+   and the wording change with the state. */
+.prep-save-status {
+  margin: 0; display: flex; align-items: center; gap: var(--s-1);
+  min-width: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--muted);
+}
+.prep-save-icon { flex: none; display: inline-flex; align-items: center; justify-content: center; width: var(--icon-sm); height: var(--icon-sm); }
+.prep-save-icon svg { width: var(--icon-sm); height: var(--icon-sm); }
+.prep-save-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prep-save-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.7; }
+.prep-save-status[data-state="ok"] .prep-save-icon { color: var(--hope); opacity: 0.85; }
 .prep-save-status[data-state="error"] { color: var(--fear-soft); }
 
-/* ---- Session Prep chrome (expanded / compact toggle) ----
-   #session-prep-chrome (in index.html) wraps the shared site header. It
+/* Session Notes: the bar's centre zone. A quiet caps label over a two-line,
+   non-resizable plain-text field; the field is the existing input surface
+   (--ink-raised, --line → --line-strong → --hope border progression) with the
+   standard gold ring drawn *inside* the box so it never spills into the
+   neighbouring zones. The column is `minmax(0, 1fr)`, so the field flexes and
+   can never push New / the actions menu out of view. */
+.prep-notes { min-width: 0; display: flex; flex-direction: column; gap: var(--s-1); }
+.prep-notes-label {
+  font-family: var(--font-ui); font-size: var(--fs-xs); line-height: var(--lh-xs);
+  color: var(--muted); text-transform: uppercase; letter-spacing: var(--tracking-caps);
+}
+.prep-notes-input {
+  display: block; width: 100%; min-width: 0; box-sizing: border-box; margin: 0;
+  height: calc(2.8em + var(--s-2) + 2px); padding: var(--s-1) var(--s-3);
+  font-family: var(--font-ui); font-size: var(--fs-sm); line-height: 1.4;
+  color: var(--parchment); background-color: var(--ink-raised);
+  border: 1px solid var(--line); border-radius: var(--r-sm);
+  resize: none; overflow-y: auto; white-space: pre-wrap; overflow-wrap: anywhere;
+  scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
+  transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.prep-notes-input::placeholder { color: var(--muted); }
+.prep-notes-input:hover { border-color: var(--line-strong); }
+.prep-notes-input:focus { border-color: var(--hope); }
+.prep-notes-input:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
+
+.prep-actions { flex: none; display: flex; align-items: center; gap: var(--s-2); }
+.prep-more-wrap { position: relative; }
+.prep-new-btn { height: var(--h-md); padding: 0 var(--s-4) 0 var(--s-3); gap: var(--s-2); font-family: var(--font-ui); font-size: var(--fs-base); }
+.prep-new-btn svg { width: var(--icon-md); height: var(--icon-md); color: var(--hope); }
+.prep-more-btn { width: var(--h-md); height: var(--h-md); }
+
+/* ---- menus (prep selector + actions) ---- */
+.prep-menu {
+  position: absolute; top: calc(100% + var(--s-1)); left: 0; z-index: 20;
+  width: max-content; min-width: 240px; max-width: min(360px, calc(100vw - var(--s-4) * 2));
+  max-height: min(340px, var(--menu-room, 340px));
+  flex-direction: column; padding: var(--s-1);
+  background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-lg);
+  box-shadow: var(--e-3);
+  font-family: var(--font-ui); font-size: var(--fs-base);
+  animation: modal-in var(--t-fast) var(--ease-enter);
+}
+.prep-menu:not([hidden]) { display: flex; }
+.prep-actions-menu { left: auto; right: 0; min-width: 200px; }
+.prep-menu-heading {
+  flex: none; padding: var(--s-2) var(--s-3) var(--s-1);
+  font-size: var(--fs-xs); color: var(--muted); text-transform: uppercase; letter-spacing: var(--tracking-caps);
+}
+.prep-menu-list {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  display: flex; flex-direction: column; gap: 1px;
+  scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
+}
+.prep-menu-list::-webkit-scrollbar { width: 8px; }
+.prep-menu-list::-webkit-scrollbar-track { background: transparent; }
+.prep-menu-list::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.34); border: 2px solid var(--ink-raised); border-radius: var(--r-pill); }
+@media (forced-colors: active) { .prep-menu-list { scrollbar-color: auto; } }
+.prep-menu-sep { flex: none; height: 1px; margin: var(--s-1) var(--s-2); background: var(--line-faint); }
+.prep-menu-item {
+  flex: none; display: flex; align-items: center; gap: var(--s-2);
+  width: 100%; min-height: var(--h-md); padding: var(--s-2) var(--s-3);
+  background: transparent; border: none; border-radius: var(--r-sm);
+  font: inherit; color: var(--parchment); text-align: left; cursor: pointer;
+  transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+.prep-menu-item:hover, .prep-menu-item:focus-visible { background: rgba(255,255,255,0.06); color: var(--hope-soft); }
+.prep-menu-item:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
+.prep-menu-item[aria-checked="true"] { background: rgba(217,164,65,0.12); color: var(--hope-soft); }
+.prep-menu-item[aria-checked="true"]:hover { background: rgba(217,164,65,0.2); }
+.prep-menu-check { flex: none; display: inline-flex; width: var(--icon-md); height: var(--icon-md); color: var(--hope); }
+.prep-menu-check svg { width: var(--icon-md); height: var(--icon-md); }
+.prep-menu-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Delete uses the Fear tokens the rest of the app reserves for destructive
+   actions; the divider above it is what separates it from the safe ones. */
+.prep-menu-item.is-danger { color: var(--fear-soft); }
+.prep-menu-item.is-danger:hover, .prep-menu-item.is-danger:focus-visible { background: rgba(156,43,59,0.14); color: var(--fear-soft); }
+.prep-menu-item.is-disabled, .prep-menu-item.is-disabled:hover, .prep-menu-item.is-disabled:focus-visible {
+  color: var(--muted); background: transparent; cursor: not-allowed; opacity: 0.7;
+}
+
+/* Delete confirmation (reuses .modal / .modal-sm / .modal-header). */
+.prep-confirm-body { margin: 0 0 var(--s-5); color: var(--parchment-dim); font-family: var(--font-ui); font-size: var(--fs-base); line-height: var(--lh-base); }
+.prep-confirm-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: var(--s-2); }
+.prep-confirm-actions .btn { font-family: var(--font-ui); }
+
+/* Touch: 40px visible controls whose hit area reaches 44px via ::after. */
+@media (max-width: 760px), (pointer: coarse) {
+  .prep-menu-item { min-height: 44px; }
+  .prep-icon-btn { width: var(--h-md); height: var(--h-md); }
+  .prep-icon-btn::after { inset: -2px; }
+  .prep-new-btn { height: var(--h-md); }
+}
+/* Very narrow phones: "New" keeps its icon, tooltip and accessible name, but
+   drops its visible word so the prep title gets the room. */
+@media (max-width: 480px) {
+  .prep-new-btn { width: var(--h-md); padding: 0; }
+  .prep-new-btn span {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+  }
+}
+/* Phone: two compact rows — title with New/actions on the right,
+   then the save status directly under the title. The identity wrapper drops
+   out of layout so its two children can sit in the bar's own grid areas. */
+@media (max-width: 760px) {
+  .prep-bar {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
+    grid-template-areas: "title actions" "status status" "notes notes";
+    gap: 0 var(--s-2); padding: var(--s-2) var(--s-3);
+  }
+  .prep-identity { display: contents; }
+  .prep-titlerow { grid-area: title; }
+  .prep-save-status { grid-area: status; }
+  .prep-notes { grid-area: notes; margin-top: var(--s-2); }
+  .prep-actions { grid-area: actions; }
+  .prep-new-btn { padding: 0 var(--s-3) 0 var(--s-2); }
+  .prep-title-btn, .prep-title-input { font-size: var(--fs-lg); line-height: var(--lh-lg); }
+}
+
+/* ---- Prep chrome (expanded / compact toggle) ----
+   #prep-chrome (in index.html) wraps the shared site header. It
    stays display:contents on every route, including this one — the compact
    look below is a pure CSS variant of the one #header markup renderHeader()
    always produces, never a second copy of the header, and never automatic:
-   the header only changes state on a deliberate click of .sp-chrome-toggle.
+   the header only changes state on a deliberate click of .sp-session-control.
    Expanded mode (the default markup, no rules needed here) keeps the full
    branded presentation; every rule below only applies once
    body[data-sp-header-mode="compact"], and both the global header and the
-   session strip above key off that one attribute. */
-#session-prep-chrome { display: contents; }
+   prep strip above key off that one attribute. */
+#prep-chrome { display: contents; }
 
-body[data-route="session-prep"][data-sp-header-mode="compact"] .header-inner {
+body[data-route="prep"][data-sp-header-mode="compact"] .header-inner {
   padding-block: var(--s-2);
   min-height: var(--sp-toolbar-h);
   transition: padding var(--t-base) var(--ease-out);
@@ -2149,26 +2356,37 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .header-inner {
    an ancestor of the button would remove that hit area (and the button's
    own focusability) along with the text, leaving the visible logo dead to
    both click and keyboard. aria-label on the button (see renderHeader() in
-   js/app.js) keeps its accessible name once .brand-title-text is hidden. */
-body[data-route="session-prep"][data-sp-header-mode="compact"] .brand-title-text,
-body[data-route="session-prep"][data-sp-header-mode="compact"] .brand-meta {
+   js/app.js) keeps its accessible name if .brand-title-text is hidden.
+   Compact keeps a reduced single-line lockup — logo + title — so the
+   wordmark isn't lost; only the subtitle/compat line (.brand-meta) comes
+   out. The title sits inside #brand-home's h1, so it stays part of the one
+   brand link. On a phone (≤640px) the title is dropped again, the one place
+   there is real layout pressure against the nav. */
+body[data-route="prep"][data-sp-header-mode="compact"] .brand-meta {
   display: none;
 }
-body[data-route="session-prep"][data-sp-header-mode="compact"] .brand-mark {
+body[data-route="prep"][data-sp-header-mode="compact"] .brand-text h1 {
+  font-size: var(--fs-base); line-height: 1.15; letter-spacing: 0.06em;
+}
+@media (max-width: 640px) {
+  body[data-route="prep"][data-sp-header-mode="compact"] .brand-title-text {
+    display: none;
+  }
+}
+body[data-route="prep"][data-sp-header-mode="compact"] .brand-mark {
   height: 28px;
   transition: height var(--t-base) var(--ease-out);
 }
-body[data-route="session-prep"][data-sp-header-mode="compact"] .header-actions .btn,
-body[data-route="session-prep"][data-sp-header-mode="compact"] .lang-switch {
+body[data-route="prep"][data-sp-header-mode="compact"] .header-actions .btn,
+body[data-route="prep"][data-sp-header-mode="compact"] .lang-switch {
   height: 28px;
   transition: height var(--t-base) var(--ease-out);
 }
 
-/* ---- compact mode: session name/save-status and the switcher row both
-   come out of layout entirely, not merely shrunk. Both are session
-   *management* — a GM mid-session wants the workspace, not this chrome. */
-body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-session-header,
-body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-session-switcher {
+/* ---- compact mode: the Prep Bar comes out of layout entirely, not
+   merely shrunk. It is prep *management* — a GM mid-prep wants the
+   workspace, not this chrome. */
+body[data-route="prep"][data-sp-header-mode="compact"] .prep-bar {
   display: none;
 }
 
@@ -2176,37 +2394,81 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-session-swi
    the ≥1200px "no page-level scroll" block further down, where every
    ancestor from body to .prep-main already has a definite, shrinkable
    height, so removing these two rows directly grows .prep-main's share. */
-body[data-route="session-prep"][data-sp-header-mode="compact"] .prep-wrap {
+body[data-route="prep"][data-sp-header-mode="compact"] .prep-wrap {
   margin-top: var(--sp-workspace-gap); gap: var(--sp-workspace-gap);
 }
 
-/* A normal flex child of #header's own .header-actions (alongside the nav
-   and language switch) — see initSessionPrepChrome() in js/app.js — so it
-   is laid out correctly by flexbox at every viewport width for free. Never
-   absolutely/fixed-positioned over the header, so it can never be clipped
-   by, or straddle the edge of, a header whose height changes between the
-   expanded and compact modes. Sized like the rest of the header cluster
-   (32px, shrinking to 28px in compact mode below) but its actual hit area
-   is extended past that with a transparent ::after, same technique as
-   .search-clear-btn/.prep-remove-btn elsewhere in this file, to clear the
-   ~40px a pointer expects regardless of the visible control's size. */
-.sp-chrome-toggle {
-  position: relative; flex: none;
-  display: flex; align-items: center; justify-content: center;
-  width: var(--h-sm); height: var(--h-sm); padding: 0;
-  background: var(--ink-raised); color: var(--muted);
-  border: 1px solid var(--line-faint); border-radius: var(--r-pill);
+/* The session control (see initPrepChrome() in js/app.js): one button in
+   .header-inner's free middle space, between the brand and .header-actions —
+   a flex child, never absolutely positioned, so it can't be clipped by a
+   header whose height changes between the two modes and never adds a row.
+   .sp-session-slot takes the leftover width (flex 1, min-width 0) and is an
+   inline-size container, so the label/title shrinking below is driven by the
+   room the control actually has, not by the viewport. Order of loss as the
+   slot narrows: the "Session ·" prefix, then the title's max width, then the
+   title's own ellipsis. Sized like the header cluster (32px, 28px compact);
+   its hit area is extended past that with ::after, same technique as
+   .search-clear-btn. */
+body[data-route="prep"] .header-inner { flex-wrap: nowrap; }
+.sp-session-slot {
+  position: relative; flex: 1 1 0; min-width: 0;
+  display: flex; justify-content: center;
+  container: sp-session / inline-size;
+}
+.sp-session-control {
+  position: relative; max-width: 100%; min-width: 0; height: var(--h-sm);
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  padding: 0 var(--s-3); white-space: nowrap;
+  font-family: inherit; font-size: var(--fs-sm); line-height: 1; color: var(--muted);
+  background: var(--ink-raised); border: 1px solid var(--line-faint); border-radius: var(--r-pill);
   cursor: pointer;
   transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out),
-              background var(--t-fast) var(--ease-out), width var(--t-base) var(--ease-out), height var(--t-base) var(--ease-out);
+              background var(--t-fast) var(--ease-out), box-shadow var(--t-base) var(--ease-out),
+              height var(--t-base) var(--ease-out);
 }
-.sp-chrome-toggle::after { content: ""; position: absolute; inset: -6px; }
-.sp-chrome-toggle svg { width: var(--icon-md); height: var(--icon-md); }
-.sp-chrome-toggle:hover { color: var(--hope-soft); border-color: var(--line-strong); background: var(--ink-hover); }
-.sp-chrome-toggle:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); color: var(--hope-soft); }
-body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
-  width: 28px; height: 28px;
+.sp-session-control::after { content: ""; position: absolute; inset: -6px; }
+.sp-session-control:hover { color: var(--hope-soft); border-color: var(--line-strong); background: var(--ink-hover); }
+.sp-session-control:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); color: var(--hope-soft); }
+.sp-session-control.is-hinted { color: var(--hope-soft); border-color: var(--hope); box-shadow: 0 0 0 3px rgba(217,164,65,0.18); }
+.sp-session-label { flex: none; color: var(--muted); }
+.sp-session-name {
+  flex: 0 1 auto; min-width: 0; max-width: 30ch;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--parchment);
 }
+.sp-session-status, .sp-session-chevron { flex: none; display: inline-flex; align-items: center; justify-content: center; }
+.sp-session-status { width: var(--icon-sm); height: var(--icon-sm); }
+.sp-session-status svg { width: var(--icon-sm); height: var(--icon-sm); }
+.sp-session-chevron svg { width: var(--icon-md); height: var(--icon-md); }
+.sp-session-status[data-state="ok"] { color: var(--hope); opacity: 0.85; }
+.sp-session-status[data-state="error"] { color: var(--fear-soft); }
+.sp-session-spin {
+  width: 10px; height: 10px; box-sizing: border-box; border-radius: 50%;
+  border: 2px solid var(--line-strong); border-top-color: var(--hope);
+  animation: sp-session-spin 0.8s linear infinite;
+}
+@keyframes sp-session-spin { to { transform: rotate(360deg); } }
+@container sp-session (max-width: 270px) {
+  .sp-session-label { display: none; }
+  .sp-session-name { max-width: 24ch; }
+}
+@container sp-session (max-width: 190px) {
+  .sp-session-name { max-width: 12ch; }
+}
+body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { height: 28px; }
+
+/* One-time hint: an overlay under the control (absolute, out of flow — no
+   layout shift), same surface as .tooltip but able to take a short sentence. */
+.sp-session-hint {
+  position: absolute; top: calc(100% + var(--s-1)); left: 50%; translate: -50% 0; z-index: 40;
+  width: max-content; max-width: min(260px, 100%);
+  padding: var(--s-1) var(--s-2); text-align: center;
+  background: var(--ink-raised); border: 1px solid var(--hope); border-radius: var(--r-sm);
+  box-shadow: var(--e-3); color: var(--parchment);
+  font-size: var(--fs-xs); line-height: var(--lh-xs); pointer-events: none;
+  animation: sp-session-hint-in var(--t-base) var(--ease-out);
+}
+@keyframes sp-session-hint-in { from { opacity: 0; transform: translateY(2px); } }
 
 /* ---- three-column composition ---- */
 .prep-main {
@@ -2221,16 +2483,73 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-col-adv { grid-area: adv; }
 
 /* Quieter outer catalogues vs. the brighter, gold-accented central panel —
-   see "Visual priorities" in the Session Prep spec. */
+   see "Visual priorities" in the Prep spec. */
 .prep-col {
   min-width: 0; display: flex; flex-direction: column; gap: var(--s-2);
   background: var(--ink-card); border: 1px solid var(--line-faint); border-radius: var(--r-md);
   padding: 12px var(--s-4) var(--s-4);
 }
 .prep-central {
+  /* Central-panel tokens: the only place its density is tuned. */
+  --pc-pad-x: var(--s-3);      /* 12px  panel/section side padding        */
+  --pc-pad-y: 6px;             /*       section body vertical padding      */
+  --pc-pad-card: 6px;          /*       card/row inner padding             */
+  --pc-gap: var(--s-2);        /* 8px   gap between cards and card parts   */
+  --pc-head-h: 36px;           /*       section header                     */
+  --pc-thumb: 40px;
+  --pc-thumb-row: 36px;        /*       adversary tile thumbnail           */
+  --pc-card-h: 56px;
+  --pc-row-h: 48px;
+  --pc-pad-x-row: 8px;         /*       adversary tile side padding        */
+  --pc-row-gap: 6px;           /*       adversary tile row gap             */
+  --pc-remove: 32px;
+  --pc-remove-room: 24px;      /*       card text's reserve for the remove button */
+  --pc-scroll-pad: 40px;       /*       keeps a sticky header off scrolled-to content */
+  --pc-title-size: var(--fs-md);        /* section heading                  */
+  --pc-icon: var(--icon-md);            /* section heading icon             */
+  --pc-count-size: var(--fs-xs);        /* section heading counter          */
+  --pc-name-size: var(--fs-card-copy);  /* card title                       */
+  --pc-name-lh: 17px;
+  --pc-meta-size: var(--fs-xs);         /* card metadata                    */
+  --pc-meta-lh: 15px;
+  container: prep-central / inline-size;
   min-width: 0; display: flex; flex-direction: column;
-  background: var(--ink-raised); border: 1px solid var(--line-strong); border-top: 2px solid var(--hope);
-  border-radius: var(--r-lg); padding: 0 var(--s-5) var(--s-5); box-shadow: var(--e-2);
+  background: var(--ink-raised); border: 1px solid var(--line-strong); border-top-color: rgba(217,164,65,0.55);
+  border-radius: var(--r-lg); padding: 0 var(--pc-pad-x); box-shadow: var(--e-2);
+}
+/* Comfortable density for large monitors (e.g. 1920x1080 at 100% zoom): the
+   same three-column layout and column widths, with only the central
+   workspace's own content ~8-12% larger. Needs both width AND height — a wide
+   but short window (or a 1536x864 laptop viewport) keeps the compact values
+   above. Nothing here but token overrides, so the rules below stay the one
+   source of truth for structure. The sidebars/Items strip don't read --pc-*. */
+@media (min-width: 1800px) and (min-height: 900px) {
+  .prep-central {
+    /* --pc-pad-x is deliberately NOT overridden: it sets the panel's content
+       width, which the `@container prep-central (max-width: 760px)` Battle
+       Points rules measure — at 1920px that box is exactly 760px, so any
+       extra side padding would drop the "Characters" label. */
+    --pc-pad-y: 8px;           /* section body padding: +2 above and below */
+    --pc-pad-card: 8px;
+    --pc-gap: 10px;
+    --pc-head-h: 40px;
+    --pc-thumb: 44px;
+    --pc-thumb-row: 40px;
+    --pc-card-h: 62px;
+    --pc-row-h: 52px;
+    --pc-pad-x-row: 10px;
+    --pc-row-gap: 8px;
+    --pc-remove: 34px;
+    --pc-remove-room: 22px;    /* card padding grew by 2, so the total reserve stays 30px */
+    --pc-scroll-pad: 44px;
+    --pc-title-size: 18px;
+    --pc-icon: 18px;
+    --pc-count-size: 13px;
+    --pc-name-size: 15px;
+    --pc-name-lh: 18px;
+    --pc-meta-size: 13px;
+    --pc-meta-lh: 16px;
+  }
 }
 
 .prep-col-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2); flex-wrap: wrap; }
@@ -2281,7 +2600,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    here (unlike the adversary picker, where .prep-picker-list holds the
    toolbar and #prep-adv-list directly as its two children too), so it
    needs its own flex/gap rule to lay out rows. */
-/* The env picker is the narrowest of Session Prep's three columns
+/* The env picker is the narrowest of Prep's three columns
    (.prep-main's `minmax(260px, 0.85fr)` track), so the search field is the
    one flexible/shrinkable track (`minmax(0, 1fr)`, floored by its own
    min-width below) while the Tier buttons and counter get plain `auto`
@@ -2310,14 +2629,26 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    removes an entity — never a whole row/card acting as an implicit toggle.
    .prep-checkbox-hit is a small, invisible label purely to enlarge the
    clickable/tappable area without changing the checkbox's own visual size:
-   ~36-40px on desktop, 44px on touch (see the touch media query below). */
+   --sel-hit (32px) on desktop, --sel-hit-touch (44px) on touch (see the
+   touch media query below). Every picker builds it through
+   prepSelectionCellHtml() in js/app.js, and the row padding/gap around it
+   comes from --sel-pad/--sel-gap, so the three catalogs cannot drift. */
 .prep-checkbox-hit {
-  flex: none; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  position: relative;
+  flex: none; width: var(--sel-col); height: var(--sel-hit); display: flex; align-items: center; justify-content: center;
   cursor: pointer;
 }
+/* The enlarged click area costs no layout: an invisible overlay of the label
+   reaching into the row padding on the left and the gap on the right, so the
+   column stays as narrow as the box while the target stays ~28×32. */
+.prep-checkbox-hit::after {
+  content: ""; position: absolute; top: 0; bottom: 0;
+  left: calc(-1 * var(--sel-pad)); right: calc(-1 * var(--sel-gap));
+}
+.prep-checkbox-hit:has(.prep-select-checkbox:disabled) { cursor: not-allowed; }
 .prep-select-checkbox {
   appearance: none; -webkit-appearance: none;
-  flex: none; width: 20px; height: 20px; margin: 0;
+  flex: none; width: var(--sel-box); height: var(--sel-box); margin: 0;
   border: 1px solid var(--line-strong); border-radius: var(--r-xs);
   background: var(--ink-raised); cursor: pointer; position: relative;
   transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
@@ -2325,18 +2656,18 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-select-checkbox:hover { border-color: var(--hope); }
 .prep-select-checkbox:checked { background: var(--hope); border-color: var(--hope); }
 .prep-select-checkbox:checked::after {
-  content: ""; position: absolute; left: 6px; top: 2px; width: 5px; height: 10px;
+  content: ""; position: absolute; left: 4.5px; top: 1.5px; width: 5px; height: 9px;
   border: solid var(--hope-ink); border-width: 0 2px 2px 0; transform: rotate(45deg);
 }
 .prep-select-checkbox:disabled { opacity: 0.4; cursor: not-allowed; }
 .prep-select-checkbox:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
 
 /* ---- environment picker row (checkbox + separate "open detail" button) ---- */
-.prep-row { display: flex; align-items: center; gap: var(--s-2); border-radius: var(--r-sm); }
-.prep-env-row, .prep-adv-row { padding: var(--s-1) var(--s-1); }
+.prep-row { display: flex; align-items: center; gap: var(--sel-gap); border-radius: var(--r-sm); }
+.prep-env-row, .prep-adv-row { padding: var(--s-1) var(--sel-pad); }
 .prep-env-row:hover, .prep-adv-row:hover { background: var(--ink-hover); }
 .prep-row-open {
-  all: unset; flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--s-3); cursor: pointer;
+  all: unset; flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--s-2); cursor: pointer;
   font-family: inherit;
 }
 .prep-row-open:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); border-radius: var(--r-sm); }
@@ -2359,7 +2690,41 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   font-family: inherit;
 }
 .prep-adv-link:hover .prep-row-name { color: var(--hope-soft); }
+/* Name + the shared ↗ cue (see .prep-sel-ext) on one line inside the link;
+   the name ellipsizes first, the glyph never shrinks or wraps away. */
+.prep-adv-title { display: flex; align-items: baseline; gap: var(--s-1); min-width: 0; }
+.prep-adv-title .prep-row-name { flex: 0 1 auto; min-width: 0; }
+.prep-adv-link:hover .prep-sel-ext, .prep-adv-link:focus-visible .prep-sel-ext { opacity: 1; color: var(--hope-soft); }
 .prep-adv-link:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); border-radius: var(--r-sm); }
+
+/* ---- Environment → Recommended Adversaries (All Adversaries picker) ----
+   Advisory only: a compact group heading, a restrained gold row treatment and
+   a non-interactive star. Every colour is the --hope token (tints via
+   color-mix), nothing here changes row geometry, and hover/focus/selected
+   states always win over the resting tint. No animation, no glow. */
+.prep-rec-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2);
+  padding: var(--s-1) var(--sel-pad) var(--s-2);
+}
+.prep-rec-title {
+  margin: 0; min-width: 0; display: flex; align-items: baseline; gap: var(--s-1);
+  font-family: var(--font-ui); font-size: var(--fs-xs); line-height: var(--lh-xs); font-weight: 600;
+  letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--hope-soft);
+}
+/* The picker column is narrow and the RU label is long: wrap rather than clip. */
+.prep-rec-title span:not(.prep-rec-title-star) { min-width: 0; overflow-wrap: anywhere; }
+.prep-rec-title-star { flex: none; color: var(--hope); }
+.prep-rec-count { flex: none; font-family: var(--font-mono); font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--muted); font-variant-numeric: tabular-nums; }
+.prep-rec-divider { height: 1px; margin: 2px var(--sel-pad); background: var(--line-faint); }
+.prep-adv-row.is-recommended {
+  background: color-mix(in srgb, var(--hope) 6%, transparent);
+}
+.prep-adv-row.is-recommended:hover { background: var(--ink-hover); }
+/* A status marker, never a control: no cursor change, out of the tab order. */
+.prep-rec-star {
+  flex: none; width: 14px; display: flex; align-items: center; justify-content: center;
+  color: var(--hope); font-size: var(--fs-sm); line-height: 1; cursor: default;
+}
 
 /* ---- thumbnails: biome art (environments) or transparent-background PNG
    (adversaries/items), with a fallback that is never a broken-image icon ---- */
@@ -2380,6 +2745,8 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   display: flex; align-items: center; justify-content: center; background: var(--ink-raised);
 }
 .prep-thumb-fallback svg { width: 62%; height: 62%; color: var(--muted); }
+/* Adversary fallback is a picture (img/adv_fallback.png), not an icon. */
+.prep-thumb-fallback img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
 /* A real <button> variant of .prep-adv-thumb, used only when local art
    exists — opens the art overlay. A subtle zoom-in affordance on hover/focus
@@ -2388,7 +2755,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    distinctly. Reset to a plain box first since it's a <button>, not a
    <span>. */
 .prep-adv-thumb-btn {
-  border: none; padding: 7.5px; cursor: pointer;
+  border: none; padding: 7.5px; cursor: zoom-in;
   transition: background var(--t-fast) var(--ease-out);
 }
 .prep-adv-thumb-btn img { transition: transform var(--t-fast) var(--ease-out); }
@@ -2428,6 +2795,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   color: var(--muted); font-size: var(--fs-sm); padding: var(--s-6);
 }
 .adv-art-fallback svg { width: 64px; height: 64px; }
+.adv-art-fallback img { width: 160px; height: 160px; object-fit: contain; }
 .adv-art-caption {
   margin: 0; display: flex; align-items: center; justify-content: center; gap: var(--s-2);
   font-family: var(--font-display); font-weight: 400;
@@ -2444,92 +2812,358 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .adv-art-copy:hover { color: var(--hope-soft); background: var(--ink-hover); }
 
 /* ---- central preparation: environments / adversaries / items ----
-   Each h3 is a full-bleed sticky bar, position:sticky within .prep-central's
-   own internal scroll area (≥1200px only — see the no-page-scroll block
-   below) so the current section stays identifiable while scrolling a long
-   preparation. Sticking is scoped to its own .prep-central-section (the
-   containing block for the offset), so a header never overlaps a sibling
-   section's. The negative inline margin cancels .prep-central's own side
-   padding so the bar's opaque background spans the full column width
-   instead of leaving a sliver of scrolled content visible beside it; that
-   padding is removed from .prep-central's top entirely (rather than left as
-   a transparent gap above the bar) since the bar's own min-height already
-   gives the resting (unstuck) heading equivalent breathing room. */
-.prep-central-section { display: flex; flex-direction: column; gap: 6px; scroll-margin-top: 40px; }
-/* The divider rule needs its own margin-top, not just the padding-top below
-   it — padding only pushes this section's own heading away from the rule,
-   it does nothing to separate the rule from the *previous* section's last
-   row, so without it the rule renders flush against the bottom of that
-   content. The Environments -> Adversaries gap skips the rule line itself:
-   the Selected Adversaries heading right below it already reads as the
-   section break, so the line only added visual noise there. Adversaries ->
-   Items keeps the line since Items has no card/row content of its own above
-   it to lean on. */
-.prep-central-section + .prep-central-section { margin-top: var(--s-2); padding-top: 11px; }
-.prep-central-section + .prep-central-section[data-sp-section="items"] { border-top: 1px solid var(--line-faint); }
-.prep-central-section h3 {
-  position: sticky; top: 0; z-index: 1; min-height: 40px;
-  margin: 0 calc(-1 * var(--s-5)); padding-inline: var(--s-5);
-  background: var(--ink-raised); border-bottom: 1px solid var(--line); box-shadow: var(--e-1);
-  display: flex; align-items: center; gap: var(--s-2);
-  font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md);
+   A compact prep manifest built from one shared selected-entity
+   primitive (.prep-sel: thumbnail + name + meta + remove). Environments and
+   items are bordered cards in a 2-column grid, adversaries are compact
+   bordered tiles in a container-query grid (1 → 2 columns). Every dimension below comes from the small
+   --pc-* token set on .prep-central (spacing scale: 4/6/8/12), so density is
+   tuned in one place. Each section header is sticky within .prep-central's
+   own scroll area (≥1200px — see the no-page-scroll block further down) so
+   the current section stays identifiable in a long preparation; that scroll
+   area is the only vertical scroller (no per-section scrollbars). */
+.prep-central-section { display: flex; flex-direction: column; min-width: 0; }
+.prep-central-section + .prep-central-section { border-top: 1px solid var(--line-faint); }
+.prep-central-head {
+  position: sticky; top: 0; z-index: 1; min-height: var(--pc-head-h);
+  margin-inline: calc(-1 * var(--pc-pad-x)); padding-inline: var(--pc-pad-x);
+  background: var(--ink-raised);
+  display: flex; align-items: center; gap: var(--pc-gap);
+}
+.prep-central-title {
+  flex: 1 1 auto; min-width: 0; margin: 0; display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-display); font-weight: 400; font-size: var(--pc-title-size); line-height: 1.2;
   letter-spacing: var(--tracking-display); color: var(--parchment);
 }
-.prep-central-section h3 svg { width: var(--s-5); height: var(--s-5); flex: none; color: var(--hope); }
-.prep-central-count { margin-left: auto; font-size: var(--fs-sm); font-family: var(--font-mono); color: var(--muted); }
-/* Persistent explanation next to the environment counter while at the
-   three-environment cap — see envLimitStateText() in js/app.js. Empty and
-   invisible below the cap. */
-.prep-env-limit-state { font-size: var(--fs-sm); color: var(--hope-soft); font-weight: 600; }
-.prep-env-limit-state:empty { display: none; }
+.prep-central-title span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Section icon: custom illustrated asset (img/ui/section-*.png), one shared
+   16px box for all three; keeps its own colours — no filter, tint or plate. */
+.prep-central-icon { display: block; width: var(--pc-icon); height: var(--pc-icon); flex: none; object-fit: contain; }
+/* The Environments icon is the inline SVG symbol, not a raster: it takes its
+ * colour from here (gold, like the two illustrated section icons beside it). */
+.prep-central-icon--env { color: var(--hope); overflow: visible; }
+/* Title, dot and count form one baseline-aligned group: the serif title and
+   the monospace count share a baseline instead of each being box-centred. The
+   icon stays centred on its text. The group takes the free space, so the
+   action (and the Battle Points slot) sit at the far end. */
+.prep-central-lead { display: flex; align-items: baseline; gap: 6px; flex: 1 1 auto; min-width: 0; }
+.prep-central-lead .prep-central-title { flex: 0 1 auto; align-items: baseline; }
+.prep-central-lead .prep-central-title .prep-central-icon { align-self: center; }
+.prep-central-dot { flex: none; color: var(--muted); }
+/* Gold marks "limit reached" only: the pill shape (border + tint) is the
+   non-colour cue, the sr-only text inside carries it for assistive tech. */
+.prep-central-count {
+  flex: none; padding: 0 6px; min-width: 2.25em; text-align: center;
+  font-size: var(--pc-count-size); line-height: 18px; font-family: var(--font-mono); color: var(--muted);
+  border: 1px solid transparent; border-radius: var(--r-pill);
+}
+.prep-central-count { font-variant-numeric: tabular-nums; }
+.prep-central-lead .prep-central-count { min-width: 0; padding-inline: 0; text-align: left; }
+/* The limit pill keeps its padding; its trailing side is pulled back so the
+   header does not grow, and it never crowds the dot. */
+.prep-central-lead .prep-central-count.is-limit { padding-inline: 6px; margin-left: 0; margin-right: -6px; }
+.prep-central-count.is-limit { color: var(--hope-soft); border-color: rgba(217,164,65,0.45); background: rgba(217,164,65,0.08); }
+/* Roll coverage + clear-all live in the lead group, after the count: muted
+   header metadata and a tertiary icon button, never a pill or a far-right control. */
+.prep-central-roll-slot, .prep-central-clear-slot { display: contents; }
+.prep-central-roll {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: var(--pc-count-size); line-height: 18px; font-family: var(--font-mono); color: var(--muted);
+}
+.prep-central-title:focus { outline: none; }
+.prep-central-clear {
+  flex: none; align-self: center; position: relative; top: 1px; width: 28px; height: 28px; margin-block: -6px; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid transparent; border-radius: var(--r-sm);
+  background: transparent; color: var(--muted); opacity: 0.75; cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out), opacity var(--t-fast) var(--ease-out);
+}
+.prep-central-clear svg { width: 15px; height: 15px; display: block; }
+.prep-central-clear:hover { opacity: 1; color: var(--fear-soft); background: rgba(156,43,59,0.14); }
+.prep-central-clear:focus-visible { opacity: 1; outline: var(--focus-ring); outline-offset: 1px; color: var(--fear-soft); background: rgba(156,43,59,0.14); }
+.prep-central-body { padding-block: var(--pc-pad-y); }
+.prep-central-section .prep-empty { padding-block: 2px; }
+.prep-central-section .prep-warning { margin-block: 0 var(--pc-pad-y); }
+.prep-central-section #prep-central-adv-warning:empty { display: none; }
 
-.prep-central-card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
-.prep-central-card-name { display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-base); line-height: 1.4; color: var(--parchment); }
-.prep-central-card-meta { font-size: var(--fs-sm); line-height: 1.4; color: var(--muted); }
+/* Selected-adversaries "FreshCutGrass ↗" export link — absent entirely (not
+   just disabled) when nothing is selected, see freshCutGrassLinkHtml() in
+   js/app.js. A ghost button sized to the header, never wrapping. */
+.prep-freshcutgrass-wrap { flex: none; }
+.prep-freshcutgrass-wrap:empty { display: none; }
+.prep-freshcutgrass-link { flex: none; height: 30px; padding: 0 10px; white-space: nowrap; }
+/* The bulk-add action sits before the FreshCutGrass link; absent entirely
+   (not disabled) when the selected environments recommend nothing supported.
+   Its "★ ✓" state is aria-disabled, so it stays focusable — .btn already
+   dims it; it is a finished state rather than a refusal, hence no not-allowed. */
+/* Both header actions share one tight group so the compact star button costs
+   as little of the (already full) laptop-width header as possible. */
+.prep-central-actions { flex: none; display: flex; align-items: center; gap: var(--s-1); }
+.prep-central-actions:not(:has(> :not(:empty))) { display: none; }
+.prep-recommend-wrap { flex: none; }
+.prep-recommend-wrap:empty { display: none; }
+.prep-recommend-btn { flex: none; height: 30px; padding: 0 var(--s-2); white-space: nowrap; color: var(--hope-soft); font-variant-numeric: tabular-nums; }
+.prep-recommend-btn[aria-disabled="true"] { cursor: default; }
+.prep-recommend-btn:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
 
-/* Selected environments: up to three tiles side by side — always exactly
-   three columns (never auto-fill's implicit drop to two at in-between
-   widths, which was the cramped-card/excessive-wrap bug at laptop widths)
-   since the three-environment cap (SessionPrepUtils.MAX_ENVIRONMENTS,
-   PD-002) means this grid never needs to hold more or fewer. minmax(0, 1fr)
-   lets a column shrink below its content's natural width so a long name
-   wraps instead of forcing overflow — each card is its own bordered box
-   with the remove control in its corner. */
-.prep-central-env-grid {
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3);
+/* ---- Battle Points (js/battle-points-ui.js) ----
+   Summary + character stepper in the Adversaries header, and the breakdown
+   popover. All one 13px size (hierarchy by colour only), one 30px control
+   height matching the FreshCutGrass link, and every changing figure in a
+   fixed-width box so nothing resizes or shifts as numbers change. */
+.prep-central-head--mid .prep-central-lead { flex: 0 1 auto; }
+.bp-slot { flex: 0 1 auto; min-width: 0; margin-left: auto; }
+.bp-slot:empty { display: none; }
+.bp {
+  display: flex; align-items: center; gap: var(--s-3); min-width: 0; white-space: nowrap;
+  font-family: var(--font-ui); font-size: var(--fs-sm); color: var(--parchment-dim);
 }
-.prep-central-env-card {
-  position: relative; display: flex; align-items: center; gap: var(--s-2);
-  padding: var(--s-2) var(--s-7) var(--s-2) var(--s-1);
-  border: 1px solid var(--line-faint); border-radius: var(--r-sm); background: var(--ink-raised);
-}
-.prep-central-env-card .prep-central-env-remove { position: absolute; top: var(--s-1); right: var(--s-1); }
+.bp button, .bp input, .bp-popover button, .bp-popover input { font: inherit; color: inherit; }
 
-/* Selected items: same two-column card grid as environments above. Items
-   carry no quantity control anywhere in Session Prep. */
-.prep-central-item-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--s-3);
+.bp-pc { display: inline-flex; align-items: center; gap: var(--s-2); }
+.bp-pc-label { color: var(--muted); }
+.bp-stepper {
+  display: inline-flex; align-items: stretch; height: 30px; flex: none;
+  border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--ink); overflow: hidden;
 }
-.prep-central-item-card {
-  position: relative; display: flex; align-items: center; gap: var(--s-3);
-  padding: var(--s-2); padding-right: var(--s-7);
-  border: 1px solid var(--line-faint); border-radius: var(--r-sm); background: var(--ink-raised);
+.bp-step {
+  flex: none; width: 26px; padding: 0; border: 0; background: transparent; color: var(--parchment-dim);
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
 }
-.prep-central-item-card .prep-central-item-remove { position: absolute; top: var(--s-1); right: var(--s-1); }
+.bp-step:hover:not(:disabled) { background: var(--ink-hover); color: var(--hope-soft); }
+.bp-step:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
+.bp-step:disabled { opacity: 0.35; cursor: not-allowed; }
+.bp-pc-input {
+  width: 2.6em; padding: 0; text-align: center; background: transparent; color: var(--parchment);
+  border: 0; border-inline: 1px solid var(--line-faint); border-radius: 0;
+  font-variant-numeric: tabular-nums; -moz-appearance: textfield; appearance: textfield;
+}
+.bp-pc-input::-webkit-inner-spin-button, .bp-pc-input::-webkit-outer-spin-button { -webkit-appearance: none; appearance: none; margin: 0; }
+.bp-pc-input:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
 
-/* Selected adversaries: a simple thumb + name + remove row — no quantity
-   control anywhere in Session Prep. */
-.prep-central-row {
-  display: flex; align-items: center; gap: var(--s-3); padding: var(--s-2) 0;
-  border-bottom: 1px solid var(--line-faint);
+.bp-summary {
+  display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 var(--s-3); flex: none;
+  background: var(--ink); border: 1px solid var(--line); border-radius: var(--r-sm); cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  transition: background var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
 }
-.prep-central-row:last-child { border-bottom: none; }
-.prep-central-row-body { flex: 1; min-width: 80px; display: flex; flex-direction: column; gap: 1px; }
-.prep-central-row-name {
-  font-size: var(--fs-base); line-height: 1.4; color: var(--parchment);
+.bp-summary:hover { background: var(--ink-hover); border-color: var(--line-strong); }
+.bp-summary:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
+.bp-summary[aria-expanded="true"] { border-color: rgba(217,164,65,0.55); }
+.bp-step svg { width: var(--icon-sm); height: var(--icon-sm); }
+.bp-abbr { color: var(--muted); }
+/* Every number that changes is tabular and sits in a reserved-width box, so
+   going 8 -> 10 -> 11.25 never resizes the button (the slot is right-aligned,
+   so a width change would shove the stepper and title around). */
+.bp-spent { display: inline-block; min-width: 4.4ch; text-align: right; color: var(--parchment); }
+.bp-avail { display: inline-block; min-width: 2ch; text-align: left; }
+.bp-sep { color: var(--muted); }
+.bp-avail { color: var(--parchment); }
+.bp-sep { margin-inline: -1px; }
+.bp-warn-icon { display: inline-flex; color: var(--hope-soft); }
+.bp-warn-icon svg { width: var(--icon-sm); height: var(--icon-sm); }
+/* Over budget is advisory: amber tint + icon, never destructive red. */
+.bp-summary.is-over { border-color: rgba(217,164,65,0.45); background: rgba(217,164,65,0.08); }
+.bp-summary.is-over .bp-spent { color: var(--hope-soft); text-decoration: underline dotted; text-underline-offset: 3px; }
+
+/* Constrained container (laptop): drop the label, keep the numbers. */
+@container prep-central (max-width: 760px) {
+  .bp-pc-label { display: none; }
+  .bp { gap: var(--s-2); }
+  .bp-step { width: 24px; }
+  .bp-pc-input { width: 2.2em; }
+  .bp-summary { padding-inline: 10px; }
+}
+
+/* Typical 1366px laptop: the Adversaries header is full, so its two text
+   actions (★ +N and FreshCutGrass) tighten together — same padding, same
+   height — instead of the section title being ellipsized. */
+@container prep-central (max-width: 600px) {
+  .prep-recommend-btn, .prep-freshcutgrass-link { padding-inline: 6px; }
+  .bp-summary { padding-inline: 8px; }
+  .bp { gap: 4px; }
+  .prep-central-lead { gap: 4px; }
+  .prep-central-head { gap: 6px; }
+}
+
+/* ---- popover (position: fixed, so opening never shifts layout) ---- */
+.bp-popover {
+  position: fixed; z-index: 30; overflow-y: auto; padding: var(--s-3);
+  background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-lg); box-shadow: var(--e-3);
+  font-family: var(--font-ui); font-size: var(--fs-sm); color: var(--parchment);
+  animation: modal-in var(--t-fast) var(--ease-enter);
+}
+.bp-popover[hidden] { display: none; }
+.bp-popover:focus { outline: none; }
+.bp-pop-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s-2); }
+.bp-pop-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md); letter-spacing: var(--tracking-display); }
+.bp-pop-close {
+  width: var(--h-sm); height: var(--h-sm); margin: -4px -6px -4px 0; padding: 0; border: 0; border-radius: var(--r-sm);
+  background: transparent; color: var(--muted); font-size: var(--fs-md); line-height: 1; cursor: pointer;
+}
+.bp-pop-close:hover { background: var(--ink-hover); color: var(--parchment); }
+.bp-pop-close:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
+.bp-pop-sec { padding-top: var(--s-2); margin-top: var(--s-2); border-top: 1px solid var(--line-faint); }
+.bp-pop-h { color: var(--muted); text-transform: uppercase; letter-spacing: var(--tracking-caps); }
+.bp-pop-row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); padding: 2px 0; }
+.bp-pop-row--pc { align-items: center; }
+.bp-pop-label { min-width: 0; }
+.bp-formula { margin-left: var(--s-2); color: var(--muted); font-family: var(--font-mono); }
+.bp-val { flex: none; min-width: 3em; text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.bp-popover .bp-val.is-idle, .bp-popover .is-idle, .bp-popover .is-idle .bp-val { color: var(--muted); }
+.bp-popover .is-active .bp-val { color: var(--hope-soft); }
+.bp-segs { display: grid; grid-template-columns: repeat(3, 1fr); margin: var(--s-1) 0 var(--s-2); border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; }
+.bp-seg { display: flex; cursor: pointer; }
+.bp-seg + .bp-seg { border-left: 1px solid var(--line); }
+.bp-seg span {
+  flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; padding: 5px 6px;
+  line-height: 1.25; color: var(--parchment-dim); background: var(--ink);
+  transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+.bp-seg:hover span { background: var(--ink-hover); }
+.bp-seg input:checked + span { background: rgba(217,164,65,0.14); color: var(--hope-soft); }
+.bp-seg input:focus-visible + span { outline: var(--focus-ring); outline-offset: -2px; }
+.bp-check { display: flex; align-items: flex-start; gap: var(--s-2); padding: 3px 0; cursor: pointer; }
+.bp-check input { flex: none; margin: 2px 0 0; accent-color: var(--hope); }
+.bp-check-text { flex: 1; min-width: 0; }
+.bp-pop-totals .bp-pop-row { font-weight: 600; }
+.bp-pop-totals .bp-pop-row:last-child { margin-top: 2px; padding-top: 4px; border-top: 1px solid var(--line-faint); }
+.bp-pop-row.is-over, .bp-pop-row.is-over .bp-val { color: var(--hope-soft); }
+.bp-pop-row.is-over .bp-warn-icon { margin-right: var(--s-1); vertical-align: -2px; }
+.bp-pop-empty { margin: 2px 0; color: var(--muted); }
+.bp-pop-note { margin: var(--s-3) 0 0; color: var(--muted); }
+
+/* ---- shared selected-entity primitive ---- */
+.prep-sel-list { list-style: none; margin: 0; padding: 0; }
+.prep-sel {
+  position: relative; display: flex; align-items: center; gap: var(--pc-gap); min-width: 0;
+  transition: background var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+.prep-sel-thumb {
+  flex: none; width: var(--pc-thumb); height: var(--pc-thumb); box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+  border-radius: var(--r-sm); padding: var(--thumb-pad, 0);
+  background: radial-gradient(circle at 50% 35%, rgba(217,164,65,0.12), transparent 70%), var(--ink);
+}
+/* Transparent adversary PNGs carry uneven built-in padding; a shared inset
+   plus object-fit:contain normalises them without per-asset rules. Item and
+   biome art already frame themselves. */
+.prep-sel-thumb[data-kind="adv"] { --thumb-pad: 2px; }
+.prep-sel-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+/* The one exception to contain: biome art is a tall 200×600 landscape strip
+   meant to be cropped — contained it would shrink to a 13px sliver. */
+.prep-sel-thumb[data-kind="env"] img { object-fit: cover; }
+.prep-sel-thumb.is-fallback { background: var(--ink); }
+.prep-sel-thumb.is-fallback svg { width: 60%; height: 60%; color: var(--muted); }
+.prep-sel-thumb.is-fallback img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.prep-sel-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.prep-sel-name {
+  font-size: var(--pc-name-size); line-height: var(--pc-name-lh); font-weight: 500; color: var(--parchment);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2;
+  overflow: hidden; overflow-wrap: anywhere;
+}
+.prep-sel-meta {
+  margin-top: 1px; font-size: var(--pc-meta-size); line-height: var(--pc-meta-lh); color: var(--muted);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.prep-central-row-meta { font-size: var(--fs-sm); line-height: 1.4; color: var(--muted); }
+.prep-sel-remove {
+  flex: none; width: var(--pc-remove); height: var(--pc-remove); padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid transparent; border-radius: var(--r-sm);
+  background: transparent; color: var(--muted); font-family: inherit; font-size: var(--fs-lg); line-height: 1; cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.prep-sel-remove:hover { color: var(--fear-soft); border-color: var(--fear); background: rgba(156,43,59,0.14); }
+.prep-sel-remove:focus-visible { outline: var(--focus-ring); outline-offset: 1px; color: var(--fear-soft); background: rgba(156,43,59,0.14); }
+
+/* Primary action zone of a selected entity: a real <button> (cards — opens
+   the catalog's own overlay) or <a> (adversary rows — FreshCutGrass) that
+   fills everything except the sibling remove button, so the thumbnail, the
+   text and the card's empty space are all one target. Reset to a plain flex
+   box first; hover/focus feedback never changes any dimension. */
+.prep-sel-main {
+  flex: 1 1 auto; min-width: 0; align-self: stretch; box-sizing: border-box;
+  display: flex; align-items: center; gap: var(--pc-gap);
+  margin: 0; border: 0; background: transparent; color: inherit;
+  font: inherit; text-align: left; text-decoration: none; cursor: pointer;
+}
+.prep-sel--card .prep-sel-main { padding: 0 var(--pc-pad-card); border-radius: calc(var(--r-md) - 1px); }
+.prep-sel-main:hover .prep-sel-name { color: var(--hope-soft); }
+.prep-sel-main:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
+.prep-sel-title { display: flex; align-items: baseline; gap: var(--s-1); min-width: 0; }
+.prep-sel-title .prep-sel-name { flex: 0 1 auto; min-width: 0; }
+/* Secondary "opens elsewhere" cue next to the adversary name: barely there
+   at rest, clearer on hover/focus, and it never takes more than its glyph. */
+.prep-sel-ext {
+  flex: none; font-size: var(--fs-xs); line-height: 1; color: var(--muted); opacity: 0.55;
+  transition: opacity var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+.prep-sel-main:hover .prep-sel-ext, .prep-sel-main:focus-visible .prep-sel-ext { opacity: 1; color: var(--hope-soft); }
+.prep-sel--row .prep-sel-link { border-radius: var(--r-sm); }
+/* The adversary thumbnail's art-preview button: same box as the decorative
+   span, plus a zoom-in cursor and a hover/focus edge (no scaling, no shift). */
+.prep-sel-thumb-btn {
+  border: 0; font: inherit; color: inherit; cursor: zoom-in;
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: box-shadow var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.prep-sel-thumb-btn:hover { background: radial-gradient(circle at 50% 35%, rgba(217,164,65,0.22), transparent 70%), var(--ink-hover); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.prep-sel-thumb-btn:focus-visible { outline: var(--focus-ring); outline-offset: 1px; }
+.prep-sel-thumb-btn:disabled { cursor: default; }
+
+/* Card layout (environments, items): fixed height so a long name (clamped to
+   two lines) never changes its row; the remove button sits in the top-right
+   corner over the card's own padding, and the body reserves room for it. */
+.prep-sel--card {
+  height: var(--pc-card-h); box-sizing: border-box; padding: 0;
+  border: 1px solid var(--line-faint); border-radius: var(--r-md); background: var(--ink-card);
+}
+.prep-sel--card:hover {
+  border-color: var(--line-strong); background: var(--ink-hover);
+  box-shadow: inset 0 0 0 1px rgba(217,164,65,0.08);
+}
+.prep-sel--card .prep-sel-body { padding-right: var(--pc-remove-room); }
+.prep-sel--card .prep-sel-remove { position: absolute; top: 1px; right: 1px; }
+
+/* Row layout (adversaries): a fixed-height compact tile in a responsive grid
+   (see .prep-sel-grid--adv below) — same surface/border language as the
+   item cards it sits above, but with its own three-zone interior (thumbnail
+   button, FreshCutGrass link, remove). The name and meta both stay on one
+   line and ellipsize, so a two-column tile never changes height. */
+.prep-sel--row {
+  height: var(--pc-row-h); box-sizing: border-box; padding: 0 var(--pc-pad-x-row) 0 var(--pc-pad-x-row);
+  border: 1px solid var(--line-faint); border-radius: var(--r-md); background: var(--ink-card);
+}
+.prep-sel--row:hover { border-color: var(--line-strong); background: var(--ink-hover); }
+.prep-sel--row .prep-sel-name { -webkit-line-clamp: 1; line-clamp: 1; }
+.prep-sel--row .prep-sel-thumb { --pc-thumb: var(--pc-thumb-row); }
+/* min-width:0 all the way down so the name (not the ↗ or the remove button)
+   is what gives way; the ↗ is flex:none and stays right after the name. */
+.prep-sel--row .prep-sel-main, .prep-sel--row .prep-sel-body, .prep-sel--row .prep-sel-title { min-width: 0; }
+.prep-sel--row .prep-sel-title { align-items: center; }
+.prep-sel--row .prep-sel-name { overflow-wrap: normal; word-break: normal; white-space: nowrap; text-overflow: ellipsis; display: block; }
+
+.prep-sel-grid { display: grid; gap: var(--pc-gap); }
+.prep-sel-grid--env { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.prep-sel-grid--item { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* Adversaries: one column until the central panel can hold two ≥260px tiles
+   side by side (see the @container rules below). Row gap is tighter than the
+   column gap — the tiles are short. */
+.prep-sel-grid--adv { grid-template-columns: minmax(0, 1fr); gap: var(--pc-row-gap) var(--pc-gap); }
+
+/* The center column narrows before the page does (laptop widths, the
+   two-column tablet layout): step down the grids instead of squeezing names
+   or letting the remove buttons collide with them. */
+@container prep-central (max-width: 500px) {
+  .prep-sel-grid--env { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container prep-central (max-width: 400px) {
+  .prep-sel-grid--env, .prep-sel-grid--item { grid-template-columns: minmax(0, 1fr); }
+}
+/* Two adversary columns need 2 × 260px + the 8px gap of container width. */
+@container prep-central (min-width: 528px) {
+  .prep-sel-grid--adv { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 
 /* ---- compact "All Adversaries" toolbar (search + Tier + Type + counter, one row) ----
    Same plain-static-block-above-its-own-scrolling-list structure as
@@ -2562,33 +3196,61 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .ms-clear { flex: none; white-space: nowrap; margin-top: var(--s-1); }
 @container prep-adv-col (max-width: 360px) {
   .prep-adv-toolbar .prep-count { display: none; }
+  .prep-adv-toolbar { grid-template-columns: minmax(0, 1fr) auto auto; }
+}
+/* At MacBook widths and below the Environment/Adversary "{n} of {total}"
+   counters cost more horizontal space than they're worth. Hidden with
+   display:none (no placeholder, no min-width) and the grid loses that
+   track so no empty column/gap is left behind; the text is still kept up
+   to date by refreshEnvPicker()/refreshAdvPicker(). The Items counter and
+   the central "3/3" counters are different classes and stay. */
+@media (max-width: 1536px) {
+  .prep-env-toolbar .prep-count, .prep-adv-toolbar .prep-count { display: none; }
+  .prep-env-toolbar { grid-template-columns: minmax(0, 1fr) auto; }
+  .prep-adv-toolbar { grid-template-columns: minmax(0, 1fr) auto auto; }
 }
 
-/* Selected-adversaries heading's "Open in FreshCutGrass" export link —
-   absent entirely (not just disabled) when nothing is selected, see
-   freshCutGrassLinkHtml() in js/app.js. */
-.prep-freshcutgrass-wrap { margin-left: auto; }
-.prep-freshcutgrass-wrap:empty { display: none; }
-.prep-freshcutgrass-link { flex: none; }
-
-/* Items panel: Category (Items/Consumables) and Source (All/Core/Hope &
-   Fear) toggles, each a small group of pressed/unpressed buttons — same
-   btn-sm/btn-ghost/btn-primary recipe as everywhere else, so "selected"
-   reads the same way active filters do elsewhere in the app. */
-.prep-item-filters { display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-4); align-items: center; margin-bottom: var(--s-2); }
-.prep-item-category-toggle, .prep-item-source-toggle { display: flex; gap: var(--s-2); flex-wrap: wrap; }
-
-/* 24px on the card, larger under a finger — same recipe as .list-card-del. */
-.prep-remove-btn {
-  position: relative; flex: none; width: var(--h-xs); height: var(--h-xs); padding: 0;
-  display: flex; align-items: center; justify-content: center;
-  border: 1px solid transparent; border-radius: var(--r-sm);
-  background: transparent; color: var(--muted); font-size: var(--fs-lg); line-height: 1; cursor: pointer;
-  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+/* ---- compact "All Items" toolbar (Type + Source + search + dice + view + counter, one row) ----
+   Same structural pattern as .prep-env-toolbar/.prep-adv-toolbar above —
+   a CSS grid row, one flexible `minmax(0,1fr)` track (the search field),
+   every other track sized to its own content first — applied to the
+   Items panel's own full-width toolbar instead of a column's nested
+   picker list. Every group after the first gets a left border instead of
+   a dedicated separator element, for the "subtle vertical separator
+   between groups" requirement. */
+.item-toolbar {
+  display: grid; grid-template-columns: auto auto minmax(0,1fr) auto auto auto auto;
+  align-items: center; gap: var(--s-2);
+  min-height: 40px; padding-bottom: var(--s-1);
 }
-.prep-remove-btn::after { content: ""; position: absolute; inset: -10px; }
-.prep-remove-btn:hover, .prep-remove-btn:focus-visible {
-  color: var(--fear-soft); border-color: var(--fear); background: rgba(156,43,59,0.14);
+.item-toolbar-group {
+  display: flex; gap: var(--s-2); align-items: center; flex-wrap: nowrap;
+}
+.item-toolbar-group + .item-toolbar-group,
+.item-clear-btn + .item-toolbar-group,
+.item-toolbar-group + .item-toolbar-count {
+  border-left: 1px solid var(--line-faint); padding-left: var(--s-3);
+}
+.item-toolbar .prep-search.item-toolbar-search { min-width: 0; }
+.item-toolbar .prep-search.item-toolbar-search input { min-width: 90px; }
+/* .prep-count's 10ch floor is border-box, so this column's own divider and
+   padding ate into it and "0 of 240" came out narrower than "240 of 240",
+   resizing the search field on every keystroke. */
+.item-toolbar-count { text-align: right; min-width: calc(10ch + var(--s-3) + 1px); }
+/* Standalone square "clear all item filters" button right after the search
+   field — same height as the search input (.prep-search input, 35px). It
+   is always present and `disabled` (the shared .btn:disabled look) while
+   there is nothing to clear, so the toolbar never shifts. */
+.item-clear-btn {
+  width: 35px; height: 35px; padding: 0; flex: none;
+  font-size: var(--fs-md); line-height: 1;
+}
+/* .prep-items-panel is a size container so the counter — the least
+   important toolbar element, see CLAUDE.md/docs/architecture.md — can
+   hide via a container query before any other control has to shrink or
+   wrap, same convention .prep-col-adv already established. */
+@container prep-items-panel (max-width: 640px) {
+  .item-toolbar-count { display: none; }
 }
 
 /* Non-blocking heads-up, not an error — an amber rule, not the fear-red used
@@ -2598,19 +3260,29 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   border-radius: var(--r-sm); background: rgba(217,164,65,0.06); font-size: var(--fs-sm); color: var(--parchment-dim);
 }
 
-/* ---- items panel (full width, below the three columns) ---- */
+/* ---- items panel (full width, below the three columns) ----
+   A size container so the compact toolbar's counter (the least important
+   element) can hide via a container query before any other control has
+   to shrink or wrap — see @container prep-items-panel above. */
 .prep-items-panel {
+  container-type: inline-size; container-name: prep-items-panel;
   grid-column: 1 / -1;
   display: flex; flex-direction: column; gap: var(--s-2);
   background: var(--ink-card); border: 1px solid var(--line-faint); border-radius: var(--r-md);
   padding: 12px var(--s-4) var(--s-4);
 }
 /* Wraps the strip with its two manual prev/next arrows (hidden entirely
-   while there is nothing to scroll to — see refreshSessionPrepItemNav() in
+   while there is nothing to scroll to — see refreshPrepItemNav() in
    js/app.js). Native overflow-x still gives trackpad/wheel/touch/scrollbar
    scrolling for free; the arrows are just an explicit, user-controlled
    alternative — the strip never moves on its own. */
 .prep-item-strip-wrap { position: relative; display: flex; align-items: center; gap: var(--s-2); }
+/* The Gallery/Compact switch toggles this element's `hidden` attribute
+   (setItemViewMode() in js/app.js) — without this, the `display: flex`
+   above (author-origin CSS) would keep beating the browser's own
+   UA-origin `[hidden] { display: none }` default, and both strips would
+   render at once. */
+.prep-item-strip-wrap[hidden] { display: none; }
 .prep-item-nav-btn {
   flex: none; width: var(--h-md); height: var(--h-md); padding: 0;
   display: flex; align-items: center; justify-content: center;
@@ -2624,25 +3296,35 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
 .prep-item-nav-btn:hover:not(:disabled) { border-color: var(--hope); color: var(--hope-soft); }
 .prep-item-nav-btn:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
 .prep-item-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-.prep-item-nav-btn[hidden] { display: none; }
+/* Hidden arrows (nothing to scroll) still occupy their slot — `visibility`,
+   not `display` — so the tile strip doesn't shift sideways by two arrow
+   widths whenever a filter narrows the list to fit. */
+.prep-item-nav-btn[hidden] { display: flex; visibility: hidden; }
 
 /* Art-first tile strip: square tiles dominated by item artwork, with name
    and selection as contextual overlays rather than permanent card chrome —
    this is the one exception to the "permanently visible checkbox" recipe
-   used everywhere else in Session Prep (env/adv rows, see the shared
+   used everywhere else in Prep (env/adv rows, see the shared
    .prep-select-checkbox comment above), scoped to `.prep-item-card` alone
    so it never touches those other pickers. Real interactive controls in
    source order; native overflow gives trackpad/shift-wheel/scrollbar-drag/
    touch-swipe scrolling for free, with momentum scrolling opted into
    explicitly for iOS Safari. */
 .prep-item-grid {
-  --session-prep-item-tile-size: clamp(108px, 6.8vw, 128px);
+  --prep-item-tile-size: clamp(108px, 6.8vw, 128px);
   flex: 1 1 auto; min-width: 0;
   display: flex; flex-wrap: nowrap; align-items: flex-start;
-  gap: var(--s-3); overflow-x: auto; -webkit-overflow-scrolling: touch;
+  gap: var(--s-3); overflow-x: scroll; -webkit-overflow-scrolling: touch;
   padding-bottom: var(--s-2);
+  /* overflow-x: scroll (not auto) permanently reserves the scrollbar's
+     height — the track is transparent and the thumb only exists while
+     there is something to scroll — so filtering never makes the panel jump
+     when the scrollbar would otherwise appear/disappear. */
   scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
 }
+/* The "no results" line takes one tile's height, so an empty result doesn't
+   collapse the strip either. */
+.prep-item-grid > .prep-empty { min-height: var(--prep-item-tile-size); display: flex; align-items: center; }
 .prep-item-grid::-webkit-scrollbar { height: 8px; }
 .prep-item-grid::-webkit-scrollbar-track { background: transparent; }
 .prep-item-grid::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
@@ -2654,7 +3336,7 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    artwork's corners rounded instead. */
 .prep-item-card {
   position: relative; flex: none;
-  width: var(--session-prep-item-tile-size); aspect-ratio: 1 / 1;
+  width: var(--prep-item-tile-size); aspect-ratio: 1 / 1;
   border: 1px solid var(--line); border-radius: var(--r-md);
   background: var(--ink-raised);
   transition: border-color var(--t-fast) var(--ease-out), box-shadow var(--t-fast) var(--ease-out);
@@ -2707,14 +3389,92 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    env/adv pickers' own .prep-checkbox-hit stays permanently visible. */
 .prep-item-card .prep-checkbox-hit {
   position: absolute; top: 4px; right: 4px; z-index: 2;
+  /* Hug the box so the tile-corner inset is equal on both axes; the taller
+     click target lives in the ::after overlay instead of in the label. */
+  width: var(--sel-col); height: var(--sel-col);
   opacity: 0; transform: translate(6px, -6px) scale(0.9);
   transition: opacity var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+}
+.prep-item-card .prep-checkbox-hit::after {
+  top: calc((var(--sel-col) - var(--sel-hit)) / 2);
+  bottom: calc((var(--sel-col) - var(--sel-hit)) / 2);
+  left: -4px; right: -4px;
 }
 .prep-item-card:hover .prep-checkbox-hit,
 .prep-item-card:focus-within .prep-checkbox-hit,
 .prep-item-card.is-selected .prep-checkbox-hit {
   opacity: 1; transform: translate(0, 0) scale(1);
 }
+
+/* ---- dice roll-and-filter buttons ----
+   Fixed width so a two-digit transient result (see rollPrepItemDice()
+   in js/app.js) never shifts the rest of the toolbar; icon + label swap for
+   icon + bare number during the ~1.2s reveal, same button, same footprint. */
+.dice-roll-btn {
+  width: 66px; padding: 0 var(--s-1); gap: 5px; flex: none;
+  font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+}
+/* One illustrated d12 (img/ui/d12-roll.png, trimmed of transparent padding)
+   on every button; keeps its own colors in every state, so it is not tinted
+   by the active gold — the button styling carries that. */
+.dice-roll-icon { display: block; width: 19px; height: 19px; flex: none; object-fit: contain; }
+.dice-roll-label { overflow: hidden; white-space: nowrap; }
+/* Gold fill for the button currently holding the active roll filter —
+   reuses .btn.active's existing treatment, never a new color. */
+.dice-roll-btn.is-active {
+  background: rgba(217,164,65,0.14); border-color: var(--hope); color: var(--hope-soft);
+}
+.dice-roll-btn.is-active:hover { background: rgba(217,164,65,0.2); }
+@keyframes dice-roll-pop { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+.dice-roll-btn.is-rolling .dice-roll-label { animation: dice-roll-pop var(--t-base) var(--ease-out); }
+
+/* ---- Gallery/Compact view switch ---- */
+.item-view-btn { width: var(--h-sm); padding: 0; flex: none; }
+.item-view-btn svg { width: var(--icon-md); height: var(--icon-md); }
+
+/* ---- compact view: two-row horizontal grid (see the Gallery strip above
+   for the equivalent single-row treatment) — items flow down each column
+   before starting the next, so scrolling right reveals more pairs rather
+   than more rows. Same manual prev/next arrows + native
+   wheel/trackpad/touch/scrollbar scrolling as the Gallery strip, reusing
+   .prep-item-strip-wrap/.prep-item-nav-btn as-is. */
+.prep-item-compact-grid {
+  flex: 1 1 auto; min-width: 0;
+  /* Fixed two-row height (a row is its 60px thumb + padding + border): the
+     strip keeps the same height whether 1 or 100 records match, instead of
+     collapsing to one row / an empty line as the filters narrow. */
+  --prep-compact-row-h: 78px;
+  display: grid; grid-template-rows: repeat(2, var(--prep-compact-row-h));
+  /* minmax()'s floor, not just its ceiling, has to be wide enough on its
+     own: .prep-row-name/.prep-row-meta's overflow:hidden makes them
+     contribute ~0 to the track's intrinsic/max-content size, so an
+     implicit column track here never grows past its *minimum* just
+     because the (clipped) text would want more room. At a 200px floor,
+     the checkbox hit-area (36px) plus a 60px thumbnail leaves only
+     ~66px for text — too narrow for "Item · Core · #1" — so the floor
+     is 240px, wide enough for that meta line at this row's actual
+     padding/gap/thumbnail sizing (measured, not guessed).
+   */
+  grid-auto-flow: column; grid-auto-columns: minmax(240px, 260px);
+  gap: var(--s-2) var(--s-3); overflow-x: scroll; overflow-y: hidden;
+  -webkit-overflow-scrolling: touch; padding-bottom: var(--s-2);
+  scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
+}
+.prep-item-compact-grid > .prep-empty { grid-row: 1 / -1; align-self: center; }
+.prep-item-compact-grid::-webkit-scrollbar { height: 8px; }
+.prep-item-compact-grid::-webkit-scrollbar-track { background: transparent; }
+.prep-item-compact-grid::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
+.prep-item-compact-grid::-webkit-scrollbar-thumb:hover { background: rgba(185,173,145,0.56); }
+/* .prep-row/.prep-row-open/.prep-row-text/.prep-row-name/.prep-row-meta
+   (the environment/adversary picker rows' own two-line name+meta layout)
+   are reused as-is here — this only adds what a grid *column item* needs
+   on top of that: a background/border so each record reads as its own
+   tile in the two-row flow, and a touch-friendly minimum height. */
+.prep-item-compact-row {
+  padding: var(--s-2) calc(var(--sel-pad) - 1px); border: 1px solid var(--line-faint); border-radius: var(--r-sm);
+  background: var(--ink-raised); min-height: 44px;
+}
+.prep-item-compact-row:hover { background: var(--ink-hover); }
 
 /* ---- large screens (≥1200px, the three-column layout) only: the whole page
    fits in the viewport with no page-level scroll. Every ancestor from body
@@ -2728,13 +3488,13 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    direction. Narrower layouts (tablet/phone, below) keep the normal page
    scroll. */
 @media (min-width: 1200px) {
-  body[data-route="session-prep"] {
+  body[data-route="prep"] {
     height: 100vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
   }
-  body[data-route="session-prep"] #main {
+  body[data-route="prep"] #main {
     flex: 1 1 auto;
     min-height: 0;
     min-width: 0;
@@ -2742,28 +3502,28 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
     flex-direction: column;
     padding-bottom: var(--s-4);
   }
-  body[data-route="session-prep"] #toolbar,
-  body[data-route="session-prep"] #result-count {
+  body[data-route="prep"] #toolbar,
+  body[data-route="prep"] #result-count {
     display: none;
   }
-  body[data-route="session-prep"] #grid-wrap {
+  body[data-route="prep"] #grid-wrap {
     flex: 1 1 auto;
     min-height: 0;
     min-width: 0;
     display: flex;
     flex-direction: column;
   }
-  body[data-route="session-prep"] .prep-wrap {
+  body[data-route="prep"] .prep-wrap {
     flex: 1 1 auto;
     min-height: 0;
     min-width: 0;
   }
-  body[data-route="session-prep"] .prep-session-header,
-  body[data-route="session-prep"] .prep-items-panel {
+  body[data-route="prep"] .prep-bar,
+  body[data-route="prep"] .prep-items-panel {
     flex: none;
     min-width: 0;
   }
-  body[data-route="session-prep"] .prep-main {
+  body[data-route="prep"] .prep-main {
     flex: 1 1 auto;
     min-height: 0;
     min-width: 0;
@@ -2773,28 +3533,29 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   /* Each column stretches to the row's full height; only the picker list
      inside env/adv scrolls (below), so the column itself clips rather than
      also scrolling — one scrollbar per block, not two nested ones. */
-  body[data-route="session-prep"] .prep-col {
+  body[data-route="prep"] .prep-col {
     min-height: 0;
     overflow: hidden;
   }
   /* Selected-items summary has no single inner list to delegate to, so the
      whole column scrolls if its three sections together run long. */
-  body[data-route="session-prep"] .prep-central {
+  body[data-route="prep"] .prep-central {
     min-height: 0;
     overflow-y: auto;
-    scroll-padding-top: 40px;
+    scroll-padding-top: var(--pc-scroll-pad);
+    scrollbar-gutter: stable;
     scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
   }
-  body[data-route="session-prep"] .prep-central::-webkit-scrollbar { width: 8px; }
-  body[data-route="session-prep"] .prep-central::-webkit-scrollbar-track { background: transparent; }
-  body[data-route="session-prep"] .prep-central::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
-  body[data-route="session-prep"] .prep-central::-webkit-scrollbar-thumb:hover { background: rgba(185,173,145,0.56); }
-  body[data-route="session-prep"] .prep-picker-list {
+  body[data-route="prep"] .prep-central::-webkit-scrollbar { width: 8px; }
+  body[data-route="prep"] .prep-central::-webkit-scrollbar-track { background: transparent; }
+  body[data-route="prep"] .prep-central::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
+  body[data-route="prep"] .prep-central::-webkit-scrollbar-thumb:hover { background: rgba(185,173,145,0.56); }
+  body[data-route="prep"] .prep-picker-list {
     flex: 1 1 auto;
     min-height: 0;
   }
-  body[data-route="session-prep"] #prep-env-list,
-  body[data-route="session-prep"] #prep-adv-list {
+  body[data-route="prep"] #prep-env-list,
+  body[data-route="prep"] #prep-adv-list {
     flex: 1 1 auto;
     min-height: 0;
     max-height: none;
@@ -2814,6 +3575,15 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
    then items — the single stack order the mobile spec calls for ---- */
 @media (max-width: 900px) {
   .prep-main { grid-template-columns: 1fr; grid-template-areas: "central" "env" "adv"; }
+  /* The Items toolbar carries far more controls than the env/adv ones
+     (six groups, not three) — its CSS-grid row (sized for the desktop/
+     laptop widths this panel is optimized for) genuinely runs out of
+     room below ~900px and would otherwise overflow/overlap rather than
+     degrade gracefully. Same flex-wrap fallback the env/adv toolbars use
+     below their own (narrower) breakpoint. */
+  .item-toolbar { display: flex; flex-wrap: wrap; row-gap: var(--s-2); }
+  .item-toolbar .item-toolbar-search { flex: 1 1 160px; }
+  .item-toolbar-group, .item-toolbar-count { border-left: none; padding-left: 0; }
 }
 
 /* ---- phone: no nested scroll areas, 44px touch targets ---- */
@@ -2821,12 +3591,13 @@ body[data-route="session-prep"][data-sp-header-mode="compact"] .sp-chrome-toggle
   #prep-env-list, #prep-adv-list { max-height: none; overflow: visible; }
   .prep-env-toolbar, .prep-adv-toolbar { display: flex; flex-wrap: wrap; row-gap: var(--s-2); }
   .prep-env-toolbar .prep-search, .prep-adv-toolbar .prep-search { flex: 1 1 160px; }
-  .prep-remove-btn { width: 44px; height: 44px; }
-  .prep-checkbox-hit { width: 44px; height: 44px; }
-  .prep-session-header { align-items: stretch; }
+  .prep-sel-remove { --pc-remove: 44px; }
+  .prep-sel--card { --pc-card-h: 60px; }
+  .prep-sel--card .prep-sel-body { padding-right: 36px; }
+  .prep-checkbox-hit { width: var(--sel-hit-touch); height: var(--sel-hit-touch); }
 }
 @media (hover: none), (pointer: coarse) {
-  .prep-checkbox-hit { width: 44px; height: 44px; }
+  .prep-checkbox-hit { width: var(--sel-hit-touch); height: var(--sel-hit-touch); }
   /* No hover gesture to reveal the item tile's slide-in checkbox with, so it
      stays permanently visible here instead — same fallback the item strip
      used before this tile redesign. */

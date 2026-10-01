@@ -43,6 +43,7 @@ Environment types (`type` enum, see
 | Social | Социальный |
 | Exploration | Исследование |
 | Event | Событие |
+| Time Loop | Временная петля (never «Петля времени») |
 
 A non-numeric `difficulty` value must not start with the word
 "Difficulty"/"Сложность" — the label is prepended automatically when
@@ -67,6 +68,20 @@ rendering, so a value starting with it stutters ("Сложность Сложн�
 | Critical Success | Критический успех |
 | Success/Failure with Hope/Fear | Успех/Неудача с Надеждой / со Страхом |
 | Battle Points | Боевые очки |
+
+## Item rarity tiers
+
+Used by Prep's item-browser dice tooltips (`prep_dice_rarity_1..5`
+in `data/i18n.json`) — no official RU rulebook is present in this repo, so
+these are this project's own best-judgment renderings pending a
+native-speaker/rulebook sanity check:
+
+| English | Russian |
+| --- | --- |
+| Common | Обычный |
+| Uncommon | Необычный |
+| Rare | Редкий |
+| Legendary | Легендарный |
 | Death Move | Предсмертный ход |
 
 ## Adversary stat block terms (`data/adversaries.json`)

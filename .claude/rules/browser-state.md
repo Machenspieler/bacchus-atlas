@@ -3,13 +3,13 @@ paths:
   - "js/safe-storage.js"
   - "js/route-utils.js"
   - "js/list-utils.js"
-  - "js/session-prep-utils.js"
+  - "js/prep-utils.js"
   - "js/data-version.js"
   - "js/app.js"
   - "tests/storage.test.js"
   - "tests/routing.test.js"
   - "tests/list-rename.test.js"
-  - "tests/session-prep-utils.test.js"
+  - "tests/prep-utils.test.js"
 ---
 
 # Browser state, storage, and routing conventions
@@ -43,11 +43,11 @@ paths:
 - **A persisted-shape change needs backward-compatible handling, not a
   reset.** Adding/changing a field in a stored schema requires either
   tolerating the old shape in the validator or a migration (see
-  `sanitizeSessionPrep()`/`migrateSessionPrepSessionV1ToV2()` in
+  `sanitizePrep()`/`migratePrepV1ToV2()` in
   `js/safe-storage.js` for the pattern: preserve what's still valid,
   discard only what must go, never wipe the whole store to make the
   migration simpler).
-- **Obsolete Session Prep fields (`primaryEnvironmentId`, item/adversary
+- **Obsolete Prep fields (`primaryEnvironmentId`, item/adversary
   `quantity`) are migration-only.** They must never reappear as read or
   write targets outside `js/safe-storage.js`'s v1 → v2 migration path — see
   [docs/product-decisions.md](../../docs/product-decisions.md) PD-001/PD-002.
@@ -75,7 +75,7 @@ paths:
   — never a direct `RouteUtils.parseRouteHash(location.hash)` call at a new
   site; that's what keeps repair-on-malformed-input applied consistently.
 
-## Lists / session persistence
+## Lists persistence
 
 - **List rename validation is centralized** in the pure
   `ListUtils.resolveListRename(currentName, rawValue)` (`js/list-utils.js`),
@@ -95,5 +95,5 @@ paths:
   bug fix — sanitize per-entry and per-key, matching the existing
   `sanitize*Entry()` pattern in `js/safe-storage.js`.
 - Use actual helper names from `js/safe-storage.js`/`js/route-utils.js`/
-  `js/list-utils.js`/`js/session-prep-utils.js` when documenting or
+  `js/list-utils.js`/`js/prep-utils.js` when documenting or
   discussing this layer — don't invent an abstraction that isn't there.

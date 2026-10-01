@@ -461,8 +461,8 @@
   function sanitizeJourneyRegions(parsed) { return sanitizeJourneyArray(parsed, sanitizeRegionEntry); }
   function sanitizeJourneySanctuaries(parsed) { return sanitizeJourneyArray(parsed, sanitizeSanctuaryEntry); }
 
-  /* ---------------- Session Prep (dhcodex_session_prep) ----------------
-   * Mirrors the shape SessionPrepUtils (js/session-prep-utils.js) operates
+  /* ---------------- Prep (dhcodex_session_prep) ----------------
+   * Mirrors the shape PrepUtils (js/prep-utils.js) operates
    * on, but is deliberately self-contained rather than requiring that
    * module: this validator only needs to know the storage *shape* is sound
    * (bounds, uniqueness, cross-field consistency), not the selection rules
@@ -470,7 +470,7 @@
    * this file loadable standalone in a test the same way
    * sanitizeRegionEntry/sanitizeSanctuaryEntry already are.
    *
-   * Schema v2 (current) is a plain binary-selection shape: every session
+   * Schema v2 (current) is a plain binary-selection shape: every prep
    * has `environmentIds`/`adversaryIds`/`itemIds`, each a deduplicated
    * array of string ids — no primary environment, no quantity anywhere.
    * Schema v1 (legacy) had `primaryEnvironmentId` and `adversaries`/`items`
@@ -478,7 +478,7 @@
    * to v2: dropping `primaryEnvironmentId` and each entry's `quantity` is
    * the *intended* effect of the migration, not something to flag as
    * "changed" — only a genuinely invalid row (bad id, duplicate, over the
-   * environment cap, a bad timestamp, ...) is. See the "Session Prep"
+   * environment cap, a bad timestamp, ...) is. See the "Prep"
    * section of CLAUDE.md and options.validate's contract in
    * loadStoredJson() above for how a clean migration avoids the recovery
    * toast while still writing the upgraded value back. */
@@ -536,27 +536,34 @@
     return { value: out, changed: changed };
   }
 
-  /** Shared id-list/title/timestamp sanitizing for one session, used by
+  /** Shared id-list/title/timestamp sanitizing for one prep, used by
    * both the v1->v2 migration and the v2 shape validator below —
-   * `getSelectionIds(session)` is the one difference between them (where
+   * `getSelectionIds(prep)` is the one difference between them (where
    * the adversary/item ids are read from, and by which rule). */
-  function sanitizeSessionPrepSessionCommon(session, getSelectionIds) {
-    if (!isPlainObject(session) || !isNonEmptyString(session.id)) return { ok: false };
+  function sanitizePrepCommon(prep, getSelectionIds) {
+    if (!isPlainObject(prep) || !isNonEmptyString(prep.id)) return { ok: false };
     var changed = false;
     var now = new Date().toISOString();
 
-    var title = typeof session.title === 'string' ? session.title : '';
-    if (title !== session.title) changed = true;
+    var title = typeof prep.title === 'string' ? prep.title : '';
+    if (title !== prep.title) changed = true;
 
-    var createdAt = isValidIsoTimestamp(session.createdAt) ? session.createdAt : now;
-    if (createdAt !== session.createdAt) changed = true;
-    var updatedAt = isValidIsoTimestamp(session.updatedAt) ? session.updatedAt : now;
-    if (updatedAt !== session.updatedAt) changed = true;
+    // `notes` arrived after the first v2 stores shipped, so a missing value is
+    // the normal legacy shape and is filled in silently (not a recovery
+    // event); only a present-but-non-string value counts as `changed`. The
+    // text itself is never trimmed or otherwise rewritten.
+    var notes = typeof prep.notes === 'string' ? prep.notes : '';
+    if (prep.notes !== undefined && notes !== prep.notes) changed = true;
 
-    var envResult = sanitizeIdList(session.environmentIds, SP_MAX_ENVIRONMENTS);
+    var createdAt = isValidIsoTimestamp(prep.createdAt) ? prep.createdAt : now;
+    if (createdAt !== prep.createdAt) changed = true;
+    var updatedAt = isValidIsoTimestamp(prep.updatedAt) ? prep.updatedAt : now;
+    if (updatedAt !== prep.updatedAt) changed = true;
+
+    var envResult = sanitizeIdList(prep.environmentIds, SP_MAX_ENVIRONMENTS);
     if (envResult.changed) changed = true;
 
-    var selection = getSelectionIds(session);
+    var selection = getSelectionIds(prep);
     if (selection.adversaryIds.changed) changed = true;
     if (selection.itemIds.changed) changed = true;
 
@@ -564,8 +571,9 @@
       ok: true,
       changed: changed,
       value: {
-        id: session.id,
+        id: prep.id,
         title: title,
+        notes: notes,
         createdAt: createdAt,
         updatedAt: updatedAt,
         environmentIds: envResult.value,
@@ -579,8 +587,8 @@
    * (tolerating a partially-migrated string array too) and drops
    * `primaryEnvironmentId` entirely — that drop is never itself flagged as
    * `changed`. */
-  function migrateSessionPrepSessionV1ToV2(session) {
-    return sanitizeSessionPrepSessionCommon(session, function (s) {
+  function migratePrepV1ToV2(prep) {
+    return sanitizePrepCommon(prep, function (s) {
       return {
         adversaryIds: migrateIdListFromEntries(s.adversaryIds !== undefined ? s.adversaryIds : s.adversaries),
         itemIds: migrateIdListFromEntries(s.itemIds !== undefined ? s.itemIds : s.items),
@@ -591,8 +599,8 @@
   /** Current (v2) shape: `adversaryIds`/`itemIds` are read directly as
    * plain id arrays — defensive against a hand-edited or otherwise
    * malformed v2 store. */
-  function sanitizeSessionPrepSessionV2(session) {
-    return sanitizeSessionPrepSessionCommon(session, function (s) {
+  function sanitizePrepV2(prep) {
+    return sanitizePrepCommon(prep, function (s) {
       return {
         adversaryIds: sanitizeIdList(s.adversaryIds),
         itemIds: sanitizeIdList(s.itemIds),
@@ -600,7 +608,7 @@
     });
   }
 
-  function sanitizeSessionPrep(parsed) {
+  function sanitizePrep(parsed) {
     if (!isPlainObject(parsed)) return { ok: false };
     var version = parsed.schemaVersion;
     if (version !== 1 && version !== 2) return { ok: false };
@@ -608,8 +616,8 @@
 
     var anySanitized = false;
     var kept = [];
-    parsed.sessions.forEach(function (session) {
-      var result = version === 1 ? migrateSessionPrepSessionV1ToV2(session) : sanitizeSessionPrepSessionV2(session);
+    parsed.sessions.forEach(function (prep) {
+      var result = version === 1 ? migratePrepV1ToV2(prep) : sanitizePrepV2(prep);
       if (!result.ok) { anySanitized = true; return; }
       if (result.changed) anySanitized = true;
       kept.push(result.value);
@@ -650,7 +658,7 @@
       envLists: sanitizeEnvLists,
       journeyRegions: sanitizeJourneyRegions,
       journeySanctuaries: sanitizeJourneySanctuaries,
-      sessionPrep: sanitizeSessionPrep,
+      prep: sanitizePrep,
     },
   };
 });

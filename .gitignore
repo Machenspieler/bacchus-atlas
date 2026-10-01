@@ -30,3 +30,4 @@ dist/
 # for scripts/generate-adversary-art.js) — never loaded by the runtime site
 # itself, reinstalled locally with `npm install` as needed.
 node_modules/
+

@@ -48,9 +48,8 @@ auto-detected identity.
 ## Technology
 
 Plain HTML/CSS/JS, no framework, no runtime dependency and no bundler for
-the site itself. All user data (language, lists, Journey saves, Session
-Prep) lives in the browser's `localStorage`, loaded/written through a
-single safe-storage boundary — never touches `environments.json` or any
+the site itself. All user data (language, lists, Journey saves, Prep) lives in the browser's
+`localStorage`, loaded/written through a single safe-storage boundary — never touches `environments.json` or any
 server. Deployment is copy-and-version, not a real build: GitHub Actions
 copies the runtime files into `dist/` and stamps in content-hash cache
 versions; there is no compilation, transpilation, or bundling step. See
@@ -60,7 +59,7 @@ pipeline in detail).
 
 `package.json` exists only for one dev-only offline tool
 (`scripts/generate-adversary-art.js`, which uses `sharp` to pre-generate
-Session Prep adversary art derivatives — see
+Prep adversary art derivatives — see
 [docs/architecture.md](docs/architecture.md)'s "Adversary artwork data and
 generation"); nothing under `dist/` or the runtime `js/`/`css/` loads
 anything from `node_modules/` (gitignored), and this doesn't relax the
@@ -148,9 +147,9 @@ means updating `js/search-index.js`, not reaching for
 `JSON.stringify(environment)`. Full contract:
 [docs/architecture.md](docs/architecture.md) "Environment search index".
 
-### Session Prep
+### Prep
 
-`#/session-prep` lets a GM assemble one session's worth of environments,
+`#/prep` lets a GM assemble one saved workspace of environments,
 adversaries, and items. Every selection is **binary** — there is no
 primary environment and no item quantity anywhere in this feature; the
 three-environment cap is the only limit. These are settled product
@@ -158,8 +157,16 @@ decisions, not implementation details to reopen:
 [docs/product-decisions.md](docs/product-decisions.md) PD-001/PD-002. Full
 architecture (state, rendering, persistence schema, the v1→v2 migration
 that safely discards legacy `primaryEnvironmentId`/quantity fields):
-[docs/architecture.md](docs/architecture.md), `js/session-prep-utils.js`,
+[docs/architecture.md](docs/architecture.md), `js/prep-utils.js`,
 `js/safe-storage.js`.
+
+Prep's environment-driven adversary recommendations are advisory and
+derived: selecting or removing an environment never selects or removes an
+adversary, `data/prep.json` is the whitelist, and the only Potential
+Adversaries parser is `js/potential-adversary-utils.js` — see
+[docs/product-decisions.md](docs/product-decisions.md) PD-008 and
+[docs/architecture.md](docs/architecture.md) "Environment → Recommended
+Adversaries".
 
 ## Commands
 
@@ -184,7 +191,7 @@ versioning wiring itself.
 | A UI-facing change | [design.md](design.md), [.claude/rules/ui.md](.claude/rules/ui.md), [docs/manual-qa.md](docs/manual-qa.md), or run `/implement-ui-change` |
 | Environment/adversary/region/item data | [.claude/rules/data.md](.claude/rules/data.md), [docs/data-contracts/environments.md](docs/data-contracts/environments.md) |
 | Importing/correcting an environment | run `/add-environment` |
-| Storage, routing, or Lists/Session Prep persistence | [.claude/rules/browser-state.md](.claude/rules/browser-state.md) |
+| Storage, routing, or Lists/Prep persistence | [.claude/rules/browser-state.md](.claude/rules/browser-state.md) |
 | Build, versioning, or deployment | [.claude/rules/build-and-deploy.md](.claude/rules/build-and-deploy.md) |
 | Product behavior / "is this intentional?" | [docs/product-decisions.md](docs/product-decisions.md) |
 | Russian translation terminology | [docs/translation-glossary.md](docs/translation-glossary.md) |
