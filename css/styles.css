@@ -2912,7 +2912,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    dims it; it is a finished state rather than a refusal, hence no not-allowed. */
 /* Both header actions share one tight group so the compact star button costs
    as little of the (already full) laptop-width header as possible. */
-.prep-central-actions { flex: none; display: flex; align-items: center; gap: var(--s-1); }
+.prep-central-actions { flex: none; display: flex; align-items: center; gap: var(--s-2); }
 .prep-central-actions:not(:has(> :not(:empty))) { display: none; }
 .prep-recommend-wrap { flex: none; }
 .prep-recommend-wrap:empty { display: none; }
@@ -2929,7 +2929,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .bp-slot { flex: 0 1 auto; min-width: 0; margin-left: auto; }
 .bp-slot:empty { display: none; }
 .bp {
-  display: flex; align-items: center; gap: var(--s-3); min-width: 0; white-space: nowrap;
+  display: flex; align-items: center; gap: var(--s-2); min-width: 0; white-space: nowrap;
   font-family: var(--font-ui); font-size: var(--fs-sm); color: var(--parchment-dim);
 }
 .bp button, .bp input, .bp-popover button, .bp-popover input { font: inherit; color: inherit; }
@@ -2984,7 +2984,6 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 /* Constrained container (laptop): drop the label, keep the numbers. */
 @container prep-central (max-width: 760px) {
   .bp-pc-label { display: none; }
-  .bp { gap: var(--s-2); }
   .bp-step { width: 24px; }
   .bp-pc-input { width: 2.2em; }
   .bp-summary { padding-inline: 10px; }
@@ -2996,7 +2995,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 @container prep-central (max-width: 600px) {
   .prep-recommend-btn, .prep-freshcutgrass-link { padding-inline: 6px; }
   .bp-summary { padding-inline: 8px; }
-  .bp { gap: 4px; }
+  .bp, .prep-central-actions { gap: 6px; }
   .prep-central-lead { gap: 4px; }
   .prep-central-head { gap: 6px; }
 }
