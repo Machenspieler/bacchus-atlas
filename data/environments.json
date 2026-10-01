@@ -5544,12 +5544,12 @@
             "ru": "Поднятая Тревога"
           },
           "description": {
-            "en": "Countdown (Loop 2d8). When the alarm is raised, all PCs must mark a Stress. Activate the countdown, which ticks down each time a PC rolls with Fear. Each time it triggers, roll a d4 to determine what reinforcements arrive within Very Far range. 1. A Vault Guardian Sentinel and Vault Guardian Gaoler 2. Two Vault Guardian Turrets 3. Two Watchers 4.",
-            "ru": "Отсчёт (Цикл 2d8). Когда поднята тревога, все персонажи должны отметить Стресс. Активируйте отсчёт, который уменьшается каждый раз, когда персонаж выбрасывает результат со Страхом. Каждый раз, когда он срабатывает, бросьте d4, чтобы определить, какое подкрепление прибывает в пределах Очень Дальней дистанции. 1. Страж Хранилища-Дозорный и Страж Хранилища-Тюремщик 2. Две Стража Хранилища-Турели 3. Два Наблюдателя 4."
+            "en": "Countdown (Loop 2d8). When the alarm is raised, all PCs must mark a Stress. Activate the countdown, which ticks down each time a PC rolls with Fear. Each time it triggers, roll a d4 to determine what reinforcements arrive within Very Far range.\n1. A Vault Guardian Sentinel and Vault Guardian Gaoler\n2. Two Vault Guardian Turrets\n3. Two Watchers\n4. A Zaxian",
+            "ru": "Отсчёт (Цикл 2d8). Когда поднята тревога, все персонажи должны отметить Стресс. Активируйте отсчёт, который уменьшается каждый раз, когда персонаж выбрасывает результат со Страхом. Каждый раз, когда он срабатывает, бросьте d4, чтобы определить, какое подкрепление прибывает в пределах Очень Дальней дистанции.\n1. Страж Хранилища-Дозорный и Страж Хранилища-Тюремщик\n2. Две Стража Хранилища-Турели\n3. Два Наблюдателя\n4. Заксианец"
           },
           "prompt": {
-            "en": "A Zaxian Will the PCs fight or flee? Which witnesses can describe their appearances?",
-            "ru": "Заксианец Будут ли персонажи сражаться или спасаться бегством? Какие свидетели смогут описать их внешность?"
+            "en": "Will the PCs fight or flee? Which witnesses can describe their appearances?",
+            "ru": "Будут ли персонажи сражаться или спасаться бегством? Какие свидетели смогут описать их внешность?"
           }
         },
         {
@@ -27197,7 +27197,7 @@
             "ru": "Возлияния и роскошества"
           },
           "description": {
-            "en": "A PC can choose to take a load off and have a good time. They can choose one of the following to do, and then clear a Stress:\nSpend 1 coin to have a nice drink at the bar.\nRest on the chaise lounge by the fire.\nGossip with merchants and mercenaries.",
+            "en": "A PC can choose to take a load off and have a good time. They can choose one of the following to do, and then clear a Stress:\n- Spend 1 coin to have a nice drink at the bar.\n- Rest on the chaise lounge by the fire.\n- Gossip with merchants and mercenaries.",
             "ru": "Персонаж может решить отдохнуть и хорошо провести время. Он может выбрать одно из следующего, а затем снять 1 Стресс:\n- Потратить 1 монету на приятный напиток у стойки.\n- Отдохнуть на шезлонге у камина.\n- Посплетничать с торговцами и наёмниками."
           },
           "prompt": {
