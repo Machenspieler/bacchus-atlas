@@ -867,3 +867,75 @@ test('formatRollCoverage renders the min-max span of item rolls', () => {
   assert.equal(f([11, 4, 6, 5, 10]), '4–11');
   assert.equal(f([7, 15]), '7–15');
 });
+
+/* ---------------- Session Notes (prep.notes) ---------------- */
+
+test('createDefaultPrep starts with empty notes, and so does a prep added next to one with notes', () => {
+  assert.equal(SPU.createDefaultPrep('x', '2024-01-01T00:00:00.000Z').notes, '');
+  const store = { activeSessionId: 'a', sessions: [basePrep({ id: 'a', notes: 'keep me' })] };
+  const next = SPU.addPrep(store, SPU.createDefaultPrep('b', '2024-01-02T00:00:00.000Z'));
+  assert.equal(next.sessions[1].notes, '');
+  assert.equal(next.sessions[0].notes, 'keep me');
+});
+
+test('setPrepNotes updates only the named prep, stamps updatedAt, and never mutates the input', () => {
+  const store = { activeSessionId: 'a', sessions: [basePrep({ id: 'a' }), basePrep({ id: 'b' })] };
+  const snapshot = JSON.stringify(store);
+  const next = SPU.setPrepNotes(store, 'a', 'Ogre only if players make noise', '2024-02-02T00:00:00.000Z');
+  assert.equal(JSON.stringify(store), snapshot);
+  assert.equal(next.sessions[0].notes, 'Ogre only if players make noise');
+  assert.equal(next.sessions[0].updatedAt, '2024-02-02T00:00:00.000Z');
+  assert.equal(next.sessions[1], store.sessions[1]);
+  assert.equal(next.activeSessionId, 'a');
+});
+
+test('notes stay independent across preps, survive switching away and back, and a rename', () => {
+  let store = SPU.createDefaultStore('2024-01-01T00:00:00.000Z');
+  store = SPU.setPrepNotes(store, 'default', 'notes one');
+  store = SPU.addPrep(store, SPU.createDefaultPrep('two', '2024-01-02T00:00:00.000Z'));
+  store = SPU.setPrepNotes(store, 'two', 'notes two');
+  store = SPU.setActivePrep(store, 'default');
+  assert.equal(SPU.getActivePrep(store).notes, 'notes one');
+  store = SPU.setActivePrep(store, 'two');
+  assert.equal(SPU.getActivePrep(store).notes, 'notes two');
+  store = SPU.withActivePrep(store, Object.assign({}, SPU.getActivePrep(store), { title: 'Renamed' }));
+  assert.equal(SPU.getActivePrep(store).notes, 'notes two');
+  assert.equal(store.sessions[0].notes, 'notes one');
+});
+
+test("deleting one prep leaves the other prep's notes untouched", () => {
+  let store = SPU.createDefaultStore('2024-01-01T00:00:00.000Z');
+  store = SPU.setPrepNotes(store, 'default', 'first');
+  store = SPU.addPrep(store, SPU.createDefaultPrep('two', '2024-01-02T00:00:00.000Z'));
+  store = SPU.setPrepNotes(store, 'two', 'second');
+  const after = SPU.removePrep(store, 'two');
+  assert.equal(after.sessions.length, 1);
+  assert.equal(SPU.getActivePrep(after).notes, 'first');
+});
+
+test('setPrepNotes stores the text verbatim: no trimming, line breaks and whitespace kept', () => {
+  const store = { activeSessionId: 'a', sessions: [basePrep({ id: 'a' })] };
+  const text = '  line one\n\n   line three  \n';
+  assert.equal(SPU.setPrepNotes(store, 'a', text).sessions[0].notes, text);
+});
+
+test('setPrepNotes returns the same store when nothing changes (unknown id or identical text)', () => {
+  const store = { activeSessionId: 'a', sessions: [basePrep({ id: 'a', notes: 'same' })] };
+  assert.equal(SPU.setPrepNotes(store, 'a', 'same'), store);
+  assert.equal(SPU.setPrepNotes(store, 'missing', 'x'), store);
+});
+
+test('setPrepNotes treats a non-string value as empty notes', () => {
+  const store = { activeSessionId: 'a', sessions: [basePrep({ id: 'a', notes: 'text' })] };
+  assert.equal(SPU.setPrepNotes(store, 'a', null).sessions[0].notes, '');
+});
+
+test("a duplicated prep (the app's Object.assign copy) carries notes by value", () => {
+  const source = basePrep({ id: 'a', notes: 'copied text' });
+  const duplicate = Object.assign({}, source, { id: 'b', environmentIds: source.environmentIds.slice() });
+  assert.equal(duplicate.notes, 'copied text');
+  const store = SPU.addPrep({ activeSessionId: 'a', sessions: [source] }, duplicate);
+  const edited = SPU.setPrepNotes(store, 'b', 'edited copy');
+  assert.equal(edited.sessions[0].notes, 'copied text');
+  assert.equal(edited.sessions[1].notes, 'edited copy');
+});

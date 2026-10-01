@@ -184,6 +184,14 @@ locally") before starting.
       block (~80–90px, two rows on phones) aligned with the columns below,
       with no horizontal overflow, in both languages and with a very long
       prep name (truncates with ellipsis + full-name tooltip).
+- [ ] **Session Notes**: expanded bar shows a labelled two-line textarea
+      between the prep name/status and New/⋯ (single row at 1280/1440/1920px,
+      no horizontal overflow, EN and RU). Typing keeps Enter/arrows/space
+      working; text is stored verbatim (blank lines and edge spaces kept) and
+      survives reload. Switching preps — even immediately after typing — shows
+      each prep's own notes; New starts empty; Duplicate copies them. Collapsing
+      the header hides the field and shows no note preview/badge anywhere;
+      expanding restores the text. The textarea is never auto-focused.
 - [ ] **Prep Bar menus**: the title opens the prep menu (current
       prep checked; scrolls past ~340px; stays inside the viewport);
       the ⋯ button opens Rename/Duplicate/Delete. Only one is open at a

@@ -3428,6 +3428,50 @@ function updateSaveStatusDisplay(result) {
   if (statusEl) paintSaveStatus(statusEl);
 }
 
+/* ---------------- Session Notes (per-prep scratchpad) ----------------
+ * `prep.notes` is a plain string on each prep, edited in the Prep Bar's
+ * textarea. A keystroke updates state.prep immediately (so a switch, a
+ * language re-render or a duplicate always sees the latest text) but the
+ * localStorage write is debounced — SafeStorage writes the whole store, so
+ * one write per pause beats one per keystroke. flushPrepNotesSave() is the
+ * single drain: it runs on the timer, on textarea blur, before every prep
+ * lifecycle change, when the bar is collapsed or the route is left, and on
+ * pagehide/visibilitychange/beforeunload, so a pending edit is never lost.
+ * It reuses the one save-status line; there is no notes-specific indicator. */
+
+const PREP_NOTES_SAVE_DELAY_MS = 400;
+let prepNotesSaveTimer = null;
+let prepNotesDirty = false;
+
+/** Applies a notes edit to the active prep in memory only and schedules the
+ * write. The text is stored exactly as typed — never trimmed. */
+function setPrepNotes(value) {
+  const prep = activePrep();
+  if (!prep) return;
+  const next = PrepUtils.setPrepNotes(state.prep, prep.id, value);
+  if (next === state.prep) return;
+  state.prep = next;
+  prepNotesDirty = true;
+  clearTimeout(prepNotesSaveTimer);
+  prepNotesSaveTimer = setTimeout(flushPrepNotesSave, PREP_NOTES_SAVE_DELAY_MS);
+}
+
+/** Writes a pending notes edit now. A no-op when nothing is pending, so it
+ * is safe to call from every trigger above without extra writes. */
+function flushPrepNotesSave() {
+  clearTimeout(prepNotesSaveTimer);
+  prepNotesSaveTimer = null;
+  if (!prepNotesDirty) return;
+  prepNotesDirty = false;
+  updateSaveStatusDisplay(persist(LS_KEYS.prep, state.prep));
+}
+
+window.addEventListener('pagehide', flushPrepNotesSave);
+window.addEventListener('beforeunload', flushPrepNotesSave);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') flushPrepNotesSave();
+});
+
 /* ---------------- prep lifecycle (create / switch / rename / duplicate / delete) ----------------
  * Centralizes every operation that changes *which* preps exist or which
  * one is active — as opposed to updatePrep() above, which only
@@ -3450,6 +3494,7 @@ function prepDisplayTitle(prep) {
 }
 
 function createPrep() {
+  flushPrepNotesSave();
   const now = new Date().toISOString();
   const prep = PrepUtils.createDefaultPrep(generatePrepId(), now);
   state.prep = PrepUtils.addPrep(state.prep, prep);
@@ -3460,6 +3505,7 @@ function createPrep() {
  * active or doesn't exist — same "identity means no-op" contract as
  * PrepUtils.setActivePrep() itself. */
 function switchPrep(prepId) {
+  flushPrepNotesSave();
   const next = PrepUtils.setActivePrep(state.prep, prepId);
   if (next === state.prep) return null;
   state.prep = next;
@@ -3469,9 +3515,11 @@ function switchPrep(prepId) {
 /** Copies the active prep's selections into a brand-new prep (new id,
  * new createdAt/updatedAt, a "<title> — copy" title) and makes it active.
  * Slices every id array so editing the duplicate can never mutate the
- * source prep's arrays. Returns `null` if there is no active prep to
+ * source prep's arrays; `notes` is a string, so the copy carries the source's
+ * text by value. Returns `null` if there is no active prep to
  * duplicate. */
 function duplicatePrep(prepId) {
+  flushPrepNotesSave();
   const source = state.prep.sessions.find(s => s.id === prepId);
   if (!source) return null;
   const now = new Date().toISOString();
@@ -3494,6 +3542,7 @@ function duplicatePrep(prepId) {
  * Prep must never be left with zero preps. A GM who deletes their
  * last saved prep gets a fresh empty one instead of an unusable page. */
 function deletePrep(prepId) {
+  flushPrepNotesSave();
   let next = PrepUtils.removePrep(state.prep, prepId);
   if (!next.sessions.length) {
     const now = new Date().toISOString();
@@ -4903,6 +4952,11 @@ function prepBarHtml(prep) {
         </div>
         <p class="prep-save-status" id="prep-save-status" role="status" aria-live="polite"></p>
       </div>
+      <div class="prep-notes">
+        <label class="prep-notes-label" for="prep-notes-input">${escapeHtml(t('prep_notes_label'))}</label>
+        <textarea class="prep-notes-input" id="prep-notes-input" rows="2"
+                  autocomplete="off" placeholder="${escapeAttr(t('prep_notes_placeholder'))}"></textarea>
+      </div>
       <div class="prep-actions">
         <button type="button" class="btn btn-ghost prep-new-btn" id="prep-new-btn"
                 aria-label="${escapeAttr(t('prep_new_aria'))}" data-tip="${escapeAttr(t('prep_create_new'))}">${ICON_PLUS}<span>${escapeHtml(t('prep_new'))}</span></button>
@@ -5208,6 +5262,18 @@ function bindPrepBar() {
   });
 
   prepBarEl('prep-new-btn').addEventListener('click', prepBarCreate);
+
+  // Session Notes: a plain multiline field. The value is assigned here rather
+  // than written into the markup because an HTML parser drops a textarea's
+  // leading newline, which would silently alter the stored text. No keydown
+  // handling on purpose — the page has no global hotkeys, and the document
+  // listeners that exist (menu/overlay Escape and arrows) are only attached
+  // while a menu or overlay is open, which a click into the field closes.
+  const notesInput = prepBarEl('prep-notes-input');
+  const prepNow = activePrep();
+  notesInput.value = prepNow ? prepNow.notes || '' : '';
+  notesInput.addEventListener('input', () => setPrepNotes(notesInput.value));
+  notesInput.addEventListener('blur', flushPrepNotesSave);
 
   const input = prepBarEl('prep-title-input');
   input.addEventListener('keydown', e => {
@@ -5650,6 +5716,9 @@ function applyPrepChromeDom() {
 function prepChromeSetMode(next) {
   const c = prepChromeState;
   if (!c || c.mode === next) return;
+  // Collapsing hides the textarea (display:none) without a render; drain any
+  // pending note write first.
+  flushPrepNotesSave();
   c.mode = next;
   applyPrepChromeDom();
   persistRaw(LS_KEYS.prepHeaderMode, next);
@@ -5691,6 +5760,7 @@ function initPrepChrome() {
 function destroyPrepChrome() {
   const c = prepChromeState;
   if (!c) return;
+  flushPrepNotesSave();
   delete document.body.dataset.spHeaderMode;
   if (c.toggleEl) c.toggleEl.remove();
   prepChromeState = null;
@@ -5704,6 +5774,7 @@ function destroyPrepChrome() {
  * and, on the success path, rebuilt from the freshly-created element at the
  * end. This is the only place either happens. */
 function renderPrepPage() {
+  flushPrepNotesSave();
   destroyPrepItemNav();
   destroyPrepItemDice();
   initPrepChrome();

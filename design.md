@@ -228,6 +228,14 @@ actions menu is the only Fear-coloured item and sits below a divider. On
 phones it becomes two rows (title + New/actions, then status) with 40px
 controls reaching a 44px hit area through `::after`.
 
+The bar is a three-zone grid — identity/status, **Session Notes**, actions.
+Session Notes is a `--fs-xs` caps `--muted` label over a two-line (~46px)
+`resize: none` textarea on the shared input surface (`--ink-raised`,
+`--line` → `--line-strong` → `--hope` border, the standard gold focus ring
+drawn inset so it never spills into the neighbouring zones). The centre column
+flexes; the bar grows about 7px to fit it. On phones the notes drop to a third
+row (best-effort). Collapsing the header hides the whole bar, notes included.
+
 ## Responsive breakpoints
 
 The layout uses a small, deliberate set of breakpoints rather than a generic

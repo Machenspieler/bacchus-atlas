@@ -37,6 +37,7 @@
     return {
       id: id || DEFAULT_PREP_ID,
       title: '',
+      notes: '',
       createdAt: timestamp,
       updatedAt: timestamp,
       environmentIds: [],
@@ -68,6 +69,26 @@
   function withActivePrep(store, prep) {
     var preps = store.sessions.map(function (s) { return s.id === prep.id ? prep : s; });
     return Object.assign({}, store, { sessions: preps });
+  }
+
+  /** Sets one prep's Session Notes. The text is stored exactly as given —
+   * line breaks and surrounding whitespace included, never trimmed — and only
+   * the prep named by `prepId` changes (so a late write can never land on
+   * whichever prep happens to be active by then). Returns `store` itself,
+   * not a copy, when nothing would change (unknown id, or identical text),
+   * so a caller can skip a write by identity. A non-string `value` is
+   * treated as empty. Never mutates `store`. */
+  function setPrepNotes(store, prepId, value, now) {
+    var notes = typeof value === 'string' ? value : '';
+    var target = null;
+    for (var i = 0; i < store.sessions.length; i++) {
+      if (store.sessions[i].id === prepId) { target = store.sessions[i]; break; }
+    }
+    if (!target || target.notes === notes) return store;
+    var updated = Object.assign({}, target, { notes: notes, updatedAt: now || new Date().toISOString() });
+    return Object.assign({}, store, {
+      sessions: store.sessions.map(function (s) { return s === target ? updated : s; }),
+    });
   }
 
   /* ---------------- prep lifecycle (create / switch / duplicate / delete) ----------------
@@ -621,6 +642,7 @@
     createDefaultStore: createDefaultStore,
     getActivePrep: getActivePrep,
     withActivePrep: withActivePrep,
+    setPrepNotes: setPrepNotes,
     addPrep: addPrep,
     setActivePrep: setActivePrep,
     removePrep: removePrep,

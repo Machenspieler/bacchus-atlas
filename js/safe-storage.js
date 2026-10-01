@@ -548,6 +548,13 @@
     var title = typeof prep.title === 'string' ? prep.title : '';
     if (title !== prep.title) changed = true;
 
+    // `notes` arrived after the first v2 stores shipped, so a missing value is
+    // the normal legacy shape and is filled in silently (not a recovery
+    // event); only a present-but-non-string value counts as `changed`. The
+    // text itself is never trimmed or otherwise rewritten.
+    var notes = typeof prep.notes === 'string' ? prep.notes : '';
+    if (prep.notes !== undefined && notes !== prep.notes) changed = true;
+
     var createdAt = isValidIsoTimestamp(prep.createdAt) ? prep.createdAt : now;
     if (createdAt !== prep.createdAt) changed = true;
     var updatedAt = isValidIsoTimestamp(prep.updatedAt) ? prep.updatedAt : now;
@@ -566,6 +573,7 @@
       value: {
         id: prep.id,
         title: title,
+        notes: notes,
         createdAt: createdAt,
         updatedAt: updatedAt,
         environmentIds: envResult.value,

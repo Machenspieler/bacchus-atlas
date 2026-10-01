@@ -2132,7 +2132,8 @@ body[data-route="prep"] {
    instead, and the title truncates inside it. */
 .prep-bar {
   position: relative; min-width: 0; contain: inline-size;
-  display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
+  display: grid; align-items: center; gap: var(--s-4);
+  grid-template-columns: minmax(220px, 340px) minmax(0, 1fr) max-content;
   padding: var(--s-3) var(--s-5);
   background: var(--sp-bar-bg);
   border: 1px solid var(--sp-bar-border); border-radius: var(--r-lg);
@@ -2204,6 +2205,32 @@ body[data-route="prep"] {
 .prep-save-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.7; }
 .prep-save-status[data-state="ok"] .prep-save-icon { color: var(--hope); opacity: 0.85; }
 .prep-save-status[data-state="error"] { color: var(--fear-soft); }
+
+/* Session Notes: the bar's centre zone. A quiet caps label over a two-line,
+   non-resizable plain-text field; the field is the existing input surface
+   (--ink-raised, --line → --line-strong → --hope border progression) with the
+   standard gold ring drawn *inside* the box so it never spills into the
+   neighbouring zones. The column is `minmax(0, 1fr)`, so the field flexes and
+   can never push New / the actions menu out of view. */
+.prep-notes { min-width: 0; display: flex; flex-direction: column; gap: var(--s-1); }
+.prep-notes-label {
+  font-family: var(--font-ui); font-size: var(--fs-xs); line-height: var(--lh-xs);
+  color: var(--muted); text-transform: uppercase; letter-spacing: var(--tracking-caps);
+}
+.prep-notes-input {
+  display: block; width: 100%; min-width: 0; box-sizing: border-box; margin: 0;
+  height: calc(2.8em + var(--s-2) + 2px); padding: var(--s-1) var(--s-3);
+  font-family: var(--font-ui); font-size: var(--fs-sm); line-height: 1.4;
+  color: var(--parchment); background-color: var(--ink-raised);
+  border: 1px solid var(--line); border-radius: var(--r-sm);
+  resize: none; overflow-y: auto; white-space: pre-wrap; overflow-wrap: anywhere;
+  scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
+  transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.prep-notes-input::placeholder { color: var(--muted); }
+.prep-notes-input:hover { border-color: var(--line-strong); }
+.prep-notes-input:focus { border-color: var(--hope); }
+.prep-notes-input:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
 
 .prep-actions { flex: none; display: flex; align-items: center; gap: var(--s-2); }
 .prep-more-wrap { position: relative; }
@@ -2287,12 +2314,13 @@ body[data-route="prep"] {
 @media (max-width: 760px) {
   .prep-bar {
     display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
-    grid-template-areas: "title actions" "status status";
+    grid-template-areas: "title actions" "status status" "notes notes";
     gap: 0 var(--s-2); padding: var(--s-2) var(--s-3);
   }
   .prep-identity { display: contents; }
   .prep-titlerow { grid-area: title; }
   .prep-save-status { grid-area: status; }
+  .prep-notes { grid-area: notes; margin-top: var(--s-2); }
   .prep-actions { grid-area: actions; }
   .prep-new-btn { padding: 0 var(--s-3) 0 var(--s-2); }
   .prep-title-btn, .prep-title-input { font-size: var(--fs-lg); line-height: var(--lh-lg); }

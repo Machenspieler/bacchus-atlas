@@ -251,11 +251,80 @@ test('missing Prep storage returns a valid v2 default preparation', () => {
   assert.equal(loaded.sessions[0].itemIds.length, 0);
 });
 
-test('a valid v2 Prep preparation is preserved as-is', () => {
+test('a valid v2 Prep preparation is preserved as-is (a legacy one gains empty notes)', () => {
   const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify(VALID_PREP_V2) });
   const loaded = loadPrep(storage);
-  assert.deepEqual(loaded, VALID_PREP_V2);
+  // VALID_PREP_V2 predates Session Notes: the only difference is `notes: ''`.
+  assert.deepEqual(loaded, {
+    ...VALID_PREP_V2,
+    sessions: VALID_PREP_V2.sessions.map(s => ({ ...s, notes: '' })),
+  });
   assert.equal(SafeStorage.getRecoverySummary().hasIssues, false);
+});
+
+/* ---- Session Notes (prep.notes) ---- */
+
+test('a stored prep without notes loads with notes === "" and is not a recovery event', () => {
+  const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify(VALID_PREP_V2) });
+  const loaded = loadPrep(storage);
+  assert.equal(loaded.sessions[0].notes, '');
+  assert.equal(SafeStorage.getRecoverySummary().hasIssues, false);
+  assert.equal(storage.getItem(SafeStorage.backupKeyFor('dhcodex_session_prep')), null);
+});
+
+test('legacy hydration keeps every other stored prep property', () => {
+  const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify(VALID_PREP_V2) });
+  const { notes, ...rest } = loadPrep(storage).sessions[0];
+  assert.equal(notes, '');
+  assert.deepEqual(rest, VALID_PREP_V2.sessions[0]);
+});
+
+test('a v1 -> v2 migrated prep gets empty notes', () => {
+  const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify(VALID_PREP_V1) });
+  assert.equal(loadPrep(storage).sessions[0].notes, '');
+});
+
+test('notes survive write + reload exactly as typed (newlines, spaces, no trimming)', () => {
+  const text = '  Wolves attack after the second rest\n\n- Ethan finds the artifact \n<b>not html</b>  ';
+  const store = {
+    ...VALID_PREP_V2,
+    sessions: [{ ...VALID_PREP_V2.sessions[0], notes: text }],
+  };
+  const storage = new FakeStorage();
+  assert.equal(SafeStorage.writeJson(storage, 'dhcodex_session_prep', store).ok, true);
+  const loaded = loadPrep(storage);
+  assert.equal(loaded.sessions[0].notes, text);
+  assert.equal(SafeStorage.getRecoverySummary().hasIssues, false);
+});
+
+test('notes stay independent per prep through write + reload', () => {
+  const base = VALID_PREP_V2.sessions[0];
+  const store = {
+    ...VALID_PREP_V2,
+    sessions: [
+      { ...base, id: 'a', notes: 'notes for A' },
+      { ...base, id: 'b', notes: 'notes for B' },
+      { ...base, id: 'c' },
+    ],
+  };
+  const storage = new FakeStorage();
+  SafeStorage.writeJson(storage, 'dhcodex_session_prep', store);
+  const loaded = loadPrep(storage);
+  assert.deepEqual(loaded.sessions.map(s => s.notes), ['notes for A', 'notes for B', '']);
+});
+
+test('a non-string notes value is normalized to "" and reported, without touching its siblings', () => {
+  for (const bad of [42, null, ['x'], { a: 1 }, true]) {
+    const raw = {
+      ...VALID_PREP_V2,
+      sessions: [{ ...VALID_PREP_V2.sessions[0], notes: bad }],
+    };
+    const storage = new FakeStorage({ dhcodex_session_prep: JSON.stringify(raw) });
+    const loaded = loadPrep(storage);
+    assert.equal(loaded.sessions[0].notes, '', `notes ${JSON.stringify(bad)}`);
+    assert.equal(loaded.sessions[0].title, 'My Prep');
+    assert.deepEqual(loaded.sessions[0].environmentIds, ['ancient-grove', 'harsh-desert']);
+  }
 });
 
 test('invalid Prep JSON recovers to a safe v2 default', () => {

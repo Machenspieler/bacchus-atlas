@@ -137,7 +137,7 @@ blurred backdrop of the environment's own art when one exists
 
 `state.prep` (persisted as `dhcodex_session_prep`) is a *store*, not a
 single preparation: `{ schemaVersion: 2, activeSessionId, sessions: [...] }`,
-each prep carrying its own `id`/`title`/`createdAt`/`updatedAt`/
+each prep carrying its own `id`/`title`/`notes`/`createdAt`/`updatedAt`/
 `environmentIds`/`adversaryIds`/`itemIds`. `activePrep()`
 (`PrepUtils.getActivePrep()`) is the one source of truth the whole
 page renders from — there is no separate `selectedEnvironmentIds`-style
@@ -197,6 +197,39 @@ global to keep in sync with it.
   write this visit), `ok` ("Saved locally · HH:MM"), `error`. There is no
   "Saving…" state — SafeStorage writes are synchronous, so it could never be
   observed, only faked.
+
+### Session Notes (`prep.notes`)
+
+A plain-text GM scratchpad per prep, in the Prep Bar's centre zone
+(`.prep-bar` is a three-column grid: identity/status · notes · New + actions;
+the notes column is `minmax(0, 1fr)` so it flexes without pushing the actions
+out). It lives only inside the Prep Bar, so collapsing the header hides it
+with the rest of the bar and nothing note-related exists in the collapsed
+state (no preview, badge or indicator).
+
+- **Shape:** `notes: string`, default `""` (`PrepUtils.createDefaultPrep()`).
+  `sanitizePrepCommon()` in `js/safe-storage.js` hydrates a missing value to
+  `""` *silently* (the legacy shape, not a recovery event) and a present
+  non-string value to `""` as a reported change. The text is never trimmed.
+  No schema-version bump: the field is additive and old stores load as-is.
+- **Edits** go through the pure, id-targeted `PrepUtils.setPrepNotes(store,
+  prepId, value)` (returns the same store when nothing changes). `setPrepNotes()`
+  in `js/app.js` applies it to `state.prep` immediately, but the localStorage
+  write is debounced (`PREP_NOTES_SAVE_DELAY_MS`) because `SafeStorage` writes
+  the whole store. `flushPrepNotesSave()` is the one drain: timer, textarea
+  blur, the start of `createPrep()`/`switchPrep()`/`duplicatePrep()`/
+  `deletePrep()`, `prepChromeSetMode()` (collapse), `destroyPrepChrome()`,
+  `renderPrepPage()`, and `pagehide`/`beforeunload`/`visibilitychange`.
+  It reports through the existing save-status line — there is no notes
+  indicator.
+- **Duplicate** copies notes (`Object.assign({}, source, …)`); New starts
+  empty; rename and delete never touch another prep's notes.
+- **The textarea's value is assigned via `.value`** in `bindPrepBar()`, not
+  written into the markup (an HTML parser drops a textarea's leading newline).
+- **Keyboard:** only `input`/`blur` are bound. The page has no global
+  hotkeys, so nothing needs `stopPropagation()`; Escape does not clear notes.
+- Structural coverage: `tests/prep-notes.test.js`; data behaviour in
+  `tests/prep-utils.test.js` and `tests/storage.test.js`.
 
 ## Battle Points
 
