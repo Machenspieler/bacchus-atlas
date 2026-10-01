@@ -3835,7 +3835,7 @@ function bindAdvToolbarControls() {
  * Reuses registerOverlay() for focus trap/Escape/scroll-lock/focus-restore
  * (same primitive openItemDetail() above uses) rather than duplicating that
  * lifecycle; styled as its own small card rather than reusing
- * .loot-modal-card's share/craft/copy chrome, none of which applies here. */
+ * .loot-modal's share/craft/copy chrome, none of which applies here. */
 function openAdversaryArtOverlay(advId) {
   const adv = state.prepCatalog.adversaryById.get(advId);
   if (!adv || !adv.art) return;
@@ -6332,12 +6332,10 @@ function openDetailOverlay(envId, carry = null) {
 
 /* ---------------- item card ---------------- */
 
-/* This card is a copy of the one the loot generator shows, down to its palette,
- * type and spacing — square art on top, the badge row, the name, the text and
- * the craft chain, on that site's plum surface rather than our parchment. It is
- * quoting another site's card, and the seam is the point: everything inside is
- * theirs. The artwork is served from there too, so a picture that will not load
- * simply drops out of the card. */
+/* The item card is the atlas's own modal (same header, chips and buttons as an
+ * environment's detail card) holding another site's content: square art on top,
+ * the chip row, the text and the craft chain. The artwork is served by the loot
+ * generator, so a picture that will not load simply drops out of the card. */
 const ITEM_CRAFT_ICON = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 11h11.2l-3.6-3.6L13 6l6 6-6 6-1.4-1.4 3.6-3.6H4v-2z"/></svg>`;
 /* The generator's own icons, so a reader who knows that card recognises these
  * controls as the same ones. The chain means "the link to this entry" there and
@@ -6349,12 +6347,6 @@ const ITEM_SHARE_ICON = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidde
 const ITEM_IMAGE_ICON = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5z"/></svg>`;
 const ITEM_COPY_ICON = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>`;
 
-/* The quoted card is set in Inter, which is not one of the atlas's three
- * faces. Requesting it up front would put a fourth family on every page load
- * for an overlay most visitors never open, and leaving it out of the request
- * — as it was — meant the quotation silently fell through to the system sans
- * on almost every machine. So it is fetched the first time an item card is
- * actually opened, and never otherwise. */
 /* The quoted card is only ever opened from a link inside an environment card,
  * so it sits on top of one — and bakes its text in the same way. Rebuilding the
  * card underneath has to take this one with it, or the language switch would
@@ -6362,23 +6354,12 @@ const ITEM_COPY_ICON = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden
 let openItemId = null;
 let closeOpenItemDetail = () => {};
 
-let lootFontRequested = false;
-function ensureLootFont() {
-  if (lootFontRequested) return;
-  lootFontRequested = true;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap';
-  document.head.appendChild(link);
-}
-
 /* `quiet` is set when this card is being put back on top of a stat block that
  * was rebuilt for the language: the pop-in belongs to opening a card, not to
  * the same card coming back with translated text. */
 function openItemDetail(itemId, { quiet = false } = {}) {
   const item = itemById(itemId);
   if (!item) return;
-  ensureLootFont();
 
   const name = itemField(item, 'name');
   const art = itemImageUrl(item);
@@ -6389,40 +6370,38 @@ function openItemDetail(itemId, { quiet = false } = {}) {
        <button type="button" class="loot-craft-a" data-craft-item="${escapeAttr(row.id)}">${escapeHtml(itemField(itemById(row.id), 'name'))}</button></p>`).join('');
 
   const overlay = document.createElement('div');
-  overlay.className = quiet ? 'modal-overlay loot-overlay is-rebuild' : 'modal-overlay loot-overlay';
+  overlay.className = quiet ? 'modal-overlay is-rebuild' : 'modal-overlay';
   overlay.dataset.overlayKind = 'item';
   overlay.innerHTML = `
-    <div class="loot-modal-card" data-overlay-card role="dialog" aria-modal="true" aria-label="${escapeAttr(name)}">
-      <button type="button" class="loot-x" aria-label="${t('close')}">&times;</button>
-      <article class="loot-card">
-        ${art ? `<div class="loot-media"><img src="${escapeAttr(art)}" alt="${escapeAttr(name)}"></div>` : ''}
-        <div class="loot-body">
-          <div class="loot-meta">
-            ${item.roll ? `<span class="loot-badge num">${item.roll}</span>` : ''}
-            <span class="loot-badge ${kind === 'consumable' ? 'cons' : 'thing'}">${t('item_kind_' + kind)}</span>
-            <span class="loot-badge src">${t('item_src_' + item.src)}</span>
-          </div>
-          <h2 class="loot-name">
-            <span>${escapeHtml(name)}</span>
-            <button type="button" class="loot-name-act" data-copy-link
-                    data-tip="${escapeAttr(t('copy_link'))}" aria-label="${escapeAttr(t('copy_link'))}">${ITEM_LINK_ICON}</button>
-          </h2>
-          <div class="loot-desc" data-item-desc></div>
-          ${craftHtml ? `<div class="loot-craft">${craftHtml}</div>` : ''}
-          <div class="loot-acts">
-            <button type="button" class="loot-btn" data-share-item
-                    aria-label="${escapeAttr(t('share_item'))}">${ITEM_SHARE_ICON}<span>${escapeHtml(t('share_item'))}</span></button>
-            ${art ? `<button type="button" class="loot-btn" data-copy-image
-                    data-tip="${escapeAttr(t('copy_image'))}" aria-label="${escapeAttr(t('copy_image'))}">${ITEM_IMAGE_ICON}<span>${escapeHtml(t('copy_image_label'))}</span></button>` : ''}
-            <button type="button" class="loot-btn" data-copy-text
-                    data-tip="${escapeAttr(t('copy_text'))}" aria-label="${escapeAttr(t('copy_text'))}">${ITEM_COPY_ICON}<span>${escapeHtml(t('copy_text_label'))}</span></button>
-          </div>
-          <div class="loot-acts">
-            <a class="loot-btn" href="${escapeAttr(itemUrl(itemId))}" target="_blank" rel="noopener">${ITEM_EXT_ICON}${t('open_in_loot')}</a>
-          </div>
-          <p class="loot-src-note">${t('loot_src_note')}</p>
+    <div class="modal loot-modal" data-overlay-card role="dialog" aria-modal="true" aria-labelledby="item-title">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <h2 id="item-title">${escapeHtml(name)}</h2>
+          <button type="button" class="loot-name-act" data-copy-link
+                  data-tip="${escapeAttr(t('copy_link'))}" aria-label="${escapeAttr(t('copy_link'))}">${ITEM_LINK_ICON}</button>
         </div>
-      </article>
+        <button type="button" class="modal-close" aria-label="${t('close')}">&times;</button>
+      </div>
+      <div class="modal-body">
+        ${art ? `<div class="loot-media"><img src="${escapeAttr(art)}" alt="${escapeAttr(name)}"></div>` : ''}
+        <div class="loot-meta">
+          ${item.roll ? `<span class="environment-type-chip loot-roll">${item.roll}</span>` : ''}
+          <span class="${kind === 'consumable' ? 'biome-chip' : 'environment-type-chip'}">${t('item_kind_' + kind)}</span>
+          <span class="environment-type-chip">${t('item_src_' + item.src)}</span>
+        </div>
+        <div class="feature-desc loot-desc" data-item-desc></div>
+        ${craftHtml ? `<div class="loot-craft">${craftHtml}</div>` : ''}
+        <div class="loot-acts">
+          <button type="button" class="btn btn-ghost btn-sm" data-share-item
+                  aria-label="${escapeAttr(t('share_item'))}">${ITEM_SHARE_ICON}<span>${escapeHtml(t('share_item'))}</span></button>
+          ${art ? `<button type="button" class="btn btn-ghost btn-sm" data-copy-image
+                  data-tip="${escapeAttr(t('copy_image'))}" aria-label="${escapeAttr(t('copy_image'))}">${ITEM_IMAGE_ICON}<span>${escapeHtml(t('copy_image_label'))}</span></button>` : ''}
+          <button type="button" class="btn btn-ghost btn-sm" data-copy-text
+                  data-tip="${escapeAttr(t('copy_text'))}" aria-label="${escapeAttr(t('copy_text'))}">${ITEM_COPY_ICON}<span>${escapeHtml(t('copy_text_label'))}</span></button>
+          <a class="btn btn-sm" href="${escapeAttr(itemUrl(itemId))}" target="_blank" rel="noopener">${ITEM_EXT_ICON}${t('open_in_loot')}</a>
+        </div>
+        <p class="hint loot-src-note">${t('loot_src_note')}</p>
+      </div>
     </div>`;
   document.body.appendChild(overlay);
 
@@ -6454,7 +6433,7 @@ function openItemDetail(itemId, { quiet = false } = {}) {
   openItemId = itemId;
   closeOpenItemDetail = closeItem;
 
-  overlay.querySelector('.loot-x').addEventListener('click', closeItem);
+  overlay.querySelector('.modal-close').addEventListener('click', closeItem);
   overlay.addEventListener('click', e => { if (e.target === overlay) closeItem(); });
 
   // Walking the craft chain replaces this card rather than stacking another one:

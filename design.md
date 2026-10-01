@@ -194,11 +194,12 @@ element rather than the native `title` attribute, which waits ~700ms, can't be
 styled, and never appears for a keyboard-only user.
 
 ### Item card
-Deliberately a **copy** of the companion loot generator's item-card styling —
-same tokens, same corner radius — because it's the same kind of object
-(a stat card for a discrete piece of content) reused across two related
-projects. Kept scoped to its own card boundary; nothing about it leaks into
-the environment card's own conventions.
+Built from the atlas's own parts — the same `.modal` shell, `.modal-header`
+(Forum title, × close), chips and `.btn-ghost .btn-sm` buttons as an
+environment's detail card — so an item reads as the same kind of page. Only
+what an item needs beyond that is specific to `.loot-*`: the square artwork
+panel, the roll/kind/source chip row (consumables use the teal biome chip), and
+the craft chain (teal dotted links). No second typeface or palette.
 
 ### Prep (`#/prep`)
 The one screen that departs from the reading-page idiom on purpose: `--font-ui`

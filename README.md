@@ -511,11 +511,9 @@ itself:
   version, chat apps get plain text with no asterisks. Dice buttons are
   inserted as the notation they display.
 
-The card is copied from the loot generator one-to-one. Its palette, fonts,
-corner radii, and spacing are declared inside `.loot-overlay` in
-`css/styles.css` and don't leak outward: the parchment theme around it stays
-untouched. The seam is deliberate — everything inside the card belongs to
-that other site.
+The card uses the atlas's own modal design — the same header, chips, and
+buttons as an environment's detail card — and only the data and artwork come
+from the loot generator.
 
 The data lives in `data/items.json` and comes entirely from the loot
 generator's `data.json` — both localizations included. The file has two

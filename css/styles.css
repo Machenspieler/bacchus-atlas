@@ -1051,8 +1051,7 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 /* A card taken down and put straight back up in the other language. It never
  * left the screen, so it does not arrive again: the entrance animation here
  * would read as a blink over what is really a change of text. */
-.modal-overlay.is-rebuild .modal,
-.modal-overlay.is-rebuild .loot-modal-card { animation: none; }
+.modal-overlay.is-rebuild .modal { animation: none; }
 /* An overlay that closes itself rather than being dismissed. A click has
  * already answered for itself, so nothing else in the app animates on the way
  * out; this one would just vanish unexplained. Mirror of modal-in, leaving:
@@ -1405,140 +1404,55 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 .story-seed-body p:last-child { margin-bottom: 0; }
 .story-seed-prompt { margin-top: var(--s-2); }
 
-/* The item card is a copy of the loot generator's, tokens and all. Its palette
- * is scoped to .loot-overlay rather than :root so the plum surface, the Inter
- * stack and the 14px corners stay inside this one card and never leak into the
- * parchment theme around it. Values are that site's, kept verbatim so the two
- * cards can be compared side by side — with two corrections: the weights are
- * rounded to faces that exist, and the overlay treatment is ours, so the
- * transition in and out of the card feels like one app. */
-.loot-overlay {
-  --lt-bg: #0e0c15;
-  --lt-surface: #1a1626;
-  --lt-surface2: #221d31;
-  --lt-line: #312a45;
-  --lt-line2: #3f3758;
-  --lt-txt: #ece8f6;
-  --lt-muted: #9b93b3;
-  --lt-muted2: #8a83a3;
-  --lt-gold: #d8ab5e;
-  --lt-gold-soft: #f0d091;
-  --lt-item: #7a8ee0;
-  --lt-cons: #9ec96a;
-  --lt-radius: 14px;
-  --lt-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --lt-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-
-  align-items: center; padding: var(--s-5) var(--s-4);
+/* The item card is the atlas's own modal (.modal, .modal-header, chips, .btn) —
+ * the loot generator's plum palette and Inter stack are gone. Only what an item
+ * needs beyond that lives here: the artwork, the chip row, the craft chain. */
+.loot-modal { max-width: 520px; }
+.loot-modal .modal-header { flex-wrap: nowrap; }
+.loot-modal .modal-title-row { flex: 1 1 0; }
+.loot-media {
+  width: 100%; aspect-ratio: 1; max-height: 360px; margin: 0 0 var(--s-4);
+  background: var(--ink); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden;
 }
-.loot-modal-card {
-  position: relative; width: min(440px, 100%); max-height: 88vh; overflow: auto;
-  overscroll-behavior: contain;
-  border-radius: var(--lt-radius); animation: loot-pop var(--t-slow) var(--ease-enter) both;
-}
-.loot-modal-card:focus { outline: none; }
-@keyframes loot-pop {
-  from { opacity: 0; transform: translateY(10px) scale(0.985); }
-  to { opacity: 1; transform: none; }
-}
-.loot-x {
-  position: absolute; right: 10px; top: 10px; z-index: 5; width: 34px; height: 34px; border-radius: 50%;
-  border: 1px solid var(--lt-line2); background: rgba(10,8,16,0.8); color: var(--lt-txt);
-  font-size: 22px; line-height: 1; cursor: pointer; backdrop-filter: blur(6px); font-family: var(--lt-ui);
-}
-.loot-x:hover { border-color: var(--lt-gold); color: var(--lt-gold); }
-
-.loot-card {
-  background: linear-gradient(180deg, var(--lt-surface2), var(--lt-surface));
-  border: 1px solid var(--lt-line); border-radius: var(--lt-radius); overflow: hidden;
-  display: flex; flex-direction: column; box-shadow: var(--e-4);
-  color: var(--lt-txt); font: 15.5px/1.6 var(--lt-ui);
-}
-.loot-media { width: 100%; aspect-ratio: 1; max-height: 420px; background: #0a0810; overflow: hidden; flex: none; }
 .loot-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.loot-body { padding: 13px 15px 14px; display: flex; flex-direction: column; gap: var(--s-2); min-width: 0; }
-.loot-meta { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
-.loot-badge {
-  font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase;
-  padding: 3px 7px; border-radius: 6px; background: rgba(10,8,16,0.5);
-  border: 1px solid var(--lt-line2); color: var(--lt-muted);
-}
-.loot-badge.thing { color: var(--lt-item); border-color: #7a8ee073; }
-.loot-badge.cons { color: var(--lt-cons); border-color: #9ec96a73; }
-.loot-badge.src { color: #a5a5b2; }
-.loot-badge.num {
-  font-family: var(--lt-mono); font-size: 11px; letter-spacing: 0;
-  color: var(--lt-gold-soft); border-color: rgba(216,171,94,0.5);
-}
-.loot-name {
-  margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.28;
-  display: flex; align-items: baseline; gap: 7px; font-family: var(--lt-ui); color: var(--lt-txt);
-}
-.loot-name > span { min-width: 0; overflow-wrap: break-word; }
-/* Sits on the name's line rather than under it: it copies the address of this
- * entry, and the name is what it is the address of. Pinned to the top of the
- * row rather than to the baseline the row is aligned on — a 19px cap height
- * would hang the icon off the bottom of the text, and against a name long
- * enough to wrap, centring would leave it floating between the two lines. */
+.loot-meta { display: flex; gap: var(--s-2); flex-wrap: wrap; align-items: center; }
+.loot-roll { color: var(--hope-soft); border-color: var(--hope); }
+/* Sits on the title's first line: it copies the address of this entry, and the
+ * title is what it is the address of. */
 .loot-name-act {
-  flex: none; align-self: flex-start; margin-top: -1px;
+  flex: none; align-self: flex-start; margin-top: 1px;
   display: inline-flex; align-items: center; justify-content: center;
-  width: 26px; height: 26px; padding: 0; border: 0; border-radius: 7px;
-  background: none; color: var(--lt-muted); cursor: pointer; font: inherit;
+  width: 28px; height: 28px; padding: 0; border: 0; border-radius: var(--r-sm);
+  background: none; color: var(--muted); cursor: pointer;
   transition: color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
 }
-.loot-name-act:hover { color: var(--lt-gold); background: rgba(216,171,94,0.12); }
-.loot-name-act svg { width: 15px; height: 15px; fill: currentColor; }
-.loot-desc { margin: 0; color: #cfc8e0; font-size: 14px; line-height: 1.62; }
-.loot-desc p { margin: 0 0 7px; }
-.loot-desc p:last-child { margin-bottom: 0; }
-/* The roll buttons are ours, not theirs — restyled into their palette so they
- * read as part of this card rather than as a graft from the page behind it. */
-.loot-desc .dice-btn {
-  font-family: var(--lt-mono); font-size: 12px; font-weight: 600;
-  background: rgba(10,8,16,0.5); border-color: rgba(216,171,94,0.5); color: var(--lt-gold-soft);
-  border-radius: 6px; padding: 1px 7px 1px 5px;
-}
-.loot-desc .dice-btn:hover { background: rgba(216,171,94,0.14); }
+.loot-name-act:hover { color: var(--hope-soft); background: var(--ink-raised); }
+.loot-name-act svg { width: var(--icon-md); height: var(--icon-md); fill: currentColor; }
+.loot-desc { margin-top: var(--s-4); }
 
-.loot-craft { display: flex; flex-direction: column; gap: 3px; margin: -1px 0 1px; }
+.loot-craft { display: flex; flex-direction: column; gap: var(--s-1); margin-top: var(--s-4); }
 .loot-craft p {
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 5px; margin: 0;
-  font-size: 12.5px; line-height: 1.45; min-width: 0;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--s-2); margin: 0;
+  font-size: var(--fs-sm); line-height: var(--lh-sm); min-width: 0;
 }
-.loot-craft svg { width: 13px; height: 13px; flex: none; align-self: center; fill: var(--lt-muted2); }
+.loot-craft svg { width: 13px; height: 13px; flex: none; align-self: center; fill: var(--muted); }
 .loot-craft-l {
-  color: var(--lt-muted2); text-transform: uppercase; letter-spacing: 0.05em;
-  font-size: 10.5px; white-space: nowrap;
+  font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted);
+  text-transform: uppercase; letter-spacing: var(--tracking-caps); white-space: nowrap;
 }
 .loot-craft-a {
   background: none; border: 0; padding: 0; cursor: pointer; font: inherit; min-width: 0; text-align: left;
-  color: var(--lt-gold-soft); border-bottom: 1px dotted rgba(240,208,145,0.45);
+  color: var(--teal-soft); border-bottom: 1px dotted var(--teal);
 }
 .loot-craft-a:hover { border-bottom-style: solid; }
 
-.loot-acts { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: auto; padding-top: 3px; }
-/* The three short buttons and the way out of the site are two rows, not one
- * wrapping line: sharing a row, the long "open in the generator" label is what
- * would decide where the short three break. The first row has already taken up
- * the slack, so the second asks for no space of its own. */
-.loot-acts + .loot-acts { margin-top: 0; padding-top: 0; }
-.loot-btn {
-  display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
-  border: 1px solid var(--lt-line2); background: var(--lt-surface); color: var(--lt-txt);
-  height: 32px; padding: 0 11px; border-radius: 8px;
-  font-size: 12.5px; font-weight: 600; white-space: nowrap;
-  transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+.loot-acts {
+  display: flex; gap: var(--s-2); flex-wrap: wrap; align-items: center;
+  margin-top: var(--s-5); padding-top: var(--s-4); border-top: 1px solid var(--line);
 }
-.loot-btn:hover { border-color: var(--lt-gold); background: var(--lt-surface2); text-decoration: none; }
-.loot-btn svg { width: 15px; height: 15px; flex: none; fill: currentColor; }
-/* A button does not inherit the card's face the way the anchor beside it does. */
-button.loot-btn { font-family: var(--lt-ui); line-height: 1; cursor: pointer; }
-/* The attribution says out loud what the borrowed styling only implies. */
-.loot-src-note {
-  margin: 0; font-family: var(--lt-ui); font-size: 11px; line-height: 1.4;
-  color: var(--lt-muted2); letter-spacing: 0.02em;
-}
+.loot-acts .btn { text-decoration: none; }
+.loot-acts .btn svg { width: var(--icon-md); height: var(--icon-md); flex: none; fill: currentColor; }
+.loot-src-note { margin-top: var(--s-3); }
 
 .dice-result-pop {
   position: fixed; z-index: 200; background: var(--ink-card); border: 1px solid var(--hope);
@@ -2082,9 +1996,6 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
   body.has-lang-float .modal-header {
     padding-inline-end: calc(max(var(--s-4), env(safe-area-inset-right)) + 100px);
   }
-  /* The quoted item card keeps its own size and centres, so on a short screen
-   * its round × can reach up under the switch. Push the card down clear of it. */
-  body.has-lang-float .loot-overlay { padding-top: var(--s-9); }
 
   /* Name and close on the first line, the tier row on its own below: a 32-char
    * name plus four pills plus the close button never fit a phone. The basis has
