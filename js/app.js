@@ -7178,6 +7178,7 @@ function renderSpans(container, text, retier) {
 }
 
 const BULLET_LINE_RE = /^[-•]\s+/;
+const NUMBERED_LINE_RE = /^\d+\.\s+/;
 
 /** Splits feature/raw text into paragraphs and "- "/"• "-prefixed bullet lists,
  * rendering dice/countdown spans within each line via renderRichText. */
@@ -7195,17 +7196,18 @@ function renderFeatureBody(container, text, retier) {
   let i = 0;
   while (i < lines.length) {
     const line = lines[i].trim();
-    if (BULLET_LINE_RE.test(line)) {
+    const listRe = BULLET_LINE_RE.test(line) ? BULLET_LINE_RE : NUMBERED_LINE_RE.test(line) ? NUMBERED_LINE_RE : null;
+    if (listRe) {
       flushPara();
-      const ul = document.createElement('ul');
-      ul.className = 'feature-bullets';
-      while (i < lines.length && BULLET_LINE_RE.test(lines[i].trim())) {
+      const list = document.createElement(listRe === NUMBERED_LINE_RE ? 'ol' : 'ul');
+      list.className = 'feature-bullets';
+      while (i < lines.length && listRe.test(lines[i].trim())) {
         const li = document.createElement('li');
-        renderBulletBody(li, lines[i].trim().replace(BULLET_LINE_RE, ''), retier);
-        ul.appendChild(li);
+        renderBulletBody(li, lines[i].trim().replace(listRe, ''), retier);
+        list.appendChild(li);
         i++;
       }
-      container.appendChild(ul);
+      container.appendChild(list);
       continue;
     }
     if (line) para.push(line);

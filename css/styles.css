@@ -1226,6 +1226,7 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 .feature-desc p:last-child { margin-bottom: 0; }
 .feature-bullets { margin: 0 0 var(--s-2); padding-left: 22px; list-style: disc; color: var(--parchment-dim); }
 .feature-bullets li { margin: 3px 0; }
+ol.feature-bullets { list-style: decimal; }
 .feature-bullets:last-child { margin-bottom: 0; }
 /* Hanging indent: the lozenge sits in its own gutter so a wrapped second line
  * starts under the first line's text rather than under the glyph. */
