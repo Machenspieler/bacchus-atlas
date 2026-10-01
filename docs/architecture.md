@@ -421,7 +421,7 @@ narrower, so it stays one column there). Sections are semantic `<section>`s with
   CSS-only, directly under the `.prep-central` rule) is nothing but a token
   override block. `--pc-pad-x` is excluded on purpose: it sets the panel's
   content width, which the Battle Points `@container prep-central
-  (max-width: 760px)` rules measure (exactly 760px at 1920).
+  (max-width: 752px)` rules measure (exactly 752px at 1920, with 16px side padding).
 - **Interaction zones are sibling elements, never nested** (and never one big
   wrapper with `stopPropagation()` on its children). Card layout
   (environments, items): one `.prep-sel-main` `<button>` covering the

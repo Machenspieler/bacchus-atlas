@@ -2136,7 +2136,7 @@ body[data-route="prep"] {
   position: relative; min-width: 0; contain: inline-size;
   display: grid; align-items: center; gap: var(--s-4);
   grid-template-columns: minmax(220px, 340px) minmax(0, 1fr) max-content;
-  padding: var(--s-3) var(--s-5);
+  padding: var(--s-4);
   background: var(--sp-bar-bg);
   border: 1px solid var(--sp-bar-border); border-radius: var(--r-lg);
 }
@@ -2502,11 +2502,11 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .prep-col {
   min-width: 0; display: flex; flex-direction: column; gap: var(--s-2);
   background: var(--ink-card); border: 1px solid var(--line-faint); border-radius: var(--r-md);
-  padding: 12px var(--s-4) var(--s-4);
+  padding: var(--s-4);
 }
 .prep-central {
   /* Central-panel tokens: the only place its density is tuned. */
-  --pc-pad-x: var(--s-3);      /* 12px  panel/section side padding        */
+  --pc-pad-x: var(--s-4);      /* 16px  panel/section side padding        */
   --pc-pad-y: 6px;             /*       section body vertical padding      */
   --pc-pad-card: 6px;          /*       card/row inner padding             */
   --pc-gap: var(--s-2);        /* 8px   gap between cards and card parts   */
@@ -2530,7 +2530,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   container: prep-central / inline-size;
   min-width: 0; display: flex; flex-direction: column;
   background: var(--ink-raised); border: 1px solid var(--line-strong); border-top-color: rgba(217,164,65,0.55);
-  border-radius: var(--r-lg); padding: 0 var(--pc-pad-x); box-shadow: var(--e-2);
+  border-radius: var(--r-lg); padding: 0 var(--pc-pad-x) var(--s-4); box-shadow: var(--e-2);
 }
 /* Comfortable density for large monitors (e.g. 1920x1080 at 100% zoom): the
    same three-column layout and column widths, with only the central
@@ -2541,8 +2541,8 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 @media (min-width: 1800px) and (min-height: 900px) {
   .prep-central {
     /* --pc-pad-x is deliberately NOT overridden: it sets the panel's content
-       width, which the `@container prep-central (max-width: 760px)` Battle
-       Points rules measure — at 1920px that box is exactly 760px, so any
+       width, which the `@container prep-central (max-width: 752px)` Battle
+       Points rules measure — at 1920px that box is exactly 752px, so any
        extra side padding would drop the "Characters" label. */
     --pc-pad-y: 8px;           /* section body padding: +2 above and below */
     --pc-pad-card: 8px;
@@ -2982,7 +2982,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .bp-summary.is-over .bp-spent { color: var(--hope-soft); text-decoration: underline dotted; text-underline-offset: 3px; }
 
 /* Constrained container (laptop): drop the label, keep the numbers. */
-@container prep-central (max-width: 760px) {
+@container prep-central (max-width: 752px) {
   .bp-pc-label { display: none; }
   .bp-step { width: 24px; }
   .bp-pc-input { width: 2.2em; }
@@ -3283,7 +3283,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   grid-column: 1 / -1;
   display: flex; flex-direction: column; gap: var(--s-2);
   background: var(--ink-card); border: 1px solid var(--line-faint); border-radius: var(--r-md);
-  padding: 12px var(--s-4) var(--s-4);
+  padding: var(--s-4);
 }
 /* Wraps the strip with its two manual prev/next arrows (hidden entirely
    while there is nothing to scroll to — see refreshPrepItemNav() in
