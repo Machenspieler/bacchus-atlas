@@ -943,6 +943,7 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
 }
 .toast.is-error { border-left-color: var(--fear-soft); }
 .toast svg { width: var(--icon-md); height: var(--icon-md); flex: none; color: var(--hope); }
+.toast span { white-space: pre-line; }
 .toast.is-error svg { color: var(--fear-soft); }
 @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 /* Toasts stack out of the same corner the back-to-top button claims, and they

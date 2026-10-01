@@ -4906,6 +4906,9 @@ function prepBarHtml(prep) {
             <button type="button" class="prep-menu-item" role="menuitem" tabindex="-1" data-sp-menu-duplicate>
               <span class="prep-menu-label">${escapeHtml(t('prep_duplicate'))}</span>
             </button>
+            <button type="button" class="prep-menu-item" role="menuitem" tabindex="-1" data-sp-menu-copy-summary>
+              <span class="prep-menu-label">${escapeHtml(t('prep_copy_summary'))}</span>
+            </button>
             <div class="prep-menu-sep" role="separator"></div>
             <button type="button" class="prep-menu-item is-danger${onlyOne ? ' is-disabled' : ''}" role="menuitem" tabindex="-1"
                     data-sp-menu-delete${deleteAttrs}>
@@ -5039,6 +5042,46 @@ function prepBarSwitch(prepId) {
     renderPrepPage();
   }
   focusPrepTitleButton();
+}
+
+/** "Copy session summary": resolves the active prep in the central panel's
+ * order (same sorts as centralEnvListHtml/centralAdvListHtml/centralItemListHtml),
+ * hands plain strings to the pure PrepUtils.buildSessionSummary(), and writes
+ * the result to the clipboard. Session Notes are never read. */
+function prepSummaryText(prep) {
+  const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
+  const envs = PrepUtils.sortByTierThenName(
+    prep.environmentIds.map(id => allEnvs().find(e => e.id === id)).filter(Boolean),
+    env => env.tier, (a, b) => collator.compare(envName(a), envName(b)));
+  const advs = PrepUtils.sortByTierThenName(
+    prep.adversaryIds.map(id => state.prepCatalog.adversaryById.get(id)).filter(Boolean),
+    adv => adv.tier, (a, b) => collator.compare(spName(a), spName(b)));
+  const items = PrepUtils.sortItemsForPrep(
+    prep.itemIds.map(id => { const item = itemById(id); return item ? Object.assign({ id }, item) : null; }).filter(Boolean),
+    (a, b) => collator.compare(itemField(a, 'name'), itemField(b, 'name')));
+  return {
+    text: PrepUtils.buildSessionSummary({
+      name: prepDisplayTitle(prep),
+      headings: { environments: t('prep_central_environments'), adversaries: t('prep_central_adversaries'), items: t('prep_central_items') },
+      environments: envs.map(envName),
+      adversaries: advs.map(adv => `${spName(adv)} \u2014 ${advMetaText(adv).replace(' \u00b7 ', ' ')}`),
+      items: items.map(item => itemField(item, 'name')),
+    }),
+    counts: { env: envs.length, adv: advs.length, item: items.length },
+  };
+}
+
+function copyPrepSummary() {
+  const prep = activePrep();
+  if (!prep) return;
+  const { text, counts } = prepSummaryText(prep);
+  const plural = (key, n) => t(`prep_summary_${key}_${PrepUtils.pluralForm(n, state.lang)}`).replace('{n}', n);
+  const detail = [plural('env', counts.env), plural('adv', counts.adv), plural('item', counts.item)].join(' \u00b7 ');
+  const done = () => showToast(`${t('prep_summary_copied')}\n${detail}`);
+  const failed = () => showToast(t('prep_summary_failed'), 'error');
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(done, () => legacyCopy(text, done, failed));
+  } else legacyCopy(text, done, failed);
 }
 
 function prepBarDuplicate() {
@@ -5190,6 +5233,7 @@ function bindPrepBar() {
     closeActivePrepMenu(true);
     if (item.hasAttribute('data-sp-menu-rename')) beginPrepRename();
     else if (item.hasAttribute('data-sp-menu-duplicate')) prepBarDuplicate();
+    else if (item.hasAttribute('data-sp-menu-copy-summary')) copyPrepSummary();
     else if (item.hasAttribute('data-sp-menu-delete')) {
       const prep = activePrep();
       if (prep) openPrepDeleteConfirm(prep);

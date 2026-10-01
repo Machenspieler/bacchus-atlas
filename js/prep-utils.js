@@ -534,6 +534,37 @@
     });
   }
 
+  /* ---------------- session summary (clipboard export) ----------------
+   * Pure plain-text formatter for "Copy session summary". The caller resolves
+   * ids to display strings in the central panel's order; Session Notes are
+   * deliberately not an input. Empty sections are omitted. */
+  function buildSessionSummary(summary) {
+    const sections = [
+      [summary.headings.environments, summary.environments],
+      [summary.headings.adversaries, summary.adversaries],
+      [summary.headings.items, summary.items],
+    ];
+    const blocks = [String(summary.name)];
+    sections.forEach(function (section) {
+      const lines = section[1] || [];
+      if (!lines.length) return;
+      blocks.push(section[0] + '\n' + lines.map(function (line) { return '\u2022 ' + line; }).join('\n'));
+    });
+    return blocks.join('\n\n');
+  }
+
+  /** Plural category for the toast counts: "one" | "few" | "many" (RU), or
+   * "one" | "many" (EN, where "many" is the plain plural). */
+  function pluralForm(n, lang) {
+    if (lang === 'ru') {
+      const mod10 = n % 10, mod100 = n % 100;
+      if (mod10 === 1 && mod100 !== 11) return 'one';
+      if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'few';
+      return 'many';
+    }
+    return n === 1 ? 'one' : 'many';
+  }
+
   /** Roll span of a set of items as one inclusive "min–max" range, e.g.
    * [4,5,6,10,11] -> "4–11"; a single distinct roll renders bare ("4").
    * Returns '' when there is no valid roll. */
@@ -751,6 +782,8 @@
     itemKindRank: itemKindRank,
     sortItemsForPrep: sortItemsForPrep,
     formatRollCoverage: formatRollCoverage,
+    buildSessionSummary: buildSessionSummary,
+    pluralForm: pluralForm,
     ITEM_KIND_ALIASES: ITEM_KIND_ALIASES,
     ITEM_SOURCE_ALIASES: ITEM_SOURCE_ALIASES,
     buildItemSearchText: buildItemSearchText,
