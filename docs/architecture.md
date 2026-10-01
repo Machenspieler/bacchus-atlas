@@ -193,6 +193,17 @@ global to keep in sync with it.
   returned to the trigger, viewport clamping via `positionPrepMenu()`).
   The bar is hidden by the same `data-sp-header-mode="compact"` switch as
   the site header chrome.
+- **Session control** (header chrome): one `<button>` in `.header-inner`
+  between the brand and `.header-actions` — "Session · <active prep title>",
+  a save-status icon, a chevron — is the only expand/collapse toggle
+  (`initPrepChrome()` / `paintSessionControl()`). It is repainted from
+  `activePrep()` and `state.prepUI`, never caching a title or save state. The
+  expanded/compact mode is a global preference in
+  `dhcodex_session_prep_header_mode`, default **expanded**
+  (`PrepUtils.resolveHeaderMode()`); a separate
+  `dhcodex_session_prep_hint_seen` flag gates the one-time hint shown the
+  first time compact mode is entered or restored. Its `saving` icon is the
+  real pending state of a debounced Session Notes write (`prepNotesDirty`).
 - **Save status** sits directly under the title and reflects only real
   `persist()` outcomes (`prepSaveStatusView()`): `ready` (before the first
   write this visit), `ok` ("Saved locally · HH:MM"), `error`. There is no

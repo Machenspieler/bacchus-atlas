@@ -684,7 +684,34 @@
     return total;
   }
 
+  /** The Prep header's expanded/compact preference as read from storage.
+   * Only the literal string "compact" selects compact; a missing key,
+   * unavailable storage or any stray value reads as 'expanded', the default
+   * for a reader who has never touched the toggle. */
+  function resolveHeaderMode(raw) {
+    return raw === 'compact' ? 'compact' : 'expanded';
+  }
+
+  /** The one-time "session controls are here" hint is only ever about
+   * compact mode, and only until it has been dismissed once. */
+  function shouldShowSessionHint(mode, hintSeen) {
+    return mode === 'compact' && !hintSeen;
+  }
+
+  /** Which state the header's session control shows, from the same facts the
+   * Prep Bar's save line reads: a failed write wins, then a pending (debounced,
+   * not yet written) Session Notes edit as 'saving', then a confirmed write as
+   * 'ok', else 'ready' (autosave on, nothing written yet this visit). */
+  function sessionSaveKind(saveFailed, notesPending, lastSavedAt) {
+    if (saveFailed) return 'error';
+    if (notesPending) return 'saving';
+    return lastSavedAt ? 'ok' : 'ready';
+  }
+
   return {
+    resolveHeaderMode: resolveHeaderMode,
+    shouldShowSessionHint: shouldShowSessionHint,
+    sessionSaveKind: sessionSaveKind,
     MAX_ENVIRONMENTS: MAX_ENVIRONMENTS,
     SCHEMA_VERSION: SCHEMA_VERSION,
     DEFAULT_PREP_ID: DEFAULT_PREP_ID,

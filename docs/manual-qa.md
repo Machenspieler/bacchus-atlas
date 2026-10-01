@@ -176,9 +176,13 @@ locally") before starting.
       Tab order per adversary: image → link → ×; every stop shows a focus
       ring; Enter/Space work on the buttons; tooltips and labels in both RU
       and EN; no layout shift on hover/focus; long names clamp.
-- [ ] Header chrome collapse/expand (see "Header" above) from within
-      Prep specifically — the Prep Bar hides in compact mode and
-      returns in expanded mode.
+- [ ] Session control in the header (between brand and nav, never after the
+      language switch): fresh storage opens expanded; clicking collapses/
+      expands the Prep Bar and the choice survives a reload; the header stays
+      one row at 1920/1440/1366px in EN and RU, the title truncates with an
+      ellipsis after the "Session ·" prefix drops; the one-time hint shows
+      once in compact mode and dismisses on click, outside click, Escape or
+      timeout; rename/switch/new/duplicate/delete update the title at once.
 - [ ] **Prep Bar**: the active prep name appears once (no separate
       title field or select); at 2048/1440/768/390px the bar is one compact
       block (~80–90px, two rows on phones) aligned with the columns below,

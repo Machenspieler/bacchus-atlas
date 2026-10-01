@@ -2102,7 +2102,7 @@ body[data-route="prep"] #footer {
    AND the Prep Bar below it (which it hides outright), both driven by the
    one `data-sp-header-mode` attribute
    initPrepChrome()/applyPrepChromeDom() (js/app.js) set on
-   <body> in response to a deliberate click of .sp-chrome-toggle — never
+   <body> in response to a deliberate click of .sp-session-control — never
    automatically, and never two independent states to fall out of sync.
    These custom properties collect the compact-mode target dimensions the
    rules below implement, so the three numbers stay defined in one place. */
@@ -2177,7 +2177,7 @@ body[data-route="prep"] {
 .prep-title-input:focus { outline: none; }
 
 /* Icon-only buttons (actions). Visible size stays small; the hit area
-   grows past it with ::after, same technique as .sp-chrome-toggle. */
+   grows past it with ::after, same technique as .sp-session-control. */
 .prep-icon-btn {
   position: relative; flex: none;
   display: flex; align-items: center; justify-content: center;
@@ -2331,7 +2331,7 @@ body[data-route="prep"] {
    stays display:contents on every route, including this one — the compact
    look below is a pure CSS variant of the one #header markup renderHeader()
    always produces, never a second copy of the header, and never automatic:
-   the header only changes state on a deliberate click of .sp-chrome-toggle.
+   the header only changes state on a deliberate click of .sp-session-control.
    Expanded mode (the default markup, no rules needed here) keeps the full
    branded presentation; every rule below only applies once
    body[data-sp-header-mode="compact"], and both the global header and the
@@ -2396,42 +2396,77 @@ body[data-route="prep"][data-sp-header-mode="compact"] .prep-wrap {
   margin-top: var(--sp-workspace-gap); gap: var(--sp-workspace-gap);
 }
 
-/* A normal flex child of #header's own .header-actions (alongside the nav
-   and language switch) — see initPrepChrome() in js/app.js — so it
-   is laid out correctly by flexbox at every viewport width for free. Never
-   absolutely/fixed-positioned over the header, so it can never be clipped
-   by, or straddle the edge of, a header whose height changes between the
-   expanded and compact modes. Sized like the rest of the header cluster
-   (32px, shrinking to 28px in compact mode below) but its actual hit area
-   is extended past that with a transparent ::after, same technique as
-   .search-clear-btn elsewhere in this file, to clear the
-   ~40px a pointer expects regardless of the visible control's size. */
-.sp-chrome-toggle {
-  position: relative; flex: none;
-  display: flex; align-items: center; justify-content: center;
-  width: var(--h-sm); height: var(--h-sm); padding: 0;
-  background: var(--ink-raised); color: var(--muted);
-  border: 1px solid var(--line-faint); border-radius: var(--r-pill);
+/* The session control (see initPrepChrome() in js/app.js): one button in
+   .header-inner's free middle space, between the brand and .header-actions —
+   a flex child, never absolutely positioned, so it can't be clipped by a
+   header whose height changes between the two modes and never adds a row.
+   .sp-session-slot takes the leftover width (flex 1, min-width 0) and is an
+   inline-size container, so the label/title shrinking below is driven by the
+   room the control actually has, not by the viewport. Order of loss as the
+   slot narrows: the "Session ·" prefix, then the title's max width, then the
+   title's own ellipsis. Sized like the header cluster (32px, 28px compact);
+   its hit area is extended past that with ::after, same technique as
+   .search-clear-btn. */
+body[data-route="prep"] .header-inner { flex-wrap: nowrap; }
+.sp-session-slot {
+  position: relative; flex: 1 1 0; min-width: 0;
+  display: flex; justify-content: center;
+  container: sp-session / inline-size;
+}
+.sp-session-control {
+  position: relative; max-width: 100%; min-width: 0; height: var(--h-sm);
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  padding: 0 var(--s-3); white-space: nowrap;
+  font-family: inherit; font-size: var(--fs-sm); line-height: 1; color: var(--muted);
+  background: var(--ink-raised); border: 1px solid var(--line-faint); border-radius: var(--r-pill);
   cursor: pointer;
   transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out),
-              background var(--t-fast) var(--ease-out), width var(--t-base) var(--ease-out), height var(--t-base) var(--ease-out);
+              background var(--t-fast) var(--ease-out), box-shadow var(--t-base) var(--ease-out),
+              height var(--t-base) var(--ease-out);
 }
-.sp-chrome-toggle::after { content: ""; position: absolute; inset: -6px; }
-.sp-chrome-toggle svg { width: var(--icon-md); height: var(--icon-md); }
-.sp-chrome-toggle:hover { color: var(--hope-soft); border-color: var(--line-strong); background: var(--ink-hover); }
-.sp-chrome-toggle:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); color: var(--hope-soft); }
-body[data-route="prep"][data-sp-header-mode="compact"] .sp-chrome-toggle {
-  width: 28px; height: 28px;
-  /* keep the 32px footprint so the nav/language switch beside it never move */
-  margin-inline: calc((var(--h-sm) - 28px) / 2);
+.sp-session-control::after { content: ""; position: absolute; inset: -6px; }
+.sp-session-control:hover { color: var(--hope-soft); border-color: var(--line-strong); background: var(--ink-hover); }
+.sp-session-control:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); color: var(--hope-soft); }
+.sp-session-control.is-hinted { color: var(--hope-soft); border-color: var(--hope); box-shadow: 0 0 0 3px rgba(217,164,65,0.18); }
+.sp-session-label { flex: none; color: var(--muted); }
+.sp-session-name {
+  flex: 0 1 auto; min-width: 0; max-width: 30ch;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--parchment);
 }
+.sp-session-status, .sp-session-chevron { flex: none; display: inline-flex; align-items: center; justify-content: center; }
+.sp-session-status { width: var(--icon-sm); height: var(--icon-sm); }
+.sp-session-status svg { width: var(--icon-sm); height: var(--icon-sm); }
+.sp-session-chevron svg { width: var(--icon-md); height: var(--icon-md); }
+.sp-session-status[data-state="ok"] { color: var(--hope); opacity: 0.85; }
+.sp-session-status[data-state="error"] { color: var(--fear-soft); }
+.sp-session-spin {
+  width: 10px; height: 10px; box-sizing: border-box; border-radius: 50%;
+  border: 2px solid var(--line-strong); border-top-color: var(--hope);
+  animation: sp-session-spin 0.8s linear infinite;
+}
+@keyframes sp-session-spin { to { transform: rotate(360deg); } }
+@container sp-session (max-width: 270px) {
+  .sp-session-label { display: none; }
+  .sp-session-name { max-width: 24ch; }
+}
+@container sp-session (max-width: 190px) {
+  .sp-session-name { max-width: 12ch; }
+}
+body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { height: 28px; }
 
-/* The toggle only exists on Prep. Every other route reserves the same slot at
-   the end of the actions row, so the nav and language switch sit in the same
-   place on every route instead of jumping when the toggle appears. */
-body:not([data-route="prep"]) .header-actions::after {
-  content: ""; flex: none; width: var(--h-sm); height: 1px;
+/* One-time hint: an overlay under the control (absolute, out of flow — no
+   layout shift), same surface as .tooltip but able to take a short sentence. */
+.sp-session-hint {
+  position: absolute; top: calc(100% + var(--s-1)); left: 50%; translate: -50% 0; z-index: 40;
+  width: max-content; max-width: min(260px, 100%);
+  padding: var(--s-1) var(--s-2); text-align: center;
+  background: var(--ink-raised); border: 1px solid var(--hope); border-radius: var(--r-sm);
+  box-shadow: var(--e-3); color: var(--parchment);
+  font-size: var(--fs-xs); line-height: var(--lh-xs); pointer-events: none;
+  animation: sp-session-hint-in var(--t-base) var(--ease-out);
 }
+@keyframes sp-session-hint-in { from { opacity: 0; transform: translateY(2px); } }
 
 /* ---- three-column composition ---- */
 .prep-main {

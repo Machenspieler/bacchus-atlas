@@ -14,6 +14,7 @@ const LS_KEYS = {
   journeySanctuaries: 'dhcodex_journey_sanctuaries',
   prep: 'dhcodex_session_prep',
   prepHeaderMode: 'dhcodex_session_prep_header_mode',
+  prepSessionHintSeen: 'dhcodex_session_prep_hint_seen',
   battlePointsPcs: 'dhcodex_battle_points_pcs',
 };
 
@@ -3216,6 +3217,7 @@ function updateSaveStatusDisplay(result) {
   if (result.ok) state.prepUI.lastSavedAt = new Date();
   const statusEl = document.getElementById('prep-save-status');
   if (statusEl) paintSaveStatus(statusEl);
+  paintSessionControl();
 }
 
 /* ---------------- Session Notes (per-prep scratchpad) ----------------
@@ -3242,6 +3244,7 @@ function setPrepNotes(value) {
   if (next === state.prep) return;
   state.prep = next;
   prepNotesDirty = true;
+  paintSessionControl();
   clearTimeout(prepNotesSaveTimer);
   prepNotesSaveTimer = setTimeout(flushPrepNotesSave, PREP_NOTES_SAVE_DELAY_MS);
 }
@@ -5142,6 +5145,7 @@ function refreshPrepBarTitle(prep) {
   const item = document.querySelector(`[data-sp-switch="${escapeSelectorAttrValue(prep.id)}"] .prep-menu-label`);
   if (item) item.textContent = title;
   syncPrepTitleTip();
+  paintSessionControl();
 }
 
 function savePrepTitle(title) {
@@ -5574,11 +5578,11 @@ function bindPrepDelegation(el) {
 /* ---------------- top chrome (compact workspace mode) ----------------
  *
  * #prep-chrome (index.html) wraps the shared site header. Only on
- * this route it can be switched, via the toggle button this controller
+ * this route it can be switched, via the session control this controller
  * adds, between two CSS-driven variants of the *same* #header markup
  * renderHeader() always produces (see the "Prep chrome" rules in
- * css/styles.css) — never a second copy of the header. The one toggle also
- * drives the Prep Bar (title, save status, New/actions —
+ * css/styles.css) — never a second copy of the header. The one control also
+ * drives the Prep Bar (title, save status, Session Notes, New/actions —
  * prepBarHtml(), in the workspace, not this chrome) out of layout
  * entirely — both areas read the single
  * `data-sp-header-mode` attribute this controller sets on <body>, so there
@@ -5586,67 +5590,153 @@ function bindPrepDelegation(el) {
  * states to fall out of sync.
  *
  * There is no automatic mode change of any kind: the chrome only ever
- * changes state when the reader deliberately clicks the toggle. The mode a
- * reader last chose is persisted (LS_KEYS.prepHeaderMode, a raw
- * on/off-style flag written through persistRaw() the same way
- * dhcodex_storage_notice_dismissed is — see "Safe browser storage" in
- * CLAUDE.md) and restored on every route entry; a reader with no saved
- * preference yet — or one whose storage is unavailable or holds anything
- * other than the literal string "expanded" — starts in the denser 'compact'
- * mode, which is the more useful default for a working GM tool.
+ * changes state when the reader deliberately clicks the control. The mode a
+ * reader last chose is a global Prep-page preference (never stored on a
+ * prep record), persisted as LS_KEYS.prepHeaderMode — a raw flag written
+ * through persistRaw() the same way dhcodex_storage_notice_dismissed is, see
+ * "Safe browser storage" in CLAUDE.md — and restored on every route entry. A
+ * reader with no saved preference yet — or one whose storage is unavailable
+ * or holds anything other than the literal string "compact" — starts
+ * expanded (PrepUtils.resolveHeaderMode()).
  *
- * The toggle button is a normal flex child of #header's own
- * .header-actions (alongside the nav and language switch) rather than an
- * absolutely/fixed-positioned overlay — flexbox lays it out correctly at
- * every viewport width for free, with no collision math against the nav/
- * lang buttons to get wrong. renderHeader() rebuilds #header's entire
- * innerHTML on every render() (including a language switch while still on
- * this route), which would otherwise silently detach this button from the
- * page — initPrepChrome() re-appends the *same* button element into
- * the freshly-rendered .header-actions every time it runs (render() always
- * calls it, via renderPrepPage(), after renderHeader() has already
- * replaced #header), so the button and its listener are created once but
- * kept attached across any number of re-renders.
+ * The control is a single <button> that sits in #header's .header-inner
+ * between the brand and .header-actions (never a second row, never after the
+ * language switch): "Session · <active prep title>", a save-status icon and
+ * the expand/collapse chevron. Its title and status are painted from the
+ * same sources as the Prep Bar (activePrep(), state.prepUI), by
+ * paintSessionControl() — nothing about the session is cached on the button.
+ * renderHeader() rebuilds #header's entire innerHTML on every render()
+ * (including a language switch while still on this route), which would
+ * otherwise silently detach the control from the page — initPrepChrome()
+ * re-inserts the *same* slot element into the freshly-rendered
+ * .header-inner every time it runs (render() always calls it, via
+ * renderPrepPage(), after renderHeader() has already replaced #header), so
+ * the button and its listener are created once but kept attached across any
+ * number of re-renders.
+ *
+ * A one-time hint (a small absolutely-positioned popover anchored to the
+ * control, so it can't shift layout) points compact-mode readers at the
+ * control; its own "seen" flag is LS_KEYS.prepSessionHintSeen.
  *
  * One controller instance lives in `prepChromeState`, built by
  * initPrepChrome() and torn down by destroyPrepChrome() — the
  * only two functions that touch that variable. */
 
-/** Reads the last mode the reader chose. Anything other than the exact
- * string "expanded" — missing, unavailable storage, or a stray/corrupt
- * value — reads as 'compact', which is also this route's default for a
- * reader who has never touched the toggle. There is no structural shape to
- * validate here (unlike SafeStorage.validators' JSON validators), so — like
- * dhcodex_storage_notice_dismissed — this reads via readRawFlag() rather
- * than loadStoredJson(). */
+/** Reads the last mode the reader chose; see PrepUtils.resolveHeaderMode(). */
 function storedPrepHeaderMode() {
-  return SafeStorage.readRawFlag(lsStorage, LS_KEYS.prepHeaderMode) === 'expanded' ? 'expanded' : 'compact';
+  return PrepUtils.resolveHeaderMode(SafeStorage.readRawFlag(lsStorage, LS_KEYS.prepHeaderMode));
+}
+
+function storedPrepSessionHintSeen() {
+  return SafeStorage.readRawFlag(lsStorage, LS_KEYS.prepSessionHintSeen) === '1';
 }
 
 let prepChromeState = null;
 
+const PREP_SESSION_HINT_MS = 6000;
+
+/** The header control's save-status view: icon kind and the tooltip/sr-only
+ * wording. 'saving' is the real pending state of a debounced Session Notes
+ * edit (prepNotesDirty) — the only write that isn't synchronous. */
+function sessionControlStatusView() {
+  const ui = state.prepUI;
+  const kind = PrepUtils.sessionSaveKind(ui.saveFailed, prepNotesDirty, ui.lastSavedAt);
+  if (kind === 'error') return { kind, text: t('prep_session_save_failed') };
+  if (kind === 'saving') return { kind, text: t('prep_session_saving') };
+  if (kind === 'ok') {
+    const time = ui.lastSavedAt.toLocaleTimeString(state.lang === 'ru' ? 'ru-RU' : 'en-US', {
+      hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+    });
+    return { kind, text: t('prep_session_saved_at').replace('{time}', time) };
+  }
+  return { kind, text: t('prep_autosave_ready') };
+}
+
+/** Paints the session control from the live sources of truth. Safe to call
+ * at any time (no-op off the prep route); called on every mode change, every
+ * renderPrepPage(), a rename, and every save-status update. */
+function paintSessionControl() {
+  const c = prepChromeState;
+  if (!c || !c.toggleEl) return;
+  const btn = c.toggleEl;
+  const compact = c.mode === 'compact';
+  const name = prepDisplayTitle(activePrep());
+  const status = sessionControlStatusView();
+  const action = t(compact ? 'prep_session_expand' : 'prep_session_collapse');
+  const icon = status.kind === 'ok' ? ICON_CHECK
+    : status.kind === 'error' ? ICON_ALERT
+    : status.kind === 'saving' ? '<span class="sp-session-spin"></span>'
+    : '<span class="prep-save-dot"></span>';
+  btn.setAttribute('aria-expanded', compact ? 'false' : 'true');
+  btn.setAttribute('aria-label', `${action} ${t('prep_session_for')} ${name}`);
+  if (document.getElementById('prep-bar')) btn.setAttribute('aria-controls', 'prep-bar');
+  else btn.removeAttribute('aria-controls');
+  // While the one-time hint is up it owns the space under the control, so the
+  // hover tooltip (which would land on top of it) is withheld.
+  if (c.hintEl) delete btn.dataset.tip;
+  else btn.dataset.tip = `${name} · ${status.text}`;
+  btn.innerHTML =
+    `<span class="sp-session-label" aria-hidden="true">${escapeHtml(t('prep_session_label'))} ·</span>` +
+    `<span class="sp-session-name">${escapeHtml(name)}</span>` +
+    `<span class="sp-session-status" data-state="${status.kind}" aria-hidden="true">${icon}</span>` +
+    `<span class="sp-session-chevron" aria-hidden="true">${compact ? ICON_CHEVRON_DOWN : ICON_CHEVRON_UP}</span>`;
+  // The save status is conveyed to assistive tech as a polite live region
+  // beside the button, not inside it (the aria-label above replaces the
+  // button's content), so a save never re-announces the whole control.
+  c.statusSrEl.textContent = status.text;
+  if (c.hintEl) c.hintEl.textContent = t('prep_session_hint');
+}
+
 /** Reflects the current mode onto the DOM: the `data-sp-header-mode`
  * attribute on <body> (drives every compact-mode CSS rule in
- * css/styles.css, for both the global header and the Prep Bar)
- * and the toggle's icon/aria-expanded/label. Called on every mode change and
- * once more at the end of every renderPrepPage(), so a language
- * switch keeps the toggle's text current without recreating the button. */
+ * css/styles.css, for both the global header and the Prep Bar) and the
+ * session control. Called on every mode change and once more at the end of
+ * every renderPrepPage(), so a language switch keeps the control's text
+ * current without recreating the button. */
 function applyPrepChromeDom() {
   const c = prepChromeState;
   if (!c) return;
-  const compact = c.mode === 'compact';
   document.body.dataset.spHeaderMode = c.mode;
-  if (c.toggleEl) {
-    const label = t(compact ? 'prep_show_controls' : 'prep_hide_controls');
-    c.toggleEl.setAttribute('aria-expanded', compact ? 'false' : 'true');
-    c.toggleEl.setAttribute('aria-label', label);
-    c.toggleEl.dataset.tip = label;
-    c.toggleEl.innerHTML = compact ? ICON_CHEVRON_DOWN : ICON_CHEVRON_UP;
-  }
+  paintSessionControl();
+}
+
+/* -- one-time hint -- */
+
+function dismissPrepSessionHint() {
+  const c = prepChromeState;
+  if (!c || !c.hintEl) return;
+  clearTimeout(c.hintTimer);
+  document.removeEventListener('pointerdown', c.hintOnPointer, true);
+  document.removeEventListener('keydown', c.hintOnKey, true);
+  c.hintEl.remove();
+  c.hintEl = null;
+  c.toggleEl.classList.remove('is-hinted');
+  paintSessionControl();
+  persistRaw(LS_KEYS.prepSessionHintSeen, '1');
+}
+
+function showPrepSessionHint() {
+  const c = prepChromeState;
+  if (!c || c.hintEl || c.hintDone) return;
+  c.hintDone = true;
+  const el = document.createElement('div');
+  el.className = 'sp-session-hint';
+  el.setAttribute('role', 'status');
+  el.textContent = t('prep_session_hint');
+  c.slotEl.appendChild(el);
+  c.hintEl = el;
+  c.toggleEl.classList.add('is-hinted');
+  hideTip();
+  paintSessionControl();
+  c.hintOnPointer = () => dismissPrepSessionHint();
+  c.hintOnKey = e => { if (e.key === 'Escape') dismissPrepSessionHint(); };
+  document.addEventListener('pointerdown', c.hintOnPointer, true);
+  document.addEventListener('keydown', c.hintOnKey, true);
+  c.hintTimer = setTimeout(dismissPrepSessionHint, PREP_SESSION_HINT_MS);
 }
 
 /** The only place the mode changes, and so the only place it is persisted —
- * this is always a direct result of the reader clicking the toggle, never
+ * this is always a direct result of the reader clicking the control, never
  * an automatic transition, so writing it here can't accidentally persist a
  * route-entry default. A failed write falls back to the same centralized
  * storage_write_failed_warning toast every other persisted action uses (see
@@ -5661,38 +5751,48 @@ function prepChromeSetMode(next) {
   c.mode = next;
   applyPrepChromeDom();
   persistRaw(LS_KEYS.prepHeaderMode, next);
+  if (PrepUtils.shouldShowSessionHint(next, storedPrepSessionHintSeen())) showPrepSessionHint();
 }
 
-/** Builds (once) and (re-)attaches the one toggle button into #header's
- * current .header-actions. Safe to call any number of times — every call
- * after the first just moves the existing button into the current header
- * DOM rather than recreating it — but renderPrepPage() is the only
- * call site, since that's the only place the route is (re-)entered or the
- * header is rebuilt. Starts from the reader's saved preference (or the
- * 'compact' default) rather than a hardcoded mode. */
+/** Builds (once) and (re-)attaches the session control's slot into
+ * #header's current .header-inner, between the brand and .header-actions.
+ * Safe to call any number of times — every call after the first just moves
+ * the existing slot into the current header DOM rather than recreating it —
+ * but renderPrepPage() is the only call site, since that's the only place the
+ * route is (re-)entered or the header is rebuilt. Starts from the reader's
+ * saved preference (or the 'expanded' default) rather than a hardcoded mode. */
 function initPrepChrome() {
-  const headerActions = document.querySelector('#header .header-actions');
-  if (!headerActions) return;
+  const headerInner = document.querySelector('#header .header-inner');
+  const headerActions = headerInner && headerInner.querySelector('.header-actions');
+  if (!headerInner || !headerActions) return;
 
   let c = prepChromeState;
+  const fresh = !c;
   if (!c) {
+    const slotEl = document.createElement('div');
+    slotEl.className = 'sp-session-slot';
     const toggleEl = document.createElement('button');
     toggleEl.type = 'button';
     toggleEl.id = 'sp-chrome-toggle';
-    toggleEl.className = 'sp-chrome-toggle';
-    toggleEl.setAttribute('aria-controls', 'prep-chrome prep-bar');
-    c = { mode: storedPrepHeaderMode(), toggleEl };
+    toggleEl.className = 'sp-session-control';
+    const statusSrEl = document.createElement('span');
+    statusSrEl.className = 'sr-only';
+    statusSrEl.setAttribute('role', 'status');
+    slotEl.append(toggleEl, statusSrEl);
+    c = { mode: storedPrepHeaderMode(), toggleEl, slotEl, statusSrEl, hintEl: null, hintDone: false };
     toggleEl.addEventListener('click', () => {
       prepChromeSetMode(c.mode === 'compact' ? 'expanded' : 'compact');
     });
     prepChromeState = c;
   }
-  headerActions.appendChild(c.toggleEl);
+  headerInner.insertBefore(c.slotEl, headerActions);
 
   applyPrepChromeDom();
+  // A compact mode restored from storage is the other first-time case.
+  if (fresh && PrepUtils.shouldShowSessionHint(c.mode, storedPrepSessionHintSeen())) showPrepSessionHint();
 }
 
-/** Removes the toggle button and resets <body>'s mode attribute — called
+/** Removes the session control and resets <body>'s mode attribute — called
  * whenever render() leaves the prep route, so nothing here outlives
  * the page and a later re-entry starts clean (from the saved preference
  * again, via initPrepChrome() above). */
@@ -5700,8 +5800,9 @@ function destroyPrepChrome() {
   const c = prepChromeState;
   if (!c) return;
   flushPrepNotesSave();
+  dismissPrepSessionHint();
   delete document.body.dataset.spHeaderMode;
-  if (c.toggleEl) c.toggleEl.remove();
+  if (c.slotEl) c.slotEl.remove();
   prepChromeState = null;
 }
 /* ---------------- page render ---------------- */
