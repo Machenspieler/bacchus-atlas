@@ -2240,6 +2240,21 @@ body[data-route="prep"] {
 .prep-new-btn svg { width: var(--icon-md); height: var(--icon-md); color: var(--hope); }
 .prep-more-btn { width: var(--h-md); height: var(--h-md); }
 
+/* Desktop bar: the notes label sits in a row of its own above the other
+   zones, so the title block, the notes *field* and New / actions all centre
+   on one line (row 2). Centring the whole notes column instead — label
+   included — pulled the title and buttons ~10px above the field they sit
+   beside. `display: contents` lets the label and field be grid items; the
+   phone layout below keeps its own areas. */
+@media (min-width: 761px) {
+  .prep-bar { grid-template-rows: auto auto; row-gap: var(--s-1); }
+  .prep-identity { grid-column: 1; grid-row: 2; }
+  .prep-notes { display: contents; }
+  .prep-notes-label { grid-column: 2; grid-row: 1; min-width: 0; }
+  .prep-notes-input { grid-column: 2; grid-row: 2; align-self: center; }
+  .prep-actions { grid-column: 3; grid-row: 2; }
+}
+
 /* ---- menus (prep selector + actions) ---- */
 .prep-menu {
   position: absolute; top: calc(100% + var(--s-1)); left: 0; z-index: 20;
