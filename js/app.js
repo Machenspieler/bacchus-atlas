@@ -532,9 +532,11 @@ async function init() {
   setAdversaryCatalog(adversaries);
   if (prepData) setPrepCatalog(prepData);
   else state.prepLoadFailed = true;
+  routeSharedPrepLink();
   render();
   finishInitialLoading();
   reportStorageRecovery();
+  handleSharedPrepLink();
   initCatalogGridObserver();
 }
 
@@ -4909,6 +4911,9 @@ function prepBarHtml(prep) {
             <button type="button" class="prep-menu-item" role="menuitem" tabindex="-1" data-sp-menu-copy-summary>
               <span class="prep-menu-label">${escapeHtml(t('prep_copy_summary'))}</span>
             </button>
+            <button type="button" class="prep-menu-item" role="menuitem" tabindex="-1" data-sp-menu-copy-link>
+              <span class="prep-menu-label">${escapeHtml(t('prep_copy_link'))}</span>
+            </button>
             <div class="prep-menu-sep" role="separator"></div>
             <button type="button" class="prep-menu-item is-danger${onlyOne ? ' is-disabled' : ''}" role="menuitem" tabindex="-1"
                     data-sp-menu-delete${deleteAttrs}>
@@ -5044,6 +5049,32 @@ function prepBarSwitch(prepId) {
   focusPrepTitleButton();
 }
 
+/** "Copy session link": snapshots only the active prep (title, notes and the
+ * three id lists — see js/prep-share-utils.js) into a `?prep=` URL built from
+ * the current origin and pathname and writes it to the clipboard. The open
+ * page's own address is never touched. The latest notes are already in memory,
+ * so a failed flush (localStorage) never blocks link generation. Nothing is
+ * truncated: an over-long link is refused with an explanation instead. */
+function copyPrepShareLink() {
+  flushPrepNotesSave();
+  const prep = activePrep();
+  if (!prep) return;
+  const url = new URL(location.origin + location.pathname);
+  url.searchParams.set('prep', PrepShareUtils.encodePrep(prep));
+  url.hash = '#/prep';
+  const link = url.href;
+  if (link.length > PrepShareUtils.MAX_URL_LENGTH) {
+    showToast(t('prep_link_too_large'), 'error');
+    return;
+  }
+  const hasNotes = typeof prep.notes === 'string' && prep.notes.trim() !== '';
+  const done = () => showToast(t(hasNotes ? 'prep_link_copied_with_notes' : 'prep_link_copied'));
+  const failed = () => showToast(t('prep_link_copy_failed'), 'error');
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(link).then(done, () => legacyCopy(link, done, failed));
+  } else legacyCopy(link, done, failed);
+}
+
 /** "Copy session summary": resolves the active prep in the central panel's
  * order (same sorts as centralEnvListHtml/centralAdvListHtml/centralItemListHtml),
  * hands plain strings to the pure PrepUtils.buildSessionSummary(), and writes
@@ -5131,6 +5162,153 @@ function openPrepDeleteConfirm(prep) {
   });
   overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
   overlay.querySelector('[data-sp-confirm-cancel]').focus();
+}
+
+/* -- opening a shared session link --
+ * `?prep=<payload>` is read once, after every catalogue has loaded (init() and
+ * retryPrepCatalog()). It never overwrites anything: a valid payload opens a
+ * confirmation dialog, and only "Add session" appends a new, independent prep.
+ * The parameter is stripped from the address on every outcome (confirm,
+ * cancel, Escape, backdrop, invalid) through replaceState, so a refresh can
+ * never import twice. */
+
+let sharedPrepDialogOpen = false;
+
+function readSharedPrepParam() {
+  try { return new URL(location.href).searchParams.get('prep'); } catch (err) { return null; }
+}
+
+/** Removes `prep` from the address without adding a history entry, leaving
+ * the user on #/prep. Best-effort, like repairHash(). */
+function clearSharedPrepParam() {
+  try {
+    const url = new URL(location.href);
+    url.searchParams.delete('prep');
+    url.hash = '#/prep';
+    history.replaceState(history.state, '', url.href);
+  } catch (err) {
+    // The in-memory state is already correct; the address cleanup is best-effort.
+  }
+}
+
+/** Before the first render: a share link always lands on the Prep route. */
+function routeSharedPrepLink() {
+  if (readSharedPrepParam() === null || state.route.name === 'prep') return;
+  try {
+    const url = new URL(location.href);
+    url.hash = '#/prep';
+    history.replaceState(history.state, '', url.href);
+  } catch (err) { /* best-effort */ }
+  state.route = readCurrentRoute();
+}
+
+/** Drops ids the loaded catalogues don't know, enforces the environment cap,
+ * and reports how many validly-encoded entries were omitted. */
+function resolveSharedPrep(shared) {
+  const envIds = new Set(allEnvs().map(e => e.id));
+  const itemIds = new Set(state.prepCatalog.itemIds);
+  const environmentIds = shared.environmentIds.filter(id => envIds.has(id));
+  const adversaryIds = shared.adversaryIds.filter(id => state.prepCatalog.adversaryById.has(id));
+  const items = shared.itemIds.filter(id => itemIds.has(id));
+  const capped = environmentIds.slice(0, PrepUtils.MAX_ENVIRONMENTS);
+  const total = shared.environmentIds.length + shared.adversaryIds.length + shared.itemIds.length;
+  const kept = capped.length + adversaryIds.length + items.length;
+  return {
+    title: shared.title.slice(0, PREP_TITLE_MAX),
+    notes: shared.notes,
+    environmentIds: capped,
+    adversaryIds,
+    itemIds: items,
+    omitted: total - kept,
+  };
+}
+
+function handleSharedPrepLink() {
+  const raw = readSharedPrepParam();
+  if (raw === null || sharedPrepDialogOpen) return;
+  // Without the Prep catalogue there is nothing to validate against; leave the
+  // link in the address so a retry or reload can still open it.
+  if (state.prepLoadFailed) return;
+  const decoded = PrepShareUtils.decodePrep(raw);
+  if (!decoded.ok) {
+    clearSharedPrepParam();
+    showToast(t('prep_share_invalid'), 'error');
+    return;
+  }
+  openSharedPrepDialog(resolveSharedPrep(decoded.value));
+}
+
+function importSharedPrep(resolved) {
+  flushPrepNotesSave();
+  const now = new Date().toISOString();
+  const prep = Object.assign(PrepUtils.createDefaultPrep(generatePrepId(), now), {
+    title: resolved.title,
+    notes: resolved.notes,
+    environmentIds: resolved.environmentIds.slice(),
+    adversaryIds: resolved.adversaryIds.slice(),
+    itemIds: resolved.itemIds.slice(),
+  });
+  state.prep = PrepUtils.addPrep(state.prep, prep);
+  return persist(LS_KEYS.prep, state.prep);
+}
+
+/** Confirmation dialog — same overlay infrastructure as openPrepDeleteConfirm();
+ * Cancel gets initial focus (the safe action). */
+function openSharedPrepDialog(resolved) {
+  sharedPrepDialogOpen = true;
+  const name = PrepUtils.resolvePrepTitle(resolved.title, t('prep_name_placeholder'));
+  const plural = (key, n) => t(`prep_summary_${key}_${PrepUtils.pluralForm(n, state.lang)}`).replace('{n}', n);
+  const counts = [
+    plural('env', resolved.environmentIds.length),
+    plural('adv', resolved.adversaryIds.length),
+    plural('item', resolved.itemIds.length),
+  ].join(' \u00b7 ');
+  const hasNotes = resolved.notes.trim() !== '';
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.dataset.overlayKind = 'popup';
+  overlay.innerHTML = `
+    <div class="modal modal-sm" data-overlay-card role="alertdialog" aria-modal="true"
+         aria-labelledby="prep-share-title" aria-describedby="prep-share-body">
+      <div class="modal-header">
+        <h2 id="prep-share-title">${escapeHtml(t('prep_share_import_title'))}</h2>
+      </div>
+      <div class="modal-body">
+        <div class="prep-confirm-body" id="prep-share-body">
+          <p>${escapeHtml(t('prep_share_import_body').replace('{name}', name))}<br>${escapeHtml(counts)}${hasNotes ? `<br>${escapeHtml(t('prep_share_import_notes_included'))}` : ''}</p>
+          <p>${escapeHtml(t('prep_share_import_explain'))}</p>
+        </div>
+        <div class="prep-confirm-actions">
+          <button type="button" class="btn btn-ghost" data-sp-share-cancel>${escapeHtml(t('cancel'))}</button>
+          <button type="button" class="btn btn-primary" data-sp-share-confirm>${escapeHtml(t('prep_share_import_confirm'))}</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  const teardown = registerOverlay(overlay, close);
+  let closed = false;
+  function close() {
+    if (closed) return;
+    closed = true;
+    overlay.remove();
+    teardown();
+    sharedPrepDialogOpen = false;
+    clearSharedPrepParam();
+  }
+
+  overlay.querySelector('[data-sp-share-cancel]').addEventListener('click', close);
+  overlay.querySelector('[data-sp-share-confirm]').addEventListener('click', () => {
+    const result = importSharedPrep(resolved);
+    close();
+    updateSaveStatusDisplay(result);
+    if (state.route.name === 'prep') renderPrepPage();
+    if (result.ok) {
+      showToast(t('prep_share_imported'));
+      if (resolved.omitted > 0) showToast(t('prep_share_partial_import'), 'error');
+    }
+  });
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+  overlay.querySelector('[data-sp-share-cancel]').focus();
 }
 
 /* -- inline rename -- */
@@ -5234,6 +5412,7 @@ function bindPrepBar() {
     if (item.hasAttribute('data-sp-menu-rename')) beginPrepRename();
     else if (item.hasAttribute('data-sp-menu-duplicate')) prepBarDuplicate();
     else if (item.hasAttribute('data-sp-menu-copy-summary')) copyPrepSummary();
+    else if (item.hasAttribute('data-sp-menu-copy-link')) copyPrepShareLink();
     else if (item.hasAttribute('data-sp-menu-delete')) {
       const prep = activePrep();
       if (prep) openPrepDeleteConfirm(prep);
@@ -5359,6 +5538,7 @@ function retryPrepCatalog() {
   getJSON(versionedDataUrl('data/prep.json')).then(data => {
     setPrepCatalog(data);
     if (state.route.name === 'prep') renderPrepPage();
+    handleSharedPrepLink();
   }).catch(() => {
     state.prepLoadFailed = true;
     if (btn) { btn.removeAttribute('data-loading'); btn.disabled = false; }

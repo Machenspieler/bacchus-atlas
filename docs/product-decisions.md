@@ -333,3 +333,29 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   - Code: `retierFor()`, `retierValue()`, `retierDamage()` in `js/app.js`.
 - **Explicitly excluded:** changing how any non-Atlas environment scales,
   and a per-environment override field in the data.
+
+## PD-010: Prep sessions are shared as serverless snapshot links
+
+- **Decision:** "Copy session link" (Prep actions menu) puts a
+  `?prep=<payload>#/prep` URL on the clipboard. The payload is a compact
+  JSON snapshot — title, Session Notes, and the environment/adversary/item
+  id lists — as UTF-8, unpadded URL-safe Base64 (`js/prep-share-utils.js`,
+  `PrepShareUtils`). No backend, shortener or account.
+- **Import is always a confirmed copy:** opening a link never overwrites
+  anything; a confirmation dialog (Cancel focused) appends a *new* prep with
+  a fresh id and timestamps and makes it active. The `prep` parameter is
+  stripped with `replaceState` on every outcome, so a refresh can't import
+  twice. Duplicate titles are fine; sessions are never merged.
+- **Never in the payload:** local prep id, timestamps, `activeSessionId`,
+  other sessions, search/filter state, display mode, UI language, Battle
+  Points state (character count is a global preference; style/adjustments
+  are transient).
+- **Unknown ids are dropped, not fatal:** ids missing from the loaded
+  catalogues (and environments beyond the cap of three) are omitted with a
+  warning toast; the rest imports. A malformed/oversized/unsupported payload
+  changes nothing and shows one generic "invalid or damaged" toast.
+- **No silent truncation on export:** a link longer than
+  `PrepShareUtils.MAX_URL_LENGTH` is refused with an explanation.
+- Code: `copyPrepShareLink()`, `handleSharedPrepLink()`,
+  `openSharedPrepDialog()` in `js/app.js`; read only after the catalogues
+  load (`init()` and `retryPrepCatalog()`).
