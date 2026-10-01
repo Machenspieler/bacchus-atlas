@@ -250,3 +250,57 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   - Adversary types are the canonical `adv.type` ids, never translated labels.
 - **Explicitly excluded:** per-prep character counts, persisted manual
   adjustments, and any blocking behaviour.
+
+## PD-008: Prep recommends adversaries from the selected environments, advisorily
+
+- **Status:** Active
+- **Date:** 2026-10-01
+- **Decision:** In Prep (`#/prep`), the selected environments' English
+  `potential_adversaries` text produces *recommended adversaries*: those
+  names that resolve to an adversary in `data/prep.json`. They are surfaced
+  in the All Adversaries picker (a "Recommended for selected environments"
+  group at the top, each row marked with a gold ★ naming its source
+  environments) and through one explicit `★ +N` bulk-add button in the
+  central Adversaries header. The GM always makes the final selection.
+- **Implications:**
+  - **Advisory only.** Selecting an environment never selects an adversary;
+    removing an environment never removes one. Adding an environment can
+    only make an already-selected adversary gain a ★; removing one can only
+    take it away. The only path from recommendation to selection is the
+    user's own checkbox or the `★ +N` click.
+  - **`data/prep.json` is the whitelist.** Only a name that matches a
+    catalogue adversary is ever recommended; unsupported, custom,
+    third-party or unknown names are silently ignored — no placeholder rows,
+    no warnings, no validation failure. No adversary is added to the
+    catalogue for the sake of this feature.
+  - **Canonical English names, conservative matching.** Matching compares
+    `adversary.name.en` with the English text only (never Russian), after
+    trim, NFKC, case folding, whitespace collapsing and folding of Unicode
+    apostrophe/dash variants — nothing fuzzier. Names that differ by
+    punctuation or a subtitle stay different.
+  - **One parser.** The Potential Adversaries parsing/alias/family rules
+    live in `js/potential-adversary-utils.js` and are shared with the
+    environment card's FreshCutGrass links; Prep adds only the catalogue
+    match.
+  - **Generic Bandits mean the Jagged Knife family.** `Bandit`, `Bandits`,
+    `Bandits (tier 2)`, `any Bandit(s)`, `Jagged Knife Bandits`, `any Jagged
+    Knife` and `any Jagged Knife Bandit` all expand to the complete
+    seven-adversary Jagged Knife roster (Bandit, Hexer, Kneebreaker, Lackey,
+    Lieutenant, Shadow, Sniper) through explicit family entries, not name
+    guessing. The plural forms (`Bandits`, `Jagged Knife Bandits`) also mean
+    the family when listed as a member of some other group (e.g. `Outlaws
+    (Bandits, Pirates, …)`); the singular `Bandit` inside a group stays the
+    one Jagged Knife Bandit (`Jagged Knife Bandits (Bandit, Hexer, …)`).
+  - **Derived, never persisted.** Recommendations are recomputed from the
+    active Prep's `environmentIds`; nothing is stored and the Prep schema is
+    unchanged.
+  - **Bulk add ignores the picker filters.** `★ +N` counts and adds every
+    supported recommendation the Prep lacks, regardless of the picker's
+    search/Tier/Type filters, which stay as they were. The picker itself
+    never force-shows a recommendation the filters hide. With nothing
+    supported to recommend the button is absent; with everything already
+    selected it reads `★ ✓` and is inert (`aria-disabled`, still focusable).
+- **Explicitly excluded:** automatic selection/removal, custom adversaries,
+  fuzzy matching, recommendations from Russian text, stored weights, a
+  Recommended-only filter, stars in the central selected list or on
+  environment cards, and any change to the Prep persistence schema.

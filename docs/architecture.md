@@ -23,13 +23,14 @@ js/list-utils.js        — Lists name validation
 js/search-index.js      — environment search index builder
 js/prep-utils.js — Prep pure selection/search/filter logic
 js/freshcutgrass-utils.js — FreshCutGrass encounter-URL encoder (shared by env detail + Prep)
+js/potential-adversary-utils.js — Potential Adversaries parser + Prep recommendation matching (shared by env detail + Prep)
 js/battle-points.js     — Battle Points arithmetic (pure)
 js/battle-points-ui.js  — Battle Points summary + popover in the Prep Adversaries header
 js/app.js               — everything else: state, rendering, event wiring
 ```
 
 Everything above `js/app.js` is a dependency-free module exposing a global
-(`SafeStorage`, `RouteUtils`, `ListUtils`, `SearchIndex`, `PrepUtils`, `FreshCutGrassUtils`)
+(`SafeStorage`, `RouteUtils`, `ListUtils`, `SearchIndex`, `PrepUtils`, `FreshCutGrassUtils`, `PotentialAdversaryUtils`)
 that also works under plain Node `require()` — that's what makes each one
 directly unit-testable in `tests/*.test.js` without a DOM or bundler.
 
@@ -526,6 +527,86 @@ derives the same `{ thumb, full }` pair from its existing source-image
 mapping (`deriveArtPaths()`), so a future catalogue regeneration keeps
 producing the current schema rather than reintroducing `image`.
 
+## Environment → Recommended Adversaries (Prep)
+
+Advisory, derived UI state on `#/prep` — the decision record is
+[PD-008](product-decisions.md). Nothing here is persisted, and picking or
+removing an environment never changes `prep.adversaryIds`.
+
+**Parsing and matching** live in `js/potential-adversary-utils.js`
+(`PotentialAdversaryUtils`), the only parser of an environment's
+`potential_adversaries` text. `envAdversaryNames(env)` expands the English
+entries (ordinary names, `Label (Member, …)` groups, `Tier N: …` entries,
+tier/role annotations, group prefixes and member aliases, `any X` and bare
+family references; `Any`/`All` and `see "…"` citations resolve to nothing)
+into canonical English adversary names; the environment card's FreshCutGrass
+links in `js/app.js` read the same function. The Bandits rule is two
+explicit parts of the family table: `Bandit`, `Bandits` and `Jagged Knife
+Bandits` are family keys for the Jagged Knife roster (so `any Bandit(s)` and
+a bare `Bandits (tier 2)` reach it through the existing family code), and
+`BANDIT_GROUP_MEMBER_FAMILY_ALIASES` lets the plural forms mean the family
+as a member of another group too.
+
+On top of that:
+`normalizeAdversaryName()` is the conservative comparison key (trim, NFKC,
+case fold, collapse whitespace, fold apostrophe/dash variants — no fuzzy
+matching); `buildCatalogueNameIndex(adversaries)` maps it to Prep ids from
+`adversary.name.en`; `matchCatalogueIds(names, index)` returns `{ ids,
+unmatched }` (the UI uses only `ids`); `buildEnvironmentRecommendationIndex(
+environments, index)` gives `Map<envId, advIds[]>`; and
+`aggregateRecommendations(selectedEnvIds, index)` returns the provenance
+map `Map<advId, { environmentIds, sourceCount }>` — each environment counted
+at most once, unknown ids ignored.
+
+**Lifecycle.** `state.prepRecommendationIndex` is that per-environment
+index, rebuilt by `rebuildPrepRecommendationIndex()` only when the
+environment catalogue (`setEnvironmentCatalog()`) or the Prep catalogue
+(`setPrepCatalog()`, including a retry) is replaced — never per row or per
+Prep change. `prepRecommendations(prep)` unions the selected environments'
+entries on demand (at most three lookups), so nothing can go stale.
+
+**Picker.** `advPickerListHtml()` applies the existing search/Tier/Type
+filters first, then `PrepUtils.partitionRecommendedAdversaries()` splits the
+result: recommended rows sort by `sourceCount` desc, Tier, localized name;
+the rest by Tier, name. With at least one visible recommended row the
+output is a `<section class="prep-rec-group">` (an `<h3>` "★ Recommended for
+selected environments" + the visible count, then a `role="list"`), a thin
+divider when ordinary rows follow, then the ordinary `role="list"`; with no
+recommendation it is the plain flat list as before. `#prep-adv-list` itself
+is just the scroll container. The `{n} of {total}` count is still the whole
+filtered set. A recommended row (`.prep-adv-row.is-recommended`) gains a
+`.prep-rec-star` — a non-interactive `role="img"` sibling between the
+artwork and the name link, outside the `<a>` and out of the tab order — whose
+`aria-label`/`data-tip` is "Recommended for: <localized environment names>".
+The tint and inset line are `color-mix()` over `--hope`; hover, focus and the
+selected checkbox keep precedence.
+
+**Bulk add.** `recommendBulkView()` decides the `★ +N` / `★ ✓` button in
+`#prep-recommend-wrap` (the central Adversaries header, before the
+FreshCutGrass link, both inside `.prep-central-actions`): absent without
+supported recommendations, `aria-disabled="true"` when none is missing.
+`refreshRecommendBulkAction()` updates it in place (so a focused button keeps
+focus). Clicking calls `addRecommendedAdversariesToActivePrep()` →
+`PrepUtils.addRecommendedAdversaries()` (appends only missing ids, preserves
+the rest, no duplicates, no mutation) → `updatePrep()` → `refreshCentralAdversaries()`
+(list, count, warning, FreshCutGrass link, Battle Points, the button) plus an
+in-place picker checkbox/label sync that leaves the filters alone; the toast
+only follows a successful write.
+
+**Synchronization.** Every path that changes the selected environments (the
+picker checkbox, central × and trash, the catalog/Lists quick action, the
+detail overlay, the Add to… dialog) ends in `refreshCentralEnvironments()`,
+which calls `syncPrepRecommendations()` — the one helper that re-renders the
+picker rows and the bulk button. `refreshCentralAdversaries()` re-evaluates
+the bulk button when the adversary selection changes. A full
+`renderPrepPage()` (route entry, language switch, switching/creating/
+duplicating/deleting a Prep, catalogue retry) derives it all from scratch.
+
+Tests: `tests/potential-adversary-utils.test.js` (parser, families, Bandits
+rule, catalogue matching, real-data smoke) and
+`tests/prep-recommendations.test.js` (index, provenance aggregation, group
+ordering, bulk add).
+
 ## Main catalog progressive loading
 
 The main catalog (`state.route.name === 'catalog'` only — never the
@@ -633,8 +714,9 @@ directly rather than driving it through the DOM:
 | `js/route-utils.js` | hash parsing, building, and safe decoding |
 | `js/list-utils.js` | list name normalization and rename resolution |
 | `js/search-index.js` | environment search record building and matching |
-| `js/prep-utils.js` | Prep default shape, prep lifecycle (add/switch/remove prep, title resolution), selection toggling, search/Tier/Type/Category/Source filtering |
+| `js/prep-utils.js` | Prep default shape, prep lifecycle (add/switch/remove prep, title resolution), selection toggling, search/Tier/Type/Category/Source filtering, recommended-group ordering and the bulk-add of recommendations |
 | `js/freshcutgrass-utils.js` | FreshCutGrass encounter URL encoding |
+| `js/potential-adversary-utils.js` | Potential Adversaries parsing/alias/family resolution (incl. the Bandits → Jagged Knife rule), canonical-name catalogue matching, per-environment recommendation index, recommendation provenance aggregation |
 | `js/battle-points.js` | Battle Points base budget, per-type cost, automatic/manual adjustments, number formatting |
 | `js/random-environment-utils.js` | Random Environment card's Tier-badge derivation and pool pick |
 
@@ -668,6 +750,7 @@ stays copy-only.
 | Environment search index | `js/search-index.js` | `tests/search-index.test.js` |
 | Prep selection/search/filter logic | `js/prep-utils.js` | `tests/prep-utils.test.js` |
 | FreshCutGrass URL encoding | `js/freshcutgrass-utils.js` | `tests/freshcutgrass-utils.test.js` |
+| Potential Adversaries parsing, catalogue matching, recommendation aggregation | `js/potential-adversary-utils.js` | `tests/potential-adversary-utils.test.js`, `tests/prep-recommendations.test.js` |
 | Battle Points calculation | `js/battle-points.js` | `tests/battle-points.test.js` |
 | Initial loading shell lifecycle | `js/app.js` (`beginInitialLoading()` etc.) | `tests/loading-state.test.js` |
 | Random Environment card Tier badge/pick | `js/random-environment-utils.js` | `tests/random-environment-utils.test.js` |

@@ -453,6 +453,56 @@
     });
   }
 
+  /* ---------------- recommended adversaries ----------------
+   * Environment → Recommended Adversaries is advisory, derived UI state (see
+   * PotentialAdversaryUtils.aggregateRecommendations() for the
+   * { adversaryId => { environmentIds, sourceCount } } map these take). It
+   * never selects or deselects anything by itself; the only mutation here is
+   * the explicit bulk add below. Nothing in this section is persisted. */
+
+  /** Splits the already-filtered adversaries into the recommended group and
+   * everything else. Recommended rows sort by how many selected environments
+   * recommend them (descending), then Tier, then the caller's localized name
+   * comparison; the rest keep the plain Tier-then-name order. A recommended
+   * adversary the filters already removed is simply not in `filtered`, so it
+   * is never force-shown. Never mutates `filtered`. */
+  function partitionRecommendedAdversaries(filtered, recommendations, getTier, compareNames) {
+    var recommended = [];
+    var rest = [];
+    (filtered || []).forEach(function (adv) {
+      (recommendations && recommendations.has(adv.id) ? recommended : rest).push(adv);
+    });
+    recommended.sort(function (a, b) {
+      var diff = recommendations.get(b.id).sourceCount - recommendations.get(a.id).sourceCount;
+      if (diff !== 0) return diff;
+      diff = getTier(a) - getTier(b);
+      return diff !== 0 ? diff : compareNames(a, b);
+    });
+    return { recommended: recommended, rest: sortByTierThenName(rest, getTier, compareNames) };
+  }
+
+  /** The recommended ids the prep does not hold yet, deduplicated, in the
+   * order given. Independent of any picker search/Tier/Type filter. */
+  function missingRecommendedIds(adversaryIds, recommendedIds) {
+    var have = Object.create(null);
+    (adversaryIds || []).forEach(function (id) { have[id] = true; });
+    return normalizeIdList(recommendedIds).filter(function (id) { return !have[id]; });
+  }
+
+  /** The explicit "add all recommended" action: appends only the missing ids
+   * after the existing selection (which is preserved as-is), never duplicates,
+   * and never mutates `prep`. `changed` is false (and `prep` is returned
+   * untouched) when nothing was missing. */
+  function addRecommendedAdversaries(prep, recommendedIds) {
+    var addedIds = missingRecommendedIds(prep.adversaryIds, recommendedIds);
+    if (!addedIds.length) return { prep: prep, addedIds: [], changed: false };
+    return {
+      prep: Object.assign({}, prep, { adversaryIds: prep.adversaryIds.concat(addedIds) }),
+      addedIds: addedIds,
+      changed: true,
+    };
+  }
+
   /** Book source rank for the Items table sort below: 'core' before 'hnf',
    * anything else (there is no third source today) sorts after both rather
    * than throwing. */
@@ -667,6 +717,9 @@
     buildAdversarySearchIndex: buildAdversarySearchIndex,
     filterAdversariesByToolbar: filterAdversariesByToolbar,
     sortByTierThenName: sortByTierThenName,
+    partitionRecommendedAdversaries: partitionRecommendedAdversaries,
+    missingRecommendedIds: missingRecommendedIds,
+    addRecommendedAdversaries: addRecommendedAdversaries,
     itemSourceRank: itemSourceRank,
     itemKindRank: itemKindRank,
     sortItemsForPrep: sortItemsForPrep,

@@ -160,6 +160,14 @@ that safely discards legacy `primaryEnvironmentId`/quantity fields):
 [docs/architecture.md](docs/architecture.md), `js/prep-utils.js`,
 `js/safe-storage.js`.
 
+Prep's environment-driven adversary recommendations are advisory and
+derived: selecting or removing an environment never selects or removes an
+adversary, `data/prep.json` is the whitelist, and the only Potential
+Adversaries parser is `js/potential-adversary-utils.js` — see
+[docs/product-decisions.md](docs/product-decisions.md) PD-008 and
+[docs/architecture.md](docs/architecture.md) "Environment → Recommended
+Adversaries".
+
 ## Commands
 
 ```bash

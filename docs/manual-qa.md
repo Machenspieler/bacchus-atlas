@@ -302,6 +302,67 @@ locally") before starting.
 - [ ] A selected adversary/item's Tier/Type/source meta line in both the
       picker row and the central selected list.
 
+### Environment → Recommended Adversaries
+
+Advisory only — see [PD-008](product-decisions.md). Check in EN and
+RU. Useful environments: **Bandit Hideout** (7 Jagged Knife), **Raging River**
+(the same 7 + Bear + Glass Snake — overlaps Bandit Hideout), **Green Doom
+Skies** (only an unsupported name).
+
+- [ ] **No environment selected**: no ★ on any row, no "Recommended" group,
+      no `★` button in the Adversaries header, picker looks like the plain
+      flat list.
+- [ ] **One environment** (Bandit Hideout): a "★ RECOMMENDED FOR SELECTED
+      ENVIRONMENTS  7" group sits above the regular rows, followed by a thin
+      divider and no second heading; the 7 rows have a gold ★ before the
+      name, a faint gold tint and thin left line; hovering the ★ shows
+      "Recommended for: Bandit Hideout" (RU: "Рекомендовано для: …"); the
+      checkbox state of every row is unchanged — **nothing is selected
+      automatically**.
+- [ ] **Row geometry**: a recommended row is exactly as tall as an ordinary
+      one; the checkbox, artwork button and name link are still the only
+      three interactive zones, in that Tab order (the ★ is not focusable and
+      not inside the link).
+- [ ] **Two overlapping environments** (+ Raging River): no duplicate rows;
+      the 7 shared adversaries come before Bear/Glass Snake; their tooltip
+      lists both environments (names localized); the group count is 9.
+- [ ] **Filters**: search, Tier and Type still work. A Tier that excludes
+      every recommendation removes the group entirely (no empty heading); a
+      search matching some keeps only those under the heading, above the
+      regular matches; hidden recommendations are never force-shown;
+      `{n} of {total}` still counts every filtered row; the `★ +N` number
+      does **not** change with the filters.
+- [ ] **Bulk add**: `★ +9` (tooltip "Add 9 recommended adversaries")
+      appears before the FreshCutGrass link; one click adds only the missing
+      recommendations, keeps the ones already selected, and updates the
+      central list and its count, Battle Points, the >10 warning, the
+      FreshCutGrass export, every affected picker checkbox and its
+      "Add…/Remove…" label; one toast "Added 9 recommended adversaries";
+      the button becomes `★ ✓` ("All recommended adversaries are already
+      selected"), stays focusable, ignores Enter/Space/click, and keeps
+      keyboard focus; the picker's filters are untouched. With exactly one
+      missing it reads `★ +1` / "Add 1 recommended adversary".
+- [ ] **Remove an environment after bulk add** (central ×, picker checkbox,
+      trash, or the quick action / detail overlay): the selected adversaries
+      all stay; stars and tooltips update immediately (the shared rows lose
+      the removed environment, the exclusive ones lose the ★ and drop out of
+      the group); removing the last one hides the group and the button.
+      Adding an environment only adds stars — never a selection.
+- [ ] **Unsupported/custom names only** (Green Doom Skies): no ★, no group,
+      no button, no placeholder rows, nothing in the console.
+- [ ] **Prep switching**: create, switch, duplicate and delete a Prep — the
+      stars, group and button always reflect the *active* Prep's
+      environments; a language switch rebuilds them in the new language.
+- [ ] **Storage failure** (e.g. block `localStorage.setItem` in DevTools),
+      then `★ +N`: the selection changes for this tab, the storage warning
+      appears, and there is **no** "Added …" success toast.
+- [ ] **Layout**: 1920×1080 — group heading on one line; ~1366×768 laptop —
+      the central Adversaries header (title, count, Battle Points, `★ +N`,
+      FreshCutGrass) doesn't overlap, wrap or clip the title in EN or RU
+      (with a two-digit `★ +12` the RU title may ellipsize by a few pixels);
+      the long RU group heading wraps inside the narrow picker column; rows
+      keep their height; focus ring visible on the `★` button.
+
 ## Language
 
 - [ ] English: full pass over whatever changed.

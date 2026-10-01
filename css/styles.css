@@ -2660,6 +2660,36 @@ body:not([data-route="prep"]) .header-actions::after {
 .prep-adv-link:hover .prep-sel-ext, .prep-adv-link:focus-visible .prep-sel-ext { opacity: 1; color: var(--hope-soft); }
 .prep-adv-link:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); border-radius: var(--r-sm); }
 
+/* ---- Environment → Recommended Adversaries (All Adversaries picker) ----
+   Advisory only: a compact group heading, a restrained gold row treatment and
+   a non-interactive star. Every colour is the --hope token (tints via
+   color-mix), nothing here changes row geometry, and hover/focus/selected
+   states always win over the resting tint. No animation, no glow. */
+.prep-rec-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2);
+  padding: var(--s-1) var(--sel-pad) var(--s-2);
+}
+.prep-rec-title {
+  margin: 0; min-width: 0; display: flex; align-items: baseline; gap: var(--s-1);
+  font-family: var(--font-ui); font-size: var(--fs-xs); line-height: var(--lh-xs); font-weight: 600;
+  letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--hope-soft);
+}
+/* The picker column is narrow and the RU label is long: wrap rather than clip. */
+.prep-rec-title span:not(.prep-rec-title-star) { min-width: 0; overflow-wrap: anywhere; }
+.prep-rec-title-star { flex: none; color: var(--hope); }
+.prep-rec-count { flex: none; font-family: var(--font-mono); font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--muted); font-variant-numeric: tabular-nums; }
+.prep-rec-divider { height: 1px; margin: var(--s-2) var(--sel-pad); background: var(--line-faint); }
+.prep-adv-row.is-recommended {
+  background: color-mix(in srgb, var(--hope) 6%, transparent);
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--hope) 55%, transparent);
+}
+.prep-adv-row.is-recommended:hover { background: var(--ink-hover); }
+/* A status marker, never a control: no cursor change, out of the tab order. */
+.prep-rec-star {
+  flex: none; width: 14px; display: flex; align-items: center; justify-content: center;
+  color: var(--hope); font-size: var(--fs-sm); line-height: 1; cursor: default;
+}
+
 /* ---- thumbnails: biome art (environments) or transparent-background PNG
    (adversaries/items), with a fallback that is never a broken-image icon ---- */
 .prep-thumb { flex: none; width: 48px; height: 48px; border-radius: var(--r-sm); object-fit: cover; }
@@ -2825,6 +2855,19 @@ body:not([data-route="prep"]) .header-actions::after {
 .prep-freshcutgrass-wrap { flex: none; }
 .prep-freshcutgrass-wrap:empty { display: none; }
 .prep-freshcutgrass-link { flex: none; height: 30px; padding: 0 10px; white-space: nowrap; }
+/* The bulk-add action sits before the FreshCutGrass link; absent entirely
+   (not disabled) when the selected environments recommend nothing supported.
+   Its "★ ✓" state is aria-disabled, so it stays focusable — .btn already
+   dims it; it is a finished state rather than a refusal, hence no not-allowed. */
+/* Both header actions share one tight group so the compact star button costs
+   as little of the (already full) laptop-width header as possible. */
+.prep-central-actions { flex: none; display: flex; align-items: center; gap: var(--s-1); }
+.prep-central-actions:not(:has(> :not(:empty))) { display: none; }
+.prep-recommend-wrap { flex: none; }
+.prep-recommend-wrap:empty { display: none; }
+.prep-recommend-btn { flex: none; height: 30px; padding: 0 var(--s-2); white-space: nowrap; color: var(--hope-soft); font-variant-numeric: tabular-nums; }
+.prep-recommend-btn[aria-disabled="true"] { cursor: default; }
+.prep-recommend-btn:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
 
 /* ---- Battle Points (js/battle-points-ui.js) ----
    Summary + character stepper in the Adversaries header, and the breakdown
@@ -2894,6 +2937,17 @@ body:not([data-route="prep"]) .header-actions::after {
   .bp-step { width: 24px; }
   .bp-pc-input { width: 2.2em; }
   .bp-summary { padding-inline: 10px; }
+}
+
+/* Typical 1366px laptop: the Adversaries header is full, so its two text
+   actions (★ +N and FreshCutGrass) tighten together — same padding, same
+   height — instead of the section title being ellipsized. */
+@container prep-central (max-width: 600px) {
+  .prep-recommend-btn, .prep-freshcutgrass-link { padding-inline: 6px; }
+  .bp-summary { padding-inline: 8px; }
+  .bp { gap: 4px; }
+  .prep-central-lead { gap: 4px; }
+  .prep-central-head { gap: 6px; }
 }
 
 /* ---- popover (position: fixed, so opening never shifts layout) ---- */

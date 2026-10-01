@@ -71,6 +71,13 @@ const state = {
   // it indexes" pattern environmentPrepSearchIndex uses above. See
   // "Prep's compact 'All Adversaries' toolbar" in docs/architecture.md.
   adversaryPrepSearchIndex: new Map(),
+  // Environment id -> supported Prep adversary ids (the ids in data/prep.json
+  // that the environment's Potential Adversaries text resolves to). Derived,
+  // never persisted; rebuilt by rebuildPrepRecommendationIndex() only when the
+  // environment catalogue or the Prep catalogue is replaced — never per row or
+  // per Prep change. See "Environment → Recommended Adversaries" in
+  // docs/architecture.md.
+  prepRecommendationIndex: new Map(),
   // The compact "All Items" toolbar's own precomputed search index (name +
   // Kind/Source alias words, EN+RU at once) — same "built once alongside
   // the catalogue it indexes" pattern as environmentPrepSearchIndex/
@@ -234,6 +241,7 @@ function setEnvironmentCatalog(environments) {
   // see js/app.js's init()), never rebuilt per keystroke or language switch.
   state.environmentPrepSearchIndex = PrepUtils.buildEnvironmentSearchIndex(
     environments, state.i18n.en, state.i18n.ru);
+  rebuildPrepRecommendationIndex();
 }
 
 /* The members of a list, in catalog order. Taken off the catalog rather than off
@@ -383,257 +391,16 @@ function bilingual(field) { return field?.[state.lang] || field?.en || field?.ru
 
 /* ---------------- FreshCutGrass encounter builder ---------------- */
 
-/* A potential_adversaries entry is plain text — "Beasts (Bear, Dire Wolf,
- * Glass Snake)", a named group followed by its members in parentheses — or,
- * with no parentheses, a single adversary named by itself (e.g. "Sellsword").
- * Parsing that text, rather than hand-listing monster names per environment,
- * is what lets the encounter builder below stay generic: it reads the same
- * data the "Potential Adversaries" line already renders from. */
-/** Two more Potential Adversaries shapes fall outside the ordinary "Label
- * (Member, Member)" form, and neither needs the SRD to parse correctly —
- * both are pure punctuation, not creature names:
- *
- * - A whole entry can be "Tier N: Name, Name" (RU "Ранг N: …") instead of a
- *   single string with parens — the encounter table for a tiered event like
- *   a fighting arena. The names after the colon are already complete, so
- *   this parses exactly like a parenthetical group, just with ": " instead
- *   of " (" ... ")" as the wrapping punctuation (see `style` below).
- * - A parenthetical can hold a tier/role annotation instead of members —
- *   "Bandits (tier 2)", "Barbara Yaga, Barkeep (Tier 4 Solo)". That's
- *   metadata about the one adversary named before it, not a list of
- *   adversaries to look up, so it's kept for display (as `annotation`) but
- *   never treated as a member to resolve or link. */
-function parsePotentialAdversaryEntry(entry) {
-  const text = String(entry || '').trim();
-  const tierMatch = text.match(/^((?:Tier|Ранг)\s+\d+):\s*(.+)$/i);
-  if (tierMatch) return { label: tierMatch[1].trim(), members: splitAdversaryMembers(tierMatch[2]), isGroup: true, style: 'tier' };
-  const match = text.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
-  if (!match) return { label: text, members: text ? [text] : [], isGroup: false };
-  if (/^(?:tier|ранг)\s*\d+/i.test(match[2].trim())) {
-    const label = match[1].trim();
-    return { label, members: label ? [label] : [], isGroup: false, annotation: match[2].trim() };
-  }
-  return { label: match[1].trim(), members: splitAdversaryMembers(match[2]), isGroup: true, style: 'paren' };
-}
-
-/** Splits a group's parenthetical member list on commas, same as always —
- * except for the rare list that uses "or" before its last item instead of a
- * comma ("Green or Red Ooze", RU "Зелёная или Красная Слизь"). English (and
- * Russian) drop the shared trailing noun from every item but the last one, so
- * a plain split leaves the first item short a word ("Green" instead of
- * "Green Ooze"). When "or"/"или" is present, the last item's trailing words
- * (everything after its first word) are treated as that shared noun and
- * appended to any earlier item that doesn't already end with it. Plain
- * comma lists never hit this path, so multi-word distinct names in an
- * ordinary list ("Gobstalker, Green Ooze, Ravenous Mockery, Rust Eater")
- * are untouched. */
-function splitAdversaryMembers(text) {
-  /* \b doesn't mark a boundary around Cyrillic letters in JS regex (\w is
-   * ASCII-only), so "или" is matched by surrounding whitespace instead —
-   * the same pattern the split below uses. */
-  if (!/\s(?:or|или)\s/i.test(text)) return text.split(',').map(s => s.trim()).filter(Boolean);
-  const parts = text.split(/\s*,\s*|\s+(?:or|или)\s+/i).map(s => s.trim()).filter(Boolean);
-  const last = parts[parts.length - 1];
-  const lastWords = last.split(/\s+/);
-  if (lastWords.length < 2) return parts;
-  const suffix = lastWords.slice(1).join(' ');
-  return parts.map((p, i) => (i === parts.length - 1 || p.toLowerCase().endsWith(suffix.toLowerCase())) ? p : `${p} ${suffix}`);
-}
-
-/* A handful of Potential Adversaries entries don't name an adversary at all:
- * "Any"/"All" (the GM picks whatever fits) or a citation like
- * 'ghostly versions of other adversaries (see "Ghostly Form")' pointing at a
- * feature instead of naming a creature. Neither is something FreshCutGrass's
- * bestiary can look up, so both are filtered out here rather than becoming a
- * broken link or a fake entry in the whole-environment payload. Checked only
- * on the section's own text ("see …", quote marks, the bare word "any"/"all"),
- * so it holds for any environment's data rather than one hand-picked id. */
-function looksLikeAdversaryName(name) {
-  const text = String(name || '').trim();
-  if (!text) return false;
-  if (/^(?:any|all)$/i.test(text)) return false;
-  if (/[“”"]/.test(text)) return false;
-  if (/\bsee\b/i.test(text)) return false;
-  return true;
-}
-
-/** A handful of Potential Adversaries groups list their members as bare role
- * suffixes rather than full names — "Jagged Knife Bandits (Hexer, ...)" means
- * the FreshCutGrass bestiary entry "Jagged Knife Hexer", not "Hexer" on its
- * own — so the name FreshCutGrass needs is the group's own prefix plus the
- * member, not the member text as written. That prefix isn't always the full
- * group label either: "Outer Realms Monstrosities" names its members "Outer
- * Realms Abomination" etc., dropping "Monstrosities". A label absent here is
- * assumed to already list complete adversary names, e.g. "Beasts (Bear,
- * Glass Snake)", so it's passed through unchanged. */
-const ADVERSARY_GROUP_NAME_PREFIXES = {
-  'Jagged Knife Bandits': 'Jagged Knife',
-  'Jagged Knife': 'Jagged Knife',
-  'Outer Realms Monstrosities': 'Outer Realms',
-  'Outer Realms': 'Outer Realms',
-  Skeletons: 'Skeleton',
-  Spectral: 'Spectral',
-  'Spectral Warriors': 'Spectral',
-  Pirates: 'Pirate',
-  Cultists: 'Cult',
-  Demons: 'Demon of',
-  'Vault Guardians': 'Vault Guardian',
-  Hallowed: 'Hallowed',
-  Fallen: 'Fallen',
-};
-
-/** A few groups don't follow the prefix pattern above at all — "Guards (Head,
- * Archer, Bladed)" names its members with the role first and "Guard" dropped,
- * so neither leaving the text alone nor prepending a prefix produces the
- * FreshCutGrass name ("Head Guard", not "Head" or "Guards Head"). Those need
- * an explicit member-by-member alias instead of a prefix or suffix rule.
- * "Captain" is an alias some source text uses for the same role as "Head" —
- * both map to the FreshCutGrass entry "Head Guard", since "Guard Captain"
- * isn't a bestiary entry of its own. The singular "Guard (...)" label (used
- * when a card lists only one guard-type group) shares the same member map as
- * the plural "Guards (...)". */
-const GUARD_GROUP_MEMBER_ALIASES = {
-  Head: 'Head Guard',
-  Captain: 'Head Guard',
-  Archer: 'Archer Guard',
-  Bladed: 'Bladed Guard',
-};
-const ADVERSARY_GROUP_MEMBER_ALIASES = {
-  Guards: GUARD_GROUP_MEMBER_ALIASES,
-  Guard: GUARD_GROUP_MEMBER_ALIASES,
-  /* "Assassins" doesn't follow one uniform prefix or suffix: Apprentice and
-   * Master take "Assassin" as a suffix, but Poisoner takes it as a prefix
-   * ("Assassin Poisoner", not "Poisoner Assassin") — confirmed against
-   * FreshCutGrass's own adversary list, which has no plain "Poisoner". */
-  Assassins: {
-    Apprentice: 'Apprentice Assassin',
-    Master: 'Master Assassin',
-    Poisoner: 'Assassin Poisoner',
-  },
-  /* "Sundry Ne'er-Do-Wells (Jagged Knife Bandit, Lackey)" already spells its
-   * first member out in full; only "Lackey" is bare and needs disambiguating
-   * to the "Jagged Knife Lackey" bestiary entry. */
-  "Sundry Ne'er-Do-Wells": { Lackey: 'Jagged Knife Lackey' },
-  /* Elemental groups wrap the bare member on both sides ("Minor" + member +
-   * "Elemental"), which fullAdversaryName's single prefix can't express. */
-  Elementals: { 'Greater Earth': 'Greater Earth Elemental' },
-  'Greater Elementals': { Earth: 'Greater Earth Elemental', Water: 'Greater Water Elemental' },
-  'Minor Elementals': { Fire: 'Minor Fire Elemental', Chaos: 'Minor Chaos Elemental' },
-  /* "Fallen (Shock Troop, Sorcerer, Warlord)" — bare "Warlord" doesn't
-   * prefix cleanly since the bestiary has no plain "Fallen Warlord", only
-   * subtitled variants. Confirmed this environment (Fortress) means the
-   * "Realm-Breaker" one specifically. */
-  Fallen: { Warlord: 'Fallen Warlord: Realm-Breaker' },
-};
-
-/** The FreshCutGrass-recognizable name for one member of a Potential
- * Adversaries group — see ADVERSARY_GROUP_MEMBER_ALIASES and
- * ADVERSARY_GROUP_NAME_PREFIXES above. A member that's already spelled out in
- * full ("Cultists (Cult Adept, Cult Fang, Cult Initiate)") is left alone
- * rather than getting the prefix prepended a second time ("Cult Cult
- * Adept") — some environments mix bare roles and full names in the same
- * group, e.g. "Sundry Ne'er-Do-Wells (Jagged Knife Bandit, Lackey)". */
-function fullAdversaryName(groupLabel, memberName) {
-  const alias = ADVERSARY_GROUP_MEMBER_ALIASES[groupLabel]?.[memberName];
-  if (alias) return alias;
-  const prefix = ADVERSARY_GROUP_NAME_PREFIXES[groupLabel];
-  if (!prefix) return memberName;
-  return memberName === prefix || memberName.startsWith(`${prefix} `) ? memberName : `${prefix} ${memberName}`;
-}
-
-/** A handful of Potential Adversaries entries — grouped or standalone — don't
- * enumerate their members at all, instead naming a family and leaving the GM
- * to pick any of it: "Criminals (any Jagged Knife)", or the bare entry "any
- * Cult member". FreshCutGrass has no notion of "any", so these expand to the
- * family's full roster, taken from the same wording spelled out in full
- * elsewhere in this file — e.g. "Jagged Knife Bandits (Bandit, Hexer,
- * Kneebreaker, Lackey, Lieutenant, Shadow, Sniper)" and "Cultists (Adept,
- * Fang, Initiate)". Both the singular and plural family name are listed
- * since source text uses either ("any Vault Guardian" / "any Vault
- * Guardians"). */
-const ADVERSARY_FAMILY_MEMBERS = {
-  'Jagged Knife': ['Jagged Knife Bandit', 'Jagged Knife Hexer', 'Jagged Knife Kneebreaker', 'Jagged Knife Lackey', 'Jagged Knife Lieutenant', 'Jagged Knife Shadow', 'Jagged Knife Sniper'],
-  'Vault Guardian': ['Vault Guardian Gaoler', 'Vault Guardian Sentinel', 'Vault Guardian Turret'],
-  'Vault Guardians': ['Vault Guardian Gaoler', 'Vault Guardian Sentinel', 'Vault Guardian Turret'],
-  'Outer Realms': ['Outer Realms Abomination', 'Outer Realms Corrupter', 'Outer Realms Thrall'],
-  Cult: ['Cult Adept', 'Cult Fang', 'Cult Initiate'],
-  Pirate: ['Pirate Captain', 'Pirate Raiders', 'Pirate Tough'],
-  Pirates: ['Pirate Captain', 'Pirate Raiders', 'Pirate Tough'],
-};
-
-/** The text named by an "any X" (or "any X member"/"any X being") phrase —
- * "any Cult member" -> "Cult", "any Jagged Knife" -> "Jagged Knife", "any
- * Jagged Knife Bandit" -> "Jagged Knife Bandit". Returns null for text that
- * isn't an "any …" phrase at all. This is the raw named text, not
- * necessarily a family key by itself — see familyForAnyPhrase. */
-function anyAdversaryFamily(text) {
-  const match = String(text).trim().match(/^any\s+(.+)$/i);
-  if (!match) return null;
-  return match[1].trim().replace(/\s+(members?|beings?)$/i, '').trim();
-}
-
-/** The ADVERSARY_FAMILY_MEMBERS key an "any X" phrase's named text refers
- * to. Usually X is the family name outright ("any Jagged Knife"), but
- * source text sometimes names one of the family's own members as a
- * stand-in for the whole family — "Hired goons (any Jagged Knife Bandit)"
- * means any Jagged Knife-gang member, not literally just the "Bandit" rank
- * — so a phrase that starts with a known family name still counts, even
- * with extra words after it. */
-function familyForAnyPhrase(phrase) {
-  if (ADVERSARY_FAMILY_MEMBERS[phrase]) return phrase;
-  return Object.keys(ADVERSARY_FAMILY_MEMBERS).find(family => phrase.startsWith(`${family} `)) || null;
-}
-
-/** Every FreshCutGrass-recognizable name a single Potential Adversaries
- * member (or, for a bare non-group entry, the whole entry) resolves to —
- * almost always exactly one, but an "any Jagged Knife" style family phrase
- * expands to every member of that family, and a name FreshCutGrass has
- * nothing to look up for ("Any", a "see …" citation) resolves to none.
- * groupLabel is null for a bare non-group entry, where no prefix applies.
- * "Vampires (all, including Lamia)" names one adversary through a citation
- * rather than stating it plainly — "including Lamia" means "Lamia" for
- * lookup purposes, same idea as "any X" naming a family instead of a member,
- * just for a single already-complete name instead of a whole roster. A bare
- * (non-grouped) entry that's itself a family name — "Pirates", no "any" and
- * no parenthetical members — means the whole family too: the SRD's "Pirates"
- * potential-adversary entry covers Pirate Captain/Raiders/Tough, not a single
- * bestiary entry called "Pirates". This only fires for bare entries
- * (groupLabel === null) and only on an exact family-key match, not the
- * startsWith fuzzy match familyForAnyPhrase does for "any X member" text —
- * that fuzzy match is safe there because "any" already signals "pick from
- * this family", but a bare full name like "Vault Guardian Turret" names one
- * specific adversary and must not expand to its whole family. */
-function resolveAdversaryNames(groupLabel, memberName) {
-  const phrase = anyAdversaryFamily(memberName);
-  if (phrase != null) {
-    const familyKey = familyForAnyPhrase(phrase);
-    if (familyKey) return ADVERSARY_FAMILY_MEMBERS[familyKey];
-    return looksLikeAdversaryName(phrase) ? [phrase] : [];
-  }
-  if (groupLabel == null) {
-    const bareFamily = ADVERSARY_FAMILY_MEMBERS[String(memberName).trim()];
-    if (bareFamily) return bareFamily;
-  }
-  const includingMatch = String(memberName).trim().match(/^including\s+(.+)$/i);
-  const nameToResolve = includingMatch ? includingMatch[1].trim() : memberName;
-  return looksLikeAdversaryName(nameToResolve) ? [fullAdversaryName(groupLabel, nameToResolve)] : [];
-}
-
-/** Every adversary named anywhere in an environment's Potential Adversaries
- * text, in English — FreshCutGrass has no notion of the site's other
- * languages — deduplicated but kept in the order they first appear. */
-function envAdversaryNames(env) {
-  const entries = env.potential_adversaries?.en || [];
-  const seen = new Set();
-  entries.forEach(entry => {
-    const parsed = parsePotentialAdversaryEntry(entry);
-    const groupLabel = parsed.isGroup ? parsed.label : null;
-    parsed.members.forEach(name => {
-      resolveAdversaryNames(groupLabel, name).forEach(n => seen.add(n));
-    });
-  });
-  return [...seen];
-}
+/* Parsing and resolving an environment's Potential Adversaries text — groups,
+ * aliases, adversary families, "Tier N:" entries — lives in
+ * js/potential-adversary-utils.js (PotentialAdversaryUtils), the one parser in
+ * the app. The environment card's FreshCutGrass links below and Prep's
+ * recommended adversaries both read the same canonical English names through
+ * it. */
+const {
+  parsePotentialAdversaryEntry, looksLikeAdversaryName, anyAdversaryFamily,
+  resolveAdversaryNames, envAdversaryNames,
+} = PotentialAdversaryUtils;
 
 /** The one FreshCutGrass URL encoder for the whole app — see
  * js/freshcutgrass-utils.js (FreshCutGrassUtils) for the pure
@@ -3360,6 +3127,28 @@ function setPrepCatalog(data) {
   // Items toolbar's own search index can be built here too, right
   // alongside the adversary one above.
   state.itemBrowserSearchIndex = PrepUtils.buildItemSearchIndex(prepItems());
+  rebuildPrepRecommendationIndex();
+}
+
+/** Re-derives which supported Prep adversaries each environment recommends.
+ * Needs both catalogues, so it runs from whichever of setEnvironmentCatalog()
+ * and setPrepCatalog() lands last (and again on a catalogue retry) — a pure
+ * parse through PotentialAdversaryUtils, matched on canonical English names
+ * against data/prep.json, which is the whitelist of what can be recommended.
+ * Unknown/custom names simply fall out; nothing is logged or rendered for them. */
+function rebuildPrepRecommendationIndex() {
+  const nameIndex = PotentialAdversaryUtils.buildCatalogueNameIndex(state.prepCatalog.adversaries);
+  state.prepRecommendationIndex = PotentialAdversaryUtils.buildEnvironmentRecommendationIndex(
+    state.builtinEnvs, nameIndex);
+}
+
+/** The active Prep's recommendations with provenance — Map { adversaryId =>
+ * { environmentIds, sourceCount } } — derived from its selected environments
+ * on demand. Cheap (at most MAX_ENVIRONMENTS index lookups) and never stored,
+ * so it can't go stale against the selection. */
+function prepRecommendations(prep = activePrep()) {
+  return PotentialAdversaryUtils.aggregateRecommendations(
+    prep ? prep.environmentIds : [], state.prepRecommendationIndex);
 }
 
 /** Prep's items are ids into the shared item catalog (see itemById()
@@ -3749,7 +3538,7 @@ function prepAdvThumbHtml(adv, name) {
 /** Three isolated action zones — checkbox (selection), artwork button (the
  * art overlay), and one link wrapping name+meta (FreshCutGrass) — never a
  * whole-row click target. See the "All Adversaries" row spec in CLAUDE.md. */
-function advPickerRowHtml(adv, prep) {
+function advPickerRowHtml(adv, prep, recommendedFor = null) {
   const checked = prep.adversaryIds.includes(adv.id);
   const name = spName(adv);
   const fcgUrl = adversaryFreshCutGrassUrl(adv);
@@ -3765,17 +3554,62 @@ function advPickerRowHtml(adv, prep) {
       </a>`
     : `<div class="prep-row-text prep-adv-link">${nameHtml}${metaHtml}</div>`;
   return `
-    <div class="prep-row prep-adv-row" data-adv-id="${escapeAttr(adv.id)}" role="listitem">
+    <div class="prep-row prep-adv-row${recommendedFor ? ' is-recommended' : ''}" data-adv-id="${escapeAttr(adv.id)}" role="listitem">
       ${prepSelectionCellHtml('data-sp-toggle-adv', adv.id, checked, name)}
       ${prepAdvThumbHtml(adv, name)}
+      ${recommendedFor ? recommendedStarHtml(recommendedFor) : ''}
       ${text}
     </div>`;
 }
 
+/** The "Recommended for: Bastion, Faestone Wode" text for a recommended row —
+ * localized environment names, in the order the Prep selected them. */
+function recommendedForText(recommendation, envNameById) {
+  const names = recommendation.environmentIds.map(id => envNameById.get(id)).filter(Boolean);
+  return t('prep_recommended_for').replace('{environments}', () => names.join(', '));
+}
+
+/** A non-interactive status marker, never a button: a sibling of the three
+ * action zones (checkbox, artwork, name link), outside the name <a> — whose
+ * own aria-label would otherwise swallow it — and out of the tab order. The
+ * sources are in both the tooltip and the accessible name (role="img"), so
+ * the gold colour is never the only carrier of the meaning. */
+function recommendedStarHtml(sourcesText) {
+  return `<span class="prep-rec-star" role="img" data-tip="${escapeAttr(sourcesText)}" aria-label="${escapeAttr(sourcesText)}"><span aria-hidden="true">★</span></span>`;
+}
+
+/** The filtered adversaries, recommended ones first. Search, Tier and Type
+ * stay authoritative: they run first (prepFilteredAdversaries()) and the
+ * result is only then partitioned, so a recommendation the filters hide is
+ * never force-shown and nothing appears twice. With no supported
+ * recommendation the picker is the plain flat list it always was. */
 function advPickerListHtml(prep) {
   const advs = prepFilteredAdversaries();
   if (!advs.length) return `<p class="prep-empty">${escapeHtml(t('no_results'))}</p>`;
-  return advs.map(adv => advPickerRowHtml(adv, prep)).join('');
+  const recommendations = prepRecommendations(prep);
+  const listLabel = ` aria-labelledby="prep-adv-heading"`;
+  if (!recommendations.size) {
+    return `<div role="list"${listLabel}>${advs.map(adv => advPickerRowHtml(adv, prep)).join('')}</div>`;
+  }
+  const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
+  const { recommended, rest } = PrepUtils.partitionRecommendedAdversaries(
+    advs, recommendations, adv => adv.tier, (a, b) => collator.compare(spName(a), spName(b)));
+  const envNameById = new Map(allEnvs().map(env => [env.id, envName(env)]));
+  const restHtml = rest.length
+    ? `<div role="list"${listLabel}>${rest.map(adv => advPickerRowHtml(adv, prep)).join('')}</div>`
+    : '';
+  if (!recommended.length) return restHtml;
+  const label = t('prep_recommended_group');
+  return `
+    <section class="prep-rec-group" aria-labelledby="prep-rec-heading">
+      <div class="prep-rec-head">
+        <h3 class="prep-rec-title" id="prep-rec-heading"><span class="prep-rec-title-star" aria-hidden="true">★</span><span>${escapeHtml(label)}</span><span class="sr-only">: ${recommended.length}</span></h3>
+        <span class="prep-rec-count" aria-hidden="true">${recommended.length}</span>
+      </div>
+      <div role="list" aria-labelledby="prep-rec-heading">${recommended.map(adv => advPickerRowHtml(adv, prep, recommendedForText(recommendations.get(adv.id), envNameById))).join('')}</div>
+    </section>
+    ${rest.length ? '<div class="prep-rec-divider" role="presentation"></div>' : ''}
+    ${restHtml}`;
 }
 
 /** The four pentagonal Tier toggle buttons — same OR-multiselect control and
@@ -3839,7 +3673,7 @@ function advPickerColumnHtml(prep) {
       <h2 id="prep-adv-heading" class="sr-only">${t('prep_all_adversaries')}</h2>
       <div class="prep-picker-list">
         ${advToolbarHtml()}
-        <div id="prep-adv-list" role="list" aria-labelledby="prep-adv-heading">${advPickerListHtml(prep)}</div>
+        <div id="prep-adv-list">${advPickerListHtml(prep)}</div>
       </div>
     </section>`;
 }
@@ -4689,6 +4523,21 @@ function refreshCentralEnvironments() {
   refreshClearAllSlot('environments', prep.environmentIds.length);
   refreshEnvCheckboxDisabled(prep);
   syncCentralTruncationTips();
+  syncPrepRecommendations();
+}
+
+/** The one place recommendation-dependent UI follows a change of the Prep's
+ * selected environments. Every path that changes them — the picker checkbox,
+ * the central × and trash, the catalog/Lists quick action, the detail overlay
+ * and the Add to… dialog — already ends in refreshCentralEnvironments(), so
+ * hooking it here covers them all (a full renderPrepPage(), used for
+ * switching/creating/duplicating/deleting a prep and for language changes,
+ * derives everything from scratch anyway). Rebuilds the All Adversaries rows
+ * (stars, tooltips, the Recommended group) and the bulk button; selected
+ * adversaries are never touched. */
+function syncPrepRecommendations() {
+  if (document.getElementById('prep-adv-list')) refreshAdvPicker();
+  refreshRecommendBulkAction();
 }
 
 /** Non-blocking: a lot of selected adversaries is a play-experience
@@ -4787,8 +4636,89 @@ function refreshCentralAdversaries() {
   const warning = document.getElementById('prep-central-adv-warning');
   if (warning) warning.innerHTML = advWarningHtml(prep);
   refreshFreshCutGrassLink();
+  refreshRecommendBulkAction();
   BattlePointsUI.refresh();
   syncCentralTruncationTips();
+}
+
+/* ---------------- recommended adversaries: bulk action ----------------
+ * The "★ +N" button in the central Adversaries header is the only way a
+ * recommendation ever becomes a selection — picking an environment never
+ * selects anything, and removing one never deselects anything. It is derived
+ * state all the way down: N is recomputed from the selected environments and
+ * the current adversary selection every time, ignoring the picker's search/
+ * Tier/Type filters. */
+
+/** What the button should currently be, or null when the selected
+ * environments recommend nothing supported (the button is then absent, not
+ * disabled). `done` is the `★ ✓` state: every recommendation already
+ * selected — still rendered and focusable, but inert (aria-disabled). */
+function recommendBulkView(prep) {
+  if (!prep) return null;
+  const recommendations = prepRecommendations(prep);
+  if (!recommendations.size) return null;
+  const missing = PrepUtils.missingRecommendedIds(prep.adversaryIds, [...recommendations.keys()]);
+  const n = missing.length;
+  if (!n) {
+    const tip = t('prep_recommend_all_selected');
+    return { done: true, label: '★ ✓', tip };
+  }
+  return { done: false, label: `★ +${n}`, tip: t(n === 1 ? 'prep_recommend_add_one' : 'prep_recommend_add').replace('{n}', n) };
+}
+
+function recommendBulkHtml(prep) {
+  const view = recommendBulkView(prep);
+  if (!view) return '';
+  return `<button type="button" class="btn btn-ghost btn-sm prep-recommend-btn${view.done ? ' is-done' : ''}" id="prep-recommend-btn"
+             data-sp-add-recommended aria-disabled="${view.done}" data-tip="${escapeAttr(view.tip)}" aria-label="${escapeAttr(view.tip)}">${escapeHtml(view.label)}</button>`;
+}
+
+/** Brings the button in line with state without replacing it while it exists,
+ * so a keyboard user who just pressed it keeps focus (it simply turns into
+ * `★ ✓`). It appears/disappears only when the recommendations themselves
+ * start/stop existing. */
+function refreshRecommendBulkAction() {
+  const wrap = document.getElementById('prep-recommend-wrap');
+  if (!wrap) return;
+  const view = recommendBulkView(activePrep());
+  const btn = wrap.querySelector('#prep-recommend-btn');
+  if (!view) { wrap.innerHTML = ''; return; }
+  if (!btn) { wrap.innerHTML = recommendBulkHtml(activePrep()); return; }
+  btn.classList.toggle('is-done', view.done);
+  btn.setAttribute('aria-disabled', String(view.done));
+  btn.setAttribute('aria-label', view.tip);
+  btn.dataset.tip = view.tip;
+  btn.textContent = view.label;
+  // A tooltip already up (hovered or focused) would keep the old wording.
+  if (tipTarget === btn) showTip(btn);
+}
+
+/** Appends every supported recommendation the Prep does not hold yet —
+ * ignoring the picker's search/Tier/Type filters, keeping the existing
+ * selection — through the same updatePrep() path as any other adversary
+ * change, then syncs every surface that shows adversaries. The success toast
+ * only follows a successful write. */
+function addRecommendedAdversariesToActivePrep() {
+  const prep = activePrep();
+  if (!prep) return;
+  const outcome = PrepUtils.addRecommendedAdversaries(prep, [...prepRecommendations(prep).keys()]);
+  if (!outcome.changed) return;
+  const { result } = updatePrep(() => outcome.prep);
+  updateSaveStatusDisplay(result);
+  // Central list, count, warning, FreshCutGrass link, Battle Points and the
+  // bulk button itself.
+  refreshCentralAdversaries();
+  // The picker is synced in place rather than rebuilt: its active filters,
+  // search text and scroll position are left exactly as they were.
+  outcome.addedIds.forEach(id => {
+    syncPickerCheckbox('data-sp-toggle-adv', id, true);
+    const adv = state.prepCatalog.adversaryById.get(id);
+    if (adv) updatePrepToggleLabel('data-sp-toggle-adv', id, true, spName(adv));
+  });
+  if (result.ok) {
+    const n = outcome.addedIds.length;
+    showToast(t(n === 1 ? 'prep_recommend_added_one' : 'prep_recommend_added').replace('{n}', n), 'success');
+  }
 }
 
 /** Selected-item card: icon, name, "source · kind #roll" meta line, remove
@@ -4882,7 +4812,7 @@ function centralSectionHtml(prep) {
           countHtml: centralCountHtml('prep-central-adv-count', prep.adversaryIds.length, null),
           clearHtml: clearAllSlotHtml('adversaries', prep.adversaryIds.length),
           midHtml: BattlePointsUI.slotHtml(),
-          actionHtml: `<span class="prep-freshcutgrass-wrap" id="prep-freshcutgrass-wrap">${freshCutGrassLinkHtml(prep)}</span>` })}
+          actionHtml: `<span class="prep-central-actions"><span class="prep-recommend-wrap" id="prep-recommend-wrap">${recommendBulkHtml(prep)}</span><span class="prep-freshcutgrass-wrap" id="prep-freshcutgrass-wrap">${freshCutGrassLinkHtml(prep)}</span></span>` })}
         <div id="prep-central-adv-warning">${advWarningHtml(prep)}</div>
         <div class="prep-central-body" id="prep-central-adv-list">${centralAdvListHtml(prep)}</div>
       </section>
@@ -5488,6 +5418,14 @@ function bindPrepDelegation(el) {
 
     const openEnv = e.target.closest('[data-sp-open-env]');
     if (openEnv) { navigate(envHash(openEnv.dataset.spOpenEnv, state.route)); return; }
+
+    // aria-disabled (the `★ ✓` state) keeps the button focusable so its reason
+    // is reachable, so the activation guard lives here.
+    const addRecommended = e.target.closest('[data-sp-add-recommended]');
+    if (addRecommended) {
+      if (addRecommended.getAttribute('aria-disabled') !== 'true') addRecommendedAdversariesToActivePrep();
+      return;
+    }
 
     const clearAll = e.target.closest('[data-sp-clear-all]');
     if (clearAll) { clearPrepCategory(clearAll.dataset.spClearAll); return; }
