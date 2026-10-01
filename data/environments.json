@@ -32103,8 +32103,8 @@
       "type": "social",
       "difficulty": 17,
       "name": {
-        "en": "Masquerade Ball (Atlas of Adventure)",
-        "ru": "Бал-маскарад (Атлас приключений)"
+        "en": "Masquerade Ball",
+        "ru": "Бал-маскарад"
       },
       "lore": {
         "en": "The premiere party of the season, with magnificent costumes and intricate masks, attended by dignitaries, politicians, nobles, scoundrels, and unwelcome guests with mysterious motives.",
@@ -32535,8 +32535,8 @@
       "type": "event",
       "difficulty": 17,
       "name": {
-        "en": "Time Loop (Atlas of Adventure)",
-        "ru": "Петля времени (Атлас приключений)"
+        "en": "Time Loop",
+        "ru": "Временная петля"
       },
       "lore": {
         "en": "A supernatural bubble of space—within, time loops on itself, each instance always ending with a specific event and returning to a specific moment.",
@@ -32577,7 +32577,7 @@
           },
           "description": {
             "en": "The time loop affects an area the size of a town, endlessly repeating the same few hours. When the PCs enter the time loop, they can’t leave until they’ve unraveled the central mystery that plays out over and over. When the PCs enter the environment, and at the beginning of each loop, activate a Countdown (Loop 4) that ticks down by 1 at the start of each hour or at an interval decided by the GM. When the countdown triggers, the loop resets and everything inside the loop returns to how it was at the beginning of the loop. PCs clear all Stress, HP, and Armor Slots, and their Hope resets to 2 each. This also resets ability and feature exhaust limits as though they had finished a long rest.",
-            "ru": "Петля времени охватывает область размером с город, бесконечно повторяя одни и те же несколько часов. Когда персонажи входят в петлю времени, они не могут выйти, пока не раскроют центральную тайну, которая разыгрывается снова и снова. Когда персонажи входят в это окружение, а также в начале каждой петли, активируйте Отсчёт (Цикл 4), который уменьшается на 1 в начале каждого часа или с интервалом, выбранным Мастером. Когда отсчёт срабатывает, петля сбрасывается, и всё внутри неё возвращается к состоянию на начало петли. Персонажи очищают весь Стресс, Раны и Ячейки Брони, а их Надежда сбрасывается до 2 у каждого. Это также сбрасывает ограничения на использование способностей и свойств, как если бы они завершили продолжительный отдых."
+            "ru": "Временная петля охватывает область размером с город, бесконечно повторяя одни и те же несколько часов. Когда персонажи входят во временную петлю, они не могут выйти, пока не раскроют центральную тайну, которая разыгрывается снова и снова. Когда персонажи входят в это окружение, а также в начале каждой петли, активируйте Отсчёт (Цикл 4), который уменьшается на 1 в начале каждого часа или с интервалом, выбранным Мастером. Когда отсчёт срабатывает, петля сбрасывается, и всё внутри неё возвращается к состоянию на начало петли. Персонажи очищают весь Стресс, Раны и Ячейки Брони, а их Надежда сбрасывается до 2 у каждого. Это также сбрасывает ограничения на использование способностей и свойств, как если бы они завершили продолжительный отдых."
           },
           "prompt": {
             "en": "What caused the loop? Who is at its center? Who is trapped with them?",

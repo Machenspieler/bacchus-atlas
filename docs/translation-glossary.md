@@ -43,6 +43,7 @@ Environment types (`type` enum, see
 | Social | Социальный |
 | Exploration | Исследование |
 | Event | Событие |
+| Time Loop | Временная петля (never «Петля времени») |
 
 A non-numeric `difficulty` value must not start with the word
 "Difficulty"/"Сложность" — the label is prepended automatically when
