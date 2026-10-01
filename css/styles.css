@@ -2631,7 +2631,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   flex: none;
   display: grid; grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center; gap: var(--s-2);
-  min-height: 40px; padding: var(--s-2) 0 var(--s-3);
+  min-height: 35px; padding: 0 0 var(--s-3);
   border-bottom: 1px solid var(--line-faint);
 }
 .prep-env-toolbar .prep-search { min-width: 0; }
@@ -2838,6 +2838,11 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    area is the only vertical scroller (no per-section scrollbars). */
 .prep-central-section { display: flex; flex-direction: column; min-width: 0; }
 .prep-central-section + .prep-central-section { border-top: 1px solid var(--line-faint); }
+/* First header carries the panel's top padding (sticky headers need a flush
+   scroll-container top, so the 16px lives inside the header, not above it). */
+.prep-central > .prep-central-section:first-of-type .prep-central-head {
+  padding-top: var(--s-2); min-height: calc(var(--pc-head-h) + var(--s-2));
+}
 .prep-central-head {
   position: sticky; top: 0; z-index: 1; min-height: var(--pc-head-h);
   margin-inline: calc(-1 * var(--pc-pad-x)); padding-inline: var(--pc-pad-x);
@@ -3195,7 +3200,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   flex: none;
   display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto;
   align-items: center; gap: var(--s-2);
-  min-height: 40px; padding: var(--s-2) 0 var(--s-3);
+  min-height: 35px; padding: 0 0 var(--s-3);
   border-bottom: 1px solid var(--line-faint);
 }
 .prep-adv-toolbar .prep-search { min-width: 0; }
@@ -3557,9 +3562,6 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
     min-height: 0;
     overflow-y: auto;
     scroll-padding-top: var(--pc-scroll-pad);
-    /* both-edges mirrors the reserved scrollbar gutter on the left, so the
-       content stays centred whether or not the scrollbar is showing. */
-    scrollbar-gutter: stable both-edges;
     scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
   }
   body[data-route="prep"] .prep-central::-webkit-scrollbar { width: 8px; }
