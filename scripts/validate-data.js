@@ -189,9 +189,10 @@ const TIER_MIN = 1, TIER_MAX = 4;
  * DIFFICULTY_CEIL=20), but that pair only clamps a *cross-tier* read — same
  * as damage, a stat block's own native-tier number is allowed to sit outside
  * the printed band (data/environments.json: "planetary-invasion", tier 4,
- * difficulty 21). The floor matches DIFFICULTY_FLOOR; the ceiling leaves
- * headroom above the observed max instead of hard-coding today's data. */
-const DIFFICULTY_MIN = 10, DIFFICULTY_MAX = 25;
+ * difficulty 21). The floor sits one below DIFFICULTY_FLOOR for Atlas of
+ * Adventure's Town Festival, printed at 9; the ceiling leaves headroom above
+ * the observed max instead of hard-coding today's data. */
+const DIFFICULTY_MIN = 9, DIFFICULTY_MAX = 25;
 
 const DAMAGE_NOTATION_RE = /^\d{0,2}d(?:2|3|4|6|8|10|12|20|100)(?:\s*[+-]\s*\d+)?$/;
 function isValidDamageNotation(v) { return typeof v === 'string' && DAMAGE_NOTATION_RE.test(v.trim()); }

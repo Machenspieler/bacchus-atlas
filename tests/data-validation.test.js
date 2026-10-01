@@ -252,6 +252,15 @@ test('invalid environment tier fails', () => {
   assert.ok(errorsOf(result).some(d => d.path === '$.environments[0].tier'));
 });
 
+/* Atlas of Adventure prints Town Festival at Difficulty 9 — the lowest value
+   the validator accepts. */
+test('environment difficulty accepts 9 and rejects 8', () => {
+  const ok = validateRepositoryData(buildFixture({ environments: v => { v.environments[0].difficulty = 9; } }));
+  assert.equal(errorsOf(ok).length, 0);
+  const low = validateRepositoryData(buildFixture({ environments: v => { v.environments[0].difficulty = 8; } }));
+  assert.ok(errorsOf(low).some(d => d.path === '$.environments[0].difficulty'));
+});
+
 /* ---------------- 7: invalid environment type ---------------- */
 
 test('invalid environment type fails', () => {

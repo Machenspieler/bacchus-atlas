@@ -304,3 +304,32 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   fuzzy matching, recommendations from Russian text, stored weights, a
   Recommended-only filter, stars in the central selected list or on
   environment cards, and any change to the Prep persistence schema.
+
+---
+
+## PD-009: Atlas of Adventure environments scale between Tier 1 and 2 by their own rule
+
+- **Status:** Active
+- **Date:** 2026-10-01
+- **Decision:** An environment whose `source` is `"Atlas of Adventure"`,
+  read through the detail card's "view as tier" pills at the *other* of
+  Tier 1/Tier 2, uses the book's own "Scaling" rule instead of the Core
+  Rulebook tier table: difficulty (and every in-text check DC) moves by a
+  flat 3 — up to Tier 2, down to Tier 1 — and a damage roll of exactly one
+  die becomes two dice (up) or exactly two dice become one (down), keeping
+  the die size and the `+N` modifier.
+- **Implications:**
+  - The rule is keyed on `env.source` and applies to that one tier pair
+    only. Every other environment, and every other tier pair of an Atlas
+    environment (Tier 1↔3, 2↔3, anything involving Tier 4), keeps the
+    original table-based scaling. The environment's own tier is never
+    rewritten.
+  - A damage roll that doesn't fit the one-die/two-dice shape (Raging
+    Fire's 2d10+2 going up, Wretched Mire's 1d10 going down) is not covered
+    by the book's rule and falls back to the original table scaling for
+    that roll.
+  - No clamping to 10–20 on the Atlas rule (the table path clamps; the
+    book's rule is a plain ±3).
+  - Code: `retierFor()`, `retierValue()`, `retierDamage()` in `js/app.js`.
+- **Explicitly excluded:** changing how any non-Atlas environment scales,
+  and a per-environment override field in the data.

@@ -2013,6 +2013,7 @@ const SOURCES = [
   'Court & Shadow',
   'Pistol Heart',
   'StarHeart',
+  'Atlas of Adventure',
 ];
 
 function renderFooter() {
@@ -5816,12 +5817,31 @@ const DIE_SIZES = [3, 4, 6, 8, 10, 12, 20, 100];
 
 function diceAvg(count, sides, mod) { return count * (sides + 1) / 2 + mod; }
 
+/* "Scaling" in Atlas of Adventure gives its own rule for moving one of its Tier 1
+ * or Tier 2 environments between those two tiers: difficulty ±3, and the damage
+ * pool of a feature goes from one die to two (up) or two to one (down). It
+ * belongs to that book's environments alone (`source`) and to that one tier
+ * pair alone — every other read, Atlas environment or not, uses the tier table
+ * above. */
+const ATLAS_SOURCE = 'Atlas of Adventure';
+const ATLAS_TIER_DIFFICULTY_SHIFT = 3;
+
+/** The `{ from, to }` a card read at `toTier` is scaled by, or null at the
+ * environment's own tier. `atlas` marks the Atlas of Adventure Tier 1 ↔ 2 rule. */
+function retierFor(env, toTier) {
+  if (toTier === env.tier) return null;
+  const atlas = env.source === ATLAS_SOURCE && [env.tier, toTier].every(n => n === 1 || n === 2);
+  return { from: env.tier, to: toTier, atlas };
+}
+
 /** A number tuned for `fromTier` (a difficulty, or a single check's DC), read at
  * `toTier`. The deviation from the tier's own printed difficulty is authored
  * tuning and is carried over rather than snapping to the flat table value: a
- * tier 2 number one below the table reads one below the table at tier 3 too. */
-function retierValue(value, fromTier, toTier) {
+ * tier 2 number one below the table reads one below the table at tier 3 too.
+ * `atlas` swaps the table for the Atlas of Adventure flat ±3 (see above). */
+function retierValue(value, fromTier, toTier, atlas = false) {
   if (toTier === fromTier) return value;
+  if (atlas) return value + (toTier > fromTier ? 1 : -1) * ATLAS_TIER_DIFFICULTY_SHIFT;
   const shifted = value + TIER_TABLE[toTier].difficulty - TIER_TABLE[fromTier].difficulty;
   return Math.min(DIFFICULTY_CEIL, Math.max(DIFFICULTY_FLOOR, shifted));
 }
@@ -5829,7 +5849,8 @@ function retierValue(value, fromTier, toTier) {
 /** Descriptive difficulties ("Special (see Relative Strength)") never scale. */
 function retierDifficulty(env, tier) {
   if (typeof env.difficulty !== 'number') return envDifficulty(env);
-  return retierValue(env.difficulty, env.tier, tier);
+  const retier = retierFor(env, tier);
+  return retier ? retierValue(env.difficulty, retier.from, retier.to, retier.atlas) : env.difficulty;
 }
 
 const damageLadderCache = new Map();
@@ -5911,8 +5932,15 @@ function enforceDamageDirection(from, to, roll, scaled) {
 /** The same damage roll read at another tier. The environment's own tier always
  * returns the authored roll untouched — nothing about a stat block is ever
  * rewritten at its native tier. */
-function retierDamage(from, to, roll) {
+function retierDamage(from, to, roll, atlas = false) {
   if (to === from) return { count: roll.count, sides: roll.sides, mod: roll.mod, changed: false };
+  // Atlas of Adventure: exactly one die rises to two, exactly two fall to one,
+  // the die size and the modifier untouched. A roll that is not that shape
+  // (Raging Fire's 2d10+2 going up, Wretched Mire's 1d10 going down) is not
+  // covered by the rule and takes the table scaling below.
+  if (atlas && roll.count === (from < to ? 1 : 2)) {
+    return { count: from < to ? 2 : 1, sides: roll.sides, mod: roll.mod, changed: true };
+  }
   const avg = diceAvg(roll.count, roll.sides, roll.mod);
   const [lo, hi] = TIER_TABLE[from].band;
   const scaled = (avg >= lo && avg <= hi)
@@ -6252,7 +6280,7 @@ function openDetailOverlay(envId, carry = null) {
   // rebuilt, so a countdown tracker opened elsewhere in the card survives the
   // switch.
   function renderRichBlocks() {
-    const retier = viewTier === env.tier ? null : { from: env.tier, to: viewTier };
+    const retier = retierFor(env, viewTier);
     overlay.querySelectorAll('[data-rich-block]').forEach(node => {
       const text = decodeURIComponent(node.getAttribute('data-rich-block'));
       if (node._renderedTier === viewTier) return;
@@ -6948,8 +6976,8 @@ function findConditionMatches(text) {
  * a roll inside bold text still gets its button. */
 const BOLD_RE = /\*\*([\s\S]+?)\*\*/g;
 
-/** `retier` is `{ from, to }` while the card is being read at another tier, or
- * null at the environment's own tier. Only damage rolls and check DCs follow
+/** `retier` is `{ from, to, atlas }` (see retierFor) while the card is being read
+ * at another tier, or null at the environment's own tier. Only damage rolls and check DCs follow
  * it; countdowns and every other roll in the text are left exactly as written. */
 function renderRichText(container, text, retier) {
   container.textContent = '';
@@ -6979,7 +7007,7 @@ function renderSpans(container, text, retier) {
     if (match.start < lastIndex) continue; // skip overlapping match
     if (match.start > lastIndex) container.appendChild(document.createTextNode(text.slice(lastIndex, match.start)));
     if (match.type === 'dice') {
-      const scaled = retier && match.isDamage ? retierDamage(retier.from, retier.to, match) : null;
+      const scaled = retier && match.isDamage ? retierDamage(retier.from, retier.to, match, retier.atlas) : null;
       container.appendChild(scaled && scaled.changed
         ? makeDiceButton(scaled.count, scaled.sides, scaled.mod, formatDamage(scaled), match.label)
         : makeDiceButton(match.count, match.sides, match.mod, match.label));
@@ -6994,7 +7022,7 @@ function renderSpans(container, text, retier) {
     } else if (match.type === 'item') {
       container.appendChild(makeItemButton(match.id, match.label));
     } else if (match.type === 'check-dc') {
-      const scaled = retier ? retierValue(match.value, retier.from, retier.to) : match.value;
+      const scaled = retier ? retierValue(match.value, retier.from, retier.to, retier.atlas) : match.value;
       container.appendChild(document.createTextNode(String(scaled)));
     } else {
       container.appendChild(makeCountdownButton(match.value, match.label));
