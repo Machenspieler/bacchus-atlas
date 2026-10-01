@@ -1417,6 +1417,9 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 .loot-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .loot-meta { display: flex; gap: var(--s-2); flex-wrap: wrap; align-items: center; }
 .loot-roll { color: var(--hope-soft); border-color: var(--hope); }
+/* Item vs consumable: consumables take the teal chip, items the brighter parchment
+ * one, so the two kinds read apart without borrowing gold or fear-red. */
+.loot-kind-item { color: var(--parchment); border-color: var(--line-strong); }
 /* Sits on the title's first line: it copies the address of this entry, and the
  * title is what it is the address of. */
 .loot-name-act {

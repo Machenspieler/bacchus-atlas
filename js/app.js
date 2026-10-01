@@ -6386,7 +6386,7 @@ function openItemDetail(itemId, { quiet = false } = {}) {
         ${art ? `<div class="loot-media"><img src="${escapeAttr(art)}" alt="${escapeAttr(name)}"></div>` : ''}
         <div class="loot-meta">
           ${item.roll ? `<span class="environment-type-chip loot-roll">${item.roll}</span>` : ''}
-          <span class="${kind === 'consumable' ? 'biome-chip' : 'environment-type-chip'}">${t('item_kind_' + kind)}</span>
+          <span class="${kind === 'consumable' ? 'biome-chip' : 'environment-type-chip loot-kind-item'}">${t('item_kind_' + kind)}</span>
           <span class="environment-type-chip">${t('item_src_' + item.src)}</span>
         </div>
         <div class="feature-desc loot-desc" data-item-desc></div>
