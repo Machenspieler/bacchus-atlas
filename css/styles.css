@@ -3558,7 +3558,9 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
     min-height: 0;
     overflow-y: auto;
     scroll-padding-top: var(--pc-scroll-pad);
-    scrollbar-gutter: stable;
+    /* both-edges mirrors the reserved scrollbar gutter on the left, so the
+       content stays centred whether or not the scrollbar is showing. */
+    scrollbar-gutter: stable both-edges;
     scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
   }
   body[data-route="prep"] .prep-central::-webkit-scrollbar { width: 8px; }
