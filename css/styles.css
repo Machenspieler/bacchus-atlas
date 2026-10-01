@@ -1452,7 +1452,7 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 }
 .loot-acts .btn { text-decoration: none; }
 .loot-acts .btn svg { width: var(--icon-md); height: var(--icon-md); flex: none; fill: currentColor; }
-.loot-src-note { margin-top: var(--s-3); }
+.loot-modal .loot-src-note { margin-top: var(--s-4); }
 
 .dice-result-pop {
   position: fixed; z-index: 200; background: var(--ink-card); border: 1px solid var(--hope);
