@@ -2426,22 +2426,23 @@ body[data-route="prep"][data-sp-header-mode="compact"] .prep-wrap {
    .search-clear-btn. */
 body[data-route="prep"] .header-inner { flex-wrap: nowrap; }
 .sp-session-slot {
-  position: relative; flex: 1 1 0; min-width: 0;
+  position: relative; flex: 1 1 0; min-width: 7.5rem;
   display: flex; justify-content: center;
   container: sp-session / inline-size;
 }
 .sp-session-control {
-  position: relative; max-width: 100%; min-width: 0; height: var(--h-sm);
+  position: relative; max-width: 100%; min-width: 7.5rem; height: var(--h-sm);
   display: inline-flex; align-items: center; gap: var(--s-2);
   padding: 0 var(--s-3); white-space: nowrap;
   font-family: inherit; font-size: var(--fs-sm); line-height: 1; color: var(--muted);
-  background: var(--ink-raised); border: 1px solid var(--line-faint); border-radius: var(--r-pill);
+  background: var(--ink-raised); border: 1px solid var(--line-faint); border-radius: 12px;
   cursor: pointer;
   transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out),
               background var(--t-fast) var(--ease-out), box-shadow var(--t-base) var(--ease-out),
               height var(--t-base) var(--ease-out);
 }
 .sp-session-control::after { content: ""; position: absolute; inset: -6px; }
+.sp-session-control:active { background: var(--ink-raised); border-color: var(--line-strong); }
 .sp-session-control:hover { color: var(--hope-soft); border-color: var(--line-strong); background: var(--ink-hover); }
 .sp-session-control:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); color: var(--hope-soft); }
 .sp-session-control.is-hinted { color: var(--hope-soft); border-color: var(--hope); box-shadow: 0 0 0 3px rgba(217,164,65,0.18); }
@@ -2464,13 +2465,12 @@ body[data-route="prep"] .header-inner { flex-wrap: nowrap; }
 }
 @keyframes sp-session-spin { to { transform: rotate(360deg); } }
 @container sp-session (max-width: 270px) {
-  .sp-session-label { display: none; }
   .sp-session-name { max-width: 24ch; }
 }
 @container sp-session (max-width: 190px) {
   .sp-session-name { max-width: 12ch; }
 }
-body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { height: 28px; }
+body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { height: 28px; border-radius: 12px; }
 
 /* One-time hint: an overlay under the control (absolute, out of flow — no
    layout shift), same surface as .tooltip but able to take a short sentence. */

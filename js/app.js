@@ -5899,9 +5899,11 @@ function paintSessionControl() {
   // hover tooltip (which would land on top of it) is withheld.
   if (c.hintEl) delete btn.dataset.tip;
   else btn.dataset.tip = `${name} · ${status.text}`;
+  // Expanded: the panel below already shows the session name, so the control
+  // carries only the label. Collapsed: the name is the only on-screen cue.
   btn.innerHTML =
-    `<span class="sp-session-label" aria-hidden="true">${escapeHtml(t('prep_session_label'))} ·</span>` +
-    `<span class="sp-session-name">${escapeHtml(name)}</span>` +
+    `<span class="sp-session-label" aria-hidden="true">${escapeHtml(t('prep_session_label'))}${compact ? ' ·' : ''}</span>` +
+    (compact ? `<span class="sp-session-name">${escapeHtml(name)}</span>` : '') +
     `<span class="sp-session-status" data-state="${status.kind}" aria-hidden="true">${icon}</span>` +
     `<span class="sp-session-chevron" aria-hidden="true">${compact ? ICON_CHEVRON_DOWN : ICON_CHEVRON_UP}</span>`;
   // The save status is conveyed to assistive tech as a polite live region

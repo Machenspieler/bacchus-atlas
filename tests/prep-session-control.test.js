@@ -140,16 +140,17 @@ test('the hint has its own persisted flag, dismisses on click/outside/Escape/tim
 
 test('the control never wraps and truncates its title with an ellipsis', () => {
   assert.match(CSS, /body\[data-route="prep"\] \.header-inner \{ flex-wrap: nowrap; \}/);
-  assert.match(CSS, /\.sp-session-slot \{[^}]*min-width: 0/);
+  assert.match(CSS, /\.sp-session-slot \{[^}]*min-width: 7\.5rem/);
   assert.match(CSS, /\.sp-session-control \{[^}]*white-space: nowrap/);
   assert.match(CSS, /\.sp-session-name \{[^}]*min-width: 0[^}]*overflow: hidden; text-overflow: ellipsis; white-space: nowrap/);
 });
 
-test('narrowing drops the "Session ·" prefix first, then lowers the title max-width', () => {
+test('narrowing lowers the title max-width while the label stays visible', () => {
   const first = CSS.indexOf('@container sp-session (max-width: 270px)');
   const second = CSS.indexOf('@container sp-session (max-width: 190px)');
   assert.ok(first !== -1 && second > first);
-  assert.match(CSS.slice(first, second), /\.sp-session-label \{ display: none; \}/);
+  assert.doesNotMatch(CSS, /\.sp-session-label \{ display: none; \}/);
+  assert.match(CSS.slice(first, second), /\.sp-session-name \{ max-width: 24ch; \}/);
   assert.match(CSS.slice(second, second + 120), /\.sp-session-name \{ max-width: 12ch; \}/);
 });
 
