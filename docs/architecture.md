@@ -578,7 +578,7 @@ filtered set. A recommended row (`.prep-adv-row.is-recommended`) gains a
 `.prep-rec-star` — a non-interactive `role="img"` sibling between the
 artwork and the name link, outside the `<a>` and out of the tab order — whose
 `aria-label`/`data-tip` is "Recommended for: <localized environment names>".
-The tint and inset line are `color-mix()` over `--hope`; hover, focus and the
+The tint is `color-mix()` over `--hope`; hover, focus and the
 selected checkbox keep precedence.
 
 **Bulk add.** `recommendBulkView()` decides the `★ +N` / `★ ✓` button in

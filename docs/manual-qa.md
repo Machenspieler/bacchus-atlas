@@ -315,7 +315,7 @@ Skies** (only an unsupported name).
 - [ ] **One environment** (Bandit Hideout): a "★ RECOMMENDED FOR SELECTED
       ENVIRONMENTS  7" group sits above the regular rows, followed by a thin
       divider and no second heading; the 7 rows have a gold ★ before the
-      name, a faint gold tint and thin left line; hovering the ★ shows
+      name, a faint gold tint (no side line); hovering the ★ shows
       "Recommended for: Bandit Hideout" (RU: "Рекомендовано для: …"); the
       checkbox state of every row is unchanged — **nothing is selected
       automatically**.

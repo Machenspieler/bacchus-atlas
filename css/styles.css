@@ -2678,10 +2678,9 @@ body:not([data-route="prep"]) .header-actions::after {
 .prep-rec-title span:not(.prep-rec-title-star) { min-width: 0; overflow-wrap: anywhere; }
 .prep-rec-title-star { flex: none; color: var(--hope); }
 .prep-rec-count { flex: none; font-family: var(--font-mono); font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--muted); font-variant-numeric: tabular-nums; }
-.prep-rec-divider { height: 1px; margin: var(--s-2) var(--sel-pad); background: var(--line-faint); }
+.prep-rec-divider { height: 1px; margin: 2px var(--sel-pad); background: var(--line-faint); }
 .prep-adv-row.is-recommended {
   background: color-mix(in srgb, var(--hope) 6%, transparent);
-  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--hope) 55%, transparent);
 }
 .prep-adv-row.is-recommended:hover { background: var(--ink-hover); }
 /* A status marker, never a control: no cursor change, out of the tab order. */
