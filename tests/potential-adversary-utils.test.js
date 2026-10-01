@@ -89,7 +89,7 @@ test('the complete Jagged Knife group resolves to the full roster', () => {
 
 for (const form of [
   'Bandit', 'Bandits', 'Bandits (tier 2)', 'any Bandit', 'any Bandits',
-  'Jagged Knife Bandits', 'any Jagged Knife', 'any Jagged Knife Bandit',
+  'Jagged Knife Bandits', 'Jagged Knives', 'any Jagged Knives', 'any Jagged Knife', 'any Jagged Knife Bandit',
 ]) {
   test(`generic Bandits reference "${form}" resolves to the complete Jagged Knife roster`, () => {
     assert.deepEqual(names(form), JAGGED_KNIFE);
@@ -100,6 +100,7 @@ test('plural Bandits inside another group means the family; a singular member st
   assert.deepEqual(names('Outlaws (Bandits, Pirates, Skeletons)'),
     [...JAGGED_KNIFE, 'Pirates', 'Skeletons']);
   assert.deepEqual(names('Desert Raiders (Jagged Knife Bandits)'), JAGGED_KNIFE);
+  assert.deepEqual(names('Outlaws (Jagged Knives)'), JAGGED_KNIFE);
   // "Bandit" in a Jagged Knife group is the one Jagged Knife Bandit, not the family.
   assert.deepEqual(names('Jagged Knife Bandits (Bandit, Shadow)'), ['Jagged Knife Bandit', 'Jagged Knife Shadow']);
 });
@@ -219,4 +220,6 @@ test('real data: generic Bandits environments recommend the full Jagged Knife ro
   }
   // Bare "Jagged Knife Bandits" (underroot-tunnels) used to resolve to nothing.
   roster.forEach(advId => assert.ok(recommendations.get('underroot-tunnels').includes(advId), advId));
+  // "Jagged Knives" (hold-the-line) is the whole roster too.
+  roster.forEach(advId => assert.ok(recommendations.get('hold-the-line').includes(advId), advId));
 });

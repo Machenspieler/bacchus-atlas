@@ -283,7 +283,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
     environment card's FreshCutGrass links; Prep adds only the catalogue
     match.
   - **Generic Bandits mean the Jagged Knife family.** `Bandit`, `Bandits`,
-    `Bandits (tier 2)`, `any Bandit(s)`, `Jagged Knife Bandits`, `any Jagged
+    `Bandits (tier 2)`, `any Bandit(s)`, `Jagged Knife Bandits`, `Jagged Knives`, `any Jagged
     Knife` and `any Jagged Knife Bandit` all expand to the complete
     seven-adversary Jagged Knife roster (Bandit, Hexer, Kneebreaker, Lackey,
     Lieutenant, Shadow, Sniper) through explicit family entries, not name

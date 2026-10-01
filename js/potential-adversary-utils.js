@@ -201,8 +201,8 @@
    *
    * The Bandits rule is an explicit project rule, not a fuzzy guess: a generic
    * "Bandit"/"Bandits" reference (bare, "Bandits (tier 2)", "any Bandit(s)",
-   * "Jagged Knife Bandits") means the complete Jagged Knife family — the only
-   * bandit gang the adversary catalogue has. The three extra keys below are
+   * "Jagged Knife Bandits", "Jagged Knives") means the complete Jagged Knife family — the only
+   * bandit gang the adversary catalogue has. The extra keys below are
    * what carry it; "any Jagged Knife [Bandit]" already reaches the roster
    * through the 'Jagged Knife' key. See docs/product-decisions.md PD-008. */
   const ADVERSARY_FAMILY_MEMBERS = {
@@ -210,6 +210,7 @@
     Bandit: JAGGED_KNIFE_ROSTER,
     Bandits: JAGGED_KNIFE_ROSTER,
     'Jagged Knife Bandits': JAGGED_KNIFE_ROSTER,
+    'Jagged Knives': JAGGED_KNIFE_ROSTER,
     'Vault Guardian': ['Vault Guardian Gaoler', 'Vault Guardian Sentinel', 'Vault Guardian Turret'],
     'Vault Guardians': ['Vault Guardian Gaoler', 'Vault Guardian Sentinel', 'Vault Guardian Turret'],
     'Outer Realms': ['Outer Realms Abomination', 'Outer Realms Corrupter', 'Outer Realms Thrall'],
@@ -225,7 +226,7 @@
    * inside a group, because "Jagged Knife Bandits (Bandit, Hexer, …)" lists
    * the one Jagged Knife Bandit. Other families (e.g. "Pirates") keep their
    * existing group-member behaviour. */
-  const BANDIT_GROUP_MEMBER_FAMILY_ALIASES = new Set(['Bandits', 'Jagged Knife Bandits']);
+  const BANDIT_GROUP_MEMBER_FAMILY_ALIASES = new Set(['Bandits', 'Jagged Knife Bandits', 'Jagged Knives']);
 
   /** The text named by an "any X" (or "any X member"/"any X being") phrase —
    * "any Cult member" -> "Cult", "any Jagged Knife" -> "Jagged Knife", "any

@@ -541,8 +541,8 @@ tier/role annotations, group prefixes and member aliases, `any X` and bare
 family references; `Any`/`All` and `see "…"` citations resolve to nothing)
 into canonical English adversary names; the environment card's FreshCutGrass
 links in `js/app.js` read the same function. The Bandits rule is two
-explicit parts of the family table: `Bandit`, `Bandits` and `Jagged Knife
-Bandits` are family keys for the Jagged Knife roster (so `any Bandit(s)` and
+explicit parts of the family table: `Bandit`, `Bandits`, `Jagged Knife
+Bandits` and `Jagged Knives` are family keys for the Jagged Knife roster (so `any Bandit(s)` and
 a bare `Bandits (tier 2)` reach it through the existing family code), and
 `BANDIT_GROUP_MEMBER_FAMILY_ALIASES` lets the plural forms mean the family
 as a member of another group too.
