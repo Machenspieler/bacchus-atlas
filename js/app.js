@@ -6816,6 +6816,12 @@ function openItemDetail(itemId, { quiet = false } = {}) {
   // same renderer as a feature — minus the tier scaling, which describes an
   // environment's damage and has nothing to say about a potion.
   renderFeatureBody(overlay.querySelector('[data-item-desc]'), itemField(item, 'description'), null);
+  // The text often names the item it belongs to ("a pouch of ball bearings");
+  // a link back to the card you are already reading is just noise, so that
+  // mention stays plain text. Mentions of other items keep their buttons.
+  overlay.querySelectorAll('[data-item-desc] .item-btn').forEach(btn => {
+    if (btn.dataset.itemId === itemId) btn.replaceWith(document.createTextNode(btn.textContent));
+  });
 
   const media = overlay.querySelector('.loot-media');
   // A picture that will not load takes its copy button with it: there is
@@ -7476,6 +7482,7 @@ function makeItemButton(id, label) {
   btn.className = 'item-btn';
   btn.type = 'button';
   btn.dataset.tip = t('open_item');
+  btn.dataset.itemId = id;
   btn.innerHTML = `${itemIconSVG()}<span>${escapeHtml(label)}</span>`;
   btn.addEventListener('click', e => {
     e.stopPropagation();
