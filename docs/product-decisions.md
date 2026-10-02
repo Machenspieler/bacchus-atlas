@@ -407,3 +407,17 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - Code: `js/prep-reorder-utils.js`, `js/prep-reorder-ui.js`,
   `commitPrepOrder()`/`initPrepReorder()` in `js/app.js`; see
   [architecture.md](architecture.md) "Prep manual ordering".
+
+## PD-013: One item meta line everywhere — "#roll · Kind · Source"
+- **Date:** 2026-10-02
+- **Decision:** Wherever Prep shows an item's roll number, kind and source
+  together, they appear in this one order: `#19 · Consumable · Core`. The
+  picker row's second line, the gallery tile's tooltip and the selected item
+  card all use it, built by `PrepUtils.formatItemMeta()` via `itemMetaText()`
+  in `js/app.js`.
+- **Why roll-first:** an ellipsis truncates from the end. The roll is the
+  shortest field and the one the dice-roll filter matches on, so it must
+  survive narrow rows and longer RU strings; Source ("Hope & Fear") is the
+  longest and least useful when picking, so it is the one allowed to lose.
+- **How to apply:** a new surface that shows these facts calls
+  `itemMetaText()` — never a second inline template.

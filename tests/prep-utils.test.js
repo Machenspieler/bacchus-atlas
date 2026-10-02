@@ -868,6 +868,11 @@ test('formatRollCoverage renders the min-max span of item rolls', () => {
   assert.equal(f([7, 15]), '7–15');
 });
 
+test('formatItemMeta is roll-first so truncation eats Source, never the roll', () => {
+  assert.equal(SPU.formatItemMeta(19, 'Consumable', 'Core'), '#19 · Consumable · Core');
+  assert.equal(SPU.formatItemMeta(1, 'Item', 'Hope & Fear'), '#1 · Item · Hope & Fear');
+});
+
 /* ---------------- Session Notes (prep.notes) ---------------- */
 
 test('createDefaultPrep starts with empty notes, and so does a prep added next to one with notes', () => {

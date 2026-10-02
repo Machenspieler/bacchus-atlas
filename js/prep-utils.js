@@ -576,6 +576,15 @@
     return min === max ? String(min) : min + '–' + max;
   }
 
+  /** The one item meta line: "#roll · Kind · Source". Roll-first on purpose
+   * — an ellipsis truncates from the end, so the shortest and most useful
+   * field (the one the dice-roll filter matches on) survives narrow rows
+   * and longer RU strings; Source, the longest, is the one to lose. Every
+   * surface that shows these three facts uses this order. */
+  function formatItemMeta(roll, kindLabel, sourceLabel) {
+    return '#' + roll + ' · ' + kindLabel + ' · ' + sourceLabel;
+  }
+
   /* ---------------- item search + filters (compact "All Items" toolbar) ----------------
    * Reuses the same precomputed-index + normalizeSearchToken()/
    * tokenizeEnvironmentQuery()/matchesEnvironmentTokens() machinery the
@@ -782,6 +791,7 @@
     itemKindRank: itemKindRank,
     sortItemsForPrep: sortItemsForPrep,
     formatRollCoverage: formatRollCoverage,
+    formatItemMeta: formatItemMeta,
     buildSessionSummary: buildSessionSummary,
     pluralForm: pluralForm,
     ITEM_KIND_ALIASES: ITEM_KIND_ALIASES,

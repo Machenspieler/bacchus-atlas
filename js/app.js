@@ -4033,25 +4033,13 @@ function prepSelectionCellHtml(attr, id, checked, name, disabled = false) {
  * checkbox described in CLAUDE.md's "Prep" section). The preview
  * button (opens detail) and the checkbox (selects) stay two separate
  * sibling controls either way — never one toggling the other. */
-/** "Item · Core · #1" — the gallery card's data-tip tooltip, which has a
- * generous ~240px max-width to render this in (see css/styles.css's
- * .tooltip) and so never needs to protect any one part of it from
- * truncation. */
+/** "#19 · Consumable · Core" — the single item meta line, used by the
+ * gallery tile's data-tip tooltip, the compact picker row's second line and
+ * the selected item card. Order and its rationale (roll-first so truncation
+ * eats Source, not the roll) live in PrepUtils.formatItemMeta(). */
 function itemMetaText(item) {
   const kind = item.kind === 'consumable' ? 'consumable' : 'item';
-  return `${t('item_kind_' + kind)} · ${t('item_src_' + item.src)} · #${item.roll}`;
-}
-
-/** The compact row's own always-visible second line — same three facts as
- * itemMetaText() above, but roll-number-first: this line's fixed-width box
- * (see .prep-item-compact-row in css/styles.css) can be narrower than the
- * longest EN/RU Kind+Source combination ("Consumable · Hope & Fear"), and
- * an ellipsis always truncates from the end — leading with "#N" means the
- * one detail that AND-composes with an active dice-roll filter survives
- * truncation even when Kind/Source don't fully fit. */
-function compactItemMetaText(item) {
-  const kind = item.kind === 'consumable' ? 'consumable' : 'item';
-  return `#${item.roll} · ${t('item_kind_' + kind)} · ${t('item_src_' + item.src)}`;
+  return PrepUtils.formatItemMeta(item.roll, t('item_kind_' + kind), t('item_src_' + item.src));
 }
 
 function itemCardHtml(item, prep) {
@@ -4095,7 +4083,7 @@ function compactItemRowHtml(item, prep) {
         ${prepItemThumbHtml(item)}
         <span class="prep-row-text">
           <span class="prep-row-name" title="${escapeAttr(name)}">${escapeHtml(name)}</span>
-          <span class="prep-row-meta">${escapeHtml(compactItemMetaText(item))}</span>
+          <span class="prep-row-meta">${escapeHtml(itemMetaText(item))}</span>
         </span>
       </button>
     </div>`;
@@ -4771,15 +4759,14 @@ function addRecommendedAdversariesToActivePrep() {
   }
 }
 
-/** Selected-item card: icon, name, "source · kind #roll" meta line, remove
+/** Selected-item card: icon, name, "#roll · kind · source" meta line, remove
  * — items carry no quantity anywhere in Prep. */
 function centralItemCardHtml(id, item) {
   const name = itemField(item, 'name');
-  const kind = item.kind === 'consumable' ? 'consumable' : 'item';
   return selectedEntityHtml({
     layout: 'card', id, name,
     thumb: centralThumbHtml('item', itemImageUrl(item)),
-    meta: `${t('item_src_' + item.src)} · ${t('item_kind_' + kind)} · #${item.roll}`,
+    meta: itemMetaText(item),
     openAttr: 'data-sp-open-item',
     openLabel: t('prep_open_item_detail').replace('{name}', name),
     removeAttr: 'data-sp-remove-item',
