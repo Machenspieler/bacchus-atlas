@@ -3406,8 +3406,9 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .prep-item-compact-grid {
   flex: 1 1 auto; min-width: 0;
   /* Fixed two-row height (a row is its 60px thumb + padding + border): the
-     strip keeps the same height whether 1 or 100 records match, instead of
-     collapsing to one row / an empty line as the filters narrow. */
+     strip keeps the same height from 5 to 100 records instead of shrinking
+     line by line as the filters narrow. Only at four records or fewer does it
+     drop to a single row — see the :has() rule below. */
   --prep-compact-row-h: 78px;
   display: grid; grid-template-rows: repeat(2, var(--prep-compact-row-h));
   /* minmax()'s floor, not just its ceiling, has to be wide enough on its
@@ -3426,6 +3427,12 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
 }
 .prep-item-compact-grid > .prep-empty { grid-row: 1 / -1; align-self: center; }
+/* Four records or fewer fit one row of columns, so the second row would only
+   be an empty band: collapse to a single row (the empty state included). The
+   pure-CSS test is "no 5th child" — it re-evaluates by itself every time
+   refreshItemGrid() swaps the grid's contents, so no JS state is involved.
+   Five or more keep the fixed two-row height. */
+.prep-item-compact-grid:not(:has(> :nth-child(5))) { grid-template-rows: var(--prep-compact-row-h); }
 .prep-item-compact-grid::-webkit-scrollbar { height: 8px; }
 .prep-item-compact-grid::-webkit-scrollbar-track { background: transparent; }
 .prep-item-compact-grid::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }

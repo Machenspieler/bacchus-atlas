@@ -300,7 +300,9 @@ locally") before starting.
       Core · #1"-style meta with the item number always visible even when
       a long Russian name/source combination truncates the rest); flows
       into exactly two horizontal rows with native scrolling and no nested
-      vertical scrollbar; clicking a compact record opens the same detail
+      vertical scrollbar — except at four matches or fewer (e.g. dice roll
+      3d12), which collapse to one row of up to four columns, and grow
+      back to two rows the moment a fifth match appears; clicking a compact record opens the same detail
       overlay as its gallery card; a long name still exposes its full text
       via hover/focus (native `title`).
 - [ ] A selected adversary/item's Tier/Type/source meta line in both the
