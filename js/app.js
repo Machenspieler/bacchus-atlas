@@ -4314,7 +4314,12 @@ function refreshPrepItemNav() {
   const s = itemNavState;
   if (!s || !s.el) return;
   const max = Math.max(0, s.el.scrollWidth - s.el.clientWidth);
-  const overflowing = max > 0;
+  // Judged against the wrap's full width, not the strip's: the arrows take
+  // space only while shown, so "overflows even without them" is the only
+  // stable test (otherwise showing them would narrow the strip, and hiding
+  // them would widen it again).
+  const wrap = s.el.parentElement;
+  const overflowing = max > 0 && (!wrap || s.el.scrollWidth > wrap.clientWidth);
   if (s.prevBtn) { s.prevBtn.hidden = !overflowing; s.prevBtn.disabled = s.el.scrollLeft <= 0; }
   if (s.nextBtn) { s.nextBtn.hidden = !overflowing; s.nextBtn.disabled = s.el.scrollLeft >= max; }
 }

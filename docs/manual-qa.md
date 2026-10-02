@@ -291,9 +291,11 @@ locally") before starting.
 - [ ] **Item strip doesn't jump while filtering** (both views): typing a
       search that leaves 1 / a few / zero results keeps the panel's height
       (scrollbar space is always reserved, Compact keeps two rows, "no
-      results" takes a tile's height), the tiles don't slide sideways when
-      the prev/next arrows stop being needed, and the toolbar counter stays
-      one width.
+      results" takes a tile's height), and the toolbar counter stays
+      one width. The prev/next arrow slots are *not* reserved: with nothing
+      to scroll they are gone and the strip uses the panel's full width
+      (more tiles/columns fit); they appear only when the content overflows
+      even at that full width.
 - [ ] **Item Gallery view** (default): unchanged from before this
       redesign — same large art tiles, hover/selection/click behavior.
 - [ ] **Item Compact view**: two-line records (thumbnail, name, "Item ·

@@ -3261,10 +3261,12 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .prep-item-nav-btn { --ib-size: var(--h-md); margin-bottom: calc(var(--s-2) + 8px); }
 .prep-item-nav-btn[data-sp-item-nav="prev"] svg { transform: rotate(-90deg); }
 .prep-item-nav-btn[data-sp-item-nav="next"] svg { transform: rotate(90deg); }
-/* Hidden arrows (nothing to scroll) still occupy their slot — `visibility`,
-   not `display` — so the tile strip doesn't shift sideways by two arrow
-   widths whenever a filter narrows the list to fit. */
-.prep-item-nav-btn[hidden] { display: flex; visibility: hidden; }
+/* Hidden arrows (nothing to scroll) take no space at all, so the strip gets
+   the full panel width and fits more tiles. refreshPrepItemNav() decides
+   against the strip's *full* width, so the arrows only appear when the
+   content overflows even without them — the strip never flips back and
+   forth between the two layouts. */
+.prep-item-nav-btn[hidden] { display: none; }
 
 /* Art-first tile strip: square tiles dominated by item artwork, with name
    and selection as contextual overlays rather than permanent card chrome —
@@ -3434,18 +3436,21 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    More records than that keep the fixed two-row height. A wider panel fits
    more columns without any horizontal scroll, so each step below raises the
    limit by one: a column needs 240px (the grid-auto-columns floor) plus the
-   12px gap, and the strip itself is 98px narrower than the panel's content box
-   (the two 40px nav buttons and their gaps) — N columns therefore need a
-   panel of 98 + 240N + 12(N-1) px, rounded up a few px. */
+   12px gap. The nav arrows are hidden (display: none) whenever nothing
+   overflows, so the strip is the panel's whole content box and N columns
+   need 240N + 12(N-1) px, rounded up a few px. */
 .prep-item-compact-grid:not(:has(> :nth-child(5))) { grid-template-rows: var(--prep-compact-row-h); }
-@container prep-items-panel (min-width: 1350px) {
+@container prep-items-panel (min-width: 1250px) {
   .prep-item-compact-grid:not(:has(> :nth-child(6))) { grid-template-rows: var(--prep-compact-row-h); }
 }
-@container prep-items-panel (min-width: 1602px) {
+@container prep-items-panel (min-width: 1502px) {
   .prep-item-compact-grid:not(:has(> :nth-child(7))) { grid-template-rows: var(--prep-compact-row-h); }
 }
-@container prep-items-panel (min-width: 1854px) {
+@container prep-items-panel (min-width: 1754px) {
   .prep-item-compact-grid:not(:has(> :nth-child(8))) { grid-template-rows: var(--prep-compact-row-h); }
+}
+@container prep-items-panel (min-width: 2006px) {
+  .prep-item-compact-grid:not(:has(> :nth-child(9))) { grid-template-rows: var(--prep-compact-row-h); }
 }
 .prep-item-compact-grid::-webkit-scrollbar { height: 8px; }
 .prep-item-compact-grid::-webkit-scrollbar-track { background: transparent; }
