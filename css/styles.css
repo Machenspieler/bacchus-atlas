@@ -3714,10 +3714,10 @@ body[data-route="prep"][data-sp-header-mode="compact"] .header-actions .sb-trigg
    grid cell or moves a neighbour. */
 .prep-sel-list { position: relative; }
 @media (any-hover: hover) and (any-pointer: fine) {
-  .prep-sel, .prep-sel-main, .prep-sel-link { cursor: grab; }
-  .prep-sel-main--static { cursor: grab; }
-  .prep-sel-remove { cursor: pointer; }
-  .prep-sel-thumb-btn { cursor: zoom-in; }
+  /* The cursor says what a click does: the card and its non-interactive parts
+     are `grab`; every control that opens something (main button, link, art
+     preview, ×) keeps its own pointer / zoom-in. */
+  .prep-sel, .prep-sel-main--static { cursor: grab; }
   .prep-sel { user-select: none; -webkit-user-select: none; }
 
   /* Catalog entries that can be dragged in: unselected, and (environments)
@@ -3728,8 +3728,6 @@ body[data-route="prep"][data-sp-header-mode="compact"] .header-actions .sb-trigg
   .prep-item-card:not(.is-selected):not(:has(.prep-select-checkbox:checked)) {
     cursor: grab; user-select: none; -webkit-user-select: none;
   }
-  :is(.prep-env-row, .prep-adv-row, .prep-item-compact-row):not(:has(.prep-select-checkbox:checked, .prep-select-checkbox:disabled)) :is(.prep-row-open, .prep-adv-link),
-  .prep-item-card:not(.is-selected):not(:has(.prep-select-checkbox:checked)) .prep-item-icon-btn { cursor: inherit; }
 }
 
 body.is-prep-dragging, body.is-prep-dragging * { cursor: grabbing !important; user-select: none !important; -webkit-user-select: none !important; }

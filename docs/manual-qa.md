@@ -392,7 +392,7 @@ Desktop pointer only (mouse or trackpad); also 1366×768, 1440×900, 1536×864,
 - [ ] Click ≠ drag: environment/item detail, adversary art preview,
       FreshCutGrass link and × all still work; a light trackpad wobble does
       not reorder; links/images in a card never start a native drag.
-- [ ] Selected cards show the grab cursor on hover (no grip/handle). Alt+↑/↓ and Alt+Shift+↑/↓ on a focused card move it,
+- [ ] Selected cards show `grab` on their non-interactive parts and keep pointer / zoom-in over the controls that open something (no grip/handle). Alt+↑/↓ and Alt+Shift+↑/↓ on a focused card move it,
       focus stays on it, a screen reader hears "moved to position N of M".
 - [ ] Copy session summary, Copy session link (open it in a fresh profile) and
       the FreshCutGrass link list the adversaries in the on-screen order;
