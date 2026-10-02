@@ -3204,6 +3204,9 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .item-clear-btn + .item-toolbar-group,
 .item-toolbar-group + .item-toolbar-count {
   border-left: 1px solid var(--line-faint); padding-left: var(--s-3);
+  /* The grid gap already puts --s-2 left of the divider; top it up to --s-3
+     so the divider sits centred between the controls on either side. */
+  margin-left: calc(var(--s-3) - var(--s-2));
 }
 .item-toolbar .prep-search.item-toolbar-search { min-width: 0; }
 .item-toolbar .prep-search.item-toolbar-search input { min-width: 90px; }
@@ -3590,7 +3593,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
      below their own (narrower) breakpoint. */
   .item-toolbar { display: flex; flex-wrap: wrap; row-gap: var(--s-2); }
   .item-toolbar .item-toolbar-search { flex: 1 1 160px; }
-  .item-toolbar-group, .item-toolbar-count { border-left: none; padding-left: 0; }
+  .item-toolbar-group, .item-toolbar-count { border-left: none; padding-left: 0; margin-left: 0; }
 }
 
 /* ---- phone: no nested scroll areas, 44px touch targets ---- */
