@@ -626,6 +626,9 @@ const ICON_CHEVRON_UP = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"
 const ICON_CHEVRON_DOWN = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_SEARCH_EMPTY = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="m15.5 15.5 4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 10.5h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 const ICON_BOOKMARK = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 3.5h11a1 1 0 0 1 1 1v16l-6.5-4-6.5 4v-16a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+// The one close glyph: dismiss, clear-value and remove-entry controls all use it
+// (the semantic role is carried by the button's class/hover, not by a different glyph).
+const ICON_CLOSE = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
 const ICON_PLUS = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
 const ICON_MORE = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="5.5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="18.5" cy="12" r="1.6" fill="currentColor"/></svg>`;
 const ICON_CHECK_PLAIN = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5.5 12.5 4.3 4.3 8.7-9.3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -1468,7 +1471,7 @@ function renderToolbar() {
             <line x1="13.6" y1="13.6" x2="18" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
           </svg>
           <input type="text" id="f-search" aria-label="${t('search_label')}" placeholder="${t('search_placeholder')}" value="${escapeAttr(state.filters.search)}">
-          <button type="button" class="search-clear-btn" id="f-search-clear" aria-label="${t('clear_filters')}" style="${state.filters.search ? '' : 'display:none;'}">×</button>
+          <button type="button" class="icon-btn icon-btn--reach search-clear-btn" id="f-search-clear" aria-label="${t('clear_filters')}" style="${state.filters.search ? '' : 'display:none;'}">${ICON_CLOSE}</button>
         </div>
       </div>
       <button type="button" class="btn filter-toggle" id="f-toggle"
@@ -2221,8 +2224,8 @@ function renderListsHome() {
       <div class="storage-notice" role="status">
         <span class="storage-notice-icon" aria-hidden="true">!</span>
         <p class="storage-notice-text">${t('storage_notice')}</p>
-        <button type="button" class="storage-notice-close" id="storage-notice-close"
-                aria-label="${t('dismiss')}" data-tip="${t('dismiss')}">×</button>
+        <button type="button" class="icon-btn icon-btn--reach storage-notice-close" id="storage-notice-close"
+                aria-label="${t('dismiss')}" data-tip="${t('dismiss')}">${ICON_CLOSE}</button>
       </div>`}
       <div>
         <div class="new-list-row">
@@ -2434,7 +2437,7 @@ function listCardHtml(list) {
     <div class="list-card${cover ? ' has-cover' : ''}" data-list="${list.id}">${cover}
       <div class="list-card-top">
         <input type="text" value="${escapeAttr(list.name)}" class="list-rename" aria-label="${t('rename_list_label')}" aria-describedby="${errorId}">
-        <button type="button" class="list-card-del" data-del-list="${list.id}"
+        <button type="button" class="icon-btn icon-btn--danger icon-btn--reach list-card-del" data-del-list="${list.id}"
                 aria-label="${t('delete')}" data-tip="${t('delete')}">${ICON_TRASH}</button>
       </div>
       <p class="field-error list-rename-error" id="${errorId}" role="alert" hidden>${ICON_ALERT}<span>${t('list_rename_required')}</span></p>
@@ -2495,7 +2498,7 @@ function openAddToListPopup(envId, { expanded = false } = {}) {
          role="dialog" aria-modal="true" aria-labelledby="atl-title">
       <div class="modal-header">
         <h2 id="atl-title">${escapeHtml(title)}</h2>
-        <button type="button" class="modal-close" aria-label="${t('close')}">&times;</button>
+        <button type="button" class="icon-btn icon-btn--reach modal-close" aria-label="${t('close')}">${ICON_CLOSE}</button>
       </div>
       <div class="modal-body">
         ${prepSectionHtml}
@@ -2958,7 +2961,7 @@ function journeyEntryHtml(kind, entry, saved, index) {
         <input type="text" class="jr-name" value="${escapeAttr(entry.name || '')}"
                placeholder="${escapeAttr(saved ? fallback : t('journey_name_placeholder'))}"
                aria-label="${escapeAttr(t('journey_name_placeholder'))}">
-        <button type="button" class="jr-icon-btn" data-roll-name
+        <button type="button" class="icon-btn icon-btn--utility jr-icon-btn" data-roll-name
                 aria-label="${escapeAttr(t('journey_roll_name'))}"
                 data-tip="${escapeAttr(t('journey_roll_name'))}">${diceIconSVG()}</button>
       </div>
@@ -2969,7 +2972,7 @@ function journeyEntryHtml(kind, entry, saved, index) {
             <dd class="jr-v">
               <span class="jr-roll">${escapeHtml(row.roll)}</span>
               <div class="jr-body">${row.html}</div>
-              <button type="button" class="jr-icon-btn jr-reroll" data-reroll="${row.key}"
+              <button type="button" class="icon-btn icon-btn--utility jr-icon-btn jr-reroll" data-reroll="${row.key}"
                       aria-label="${escapeAttr(t('journey_reroll'))}"
                       data-tip="${escapeAttr(t('journey_reroll'))}">${ICON_REROLL}</button>
             </dd>
@@ -3672,9 +3675,9 @@ function advToolbarHtml() {
       <div class="field search-field prep-search prep-adv-search">
         <input type="text" id="prep-adv-search" aria-label="${escapeAttr(t('prep_adversary_search'))}"
                placeholder="${escapeAttr(t('prep_adversary_search'))}" value="${escapeAttr(state.prepUI.advSearch)}">
-        <button type="button" class="search-clear-btn" id="prep-adv-search-clear" data-sp-clear-search="adv"
+        <button type="button" class="icon-btn icon-btn--reach search-clear-btn" id="prep-adv-search-clear" data-sp-clear-search="adv"
                 aria-label="${escapeAttr(t('prep_clear_adversary_search'))}"
-                style="${state.prepUI.advSearch ? '' : 'display:none;'}">×</button>
+                style="${state.prepUI.advSearch ? '' : 'display:none;'}">${ICON_CLOSE}</button>
       </div>
       <div class="rank-pills prep-adv-tiers" role="group" aria-label="${escapeAttr(t('filter_tier'))}">
         ${advTierButtonsHtml()}
@@ -3760,13 +3763,13 @@ function openAdversaryArtOverlay(advId) {
   overlay.dataset.overlayKind = 'adv-art';
   overlay.innerHTML = `
     <div class="adv-art-modal-card" data-overlay-card role="dialog" aria-modal="true" aria-label="${escapeAttr(name)}">
-      <button type="button" class="modal-close adv-art-close" aria-label="${escapeAttr(t('close'))}">&times;</button>
+      <button type="button" class="icon-btn icon-btn--overlay icon-btn--reach adv-art-close" aria-label="${escapeAttr(t('close'))}">${ICON_CLOSE}</button>
       <div class="adv-art-media">
         <img src="${escapeAttr(adv.art.full)}" alt="${escapeAttr(name)}" data-adv-art-img>
       </div>
       <p class="adv-art-caption">
         <span>${escapeHtml(name)}</span>
-        <button type="button" class="adv-art-copy" data-copy-adv-art
+        <button type="button" class="icon-btn icon-btn--utility adv-art-copy" data-copy-adv-art
                 data-tip="${escapeAttr(t('copy_image'))}" aria-label="${escapeAttr(t('copy_image'))}">${ITEM_IMAGE_ICON}</button>
       </p>
     </div>`;
@@ -3963,7 +3966,7 @@ function itemToolbarHtml() {
       </div>
       <button type="button" class="btn btn-ghost item-clear-btn" id="prep-item-search-clear" data-sp-clear-search="item"
               aria-label="${escapeAttr(t('prep_clear_item_filters'))}" data-tip="${escapeAttr(t('prep_clear_item_filters'))}"
-              ${itemBrowserHasActiveFilters() ? '' : 'disabled'}>×</button>
+              ${itemBrowserHasActiveFilters() ? '' : 'disabled'}>${ICON_CLOSE}</button>
       ${itemDiceGroupHtml()}
       ${itemViewToggleGroupHtml()}
       <span class="prep-count item-toolbar-count" id="prep-item-total-count" role="status" aria-live="polite">${escapeHtml(itemCountText())}</span>
@@ -4105,14 +4108,14 @@ function itemsPanelHtml(prep) {
       <h2 id="prep-items-heading" class="sr-only">${t('prep_items')}</h2>
       ${itemToolbarHtml()}
       <div class="prep-item-strip-wrap" id="sp-item-gallery-wrap" ${galleryHidden ? 'hidden' : ''}>
-        <button type="button" class="prep-item-nav-btn" data-sp-item-nav="prev" aria-label="${escapeAttr(t('prep_item_nav_prev'))}" hidden>${ICON_CHEVRON_UP}</button>
+        <button type="button" class="icon-btn icon-btn--circle prep-item-nav-btn" data-sp-item-nav="prev" aria-label="${escapeAttr(t('prep_item_nav_prev'))}" hidden>${ICON_CHEVRON_UP}</button>
         <div class="prep-item-grid" id="prep-item-grid">${itemCardsHtml(prep)}</div>
-        <button type="button" class="prep-item-nav-btn" data-sp-item-nav="next" aria-label="${escapeAttr(t('prep_item_nav_next'))}" hidden>${ICON_CHEVRON_UP}</button>
+        <button type="button" class="icon-btn icon-btn--circle prep-item-nav-btn" data-sp-item-nav="next" aria-label="${escapeAttr(t('prep_item_nav_next'))}" hidden>${ICON_CHEVRON_UP}</button>
       </div>
       <div class="prep-item-strip-wrap prep-item-compact-wrap" id="sp-item-compact-wrap" ${compactHidden ? 'hidden' : ''}>
-        <button type="button" class="prep-item-nav-btn" data-sp-item-nav="prev" aria-label="${escapeAttr(t('prep_item_nav_prev'))}" hidden>${ICON_CHEVRON_UP}</button>
+        <button type="button" class="icon-btn icon-btn--circle prep-item-nav-btn" data-sp-item-nav="prev" aria-label="${escapeAttr(t('prep_item_nav_prev'))}" hidden>${ICON_CHEVRON_UP}</button>
         <div class="prep-item-compact-grid" id="prep-item-compact-grid">${compactItemGridHtml(prep)}</div>
-        <button type="button" class="prep-item-nav-btn" data-sp-item-nav="next" aria-label="${escapeAttr(t('prep_item_nav_next'))}" hidden>${ICON_CHEVRON_UP}</button>
+        <button type="button" class="icon-btn icon-btn--circle prep-item-nav-btn" data-sp-item-nav="next" aria-label="${escapeAttr(t('prep_item_nav_next'))}" hidden>${ICON_CHEVRON_UP}</button>
       </div>
     </section>`;
 }
@@ -4421,8 +4424,8 @@ function selectedEntityHtml({ layout, id, thumb, name, meta, removeAttr, removeL
   return `
     <li class="prep-sel prep-sel--${layout}"${attrs}>
       ${main}
-      <button type="button" class="prep-sel-remove" ${removeAttr}="${escapeAttr(id)}"
-              data-tip="${escapeAttr(removeTip)}" aria-label="${escapeAttr(removeLabel)}"><span aria-hidden="true">×</span></button>
+      <button type="button" class="icon-btn icon-btn--danger prep-sel-remove" ${removeAttr}="${escapeAttr(id)}"
+              data-tip="${escapeAttr(removeTip)}" aria-label="${escapeAttr(removeLabel)}">${ICON_CLOSE}</button>
     </li>`;
 }
 
@@ -4463,7 +4466,7 @@ function setCentralCount(id, count, max) {
 function clearAllSlotHtml(kind, count) {
   const label = t('prep_clear_all_' + kind);
   const btn = count
-    ? `<button type="button" class="prep-central-clear" data-sp-clear-all="${kind}"
+    ? `<button type="button" class="icon-btn icon-btn--danger prep-central-clear" data-sp-clear-all="${kind}"
          aria-label="${escapeAttr(label)}" data-tip="${escapeAttr(label)}">${ICON_TRASH}</button>`
     : '';
   return `<span class="prep-central-clear-slot" id="prep-central-${kind}-clear">${btn}</span>`;
@@ -4922,7 +4925,7 @@ function prepBarHtml(prep) {
         <button type="button" class="btn btn-ghost prep-new-btn" id="prep-new-btn"
                 aria-label="${escapeAttr(t('prep_new_aria'))}" data-tip="${escapeAttr(t('prep_create_new'))}">${ICON_PLUS}<span>${escapeHtml(t('prep_new'))}</span></button>
         <div class="prep-more-wrap" id="prep-more-wrap">
-          <button type="button" class="prep-icon-btn prep-more-btn" id="prep-more-btn"
+          <button type="button" class="icon-btn icon-btn--utility prep-icon-btn prep-more-btn" id="prep-more-btn"
                   aria-haspopup="menu" aria-expanded="false" aria-controls="prep-actions-menu"
                   aria-label="${escapeAttr(t('prep_actions_open'))}" data-tip="${escapeAttr(t('prep_actions_open'))}">${ICON_MORE}</button>
           <div class="prep-menu prep-actions-menu" id="prep-actions-menu" role="menu" hidden
@@ -6126,7 +6129,7 @@ function openSourcesPopup() {
          role="dialog" aria-modal="true" aria-labelledby="sources-title">
       <div class="modal-header">
         <h2 id="sources-title">${t('sources_title')}</h2>
-        <button type="button" class="modal-close" aria-label="${t('close')}">&times;</button>
+        <button type="button" class="icon-btn icon-btn--reach modal-close" aria-label="${t('close')}">${ICON_CLOSE}</button>
       </div>
       <div class="modal-body">
         <ul class="sources-list">
@@ -6552,7 +6555,7 @@ function openDetailOverlay(envId, carry = null) {
           </div>
         </div>
         <div class="rank-pills detail-tier-pills" id="detail-tier-pills" role="group" aria-label="${t('view_as_tier')}">${tierPillsHtml}</div>
-        <button type="button" class="modal-close" aria-label="${t('close')}">&times;</button>
+        <button type="button" class="icon-btn icon-btn--reach modal-close" aria-label="${t('close')}">${ICON_CLOSE}</button>
       </div>
       <div class="modal-body">
         ${loreHtml}
@@ -6766,10 +6769,10 @@ function openItemDetail(itemId, { quiet = false } = {}) {
       <div class="modal-header">
         <div class="modal-title-row">
           <h2 id="item-title">${escapeHtml(name)}</h2>
-          <button type="button" class="loot-name-act" data-copy-link
+          <button type="button" class="icon-btn icon-btn--utility loot-name-act" data-copy-link
                   data-tip="${escapeAttr(t('copy_link'))}" aria-label="${escapeAttr(t('copy_link'))}">${ITEM_LINK_ICON}</button>
         </div>
-        <button type="button" class="modal-close" aria-label="${t('close')}">&times;</button>
+        <button type="button" class="icon-btn icon-btn--reach modal-close" aria-label="${t('close')}">${ICON_CLOSE}</button>
       </div>
       <div class="modal-body">
         ${art ? `<div class="loot-media"><img src="${escapeAttr(art)}" alt="${escapeAttr(name)}"></div>` : ''}
@@ -7515,11 +7518,11 @@ function openCountdownOverlay(btn) {
   const panel = document.createElement('div');
   panel.className = 'countdown-overlay';
   panel.innerHTML = `
-    <button type="button" class="countdown-overlay-close" aria-label="${t('close')}">&times;</button>
+    <button type="button" class="icon-btn icon-btn--reach countdown-overlay-close" aria-label="${t('close')}">${ICON_CLOSE}</button>
     <div class="countdown-overlay-value">${btn.dataset.count}</div>
     <div class="countdown-overlay-actions">
-      <button type="button" class="countdown-overlay-btn" data-op="dec" aria-label="-">&minus;</button>
-      <button type="button" class="countdown-overlay-btn" data-op="inc" aria-label="+">+</button>
+      <button type="button" class="icon-btn icon-btn--circle countdown-overlay-btn" data-op="dec" aria-label="-">&minus;</button>
+      <button type="button" class="icon-btn icon-btn--circle countdown-overlay-btn" data-op="inc" aria-label="+">+</button>
     </div>`;
   let stack = document.getElementById('countdown-stack');
   if (!stack) {

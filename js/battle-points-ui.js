@@ -14,7 +14,7 @@
    confirms anything.
 
    It reads app.js globals (t, state, activePrep, lsStorage, LS_KEYS,
-   persistRaw, escapeHtml, escapeAttr, ICON_PLUS, ICON_ALERT) lazily, at call
+   persistRaw, escapeHtml, escapeAttr, ICON_PLUS, ICON_CLOSE, ICON_ALERT) lazily, at call
    time.
 
    Structure vs values: the controls are rendered once (slotHtml()) and are
@@ -96,7 +96,7 @@
     return `
       <div class="bp-pop-head">
         <h3 class="bp-pop-title">${escapeHtml(t('bp_title'))}</h3>
-        <button type="button" class="bp-pop-close" data-bp-act="close" aria-label="${escapeAttr(t('close'))}">&times;</button>
+        <button type="button" class="icon-btn bp-pop-close" data-bp-act="close" aria-label="${escapeAttr(t('close'))}">${ICON_CLOSE}</button>
       </div>
       <div class="bp-pop-row bp-pop-row--pc"><span>${escapeHtml(t('bp_characters'))}</span>${stepperHtml()}</div>
       <div class="bp-pop-sec" data-bp-dyn="base"></div>

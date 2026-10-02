@@ -1,0 +1,677 @@
+{
+  "total": 134,
+  "failed": 0,
+  "results": [
+    {
+      "name": "a11y catalog .search-clear-btn (24x24)",
+      "ok": true,
+      "detail": "name=\"Clear filters\" focus-visible=true"
+    },
+    {
+      "name": "clear search empties the field",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "clear search hides its button",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "a11y env modal .modal-close (24x24)",
+      "ok": true,
+      "detail": "name=\"Close\" focus-visible=true"
+    },
+    {
+      "name": "modal-close (click) closes the detail",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "modal-close (keyboard Enter) closes the detail",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "a11y countdown overlay .modal-close (24x24)",
+      "ok": true,
+      "detail": "name=\"Close\" focus-visible=true"
+    },
+    {
+      "name": "a11y countdown overlay .countdown-overlay-close (24x24)",
+      "ok": true,
+      "detail": "name=\"Close\" focus-visible=true"
+    },
+    {
+      "name": "a11y countdown overlay .countdown-overlay-btn (34x34)",
+      "ok": true,
+      "detail": "name=\"-\" focus-visible=true"
+    },
+    {
+      "name": "a11y countdown overlay .countdown-overlay-btn (34x34)",
+      "ok": true,
+      "detail": "name=\"+\" focus-visible=true"
+    },
+    {
+      "name": "countdown − still decrements",
+      "ok": true,
+      "detail": "12 → 11"
+    },
+    {
+      "name": "countdown close dismisses the overlay",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "a11y lists .list-card-del (24x24)",
+      "ok": true,
+      "detail": "name=\"Delete\" focus-visible=true"
+    },
+    {
+      "name": "a11y lists .list-card-del (24x24)",
+      "ok": true,
+      "detail": "name=\"Delete\" focus-visible=true"
+    },
+    {
+      "name": "a11y lists .list-card-del (24x24)",
+      "ok": true,
+      "detail": "name=\"Delete\" focus-visible=true"
+    },
+    {
+      "name": "list-card-del deletes (after confirm)",
+      "ok": true,
+      "detail": "3 → 2"
+    },
+    {
+      "name": "list-card-del cancelled confirm keeps the list",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "a11y storage notice .storage-notice-close (24x24)",
+      "ok": true,
+      "detail": "name=\"Dismiss\" focus-visible=true"
+    },
+    {
+      "name": "storage-notice-close (keyboard Space) dismisses",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "a11y journey .jr-icon-btn (28x28)",
+      "ok": true,
+      "detail": "name=\"Roll a name\" focus-visible=true"
+    },
+    {
+      "name": "a11y journey .jr-icon-btn.jr-reroll (28x28)",
+      "ok": true,
+      "detail": "name=\"Roll this line again\" focus-visible=true"
+    },
+    {
+      "name": "a11y journey .jr-icon-btn.jr-reroll (28x28)",
+      "ok": true,
+      "detail": "name=\"Roll this line again\" focus-visible=true"
+    },
+    {
+      "name": "a11y journey .jr-icon-btn.jr-reroll (28x28)",
+      "ok": true,
+      "detail": "name=\"Roll this line again\" focus-visible=true"
+    },
+    {
+      "name": "a11y journey .jr-icon-btn.jr-reroll (28x28)",
+      "ok": true,
+      "detail": "name=\"Roll this line again\" focus-visible=true"
+    },
+    {
+      "name": "a11y journey .jr-icon-btn.jr-reroll (28x28)",
+      "ok": true,
+      "detail": "name=\"Roll this line again\" focus-visible=true"
+    },
+    {
+      "name": "jr reroll button still acts",
+      "ok": true,
+      "detail": "click handled without error (value is seeded-random)"
+    },
+    {
+      "name": "jr name-roll button still acts",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-icon-btn.prep-more-btn (40x40)",
+      "ok": true,
+      "detail": "name=\"Open prep actions\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-central-clear (28x28)",
+      "ok": true,
+      "detail": "name=\"Clear all environments\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove environment “Harsh Desert”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove environment “Port City”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove environment “Ancient Tomb”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-central-clear (28x28)",
+      "ok": true,
+      "detail": "name=\"Clear all adversaries\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Acid Burrower”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Ahuizotl”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Apprentice Assassin”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Arch-Necromancer”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-central-clear (28x28)",
+      "ok": true,
+      "detail": "name=\"Clear all items\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Premium Bedroll”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Piper Whistle”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Charging Quiver”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Alistair's Torch”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1440x900 disabled .icon-btn  prep-item-nav-btn",
+      "ok": true,
+      "detail": "disabled: not focusable by design, opacity 0.35, name=\"Scroll items left\""
+    },
+    {
+      "name": "a11y prep 1440x900 .prep-item-nav-btn (40x40)",
+      "ok": true,
+      "detail": "name=\"Scroll items right\" focus-visible=true"
+    },
+    {
+      "name": "prep search clear empties the field",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "item-clear-btn enables with a filter and clears it",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "prep-sel-remove removes the entry",
+      "ok": true,
+      "detail": "11 → 10"
+    },
+    {
+      "name": "prep-central-clear clears its category",
+      "ok": true,
+      "detail": "3 → 2"
+    },
+    {
+      "name": "prep-icon-btn (more) opens the actions menu",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "prep-item-nav-btn scrolls the strip",
+      "ok": true,
+      "detail": "0 → 1004"
+    },
+    {
+      "name": "a11y bp popover .prep-icon-btn.prep-more-btn (40x40)",
+      "ok": true,
+      "detail": "name=\"Open prep actions\" focus-visible=true"
+    },
+    {
+      "name": "a11y bp popover .prep-central-clear (28x28)",
+      "ok": true,
+      "detail": "name=\"Clear all adversaries\" focus-visible=true"
+    },
+    {
+      "name": "a11y bp popover .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Acid Burrower”\" focus-visible=true"
+    },
+    {
+      "name": "a11y bp popover .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Ahuizotl”\" focus-visible=true"
+    },
+    {
+      "name": "a11y bp popover .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Apprentice Assassin”\" focus-visible=true"
+    },
+    {
+      "name": "a11y bp popover .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Arch-Necromancer”\" focus-visible=true"
+    },
+    {
+      "name": "a11y bp popover .prep-central-clear (28x28)",
+      "ok": true,
+      "detail": "name=\"Clear all items\" focus-visible=true"
+    },
+    {
+      "name": "a11y bp popover .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Premium Bedroll”\" focus-visible=true"
+    },
+    {
+      "name": "a11y bp popover .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Piper Whistle”\" focus-visible=true"
+    },
+    {
+      "name": "a11y bp popover .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Charging Quiver”\" focus-visible=true"
+    },
+    {
+      "name": "a11y bp popover .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Alistair's Torch”\" focus-visible=true"
+    },
+    {
+      "name": "a11y bp popover .prep-item-nav-btn (40x40)",
+      "ok": true,
+      "detail": "name=\"Scroll items left\" focus-visible=true"
+    },
+    {
+      "name": "a11y bp popover .prep-item-nav-btn (40x40)",
+      "ok": true,
+      "detail": "name=\"Scroll items right\" focus-visible=true"
+    },
+    {
+      "name": "a11y bp popover .bp-pop-close (32x32)",
+      "ok": true,
+      "detail": "name=\"Close\" focus-visible=true"
+    },
+    {
+      "name": "bp-step + increments the character count",
+      "ok": true,
+      "detail": "4 → 5"
+    },
+    {
+      "name": "bp-pop-close closes the popover",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "a11y adv art modal .prep-icon-btn.prep-more-btn (40x40)",
+      "ok": true,
+      "detail": "name=\"Open prep actions\" focus-visible=true"
+    },
+    {
+      "name": "a11y adv art modal .prep-central-clear (28x28)",
+      "ok": true,
+      "detail": "name=\"Clear all adversaries\" focus-visible=true"
+    },
+    {
+      "name": "a11y adv art modal .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Acid Burrower”\" focus-visible=true"
+    },
+    {
+      "name": "a11y adv art modal .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Ahuizotl”\" focus-visible=true"
+    },
+    {
+      "name": "a11y adv art modal .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Apprentice Assassin”\" focus-visible=true"
+    },
+    {
+      "name": "a11y adv art modal .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Arch-Necromancer”\" focus-visible=true"
+    },
+    {
+      "name": "a11y adv art modal .prep-central-clear (28x28)",
+      "ok": true,
+      "detail": "name=\"Clear all items\" focus-visible=true"
+    },
+    {
+      "name": "a11y adv art modal .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Premium Bedroll”\" focus-visible=true"
+    },
+    {
+      "name": "a11y adv art modal .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Piper Whistle”\" focus-visible=true"
+    },
+    {
+      "name": "a11y adv art modal .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Charging Quiver”\" focus-visible=true"
+    },
+    {
+      "name": "a11y adv art modal .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Alistair's Torch”\" focus-visible=true"
+    },
+    {
+      "name": "a11y adv art modal disabled .icon-btn  prep-item-nav-btn",
+      "ok": true,
+      "detail": "disabled: not focusable by design, opacity 0.35, name=\"Scroll items left\""
+    },
+    {
+      "name": "a11y adv art modal .prep-item-nav-btn (40x40)",
+      "ok": true,
+      "detail": "name=\"Scroll items right\" focus-visible=true"
+    },
+    {
+      "name": "a11y adv art modal .adv-art-close (24x24)",
+      "ok": true,
+      "detail": "name=\"Close\" focus-visible=true"
+    },
+    {
+      "name": "a11y adv art modal .adv-art-copy (28x28)",
+      "ok": true,
+      "detail": "name=\"Copy image\" focus-visible=true"
+    },
+    {
+      "name": "adv-art-close closes the art modal",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "a11y soundboard .prep-icon-btn.prep-more-btn (40x40)",
+      "ok": true,
+      "detail": "name=\"Open prep actions\" focus-visible=true"
+    },
+    {
+      "name": "a11y soundboard .prep-central-clear (28x28)",
+      "ok": true,
+      "detail": "name=\"Clear all adversaries\" focus-visible=true"
+    },
+    {
+      "name": "a11y soundboard .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Acid Burrower”\" focus-visible=true"
+    },
+    {
+      "name": "a11y soundboard .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Ahuizotl”\" focus-visible=true"
+    },
+    {
+      "name": "a11y soundboard .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Apprentice Assassin”\" focus-visible=true"
+    },
+    {
+      "name": "a11y soundboard .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Arch-Necromancer”\" focus-visible=true"
+    },
+    {
+      "name": "a11y soundboard .prep-central-clear (28x28)",
+      "ok": true,
+      "detail": "name=\"Clear all items\" focus-visible=true"
+    },
+    {
+      "name": "a11y soundboard .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Premium Bedroll”\" focus-visible=true"
+    },
+    {
+      "name": "a11y soundboard .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Piper Whistle”\" focus-visible=true"
+    },
+    {
+      "name": "a11y soundboard .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Charging Quiver”\" focus-visible=true"
+    },
+    {
+      "name": "a11y soundboard .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Alistair's Torch”\" focus-visible=true"
+    },
+    {
+      "name": "a11y soundboard disabled .icon-btn  prep-item-nav-btn",
+      "ok": true,
+      "detail": "disabled: not focusable by design, opacity 0.35, name=\"Scroll items left\""
+    },
+    {
+      "name": "a11y soundboard .prep-item-nav-btn (40x40)",
+      "ok": true,
+      "detail": "name=\"Scroll items right\" focus-visible=true"
+    },
+    {
+      "name": "sb-ctl settings toggles aria-pressed",
+      "ok": true,
+      "detail": "false → true"
+    },
+    {
+      "name": "sb-ctl close closes the panel",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-icon-btn.prep-more-btn (40x40)",
+      "ok": true,
+      "detail": "name=\"Open prep actions\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-central-clear (28x28)",
+      "ok": true,
+      "detail": "name=\"Clear all environments\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove environment “Harsh Desert”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove environment “Port City”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove environment “Ancient Tomb”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-central-clear (28x28)",
+      "ok": true,
+      "detail": "name=\"Clear all adversaries\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Acid Burrower”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Ahuizotl”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Apprentice Assassin”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Arch-Necromancer”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-central-clear (28x28)",
+      "ok": true,
+      "detail": "name=\"Clear all items\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Premium Bedroll”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Piper Whistle”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Charging Quiver”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-sel-remove (32x32)",
+      "ok": true,
+      "detail": "name=\"Remove item “Alistair's Torch”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1366x768 disabled .icon-btn  prep-item-nav-btn",
+      "ok": true,
+      "detail": "disabled: not focusable by design, opacity 0.35, name=\"Scroll items left\""
+    },
+    {
+      "name": "a11y prep 1366x768 .prep-item-nav-btn (40x40)",
+      "ok": true,
+      "detail": "name=\"Scroll items right\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-icon-btn.prep-more-btn (40x40)",
+      "ok": true,
+      "detail": "name=\"Open prep actions\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-central-clear (28x28)",
+      "ok": true,
+      "detail": "name=\"Clear all environments\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-sel-remove (34x34)",
+      "ok": true,
+      "detail": "name=\"Remove environment “Harsh Desert”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-sel-remove (34x34)",
+      "ok": true,
+      "detail": "name=\"Remove environment “Port City”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-sel-remove (34x34)",
+      "ok": true,
+      "detail": "name=\"Remove environment “Ancient Tomb”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-central-clear (28x28)",
+      "ok": true,
+      "detail": "name=\"Clear all adversaries\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-sel-remove (34x34)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Acid Burrower”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-sel-remove (34x34)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Ahuizotl”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-sel-remove (34x34)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Apprentice Assassin”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-sel-remove (34x34)",
+      "ok": true,
+      "detail": "name=\"Remove adversary “Arch-Necromancer”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-central-clear (28x28)",
+      "ok": true,
+      "detail": "name=\"Clear all items\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-sel-remove (34x34)",
+      "ok": true,
+      "detail": "name=\"Remove item “Premium Bedroll”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-sel-remove (34x34)",
+      "ok": true,
+      "detail": "name=\"Remove item “Piper Whistle”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-sel-remove (34x34)",
+      "ok": true,
+      "detail": "name=\"Remove item “Charging Quiver”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-sel-remove (34x34)",
+      "ok": true,
+      "detail": "name=\"Remove item “Alistair's Torch”\" focus-visible=true"
+    },
+    {
+      "name": "a11y prep 1920x1080 disabled .icon-btn  prep-item-nav-btn",
+      "ok": true,
+      "detail": "disabled: not focusable by design, opacity 0.35, name=\"Scroll items left\""
+    },
+    {
+      "name": "a11y prep 1920x1080 .prep-item-nav-btn (40x40)",
+      "ok": true,
+      "detail": "name=\"Scroll items right\" focus-visible=true"
+    },
+    {
+      "name": "a11y item modal .modal-close (24x24)",
+      "ok": true,
+      "detail": "name=\"Close\" focus-visible=true"
+    },
+    {
+      "name": "a11y item modal .loot-name-act (28x28)",
+      "ok": true,
+      "detail": "name=\"Copy link\" focus-visible=true"
+    },
+    {
+      "name": "a11y item modal .modal-close (24x24)",
+      "ok": true,
+      "detail": "name=\"Close\" focus-visible=true"
+    }
+  ],
+  "consoleIssues": []
+}

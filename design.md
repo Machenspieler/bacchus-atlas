@@ -154,6 +154,36 @@ border-only active state was visually indistinguishable from hover. A loading
 button swaps its label for a centered spinner via `[data-loading="true"]`
 without changing width, so the layout doesn't jump.
 
+### Icon-only buttons (`.icon-btn`)
+Icon-only controls are grouped by **semantic role**, not squeezed into one
+size. Equivalent semantics share state treatment; the box size
+(`--ib-size`: 24 / 28 / 32 / 34 / 40) follows the density of the surface.
+- **Dismiss / clear** — `.icon-btn` alone. Neutral: muted → parchment on
+  hover over a quiet `--ink-raised` fill, never red or gold. One SVG glyph,
+  `ICON_CLOSE` (inherits `currentColor`), replaces every `×`/`&times;` text
+  glyph. Embedded in a rectangular surface → `--r-sm`.
+- **Neutral utility** — `.icon-btn--utility` (copy, reroll, "more" menu).
+  Same quiet fill, icon turns `--hope-soft`; `aria-expanded` adds a `--line`
+  edge. `.bp-step` is the same recipe as a segment of its stepper's own box.
+- **Remove / delete** — `.icon-btn--danger`. Muted at rest, fear-red edge +
+  `--fear-tint` on hover/focus. Only for content that actually leaves the
+  user's data (a list, a Prep entry, a whole Prep category); clearing a
+  search/filter stays neutral.
+- **Circular navigation / overlay** — `.icon-btn--circle` (enclosed, gold
+  edge on hover: item-strip arrows, countdown ±) and `.icon-btn--overlay`
+  (dismiss over imagery: translucent fill, neutral hover). Always `50%`.
+- Borders are 1px **transparent** at rest so hover/pressed never shifts
+  geometry; enclosed roles (circle, overlay, soundboard `.sb-ctl`) keep a
+  visible `--line`. Focus is the global ring, offset 1px on these tight boxes.
+- Hit area: only the 24px controls opt in (`.icon-btn--reach`, ::after grows
+  to 44px); 28px and larger are already sufficient and have none.
+  `--ib-hover-bg` steps up to `--ink-hover` when the host is itself
+  `--ink-raised` (the Battle Points popover).
+- Deliberately outside the family: `.card-add-btn`/`.env-prep-btn` (gold
+  affirmative toggles with their own selected states), `.sb-ctl` (enclosed
+  audio control with `aria-pressed`), and `.item-clear-btn` (a `.btn` sized to
+  the search field; it shares the glyph only).
+
 ### Chips & badges (`.environment-type-chip`, `.biome-chip`, `.region-chip`, `.badge`)
 Share one shape (`--r-xs`, `--fs-xs`, uppercase, `--tracking-caps`). Type
 chips are neutral (`--type-chip-border`, `--muted` text); biome chips use the
