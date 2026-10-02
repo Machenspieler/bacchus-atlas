@@ -3728,7 +3728,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .header-actions .sb-trigg
   .prep-item-card:not(.is-selected):not(:has(.prep-select-checkbox:checked)) {
     cursor: grab; user-select: none; -webkit-user-select: none;
   }
-  :is(.prep-env-row, .prep-adv-row, .prep-item-compact-row):not(:has(.prep-select-checkbox:checked, .prep-select-checkbox:disabled)) :is(.prep-row-open, .prep-adv-link, .prep-adv-thumb-btn),
+  :is(.prep-env-row, .prep-adv-row, .prep-item-compact-row):not(:has(.prep-select-checkbox:checked, .prep-select-checkbox:disabled)) :is(.prep-row-open, .prep-adv-link),
   .prep-item-card:not(.is-selected):not(:has(.prep-select-checkbox:checked)) .prep-item-icon-btn { cursor: inherit; }
 }
 
