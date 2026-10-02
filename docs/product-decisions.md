@@ -359,3 +359,21 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - Code: `copyPrepShareLink()`, `handleSharedPrepLink()`,
   `openSharedPrepDialog()` in `js/app.js`; read only after the catalogues
   load (`init()` and `retryPrepCatalog()`).
+
+## PD-011: The soundboard is a global, icon-only, one-shot effects panel
+
+- **Decision:** one soundboard, reachable from the header on every route,
+  with eight bundled effects. It plays *effects only*, over whatever music
+  the GM runs elsewhere — no music, uploads, playlists, looping, ordering,
+  per-session sound sets, hotkeys or output-device handling.
+- **Icon-only:** a sound button shows an icon and nothing else — no caption,
+  filename or tooltip, in the panel or in settings mode. Names exist only as
+  localized `aria-label`s. Do not add visible names without a new decision.
+- **Every sound is a one-shot,** including `footsteps-in-a-tunnel-loop` and
+  `big-fire-burning`: a filename never implies looping.
+- **One instance per sound:** replaying a sound restarts it; different sounds
+  overlap. A sound that is still loading refuses the click — a click is never
+  queued, so nothing fires late.
+- **Levels are global preferences** (master 35%, each sound 100%, max unity),
+  not part of a Prep session, and playback never resumes after a reload.
+- Mechanics: [docs/architecture.md](architecture.md) "Global soundboard".

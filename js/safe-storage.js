@@ -376,6 +376,35 @@
 
   var DANGEROUS_KEYS = { '__proto__': true, prototype: true, constructor: true };
 
+  /** Global soundboard preferences: { schemaVersion, master, sounds:{id:level} }.
+   * Every level is clamped into 0..1 (never amplification) and a non-numeric
+   * one is dropped; a missing or wrong-typed master is dropped too — the
+   * caller (SoundboardManifest.normalizePrefs) fills in defaults, so this
+   * stays ignorant of which sounds exist. Only an unusable top level fails. */
+  function sanitizeSoundboard(parsed) {
+    if (!isPlainObject(parsed)) return { ok: false };
+    var changed = false;
+    var value = { schemaVersion: 1, sounds: {} };
+    if (parsed.schemaVersion !== 1) changed = true;
+    if (isFiniteNumber(parsed.master)) {
+      value.master = Math.min(1, Math.max(0, parsed.master));
+      if (value.master !== parsed.master) changed = true;
+    } else {
+      changed = true;
+    }
+    if (isPlainObject(parsed.sounds)) {
+      Object.keys(parsed.sounds).forEach(function (id) {
+        var level = parsed.sounds[id];
+        if (DANGEROUS_KEYS[id] || !isFiniteNumber(level)) { changed = true; return; }
+        value.sounds[id] = Math.min(1, Math.max(0, level));
+        if (value.sounds[id] !== level) changed = true;
+      });
+    } else {
+      changed = true;
+    }
+    return { ok: true, value: value, changed: changed };
+  }
+
   function sanitizeEnvLists(parsed) {
     if (!isPlainObject(parsed)) return { ok: false };
     var out = {};
@@ -659,6 +688,7 @@
       journeyRegions: sanitizeJourneyRegions,
       journeySanctuaries: sanitizeJourneySanctuaries,
       prep: sanitizePrep,
+      soundboard: sanitizeSoundboard,
     },
   };
 });

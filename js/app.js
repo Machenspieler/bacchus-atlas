@@ -16,6 +16,7 @@ const LS_KEYS = {
   prepHeaderMode: 'dhcodex_session_prep_header_mode',
   prepSessionHintSeen: 'dhcodex_session_prep_hint_seen',
   battlePointsPcs: 'dhcodex_battle_points_pcs',
+  soundboard: 'dhcodex_soundboard',
 };
 
 const BIOMES = ['underground', 'aquatic', 'wetland', 'grassland', 'tropical', 'forest', 'drylands', 'rolling', 'mountain', 'frozen', 'badlands', 'settlement', 'universal'];
@@ -141,6 +142,12 @@ const state = {
   envLists: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.envLists, {
     fallback: () => ({}),
     validate: SafeStorage.validators.envLists,
+  }),
+  /* Global soundboard levels (master + per sound), never part of a Prep
+   * session. Normalized against the manifest in SoundboardUI.init(). */
+  soundboard: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.soundboard, {
+    fallback: () => SoundboardManifest.defaultPrefs(),
+    validate: SafeStorage.validators.soundboard,
   }),
   storageNoticeDismissed: SafeStorage.readRawFlag(lsStorage, LS_KEYS.storageNoticeDismissed) === '1',
   filters: { search: '', tiers: new Set(), types: new Set(), sources: new Set(), biomes: new Set(), regionOnly: false },
@@ -514,6 +521,12 @@ async function init() {
     renderFatalError(err);
     return;
   }
+  SoundboardUI.init({
+    t,
+    prefs: state.soundboard,
+    savePrefs: prefs => persist(LS_KEYS.soundboard, prefs),
+    showToast,
+  });
   renderHeader();
   renderFooter();
   mountToTop();
@@ -1344,10 +1357,14 @@ function renderHeader() {
                   aria-label="${t('nav_journey')}"
                   ${onJourney ? 'aria-current="page"' : ''}>${ICON_COMPASS}<span>${t('nav_journey')}</span></button>
         </nav>
-        <div class="lang-switch">${langButtonsHtml()}</div>
+        <div class="header-utils">
+          ${SoundboardUI.triggerHtml()}
+          <div class="lang-switch">${langButtonsHtml()}</div>
+        </div>
       </div>
     </div>`;
   bindLangSwitch(el);
+  SoundboardUI.sync();
   document.getElementById('btn-lists').addEventListener('click', () => navigate('#/lists'));
   document.getElementById('btn-prep').addEventListener('click', () => navigate('#/prep'));
   document.getElementById('btn-journey').addEventListener('click', () => navigate('#/journey'));

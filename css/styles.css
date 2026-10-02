@@ -3622,6 +3622,112 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   .prep-item-card .prep-checkbox-hit { opacity: 1; transform: none; }
 }
 
+/* ---------- Global soundboard ----------
+   One icon button in .header-actions (sized like its neighbours, in both the
+   expanded and the compact Prep header) and one non-modal popover mounted on
+   <body> by js/soundboard-ui.js — never inside #header, which is rebuilt on
+   every render. z-index 80: above the sticky header (30), below the overlay
+   backdrop (100) and the language float (150), so a card opened over it
+   covers it exactly as it covers the header. The sound buttons show icons
+   only; their names live in aria-labels. */
+/* The two utility controls — soundboard and language — sit together, so the
+   soundboard button costs the header one 32px button and one 8px gap. On Prep,
+   whose header is already full at the 1180px cap, the brand/session/actions
+   gaps give back the 24px that, with the slot's own slack, pays for it. */
+.header-utils { display: flex; align-items: center; gap: var(--s-2); }
+body[data-route="prep"] .header-inner { gap: var(--s-3); }
+.sb-trigger { position: relative; width: var(--h-sm); padding: 0; flex: none; }
+.header-actions .sb-trigger { padding: 0; }
+.sb-trigger svg { width: var(--icon-md); height: var(--icon-md); flex: none; }
+.sb-trigger[aria-expanded="true"] { border-color: var(--line-strong); background: var(--ink-hover); }
+body[data-route="prep"][data-sp-header-mode="compact"] .header-actions .sb-trigger {
+  width: 28px; padding: 0;
+}
+/* A small gold dot while any effect is sounding — visible with the panel closed. */
+.sb-trigger-dot {
+  display: none; position: absolute; top: 3px; right: 3px;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--hope); box-shadow: 0 0 0 2px var(--ink-raised);
+}
+.sb-trigger[data-playing="true"] .sb-trigger-dot { display: block; }
+
+.sb-panel {
+  --sb-gap: var(--s-2);
+  --sb-icon: 32px;
+  /* 64px on a desktop; on a narrow phone the four columns shrink to fit. */
+  --sb-btn: min(64px, calc((100vw - 2 * var(--s-2) - 2 * var(--s-3) - 3 * var(--sb-gap)) / 4));
+  position: fixed; top: 0; left: 0; z-index: 80;
+  display: flex; flex-direction: column; gap: var(--s-3);
+  padding: var(--s-3);
+  background: var(--ink-card); border: 1px solid var(--line-strong);
+  border-radius: var(--r-lg); box-shadow: var(--e-3);
+}
+.sb-panel[hidden] { display: none; }
+.sb-panel:focus { outline: none; }
+.sb-grid { display: grid; grid-template-columns: repeat(4, var(--sb-btn)); gap: var(--sb-gap); }
+.sb-cell { display: flex; flex-direction: column; gap: var(--s-1); min-width: 0; }
+
+.sb-sound {
+  position: relative; width: var(--sb-btn); height: var(--sb-btn); padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--ink-raised); border: 1px solid var(--line); border-radius: var(--r-md);
+  color: var(--parchment); cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out),
+              box-shadow var(--t-base) var(--ease-out), color var(--t-fast) var(--ease-out),
+              transform var(--t-fast) var(--ease-out);
+}
+.sb-sound svg { width: var(--sb-icon); height: var(--sb-icon); flex: none; transition: opacity var(--t-fast) var(--ease-out); }
+.sb-sound:hover { border-color: var(--line-strong); background: var(--ink-hover); }
+.sb-sound:active { transform: translateY(1px); }
+
+/* Loading: the icon stays, dimmed, with a small spinner in the corner; the
+   button is inert (the engine refuses the click as well — nothing is queued). */
+.sb-sound[data-state="idle"], .sb-sound[data-state="loading"], .sb-sound[aria-busy="true"] { cursor: progress; }
+.sb-sound[data-state="idle"] svg, .sb-sound[data-state="loading"] svg { opacity: 0.45; }
+.sb-sound[data-state="idle"]:active, .sb-sound[data-state="loading"]:active { transform: none; }
+.sb-sound[data-state="loading"]::after {
+  content: ""; position: absolute; top: 6px; right: 6px; width: 10px; height: 10px;
+  border: 2px solid var(--muted); border-top-color: transparent; border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+/* Unavailable: same slot, same icon, dashed edge and a warning glyph. */
+.sb-sound[data-state="failed"] { border-style: dashed; color: var(--muted); cursor: not-allowed; }
+.sb-sound[data-state="failed"]:hover { background: var(--ink-raised); border-color: var(--line); }
+.sb-sound[data-state="failed"]:active { transform: none; }
+.sb-sound[data-state="failed"] svg { opacity: 0.4; }
+.sb-sound-alert { display: none; position: absolute; top: 4px; right: 4px; width: 14px; height: 14px; color: var(--fear-soft); }
+.sb-sound-alert svg { width: 14px; height: 14px; opacity: 1; }
+.sb-sound[data-state="failed"] .sb-sound-alert { display: block; }
+/* Playing: the icon keeps its place; a gold edge, glow and dot say it is sounding. */
+.sb-sound[data-playing="true"] {
+  border-color: var(--hope); color: var(--hope-soft);
+  box-shadow: 0 0 0 1px var(--hope), 0 0 14px rgba(217,164,65,0.35);
+}
+.sb-sound[data-playing="true"]::before {
+  content: ""; position: absolute; top: 6px; right: 6px; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--hope);
+}
+
+.sb-slider { accent-color: var(--hope); width: 100%; min-width: 0; height: 18px; margin: 0; cursor: pointer; }
+.sb-sound-volume { display: none; }
+.sb-panel[data-settings="true"] .sb-sound-volume { display: block; }
+
+.sb-controls { display: flex; align-items: center; gap: var(--s-2); }
+.sb-master { flex: 1 1 0; }
+.sb-ctl {
+  flex: none; width: var(--h-sm); height: var(--h-sm); padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--ink-raised); border: 1px solid var(--line); border-radius: var(--r-sm);
+  color: var(--parchment); cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out),
+              color var(--t-fast) var(--ease-out);
+}
+.sb-ctl svg { width: 18px; height: 18px; }
+.sb-ctl:hover { border-color: var(--line-strong); background: var(--ink-hover); }
+.sb-ctl[aria-pressed="true"] { border-color: var(--hope); color: var(--hope-soft); }
+.sb-ctl[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
+.sb-ctl[aria-disabled="true"]:hover { border-color: var(--line); background: var(--ink-raised); }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

@@ -26,13 +26,19 @@ js/freshcutgrass-utils.js — FreshCutGrass encounter-URL encoder (shared by env
 js/potential-adversary-utils.js — Potential Adversaries parser + Prep recommendation matching (shared by env detail + Prep)
 js/battle-points.js     — Battle Points arithmetic (pure)
 js/battle-points-ui.js  — Battle Points summary + popover in the Prep Adversaries header
+js/soundboard-manifest.js — the eight bundled sound effects + stored-level normalization (pure)
+js/soundboard-icons.js  — the soundboard's inline SVG icons (pure)
+js/soundboard-engine.js — shared Web Audio engine (context injected, so testable)
+js/soundboard-ui.js     — global soundboard panel + header trigger
 js/app.js               — everything else: state, rendering, event wiring
 ```
 
 Everything above `js/app.js` is a dependency-free module exposing a global
-(`SafeStorage`, `RouteUtils`, `ListUtils`, `SearchIndex`, `PrepUtils`, `FreshCutGrassUtils`, `PotentialAdversaryUtils`)
+(`SafeStorage`, `RouteUtils`, `ListUtils`, `SearchIndex`, `PrepUtils`, `FreshCutGrassUtils`, `PotentialAdversaryUtils`, `SoundboardManifest`, `SoundboardIcons`, `SoundboardEngine`)
 that also works under plain Node `require()` — that's what makes each one
 directly unit-testable in `tests/*.test.js` without a DOM or bundler.
+`js/soundboard-ui.js` is the one exception: it needs the DOM, so it is only
+exercised in the browser (its logic lives in the engine and manifest).
 
 ## Catalog toolbar row
 
@@ -701,13 +707,71 @@ helpers (`envName()`, `envField()`, `bilingual()`, `itemField()`,
 `adversaryName()`) rather than inline property access, so the EN-fallback
 rule stays in one place.
 
+## Global soundboard
+
+A compact, non-modal panel of eight one-shot sound effects, available on every
+route. A GM plays them over music they run elsewhere; the app never plays,
+pauses or ducks music. Product rules: [PD-011](product-decisions.md).
+
+- **Trigger:** one icon button (`#btn-soundboard`) in `.header-utils`, beside
+  the language switch, built by `SoundboardUI.triggerHtml()` inside
+  `renderHeader()`. `renderHeader()` rebuilds the header every render, so it
+  ends with `SoundboardUI.sync()`, which re-applies `aria-expanded`, the
+  "playing" dot and the language to the fresh button. The click handler is
+  delegated on `document`, so it survives the rebuild.
+- **Panel:** `#soundboard-panel` is a child of `<body>` (never of `#header` or a
+  page), built once on first open and afterwards only attribute-updated —
+  `applyLabels()` (language) and `applyState()` (engine snapshot). It is
+  anchored under the trigger with `position: fixed` and never moves layout.
+  Dismissal: trigger again, outside `pointerdown`, Escape (only when focus is on
+  the panel or trigger — a window capture handler that consumes the key, so a
+  card or dialog underneath stays open), or the close button. Closing never
+  stops audio.
+- **Engine** (`SoundboardEngine.create()`): one `AudioContext`, created from the
+  click that opens the panel (user activation) and never torn down. Per sound
+  the graph is `source → instance gain (fades) → sound gain → master gain →
+  DynamicsCompressor → destination`. Decoded `AudioBuffer`s are cached; a fresh
+  `AudioBufferSourceNode` is made per play. Status per sound is
+  `idle | loading | ready | failed`; `load()` runs on every panel open and only
+  re-requests what is not `ready` (so failures retry, successes never refetch).
+  A sound that is not `ready` ignores clicks — **nothing is ever queued**.
+- **Race guards:** `stopAll()` bumps a global `epoch` and every sound's `seq`;
+  a start that was awaiting `AudioContext.resume()` re-checks both and drops
+  itself. An `ended` handler only clears state when its instance is still the
+  sound's current one. At most one instance per sound; replaying restarts it.
+- **Levels:** master default 35%, per sound 100%, both clamped to 0..1 (no
+  amplification) and changed with short `setTargetAtTime` ramps, so they apply
+  to what is already playing. Persisted as one global key,
+  `LS_KEYS.soundboard` (`dhcodex_soundboard`:
+  `{ schemaVersion, master, sounds: { <id>: level } }`), validated by
+  `SafeStorage.validators.soundboard` and completed against the manifest by
+  `SoundboardManifest.normalizePrefs()`. It is not part of any Prep session.
+  Playback state is never persisted — a reload restores levels, not sound.
+- **Assets:** `sound/*` is copied by `scripts/build.js` like `img/`. URLs are
+  built with `new URL(src, document.baseURI)`, so they resolve under the GitHub
+  Pages project base path. They are not content-hashed (only css/js/data are).
+
+### Adding a bundled sound
+
+1. Put the file in `sound/`.
+2. Add one entry to `SOUNDS` in `js/soundboard-manifest.js`: `id` (stable —
+   it is the storage key), `src` (relative, e.g. `sound/foo.wav`), `icon`,
+   `nameKey`, `defaultVolume`.
+3. Add its drawing to `ICONS` in `js/soundboard-icons.js` under that `icon` key.
+4. Add the `nameKey` string to `data/i18n.json` in both `en` and `ru`.
+5. The panel grid is four columns wide and fills from the manifest order; a
+   ninth sound starts a third row with no other change. Run
+   `node --test tests/soundboard.test.js`, which checks the file exists, the
+   icon is unique, and both strings are present.
+
 ## Local persistence
 
 `js/safe-storage.js` (`SafeStorage`) is the one boundary between `js/app.js`
 and `localStorage` — see [.claude/rules/browser-state.md](../.claude/rules/browser-state.md)
 for the read/write/migration contract. `LS_KEYS` (top of `js/app.js`) is the
 full list of persisted keys: language, lists, environment-to-list
-membership, the storage-notice dismissal flag, the two Journey tables, and
+membership, the storage-notice dismissal flag, the two Journey tables, the
+global soundboard levels (see "Global soundboard"), and
 Prep's multi-prep store (see "Prep multi-prep model"
 above). `persist()`/`persistRaw()`/`persistBatch()`
 in `js/app.js` wrap `SafeStorage`'s write functions and centralize
@@ -765,5 +829,6 @@ stays copy-only.
 | Battle Points calculation | `js/battle-points.js` | `tests/battle-points.test.js` |
 | Initial loading shell lifecycle | `js/app.js` (`beginInitialLoading()` etc.) | `tests/loading-state.test.js` |
 | Random Environment card Tier badge/pick | `js/random-environment-utils.js` | `tests/random-environment-utils.test.js` |
+| Soundboard manifest, stored levels, audio engine races | `js/soundboard-manifest.js`, `js/soundboard-engine.js` | `tests/soundboard.test.js` |
 
 Run all of them with `node --test tests/*.test.js`.
