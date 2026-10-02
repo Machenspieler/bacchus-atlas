@@ -22,6 +22,7 @@
 
 const SoundboardUI = (function () {
   const TRIGGER_ID = 'btn-soundboard';
+  const FLOAT_ID = 'btn-soundboard-float';
   const PANEL_ID = 'soundboard-panel';
   const GAP_PX = 8;
 
@@ -39,14 +40,19 @@ const SoundboardUI = (function () {
   const AudioCtor = typeof window !== 'undefined' ? (window.AudioContext || window.webkitAudioContext) : null;
 
   function t(key) { return opts.t(key); }
-  function trigger() { return document.getElementById(TRIGGER_ID); }
+  /* While a card is open the header is behind its backdrop, so a second
+   * trigger rides in the floating language pill (see syncLangFloat() in
+   * js/app.js). The panel anchors to whichever one is on screen. */
+  function triggers() { return [...document.querySelectorAll('[data-sb-trigger]')]; }
+  function trigger() { return document.getElementById(FLOAT_ID) || document.getElementById(TRIGGER_ID); }
+  function isTrigger(el) { return !!(el && el.closest && el.closest('[data-sb-trigger]')); }
   function pct(v) { return Math.round(v * 100); }
 
   /** Static attributes the header template writes itself; kept here so the
    * label, the tooltip and the icon of the trigger have one definition. */
-  function triggerHtml() {
+  function triggerHtml(floating) {
     const label = t('sb_open');
-    return `<button type="button" class="btn sb-trigger" id="${TRIGGER_ID}"
+    return `<button type="button" class="${floating ? 'sb-trigger sb-trigger-float' : 'btn sb-trigger'}" id="${floating ? FLOAT_ID : TRIGGER_ID}" data-sb-trigger
               aria-label="${label}" data-tip="${label}"
               aria-expanded="false" aria-controls="${PANEL_ID}">${Icons.ICONS.waveform}<span class="sb-trigger-dot" aria-hidden="true"></span></button>`;
   }
@@ -123,15 +129,13 @@ const SoundboardUI = (function () {
     setTip(panel.querySelector('[data-act="settings"]'), t(settingsOpen ? 'sb_settings_done' : 'sb_settings'));
     setTip(panel.querySelector('[data-act="stop"]'), t('sb_stop_all'));
     setTip(panel.querySelector('[data-act="close"]'), t('sb_close'));
-    const trg = trigger();
-    if (trg) setTip(trg, t('sb_open'));
+    triggers().forEach(trg => setTip(trg, t('sb_open')));
   }
 
   /** Mirrors the engine's snapshot onto the DOM. Pure attribute updates. */
   function applyState() {
     const snap = engine.getState();
-    const trg = trigger();
-    if (trg) trg.dataset.playing = snap.anyActive ? 'true' : 'false';
+    triggers().forEach(trg => { trg.dataset.playing = snap.anyActive ? 'true' : 'false'; });
     if (!panel) return;
     M.SOUNDS.forEach(s => {
       const st = snap.sounds[s.id];
@@ -158,12 +162,23 @@ const SoundboardUI = (function () {
    * language. */
   function sync() {
     if (!engine) return;
-    const trg = trigger();
-    if (trg) trg.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    triggers().forEach(trg => trg.setAttribute('aria-expanded', isOpen ? 'true' : 'false'));
     applyLabels();
     applyState();
     position();
   }
+
+  /** Called by syncLangFloat(): puts a trigger into the floating pill while a
+   * card is open and takes it out again afterwards. */
+  function syncFloat(pill) {
+    const existing = document.getElementById(FLOAT_ID);
+    if (!pill) { if (existing) existing.remove(); }
+    else if (!existing && engine) pill.insertAdjacentHTML('afterbegin', triggerHtml(true));
+    if (engine) sync();
+  }
+
+  /** The open panel, for the overlay focus ring in app.js (null when closed). */
+  function openPanelElement() { return isOpen ? panel : null; }
 
   /* ---------------- open / close / position ---------------- */
 
@@ -172,6 +187,7 @@ const SoundboardUI = (function () {
     const trg = trigger();
     if (!trg) return;
     const r = trg.getBoundingClientRect();
+    if (!r.width) return;
     const vw = document.documentElement.clientWidth;
     const vh = window.innerHeight;
     const w = panel.offsetWidth;
@@ -190,8 +206,7 @@ const SoundboardUI = (function () {
     isOpen = true;
     loadFailureToastShown = false;
     panel.hidden = false;
-    const trg = trigger();
-    if (trg) trg.setAttribute('aria-expanded', 'true');
+    triggers().forEach(trg => trg.setAttribute('aria-expanded', 'true'));
     applyLabels();
     applyState();
     position();
@@ -210,11 +225,9 @@ const SoundboardUI = (function () {
     if (!isOpen) return;
     isOpen = false;
     panel.hidden = true;
+    triggers().forEach(trg => trg.setAttribute('aria-expanded', 'false'));
     const trg = trigger();
-    if (trg) {
-      trg.setAttribute('aria-expanded', 'false');
-      if (returnFocus) trg.focus({ preventScroll: true });
-    }
+    if (trg && returnFocus) trg.focus({ preventScroll: true });
   }
 
   function firstSoundButton() { return panel.querySelector('.sb-sound'); }
@@ -271,8 +284,7 @@ const SoundboardUI = (function () {
   }
 
   function onDocumentClick(e) {
-    const trg = e.target.closest && e.target.closest(`#${TRIGGER_ID}`);
-    if (!trg) return;
+    if (!isTrigger(e.target)) return;
     if (isOpen) closePanel(false);
     // detail === 0 is a keyboard activation (Enter/Space) — only then is
     // focus moved into the panel.
@@ -283,7 +295,7 @@ const SoundboardUI = (function () {
    * the user has deliberately moved on. */
   function onPointerDownOutside(e) {
     if (!isOpen) return;
-    if (panel.contains(e.target) || (e.target.closest && e.target.closest(`#${TRIGGER_ID}`))) return;
+    if (panel.contains(e.target) || isTrigger(e.target)) return;
     closePanel(false);
   }
 
@@ -295,7 +307,7 @@ const SoundboardUI = (function () {
     if (!isOpen) return;
     const active = document.activeElement;
     const trg = trigger();
-    if (e.key === 'Escape' && active && (panel.contains(active) || active === trg)) {
+    if (e.key === 'Escape' && active && (panel.contains(active) || isTrigger(active))) {
       e.preventDefault();
       e.stopImmediatePropagation();
       closePanel(true);
@@ -303,6 +315,8 @@ const SoundboardUI = (function () {
     }
     // The panel lives at the end of <body>; these two keep Tab order natural
     // (trigger → panel → on, and back).
+    // Inside a card the focus ring (trapItems() in app.js) owns Tab.
+    if (document.querySelector('.modal-overlay')) return;
     if (e.key === 'Tab' && !e.shiftKey && active === trg) {
       e.preventDefault();
       firstSoundButton().focus();
@@ -342,5 +356,5 @@ const SoundboardUI = (function () {
     if (header && typeof ResizeObserver !== 'undefined') new ResizeObserver(position).observe(header);
   }
 
-  return { init, sync, triggerHtml };
+  return { init, sync, syncFloat, triggerHtml, openPanelElement };
 })();

@@ -3626,14 +3626,20 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    One icon button in .header-actions (sized like its neighbours, in both the
    expanded and the compact Prep header) and one non-modal popover mounted on
    <body> by js/soundboard-ui.js — never inside #header, which is rebuilt on
-   every render. z-index 80: above the sticky header (30), below the overlay
-   backdrop (100) and the language float (150), so a card opened over it
-   covers it exactly as it covers the header. The sound buttons show icons
+   every render. z-index 160: above the card overlays (100) and the floating language pill
+   (150) so it stays usable over an open card, below the tooltip (220). The sound buttons show icons
    only; their names live in aria-labels. */
 /* The two utility controls — soundboard and language — sit together, so the
    soundboard button costs the header one 32px button and one 8px gap. On Prep,
    whose header is already full at the 1180px cap, the brand/session/actions
    gaps give back the 24px that, with the slot's own slack, pays for it. */
+/* The same trigger inside the floating language pill shown over an open card. */
+.lang-switch .sb-trigger-float {
+  width: var(--h-sm); height: 100%; padding: 0; border: 0; border-right: 1px solid var(--line);
+  border-radius: 0; background: transparent; color: var(--muted);
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.lang-switch .sb-trigger-float:hover, .lang-switch .sb-trigger-float[aria-expanded="true"] { color: var(--parchment); background: var(--ink-raised); }
 .header-utils { display: flex; align-items: center; gap: var(--s-2); }
 body[data-route="prep"] .header-inner { gap: var(--s-3); }
 .sb-trigger { position: relative; width: var(--h-sm); padding: 0; flex: none; }
@@ -3656,7 +3662,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .header-actions .sb-trigg
   --sb-icon: 32px;
   /* 64px on a desktop; on a narrow phone the four columns shrink to fit. */
   --sb-btn: min(64px, calc((100vw - 2 * var(--s-2) - 2 * var(--s-3) - 3 * var(--sb-gap)) / 4));
-  position: fixed; top: 0; left: 0; z-index: 80;
+  position: fixed; top: 0; left: 0; z-index: 160;
   display: flex; flex-direction: column; gap: var(--s-3);
   padding: var(--s-3);
   background: var(--ink-card); border: 1px solid var(--line-strong);

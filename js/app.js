@@ -888,12 +888,14 @@ function focusableIn(root) {
  * at the end, matching its place as the last thing in the document. */
 function trapItems(overlay) {
   const float = document.getElementById('lang-float');
-  return float ? [...focusableIn(overlay), ...focusableIn(float)] : focusableIn(overlay);
+  const sb = SoundboardUI.openPanelElement();
+  return [...focusableIn(overlay), ...(float ? focusableIn(float) : []), ...(sb ? focusableIn(sb) : [])];
 }
 
 function trapHolds(overlay, node) {
   const float = document.getElementById('lang-float');
-  return overlay.contains(node) || !!(float && float.contains(node));
+  const sb = SoundboardUI.openPanelElement();
+  return overlay.contains(node) || !!(float && float.contains(node)) || !!(sb && sb.contains(node));
 }
 
 /* position:fixed rather than overflow:hidden — iOS Safari ignores the latter on
@@ -1052,6 +1054,7 @@ function syncLangFloat() {
   if (!cardOpen || blocked) {
     el?.remove();
     document.body.classList.remove('has-lang-float');
+    SoundboardUI.syncFloat(null);
     return;
   }
   if (!el) {
@@ -1064,6 +1067,7 @@ function syncLangFloat() {
     document.body.classList.add('has-lang-float');
   }
   markLangSwitch(el);
+  SoundboardUI.syncFloat(el);
   // Kept last in the document — an overlay opened on top of the card is
   // appended after it, and the focus ring in trapItems() follows DOM order.
   if (el.nextSibling) document.body.appendChild(el);
