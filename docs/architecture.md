@@ -305,9 +305,8 @@ recommended-adversaries bulk add still appends.
   start/end. Focus is restored to the same card and a polite live region
   (`#prep-reorder-live`) announces the new position. There is no menu, no
   reset-order, no undo and no drag-to-delete (PD-012).
-- **Capability gate:** the grab cursor, the six-dot grip (a decorative,
-  absolutely positioned cue — the whole card is the drag source) and the
-  catalog `grab` cursors live in `@media (any-hover: hover) and
+- **Capability gate:** the grab cursor on selected cards (the whole card is
+  the drag source; there is no grip or handle) and the catalog `grab` cursors live in `@media (any-hover: hover) and
   (any-pointer: fine)`.
 
 ## Battle Points

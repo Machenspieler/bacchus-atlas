@@ -3708,13 +3708,10 @@ body[data-route="prep"][data-sp-header-mode="compact"] .header-actions .sb-trigg
 
 /* ---- manual ordering: drag-and-drop of whole cards (js/prep-reorder-ui.js) ----
    Everything here is gated on a fine pointer, so a touch-only device gets no
-   grab cursor, no grip and no draggable behaviour (the controller itself also
-   only accepts mouse/pen pointerdowns). The whole card is the drag source;
-   the six-dot grip is a quiet cue only — absolutely positioned inside the
-   card's existing left padding, so it can never change a card's size. The
-   insertion line, drop highlight and ghost are overlays: none of them takes a
+   grab cursor and no draggable behaviour (the controller itself also only
+   accepts mouse/pen pointerdowns). The whole card is the drag source — there
+   is deliberately no grip/handle. The insertion line, drop highlight and ghost are overlays: none of them takes a
    grid cell or moves a neighbour. */
-.prep-sel-grip { display: none; }
 .prep-sel-list { position: relative; }
 @media (any-hover: hover) and (any-pointer: fine) {
   .prep-sel, .prep-sel-main, .prep-sel-link { cursor: grab; }
@@ -3722,15 +3719,6 @@ body[data-route="prep"][data-sp-header-mode="compact"] .header-actions .sb-trigg
   .prep-sel-remove { cursor: pointer; }
   .prep-sel-thumb-btn { cursor: zoom-in; }
   .prep-sel { user-select: none; -webkit-user-select: none; }
-  .prep-sel-grip {
-    position: absolute; z-index: 1; top: 50%; left: 1px; translate: 0 -50%;
-    display: flex; width: 6px; height: 11px; color: var(--hope-soft);
-    opacity: 0; pointer-events: none;
-    transition: opacity var(--t-fast) var(--ease-out);
-  }
-  .prep-sel-grip svg { width: 100%; height: 100%; display: block; }
-  .prep-sel--row .prep-sel-grip { left: 0; }
-  .prep-sel:hover .prep-sel-grip, .prep-sel:focus-within .prep-sel-grip { opacity: 0.6; }
 
   /* Catalog entries that can be dragged in: unselected, and (environments)
      with room under the cap — a disabled checkbox is exactly the 3/3 state. */

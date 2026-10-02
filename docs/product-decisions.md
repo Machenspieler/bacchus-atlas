@@ -393,8 +393,8 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   Copy session summary and the FreshCutGrass export. Existing saved sessions
   keep their stored (selection) order, which now shows as-is rather than
   Tier-sorted.
-- **Desktop pointers only.** Whole-card drag with a fine pointer; a six-dot
-  grip is only a hover/focus cue. Keyboard: Alt+↑/↓ (one step) and
+- **Desktop pointers only.** Whole-card drag with a fine pointer; no grip or
+  handle of any kind (the grab cursor is the cue). Keyboard: Alt+↑/↓ (one step) and
   Alt+Shift+↑/↓ (start/end — not Home/End, which MacBooks lack). Touch and
   phone reordering are out of scope.
 - **Explicitly excluded:** Reset order / restore default order / automatic

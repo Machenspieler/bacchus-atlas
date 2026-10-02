@@ -392,13 +392,12 @@ Desktop pointer only (mouse or trackpad); also 1366×768, 1440×900, 1536×864,
 - [ ] Click ≠ drag: environment/item detail, adversary art preview,
       FreshCutGrass link and × all still work; a light trackpad wobble does
       not reorder; links/images in a card never start a native drag.
-- [ ] Hover/focus on a selected card shows the faint six-dot grip; nothing
-      changes size. Alt+↑/↓ and Alt+Shift+↑/↓ on a focused card move it,
+- [ ] Selected cards show the grab cursor on hover (no grip/handle). Alt+↑/↓ and Alt+Shift+↑/↓ on a focused card move it,
       focus stays on it, a screen reader hears "moved to position N of M".
 - [ ] Copy session summary, Copy session link (open it in a fresh profile) and
       the FreshCutGrass link list the adversaries in the on-screen order;
       Duplicate session keeps it.
-- [ ] A touch-only device shows no grip and no grab cursor and cannot start a
+- [ ] A touch-only device shows no grab cursor and cannot start a
       drag. No Reset order, undo or drag-to-delete anywhere.
 
 ## Language

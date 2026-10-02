@@ -4375,10 +4375,6 @@ function destroyPrepItemNav() {
  * (PrepUtils.MAX_ENVIRONMENTS); adversaries and items are uncapped
  * (PD-002), so their header count is a plain number, never "n/max". */
 
-/* Six-dot grip (2×3): the quiet "this card can be dragged" cue shown on hover /
- * focus of a selected card. Decorative only — the whole card is the drag source. */
-const ICON_GRIP = `<svg viewBox="0 0 8 14" fill="currentColor" aria-hidden="true" focusable="false"><circle cx="2" cy="2" r="1.1"/><circle cx="6" cy="2" r="1.1"/><circle cx="2" cy="7" r="1.1"/><circle cx="6" cy="7" r="1.1"/><circle cx="2" cy="12" r="1.1"/><circle cx="6" cy="12" r="1.1"/></svg>`;
-
 const CENTRAL_THUMB_FALLBACK = { env: ICON_HEX, adv: ICON_ADVERSARY_FALLBACK, item: ICON_ITEM_FALLBACK };
 
 /** Fixed-size, centered, object-fit:contain thumbnail wrapper for every
@@ -4442,7 +4438,6 @@ function selectedEntityHtml({ layout, id, thumb, name, meta, removeAttr, removeL
   }
   return `
     <li class="prep-sel prep-sel--${layout}" data-sel-id="${escapeAttr(id)}"${attrs}>
-      <span class="prep-sel-grip" aria-hidden="true">${ICON_GRIP}</span>
       ${main}
       <button type="button" class="icon-btn icon-btn--danger prep-sel-remove" ${removeAttr}="${escapeAttr(id)}"
               data-tip="${escapeAttr(removeTip)}" aria-label="${escapeAttr(removeLabel)}">${ICON_CLOSE}</button>
