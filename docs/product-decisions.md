@@ -28,9 +28,10 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   - Selected environments are stored as a plain array of ids
     (`prep.environmentIds` in `data/prep` schema v2) with no
     primary-id field alongside it.
-  - Selection order may still exist for presentation (the order a GM picked
-    things in) but must never be read as priority, importance, or a default
-    choice.
+  - Selection order is the GM's own manual order (PD-012) and exists for
+    presentation only; it must never be read as priority, importance, or a
+    default choice. Dragging an environment to the front is not "making it
+    primary".
   - The interface exposes exactly one control per environment — the
     selection checkbox (`.prep-select-checkbox`) — and never a "Make
     primary" action, star, or promotion affordance.
@@ -377,3 +378,32 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Levels are global preferences** (master 35%, each sound 100%, max unity),
   not part of a Prep session, and playback never resumes after a reload.
 - Mechanics: [docs/architecture.md](architecture.md) "Global soundboard".
+
+## PD-012: Prep's selected cards keep a manual order — the arrays are the order
+
+- **Status:** Active
+- **Date:** 2026-10-02
+- **Decision:** The GM can drag the selected Environments, Adversaries and
+  Items into any order, and drag an unselected catalog entry straight to a
+  position. `prep.environmentIds` / `adversaryIds` / `itemIds` are the
+  canonical display order and are rendered without sorting; the catalogs
+  keep their automatic sort. There is no separate order field.
+- **Everywhere the session is read, the order is the same:** the central
+  panel, autosave/reload, session switch and duplicate, Copy session link,
+  Copy session summary and the FreshCutGrass export. Existing saved sessions
+  keep their stored (selection) order, which now shows as-is rather than
+  Tier-sorted.
+- **Desktop pointers only.** Whole-card drag with a fine pointer; a six-dot
+  grip is only a hover/focus cue. Keyboard: Alt+↑/↓ (one step) and
+  Alt+Shift+↑/↓ (start/end — not Home/End, which MacBooks lack). Touch and
+  phone reordering are out of scope.
+- **Explicitly excluded:** Reset order / restore default order / automatic
+  re-sort, undo, drag-to-delete (dragging outside is *cancel*), visible
+  Move earlier/later menus, a `+` placeholder that occupies a grid cell
+  (layout must not jump), a new schema, a server.
+- **Constraints preserved:** same-section drops only, no duplicates, the
+  three-environment cap (cards already selected stay reorderable at 3/3),
+  checkbox selection and the × remove are unchanged.
+- Code: `js/prep-reorder-utils.js`, `js/prep-reorder-ui.js`,
+  `commitPrepOrder()`/`initPrepReorder()` in `js/app.js`; see
+  [architecture.md](architecture.md) "Prep manual ordering".

@@ -4375,6 +4375,10 @@ function destroyPrepItemNav() {
  * (PrepUtils.MAX_ENVIRONMENTS); adversaries and items are uncapped
  * (PD-002), so their header count is a plain number, never "n/max". */
 
+/* Six-dot grip (2×3): the quiet "this card can be dragged" cue shown on hover /
+ * focus of a selected card. Decorative only — the whole card is the drag source. */
+const ICON_GRIP = `<svg viewBox="0 0 8 14" fill="currentColor" aria-hidden="true" focusable="false"><circle cx="2" cy="2" r="1.1"/><circle cx="6" cy="2" r="1.1"/><circle cx="2" cy="7" r="1.1"/><circle cx="6" cy="7" r="1.1"/><circle cx="2" cy="12" r="1.1"/><circle cx="6" cy="12" r="1.1"/></svg>`;
+
 const CENTRAL_THUMB_FALLBACK = { env: ICON_HEX, adv: ICON_ADVERSARY_FALLBACK, item: ICON_ITEM_FALLBACK };
 
 /** Fixed-size, centered, object-fit:contain thumbnail wrapper for every
@@ -4426,18 +4430,19 @@ function selectedEntityHtml({ layout, id, thumb, name, meta, removeAttr, removeL
   if (link) {
     main = `${thumb}
       <a class="prep-sel-main prep-sel-link" href="${escapeAttr(link.href)}" target="_blank" rel="noopener noreferrer"
-         data-tip="${escapeAttr(link.tip)}" aria-label="${escapeAttr(link.label)}">${text}
+         aria-keyshortcuts="Alt+ArrowUp Alt+ArrowDown" data-tip="${escapeAttr(link.tip)}" aria-label="${escapeAttr(link.label)}">${text}
       </a>`;
   } else if (layout === 'row') {
     // An adversary with no FreshCutGrass URL: plain text, never a dead link.
-    main = `<div class="prep-sel-main" style="cursor:default">${thumb}${text}</div>`;
+    main = `<div class="prep-sel-main prep-sel-main--static" tabindex="0" aria-keyshortcuts="Alt+ArrowUp Alt+ArrowDown">${thumb}${text}</div>`;
   } else {
-    main = `<button type="button" class="prep-sel-main" ${openAttr}="${escapeAttr(id)}" aria-label="${escapeAttr(openLabel)}">
+    main = `<button type="button" class="prep-sel-main" ${openAttr}="${escapeAttr(id)}" aria-label="${escapeAttr(openLabel)}" aria-keyshortcuts="Alt+ArrowUp Alt+ArrowDown">
         ${thumb}${text}
       </button>`;
   }
   return `
-    <li class="prep-sel prep-sel--${layout}"${attrs}>
+    <li class="prep-sel prep-sel--${layout}" data-sel-id="${escapeAttr(id)}"${attrs}>
+      <span class="prep-sel-grip" aria-hidden="true">${ICON_GRIP}</span>
       ${main}
       <button type="button" class="icon-btn icon-btn--danger prep-sel-remove" ${removeAttr}="${escapeAttr(id)}"
               data-tip="${escapeAttr(removeTip)}" aria-label="${escapeAttr(removeLabel)}">${ICON_CLOSE}</button>
@@ -4537,15 +4542,13 @@ function centralEnvCardHtml(env) {
   });
 }
 
-/** Selected environments render in the same order as the "All Environments"
- * picker (Tier ascending, then alphabetically), not selection order — see
- * prepFilteredEnvs(). */
+/** Selected environments render in exactly the order of prep.environmentIds —
+ * the GM's own (manually reorderable) order, never re-sorted. The "All
+ * Environments" picker keeps its Tier-then-name sort (prepFilteredEnvs()). */
 function centralEnvListHtml(prep) {
   if (!prep.environmentIds.length) return centralEmptyHtml('prep_no_environments');
   const envs = prep.environmentIds.map(id => allEnvs().find(e => e.id === id)).filter(Boolean);
-  const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
-  const sorted = PrepUtils.sortByTierThenName(envs, env => env.tier, (a, b) => collator.compare(envName(a), envName(b)));
-  return `<ul class="prep-sel-list prep-sel-grid prep-sel-grid--env">${sorted.map(centralEnvCardHtml).join('')}</ul>`;
+  return `<ul class="prep-sel-list prep-sel-grid prep-sel-grid--env">${envs.map(centralEnvCardHtml).join('')}</ul>`;
 }
 
 function centralEnvCountHtml(prep) {
@@ -4597,15 +4600,13 @@ function advWarningHtml(prep) {
   return `<p class="prep-warning" role="status">${escapeHtml(t('prep_adversary_large_warning').replace('{n}', prep.adversaryIds.length))}</p>`;
 }
 
-/** Selected adversaries render in the same order as the "All Adversaries"
- * picker (Tier ascending, then alphabetically), not selection order — see
- * prepFilteredAdversaries(). */
+/** Selected adversaries render in exactly the order of prep.adversaryIds —
+ * the GM's own (manually reorderable) order, never re-sorted. The "All
+ * Adversaries" picker keeps its Tier-then-name sort (prepFilteredAdversaries()). */
 function centralAdvListHtml(prep) {
   if (!prep.adversaryIds.length) return centralEmptyHtml('prep_no_adversaries');
   const advs = prep.adversaryIds.map(id => state.prepCatalog.adversaryById.get(id)).filter(Boolean);
-  const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
-  const sorted = PrepUtils.sortByTierThenName(advs, adv => adv.tier, (a, b) => collator.compare(spName(a), spName(b)));
-  const rows = sorted.map(adv => {
+  const rows = advs.map(adv => {
     const name = spName(adv);
     const fcgUrl = adversaryFreshCutGrassUrl(adv);
     return selectedEntityHtml({
@@ -4787,15 +4788,13 @@ function centralItemCardHtml(id, item) {
   });
 }
 
-/** Selected items render in the same order as the Items picker (roll number,
- * then Source, then Kind, then alphabetically), not selection order — see
- * prepFilteredItems(). */
+/** Selected items render in exactly the order of prep.itemIds — the GM's own
+ * (manually reorderable) order, never re-sorted. The Items picker keeps its
+ * roll/Source/Kind/name sort (prepFilteredItems()). */
 function centralItemListHtml(prep) {
   if (!prep.itemIds.length) return centralEmptyHtml('prep_no_items');
   const items = prep.itemIds.map(id => { const item = itemById(id); return item ? Object.assign({ id }, item) : null; }).filter(Boolean);
-  const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
-  const sorted = PrepUtils.sortItemsForPrep(items, (a, b) => collator.compare(itemField(a, 'name'), itemField(b, 'name')));
-  return `<ul class="prep-sel-list prep-sel-grid prep-sel-grid--item">${sorted.map(item => centralItemCardHtml(item.id, item)).join('')}</ul>`;
+  return `<ul class="prep-sel-list prep-sel-grid prep-sel-grid--item">${items.map(item => centralItemCardHtml(item.id, item)).join('')}</ul>`;
 }
 
 function refreshCentralItems() {
@@ -4807,6 +4806,75 @@ function refreshCentralItems() {
   if (roll) roll.outerHTML = itemRollMetaHtml(prep);
   refreshClearAllSlot('items', prep.itemIds.length);
   syncCentralTruncationTips();
+}
+
+/* ---------------- manual ordering (drag-and-drop + Alt+Arrow) ----------------
+ * The stored arrays prep.environmentIds / adversaryIds / itemIds ARE the
+ * display order of the central panel (it never re-sorts them). The pointer
+ * and keyboard handling lives in js/prep-reorder-ui.js (geometry in
+ * js/prep-reorder-utils.js); this is only the bridge: it tells the controller
+ * what is selected / addable and applies a finished drop through the same
+ * updatePrep() path every other selection change uses. */
+const PREP_ID_FIELD = { environments: 'environmentIds', adversaries: 'adversaryIds', items: 'itemIds' };
+
+function prepReorderName(kind, id) {
+  if (kind === 'environments') { const env = allEnvs().find(e => e.id === id); return env ? envName(env) : id; }
+  if (kind === 'adversaries') { const adv = state.prepCatalog.adversaryById.get(id); return adv ? spName(adv) : id; }
+  const item = itemById(id);
+  return item ? itemField(item, 'name') : id;
+}
+
+/** A catalog entry can be dragged in only while it is unselected and (for
+ * environments) the three-environment cap leaves room — the same rule the
+ * picker checkboxes enforce. */
+function prepReorderCanAdd(kind, id) {
+  const prep = activePrep();
+  if (!prep || !PREP_ID_FIELD[kind]) return false;
+  if (kind === 'environments') return PrepUtils.environmentActionState(prep, id) === 'available';
+  return prep[PREP_ID_FIELD[kind]].indexOf(id) === -1;
+}
+
+/** Brings the catalog's checkbox / selected tile into line after a drop-add,
+ * mirroring what the checkbox change handler does for the same selection. */
+function syncAddedSelection(kind, id) {
+  const attr = { environments: 'data-sp-toggle-env', adversaries: 'data-sp-toggle-adv', items: 'data-sp-toggle-item' }[kind];
+  syncPickerCheckbox(attr, id, true);
+  updatePrepToggleLabel(attr, id, true, prepReorderName(kind, id));
+  if (kind === 'environments') syncEnvPrepControls();
+  if (kind === 'items') {
+    document.querySelectorAll(`.prep-item-card[data-item-id="${escapeSelectorAttrValue(id)}"], .prep-item-compact-row[data-item-id="${escapeSelectorAttrValue(id)}"]`)
+      .forEach(card => card.classList.add('is-selected'));
+  }
+}
+
+function commitPrepOrder({ kind, ids, id, mode }) {
+  const field = PREP_ID_FIELD[kind];
+  if (!field) return;
+  const { result } = updatePrep(prep => Object.assign({}, prep, { [field]: ids }));
+  updateSaveStatusDisplay(result);
+  if (kind === 'environments') refreshCentralEnvironments();
+  else if (kind === 'adversaries') refreshCentralAdversaries();
+  else refreshCentralItems();
+  if (mode === 'add') syncAddedSelection(kind, id);
+}
+
+function announcePrepReorder(message) {
+  const live = document.getElementById('prep-reorder-live');
+  if (!live) return;
+  live.textContent = '';
+  setTimeout(() => { live.textContent = message; }, 30);
+}
+
+function initPrepReorder() {
+  PrepReorderUI.init({
+    isActive: () => state.route.name === 'prep' && !!activePrep(),
+    getIds: kind => { const prep = activePrep(); return prep ? prep[PREP_ID_FIELD[kind]] : []; },
+    canAdd: prepReorderCanAdd,
+    nameOf: prepReorderName,
+    commit: commitPrepOrder,
+    announce: announcePrepReorder,
+    text: (key, params) => t(key).replace(/\{(\w+)\}/g, (m, k) => (params && k in params ? String(params[k]) : m)),
+  });
 }
 
 /** Empties one category of the active prep through the same updatePrep() path
@@ -4852,6 +4920,7 @@ function centralSectionHtml(prep) {
   return `
     <section class="prep-central" aria-labelledby="prep-central-heading">
       <h2 id="prep-central-heading" class="sr-only">${t('prep_title')}</h2>
+      <span class="sr-only" id="prep-reorder-live" role="status" aria-live="polite" aria-atomic="true"></span>
       <section class="prep-central-section" data-sp-section="environments" aria-labelledby="prep-central-env-title">
         ${centralHeadHtml({ titleId: 'prep-central-env-title', icon: ICON_TABLE_ENVIRONMENTS, title: t('prep_central_environments'), countHtml: centralEnvCountHtml(prep), clearHtml: clearAllSlotHtml('environments', prep.environmentIds.length) })}
         <div class="prep-central-body" id="prep-central-env-list">${centralEnvListHtml(prep)}</div>
@@ -5119,20 +5188,12 @@ function copyPrepShareLink() {
 }
 
 /** "Copy session summary": resolves the active prep in the central panel's
- * order (same sorts as centralEnvListHtml/centralAdvListHtml/centralItemListHtml),
- * hands plain strings to the pure PrepUtils.buildSessionSummary(), and writes
+ * order (the stored prep.*Ids order — see centralEnvListHtml() & co), hands plain strings to the pure PrepUtils.buildSessionSummary(), and writes
  * the result to the clipboard. Session Notes are never read. */
 function prepSummaryText(prep) {
-  const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
-  const envs = PrepUtils.sortByTierThenName(
-    prep.environmentIds.map(id => allEnvs().find(e => e.id === id)).filter(Boolean),
-    env => env.tier, (a, b) => collator.compare(envName(a), envName(b)));
-  const advs = PrepUtils.sortByTierThenName(
-    prep.adversaryIds.map(id => state.prepCatalog.adversaryById.get(id)).filter(Boolean),
-    adv => adv.tier, (a, b) => collator.compare(spName(a), spName(b)));
-  const items = PrepUtils.sortItemsForPrep(
-    prep.itemIds.map(id => { const item = itemById(id); return item ? Object.assign({ id }, item) : null; }).filter(Boolean),
-    (a, b) => collator.compare(itemField(a, 'name'), itemField(b, 'name')));
+  const envs = prep.environmentIds.map(id => allEnvs().find(e => e.id === id)).filter(Boolean);
+  const advs = prep.adversaryIds.map(id => state.prepCatalog.adversaryById.get(id)).filter(Boolean);
+  const items = prep.itemIds.map(id => { const item = itemById(id); return item ? Object.assign({ id }, item) : null; }).filter(Boolean);
   return {
     text: PrepUtils.buildSessionSummary({
       name: prepDisplayTitle(prep),
@@ -6121,6 +6182,7 @@ function renderPrepPage() {
       ${itemsPanelHtml(prep)}
     </div>`;
   bindPrepDelegation(el);
+  initPrepReorder();
   bindPrepSearchAndTitle();
   bindAdvToolbarControls();
   initPrepItemNav(activeItemGridId());

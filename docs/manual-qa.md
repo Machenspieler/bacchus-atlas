@@ -367,6 +367,40 @@ Skies** (only an unsupported name).
       the long RU group heading wraps inside the narrow picker column; rows
       keep their height; focus ring visible on the `★` button.
 
+## Prep manual ordering
+
+Desktop pointer only (mouse or trackpad); also 1366×768, 1440×900, 1536×864,
+1920×1080 and a window resized across the 3/2/1-column switches.
+
+- [ ] Drag a selected Environment / Adversary / Item card inside its own
+      section: the gold line shows the landing slot, drop reorders, reload
+      keeps the order. No line when the drop would change nothing.
+- [ ] Across a row boundary (C → D, F → G in a 2- or 3-column grid) the line
+      does not jump; a partial last row and an empty cell are reachable.
+- [ ] Drag an unselected row from All Environments / All Adversaries and a
+      tile or text row from the Items strip into the matching section: it
+      lands at the line, the picker checkbox/tile turns selected, the other
+      sections are not highlighted, nothing below shifts. An empty section's
+      "nothing selected" line becomes "Drop here to add" with the same height.
+- [ ] Invalid drags do nothing: other section, an already-selected entry (not
+      draggable), an unselected environment at 3/3 (not draggable), Esc,
+      releasing outside. Cards already selected still reorder at 3/3.
+- [ ] A long selection: holding the pointer within ~56px of the central
+      panel's top/bottom scrolls it (faster nearer the edge) and stops on
+      release / leaving the zone / the end of the list; the page itself does
+      not scroll at ≥1200px.
+- [ ] Click ≠ drag: environment/item detail, adversary art preview,
+      FreshCutGrass link and × all still work; a light trackpad wobble does
+      not reorder; links/images in a card never start a native drag.
+- [ ] Hover/focus on a selected card shows the faint six-dot grip; nothing
+      changes size. Alt+↑/↓ and Alt+Shift+↑/↓ on a focused card move it,
+      focus stays on it, a screen reader hears "moved to position N of M".
+- [ ] Copy session summary, Copy session link (open it in a fresh profile) and
+      the FreshCutGrass link list the adversaries in the on-screen order;
+      Duplicate session keeps it.
+- [ ] A touch-only device shows no grip and no grab cursor and cannot start a
+      drag. No Reset order, undo or drag-to-delete anywhere.
+
 ## Language
 
 - [ ] English: full pass over whatever changed.

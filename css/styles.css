@@ -3705,3 +3705,78 @@ body[data-route="prep"][data-sp-header-mode="compact"] .header-actions .sb-trigg
   }
   .card:hover { transform: none; }
 }
+
+/* ---- manual ordering: drag-and-drop of whole cards (js/prep-reorder-ui.js) ----
+   Everything here is gated on a fine pointer, so a touch-only device gets no
+   grab cursor, no grip and no draggable behaviour (the controller itself also
+   only accepts mouse/pen pointerdowns). The whole card is the drag source;
+   the six-dot grip is a quiet cue only — absolutely positioned inside the
+   card's existing left padding, so it can never change a card's size. The
+   insertion line, drop highlight and ghost are overlays: none of them takes a
+   grid cell or moves a neighbour. */
+.prep-sel-grip { display: none; }
+.prep-sel-list { position: relative; }
+@media (any-hover: hover) and (any-pointer: fine) {
+  .prep-sel, .prep-sel-main, .prep-sel-link { cursor: grab; }
+  .prep-sel-main--static { cursor: grab; }
+  .prep-sel-remove { cursor: pointer; }
+  .prep-sel-thumb-btn { cursor: zoom-in; }
+  .prep-sel { user-select: none; -webkit-user-select: none; }
+  .prep-sel-grip {
+    position: absolute; z-index: 1; top: 50%; left: 1px; translate: 0 -50%;
+    display: flex; width: 6px; height: 11px; color: var(--hope-soft);
+    opacity: 0; pointer-events: none;
+    transition: opacity var(--t-fast) var(--ease-out);
+  }
+  .prep-sel-grip svg { width: 100%; height: 100%; display: block; }
+  .prep-sel--row .prep-sel-grip { left: 0; }
+  .prep-sel:hover .prep-sel-grip, .prep-sel:focus-within .prep-sel-grip { opacity: 0.6; }
+
+  /* Catalog entries that can be dragged in: unselected, and (environments)
+     with room under the cap — a disabled checkbox is exactly the 3/3 state. */
+  .prep-env-row:not(:has(.prep-select-checkbox:checked, .prep-select-checkbox:disabled)),
+  .prep-adv-row:not(:has(.prep-select-checkbox:checked)),
+  .prep-item-compact-row:not(:has(.prep-select-checkbox:checked)),
+  .prep-item-card:not(.is-selected):not(:has(.prep-select-checkbox:checked)) {
+    cursor: grab; user-select: none; -webkit-user-select: none;
+  }
+  :is(.prep-env-row, .prep-adv-row, .prep-item-compact-row):not(:has(.prep-select-checkbox:checked, .prep-select-checkbox:disabled)) :is(.prep-row-open, .prep-adv-link, .prep-adv-thumb-btn),
+  .prep-item-card:not(.is-selected):not(:has(.prep-select-checkbox:checked)) .prep-item-icon-btn { cursor: inherit; }
+}
+
+body.is-prep-dragging, body.is-prep-dragging * { cursor: grabbing !important; user-select: none !important; -webkit-user-select: none !important; }
+
+/* Source while dragging: translucent with a thin gold edge, no scale/shadow. */
+.is-drag-source { opacity: 0.55; outline: 1px solid rgba(217,164,65,0.7); outline-offset: -1px; }
+
+/* Insertion line — a child of the list, absolutely positioned (see drawLine()). */
+.prep-drop-line {
+  position: absolute; z-index: 3; pointer-events: none; margin: 0; padding: 0; list-style: none;
+  background: var(--hope); border-radius: var(--r-pill);
+  box-shadow: 0 0 0 1px rgba(20,17,15,0.6);
+}
+
+/* Section that accepts the catalog entry being dragged. */
+.prep-central-section.is-drop-target > .prep-central-body {
+  border-radius: var(--r-md);
+  background: rgba(217,164,65,0.045);
+  box-shadow: inset 0 0 0 1px rgba(217,164,65,0.4);
+}
+/* The empty-state paragraph becomes the drop target in place: same box (its
+   own outline sits in the body's padding), so the section keeps its height. */
+.prep-central-section .prep-empty.is-drop-empty {
+  text-align: center; font-style: normal; color: var(--hope-soft);
+  outline: 1px dashed rgba(217,164,65,0.7); outline-offset: 3px; border-radius: var(--r-sm);
+}
+
+/* Name chip that follows the pointer. */
+.prep-drag-ghost {
+  position: fixed; z-index: 400; left: 0; top: 0; pointer-events: none;
+  max-width: 260px; padding: 3px 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: var(--font-ui); font-size: var(--fs-sm); line-height: 1.4; color: var(--parchment);
+  background: var(--ink-raised); border: 1px solid var(--hope); border-radius: var(--r-sm);
+  box-shadow: var(--e-2);
+}
+@media (any-pointer: coarse) and (not (any-pointer: fine)) { .prep-drag-ghost { display: none; } }
+/* Hover tooltips would trail the pointer across every card it crosses. */
+body.is-prep-dragging .tooltip { display: none !important; }

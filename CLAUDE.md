@@ -168,6 +168,18 @@ Adversaries parser is `js/potential-adversary-utils.js` — see
 [docs/architecture.md](docs/architecture.md) "Environment → Recommended
 Adversaries".
 
+### Manual ordering
+
+The selected cards on `#/prep` are manually orderable: `prep.environmentIds`
+/ `adversaryIds` / `itemIds` **are** the display order — the central lists,
+the session summary and the FreshCutGrass export read them as-is, and there
+is no second order field. Never re-sort a selected list (the catalog
+pickers keep their own sort). Desktop fine-pointer only; no reset-order,
+undo, drag-to-delete or `+` grid cell. Pointer/geometry logic lives in
+`js/prep-reorder-ui.js` and `js/prep-reorder-utils.js`; decision record:
+[docs/product-decisions.md](docs/product-decisions.md) PD-012, detail:
+[docs/architecture.md](docs/architecture.md) "Prep manual ordering".
+
 ## Commands
 
 ```bash

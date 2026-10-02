@@ -22,6 +22,8 @@ js/route-utils.js       — location.hash parsing/building
 js/list-utils.js        — Lists name validation
 js/search-index.js      — environment search index builder
 js/prep-utils.js — Prep pure selection/search/filter logic
+js/prep-reorder-utils.js — Prep manual ordering: id moves/inserts, insertion-slot geometry, autoscroll curve (pure)
+js/prep-reorder-ui.js   — Prep drag-and-drop / Alt+Arrow controller (pointer events, insertion line, autoscroll)
 js/freshcutgrass-utils.js — FreshCutGrass encounter-URL encoder (shared by env detail + Prep)
 js/potential-adversary-utils.js — Potential Adversaries parser + Prep recommendation matching (shared by env detail + Prep)
 js/battle-points.js     — Battle Points arithmetic (pure)
@@ -34,7 +36,7 @@ js/app.js               — everything else: state, rendering, event wiring
 ```
 
 Everything above `js/app.js` is a dependency-free module exposing a global
-(`SafeStorage`, `RouteUtils`, `ListUtils`, `SearchIndex`, `PrepUtils`, `FreshCutGrassUtils`, `PotentialAdversaryUtils`, `SoundboardManifest`, `SoundboardIcons`, `SoundboardEngine`)
+(`SafeStorage`, `RouteUtils`, `ListUtils`, `SearchIndex`, `PrepUtils`, `PrepReorderUtils`, `FreshCutGrassUtils`, `PotentialAdversaryUtils`, `SoundboardManifest`, `SoundboardIcons`, `SoundboardEngine`)
 that also works under plain Node `require()` — that's what makes each one
 directly unit-testable in `tests/*.test.js` without a DOM or bundler.
 `js/soundboard-ui.js` is the one exception: it needs the DOM, so it is only
@@ -248,6 +250,65 @@ state (no preview, badge or indicator).
   hotkeys, so nothing needs `stopPropagation()`; Escape does not clear notes.
 - Structural coverage: `tests/prep-notes.test.js`; data behaviour in
   `tests/prep-utils.test.js` and `tests/storage.test.js`.
+
+## Prep manual ordering (drag-and-drop)
+
+The three stored arrays — `prep.environmentIds`, `prep.adversaryIds`,
+`prep.itemIds` — **are** the display order of the central Prep panel. The
+central lists (`centralEnvListHtml()`, `centralAdvListHtml()`,
+`centralItemListHtml()`) map them straight to cards and never sort; the
+catalog pickers keep their own Tier/name/roll sort. There is no second
+"order" field anywhere, so everything that reads a prep sees the same order:
+autosave and reload, switching and duplicating sessions, the shared-link
+payload (`PrepShareUtils` already preserved array order), Copy session
+summary (`prepSummaryText()`) and the FreshCutGrass export
+(`freshCutGrassUrlForPrep()`). A checkbox selection still appends; the
+recommended-adversaries bulk add still appends.
+
+- **Pure geometry** — `js/prep-reorder-utils.js`. For N cards there are N+1
+  *insertion slots* (before card 1 … after card N). `resolveSlot()` picks the
+  row by the pointer's vertical distance, then the slot by horizontal
+  distance to that row's anchors (left edge, gaps, right edge); a
+  single-column grid uses the card's vertical half instead. The slot after
+  the last card of a row and the slot before the first card of the next row
+  are the *same* index, so crossing a row boundary never flips between two
+  answers. Rows and column count come from the *rendered* rects and the grid's
+  computed `grid-template-columns`, so 3/2/1-column layouts and a partial
+  last row need no special casing. `slotGeometry()` places the line: vertical
+  between two cards of a row, horizontal at a row boundary, below a full last
+  row, and for every slot of a one-column grid.
+- **Controller** — `js/prep-reorder-ui.js`, wired once by `initPrepReorder()`
+  in `js/app.js`, which supplies hooks (`getIds`, `canAdd`, `nameOf`,
+  `commit`, `announce`, `text`). It uses **pointer events, not native
+  HTML5 drag-and-drop**: a press only becomes a drag after 6px of travel (so
+  a wobbly trackpad click is still a click), links/images in a card are
+  opted out of native drag on pointerdown (otherwise the browser cancels the
+  pointer stream), Esc/blur/pointercancel cancel deterministically, and only
+  `mouse`/`pen` pointers ever start one (touch never gets a long-press drag).
+  The click that follows a finished or cancelled drag is swallowed.
+- **Two drags:** a selected card inside `.prep-central` (reorder, same
+  section only) and an unselected catalog row/tile (add at the slot under the
+  pointer). Catalog entries that are selected, or environments while 3/3, are
+  not sources. Nothing about the prep changes during the drag — only
+  temporary UI: `.is-drag-source`, the ghost name chip, one absolutely
+  positioned `.prep-drop-line` inside the list, `.is-drop-target` on the
+  matching section (adds only), and — for an empty section — its "nothing
+  selected" paragraph turned into the drop target in place (no `+` grid cell,
+  no layout shift). The drop calls `commitPrepOrder()` → `updatePrep()` →
+  the existing `refreshCentral*()`.
+- **Autoscroll** is time-based (px/s, ramping inside a 56px zone) and runs on
+  `.prep-central` when it is the scroll container (≥1200px) or on the
+  document otherwise; it stops on release, cancel, leaving the zone and at
+  the scroll bounds.
+- **Keyboard:** on a card's main control (`.prep-sel-main`, tab stop), Alt+↑/↓
+  moves one position in the *linear* order, Alt+Shift+↑/↓ jumps to the
+  start/end. Focus is restored to the same card and a polite live region
+  (`#prep-reorder-live`) announces the new position. There is no menu, no
+  reset-order, no undo and no drag-to-delete (PD-012).
+- **Capability gate:** the grab cursor, the six-dot grip (a decorative,
+  absolutely positioned cue — the whole card is the drag source) and the
+  catalog `grab` cursors live in `@media (any-hover: hover) and
+  (any-pointer: fine)`.
 
 ## Battle Points
 
@@ -790,6 +851,7 @@ directly rather than driving it through the DOM:
 | `js/list-utils.js` | list name normalization and rename resolution |
 | `js/search-index.js` | environment search record building and matching |
 | `js/prep-utils.js` | Prep default shape, prep lifecycle (add/switch/remove prep, title resolution), selection toggling, search/Tier/Type/Category/Source filtering, recommended-group ordering and the bulk-add of recommendations |
+| `js/prep-reorder-utils.js` | Prep manual ordering: `moveId`/`insertId`, `resolveSlot`/`slotGeometry` (virtual insertion slots over the rendered grid), `keyboardTarget`, `autoscrollDelta` |
 | `js/freshcutgrass-utils.js` | FreshCutGrass encounter URL encoding |
 | `js/potential-adversary-utils.js` | Potential Adversaries parsing/alias/family resolution (incl. the Bandits → Jagged Knife rule), canonical-name catalogue matching, per-environment recommendation index, recommendation provenance aggregation |
 | `js/battle-points.js` | Battle Points base budget, per-type cost, automatic/manual adjustments, number formatting |
@@ -824,6 +886,7 @@ stays copy-only.
 | List rename resolution | `js/list-utils.js` | `tests/list-rename.test.js` |
 | Environment search index | `js/search-index.js` | `tests/search-index.test.js` |
 | Prep selection/search/filter logic | `js/prep-utils.js` | `tests/prep-utils.test.js` |
+| Prep manual ordering (geometry, id moves, keyboard targets, autoscroll) | `js/prep-reorder-utils.js` | `tests/prep-reorder-utils.test.js`, `tests/prep-manual-order.test.js` |
 | FreshCutGrass URL encoding | `js/freshcutgrass-utils.js` | `tests/freshcutgrass-utils.test.js` |
 | Potential Adversaries parsing, catalogue matching, recommendation aggregation | `js/potential-adversary-utils.js` | `tests/potential-adversary-utils.test.js`, `tests/prep-recommendations.test.js` |
 | Battle Points calculation | `js/battle-points.js` | `tests/battle-points.test.js` |
