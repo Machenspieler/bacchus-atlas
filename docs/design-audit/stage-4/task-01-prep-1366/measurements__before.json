@@ -1,0 +1,961 @@
+{
+  "1366x768": {
+    "shellPadL": "20px",
+    "shell": {
+      "x": 0,
+      "w": 1351
+    },
+    "wrap": {
+      "x": 20,
+      "w": 1311
+    },
+    "main": {
+      "x": 20,
+      "w": 1311
+    },
+    "gap": "16px",
+    "cols": "334.5px 550.953px 393.531px",
+    "left": {
+      "x": 20,
+      "w": 334.5
+    },
+    "center": {
+      "x": 370.5,
+      "w": 551
+    },
+    "right": {
+      "x": 937.5,
+      "w": 393.5
+    },
+    "docScrollW": 1351,
+    "innerW": 1366,
+    "centralTitles": [
+      {
+        "t": "Environments",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Adversaries",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Items",
+        "lines": 1,
+        "clipped": false
+      }
+    ],
+    "rowNames": [
+      {
+        "t": "Harsh Desert",
+        "lines": 2,
+        "clipped": false
+      },
+      {
+        "t": "Port City",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Ancient Tomb",
+        "lines": 2,
+        "clipped": false
+      },
+      {
+        "t": "Acid Burrower",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Ahuizotl",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Apprentice Assassin",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Arch-Necromancer",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Premium Bedroll",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Piper Whistle",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Charging Quiver",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Alistair's Torch",
+        "lines": 1,
+        "clipped": false
+      }
+    ],
+    "toolbars": [
+      {
+        "c": "prep-env-toolbar",
+        "over": false,
+        "h": 48
+      },
+      {
+        "c": "prep-central-head",
+        "over": false,
+        "h": 44
+      },
+      {
+        "c": "prep-central-head prep-central-head--mid",
+        "over": false,
+        "h": 36
+      },
+      {
+        "c": "prep-central-head",
+        "over": false,
+        "h": 36
+      },
+      {
+        "c": "prep-adv-toolbar",
+        "over": false,
+        "h": 48
+      },
+      {
+        "c": "item-toolbar",
+        "over": false,
+        "h": 40
+      }
+    ]
+  },
+  "1440x900": {
+    "shellPadL": "20px",
+    "shell": {
+      "x": 0,
+      "w": 1425
+    },
+    "wrap": {
+      "x": 20,
+      "w": 1385
+    },
+    "main": {
+      "x": 20,
+      "w": 1385
+    },
+    "gap": "16px",
+    "cols": "353.859px 582.828px 416.297px",
+    "left": {
+      "x": 20,
+      "w": 353.9
+    },
+    "center": {
+      "x": 389.9,
+      "w": 582.8
+    },
+    "right": {
+      "x": 988.7,
+      "w": 416.3
+    },
+    "docScrollW": 1425,
+    "innerW": 1440,
+    "centralTitles": [
+      {
+        "t": "Environments",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Adversaries",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Items",
+        "lines": 1,
+        "clipped": false
+      }
+    ],
+    "rowNames": [
+      {
+        "t": "Harsh Desert",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Port City",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Ancient Tomb",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Acid Burrower",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Ahuizotl",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Apprentice Assassin",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Arch-Necromancer",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Premium Bedroll",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Piper Whistle",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Charging Quiver",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Alistair's Torch",
+        "lines": 1,
+        "clipped": false
+      }
+    ],
+    "toolbars": [
+      {
+        "c": "prep-env-toolbar",
+        "over": false,
+        "h": 48
+      },
+      {
+        "c": "prep-central-head",
+        "over": false,
+        "h": 44
+      },
+      {
+        "c": "prep-central-head prep-central-head--mid",
+        "over": false,
+        "h": 36
+      },
+      {
+        "c": "prep-central-head",
+        "over": false,
+        "h": 36
+      },
+      {
+        "c": "prep-adv-toolbar",
+        "over": false,
+        "h": 48
+      },
+      {
+        "c": "item-toolbar",
+        "over": false,
+        "h": 40
+      }
+    ]
+  },
+  "1920x1080": {
+    "shellPadL": "20px",
+    "shell": {
+      "x": 0,
+      "w": 1905
+    },
+    "wrap": {
+      "x": 20,
+      "w": 1865
+    },
+    "main": {
+      "x": 20,
+      "w": 1865
+    },
+    "gap": "16px",
+    "cols": "479.391px 789.609px 564px",
+    "left": {
+      "x": 20,
+      "w": 479.4
+    },
+    "center": {
+      "x": 515.4,
+      "w": 789.6
+    },
+    "right": {
+      "x": 1321,
+      "w": 564
+    },
+    "docScrollW": 1905,
+    "innerW": 1920,
+    "centralTitles": [
+      {
+        "t": "Environments",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Adversaries",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Items",
+        "lines": 1,
+        "clipped": false
+      }
+    ],
+    "rowNames": [
+      {
+        "t": "Harsh Desert",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Port City",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Ancient Tomb",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Acid Burrower",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Ahuizotl",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Apprentice Assassin",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Arch-Necromancer",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Premium Bedroll",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Piper Whistle",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Charging Quiver",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Alistair's Torch",
+        "lines": 1,
+        "clipped": false
+      }
+    ],
+    "toolbars": [
+      {
+        "c": "prep-env-toolbar",
+        "over": false,
+        "h": 48
+      },
+      {
+        "c": "prep-central-head",
+        "over": false,
+        "h": 48
+      },
+      {
+        "c": "prep-central-head prep-central-head--mid",
+        "over": false,
+        "h": 40
+      },
+      {
+        "c": "prep-central-head",
+        "over": false,
+        "h": 40
+      },
+      {
+        "c": "prep-adv-toolbar",
+        "over": false,
+        "h": 48
+      },
+      {
+        "c": "item-toolbar",
+        "over": false,
+        "h": 40
+      }
+    ]
+  },
+  "1200x800": {
+    "shellPadL": "20px",
+    "shell": {
+      "x": 0,
+      "w": 1185
+    },
+    "wrap": {
+      "x": 20,
+      "w": 1145
+    },
+    "main": {
+      "x": 20,
+      "w": 1145
+    },
+    "gap": "16px",
+    "cols": "290.828px 480px 342.172px",
+    "left": {
+      "x": 20,
+      "w": 290.8
+    },
+    "center": {
+      "x": 326.8,
+      "w": 480
+    },
+    "right": {
+      "x": 822.8,
+      "w": 342.2
+    },
+    "docScrollW": 1185,
+    "innerW": 1200,
+    "centralTitles": [
+      {
+        "t": "Environments",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Adversaries",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Items",
+        "lines": 1,
+        "clipped": false
+      }
+    ],
+    "rowNames": [
+      {
+        "t": "Harsh Desert",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Port City",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Ancient Tomb",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Acid Burrower",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Ahuizotl",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Apprentice Assassin",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Arch-Necromancer",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Premium Bedroll",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Piper Whistle",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Charging Quiver",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Alistair's Torch",
+        "lines": 1,
+        "clipped": false
+      }
+    ],
+    "toolbars": [
+      {
+        "c": "prep-env-toolbar",
+        "over": false,
+        "h": 48
+      },
+      {
+        "c": "prep-central-head",
+        "over": false,
+        "h": 44
+      },
+      {
+        "c": "prep-central-head prep-central-head--mid",
+        "over": false,
+        "h": 36
+      },
+      {
+        "c": "prep-central-head",
+        "over": false,
+        "h": 36
+      },
+      {
+        "c": "prep-adv-toolbar",
+        "over": false,
+        "h": 48
+      },
+      {
+        "c": "item-toolbar",
+        "over": false,
+        "h": 40
+      }
+    ]
+  },
+  "1280x720": {
+    "shellPadL": "20px",
+    "shell": {
+      "x": 0,
+      "w": 1265
+    },
+    "wrap": {
+      "x": 20,
+      "w": 1225
+    },
+    "main": {
+      "x": 20,
+      "w": 1225
+    },
+    "gap": "16px",
+    "cols": "312px 513.922px 367.078px",
+    "left": {
+      "x": 20,
+      "w": 312
+    },
+    "center": {
+      "x": 348,
+      "w": 513.9
+    },
+    "right": {
+      "x": 877.9,
+      "w": 367.1
+    },
+    "docScrollW": 1265,
+    "innerW": 1280,
+    "centralTitles": [
+      {
+        "t": "Environments",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Adversaries",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Items",
+        "lines": 1,
+        "clipped": false
+      }
+    ],
+    "rowNames": [
+      {
+        "t": "Harsh Desert",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Port City",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Ancient Tomb",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Acid Burrower",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Ahuizotl",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Apprentice Assassin",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Arch-Necromancer",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Premium Bedroll",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Piper Whistle",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Charging Quiver",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Alistair's Torch",
+        "lines": 1,
+        "clipped": false
+      }
+    ],
+    "toolbars": [
+      {
+        "c": "prep-env-toolbar",
+        "over": false,
+        "h": 48
+      },
+      {
+        "c": "prep-central-head",
+        "over": false,
+        "h": 44
+      },
+      {
+        "c": "prep-central-head prep-central-head--mid",
+        "over": false,
+        "h": 36
+      },
+      {
+        "c": "prep-central-head",
+        "over": false,
+        "h": 36
+      },
+      {
+        "c": "prep-adv-toolbar",
+        "over": false,
+        "h": 48
+      },
+      {
+        "c": "item-toolbar",
+        "over": false,
+        "h": 40
+      }
+    ]
+  },
+  "1280x800": {
+    "shellPadL": "20px",
+    "shell": {
+      "x": 0,
+      "w": 1265
+    },
+    "wrap": {
+      "x": 20,
+      "w": 1225
+    },
+    "main": {
+      "x": 20,
+      "w": 1225
+    },
+    "gap": "16px",
+    "cols": "312px 513.922px 367.078px",
+    "left": {
+      "x": 20,
+      "w": 312
+    },
+    "center": {
+      "x": 348,
+      "w": 513.9
+    },
+    "right": {
+      "x": 877.9,
+      "w": 367.1
+    },
+    "docScrollW": 1265,
+    "innerW": 1280,
+    "centralTitles": [
+      {
+        "t": "Environments",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Adversaries",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Items",
+        "lines": 1,
+        "clipped": false
+      }
+    ],
+    "rowNames": [
+      {
+        "t": "Harsh Desert",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Port City",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Ancient Tomb",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Acid Burrower",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Ahuizotl",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Apprentice Assassin",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Arch-Necromancer",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Premium Bedroll",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Piper Whistle",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Charging Quiver",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Alistair's Torch",
+        "lines": 1,
+        "clipped": false
+      }
+    ],
+    "toolbars": [
+      {
+        "c": "prep-env-toolbar",
+        "over": false,
+        "h": 48
+      },
+      {
+        "c": "prep-central-head",
+        "over": false,
+        "h": 44
+      },
+      {
+        "c": "prep-central-head prep-central-head--mid",
+        "over": false,
+        "h": 36
+      },
+      {
+        "c": "prep-central-head",
+        "over": false,
+        "h": 36
+      },
+      {
+        "c": "prep-adv-toolbar",
+        "over": false,
+        "h": 48
+      },
+      {
+        "c": "item-toolbar",
+        "over": false,
+        "h": 40
+      }
+    ]
+  },
+  "1600x900": {
+    "shellPadL": "20px",
+    "shell": {
+      "x": 0,
+      "w": 1585
+    },
+    "wrap": {
+      "x": 20,
+      "w": 1545
+    },
+    "main": {
+      "x": 20,
+      "w": 1545
+    },
+    "gap": "16px",
+    "cols": "395.703px 651.75px 465.547px",
+    "left": {
+      "x": 20,
+      "w": 395.7
+    },
+    "center": {
+      "x": 431.7,
+      "w": 651.8
+    },
+    "right": {
+      "x": 1099.5,
+      "w": 465.5
+    },
+    "docScrollW": 1585,
+    "innerW": 1600,
+    "centralTitles": [
+      {
+        "t": "Environments",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Adversaries",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Items",
+        "lines": 1,
+        "clipped": false
+      }
+    ],
+    "rowNames": [
+      {
+        "t": "Harsh Desert",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Port City",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Ancient Tomb",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Acid Burrower",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Ahuizotl",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Apprentice Assassin",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Arch-Necromancer",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Premium Bedroll",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Piper Whistle",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Charging Quiver",
+        "lines": 1,
+        "clipped": false
+      },
+      {
+        "t": "Alistair's Torch",
+        "lines": 1,
+        "clipped": false
+      }
+    ],
+    "toolbars": [
+      {
+        "c": "prep-env-toolbar",
+        "over": false,
+        "h": 48
+      },
+      {
+        "c": "prep-central-head",
+        "over": false,
+        "h": 44
+      },
+      {
+        "c": "prep-central-head prep-central-head--mid",
+        "over": false,
+        "h": 36
+      },
+      {
+        "c": "prep-central-head",
+        "over": false,
+        "h": 36
+      },
+      {
+        "c": "prep-adv-toolbar",
+        "over": false,
+        "h": 48
+      },
+      {
+        "c": "item-toolbar",
+        "over": false,
+        "h": 40
+      }
+    ]
+  }
+}

@@ -3589,6 +3589,23 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   }
 }
 
+/* ---- laptop three-column range (1200–1439px; 1440 is the existing point where
+   .shell's cap drops): the default 20px shell padding + 16px gaps cost 72px
+   of row width, and at 1366px that left the central track ~551px, wrapping
+   short selected-environment names the 1440 layout (~583px) keeps on one line.
+   Reclaim that width (padding/gap one step down the spacing scale) and shift
+   the fractions toward the central column, which is the primary workspace;
+   type, controls and row sizes are unchanged. ---- */
+@media (min-width: 1200px) and (max-width: 1439px) {
+  body[data-route="prep"] .shell {
+    padding-inline: var(--s-3);
+  }
+  .prep-main {
+    grid-template-columns: minmax(260px, 0.8fr) minmax(480px, 1.5fr) minmax(300px, 1fr);
+    gap: var(--s-3);
+  }
+}
+
 /* ---- below ~900px: one column, central first, then the two catalogues,
    then items — the single stack order the mobile spec calls for ---- */
 @media (max-width: 900px) {

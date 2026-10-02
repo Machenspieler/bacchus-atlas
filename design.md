@@ -250,6 +250,7 @@ category:
 | `max-width: 760px` / `900px` | Prep's picker columns stack |
 | `max-width: 1536px` | Prep's Environment/Adversary picker result counters hide (Items and central counters stay) |
 | `min-width: 1200px` / `max-width: 1199px` | Prep's three-column layout threshold |
+| `min-width: 1200px` **and** `max-width: 1439px` | Prep laptop range: shell side padding and column gap drop one spacing step (20→12px, 16→12px) and the grid fractions shift to `.8fr / 1.5fr / 1fr` so the central workspace gets the width (≈592px at 1366 vs 551px) — no type, control or row-size change. 1440 is the existing point where the Prep shell cap drops |
 | `min-width: 1800px` **and** `min-height: 900px` | Prep's central workspace switches to comfortable density (~8–12% larger cards, headings, thumbnails) by overriding the `--pc-*` tokens on `.prep-central` only; sidebars, Items strip and column widths are untouched. Both axes are required — a wide-but-short window keeps the compact values. `--pc-pad-x` is deliberately not overridden (see the comment in `css/styles.css`) |
 | `min-width: 1440px`+ (1480/1836/2192/2548px) | catalog grid gains extra columns on very wide screens |
 
