@@ -3251,7 +3251,10 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    UA-origin `[hidden] { display: none }` default, and both strips would
    render at once. */
 .prep-item-strip-wrap[hidden] { display: none; }
-.prep-item-nav-btn { --ib-size: var(--h-md); }
+/* The strip permanently reserves its bottom padding plus the 8px scrollbar
+   track below the tiles; margin-bottom of that same amount makes the arrows
+   centre on the tiles themselves, not on tiles + scrollbar. */
+.prep-item-nav-btn { --ib-size: var(--h-md); margin-bottom: calc(var(--s-2) + 8px); }
 .prep-item-nav-btn[data-sp-item-nav="prev"] svg { transform: rotate(-90deg); }
 .prep-item-nav-btn[data-sp-item-nav="next"] svg { transform: rotate(90deg); }
 /* Hidden arrows (nothing to scroll) still occupy their slot — `visibility`,
