@@ -144,7 +144,7 @@ test('reordering announcements and the drop label exist in both languages', () =
 });
 
 test('drag affordances are gated on a fine pointer and there is no reset-order or drag-to-delete UI', () => {
-  assert.match(CSS, /@media \(any-hover: hover\) and \(any-pointer: fine\)\s*\{\s*\n\s*\.prep-sel, \.prep-sel-main/);
+  assert.match(CSS, /@media \(any-hover: hover\) and \(any-pointer: fine\)\s*\{[^}]*?\.prep-sel, \.prep-sel-main--static \{ cursor: grab; \}/);
   assert.ok(!/reset[-_ ]order|restore[-_ ]default[-_ ]order/i.test(APP_JS + JSON.stringify(I18N)));
   const ui = fs.readFileSync(path.join(ROOT, 'js', 'prep-reorder-ui.js'), 'utf8');
   assert.match(ui, /pointerType !== 'mouse' && e\.pointerType !== 'pen'/);
