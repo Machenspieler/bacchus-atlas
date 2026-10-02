@@ -1,0 +1,476 @@
+{
+  "total": 94,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "1440x900 ms: Escape closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900 menu: Escape closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900 bp: Escape closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900 sb: Escape closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768 ms: Escape closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768 menu: Escape closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768 bp: Escape closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768 sb: Escape closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080 ms: Escape closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080 menu: Escape closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080 bp: Escape closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080 sb: Escape closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "shell radius identical across ms/menu/bp/sb",
+      "ok": true,
+      "detail": "\"10px\""
+    },
+    {
+      "name": "shell border identical across ms/menu/bp/sb",
+      "ok": true,
+      "detail": "\"1px solid rgb(106, 93, 79)\""
+    },
+    {
+      "name": "shell shadow identical across ms/menu/bp/sb",
+      "ok": true,
+      "detail": "\"rgba(0, 0, 0, 0.35) 0px 4px 8px 0px, rgba(0, 0, 0, 0.55) 0px 14px 28px -8px\""
+    },
+    {
+      "name": "bg identical across ms/menu/bp",
+      "ok": true,
+      "detail": "rgb(28, 24, 21)"
+    },
+    {
+      "name": "ms-row radius is r-sm (4px)",
+      "ok": true,
+      "detail": "4px"
+    },
+    {
+      "name": "multiselect: option can be selected",
+      "ok": true,
+      "detail": "checked=1"
+    },
+    {
+      "name": "multiselect: closes on Escape",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "multiselect: focus returns to trigger",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "multiselect: Tab reaches a panel control with focus-visible",
+      "ok": true,
+      "detail": "{\"inPanel\":true,\"fv\":true,\"cls\":\"ms-checkbox sr-only\"}"
+    },
+    {
+      "name": "session menu: opening moves focus to an item",
+      "ok": true,
+      "detail": "items=1"
+    },
+    {
+      "name": "session menu: keyboard-opened item shows :focus-visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "session menu: arrow keys keep focus inside",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "session menu: Escape closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "session menu: focus returns to trigger",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "session menu: Tab closes it and focus is not trapped in it",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "session menu: choosing an item closes it",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bp popover: stepper interaction runs without closing it",
+      "ok": true,
+      "detail": "value changed"
+    },
+    {
+      "name": "bp popover: × closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "soundboard: control click leaves panel open and usable",
+      "ok": true,
+      "detail": "controls=1"
+    },
+    {
+      "name": "soundboard: Escape closes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900__ms: inside viewport",
+      "ok": true,
+      "detail": "{\"x\":1198,\"y\":301.6,\"w\":190,\"h\":352}"
+    },
+    {
+      "name": "1440x900__ms: not clipped by an ancestor",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900__ms: bottom edge visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900__ms: no horizontal scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900__ms: panel sits next to its trigger",
+      "ok": true,
+      "detail": "gap=8"
+    },
+    {
+      "name": "1440x900__menu: inside viewport",
+      "ok": true,
+      "detail": "{\"x\":37,\"y\":181.1,\"w\":240,\"h\":80.6}"
+    },
+    {
+      "name": "1440x900__menu: not clipped by an ancestor",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900__menu: bottom edge visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900__menu: no horizontal scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900__menu: panel sits next to its trigger",
+      "ok": true,
+      "detail": "gap=4"
+    },
+    {
+      "name": "1440x900__bp: inside viewport",
+      "ok": true,
+      "detail": "{\"x\":400.4,\"y\":394.6,\"w\":380,\"h\":497.4}"
+    },
+    {
+      "name": "1440x900__bp: not clipped by an ancestor",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900__bp: bottom edge visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900__bp: no horizontal scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900__bp: panel sits next to its trigger",
+      "ok": true,
+      "detail": "gap=6"
+    },
+    {
+      "name": "1440x900__sb: inside viewport",
+      "ok": true,
+      "detail": "{\"x\":886.8,\"y\":62,\"w\":306,\"h\":206}"
+    },
+    {
+      "name": "1440x900__sb: not clipped by an ancestor",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900__sb: bottom edge visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900__sb: no horizontal scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440x900__sb: panel sits next to its trigger",
+      "ok": true,
+      "detail": "gap=8"
+    },
+    {
+      "name": "1366x768__ms: inside viewport",
+      "ok": true,
+      "detail": "{\"x\":1132,\"y\":301.6,\"w\":190,\"h\":220}"
+    },
+    {
+      "name": "1366x768__ms: not clipped by an ancestor",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768__ms: bottom edge visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768__ms: no horizontal scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768__ms: panel sits next to its trigger",
+      "ok": true,
+      "detail": "gap=8"
+    },
+    {
+      "name": "1366x768__menu: inside viewport",
+      "ok": true,
+      "detail": "{\"x\":29,\"y\":181.1,\"w\":240,\"h\":80.6}"
+    },
+    {
+      "name": "1366x768__menu: not clipped by an ancestor",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768__menu: bottom edge visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768__menu: no horizontal scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768__menu: panel sits next to its trigger",
+      "ok": true,
+      "detail": "gap=4"
+    },
+    {
+      "name": "1366x768__bp: inside viewport",
+      "ok": true,
+      "detail": "{\"x\":359.9,\"y\":394.6,\"w\":380,\"h\":365.4}"
+    },
+    {
+      "name": "1366x768__bp: not clipped by an ancestor",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768__bp: bottom edge visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768__bp: no horizontal scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768__bp: panel sits next to its trigger",
+      "ok": true,
+      "detail": "gap=6"
+    },
+    {
+      "name": "1366x768__sb: inside viewport",
+      "ok": true,
+      "detail": "{\"x\":849.8,\"y\":62,\"w\":306,\"h\":206}"
+    },
+    {
+      "name": "1366x768__sb: not clipped by an ancestor",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768__sb: bottom edge visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768__sb: no horizontal scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1366x768__sb: panel sits next to its trigger",
+      "ok": true,
+      "detail": "gap=8"
+    },
+    {
+      "name": "1920x1080__ms: inside viewport",
+      "ok": true,
+      "detail": "{\"x\":1686,\"y\":301.6,\"w\":190,\"h\":419.5}"
+    },
+    {
+      "name": "1920x1080__ms: not clipped by an ancestor",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080__ms: bottom edge visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080__ms: no horizontal scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080__ms: panel sits next to its trigger",
+      "ok": true,
+      "detail": "gap=8"
+    },
+    {
+      "name": "1920x1080__menu: inside viewport",
+      "ok": true,
+      "detail": "{\"x\":37,\"y\":181.1,\"w\":240,\"h\":80.6}"
+    },
+    {
+      "name": "1920x1080__menu: not clipped by an ancestor",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080__menu: bottom edge visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080__menu: no horizontal scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080__menu: panel sits next to its trigger",
+      "ok": true,
+      "detail": "gap=4"
+    },
+    {
+      "name": "1920x1080__bp: inside viewport",
+      "ok": true,
+      "detail": "{\"x\":714.8,\"y\":410.6,\"w\":380,\"h\":642.1}"
+    },
+    {
+      "name": "1920x1080__bp: not clipped by an ancestor",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080__bp: bottom edge visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080__bp: no horizontal scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080__bp: panel sits next to its trigger",
+      "ok": true,
+      "detail": "gap=6"
+    },
+    {
+      "name": "1920x1080__sb: inside viewport",
+      "ok": true,
+      "detail": "{\"x\":1126.8,\"y\":62,\"w\":306,\"h\":206}"
+    },
+    {
+      "name": "1920x1080__sb: not clipped by an ancestor",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080__sb: bottom edge visible",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080__sb: no horizontal scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1920x1080__sb: panel sits next to its trigger",
+      "ok": true,
+      "detail": "gap=8"
+    },
+    {
+      "name": "Prep 1366: no horizontal overflow",
+      "ok": true,
+      "detail": "[1327,1327,1327]"
+    },
+    {
+      "name": "icon-btn family intact: bp-pop-close is .icon-btn 32px",
+      "ok": true,
+      "detail": "{\"cls\":\"icon-btn bp-pop-close\",\"w\":32,\"radius\":\"4px\"}"
+    }
+  ]
+}

@@ -519,6 +519,14 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%23e9dfc7' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 .ms-trigger[aria-expanded="true"] { border-color: var(--hope); }
+/* Interactive floating panels (family A): one shell — raised neutral edge,
+ * --r-lg corners, --e-3 elevation. Width, padding and interior stay local to
+ * each component. Soundboard keeps --ink-card (its tiles are --ink-raised wells).
+ * Small hints/tooltips (r-sm, e-2) and modals (e-4) are other families. */
+.ms-panel, .prep-menu, .bp-popover, .sb-panel {
+  border: 1px solid var(--line-strong); border-radius: var(--r-lg); box-shadow: var(--e-3);
+}
+.ms-panel, .prep-menu, .bp-popover { background: var(--ink-raised); }
 .ms-panel {
   position: absolute; top: calc(100% + var(--s-2)); left: 0; z-index: 20;
   min-width: 190px; max-width: min(280px, calc(100vw - var(--s-4) * 2));
@@ -526,12 +534,10 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
    * desktop should surface many more rows than a short laptop window before
    * scrolling. dvh (where supported) tracks the real visible viewport past
    * mobile browser chrome; the vh line above it is the fallback. */
-  max-height: min(480px, 52vh);
-  max-height: min(480px, 52dvh);
+  max-height: min(480px, 52vh, var(--ms-room, 480px));
+  max-height: min(480px, 52dvh, var(--ms-room, 480px));
   overflow-y: auto; overscroll-behavior: contain;
   padding: var(--s-2); flex-direction: column; gap: 1px;
-  background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-sm);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
   /* Firefox's own thin/muted scrollbar; Chromium ignores these and is styled
    * via the ::-webkit-scrollbar-* rules below instead. */
   scrollbar-width: thin;
@@ -567,7 +573,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 .ms-row {
   position: relative;
   display: flex; align-items: center;
-  padding: var(--s-2) var(--s-3); border-radius: var(--r-xs); cursor: pointer;
+  padding: var(--s-2) var(--s-3); border-radius: var(--r-sm); cursor: pointer;
   font-size: var(--fs-base); color: var(--parchment);
   transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
 }
@@ -1945,8 +1951,8 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
     /* A phone's viewport height is precious and mostly keyboard/chrome; cap
      * the panel well short of the 52vh desktop share so it never reads as
      * "taking over the screen". */
-    max-height: min(360px, 46vh);
-    max-height: min(360px, 46dvh);
+    max-height: min(360px, 46vh, var(--ms-room, 360px));
+    max-height: min(360px, 46dvh, var(--ms-room, 360px));
   }
 
   /* One column at this width, and the panel narrows so the name keeps a full
@@ -2237,8 +2243,6 @@ body[data-route="prep"] {
   width: max-content; min-width: 240px; max-width: min(360px, calc(100vw - var(--s-4) * 2));
   max-height: min(340px, var(--menu-room, 340px));
   flex-direction: column; padding: var(--s-1);
-  background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-lg);
-  box-shadow: var(--e-3);
   font-family: var(--font-ui); font-size: var(--fs-base);
   animation: modal-in var(--t-fast) var(--ease-enter);
 }
@@ -2960,7 +2964,6 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 /* ---- popover (position: fixed, so opening never shifts layout) ---- */
 .bp-popover {
   position: fixed; z-index: 30; overflow-y: auto; padding: var(--s-3);
-  background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-lg); box-shadow: var(--e-3);
   font-family: var(--font-ui); font-size: var(--fs-sm); color: var(--parchment);
   animation: modal-in var(--t-fast) var(--ease-enter);
 }
@@ -3168,6 +3171,13 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   .prep-env-toolbar .prep-count, .prep-adv-toolbar .prep-count { display: none; }
   .prep-env-toolbar { grid-template-columns: minmax(0, 1fr) auto; }
   .prep-adv-toolbar { grid-template-columns: minmax(0, 1fr) auto auto; }
+}
+/* With the counter gone the Type trigger is the toolbar's last item, flush with
+   the column's right edge; a left-anchored 190px panel then runs past the
+   column (and the viewport) and is clipped. Anchor it to the trigger's right
+   edge instead. Phones keep the full-width panel from the 640px rules. */
+@media (min-width: 761px) and (max-width: 1536px) {
+  .prep-adv-toolbar .ms-panel { left: auto; right: 0; }
 }
 
 /* ---- compact "All Items" toolbar (Type + Source + search + dice + view + counter, one row) ----
@@ -3611,8 +3621,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .header-actions .sb-trigg
   position: fixed; top: 0; left: 0; z-index: 160;
   display: flex; flex-direction: column; gap: var(--s-3);
   padding: var(--s-3);
-  background: var(--ink-card); border: 1px solid var(--line-strong);
-  border-radius: var(--r-lg); box-shadow: var(--e-3);
+  background: var(--ink-card);
 }
 .sb-panel[hidden] { display: none; }
 .sb-panel:focus { outline: none; }

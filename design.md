@@ -100,6 +100,20 @@ elsewhere in the app.
 - **Elevation** is four shadow steps (`--e-1`…`--e-4`), each a two-layer
   shadow (tight + diffuse) rather than one blurred rectangle — used for card
   rest/hover, modals, and the environment detail overlay in increasing order.
+- **Floating surfaces** come in three families by role:
+  - *Interactive panels* (`.ms-panel`, `.prep-menu`, `.bp-popover`,
+    `.sb-panel`) share one shell, declared once in a grouped rule above
+    `.ms-panel`: `1px solid --line-strong`, `--r-lg`, `--e-3`, `--ink-raised`
+    (the Soundboard keeps `--ink-card` because its tiles are `--ink-raised`
+    wells). Rows inside use `--r-sm`; hover is the neutral
+    `rgba(255,255,255,0.06)`, selected stays gold. Width, padding and interior
+    layout remain per-component.
+  - *Small informational surfaces* (`.tooltip`, `.sp-session-hint`,
+    `.dice-result-pop`) stay compact: `--r-sm`, tight padding, `--e-3`
+    (tooltip is `--line-strong`; the hint and dice pop use a gold edge).
+  - *Modals* (`.modal`, `.adv-art-modal-card`) use `--r-lg` + `--e-4`. The
+    countdown overlay keeps its teal frame as a semantic exception.
+  A new dropdown/popover joins family A by adding its selector to the grouped rule.
 - **Motion** has two timing tokens (`--t-fast` 120ms, `--t-base` 180ms,
   `--t-slow` 260ms) and two eases (`--ease-out`, `--ease-enter`). Prep
   Prep's item strip explicitly respects `prefers-reduced-motion` and has no

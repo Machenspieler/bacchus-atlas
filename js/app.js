@@ -1623,6 +1623,20 @@ function closeActiveMultiSelect() {
   if (activeMultiSelect) activeMultiSelect.close();
 }
 
+/** A panel inside a clipping ancestor (Prep's overflow:hidden columns) would
+ * lose its lower rows to the clip, so cap it to the room left above that
+ * ancestor's bottom edge — the panel then scrolls instead. With no clipping
+ * ancestor nothing is set and the CSS max-height alone applies. */
+function capMultiSelectRoom(panel) {
+  panel.style.removeProperty('--ms-room');
+  let limit = Infinity;
+  for (let el = panel.parentElement; el && el !== document.body; el = el.parentElement) {
+    if (getComputedStyle(el).overflowY !== 'visible') limit = Math.min(limit, el.getBoundingClientRect().bottom);
+  }
+  if (limit === Infinity) return;
+  panel.style.setProperty('--ms-room', `${Math.max(120, Math.floor(limit - panel.getBoundingClientRect().top - 8))}px`);
+}
+
 /* Shared behavior behind the Type, Biome and Source dropdowns (and Prep
  * Prep's own adversary Type dropdown): instant checkbox filtering that never
  * auto-closes on its own, closing only on an explicit exit (trigger re-click,
@@ -1641,6 +1655,7 @@ function bindMultiSelectField({ field, trigger, panel, onToggle, updateLabel, on
   function open() {
     closeActiveMultiSelect();
     panel.hidden = false;
+    capMultiSelectRoom(panel);
     trigger.setAttribute('aria-expanded', 'true');
     document.addEventListener('click', onDocClick);
     document.addEventListener('keydown', onDocKeydown);
