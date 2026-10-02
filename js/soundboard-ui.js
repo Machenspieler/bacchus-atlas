@@ -296,6 +296,9 @@ const SoundboardUI = (function () {
   function onPointerDownOutside(e) {
     if (!isOpen) return;
     if (panel.contains(e.target) || isTrigger(e.target)) return;
+    // Reading or clicking inside an open card does not dismiss it: the GM is
+    // using the soundboard alongside the card.
+    if (e.target.closest && e.target.closest('[data-overlay-card]')) return;
     closePanel(false);
   }
 
