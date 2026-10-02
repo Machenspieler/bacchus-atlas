@@ -31,3 +31,7 @@ dist/
 # itself, reinstalled locally with `npm install` as needed.
 node_modules/
 
+
+# Stage 2 design-audit screenshots are generated evidence (~50 MB); reproduce with `npm run design:audit:screenshots`.
+# The manifest, report and README next to them are tracked.
+docs/design-audit/stage-2/**/*.png
