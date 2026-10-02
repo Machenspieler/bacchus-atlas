@@ -1859,7 +1859,11 @@ function renderGrid() {
       state.catalogVisibleCount = Math.min(state.catalogVisibleCount, list.length);
     }
     state.catalogLastColumnCount = columnCount;
-    cardsToRender = list.slice(0, state.catalogVisibleCount);
+    // The Random Environment card is a grid cell too: while more remain, it
+    // takes one of the visible slots so the last row stays full (29 + random
+    // = 30). Once everything is shown there is nothing to align, so no reserve.
+    const reserved = state.catalogVisibleCount < list.length ? 1 : 0;
+    cardsToRender = list.slice(0, state.catalogVisibleCount - reserved);
   }
 
   el.innerHTML = (onCatalog ? randomCardHtml(list) : '') + cardsToRender.map(cardHtml).join('');
