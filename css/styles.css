@@ -3431,8 +3431,22 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    be an empty band: collapse to a single row (the empty state included). The
    pure-CSS test is "no 5th child" — it re-evaluates by itself every time
    refreshItemGrid() swaps the grid's contents, so no JS state is involved.
-   Five or more keep the fixed two-row height. */
+   More records than that keep the fixed two-row height. A wider panel fits
+   more columns without any horizontal scroll, so each step below raises the
+   limit by one: a column needs 240px (the grid-auto-columns floor) plus the
+   12px gap, and the strip itself is 98px narrower than the panel's content box
+   (the two 40px nav buttons and their gaps) — N columns therefore need a
+   panel of 98 + 240N + 12(N-1) px, rounded up a few px. */
 .prep-item-compact-grid:not(:has(> :nth-child(5))) { grid-template-rows: var(--prep-compact-row-h); }
+@container prep-items-panel (min-width: 1350px) {
+  .prep-item-compact-grid:not(:has(> :nth-child(6))) { grid-template-rows: var(--prep-compact-row-h); }
+}
+@container prep-items-panel (min-width: 1602px) {
+  .prep-item-compact-grid:not(:has(> :nth-child(7))) { grid-template-rows: var(--prep-compact-row-h); }
+}
+@container prep-items-panel (min-width: 1854px) {
+  .prep-item-compact-grid:not(:has(> :nth-child(8))) { grid-template-rows: var(--prep-compact-row-h); }
+}
 .prep-item-compact-grid::-webkit-scrollbar { height: 8px; }
 .prep-item-compact-grid::-webkit-scrollbar-track { background: transparent; }
 .prep-item-compact-grid::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
