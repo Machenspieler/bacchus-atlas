@@ -3052,6 +3052,10 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 }
 .prep-sel--card .prep-sel-main { padding: 0 var(--pc-pad-card); border-radius: calc(var(--r-md) - 1px); }
 .prep-sel-main:hover .prep-sel-name { color: var(--hope-soft); }
+/* The global a:hover underline lands unevenly on a link's mixed block/inline
+   children (sometimes the meta, sometimes only the ↗); the colour shift and
+   the ↗ cue are the hover feedback here, so no underline at all. */
+.prep-sel-main:hover, .prep-adv-link:hover { text-decoration: none; }
 .prep-sel-main:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
 .prep-sel-title { display: flex; align-items: baseline; gap: var(--s-1); min-width: 0; }
 .prep-sel-title .prep-sel-name { flex: 0 1 auto; min-width: 0; }
