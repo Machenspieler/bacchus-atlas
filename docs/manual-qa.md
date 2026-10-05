@@ -185,10 +185,10 @@ locally") before starting.
       timeout; rename/switch/new/duplicate/delete update the title at once.
 - [ ] **Prep Bar**: the active prep name appears once (no separate
       title field or select); at 2048/1440/768/390px the bar is one compact
-      block (~80–90px, two rows on phones) aligned with the columns below,
+      block (~84px, two rows on phones) aligned with the columns below,
       with no horizontal overflow, in both languages and with a very long
       prep name (truncates with ellipsis + full-name tooltip).
-- [ ] **Session Notes**: expanded bar shows a labelled two-line textarea
+- [ ] **Session Notes**: expanded bar shows a two-line textarea (no visible label; sr-only label + placeholder)
       between the prep name/status and New/⋯ (single row at 1280/1440/1920px,
       no horizontal overflow, EN and RU). Typing keeps Enter/arrows/space
       working; text is stored verbatim (blank lines and edge spaces kept) and
@@ -198,7 +198,7 @@ locally") before starting.
       expanding restores the text. The textarea is never auto-focused.
 - [ ] **Prep Bar menus**: the title opens the prep menu (current
       prep checked; scrolls past ~340px; stays inside the viewport);
-      the ⋯ button opens Rename/Duplicate/Delete. Only one is open at a
+      the menu is headed "Sessions" and ends with a "+ New session" shortcut; the ⋯ button opens Rename/Duplicate/Copy/Delete. The save status (Local · HH:MM / Saving… / Save failed) sits inside the title selector and never changes the bar height. Only one is open at a
       time; outside click and Escape close them and Escape returns focus to
       the trigger; Arrow/Home/End move through items.
 - [ ] **Prep rename**: menu "Rename" (no pencil beside the title) starts the inline

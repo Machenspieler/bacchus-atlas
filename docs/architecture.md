@@ -187,7 +187,7 @@ global to keep in sync with it.
   The actions menu's "Rename" calls `beginPrepRename()`
   (inline input, same line box as the title, Enter/blur commit, Escape
   cancel); New/Duplicate also start it so the GM can name the fresh prep.
-  "+ New" is the only always-visible collection action; Duplicate and Delete
+  "+ New session" is the only always-visible collection action (the sessions menu also ends with a "+ New session" shortcut, `data-sp-new`); Duplicate and Delete
   live only in the actions (⋯) menu, Delete behind
   `openPrepDeleteConfirm()` (an `alertdialog` built on
   `registerOverlay()`, Cancel focused first) and disabled — with a hint —
@@ -212,16 +212,18 @@ global to keep in sync with it.
   `dhcodex_session_prep_hint_seen` flag gates the one-time hint shown the
   first time compact mode is entered or restored. Its `saving` icon is the
   real pending state of a debounced Session Notes write (`prepNotesDirty`).
-- **Save status** sits directly under the title and reflects only real
-  `persist()` outcomes (`prepSaveStatusView()`): `ready` (before the first
-  write this visit), `ok` ("Saved locally · HH:MM"), `error`. There is no
-  "Saving…" state — SafeStorage writes are synchronous, so it could never be
-  observed, only faked.
+- **Save status** is the second line inside the session selector button
+  (`#prep-save-status`, aria-hidden — the header control's live region
+  announces it) and reflects only real outcomes (`prepSaveStatusView()`, built
+  on `PrepUtils.sessionSaveKind()`): `ready` (before the first write this
+  visit), `saving` (only a pending debounced notes write), `ok` ("Local ·
+  HH:MM"), `error` ("Save failed"). SafeStorage writes are synchronous, so
+  nothing but the notes debounce can ever be observed as "Saving…".
 
 ### Session Notes (`prep.notes`)
 
 A plain-text GM scratchpad per prep, in the Prep Bar's centre zone
-(`.prep-bar` is a three-column grid: identity/status · notes · New + actions;
+(`.prep-bar` is a three-column grid: session selector (title + save status) · notes · New session + actions;
 the notes column is `minmax(0, 1fr)` so it flexes without pushing the actions
 out). It lives only inside the Prep Bar, so collapsing the header hides it
 with the rest of the bar and nothing note-related exists in the collapsed

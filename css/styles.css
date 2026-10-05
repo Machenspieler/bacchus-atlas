@@ -2226,97 +2226,99 @@ body[data-route="prep"] {
     radial-gradient(ellipse at 0% 0%, var(--hope-wash), transparent 55%);
   --sp-bar-border: var(--line-faint);
 }
-/* contain: inline-size — a long, nowrap prep name must not push the
-   bar's *intrinsic* width up through .prep-wrap (a grid item with an automatic
+/* Compact toolbar: [ session selector ][ notes ......... ][ New session ][ ⋯ ]
+   in one row (~84px with its padding). The selector is ONE control — title,
+   chevron and save status — so the status no longer needs a row of its own.
+   --prep-bar-h is the shared height of the selector and the notes field.
+   contain: inline-size — a long, nowrap prep name must not push the bar's
+   *intrinsic* width up through .prep-wrap (a grid item with an automatic
    minimum) and widen the whole page. The bar takes its width from the wrap
    instead, and the title truncates inside it. */
 .prep-bar {
+  --prep-bar-h: 58px;
   position: relative; min-width: 0; contain: inline-size;
-  display: grid; align-items: center; gap: var(--s-4);
-  grid-template-columns: minmax(220px, 340px) minmax(0, 1fr) max-content;
-  padding: var(--s-4);
+  display: grid; align-items: center; gap: var(--s-3);
+  grid-template-columns: minmax(300px, 340px) minmax(0, 1fr) max-content;
+  padding: var(--s-3) var(--s-4);
   background: var(--sp-bar-bg);
   border: 1px solid var(--sp-bar-border); border-radius: var(--r-lg);
 }
-.prep-identity { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--s-1); }
-.prep-titlerow { display: flex; align-items: center; gap: var(--s-2); min-width: 0; }
-.prep-title-wrap { position: relative; min-width: 0; max-width: 100%; display: flex; }
+.prep-identity { min-width: 0; display: flex; }
+.prep-title-wrap { position: relative; min-width: 0; width: 100%; display: flex; }
 
-/* The title is a title, not a form control: display face, no box, only a
-   hairline underline on hover so it still reads as interactive. The rename
-   input below shares its exact font/padding/border metrics, so swapping one
-   for the other never changes the row's height. */
+/* The selector: the display-face title is the strongest element, the save
+   status a quiet second line. The rename input shares the box metrics, so
+   swapping one for the other never changes the bar's height. */
 .prep-title-btn,
 .prep-title-input {
-  font-family: var(--font-display); font-weight: 400;
-  font-size: var(--fs-xl); line-height: var(--lh-xl); letter-spacing: var(--tracking-display);
-  color: var(--parchment);
-  padding: var(--s-1) 0; margin: 0;
-  background: transparent; border: none; border-bottom: 1px solid transparent; border-radius: 0;
+  box-sizing: border-box; height: var(--prep-bar-h); margin: 0;
+  background: var(--ink-raised); border: 1px solid var(--line); border-radius: var(--r-md);
 }
 .prep-title-btn {
-  display: inline-flex; align-items: center; gap: var(--s-2);
-  min-width: 0; max-width: 100%; cursor: pointer; text-align: left;
-  transition: border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+  flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 2px;
+  padding: 0 var(--s-3); cursor: pointer; text-align: left; color: var(--parchment);
+  transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
 }
+.prep-title-btn:hover { border-color: var(--line-strong); background: var(--ink-hover); }
+.prep-title-btn[aria-expanded="true"] { border-color: var(--hope-border-soft); background: var(--ink-hover); }
+.prep-title-btn:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
 .prep-title-btn[hidden], .prep-title-input[hidden] { display: none; }
-.prep-title-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.prep-title-btn svg {
-  flex: none; width: var(--icon-md); height: var(--icon-md); color: var(--muted);
+.prep-title-line { min-width: 0; display: flex; align-items: center; gap: var(--s-2); }
+.prep-title-text {
+  flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: var(--font-display); font-weight: 400;
+  font-size: var(--fs-lg); line-height: var(--lh-lg); letter-spacing: var(--tracking-display);
+}
+.prep-title-line svg {
+  flex: none; margin-left: auto; width: var(--icon-md); height: var(--icon-md); color: var(--muted);
   transition: color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
 }
-.prep-title-btn:hover { border-bottom-color: var(--line-strong); }
-.prep-title-btn:hover svg { color: var(--hope-soft); }
-.prep-title-btn[aria-expanded="true"] svg { color: var(--hope-soft); transform: rotate(180deg); }
-.prep-title-btn:focus-visible { border-radius: var(--r-sm); }
+.prep-title-btn:hover .prep-title-line svg,
+.prep-title-btn[aria-expanded="true"] .prep-title-line svg { color: var(--hope-soft); }
+.prep-title-btn[aria-expanded="true"] .prep-title-line svg { transform: rotate(180deg); }
 .prep-title-input {
-  min-width: 0; max-width: 100%;
-  border-bottom-color: var(--hope);
-  text-overflow: ellipsis;
+  flex: 1; min-width: 0; padding: 0 var(--s-3); color: var(--parchment); text-overflow: ellipsis;
+  font-family: var(--font-display); font-weight: 400;
+  font-size: var(--fs-lg); letter-spacing: var(--tracking-display);
+  border-color: var(--hope);
 }
-/* Keyboard focus is the ring, hugging the title (tight offset, so the compact
- * header does not grow). The ring replaces the gold underline rather than
- * stacking a second line under it; the input only exists in edit mode, so the
- * ring is also the edit-mode marker. */
-.prep-title-input:focus-visible {
-  outline: var(--focus-ring); outline-offset: var(--focus-offset-tight); border-radius: var(--r-xs);
-  border-bottom-color: transparent;
-}
+/* The ring replaces the gold border rather than stacking on it; the input
+   only exists in edit mode, so the ring is also the edit-mode marker. */
+.prep-title-input:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 
 /* Icon-only buttons (actions). Visible size stays small; the hit area
    grows past it with ::after, same technique as .sp-session-control. */
 .prep-icon-btn { --ib-size: var(--h-sm); }
 
-/* Save status: directly under the title, quiet. Never colour-only — the icon
+/* Save status: the selector's second line, level 3 of the hierarchy. A fixed
+   14px line box and a fixed-size icon, so Saving… ↔ Local · 14:10 ↔ Save
+   failed swap in place without moving anything. Never colour-only — the icon
    and the wording change with the state. */
 .prep-save-status {
-  margin: 0; display: flex; align-items: center; gap: var(--s-1);
-  min-width: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--muted);
+  display: flex; align-items: center; gap: var(--s-1); min-width: 0;
+  height: var(--icon-sm); font-family: var(--font-ui); font-size: var(--fs-sm); line-height: var(--icon-sm); color: var(--muted);
+  transition: color var(--t-fast) var(--ease-out);
 }
 .prep-save-icon { flex: none; display: inline-flex; align-items: center; justify-content: center; width: var(--icon-sm); height: var(--icon-sm); }
 .prep-save-icon svg { width: var(--icon-sm); height: var(--icon-sm); }
-.prep-save-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prep-save-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; animation: prep-save-in var(--t-base) var(--ease-out); }
+@keyframes prep-save-in { from { opacity: 0.4; } }
 .prep-save-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.7; }
 .prep-save-status[data-state="ok"] .prep-save-icon { color: var(--hope); opacity: 0.85; }
 .prep-save-status[data-state="error"] { color: var(--fear-soft); }
 
-/* Session Notes: the bar's centre zone. A quiet caps label over a two-line,
-   non-resizable plain-text field; the field is the existing input surface
-   (--ink-raised, --line → --line-strong → --hope border progression) with the
-   standard gold ring drawn *inside* the box so it never spills into the
-   neighbouring zones. The column is `minmax(0, 1fr)`, so the field flexes and
-   can never push New / the actions menu out of view. */
-.prep-notes { min-width: 0; display: flex; flex-direction: column; gap: var(--s-1); }
-.prep-notes-label {
-  font-family: var(--font-ui); font-size: var(--fs-xs); line-height: var(--lh-xs);
-  color: var(--muted); text-transform: uppercase; letter-spacing: var(--tracking-caps);
-}
+/* Session Notes: a compact quick-notes field the same height as the
+   selector, on the shared input surface (--ink-raised, --line → --line-strong
+   → --hope border). Its label is visually hidden (.sr-only) — the placeholder
+   carries the hint. The column is `minmax(0, 1fr)`, so the field shrinks
+   first and can never push New session / the actions menu out of view. */
+.prep-notes { min-width: 0; display: flex; }
 .prep-notes-input {
   display: block; width: 100%; min-width: 0; box-sizing: border-box; margin: 0;
-  height: calc(2.8em + var(--s-2) + 2px); padding: var(--s-1) var(--s-3);
+  height: var(--prep-bar-h); padding: var(--s-2) var(--s-3);
   font-family: var(--font-ui); font-size: var(--fs-sm); line-height: 1.4;
   color: var(--parchment); background-color: var(--ink-raised);
-  border: 1px solid var(--line); border-radius: var(--r-sm);
+  border: 1px solid var(--line); border-radius: var(--r-md);
   resize: none; overflow-y: auto; white-space: pre-wrap; overflow-wrap: anywhere;
   scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent;
   transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
@@ -2328,24 +2330,12 @@ body[data-route="prep"] {
 
 .prep-actions { flex: none; display: flex; align-items: center; gap: var(--s-2); }
 .prep-more-wrap { position: relative; }
-.prep-new-btn { height: var(--h-md); padding: 0 var(--s-4) 0 var(--s-3); gap: var(--s-2); font-family: var(--font-ui); font-size: var(--fs-base); }
-.prep-new-btn svg { width: var(--icon-md); height: var(--icon-md); color: var(--hope); }
-.prep-more-btn { --ib-size: var(--h-md); }
-
-/* Desktop bar: the notes label sits in a row of its own above the other
-   zones, so the title block, the notes *field* and New / actions all centre
-   on one line (row 2). Centring the whole notes column instead — label
-   included — pulled the title and buttons ~10px above the field they sit
-   beside. `display: contents` lets the label and field be grid items; the
-   phone layout below keeps its own areas. */
-@media (min-width: 761px) {
-  .prep-bar { grid-template-rows: auto auto; row-gap: var(--s-1); }
-  .prep-identity { grid-column: 1; grid-row: 2; }
-  .prep-notes { display: contents; }
-  .prep-notes-label { grid-column: 2; grid-row: 1; min-width: 0; }
-  .prep-notes-input { grid-column: 2; grid-row: 2; align-self: center; }
-  .prep-actions { grid-column: 3; grid-row: 2; }
+.prep-new-btn {
+  height: 54px; padding: 0 var(--s-4) 0 var(--s-3); gap: var(--s-2); white-space: nowrap;
+  font-family: var(--font-ui); font-size: var(--fs-base); border-radius: var(--r-md);
 }
+.prep-new-btn svg { width: var(--icon-md); height: var(--icon-md); color: var(--hope); }
+.prep-more-btn { --ib-size: 54px; border-radius: var(--r-md); }
 
 /* ---- menus (prep selector + actions) ---- */
 .prep-menu {
@@ -2357,6 +2347,7 @@ body[data-route="prep"] {
   animation: modal-in var(--t-fast) var(--ease-enter);
 }
 .prep-menu:not([hidden]) { display: flex; }
+.prep-title-wrap .prep-menu { min-width: 100%; }
 .prep-actions-menu { left: auto; right: 0; min-width: 200px; }
 .prep-menu-heading {
   flex: none; padding: var(--s-2) var(--s-3) var(--s-1);
@@ -2414,22 +2405,20 @@ body[data-route="prep"] {
     clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
   }
 }
-/* Phone: two compact rows — title with New/actions on the right,
-   then the save status directly under the title. The identity wrapper drops
-   out of layout so its two children can sit in the bar's own grid areas. */
+/* Phone: title selector with New/actions on the right, notes below. */
 @media (max-width: 760px) {
   .prep-bar {
-    display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
-    grid-template-areas: "title actions" "status status" "notes notes";
-    gap: 0 var(--s-2); padding: var(--s-2) var(--s-3);
+    --prep-bar-h: 52px;
+    grid-template-columns: minmax(0, 1fr) auto; align-items: center;
+    grid-template-areas: "title actions" "notes notes";
+    gap: var(--s-2); padding: var(--s-2) var(--s-3);
   }
-  .prep-identity { display: contents; }
-  .prep-titlerow { grid-area: title; }
-  .prep-save-status { grid-area: status; }
-  .prep-notes { grid-area: notes; margin-top: var(--s-2); }
+  .prep-identity { grid-area: title; }
+  .prep-notes { grid-area: notes; }
   .prep-actions { grid-area: actions; }
-  .prep-new-btn { padding: 0 var(--s-3) 0 var(--s-2); }
-  .prep-title-btn, .prep-title-input { font-size: var(--fs-lg); line-height: var(--lh-lg); }
+  .prep-new-btn { padding: 0 var(--s-3) 0 var(--s-2); height: var(--prep-bar-h); }
+  .prep-more-btn { --ib-size: var(--prep-bar-h); }
+  .prep-notes-input { height: calc(2.8em + var(--s-2) + 2px); }
 }
 
 /* ---- Prep chrome (expanded / compact toggle) ----

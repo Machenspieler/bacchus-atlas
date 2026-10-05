@@ -58,7 +58,7 @@ test('pluralForm', () => {
 test('menu wiring and i18n keys', () => {
   assert.ok(APP_JS.includes('data-sp-menu-copy-summary'));
   assert.ok(APP_JS.indexOf('data-sp-menu-duplicate>') < APP_JS.indexOf('data-sp-menu-copy-summary>'));
-  assert.ok(APP_JS.indexOf('data-sp-menu-copy-summary>') < APP_JS.indexOf('prep-menu-sep'));
+  assert.ok(APP_JS.indexOf('data-sp-menu-copy-summary>') < APP_JS.indexOf('prep-menu-sep', APP_JS.indexOf('data-sp-menu-copy-summary>')));
   for (const lang of ['en', 'ru']) {
     const d = I18N[lang];
     for (const k of ['prep_copy_summary', 'prep_summary_copied', 'prep_summary_failed',

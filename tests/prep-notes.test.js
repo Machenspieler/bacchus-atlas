@@ -47,9 +47,9 @@ test('Session Notes render inside the Prep Bar, between the identity and the act
   assert.ok(identity < notes && notes < actions, 'DOM order is identity, notes, actions');
 });
 
-test('the textarea is labelled by a connected <label>, is two rows, and never autofocuses', () => {
+test('the textarea is labelled by a connected, visually hidden <label>, is two rows, and never autofocuses', () => {
   const bar = fnSource('prepBarHtml');
-  assert.match(bar, /<label class="prep-notes-label" for="prep-notes-input">/);
+  assert.match(bar, /<label class="prep-notes-label sr-only" for="prep-notes-input">/);
   assert.match(bar, /<textarea class="prep-notes-input" id="prep-notes-input" rows="2"/);
   assert.doesNotMatch(bar, /autofocus/);
   assert.equal(fnSource('bindPrepBar').includes('notesInput.focus'), false);
@@ -78,7 +78,7 @@ test('the notes field is plain text: fixed height, no manual resize, internal sc
 
 test('the notes column flexes (minmax(0, 1fr)) between the identity and the actions', () => {
   const bar = CSS.match(/\n\.prep-bar \{[^}]*\}/)[0];
-  assert.match(bar, /grid-template-columns: minmax\(220px, 340px\) minmax\(0, 1fr\) max-content/);
+  assert.match(bar, /grid-template-columns: minmax\(300px, 340px\) minmax\(0, 1fr\) max-content/);
 });
 
 /* ---------------- value handling ---------------- */
@@ -154,9 +154,9 @@ test('no document-level shortcut acts on plain typing; Escape never touches note
 
 test('Session Notes strings exist in both languages with the agreed wording', () => {
   assert.equal(I18N.en.prep_notes_label, 'Session Notes');
-  assert.equal(I18N.en.prep_notes_placeholder, 'Reminders, triggers, reveals, or session beats…');
+  assert.equal(I18N.en.prep_notes_placeholder, 'Session notes — reminders, triggers, key scenes…');
   assert.equal(I18N.ru.prep_notes_label, 'Заметки к сессии');
-  assert.equal(I18N.ru.prep_notes_placeholder, 'Напоминания, триггеры, раскрытия или ключевые сцены…');
+  assert.equal(I18N.ru.prep_notes_placeholder, 'Заметки к сессии — напоминания, триггеры, ключевые сцены…');
 });
 
 test('the label and placeholder are localized through t(), never hardcoded', () => {

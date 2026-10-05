@@ -426,26 +426,29 @@ adversary pickers are unaffected and keep the always-visible checkbox. See
 the "Prep" section of `CLAUDE.md` for the full interaction contract;
 this file only covers its visual departure from the rest of the app.
 
-**Prep Bar** (`.prep-bar`): the one place Prep breaks its
-own `--font-ui` rule — the active prep's name is set in `--font-display`
-(`--fs-xl`, `--fs-lg` on phones) because it is a *title*, not a control
-label; everything else in the bar (status, buttons, menus) stays `--font-ui`.
-The bar is a dark, restrained local surface (`--sp-bar-bg`, a translucent
-`--ink` gradient with a faint gold wash, `--line-faint` border) laid over the
-atlas watermark so the artwork stays visible but never competes with the
-controls. Save status is muted text with a 14px icon (gold check on success,
-Fear alert on failure, neutral dot before the first save); Delete in the
-actions menu is the only Fear-coloured item and sits below a divider. On
-phones it becomes two rows (title + New/actions, then status) with 40px
-controls reaching a 44px hit area through `::after`.
+**Prep Bar** (`.prep-bar`): a compact toolbar, ~84px on desktop (58px
+controls in 12px/16px padding): `[ session selector ][ notes ][ New session ][ ⋯ ]`
+in one row. The selector is one control (`.prep-title-btn`, `--prep-bar-h`
+58px, `--ink-raised` surface, `--r-md`): the session name in `--font-display`
+(`--fs-lg`) with the chevron beside it, and the save status as a quiet
+`--fs-sm` second line inside the same button — level 1 vs level 3 of the
+hierarchy. Open state: `--hope-border-soft` edge, chevron turned up. Save
+status is a fixed 14px line with a 14px icon (gold check "Local · HH:MM",
+`.sp-session-spin` spinner "Saving…" while a debounced notes write is pending,
+Fear alert "Save failed", neutral dot "Autosave on" before the first save), so
+state changes never move anything. The bar is a dark restrained local surface
+(`--sp-bar-bg`, `--line-faint` border) over the atlas watermark.
 
-The bar is a three-zone grid — identity/status, **Session Notes**, actions.
-Session Notes is a `--fs-xs` caps `--muted` label over a two-line (~46px)
-`resize: none` textarea on the shared input surface (`--ink-raised`,
-`--line` → `--line-strong` → `--hope` border, the standard gold focus ring
-drawn inset so it never spills into the neighbouring zones). The centre column
-flexes; the bar grows about 7px to fit it. On phones the notes drop to a third
-row (best-effort). Collapsing the header hides the whole bar, notes included.
+Session Notes has no visible label (an `.sr-only` `<label>` keeps the
+accessible name; the placeholder carries the hint): a two-line `resize: none`
+textarea at the selector's height on the shared input surface (`--line` →
+`--line-strong` → `--hope`, gold focus ring inset). The centre column is
+`minmax(0, 1fr)`, so it shrinks first. "New session" (`.btn-ghost`, 54px,
+never wraps) and the ⋯ button sit to its right. The sessions dropdown's
+heading reads "Sessions"; it ends with a divider and a "+ New session"
+shortcut. Delete in the actions menu is the only Fear-coloured item and sits
+below a divider. On phones it becomes two rows (selector + New/actions, then
+notes) with 52px controls. Collapsing the header hides the whole bar.
 
 ## Responsive breakpoints
 

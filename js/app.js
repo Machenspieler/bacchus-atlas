@@ -3262,25 +3262,33 @@ function updatePrep(mutator) {
 /** The save-status line is never blank and only ever reflects a real
  * persist() outcome: before the first mutation this visit it says autosave is
  * on (`ready`), after a successful write it shows when (`ok`), and after a
- * failed one it says so (`error`). There is deliberately no "Saving…" state:
- * SafeStorage writes are synchronous, so a pending state would never be
- * observable and could only ever be faked. */
+ * failed one it says so (`error`). "Saving…" is only ever the real pending
+ * state of a debounced Session Notes write (`prepNotesDirty`): plain
+ * SafeStorage writes are synchronous, so nothing else could show it. */
 function prepSaveStatusView() {
   const ui = state.prepUI;
-  if (ui.saveFailed) return { kind: 'error', text: t('prep_save_failed'), tip: t('prep_save_failed_tip') };
-  if (!ui.lastSavedAt) return { kind: 'ready', text: t('prep_autosave_ready'), tip: t('prep_autosave_ready_tip') };
+  const kind = PrepUtils.sessionSaveKind(ui.saveFailed, prepNotesDirty, ui.lastSavedAt);
+  if (kind === 'error') return { kind, text: t('prep_save_failed'), tip: t('prep_save_failed_tip') };
+  if (kind === 'saving') return { kind, text: t('prep_session_saving'), tip: t('prep_saved_local_tip') };
+  if (kind === 'ready') return { kind, text: t('prep_autosave_ready'), tip: t('prep_autosave_ready_tip') };
   const time = ui.lastSavedAt.toLocaleTimeString(state.lang === 'ru' ? 'ru-RU' : 'en-US', {
     hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
   });
-  return { kind: 'ok', text: `${t('prep_saved_local')} · ${time}`, tip: t('prep_saved_local_tip') };
+  return { kind, text: `${t('prep_saved_local')} · ${time}`, tip: t('prep_saved_local_tip') };
 }
 
 /** Fills the status element from prepSaveStatusView(): a 14px state icon
- * (check / alert / a neutral dot before the first save) plus the text. The
- * state is never colour-only — the icon and the wording both change with it. */
+ * (check / alert / spinner while a notes edit is pending / a neutral dot
+ * before the first save) plus the text. Never colour-only — the icon and the
+ * wording both change with the state. The element sits inside the session
+ * selector button, so it is aria-hidden; the header control's live region
+ * (paintSessionControl) is what announces a save. */
 function paintSaveStatus(el) {
   const view = prepSaveStatusView();
-  const icon = view.kind === 'ok' ? ICON_CHECK : view.kind === 'error' ? ICON_ALERT : '<span class="prep-save-dot"></span>';
+  const icon = view.kind === 'ok' ? ICON_CHECK
+    : view.kind === 'error' ? ICON_ALERT
+    : view.kind === 'saving' ? '<span class="sp-session-spin"></span>'
+    : '<span class="prep-save-dot"></span>';
   el.dataset.state = view.kind;
   el.dataset.tip = view.tip;
   el.innerHTML = `<span class="prep-save-icon" aria-hidden="true">${icon}</span><span class="prep-save-text">${escapeHtml(view.text)}</span>`;
@@ -3322,6 +3330,8 @@ function setPrepNotes(value) {
   if (next === state.prep) return;
   state.prep = next;
   prepNotesDirty = true;
+  const pendingStatusEl = document.getElementById('prep-save-status');
+  if (pendingStatusEl) paintSaveStatus(pendingStatusEl);
   paintSessionControl();
   clearTimeout(prepNotesSaveTimer);
   prepNotesSaveTimer = setTimeout(flushPrepNotesSave, PREP_NOTES_SAVE_DELAY_MS);
@@ -5045,27 +5055,30 @@ function prepBarHtml(prep) {
   return `
     <div class="prep-bar" id="prep-bar">
       <div class="prep-identity">
-        <div class="prep-titlerow">
-          <div class="prep-title-wrap" id="prep-title-wrap">
-            <button type="button" class="prep-title-btn" id="prep-title-btn"
-                    aria-haspopup="menu" aria-expanded="false" aria-controls="prep-menu"
-                    aria-label="${escapeAttr(t('prep_open_selector') + ': ' + title)}">
-              <span class="prep-title-text">${escapeHtml(title)}</span>${ICON_CHEVRON_DOWN}
+        <div class="prep-title-wrap" id="prep-title-wrap">
+          <button type="button" class="prep-title-btn" id="prep-title-btn"
+                  aria-haspopup="menu" aria-expanded="false" aria-controls="prep-menu"
+                  aria-label="${escapeAttr(t('prep_open_selector') + ': ' + title)}">
+            <span class="prep-title-line"><span class="prep-title-text">${escapeHtml(title)}</span>${ICON_CHEVRON_DOWN}</span>
+            <span class="prep-save-status" id="prep-save-status" aria-hidden="true"></span>
+          </button>
+          <input type="text" class="prep-title-input" id="prep-title-input" hidden
+                 maxlength="${PREP_TITLE_MAX}" autocomplete="off" spellcheck="false"
+                 aria-label="${escapeAttr(t('prep_name_label'))}">
+          <div class="prep-menu prep-menu" id="prep-menu" role="menu" hidden
+               aria-labelledby="prep-title-btn">
+            <div class="prep-menu-heading" id="prep-menu-heading">${escapeHtml(t('prep_list_heading'))}</div>
+            <div class="prep-menu-list" role="group" aria-labelledby="prep-menu-heading">${prepItems}</div>
+            <div class="prep-menu-sep" role="separator"></div>
+            <button type="button" class="prep-menu-item prep-menu-new" role="menuitem" tabindex="-1" data-sp-new>
+              <span class="prep-menu-check" aria-hidden="true">${ICON_PLUS}</span>
+              <span class="prep-menu-label">${escapeHtml(t('prep_new'))}</span>
             </button>
-            <input type="text" class="prep-title-input" id="prep-title-input" hidden
-                   maxlength="${PREP_TITLE_MAX}" autocomplete="off" spellcheck="false"
-                   aria-label="${escapeAttr(t('prep_name_label'))}">
-            <div class="prep-menu prep-menu" id="prep-menu" role="menu" hidden
-                 aria-labelledby="prep-title-btn">
-              <div class="prep-menu-heading" id="prep-menu-heading">${escapeHtml(t('prep_list_heading'))}</div>
-              <div class="prep-menu-list" role="group" aria-labelledby="prep-menu-heading">${prepItems}</div>
-            </div>
           </div>
         </div>
-        <p class="prep-save-status" id="prep-save-status" role="status" aria-live="polite"></p>
       </div>
       <div class="prep-notes">
-        <label class="prep-notes-label" for="prep-notes-input">${escapeHtml(t('prep_notes_label'))}</label>
+        <label class="prep-notes-label sr-only" for="prep-notes-input">${escapeHtml(t('prep_notes_label'))}</label>
         <textarea class="prep-notes-input" id="prep-notes-input" rows="2"
                   autocomplete="off" placeholder="${escapeAttr(t('prep_notes_placeholder'))}"></textarea>
       </div>
@@ -5493,7 +5506,6 @@ function beginPrepRename() {
   closeActivePrepMenu();
   hideTip();
   input.value = prepDisplayTitle(prep);
-  input.style.width = `${Math.max(btn.offsetWidth, 240)}px`;
   btn.hidden = true;
   input.hidden = false;
   input.focus();
@@ -5566,6 +5578,7 @@ function bindPrepBar() {
     if (!item) return;
     closeActivePrepMenu(true);
     if (item.dataset.spSwitch) prepBarSwitch(item.dataset.spSwitch);
+    else if (item.hasAttribute('data-sp-new')) prepBarCreate();
   });
 
   const moreWrap = prepBarEl('prep-more-wrap');
