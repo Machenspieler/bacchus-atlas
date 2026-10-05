@@ -103,6 +103,11 @@
   /* ---- spacing, 4px base ---- */
   --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px; --s-5: 20px;
   --s-6: 24px; --s-7: 32px; --s-8: 40px; --s-9: 56px; --s-10: 80px;
+  /* Two role tokens for gaps the 4px scale is too coarse for: the optical
+   * icon<->label gap of inline controls and pills, and the hairline between
+   * stacked menu rows. Everything else off-scale stays a documented local value. */
+  --inline-control-gap: 5px;
+  --menu-item-gap: 1px;
 
   /* ---- radii: tight, but scaled to the object ---- */
   --r-xs: 2px;      /* chips, badges          */
@@ -593,7 +598,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
   max-height: min(480px, 52vh, var(--ms-room, 480px));
   max-height: min(480px, 52dvh, var(--ms-room, 480px));
   overflow-y: auto; overscroll-behavior: contain;
-  padding: var(--s-2); flex-direction: column; gap: 1px;
+  padding: var(--s-2); flex-direction: column; gap: var(--menu-item-gap);
   /* Firefox's own thin/muted scrollbar; Chromium ignores these and is styled
    * via the ::-webkit-scrollbar-* rules below instead. */
   scrollbar-width: thin;
@@ -1333,7 +1338,7 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 .feature-desc { margin: var(--s-2) 0 0; font-size: var(--fs-base); line-height: var(--lh-base); }
 .feature-desc p { margin: 0 0 var(--s-2); }
 .feature-desc p:last-child { margin-bottom: 0; }
-.feature-bullets { margin: 0 0 var(--s-2); padding-left: 22px; list-style: disc; color: var(--parchment-dim); }
+.feature-bullets { --bullet-indent: 22px; margin: 0 0 var(--s-2); padding-left: var(--bullet-indent); list-style: disc; color: var(--parchment-dim); }
 .feature-bullets li { margin: 3px 0; }
 ol.feature-bullets { list-style: decimal; }
 .feature-bullets:last-child { margin-bottom: 0; }
@@ -1380,7 +1385,7 @@ ol.feature-bullets { list-style: decimal; }
 
 /* ---------- dice button ---------- */
 .dice-btn {
-  display: inline-flex; align-items: center; gap: 5px;
+  display: inline-flex; align-items: center; gap: var(--inline-control-gap);
   font-family: var(--font-mono); font-size: var(--fs-xs); font-weight: 700;
   background: var(--ink-raised); border: 1px solid var(--hope); color: var(--hope-soft);
   padding: 2px var(--s-2) 2px 6px; border-radius: var(--r-pill); cursor: pointer; vertical-align: middle;
@@ -1394,9 +1399,9 @@ ol.feature-bullets { list-style: decimal; }
 
 /* A bullet that names a catalogue entry loses its disc: the flask already marks
  * the line, and a bullet in front of a pill reads as two markers for one item. */
-.feature-bullets li.has-item { list-style: none; margin-left: -22px; }
+.feature-bullets li.has-item { list-style: none; margin-left: calc(-1 * var(--bullet-indent)); }
 .item-btn {
-  display: inline-flex; align-items: baseline; gap: 5px;
+  display: inline-flex; align-items: baseline; gap: var(--inline-control-gap);
   font-family: var(--font-body); font-size: var(--fs-base);
   background: var(--ink-raised); border: 1px solid var(--teal); color: var(--teal-soft);
   padding: 1px 10px 2px var(--s-2); border-radius: var(--r-pill); cursor: pointer; vertical-align: middle;
@@ -1414,7 +1419,7 @@ ol.feature-bullets { list-style: decimal; }
 .adversary-link-btn {
   display: inline; font: inherit;
   background: var(--ink-raised); border: 1px solid var(--teal); color: var(--teal-soft);
-  padding: 1px 8px; border-radius: var(--r-pill); cursor: pointer;
+  padding: 1px var(--s-2); border-radius: var(--r-pill); cursor: pointer;
   transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
 }
 .adversary-link-btn:hover { background: var(--teal-hover-bg); color: var(--parchment); }
@@ -1573,7 +1578,7 @@ ol.feature-bullets { list-style: decimal; }
 
 /* ---------- countdown button + overlay ---------- */
 .countdown-btn {
-  display: inline-flex; align-items: center; gap: 5px;
+  display: inline-flex; align-items: center; gap: var(--inline-control-gap);
   font-family: var(--font-mono); font-size: var(--fs-xs); font-weight: 700;
   background: var(--ink-raised); border: 1px solid var(--teal); color: var(--teal-soft);
   padding: 2px var(--s-2) 2px 6px; border-radius: var(--r-pill); cursor: pointer; vertical-align: middle;
@@ -1648,7 +1653,7 @@ ol.feature-bullets { list-style: decimal; }
 .new-list-row input[aria-invalid="true"] { border-color: var(--fear-soft); }
 .new-list-row input[aria-invalid="true"]:focus { border-color: var(--fear-soft); }
 .field-error {
-  display: flex; align-items: center; gap: 5px;
+  display: flex; align-items: center; gap: var(--inline-control-gap);
   margin: var(--s-2) 0 0; font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--fear-soft);
 }
 .field-error svg { width: var(--icon-sm); height: var(--icon-sm); flex: none; }
@@ -2343,7 +2348,7 @@ body[data-route="prep"] {
 }
 .prep-menu-list {
   flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
-  display: flex; flex-direction: column; gap: 1px;
+  display: flex; flex-direction: column; gap: var(--menu-item-gap);
   scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 .prep-menu-list::-webkit-scrollbar { width: 8px; }
@@ -2499,11 +2504,14 @@ body[data-route="prep"] .header-inner { flex-wrap: nowrap; }
   container: sp-session / inline-size;
 }
 .sp-session-control {
+  /* Intentional exception to the radius scale: a status/selector capsule that is
+   * neither a button (--r-sm) nor a full pill; the same 12px in the compact header. */
+  --sp-session-radius: 12px;
   position: relative; max-width: 100%; min-width: 7.5rem; height: var(--h-sm);
   display: inline-flex; align-items: center; gap: var(--s-2);
   padding: 0 var(--s-3); white-space: nowrap;
   font-family: inherit; font-size: var(--fs-sm); line-height: 1; color: var(--muted);
-  background: var(--ink-raised); border: 1px solid var(--line-faint); border-radius: 12px;
+  background: var(--ink-raised); border: 1px solid var(--line-faint); border-radius: var(--sp-session-radius);
   cursor: pointer;
   transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out),
               background var(--t-fast) var(--ease-out), box-shadow var(--t-base) var(--ease-out),
@@ -2538,7 +2546,7 @@ body[data-route="prep"] .header-inner { flex-wrap: nowrap; }
 @container sp-session (max-width: 190px) {
   .sp-session-name { max-width: 12ch; }
 }
-body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { height: 28px; border-radius: 12px; }
+body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { height: 28px; }
 
 /* One-time hint: an overlay under the control (absolute, out of flow — no
    layout shift), same surface as .tooltip but able to take a short sentence. */
@@ -2575,8 +2583,9 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .prep-central {
   /* Central-panel tokens: the only place its density is tuned. */
   --pc-pad-x: var(--s-4);      /* 16px  panel/section side padding        */
-  --pc-pad-y: 6px;             /*       section body vertical padding      */
-  --pc-pad-card: 6px;          /*       card/row inner padding             */
+  --pc-dense: 6px;             /*       the dense-Prep micro step: header gaps, count pill, card/row rhythm */
+  --pc-pad-y: var(--pc-dense);             /*       section body vertical padding      */
+  --pc-pad-card: var(--pc-dense);          /*       card/row inner padding             */
   --pc-gap: var(--s-2);        /* 8px   gap between cards and card parts   */
   --pc-head-h: 36px;           /*       section header                     */
   --pc-thumb: 40px;
@@ -2584,7 +2593,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   --pc-card-h: 56px;
   --pc-row-h: 48px;
   --pc-pad-x-row: 8px;         /*       adversary tile side padding        */
-  --pc-row-gap: 6px;           /*       adversary tile row gap             */
+  --pc-row-gap: var(--pc-dense);           /*       adversary tile row gap             */
   --pc-remove: 32px;
   --pc-remove-room: 24px;      /*       card text's reserve for the remove button */
   --pc-scroll-pad: 40px;       /*       keeps a sticky header off scrolled-to content */
@@ -2816,7 +2825,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   flex: none; width: 60px; height: 60px; border-radius: var(--r-sm);
   overflow: hidden; background: radial-gradient(circle at 50% 35%, var(--hope-art-wash), transparent 70%), var(--ink-raised);
 }
-.prep-adv-thumb { padding: 7.5px; }
+.prep-adv-thumb { padding: var(--s-2); }
 /* Item art is a loot-generator product photo with its own dark background
    already framing the item — unlike the transparent adversary PNGs above,
    it needs little extra padding here to avoid looking tiny in its frame. */
@@ -2838,7 +2847,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    distinctly. Reset to a plain box first since it's a <button>, not a
    <span>. */
 .prep-adv-thumb-btn {
-  border: none; padding: 7.5px; cursor: zoom-in;
+  border: none; padding: var(--s-2); cursor: zoom-in;
   transition: background var(--t-fast) var(--ease-out);
 }
 .prep-adv-thumb-btn img { transition: transform var(--t-fast) var(--ease-out); }
@@ -2902,7 +2911,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   display: flex; align-items: center; gap: var(--pc-gap);
 }
 .prep-central-title {
-  flex: 1 1 auto; min-width: 0; margin: 0; display: flex; align-items: center; gap: 6px;
+  flex: 1 1 auto; min-width: 0; margin: 0; display: flex; align-items: center; gap: var(--pc-dense);
   font-family: var(--font-display); font-weight: 400; font-size: var(--pc-title-size); line-height: 1.2;
   letter-spacing: var(--tracking-display); color: var(--parchment);
 }
@@ -2917,14 +2926,14 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    the monospace count share a baseline instead of each being box-centred. The
    icon stays centred on its text. The group takes the free space, so the
    action (and the Battle Points slot) sit at the far end. */
-.prep-central-lead { display: flex; align-items: baseline; gap: 6px; flex: 1 1 auto; min-width: 0; }
+.prep-central-lead { display: flex; align-items: baseline; gap: var(--pc-dense); flex: 1 1 auto; min-width: 0; }
 .prep-central-lead .prep-central-title { flex: 0 1 auto; align-items: baseline; }
 .prep-central-lead .prep-central-title .prep-central-icon { align-self: center; }
 .prep-central-dot { flex: none; color: var(--muted); }
 /* Gold marks "limit reached" only: the pill shape (border + tint) is the
    non-colour cue, the sr-only text inside carries it for assistive tech. */
 .prep-central-count {
-  flex: none; padding: 0 6px; min-width: 2.25em; text-align: center;
+  flex: none; padding: 0 var(--pc-dense); min-width: 2.25em; text-align: center;
   font-size: var(--pc-count-size); line-height: 18px; font-family: var(--font-mono); color: var(--muted);
   border: 1px solid transparent; border-radius: var(--r-pill);
 }
@@ -2932,7 +2941,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .prep-central-lead .prep-central-count { min-width: 0; padding-inline: 0; text-align: left; }
 /* The limit pill keeps its padding; its trailing side is pulled back so the
    header does not grow, and it never crowds the dot. */
-.prep-central-lead .prep-central-count.is-limit { padding-inline: 6px; margin-left: 0; margin-right: -6px; }
+.prep-central-lead .prep-central-count.is-limit { padding-inline: var(--pc-dense); margin-left: 0; margin-right: calc(-1 * var(--pc-dense)); }
 .prep-central-count.is-limit { color: var(--hope-soft); border-color: var(--hope-border); background: var(--hope-wash); }
 /* Roll coverage + clear-all live in the lead group, after the count: muted
    header metadata and a tertiary icon button, never a pill or a far-right control. */
@@ -3007,7 +3016,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .bp-pc-input:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 
 .bp-summary {
-  display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 var(--s-3); flex: none;
+  display: inline-flex; align-items: center; gap: var(--inline-control-gap); height: 30px; padding: 0 var(--s-3); flex: none;
   background: var(--ink); border: 1px solid var(--line); border-radius: var(--r-sm); cursor: pointer;
   font-variant-numeric: tabular-nums;
   transition: background var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
@@ -3043,11 +3052,11 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    actions (★ +N and FreshCutGrass) tighten together — same padding, same
    height — instead of the section title being ellipsized. */
 @container prep-central (max-width: 600px) {
-  .prep-recommend-btn, .prep-freshcutgrass-link { padding-inline: 6px; }
-  .bp-summary { padding-inline: 8px; }
-  .bp, .prep-central-actions { gap: 6px; }
-  .prep-central-lead { gap: 4px; }
-  .prep-central-head { gap: 6px; }
+  .prep-recommend-btn, .prep-freshcutgrass-link { padding-inline: var(--pc-dense); }
+  .bp-summary { padding-inline: var(--s-2); }
+  .bp, .prep-central-actions { gap: var(--pc-dense); }
+  .prep-central-lead { gap: var(--s-1); }
+  .prep-central-head { gap: var(--pc-dense); }
 }
 
 /* ---- popover (position: fixed, so opening never shifts layout) ---- */
@@ -3088,7 +3097,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .bp-check input { flex: none; margin: 2px 0 0; accent-color: var(--hope); }
 .bp-check-text { flex: 1; min-width: 0; }
 .bp-pop-totals .bp-pop-row { font-weight: 600; }
-.bp-pop-totals .bp-pop-row:last-child { margin-top: 2px; padding-top: 4px; border-top: 1px solid var(--line-faint); }
+.bp-pop-totals .bp-pop-row:last-child { margin-top: 2px; padding-top: var(--s-1); border-top: 1px solid var(--line-faint); }
 .bp-pop-row.is-over, .bp-pop-row.is-over .bp-val { color: var(--hope-soft); }
 .bp-pop-row.is-over .bp-warn-icon { margin-right: var(--s-1); vertical-align: -2px; }
 .bp-pop-empty { margin: 2px 0; color: var(--muted); }
@@ -3426,7 +3435,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 }
 .prep-item-icon-btn:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 .prep-item-icon-btn .prep-item-thumb,
-.prep-item-icon-btn .prep-item-thumb.prep-thumb-fallback { width: 100%; height: 100%; padding: 4px; }
+.prep-item-icon-btn .prep-item-thumb.prep-thumb-fallback { width: 100%; height: 100%; padding: var(--s-1); }
 .prep-item-icon-btn .prep-item-thumb img {
   transition: transform var(--t-base) var(--ease-out);
 }
@@ -3438,7 +3447,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    a full veil) so the artwork underneath stays legible even while shown. */
 .prep-item-name-overlay {
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
-  padding: 5px 7px 4px;
+  padding: var(--s-1) var(--s-2);
   font-size: var(--fs-xs); line-height: 1.3; color: var(--parchment);
   background: linear-gradient(to top, rgba(20,17,15,0.92), rgba(20,17,15,0.55) 65%, transparent);
   overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
@@ -3453,7 +3462,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    or pushes a neighboring tile — scoped to `.prep-item-card` so the
    env/adv pickers' own .prep-checkbox-hit stays permanently visible. */
 .prep-item-card .prep-checkbox-hit {
-  position: absolute; top: 4px; right: 4px; z-index: 2;
+  position: absolute; top: var(--s-1); right: var(--s-1); z-index: 2;
   /* Hug the box so the tile-corner inset is equal on both axes; the taller
      click target lives in the ::after overlay instead of in the label. */
   width: var(--sel-col); height: var(--sel-col);
@@ -3476,7 +3485,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    in js/app.js) never shifts the rest of the toolbar; icon + label swap for
    icon + bare number during the ~1.2s reveal, same button, same footprint. */
 .dice-roll-btn {
-  width: 66px; padding: 0 var(--s-1); gap: 5px; flex: none;
+  width: 66px; padding: 0 var(--s-1); gap: var(--inline-control-gap); flex: none;
   font-family: var(--font-mono); font-variant-numeric: tabular-nums;
 }
 /* One illustrated d12 (img/ui/d12-roll.png, trimmed of transparent padding)
@@ -3789,7 +3798,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .header-actions .sb-trigg
 .sb-sound[data-state="failed"] { border-style: dashed; color: var(--muted); cursor: not-allowed; }
 .sb-sound[aria-disabled="true"]:hover { background: var(--ink-raised); border-color: var(--line); }
 .sb-sound[data-state="failed"]:active { transform: none; }
-.sb-sound-alert { display: none; position: absolute; top: 4px; right: 4px; width: 14px; height: 14px; color: var(--fear-soft); }
+.sb-sound-alert { display: none; position: absolute; top: var(--s-1); right: var(--s-1); width: 14px; height: 14px; color: var(--fear-soft); }
 .sb-sound-alert svg { width: 14px; height: 14px; opacity: 1; }
 .sb-sound[data-state="failed"] .sb-sound-alert { display: block; }
 /* Playing: the icon keeps its place; a gold edge, glow and dot say it is sounding. */

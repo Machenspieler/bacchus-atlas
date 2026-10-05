@@ -204,10 +204,31 @@ elsewhere in the app.
 ## Spacing, radii, elevation, motion
 
 - **Spacing** is a 4px base scale, `--s-1` (4px) through `--s-10` (80px).
-  Never write a raw pixel margin/padding/gap — reach for the nearest step.
+  Reach for the nearest step before writing a raw pixel margin/padding/gap; a
+  raw value that equals a step is always the token. Dense expert-tool regions
+  may keep documented local micro-values where the scale is too coarse. The
+  off-scale values that remain each have a reason:
+  - `--inline-control-gap` (5px): optical icon↔label gap of inline controls
+    (dice, item, countdown, field error, Battle Points summary, d12 roll).
+  - Pill padding: icon side is 2px tighter than the text side (dice/countdown
+    `2px 8px 2px 6px`, item `1px 10px 2px 8px` at body size) — optical, not drift.
+  - `--menu-item-gap` (1px): hairline between stacked menu rows (`.ms-panel`,
+    `.prep-menu-list`). Stacked name/meta pairs use 1px, picker lists 2px.
+  - `--pc-dense` (6px, scoped to `.prep-central`): the dense-Prep micro step —
+    header/title/lead gaps, count pill, and the base card/row rhythm
+    (`--pc-pad-y/-card/-row-gap`). Comfortable density overrides those three;
+    the header gaps stay 6px on purpose.
+  - `--bullet-indent` (22px) couples `.feature-bullets` padding to the
+    `.has-item` pull-back; `--sp-session-radius` below; 1px border
+    compensation (`calc(var(--r-md) - 1px)`, `calc(var(--sel-pad) - 1px)`);
+    negative margins that cancel an icon button's padding; checkmark/rank/
+    SVG drawing geometry. Fractional spacing is not used (`7.5px` was removed).
 - **Radii** are scaled to the object, not uniform: `--r-xs` (2px, chips/
   badges) < `--r-sm` (4px, inputs/buttons) < `--r-md` (6px, cards) < `--r-lg`
-  (10px, modals/popovers) < `--r-pill` (999px, pill controls).
+  (10px, modals/popovers) < `--r-pill` (999px, pill controls). Circles are
+  `50%`, never `--r-pill`. The session control (`--sp-session-radius`, 12px)
+  is an intentional exception: a status/selector capsule that is neither a
+  button nor a full pill.
 - **Elevation** is four shadow steps (`--e-1`…`--e-4`), each a two-layer
   shadow (tight + diffuse) rather than one blurred rectangle — used for card
   rest/hover, modals, and the environment detail overlay in increasing order.
