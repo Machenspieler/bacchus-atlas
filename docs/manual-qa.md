@@ -244,8 +244,11 @@ locally") before starting.
 - [ ] **FreshCutGrass support gate (PD-014)**: on `#/env/fathomless-baths-surface`
       (RU and EN) Merchant and Petty Noble are links with the external icon,
       Tourists is plain text (no icon, no hover, not greyed); "Open Encounter"
-      shows a `2` badge and its tooltip names Tourists, and the opened
-      encounter holds only Merchant and Petty Noble. `#/env/cursed-graveyard`
+      shows a `2` badge and its tooltip (on the label, the badge and the icon
+      alike, and on keyboard focus) names Tourists, and the opened
+      encounter holds only Merchant and Petty Noble. The Merchant / Petty Noble
+      links themselves show no tooltip. On `#/env/port-city` the tip lists
+      the three unsupported names after "Not supported:" / "Не поддерживаются:". `#/env/cursed-graveyard`
       (all supported) has no badge; `#/env/civic-library` (none supported) has
       no links and no "Open Encounter".
 - [ ] **FreshCutGrass export**: the central "Open Encounter" link is absent with

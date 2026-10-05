@@ -518,17 +518,16 @@ function encounterLinkTip(name) {
  * page's own language; the encounter itself is always built from the English
  * counterpart, the same way envAdversaryNames() only ever reads .en — a name a
  * third-party service has to recognize is not something the UI language
- * should get to change. The tooltip names this specific link's target rather
- * than saying "this encounter", so hovering "Bear" and hovering "Beasts" don't
- * read the same. */
+ * should get to change. The link carries no tooltip of its own. */
 function potentialAdversaryLinkHtml(visibleLabel, encounterName, adversaryNames) {
   const url = buildFreshCutGrassEncounterUrl(encounterName, adversaryNames);
   // Nothing FreshCutGrass knows: ordinary text — not a link, an icon or a
   // greyed-out entity; the adversary is fine, only the integration is absent.
   if (!url) return escapeHtml(visibleLabel);
-  const tip = encounterLinkTip(visibleLabel);
-  return `<a class="adversary-encounter-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer"
-            data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(tip)}">${escapeHtml(visibleLabel)}${inlineExtIconHtml()}</a>`;
+  // No tooltip and no aria-label: the link styling + icon already say "this
+  // opens something", the section hint explains what, and the visible name is
+  // the accessible name.
+  return `<a class="adversary-encounter-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(visibleLabel)}${inlineExtIconHtml()}</a>`;
 }
 
 /** Renders one full potential_adversaries entry — "Beasts (Bear, Dire Wolf,
@@ -938,8 +937,11 @@ document.addEventListener('pointerover', e => {
   clearTimeout(tipTimer);
   tipTimer = setTimeout(() => showTip(target), TIP_DELAY_MS);
 });
+// Moving between a trigger's own children (label → badge → icon) is not
+// leaving it: only hide when the pointer actually exits the trigger.
 document.addEventListener('pointerout', e => {
-  if (e.target.closest?.('[data-tip], [data-tip-rich]')) hideTip();
+  const target = e.target.closest?.('[data-tip], [data-tip-rich]');
+  if (target && !target.contains(e.relatedTarget)) hideTip();
 });
 // No delay for the keyboard: focus is already a deliberate act. Deferred to
 // the end of the task because moving focus can scroll the element into view,

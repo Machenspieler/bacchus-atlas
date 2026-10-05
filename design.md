@@ -392,7 +392,10 @@ Every control that opens a prepared encounter shares one visual language:
   own line or push the next "," / ";" down.
 - **Inline name links** (`.adversary-encounter-link`): gold, 1px `--hope-border-soft`
   underline at rest, brightening on hover/focus; identical for single adversaries,
-  groups and recommended ones (the `★` is a separate marker).
+  groups and recommended ones (the `★` is a separate marker). In the Environment
+  overlay they carry **no tooltip and no `aria-label`** — the styling + icon say
+  "opens something", the section hint says what, and the visible name is the
+  accessible name. (Prep's rows keep `encounter_link_tip`.)
 - **"Open Encounter" actions** (`.encounter-action`): label → icon with
   `--inline-control-gap`. Environment: lightweight mono-caps text action.
   Prep: compact `.btn-ghost .btn-sm` in the dense toolbar. Same icon, size and gap.
@@ -400,6 +403,13 @@ Every control that opens a prepared encounter shares one visual language:
   sentence: `encounter_link_tip` ("Open “{name}” as an encounter in FreshCutGrass")
   for named links, `encounter_open_tip` ("Open encounter in FreshCutGrass") for the
   two actions. Always the spelling "FreshCutGrass"; no "in a new tab" suffix.
+  Exception: a mixed Environment "Open Encounter" (some adversaries unsupported)
+  shows the compact count badge and a tooltip on the **whole** action (label,
+  badge, icon — hover and keyboard focus alike; the tip does not hide while the
+  pointer moves between them): `encounter_partial_tip` + `encounter_partial_one`/
+  `_many` ("5 of 6 adversaries will be added. “Guard” is not currently supported
+  by FreshCutGrass." / "… Not supported: “Guard”, “Tourists”."). Its `aria-label`
+  is `encounter_open_tip` followed by that same text.
 - **Dense Prep header.** The Prep button shortens its label, then collapses to the
   icon alone, as the `prep-central` container narrows (see architecture.md); the
   tooltip and `aria-label` never shorten.
