@@ -6478,12 +6478,13 @@ function openDetailOverlay(envId, carry = null) {
     ['en', 'ru'].forEach(l => { if (adv.name?.[l]) potentialAdvNameToId.set(adv.name[l].trim().toLowerCase(), e.id); });
   });
   const englishAdversaryEntries = env.potential_adversaries?.en || [];
-  /* "Any" ("Любой") means the GM picks whatever fits — it names nothing, so
-   * the whole Potential Adversaries block is noise rather than information.
+  /* "Any" ("Любой") means the GM picks whatever fits and "None" ("Нет") means
+   * there are none — neither names anything, so the whole Potential
+   * Adversaries block is noise rather than information.
    * Checked against the English text (or the localized text when English is
    * unavailable) so the block hides regardless of the card's display language. */
   const adversaryCanonical = englishAdversaryEntries.length ? englishAdversaryEntries : adversaries;
-  const hasRealAdversaries = adversaryCanonical.some(name => !/^any$/i.test(parsePotentialAdversaryEntry(name).label));
+  const hasRealAdversaries = adversaryCanonical.some(name => !/^(any|none|любой|нет)$/i.test(parsePotentialAdversaryEntry(name).label));
   const adversariesHtml = adversaries.map((name, i) => {
     const id = potentialAdvNameToId.get(name.trim().toLowerCase());
     if (id) return `<button type="button" class="adversary-link-btn" data-adversary-link="${escapeAttr(id)}">${escapeHtml(name)}</button>`;
