@@ -24,6 +24,13 @@ for the environment schema in full before editing `data/environments.json`.
   `id` is derived from (or matches) its English name; renaming or refining
   the `ru` field must never change `id`, since routes, lists, and Prep
   Prep selections all reference it.
+- **Prep adversary `name.en` must match FreshCutGrass exactly.** The
+  FreshCutGrass export/links look adversaries up by exact name
+  (`freshcutgrass.app/data/adversary/adversaries.json`), including colons
+  and curly apostrophes (`Fallen Warlord: Realm-Breaker`,
+  `Will-O’-The-Wisps`). Never "tidy" those punctuation differences; `id`
+  stays unchanged, and `adversary-translations-manual.json` keys follow
+  the same spelling.
 - **Don't invent a missing optional field.** `lore`, `biomes`, `source`,
   `featured_adversaries`, `story_seeds`, `rawText`, and an absent/empty `ru`
   translation are all legitimately optional — leave them out rather than

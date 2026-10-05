@@ -860,7 +860,7 @@
     {
       "id": "fallen-warlord-realm-breaker",
       "name": {
-        "en": "Fallen Warlord Realm-Breaker",
+        "en": "Fallen Warlord: Realm-Breaker",
         "ru": "Полководец Падших: Губитель Миров"
       },
       "tier": 4,
@@ -873,7 +873,7 @@
     {
       "id": "fallen-warlord-undefeated-champion",
       "name": {
-        "en": "Fallen Warlord Undefeated Champion",
+        "en": "Fallen Warlord: Undefeated Champion",
         "ru": "Полководец Падших: Непобеждённый Чемпион"
       },
       "tier": 4,
@@ -1403,7 +1403,7 @@
     {
       "id": "jack-o-lantern",
       "name": {
-        "en": "Jack-O-Lantern",
+        "en": "Jack-O’-Lantern",
         "ru": "Джек-Фонарь"
       },
       "tier": 2,
@@ -2613,7 +2613,7 @@
     {
       "id": "volcanic-dragon-ashen-tyrant",
       "name": {
-        "en": "Volcanic Dragon Ashen Tyrant",
+        "en": "Volcanic Dragon: Ashen Tyrant",
         "ru": "Вулканический Дракон: Пепельный Тиран"
       },
       "tier": 4,
@@ -2626,7 +2626,7 @@
     {
       "id": "volcanic-dragon-molten-scourge",
       "name": {
-        "en": "Volcanic Dragon Molten Scourge",
+        "en": "Volcanic Dragon: Molten Scourge",
         "ru": "Вулканический Дракон: Расплавленная Кара"
       },
       "tier": 4,
@@ -2639,7 +2639,7 @@
     {
       "id": "volcanic-dragon-obsidian-predator",
       "name": {
-        "en": "Volcanic Dragon Obsidian Predator",
+        "en": "Volcanic Dragon: Obsidian Predator",
         "ru": "Вулканический Дракон: Обсидиановый Хищник"
       },
       "tier": 4,
@@ -2705,7 +2705,7 @@
     {
       "id": "will-o-the-wisps",
       "name": {
-        "en": "Will-O-The-Wisps",
+        "en": "Will-O’-The-Wisps",
         "ru": "Блуждающие Огоньки"
       },
       "tier": 1,
