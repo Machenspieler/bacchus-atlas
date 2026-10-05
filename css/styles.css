@@ -46,9 +46,36 @@
   --hope-ink: #1c1408;       /*  8.10:1 on gold — text for gold fills */
   --fear: #9c2b3b;
   --fear-soft: #d9707e;      /*  5.10:1 — was #c85263 at 3.89:1, under AA */
-  --fear-tint: rgba(156,43,59,0.14);  /* danger hover/focus fill on icon buttons */
+  --fear-tint: rgba(156,43,59,0.14);  /* destructive hover/focus fill: danger buttons, menu items, icon buttons */
   --teal: #3f7b74;
   --teal-soft: #6fa89f;      /*  6.25:1 — structural, never affirmative */
+
+  /* ---- interaction tints: named by role, never by number ----
+   * Strength order on gold: wash < hover < selected < selected-hover. A hover
+   * never reaches the selected strength, so a selected control still reads as
+   * selected under the pointer. Focus is a separate channel (--focus-ring) and
+   * no fill here stands in for it. See design.md "Colour roles".
+   *   wash      resting emphasis: advisory/recommended/limit rows, drop target
+   *   hover     a gold-bordered control under the pointer
+   *   selected  checked / active / current
+   *   border-*  accent edges: soft (resting frame), default (open/limit), strong (drag affordance)
+   *   glow      soft halo or inner glow around a gold edge
+   * Teal has one hover fill; destructive uses --fear-tint; every neutral
+   * control that is not gold, teal or red hovers on --neutral-hover-bg. */
+  --hope-wash: rgba(217,164,65,0.08);
+  --hope-hover-bg: rgba(217,164,65,0.10);
+  --hope-selected-bg: rgba(217,164,65,0.16);
+  --hope-selected-hover-bg: rgba(217,164,65,0.22);
+  --hope-border-soft: rgba(217,164,65,0.35);
+  --hope-border: rgba(217,164,65,0.50);
+  --hope-border-strong: rgba(217,164,65,0.70);
+  --hope-glow: rgba(217,164,65,0.18);
+  --hope-art-wash: rgba(217,164,65,0.12);   /* the lit backdrop behind catalogue art */
+  --teal-hover-bg: rgba(63,123,116,0.16);
+  --neutral-hover-bg: rgba(255,255,255,0.06);
+  /* One scrollbar thumb for every themed scroller. */
+  --scrollbar-thumb: rgba(185,173,145,0.38);
+  --scrollbar-thumb-hover: rgba(185,173,145,0.56);
 
   /* ---- type ---- */
   --font-display: 'Forum', 'Times New Roman', serif;   /* 400 only — no bold face exists */
@@ -377,15 +404,15 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 .btn-ghost { background: transparent; }
 .btn-ghost:hover { background: var(--ink-raised); }
 .btn-danger { border-color: var(--fear); color: var(--fear-soft); background: transparent; }
-.btn-danger:hover { background: rgba(156,43,59,0.14); border-color: var(--fear-soft); }
+.btn-danger:hover { background: var(--fear-tint); border-color: var(--fear-soft); }
 .btn-sm { height: var(--h-sm); padding: 0 var(--s-3); font-size: var(--fs-sm); }
 
 /* The active nav item is a fill, not a border — a border alone was
  * indistinguishable from the hover state. */
 .btn.active {
-  background: rgba(217,164,65,0.14); border-color: var(--hope); color: var(--hope-soft);
+  background: var(--hope-selected-bg); border-color: var(--hope); color: var(--hope-soft);
 }
-.btn.active:hover { background: rgba(217,164,65,0.2); }
+.btn.active:hover { background: var(--hope-selected-hover-bg); }
 
 .btn:disabled, .btn[aria-disabled="true"] {
   opacity: var(--opacity-disabled); cursor: not-allowed; transform: none;
@@ -570,7 +597,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
   /* Firefox's own thin/muted scrollbar; Chromium ignores these and is styled
    * via the ::-webkit-scrollbar-* rules below instead. */
   scrollbar-width: thin;
-  scrollbar-color: rgba(185, 173, 145, 0.38) transparent;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 /* A native scrollbar reads as loud chrome next to the parchment-on-ink panel
  * it sits inside; thinning and muting it keeps the rows themselves the
@@ -579,11 +606,11 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 .ms-panel::-webkit-scrollbar { width: 8px; }
 .ms-panel::-webkit-scrollbar-track { background: transparent; }
 .ms-panel::-webkit-scrollbar-thumb {
-  background: rgba(185, 173, 145, 0.34);
+  background: var(--scrollbar-thumb);
   border: 2px solid var(--ink-raised);
   border-radius: var(--r-pill);
 }
-.ms-panel::-webkit-scrollbar-thumb:hover { background: rgba(185, 173, 145, 0.56); }
+.ms-panel::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
 .ms-panel::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
 /* A user's forced-colors/high-contrast theme knows better than this palette
  * does; let the system scrollbar colors through instead of overriding them. */
@@ -607,9 +634,9 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
   transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
 }
 .ms-row-label { flex: 1; }
-.ms-row:hover { background: rgba(255,255,255,0.06); color: var(--hope-soft); }
-.ms-row:has(.ms-checkbox:checked) { background: rgba(217,164,65,0.16); color: var(--hope-soft); }
-.ms-row:has(.ms-checkbox:checked):hover { background: rgba(217,164,65,0.24); }
+.ms-row:hover { background: var(--neutral-hover-bg); }
+.ms-row:has(.ms-checkbox:checked) { background: var(--hope-selected-bg); color: var(--hope-soft); }
+.ms-row:has(.ms-checkbox:checked):hover { background: var(--hope-selected-hover-bg); }
 /* The row is the focus target: its checkbox is visually hidden (.sr-only), so it
  * draws no ring of its own, and rows sit 1px apart inside the panel, so the ring
  * goes inside the row rather than over its neighbours. */
@@ -867,7 +894,7 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: var
   transition: border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out),
               background var(--t-fast) var(--ease-out), opacity var(--t-fast) var(--ease-out);
 }
-.card-add-btn:hover, .env-prep-btn:hover { border-color: var(--hope); color: var(--hope); background: rgba(217,164,65,0.1); }
+.card-add-btn:hover, .env-prep-btn:hover { border-color: var(--hope); color: var(--hope); background: var(--hope-hover-bg); }
 .card-add-btn svg { display: block; width: 18px; height: 18px; pointer-events: none; }
 @media (pointer: coarse) {
   .card-add-btn, .env-prep-btn { width: 40px; height: 40px; }
@@ -898,7 +925,7 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: var
 /* Selected reads from the gold symbol + check badge alone; the frame and fill
  * appear only on hover, like every other button in the group. */
 .env-prep-btn.is-selected { color: var(--hope); }
-.env-prep-btn.is-selected:hover { color: var(--hope-soft); border-color: var(--hope); background: rgba(217,164,65,0.1); }
+.env-prep-btn.is-selected:hover { color: var(--hope-soft); border-color: var(--hope); background: var(--hope-hover-bg); }
 .env-prep-btn.is-unavailable, .env-prep-btn.is-unavailable:hover {
   color: var(--muted); opacity: var(--opacity-disabled); cursor: not-allowed;
   border-color: transparent; background: transparent;
@@ -932,7 +959,10 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: var
   letter-spacing: var(--tracking-badge); text-transform: uppercase;
   border: 1px dashed var(--line); color: var(--muted);
 }
-.badge.pending { border-color: var(--fear); color: var(--fear-soft); }
+/* "RU pending" is an incomplete translation, not a fault: it keeps the badge's
+ * dashed edge and only steps up from --muted so it reads as a marker worth
+ * noticing. No Fear — nothing is wrong or destructive here. */
+.badge.pending { border-color: var(--line-strong); color: var(--parchment-dim); }
 
 /* ---------- random environment card ---------- */
 /* An action card, not a real environment record — same .card shell (border,
@@ -940,7 +970,7 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: var
  * to the grid, with a gold-tinted rest border marking it as the primary
  * action rather than a stat block. See randomCardHtml()/renderGrid() in
  * js/app.js for how it's kept first and out of every count. */
-.card-random { border-color: rgba(217,164,65,0.35); }
+.card-random { border-color: var(--hope-border-soft); }
 .card-random:hover { border-color: var(--hope); }
 .card-random-art { display: flex; align-items: center; justify-content: center; }
 .card-random-mark {
@@ -1198,9 +1228,9 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 .dm-v-text { font-family: var(--font-body); font-size: var(--fs-base); color: var(--parchment); }
 
 /* ---------- detail card: read at another tier ---------- */
-.modal.retiered { border-color: rgba(217,164,65,0.5); box-shadow: var(--e-4), 0 0 0 1px rgba(217,164,65,0.28); }
-.modal.retiered .modal-header { border-bottom-color: rgba(217,164,65,0.35); }
-.dice-btn-retiered { border-color: rgba(217,164,65,0.55); }
+.modal.retiered { border-color: var(--hope-border); box-shadow: var(--e-4), 0 0 0 1px var(--hope-border-soft); }
+.modal.retiered .modal-header { border-bottom-color: var(--hope-border-soft); }
+.dice-btn-retiered { border-color: var(--hope-border); }
 
 /* ---------- detail card footer ---------- */
 .detail-footer {
@@ -1296,7 +1326,9 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
   letter-spacing: var(--tracking-badge); padding: 2px var(--s-2); border-radius: var(--r-xs);
 }
 .feature-type.passive { color: var(--parchment-dim); border: 1px solid var(--line); }
-.feature-type.action { color: var(--fear-soft); border: 1px solid var(--fear); }
+/* Passive / Action / Reaction is a taxonomy, not a danger scale: Passive is the
+ * quiet neutral, Action the brighter neutral, Reaction the structural teal. */
+.feature-type.action { color: var(--parchment); border: 1px solid var(--type-chip-border); }
 .feature-type.reaction { color: var(--teal-soft); border: 1px solid var(--teal); }
 .feature-desc { margin: var(--s-2) 0 0; font-size: var(--fs-base); line-height: var(--lh-base); }
 .feature-desc p { margin: 0 0 var(--s-2); }
@@ -1335,9 +1367,9 @@ ol.feature-bullets { list-style: decimal; }
   transition: border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out),
               background var(--t-fast) var(--ease-out);
 }
-.region-env-btn:hover { border-color: var(--teal-soft); color: var(--parchment); background: rgba(63,123,116,0.14); }
+.region-env-btn:hover { border-color: var(--teal-soft); color: var(--parchment); background: var(--teal-hover-bg); }
 .region-env-btn.active {
-  border-color: var(--hope); color: var(--parchment); background: rgba(217,164,65,0.16);
+  border-color: var(--hope); color: var(--parchment); background: var(--hope-selected-bg);
   cursor: default;
 }
 .region-env-tier {
@@ -1355,7 +1387,7 @@ ol.feature-bullets { list-style: decimal; }
   transition: background var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
 }
 .dice-btn svg { width: 13px; height: 13px; }
-.dice-btn:hover { background: rgba(217,164,65,0.16); }
+.dice-btn:hover { background: var(--hope-hover-bg); }
 .dice-btn:active { transform: scale(0.95); }
 
 /* ---------- item links + item card ---------- */
@@ -1373,19 +1405,19 @@ ol.feature-bullets { list-style: decimal; }
               color var(--t-fast) var(--ease-out);
 }
 .item-btn svg { width: 13px; height: 13px; flex: none; align-self: center; }
-.item-btn:hover { background: rgba(63,123,116,0.18); color: var(--parchment); }
+.item-btn:hover { background: var(--teal-hover-bg); color: var(--parchment); }
 .item-btn:active { transform: scale(0.97); }
 
-/* A name in "Potential Adversaries" that has a featured stat block below —
- * fear-red rather than the teal of an item link, so the two kinds of inline
- * reference stay visually distinct from each other. */
+/* A name in "Potential Adversaries" that has a featured stat block below — a
+ * reference link, so structural teal like the item link; the flask on item
+ * pills (and this one's body-face, icon-free pill) keep the two apart. */
 .adversary-link-btn {
   display: inline; font: inherit;
-  background: var(--ink-raised); border: 1px solid var(--fear); color: var(--fear-soft);
+  background: var(--ink-raised); border: 1px solid var(--teal); color: var(--teal-soft);
   padding: 1px 8px; border-radius: var(--r-pill); cursor: pointer;
   transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
 }
-.adversary-link-btn:hover { background: rgba(156,43,59,0.18); color: var(--parchment); }
+.adversary-link-btn:hover { background: var(--teal-hover-bg); color: var(--parchment); }
 .adversary-link-btn:active { transform: scale(0.97); }
 
 /* A name in "Potential Adversaries" that opens its own FreshCutGrass
@@ -1410,7 +1442,7 @@ ol.feature-bullets { list-style: decimal; }
 }
 .adversary-summary::-webkit-details-marker { display: none; }
 .adversary-summary::before {
-  content: "▸"; color: var(--fear-soft); font-size: var(--fs-xs);
+  content: "▸"; color: var(--teal-soft); font-size: var(--fs-xs);
   transition: transform var(--t-fast) var(--ease-out);
 }
 .adversary-block[open] > .adversary-summary::before { transform: rotate(90deg); }
@@ -1537,7 +1569,6 @@ ol.feature-bullets { list-style: decimal; }
 @keyframes pop-in { from { opacity: 0; transform: translateY(6px) scale(0.9); } to { opacity: 1; transform: none; } }
 .dice-result-pop .notation { font-size: var(--fs-micro); color: var(--muted); letter-spacing: 0.06em; }
 .dice-result-pop .value { font-size: 26px; color: var(--hope-soft); font-weight: 700; line-height: 1.2; }
-.dice-result-pop .value.tumbling { color: var(--fear-soft); }
 .dice-result-pop .breakdown { font-size: var(--fs-micro); color: var(--parchment-dim); margin-top: 2px; }
 
 /* ---------- countdown button + overlay ---------- */
@@ -1549,7 +1580,7 @@ ol.feature-bullets { list-style: decimal; }
   transition: background var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
 }
 .countdown-btn svg { width: 13px; height: 13px; flex: none; }
-.countdown-btn:hover { background: rgba(63,123,116,0.18); }
+.countdown-btn:hover { background: var(--teal-hover-bg); }
 .countdown-btn:active { transform: scale(0.95); }
 
 .countdown-stack {
@@ -1597,7 +1628,7 @@ ol.feature-bullets { list-style: decimal; }
   display: flex; align-items: flex-start; gap: var(--s-2);
   width: fit-content; max-width: 60ch; margin: 0 0 var(--s-5);
   padding: var(--s-2) var(--s-3);
-  background: rgba(217,164,65,0.1); border: 1px solid var(--hope);
+  background: var(--hope-wash); border: 1px solid var(--hope);
   border-radius: var(--r-sm);
 }
 .storage-notice-icon {
@@ -2171,7 +2202,7 @@ body[data-route="prep"] {
 body[data-route="prep"] {
   --sp-bar-bg:
     linear-gradient(180deg, rgba(20,17,15,0.80), rgba(20,17,15,0.90)),
-    radial-gradient(ellipse at 0% 0%, rgba(217,164,65,0.08), transparent 55%);
+    radial-gradient(ellipse at 0% 0%, var(--hope-wash), transparent 55%);
   --sp-bar-border: var(--line-faint);
 }
 /* contain: inline-size — a long, nowrap prep name must not push the
@@ -2266,7 +2297,7 @@ body[data-route="prep"] {
   color: var(--parchment); background-color: var(--ink-raised);
   border: 1px solid var(--line); border-radius: var(--r-sm);
   resize: none; overflow-y: auto; white-space: pre-wrap; overflow-wrap: anywhere;
-  scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
+  scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent;
   transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
 }
 .prep-notes-input::placeholder { color: var(--muted); }
@@ -2313,11 +2344,11 @@ body[data-route="prep"] {
 .prep-menu-list {
   flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
   display: flex; flex-direction: column; gap: 1px;
-  scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
+  scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 .prep-menu-list::-webkit-scrollbar { width: 8px; }
 .prep-menu-list::-webkit-scrollbar-track { background: transparent; }
-.prep-menu-list::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.34); border: 2px solid var(--ink-raised); border-radius: var(--r-pill); }
+.prep-menu-list::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border: 2px solid var(--ink-raised); border-radius: var(--r-pill); }
 @media (forced-colors: active) { .prep-menu-list { scrollbar-color: auto; } }
 .prep-menu-sep { flex: none; height: 1px; margin: var(--s-1) var(--s-2); background: var(--line-faint); }
 .prep-menu-item {
@@ -2327,17 +2358,17 @@ body[data-route="prep"] {
   font: inherit; color: var(--parchment); text-align: left; cursor: pointer;
   transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
 }
-.prep-menu-item:hover, .prep-menu-item:focus-visible { background: rgba(255,255,255,0.06); color: var(--hope-soft); }
+.prep-menu-item:hover, .prep-menu-item:focus-visible { background: var(--neutral-hover-bg); }
 .prep-menu-item:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
-.prep-menu-item[aria-checked="true"] { background: rgba(217,164,65,0.12); color: var(--hope-soft); }
-.prep-menu-item[aria-checked="true"]:hover { background: rgba(217,164,65,0.2); }
+.prep-menu-item[aria-checked="true"] { background: var(--hope-selected-bg); color: var(--hope-soft); }
+.prep-menu-item[aria-checked="true"]:hover { background: var(--hope-selected-hover-bg); }
 .prep-menu-check { flex: none; display: inline-flex; width: var(--icon-md); height: var(--icon-md); color: var(--hope); }
 .prep-menu-check svg { width: var(--icon-md); height: var(--icon-md); }
 .prep-menu-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* Delete uses the Fear tokens the rest of the app reserves for destructive
    actions; the divider above it is what separates it from the safe ones. */
 .prep-menu-item.is-danger { color: var(--fear-soft); }
-.prep-menu-item.is-danger:hover, .prep-menu-item.is-danger:focus-visible { background: rgba(156,43,59,0.14); color: var(--fear-soft); }
+.prep-menu-item.is-danger:hover, .prep-menu-item.is-danger:focus-visible { background: var(--fear-tint); color: var(--fear-soft); }
 .prep-menu-item.is-disabled, .prep-menu-item.is-disabled:hover, .prep-menu-item.is-disabled:focus-visible {
   color: var(--muted); background: transparent; cursor: not-allowed;
 }
@@ -2482,7 +2513,7 @@ body[data-route="prep"] .header-inner { flex-wrap: nowrap; }
 .sp-session-control:active { background: var(--ink-raised); border-color: var(--line-strong); }
 .sp-session-control:hover { color: var(--hope-soft); border-color: var(--line-strong); background: var(--ink-hover); }
 .sp-session-control:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); color: var(--hope-soft); }
-.sp-session-control.is-hinted { color: var(--hope-soft); border-color: var(--hope); box-shadow: 0 0 0 3px rgba(217,164,65,0.18); }
+.sp-session-control.is-hinted { color: var(--hope-soft); border-color: var(--hope); box-shadow: 0 0 0 3px var(--hope-glow); }
 .sp-session-label { flex: none; color: var(--muted); }
 .sp-session-name {
   flex: 0 1 auto; min-width: 0; max-width: 30ch;
@@ -2566,7 +2597,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   --pc-meta-lh: 15px;
   container: prep-central / inline-size;
   min-width: 0; display: flex; flex-direction: column;
-  background: var(--ink-raised); border: 1px solid var(--line-strong); border-top-color: rgba(217,164,65,0.55);
+  background: var(--ink-raised); border: 1px solid var(--line-strong); border-top-color: var(--hope-border);
   border-radius: var(--r-lg); padding: 0 var(--pc-pad-x) var(--s-4); box-shadow: var(--e-2);
 }
 /* Comfortable density for large monitors (e.g. 1920x1080 at 100% zoom): the
@@ -2636,12 +2667,12 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    toolbar row above it. */
 #prep-env-list, #prep-adv-list {
   max-height: 410px; overflow-y: auto; padding-right: 2px;
-  scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
+  scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 #prep-env-list::-webkit-scrollbar, #prep-adv-list::-webkit-scrollbar { width: 8px; }
 #prep-env-list::-webkit-scrollbar-track, #prep-adv-list::-webkit-scrollbar-track { background: transparent; }
-#prep-env-list::-webkit-scrollbar-thumb, #prep-adv-list::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
-#prep-env-list::-webkit-scrollbar-thumb:hover, #prep-adv-list::-webkit-scrollbar-thumb:hover { background: rgba(185,173,145,0.56); }
+#prep-env-list::-webkit-scrollbar-thumb, #prep-adv-list::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: var(--r-pill); }
+#prep-env-list::-webkit-scrollbar-thumb:hover, #prep-adv-list::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
 
 /* ---- compact "All Environments" toolbar (search + Tier + counter, one row) ----
    A plain static block stacked above #prep-env-list (its sibling inside
@@ -2769,7 +2800,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .prep-rec-count { flex: none; font-family: var(--font-mono); font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--muted); font-variant-numeric: tabular-nums; }
 .prep-rec-divider { height: 1px; margin: 2px var(--sel-pad); background: var(--line-faint); }
 .prep-adv-row.is-recommended {
-  background: color-mix(in srgb, var(--hope) 6%, transparent);
+  background: var(--hope-wash);
 }
 .prep-adv-row.is-recommended:hover { background: var(--ink-hover); }
 /* A status marker, never a control: no cursor change, out of the tab order. */
@@ -2783,7 +2814,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .prep-thumb { flex: none; width: 48px; height: 48px; border-radius: var(--r-sm); object-fit: cover; }
 .prep-adv-thumb, .prep-item-thumb {
   flex: none; width: 60px; height: 60px; border-radius: var(--r-sm);
-  overflow: hidden; background: radial-gradient(circle at 50% 35%, rgba(217,164,65,0.14), transparent 70%), var(--ink-raised);
+  overflow: hidden; background: radial-gradient(circle at 50% 35%, var(--hope-art-wash), transparent 70%), var(--ink-raised);
 }
 .prep-adv-thumb { padding: 7.5px; }
 /* Item art is a loot-generator product photo with its own dark background
@@ -2902,7 +2933,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 /* The limit pill keeps its padding; its trailing side is pulled back so the
    header does not grow, and it never crowds the dot. */
 .prep-central-lead .prep-central-count.is-limit { padding-inline: 6px; margin-left: 0; margin-right: -6px; }
-.prep-central-count.is-limit { color: var(--hope-soft); border-color: rgba(217,164,65,0.45); background: rgba(217,164,65,0.08); }
+.prep-central-count.is-limit { color: var(--hope-soft); border-color: var(--hope-border); background: var(--hope-wash); }
 /* Roll coverage + clear-all live in the lead group, after the count: muted
    header metadata and a tertiary icon button, never a pill or a far-right control. */
 .prep-central-roll-slot, .prep-central-clear-slot { display: contents; }
@@ -2983,7 +3014,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 }
 .bp-summary:hover { background: var(--ink-hover); border-color: var(--line-strong); }
 .bp-summary:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
-.bp-summary[aria-expanded="true"] { border-color: rgba(217,164,65,0.55); }
+.bp-summary[aria-expanded="true"] { border-color: var(--hope-border); }
 .bp-step svg { width: var(--icon-sm); height: var(--icon-sm); }
 .bp-abbr { color: var(--muted); }
 /* Every number that changes is tabular and sits in a reserved-width box, so
@@ -2997,7 +3028,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .bp-warn-icon { display: inline-flex; color: var(--hope-soft); }
 .bp-warn-icon svg { width: var(--icon-sm); height: var(--icon-sm); }
 /* Over budget is advisory: amber tint + icon, never destructive red. */
-.bp-summary.is-over { border-color: rgba(217,164,65,0.45); background: rgba(217,164,65,0.08); }
+.bp-summary.is-over { border-color: var(--hope-border); background: var(--hope-wash); }
 .bp-summary.is-over .bp-spent { color: var(--hope-soft); text-decoration: underline dotted; text-underline-offset: 3px; }
 
 /* Constrained container (laptop): drop the label, keep the numbers. */
@@ -3050,7 +3081,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
 }
 .bp-seg:hover span { background: var(--ink-hover); }
-.bp-seg input:checked + span { background: rgba(217,164,65,0.14); color: var(--hope-soft); }
+.bp-seg input:checked + span { background: var(--hope-selected-bg); color: var(--hope-soft); }
 .bp-seg input:focus-visible { outline: none; }
 .bp-seg input:focus-visible + span { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 .bp-check { display: flex; align-items: flex-start; gap: var(--s-2); padding: 3px 0; cursor: pointer; }
@@ -3073,7 +3104,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   flex: none; width: var(--pc-thumb); height: var(--pc-thumb); box-sizing: border-box;
   display: flex; align-items: center; justify-content: center; overflow: hidden;
   border-radius: var(--r-sm); padding: var(--thumb-pad, 0);
-  background: radial-gradient(circle at 50% 35%, rgba(217,164,65,0.12), transparent 70%), var(--ink);
+  background: radial-gradient(circle at 50% 35%, var(--hope-art-wash), transparent 70%), var(--ink);
 }
 /* Transparent adversary PNGs carry uneven built-in padding; a shared inset
    plus object-fit:contain normalises them without per-asset rules. Item and
@@ -3133,7 +3164,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   box-shadow: inset 0 0 0 1px transparent;
   transition: box-shadow var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
 }
-.prep-sel-thumb-btn:hover { background: radial-gradient(circle at 50% 35%, rgba(217,164,65,0.22), transparent 70%), var(--ink-hover); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.prep-sel-thumb-btn:hover { background: radial-gradient(circle at 50% 35%, var(--hope-selected-hover-bg), transparent 70%), var(--ink-hover); box-shadow: inset 0 0 0 1px var(--line-strong); }
 .prep-sel-thumb-btn:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-tight); }
 .prep-sel-thumb-btn:disabled { cursor: default; }
 
@@ -3146,7 +3177,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 }
 .prep-sel--card:hover {
   border-color: var(--line-strong); background: var(--ink-hover);
-  box-shadow: inset 0 0 0 1px rgba(217,164,65,0.08);
+  box-shadow: inset 0 0 0 1px var(--hope-wash);
 }
 .prep-sel--card .prep-sel-body { padding-right: var(--pc-remove-room); }
 .prep-sel--card .prep-sel-remove { position: absolute; top: 1px; right: 1px; }
@@ -3296,7 +3327,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    for destructive/error states elsewhere. */
 .prep-warning {
   margin: 0; padding: var(--s-2) var(--s-3); border: 1px solid var(--line); border-left: 3px solid var(--hope);
-  border-radius: var(--r-sm); background: rgba(217,164,65,0.06); font-size: var(--fs-sm); color: var(--parchment-dim);
+  border-radius: var(--r-sm); background: var(--hope-wash); font-size: var(--fs-sm); color: var(--parchment-dim);
 }
 
 /* ---- items panel (full width, below the three columns) ----
@@ -3354,15 +3385,15 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
      height — the track is transparent and the thumb only exists while
      there is something to scroll — so filtering never makes the panel jump
      when the scrollbar would otherwise appear/disappear. */
-  scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
+  scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 /* The "no results" line takes one tile's height, so an empty result doesn't
    collapse the strip either. */
 .prep-item-grid > .prep-empty { min-height: var(--prep-item-tile-size); display: flex; align-items: center; }
 .prep-item-grid::-webkit-scrollbar { height: 8px; }
 .prep-item-grid::-webkit-scrollbar-track { background: transparent; }
-.prep-item-grid::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
-.prep-item-grid::-webkit-scrollbar-thumb:hover { background: rgba(185,173,145,0.56); }
+.prep-item-grid::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: var(--r-pill); }
+.prep-item-grid::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
 
 /* The card itself stays overflow:visible (not clipped) so the checkbox's
    focus ring and slide-in offset are never cut off; the preview button
@@ -3379,7 +3410,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    (never color alone — the checkbox below stays permanently visible too). */
 .prep-item-card.is-selected {
   border-color: var(--hope);
-  box-shadow: 0 0 0 1px var(--hope), inset 0 0 16px rgba(217,164,65,0.18);
+  box-shadow: 0 0 0 1px var(--hope), inset 0 0 16px var(--hope-glow);
 }
 /* display:flex (not just width/height:100%) is required here: .prep-item-thumb
    is a plain <span>, which ignores width/height entirely unless blockified —
@@ -3456,9 +3487,9 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 /* Gold fill for the button currently holding the active roll filter —
    reuses .btn.active's existing treatment, never a new color. */
 .dice-roll-btn.is-active {
-  background: rgba(217,164,65,0.14); border-color: var(--hope); color: var(--hope-soft);
+  background: var(--hope-selected-bg); border-color: var(--hope); color: var(--hope-soft);
 }
-.dice-roll-btn.is-active:hover { background: rgba(217,164,65,0.2); }
+.dice-roll-btn.is-active:hover { background: var(--hope-selected-hover-bg); }
 @keyframes dice-roll-pop { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
 .dice-roll-btn.is-rolling .dice-roll-label { animation: dice-roll-pop var(--t-base) var(--ease-out); }
 
@@ -3493,7 +3524,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   grid-auto-flow: column; grid-auto-columns: minmax(240px, 260px);
   gap: var(--s-2) var(--s-3); overflow-x: scroll; overflow-y: hidden;
   -webkit-overflow-scrolling: touch; padding-bottom: var(--s-2);
-  scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
+  scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 .prep-item-compact-grid > .prep-empty { grid-row: 1 / -1; align-self: center; }
 /* Four records or fewer fit one row of columns, so the second row would only
@@ -3521,8 +3552,8 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 }
 .prep-item-compact-grid::-webkit-scrollbar { height: 8px; }
 .prep-item-compact-grid::-webkit-scrollbar-track { background: transparent; }
-.prep-item-compact-grid::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
-.prep-item-compact-grid::-webkit-scrollbar-thumb:hover { background: rgba(185,173,145,0.56); }
+.prep-item-compact-grid::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: var(--r-pill); }
+.prep-item-compact-grid::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
 /* .prep-row/.prep-row-open/.prep-row-text/.prep-row-name/.prep-row-meta
    (the environment/adversary picker rows' own two-line name+meta layout)
    are reused as-is here — this only adds what a grid *column item* needs
@@ -3601,12 +3632,12 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
     min-height: 0;
     overflow-y: auto;
     scroll-padding-top: var(--pc-scroll-pad);
-    scrollbar-width: thin; scrollbar-color: rgba(185,173,145,0.38) transparent;
+    scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent;
   }
   body[data-route="prep"] .prep-central::-webkit-scrollbar { width: 8px; }
   body[data-route="prep"] .prep-central::-webkit-scrollbar-track { background: transparent; }
-  body[data-route="prep"] .prep-central::-webkit-scrollbar-thumb { background: rgba(185,173,145,0.38); border-radius: var(--r-pill); }
-  body[data-route="prep"] .prep-central::-webkit-scrollbar-thumb:hover { background: rgba(185,173,145,0.56); }
+  body[data-route="prep"] .prep-central::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: var(--r-pill); }
+  body[data-route="prep"] .prep-central::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
   body[data-route="prep"] .prep-picker-list {
     flex: 1 1 auto;
     min-height: 0;
@@ -3828,7 +3859,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .header-actions .sb-trigg
 body.is-prep-dragging, body.is-prep-dragging * { cursor: grabbing !important; user-select: none !important; -webkit-user-select: none !important; }
 
 /* Source while dragging: translucent with a thin gold edge, no scale/shadow. */
-.is-drag-source { opacity: 0.55; outline: 1px solid rgba(217,164,65,0.7); outline-offset: -1px; }
+.is-drag-source { opacity: 0.55; outline: 1px solid var(--hope-border-strong); outline-offset: -1px; }
 
 /* Insertion line — a child of the list, absolutely positioned (see drawLine()). */
 .prep-drop-line {
@@ -3840,14 +3871,14 @@ body.is-prep-dragging, body.is-prep-dragging * { cursor: grabbing !important; us
 /* Section that accepts the catalog entry being dragged. */
 .prep-central-section.is-drop-target > .prep-central-body {
   border-radius: var(--r-md);
-  background: rgba(217,164,65,0.045);
-  box-shadow: inset 0 0 0 1px rgba(217,164,65,0.4);
+  background: var(--hope-wash);
+  box-shadow: inset 0 0 0 1px var(--hope-border);
 }
 /* The empty-state paragraph becomes the drop target in place: same box (its
    own outline sits in the body's padding), so the section keeps its height. */
 .prep-central-section .prep-empty.is-drop-empty {
   text-align: center; font-style: normal; color: var(--hope-soft);
-  outline: 1px dashed rgba(217,164,65,0.7); outline-offset: 3px; border-radius: var(--r-sm);
+  outline: 1px dashed var(--hope-border-strong); outline-offset: 3px; border-radius: var(--r-sm);
 }
 
 /* Name chip that follows the pointer. */

@@ -18,9 +18,14 @@ before substantial UI work — this file assumes both.
   measurement next to it.
 - **Colors carry meaning — don't reassign it.** Gold (`--hope*`) is the only
   affirmative/selected/primary-action color in the system. Teal
-  (`--teal*`) is structural metadata (biome chips), never a second
-  affirmative color. Fear-red is destructive actions only. Don't repurpose
-  one for a new kind of state.
+  (`--teal*`) is structural/informational/reference (biome chips, item and
+  adversary links, countdowns), never a second affirmative color. Fear-red is
+  destructive actions, errors and dangerous states only — never a taxonomy
+  label or a "pending" marker. Gold fills come from the role tokens
+  (`--hope-wash/-hover-bg/-selected-bg/-selected-hover-bg/-border*/-glow`,
+  see design.md "Colour roles"), never a new literal `rgba(217,164,65,…)`;
+  hover is weaker than selected, and neither stands in for focus. Don't
+  repurpose one for a new kind of state.
 - **Cover the real state matrix**, not just the happy path: hover, active,
   focus-visible, disabled, selected, and error states, wherever a control
   can be in them. `:focus-visible` must stay visible everywhere — never

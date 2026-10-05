@@ -1,0 +1,118 @@
+{
+  "passed": 19,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "ms-row: neutral hover is not gold",
+      "ok": true,
+      "detail": "rgba(255, 255, 255, 0.06)"
+    },
+    {
+      "name": "ms-row: checked fill stronger than hover fill",
+      "ok": true,
+      "detail": "rgba(217, 164, 65, 0.16) vs rgba(255, 255, 255, 0.06)"
+    },
+    {
+      "name": "ms-row: checked+hover stronger than checked",
+      "ok": true,
+      "detail": "rgba(217, 164, 65, 0.22) vs rgba(217, 164, 65, 0.16)"
+    },
+    {
+      "name": "ms-row: checked+focus keeps the selected fill",
+      "ok": true,
+      "detail": "{\"bg\":\"rgba(217, 164, 65, 0.16)\",\"outline\":\"2px rgb(217, 164, 65)\"}"
+    },
+    {
+      "name": "nav .btn.active: hover stronger than selected",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "nav .btn.active: same selected fill as ms-row checked",
+      "ok": true,
+      "detail": "rgba(217, 164, 65, 0.16) / rgba(217, 164, 65, 0.16)"
+    },
+    {
+      "name": "nav .btn.active: focus keeps selected fill + has ring",
+      "ok": true,
+      "detail": "\"2px rgb(217, 164, 65)\""
+    },
+    {
+      "name": "gold hover: card-add-btn and dice-btn share one fill",
+      "ok": true,
+      "detail": "rgba(217, 164, 65, 0.1) / rgba(217, 164, 65, 0.1)"
+    },
+    {
+      "name": "gold hover weaker than gold selected",
+      "ok": true,
+      "detail": "rgba(217, 164, 65, 0.1) vs rgba(217, 164, 65, 0.16)"
+    },
+    {
+      "name": "teal hover: item-btn and countdown-btn share one fill",
+      "ok": true,
+      "detail": "rgba(63, 123, 116, 0.16) / rgba(63, 123, 116, 0.16)"
+    },
+    {
+      "name": "recommended wash is weaker than selected",
+      "ok": true,
+      "detail": "rgba(217, 164, 65, 0.08)"
+    },
+    {
+      "name": "prep-menu checked = selected fill",
+      "ok": true,
+      "detail": "rgba(217, 164, 65, 0.16)"
+    },
+    {
+      "name": "danger icon-button hover stays Fear",
+      "ok": true,
+      "detail": "rgba(156, 43, 59, 0.14)"
+    },
+    {
+      "name": "Prep Delete item: Fear text when enabled; disabled (only session) is muted with no hover fill",
+      "ok": true,
+      "detail": "[\"rgb(154, 143, 125)\",\"rgba(0, 0, 0, 0)\",true]"
+    },
+    {
+      "name": "jr-blight keeps Fear (negative game state)",
+      "ok": true,
+      "detail": "rgb(156, 43, 59)"
+    },
+    {
+      "name": "feature-type.action is no longer Fear",
+      "ok": true,
+      "detail": "rgb(120, 107, 93)"
+    },
+    {
+      "name": "adversary-link-btn is no longer Fear",
+      "ok": true,
+      "detail": "rgb(63, 123, 116)"
+    },
+    {
+      "name": "badge.pending is no longer Fear",
+      "ok": true,
+      "detail": "rgb(106, 93, 79)"
+    },
+    {
+      "name": "failed sound alert glyph stays Fear-soft",
+      "ok": true,
+      "detail": "visual in sound-failed crop"
+    }
+  ],
+  "consoleIssues": [
+    {
+      "ctx": "1440x900/full",
+      "type": "requestfailed",
+      "text": "/sound/hawk-call-squawk.wav (net::ERR_FAILED)"
+    },
+    {
+      "ctx": "1440x900/full",
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "ctx": "1440x900/full",
+      "type": "warning",
+      "text": "[atlas] soundboard: could not load sound/hawk-call-squawk.wav Failed to fetch"
+    }
+  ]
+}

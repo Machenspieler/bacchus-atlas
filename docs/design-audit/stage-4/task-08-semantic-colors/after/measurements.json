@@ -1,0 +1,189 @@
+{
+  "1366": {},
+  "1440": {
+    "cardAddHover": {
+      "color": "rgb(217, 164, 65)",
+      "bg": "rgba(217, 164, 65, 0.1)",
+      "border": "rgb(217, 164, 65)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "msHover": {
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(255, 255, 255, 0.06)",
+      "border": "rgb(233, 223, 199)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "msChecked": {
+      "color": "rgb(240, 207, 140)",
+      "bg": "rgba(217, 164, 65, 0.16)",
+      "border": "rgb(240, 207, 140)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "msCheckedHover": {
+      "color": "rgb(240, 207, 140)",
+      "bg": "rgba(217, 164, 65, 0.22)",
+      "border": "rgb(240, 207, 140)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "msCheckedFocus": {
+      "color": "rgb(240, 207, 140)",
+      "bg": "rgba(217, 164, 65, 0.16)",
+      "border": "rgb(240, 207, 140)",
+      "outline": "2px rgb(217, 164, 65)",
+      "shadow": "none"
+    },
+    "badgePending": {
+      "color": "rgb(185, 173, 145)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(106, 93, 79)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "ft_passive": {
+      "color": "rgb(185, 173, 145)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(77, 66, 56)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "ft_action": {
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(120, 107, 93)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "ft_reaction": {
+      "color": "rgb(111, 168, 159)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(63, 123, 116)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "diceHover": {
+      "color": "rgb(240, 207, 140)",
+      "bg": "rgba(217, 164, 65, 0.1)",
+      "border": "rgb(217, 164, 65)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "countdownHover": {
+      "color": "rgb(111, 168, 159)",
+      "bg": "rgba(63, 123, 116, 0.16)",
+      "border": "rgb(63, 123, 116)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "advLink": {
+      "color": "rgb(111, 168, 159)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(63, 123, 116)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "advLinkHover": {
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(63, 123, 116, 0.16)",
+      "border": "rgb(63, 123, 116)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "itemHover": {
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(63, 123, 116, 0.16)",
+      "border": "rgb(63, 123, 116)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "blight": {
+      "color": "rgb(217, 112, 126)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(156, 43, 59)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "navActive": {
+      "color": "rgb(240, 207, 140)",
+      "bg": "rgba(217, 164, 65, 0.16)",
+      "border": "rgb(217, 164, 65)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "navActiveHover": {
+      "color": "rgb(240, 207, 140)",
+      "bg": "rgba(217, 164, 65, 0.22)",
+      "border": "rgb(217, 164, 65)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "navActiveFocus": {
+      "color": "rgb(240, 207, 140)",
+      "bg": "rgba(217, 164, 65, 0.16)",
+      "border": "rgb(217, 164, 65)",
+      "outline": "2px rgb(217, 164, 65)",
+      "shadow": "none"
+    },
+    "recommended": {
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(217, 164, 65, 0.08)",
+      "border": "rgb(233, 223, 199)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "limit": {
+      "color": "rgb(240, 207, 140)",
+      "bg": "rgba(217, 164, 65, 0.08)",
+      "border": "rgba(217, 164, 65, 0.5)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "itemSelected": {
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(217, 164, 65)",
+      "outline": "none",
+      "shadow": "rgb(217, 164, 65) 0px 0px 0px 1px, rgba(217, 164, 65, 0.18) 0px 0px 16px 0px inset"
+    },
+    "bpSummary": {
+      "color": "rgb(185, 173, 145)",
+      "bg": "rgb(20, 17, 15)",
+      "border": "rgb(77, 66, 56)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "menuChecked": {
+      "color": "rgb(240, 207, 140)",
+      "bg": "rgba(217, 164, 65, 0.16)",
+      "border": "rgb(240, 207, 140)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "menuDanger": {
+      "color": "rgb(217, 112, 126)",
+      "bg": "rgba(156, 43, 59, 0.14)",
+      "border": "rgb(156, 43, 59)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "menuDangerItem": {
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(154, 143, 125)",
+      "outline": "none",
+      "shadow": "none"
+    },
+    "menuDangerItemDisabled": true,
+    "soundFailed": {
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "outline": "none",
+      "shadow": "none"
+    }
+  },
+  "1920": {}
+}

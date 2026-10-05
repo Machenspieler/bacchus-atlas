@@ -100,8 +100,8 @@ hard-code a hex value anywhere else.
 | `--muted` | `#9a8f7d` | tertiary/meta text — 5.30:1 (AA) |
 | `--hope` / `--hope-soft` / `--hope-hover` | `#d9a441` / `#f0cf8c` / `#e6b355` | the one affirmative accent — selection, primary actions, focus ring |
 | `--hope-ink` | `#1c1408` | text colour *on* gold fills — 8.10:1 |
-| `--fear` / `--fear-soft` | `#9c2b3b` / `#d9707e` | destructive actions, danger states |
-| `--teal` / `--teal-soft` | `#3f7b74` / `#6fa89f` | structural accent (biome chips) — never affirmative, never a call to action |
+| `--fear` / `--fear-soft` | `#9c2b3b` / `#d9707e` | destructive actions, errors/failures, dangerous game states (e.g. Shadowblighted) — never taxonomy or "pending" |
+| `--teal` / `--teal-soft` | `#3f7b74` / `#6fa89f` | structural / informational / reference (biome chips, item + adversary links, countdowns, notes) — never affirmative |
 | `--line-faint` / `--line` / `--line-strong` | `#3a322b` / `#4d4238` / `#6a5d4f` | internal divider / default edge / hover edge |
 
 A soft radial wash of gold and crimson (`body`'s `background-image`) sits
@@ -113,6 +113,41 @@ an environment backdrop already owns the screen. It's disabled entirely under
 
 `color-scheme: dark` is set once on `:root` so native chrome (scrollbars, the
 `<select>` popup, autofill) follows the theme without extra rules.
+
+## Colour roles
+
+Four families, each with one meaning. Variation inside a family is by *role*
+(wash / hover / selected / border / glow), never by an ad-hoc alpha.
+
+| Family | Means | Used for |
+| --- | --- | --- |
+| **Hope** (gold) | affirmative, selected/active, recommendation, primary accent, focus | active nav, `.btn-primary`, checked rows, dice pills, recommended rows, the focus ring |
+| **Fear** (red) | destructive, delete/remove danger, error/failure, dangerous state | `.btn-danger`, `.icon-btn--danger`, menu Delete, save/sound errors, `.jr-blight` |
+| **Teal** | structural, informational, reference/utility | biome chips, `.feature-type.reaction`, item + adversary link pills, countdowns, notes, dice notation labels |
+| **Neutral** | generic hover, secondary action, inactive surface, taxonomy | `--neutral-hover-bg` rows, `--ink-hover`, type chips, `.feature-type.passive/.action`, `.badge.pending` |
+
+Gold alpha roles (tokens on `:root`; the strength order is wash < hover <
+selected < selected-hover, and focus is a separate ring no fill replaces):
+
+| Role | Token | Components |
+| --- | --- | --- |
+| wash | `--hope-wash` | recommended adversary row, limit/over-budget pill, Prep warning, storage notice, drop target, hero glow |
+| hover | `--hope-hover-bg` | `.card-add-btn`, `.env-prep-btn`, `.dice-btn` |
+| selected | `--hope-selected-bg` | `.btn.active`, `.dice-roll-btn.is-active`, `.ms-row` checked, menu `aria-checked`, `.bp-seg` checked, `.region-env-btn.active` |
+| selected + hover | `--hope-selected-hover-bg` | the same controls under the pointer |
+| border | `--hope-border-soft` / `--hope-border` / `--hope-border-strong` | resting frame (random card, re-tiered header) / open or limit (re-tiered modal, `.bp-summary`, limit pill) / drag affordance |
+| glow | `--hope-glow` | session hint ring, selected item card |
+
+Teal has one hover fill (`--teal-hover-bg`); destructive hover is `--fear-tint`;
+every other control that is not gold, teal or red hovers on `--neutral-hover-bg`
+or `--ink-hover`. Scrollbars share `--scrollbar-thumb`/`-hover`.
+
+Deliberate exceptions: `.jr-blight` stays Fear (a negative game state);
+`.region-chip` keeps its gold edge to stay distinct from the neutral type and
+teal biome chips (it is not clickable); utility/circle icon buttons and the
+session control tint their glyph gold on hover (Task 02 family decision); the
+tier hexagon keeps its local gradient palette; the one-off 0.35 playing glow, the
+hexagon drop-shadows, ink overlays and the page-wash gradients stay literal.
 
 ## Typography
 
@@ -182,7 +217,7 @@ elsewhere in the app.
     `.ms-panel`: `1px solid --line-strong`, `--r-lg`, `--e-3`, `--ink-raised`
     (the Soundboard keeps `--ink-card` because its tiles are `--ink-raised`
     wells). Rows inside use `--r-sm`; hover is the neutral
-    `rgba(255,255,255,0.06)`, selected stays gold. Width, padding and interior
+    `--neutral-hover-bg`, selected stays gold (hover keeps the row text colour — only the fill moves). Width, padding and interior
     layout remain per-component.
   - *Small informational surfaces* (`.tooltip`, `.sp-session-hint`,
     `.dice-result-pop`) stay compact: `--r-sm`, tight padding, `--e-3`
@@ -239,7 +274,7 @@ the badge is the neutral Prep "Environments" section icon.
 One base class, four modifiers: `.btn-primary` (gold fill, the only
 affirmative surface), `.btn-ghost` (transparent), `.btn-danger` (fear-red
 outline), and `.btn-sm` (compact). `.active` is a *fill*
-(`rgba(217,164,65,0.14)` background + gold border), not a border alone — a
+(`--hope-selected-bg` background + gold border), not a border alone — a
 border-only active state was visually indistinguishable from hover. A loading
 button swaps its label for a centered spinner via `[data-loading="true"]`
 without changing width, so the layout doesn't jump.
