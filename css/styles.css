@@ -69,6 +69,7 @@
   --fs-2xl: 31px;    --lh-2xl: 1.1;
 
   --tracking-caps: 0.1em;
+  --tracking-badge: 0.06em;   /* small uppercase mono badges (status/type/blight) */
   --tracking-display: 0.02em;
   --measure: 68ch;
 
@@ -523,7 +524,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
   display: inline-flex; align-items: center; justify-content: center;
   min-width: 18px; height: 18px; padding: 0 5px; border-radius: var(--r-pill);
   background: var(--hope); color: var(--hope-ink);
-  font-family: var(--font-mono); font-size: 10px; font-weight: 700; line-height: 1;
+  font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 700; line-height: 1;
 }
 
 .tier-pills { display: flex; gap: var(--s-2); flex-wrap: wrap; align-items: center; }
@@ -928,7 +929,7 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: var
 .biome-chip { border: 1px solid var(--teal); color: var(--teal-soft); }
 .region-chip { border: 1px solid var(--hope); color: var(--hope-soft); }
 .badge {
-  font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase;
+  letter-spacing: var(--tracking-badge); text-transform: uppercase;
   border: 1px dashed var(--line); color: var(--muted);
 }
 .badge.pending { border-color: var(--fear); color: var(--fear-soft); }
@@ -1292,7 +1293,7 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 }
 .feature-type {
   font-family: var(--font-mono); font-size: var(--fs-micro); text-transform: uppercase;
-  letter-spacing: 0.06em; padding: 2px var(--s-2); border-radius: var(--r-xs);
+  letter-spacing: var(--tracking-badge); padding: 2px var(--s-2); border-radius: var(--r-xs);
 }
 .feature-type.passive { color: var(--parchment-dim); border: 1px solid var(--line); }
 .feature-type.action { color: var(--fear-soft); border: 1px solid var(--fear); }
@@ -1310,7 +1311,7 @@ ol.feature-bullets { list-style: decimal; }
   margin: var(--s-2) 0 0;
   padding-left: 1.15em; text-indent: -1.15em;
   /* A step up from --fs-sm: italic grey at 13px is hard to read on a desktop monitor. */
-  font-size: 14px; line-height: var(--lh-sm); color: var(--muted); font-style: italic;
+  font-size: var(--fs-card-copy); line-height: var(--lh-sm); color: var(--muted); font-style: italic;
 }
 .feature-prompt::before { content: "❖ "; color: var(--hope); font-style: normal; }
 /* No rule between passive / reaction / action — the gap does the grouping. */
@@ -1446,7 +1447,7 @@ ol.feature-bullets { list-style: decimal; }
 }
 .adversary-range-badge, .adversary-damage-type-badge {
   font-family: var(--font-mono); font-size: var(--fs-micro); text-transform: uppercase;
-  letter-spacing: 0.06em; padding: 2px var(--s-2); border-radius: var(--r-xs);
+  letter-spacing: var(--tracking-badge); padding: 2px var(--s-2); border-radius: var(--r-xs);
   color: var(--parchment-dim); border: 1px solid var(--line);
 }
 .adversary-block .feature { margin: var(--s-3) 0 0; }
@@ -1534,7 +1535,7 @@ ol.feature-bullets { list-style: decimal; }
   animation: pop-in var(--t-base) var(--ease-enter);
 }
 @keyframes pop-in { from { opacity: 0; transform: translateY(6px) scale(0.9); } to { opacity: 1; transform: none; } }
-.dice-result-pop .notation { font-size: 10px; color: var(--muted); letter-spacing: 0.06em; }
+.dice-result-pop .notation { font-size: var(--fs-micro); color: var(--muted); letter-spacing: 0.06em; }
 .dice-result-pop .value { font-size: 26px; color: var(--hope-soft); font-weight: 700; line-height: 1.2; }
 .dice-result-pop .value.tumbling { color: var(--fear-soft); }
 .dice-result-pop .breakdown { font-size: var(--fs-micro); color: var(--parchment-dim); margin-top: 2px; }
@@ -1866,7 +1867,7 @@ ol.feature-bullets { list-style: decimal; }
   display: inline-flex; align-items: center; height: var(--h-xs); padding: 0 var(--s-2);
   border: 1px solid var(--fear); border-radius: var(--r-xs);
   font-family: var(--font-mono); font-size: var(--fs-micro); line-height: 1;
-  letter-spacing: 0.05em; text-transform: uppercase; color: var(--fear-soft);
+  letter-spacing: var(--tracking-badge); text-transform: uppercase; color: var(--fear-soft);
 }
 
 /* The habitat chip is the one thing on this page that goes somewhere, so unlike
@@ -2595,10 +2596,10 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
     --pc-scroll-pad: 44px;
     --pc-title-size: 18px;
     --pc-icon: 18px;
-    --pc-count-size: 13px;
-    --pc-name-size: 15px;
+    --pc-count-size: var(--fs-sm);
+    --pc-name-size: var(--fs-base);
     --pc-name-lh: 18px;
-    --pc-meta-size: 13px;
+    --pc-meta-size: var(--fs-sm);
     --pc-meta-lh: 16px;
   }
 }

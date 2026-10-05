@@ -128,10 +128,37 @@ Fonts are requested via a `<link>` in `index.html` with `preconnect`, not an
 the stylesheet itself has been fetched and parsed, costing a full extra round
 trip before first paint.
 
-Sizes are tokens (`--fs-micro` 11px through `--fs-2xl` 31px), each paired with
-its own line-height (`--lh-*`). Display type uses `--tracking-display`
-(0.02em); all-caps labels use the wider `--tracking-caps` (0.1em) because
-uppercase inscriptional caps need tracking to read, not weight.
+Sizes are tokens (`--fs-micro` 11px through `--fs-2xl` 31px, plus `--fs-card-copy`
+14px), each paired with its own line-height (`--lh-*`). Display type uses
+`--tracking-display` (0.02em); all-caps labels use the wider `--tracking-caps`
+(0.1em) because uppercase inscriptional caps need tracking to read, not weight.
+Small uppercase **mono badges** (status/type/blight) use the tighter
+`--tracking-badge` (0.06em) — a badge is a boxed word, not a structural label.
+
+**Role map** — equivalent roles share a recipe; different roles stay different.
+
+| Role | Face | Size | Weight | Line height | Tracking |
+| --- | --- | --- | --- | --- | --- |
+| Site title `h1` | display | `--fs-lg` (`--fs-md` phone) | 400 | `--lh-lg` | .06em (.04em phone) — deliberate brand value, not `--tracking-caps` |
+| Page / modal title | display | `--fs-xl` | 400 | `--lh-xl` | `--tracking-display` |
+| Card title, feature name | display | `--fs-md` | 400 | `--lh-md` | `--tracking-display` |
+| Body / card copy | body | `--fs-base` / `--fs-card-copy` | 400 | 1.5–`--lh-base` | none |
+| Secondary body (prompts, notes) | body | `--fs-card-copy` / `--fs-sm` | 400 | `--lh-sm` | none |
+| Button label | body | `--fs-base` (`--fs-sm` small) | 400 (600 primary) | `normal` | .01em on `.btn`; none elsewhere |
+| Caps label | mono (or ui in Prep) | `--fs-xs` / `--fs-micro` | 400 | `--lh-xs` | `--tracking-caps` |
+| Informational chip (type/biome/region) | mono | `--fs-micro` | 400 | 1 (fixed-height box) | none, not uppercase |
+| Status badge (`.badge`, feature type, range/damage, blight) | mono | `--fs-micro` | 400 | 1 / box | `--tracking-badge`, uppercase |
+| Count badge | mono | `--fs-micro` (catalog/Journey), `--pc-count-size` (Prep) | 700 / 400 | fixed to the pill height | none |
+| Tooltip / toast | body | `--fs-xs` / `--fs-sm` | 400 | 1.3 / 1.5 | none |
+| Prep picker row name / meta | ui | `--fs-base` / `--fs-sm` | 400 | 1.4 | none |
+| Prep central row name / meta | ui | `--pc-name-size` / `--pc-meta-size` | 500 / 400 | 17–18px / 15–16px fixed | none |
+
+Intentional exceptions: Prep's central rows use fixed pixel line-heights and a
+500 name weight so the selected-content rows keep their 48–56px geometry and
+read one step above their metadata; the comfortable-density block only
+re-points `--pc-*` at tokens (`--fs-base`, `--fs-sm`) — its 18px section title
+stays a literal because nothing on the scale sits there. `.dice-result-pop
+.value` (26px) and `.card-random-mark` (2.75rem) are decorative one-offs.
 
 **Prep's exception:** it's a dense working tool (three simultaneous
 pickers, checkboxes, counters), not a page meant to be read start to finish,
@@ -248,7 +275,9 @@ size. Equivalent semantics share state treatment; the box size
   the search field; it shares the glyph only).
 
 ### Chips & badges (`.environment-type-chip`, `.biome-chip`, `.region-chip`, `.badge`)
-Share one shape (`--r-xs`, `--fs-xs`, uppercase, `--tracking-caps`). Type
+Share one shape (`--h-xs`, `--r-xs`, `--font-mono`, `--fs-micro`). The
+three descriptive chips are not uppercased and carry no tracking; `.badge` (the
+untranslated marker) is the uppercase status variant (`--tracking-badge`). Type
 chips are neutral (`--type-chip-border`, `--muted` text); biome chips use the
 structural teal (`--teal` border, `--teal-soft` text) — teal is picked
 specifically because it reads as informative metadata, never as a second

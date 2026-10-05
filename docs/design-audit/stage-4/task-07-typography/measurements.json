@@ -1,0 +1,229 @@
+{
+  "report": {
+    "catalog-1440x900": {
+      "elements": 396,
+      "sameCount": true,
+      "layoutDiffs": [],
+      "typeDiffs": []
+    },
+    "catalog-ru-1440x900": {
+      "elements": 403,
+      "sameCount": true,
+      "layoutDiffs": [],
+      "typeDiffs": []
+    },
+    "lists-1440x900": {
+      "elements": 58,
+      "sameCount": true,
+      "layoutDiffs": [],
+      "typeDiffs": []
+    },
+    "journey-1440x900": {
+      "elements": 374,
+      "sameCount": true,
+      "layoutDiffs": [
+        {
+          "k": "span.jr-blight",
+          "before": {
+            "w": 118.11,
+            "h": 24,
+            "x": 230,
+            "y": 1696.9,
+            "lines": 2,
+            "over": false
+          },
+          "after": {
+            "w": 119.64,
+            "h": 24,
+            "x": 230,
+            "y": 1696.9,
+            "lines": 2,
+            "over": false
+          }
+        }
+      ],
+      "typeDiffs": [
+        {
+          "k": "span.jr-blight",
+          "before": {
+            "fs": "11px",
+            "lh": "11px",
+            "ls": "0.55px",
+            "fw": "400"
+          },
+          "after": {
+            "fs": "11px",
+            "lh": "11px",
+            "ls": "0.66px",
+            "fw": "400"
+          }
+        }
+      ]
+    },
+    "prep-1366x768": {
+      "elements": 7047,
+      "sameCount": true,
+      "layoutDiffs": [],
+      "typeDiffs": []
+    },
+    "prep-1440x900": {
+      "elements": 7047,
+      "sameCount": true,
+      "layoutDiffs": [],
+      "typeDiffs": []
+    },
+    "prep-1920x1080": {
+      "elements": 7050,
+      "sameCount": true,
+      "layoutDiffs": [],
+      "typeDiffs": []
+    },
+    "detail-harsh-desert": {
+      "elements": 529,
+      "sameCount": true,
+      "layoutDiffs": [],
+      "typeDiffs": []
+    },
+    "detail-adversary": {
+      "elements": 545,
+      "sameCount": true,
+      "layoutDiffs": [],
+      "typeDiffs": []
+    },
+    "catalog-420-filter": {
+      "elements": 170,
+      "sameCount": true,
+      "layoutDiffs": [],
+      "typeDiffs": [
+        {
+          "k": "span.filter-count",
+          "before": {
+            "fs": "10px",
+            "lh": "10px",
+            "ls": "0.15px",
+            "fw": "700"
+          },
+          "after": {
+            "fs": "11px",
+            "lh": "11px",
+            "ls": "0.15px",
+            "fw": "700"
+          }
+        }
+      ]
+    },
+    "dice-pop": {
+      "elements": 532,
+      "sameCount": true,
+      "layoutDiffs": [
+        {
+          "k": "div.dice-result-pop",
+          "before": {
+            "w": 90,
+            "h": 72.69,
+            "x": 433.2,
+            "y": 468.5,
+            "lines": 3,
+            "over": false
+          },
+          "after": {
+            "w": 90,
+            "h": 74.23,
+            "x": 433.2,
+            "y": 468.5,
+            "lines": 3,
+            "over": false
+          }
+        },
+        {
+          "k": "div.notation",
+          "before": {
+            "w": 56,
+            "h": 15.5,
+            "x": 450.2,
+            "y": 481.5,
+            "lines": 1,
+            "over": false
+          },
+          "after": {
+            "w": 56,
+            "h": 17.05,
+            "x": 450.2,
+            "y": 481.5,
+            "lines": 1,
+            "over": false
+          }
+        },
+        {
+          "k": "div.value",
+          "before": {
+            "w": 56,
+            "h": 31.19,
+            "x": 450.2,
+            "y": 497,
+            "lines": 1,
+            "over": false
+          },
+          "after": {
+            "w": 56,
+            "h": 31.19,
+            "x": 450.2,
+            "y": 498.6,
+            "lines": 1,
+            "over": false
+          }
+        }
+      ],
+      "typeDiffs": [
+        {
+          "k": "div.notation",
+          "before": {
+            "fs": "10px",
+            "lh": "15.5px",
+            "ls": "0.6px",
+            "fw": "400"
+          },
+          "after": {
+            "fs": "11px",
+            "lh": "17.05px",
+            "ls": "0.66px",
+            "fw": "400"
+          }
+        }
+      ]
+    }
+  },
+  "pairs": [
+    {
+      "st": "journey-1440x900",
+      "sel": ".jr-blight",
+      "f": "journey-1440x900__jr_blight"
+    },
+    {
+      "st": "detail-harsh-desert",
+      "sel": ".modal .feature-head:has(.feature-type)",
+      "f": "detail-harsh-desert__modal_feature_head_has_feature_type"
+    },
+    {
+      "st": "detail-harsh-desert",
+      "sel": ".modal .feature-prompt",
+      "f": "detail-harsh-desert__modal_feature_prompt"
+    },
+    {
+      "st": "detail-adversary",
+      "sel": ".modal .adversary-range-badge",
+      "f": "detail-adversary__modal_adversary_range_badge"
+    },
+    {
+      "st": "catalog-420-filter",
+      "sel": ".filter-count",
+      "f": "catalog-420-filter__filter_count"
+    },
+    {
+      "st": "dice-pop",
+      "sel": ".dice-result-pop",
+      "f": "dice-pop__dice_result_pop"
+    }
+  ],
+  "consoleIssues": []
+}
