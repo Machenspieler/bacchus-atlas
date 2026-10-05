@@ -190,7 +190,9 @@ body[data-route="prep"]::before {
           saturate(var(--catalog-art-saturate))
           contrast(var(--catalog-art-contrast));
 }
-@media (max-width: 641px) {
+/* Phone composition boundary is <=640 / >=641 everywhere (the JS ENV_ART_ROOM
+ * query included). Never use 641 as a max-width. */
+@media (max-width: 640px) {
   body[data-route="catalog"]::before,
   body[data-route="lists"]::before,
   body[data-route="list"]::before,
@@ -1933,7 +1935,11 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
 
 /* Between one and three columns the two tracks would stretch to ~484px against
  * a 95px picture panel. Capping the grid at two 420px cards keeps the panel in
- * proportion; above 1092px a third column arrives and no track exceeds 369px. */
+ * proportion; above 1092px a third column arrives and no track exceeds 369px.
+ * Geometry: 3 x 340px cards + 2 x 16px gaps + 2 x 20px shell padding = 1092px.
+ * The viewport query cannot see a classic scrollbar, so with one (~15px) the
+ * third column really arrives at ~1107px and 1092-1106px shows two uncapped
+ * tracks; an overlay-scrollbar viewport switches exactly at 1092. */
 @media (min-width: 641px) and (max-width: 1091px) {
   .grid { max-width: calc(420px * 2 + var(--s-4)); margin-inline: auto; }
 }
@@ -3224,6 +3230,9 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    to date by refreshEnvPicker()/refreshAdvPicker(). The Items counter and
    the central "3/3" counters are different classes and stay. */
 @media (max-width: 1536px) {
+  /* Space-driven, not geometry-exact: with the counter forced on, the picker
+     search fields squeeze to ~60-100px at 1366-1440; 1536 is the widest
+     viewport (a 1920px screen at 125% scale) where that still holds. */
   .prep-env-toolbar .prep-count, .prep-adv-toolbar .prep-count { display: none; }
   .prep-env-toolbar { grid-template-columns: minmax(0, 1fr) auto; }
   .prep-adv-toolbar { grid-template-columns: minmax(0, 1fr) auto auto; }
@@ -3231,8 +3240,10 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 /* With the counter gone the Type trigger is the toolbar's last item, flush with
    the column's right edge; a left-anchored 190px panel then runs past the
    column (and the viewport) and is clipped. Anchor it to the trigger's right
-   edge instead. Phones keep the full-width panel from the 640px rules. */
-@media (min-width: 761px) and (max-width: 1536px) {
+   edge instead. Same range as the counter rule above, phones included: the
+   640px rules only stretch .ms-panel for .field triggers, and a left-anchored
+   panel here ran off the right edge at <=760px. */
+@media (max-width: 1536px) {
   .prep-adv-toolbar .ms-panel { left: auto; right: 0; }
 }
 
@@ -3637,12 +3648,15 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    then items — the single stack order the mobile spec calls for ---- */
 @media (max-width: 900px) {
   .prep-main { grid-template-columns: 1fr; grid-template-areas: "central" "env" "adv"; }
-  /* The Items toolbar carries far more controls than the env/adv ones
-     (six groups, not three) — its CSS-grid row (sized for the desktop/
-     laptop widths this panel is optimized for) genuinely runs out of
-     room below ~900px and would otherwise overflow/overlap rather than
-     degrade gracefully. Same flex-wrap fallback the env/adv toolbars use
-     below their own (narrower) breakpoint. */
+}
+/* The Items toolbar carries far more controls than the env/adv ones (six
+   groups, not three). Its single grid row needs ~1077px (EN) / ~1101px (RU) of
+   panel content width; below that it overflowed the panel and the page (a
+   ~100-200px sideways scroll at 901-1165px, where the old <=900px viewport
+   rule had not kicked in yet). Tied to the panel's own width, so it follows
+   the layout (two-column, one-column, scrollbar or not) instead of a guess.
+   Same flex-wrap fallback the env/adv toolbars use on phones. */
+@container prep-items-panel (max-width: 1100px) {
   .item-toolbar { display: flex; flex-wrap: wrap; row-gap: var(--s-2); }
   .item-toolbar .item-toolbar-search { flex: 1 1 160px; }
   .item-toolbar-group, .item-toolbar-count { border-left: none; padding-left: 0; margin-left: 0; }

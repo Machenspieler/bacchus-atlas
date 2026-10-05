@@ -333,19 +333,38 @@ row (best-effort). Collapsing the header hides the whole bar, notes included.
 
 The layout uses a small, deliberate set of breakpoints rather than a generic
 grid framework — each tied to a specific content collision, not a device
-category:
+category. Pairs are always complementary (`<=N` with `>=N+1`); never write a
+`max-width` of N+1 for a boundary whose other side is `min-width: N+1`
+(the old `max-width: 641px` watermark rule made 641px a one-pixel state of
+its own). Media queries cannot read CSS custom properties, so consistency is
+kept by this table and the comments at each rule. Capability queries
+(`pointer: coarse`, `hover: none`, `forced-colors`, `prefers-reduced-motion`)
+are not breakpoints and are not listed.
 
-| Breakpoint | What changes |
-| --- | --- |
-| `max-width: 641px` | phone: toolbar filters collapse into a disclosure, watermark shrinks/dims |
-| `min-width: 641px` | tablet and up: toolbar filters expand inline |
-| `max-width: 480px` / `400px` | further compaction of specific controls (tier pills, search field) |
-| `max-width: 760px` / `900px` | Prep's picker columns stack |
-| `max-width: 1536px` | Prep's Environment/Adversary picker result counters hide (Items and central counters stay) |
-| `min-width: 1200px` / `max-width: 1199px` | Prep's three-column layout threshold |
-| `min-width: 1200px` **and** `max-width: 1439px` | Prep laptop range: shell side padding and column gap drop one spacing step (20→12px, 16→12px) and the grid fractions shift to `.8fr / 1.5fr / 1fr` so the central workspace gets the width (≈592px at 1366 vs 551px) — no type, control or row-size change. 1440 is the existing point where the Prep shell cap drops |
-| `min-width: 1800px` **and** `min-height: 900px` | Prep's central workspace switches to comfortable density (~8–12% larger cards, headings, thumbnails) by overriding the `--pc-*` tokens on `.prep-central` only; sidebars, Items strip and column widths are untouched. Both axes are required — a wide-but-short window keeps the compact values. `--pc-pad-x` is deliberately not overridden (see the comment in `css/styles.css`) |
-| `min-width: 1440px`+ (1480/1836/2192/2548px) | catalog grid gains extra columns on very wide screens |
+| Threshold | Scope | Purpose |
+| --- | --- | --- |
+| `<=640` / `>=641` | global (also JS `ENV_ART_ROOM`, `sizes` hints) | phone composition: compact header, sheet-style detail card, dimmed watermark, stacked toasts, full-width filter rows |
+| `<=400`, `<=480` | component | nav labels drop to icons; detail footer and Prep "New" compaction |
+| `<=760` / `>=761` | Prep, Journey | Prep bar and picker toolbars wrap, 44px touch rows; Journey's two generator columns stack |
+| `<=900` / `>=901` | Catalog, Prep | Catalog filters collapse behind the disclosure / sit inline in the three-column bar; Prep goes single column |
+| `641–1091` | Catalog | grid capped at two 420px cards (a third 340px column needs a 1092px viewport) |
+| `<=1199` / `>=1200` | Prep | two-column (central on top) vs three-column workspace; page scroll becomes internal panel scroll |
+| `1200–1439` | Prep | laptop range: shell padding and gap drop one step, grid fractions `.8fr / 1.5fr / 1fr` (≈592px central at 1366) |
+| `>=1440` | Prep | full-width shell: the Prep cap is dropped (the global header stays narrower on purpose) |
+| `<=1536` | Prep | Environment/Adversary picker counters hide (search field would squeeze under ~90px); the Type panel anchors to its trigger's right edge |
+| `>=1800` **and** height `>=900` | Prep | comfortable central density (`--pc-*` token overrides only); both axes required |
+| `>=1480 / 1836 / 2192 / 2548` | Catalog | geometry-derived shell steps: each adds one 340px card + 16px gap (356px) to the grid. Not round numbers on purpose |
+
+Container queries own thresholds that depend on a panel's own width, not the
+viewport: the catalog bar's 1439px (toolbar 942px + two 234px status columns;
+equals the 1480px shell step minus its 40px padding), the Prep Items toolbar's
+1100px (its single grid row needs ~1077px EN / ~1101px RU — below that it
+wraps), the Items counter at 640px, and the `prep-central` / `prep-adv-col`
+rules.
+
+Known quirk: a viewport query cannot see a classic scrollbar, so on Windows
+the 1092px third column and the 1480px fourth arrive ~15px later than the
+table says. The layouts in between are valid, just one column narrower.
 
 ## Accessibility constraints
 
