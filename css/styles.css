@@ -3388,30 +3388,68 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   background: var(--ink-card); border: 1px solid var(--line-faint); border-radius: var(--r-md);
   padding: var(--s-4);
 }
-/* Wraps the strip with its two manual prev/next arrows (hidden entirely
-   while there is nothing to scroll to — see refreshPrepItemNav() in
-   js/app.js). Native overflow-x still gives trackpad/wheel/touch/scrollbar
-   scrolling for free; the arrows are just an explicit, user-controlled
-   alternative — the strip never moves on its own. */
-.prep-item-strip-wrap { position: relative; display: flex; align-items: center; gap: var(--s-2); }
+/* Wraps the strip; its two manual prev/next arrows are edge-navigation
+   overlays (see design.md "Edge navigation") that sit on top of the strip's
+   left/right edges and take no layout space, so the strip is identical
+   whether they are shown or not (refreshPrepItemNav() in js/app.js).
+   Native overflow-x still gives trackpad/wheel/touch/scrollbar scrolling
+   for free — the strip never moves on its own. */
+.prep-item-strip-wrap { position: relative; display: flex; align-items: center; }
 /* The Gallery/Compact switch toggles this element's `hidden` attribute
    (setItemViewMode() in js/app.js) — without this, the `display: flex`
    above (author-origin CSS) would keep beating the browser's own
    UA-origin `[hidden] { display: none }` default, and both strips would
    render at once. */
 .prep-item-strip-wrap[hidden] { display: none; }
-/* The strip permanently reserves its bottom padding plus the 8px scrollbar
-   track below the tiles; margin-bottom of that same amount makes the arrows
-   centre on the tiles themselves, not on tiles + scrollbar. */
-.prep-item-nav-btn { --ib-size: var(--h-md); margin-bottom: calc(var(--s-2) + 8px); }
-.prep-item-nav-btn[data-sp-item-nav="prev"] svg { transform: rotate(-90deg); }
-.prep-item-nav-btn[data-sp-item-nav="next"] svg { transform: rotate(90deg); }
-/* Hidden arrows (nothing to scroll) take no space at all, so the strip gets
-   the full panel width and fits more tiles. refreshPrepItemNav() decides
-   against the strip's *full* width, so the arrows only appear when the
-   content overflows even without them — the strip never flips back and
-   forth between the two layouts. */
-.prep-item-nav-btn[hidden] { display: none; }
+/* Edge navigation: 28x40 rectangle, centred on the tiles (the strip's bottom
+   padding plus 8px scrollbar track are subtracted so it does not centre on
+   tiles + scrollbar). Hidden = faded out and out of the tab order, never
+   display:none, so it can transition without anything reflowing. */
+.edge-nav {
+  --edge-nav-w: 28px;
+  --edge-nav-chrome: calc(var(--s-2) + 8px);
+  position: absolute; z-index: 2;
+  top: calc((100% - var(--edge-nav-chrome)) / 2);
+  width: var(--edge-nav-w); height: var(--h-md); padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--ink-raised); color: var(--parchment-dim);
+  border: 1px solid var(--line); border-radius: var(--r-sm);
+  font: inherit; line-height: 1; cursor: pointer;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transform: translate(var(--edge-nav-shift, 0), -50%);
+  transition: opacity var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out),
+              visibility 0s linear var(--t-fast),
+              color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+.edge-nav[data-sp-item-nav="prev"] { left: 0; --edge-nav-shift: -4px; }
+.edge-nav[data-sp-item-nav="next"] { right: 0; --edge-nav-shift: 4px; }
+.edge-nav[data-visible="true"] {
+  --edge-nav-shift: 0px;
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transition-delay: 0s;
+}
+.edge-nav svg { display: block; width: var(--icon-md); height: var(--icon-md); }
+.edge-nav[data-sp-item-nav="prev"] svg { transform: rotate(-90deg); }
+.edge-nav[data-sp-item-nav="next"] svg { transform: rotate(90deg); }
+.edge-nav:hover { color: var(--hope-soft); border-color: var(--hope); }
+.edge-nav:focus-visible { outline-offset: var(--focus-offset-tight); }
+/* Subtle fade just outside the control, so it reads over bright artwork and
+   signals more content. Decorative and click-through. */
+.edge-nav::before {
+  content: ""; position: absolute; top: -24px; bottom: -24px; width: 64px;
+  pointer-events: none; z-index: -1;
+}
+.edge-nav[data-sp-item-nav="prev"]::before {
+  left: 0; background: radial-gradient(ellipse 64px 52px at 0 50%, rgba(20,17,15,0.78), transparent);
+}
+.edge-nav[data-sp-item-nav="next"]::before {
+  right: 0; background: radial-gradient(ellipse 64px 52px at 100% 50%, rgba(20,17,15,0.78), transparent);
+}
+/* Slightly larger pointer target than the visible box, vertical only. */
+.edge-nav::after { content: ""; position: absolute; inset: -4px -2px; }
+@media (prefers-reduced-motion: reduce) {
+  .edge-nav { transition: none; transform: translateY(-50%); }
+}
 
 /* Art-first tile strip: square tiles dominated by item artwork, with name
    and selection as contextual overlays rather than permanent card chrome —
@@ -3549,7 +3587,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    before starting the next, so scrolling right reveals more pairs rather
    than more rows. Same manual prev/next arrows + native
    wheel/trackpad/touch/scrollbar scrolling as the Gallery strip, reusing
-   .prep-item-strip-wrap/.prep-item-nav-btn as-is. */
+   .prep-item-strip-wrap/.edge-nav as-is. */
 .prep-item-compact-grid {
   flex: 1 1 auto; min-width: 0;
   /* Two deterministic heights, chosen by syncCompactRows() in js/app.js via

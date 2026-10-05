@@ -4144,14 +4144,14 @@ function itemsPanelHtml(prep) {
       <h2 id="prep-items-heading" class="sr-only">${t('prep_items')}</h2>
       ${itemToolbarHtml()}
       <div class="prep-item-strip-wrap" id="sp-item-gallery-wrap" ${galleryHidden ? 'hidden' : ''}>
-        <button type="button" class="icon-btn icon-btn--circle prep-item-nav-btn" data-sp-item-nav="prev" aria-label="${escapeAttr(t('prep_item_nav_prev'))}" hidden>${ICON_CHEVRON_UP}</button>
+        <button type="button" class="edge-nav" data-sp-item-nav="prev" aria-label="${escapeAttr(t('prep_item_nav_prev'))}">${ICON_CHEVRON_UP}</button>
         <div class="prep-item-grid" id="prep-item-grid">${itemCardsHtml(prep)}</div>
-        <button type="button" class="icon-btn icon-btn--circle prep-item-nav-btn" data-sp-item-nav="next" aria-label="${escapeAttr(t('prep_item_nav_next'))}" hidden>${ICON_CHEVRON_UP}</button>
+        <button type="button" class="edge-nav" data-sp-item-nav="next" aria-label="${escapeAttr(t('prep_item_nav_next'))}">${ICON_CHEVRON_UP}</button>
       </div>
       <div class="prep-item-strip-wrap prep-item-compact-wrap" id="sp-item-compact-wrap" ${compactHidden ? 'hidden' : ''}>
-        <button type="button" class="icon-btn icon-btn--circle prep-item-nav-btn" data-sp-item-nav="prev" aria-label="${escapeAttr(t('prep_item_nav_prev'))}" hidden>${ICON_CHEVRON_UP}</button>
+        <button type="button" class="edge-nav" data-sp-item-nav="prev" aria-label="${escapeAttr(t('prep_item_nav_prev'))}">${ICON_CHEVRON_UP}</button>
         <div class="prep-item-compact-grid" id="prep-item-compact-grid">${compactItemGridHtml(prep)}</div>
-        <button type="button" class="icon-btn icon-btn--circle prep-item-nav-btn" data-sp-item-nav="next" aria-label="${escapeAttr(t('prep_item_nav_next'))}" hidden>${ICON_CHEVRON_UP}</button>
+        <button type="button" class="edge-nav" data-sp-item-nav="next" aria-label="${escapeAttr(t('prep_item_nav_next'))}">${ICON_CHEVRON_UP}</button>
       </div>
     </section>`;
 }
@@ -4371,21 +4371,19 @@ function scrollPrepItemStrip(direction) {
   s.el.scrollBy({ left: direction * step, behavior: reduceMotion ? 'auto' : 'smooth' });
 }
 
-/** Shows/hides each arrow (no overflow at all -> both hidden) and disables
- * one at each scroll boundary. Called after the strip is built, after every
+/** Shows/hides each arrow (no overflow at all -> both hidden; each also
+ * hides at its own scroll boundary). Called after the strip is built, after every
  * refreshItemGrid() re-filter, on scroll, and on resize. */
 function refreshPrepItemNav() {
   const s = itemNavState;
   if (!s || !s.el) return;
   const max = Math.max(0, s.el.scrollWidth - s.el.clientWidth);
-  // Judged against the wrap's full width, not the strip's: the arrows take
-  // space only while shown, so "overflows even without them" is the only
-  // stable test (otherwise showing them would narrow the strip, and hiding
-  // them would widen it again).
-  const wrap = s.el.parentElement;
-  const overflowing = max > 0 && (!wrap || s.el.scrollWidth > wrap.clientWidth);
-  if (s.prevBtn) { s.prevBtn.hidden = !overflowing; s.prevBtn.disabled = s.el.scrollLeft <= 0; }
-  if (s.nextBtn) { s.nextBtn.hidden = !overflowing; s.nextBtn.disabled = s.el.scrollLeft >= max; }
+  // The arrows overlay the strip and take no space, so overflow is simply
+  // "there is something to scroll"; each one shows only while scrolling in
+  // its direction is possible. 1px tolerance for fractional scrollLeft.
+  const overflowing = max > 0;
+  if (s.prevBtn) s.prevBtn.dataset.visible = String(overflowing && s.el.scrollLeft > 1);
+  if (s.nextBtn) s.nextBtn.dataset.visible = String(overflowing && s.el.scrollLeft < max - 1);
 }
 
 /** Builds the one controller instance for the *currently active* view's

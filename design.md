@@ -316,8 +316,16 @@ size. Equivalent semantics share state treatment; the box size
   user's data (a list, a Prep entry, a whole Prep category); clearing a
   search/filter stays neutral.
 - **Circular navigation / overlay** — `.icon-btn--circle` (enclosed, gold
-  edge on hover: item-strip arrows, countdown ±) and `.icon-btn--overlay`
+  edge on hover: countdown ±) and `.icon-btn--overlay`
   (dismiss over imagery: translucent fill, neutral hover). Always `50%`.
+- **Edge navigation** — `.edge-nav`. Used for navigation controls attached to
+  the edge of a horizontally scrollable viewport (the Loot item strip):
+  rectangular overlay, 28 × 40px (`--h-md` tall), `--r-sm`, absolutely
+  positioned so it never participates in content layout (showing/hiding it
+  moves nothing). Visible only while scrolling that way is possible
+  (`data-visible`, opacity transition, no `display:none`); a subtle ~64px
+  radial edge fade sits behind it; Hope accent on hover, global focus ring.
+  Not part of the 50% circle rule.
 - Borders are 1px **transparent** at rest so hover/pressed never shifts
   geometry; enclosed roles (circle, overlay, soundboard `.sb-ctl`) keep a
   visible `--line`. Focus is the global ring, tight (1px) offset on these small boxes.
