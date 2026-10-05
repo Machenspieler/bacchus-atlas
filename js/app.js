@@ -436,11 +436,15 @@ function envEncounterUrl(env) {
  * should get to change. The tooltip names this specific link's target rather
  * than saying "this encounter", so hovering "Bear" and hovering "Beasts" don't
  * read the same. */
+function extIconHtml() {
+  return `<span class="ext-icon" aria-hidden="true">${ITEM_EXT_ICON}</span>`;
+}
+
 function potentialAdversaryLinkHtml(visibleLabel, encounterName, adversaryNames) {
   const url = buildFreshCutGrassEncounterUrl(encounterName, adversaryNames);
   const tip = t('open_encounter_builder_tip').replace('{n}', visibleLabel);
   return `<a class="adversary-encounter-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer"
-            data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(tip)}">${escapeHtml(visibleLabel)}</a>`;
+            data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(tip)}">${escapeHtml(visibleLabel)}${extIconHtml()}</a>`;
 }
 
 /** Renders one full potential_adversaries entry — "Beasts (Bear, Dire Wolf,
@@ -4658,8 +4662,8 @@ function freshCutGrassLinkHtml(prep) {
   const url = freshCutGrassUrlForPrep(prep);
   if (!url) return '';
   const tip = t('prep_open_freshcutgrass_tip');
-  return `<a class="btn btn-ghost btn-sm prep-freshcutgrass-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer"
-             data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(tip)}">${escapeHtml(t('prep_open_freshcutgrass'))}</a>`;
+  return `<a class="btn btn-ghost btn-sm prep-freshcutgrass-link encounter-action" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer"
+             data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(tip)}"><span>${escapeHtml(t('prep_open_freshcutgrass'))}</span>${extIconHtml()}</a>`;
 }
 
 /** Refreshed after every adversary selection change and every prep-title
@@ -6649,8 +6653,8 @@ function openDetailOverlay(envId, carry = null) {
           <span class="section-label">${t('adversaries_label')}</span>
           ${encounterUrl ? (() => {
             const tip = t('open_encounter_builder_tip').replace('{n}', envName(env));
-            return `<a class="encounter-builder-link" href="${escapeAttr(encounterUrl)}" target="_blank" rel="noopener noreferrer"
-                data-tip="${escapeAttr(tip)}">${ITEM_EXT_ICON}<span>${t('open_encounter_builder')}</span><span class="sr-only"> — ${tip}</span></a>`;
+            return `<a class="encounter-builder-link encounter-action" href="${escapeAttr(encounterUrl)}" target="_blank" rel="noopener noreferrer"
+                data-tip="${escapeAttr(tip)}"><span>${t('open_encounter_builder')}</span>${extIconHtml()}<span class="sr-only"> — ${tip}</span></a>`;
           })() : ''}
         </div>
         <p class="adversary-hint">${escapeHtml(t('adversaries_hint'))}</p>

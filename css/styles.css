@@ -1287,6 +1287,19 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 .adversary-encounter-link:hover, .adversary-encounter-link:focus-visible {
   color: var(--hope-hover); text-decoration-color: currentColor;
 }
+/* One external-link icon for every encounter link. The box is always
+ * reserved and identical in every state; only opacity changes on
+ * hover/focus, so nothing neighbouring can shift. */
+.ext-icon {
+  display: inline-block; flex: none; width: 1em; height: 1em; margin-left: 0.25em;
+  vertical-align: -0.125em; opacity: 0.55; text-decoration: none;
+  transition: opacity var(--t-fast) var(--ease-out);
+}
+.ext-icon svg { display: block; width: 100%; height: 100%; }
+.adversary-encounter-link:hover .ext-icon, .adversary-encounter-link:focus-visible .ext-icon,
+.encounter-action:hover .ext-icon, .encounter-action:focus-visible .ext-icon { opacity: 1; }
+.encounter-action { display: inline-flex; align-items: center; }
+.encounter-action .ext-icon { vertical-align: 0; margin-left: var(--s-1); }
 /* Its own box, not underlined text: a plain "\00a0↗" reads as an underlined
  * arrow glued to the name with no room to breathe before the next comma. */
 /*.adversary-encounter-link::after {
@@ -1314,7 +1327,6 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
   transition: color var(--t-fast) var(--ease-out);
 }
 .encounter-builder-link:hover { color: var(--hope-soft); text-decoration: none; }
-.encounter-builder-link svg { width: var(--icon-sm); height: var(--icon-sm); flex: none; }
 
 /* The one rule left inside the card body, so it carries the interactive weight
  * rather than the default edge — at 1.73:1 a 2px stem read as nothing at all. */
