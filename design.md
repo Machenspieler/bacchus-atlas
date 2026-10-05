@@ -392,6 +392,9 @@ Every control that opens a prepared encounter shares one visual language:
   sentence: `encounter_link_tip` ("Open “{name}” as an encounter in FreshCutGrass")
   for named links, `encounter_open_tip` ("Open encounter in FreshCutGrass") for the
   two actions. Always the spelling "FreshCutGrass"; no "in a new tab" suffix.
+- **Dense Prep header.** The Prep button shortens its label, then collapses to the
+  icon alone, as the `prep-central` container narrows (see architecture.md); the
+  tooltip and `aria-label` never shorten.
 
 ### Item card
 Built from the atlas's own parts — the same `.modal` shell, `.modal-header`

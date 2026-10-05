@@ -525,7 +525,13 @@ narrower, so it stays one column there). Sections are semantic `<section>`s with
   `contain` (adversaries with a small inset for their uneven transparent
   padding).
 - The Prep encounter action reads "Open Encounter" + the shared icon (service-agnostic);
-  its "…in FreshCutGrass" sentence is the `aria-label` and tooltip.
+  its "…in FreshCutGrass" sentence is the `aria-label` and tooltip. The Adversaries
+  header is width-budgeted (title, Battle Points, ★ +N, this button), so by
+  `prep-central` container width the button steps down: full label → short
+  label ("Столкновение" / "Encounter", `prep_open_freshcutgrass_short`, ≤600px) →
+  section icons hidden + Battle Points trimmed (≤560px) → icon only (≤520px).
+  Nothing in that header may ellipsize or overlap at 1200–1920px; re-measure
+  after adding anything to it.
 
 ### Quick add to the current Prep (outside `#/prep`)
 

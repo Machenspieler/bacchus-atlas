@@ -2978,6 +2978,8 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .prep-freshcutgrass-wrap { flex: none; }
 .prep-freshcutgrass-wrap:empty { display: none; }
 .prep-freshcutgrass-link { flex: none; height: 30px; padding: 0 10px; white-space: nowrap; }
+/* Full label by default; the dense laptop container swaps to the short one. */
+.encounter-label-short { display: none; }
 /* The bulk-add action sits before the FreshCutGrass link; absent entirely
    (not disabled) when the selected environments recommend nothing supported.
    Its "★ ✓" state is aria-disabled, so it stays focusable — .btn already
@@ -3064,14 +3066,33 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 }
 
 /* Typical 1366px laptop: the Adversaries header is full, so its two text
-   actions (★ +N and FreshCutGrass) tighten together — same padding, same
-   height — instead of the section title being ellipsized. */
+   actions (★ +N and Open Encounter) tighten together — same padding, same
+   height, and the Prep encounter button drops its verb ("Столкновение ↗") —
+   instead of the section title being ellipsized or Battle Points overlapping. */
 @container prep-central (max-width: 600px) {
+  .encounter-label-full { display: none; }
+  .encounter-label-short { display: inline; }
   .prep-recommend-btn, .prep-freshcutgrass-link { padding-inline: var(--pc-dense); }
   .bp-summary { padding-inline: var(--s-2); }
   .bp, .prep-central-actions { gap: var(--pc-dense); }
   .prep-central-lead { gap: var(--s-1); }
   .prep-central-head { gap: var(--pc-dense); }
+}
+/* 1280px laptop: still short after the swap above, so the three decorative
+   section icons (aria-hidden; the title names the section) step aside in
+   every header at once rather than only in the full one; Battle Points
+   trims its own padding/step width for the headroom a two-digit count needs. */
+@container prep-central (max-width: 560px) {
+  .prep-central-title .prep-central-icon { display: none; }
+  .bp-summary { padding-inline: var(--pc-dense); }
+  .bp-step { width: 22px; }
+  .bp-pc-input { width: 2em; }
+}
+/* 1200px, the narrowest three-column width: the button collapses to its icon
+   alone. The tooltip and aria-label still carry the whole sentence. */
+@container prep-central (max-width: 520px) {
+  .prep-freshcutgrass-link .encounter-label-short { display: none; }
+  .prep-freshcutgrass-link { padding-inline: var(--s-2); }
 }
 
 /* ---- popover (position: fixed, so opening never shifts layout) ---- */

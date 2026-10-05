@@ -4678,15 +4678,17 @@ function freshCutGrassUrlForPrep(prep) {
 /** An ordinary link (not a button) so it behaves like every other
  * FreshCutGrass link in the app — opens in a new tab, `noopener noreferrer`,
  * and an accessible name that names the destination. The visible label is
- * service-agnostic ("Open Encounter" + the shared extIconHtml() icon); the
- * "…in FreshCutGrass" sentence lives in aria-label + tooltip.
+ * service-agnostic ("Open Encounter" + the shared extIconHtml() icon); in the
+ * dense laptop header CSS swaps it for the short form ("Encounter") — both are
+ * contained in the aria-label, so the visible text is always part of the name.
+ * The "…in FreshCutGrass" sentence lives in aria-label + tooltip.
  * Absent entirely (not just disabled) when no adversary is selected. */
 function freshCutGrassLinkHtml(prep) {
   const url = freshCutGrassUrlForPrep(prep);
   if (!url) return '';
   const tip = t('encounter_open_tip');
   return `<a class="btn btn-ghost btn-sm prep-freshcutgrass-link encounter-action" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer"
-             data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(tip)}"><span>${escapeHtml(t('prep_open_freshcutgrass'))}</span>${extIconHtml()}</a>`;
+             data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(tip)}"><span class="encounter-label-full">${escapeHtml(t('prep_open_freshcutgrass'))}</span><span class="encounter-label-short">${escapeHtml(t('prep_open_freshcutgrass_short'))}</span>${extIconHtml()}</a>`;
 }
 
 /** Refreshed after every adversary selection change and every prep-title
