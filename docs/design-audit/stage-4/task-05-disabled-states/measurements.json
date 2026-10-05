@@ -1,0 +1,563 @@
+{
+  "1366": {
+    "checkboxDisabled": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(170, 170, 170)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(106, 93, 79)",
+      "native": true,
+      "aria": null
+    },
+    "checkboxEnabled": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(255, 255, 255)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(106, 93, 79)",
+      "native": false,
+      "aria": null
+    },
+    "btnDisabled": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(77, 66, 56)",
+      "native": true,
+      "aria": null
+    },
+    "btnEnabled": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": null
+    },
+    "iconBtnDisabled": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgba(0, 0, 0, 0)",
+      "native": true,
+      "aria": null
+    },
+    "navDisabled": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": true,
+      "aria": null
+    },
+    "navEnabled": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": null
+    },
+    "menuDisabled": {
+      "opacity": "1",
+      "cursor": "not-allowed",
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(154, 143, 125)",
+      "native": false,
+      "aria": "true"
+    },
+    "menuNormal": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(233, 223, 199)",
+      "native": false,
+      "aria": null
+    },
+    "stepDisabled": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(233, 223, 199)",
+      "native": true,
+      "aria": null
+    },
+    "stepEnabled": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(233, 223, 199)",
+      "native": false,
+      "aria": null
+    },
+    "sbStop": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": "true"
+    },
+    "sbSettings": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": null
+    },
+    "soundReady": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": "false"
+    },
+    "soundLoading": {
+      "opacity": "1",
+      "cursor": "progress",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": "true"
+    },
+    "soundFailed": {
+      "opacity": "1",
+      "cursor": "not-allowed",
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": "true"
+    },
+    "soundSvg": {
+      "ready": "1",
+      "loading": "0.5",
+      "failed": "1"
+    },
+    "envUnavailable": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgba(0, 0, 0, 0)",
+      "native": false,
+      "aria": "true"
+    },
+    "atlRow": {
+      "opacity": "1",
+      "cursor": "not-allowed",
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(154, 143, 125)",
+      "native": false,
+      "aria": null
+    },
+    "atlRowNormal": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(233, 223, 199)",
+      "native": false,
+      "aria": null
+    },
+    "atlBox": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(170, 170, 170)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(106, 93, 79)",
+      "native": true,
+      "aria": null
+    }
+  },
+  "1440": {
+    "checkboxDisabled": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(170, 170, 170)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(106, 93, 79)",
+      "native": true,
+      "aria": null
+    },
+    "checkboxEnabled": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(255, 255, 255)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(106, 93, 79)",
+      "native": false,
+      "aria": null
+    },
+    "btnDisabled": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(77, 66, 56)",
+      "native": true,
+      "aria": null
+    },
+    "btnEnabled": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": null
+    },
+    "iconBtnDisabled": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgba(0, 0, 0, 0)",
+      "native": true,
+      "aria": null
+    },
+    "navDisabled": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": true,
+      "aria": null
+    },
+    "navEnabled": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": null
+    },
+    "menuDisabled": {
+      "opacity": "1",
+      "cursor": "not-allowed",
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(154, 143, 125)",
+      "native": false,
+      "aria": "true"
+    },
+    "menuNormal": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(233, 223, 199)",
+      "native": false,
+      "aria": null
+    },
+    "stepDisabled": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(233, 223, 199)",
+      "native": true,
+      "aria": null
+    },
+    "stepEnabled": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(233, 223, 199)",
+      "native": false,
+      "aria": null
+    },
+    "sbStop": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": "true"
+    },
+    "sbSettings": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": null
+    },
+    "soundReady": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": "false"
+    },
+    "soundLoading": {
+      "opacity": "1",
+      "cursor": "progress",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": "true"
+    },
+    "soundFailed": {
+      "opacity": "1",
+      "cursor": "not-allowed",
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": "true"
+    },
+    "soundSvg": {
+      "ready": "1",
+      "loading": "0.5",
+      "failed": "1"
+    },
+    "envUnavailable": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgba(0, 0, 0, 0)",
+      "native": false,
+      "aria": "true"
+    },
+    "atlRow": {
+      "opacity": "1",
+      "cursor": "not-allowed",
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(154, 143, 125)",
+      "native": false,
+      "aria": null
+    },
+    "atlRowNormal": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(233, 223, 199)",
+      "native": false,
+      "aria": null
+    },
+    "atlBox": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(170, 170, 170)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(106, 93, 79)",
+      "native": true,
+      "aria": null
+    }
+  },
+  "1920": {
+    "checkboxDisabled": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(170, 170, 170)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(106, 93, 79)",
+      "native": true,
+      "aria": null
+    },
+    "checkboxEnabled": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(255, 255, 255)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(106, 93, 79)",
+      "native": false,
+      "aria": null
+    },
+    "btnDisabled": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(77, 66, 56)",
+      "native": true,
+      "aria": null
+    },
+    "btnEnabled": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": null
+    },
+    "iconBtnDisabled": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgba(0, 0, 0, 0)",
+      "native": true,
+      "aria": null
+    },
+    "navDisabled": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": true,
+      "aria": null
+    },
+    "navEnabled": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": null
+    },
+    "menuDisabled": {
+      "opacity": "1",
+      "cursor": "not-allowed",
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(154, 143, 125)",
+      "native": false,
+      "aria": "true"
+    },
+    "menuNormal": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(233, 223, 199)",
+      "native": false,
+      "aria": null
+    },
+    "stepDisabled": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(233, 223, 199)",
+      "native": true,
+      "aria": null
+    },
+    "stepEnabled": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(233, 223, 199)",
+      "native": false,
+      "aria": null
+    },
+    "sbStop": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": "true"
+    },
+    "sbSettings": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": null
+    },
+    "soundReady": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": "false"
+    },
+    "soundLoading": {
+      "opacity": "1",
+      "cursor": "progress",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": "true"
+    },
+    "soundFailed": {
+      "opacity": "1",
+      "cursor": "not-allowed",
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(77, 66, 56)",
+      "native": false,
+      "aria": "true"
+    },
+    "soundSvg": {
+      "ready": "1",
+      "loading": "0.5",
+      "failed": "1"
+    },
+    "envUnavailable": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgba(0, 0, 0, 0)",
+      "native": false,
+      "aria": "true"
+    },
+    "atlRow": {
+      "opacity": "1",
+      "cursor": "not-allowed",
+      "color": "rgb(154, 143, 125)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(154, 143, 125)",
+      "native": false,
+      "aria": null
+    },
+    "atlRowNormal": {
+      "opacity": "1",
+      "cursor": "pointer",
+      "color": "rgb(233, 223, 199)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "border": "rgb(233, 223, 199)",
+      "native": false,
+      "aria": null
+    },
+    "atlBox": {
+      "opacity": "0.5",
+      "cursor": "not-allowed",
+      "color": "rgb(170, 170, 170)",
+      "bg": "rgb(28, 24, 21)",
+      "border": "rgb(106, 93, 79)",
+      "native": true,
+      "aria": null
+    }
+  }
+}

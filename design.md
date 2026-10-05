@@ -49,6 +49,36 @@ replacement for it — when the two disagree, the CSS (and its tests) win.
   focus is on the dialog/panel, not a control. `aria-disabled` controls stay
   focusable by design (so their reason is reachable) and keep the ring; native
   `:disabled` controls cannot take focus.
+- **Non-active states are five different things, not one dimmed look.**
+  - **Disabled** — a compact control that exists but cannot be used (`.btn`,
+    `.icon-btn`, `.bp-step`, `.prep-select-checkbox`, `.sb-ctl`, the unavailable
+    `.env-prep-btn` glyph). One recipe: `opacity: var(--opacity-disabled)` (0.5 —
+    the only opacity in the system for this), `cursor: not-allowed`, no hover
+    fill/border/colour (hover restores the variant's *own* resting look, so a ghost
+    button never gains a fill), no pressed offset. Native `:disabled` is preferred
+    (not focusable, no `pointer-events: none`); `aria-disabled="true"` is used only
+    where the control must stay focusable so its reason is reachable (`.env-prep-btn`,
+    sound-board `.sb-ctl`, the Prep "★ ✓" button, the Delete menu item) and then
+    needs an explicit activation guard in JS.
+  - **Unavailable** — a labelled row or option the current context rules out
+    (`.atl-row.is-unavailable`, `.prep-menu-item.is-disabled`). Text is **not**
+    faded: the label swaps to `--muted` (one muting mechanism — never muted colour
+    *and* opacity), so a Russian label still reads. Only a checkbox box inside it
+    takes `--opacity-disabled`. The reason (hint line / tooltip) stays visible.
+  - **Inactive** — not selected/active but still interactive (unpressed
+    `.sb-ctl`, unselected segment, idle toggle). Never dimmed, never uses
+    `--opacity-disabled`; keeps hover, focus ring and click affordance.
+  - **Loading** — work in progress, not a refusal. `.btn[data-loading]` is natively
+    disabled to block a second click but stays at full opacity with its spinner;
+    a loading `.sb-sound` tile keeps its icon at `--opacity-disabled` plus a corner
+    spinner and `cursor: progress`.
+  - **Failed** — an error, not a mute. A failed `.sb-sound` tile has a dashed edge,
+    muted icon colour and the fear-coloured alert glyph; its icon is not also faded.
+  Hover is suppressed on every disabled/unavailable/loading/failed element. Hide vs
+  disable for no-op controls is unchanged and deliberate: the adversary search "×" is
+  hidden when empty, the item-filter clear button stays (disabled) so the toolbar
+  never shifts. Selected + disabled (a checked box) keeps its gold fill at the same
+  token.
 - **The book, not the app.** Display type is a classical inscriptional face
   (Forum) used only for names/headings; body copy is a literary serif
   (Spectral); numbers, dice, and stats get a monospace face (JetBrains Mono)

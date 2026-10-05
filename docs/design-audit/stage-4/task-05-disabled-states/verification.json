@@ -1,0 +1,908 @@
+{
+  "passed": 168,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "hover leaves look unchanged — prep-select-checkbox:disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "disabled checkbox: hover does not gold its border",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "disabled checkbox: click selects nothing",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "disabled checkbox: not focusable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "checked+disabled stays distinguishable from unchecked+disabled",
+      "ok": true,
+      "detail": "every unselected env box is disabled at 3/3; selected ones stay enabled (so they can be removed)"
+    },
+    {
+      "name": "hover leaves look unchanged — .btn:disabled (item clear)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": ".btn:disabled uses the shared token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": ".btn:disabled: not focusable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — .icon-btn:disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": ".icon-btn:disabled uses the shared token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": ".icon-btn:disabled is not tinted by hover (no hover bg)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — prep-item-nav-btn (disabled, prev at start)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "nav disabled: opacity token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": "nav disabled: not focusable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — prep-menu-item.is-disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "menu item disabled: no opacity stacked on the muted label",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "name": "menu item disabled: label is muted, normal is parchment",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "menu item disabled: aria-disabled=\"true\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "menu item disabled: click is swallowed (menu stays, prep not deleted)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "menu item disabled: still focusable (roving menu)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bp-step reaches its minimum (disabled)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — bp-step:disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bp-step disabled: opacity token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": "bp-step enabled is untouched (opacity 1)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bp-step disabled: click does not change the count",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "name": "bp-step disabled: not focusable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — sb-ctl[aria-disabled]",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sb-ctl aria-disabled: opacity token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": "sb-ctl aria-disabled=\"true\" exposed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sb-ctl aria-disabled: stays focusable by design",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sb-ctl aria-disabled: click is inert",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "inactive control (sb-ctl settings) is not dimmed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "inactive control still responds to hover",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "inactive control: focusable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sound states reached: loading / failed / ready",
+      "ok": true,
+      "detail": "loading/failed"
+    },
+    {
+      "name": "loading: icon at the disabled token, spinner present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "failed: icon not additionally dimmed (muted colour + dashed edge + alert glyph)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "failed: alert glyph shown in fear colour",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sound loading: hover leaves look unchanged",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sound failed: hover leaves look unchanged",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sound loading: aria-disabled + aria-busy, click does not start playback",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sound loading: not playing after click",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ready sound: still plays on click (interactive)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "stop-all enabled while a sound plays",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "stop-all disabled again after stopping",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — env-prep-btn.is-unavailable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "env-prep-btn unavailable: opacity token + aria-disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "env-prep-btn unavailable: activation blocked",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "env-prep-btn unavailable: keeps its reason tooltip",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "env-prep-btn unavailable: focusable (reason reachable)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — atl-row.is-unavailable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "atl-row unavailable: label muted, no row opacity",
+      "ok": true,
+      "detail": "rgb(154, 143, 125) vs rgb(233, 223, 199)"
+    },
+    {
+      "name": "atl-row unavailable: checkbox at the disabled token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": "atl-row unavailable: click does not toggle",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "atl-row unavailable: hint stays visible (reason)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": ".btn loading is not dimmed like disabled",
+      "ok": true,
+      "detail": "{\"opacity\":\"1\",\"cursor\":\"progress\",\"after\":\"\\\"\\\"\"}"
+    },
+    {
+      "name": "hover leaves look unchanged — prep-select-checkbox:disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "disabled checkbox: hover does not gold its border",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "disabled checkbox: click selects nothing",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "disabled checkbox: not focusable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "checked+disabled stays distinguishable from unchecked+disabled",
+      "ok": true,
+      "detail": "every unselected env box is disabled at 3/3; selected ones stay enabled (so they can be removed)"
+    },
+    {
+      "name": "hover leaves look unchanged — .btn:disabled (item clear)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": ".btn:disabled uses the shared token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": ".btn:disabled: not focusable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — .icon-btn:disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": ".icon-btn:disabled uses the shared token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": ".icon-btn:disabled is not tinted by hover (no hover bg)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — prep-item-nav-btn (disabled, prev at start)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "nav disabled: opacity token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": "nav disabled: not focusable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — prep-menu-item.is-disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "menu item disabled: no opacity stacked on the muted label",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "name": "menu item disabled: label is muted, normal is parchment",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "menu item disabled: aria-disabled=\"true\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "menu item disabled: click is swallowed (menu stays, prep not deleted)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "menu item disabled: still focusable (roving menu)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bp-step reaches its minimum (disabled)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — bp-step:disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bp-step disabled: opacity token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": "bp-step enabled is untouched (opacity 1)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bp-step disabled: click does not change the count",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "name": "bp-step disabled: not focusable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — sb-ctl[aria-disabled]",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sb-ctl aria-disabled: opacity token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": "sb-ctl aria-disabled=\"true\" exposed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sb-ctl aria-disabled: stays focusable by design",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sb-ctl aria-disabled: click is inert",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "inactive control (sb-ctl settings) is not dimmed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "inactive control still responds to hover",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "inactive control: focusable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sound states reached: loading / failed / ready",
+      "ok": true,
+      "detail": "loading/failed"
+    },
+    {
+      "name": "loading: icon at the disabled token, spinner present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "failed: icon not additionally dimmed (muted colour + dashed edge + alert glyph)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "failed: alert glyph shown in fear colour",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sound loading: hover leaves look unchanged",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sound failed: hover leaves look unchanged",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sound loading: aria-disabled + aria-busy, click does not start playback",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sound loading: not playing after click",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ready sound: still plays on click (interactive)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "stop-all enabled while a sound plays",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "stop-all disabled again after stopping",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — env-prep-btn.is-unavailable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "env-prep-btn unavailable: opacity token + aria-disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "env-prep-btn unavailable: activation blocked",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "env-prep-btn unavailable: keeps its reason tooltip",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "env-prep-btn unavailable: focusable (reason reachable)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — atl-row.is-unavailable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "atl-row unavailable: label muted, no row opacity",
+      "ok": true,
+      "detail": "rgb(154, 143, 125) vs rgb(233, 223, 199)"
+    },
+    {
+      "name": "atl-row unavailable: checkbox at the disabled token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": "atl-row unavailable: click does not toggle",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "atl-row unavailable: hint stays visible (reason)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": ".btn loading is not dimmed like disabled",
+      "ok": true,
+      "detail": "{\"opacity\":\"1\",\"cursor\":\"progress\",\"after\":\"\\\"\\\"\"}"
+    },
+    {
+      "name": "hover leaves look unchanged — prep-select-checkbox:disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "disabled checkbox: hover does not gold its border",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "disabled checkbox: click selects nothing",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "disabled checkbox: not focusable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "checked+disabled stays distinguishable from unchecked+disabled",
+      "ok": true,
+      "detail": "every unselected env box is disabled at 3/3; selected ones stay enabled (so they can be removed)"
+    },
+    {
+      "name": "hover leaves look unchanged — .btn:disabled (item clear)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": ".btn:disabled uses the shared token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": ".btn:disabled: not focusable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — .icon-btn:disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": ".icon-btn:disabled uses the shared token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": ".icon-btn:disabled is not tinted by hover (no hover bg)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — prep-item-nav-btn (disabled, prev at start)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "nav disabled: opacity token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": "nav disabled: not focusable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — prep-menu-item.is-disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "menu item disabled: no opacity stacked on the muted label",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "name": "menu item disabled: label is muted, normal is parchment",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "menu item disabled: aria-disabled=\"true\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "menu item disabled: click is swallowed (menu stays, prep not deleted)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "menu item disabled: still focusable (roving menu)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bp-step reaches its minimum (disabled)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — bp-step:disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bp-step disabled: opacity token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": "bp-step enabled is untouched (opacity 1)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bp-step disabled: click does not change the count",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "name": "bp-step disabled: not focusable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — sb-ctl[aria-disabled]",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sb-ctl aria-disabled: opacity token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": "sb-ctl aria-disabled=\"true\" exposed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sb-ctl aria-disabled: stays focusable by design",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sb-ctl aria-disabled: click is inert",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "inactive control (sb-ctl settings) is not dimmed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "inactive control still responds to hover",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "inactive control: focusable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sound states reached: loading / failed / ready",
+      "ok": true,
+      "detail": "loading/failed"
+    },
+    {
+      "name": "loading: icon at the disabled token, spinner present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "failed: icon not additionally dimmed (muted colour + dashed edge + alert glyph)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "failed: alert glyph shown in fear colour",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sound loading: hover leaves look unchanged",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sound failed: hover leaves look unchanged",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sound loading: aria-disabled + aria-busy, click does not start playback",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sound loading: not playing after click",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ready sound: still plays on click (interactive)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "stop-all enabled while a sound plays",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "stop-all disabled again after stopping",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — env-prep-btn.is-unavailable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "env-prep-btn unavailable: opacity token + aria-disabled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "env-prep-btn unavailable: activation blocked",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "env-prep-btn unavailable: keeps its reason tooltip",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "env-prep-btn unavailable: focusable (reason reachable)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hover leaves look unchanged — atl-row.is-unavailable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "atl-row unavailable: label muted, no row opacity",
+      "ok": true,
+      "detail": "rgb(154, 143, 125) vs rgb(233, 223, 199)"
+    },
+    {
+      "name": "atl-row unavailable: checkbox at the disabled token",
+      "ok": true,
+      "detail": "0.5"
+    },
+    {
+      "name": "atl-row unavailable: click does not toggle",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "atl-row unavailable: hint stays visible (reason)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": ".btn loading is not dimmed like disabled",
+      "ok": true,
+      "detail": "{\"opacity\":\"1\",\"cursor\":\"progress\",\"after\":\"\\\"\\\"\"}"
+    }
+  ],
+  "consoleIssues": [
+    {
+      "ctx": "1366x768/full",
+      "type": "requestfailed",
+      "text": "/sound/hawk-call-squawk.wav (net::ERR_FAILED)"
+    },
+    {
+      "ctx": "1366x768/full",
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "ctx": "1366x768/full",
+      "type": "warning",
+      "text": "[atlas] soundboard: could not load sound/hawk-call-squawk.wav Failed to fetch"
+    },
+    {
+      "ctx": "1366x768/full",
+      "type": "warning",
+      "text": "[atlas] soundboard: could not load sound/rock-golem-walking.mp3 Failed to fetch"
+    },
+    {
+      "ctx": "1440x900/full",
+      "type": "requestfailed",
+      "text": "/sound/hawk-call-squawk.wav (net::ERR_FAILED)"
+    },
+    {
+      "ctx": "1440x900/full",
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "ctx": "1440x900/full",
+      "type": "warning",
+      "text": "[atlas] soundboard: could not load sound/hawk-call-squawk.wav Failed to fetch"
+    },
+    {
+      "ctx": "1440x900/full",
+      "type": "warning",
+      "text": "[atlas] soundboard: could not load sound/rock-golem-walking.mp3 Failed to fetch"
+    },
+    {
+      "ctx": "1920x1080/full",
+      "type": "requestfailed",
+      "text": "/sound/hawk-call-squawk.wav (net::ERR_FAILED)"
+    },
+    {
+      "ctx": "1920x1080/full",
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "ctx": "1920x1080/full",
+      "type": "warning",
+      "text": "[atlas] soundboard: could not load sound/hawk-call-squawk.wav Failed to fetch"
+    },
+    {
+      "ctx": "1920x1080/full",
+      "type": "warning",
+      "text": "[atlas] soundboard: could not load sound/rock-golem-walking.mp3 Failed to fetch"
+    }
+  ]
+}
