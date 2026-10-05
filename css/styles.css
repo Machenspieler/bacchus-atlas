@@ -1271,15 +1271,15 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
   font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--muted);
 }
 
-/* Gold like every other link, but a link first: a faint underline at rest
- * says "clickable" without competing with the adversary text, brightens and
- * gains a full underline on hover/focus, and only then reveals the external-
- * link arrow — with a dozen names in one paragraph, a permanently visible
- * arrow on each would be pure noise. aria-label carries the full "opens in a
- * new tab" meaning, so the decorative arrow glyph never needs its own. */
+/* One encounter-link pattern, shared by every name that opens a prepared
+ * encounter (Potential Adversaries text, recommended adversaries). Gold like
+ * every other link, with a faint 1px underline at rest that brightens on
+ * hover/focus. Hover changes only colour, underline colour and the icon's
+ * opacity — never a box size, gap, weight or glyph — so a run of links in one
+ * paragraph stays perfectly still as the pointer crosses it. */
 .adversary-encounter-link {
   color: var(--hope-soft); cursor: pointer;
-  text-decoration: underline; text-decoration-color: rgba(240,207,140,0.35);
+  text-decoration: underline; text-decoration-color: var(--hope-border-soft);
   text-decoration-thickness: 1px; text-decoration-skip-ink: auto;
   text-underline-offset: 3px;
   transition: color var(--t-fast) var(--ease-out), text-decoration-color var(--t-fast) var(--ease-out);
@@ -1287,26 +1287,30 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 .adversary-encounter-link:hover, .adversary-encounter-link:focus-visible {
   color: var(--hope-hover); text-decoration-color: currentColor;
 }
-/* One external-link icon for every encounter link. The box is always
- * reserved and identical in every state; only opacity changes on
- * hover/focus, so nothing neighbouring can shift. */
+
+/* THE external-link icon (extIconHtml() in js/app.js — one SVG for every
+ * encounter link). Always in the DOM with a fixed box: the same size, gap and
+ * position at rest, hover, focus and active; only opacity changes between
+ * states. Size follows the context through --ext-icon-size (1em in running
+ * text, --icon-sm in the Open Encounter actions and Prep rows). */
 .ext-icon {
-  display: inline-block; flex: none; width: 1em; height: 1em; margin-left: 0.25em;
-  vertical-align: -0.125em; opacity: 0.55; text-decoration: none;
+  display: inline-block; flex: none;
+  width: var(--ext-icon-size, 1em); height: var(--ext-icon-size, 1em);
+  margin-left: 0.25em; vertical-align: -0.125em;
+  opacity: 0.55; text-decoration: none;
   transition: opacity var(--t-fast) var(--ease-out);
 }
 .ext-icon svg { display: block; width: 100%; height: 100%; }
-.adversary-encounter-link:hover .ext-icon, .adversary-encounter-link:focus-visible .ext-icon,
-.encounter-action:hover .ext-icon, .encounter-action:focus-visible .ext-icon { opacity: 1; }
-.encounter-action { display: inline-flex; align-items: center; }
-.encounter-action .ext-icon { vertical-align: 0; margin-left: var(--s-1); }
-/* Its own box, not underlined text: a plain "\00a0↗" reads as an underlined
- * arrow glued to the name with no room to breathe before the next comma. */
-/*.adversary-encounter-link::after {
-  content: "↗"; display: inline-block; margin-left: 0.3em;
-  text-decoration: none; opacity: 0; transition: opacity var(--t-fast) var(--ease-out);
+a:hover .ext-icon, a:focus-visible .ext-icon { opacity: 1; }
+
+/* The two "Open Encounter" actions (Environment text action, Prep bordered
+ * button): same label → icon order, same icon size, same inline-control gap.
+ * The icon's own margin is zeroed so the gap is the only spacing. */
+.encounter-action {
+  display: inline-flex; align-items: center; gap: var(--inline-control-gap);
+  --ext-icon-size: var(--icon-sm);
 }
-.adversary-encounter-link:hover::after, .adversary-encounter-link:focus-visible::after { opacity: 1; }*/
+.encounter-action .ext-icon { margin-left: 0; vertical-align: 0; }
 
 /* Carries the section-label's own spacing so the label sits flush against the
  * link beside it; wraps to its own line on a narrow card rather than crowding
@@ -1320,7 +1324,6 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 /* A secondary utility action, not a CTA: muted at rest, brightening to the
  * same gold every other hover in the card uses. */
 .encounter-builder-link {
-  display: inline-flex; align-items: center; gap: var(--s-1);
   font-family: var(--font-mono); font-size: var(--fs-micro);
   letter-spacing: var(--tracking-caps); text-transform: uppercase;
   color: var(--muted); text-decoration: none;
@@ -2794,7 +2797,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   font-family: inherit;
 }
 .prep-adv-link:hover .prep-row-name { color: var(--hope-soft); }
-/* Name + the shared ↗ cue (see .prep-sel-ext) on one line inside the link;
+/* Name + the shared external-link icon (see .prep-sel-ext) on one line inside the link;
    the name ellipsizes first, the glyph never shrinks or wraps away. */
 .prep-adv-title { display: flex; align-items: baseline; gap: var(--s-1); min-width: 0; }
 .prep-adv-title .prep-row-name { flex: 0 1 auto; min-width: 0; }
@@ -2969,7 +2972,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .prep-central-section .prep-warning { margin-block: 0 var(--pc-pad-y); }
 .prep-central-section #prep-central-adv-warning:empty { display: none; }
 
-/* Selected-adversaries "FreshCutGrass ↗" export link — absent entirely (not
+/* Selected-adversaries "Open Encounter" export link — absent entirely (not
    just disabled) when nothing is selected, see freshCutGrassLinkHtml() in
    js/app.js. A ghost button sized to the header, never wrapping. */
 .prep-freshcutgrass-wrap { flex: none; }
@@ -3164,8 +3167,8 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .prep-sel--card .prep-sel-main { padding: 0 var(--pc-pad-card); border-radius: calc(var(--r-md) - 1px); }
 .prep-sel-main:hover .prep-sel-name { color: var(--hope-soft); }
 /* The global a:hover underline lands unevenly on a link's mixed block/inline
-   children (sometimes the meta, sometimes only the ↗); the colour shift and
-   the ↗ cue are the hover feedback here, so no underline at all. */
+   children (sometimes the meta, sometimes only the icon); the colour shift and
+   the icon's opacity is the hover feedback here, so no underline at all. */
 .prep-sel-main:hover, .prep-adv-link:hover { text-decoration: none; }
 .prep-sel-main:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 .prep-sel-title { display: flex; align-items: baseline; gap: var(--s-1); min-width: 0; }
@@ -3173,7 +3176,8 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 /* Secondary "opens elsewhere" cue next to the adversary name: barely there
    at rest, clearer on hover/focus, and it never takes more than its glyph. */
 .prep-sel-ext {
-  flex: none; font-size: var(--fs-xs); line-height: 1; color: var(--muted); opacity: 0.55;
+  --ext-icon-size: var(--icon-sm);
+  align-self: center; margin-left: 0; vertical-align: 0; color: var(--muted);
   transition: opacity var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
 }
 .prep-sel-main:hover .prep-sel-ext, .prep-sel-main:focus-visible .prep-sel-ext { opacity: 1; color: var(--hope-soft); }
@@ -3215,8 +3219,8 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .prep-sel--row:hover { border-color: var(--line-strong); background: var(--ink-hover); }
 .prep-sel--row .prep-sel-name { -webkit-line-clamp: 1; line-clamp: 1; }
 .prep-sel--row .prep-sel-thumb { --pc-thumb: var(--pc-thumb-row); }
-/* min-width:0 all the way down so the name (not the ↗ or the remove button)
-   is what gives way; the ↗ is flex:none and stays right after the name. */
+/* min-width:0 all the way down so the name (not the icon or the remove button)
+   is what gives way; the icon is flex:none and stays right after the name. */
 .prep-sel--row .prep-sel-main, .prep-sel--row .prep-sel-body, .prep-sel--row .prep-sel-title { min-width: 0; }
 .prep-sel--row .prep-sel-title { align-items: center; }
 .prep-sel--row .prep-sel-name { overflow-wrap: normal; word-break: normal; white-space: nowrap; text-overflow: ellipsis; display: block; }

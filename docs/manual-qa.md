@@ -157,7 +157,7 @@ locally") before starting.
       1920×950 are comfortable, with no horizontal scrollbar at any of them.
 - [ ] **Selected-adversary grid**: 4+ selected adversaries form a two-column
       grid at 1536 and 1440 (central panel ≥528px) and fall back to one column
-      at 1280; tiles stay 48px tall, a long name/meta ellipsizes with the ↗
+      at 1280; tiles stay 48px tall, a long name/meta ellipsizes with the external-link icon
       right after it and never touches the ×, the full name shows as a
       tooltip, and there is no horizontal overflow at 1536/1440/1280.
 - [ ] **Selection cell**: Environments, Adversaries and compact Items rows all
@@ -241,11 +241,11 @@ locally") before starting.
       thumbnail button that opened it; an adversary sharing group art with
       others (e.g. the four Darkweave adversaries) shows the same image for
       each.
-- [ ] **FreshCutGrass export**: the central "FreshCutGrass ↗" link is absent with
+- [ ] **FreshCutGrass export**: the central "Open Encounter" link is absent with
       zero adversaries selected, appears the moment one is selected, opens
       in a new tab, and its accessible label/tooltip announces the
-      destination ("Open selected adversaries in FreshCutGrass in a new
-      tab"). Decode the link's payload and confirm it uses
+      destination ("Open encounter in FreshCutGrass"). Hovering or focusing it, and
+      any adversary link on the page, moves nothing. Decode the link's payload and confirm it uses
       `name.en` (never the Russian label) at `q: 1`, with no environment or
       item data included.
 - [ ] **Items compact toolbar**: Type buttons (Items/Consumables), Source

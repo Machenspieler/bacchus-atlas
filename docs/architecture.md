@@ -500,16 +500,16 @@ narrower, so it stays one column there). Sections are semantic `<section>`s with
   broken thumbnail is a plain non-interactive icon, never a button that
   opens an empty overlay), a `.prep-sel-main` `<a target="_blank" rel="noopener noreferrer">`
   built by `adversaryFreshCutGrassUrl()` (a real link, so Cmd/Ctrl-click,
-  middle-click and "copy link" work) with a secondary `↗` beside the name,
+  middle-click and "copy link" work) with the shared external-link icon (`extIconHtml()`) beside the name,
   and remove. The "All Adversaries" picker row uses the same three zones
   (art button → `openAdversaryArtOverlay()`, FreshCutGrass link, checkbox)
   and the same `adversaryFreshCutGrassUrl()` + `adversaryExtIconHtml()`
-  (`↗`); an adversary with no URL renders plain text with no link and no
-  `↗`. The Environment and Adversary picker "{n} of {total}" counters are
+  (the same `extIconHtml()` SVG); an adversary with no URL renders plain text with no link and no
+  icon. The Environment and Adversary picker "{n} of {total}" counters are
   hidden at `max-width: 1536px` (CSS only, the text is still updated; the
   toolbar grid drops that track). DOM order is tab order: primary action →
   external link → remove. Tooltips come from the shared `data-tip` system
-  (`prep_tip_*` keys); the `aria-label`s stay name-specific.
+  (`encounter_link_tip` / `encounter_open_tip`, see design.md "Encounter links"); the `aria-label` repeats the same sentence.
 - **Counts:** only environments have a configured cap
   (`PrepUtils.MAX_ENVIRONMENTS`), so only that header reads `n/3`;
   adversaries and items are uncapped (PD-002) and show a plain number. At the
@@ -524,8 +524,8 @@ narrower, so it stays one column there). Sections are semantic `<section>`s with
   so environment thumbs use `object-fit: cover`; adversary/item art use
   `contain` (adversaries with a small inset for their uneven transparent
   padding).
-- The FreshCutGrass link label is the product name only ("FreshCutGrass ↗",
-  both languages); its localized sentence is the `aria-label` and tooltip.
+- The Prep encounter action reads "Open Encounter" + the shared icon (service-agnostic);
+  its "…in FreshCutGrass" sentence is the `aria-label` and tooltip.
 
 ### Quick add to the current Prep (outside `#/prep`)
 

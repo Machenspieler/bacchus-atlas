@@ -371,6 +371,28 @@ claims, so the two never collide). The tooltip is a single reused custom
 element rather than the native `title` attribute, which waits ~700ms, can't be
 styled, and never appears for a keyboard-only user.
 
+### Encounter links (FreshCutGrass)
+Every control that opens a prepared encounter shares one visual language:
+- **One icon.** `extIconHtml()` (the `ITEM_EXT_ICON` SVG in a `.ext-icon` box) —
+  never a literal `↗` or a second glyph. Size comes from `--ext-icon-size`
+  (1em in running text, `--icon-sm` in the two "Open Encounter" actions and
+  Prep rows); the box is always in the DOM, 0.55 opacity at rest, 1 on hover/focus.
+- **Zero layout shift.** Hover/focus/active change only colour, underline
+  colour, opacity, background or outline — never size, gap, padding, weight,
+  letter-spacing, border width or the glyph. In running text the icon is
+  wrapped in word joiners (`inlineExtIconHtml()`) so it cannot strand on its
+  own line or push the next "," / ";" down.
+- **Inline name links** (`.adversary-encounter-link`): gold, 1px `--hope-border-soft`
+  underline at rest, brightening on hover/focus; identical for single adversaries,
+  groups and recommended ones (the `★` is a separate marker).
+- **"Open Encounter" actions** (`.encounter-action`): label → icon with
+  `--inline-control-gap`. Environment: lightweight mono-caps text action.
+  Prep: compact `.btn-ghost .btn-sm` in the dense toolbar. Same icon, size and gap.
+- **Wording.** Visible UI is service-agnostic. Tooltip and `aria-label` are one
+  sentence: `encounter_link_tip` ("Open “{name}” as an encounter in FreshCutGrass")
+  for named links, `encounter_open_tip` ("Open encounter in FreshCutGrass") for the
+  two actions. Always the spelling "FreshCutGrass"; no "in a new tab" suffix.
+
 ### Item card
 Built from the atlas's own parts — the same `.modal` shell, `.modal-header`
 (Forum title, × close), chips and `.btn-ghost .btn-sm` buttons as an

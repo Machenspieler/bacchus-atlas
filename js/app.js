@@ -426,6 +426,33 @@ function envEncounterUrl(env) {
   return names.length ? buildFreshCutGrassEncounterUrl(env.name?.en || envName(env), names) : null;
 }
 
+const WORD_JOINER = String.fromCharCode(0x2060);
+
+/** THE external-link icon of the encounter integration — the only one: the
+ * individual/group adversary links, Prep's picker and selected rows, and both
+ * "Open Encounter" actions all render it through here (sizes differ by CSS
+ * token only, see .ext-icon). Always present, never swapped, so a link's
+ * geometry is identical in every interaction state. */
+function extIconHtml(extraClass = '') {
+  return `<span class="ext-icon${extraClass ? ' ' + extraClass : ''}" aria-hidden="true">${ITEM_EXT_ICON}</span>`;
+}
+
+/** The same icon inside running text: word joiners on both sides stop a wrap
+ * from stranding it on a line of its own after a name, or from pushing the
+ * following "," / ";" onto the next line. Only for inline text — in a flex
+ * row the joiner would become a stray flex item (and an extra gap). */
+function inlineExtIconHtml() {
+  return `${WORD_JOINER}${extIconHtml()}${WORD_JOINER}`;
+}
+
+/** The one tooltip + accessible-name sentence for a link that opens a named
+ * adversary or group as an encounter ("Open “Bear” as an encounter in
+ * FreshCutGrass"). The aggregate "Open Encounter" actions use
+ * t('encounter_open_tip') instead. */
+function encounterLinkTip(name) {
+  return t('encounter_link_tip').replace('{name}', () => name);
+}
+
 /** One inline link for a name in "Potential Adversaries" — a group such as
  * "Beasts" or a single adversary — that opens that name's own FreshCutGrass
  * encounter. An ordinary link, not a button: it reads as part of the sentence,
@@ -436,15 +463,11 @@ function envEncounterUrl(env) {
  * should get to change. The tooltip names this specific link's target rather
  * than saying "this encounter", so hovering "Bear" and hovering "Beasts" don't
  * read the same. */
-function extIconHtml() {
-  return `<span class="ext-icon" aria-hidden="true">${ITEM_EXT_ICON}</span>`;
-}
-
 function potentialAdversaryLinkHtml(visibleLabel, encounterName, adversaryNames) {
   const url = buildFreshCutGrassEncounterUrl(encounterName, adversaryNames);
-  const tip = t('open_encounter_builder_tip').replace('{n}', visibleLabel);
+  const tip = encounterLinkTip(visibleLabel);
   return `<a class="adversary-encounter-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer"
-            data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(tip)}">${escapeHtml(visibleLabel)}${extIconHtml()}</a>`;
+            data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(tip)}">${escapeHtml(visibleLabel)}${inlineExtIconHtml()}</a>`;
 }
 
 /** Renders one full potential_adversaries entry — "Beasts (Bear, Dire Wolf,
@@ -3571,12 +3594,12 @@ function adversaryFreshCutGrassUrl(adv) {
   return enName ? buildFreshCutGrassEncounterUrl(enName, [enName]) : null;
 }
 
-/** The one "opens FreshCutGrass in a new tab" cue for adversary names —
- * shared by the central selected-adversary row and the "All Adversaries"
- * picker row, so the glyph, its markup, and (via .prep-sel-ext) its
- * size/opacity/hover behavior have a single source of truth. */
+/** The external-link cue for adversary names — shared by the central
+ * selected-adversary row and the "All Adversaries" picker row. It is the same
+ * extIconHtml() every encounter link uses; .prep-sel-ext only sets its size
+ * and alignment inside Prep's flex rows. */
 function adversaryExtIconHtml() {
-  return '<span class="prep-sel-ext" aria-hidden="true">↗</span>';
+  return extIconHtml('prep-sel-ext');
 }
 
 /** Area 2 (artwork) of an adversary picker row: a real, focusable `<button>`
@@ -3601,13 +3624,13 @@ function advPickerRowHtml(adv, prep, recommendedFor = null) {
   const checked = prep.adversaryIds.includes(adv.id);
   const name = spName(adv);
   const fcgUrl = adversaryFreshCutGrassUrl(adv);
-  const fcgLabel = t('prep_open_adversary_freshcutgrass').replace('{name}', name);
+  const fcgLabel = encounterLinkTip(name);
   const nameHtml = `<span class="prep-row-name">${escapeHtml(name)}</span>`;
   const metaHtml = `<span class="prep-row-meta">${escapeHtml(advMetaText(adv))}</span>`;
-  // No FreshCutGrass URL: plain text, no link and no ↗ — never a broken link.
+  // No FreshCutGrass URL: plain text, no link and no icon — never a broken link.
   const text = fcgUrl
     ? `<a class="prep-row-text prep-adv-link" href="${escapeAttr(fcgUrl)}" target="_blank" rel="noopener noreferrer"
-         aria-label="${escapeAttr(fcgLabel)}">
+         data-tip="${escapeAttr(fcgLabel)}" aria-label="${escapeAttr(fcgLabel)}">
         <span class="prep-adv-title">${nameHtml}${adversaryExtIconHtml()}</span>
         ${metaHtml}
       </a>`
@@ -4415,7 +4438,7 @@ function centralThumbHtml(kind, src, action = null) {
  *    detail).
  *  - row layout: the thumbnail (its own art-preview button, see
  *    centralThumbHtml()), a `.prep-sel-main` <a> (`link`: {href, label,
- *    tip}) to FreshCutGrass with a secondary ↗, and the remove button.
+ *    tip}) to FreshCutGrass with a secondary external-link icon, and the remove button.
  * DOM order is the tab order: primary action, external link, remove. */
 function selectedEntityHtml({ layout, id, thumb, name, meta, removeAttr, removeLabel, removeTip, openAttr = '', openLabel = '', link = null, attrs = '' }) {
   const text = `
@@ -4617,8 +4640,8 @@ function centralAdvListHtml(prep) {
       meta: advMetaText(adv),
       link: fcgUrl && {
         href: fcgUrl,
-        label: t('prep_open_adversary_freshcutgrass').replace('{name}', name),
-        tip: t('prep_tip_open_adversary_freshcutgrass'),
+        label: encounterLinkTip(name),
+        tip: encounterLinkTip(name),
       },
       removeAttr: 'data-sp-remove-adv',
       removeLabel: t('prep_remove_adversary_named').replace('{name}', name),
@@ -4654,14 +4677,14 @@ function freshCutGrassUrlForPrep(prep) {
 
 /** An ordinary link (not a button) so it behaves like every other
  * FreshCutGrass link in the app — opens in a new tab, `noopener noreferrer`,
- * and an accessible name that announces both the destination and the new
- * tab. The visible label is the product name only ("FreshCutGrass ↗", same
- * in both languages); the localized sentence lives in aria-label + tooltip.
+ * and an accessible name that names the destination. The visible label is
+ * service-agnostic ("Open Encounter" + the shared extIconHtml() icon); the
+ * "…in FreshCutGrass" sentence lives in aria-label + tooltip.
  * Absent entirely (not just disabled) when no adversary is selected. */
 function freshCutGrassLinkHtml(prep) {
   const url = freshCutGrassUrlForPrep(prep);
   if (!url) return '';
-  const tip = t('prep_open_freshcutgrass_tip');
+  const tip = t('encounter_open_tip');
   return `<a class="btn btn-ghost btn-sm prep-freshcutgrass-link encounter-action" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer"
              data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(tip)}"><span>${escapeHtml(t('prep_open_freshcutgrass'))}</span>${extIconHtml()}</a>`;
 }
@@ -6652,9 +6675,9 @@ function openDetailOverlay(envId, carry = null) {
         <div class="section-label-row">
           <span class="section-label">${t('adversaries_label')}</span>
           ${encounterUrl ? (() => {
-            const tip = t('open_encounter_builder_tip').replace('{n}', envName(env));
+            const tip = t('encounter_open_tip');
             return `<a class="encounter-builder-link encounter-action" href="${escapeAttr(encounterUrl)}" target="_blank" rel="noopener noreferrer"
-                data-tip="${escapeAttr(tip)}"><span>${t('open_encounter_builder')}</span>${extIconHtml()}<span class="sr-only"> — ${tip}</span></a>`;
+                data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(tip)}"><span>${t('open_encounter_builder')}</span>${extIconHtml()}</a>`;
           })() : ''}
         </div>
         <p class="adversary-hint">${escapeHtml(t('adversaries_hint'))}</p>
