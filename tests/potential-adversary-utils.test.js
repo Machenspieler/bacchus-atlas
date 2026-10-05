@@ -228,7 +228,7 @@ test('"Beasts (any)" resolves to the tiered beast rosters and links per tier', (
   const prep = require('../data/prep.json');
   const groups = PAU.beastTierGroups(PAU.parsePotentialAdversaryEntry('Beasts (any)'));
   assert.deepEqual(groups.map(g => g.tier), [1, 2, 3, 4]);
-  assert.equal(groups.flatMap(g => g.names).length, 29);
+  assert.equal(groups.flatMap(g => g.names).length, 32);
   // Every roster name is a real catalogue adversary of exactly that tier.
   groups.forEach(({ tier, names: roster }) => roster.forEach(name => {
     const adv = prep.adversaries.find(a => a.name.en === name);

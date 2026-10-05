@@ -220,14 +220,16 @@
   };
 
   /** "Beasts (any)" — the GM may pick any beast — expands to the SRD 2.0
-   * adversaries FreshCutGrass tags "Beasts" that data/prep.json also holds,
+   * adversaries FreshCutGrass tags "Beasts" that data/prep.json also holds (plus
+   * Glass Snake, Giant Scorpion and Giant Mosquitoes, which the environments'
+   * own explicit Beasts lists use but FreshCutGrass leaves untagged),
    * split by tier so the card can offer one encounter link per tier (see
    * beastTierGroups). Tiers are the catalogue's own; tests/potential-adversary-
    * utils.test.js cross-checks every name and tier against data/prep.json so
    * this list can't drift from it. */
   const BEAST_TIER_ROSTERS = {
-    1: ['Ahuizotl', 'Atototl', 'Bear', 'Dire Wolf', 'Elk', 'Falcon', 'Giant Rat', 'Octopus', 'Panther',
-      'Sawtoothed Gillbeast', 'Swarm of Rats', 'Viper'],
+    1: ['Ahuizotl', 'Atototl', 'Bear', 'Dire Wolf', 'Elk', 'Falcon', 'Giant Mosquitoes', 'Giant Rat',
+      'Giant Scorpion', 'Glass Snake', 'Octopus', 'Panther', 'Sawtoothed Gillbeast', 'Swarm of Rats', 'Viper'],
     2: ['Dire Pangolati', 'Electric Eels', 'Elephant', 'Fowlbear', 'Giant Eagle', 'Giant Octopus', 'Shark',
       'Triceratops', 'Tyrannosaurus'],
     3: ['Crimson Lepus', 'Dire Bat', 'Gargantuan Sea Turtle', 'Plesiosaurus', 'Roc', 'Stag Knight'],
