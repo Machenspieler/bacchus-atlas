@@ -6804,7 +6804,7 @@ function openDetailOverlay(envId, carry = null) {
                 data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(label)}"><span>${t('open_encounter_builder')}</span>${badge}${extIconHtml()}</a>`;
           })() : ''}
         </div>
-        <p class="adversary-hint">${escapeHtml(t('adversaries_hint'))}</p>
+        ${adversariesHtml.includes('adversary-encounter-link') ? `<p class="adversary-hint">${escapeHtml(t('adversaries_hint'))}</p>` : ''}
         <p class="adversary-list">${adversariesHtml}</p>` : ''}
         ${featuresHtml ? `<span class="section-label">${t('features_label')}</span>${featuresHtml}` : ''}
         ${featuredAdversaryHtml}

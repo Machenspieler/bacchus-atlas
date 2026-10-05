@@ -445,7 +445,9 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   missing). The environment overlay's "Open Encounter" exports the supported
   subset; when that is a strict subset it shows a small count badge and a
   tooltip naming what is left out (long lists are cut with "and N more");
-  with no supported adversary the action is absent. All-supported and
+  with no supported adversary the action and the "Adversary names open a
+  prepared encounter" hint are absent (the hint shows only when at least one
+  encounter link is rendered). All-supported and
   no-adversary environments are unchanged. Group links ("Beasts", a family)
   export their supported members and are plain text when none remain.
 - **How to apply:** ask `FreshCutGrassUtils.isFreshCutGrassSupported()` and
