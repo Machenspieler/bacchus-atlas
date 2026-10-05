@@ -429,3 +429,28 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   longest and least useful when picking, so it is the one allowed to lose.
 - **How to apply:** a new surface that shows these facts calls
   `itemMetaText()` — never a second inline template.
+
+## PD-014: FreshCutGrass links exist only for adversaries FreshCutGrass supports
+- **Date:** 2026-10-05
+- **Decision:** An adversary is linked to, or exported to, FreshCutGrass only
+  if it is in the supported dataset: the English names of the adversary
+  catalogue `data/prep.json` (official adversaries, spelled as FreshCutGrass
+  spells them). Anything absent is unsupported — fail closed, never "probably
+  supported". The decision is never inferred from source, book, tier or
+  homebrew status, and never from a localized label; RU/EN do not change it.
+- **Why:** FreshCutGrass opens an effectively empty encounter for a name it
+  does not know, so a link for it looks broken.
+- **Behaviour:** an unsupported adversary renders as plain text — no `<a>`, no
+  icon, not greyed out (the adversary is valid; only the integration is
+  missing). The environment overlay's "Open Encounter" exports the supported
+  subset; when that is a strict subset it shows a small count badge and a
+  tooltip naming what is left out (long lists are cut with "and N more");
+  with no supported adversary the action is absent. All-supported and
+  no-adversary environments are unchanged. Group links ("Beasts", a family)
+  export their supported members and are plain text when none remain.
+- **How to apply:** ask `FreshCutGrassUtils.isFreshCutGrassSupported()` and
+  build URLs only through `buildFreshCutGrassEncounterUrl()` in `js/app.js`
+  (which gates through `buildSupportedEncounterUrl()`); never add a second
+  allowlist or an `if (source === …)` check. Supported names are sent under
+  the catalogue spelling. Making an adversary linkable means adding it to
+  `data/prep.json`.

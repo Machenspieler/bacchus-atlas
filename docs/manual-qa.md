@@ -241,6 +241,13 @@ locally") before starting.
       thumbnail button that opened it; an adversary sharing group art with
       others (e.g. the four Darkweave adversaries) shows the same image for
       each.
+- [ ] **FreshCutGrass support gate (PD-014)**: on `#/env/fathomless-baths-surface`
+      (RU and EN) Merchant and Petty Noble are links with the external icon,
+      Tourists is plain text (no icon, no hover, not greyed); "Open Encounter"
+      shows a `2` badge and its tooltip names Tourists, and the opened
+      encounter holds only Merchant and Petty Noble. `#/env/cursed-graveyard`
+      (all supported) has no badge; `#/env/civic-library` (none supported) has
+      no links and no "Open Encounter".
 - [ ] **FreshCutGrass export**: the central "Open Encounter" link is absent with
       zero adversaries selected, appears the moment one is selected, opens
       in a new tab, and its accessible label/tooltip announces the

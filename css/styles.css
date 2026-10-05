@@ -1332,6 +1332,16 @@ a:hover .ext-icon, a:focus-visible .ext-icon { opacity: 1; }
 }
 .encounter-builder-link:hover { color: var(--hope-soft); text-decoration: none; }
 
+/* How many adversaries a mixed environment's "Open Encounter" really exports —
+ * a small outlined count that takes the link's own colour, so it brightens
+ * with the label on hover instead of becoming a second accent. */
+.encounter-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; padding: 0 5px; border-radius: var(--r-pill);
+  border: 1px solid currentColor;
+  font-size: var(--fs-micro); font-weight: 700; line-height: 1; letter-spacing: 0;
+}
+
 /* The one rule left inside the card body, so it carries the interactive weight
  * rather than the default edge — at 1.73:1 a 2px stem read as nothing at all. */
 .feature {

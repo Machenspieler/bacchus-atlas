@@ -24,8 +24,8 @@ js/search-index.js      — environment search index builder
 js/prep-utils.js — Prep pure selection/search/filter logic
 js/prep-reorder-utils.js — Prep manual ordering: id moves/inserts, insertion-slot geometry, autoscroll curve (pure)
 js/prep-reorder-ui.js   — Prep drag-and-drop / Alt+Arrow controller (pointer events, insertion line, autoscroll)
-js/freshcutgrass-utils.js — FreshCutGrass encounter-URL encoder (shared by env detail + Prep)
 js/potential-adversary-utils.js — Potential Adversaries parser + Prep recommendation matching (shared by env detail + Prep)
+js/freshcutgrass-utils.js — FreshCutGrass encounter-URL encoder + supported-adversary gate (shared by env detail + Prep); loads after potential-adversary-utils.js, which it requires
 js/battle-points.js     — Battle Points arithmetic (pure)
 js/battle-points-ui.js  — Battle Points summary + popover in the Prep Adversaries header
 js/soundboard-manifest.js — the eight bundled sound effects + stored-level normalization (pure)
@@ -873,7 +873,7 @@ directly rather than driving it through the DOM:
 | `js/search-index.js` | environment search record building and matching |
 | `js/prep-utils.js` | Prep default shape, prep lifecycle (add/switch/remove prep, title resolution), selection toggling, search/Tier/Type/Category/Source filtering, recommended-group ordering and the bulk-add of recommendations |
 | `js/prep-reorder-utils.js` | Prep manual ordering: `moveId`/`insertId`, `resolveSlot`/`slotGeometry` (virtual insertion slots over the rendered grid), `keyboardTarget`, `autoscrollDelta` |
-| `js/freshcutgrass-utils.js` | FreshCutGrass encounter URL encoding |
+| `js/freshcutgrass-utils.js` | FreshCutGrass encounter URL encoding and the supported-adversary compatibility gate (`isFreshCutGrassSupported`, PD-014) |
 | `js/potential-adversary-utils.js` | Potential Adversaries parsing/alias/family resolution (incl. the Bandits → Jagged Knife rule), canonical-name catalogue matching, per-environment recommendation index, recommendation provenance aggregation |
 | `js/battle-points.js` | Battle Points base budget, per-type cost, automatic/manual adjustments, number formatting |
 | `js/random-environment-utils.js` | Random Environment card's Tier-badge derivation and pool pick |

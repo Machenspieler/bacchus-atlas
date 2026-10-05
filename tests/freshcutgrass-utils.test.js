@@ -63,3 +63,71 @@ test('utf8ToBase64 round-trips a plain ASCII string', () => {
   const encoded = FreshCutGrassUtils.utf8ToBase64('hello');
   assert.equal(Buffer.from(encoded, 'base64').toString('utf8'), 'hello');
 });
+
+/* ---------------- supported-adversary compatibility ---------------- */
+
+const prepCatalogue = require('../data/prep.json').adversaries;
+const environments = require('../data/environments.json').environments;
+const PotentialAdversaryUtils = require('../js/potential-adversary-utils.js');
+const supportIndex = FreshCutGrassUtils.buildSupportedAdversaryIndex(prepCatalogue);
+const supportedUrl = (name, advs) => FreshCutGrassUtils.buildSupportedEncounterUrl(name, advs, supportIndex);
+
+test('every Prep catalogue adversary is supported, by English name or record', () => {
+  prepCatalogue.forEach(adv => {
+    assert.equal(FreshCutGrassUtils.isFreshCutGrassSupported(adv, supportIndex), true, adv.id);
+    assert.equal(FreshCutGrassUtils.isFreshCutGrassSupported(adv.name.en, supportIndex), true, adv.id);
+  });
+});
+
+test('a name outside the supported dataset is unsupported (fail closed)', () => {
+  assert.equal(FreshCutGrassUtils.isFreshCutGrassSupported('Tourists', supportIndex), false);
+  assert.equal(FreshCutGrassUtils.isFreshCutGrassSupported('', supportIndex), false);
+  assert.equal(FreshCutGrassUtils.isFreshCutGrassSupported(null, supportIndex), false);
+  // No index at all (Prep catalogue not loaded) means nothing is supported.
+  assert.equal(FreshCutGrassUtils.isFreshCutGrassSupported('Bear', undefined), false);
+  assert.equal(FreshCutGrassUtils.isFreshCutGrassSupported('Bear', new Map()), false);
+});
+
+test('compatibility reads the English name only — a Russian label never matches', () => {
+  const bear = prepCatalogue.find(a => a.id === 'bear');
+  assert.equal(FreshCutGrassUtils.isFreshCutGrassSupported(bear.name.ru, supportIndex), false);
+  assert.equal(FreshCutGrassUtils.isFreshCutGrassSupported({ name: { ru: bear.name.ru } }, supportIndex), false);
+  assert.equal(FreshCutGrassUtils.isFreshCutGrassSupported({ name: { en: 'Bear', ru: 'whatever' } }, supportIndex), true);
+});
+
+test('supported/unsupported helpers partition a list and keep its order', () => {
+  const list = ['Bear', 'Tourists', 'Dire Wolf', 'River Spirit'];
+  assert.deepEqual(FreshCutGrassUtils.getFreshCutGrassSupportedAdversaries(list, supportIndex), ['Bear', 'Dire Wolf']);
+  assert.deepEqual(FreshCutGrassUtils.getFreshCutGrassUnsupportedAdversaries(list, supportIndex), ['Tourists', 'River Spirit']);
+});
+
+test('a supported-only list builds exactly the same URL as the raw encoder', () => {
+  const names = ['Acid Burrower', 'Bugboar', 'Dire Wolf'];
+  assert.equal(supportedUrl('Encounter', names), FreshCutGrassUtils.buildFreshCutGrassEncounterUrl('Encounter', names));
+});
+
+test('unsupported names never reach the payload', () => {
+  const url = supportedUrl('Mixed', ['Bear', 'Tourists', 'Dire Wolf']);
+  assert.deepEqual(decodeEncounterUrl(url).d.map(e => e.n), ['Bear', 'Dire Wolf']);
+  assert.ok(!JSON.stringify(decodeEncounterUrl(url)).includes('Tourists'));
+});
+
+test('no supported adversary builds no URL at all', () => {
+  assert.equal(supportedUrl('None', ['Tourists', 'Some Homebrew Adversary']), null);
+  assert.equal(supportedUrl('None', []), null);
+  assert.equal(FreshCutGrassUtils.buildSupportedEncounterUrl('None', ['Bear'], new Map()), null);
+});
+
+test('a supported adversary is sent under the catalogue spelling, once', () => {
+  const url = supportedUrl('Case', ['dire wolf', 'Dire Wolf']);
+  assert.deepEqual(decodeEncounterUrl(url).d.map(e => e.n), ['Dire Wolf']);
+});
+
+test('the Fathomless Baths surface keeps its supported names and drops Tourists', () => {
+  const env = environments.find(e => e.id === 'fathomless-baths-surface');
+  const names = PotentialAdversaryUtils.envAdversaryNames(env);
+  assert.deepEqual(names, ['Merchant', 'Petty Noble', 'Tourists']);
+  const exported = decodeEncounterUrl(supportedUrl('Baths', names)).d.map(e => e.n);
+  assert.ok(!exported.includes('Tourists'));
+  assert.deepEqual(exported, names.filter(n => FreshCutGrassUtils.isFreshCutGrassSupported(n, supportIndex)));
+});

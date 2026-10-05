@@ -67,6 +67,11 @@ const state = {
   // above (the complete item encyclopedia); see the "Prep" sections
   // in CLAUDE.md.
   prepCatalog: { adversaries: [], itemIds: [], adversaryById: new Map() },
+  // The FreshCutGrass-supported adversaries (normalized English name -> its
+  // FreshCutGrass spelling), derived from the Prep catalogue by
+  // setPrepCatalog(). Empty until that lands — and if it never does — which
+  // means "nothing is supported": every FreshCutGrass link stays off.
+  fcgSupportIndex: new Map(),
   // The compact "All Adversaries" toolbar's own precomputed search index
   // (name/Tier-alias/Type, EN+RU at once) — built once in
   // setPrepCatalog(), the same "built once alongside the catalogue
@@ -407,23 +412,76 @@ function bilingual(field) { return field?.[state.lang] || field?.en || field?.ru
  * it. */
 const {
   parsePotentialAdversaryEntry, looksLikeAdversaryName, anyAdversaryFamily,
-  resolveAdversaryNames, envAdversaryNames, beastTierGroups,
+  resolveAdversaryNames, envAdversaryNames, beastTierGroups, normalizeAdversaryName,
 } = PotentialAdversaryUtils;
 
-/** The one FreshCutGrass URL encoder for the whole app — see
- * js/freshcutgrass-utils.js (FreshCutGrassUtils) for the pure
- * implementation shared with Prep's own export. */
+/** The one FreshCutGrass URL builder for the whole app. Whether an adversary
+ * may go to FreshCutGrass at all is decided by
+ * FreshCutGrassUtils.isFreshCutGrassSupported() (js/freshcutgrass-utils.js)
+ * against state.fcgSupportIndex — never by an adversary's source or tier.
+ * Unsupported adversaries are dropped before encoding, and null comes back
+ * when none are left — callers render no link then, never an empty
+ * encounter. */
 function buildFreshCutGrassEncounterUrl(encounterName, adversaryNames) {
-  return FreshCutGrassUtils.buildFreshCutGrassEncounterUrl(encounterName, adversaryNames);
+  return FreshCutGrassUtils.buildSupportedEncounterUrl(encounterName, adversaryNames, state.fcgSupportIndex);
 }
 
-/** The whole-environment encounter URL for an environment, or null for one
- * whose Potential Adversaries names nothing buildFreshCutGrassEncounterUrl()
- * could use — e.g. "Any". Every environment is eligible, current or future:
- * nothing here reads env.source or any other opt-in list. */
-function envEncounterUrl(env) {
+/** The label the reader sees for each canonical adversary name in an
+ * environment's Potential Adversaries, keyed by normalized English name. Read
+ * from the localized entry at the same index as the English one, and only
+ * where the two line up one-to-one; any name not in the map is shown in
+ * English. Display only — never part of a compatibility decision. */
+function envAdversaryDisplayNames(env) {
+  const labels = new Map();
+  const english = env?.potential_adversaries?.en || [];
+  const localized = env?.potential_adversaries?.[state.lang] || [];
+  english.forEach((entry, i) => {
+    const canonical = parsePotentialAdversaryEntry(entry);
+    const shown = parsePotentialAdversaryEntry(localized[i] ?? entry);
+    if (beastTierGroups(canonical) || shown.members.length !== canonical.members.length) return;
+    const groupLabel = canonical.isGroup ? canonical.label : null;
+    canonical.members.forEach((member, j) => {
+      const names = resolveAdversaryNames(groupLabel, member);
+      if (names.length === 1) labels.set(normalizeAdversaryName(names[0]), shown.members[j]);
+    });
+  });
+  return labels;
+}
+
+/** What the environment's "Open Encounter" action exports: the whole-
+ * environment URL (null when no adversary is supported, or the environment
+ * names none), how many adversaries it holds, and the readable names of the
+ * ones left out. Every environment is eligible, current or future: nothing
+ * here reads env.source or any other opt-in list. */
+function envEncounterExport(env) {
   const names = envAdversaryNames(env);
-  return names.length ? buildFreshCutGrassEncounterUrl(env.name?.en || envName(env), names) : null;
+  const supported = FreshCutGrassUtils.getFreshCutGrassSupportedAdversaries(names, state.fcgSupportIndex);
+  const unsupported = FreshCutGrassUtils.getFreshCutGrassUnsupportedAdversaries(names, state.fcgSupportIndex);
+  const url = buildFreshCutGrassEncounterUrl(env.name?.en || envName(env), supported);
+  if (!url) return { url: null, supportedCount: 0, total: names.length, unsupportedLabels: [] };
+  const labels = unsupported.length ? envAdversaryDisplayNames(env) : null;
+  return {
+    url,
+    supportedCount: supported.length,
+    total: names.length,
+    unsupportedLabels: unsupported.map(name => labels.get(normalizeAdversaryName(name)) || name),
+  };
+}
+
+/** Longest list of left-out names the partial-export tooltip spells out. */
+const ENCOUNTER_TIP_MAX_NAMES = 4;
+
+/** The tooltip for a mixed environment's "Open Encounter": how many adversaries
+ * will be added and which ones will not. Empty when everything is exported. */
+function encounterPartialTip(exp) {
+  if (!exp.unsupportedLabels.length) return '';
+  const head = t('encounter_partial_tip').replace('{n}', exp.supportedCount).replace('{total}', exp.total);
+  const labels = exp.unsupportedLabels;
+  if (labels.length === 1) return `${head} ${t('encounter_partial_one').replace('{name}', () => labels[0])}`;
+  const shown = labels.slice(0, ENCOUNTER_TIP_MAX_NAMES);
+  const rest = labels.length - shown.length;
+  const list = rest > 0 ? `${shown.join(', ')}, ${t('encounter_partial_more').replace('{n}', rest)}` : shown.join(', ');
+  return `${head} ${t('encounter_partial_many').replace('{names}', () => list)}`;
 }
 
 const WORD_JOINER = String.fromCharCode(0x2060);
@@ -465,6 +523,9 @@ function encounterLinkTip(name) {
  * read the same. */
 function potentialAdversaryLinkHtml(visibleLabel, encounterName, adversaryNames) {
   const url = buildFreshCutGrassEncounterUrl(encounterName, adversaryNames);
+  // Nothing FreshCutGrass knows: ordinary text — not a link, an icon or a
+  // greyed-out entity; the adversary is fine, only the integration is absent.
+  if (!url) return escapeHtml(visibleLabel);
   const tip = encounterLinkTip(visibleLabel);
   return `<a class="adversary-encounter-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer"
             data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(tip)}">${escapeHtml(visibleLabel)}${inlineExtIconHtml()}</a>`;
@@ -3201,6 +3262,7 @@ function setPrepCatalog(data) {
   // environmentPrepSearchIndex.
   state.adversaryPrepSearchIndex = PrepUtils.buildAdversarySearchIndex(
     adversaries, state.i18n.en, state.i18n.ru);
+  state.fcgSupportIndex = FreshCutGrassUtils.buildSupportedAdversaryIndex(adversaries);
   state.prepLoadFailed = false;
   // prepItems() below resolves itemIds against the already-loaded
   // itemCatalog (setItemCatalog() always runs first in init()), so the
@@ -4724,7 +4786,7 @@ function freshCutGrassUrlForPrep(prep) {
     .filter(Boolean)
     .map(adv => adv.name.en);
   if (!names.length) return null;
-  return FreshCutGrassUtils.buildFreshCutGrassEncounterUrl(freshCutGrassEncounterTitle(prep), names);
+  return buildFreshCutGrassEncounterUrl(freshCutGrassEncounterTitle(prep), names);
 }
 
 /** An ordinary link (not a button) so it behaves like every other
@@ -6516,7 +6578,7 @@ function openDetailOverlay(envId, carry = null) {
   if (!env) return;
   const impulses = envField(env, 'impulses');
   const adversaries = envField(env, 'potential_adversaries');
-  const encounterUrl = envEncounterUrl(env);
+  const encounterExport = envEncounterExport(env);
 
   /* The tier the card is currently being read at. Deliberately modal-local: it
    * lives while this card is open and is gone the moment it closes, so nothing
@@ -6731,10 +6793,15 @@ function openDetailOverlay(envId, carry = null) {
         ${hasRealAdversaries ? `
         <div class="section-label-row">
           <span class="section-label">${t('adversaries_label')}</span>
-          ${encounterUrl ? (() => {
-            const tip = t('encounter_open_tip');
-            return `<a class="encounter-builder-link encounter-action" href="${escapeAttr(encounterUrl)}" target="_blank" rel="noopener noreferrer"
-                data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(tip)}"><span>${t('open_encounter_builder')}</span>${extIconHtml()}</a>`;
+          ${encounterExport.url ? (() => {
+            // Mixed environment: a count badge and a tooltip say that only
+            // part of the list is exported. All-supported: nothing extra.
+            const partialTip = encounterPartialTip(encounterExport);
+            const tip = partialTip || t('encounter_open_tip');
+            const label = partialTip ? `${t('encounter_open_tip')}. ${partialTip}` : tip;
+            const badge = partialTip ? `<span class="encounter-count" aria-hidden="true">${encounterExport.supportedCount}</span>` : '';
+            return `<a class="encounter-builder-link encounter-action" href="${escapeAttr(encounterExport.url)}" target="_blank" rel="noopener noreferrer"
+                data-tip="${escapeAttr(tip)}" aria-label="${escapeAttr(label)}"><span>${t('open_encounter_builder')}</span>${badge}${extIconHtml()}</a>`;
           })() : ''}
         </div>
         <p class="adversary-hint">${escapeHtml(t('adversaries_hint'))}</p>
