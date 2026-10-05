@@ -385,6 +385,20 @@ rebuilt mid-interaction; a Tier button's pressed state is toggled directly
 on the clicked element in `bindPrepDelegation()` rather than through
 a rebuild, for the same reason.
 
+## Prep Items strip: one-row / two-row height
+
+The Compact (list) strip `#prep-item-compact-grid` has exactly two heights,
+selected by `data-rows="1|2"` and animated with `height var(--t-layout)`
+(160ms ease; `prefers-reduced-motion` removes it). `syncCompactRows()` in
+`js/app.js` sets the attribute from rendered capacity — `floor((wrapWidth +
+gap) / (colMin + gap))` columns, read from the wrap's full width (arrow
+visibility never feeds in) and CSS custom properties — never from a record
+count. It only writes on a change, so the ResizeObserver firing during the
+transition settles at once. Heights are fixed lengths (rows + padding + the
+measured scrollbar track, `--prep-compact-scroll-h`); the toolbar is outside
+the strip and never changes. A view switch applies the state without a
+transition. The Gallery strip is always one row and is unaffected.
+
 ## Prep's compact "All Adversaries" toolbar
 
 The `#/prep` adversary picker's toolbar (`advToolbarHtml()`) is

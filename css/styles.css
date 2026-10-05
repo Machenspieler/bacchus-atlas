@@ -127,6 +127,7 @@
   /* ---- motion ---- */
   --t-fast: 120ms;
   --t-base: 180ms;
+  --t-layout: 160ms; /* structural height changes (Prep Items panel) */
   --t-slow: 260ms;
   --ease-out: cubic-bezier(0.2, 0.8, 0.3, 1);
   --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
@@ -3551,11 +3552,21 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    .prep-item-strip-wrap/.prep-item-nav-btn as-is. */
 .prep-item-compact-grid {
   flex: 1 1 auto; min-width: 0;
-  /* Fixed two-row height (a row is its 60px thumb + padding + border): the
-     strip keeps the same height from 5 to 100 records instead of shrinking
-     line by line as the filters narrow. Only at four records or fewer does it
-     drop to a single row — see the :has() rule below. */
+  /* Two deterministic heights, chosen by syncCompactRows() in js/app.js via
+     data-rows="1|2" (measured against the strip's real width, never a record
+     count): a row is its 60px thumb + padding + border. The two heights are
+     fixed lengths, so `height` can transition between them; overflow-y: hidden
+     clips the not-yet-revealed second row mid-animation. */
   --prep-compact-row-h: 78px;
+  --prep-compact-row-gap: var(--s-2);
+  --prep-compact-col-min: 240px;
+  --prep-compact-col-gap: var(--s-3);
+  /* The strip's bottom padding plus the scrollbar track it permanently
+     reserves (overflow-x: scroll). --prep-compact-scroll-h is the measured
+     track height (syncCompactRows()); 8px is only the pre-measure default. */
+  --prep-compact-scroll-h: 8px;
+  --prep-compact-chrome-h: calc(var(--s-2) + var(--prep-compact-scroll-h));
+  height: calc(2 * var(--prep-compact-row-h) + var(--prep-compact-row-gap) + var(--prep-compact-chrome-h));
   display: grid; grid-template-rows: repeat(2, var(--prep-compact-row-h));
   /* minmax()'s floor, not just its ceiling, has to be wide enough on its
      own: .prep-row-name/.prep-row-meta's overflow:hidden makes them
@@ -3567,34 +3578,24 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
      is 240px, wide enough for that meta line at this row's actual
      padding/gap/thumbnail sizing (measured, not guessed).
    */
-  grid-auto-flow: column; grid-auto-columns: minmax(240px, 260px);
-  gap: var(--s-2) var(--s-3); overflow-x: scroll; overflow-y: hidden;
+  grid-auto-flow: column; grid-auto-columns: minmax(var(--prep-compact-col-min), 260px);
+  gap: var(--prep-compact-row-gap) var(--prep-compact-col-gap); overflow-x: scroll; overflow-y: hidden;
   -webkit-overflow-scrolling: touch; padding-bottom: var(--s-2);
   scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent;
+  transition: height var(--t-layout) ease;
 }
 .prep-item-compact-grid > .prep-empty { grid-row: 1 / -1; align-self: center; }
-/* Four records or fewer fit one row of columns, so the second row would only
-   be an empty band: collapse to a single row (the empty state included). The
-   pure-CSS test is "no 5th child" — it re-evaluates by itself every time
-   refreshItemGrid() swaps the grid's contents, so no JS state is involved.
-   More records than that keep the fixed two-row height. A wider panel fits
-   more columns without any horizontal scroll, so each step below raises the
-   limit by one: a column needs 240px (the grid-auto-columns floor) plus the
-   12px gap. The nav arrows are hidden (display: none) whenever nothing
-   overflows, so the strip is the panel's whole content box and N columns
-   need 240N + 12(N-1) px, rounded up a few px. */
-.prep-item-compact-grid:not(:has(> :nth-child(5))) { grid-template-rows: var(--prep-compact-row-h); }
-@container prep-items-panel (min-width: 1250px) {
-  .prep-item-compact-grid:not(:has(> :nth-child(6))) { grid-template-rows: var(--prep-compact-row-h); }
+/* One row when every record fits a single row at the strip's current width
+   (syncCompactRows() counts columns from the live width, so it follows the
+   viewport, panel padding and scrollbar by itself); otherwise the two-row
+   default above. Never a third row. The rows template switches instantly —
+   the cards re-flow with the filter result — while the height glides. */
+.prep-item-compact-grid[data-rows="1"] {
+  grid-template-rows: var(--prep-compact-row-h);
+  height: calc(var(--prep-compact-row-h) + var(--prep-compact-chrome-h));
 }
-@container prep-items-panel (min-width: 1502px) {
-  .prep-item-compact-grid:not(:has(> :nth-child(7))) { grid-template-rows: var(--prep-compact-row-h); }
-}
-@container prep-items-panel (min-width: 1754px) {
-  .prep-item-compact-grid:not(:has(> :nth-child(8))) { grid-template-rows: var(--prep-compact-row-h); }
-}
-@container prep-items-panel (min-width: 2006px) {
-  .prep-item-compact-grid:not(:has(> :nth-child(9))) { grid-template-rows: var(--prep-compact-row-h); }
+@media (prefers-reduced-motion: reduce) {
+  .prep-item-compact-grid { transition: none; }
 }
 .prep-item-compact-grid::-webkit-scrollbar { height: 8px; }
 .prep-item-compact-grid::-webkit-scrollbar-track { background: transparent; }

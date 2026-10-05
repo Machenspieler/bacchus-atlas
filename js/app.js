@@ -4169,7 +4169,7 @@ function activeItemGridId() {
  * out from under an in-progress interaction. Called after every
  * filter-affecting change: Type/Source toggle, a committed search edit,
  * a dice roll, or Clear. */
-function refreshItemGrid() {
+function refreshItemGrid(opts) {
   const prep = activePrep();
   const grid = document.getElementById(activeItemGridId());
   if (grid) {
@@ -4178,7 +4178,48 @@ function refreshItemGrid() {
   }
   const count = document.getElementById('prep-item-total-count');
   if (count) count.textContent = itemCountText();
+  syncCompactRows(opts);
   refreshPrepItemNav();
+}
+
+/** Picks the Compact strip's one of two deterministic heights (data-rows
+ * "1" or "2", animated by CSS) from the *rendered* capacity: how many
+ * minimum-width columns fit the wrap's full width (arrows excluded, so
+ * their visibility never feeds back into the height). Records fit one row
+ * when there are no more than that many; the strip never goes beyond two
+ * rows. Only writes on an actual change, so the ResizeObserver that fires
+ * while the height transitions settles immediately. `animate: false`
+ * applies the state without a transition (first paint, view switch). */
+function syncCompactRows({ animate = true } = {}) {
+  const grid = document.getElementById('prep-item-compact-grid');
+  const wrap = grid && grid.parentElement;
+  if (!wrap || wrap.hidden) return;
+  const width = wrap.clientWidth;
+  if (!width) return;
+  // The scrollbar track the strip reserves is browser-defined (thin ≠ 8px
+  // everywhere, 0 for overlay scrollbars): read it once and feed it to the
+  // two fixed heights, so neither state clips the rows' bottom padding.
+  const track = grid.offsetHeight - grid.clientHeight;
+  if (track >= 0 && grid.dataset.track !== String(track)) {
+    grid.style.transition = 'none';
+    grid.dataset.track = String(track);
+    grid.style.setProperty('--prep-compact-scroll-h', track + 'px');
+    void grid.offsetHeight;
+    grid.style.transition = '';
+  }
+  const cs = getComputedStyle(grid);
+  const gap = parseFloat(cs.columnGap) || 0;
+  const colMin = parseFloat(cs.getPropertyValue('--prep-compact-col-min')) || 240;
+  const capacity = Math.max(1, Math.floor((width + gap) / (colMin + gap)));
+  const count = grid.querySelector('.prep-empty') ? 0 : grid.childElementCount;
+  const rows = count <= capacity ? '1' : '2';
+  if (grid.dataset.rows === rows) return;
+  if (!animate) grid.style.transition = 'none';
+  grid.dataset.rows = rows;
+  if (!animate) {
+    void grid.offsetHeight;
+    grid.style.transition = '';
+  }
 }
 
 /** Enables/disables the clear-all-filters button beside the search field —
@@ -4209,7 +4250,9 @@ function setItemViewMode(mode) {
     btn.classList.toggle('btn-ghost', !active);
     btn.setAttribute('aria-pressed', String(active));
   });
-  refreshItemGrid();
+  // The strip was display:none until a moment ago, so its height settles
+  // without a transition.
+  refreshItemGrid({ animate: false });
   initPrepItemNav(activeItemGridId());
 }
 
@@ -4365,14 +4408,15 @@ function initPrepItemNav(gridId = 'prep-item-grid') {
   s.onScroll = () => refreshPrepItemNav();
   el.addEventListener('scroll', s.onScroll, { passive: true });
   if (typeof ResizeObserver !== 'undefined') {
-    s.ro = new ResizeObserver(() => refreshPrepItemNav());
+    s.ro = new ResizeObserver(() => { syncCompactRows(); refreshPrepItemNav(); });
     s.ro.observe(el);
   } else {
-    s.onWindowResize = () => refreshPrepItemNav();
+    s.onWindowResize = () => { syncCompactRows(); refreshPrepItemNav(); };
     window.addEventListener('resize', s.onWindowResize);
   }
 
   itemNavState = s;
+  syncCompactRows({ animate: false });
   refreshPrepItemNav();
 }
 
