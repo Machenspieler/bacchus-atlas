@@ -105,8 +105,15 @@
   --h-label: 16px;
   --icon-sm: 14px; --icon-md: 16px;
 
+  /* One ring colour and width; only the placement varies:
+     external  --focus-offset        standalone controls with room around them
+     tight     --focus-offset-tight  small boxes beside a neighbour or an edge
+     inset     --focus-offset-inset  boxes whose edge is a shared border or an
+                                     overflow clip (segments, steppers, rows) */
   --focus-ring: 2px solid var(--hope);
   --focus-offset: 2px;
+  --focus-offset-tight: 1px;
+  --focus-offset-inset: -2px;
 
   /* ---- Prep selection cell (shared by the environment, adversary
      and item pickers): 4px row padding → 32px hit area holding an 18px
@@ -310,7 +317,11 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 }
 .lang-switch button.active { background: var(--hope); color: var(--hope-ink); font-weight: 700; }
 .lang-switch button:not(.active):hover { color: var(--parchment); background: var(--ink-raised); }
-.lang-switch button:focus-visible { outline-offset: -2px; border-radius: 0; }
+.lang-switch button:focus-visible { outline-offset: var(--focus-offset-inset); border-radius: 0; }
+/* The selected segment is already solid gold, so a gold ring would vanish on it: the
+ * ring goes dark and 2px further in, leaving a gold gutter so it reads as a frame
+ * rather than as the segment shrinking against the dark group edge. */
+.lang-switch button.active:focus-visible { outline-color: var(--hope-ink); outline-offset: -4px; }
 
 /* The same control, pinned to the corner while a stat block is open — the one
  * in the header is behind the backdrop by then. Above the overlays it rides
@@ -467,7 +478,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 .icon-btn:hover:not(:disabled) { color: var(--parchment); background: var(--ib-hover-bg); }
 .icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 /* Tight boxes sit at the edge of their surfaces: a 1px offset keeps the ring unclipped. */
-.icon-btn:focus-visible { outline-offset: 1px; }
+.icon-btn:focus-visible { outline-offset: var(--focus-offset-tight); }
 .icon-btn--utility:hover:not(:disabled),
 .icon-btn--utility[aria-expanded="true"] { color: var(--hope-soft); background: var(--ib-hover-bg); }
 .icon-btn--utility[aria-expanded="true"] { border-color: var(--line); }
@@ -581,7 +592,18 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 .ms-row:hover { background: rgba(255,255,255,0.06); color: var(--hope-soft); }
 .ms-row:has(.ms-checkbox:checked) { background: rgba(217,164,65,0.16); color: var(--hope-soft); }
 .ms-row:has(.ms-checkbox:checked):hover { background: rgba(217,164,65,0.24); }
-.ms-row:has(.ms-checkbox:focus-visible) { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
+/* The row is the focus target: its checkbox is visually hidden (.sr-only), so it
+ * draws no ring of its own, and rows sit 1px apart inside the panel, so the ring
+ * goes inside the row rather than over its neighbours. */
+.ms-checkbox:focus-visible { outline: none; }
+/* As a 1px dot at the row's edge, the hidden checkbox is all the browser scrolls
+ * into view on focus — a row at the bottom of a scrolling panel could take focus
+ * while mostly hidden. Stretched over the row (still invisible) it brings the
+ * whole row, and its ring, in; a click on it toggles it exactly as the label does. */
+.ms-checkbox {
+  inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; clip: auto; cursor: pointer;
+}
+.ms-row:has(.ms-checkbox:focus-visible) { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 /* A finger needs ~44px of row, not the ~34px a mouse is happy clicking. */
 @media (pointer: coarse) {
   .ms-row { min-height: 44px; }
@@ -631,7 +653,7 @@ button.rank-icon:hover { color: var(--parchment); }
 button.rank-icon:active { transform: scale(0.92); }
 /* The face is clipped to a hexagon, so the ring is drawn on the box around it
  * rather than following the silhouette — clearer than a clipped outline. */
-button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px; border-radius: var(--r-xs); }
+button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-tight); border-radius: var(--r-xs); }
 .rank-icon.active {
   --ri-rim-lo: #6b4514; --ri-rim-hi: #ffe9ae;
   --ri-face-hi: #ffe9ae; --ri-face-mid: #d9a441; --ri-face-lo: #8a5a1c;
@@ -774,8 +796,10 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: 1px
 .card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--s-3); }
 
 .card:hover { border-color: var(--line-strong); transform: translateY(-2px); box-shadow: var(--e-2); }
+/* Container focus: the card wears the ring and keeps its rest border. A gold
+ * border *and* a gold ring read as a doubled frame, and the border alone is what
+ * hover already moves (line-strong + lift), so the ring is the one focus signal. */
 .card:has(.card-open:focus-visible) {
-  border-color: var(--hope);
   outline: var(--focus-ring); outline-offset: var(--focus-offset);
 }
 
@@ -1612,7 +1636,12 @@ ol.feature-bullets { list-style: decimal; }
  * containing block for that ::after — mid-click the hit area would snap back to
  * the button and the release would land on nothing. */
 .list-card-open:active { transform: none; }
-.list-card:has(.list-card-open:focus-visible) { border-color: var(--hope); }
+/* Same container focus as .card: the card wears the ring, the button that
+ * holds the tab stop does not draw a second one inside it. */
+.list-card:has(.list-card-open:focus-visible) {
+  outline: var(--focus-ring); outline-offset: var(--focus-offset);
+}
+.list-card-open:focus-visible { outline: none; }
 /* Above the hit area. Without this, renaming or deleting would open the list. */
 .list-rename, .list-card-del { position: relative; z-index: 2; }
 /* Full bleed: the negative margins spend the card's own padding, and the card
@@ -2171,7 +2200,14 @@ body[data-route="prep"] {
   border-bottom-color: var(--hope);
   text-overflow: ellipsis;
 }
-.prep-title-input:focus { outline: none; }
+/* Keyboard focus is the ring, hugging the title (tight offset, so the compact
+ * header does not grow). The ring replaces the gold underline rather than
+ * stacking a second line under it; the input only exists in edit mode, so the
+ * ring is also the edit-mode marker. */
+.prep-title-input:focus-visible {
+  outline: var(--focus-ring); outline-offset: var(--focus-offset-tight); border-radius: var(--r-xs);
+  border-bottom-color: transparent;
+}
 
 /* Icon-only buttons (actions). Visible size stays small; the hit area
    grows past it with ::after, same technique as .sp-session-control. */
@@ -2214,7 +2250,7 @@ body[data-route="prep"] {
 .prep-notes-input::placeholder { color: var(--muted); }
 .prep-notes-input:hover { border-color: var(--line-strong); }
 .prep-notes-input:focus { border-color: var(--hope); }
-.prep-notes-input:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
+.prep-notes-input:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 
 .prep-actions { flex: none; display: flex; align-items: center; gap: var(--s-2); }
 .prep-more-wrap { position: relative; }
@@ -2270,7 +2306,7 @@ body[data-route="prep"] {
   transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
 }
 .prep-menu-item:hover, .prep-menu-item:focus-visible { background: rgba(255,255,255,0.06); color: var(--hope-soft); }
-.prep-menu-item:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
+.prep-menu-item:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 .prep-menu-item[aria-checked="true"] { background: rgba(217,164,65,0.12); color: var(--hope-soft); }
 .prep-menu-item[aria-checked="true"]:hover { background: rgba(217,164,65,0.2); }
 .prep-menu-check { flex: none; display: inline-flex; width: var(--icon-md); height: var(--icon-md); color: var(--hope); }
@@ -2664,7 +2700,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   all: unset; flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--s-2); cursor: pointer;
   font-family: inherit;
 }
-.prep-row-open:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); border-radius: var(--r-sm); }
+.prep-row-open:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); border-radius: var(--r-sm); }
 .prep-row-text { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
 .prep-row-name {
   color: var(--parchment); font-size: var(--fs-base); line-height: 1.4;
@@ -2755,7 +2791,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 .prep-adv-thumb-btn img { transition: transform var(--t-fast) var(--ease-out); }
 .prep-adv-thumb-btn:hover, .prep-adv-thumb-btn:focus-visible { background: var(--ink-hover); }
 .prep-adv-thumb-btn:hover img, .prep-adv-thumb-btn:focus-visible img { transform: scale(1.08); }
-.prep-adv-thumb-btn:focus-visible { outline: var(--focus-ring); outline-offset: 1px; }
+.prep-adv-thumb-btn:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-tight); }
 .prep-adv-thumb-btn:disabled { cursor: default; }
 .prep-adv-thumb-btn:disabled:hover img { transform: none; }
 
@@ -2907,7 +2943,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
 }
 .bp-step:hover:not(:disabled) { background: var(--ink-raised); color: var(--hope-soft); }
-.bp-step:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
+.bp-step:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 .bp-step:disabled { opacity: 0.35; cursor: not-allowed; }
 .bp-pc-input {
   width: 2.6em; padding: 0; text-align: center; background: transparent; color: var(--parchment);
@@ -2915,7 +2951,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   font-variant-numeric: tabular-nums; -moz-appearance: textfield; appearance: textfield;
 }
 .bp-pc-input::-webkit-inner-spin-button, .bp-pc-input::-webkit-outer-spin-button { -webkit-appearance: none; appearance: none; margin: 0; }
-.bp-pc-input:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
+.bp-pc-input:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 
 .bp-summary {
   display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 var(--s-3); flex: none;
@@ -2993,7 +3029,8 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 }
 .bp-seg:hover span { background: var(--ink-hover); }
 .bp-seg input:checked + span { background: rgba(217,164,65,0.14); color: var(--hope-soft); }
-.bp-seg input:focus-visible + span { outline: var(--focus-ring); outline-offset: -2px; }
+.bp-seg input:focus-visible { outline: none; }
+.bp-seg input:focus-visible + span { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 .bp-check { display: flex; align-items: flex-start; gap: var(--s-2); padding: 3px 0; cursor: pointer; }
 .bp-check input { flex: none; margin: 2px 0 0; accent-color: var(--hope); }
 .bp-check-text { flex: 1; min-width: 0; }
@@ -3056,7 +3093,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
    children (sometimes the meta, sometimes only the ↗); the colour shift and
    the ↗ cue are the hover feedback here, so no underline at all. */
 .prep-sel-main:hover, .prep-adv-link:hover { text-decoration: none; }
-.prep-sel-main:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
+.prep-sel-main:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 .prep-sel-title { display: flex; align-items: baseline; gap: var(--s-1); min-width: 0; }
 .prep-sel-title .prep-sel-name { flex: 0 1 auto; min-width: 0; }
 /* Secondary "opens elsewhere" cue next to the adversary name: barely there
@@ -3075,7 +3112,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   transition: box-shadow var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
 }
 .prep-sel-thumb-btn:hover { background: radial-gradient(circle at 50% 35%, rgba(217,164,65,0.22), transparent 70%), var(--ink-hover); box-shadow: inset 0 0 0 1px var(--line-strong); }
-.prep-sel-thumb-btn:focus-visible { outline: var(--focus-ring); outline-offset: 1px; }
+.prep-sel-thumb-btn:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-tight); }
 .prep-sel-thumb-btn:disabled { cursor: default; }
 
 /* Card layout (environments, items): fixed height so a long name (clamped to
@@ -3329,7 +3366,7 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
   display: flex; align-items: center; justify-content: center;
   border-radius: calc(var(--r-md) - 1px); overflow: hidden;
 }
-.prep-item-icon-btn:focus-visible { outline: var(--focus-ring); outline-offset: -2px; }
+.prep-item-icon-btn:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 .prep-item-icon-btn .prep-item-thumb,
 .prep-item-icon-btn .prep-item-thumb.prep-thumb-fallback { width: 100%; height: 100%; padding: 4px; }
 .prep-item-icon-btn .prep-item-thumb img {

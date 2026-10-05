@@ -27,9 +27,28 @@ replacement for it — when the two disagree, the CSS (and its tests) win.
   states each get their own step (`--line-faint`, `--line`, `--line-strong`),
   each strong enough to actually read as an edge.
 - **One focus indicator, everywhere.** `:focus-visible { outline: var(--focus-ring); }`
-  is global. Older rules that stripped the outline and swapped a border colour
-  instead now keep both — the ring is the indicator, the border is a bonus,
-  never a replacement.
+  is global: one gold 2px ring, never a second colour, never a border-only
+  swap. Only its *placement* varies, in three offsets:
+  - **external** (`--focus-offset`, 2px) — standalone controls with room around
+    them: buttons, links, triggers, text inputs, session control.
+  - **tight** (`--focus-offset-tight`, 1px) — small boxes beside a neighbour or an
+    edge: icon buttons, rank icons, thumbnails, the Prep title input.
+  - **inset** (`--focus-offset-inset`, -2px) — boxes whose edge is a shared border
+    or a clip: the language switch, stepper/segments, Prep rows, menu items,
+    multiselect rows, the notes textarea.
+
+  **Card-style surfaces** (`.card`, `.list-card`) wear the ring themselves via
+  `:has(.…-open:focus-visible)`; the stretched button inside draws none, and the
+  card keeps its rest border so hover (border step + lift) and focus (ring) stay
+  distinguishable. A **selected + focused** control keeps a ring that contrasts
+  with its fill (the selected language segment is gold, so its ring is dark and
+  sits 4px in). A visually-hidden input never draws its own ring — the row or
+  sibling that stands in for it does.
+  **Exemptions:** programmatically focused containers (`.modal`, `.adv-art-modal-card`,
+  `.bp-popover`, `.sb-panel`, `.prep-central-title`) suppress their own outline;
+  focus is on the dialog/panel, not a control. `aria-disabled` controls stay
+  focusable by design (so their reason is reachable) and keep the ring; native
+  `:disabled` controls cannot take focus.
 - **The book, not the app.** Display type is a classical inscriptional face
   (Forum) used only for names/headings; body copy is a literary serif
   (Spectral); numbers, dice, and stats get a monospace face (JetBrains Mono)
@@ -188,7 +207,7 @@ size. Equivalent semantics share state treatment; the box size
   (dismiss over imagery: translucent fill, neutral hover). Always `50%`.
 - Borders are 1px **transparent** at rest so hover/pressed never shifts
   geometry; enclosed roles (circle, overlay, soundboard `.sb-ctl`) keep a
-  visible `--line`. Focus is the global ring, offset 1px on these tight boxes.
+  visible `--line`. Focus is the global ring, tight (1px) offset on these small boxes.
 - Hit area: only the 24px controls opt in (`.icon-btn--reach`, ::after grows
   to 44px); 28px and larger are already sufficient and have none.
   `--ib-hover-bg` steps up to `--ink-hover` when the host is itself

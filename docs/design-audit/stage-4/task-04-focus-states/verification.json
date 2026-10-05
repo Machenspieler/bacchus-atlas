@@ -1,0 +1,621 @@
+{
+ "passed": 123,
+ "failed": 0,
+ "checks": [
+  {
+   "name": ":focus-visible reached by keyboard — standard-button",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — standard-button",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — standard-button",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — standard-button",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — text-input",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — text-input",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — text-input",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — text-input",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — catalog-card",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — catalog-card",
+   "ok": true,
+   "detail": "container"
+  },
+  {
+   "name": "not clipped — catalog-card",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — catalog-card",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — ms-trigger",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — ms-trigger",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — ms-trigger",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — ms-trigger",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "ms-row: focus lands on a row checkbox",
+   "ok": true,
+   "detail": "input.ms-checkbox"
+  },
+  {
+   "name": "ms-row: one ring (row) only, no ring on the sr-only checkbox",
+   "ok": true,
+   "detail": "{\"programmatic\":false,\"clipInfo\":null,\"el\":\"input.ms-checkbox\",\"name\":\"\",\"fv\":true,\"ring\":true,\"own\":false,\"host\":true,\"double\":false,\"clipped\":null}"
+  },
+  {
+   "name": "ms-row: ring not clipped by the panel",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "ms-row (last): ring not clipped",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "ms panel: Escape returns focus to the trigger",
+   "ok": true,
+   "detail": "f-types-btn"
+  },
+  {
+   "name": ":focus-visible reached by keyboard — lang-switch-selected",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — lang-switch-selected",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — lang-switch-selected",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — lang-switch-selected",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — lang-switch-unselected",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — lang-switch-unselected",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — lang-switch-unselected",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — lang-switch-unselected",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — rank-icon-selected-focused",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — rank-icon-selected-focused",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — rank-icon-selected-focused",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — rank-icon-selected-focused",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "modal: something inside the dialog holds focus after Enter",
+   "ok": true,
+   "detail": "div.modal"
+  },
+  {
+   "name": "modal: every Tab stop shows a ring",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "modal: Tab stays inside the dialog",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "modal: Escape closes and returns focus to the opening card",
+   "ok": true,
+   "detail": "card-open"
+  },
+  {
+   "name": ":focus-visible reached by keyboard — list-card",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — list-card",
+   "ok": true,
+   "detail": "container"
+  },
+  {
+   "name": "not clipped — list-card",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — list-card",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — icon-danger-button",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — icon-danger-button",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — icon-danger-button",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — icon-danger-button",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — list-rename-input",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — list-rename-input",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — list-rename-input",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — list-rename-input",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — link-btn",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — link-btn",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — link-btn",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — link-btn",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — btn-primary",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — btn-primary",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — btn-primary",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — btn-primary",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — adversary-encounter-link",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — adversary-encounter-link",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — adversary-encounter-link",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — adversary-encounter-link",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — encounter-builder-link",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — encounter-builder-link",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — encounter-builder-link",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — encounter-builder-link",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — icon-utility-button",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — icon-utility-button",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — icon-utility-button",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — icon-utility-button",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — session-control",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — session-control",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — session-control",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — session-control",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — checkbox",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — checkbox",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — checkbox",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — checkbox",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — prep-sel-main",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — prep-sel-main",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — prep-sel-main",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — prep-sel-main",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — bp-summary",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — bp-summary",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — bp-summary",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — bp-summary",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": ":focus-visible reached by keyboard — prep-notes-input",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "visible ring — prep-notes-input",
+   "ok": true,
+   "detail": "own"
+  },
+  {
+   "name": "not clipped — prep-notes-input",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "single ring — prep-notes-input",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "prep-title-input: ring present",
+   "ok": true,
+   "detail": "{\"programmatic\":false,\"clipInfo\":null,\"el\":\"input.prep-title-input\",\"name\":\"Name\",\"fv\":true,\"ring\":true,\"own\":true,\"host\":false,\"double\":false,\"clipped\":null}"
+  },
+  {
+   "name": "prep-title-input: not clipped",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "prep-title-input: header height unchanged by focus",
+   "ok": true,
+   "detail": "37.75 → 37.75"
+  },
+  {
+   "name": "prep-title-input: Escape returns focus to the title button",
+   "ok": true,
+   "detail": "prep-title-btn"
+  },
+  {
+   "name": "session-menu: trigger focus ring",
+   "ok": true,
+   "detail": "button.prep-title-btn"
+  },
+  {
+   "name": "session-menu: 13 in-panel stops all show a ring (programmatic panel focus exempt)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "session-menu: no in-panel ring clipped",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "session-menu: no stacked rings",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "session-menu: Escape from inside returns focus to the trigger",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "bp-popover: trigger focus ring",
+   "ok": true,
+   "detail": "button.bp-summary"
+  },
+  {
+   "name": "bp-popover: 7 in-panel stops all show a ring (programmatic panel focus exempt)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "bp-popover: no in-panel ring clipped",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "bp-popover: no stacked rings",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "bp-popover: Escape from inside returns focus to the trigger",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "soundboard: trigger focus ring",
+   "ok": true,
+   "detail": "button.btn"
+  },
+  {
+   "name": "soundboard: 12 in-panel stops all show a ring (programmatic panel focus exempt)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "soundboard: no in-panel ring clipped",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "soundboard: no stacked rings",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "soundboard: Escape from inside returns focus to the trigger",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "prep-adv-ms: trigger focus ring",
+   "ok": true,
+   "detail": "button.ms-trigger"
+  },
+  {
+   "name": "prep-adv-ms: 10 in-panel stops all show a ring (programmatic panel focus exempt)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "prep-adv-ms: no in-panel ring clipped",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "prep-adv-ms: no stacked rings",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "prep-adv-ms: Escape from inside returns focus to the trigger",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "bp-seg selected + focused: ring is on the segment label",
+   "ok": true,
+   "detail": "{\"programmatic\":false,\"clipInfo\":null,\"el\":\"input.sr-only\",\"name\":\"\",\"fv\":true,\"ring\":true,\"own\":false,\"host\":true,\"double\":false,\"clipped\":null}"
+  },
+  {
+   "name": "native :disabled controls cannot take focus",
+   "ok": true,
+   "detail": "299 disabled controls, bad="
+  },
+  {
+   "name": "reduced motion: ring present and not transitioned",
+   "ok": true,
+   "detail": "{\"ring\":true,\"transitionsOutline\":false}"
+  },
+  {
+   "name": "forced-colors: every probed control keeps a visible outline",
+   "ok": true,
+   "detail": "[{\"sel\":\"icon-btn icon-btn--utility prep-icon-btn prep-more-btn\",\"style\":\"solid\",\"w\":\"2px\",\"color\":\"rgb(26, 235, 255)\"},{\"sel\":\"bp-summary\",\"style\":\"solid\",\"w\":\"2px\",\"color\":\"rgb(26, 235, 255)\"},{\"sel\":\"prep-notes-input\",\"style\":\"solid\",\"w\":\"2px\",\"color\":\"rgb(26, 235, 255)\"},{\"sel\":\"prep-env-search\",\"style\":\"solid\",\"w\":\"2px\",\"color\":\"rgb(26, 235, 255)\"},{\"sel\":\"active\",\"style\":\"solid\",\"w\":\"2px\",\"color\":\"rgb(26, 235, 255)\"}]"
+  },
+  {
+   "name": "prep 1366x768: representative controls ring visible and unclipped",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "prep 1366x768: no horizontal overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "prep 1440x900: representative controls ring visible and unclipped",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "prep 1440x900: no horizontal overflow",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "prep 1920x1080: representative controls ring visible and unclipped",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "prep 1920x1080: no horizontal overflow",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}

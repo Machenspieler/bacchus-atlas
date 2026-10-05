@@ -1,0 +1,7419 @@
+{
+ "catalog": [
+  {
+   "tag": "a",
+   "cls": "skip-link",
+   "id": "",
+   "name": "Skip to the catalog",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(28, 20, 8)",
+   "rect": {
+    "x": 16,
+    "y": 8,
+    "w": 141,
+    "h": 36
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "",
+   "id": "brand-home",
+   "name": "Bacchus's Atlas",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "brand",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 218,
+    "y": 17,
+    "w": 165,
+    "h": 24
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.nav-btn",
+   "id": "btn-lists",
+   "name": "Lists",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 842,
+    "y": 22,
+    "w": 91,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.nav-btn",
+   "id": "btn-prep",
+   "name": "Prep",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 941,
+    "y": 22,
+    "w": 90,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.nav-btn",
+   "id": "btn-journey",
+   "name": "Journey",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 1039,
+    "y": 22,
+    "w": 110,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.sb-trigger",
+   "id": "btn-soundboard",
+   "name": "Soundboard",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 1161,
+    "y": 22,
+    "w": 32,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "",
+   "id": "",
+   "name": "RU",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(154, 143, 125)",
+   "rect": {
+    "x": 1202,
+    "y": 23,
+    "w": 40,
+    "h": 30
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "active",
+   "id": "",
+   "name": "EN",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(28, 20, 8)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(28, 20, 8)",
+   "rect": {
+    "x": 1242,
+    "y": 23,
+    "w": 40,
+    "h": 30
+   }
+  },
+  {
+   "tag": "input",
+   "cls": "",
+   "id": "f-search",
+   "name": "Search",
+   "type": "text",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 242,
+    "y": 101,
+    "w": 260,
+    "h": 40
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "rank-icon",
+   "id": "",
+   "name": "Tier 1",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(185, 173, 145)",
+   "rect": {
+    "x": 518,
+    "y": 103,
+    "w": 36,
+    "h": 36
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "rank-icon",
+   "id": "",
+   "name": "Tier 2",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(185, 173, 145)",
+   "rect": {
+    "x": 562,
+    "y": 103,
+    "w": 36,
+    "h": 36
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "rank-icon",
+   "id": "",
+   "name": "Tier 3",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(185, 173, 145)",
+   "rect": {
+    "x": 606,
+    "y": 103,
+    "w": 36,
+    "h": 36
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "rank-icon",
+   "id": "",
+   "name": "Tier 4",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(185, 173, 145)",
+   "rect": {
+    "x": 650,
+    "y": 103,
+    "w": 36,
+    "h": 36
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "ms-trigger.field-control",
+   "id": "f-types-btn",
+   "name": "Type",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 702,
+    "y": 101,
+    "w": 150,
+    "h": 40
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "ms-trigger.field-control",
+   "id": "f-biomes-btn",
+   "name": "Biome",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 868,
+    "y": 101,
+    "w": 150,
+    "h": 40
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "ms-trigger.field-control",
+   "id": "f-sources-btn",
+   "name": "Source",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 1034,
+    "y": 101,
+    "w": 150,
+    "h": 40
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-open",
+   "id": "",
+   "name": "Open a random environment fr",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 255,
+    "y": 209,
+    "w": 155,
+    "h": 21
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "card-open",
+   "id": "",
+   "name": "Abandoned Grove",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 640,
+    "y": 210,
+    "w": 131,
+    "h": 19
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "env-prep-btn.is-unavailable",
+   "id": "",
+   "name": "The current Prep already con",
+   "type": "button",
+   "fv": true,
+   "disabled": true,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 832,
+    "y": 203,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-add-btn",
+   "id": "",
+   "name": "Add to list",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 860,
+    "y": 203,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "card-open",
+   "id": "",
+   "name": "Abandoned Mine",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 1025,
+    "y": 210,
+    "w": 123,
+    "h": 19
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "env-prep-btn.is-unavailable",
+   "id": "",
+   "name": "The current Prep already con",
+   "type": "button",
+   "fv": true,
+   "disabled": true,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 1218,
+    "y": 203,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-add-btn",
+   "id": "",
+   "name": "Add to list",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 1246,
+    "y": 203,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "card-open",
+   "id": "",
+   "name": "Acid Burrows",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 255,
+    "y": 447,
+    "w": 95,
+    "h": 19
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "env-prep-btn.is-unavailable",
+   "id": "",
+   "name": "The current Prep already con",
+   "type": "button",
+   "fv": true,
+   "disabled": true,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 447,
+    "y": 440,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-add-btn",
+   "id": "",
+   "name": "Add to list",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 475,
+    "y": 440,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "card-open",
+   "id": "",
+   "name": "Alchemist's Abandoned Worksh",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 640,
+    "y": 447,
+    "w": 158,
+    "h": 40
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "env-prep-btn.is-unavailable",
+   "id": "",
+   "name": "The current Prep already con",
+   "type": "button",
+   "fv": true,
+   "disabled": true,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 832,
+    "y": 440,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-add-btn",
+   "id": "",
+   "name": "Add to list",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 860,
+    "y": 440,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "card-open",
+   "id": "",
+   "name": "Ambushed",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 1025,
+    "y": 447,
+    "w": 77,
+    "h": 19
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "env-prep-btn.is-unavailable",
+   "id": "",
+   "name": "The current Prep already con",
+   "type": "button",
+   "fv": true,
+   "disabled": true,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 1218,
+    "y": 440,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-add-btn",
+   "id": "",
+   "name": "Add to list",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 1246,
+    "y": 440,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "card-open",
+   "id": "",
+   "name": "Ambushers",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 255,
+    "y": 704,
+    "w": 81,
+    "h": 19
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "env-prep-btn.is-unavailable",
+   "id": "",
+   "name": "The current Prep already con",
+   "type": "button",
+   "fv": true,
+   "disabled": true,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 447,
+    "y": 697,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-add-btn",
+   "id": "",
+   "name": "Add to list",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 475,
+    "y": 697,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "card-open",
+   "id": "",
+   "name": "Arcane Magic Shop",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 640,
+    "y": 704,
+    "w": 139,
+    "h": 19
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "env-prep-btn.is-unavailable",
+   "id": "",
+   "name": "The current Prep already con",
+   "type": "button",
+   "fv": true,
+   "disabled": true,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 832,
+    "y": 697,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-add-btn",
+   "id": "",
+   "name": "Add to list",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 860,
+    "y": 697,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "card-open",
+   "id": "",
+   "name": "Asteroid Chase",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 1025,
+    "y": 704,
+    "w": 110,
+    "h": 19
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "env-prep-btn.is-unavailable",
+   "id": "",
+   "name": "The current Prep already con",
+   "type": "button",
+   "fv": true,
+   "disabled": true,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 1218,
+    "y": 697,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-add-btn",
+   "id": "",
+   "name": "Add to list",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 1246,
+    "y": 697,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "card-open",
+   "id": "",
+   "name": "Bandit Attack",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 255,
+    "y": 440,
+    "w": 95,
+    "h": 19
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "env-prep-btn.is-unavailable",
+   "id": "",
+   "name": "The current Prep already con",
+   "type": "button",
+   "fv": true,
+   "disabled": true,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 447,
+    "y": 433,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-add-btn",
+   "id": "",
+   "name": "Add to list",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 475,
+    "y": 433,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "card-open",
+   "id": "",
+   "name": "Bandit Hideout",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 640,
+    "y": 440,
+    "w": 107,
+    "h": 19
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "env-prep-btn.is-unavailable",
+   "id": "",
+   "name": "The current Prep already con",
+   "type": "button",
+   "fv": true,
+   "disabled": true,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 832,
+    "y": 433,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-add-btn",
+   "id": "",
+   "name": "Add to list",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 860,
+    "y": 433,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "card-open",
+   "id": "",
+   "name": "Bankburgh Chase",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 1025,
+    "y": 440,
+    "w": 126,
+    "h": 19
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "env-prep-btn.is-unavailable",
+   "id": "",
+   "name": "The current Prep already con",
+   "type": "button",
+   "fv": true,
+   "disabled": true,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 1218,
+    "y": 433,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-add-btn",
+   "id": "",
+   "name": "Add to list",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 1246,
+    "y": 433,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "card-open",
+   "id": "",
+   "name": "Bastion",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 255,
+    "y": 677,
+    "w": 53,
+    "h": 19
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "env-prep-btn.is-unavailable",
+   "id": "",
+   "name": "The current Prep already con",
+   "type": "button",
+   "fv": true,
+   "disabled": true,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 447,
+    "y": 670,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-add-btn",
+   "id": "",
+   "name": "Add to list",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 475,
+    "y": 670,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "card-open",
+   "id": "",
+   "name": "Beelzebufo Bog",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 640,
+    "y": 677,
+    "w": 110,
+    "h": 19
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "env-prep-btn.is-unavailable",
+   "id": "",
+   "name": "The current Prep already con",
+   "type": "button",
+   "fv": true,
+   "disabled": true,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 832,
+    "y": 670,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-add-btn",
+   "id": "",
+   "name": "Add to list",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 860,
+    "y": 670,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "card-open",
+   "id": "",
+   "name": "Bubbly's Bottom",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 1025,
+    "y": 677,
+    "w": 115,
+    "h": 19
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "env-prep-btn.is-unavailable",
+   "id": "",
+   "name": "The current Prep already con",
+   "type": "button",
+   "fv": true,
+   "disabled": true,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 1218,
+    "y": 670,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-add-btn",
+   "id": "",
+   "name": "Add to list",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 1246,
+    "y": 670,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "card-open",
+   "id": "",
+   "name": "Bustling Marketplace",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 255,
+    "y": 440,
+    "w": 150,
+    "h": 19
+   }
+  }
+ ],
+ "lists": [
+  {
+   "tag": "a",
+   "cls": "skip-link",
+   "id": "",
+   "name": "Skip to the catalog",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(28, 20, 8)",
+   "rect": {
+    "x": 16,
+    "y": 8,
+    "w": 141,
+    "h": 36
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "",
+   "id": "brand-home",
+   "name": "Bacchus's Atlas",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "brand",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 218,
+    "y": 17,
+    "w": 165,
+    "h": 24
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.nav-btn.active",
+   "id": "btn-lists",
+   "name": "Lists",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 842,
+    "y": 22,
+    "w": 91,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.nav-btn",
+   "id": "btn-prep",
+   "name": "Prep",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 941,
+    "y": 22,
+    "w": 90,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.nav-btn",
+   "id": "btn-journey",
+   "name": "Journey",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 1039,
+    "y": 22,
+    "w": 110,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.sb-trigger",
+   "id": "btn-soundboard",
+   "name": "Soundboard",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 1161,
+    "y": 22,
+    "w": 32,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "",
+   "id": "",
+   "name": "RU",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(154, 143, 125)",
+   "rect": {
+    "x": 1202,
+    "y": 23,
+    "w": 40,
+    "h": 30
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "active",
+   "id": "",
+   "name": "EN",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(28, 20, 8)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(28, 20, 8)",
+   "rect": {
+    "x": 1242,
+    "y": 23,
+    "w": 40,
+    "h": 30
+   }
+  },
+  {
+   "tag": "input",
+   "cls": "",
+   "id": "new-list-input",
+   "name": "New list name",
+   "type": "text",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 143,
+    "y": 146,
+    "w": 360,
+    "h": 40
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.btn-primary",
+   "id": "new-list-btn",
+   "name": "Create",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 511,
+    "y": 146,
+    "w": 80,
+    "h": 40
+   }
+  },
+  {
+   "tag": "input",
+   "cls": "list-rename",
+   "id": "",
+   "name": "Rename list",
+   "type": "text",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 160,
+    "y": 227,
+    "w": 250,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "icon-btn.icon-btn--danger.icon-btn--reach",
+   "id": "",
+   "name": "Delete",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(156, 43, 59)",
+   "rect": {
+    "x": 422,
+    "y": 231,
+    "w": 24,
+    "h": 24
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.btn-sm.list-card-open",
+   "id": "",
+   "name": "Open",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "list-card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 160,
+    "y": 301,
+    "w": 286,
+    "h": 32
+   }
+  },
+  {
+   "tag": "input",
+   "cls": "list-rename",
+   "id": "",
+   "name": "Rename list",
+   "type": "text",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 496,
+    "y": 227,
+    "w": 250,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "icon-btn.icon-btn--danger.icon-btn--reach",
+   "id": "",
+   "name": "Delete",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(156, 43, 59)",
+   "rect": {
+    "x": 758,
+    "y": 231,
+    "w": 24,
+    "h": 24
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.btn-sm.list-card-open",
+   "id": "",
+   "name": "Open",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "list-card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 496,
+    "y": 301,
+    "w": 286,
+    "h": 32
+   }
+  },
+  {
+   "tag": "input",
+   "cls": "list-rename",
+   "id": "",
+   "name": "Rename list",
+   "type": "text",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 832,
+    "y": 227,
+    "w": 250,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "icon-btn.icon-btn--danger.icon-btn--reach",
+   "id": "",
+   "name": "Delete",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(156, 43, 59)",
+   "rect": {
+    "x": 1094,
+    "y": 231,
+    "w": 24,
+    "h": 24
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.btn-sm.list-card-open",
+   "id": "",
+   "name": "Open",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "list-card",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 832,
+    "y": 301,
+    "w": 286,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "link-btn",
+   "id": "btn-sources",
+   "name": "“Sources”",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(240, 207, 140)",
+   "rect": {
+    "x": 594,
+    "y": 491,
+    "w": 52,
+    "h": 17
+   }
+  }
+ ],
+ "prep": [
+  {
+   "tag": "a",
+   "cls": "skip-link",
+   "id": "",
+   "name": "Skip to the catalog",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(28, 20, 8)",
+   "rect": {
+    "x": 16,
+    "y": 8,
+    "w": 141,
+    "h": 36
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "",
+   "id": "brand-home",
+   "name": "Bacchus's Atlas",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "brand",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 218,
+    "y": 17,
+    "w": 165,
+    "h": 24
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "sp-session-control",
+   "id": "sp-chrome-toggle",
+   "name": "Collapse session controls fo",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(58, 50, 43)",
+   "rect": {
+    "x": 631,
+    "y": 22,
+    "w": 120,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.nav-btn",
+   "id": "btn-lists",
+   "name": "Lists",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 842,
+    "y": 22,
+    "w": 91,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.nav-btn.active",
+   "id": "btn-prep",
+   "name": "Prep",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 941,
+    "y": 22,
+    "w": 90,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.nav-btn",
+   "id": "btn-journey",
+   "name": "Journey",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 1039,
+    "y": 22,
+    "w": 110,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.sb-trigger",
+   "id": "btn-soundboard",
+   "name": "Soundboard",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 1161,
+    "y": 22,
+    "w": 32,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "",
+   "id": "",
+   "name": "RU",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(154, 143, 125)",
+   "rect": {
+    "x": 1202,
+    "y": 23,
+    "w": 40,
+    "h": 30
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "active",
+   "id": "",
+   "name": "EN",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(28, 20, 8)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(28, 20, 8)",
+   "rect": {
+    "x": 1242,
+    "y": 23,
+    "w": 40,
+    "h": 30
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-title-btn",
+   "id": "prep-title-btn",
+   "name": "Open prep selector: Audit pr",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 37,
+    "y": 139,
+    "w": 136,
+    "h": 38
+   }
+  },
+  {
+   "tag": "textarea",
+   "cls": "prep-notes-input",
+   "id": "prep-notes-input",
+   "name": "Reminders, triggers, reveals",
+   "type": "textarea",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 393,
+    "y": 147,
+    "w": 847,
+    "h": 46
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.btn-ghost.prep-new-btn",
+   "id": "prep-new-btn",
+   "name": "New prep",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 1256,
+    "y": 150,
+    "w": 84,
+    "h": 40
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "icon-btn.icon-btn--utility.prep-icon-btn",
+   "id": "prep-more-btn",
+   "name": "Open prep actions",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 1348,
+    "y": 150,
+    "w": 40,
+    "h": 40
+   }
+  },
+  {
+   "tag": "input",
+   "cls": "",
+   "id": "prep-env-search",
+   "name": "Search environments…",
+   "type": "search",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 37,
+    "y": 259,
+    "w": 184,
+    "h": 35
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "rank-icon.rank-icon-sm",
+   "id": "",
+   "name": "Tier 1",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(185, 173, 145)",
+   "rect": {
+    "x": 229,
+    "y": 263,
+    "w": 26,
+    "h": 26
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "rank-icon.rank-icon-sm",
+   "id": "",
+   "name": "Tier 2",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(185, 173, 145)",
+   "rect": {
+    "x": 263,
+    "y": 263,
+    "w": 26,
+    "h": 26
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "rank-icon.rank-icon-sm",
+   "id": "",
+   "name": "Tier 3",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(185, 173, 145)",
+   "rect": {
+    "x": 297,
+    "y": 263,
+    "w": 26,
+    "h": 26
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "rank-icon.rank-icon-sm",
+   "id": "",
+   "name": "Tier 4",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(185, 173, 145)",
+   "rect": {
+    "x": 331,
+    "y": 263,
+    "w": 26,
+    "h": 26
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Abandoned Grove Tier 1 · Exp",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 319,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Abandoned Mine Tier 1 · Trav",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 377,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Acid Burrows Tier 1 · Explor",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 435,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Alchemist's Abandoned Worksh",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 493,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Ambushed Tier 1 · Event · Ot",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 551,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Ambushers Tier 1 · Event · O",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Arcane Magic Shop Tier 1 · S",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Asteroid Chase Tier 1 · Even",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Bandit Attack Tier 1 · Event",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Bandit Hideout Tier 1 · Expl",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Bankburgh Chase Tier 1 · Eve",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Bastion Tier 1 · Social · Fo",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Beelzebufo Bog Tier 1 · Expl",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Bubbly's Bottom Tier 1 · Exp",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Bustling Marketplace Tier 1 ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Buzzing Swamp Tier 1 · Trave",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Chaotic Marketplace Tier 1 ·",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "City Streets Tier 1 · Explor",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Cliffside Ascent Tier 1 · Tr",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Collapsing Floor Tier 1 · Ev",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Corrupted Swamp Tier 1 · Tra",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Cursed Graveyard Tier 1 · Ex",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Defense of the River-Fort Ti",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Den of Vice and Violence Tie",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Desecrated Graveyard Tier 1 ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Divine Feast Tier 1 · Explor",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Drakkenheim: Outer City Tier",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Empty Cliffside Village Tier",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Endless Catacombs Tier 1 · E",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Faestone Wode Tier 1 · Explo",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Fathomless Baths - Surface T",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Fighting Arena Tier 1 · Even",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Forced Penance Tier 1 · Even",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Frosted Timber Tier 1 · Expl",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Frozen Lake Tier 1 · Travers",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Gang Hideout Tier 1 · Social",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Garden of the Tranquil Order",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Gloaming Forest Tier 1 · Tra",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Gnarled Glen Tier 1 · Explor",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Grand Feast Tier 1 · Social ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Hallow Rest Tier 1 · Explora",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Hold the Line Tier 1 · Event",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Jazz Speakeasy Tier 1 · Soci",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Jungle Path Tier 1 · Explora",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Jungle River Village Tier 1 ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Keep-Away Tier 1 · Event · S",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Laboratory Tier 1 · Explorat",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Lion Ascendant Tier 1 · Expl",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Lizardfolk Village Tier 1 · ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Local Festival Tier 1 · Soci",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Local Tavern Tier 1 · Social",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Lost Village Tier 1 · Explor",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Moonlight Bastion Tier 1 · S",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Museum Of Lost Realities Tie",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Occupied Town Tier 1 · Socia",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Orphanmaker River Tier 1 · T",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Outpost Town Tier 1 · Social",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Overgrown Field Tier 1 · Exp",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Perilous Journey Tier 1 · Tr",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Planetary Blockade Tier 1 · ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Possessed Abode Tier 1 · Exp",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Pursued Tier 1 · Event · Oth",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Pursuers Tier 1 · Event · Ot",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Racetrack Tier 1 · Event · R",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Raging Fire Tier 1 · Event ·",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Raging River Tier 1 · Traver",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Raiding Party Tier 1 · Event",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Resting Dagger Inn Tier 1 · ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Road Blockade Tier 1 · Trave",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Root Rush Rescue Tier 1 · Ev",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Ruined Castle Tier 1 · Explo",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Sand Sea Tier 1 · Traversal ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Snow Squall Tier 1 · Event ·",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Sovereignty Entanglements Ti",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Spooky Forest Tier 1 · Trave",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Stampede Tier 1 · Event · Ot",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Stones Adrift Tier 1 · Trave",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Stream Fold Tier 1 · Travers",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Teal-Heart Inn Tier 1 · Soci",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "The Commander's Dinner Tier ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "The Endless Song Tier 1 · So",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "The Proving Pyre Tier 1 · Ev",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "The Ritual of Renewal Tier 1",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "The Skyship Windfall Tier 1 ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "The Undermarket Tier 1 · Soc",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "The Village of Hush Tier 1 ·",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "The Wandering Tavern Tier 1 ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Town Festival Tier 1 · Event",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Underroot Tunnels Tier 1 · T",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Abandoned Building Tier 2 · ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Aetherstone Grove Tier 2 · E",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Ancient Power Conduit Tier 2",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Astral Mound Tier 2 · Traver",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Beach Day Tier 2 · Social · ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Blade Root Sanctum Tier 2 · ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Blood Marsh Tier 2 · Travers",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Body Tier 2 · Exploration · ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Boreal Glacier Tier 2 · Soci",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Burning Sands Tier 2 · Trave",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Canyon Dogfight Tier 2 · Eve",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Castle Of Wails Tier 2 · Exp",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Catacomb Tunnels Tier 2 · Ev",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Cauldera Valley Tier 2 · Exp",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Chthon Verlies Tier 2 · Trav",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Corridor Of Flammable Air Ti",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Corrupt Court Tier 2 · Socia",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Cult Ritual Tier 2 · Event ·",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Cursed Valley Tier 2 · Trave",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Dangerous Dungeon Tier 2 · E",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Deadly Dungeon Tier 2 · Expl",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Deadly Jungle Tier 2 · Trave",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Death Butterfly Grove Tier 2",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Deathrace Tier 2 · Event · D",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Deep Underground Cave Tier 2",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Desert Tier 2 · Traversal · ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Devouring Green Ritual Tier ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Divert The River Tier 2 · Ev",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Domain of Dinosaurs Tier 2 ·",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Duel Tier 2 · Event · Other",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Endless Forest Tier 2 · Expl",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Epic Duel Tier 2 · Event · O",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Escape The Swarm Tier 2 · Ev",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Field Of Dreams Tier 2 · Soc",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Fighting Pit Tier 2 · Event ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Floating Mountains Tier 2 · ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Forest Wildfire Tier 2 · Eve",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Forgotten Temple of the Serp",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Frozen Chalice Tier 2 · Even",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Hag’s Hut Tier 2 · Social · ",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Hakturi Ambush Tier 2 · Even",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Hallowed Temple Tier 2 · Soc",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "input",
+   "cls": "prep-select-checkbox",
+   "id": "",
+   "name": "Remove Harsh Desert from thi",
+   "type": "checkbox",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 42,
+    "y": 529,
+    "w": 18,
+    "h": 18
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Harsh Desert Tier 2 · Traver",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Haunted City Tier 2 · Explor",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Heist Tier 2 · Event · Settl",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Hero’s Tomb Tier 2 · Explora",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Humble Altar Tier 2 · Social",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Jungle Trek Tier 2 · Travers",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Library Of The Dusk Tree Tie",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 597,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Magic City Tier 2 · Social ·",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 456,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Magical Storm Tier 2 · Event",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 514,
+    "w": 286,
+    "h": 48
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "prep-row-open",
+   "id": "",
+   "name": "Martyr's Rest Tier 2 · Socia",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 65,
+    "y": 572,
+    "w": 286,
+    "h": 48
+   }
+  }
+ ],
+ "journey": [
+  {
+   "tag": "a",
+   "cls": "skip-link",
+   "id": "",
+   "name": "Skip to the catalog",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(28, 20, 8)",
+   "rect": {
+    "x": 16,
+    "y": 8,
+    "w": 141,
+    "h": 36
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "",
+   "id": "brand-home",
+   "name": "Bacchus's Atlas",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": null,
+   "host": {
+    "cls": "brand",
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(233, 223, 199)",
+   "rect": {
+    "x": 218,
+    "y": 17,
+    "w": 165,
+    "h": 24
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.nav-btn",
+   "id": "btn-lists",
+   "name": "Lists",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 842,
+    "y": 22,
+    "w": 91,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.nav-btn",
+   "id": "btn-prep",
+   "name": "Prep",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 941,
+    "y": 22,
+    "w": 90,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.nav-btn.active",
+   "id": "btn-journey",
+   "name": "Journey",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 1039,
+    "y": 22,
+    "w": 110,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.sb-trigger",
+   "id": "btn-soundboard",
+   "name": "Soundboard",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 1161,
+    "y": 22,
+    "w": 32,
+    "h": 32
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "",
+   "id": "",
+   "name": "RU",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(154, 143, 125)",
+   "rect": {
+    "x": 1202,
+    "y": 23,
+    "w": 40,
+    "h": 30
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "active",
+   "id": "",
+   "name": "EN",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(28, 20, 8)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(28, 20, 8)",
+   "rect": {
+    "x": 1242,
+    "y": 23,
+    "w": 40,
+    "h": 30
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.btn-primary.journey-roll",
+   "id": "",
+   "name": "Roll a region",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 143,
+    "y": 356,
+    "w": 147,
+    "h": 40
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn.btn-primary.journey-roll",
+   "id": "",
+   "name": "Roll a sanctuary",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 725,
+    "y": 338,
+    "w": 169,
+    "h": 40
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "link-btn",
+   "id": "btn-sources",
+   "name": "“Sources”",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(240, 207, 140)",
+   "rect": {
+    "x": 594,
+    "y": 620,
+    "w": 52,
+    "h": 17
+   }
+  }
+ ],
+ "env-detail": [
+  {
+   "tag": "button",
+   "cls": "env-prep-btn.is-selected",
+   "id": "",
+   "name": "Remove from current Prep: Ha",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 526,
+    "y": 62,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "card-add-btn.is-listed",
+   "id": "detail-add-to-list",
+   "name": "Add to list",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 554,
+    "y": 62,
+    "w": 28,
+    "h": 28
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "rank-icon.rank-icon-sm",
+   "id": "",
+   "name": "Read as tier 1",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(185, 173, 145)",
+   "rect": {
+    "x": 598,
+    "y": 63,
+    "w": 26,
+    "h": 26
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "rank-icon.rank-icon-sm.native",
+   "id": "",
+   "name": "Read as tier 2",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(28, 20, 8)",
+   "rect": {
+    "x": 632,
+    "y": 63,
+    "w": 26,
+    "h": 26
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "rank-icon.rank-icon-sm",
+   "id": "",
+   "name": "Read as tier 3",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(185, 173, 145)",
+   "rect": {
+    "x": 666,
+    "y": 63,
+    "w": 26,
+    "h": 26
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "rank-icon.rank-icon-sm",
+   "id": "",
+   "name": "Read as tier 4",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(185, 173, 145)",
+   "rect": {
+    "x": 700,
+    "y": 63,
+    "w": 26,
+    "h": 26
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "icon-btn.icon-btn--reach.modal-close",
+   "id": "",
+   "name": "Close",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 1,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgba(0, 0, 0, 0)",
+   "rect": {
+    "x": 1024,
+    "y": 61,
+    "w": 24,
+    "h": 24
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "encounter-builder-link",
+   "id": "",
+   "name": "Open Encounter Builder — Ope",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(154, 143, 125)",
+   "rect": {
+    "x": 860,
+    "y": 316,
+    "w": 187,
+    "h": 17
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Assassins in FreshCutGr",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 378,
+    "y": 377,
+    "w": 64,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Apprentice in FreshCutG",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 449,
+    "y": 377,
+    "w": 75,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Poisoner in FreshCutGra",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 531,
+    "y": 377,
+    "w": 58,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Jackalweres in FreshCut",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 601,
+    "y": 377,
+    "w": 78,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Dunerider in FreshCutGr",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 686,
+    "y": 377,
+    "w": 68,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Hierophant in FreshCutG",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 761,
+    "y": 377,
+    "w": 77,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Raider in FreshCutGrass",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 845,
+    "y": 377,
+    "w": 43,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Ravager in FreshCutGras",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 896,
+    "y": 377,
+    "w": 52,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Sandknife in FreshCutGr",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 956,
+    "y": 377,
+    "w": 67,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Sellsword in FreshCutGr",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 378,
+    "y": 401,
+    "w": 65,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Glintsand Drakona in Fr",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 450,
+    "y": 401,
+    "w": 127,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Efreeti in FreshCutGras",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 584,
+    "y": 401,
+    "w": 45,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Firewalker in FreshCutG",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 636,
+    "y": 401,
+    "w": 70,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Nomad in FreshCutGrass.",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 714,
+    "y": 401,
+    "w": 49,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Spellbreaker in FreshCu",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 771,
+    "y": 401,
+    "w": 82,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Stalker in FreshCutGras",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 860,
+    "y": 401,
+    "w": 46,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Urdu in FreshCutGrass.a",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 913,
+    "y": 401,
+    "w": 34,
+    "h": 23
+   }
+  },
+  {
+   "tag": "a",
+   "cls": "adversary-encounter-link",
+   "id": "",
+   "name": "Open Giant Scorpion in Fresh",
+   "type": "",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(230, 179, 85)",
+   "rect": {
+    "x": 378,
+    "y": 401,
+    "w": 619,
+    "h": 46
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "countdown-btn",
+   "id": "",
+   "name": "Countdown (12)",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(63, 123, 116)",
+   "rect": {
+    "x": 682,
+    "y": 751,
+    "w": 135,
+    "h": 22
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "dice-btn",
+   "id": "",
+   "name": "D20",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 433,
+    "y": 439,
+    "w": 56,
+    "h": 22
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "dice-btn",
+   "id": "",
+   "name": "1d4",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(217, 164, 65)",
+   "rect": {
+    "x": 818,
+    "y": 563,
+    "w": 56,
+    "h": 22
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "btn",
+   "id": "detail-add-to-list-bottom",
+   "name": "Add to…",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": 2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(77, 66, 56)",
+   "rect": {
+    "x": 958,
+    "y": 795,
+    "w": 90,
+    "h": 40
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "sb-trigger.sb-trigger-float",
+   "id": "btn-soundboard-float",
+   "name": "Soundboard",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(154, 143, 125)",
+   "rect": {
+    "x": 1300,
+    "y": 13,
+    "w": 32,
+    "h": 30
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "",
+   "id": "",
+   "name": "RU",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(217, 164, 65)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(154, 143, 125)",
+   "rect": {
+    "x": 1332,
+    "y": 13,
+    "w": 40,
+    "h": 30
+   }
+  },
+  {
+   "tag": "button",
+   "cls": "active",
+   "id": "",
+   "name": "EN",
+   "type": "button",
+   "fv": true,
+   "disabled": false,
+   "own": {
+    "w": 2,
+    "off": -2,
+    "color": "rgb(28, 20, 8)"
+   },
+   "host": null,
+   "double": false,
+   "tiny": false,
+   "clipped": null,
+   "boxShadow": false,
+   "borderBottom": "rgb(28, 20, 8)",
+   "rect": {
+    "x": 1372,
+    "y": 13,
+    "w": 40,
+    "h": 30
+   }
+  }
+ ]
+}
