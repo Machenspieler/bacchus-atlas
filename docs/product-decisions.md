@@ -292,6 +292,13 @@ what it explicitly rules out, and — when identifiable — what it replaced.
     the family when listed as a member of some other group (e.g. `Outlaws
     (Bandits, Pirates, …)`); the singular `Bandit` inside a group stays the
     one Jagged Knife Bandit (`Jagged Knife Bandits (Bandit, Hexer, …)`).
+  - **"Beasts (any)" is a tiered family.** The exact entry `Beasts (any)` (RU
+    `Звери (любые)`) renders as four links — Beasts Tier 1 … Tier 4 (RU
+    `Звери Ранг N`) — each opening its own FreshCutGrass encounter, and
+    resolves for Prep to all 29 SRD 2.0 beasts (those FreshCutGrass tags
+    `Beasts` that `data/prep.json` holds). The rosters are explicit in
+    `BEAST_TIER_ROSTERS`; a test cross-checks them against `data/prep.json`.
+    Explicit lists such as `Beasts (Bear, Dire Wolf)` are unchanged.
   - **Derived, never persisted.** Recommendations are recomputed from the
     active Prep's `environmentIds`; nothing is stored and the Prep schema is
     unchanged.

@@ -219,6 +219,30 @@
     Pirates: ['Pirate Captain', 'Pirate Raiders', 'Pirate Tough'],
   };
 
+  /** "Beasts (any)" — the GM may pick any beast — expands to the SRD 2.0
+   * adversaries FreshCutGrass tags "Beasts" that data/prep.json also holds,
+   * split by tier so the card can offer one encounter link per tier (see
+   * beastTierGroups). Tiers are the catalogue's own; tests/potential-adversary-
+   * utils.test.js cross-checks every name and tier against data/prep.json so
+   * this list can't drift from it. */
+  const BEAST_TIER_ROSTERS = {
+    1: ['Ahuizotl', 'Atototl', 'Bear', 'Dire Wolf', 'Elk', 'Falcon', 'Giant Rat', 'Octopus', 'Panther',
+      'Sawtoothed Gillbeast', 'Swarm of Rats', 'Viper'],
+    2: ['Dire Pangolati', 'Electric Eels', 'Elephant', 'Fowlbear', 'Giant Eagle', 'Giant Octopus', 'Shark',
+      'Triceratops', 'Tyrannosaurus'],
+    3: ['Crimson Lepus', 'Dire Bat', 'Gargantuan Sea Turtle', 'Plesiosaurus', 'Roc', 'Stag Knight'],
+    4: ['Griffin', 'Water Mother'],
+  };
+
+  /** For a parsed English entry that is exactly "Beasts (any)", the per-tier
+   * groups [{ tier, names }] in tier order; null for any other entry. */
+  function beastTierGroups(parsedEnglishEntry) {
+    const e = parsedEnglishEntry;
+    if (!e || !e.isGroup || e.style !== 'paren' || e.label.toLowerCase() !== 'beasts') return null;
+    if (e.members.length !== 1 || e.members[0].toLowerCase() !== 'any') return null;
+    return Object.keys(BEAST_TIER_ROSTERS).map(tier => ({ tier: Number(tier), names: BEAST_TIER_ROSTERS[tier] }));
+  }
+
   /** The plural Bandit references that name the whole Jagged Knife family even
    * as a *member* of some other group — "Outlaws (Bandits, Pirates, …)",
    * "Desert Raiders (Jagged Knife Bandits)". Deliberately narrower than the
@@ -298,6 +322,8 @@
     const seen = new Set();
     entries.forEach(entry => {
       const parsed = parsePotentialAdversaryEntry(entry);
+      const beastTiers = beastTierGroups(parsed);
+      if (beastTiers) { beastTiers.forEach(g => g.names.forEach(n => seen.add(n))); return; }
       const groupLabel = parsed.isGroup ? parsed.label : null;
       parsed.members.forEach(name => {
         resolveAdversaryNames(groupLabel, name).forEach(n => seen.add(n));
@@ -411,6 +437,8 @@
     ADVERSARY_GROUP_NAME_PREFIXES,
     ADVERSARY_GROUP_MEMBER_ALIASES,
     ADVERSARY_FAMILY_MEMBERS,
+    BEAST_TIER_ROSTERS,
+    beastTierGroups,
     normalizeAdversaryName,
     buildCatalogueNameIndex,
     matchCatalogueIds,

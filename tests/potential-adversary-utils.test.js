@@ -223,3 +223,20 @@ test('real data: generic Bandits environments recommend the full Jagged Knife ro
   // "Jagged Knives" (hold-the-line) is the whole roster too.
   roster.forEach(advId => assert.ok(recommendations.get('hold-the-line').includes(advId), advId));
 });
+
+test('"Beasts (any)" resolves to the tiered beast rosters and links per tier', () => {
+  const prep = require('../data/prep.json');
+  const groups = PAU.beastTierGroups(PAU.parsePotentialAdversaryEntry('Beasts (any)'));
+  assert.deepEqual(groups.map(g => g.tier), [1, 2, 3, 4]);
+  assert.equal(groups.flatMap(g => g.names).length, 29);
+  // Every roster name is a real catalogue adversary of exactly that tier.
+  groups.forEach(({ tier, names: roster }) => roster.forEach(name => {
+    const adv = prep.adversaries.find(a => a.name.en === name);
+    assert.ok(adv, `${name} is in data/prep.json`);
+    assert.equal(adv.tier, tier, `${name} is tier ${tier}`);
+  }));
+  assert.deepEqual(names('Beasts (any)'), groups.flatMap(g => g.names));
+  // Only the exact "Beasts (any)" entry is split; explicit lists are untouched.
+  assert.equal(PAU.beastTierGroups(PAU.parsePotentialAdversaryEntry('Beasts (Bear, Dire Wolf)')), null);
+  assert.deepEqual(names('Beasts (Bear, Dire Wolf)'), ['Bear', 'Dire Wolf']);
+});

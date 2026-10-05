@@ -407,7 +407,7 @@ function bilingual(field) { return field?.[state.lang] || field?.en || field?.ru
  * it. */
 const {
   parsePotentialAdversaryEntry, looksLikeAdversaryName, anyAdversaryFamily,
-  resolveAdversaryNames, envAdversaryNames,
+  resolveAdversaryNames, envAdversaryNames, beastTierGroups,
 } = PotentialAdversaryUtils;
 
 /** The one FreshCutGrass URL encoder for the whole app — see
@@ -462,6 +462,12 @@ function potentialAdversaryLinkHtml(visibleLabel, encounterName, adversaryNames)
 function potentialAdversaryEntryHtml(localizedText, englishText) {
   const shown = parsePotentialAdversaryEntry(localizedText);
   const canonical = parsePotentialAdversaryEntry(englishText);
+  const beastTiers = beastTierGroups(canonical);
+  if (beastTiers) {
+    /* "Beasts (any)": one link per tier, each its own encounter. */
+    return beastTiers.map(({ tier, names }) => potentialAdversaryLinkHtml(
+      `${shown.label} ${t('tier_label')} ${tier}`, `${canonical.label} Tier ${tier}`, names)).join(', ');
+  }
   if (!canonical.isGroup) {
     const names = resolveAdversaryNames(null, canonical.label);
     if (!names.length) return escapeHtml(localizedText);
