@@ -77,6 +77,30 @@ test('bare Pirates is the whole Pirate family', () => {
   assert.deepEqual(names('Pirates'), ['Pirate Captain', 'Pirate Raiders', 'Pirate Tough']);
 });
 
+const BARE_FAMILIES = {
+  Guards: ['Head Guard', 'Archer Guard', 'Bladed Guard'],
+  Skeletons: ['Skeleton Archer', 'Skeleton Dredge', 'Skeleton Knight', 'Skeleton Warrior'],
+  Assassins: ['Apprentice Assassin', 'Master Assassin', 'Assassin Poisoner'],
+  Cultists: ['Cult Adept', 'Cult Fang', 'Cult Initiate'],
+};
+Object.entries(BARE_FAMILIES).forEach(([plural, roster]) => {
+  test(`bare ${plural} (and its singular) is the whole family`, () => {
+    assert.deepEqual(names(plural), roster);
+    assert.deepEqual(names(plural.replace(/s$/, '')), roster);
+  });
+});
+
+test('every bare-family member is a real Prep catalogue adversary', () => {
+  const catalogue = new Set(require('../data/prep.json').adversaries.map(a => a.name.en));
+  Object.values(BARE_FAMILIES).flat().forEach(name => assert.ok(catalogue.has(name), name));
+});
+
+test('a full name stays specific, and a family word inside another group is left as written', () => {
+  assert.deepEqual(names('Skeleton Warrior'), ['Skeleton Warrior']);
+  assert.deepEqual(names('Head Guard'), ['Head Guard']);
+  assert.deepEqual(names('Undead (Ghost Wolf, Skeletons)'), ['Ghost Wolf', 'Skeletons']);
+});
+
 test('grouped Pirates take the group prefix', () => {
   assert.deepEqual(names('Pirates (Captain, Raiders, Tough)'), ['Pirate Captain', 'Pirate Raiders', 'Pirate Tough']);
 });

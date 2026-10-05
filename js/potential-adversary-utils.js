@@ -188,6 +188,11 @@
     'Jagged Knife Lieutenant', 'Jagged Knife Shadow', 'Jagged Knife Sniper',
   ];
 
+  const GUARD_ROSTER = ['Head Guard', 'Archer Guard', 'Bladed Guard'];
+  const SKELETON_ROSTER = ['Skeleton Archer', 'Skeleton Dredge', 'Skeleton Knight', 'Skeleton Warrior'];
+  const ASSASSIN_ROSTER = ['Apprentice Assassin', 'Master Assassin', 'Assassin Poisoner'];
+  const CULT_ROSTER = ['Cult Adept', 'Cult Fang', 'Cult Initiate'];
+
   /** A handful of Potential Adversaries entries — grouped or standalone — don't
    * enumerate their members at all, instead naming a family and leaving the GM
    * to pick any of it: "Criminals (any Jagged Knife)", or the bare entry "any
@@ -198,6 +203,11 @@
    * Fang, Initiate)". Both the singular and plural family name are listed
    * since source text uses either ("any Vault Guardian" / "any Vault
    * Guardians").
+   *
+   * Guards, Skeletons, Assassins and Cultists work the same way when they
+   * stand alone as a whole entry ("Guards", "Skeleton"): FreshCutGrass has no
+   * adversary by those names, only the roster members. Inside another group
+   * ("Undead (…, Skeletons)") they are left as written, like "Pirates" there.
    *
    * The Bandits rule is an explicit project rule, not a fuzzy guess: a generic
    * "Bandit"/"Bandits" reference (bare, "Bandits (tier 2)", "any Bandit(s)",
@@ -214,7 +224,15 @@
     'Vault Guardian': ['Vault Guardian Gaoler', 'Vault Guardian Sentinel', 'Vault Guardian Turret'],
     'Vault Guardians': ['Vault Guardian Gaoler', 'Vault Guardian Sentinel', 'Vault Guardian Turret'],
     'Outer Realms': ['Outer Realms Abomination', 'Outer Realms Corrupter', 'Outer Realms Thrall'],
-    Cult: ['Cult Adept', 'Cult Fang', 'Cult Initiate'],
+    Cult: CULT_ROSTER,
+    Cultist: CULT_ROSTER,
+    Cultists: CULT_ROSTER,
+    Guard: GUARD_ROSTER,
+    Guards: GUARD_ROSTER,
+    Skeleton: SKELETON_ROSTER,
+    Skeletons: SKELETON_ROSTER,
+    Assassin: ASSASSIN_ROSTER,
+    Assassins: ASSASSIN_ROSTER,
     Pirate: ['Pirate Captain', 'Pirate Raiders', 'Pirate Tough'],
     Pirates: ['Pirate Captain', 'Pirate Raiders', 'Pirate Tough'],
   };

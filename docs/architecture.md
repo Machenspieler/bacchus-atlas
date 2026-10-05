@@ -646,6 +646,14 @@ a bare `Bandits (tier 2)` reach it through the existing family code), and
 `BANDIT_GROUP_MEMBER_FAMILY_ALIASES` lets the plural forms mean the family
 as a member of another group too.
 
+Four more families are keys of the same table — `Guards`/`Guard`,
+`Skeletons`/`Skeleton`, `Assassins`/`Assassin` and `Cultists`/`Cultist` —
+so a *bare* entry of one of those words expands to its roster (Head/Archer/
+Bladed Guard, the four Skeleton adversaries, the three Assassins, the three
+Cult adversaries). Unlike Bandits they do **not** expand as a member of
+another group (`Undead (…, Skeletons)` is left as written, as `Pirates` is);
+a full name such as `Skeleton Warrior` stays specific.
+
 On top of that:
 `normalizeAdversaryName()` is the conservative comparison key (trim, NFKC,
 case fold, collapse whitespace, fold apostrophe/dash variants — no fuzzy

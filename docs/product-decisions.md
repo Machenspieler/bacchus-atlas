@@ -292,6 +292,11 @@ what it explicitly rules out, and — when identifiable — what it replaced.
     the family when listed as a member of some other group (e.g. `Outlaws
     (Bandits, Pirates, …)`); the singular `Bandit` inside a group stays the
     one Jagged Knife Bandit (`Jagged Knife Bandits (Bandit, Hexer, …)`).
+  - **Bare Guards, Skeletons, Assassins and Cultists mean their rosters**
+    (added 2026-10-05, so the FreshCutGrass support gate of PD-014 doesn't
+    leave them as plain text). Only as a whole entry; inside another group
+    they stay as written. This also widens Prep's recommendations for the
+    environments that list them.
   - **"Beasts (any)" is a tiered family.** The exact entry `Beasts (any)` (RU
     `Звери (любые)`) renders as four links — Beasts Tier 1 … Tier 4 (RU
     `Звери Ранг N`) — each opening its own FreshCutGrass encounter, and
