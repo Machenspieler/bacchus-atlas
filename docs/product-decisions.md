@@ -604,8 +604,8 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   The bar's Deselect button went with it (the inspector's Close is the same
   action). A hex dragged to a new cell stays selected only while the inspector
   is anchored on it; otherwise nothing is selected afterwards (Undo remains).
-- **Decision (environments on the card):** an *expanded* region card has an
-  **Environments (N)** disclosure listing every catalog environment whose
+- **Decision (environments on the card — superseded by PD-020, they now live in the
+  Region Inspector):** an *expanded* region card had an **Environments (N)** disclosure listing every catalog environment whose
   `biomes` contains the region's biome, sorted by tier then name. Each row is a
   plain link to that environment's overlay on `#/journey2/env/<id>` (the same
   route-driven overlay as everywhere else), so the map and the open card are
@@ -614,3 +614,46 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   no dropdown.
 - **Where:** [architecture.md](architecture.md) "Region Inspector (Phase B)" and
   "Journey 2 map editor".
+
+## PD-020: Journey 2 Phase C — Fog of War and Player Preview
+- **Date:** 2026-10-06
+- **Decision (fog is cell data):** what the players have explored is a set of **map cells**
+  (`doc.playerVisibility.revealedCells`), not a property of regions or tiles. Every cell is
+  **hidden by default** (`[]`); nothing is revealed automatically — not Marrogate, not the
+  neighbours of a region, not a whole region at once (a "reveal region" action is out of scope).
+  Generating, placing, moving, returning and deleting regions never change fog; content moved into
+  a revealed cell becomes visible, into a hidden cell becomes hidden; hiding a cell deletes nothing.
+  Only placeable cells (inside the frame, not title/compass/scale furniture) can be revealed.
+- **Decision (the base map is never fogged away):** the original Old Valloren raster, its printed
+  MARROGATE and HORIZON labels and every sanctuary icon embedded in it stay visible in every view.
+  The fog hides only *generated New Valloren content* (Habitat glyphs, Terrain dots, Shadowblight
+  marks, overtaken marks, and later points of interest and other cell-bound overlays). The veil is
+  masked around the icon/label protection rectangles; the raster is not modified. Sanctuary
+  generation, sanctuary names and their visibility remain a future, independent state.
+- **Decision (GM vs players, one document):** the GM view always shows all generated content; a
+  subtle hatched veil (toggle **Show fog state**, a stored UI preference, default on) only marks
+  unexplored cells. **Player Preview** renders the *same* document through the pure player
+  projection (`js/journey2-projection.js`): content in hidden cells is not produced at all (a data
+  rule, not CSS), and Encounter, Rumor, notes, suggested environments, region ids, coordinates,
+  warnings, selection and diagnostics are never in it. A region spanning revealed and hidden cells
+  shows only its revealed hexes.
+- **Decision (tools):** Reveal and Hide are map tools that paint by click or drag (one hex wide);
+  one pointer stroke is **one Undo/Redo entry** and one autosave; Space (or the middle button) pans
+  while a tool is active; a tool outranks the Region Inspector and tile selection but not armed
+  placement, a drag/pan or Player Preview. The active tool, the preview, the hover cell and the stroke
+  are transient (never in the document, history, backup or storage); only "Show fog state" is stored.
+  Fog edits are campaign data: autosaved, exported/imported, validated and undoable.
+- **Decision (print):** printing is not part of this phase, but Player Preview is the print
+  renderer's first customer: the future print phase draws `buildPlayerProjection(doc)` (via the
+  shared `overlayMarkup` routine and `fogMaskRects`) into the two original A4 map halves — never a
+  clipped screen, CSS-hidden GM markup or a cloned interactive DOM.
+- **Decision (cleanup in the same phase):** suggested environments moved from the sidebar card
+  (where a long list swamped it) into a read-only, collapsed-by-default section of the Region
+  Inspector, after Rumor, with the same data and order. **GM notes stay removed** (PD-019 was
+  reaffirmed when this phase was specified: the brief's "restore GM Notes if omitted" was answered
+  "keep them removed"); the document still carries `notes`. The inspector footer no longer shows the
+  raw "Hex q,r" — coordinates are Diagnostics-only; Return to stock stays.
+- **Out of scope (unchanged):** printing/PDF/A4 splitting, sanctuary generation and names, visited
+  sanctuary state, Soul Echo, points-of-interest creation, automatic or region-wide reveal, brushes
+  larger than one hex, live player view or accounts, replacing `#/journey`, mobile redesign.
+- **Where:** [architecture.md](architecture.md) "Fog of War and Player Preview (Phase C, PD-020)".

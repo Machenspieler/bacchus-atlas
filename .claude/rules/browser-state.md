@@ -93,9 +93,11 @@ paths:
 
 - **Journey 2 owns exactly four keys**, all `dhcodex_journey2_*`
   (`js/journey2-store.js`): `map`, `map_recovery`, `map_previous`, and `ui`
-  (view preferences: `{ sideCollapsed }`, read/written only through
-  `store.loadUi()/saveUi()`, malformed -> defaults, never part of the document
-  or Undo history). It never
+  (view preferences: `{ sideCollapsed, showFogState }`, read/written only through
+  `store.loadUi()/saveUi()`, malformed -> defaults (sidebar open, fog state on), never part of
+  the document or Undo history). The active Reveal/Hide tool, Player Preview, the fog hover cell and
+  an in-progress stroke are transient view state and are **never** stored. Fog of War itself
+  (`playerVisibility.revealedCells`) is campaign data in the `map` document. It never
   reads, writes or clears a legacy Journey, Prep or unrelated key, and
   `tests/journey2-store.test.js` plus `scripts/journey2/stage1-verify.js` assert
   every non-Journey-2 value stays byte-identical.

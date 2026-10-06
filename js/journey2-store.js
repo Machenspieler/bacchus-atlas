@@ -27,7 +27,7 @@
     map: 'dhcodex_journey2_map',
     recovery: 'dhcodex_journey2_map_recovery',     // raw text of a map that failed validation
     previous: 'dhcodex_journey2_map_previous',     // the map that an import replaced
-    ui: 'dhcodex_journey2_ui',                     // view preferences (sidebar state) — never part of the map or its history
+    ui: 'dhcodex_journey2_ui',                     // view preferences (sidebar state, fog-state overlay) — never part of the map or its history
   });
 
   /** All Journey 2-owned keys; anything else in storage must stay byte-identical across any Journey 2 use. */
@@ -59,15 +59,27 @@
       return r.ok ? r.doc : null;
     }
 
-    /** View preferences, separate from the map document: { sideCollapsed: boolean }. Unreadable or malformed -> defaults. */
+    /**
+     * View preferences, separate from the map document and its history: { sideCollapsed, showFogState }.
+     * Unreadable or malformed values -> defaults (sidebar open, fog-state overlay shown). The Player Preview mode, the active
+     * Reveal/Hide tool and any in-progress stroke are NEVER stored.
+     */
     function loadUi() {
-      const out = { sideCollapsed: false };
+      const out = { sideCollapsed: false, showFogState: true };
       const raw = SafeStorage.readRawFlag(storage, KEYS.ui);
       if (typeof raw !== 'string') return out;
-      try { const v = JSON.parse(raw); if (v && typeof v === 'object' && typeof v.sideCollapsed === 'boolean') out.sideCollapsed = v.sideCollapsed; } catch (e) { /* defaults */ }
+      try {
+        const v = JSON.parse(raw);
+        if (v && typeof v === 'object') {
+          if (typeof v.sideCollapsed === 'boolean') out.sideCollapsed = v.sideCollapsed;
+          if (typeof v.showFogState === 'boolean') out.showFogState = v.showFogState;
+        }
+      } catch (e) { /* defaults */ }
       return out;
     }
-    function saveUi(ui) { return SafeStorage.writeJson(storage, KEYS.ui, { sideCollapsed: !!(ui && ui.sideCollapsed) }); }
+    function saveUi(ui) {
+      return SafeStorage.writeJson(storage, KEYS.ui, { sideCollapsed: !!(ui && ui.sideCollapsed), showFogState: !(ui && ui.showFogState === false) });
+    }
 
     return { load: load, save: save, savePrevious: savePrevious, loadPrevious: loadPrevious, loadUi: loadUi, saveUi: saveUi, keys: KEYS };
   }

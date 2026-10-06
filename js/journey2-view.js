@@ -23,9 +23,19 @@
    sidebar is only for generating, placing, deleting and opening the inspector;
    the inspector's state is transient and independent of which card is expanded.
 
+   Phase C: Fog of War and Player Preview. Visibility is CELL-based campaign data (`doc.playerVisibility`, edited only
+   through the model's `setCellsRevealed` command). Reveal/Hide are map tools: one pointer stroke (hex-line
+   interpolated so a fast drag leaves no gap) is ONE Undo entry committed on release. The GM always sees every
+   generated tile; a subtle veil only marks unexplored cells. Player Preview is a temporary read-only render of
+   `Journey2Projection.buildPlayerProjection(doc)` — generated content in hidden cells is not produced at all, and
+   the same projection is what the future print renderer will draw. The active tool, the preview mode, the hover
+   cell and an in-progress stroke are transient view state (never in the document, history or backup); only the
+   "Show fog state" preference is stored (dhcodex_journey2_ui).
+
    Layering (see docs/architecture.md "Journey 2 map editor"):
      js/journey2-geometry.js  measured lattice + camera math (pure)
      js/journey2-model.js     document, policy, commands, history (pure)
+     js/journey2-projection.js the player-facing projection (pure)
      js/journey2-store.js     local persistence over safe-storage
      js/journey2-view.js      this file: DOM, pointer state, rendering
    The model owns every rule; this file never mutates a document, it only
@@ -45,9 +55,11 @@
    - Transient interaction state (drag, preview, armed click, selection, the
      open Region Inspector) is never persisted and never enters Undo history.
    - Keyboard handling: map keys are bound to the focused viewport; the only
-     document-level handlers are Escape (close a menu, else cancel a drag or
-     armed placement, else close the Region Inspector) and Undo/Redo; Undo/Redo
-     is ignored while a text field, select, contenteditable or dialog is active.
+     document-level handlers are Escape (close a menu, else cancel a fog stroke,
+     a drag/pan or armed placement, else leave Player Preview, else leave the fog
+     tool, else close the Region Inspector), Space (temporary pan while a fog tool is
+     active) and Undo/Redo; Undo/Redo is ignored while a text field, select,
+     contenteditable or dialog is active, and in Player Preview.
    ============================================================ */
 (function (root, factory) {
   root.Journey2View = factory(root);
@@ -57,6 +69,7 @@
   const Geo = root.Journey2Geometry;
   const Model = root.Journey2Model;
   const Store = root.Journey2Store;
+  const Projection = root.Journey2Projection;
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const MAX_ZOOM = 8;
   const CLICK_SLOP_PX = 4;
@@ -176,6 +189,17 @@
     const hexPathCache = new Map();
     let activeBatchId = null;                               // the one card expanded for placement controls (independent of the inspector)
     let sideCollapsed = false;                              // view preference, persisted apart from the document
+    /* Fog of War (Phase C) — all transient except showFog, which is the one stored preference */
+    let showFog = true;                                     // "Show fog state": GM veil over unexplored cells (UI only, never in the document or history)
+    let fogTool = null;                                     // null | 'reveal' | 'hide' — the active map tool
+    let fogStroke = null;                                   // the in-progress pointer stroke { mode, pointerId, seen:Set, cells:[key], pendD, last, hover }
+    let fogHover = null;                                    // { q, r } under the pointer while a tool is active and no stroke runs
+    let fogPaintRaf = 0;
+    let fogDrawn = { vis: null, mode: null, doc: null };   // what the fog layer currently shows (so an unrelated document change never rebuilds it)
+    let foggable = null;                                    // Map cellKey -> hex path, every cell the GM can reveal/hide (built once)
+    let previewMode = false;                                // Player Preview: a read-only render of the player projection
+    let previewReturn = null;                               // camera / fit state to restore on the Back-to-GM action
+    let playerProjection = null;                            // the projection currently drawn in Player Preview
 
     container.innerHTML = '';
     container.classList.add('j2-host');
@@ -199,7 +223,8 @@
       abort.abort();
       cancelAnimationFrame(rafId);
       clearTimeout(hintTimer); clearTimeout(liveTimer);
-      tr = null; pan = null; inspector = Model.NO_INSPECTION;
+      tr = null; pan = null; fogStroke = null; fogTool = null; previewMode = false; inspector = Model.NO_INSPECTION;
+      cancelAnimationFrame(fogPaintRaf);
       document.body.classList.remove('j2-dragging');
       for (const d of Array.from(dialogs)) { try { d.close(); d.remove(); } catch (e) { /* gone */ } }
       dialogs.clear();
@@ -211,7 +236,7 @@
       container.innerHTML = '';
       delete document.body.dataset.j2;
       userPlacements = [];
-      data = null; ui = {}; doc = null; history = null; store = null; cardRefs.clear(); glyphCache.clear(); hexPathCache.clear();
+      data = null; ui = {}; doc = null; history = null; store = null; foggable = null; playerProjection = null; cardRefs.clear(); glyphCache.clear(); hexPathCache.clear();
     }
 
     function listen(target, type, fn, options) {
@@ -226,7 +251,7 @@
       if (o && o.environmentsForBiome) environmentsFor = o.environmentsForBiome;
       applyStrings();
       if (data && ui.root) {
-        updateStatus(); updateReadouts(); renderControlList(); renderAll(true);
+        updateStatus(); updateReadouts(); renderControlList(); renderAll(true); applyPreviewChrome();
       }
       if (ui.loading) renderLoading();
     }
@@ -315,6 +340,10 @@
       chevL: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m8.8 3 -4 4 4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       chevR: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m5.2 3 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       info: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 9.2v4.3M10 6.3v.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+      fog: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 3.5h9l4.5 6.5-4.5 6.5h-9L1 10z" transform="translate(0 0) scale(.9) translate(1.1 .8)" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 8.5 9 5.5M6 12.5 12 6.5M9 14.5l5-5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>',
+      reveal: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.8 10S5 4.8 10 4.8 18.2 10 18.2 10 15 15.2 10 15.2 1.8 10 1.8 10z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.4" fill="currentColor"/></svg>',
+      conceal: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.8 10S5 4.8 10 4.8 18.2 10 18.2 10 15 15.2 10 15.2 1.8 10 1.8 10z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 16.5 16.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+      players: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7" r="2.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 16c0-2.9 2.2-4.7 5-4.7s5 1.8 5 4.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="14" cy="8" r="2.1" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M14.4 11.6c2 .2 3.4 1.6 3.4 4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
       close: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m3.5 3.5 7 7m0-7-7 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
     };
 
@@ -328,7 +357,7 @@
               <h2 class="j2-title" data-t="journey2_map_name"></h2>
               <span class="j2-save" data-j2-save role="status" aria-live="polite"><span class="j2-save-ico" aria-hidden="true"></span><span class="j2-save-text"></span></span>
             </div>
-            <div class="j2-tb-group" role="group" data-t-aria="journey2_history_label">
+            <div class="j2-tb-group" role="group" data-j2-history-group data-t-aria="journey2_history_label">
               <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-undo data-t-aria="journey2_undo" data-t-title="journey2_undo">${ICON.undo}</button>
               <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-redo data-t-aria="journey2_redo" data-t-title="journey2_redo">${ICON.redo}</button>
             </div>
@@ -338,6 +367,17 @@
               <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-zoom="in" data-t-aria="journey2_zoom_in" data-t-title="journey2_zoom_in">+</button>
               <button type="button" class="btn btn-ghost btn-sm" data-j2-fit data-t="journey2_fit"></button>
             </div>
+            <div class="j2-tb-group j2-tb-fog" role="group" data-j2-fog-group data-t-aria="journey2_fog_group">
+              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-fog-state aria-pressed="true" data-t-aria="journey2_fog_show"><span class="j2-ico" aria-hidden="true">${ICON.fog}</span><span data-t="journey2_fog_label"></span></button>
+              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-fog-tool="reveal" aria-pressed="false" data-t-aria="journey2_fog_reveal_title" data-t-title="journey2_fog_reveal_title"><span class="j2-ico" aria-hidden="true">${ICON.reveal}</span><span data-t="journey2_fog_reveal"></span></button>
+              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-fog-tool="hide" aria-pressed="false" data-t-aria="journey2_fog_hide_title" data-t-title="journey2_fog_hide_title"><span class="j2-ico" aria-hidden="true">${ICON.conceal}</span><span data-t="journey2_fog_hide"></span></button>
+              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-preview data-t-title="journey2_preview_title"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><span data-t="journey2_preview"></span></button>
+            </div>
+            <div class="j2-tb-group j2-tb-preview" data-j2-preview-bar hidden>
+              <span class="j2-preview-flag" role="status"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><strong data-t="journey2_preview"></strong></span>
+              <span class="j2-preview-note" data-t="journey2_preview_hint"></span>
+              <button type="button" class="btn btn-sm" data-j2-preview-back data-t="journey2_preview_back"></button>
+            </div>
           </div>
           <div class="j2-stage" data-j2-stage>
             <div class="j2-mapwrap">
@@ -345,7 +385,9 @@
                 <div class="j2-world" style="width:${W}px;height:${H}px">
                   <img class="j2-base" alt="" draggable="false" width="${W}" height="${H}">
                   <svg class="j2-overlay" xmlns="${SVG_NS}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">
-                    <g data-j2-g="tiles"></g><g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
+                    <defs data-j2-defs></defs>
+                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="fog" mask="url(#j2-fog-mask)"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="fogstroke"></g>
+                    <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
                     <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g>
                   </svg>
                 </div>
@@ -353,6 +395,12 @@
                 <div class="j2-badge" data-j2-proof-badge hidden data-t="journey2_proof_badge"></div>
               </div>
               <div class="j2-hint-chip" data-j2-hint role="status" aria-live="polite" hidden></div>
+              <div class="j2-fog-chip" data-j2-fog-chip hidden>
+                <span class="j2-ico" aria-hidden="true" data-j2-fog-chip-ico></span>
+                <strong data-j2-fog-chip-title></strong>
+                <span class="j2-fog-chip-count" data-j2-fog-chip-count></span>
+                <span class="j2-fog-chip-hint" data-j2-fog-chip-hint></span>
+              </div>
               <aside class="j2-panel" id="j2-panel" data-t-aria="journey2_panel_label" hidden></aside>
               <aside class="j2-region-inspector" id="j2-region-inspector" role="dialog" aria-modal="false" aria-labelledby="j2-region-inspector-title" data-j2-inspector hidden>
                 <span class="j2-insp-caret" aria-hidden="true"></span>
@@ -375,6 +423,11 @@
                   </div>
                   <section class="j2-insp-sec"><h4 class="j2-insp-h" data-t="journey_k_encounter"></h4><div data-j2-i="enc"></div></section>
                   <section class="j2-insp-sec"><h4 class="j2-insp-h" data-t="journey_k_rumor"></h4><p class="j2-insp-p" data-j2-i="rumor"></p></section>
+                  <section class="j2-insp-sec j2-insp-envs" data-j2-i="envSec">
+                    <h4 class="j2-insp-h j2-insp-h--toggle"><button type="button" class="j2-insp-envs-toggle" data-j2-env-toggle data-j2-i="envToggle" aria-expanded="false" aria-controls="j2-insp-envs-list"><span data-j2-i="envLabel"></span><span class="j2-envs-chev" aria-hidden="true">${ICON.caret}</span></button></h4>
+                    <p class="j2-insp-p j2-insp-muted" data-j2-i="envNone" hidden></p>
+                    <ul class="j2-envs-list" id="j2-insp-envs-list" data-j2-i="envList" hidden></ul>
+                  </section>
                 </div>
                 <footer class="j2-insp-tile" data-j2-insp-tile hidden>
                   <span class="j2-insp-tile-text" data-j2-i="tileText"></span>
@@ -435,6 +488,21 @@
       ui.sideToggles = Array.from(container.querySelectorAll('[data-j2-side-toggle]'));
       ui.sideScroll = container.querySelector('[data-j2-side-scroll]');
       ui.save = container.querySelector('[data-j2-save]');
+      ui.historyGroup = container.querySelector('[data-j2-history-group]');
+      ui.fogGroup = container.querySelector('[data-j2-fog-group]');
+      ui.fogState = container.querySelector('[data-j2-fog-state]');
+      ui.fogTools = { reveal: container.querySelector('[data-j2-fog-tool="reveal"]'), hide: container.querySelector('[data-j2-fog-tool="hide"]') };
+      ui.previewBtn = container.querySelector('[data-j2-preview]');
+      ui.previewBar = container.querySelector('[data-j2-preview-bar]');
+      ui.previewBack = container.querySelector('[data-j2-preview-back]');
+      ui.fogChip = container.querySelector('[data-j2-fog-chip]');
+      ui.fogChipIco = container.querySelector('[data-j2-fog-chip-ico]');
+      ui.fogChipTitle = container.querySelector('[data-j2-fog-chip-title]');
+      ui.fogChipCount = container.querySelector('[data-j2-fog-chip-count]');
+      ui.fogChipHint = container.querySelector('[data-j2-fog-chip-hint]');
+      ui.defs = container.querySelector('[data-j2-defs]');
+      ui.fogVeil = container.querySelector('[data-j2-fog-veil]');
+      ui.fogEdge = container.querySelector('[data-j2-fog-edge]');
       ui.undo = container.querySelector('[data-j2-undo]');
       ui.redo = container.querySelector('[data-j2-redo]');
       ui.banner = container.querySelector('[data-j2-banner]');
@@ -454,7 +522,9 @@
       ui.base = baseImg;
       syncHeaderHeight();
       initDocument();
-      sideCollapsed = !!store.loadUi().sideCollapsed;
+      const prefs = store.loadUi();
+      sideCollapsed = !!prefs.sideCollapsed;
+      showFog = prefs.showFogState !== false;
       activeBatchId = doc.batches.length ? doc.batches[doc.batches.length - 1].id : null;
       buildStaticLayers();
       buildPanel();
@@ -466,6 +536,7 @@
       fitToView();
       updateReadouts();
       renderAll(true);
+      applyPreviewChrome();
       inst.debugApi = makeDebugApi();
     }
 
@@ -558,7 +629,7 @@
     }
 
     function undo() {
-      if (inst.disposed || editLocked) return;
+      if (inst.disposed || editLocked || previewMode) return;
       cancelTransient();
       const e = Model.historyUndo(history);
       if (!e) return;
@@ -567,7 +638,7 @@
       announce(t('journey2_live_undo'));
     }
     function redo() {
-      if (inst.disposed || editLocked) return;
+      if (inst.disposed || editLocked || previewMode) return;
       cancelTransient();
       const e = Model.historyRedo(history);
       if (!e) return;
@@ -614,6 +685,7 @@
           '<text class="j2-ctl-n" x="' + (o[0] + 4) + '" y="' + (o[1] - 4) + '">' + (i + 1) + '</text></g>';
       });
       ui.g.control.innerHTML = c;
+      buildFogLayer();
       renderProof();
     }
 
@@ -645,8 +717,11 @@
       // the hidden half is taken out of the tab order and the accessibility tree; the transition itself is CSS-only
       ui.side.inert = sideCollapsed;
       ui.rail.inert = !sideCollapsed;
-      if (persistIt && store) store.saveUi({ sideCollapsed: sideCollapsed });
+      if (persistIt) saveUiPrefs();
     }
+
+    /** The stored view preferences (sidebar state, "Show fog state") — never the document, never history. */
+    function saveUiPrefs() { if (store) store.saveUi({ sideCollapsed: sideCollapsed, showFogState: showFog }); }
 
     /** Explicit toggle only. Never touches the camera, selection or active region; focus moves to the control that replaces the one used. */
     function toggleSide() {
@@ -659,7 +734,7 @@
 
     /** Width the overlay sidebar covers on the left of the map (used by Fit only; toggling never refits). */
     function sideInset() {
-      if (!ui.sidewrap) return 0;
+      if (!ui.sidewrap || previewMode) return 0;
       const w = sideCollapsed ? ui.rail.offsetWidth : ui.sidewrap.offsetWidth;
       return Math.min(w + 2 * 8, viewSize()[0] * 0.5);
     }
@@ -674,7 +749,7 @@
 
     function createCard(b) {
       const root = el('article', { class: 'j2-card', 'data-batch': b.id });
-      const bodyId = 'j2-cb-' + b.id, envsId = 'j2-ce-' + b.id;
+      const bodyId = 'j2-cb-' + b.id;
       root.innerHTML = `
         <div class="j2-card-top">
           <button type="button" class="j2-card-head" data-j2-card-toggle aria-expanded="false" aria-controls="${bodyId}" data-j2-c="toggle">
@@ -695,10 +770,6 @@
             <button type="button" class="j2-handle j2-handle--all" data-j2-handle="all"><span class="j2-handle-label" data-j2-c="allLabel"></span><span class="j2-grip">${ICON.grip}</span></button>
           </div>
           <p class="j2-done" data-j2-c="done" hidden><span class="j2-done-ico" aria-hidden="true">${ICON.check}</span><span data-j2-c="doneText"></span></p>
-          <div class="j2-envs" data-j2-c="envs" hidden>
-            <button type="button" class="j2-envs-toggle" data-j2-env-toggle data-j2-c="envToggle" aria-expanded="false" aria-controls="${envsId}"><span data-j2-c="envLabel"></span><span class="j2-envs-chev" aria-hidden="true">${ICON.caret}</span></button>
-            <ul class="j2-envs-list" id="${envsId}" data-j2-c="envList" hidden></ul>
-          </div>
           <div class="j2-card-foot">
             <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-delete" data-j2-delete data-j2-c="del">${ICON.trash}</button>
           </div>
@@ -762,33 +833,37 @@
       refs.del.setAttribute('aria-label', fill('journey2_delete_aria', { name: name, n: ord }));
       refs.del.setAttribute('title', t('journey2_delete_region'));
       refs.del.disabled = editLocked;
-      updateEnvironments(refs, b);
     }
 
     /**
-     * The card's "Environments" dropdown: every catalog environment tagged with the region's biome, each a plain link to
-     * that environment's overlay on #/journey2 (the overlay is route-driven, so the map underneath is never re-rendered).
-     * Built once per biome + language and then left alone, so an open list and the focus inside it survive every re-render.
-     * An overtaken region has no biome and therefore no list.
+     * The inspector's read-only "Suggested environments" disclosure: every catalog environment tagged with the region's biome, each a
+     * plain link to that environment's overlay on #/journey2 (the overlay is route-driven, so the map underneath is never re-rendered).
+     * The matching itself is supplied by app.js (`environmentsForBiome`) — nothing here re-implements it, and the order is kept as
+     * given. Collapsed by default every time a region is shown; the list is built once per biome + language so an open list and the
+     * focus inside it survive every re-render. An overtaken region has no biome and therefore no list.
      */
-    function updateEnvironments(refs, b) {
+    function renderSuggestedEnvironments(b, regionChanged) {
+      const I = ui.i;
       const biome = b.habitat.overtaken ? null : b.habitat.biome;
       const list = biome ? environmentsFor(biome) : [];
-      refs.envs.hidden = !list.length;
-      if (!list.length) return;
-      refs.envLabel.textContent = fill('journey2_envs_label', { n: n(list.length) });
+      I.envLabel.textContent = t('journey2_envs_suggested') + (list.length ? ' · ' + n(list.length) : '');
+      I.envToggle.hidden = !list.length;
+      I.envNone.hidden = list.length > 0;
+      I.envNone.textContent = t('journey2_envs_none');
+      if (regionChanged || !list.length) setEnvironmentsOpen(false);
+      if (!list.length) { I.envList.innerHTML = ''; I.envList.removeAttribute('data-sig'); return; }
       const sig = lang + '|' + list.map(e => e.id + ':' + e.name).join(',');
-      if (refs.envList.getAttribute('data-sig') !== sig) {
-        refs.envList.setAttribute('data-sig', sig);
-        refs.envList.innerHTML = list.map(e => '<li><a class="j2-env-link" href="' + esc(e.href) + '" data-j2-env><span class="j2-env-tier" aria-hidden="true">' + esc(e.tier) + '</span><span class="j2-env-name">' + esc(e.name) + '</span><span class="sr-only">' + esc(t('tier_label') + ' ' + e.tier) + '</span></a></li>').join('');
+      if (I.envList.getAttribute('data-sig') !== sig) {
+        I.envList.setAttribute('data-sig', sig);
+        I.envList.innerHTML = list.map(e => '<li><a class="j2-env-link" href="' + esc(e.href) + '" data-j2-env><span class="j2-env-tier" aria-hidden="true">' + esc(e.tier) + '</span><span class="j2-env-name">' + esc(e.name) + '</span><span class="sr-only">' + esc(t('tier_label') + ' ' + e.tier) + '</span></a></li>').join('');
       }
     }
 
-    function toggleEnvironments(btn) {
-      const open = btn.getAttribute('aria-expanded') !== 'true';
-      btn.setAttribute('aria-expanded', String(open));
-      btn.closest('.j2-envs').querySelector('.j2-envs-list').hidden = !open;
+    function setEnvironmentsOpen(open) {
+      ui.i.envToggle.setAttribute('aria-expanded', String(open));
+      ui.i.envList.hidden = !open;
     }
+    function toggleEnvironments() { setEnvironmentsOpen(ui.i.envToggle.getAttribute('aria-expanded') !== 'true'); }
 
     function renderInventory(full) {
       if (!ui.cards || !doc) return;
@@ -962,11 +1037,14 @@
         I.terrainName.textContent = ''; I.terrainText.hidden = true; I.examples.hidden = true; I.enc.innerHTML = ''; I.rumor.textContent = '';
         I.daysSize.textContent = fill('journey2_hexes_n', { n: n(b.quantity) });
       }
+      renderSuggestedEnvironments(b, inspectorShown !== b.id);
       // the anchored hex's placement info + the one action on it (a card-opened inspector has no anchor, so no footer)
       const tile = inspector.tileId ? Model.derive(doc).byId.get(inspector.tileId) : null;
       ui.inspTile.hidden = !tile;
       if (tile) {
-        I.tileText.textContent = fill('journey2_tile_cell', { cell: tile.cell });
+        // raw lattice coordinates are diagnostics, not GM information: shown only while Diagnostics is on
+        I.tileText.hidden = !diagOpen;
+        I.tileText.textContent = diagOpen ? fill('journey2_tile_cell', { cell: tile.cell }) : '';
         ui.inspTile.querySelector('[data-j2-return]').disabled = editLocked;
       }
       if (inspectorShown !== b.id) ui.inspector.querySelector('.j2-insp-scroll').scrollTop = 0;
@@ -1038,11 +1116,17 @@
       return [c[0], top + BLIGHT_X_HALF + 5];
     }
 
+    /**
+     * What a generated tile draws, and nothing else: { symbolId, dots, blightMark }. Both the GM render (from a batch) and the
+     * Player Preview (from the player projection) go through the same drawing code, so a revealed hex looks identical in both.
+     */
+    function specOfBatch(b) { return { symbolId: Model.symbolIdOf(b), dots: b.terrain.value, blightMark: !!(b.habitat.blighted && !b.habitat.overtaken) }; }
+
     /** Glyph layout (symbol + terrain dots + optional blight mark) that never covers protected artwork; cached. */
-    function layoutFor(q, r, b) {
-      const sym = symbolFor(b);
+    function layoutFor(q, r, spec) {
+      const sym = data.symbolById.get(spec.symbolId);
       if (!sym) return null;
-      const dots = b.terrain.value, blight = b.habitat.blighted && !b.habitat.overtaken;
+      const dots = spec.dots, blight = spec.blightMark;
       const key = q + ',' + r + '|' + sym.id + '|' + dots + '|' + (blight ? 1 : 0);
       let L = glyphCache.get(key);
       if (L === undefined) {
@@ -1059,8 +1143,8 @@
     }
 
     /** Committed-tile markup: one monochrome symbol, terrain dots and (when blighted) a blight mark. `cls` selects committed/preview. */
-    function tileMarkup(q, r, b, cls, bodyOnly) {
-      const L = layoutFor(q, r, b);
+    function tileMarkup(q, r, spec, cls, bodyOnly) {
+      const L = layoutFor(q, r, spec);
       let h = '';
       if (!L) return h;
       if (L.lay.hidden) return h;       // no clear space: the glyph is withheld (never drawn over a marker); the tile stays, outlined
@@ -1076,18 +1160,33 @@
       return h;
     }
 
+    /**
+     * The generated-tile layer as SVG markup for a list of { q, r, spec } entries — the ONE drawing routine behind the GM map and
+     * Player Preview (and the future print renderer). It knows nothing about regions, selection or visibility: what to draw has
+     * already been decided (GM: every placed tile; players: the projection's overlays).
+     */
+    function overlayMarkup(entries) {
+      let outlines = '', quiet = '', body = '';
+      for (const e of entries) {
+        const L = layoutFor(e.q, e.r, e.spec);
+        if (L && L.lay.hidden) quiet += hexPath(e.q, e.r); else outlines += hexPath(e.q, e.r);
+        body += tileMarkup(e.q, e.r, e.spec, 'j2-tile');
+      }
+      return (outlines ? '<path class="j2-tile-hex" d="' + outlines + '"/>' : '') + (quiet ? '<path class="j2-tile-hex is-glyphless" d="' + quiet + '"/>' : '') + body;
+    }
+
     function renderTiles() {
       if (!ui.g || !doc) return;
-      const byBatch = new Map(doc.batches.map(b => [b.id, b]));
-      let outlines = '', quiet = '', body = '';
-      for (const tile of doc.tiles) {
-        const b = byBatch.get(tile.batchId);
-        const c = Geo.parseCellId(tile.cell);
-        const L = layoutFor(c.q, c.r, b);
-        if (L && L.lay.hidden) quiet += hexPath(c.q, c.r); else outlines += hexPath(c.q, c.r);
-        body += tileMarkup(c.q, c.r, b, 'j2-tile');
+      if (previewMode) {
+        // Player Preview: the GM layer is emptied (not hidden) and only the projection is produced
+        ui.g.tiles.innerHTML = '';
+        playerProjection = Projection.buildPlayerProjection(doc);
+        ui.g.player.innerHTML = overlayMarkup(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark } })));
+        return;
       }
-      ui.g.tiles.innerHTML = (outlines ? '<path class="j2-tile-hex" d="' + outlines + '"/>' : '') + (quiet ? '<path class="j2-tile-hex is-glyphless" d="' + quiet + '"/>' : '') + body;
+      ui.g.player.innerHTML = '';
+      const byBatch = new Map(doc.batches.map(b => [b.id, b]));
+      ui.g.tiles.innerHTML = overlayMarkup(doc.tiles.map(tile => { const c = Geo.parseCellId(tile.cell); return { q: c.q, r: c.r, spec: specOfBatch(byBatch.get(tile.batchId)) }; }));
     }
 
     function renderSelection() {
@@ -1118,6 +1217,8 @@
       if (!ui.root || !doc) return;
       renderInventory(full);
       renderTiles();
+      renderFog();
+      updateFogUi();
       renderSelection();
       renderInspector();
       positionInspector();
@@ -1202,6 +1303,264 @@
     }
 
     /* ============================================================
+       Fog of War and Player Preview (Phase C)
+       Visibility is cell-based campaign data (doc.playerVisibility), changed only by the model's setCellsRevealed
+       command. The GM view never hides generated content: with "Show fog state" on, a subtle hatched veil marks
+       the unexplored cells. Player Preview re-renders the same document through the player projection, so
+       generated overlays in unexplored cells are simply not produced. The veil is masked around the sanctuary icons
+       and printed labels of the base map, which therefore stay visible in both views. The active tool, the hover
+       cell, an in-progress stroke and the preview mode are transient: never persisted, never in history.
+       ============================================================ */
+
+    /** One shared set of SVG patterns + the mask that keeps the original sanctuary icons / printed labels clear of the fog. */
+    function buildFogLayer() {
+      const [W, H] = data.template.worldSizePx;
+      foggable = new Map();
+      data.grid.forEachValidCell((q, r) => { if (data.ctx.policy(q, r).ok) foggable.set(Geo.cellId(q, r), hexPath(q, r)); });
+      let cut = '';
+      for (const rc of Projection.fogMaskRects(data.anchorsDoc)) cut += '<rect ' + rectAttrs(rc) + ' fill="#000"/>';
+      ui.defs.innerHTML =
+        '<pattern id="j2-fog-gm" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect class="j2-fogp-wash" width="9" height="9"/><line class="j2-fogp-line" x1="0" y1="0" x2="0" y2="9"/></pattern>' +
+        '<pattern id="j2-fog-player" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect class="j2-fogp-wash is-player" width="7" height="7"/><line class="j2-fogp-line is-player" x1="0" y1="0" x2="0" y2="7"/><line class="j2-fogp-line is-player-x" x1="0" y1="3.5" x2="7" y2="3.5"/></pattern>' +
+        '<pattern id="j2-fog-hide-pat" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line class="j2-fogp-hide" x1="0" y1="0" x2="0" y2="6"/></pattern>' +
+        '<mask id="j2-fog-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="' + W + '" height="' + H + '"><rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#fff"/>' + cut + '</mask>';
+    }
+
+    const FOG_COUNT_KEYS = { revealed: ['journey2_fog_revealed_n', 'journey2_fog_revealed_one'], hidden: ['journey2_fog_hidden_n', 'journey2_fog_hidden_one'] };
+    function countText(kind, count) { return fill(FOG_COUNT_KEYS[kind][count === 1 ? 1 : 0], { n: n(count) }); }
+
+    /** The fog layer: every foggable cell that is not revealed gets the veil (GM: subtle; Player Preview: stronger). Rebuilt only when the visibility data or the mode changed. */
+    function renderFog() {
+      if (!ui.fogVeil || !doc || !foggable) return;
+      const mode = previewMode ? 'player' : 'gm';
+      const source = previewMode ? playerProjection : doc.playerVisibility;
+      if (!source) return;
+      if (fogDrawn.vis !== source || fogDrawn.mode !== mode) {
+        const revealed = previewMode ? new Set(playerProjection.revealedCells) : Model.getRevealedCellSet(doc);
+        let hidden = '', edge = '';
+        for (const [key, d] of foggable) { if (revealed.has(key)) edge += d; else hidden += d; }
+        ui.fogVeil.setAttribute('d', hidden);
+        ui.fogEdge.setAttribute('d', previewMode ? '' : edge);
+        fogDrawn = { vis: source, mode: mode };
+      }
+      ui.g.fog.style.display = previewMode || showFog ? '' : 'none';
+      ui.g.fog.setAttribute('data-fog-mode', mode);
+    }
+
+    /** Toolbar toggle states, the tool chip and the cursor class — all derived from the transient state. */
+    function updateFogUi() {
+      if (!ui.fogGroup || !doc) return;
+      ui.fogState.setAttribute('aria-pressed', String(showFog));
+      ui.fogState.title = showFog ? t('journey2_fog_hide_state') : t('journey2_fog_show');
+      for (const k of ['reveal', 'hide']) {
+        const b = ui.fogTools[k];
+        b.setAttribute('aria-pressed', String(fogTool === k));
+        b.disabled = editLocked;
+      }
+      ui.viewport.classList.toggle('is-fog-tool', !!fogTool);
+      ui.viewport.classList.toggle('is-fog-reveal', fogTool === 'reveal');
+      ui.viewport.classList.toggle('is-fog-hide', fogTool === 'hide');
+      ui.root.setAttribute('data-fog-tool', fogTool || '');
+      ui.fogChip.hidden = !fogTool || previewMode;
+      if (fogTool) {
+        ui.fogChipIco.innerHTML = fogTool === 'reveal' ? ICON.reveal : ICON.conceal;
+        ui.fogChipTitle.textContent = t(fogTool === 'reveal' ? 'journey2_fog_reveal_active' : 'journey2_fog_hide_active');
+        ui.fogChipCount.textContent = countText('revealed', Model.getRevealedCellSet(doc).size);
+        ui.fogChipHint.textContent = t('journey2_fog_pan_hint') + ' · ' + t('journey2_fog_esc_hint');
+      }
+    }
+
+    /**
+     * Activates a fog tool (or, with null / the already-active tool, returns to neutral). Reveal and Hide are mutually exclusive with
+     * each other, with armed or dragged placement and with the Region Inspector: activating one cancels those, clears the selection,
+     * and enables the GM veil. Pan, zoom and the sidebar state are untouched.
+     */
+    function setFogTool(mode, o) {
+      const opts = o || {};
+      if (mode && (previewMode || editLocked || !data)) return;
+      if (mode && mode === fogTool) mode = null;
+      if (mode) {
+        cancelTransient();
+        cancelFogStroke();
+        closeMenus();
+        if (diagOpen) setDiagnostics(false);
+        closeInspector({ quiet: true });
+        if (sel.tileId) { sel.tileId = null; renderSelection(); renderInventory(false); }
+        if (!showFog) { showFog = true; saveUiPrefs(); }
+      } else {
+        cancelFogStroke();
+      }
+      fogTool = mode; fogHover = null;
+      if (ui.viewport) ui.viewport.classList.remove('is-over-tile');
+      updateFogUi(); renderFog(); scheduleFogPaint();
+      if (!opts.quiet) announce(mode ? t(mode === 'reveal' ? 'journey2_fog_reveal_active' : 'journey2_fog_hide_active') : t('journey2_fog_tool_off'));
+    }
+
+    /** "Show fog state": UI preference only — the persisted reveal state and Player Preview are unaffected. */
+    function toggleFogState() {
+      showFog = !showFog;
+      saveUiPrefs();
+      updateFogUi(); renderFog();
+    }
+
+    /* ---- strokes ---- */
+
+    function fogCellFromEvent(e) {
+      if (!insideViewport(e)) return null;                 // not under the overlay sidebar, not outside the map: those cells cannot be painted
+      const [x, y] = localPoint(e);
+      const w = Geo.screenToWorld(cam, x, y);
+      return data.grid.worldToCell(w[0], w[1]);
+    }
+
+    function startFogStroke(e) {
+      clearHint();
+      ui.viewport.focus({ preventScroll: true });
+      fogStroke = { mode: fogTool, pointerId: e.pointerId, seen: new Set(), cells: [], pendD: '', last: null, hover: null };
+      fogHover = null;
+      try { ui.viewport.setPointerCapture(e.pointerId); } catch (err) { /* synthetic events may lack a capturable pointer */ }
+      ui.viewport.classList.add('is-fog-painting');
+      const cell = fogCellFromEvent(e);
+      if (cell) fogStrokeTo(cell);
+      scheduleFogPaint();
+    }
+
+    /** Adds the cell under the pointer plus every cell on the hex line from the previous sample, so a fast drag leaves no gap. */
+    function fogStrokeTo(cell) {
+      const s = fogStroke;
+      const line = s.last ? Geo.cellLine(s.last, cell) : [cell];
+      for (const c of line) {
+        const key = Geo.cellId(c.q, c.r);
+        if (s.seen.has(key)) continue;                     // a cell joins a stroke once
+        s.seen.add(key);
+        if (!foggable.has(key)) continue;                  // outside the frame / title, compass and scale furniture
+        s.cells.push(key);
+        if (Model.isCellRevealed(doc, key) !== (s.mode === 'reveal')) s.pendD += foggable.get(key);
+      }
+      s.last = cell;
+      s.hover = foggable.has(Geo.cellId(cell.q, cell.r)) ? cell : null;
+    }
+
+    function moveFogStroke(e) {
+      const s = fogStroke;
+      const samples = typeof e.getCoalescedEvents === 'function' ? e.getCoalescedEvents() : null;
+      for (const ev of samples && samples.length ? samples : [e]) {
+        const cell = fogCellFromEvent(ev);
+        if (cell) fogStrokeTo(cell); else { s.last = null; s.hover = null; }
+      }
+      scheduleFogPaint();
+    }
+
+    function updateFogHover(e) {
+      const cell = fogCellFromEvent(e);
+      const next = cell && foggable.has(Geo.cellId(cell.q, cell.r)) ? cell : null;
+      if ((next && fogHover && next.q === fogHover.q && next.r === fogHover.r) || (!next && !fogHover)) return;
+      fogHover = next;
+      scheduleFogPaint();
+    }
+
+    function releaseFogCapture(id) { try { if (ui.viewport.hasPointerCapture(id)) ui.viewport.releasePointerCapture(id); } catch (err) { /* already released */ } }
+
+    /** Pointer released: the whole stroke is ONE command (one Undo entry, one autosave). Nothing to change records nothing. */
+    function finishFogStroke(e) {
+      const s = fogStroke;
+      if (!s) return;
+      if (e) { const cell = fogCellFromEvent(e); if (cell) fogStrokeTo(cell); }
+      fogStroke = null;
+      ui.viewport.classList.remove('is-fog-painting');
+      releaseFogCapture(s.pointerId);
+      scheduleFogPaint();
+      if (!s.cells.length) return;
+      const revealed = s.mode === 'reveal';
+      const r = dispatch({ type: 'setCellsRevealed', cellKeys: s.cells, revealed: revealed }, revealed ? 'fogReveal' : 'fogHide', true);
+      if (r.ok && !r.noop) announce(countText(revealed ? 'revealed' : 'hidden', r.changed));
+    }
+
+    /** Pointer cancelled, capture lost, Escape, Undo/Redo, route exit: nothing is committed and no history entry exists. */
+    function cancelFogStroke(announceIt) {
+      const s = fogStroke;
+      if (!s) return;
+      fogStroke = null;
+      if (ui.viewport) { ui.viewport.classList.remove('is-fog-painting'); releaseFogCapture(s.pointerId); }
+      scheduleFogPaint();
+      if (announceIt) announce(t('journey2_fog_stroke_cancelled'));
+    }
+
+    function scheduleFogPaint() {
+      if (fogPaintRaf) return;
+      fogPaintRaf = requestAnimationFrame(() => { fogPaintRaf = 0; if (!inst.disposed) paintFogStroke(); });
+    }
+
+    /** Pending cells of the stroke plus the brush outline on the current cell (distinct border style AND glyph for Reveal vs Hide, not colour alone). */
+    function paintFogStroke() {
+      const g = ui.g && ui.g.fogstroke;
+      if (!g) return;
+      if (!fogTool || previewMode || !data) { g.innerHTML = ''; return; }
+      const mode = fogTool, s = fogStroke;
+      let h = '';
+      if (s && s.pendD) h += '<path class="j2-fog-pend is-' + mode + '" d="' + s.pendD + '"/>';
+      const cell = s ? s.hover : fogHover;
+      if (cell) {
+        const c = data.grid.cellCenter(cell.q, cell.r), k = data.grid.shortDimensionPx * 0.16;
+        h += '<path class="j2-fog-brush is-' + mode + '" d="' + hexPath(cell.q, cell.r) + '"/>';
+        h += mode === 'reveal'
+          ? '<circle class="j2-fog-glyph is-reveal" cx="' + fmt(c[0], 1) + '" cy="' + fmt(c[1], 1) + '" r="' + fmt(k, 1) + '"/>'
+          : '<path class="j2-fog-glyph is-hide" d="M' + fmt(c[0] - k, 1) + ' ' + fmt(c[1] - k, 1) + 'l' + fmt(2 * k, 1) + ' ' + fmt(2 * k, 1) + 'm0 ' + fmt(-2 * k, 1) + 'l' + fmt(-2 * k, 1) + ' ' + fmt(2 * k, 1) + '"/>';
+      }
+      g.innerHTML = h;
+    }
+
+    /* ---- Player Preview ---- */
+
+    /** Shows/hides the GM chrome and the preview bar. Everything is derived from `previewMode`, so a language switch can re-run it. */
+    function applyPreviewChrome() {
+      if (!ui.root) return;
+      const on = previewMode;
+      ui.root.setAttribute('data-mode', on ? 'preview' : 'gm');
+      ui.sidewrap.hidden = on; ui.sidewrap.inert = on;
+      ui.historyGroup.hidden = on; ui.fogGroup.hidden = on; ui.save.hidden = on;
+      ui.previewBar.hidden = !on;
+      ui.hint.hidden = true; ui.tip.hidden = true;
+      ui.viewport.setAttribute('aria-label', t(on ? 'journey2_preview_map_label' : 'journey2_map_label'));
+      ui.viewport.classList.toggle('is-preview', on);
+      const keys = container.querySelector('#j2-keys');
+      if (keys) keys.textContent = t(on ? 'journey2_preview_keys_hint' : 'journey2_keys_hint');   // the editing keys do not exist in the preview
+    }
+
+    /**
+     * Opens the read-only Player Preview. Everything transient is closed first (armed placement, drags, an active fog stroke/tool, menus,
+     * the inspector and its highlight, the tile selection); pan and zoom are kept and remembered for the Back-to-GM action. GM notes do not
+     * exist any more (PD-019), so there is no pending text to flush. Never touches the document or history.
+     */
+    function enterPreview() {
+      if (previewMode || !data || !doc) return;
+      cancelTransient(); cancelFogStroke(); closeMenus();
+      if (diagOpen) setDiagnostics(false);
+      setFogTool(null, { quiet: true });
+      closeInspector({ quiet: true });
+      sel.tileId = null;
+      clearHint();
+      previewReturn = { cam: { scale: cam.scale, tx: cam.tx, ty: cam.ty }, fitMode: fitMode };
+      previewMode = true;
+      renderTiles(); renderFog(); renderSelection(); paintFogStroke();
+      applyPreviewChrome(); applyLayerVisibility(); updateFogUi();
+      announce(t('journey2_live_preview_on'));
+      ui.previewBack.focus({ preventScroll: true });
+    }
+
+    /** Back to the GM view: the camera, sidebar state and fog preference are as they were; nothing is reopened or re-selected. */
+    function leavePreview(o) {
+      if (!previewMode) return;
+      previewMode = false;
+      playerProjection = null;
+      const back = previewReturn; previewReturn = null;
+      cancelTransient();
+      applyPreviewChrome(); applyLayerVisibility();
+      renderTiles(); renderFog(); renderSelection(); renderInventory(false); updateFogUi(); updateHistoryButtons();
+      if (back) { setCamera(back.cam, true); fitMode = back.fitMode; }
+      if (!(o && o.quiet)) { announce(t('journey2_live_preview_off')); ui.previewBtn.focus({ preventScroll: true }); }
+    }
+
+    /* ============================================================
        Pointer interactions
        ============================================================ */
 
@@ -1212,7 +1571,7 @@
       listen(vp, 'pointerup', onViewportUp);
       listen(vp, 'pointercancel', onViewportCancel);
       listen(vp, 'lostpointercapture', onViewportCancel);
-      listen(vp, 'pointerleave', () => { pointer.inside = false; hoverCell = null; hoverMarker = null; if (diagOpen) renderSelection(); updateReadouts(); if (tr && tr.kind === 'armed') updatePreview(); });
+      listen(vp, 'pointerleave', () => { pointer.inside = false; hoverCell = null; hoverMarker = null; if (fogHover) { fogHover = null; scheduleFogPaint(); } if (diagOpen) renderSelection(); updateReadouts(); if (tr && tr.kind === 'armed') updatePreview(); });
       listen(vp, 'wheel', onWheel, { passive: false });
       listen(vp, 'keydown', onViewportKey);
       listen(vp, 'keyup', e => { if (e.key === ' ') { spaceDown = false; vp.classList.remove('is-space'); } });
@@ -1244,6 +1603,8 @@
       // document-level: only Escape + Undo/Redo, both ignored while editing text or a dialog is open
       listen(document, 'keydown', onDocumentKey);
       listen(document, 'keydown', onMenuKey);
+      listen(document, 'keyup', onDocumentKeyUp);
+      listen(window, 'blur', () => { spaceDown = false; if (ui.viewport) ui.viewport.classList.remove('is-space'); });
       listen(document, 'pointerdown', e => { if (openMenu && !e.target.closest('.j2-menu-wrap')) closeMenus(); }, true);
       importInput = el('input', { type: 'file', accept: 'application/json,.json', class: 'sr-only', tabindex: '-1', 'aria-hidden': 'true' });
       ui.root.appendChild(importInput);
@@ -1274,13 +1635,15 @@
     /* ---- viewport: pan / tile move / armed click ---- */
 
     function onViewportDown(e) {
-      if (pan || tr && tr.kind !== 'armed') return;
+      if (pan || fogStroke || tr && tr.kind !== 'armed') return;
       if (e.button !== 0 && e.button !== 1) return;
       clearHint();
       ui.viewport.focus({ preventScroll: true });
       const [x, y] = localPoint(e);
       pointer.x = x; pointer.y = y; pointer.inside = true; pointer.cx = e.clientX; pointer.cy = e.clientY;
-      const tile = e.button === 0 && !spaceDown && !editLocked && !(tr && tr.kind === 'armed') ? tileAtScreen(x, y) : null;
+      // priority: dialog > preview > an existing drag/pan > armed placement > fog tool > neutral selection. Space (or the middle button) pans instead of painting.
+      if (fogTool && !previewMode && e.button === 0 && !spaceDown && !editLocked && !(tr && tr.kind === 'armed')) { startFogStroke(e); e.preventDefault(); return; }
+      const tile = e.button === 0 && !spaceDown && !editLocked && !previewMode && !fogTool && !(tr && tr.kind === 'armed') ? tileAtScreen(x, y) : null;
       if (tile) {
         tr = { kind: 'tile', tileId: tile.id, batchId: tile.batchId, from: tile.cell, docRef: doc, pointerId: e.pointerId, moved: false, x0: e.clientX, y0: e.clientY, preview: null };
       } else {
@@ -1293,6 +1656,7 @@
     function onViewportMove(e) {
       const [x, y] = localPoint(e);
       pointer.x = x; pointer.y = y; pointer.inside = insideViewport(e); pointer.cx = e.clientX; pointer.cy = e.clientY;
+      if (fogStroke && fogStroke.pointerId === e.pointerId) { moveFogStroke(e); return; }
       if (pan && pan.id === e.pointerId) {
         const dx = x - pan.x0, dy = y - pan.y0;
         if (!pan.moved && Math.hypot(dx, dy) > CLICK_SLOP_PX) { pan.moved = true; ui.viewport.classList.add('is-panning'); }
@@ -1303,10 +1667,12 @@
         if (tr.moved) { updatePreview(); return; }
       }
       if (tr && tr.kind === 'armed') { updatePreview(); return; }
+      if (fogTool && !pan && !previewMode) { updateFogHover(e); return; }
       if (!tr) updateHover();
     }
 
     function onViewportUp(e) {
+      if (fogStroke && fogStroke.pointerId === e.pointerId) { finishFogStroke(e); return; }
       if (pan && pan.id === e.pointerId) {
         const wasClick = !pan.moved && pan.button === 0;
         const moved = pan.moved;
@@ -1326,6 +1692,7 @@
     }
 
     function onViewportCancel(e) {
+      if (fogStroke && fogStroke.pointerId === e.pointerId) { cancelFogStroke(true); return; }
       if (pan && pan.id === e.pointerId) endPan();
       else if (tr && tr.kind === 'tile' && tr.pointerId === e.pointerId) cancelTransient();
     }
@@ -1339,6 +1706,7 @@
     }
 
     function handleMapClick(sx, sy) {
+      if (previewMode || fogTool) return;                    // read-only preview / an active fog tool never selects or inspects
       if (tr && tr.kind === 'armed') { commitArmed(); return; }
       const tile = editLocked ? null : tileAtScreen(sx, sy);
       if (tile) { selectTile(tile.id); return; }
@@ -1373,7 +1741,7 @@
         case '-': case '_': zoomStep(-1); break;
         case '0': fitToView(); break;
         case 'Delete': case 'Backspace':
-          if (sel.tileId) returnSelected(); else handled = false;
+          if (sel.tileId && !fogTool && !previewMode) returnSelected(); else handled = false;
           break;
         default: handled = false;
       }
@@ -1389,6 +1757,7 @@
       if (!h || h.disabled || e.button !== 0) return;
       if (pan) endPan();
       cancelTransient();
+      if (fogTool) setFogTool(null, { quiet: true });          // placement outranks the fog tools: they are mutually exclusive
       clearHint();
       const card = h.closest('[data-batch]');
       const batchId = card.getAttribute('data-batch');
@@ -1450,6 +1819,7 @@
     function armStock(mode, batchId, handle) {
       if (tr && tr.kind === 'armed' && tr.mode === mode && tr.batchId === batchId) { cancelTransient(); return; }
       cancelTransient();
+      if (fogTool) setFogTool(null, { quiet: true });
       const remaining = Model.derive(doc).counts.get(batchId).remaining;
       if (remaining < 1) return;
       tr = { kind: 'armed', mode: mode, batchId: batchId, docRef: doc, handle: handle, footprint: mode === 'all' ? Model.compactFootprint(remaining) : [{ dq: 0, dr: 0 }], preview: null };
@@ -1491,7 +1861,7 @@
       for (const c of p.cells) {
         h += '<path class="j2-pv ' + (c.ok && p.connected ? 'is-ok' : 'is-bad') + (p.isOrigin ? ' is-origin' : '') + '" d="' + hexPath(c.q, c.r) + '"/>';
       }
-      if (batch && p.valid) for (const c of p.cells) if (c.ok) h += '<g class="j2-pv-glyph">' + tileMarkup(c.q, c.r, batch, 'j2-pvt', true) + '</g>';
+      if (batch && p.valid) for (const c of p.cells) if (c.ok) h += '<g class="j2-pv-glyph">' + tileMarkup(c.q, c.r, specOfBatch(batch), 'j2-pvt', true) + '</g>';
       ui.g.preview.innerHTML = h;
     }
 
@@ -1538,7 +1908,7 @@
         if (x.kind === 'tile' && ui.viewport) { try { if (ui.viewport.hasPointerCapture(x.pointerId)) ui.viewport.releasePointerCapture(x.pointerId); } catch (err) { /* released */ } }
       }
     }
-    function cancelTransient() { if (tr) endTransient(); }
+    function cancelTransient() { cancelFogStroke(); if (tr) endTransient(); }
 
     function stale(x) { return x.docRef !== doc; }
 
@@ -1621,18 +1991,36 @@
       if (e.key === 'Escape') {
         if (document.querySelector('dialog[open]') || document.querySelector('.modal-overlay')) return;   // an environment overlay (app.js) owns Escape while it is open
         if (openMenu) { const b = openMenu.btn; closeMenus(); b.focus(); return; }
-        // priority: menu, then a drag / armed placement / pan, then the Region Inspector, then the diagnostic selection
+        // priority: menu, a fog stroke, a drag / armed placement / pan, Player Preview, the fog tool, the Region Inspector, then the diagnostic selection
+        if (fogStroke) { cancelFogStroke(true); e.preventDefault(); return; }
         if (pan) { setCamera({ scale: pan.scale0, tx: pan.tx0, ty: pan.ty0 }); endPan(); e.preventDefault(); return; }
         if (tr) { cancelTransient(); e.preventDefault(); return; }
+        if (previewMode) { leavePreview(); e.preventDefault(); return; }
+        if (fogTool) { setFogTool(null); e.preventDefault(); return; }
         if (inspectorOpen()) { closeInspector({ focus: true }); e.preventDefault(); return; }
         if (e.target === ui.viewport) { sel.tileId = null; selCell = null; selMarker = null; placeMode = false; renderSelection(); renderInventory(false); updateReadouts(); }
         return;
       }
+      if (e.key === ' ' && fogTool && !previewMode && !isEditableTarget(e.target) && fogSpaceTarget(e.target)) {
+        // a fog tool takes the primary drag, so Space held = temporary pan (the key must not also press a focused toolbar button)
+        spaceDown = true; ui.viewport.classList.add('is-space'); e.preventDefault(); return;
+      }
       if (isEditableTarget(e.target) || e.defaultPrevented) return;
+      if (previewMode) return;                                 // the preview is read-only: no Undo/Redo
       if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
       const k = e.key.toLowerCase();
       if (k === 'z' && !e.shiftKey) { undo(); e.preventDefault(); }
       else if (k === 'y' || (k === 'z' && e.shiftKey)) { redo(); e.preventDefault(); }
+    }
+
+    /** Space pans (rather than activating something) only when focus is on the map, the page body or one of the fog toolbar buttons. */
+    function fogSpaceTarget(t0) { return t0 === document.body || t0 === ui.viewport || !!(t0 && t0.closest && t0.closest('[data-j2-fog-group]')); }
+
+    function onDocumentKeyUp(e) {
+      if (inst.disposed || e.key !== ' ' || !spaceDown) return;
+      spaceDown = false;
+      if (ui.viewport) ui.viewport.classList.remove('is-space');
+      if (fogTool && fogSpaceTarget(e.target)) e.preventDefault();     // swallow the click a released Space would send to a focused button
     }
 
     /* ============================================================
@@ -1653,10 +2041,14 @@
       else if (b.hasAttribute('data-j2-delete')) confirmDelete(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-side-toggle')) toggleSide();
       else if (b.hasAttribute('data-j2-fit')) fitToView();
+      else if (b.hasAttribute('data-j2-fog-state')) toggleFogState();
+      else if (b.hasAttribute('data-j2-fog-tool')) setFogTool(b.getAttribute('data-j2-fog-tool'));
+      else if (b.hasAttribute('data-j2-preview-back')) leavePreview();
+      else if (b.hasAttribute('data-j2-preview')) enterPreview();
       else if (b.hasAttribute('data-j2-undo')) undo();
       else if (b.hasAttribute('data-j2-redo')) redo();
       else if (b.hasAttribute('data-j2-return')) returnSelected();
-      else if (b.hasAttribute('data-j2-env-toggle')) toggleEnvironments(b);
+      else if (b.hasAttribute('data-j2-env-toggle')) toggleEnvironments();
       else if (b.hasAttribute('data-j2-menu-btn')) toggleMenu(b);
       else if (b.hasAttribute('data-j2-act')) { closeMenus(); runAction(b.getAttribute('data-j2-act')); }
       else if (b.hasAttribute('data-j2-layer')) toggleLayer(b.getAttribute('data-j2-layer'), b);
@@ -1804,6 +2196,8 @@
     /** Replaces the whole document (import / start-empty). Clears Undo so history can never combine two different maps. */
     function replaceDocument(next) {
       cancelTransient();
+      leavePreview({ quiet: true });                     // import / reset: no preview, no fog tool, no stale stroke, no inspector
+      setFogTool(null, { quiet: true });
       closeInspector({ quiet: true });
       doc = next;
       Model.historyClear(history);
@@ -2006,8 +2400,8 @@
     }
 
     function applyLayerVisibility() {
-      for (const k of Object.keys(layers)) { const g = ui.g[k]; if (g) g.style.display = layers[k] ? '' : 'none'; }
-      ui.badge.hidden = !layers.proof;
+      for (const k of Object.keys(layers)) { const g = ui.g[k]; if (g) g.style.display = layers[k] && !previewMode ? '' : 'none'; }   // Player Preview never shows a diagnostic layer
+      ui.badge.hidden = !layers.proof || previewMode;
     }
 
     function clearProof() {
@@ -2036,7 +2430,7 @@
       if (!data || !doc) return;
       const w = Geo.screenToWorld(cam, pointer.x, pointer.y);
       const c = data.grid.worldToCell(w[0], w[1]);
-      ui.viewport.classList.toggle('is-over-tile', !editLocked && Model.derive(doc).occupancy.has(Geo.cellId(c.q, c.r)));
+      ui.viewport.classList.toggle('is-over-tile', !editLocked && !previewMode && !fogTool && Model.derive(doc).occupancy.has(Geo.cellId(c.q, c.r)));
       if (!diagOpen) return;
       hoverCell = data.grid.isValid(c.q, c.r) ? c : null;
       hoverMarker = markerAt(w[0], w[1]);
@@ -2261,6 +2655,8 @@
         domTileGlyphs: ui.g && ui.g.tiles ? ui.g.tiles.querySelectorAll('image').length : 0,
         glyphlessTiles: ui.g && ui.g.tiles && ui.g.tiles.querySelector('.is-glyphless') ? ui.g.tiles.querySelector('.is-glyphless').getAttribute('d').split('M').length - 1 : 0,
         discoveredState: 'none',
+        fog: { tool: fogTool, showFogState: showFog, previewMode: previewMode, revealed: doc ? Model.getRevealedCellSet(doc).size : 0, strokeCells: fogStroke ? fogStroke.cells.length : 0, strokePointer: fogStroke ? fogStroke.pointerId : null, hover: fogHover ? Geo.cellId(fogHover.q, fogHover.r) : null },
+        playerGlyphs: ui.g && ui.g.player ? ui.g.player.querySelectorAll('image').length : 0,
       };
     }
 
@@ -2278,6 +2674,8 @@
         zoomTo(scale, cx, cy) { zoomToScale(scale, cx, cy); },
         zoomStep(dir) { zoomStep(dir); },
         document() { return JSON.parse(Model.serializeBackup(doc)); },
+        runAction(act) { runAction(act); },
+        projection() { return JSON.parse(JSON.stringify(Projection.buildPlayerProjection(doc))); },
         dispatch(cmd) { return dispatch(cmd, cmd.type); },
         decorativeCells() { return Array.from(data.ctx.decorativeCells); },
         markers() { return data.anchorsDoc.anchors.map(a => ({ id: a.stableId, cellId: a.cellId, rect: a.iconProtectionArea.rectPx })); },

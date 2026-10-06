@@ -211,7 +211,7 @@ test('localization: every Region Inspector string exists in English and Russian 
   const i18n = JSON.parse(read('data/i18n.json'));
   const keys = ['journey2_inspect_region', 'journey2_inspect_aria', 'journey2_inspect_open', 'journey2_inspector_close', 'journey2_region_n', 'journey2_hexes_n',
     'journey2_placed_n', 'journey2_remaining_n', 'journey2_inspector_no_tiles', 'journey2_live_inspector_opened', 'journey2_live_inspector_closed',
-    'journey2_terrain_n', 'journey2_days_per_hex', 'journey2_return', 'journey2_tile_cell', 'journey2_envs_label', 'tier_label', 'journey_k_encounter', 'journey_k_rumor', 'journey_shadowblighted', 'journey2_overtaken'];
+    'journey2_terrain_n', 'journey2_days_per_hex', 'journey2_return', 'journey2_tile_cell', 'journey2_envs_suggested', 'journey2_envs_none', 'tier_label', 'journey_k_encounter', 'journey_k_rumor', 'journey_shadowblighted', 'journey2_overtaken'];
   const ph = s => (String(s).match(/\{[A-Za-z0-9_]+\}/g) || []).sort().join();
   for (const k of keys) {
     assert.ok(i18n.en[k], 'en:' + k);
@@ -242,7 +242,7 @@ test('view: the inspector is a non-modal dialog, a sibling of the zoomed world, 
   assert.match(markup, /role="dialog"/);
   assert.match(markup, /aria-modal="false"/);
   assert.match(markup, /aria-labelledby="j2-region-inspector-title"/);
-  assert.equal((markup.match(/<h4/g) || []).length, 2, 'real headings for Encounter and Rumor');
+  assert.equal((markup.match(/<h4/g) || []).length, 3, 'real headings for Encounter, Rumor and Suggested environments');
   assert.doesNotMatch(markup, /<textarea|notes/i, 'no GM notes field');
   assert.match(markup, /<footer class="j2-insp-tile" data-j2-insp-tile hidden>[\s\S]*data-j2-return/, 'the anchored hex and its Return to stock action live in the inspector');
   assert.doesNotMatch(markup, /d20|d12|d8|d4|d100|reroll|keep|discard/i);
@@ -272,18 +272,34 @@ test('view: GM notes and the separate selected-tile bar are gone; Escape priorit
   assert.doesNotMatch(css, /\.j2-notes|\.j2-tilebar/);
 });
 
-test('view: an expanded region card lists the environments of its biome as links to the environment overlay', () => {
+test('view: suggested environments live in the Region Inspector (collapsed, read-only links), not in the sidebar card', () => {
   const view = read('js/journey2-view.js');
   const card = view.slice(view.indexOf('function createCard'), view.indexOf('/** Updates a card'));
-  assert.match(card, /data-j2-env-toggle[^>]*aria-expanded="false"[^>]*aria-controls=/);
-  assert.match(card, /class="j2-envs-list"[^>]*hidden/);
-  const fn = view.slice(view.indexOf('function updateEnvironments'), view.indexOf('function toggleEnvironments'));
+  assert.doesNotMatch(card, /envs|data-j2-env-toggle|j2-envs-list/, 'the card is compact whether the region has 0, 5 or 20 environments');
+  assert.doesNotMatch(view.slice(view.indexOf('function updateCard'), view.indexOf('function renderSuggestedEnvironments')), /updateEnvironments|environmentsFor\(/);
+  const i = view.indexOf('data-j2-inspector');
+  const markup = view.slice(view.lastIndexOf('<aside', i), view.indexOf('</aside>', i));
+  assert.match(markup, /data-j2-env-toggle[^>]*aria-expanded="false"[^>]*aria-controls="j2-insp-envs-list"/, 'collapsed by default');
+  assert.match(markup, /<ul class="j2-envs-list" id="j2-insp-envs-list"[^>]*hidden>/);
+  assert.ok(markup.indexOf('journey_k_rumor') < markup.indexOf('data-j2-env-toggle'), 'after Rumor');
+  const fn = view.slice(view.indexOf('function renderSuggestedEnvironments'), view.indexOf('function setEnvironmentsOpen'));
   assert.match(fn, /habitat\.overtaken \? null/, 'an overtaken region has no biome and no list');
+  assert.match(fn, /environmentsFor\(biome\)/, 'the matching comes from app.js, not from a second implementation');
+  assert.doesNotMatch(fn, /\.sort\(|\.filter\(|biomes/, 'order and matching are preserved, never recomputed in the view');
   assert.match(fn, /<a class="j2-env-link" href=/, 'plain links: the overlay is route-driven');
   assert.match(fn, /data-sig/, 'built once per biome + language, so an open list and its focus survive re-renders');
-  const body = view.slice(view.indexOf('function updateCard'), view.indexOf('function updateEnvironments'));
-  assert.ok(body.indexOf('if (!active) return;') < body.indexOf('updateEnvironments(refs, b)'), 'only an expanded card shows the dropdown');
+  assert.match(fn, /regionChanged \|\| !list\.length\) setEnvironmentsOpen\(false\)/, 'collapsed again whenever a different region is shown');
   const app = read('js/app.js');
   assert.match(app, /environmentsForBiome: journey2EnvironmentsForBiome/);
   assert.match(app, /env\.biomes\.includes\(biome\)/);
+  const css = read('css/journey2.css');
+  assert.doesNotMatch(css, /\.j2-envs-list \{[^}]*max-height/, 'the inspector body scrolls, the list never nests a scroller');
+});
+
+test('view: raw hex coordinates appear in the inspector footer only while Diagnostics is on', () => {
+  const view = read('js/journey2-view.js');
+  const body = view.slice(view.indexOf('function renderInspector'), view.indexOf('function inspectorAnchor'));
+  assert.match(body, /I\.tileText\.hidden = !diagOpen/);
+  assert.match(body, /diagOpen \? fill\('journey2_tile_cell'/);
+  assert.match(body, /data-j2-return|\[data-j2-return\]\)\.disabled/, 'Return to stock stays available');
 });

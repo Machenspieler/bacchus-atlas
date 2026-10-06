@@ -385,8 +385,7 @@ async function main() {
     await check('scn.13b.discovery-is-untouched-by-preparation', async () => ({ ok: sR.discoveredState === 'none' && !JSON.stringify(await storageDump(page)).includes('discover'), detail: null }));
 
     // Export / import round trip
-    await page.click('[data-j2-menu-btn="backup"]');
-    const [dl] = await Promise.all([page.waitForEvent('download'), page.click('[data-j2-menu="backup"] [data-j2-act="export"]')]);
+    const [dl] = await Promise.all([page.waitForEvent('download'), page.evaluate(() => Journey2View.debugApi().runAction('export'))]);
     const exportPath = path.join(FIX, 'scenario-07-gm-backup.json');
     await dl.saveAs(exportPath);
     const exported = fs.readFileSync(exportPath, 'utf8');
@@ -400,7 +399,6 @@ async function main() {
     await viewWorld(page, SEAM_X, 800, 0.41);
     await dragStock(page, mountainId, 'one', allowedNear(2600, 1400, SEVEN), 'drop');
     const sDiff = await state(page);
-    await page.click('[data-j2-menu-btn="backup"]'); await page.click('[data-j2-menu="backup"] [data-j2-act="import"]', { noWaitAfter: true }).catch(() => {});
     await page.setInputFiles('input[type="file"]', exportPath);
     await page.waitForSelector('dialog[open]');
     const dlgText = await page.locator('dialog[open]').innerText();
@@ -410,8 +408,7 @@ async function main() {
     writeJson(path.join(FIX, 'scenario-08-after-import.json'), await snapshot(page));
     await check('scn.16.import-replaces-the-map-with-the-same-semantic-state-and-clears-undo', async () => ({ ok: JSON.stringify(sImp.tiles) === JSON.stringify(sR.tiles) && JSON.stringify(sImp.batches) === JSON.stringify(sR.batches) && sImp.history.undo === 0 && sImp.history.redo === 0, detail: { batches: sImp.batches.length, undo: sImp.history.undo } }));
     await check('scn.16b.the-replaced-map-is-kept-as-a-recovery-copy-in-journey2-storage', async () => { const st = await storageDump(page); const prev = JSON.parse(st.dhcodex_journey2_map_previous || 'null'); return { ok: prev && prev.batches.length === 2 && prev.tiles.length === sDiff.tiles.length, detail: prev && prev.batches.length }; });
-    await page.click('[data-j2-menu-btn="backup"]');
-    const [dl2] = await Promise.all([page.waitForEvent('download'), page.click('[data-j2-menu="backup"] [data-j2-act="export"]')]);
+    const [dl2] = await Promise.all([page.waitForEvent('download'), page.evaluate(() => Journey2View.debugApi().runAction('export'))]);
     const exportPath2 = path.join(TMP, 'second-export.json'); await dl2.saveAs(exportPath2);
     await check('scn.17.export-import-export-is-byte-identical', async () => ({ ok: fs.readFileSync(exportPath2, 'utf8') === exported, detail: null }));
     await check('scn.18.only-journey2-keys-changed-legacy-and-unrelated-storage-is-byte-identical', async () => {
@@ -772,8 +769,7 @@ async function main() {
       await dragStock(pg, bidA, 'one', ADJ[3], 'drop');
       const s = await state(pg);
       const txt = await pg.locator('.j2-save').innerText(); const banner = await pg.locator('[data-j2-banner]').innerText();
-      await pg.click('[data-j2-menu-btn="backup"]');
-      const [dl] = await Promise.all([pg.waitForEvent('download'), pg.click('[data-j2-menu="backup"] [data-j2-act="export"]')]);
+      const [dl] = await Promise.all([pg.waitForEvent('download'), pg.evaluate(() => Journey2View.debugApi().runAction('export'))]);
       const bk = JSON.parse(fs.readFileSync(await dl.path(), 'utf8'));
       await pg.evaluate(() => { Storage.prototype.setItem = window.__origSetItem; });
       await dragStock(pg, bidA, 'one', ADJ[4], 'drop');
@@ -1071,7 +1067,7 @@ async function main() {
     });
     await check('insp.03.content-is-region-level-and-has-no-dice-reroll-keep-or-discard', async () => {
       const x = await inspTexts();
-      return { ok: x.title === 'Forest' && /Region #1/.test(x.sub) && /Terrain 3/.test(x.text) && /\d+ days? per hex/.test(x.text) && /6 hexes/.test(x.text) && /5 placed/.test(x.text) && /1 remaining/.test(x.text) && x.enc === 1 && x.h4.join('|') === 'Encounter|Rumor' && x.buttons === 1 && !/\bd\d+\b|d8\s*\+\s*d6|reroll|re-roll|keep|discard/i.test(x.text), detail: x };
+      return { ok: x.title === 'Forest' && /Region #1/.test(x.sub) && /Terrain 3/.test(x.text) && /\d+ days? per hex/.test(x.text) && /6 hexes/.test(x.text) && /5 placed/.test(x.text) && /1 remaining/.test(x.text) && x.enc === 1 && /^Encounter\|Rumor\|Suggested environments( · \d+)?$/.test(x.h4.join('|')) && x.buttons === 3 && !/\bd\d+\b|d8\s*\+\s*d6|reroll|re-roll|keep|discard/i.test(x.text), detail: x };
     });
     await check('insp.04.the-whole-region-gets-a-soft-outline-and-only-the-clicked-hex-the-strong-one', async () => {
       const r = await pg.evaluate(() => ({ region: document.querySelector('[data-j2-g="select"] .j2-region-hl') && document.querySelector('[data-j2-g="select"] .j2-region-hl').getAttribute('d').split('M').length - 1, strong: document.querySelectorAll('[data-j2-g="select"] .j2-tile-sel').length, card: document.querySelector('.j2-card[data-batch]').closest('.j2-cards') && [...document.querySelectorAll('.j2-card.is-inspected')].map(c => c.getAttribute('data-batch')) }));
@@ -1176,7 +1172,7 @@ async function main() {
       await clickCell(SEVEN[2]); await pg.waitForTimeout(150);
       const fromHex = await pg.evaluate(() => { const f = document.querySelector('[data-j2-insp-tile]'); return { hidden: f.hidden, text: f.innerText, btn: !!f.querySelector('button[data-j2-return]') }; });
       await pg.keyboard.press('Escape'); await pg.waitForTimeout(120);
-      return { ok: fromCard && !fromHex.hidden && /\d+,-?\d+/.test(fromHex.text) && fromHex.btn && !(await state(pg)).inspector.open, detail: { fromCard, fromHex } };
+      return { ok: fromCard && !fromHex.hidden && !/\d+,-?\d+/.test(fromHex.text) && fromHex.btn && !(await state(pg)).inspector.open, detail: { fromCard, fromHex } };   // raw hex coordinates are a Diagnostics-only detail (Phase C)
     });
 
     /* ---- closing, focus, priority ---- */
@@ -1264,16 +1260,14 @@ async function main() {
       await pg.click('[data-lang="ru"]'); await pg.waitForTimeout(250);
       const s = await state(pg), x = await inspTexts();
       const btn = await cardOf(pg, B).locator('[data-j2-inspect]').getAttribute('title');
-      const r = { ok: s.inspector.open && s.inspector.batchId === B && /Регион №/.test(x.sub) && x.title === 'Горное' && /Местность 1/.test(x.text) && x.h4.join('|') === 'Встреча|Слух|Заметки ГМа' && btn === 'Осмотреть регион' && !/[A-Za-z]{5,}/.test(x.text.replace(/\bterrain\b/g, '')), detail: { x: x.sub, h4: x.h4, title: x.title, btn, latin: x.text.match(/[A-Za-z]{5,}/g) } };
+      const r = { ok: s.inspector.open && s.inspector.batchId === B && /Регион №/.test(x.sub) && x.title === 'Горное' && /Местность 1/.test(x.text) && /^Встреча\|Слух\|Подходящие окружения( · \d+)?$/.test(x.h4.join('|')) && btn === 'Осмотреть регион' && !/[A-Za-z]{5,}/.test(x.text.replace(/\bterrain\b/g, '')), detail: { x: x.sub, h4: x.h4, title: x.title, btn, latin: x.text.match(/[A-Za-z]{5,}/g) } };
       await pg.click('[data-lang="en"]'); await pg.waitForTimeout(250);
       return r;
     });
     await check('insp.24.opening-diagnostics-closes-the-inspector-and-never-overlaps-it', async () => {
-      await pg.click('[data-j2-menu-btn="more"]'); await pg.click('[data-j2-act="diagnostics"]'); await pg.waitForTimeout(150);
+      await pg.evaluate(() => Journey2View.debugApi().runAction('diagnostics')); await pg.waitForTimeout(150);
       const s = await state(pg);
       const r = { ok: s.diagnosticsOpen && !s.inspector.open && (await insp.isHidden()), detail: s.inspector };
-      await pg.click('[data-j2-act="diagnostics"]').catch(() => {});
-      await pg.click('[data-j2-menu-btn="more"]').catch(() => {});
       if ((await state(pg)).diagnosticsOpen) { await pg.click('[data-j2-panel-close]'); }
       return r;
     });
@@ -1295,6 +1289,9 @@ async function main() {
     await shot(pg, 'insp-03-after-leave.png');
     await pg.close(); await context.close();
   }
+
+  /* ===== I. Fog of War, Player Preview and suggested environments in the inspector (Phase C) ===== */
+  await require('./lib/fog-checks.js').runFogChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc, full: true });
 
   /* ===== G. hygiene ===== */
   const relevant = logs.filter(l => !/favicon|fonts\.g(oogleapis|static)\.com|ERR_INTERNET_DISCONNECTED|net::ERR_(NAME_NOT_RESOLVED|CONNECTION|FAILED)/.test(l));

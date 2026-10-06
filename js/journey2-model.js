@@ -13,7 +13,11 @@
      { schemaVersion, kind, templateId, templateVersion, createdAt, updatedAt,
        batches: [ { id, createdAt, habitat, terrain, quantity, quantitySource,
                     encounter, rumor, notes } ],
-       tiles:   [ { id, batchId, cell: "q,r" } ] }
+       tiles:   [ { id, batchId, cell: "q,r" } ],
+       playerVisibility: { revealedCells: [ "q,r", ... ] } }
+   Fog of War (Phase C) is CELL-based and lives only in `playerVisibility.revealedCells` — never on a batch or a
+   tile. Every placeable cell is hidden by default; the list is the single source of truth (no hiddenCells twin),
+   kept sorted so a serialized document is deterministic.
    Counts (placed / remaining) are DERIVED from tiles, never stored:
      remaining(batch) = quantity(batch) - placedTileCount(batch)
    Occupancy is keyed by the canonical cell id; one tile per cell.
@@ -51,7 +55,8 @@
   const HISTORY_LIMIT = 100;
 
   const ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
-  const DOC_KEYS = ['schemaVersion', 'kind', 'templateId', 'templateVersion', 'createdAt', 'updatedAt', 'batches', 'tiles'];
+  const DOC_KEYS = ['schemaVersion', 'kind', 'templateId', 'templateVersion', 'createdAt', 'updatedAt', 'batches', 'tiles', 'playerVisibility'];
+  const VISIBILITY_KEYS = ['revealedCells'];
   const BATCH_KEYS = ['id', 'createdAt', 'habitat', 'terrain', 'quantity', 'quantitySource', 'encounter', 'rumor', 'notes'];
   const HABITAT_KEYS = ['biome', 'blighted', 'overtaken', 'source', 'rolls'];
   const TILE_KEYS = ['id', 'batchId', 'cell'];
@@ -101,10 +106,10 @@
 
   function emptyDocument(ctx, nowIso) {
     const now = nowIso || new Date().toISOString();
-    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [] };
+    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [] } };
   }
 
-  function isEmptyDocument(doc) { return !doc || (doc.batches.length === 0 && doc.tiles.length === 0); }
+  function isEmptyDocument(doc) { return !doc || (doc.batches.length === 0 && doc.tiles.length === 0 && !(doc.playerVisibility && doc.playerVisibility.revealedCells.length)); }
 
   function symbolIdOf(batch) { return batch.habitat.overtaken ? OVERTAKEN_SYMBOL : batch.habitat.biome; }
 
@@ -265,8 +270,9 @@
       tiles.push({ id: t.id, batchId: t.batchId, cell: t.cell });
     }
     for (const [id, n] of placed) if (n > quantity.get(id)) errors.push('batch "' + id + '": ' + n + ' tiles placed but quantity is ' + quantity.get(id));
+    const vis = validateVisibility(doc.playerVisibility, ctx, errors);
     if (errors.length) return { ok: false, code: 'invalid', errors: errors.slice(0, 20) };
-    return { ok: true, doc: { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: doc.templateId, templateVersion: doc.templateVersion, createdAt: doc.createdAt, updatedAt: doc.updatedAt, batches: batches, tiles: tiles } };
+    return { ok: true, doc: { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: doc.templateId, templateVersion: doc.templateVersion, createdAt: doc.createdAt, updatedAt: doc.updatedAt, batches: batches, tiles: tiles, playerVisibility: vis } };
   }
 
   /** Text -> validated document. Size-limited; never throws. */
@@ -279,6 +285,68 @@
   }
 
   function serializeBackup(doc) { return JSON.stringify(doc, null, 2) + '\n'; }
+
+  /* ---------------- player visibility (Fog of War) ---------------- */
+
+  /** A cell the GM may reveal/hide: inside the printed frame and not title/compass/scale furniture (no content can ever sit there). */
+  function isFoggableCell(ctx, key) {
+    const c = Geo.parseCellId(key);
+    return !!c && ctx.policy(c.q, c.r).ok;
+  }
+
+  /** Canonical order for the stored list: ascending q, then r (numeric), so equal sets always serialize identically. */
+  function compareCellKeys(a, b) {
+    const ca = Geo.parseCellId(a), cb = Geo.parseCellId(b);
+    return ca.q - cb.q || ca.r - cb.r;
+  }
+
+  /**
+   * Validates `playerVisibility` (load + import). A MISSING object is not an error — an old or partial document simply
+   * has nothing revealed. A present one must be { revealedCells: [canonical foggable cell ids] }; duplicates are
+   * collapsed, order is normalized, anything else is reported (never silently repaired). Returns the normalized object.
+   */
+  function validateVisibility(v, ctx, errors) {
+    if (v === undefined || v === null) return { revealedCells: [] };
+    if (!isObj(v)) { errors.push('playerVisibility: not an object'); return { revealedCells: [] }; }
+    checkKeys(v, VISIBILITY_KEYS, 'playerVisibility', errors);
+    if (v.revealedCells === undefined) return { revealedCells: [] };
+    if (!Array.isArray(v.revealedCells)) { errors.push('playerVisibility.revealedCells: not an array'); return { revealedCells: [] }; }
+    if (v.revealedCells.length > ctx.allowedCellCount * 2) { errors.push('playerVisibility.revealedCells: too many entries'); return { revealedCells: [] }; }
+    const set = new Set();
+    for (let i = 0; i < v.revealedCells.length; i++) {
+      const key = v.revealedCells[i];
+      if (typeof key !== 'string' || !Geo.parseCellId(key)) { errors.push('playerVisibility.revealedCells[' + i + ']: malformed cell id'); continue; }
+      if (!isFoggableCell(ctx, key)) { errors.push('playerVisibility.revealedCells[' + i + ']: cell ' + key + ' is not on the map'); continue; }
+      set.add(key);
+    }
+    return { revealedCells: Array.from(set).sort(compareCellKeys) };
+  }
+
+  const revealedCache = new WeakMap();
+  /** The revealed cells as a Set, built once per document object (the view and the projection never re-parse the array). */
+  function getRevealedCellSet(doc) {
+    const vis = doc && doc.playerVisibility;
+    if (!vis) return new Set();
+    let s = revealedCache.get(vis);
+    if (!s) { s = new Set(vis.revealedCells); revealedCache.set(vis, s); }
+    return s;
+  }
+  function isCellRevealed(doc, cellKey) { return getRevealedCellSet(doc).has(cellKey); }
+
+  /**
+   * Pure core of the setCellsRevealed command: which of `cellKeys` would actually change, given the current set.
+   * Invalid, out-of-map and duplicate keys are ignored; the order of the first appearance is kept.
+   */
+  function cellsToChange(doc, ctx, cellKeys, revealed) {
+    const have = getRevealedCellSet(doc), seen = new Set(), out = [];
+    if (!Array.isArray(cellKeys)) return out;
+    for (const key of cellKeys) {
+      if (typeof key !== 'string' || seen.has(key) || !isFoggableCell(ctx, key)) continue;
+      seen.add(key);
+      if (have.has(key) !== !!revealed) out.push(key);
+    }
+    return out;
+  }
 
   /* ---------------- cell checks (the one policy: preview, commit, import) ---------------- */
 
@@ -414,6 +482,9 @@
    *   returnTile  { tileId, at }
    *   deleteBatch { batchId, at }                                  removes the batch AND all its tiles, atomically
    *   setNotes    { batchId, notes, at }                       unchanged => noop
+   *   setCellsRevealed { cellKeys:["q,r"...], revealed:boolean, at }   Fog of War: reveal (true) or hide (false) cells;
+   *                                                                   touches ONLY playerVisibility, never batches or tiles;
+   *                                                                   invalid/duplicate keys are ignored; nothing to change => noop
    */
   function apply(doc, cmd, ctx) {
     switch (cmd && cmd.type) {
@@ -470,6 +541,14 @@
         if (typeof cmd.notes !== 'string' || cmd.notes.length > MAX_NOTES_LENGTH) return fail('bad-notes');
         if (cmd.notes === batch.notes) return { ok: true, doc: doc, noop: true };
         return { ok: true, doc: touch(doc, cmd.at, { batches: doc.batches.map(b => (b.id === batch.id ? Object.assign({}, b, { notes: cmd.notes }) : b)) }) };
+      }
+      case 'setCellsRevealed': {
+        if (typeof cmd.revealed !== 'boolean') return fail('bad-revealed');
+        const change = cellsToChange(doc, ctx, cmd.cellKeys, cmd.revealed);
+        if (!change.length) return { ok: true, doc: doc, noop: true };
+        const next = new Set(getRevealedCellSet(doc));
+        for (const key of change) { if (cmd.revealed) next.add(key); else next.delete(key); }
+        return { ok: true, doc: touch(doc, cmd.at, { playerVisibility: { revealedCells: Array.from(next).sort(compareCellKeys) } }), changed: change.length };
       }
       default: return fail('unknown-command');
     }
@@ -559,5 +638,6 @@
     checkCells: checkCells, checkPlacement: checkPlacement, regionConnectivity: regionConnectivity, isConnected: isConnected, componentCount: componentCount, enclosedHoles: enclosedHoles, holeCounts: holeCounts, apply: apply,
     createHistory: createHistory, historyCommit: historyCommit, historyUndo: historyUndo, historyRedo: historyRedo, historyClear: historyClear,
     compactFootprint: compactFootprint,
+    isFoggableCell: isFoggableCell, getRevealedCellSet: getRevealedCellSet, isCellRevealed: isCellRevealed, cellsToChange: cellsToChange, compareCellKeys: compareCellKeys,
   };
 });

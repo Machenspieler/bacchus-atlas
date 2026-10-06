@@ -53,6 +53,22 @@ body[data-route="journey2"] #grid-wrap { display: block; }
 .j2-tb-group { display: flex; align-items: center; gap: var(--s-1); min-width: 0; }
 .j2-tb-title { gap: var(--s-3); }
 .j2-tb-end { margin-left: auto; gap: var(--s-2); }
+/* Fog of War tools: a labelled group (icon + text, so a tool is never identified by colour alone) */
+.j2-tb-fog { padding-left: var(--s-3); border-left: 1px solid var(--line-faint); }
+.j2-tool { display: inline-flex; align-items: center; gap: var(--s-1); }
+.j2-tool .j2-ico svg { width: 16px; height: 16px; }
+/* Player Preview bar: replaces the GM controls while previewing */
+.j2-tb-preview { flex: 1 1 auto; flex-wrap: wrap; gap: var(--s-3); }
+.j2-preview-flag {
+  display: inline-flex; align-items: center; gap: var(--s-2); height: var(--h-xs); padding: 0 var(--s-2);
+  border: 1px solid var(--hope-border); border-radius: var(--r-xs); background: var(--hope-wash); color: var(--hope-soft);
+  font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: var(--tracking-badge); text-transform: uppercase; white-space: nowrap;
+}
+.j2-preview-flag .j2-ico svg { width: 14px; height: 14px; }
+.j2-preview-note { min-width: 0; font-size: var(--fs-sm); color: var(--parchment-dim); }
+.j2-tb-preview .btn { margin-left: auto; }
+.j2[data-mode="preview"] .j2-toolbar { border-color: var(--hope-border); }
+.j2[data-mode="preview"] .j2-viewport { box-shadow: inset 0 0 0 2px var(--hope-border); cursor: grab; }
 .j2-title {
   margin: 0; font-family: var(--font-display); font-weight: 400;
   font-size: var(--fs-lg); line-height: var(--lh-lg); letter-spacing: var(--tracking-display); color: var(--parchment);
@@ -198,7 +214,8 @@ body[data-route="journey2"] #grid-wrap { display: block; }
 .j2-blight { padding: 0 var(--s-1); border: 1px solid var(--fear); border-radius: var(--r-xs); color: var(--fear-soft); font-family: var(--font-mono); font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tracking-badge); }
 .j2-blight[hidden] { display: none; }
 .j2-card-sum { margin: 0; padding-left: calc(32px + var(--s-2)); font-family: var(--font-mono); font-size: var(--fs-xs); font-variant-numeric: tabular-nums; color: var(--parchment-dim); }
-.j2-card-sum[hidden], .j2-warn[hidden], .j2-card-body[hidden], .j2-done[hidden], .j2-status[hidden], .j2-actions[hidden], .j2-envs[hidden], .j2-envs-list[hidden], .j2-insp-tile[hidden] { display: none; }
+.j2-card-sum[hidden], .j2-warn[hidden], .j2-card-body[hidden], .j2-done[hidden], .j2-status[hidden], .j2-actions[hidden], .j2-envs-list[hidden], .j2-insp-tile[hidden], .j2-insp-envs-toggle[hidden], .j2-insp-muted[hidden], .j2-insp-tile-text[hidden],
+.j2-tb-group[hidden], .j2-save[hidden], .j2-fog-chip[hidden], .j2-sidewrap[hidden] { display: none; }
 /* enclosed-hole warning: icon + text + a dashed edge, so it never relies on colour alone */
 .j2-warn { margin: 0; display: flex; align-items: center; gap: var(--s-1); padding: 2px var(--s-2); border: 1px dashed var(--fear-soft); border-radius: var(--r-xs); font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--fear-soft); }
 .j2-warn-ico { display: inline-flex; flex: none; }
@@ -230,26 +247,24 @@ body[data-route="journey2"] #grid-wrap { display: block; }
 .j2-card-foot { display: flex; justify-content: flex-end; }
 .j2-delete { flex: none; color: var(--muted); }
 .j2-delete:hover:not(:disabled) { color: var(--fear-soft); }
-/* environments of the region's biome: a disclosure whose rows are links to the environment overlay */
-.j2-envs { display: grid; gap: var(--s-1); }
-.j2-envs-toggle {
-  display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); width: 100%; min-height: var(--h-sm); padding: 0 var(--s-2);
-  background: transparent; color: var(--parchment); border: 1px solid var(--line); border-radius: var(--r-sm); font-family: var(--font-body); font-size: var(--fs-sm); cursor: pointer; text-align: left;
+/* Suggested environments (Region Inspector, read-only disclosure): rows are links to the environment overlay. The inspector body scrolls, so the list never scrolls on its own. */
+.j2-insp-envs-toggle {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); width: 100%; min-height: var(--h-xs); margin: 0; padding: 0;
+  background: transparent; border: 0; color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; text-align: left; cursor: pointer;
 }
-.j2-envs-toggle:hover { border-color: var(--hope-border); background: var(--hope-hover-bg); }
-.j2-envs-toggle:focus-visible, .j2-env-link:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-tight); }
-.j2-envs-toggle[aria-expanded="true"] { border-color: var(--hope-border); }
+.j2-insp-envs-toggle:hover { color: var(--parchment); }
+.j2-insp-envs-toggle:focus-visible, .j2-env-link:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-tight); }
 .j2-envs-chev { display: inline-flex; flex: none; color: var(--muted); transition: transform 150ms var(--j2-ease); }
 .j2-envs-chev svg { width: 12px; height: 12px; }
-.j2-envs-toggle[aria-expanded="true"] .j2-envs-chev { transform: rotate(180deg); }
-.j2-envs-list { list-style: none; margin: 0; padding: 0; max-height: 220px; overflow-y: auto; border: 1px solid var(--line); border-radius: var(--r-sm); scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
+.j2-insp-envs-toggle[aria-expanded="true"] .j2-envs-chev { transform: rotate(180deg); }
+.j2-envs-list { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: var(--r-sm); }
 .j2-envs-list li + li { border-top: 1px solid var(--line-faint); }
 .j2-env-link { display: flex; align-items: baseline; gap: var(--s-2); padding: var(--s-1) var(--s-2); color: var(--parchment); text-decoration: none; font-size: var(--fs-sm); line-height: var(--lh-sm); }
 .j2-env-link:hover { background: var(--hope-hover-bg); color: var(--hope-soft); }
 .j2-env-tier { flex: none; min-width: 1.2em; font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); text-align: center; }
 .j2-env-name { min-width: 0; overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: reduce) {
-  .j2-sidewrap, .j2-side, .j2-rail, .j2-hint-chip, .j2-envs-chev { transition: none !important; }
+  .j2-sidewrap, .j2-side, .j2-rail, .j2-hint-chip, .j2-fog-chip, .j2-envs-chev { transition: none !important; }
 }
 
 /* ---------- map viewport ---------- */
@@ -262,7 +277,9 @@ body[data-route="journey2"] #grid-wrap { display: block; }
 .j2-viewport.is-panning, .j2-viewport.is-moving { cursor: grabbing; }
 .j2-viewport.is-over-tile, .j2-viewport.is-space { cursor: grab; }
 .j2-viewport.is-over-marker { cursor: pointer; }
-.j2-viewport.is-placing { cursor: crosshair; }
+.j2-viewport.is-placing, .j2-viewport.is-fog-tool { cursor: crosshair; }
+.j2-viewport.is-fog-tool.is-space { cursor: grab; }
+.j2-viewport.is-fog-tool.is-panning { cursor: grabbing; }
 .j2-viewport:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select: none !important; -webkit-user-select: none !important; }
 .j2-world { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; --j2-inv: 4; }
@@ -284,6 +301,18 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
   font-size: var(--fs-sm); color: var(--parchment); pointer-events: none;
 }
 .j2-hint-chip[hidden] { display: none; }
+/* active fog tool: text + icon status, top centre of the visible map */
+.j2-fog-chip {
+  position: absolute; top: var(--s-3); left: calc(var(--j2-inset-left) + (100% - var(--j2-inset-left)) / 2); transform: translateX(-50%); z-index: 3; max-width: calc(100% - var(--j2-inset-left) - var(--s-4));
+  transition: left 250ms var(--j2-ease);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--s-1) var(--s-3); padding: var(--s-2) var(--s-3);
+  background: var(--ink-raised); border: 1px solid var(--hope-border); border-radius: var(--r-md); box-shadow: var(--e-2);
+  font-size: var(--fs-sm); color: var(--parchment); pointer-events: none;
+}
+.j2-fog-chip .j2-ico svg { width: 16px; height: 16px; color: var(--hope-soft); }
+.j2-fog-chip strong { font-weight: 600; }
+.j2-fog-chip-count { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--parchment-dim); font-variant-numeric: tabular-nums; }
+.j2-fog-chip-hint { font-size: var(--fs-xs); color: var(--muted); }
 /* drag tooltip: follows the pointer, never takes it */
 .j2-tip {
   position: fixed; left: 0; top: 0; z-index: 60; display: grid; gap: 2px; max-width: 280px; padding: var(--s-2) var(--s-3);
@@ -312,6 +341,28 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 
 /* ---------- overlay layers (screen) ---------- */
 .j2-overlay path, .j2-overlay rect, .j2-overlay circle { vector-effect: non-scaling-stroke; }
+/* Fog of War. One neutral hatch veil, never black: the base map, grid and every sanctuary icon / printed label stay readable
+ * (the fog group is masked around them). GM: subtle; stronger only while a fog tool is active. Player Preview: a clearer, still
+ * translucent gray texture; nothing animates, so the same look can be printed. */
+.j2-fogp-wash { fill: #3b3d4a; fill-opacity: 0.1; stroke: none; }
+.j2-fogp-line { stroke: #2c2e3a; stroke-opacity: 0.3; stroke-width: 1.1; fill: none; vector-effect: none; }
+.j2-fogp-wash.is-player { fill: #8a8c96; fill-opacity: 0.42; }
+.j2-fogp-line.is-player { stroke: #3a3c48; stroke-opacity: 0.5; stroke-width: 1.2; }
+.j2-fogp-line.is-player-x { stroke: #3a3c48; stroke-opacity: 0.28; stroke-width: 0.8; }
+.j2-fogp-hide { stroke: var(--ink); stroke-opacity: 0.75; stroke-width: 1.4; vector-effect: none; }
+.j2-overlay .j2-fog-veil { fill: url(#j2-fog-gm); stroke: none; opacity: 0.85; }
+.j2[data-mode="preview"] .j2-overlay .j2-fog-veil { fill: url(#j2-fog-player); opacity: 1; }
+.j2-viewport.is-fog-tool .j2-fog-veil { opacity: 1; }
+.j2-overlay .j2-fog-edge { fill: none; stroke: var(--hope); stroke-opacity: 0.22; stroke-width: 1; }
+.j2-viewport.is-fog-tool .j2-fog-edge { stroke-opacity: 0.5; }
+.j2-overlay .j2-fog-pend.is-reveal { fill: #fff; fill-opacity: 0.35; stroke: var(--hope); stroke-width: 1; }
+.j2-overlay .j2-fog-pend.is-hide { fill: url(#j2-fog-hide-pat); stroke: var(--ink); stroke-width: 1; stroke-dasharray: 3 2; }
+.j2-overlay .j2-fog-brush { fill: none; stroke-width: 2.5; }
+.j2-overlay .j2-fog-brush.is-reveal { stroke: var(--hope); }
+.j2-overlay .j2-fog-brush.is-hide { stroke: var(--ink); stroke-dasharray: 5 3; }
+.j2-overlay .j2-fog-glyph { fill: none; stroke-width: 2.2; stroke-linecap: round; }
+.j2-overlay .j2-fog-glyph.is-reveal { stroke: var(--hope); }
+.j2-overlay .j2-fog-glyph.is-hide { stroke: var(--ink); }
 /* committed terrain: monochrome — the base geography stays visible; gold is only selection/valid preview, red an invalid preview */
 .j2-tile-hex { fill: none; stroke: var(--ink); stroke-opacity: 0.55; stroke-width: 1; }
 .j2-overlay .j2-tile-halo { fill: #fff; fill-opacity: 0.7; stroke: none; }
@@ -383,8 +434,11 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-insp-h { margin: 0; font-family: var(--font-mono); font-weight: 400; font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--hope-soft); }
 .j2-insp-p { margin: 0 0 var(--s-2); font-size: var(--fs-md); line-height: var(--lh-md); color: var(--parchment); }
 .j2-insp-p:last-child { margin-bottom: 0; }
+.j2-insp-muted { font-size: var(--fs-sm); color: var(--muted); }
+.j2-insp-envs .j2-insp-h { display: block; }
 /* the anchored hex: where it is and the one action on it; outside the scroller so Return to stock never scrolls away */
 .j2-insp-tile { flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: var(--s-2) var(--s-3); border-top: 1px solid var(--line-faint); }
+.j2-insp-return { margin-left: auto; }
 .j2-insp-tile-text { min-width: 0; font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--parchment-dim); font-variant-numeric: tabular-nums; }
 .j2-region-inspector .j2-note { margin: 0 0 var(--s-2); font-size: var(--fs-xs); color: var(--muted); }
 /* decorative pointer toward the selected hex */

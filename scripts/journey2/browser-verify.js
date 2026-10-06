@@ -22,6 +22,7 @@ const path = require('path');
 const http = require('http');
 const { chromium } = require('playwright');
 const Geo = require('../../js/journey2-geometry.js');
+const Model = require('../../js/journey2-model.js');
 
 const ROOT = path.join(__dirname, '..', '..');
 const outArg = process.argv.indexOf('--out');   /* Task 01A: --out <stage dir> keeps the submitted Stage 0 evidence untouched */
@@ -72,7 +73,7 @@ function attachLogging(page, sink, label) {
 }
 const state = page => page.evaluate(() => Journey2View.debugState());
 /* Task 02: the Phase 0 inspector is the secondary "Diagnostics" drawer (closed by default), opened from the More menu. */
-async function toggleDiag(page) { await page.click('[data-j2-menu-btn="more"]'); await page.click('[data-j2-act="diagnostics"]'); await page.waitForTimeout(250); }
+async function toggleDiag(page) { await page.evaluate(() => Journey2View.debugApi().runAction('diagnostics')); await page.waitForTimeout(250); }   // the toolbar "More" menu no longer exists; the same action is reached through the debug API
 async function openDiag(page) { if (!(await state(page)).diagnosticsOpen) await toggleDiag(page); }
 async function openJ2(page, base, viewport, keepClosed) {
   if (viewport) await page.setViewportSize(viewport);
@@ -737,6 +738,9 @@ async function main() {
   /* ===== 6. console / network hygiene ===== */
   const relevant = logs.filter(l => !/favicon|fonts\.g(oogleapis|static)\.com|ERR_INTERNET_DISCONNECTED|net::ERR_(NAME_NOT_RESOLVED|CONNECTION|FAILED)/.test(l) || /journey2|valloren/.test(l));
   record('hygiene.no-console-errors-or-failed-requests', relevant.length === 0, relevant.slice(0, 12));
+
+  /* Phase C: Fog of War, Player Preview and the suggested environments in the Region Inspector (real pointer and keyboard input; the same checks stage1-verify.js runs, minus the pixel comparison) */
+  await require('./lib/fog-checks.js').runFogChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc, full: false });
 
   await browser.close(); server.close();
   const failed = results.filter(r => !r.ok);

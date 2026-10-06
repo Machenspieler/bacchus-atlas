@@ -410,7 +410,38 @@
     return out(best.x, best.y, best.side, null);
   }
 
+  /* ---------------- hex line (fog painting) ---------------- */
+
+  /** Rounds fractional axial coordinates to the nearest cell (cube rounding; "+ 0" turns -0 into 0). */
+  function roundAxial(fq, fr) {
+    const fx = fq, fz = fr, fy = -fq - fr;
+    let rx = Math.round(fx), ry = Math.round(fy), rz = Math.round(fz);
+    const dx = Math.abs(rx - fx), dy = Math.abs(ry - fy), dz = Math.abs(rz - fz);
+    if (dx > dy && dx > dz) rx = -ry - rz;
+    else if (dy > dz) ry = -rx - rz;
+    else rz = -rx - ry;
+    return { q: rx + 0, r: rz + 0 };
+  }
+
+  /**
+   * Every cell on the straight hex line from `a` to `b`, both ends included, in order (a pure function of the two
+   * cells). Used to fill the cells a fast pointer jumped over, so a fog stroke never leaves a gap. A tiny fixed
+   * nudge makes the tie-break on a cell edge deterministic.
+   */
+  function cellLine(a, b) {
+    const dq = b.q - a.q, dr = b.r - a.r;
+    const n = Math.max(Math.abs(dq), Math.abs(dr), Math.abs(dq + dr));
+    if (n === 0) return [{ q: a.q, r: a.r }];
+    const out = [];
+    for (let i = 0; i <= n; i++) {
+      const t = i / n;
+      out.push(i === 0 ? { q: a.q, r: a.r } : i === n ? { q: b.q, r: b.r } : roundAxial(a.q + dq * t + 1e-6, a.r + dr * t + 2e-6));
+    }
+    return out;
+  }
+
   return {
+    cellLine: cellLine,
     placeInspector: placeInspector,
     NEIGHBOR_DELTAS: NEIGHBOR_DELTAS,
     cellId: cellId,

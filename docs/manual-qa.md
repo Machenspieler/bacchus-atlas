@@ -424,11 +424,10 @@ contexts; run them with `--out <scratch dir>` so the committed evidence is not r
 private window, or accept that it writes the four `dhcodex_journey2_*` keys.
 
 - [ ] Open `#/journey2`: header, one compact toolbar (map name, save status, Undo/Redo,
-      zoom, Backup menu, ⋯), a left sidebar (generator + stock), the map fills the rest. No page scroll
+      zoom, the Fog group: Fog / Reveal / Hide / Player Preview), a left sidebar (generator + stock), the map fills the rest. No page scroll
       at 1366×768 and 1920×1080; Diagnostics is closed.
-- [ ] Generator: Habitat Forest, Terrain 2, Hexes 20 → **Generate region**. A card appears:
-      Placed 0 / 20, Left 20, drag targets **1 hex** and **All 20**. Nothing is on the map.
-- [ ] Enter 0, -3, 2.5, abc, 1001 → inline error, no card; empty Hexes rolls a d12.
+- [ ] **Generate region** rolls everything at random. A card appears: Placed 0 / N, drag targets
+      **1 hex** and **All N**. Nothing is on the map.
 - [ ] Drag **1 hex** onto the map: gold preview + tooltip while dragging; release places one.
       Do this seven times at scattered, unconnected places (both halves, near the seam).
       Counts read 7 / 20 and **All 13**; the targets do not move.
@@ -441,21 +440,39 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
 - [ ] Undo/Redo (buttons or Ctrl+Z / Ctrl+Y outside text fields): undo the move, then the whole All-13
       drop → exactly the seven and 13 in stock. Reload → the same seven, details and 13 remaining.
 - [ ] Region Inspector: click a placed hex → one panel beside it (Habitat, Region #, Terrain, days per
-      hex/placed/remaining counts, Encounter, Rumor, no notes field) with the whole region softly outlined
-      and that hex strongly; a footer shows "Hex q,r" and **Return to stock** (click it: the hex goes back to
-      stock, the footer disappears; Undo restores it). There is no separate bar at the bottom of the map; the sidebar does not expand, scroll or open. Click another hex of the region,
+      hex/placed/remaining counts, Encounter, Rumor, Suggested environments, no notes field) with the whole
+      region softly outlined and that hex strongly; a footer shows **Return to stock** and no raw "Hex q,r"
+      (click it: the hex goes back to stock, the footer disappears; Undo restores it). There is no separate bar at the bottom of the map; the sidebar does not expand, scroll or open. Click another hex of the region,
       then a hex of another region, then empty map (closes). A pan keeps it open; a hex drag never opens it.
 - [ ] A card's **Inspect region** button opens the same panel for an unplaced region too, without
       expanding the card; the panel never sits under the sidebar/rail and stays the same size at 50%, 100%
       and 200%. Esc cancels an armed Place first, then closes the panel; focus returns to the opener.
 - [ ] A card opened with **Inspect region** has no Hex/Return to stock footer (no anchor hex).
-- [ ] Expand a region card → **Environments (N)** (absent for an Overtaken region, absent on a collapsed card):
-      the list holds exactly that biome's catalog environments (tier, name); picking one opens its overlay over
-      the map without moving the camera or collapsing the card; Esc closes only the overlay (an open inspector
-      stays) and focus returns to that row; RU/EN switch relabels the rows.
-- [ ] Backup → Export, then Import the file: replacing a non-empty map asks first; a bad file is rejected
-      with the reason and changes nothing.
-- [ ] More → Diagnostics opens the inspector (grid, markers, protection, print proof) and closes again.
+- [ ] An expanded region card has no environment list (equally compact for any region). The inspector's
+      last section reads "Suggested environments · N" and is **collapsed**; opening it lists exactly that
+      biome's catalog environments (tier, name; absent text "No suggested environments" for an Overtaken
+      region); picking one opens its overlay over the map without moving the camera; Esc closes only the
+      overlay (the inspector stays) and focus returns to that row; the section is collapsed again for another
+      region; the inspector body scrolls normally; RU/EN switch relabels the rows.
+- [ ] Fog of War (Fog group): Reveal / Hide are toggles (`aria-pressed`, a status chip names the tool and
+      "Hold Space and drag to pan"); click and drag paint hexes (a fast flick leaves no gap); one stroke =
+      one Undo / Redo; Space + drag pans, the wheel zooms; Esc cancels a stroke, then leaves the tool;
+      a click on a region hex paints fog and never opens the inspector or moves the hex; activating a tool
+      closes the inspector and cancels an armed Place; arming Place switches the tool off. The GM keeps every
+      generated glyph; the hatch veil marks unexplored hexes, **Fog** toggles it (stored), and the sanctuary
+      icons and MARROGATE / HORIZON labels stay clean under it. Generating, placing, moving or deleting a
+      region never changes the fog. Reload keeps the fog.
+- [ ] Player Preview: the sidebar, rail, cards, Undo/Redo, save status, fog controls and inspector are gone;
+      only the Player Preview flag, zoom/Fit and **Back to GM** remain. Unexplored hexes carry the stronger gray
+      texture and no generated glyphs; revealed hexes show their glyphs; a region half revealed shows only its
+      revealed hexes; the base map, labels and sanctuary icons are unchanged. Pan and zoom work, clicks do
+      nothing, Ctrl+Z does nothing. **Back to GM** (or Esc) restores the previous pan/zoom, the sidebar state and
+      the Fog preference without reopening the inspector or adding an Undo entry. Reload leaves the preview.
+- [ ] Export/Import (no toolbar button since the Backup menu was removed — use `Journey2View.debugApi().runAction('export')`
+      and the corrupt-map banner's Import): replacing a non-empty map asks first; a bad file is rejected with the
+      reason and changes nothing; an import also ends Player Preview and any fog tool.
+- [ ] Diagnostics (via `debugApi().runAction('diagnostics')`) opens the drawer (grid, markers, protection, print proof)
+      and closes again; the inspector's footer then shows "Hex q,r".
 - [ ] RU and EN: no clipped labels in the toolbar, cards or dialogs; `#/journey` still works.
 
 ## Language

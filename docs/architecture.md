@@ -935,13 +935,15 @@ stays copy-only.
 
 Run all of them with `node --test tests/*.test.js`.
 
-## Journey 2 map editor (`#/journey2`, Phase 1; Phase A and B below)
+## Journey 2 map editor (`#/journey2`, Phase 1; Phases A, B and C below)
 - **Files (load order in `index.html`):** `js/journey2-geometry.js` (pure, UMD:
   measured lattice, cell ids, neighbours, validity, camera maths, readiness
-  gate, glyph layout), `js/journey2-model.js` (pure: the map **document**,
+  gate, glyph layout, the hex line behind fog strokes), `js/journey2-model.js`
+  (pure: the map **document**,
   the editor **placement policy**, the command/transaction reducers, bounded
   Undo/Redo history, the "All N" footprint, quantity parsing, full-document
-  validation for load **and** import), `js/journey2-store.js` (persistence
+  validation for load **and** import), `js/journey2-projection.js` (pure: the
+  **player projection**, Phase C), `js/journey2-store.js` (persistence
   over `SafeStorage`, storage injected), `js/journey2-view.js`
   (`Journey2View.mount/unmount`: DOM, transient pointer state, rendering),
   `css/journey2.css` (scoped to `.j2`, `body[data-route="journey2"]`, the
@@ -950,7 +952,7 @@ Run all of them with `node --test tests/*.test.js`.
   The model owns every rule; the view builds commands and never mutates a
   document. Both pure modules are `require()`d by `tests/journey2-*.test.js`.
 - **Document** (`schemaVersion` 1, `kind` `bacchus-atlas.journey2.gm-backup`):
-  `{ templateId, templateVersion, createdAt, updatedAt, batches[], tiles[] }`.
+  `{ templateId, templateVersion, createdAt, updatedAt, batches[], tiles[], playerVisibility }`.
   A **batch** is one generated region copied *by value* from the generator
   (habitat + provenance, terrain, quantity, encounter rolls, rumor roll,
   notes — kept in the document for already-saved maps but no longer shown or
@@ -960,6 +962,13 @@ Run all of them with `node --test tests/*.test.js`.
   habitat/terrain/quantity is `source:"manual"` and carries **no** dice
   rolls; a rolled one keeps its rolls. The export/backup *is* this document —
   no raster, SVG or asset bytes; the template is referenced by identity.
+- **Player visibility (Phase C):** `playerVisibility: { revealedCells: ["q,r", ...] }` is the
+  one source of truth for Fog of War — never on a batch or a tile, no `hiddenCells`
+  twin, kept sorted (numeric q then r) so serialization is deterministic. `[]` (the
+  default) means every cell is hidden. A document without the field (an old or partial
+  prototype) loads as nothing revealed; a present-but-malformed one is rejected whole.
+  Only *foggable* cells count — inside the printed frame and not title/compass/scale
+  furniture (`Model.isFoggableCell`, the same policy as placement).
 - **Placement policy** (`Journey2Model.createContext().policy`) — the single
   rule for preview, commit, load and import: a cell must be structurally
   valid (`grid.isValid`, i.e. inside the printed frame) and must not overlap a
@@ -971,13 +980,18 @@ Run all of them with `node --test tests/*.test.js`.
   and inside its hexagon, otherwise the glyph is withheld (the tile stays,
   drawn as a dashed outline). `tests/journey2-model.test.js` proves this over
   every allowed cell and symbol.
-- **Commands** (`createBatch`, `place`, `move`, `returnTile`, `deleteBatch`, `setNotes`)
+- **Commands** (`createBatch`, `place`, `move`, `returnTile`, `deleteBatch`, `setNotes`, `setCellsRevealed`)
   carry every generated value (ids, cells, timestamps), so Redo replays the
   same transaction and never re-rolls. `place` is atomic (all N or nothing).
   `View.dispatch()` is the one path for UI and tests: cancel any drag →
   `Model.apply` → history → persist → repaint.
   A no-op returns the same document reference and records nothing.
   `deleteBatch` removes the batch and all its tiles atomically (one Undo entry).
+  `setCellsRevealed { cellKeys, revealed, at }` reveals or hides cells: duplicate and
+  invalid keys are ignored, a command that changes nothing is a no-op (same document,
+  no history), and it replaces only `playerVisibility` — batches and tiles keep their
+  array identity. `Model.getRevealedCellSet(doc)` / `isCellRevealed(doc, key)` expose a
+  per-document cached `Set`; the view never re-parses the array.
 - **Region shape rules (Phase A, in the model):** all placed tiles of one batch
   must form one edge-connected component over the six axial neighbours
   (other batches never count). `place`, `move` and `returnTile` fail with
@@ -1028,36 +1042,98 @@ Run all of them with `node --test tests/*.test.js`.
   placement), empty-map click (never a pan), deletion, import/replace, opening
   Diagnostics, unmount; focus returns to the
   opener (the card's Inspect button, or the map). When the inspector is anchored
-  on a placed hex a footer (`[data-j2-insp-tile]`, outside the scroller) shows
-  "Hex q,r" and the one **Return to stock** button (`returnSelected`); there is
+  on a placed hex a footer (`[data-j2-insp-tile]`, outside the scroller) holds
+  the one **Return to stock** button (`returnSelected`); the raw "Hex q,r" text is shown only
+  while Diagnostics is on (it is a diagnostic detail, PD-020); there is
   no separate tile bar (PD-019). Browser coverage:
   `scripts/journey2/stage1-verify.js` checks `insp.*` and `browser-verify.js`
   `inspector.*`; pure coverage: `tests/journey2-inspector.test.js`.
-- **Environments dropdown (card, PD-019):** `app.js` passes the view
+- **Suggested environments (Region Inspector, PD-019/PD-020):** `app.js` passes the view
   `environmentsForBiome` (`journey2EnvironmentsForBiome`): the catalog
   environments whose `biomes` includes the region's biome, sorted tier → name in
   the current language, each with an `href` built by `envHash(id, { name:
-  'journey2' })`. `updateEnvironments()` (called from `updateCard`, expanded
-  cards only) fills a disclosure — a toggle button + `<ul>` of plain `<a>`
-  links — once per biome + language (`data-sig`), so an open list and the focus
-  inside it survive every re-render. Following a link is an ordinary hash
-  change: `hashchange` sees only the card suffix changed and opens the
-  environment overlay without re-rendering the page. While any
-  `.modal-overlay` is open, the view's document-level Escape handler stands
-  down so Escape closes only the overlay. An overtaken region (no biome) has no
-  dropdown.
+  'journey2' })`. The view does not re-implement the matching or the order. The inspector's
+  last section (after Rumor) is a read-only, **collapsed-by-default** disclosure "Suggested
+  environments · N" (`renderSuggestedEnvironments`); it collapses again whenever a different
+  region is shown, is built once per biome + language (`data-sig`) so an open list and the
+  focus inside it survive re-renders, and scrolls with the inspector body (the list never
+  nests a scroller). A region with no biome or no match shows "No suggested environments".
+  Region cards no longer carry any environment list, so a card is equally compact for 0, 5
+  or 20 matches. Following a link is an ordinary hash change: `hashchange` sees only the
+  suffix changed and opens the environment overlay without re-rendering the page. While any
+  `.modal-overlay` is open, the view's document-level Escape handler stands down so Escape
+  closes only the overlay.
 - **Interaction state** (view-only, never persisted, never in history):
   `tr` = a stock drag, a tile drag or an armed click-to-place; `pan`;
-  selection; the open Region Inspector. The "All N" footprint is generated once per drag
+  selection; the open Region Inspector; the fog tool, an in-progress fog stroke, the fog
+  hover cell and Player Preview (see "Fog of War and Player Preview"). The "All N" footprint is generated once per drag
   (`compactFootprint(N)`, a pure function of N) and frozen. A drag remembers
   the document it started on; release revalidates and a changed document
   cancels it. Escape, `pointercancel`, lost capture, a drop outside the map,
   route exit and any dispatched command cancel without touching state.
   Wheel/zoom during a drag recompute the preview with the *current* camera.
+- **Fog of War and Player Preview (Phase C, PD-020):**
+  - *Model.* Visibility is cell-based and lives only in `doc.playerVisibility` (see above);
+    it is campaign data, so it is autosaved, exported/imported, validated and Undo/Redo-able.
+    Generating, placing, moving, returning or deleting regions never reveals or hides a
+    cell — fog belongs to map coordinates, so content moved into a revealed cell becomes
+    visible and into a hidden cell becomes hidden.
+  - *Tools.* The toolbar has a Fog group: **Fog** (`Show fog state`, a stored UI preference,
+    default on), **Reveal**, **Hide** (`aria-pressed` toggles, mutually exclusive with each other,
+    with armed/dragged placement and with the inspector) and **Player Preview**. Activating a
+    tool cancels armed placement and drags, closes the inspector, clears the tile selection and
+    force-enables the veil; pan, zoom and the sidebar are untouched. Pressing the active tool
+    returns to neutral. A stroke is one pointer press → release: each sampled cell is joined with
+    the previous one by `Geo.cellLine` (so a fast drag leaves no gap), a cell joins a stroke once,
+    pointer moves only collect cells and schedule one `requestAnimationFrame` repaint of the
+    pending-cell / brush layer, and **release commits one `setCellsRevealed` command** — one Undo
+    entry, one autosave. `pointercancel`, lost capture, Escape, Undo/Redo and route exit cancel
+    the stroke without a history entry. Space (or the middle button) pans instead of painting;
+    the Space handler also covers a focused fog toolbar button so it never presses it. Cells under
+    the overlay sidebar or outside the map are not paintable (no click-through).
+    Priority: dialog > Player Preview > an existing drag/pan > armed placement > fog tool >
+    neutral selection/inspector. Escape: menu → stroke → drag/pan/armed → Player Preview → fog
+    tool → inspector.
+  - *GM render.* The GM always draws every generated tile (`renderTiles` never reads visibility).
+    The fog is one `<path>` of all hidden foggable cells in `<g data-j2-g="fog">`, filled with a
+    shared hatch pattern, above the tiles and below the selection/region outlines and the placement
+    preview, plus a very faint outline of the revealed cells; it is rebuilt only when the
+    visibility object or the mode changes. The group is **masked** (`#j2-fog-mask`) around every
+    sanctuary icon protection area and printed label (`Projection.fogMaskRects`), so the base map
+    is never modified, masked or covered there. "Show fog state" off hides only the veil.
+  - *Player projection.* `Journey2Projection.buildPlayerProjection(doc)` (pure, DOM-free) returns
+    `{ version, revealedCells[], overlays[{ q, r, symbolId, dots, blightMark }] }`: only generated
+    tiles in revealed cells, reduced to what is drawn — no region/tile ids, Encounter, Rumor, notes,
+    environments, selection, warnings or diagnostics. Filtering is a **data** rule: a tile in a
+    hidden cell is simply not produced (no veil-over, no opacity, no hidden DOM).
+  - *Player Preview.* A temporary read-only render of that projection, not a saved document: it
+    first cancels the tool/stroke/placement/inspector/menus, remembers the camera, then hides the
+    sidebar and rail, the history, fog and save controls and the diagnostics layers, shows a
+    "Player Preview" flag + **Back to GM**, empties the GM tile layer and draws
+    `overlayMarkup(projection overlays)`; fog uses the stronger `j2-fog-player` texture (static,
+    translucent, no blur or animation). Pan, zoom and Fit still work. Undo/Redo, tile clicks and
+    Delete are ignored. Back to GM (or Escape) restores the saved camera and fit mode and returns
+    to neutral — nothing is reopened or re-selected, no history entry, no document change. It never
+    persists across reloads. Import/reset ends the preview, the tool and any stroke.
+  - *Reuse by printing (not built yet).* The future print renderer must call
+    `buildPlayerProjection(doc)` and draw its result — the shared drawing routine is
+    `overlayMarkup(entries)` (cells + glyph specs only; it reads no camera, selection or DOM) —
+    with the same `fogMaskRects` cut-outs, once per A4 map half. It must not clip the screen,
+    CSS-hide the GM render, clone the interactive DOM or depend on scroll or sidebar state.
+  - *Accessibility.* Tools are real buttons with `aria-pressed` and a text + icon status chip
+    ("Reveal tool active · Hold Space and drag to pan · Esc"); brush shape and glyph differ for
+    Reveal (solid ring) and Hide (dashed outline, slash); entering/leaving the preview and a
+    finished stroke ("N hexes revealed/hidden", once) are announced through the live region; the
+    preview swaps the keyboard hint so it names no editing keys; the SVG overlay is
+    `aria-hidden`, so no generated content of a hidden cell is in the accessibility tree.
+  - *Coverage.* `tests/journey2-fog.test.js` (pure + source guards),
+    `scripts/journey2/lib/fog-checks.js` (real pointer/keyboard, run by both
+    `stage1-verify.js` and `browser-verify.js`).
 - **Storage:** exactly four keys, all `dhcodex_journey2_*` (`js/journey2-store.js`):
-  `map` (the document), `map_recovery` (raw text of a map that failed
-  validation), `map_previous` (the map an import replaced), `ui` (sidebar
-  collapsed state). Nothing else is
+  `map` (the document, fog included), `map_recovery` (raw text of a map that failed
+  validation), `map_previous` (the map an import replaced), `ui` (view preferences:
+  sidebar collapsed state and "Show fog state" — never the active tool, Player Preview, hover
+  or a stroke). Nothing else is
   read or written; legacy Journey, Prep and unrelated keys stay byte-identical.
   A document that fails validation is **never** replaced by an empty autosave:
   `load()` reports `corrupt`, the raw text stays under its own key and is
@@ -1085,12 +1161,16 @@ Run all of them with `node --test tests/*.test.js`.
   sums) from the same tables.
 - **Diagnostics:** the Phase 0 inspector (calibration grid, control cells,
   markers, protection areas, proof overlay, print proof) is a secondary
-  drawer behind the toolbar's "More → Diagnostics", closed by default.
+  drawer, closed by default. The toolbar's Backup and ⋯ buttons were removed, so there is
+  currently no on-screen entry point: the dev scripts reach Export and Diagnostics through
+  `Journey2View.debugApi().runAction('export' | 'diagnostics')`; Import still works through the
+  hidden file input and the corrupt-map banner.
 - **Dev pipeline (not shipped):** `scripts/journey2/` — `prepare-map.js`,
   `measure-grid.js`, `survey-markers.js`, `build-template.js`,
   `verify-template.js`, `browser-verify.js` (Phase 0 behaviours, via the
   diagnostics drawer), `stage1-verify.js` (the editor: real pointer input in
-  isolated Playwright contexts), `print-proof.js` + `verify-print.js`.
+  isolated Playwright contexts), both of which also run `lib/fog-checks.js` (Phase C: Fog of War,
+  Player Preview, suggested environments), `print-proof.js` + `verify-print.js`.
 - **Deployment note:** `scripts/build.js` copies everything not excluded;
   `docs/journey2-*` (handoff PDFs, review packages, evidence, stage ZIPs) are
   excluded and `scripts/check-journey2-build.js` fails the build if any of it
