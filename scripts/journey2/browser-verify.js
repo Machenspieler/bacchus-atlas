@@ -659,6 +659,50 @@ async function main() {
     await c4.close();
   }
 
+  /* ===== 4b. Region Inspector and the diagnostics drawer share the map but never overlap ===== */
+  {
+    const c4 = await browser.newContext({ viewport: { width: 1366, height: 768 }, locale: 'en-US' });
+    const p4 = await c4.newPage();
+    attachLogging(p4, logs, 'inspector');
+    await openJ2(p4, base, null, true);
+    const cells = await p4.evaluate(() => {
+      const api = Journey2View.debugApi(), M = Journey2Model, id = M.newId('b');
+      const region = { habitat: { biome: 'forest', blighted: false, overtaken: false, source: 'rolled', rolls: [1] }, terrain: { value: 2, source: 'rolled' }, size: 3, encounter: { entries: [[3, 4]], combines: 0 }, rumor: 17 };
+      api.dispatch({ type: 'createBatch', batch: M.batchFromRegion(region, { id: id, createdAt: new Date().toISOString() }) });
+      const c0 = api.clientToCell(700, 450).split(',').map(Number);
+      const want = [[0, 0], [1, 0], [0, 1]].map(([a, b]) => (c0[0] + a) + ',' + (c0[1] + b));
+      const ok = api.dispatch({ type: 'place', batchId: id, tiles: want.map(c => ({ id: M.newId('t'), cell: c })) }).ok;
+      return { id: id, want: want, ok: ok };
+    });
+    const center = await p4.evaluate(c => Journey2View.debugApi().cellToClient(c), cells.want[0]);
+    await check('inspector.a-map-click-opens-the-region-inspector-and-the-card-has-no-inline-details', async () => {
+      if (!cells.ok) return { ok: true, detail: 'region placement not possible at the probe cell; covered by stage1-verify' };
+      await p4.mouse.click(center.x, center.y); await sleep(150);
+      const s = await state(p4);
+      const dom = await p4.evaluate(() => ({ dlg: !document.querySelector('[data-j2-inspector]').hidden, tabs: document.querySelectorAll('.j2-card .j2-detail-tabs, .j2-card textarea').length }));
+      return { ok: s.inspector.open && s.inspector.batchId === cells.id && dom.dlg && dom.tabs === 0, detail: { insp: s.inspector, dom } };
+    });
+    await check('inspector.opening-diagnostics-closes-the-inspector-and-clicking-a-hex-closes-diagnostics', async () => {
+      if (!cells.ok) return true;
+      await toggleDiag(p4);
+      const s1 = await state(p4);
+      const c1 = await p4.evaluate(c => Journey2View.debugApi().cellToClient(c), cells.want[0]);   // opening the drawer re-fits the map
+      await p4.mouse.click(c1.x, c1.y); await sleep(200);
+      const s2 = await state(p4);
+      return { ok: s1.diagnosticsOpen && !s1.inspector.open && !s2.diagnosticsOpen && s2.inspector.open, detail: { d1: s1.diagnosticsOpen, i1: s1.inspector.open, d2: s2.diagnosticsOpen, i2: s2.inspector.open } };
+    });
+    await check('inspector.escape-closes-it-and-the-card-inspect-button-is-localized', async () => {
+      await p4.keyboard.press('Escape'); await sleep(80);
+      const s = await state(p4);
+      await p4.click('[data-lang="en"]'); await sleep(250);
+      const en = await p4.locator('.j2-card [data-j2-inspect]').getAttribute('title');
+      await p4.click('[data-lang="ru"]'); await sleep(250);
+      const ru = await p4.locator('.j2-card [data-j2-inspect]').getAttribute('title');
+      return { ok: !s.inspector.open && en === 'Inspect region' && ru === 'Осмотреть регион', detail: { open: s.inspector.open, en, ru } };
+    });
+    await c4.close();
+  }
+
   /* ===== 5. print proof PDF ===== */
   {
     const c5 = await browser.newContext({ viewport: { width: 1366, height: 768 } });

@@ -440,8 +440,15 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
 - [ ] Esc during any drag, releasing outside the map, or leaving the route → nothing changes.
 - [ ] Undo/Redo (buttons or Ctrl+Z / Ctrl+Y outside text fields): undo the move, then the whole All-13
       drop → exactly the seven and 13 in stock. Reload → the same seven, details and 13 remaining.
-- [ ] Notes (card → Rumor and notes): typing, Space, Delete and Ctrl+Z behave as in any text field;
-      leaving the field commits one Undo step.
+- [ ] Region Inspector: click a placed hex → one panel beside it (Habitat, Region #, Terrain, days per
+      hex, hex/placed/remaining counts, Encounter, Rumor, GM notes) with the whole region softly outlined
+      and that hex strongly; the sidebar does not expand, scroll or open. Click another hex of the region,
+      then a hex of another region, then empty map (closes). A pan keeps it open; a hex drag never opens it.
+- [ ] A card's **Inspect region** button opens the same panel for an unplaced region too, without
+      expanding the card; the panel never sits under the sidebar/rail and stays the same size at 50%, 100%
+      and 200%. Esc cancels an armed Place first, then closes the panel; focus returns to the opener.
+- [ ] Notes (Region Inspector → GM notes): typing, Space, Delete and Ctrl+Z behave as in any text field;
+      leaving the field commits one Undo step; the card's Inspect button shows a dot once notes exist.
 - [ ] Backup → Export, then Import the file: replacing a non-empty map asks first; a bad file is rejected
       with the reason and changes nothing.
 - [ ] More → Diagnostics opens the inspector (grid, markers, protection, print proof) and closes again.

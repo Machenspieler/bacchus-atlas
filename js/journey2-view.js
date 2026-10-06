@@ -15,6 +15,13 @@
    including exactly 100%, and the model enforces connected region shapes
    while only warning about enclosed empty hexes.
 
+   Phase B: the map is the primary inspection surface. Clicking any placed hex
+   (or the card's Inspect button, which also works for an unplaced region) opens
+   one screen-space Region Inspector over the map: the region's Habitat, Terrain,
+   Encounter, Rumor and counts, plus the one editable field, its GM notes. The
+   sidebar is only for generating, placing, deleting and opening the inspector;
+   the inspector's state is transient and independent of which card is expanded.
+
    Layering (see docs/architecture.md "Journey 2 map editor"):
      js/journey2-geometry.js  measured lattice + camera math (pure)
      js/journey2-model.js     document, policy, commands, history (pure)
@@ -34,12 +41,12 @@
    - Geometry comes only from the geometry module and the promoted
      data/journey2/*.json. A load/validation failure shows an error state —
      never guessed geometry.
-   - Transient interaction state (drag, preview, armed click, selection) is
-     never persisted and never enters Undo history.
+   - Transient interaction state (drag, preview, armed click, selection, the
+     open Region Inspector) is never persisted and never enters Undo history.
    - Keyboard handling: map keys are bound to the focused viewport; the only
-     document-level handlers are Escape (cancel a drag / close a menu) and
-     Undo/Redo, both ignored while a text field, select, contenteditable or
-     dialog is active.
+     document-level handlers are Escape (close a menu, else cancel a drag or
+     armed placement, else close the Region Inspector) and Undo/Redo; Undo/Redo
+     is ignored while a text field, select, contenteditable or dialog is active.
    ============================================================ */
 (function (root, factory) {
   root.Journey2View = factory(root);
@@ -143,6 +150,9 @@
     let pan = null;
     let spaceDown = false;
     let sel = { tileId: null };
+    let inspector = Model.NO_INSPECTION;                    // { batchId, tileId, source } — the open Region Inspector (transient: never persisted, never in history)
+    let inspectorShown = null;                              // batchId the inspector DOM currently shows (so the notes textarea survives re-renders)
+    let followUntil = 0;                                    // keep re-positioning the inspector every frame until this time (sidebar slide)
     let hintTimer = 0;
     let liveTimer = 0;
     let cardRefs = new Map();                               // batchId -> { root, ...nodes }
@@ -163,8 +173,7 @@
     const pointer = { x: 0, y: 0, inside: false, cx: 0, cy: 0 };
     const glyphCache = new Map();
     const hexPathCache = new Map();
-    let activeBatchId = null;                               // the one expanded region card
-    let detailSection = null;                               // 'encounter' | 'rumor' | 'notes' | null — only on the active card
+    let activeBatchId = null;                               // the one card expanded for placement controls (independent of the inspector)
     let sideCollapsed = false;                              // view preference, persisted apart from the document
 
     container.innerHTML = '';
@@ -190,7 +199,7 @@
       abort.abort();
       cancelAnimationFrame(rafId);
       clearTimeout(hintTimer); clearTimeout(liveTimer);
-      tr = null; pan = null;
+      tr = null; pan = null; inspector = Model.NO_INSPECTION;
       document.body.classList.remove('j2-dragging');
       for (const d of Array.from(dialogs)) { try { d.close(); d.remove(); } catch (e) { /* gone */ } }
       dialogs.clear();
@@ -304,6 +313,7 @@
       warn: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M7 1.8 12.8 12H1.2zM7 5.6v3M7 10.3v.1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       chevL: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m8.8 3 -4 4 4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       chevR: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m5.2 3 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      info: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 9.2v4.3M10 6.3v.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
       close: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m3.5 3.5 7 7m0-7-7 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
     };
 
@@ -364,6 +374,31 @@
                 <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-deselect data-t-aria="journey2_deselect" data-t-title="journey2_deselect">${ICON.close}</button>
               </div>
               <aside class="j2-panel" id="j2-panel" data-t-aria="journey2_panel_label" hidden></aside>
+              <aside class="j2-region-inspector" id="j2-region-inspector" role="dialog" aria-modal="false" aria-labelledby="j2-region-inspector-title" data-j2-inspector hidden>
+                <span class="j2-insp-caret" aria-hidden="true"></span>
+                <header class="j2-insp-head">
+                  <span class="j2-insp-sym"><img alt="" width="28" height="28" data-j2-i="img"></span>
+                  <div class="j2-insp-titles">
+                    <h3 class="j2-insp-title" id="j2-region-inspector-title" data-j2-i="name"></h3>
+                    <p class="j2-insp-sub"><span data-j2-i="ord"></span><span class="j2-blight" data-j2-i="blight" hidden></span></p>
+                  </div>
+                  <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-insp-close data-t-aria="journey2_inspector_close" data-t-title="journey2_inspector_close">${ICON.close}</button>
+                </header>
+                <div class="j2-insp-scroll">
+                  <p class="j2-insp-examples" data-j2-i="examples" hidden></p>
+                  <div class="j2-insp-summary">
+                    <p class="j2-insp-line"><span class="j2-dots" data-j2-i="dots" role="img"></span><strong data-j2-i="terrainName"></strong><span data-j2-i="terrainN"></span></p>
+                    <p class="j2-insp-line" data-j2-i="daysSize"></p>
+                    <p class="j2-insp-line" data-j2-i="counts"></p>
+                    <p class="j2-insp-line j2-insp-empty" data-j2-i="noTiles" hidden></p>
+                    <p class="j2-insp-terrain-text" data-j2-i="terrainText" hidden></p>
+                  </div>
+                  <section class="j2-insp-sec"><h4 class="j2-insp-h" data-t="journey_k_encounter"></h4><div data-j2-i="enc"></div></section>
+                  <section class="j2-insp-sec"><h4 class="j2-insp-h" data-t="journey_k_rumor"></h4><p class="j2-insp-p" data-j2-i="rumor"></p></section>
+                  <section class="j2-insp-sec"><h4 class="j2-insp-h"><label for="j2-insp-notes" data-t="journey2_notes"></label></h4>
+                    <textarea class="j2-notes" id="j2-insp-notes" rows="3" maxlength="${Model.MAX_NOTES_LENGTH}" data-j2-insp-notes data-t-ph="journey2_notes_ph"></textarea></section>
+                </div>
+              </aside>
             </div>
             <div class="j2-sidewrap" data-j2-sidewrap>
               <aside class="j2-side" id="j2-side" data-t-aria="journey2_side_label">
@@ -402,6 +437,11 @@
       ui.base = container.querySelector('.j2-base');
       ui.svg = container.querySelector('.j2-overlay');
       ui.panel = container.querySelector('.j2-panel');
+      ui.mapwrap = container.querySelector('.j2-mapwrap');
+      ui.inspector = container.querySelector('[data-j2-inspector]');
+      ui.i = {};
+      for (const x of ui.inspector.querySelectorAll('[data-j2-i]')) ui.i[x.getAttribute('data-j2-i')] = x;
+      ui.inspNotes = ui.inspector.querySelector('[data-j2-insp-notes]');
       ui.zoomReadout = container.querySelector('[data-j2-zoom-readout]');
       ui.badge = container.querySelector('[data-j2-proof-badge]');
       ui.side = container.querySelector('.j2-side');
@@ -536,6 +576,7 @@
     function afterDocChange() {
       persist();
       if (sel.tileId && !Model.derive(doc).byId.has(sel.tileId)) sel.tileId = null;
+      syncInspector();
       renderAll(false);
     }
 
@@ -626,7 +667,7 @@
       const batch = Model.batchFromRegion(region, { id: Model.newId('b'), createdAt: new Date().toISOString() });
       const r = dispatch({ type: 'createBatch', batch: batch }, 'createBatch');
       if (!r.ok) { showGenError(t('journey2_gen_failed')); return; }
-      setActiveBatch(batch.id, null);
+      setActiveBatch(batch.id);
       ui.sideScroll.scrollTop = 0;
       announce(fill('journey2_live_created', { name: batchName(batch), n: n(batch.quantity) }));
     }
@@ -646,6 +687,7 @@
     function toggleSide() {
       sideCollapsed = !sideCollapsed;
       applySideState(true);
+      followInspector(320);
       const target = ui.sideToggles[sideCollapsed ? 1 : 0];
       if (target) target.focus({ preventScroll: true });
     }
@@ -665,20 +707,22 @@
 
     function symbolFor(b) { return data.symbolById.get(Model.symbolIdOf(b)); }
 
-    const DETAIL_SECTIONS = ['encounter', 'rumor', 'notes'];
-    const NOTES_MAX_PX = 180;
+    const NOTES_MAX_PX = 240;
 
     function createCard(b) {
       const root = el('article', { class: 'j2-card', 'data-batch': b.id });
       const bodyId = 'j2-cb-' + b.id;
       root.innerHTML = `
-        <button type="button" class="j2-card-head" data-j2-card-toggle aria-expanded="false" aria-controls="${bodyId}" data-j2-c="toggle">
-          <span class="j2-card-sym"><img alt="" data-j2-c="img"></span>
-          <span class="j2-card-title">
-            <span class="j2-card-name"><span data-j2-c="name"></span><span class="j2-card-ord" data-j2-c="ord"></span></span>
-            <span class="j2-card-meta"><span class="j2-dots" data-j2-c="dots" role="img"></span><span data-j2-c="days"></span><span class="j2-blight" data-j2-c="blight" hidden></span></span>
-          </span>
-        </button>
+        <div class="j2-card-top">
+          <button type="button" class="j2-card-head" data-j2-card-toggle aria-expanded="false" aria-controls="${bodyId}" data-j2-c="toggle">
+            <span class="j2-card-sym"><img alt="" data-j2-c="img"></span>
+            <span class="j2-card-title">
+              <span class="j2-card-name"><span data-j2-c="name"></span><span class="j2-card-ord" data-j2-c="ord"></span></span>
+              <span class="j2-card-meta"><span class="j2-dots" data-j2-c="dots" role="img"></span><span data-j2-c="days"></span><span class="j2-blight" data-j2-c="blight" hidden></span></span>
+            </span>
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-inspect" data-j2-inspect data-j2-c="inspect" aria-controls="j2-region-inspector" aria-haspopup="dialog">${ICON.info}<i class="j2-notes-dot" data-j2-c="notesDot" aria-hidden="true" hidden></i><span class="sr-only" data-j2-c="inspectSr"></span></button>
+        </div>
         <p class="j2-card-sum" data-j2-c="sum"></p>
         <p class="j2-warn" data-j2-c="warn" hidden><span class="j2-warn-ico" aria-hidden="true">${ICON.warn}</span><span data-j2-c="warnText"></span></p>
         <div class="j2-card-body" id="${bodyId}" data-j2-c="body" hidden>
@@ -688,27 +732,14 @@
             <button type="button" class="j2-handle j2-handle--all" data-j2-handle="all"><span class="j2-handle-label" data-j2-c="allLabel"></span><span class="j2-grip">${ICON.grip}</span></button>
           </div>
           <p class="j2-done" data-j2-c="done" hidden><span class="j2-done-ico" aria-hidden="true">${ICON.check}</span><span data-j2-c="doneText"></span></p>
-          <div class="j2-detailbar">
-            <div class="j2-detail-tabs" role="group" data-j2-c="tabs">
-              <button type="button" class="j2-tab" data-j2-detail="encounter" aria-pressed="false" data-j2-c="tabEncounter"></button>
-              <button type="button" class="j2-tab" data-j2-detail="rumor" aria-pressed="false" data-j2-c="tabRumor"></button>
-              <button type="button" class="j2-tab" data-j2-detail="notes" aria-pressed="false" data-j2-c="tabNotes"><span data-j2-c="tabNotesText"></span><i class="j2-tab-dot" data-j2-c="notesDot" aria-hidden="true" hidden></i><span class="sr-only" data-j2-c="notesSr"></span></button>
-            </div>
+          <div class="j2-card-foot">
             <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-delete" data-j2-delete data-j2-c="del">${ICON.trash}</button>
-          </div>
-          <div class="j2-detail" data-j2-c="enc" hidden></div>
-          <p class="j2-detail j2-rumor" data-j2-c="rumor" hidden></p>
-          <div class="j2-detail" data-j2-c="notesBox" hidden>
-            <label class="sr-only" data-j2-c="notesLabel"></label>
-            <textarea class="j2-notes" rows="2" maxlength="${Model.MAX_NOTES_LENGTH}" data-j2-c="notes"></textarea>
           </div>
         </div>`;
       const refs = { root: root, id: b.id };
       for (const x of root.querySelectorAll('[data-j2-c]')) refs[x.getAttribute('data-j2-c')] = x;
       refs.handleOne = root.querySelector('[data-j2-handle="one"]');
       refs.handleAll = root.querySelector('[data-j2-handle="all"]');
-      refs.notes.setAttribute('aria-labelledby', 'j2-nl-' + b.id);
-      refs.notesLabel.id = 'j2-nl-' + b.id;
       return refs;
     }
 
@@ -717,6 +748,8 @@
       ta.style.height = 'auto';
       ta.style.height = Math.min(ta.scrollHeight + 2, NOTES_MAX_PX) + 'px';
     }
+
+    function batchHasNotes(b) { return !!((notesDirty && notesDirty.batchId === b.id) ? notesDirty.value : b.notes); }
 
     /** Updates a card's text and state in place (the handle elements are never recreated mid-drag). */
     function updateCard(refs, b, index, counts, full, holes) {
@@ -732,7 +765,15 @@
       refs.blight.hidden = !(b.habitat.blighted && !b.habitat.overtaken);
       refs.blight.textContent = t('journey_shadowblighted');
       // active region: expanded, programmatically identifiable
+      const inspected = b.id === inspector.batchId;
       refs.root.classList.toggle('is-active', active);
+      refs.root.classList.toggle('is-inspected', inspected);
+      refs.inspect.classList.toggle('is-on', inspected);
+      refs.inspect.setAttribute('title', t('journey2_inspect_region'));
+      refs.inspect.disabled = false;
+      const hasNotes = batchHasNotes(b);
+      refs.notesDot.hidden = !hasNotes;
+      refs.inspectSr.textContent = fill('journey2_inspect_aria', { name: name, n: ord }) + (hasNotes ? ' (' + t('journey2_notes_has') + ')' : '') + (inspected ? ' (' + t('journey2_inspect_open') + ')' : '');
       if (active) refs.root.setAttribute('aria-current', 'true'); else refs.root.removeAttribute('aria-current');
       refs.toggle.setAttribute('aria-expanded', String(active));
       refs.body.hidden = !active;
@@ -743,15 +784,9 @@
       refs.warn.hidden = !holes;
       if (holes) refs.warnText.textContent = fill('journey2_warn_holes', { n: n(holes) });
       refs.root.classList.toggle('has-holes', !!holes);
-      refs.root.classList.toggle('is-current', !!(sel.tileId && Model.derive(doc).byId.get(sel.tileId) && Model.derive(doc).byId.get(sel.tileId).batchId === b.id));
       if (generator && generator.ready()) {
         const d = generator.describe(b);
         refs.days.textContent = d.terrain ? fill('journey2_days_per_hex', { n: d.terrain.days }) : '';
-        if (active) {
-          refs.enc.innerHTML = (d.combined ? '<p class="j2-note">' + esc(t('journey_encounter_combined')) + '</p>' : '') +
-            d.encounter.map(e => '<p class="j2-enc">' + esc(e.text) + '</p>').join('');
-          refs.rumor.textContent = d.rumor;
-        }
       }
       if (!active) return;
       // placement: one status row, or — when nothing is left — a single confirmation and no controls at all
@@ -767,27 +802,9 @@
       for (const h of [refs.handleOne, refs.handleAll]) h.disabled = editLocked;
       refs.handleOne.setAttribute('aria-label', fill('journey2_handle_one_aria', { name: name }));
       refs.handleAll.setAttribute('aria-label', fill('journey2_handle_all_aria', { name: name, n: n(c.remaining) }));
-      refs.tabs.setAttribute('aria-label', t('journey2_detail_label'));
-      refs.tabEncounter.textContent = t('journey_k_encounter');
-      refs.tabRumor.textContent = t('journey_k_rumor');
-      refs.tabNotesText.textContent = t('journey2_detail_notes');
-      const hasNotes = !!((notesDirty && notesDirty.batchId === b.id) ? notesDirty.value : b.notes);
-      refs.notesDot.hidden = !hasNotes;
-      refs.notesSr.textContent = hasNotes ? ' (' + t('journey2_notes_has') + ')' : '';
-      for (const sec of DETAIL_SECTIONS) {
-        const open = detailSection === sec;
-        refs['tab' + sec[0].toUpperCase() + sec.slice(1)].setAttribute('aria-pressed', String(open));
-      }
-      refs.enc.hidden = detailSection !== 'encounter';
-      refs.rumor.hidden = detailSection !== 'rumor';
-      refs.notesBox.hidden = detailSection !== 'notes';
-      refs.notesLabel.textContent = t('journey2_notes');
-      refs.notes.placeholder = t('journey2_notes_ph');
       refs.del.setAttribute('aria-label', fill('journey2_delete_aria', { name: name, n: ord }));
       refs.del.setAttribute('title', t('journey2_delete_region'));
       refs.del.disabled = editLocked;
-      if (document.activeElement !== refs.notes) refs.notes.value = (notesDirty && notesDirty.batchId === b.id) ? notesDirty.value : b.notes;
-      if (detailSection === 'notes') autosizeNotes(refs.notes);
     }
 
     function renderInventory(full) {
@@ -796,7 +813,7 @@
       const holes = Model.holeCounts(doc, data.ctx);
       const seen = new Set();
       const list = doc.batches;
-      if (activeBatchId && !list.some(b => b.id === activeBatchId)) { activeBatchId = list.length ? list[list.length - 1].id : null; detailSection = null; }
+      if (activeBatchId && !list.some(b => b.id === activeBatchId)) activeBatchId = list.length ? list[list.length - 1].id : null;
       // newest first
       for (let i = list.length - 1, pos = 0; i >= 0; i--, pos++) {
         const b = list[i];
@@ -816,25 +833,14 @@
       ui.generate.disabled = editLocked;
     }
 
-    /** Makes one card the single expanded one (or none). Optionally opens a detail section on it. */
-    function setActiveBatch(id, section) {
-      flushNotes();
+    /** Makes one card the single expanded one (or none). Touches only the placement controls — never the inspector. */
+    function setActiveBatch(id) {
       if (tr && tr.kind === 'armed') cancelTransient();
       activeBatchId = id;
-      detailSection = id ? (section || null) : null;
       renderInventory(false);
     }
 
-    function toggleCard(id) { setActiveBatch(activeBatchId === id ? null : id, null); }
-
-    function toggleDetail(id, section) {
-      flushNotes();
-      if (activeBatchId !== id) activeBatchId = id;
-      detailSection = detailSection === section ? null : section;
-      renderInventory(false);
-      const refs = cardRefs.get(id);
-      if (refs && detailSection === 'notes') { autosizeNotes(refs.notes); refs.notes.focus({ preventScroll: true }); }
-    }
+    function toggleCard(id) { setActiveBatch(activeBatchId === id ? null : id); }
 
     function warnHoles(batchId) {
       const nHoles = Model.holeCounts(doc, data.ctx).get(batchId) || 0;
@@ -860,8 +866,180 @@
         if (sel.tileId && !Model.derive(doc).byId.has(sel.tileId)) sel.tileId = null;
         announce(t('journey2_live_deleted'));
         const next = cardRefs.get(activeBatchId);
-        (next ? next.toggle : ui.generate).focus({ preventScroll: true });
+        (next ? next.inspect : ui.generate).focus({ preventScroll: true });
       });
+    }
+
+    /* ============================================================
+       Region Inspector (screen-space, over the map, region-level and GM-only)
+       The one place a generated region's Encounter, Rumor and GM notes are read. Opened by clicking a placed hex
+       (source 'map', that hex is the selected anchor) or from a card's Inspect button (source 'card', works for an
+       unplaced region). Its state — `inspector` — is transient and independent of `activeBatchId`: opening, moving
+       or closing it never expands, collapses or scrolls a sidebar card, and it is never saved or put in history.
+       ============================================================ */
+
+    function inspectorOpen() { return !!inspector.batchId; }
+
+    /** One call for every inspector state change: repaints the card state, the highlight, the panel and its position. */
+    function afterInspectorChange() {
+      renderSelection();
+      renderInventory(false);
+      renderInspector();
+      positionInspector();
+    }
+
+    /** Opens/keeps the inspector on the region of a placed hex and makes that hex the selected anchor. */
+    function openInspectorFromTile(tileId) {
+      const next = Model.inspectTile(inspector, doc, tileId);
+      if (next === inspector) return;
+      announceInspector(next);
+      if (next.batchId !== inspector.batchId) flushNotes();
+      inspector = next;
+      sel.tileId = tileId;
+      if (diagOpen) setDiagnostics(false, true);         // the map must not jump under the click that opened the inspector
+      afterInspectorChange();
+    }
+
+    /** Opens the inspector on a region from its card; no hex is selected and the card is not expanded. */
+    function openInspectorFromCard(batchId) {
+      const next = Model.inspectBatch(inspector, doc, batchId);
+      if (next === inspector) return;
+      announceInspector(next);
+      if (next.batchId !== inspector.batchId) flushNotes();
+      const keepSel = inspector.tileId && sel.tileId === inspector.tileId;
+      inspector = next;
+      if (keepSel) sel.tileId = null;                    // the strong outline belonged to the inspected hex of the previous region
+      if (diagOpen) setDiagnostics(false, true);
+      afterInspectorChange();
+    }
+
+    function announceInspector(next) {
+      if (next.batchId !== inspector.batchId) announce(t('journey2_live_inspector_opened'));
+    }
+
+    /**
+     * Closes the inspector: flushes pending notes, removes the highlight and the inspected hex's outline, optionally returns focus
+     * to the opener (the card's Inspect button, or the map). `quiet` skips the live announcement (deletion, import, teardown).
+     */
+    function closeInspector(opts) {
+      if (!inspectorOpen()) return false;
+      const o = opts || {};
+      flushNotes();
+      const was = inspector;
+      inspector = Model.NO_INSPECTION;
+      if (was.tileId && sel.tileId === was.tileId) sel.tileId = null;
+      if (ui.inspector) { ui.inspector.hidden = true; ui.inspector.style.transform = ''; }
+      inspectorShown = null;
+      renderSelection();
+      renderInventory(false);
+      if (!o.quiet) announce(t('journey2_live_inspector_closed'));
+      if (o.focus) {
+        const refs = cardRefs.get(was.batchId);
+        const target = was.source === 'card' && refs && refs.inspect ? refs.inspect : ui.viewport;
+        if (target) target.focus({ preventScroll: true });
+      }
+      return true;
+    }
+
+    /** After any document change: a vanished region closes the inspector, a vanished anchor hex is dropped. */
+    function syncInspector() {
+      if (!inspectorOpen()) return;
+      const next = Model.syncInspection(inspector, doc);
+      if (next === inspector) return;
+      if (!next.batchId) { closeInspector({ quiet: true }); return; }
+      inspector = next;
+    }
+
+    /** Paints the open inspector from the committed document. The notes textarea node is never replaced. */
+    function renderInspector() {
+      if (!ui.inspector) return;
+      const b = inspectorOpen() ? Model.batchById(doc, inspector.batchId) : null;
+      if (!b) { ui.inspector.hidden = true; inspectorShown = null; return; }
+      const I = ui.i, idx = doc.batches.indexOf(b), c = Model.derive(doc).counts.get(b.id), sym = symbolFor(b);
+      const wasHidden = ui.inspector.hidden;
+      ui.inspector.hidden = false;
+      if (sym && I.img.getAttribute('data-sym') !== sym.id) { I.img.src = sym.path; I.img.setAttribute('data-sym', sym.id); }
+      I.name.textContent = batchName(b);
+      I.ord.textContent = fill('journey2_region_n', { n: n(idx + 1) });
+      const blight = b.habitat.overtaken || b.habitat.blighted;
+      I.blight.hidden = !blight;
+      I.blight.textContent = b.habitat.overtaken ? t('journey2_overtaken') : t('journey_shadowblighted');
+      I.dots.innerHTML = [1, 2, 3, 4].map(i => '<i' + (i <= b.terrain.value ? ' class="on"' : '') + '></i>').join('');
+      I.dots.setAttribute('aria-label', fill('journey2_terrain_n', { n: b.terrain.value }));
+      I.terrainN.textContent = ' · ' + fill('journey2_terrain_n', { n: n(b.terrain.value) });
+      I.counts.textContent = fill('journey2_placed_n', { n: n(c.placed) }) + ' · ' + fill('journey2_remaining_n', { n: n(c.remaining) });
+      I.noTiles.hidden = c.placed > 0;
+      I.noTiles.textContent = t('journey2_inspector_no_tiles');
+      if (generator && generator.ready()) {
+        const d = generator.describe(b);
+        I.terrainName.textContent = d.terrain ? d.terrain.name : '';
+        I.terrainText.hidden = !(d.terrain && d.terrain.text);
+        I.terrainText.textContent = d.terrain ? d.terrain.text : '';
+        I.daysSize.textContent = (d.terrain ? fill('journey2_days_per_hex', { n: n(d.terrain.days) }) + ' · ' : '') + fill('journey2_hexes_n', { n: n(b.quantity) });
+        I.examples.hidden = !d.examples;
+        I.examples.textContent = d.examples || '';
+        I.enc.innerHTML = (d.combined ? '<p class="j2-note">' + esc(t('journey_encounter_combined')) + '</p>' : '') + d.encounter.map(x => '<p class="j2-insp-p j2-enc">' + esc(x.text) + '</p>').join('');
+        I.rumor.textContent = d.rumor;
+      } else {
+        I.terrainName.textContent = ''; I.terrainText.hidden = true; I.examples.hidden = true; I.enc.innerHTML = ''; I.rumor.textContent = '';
+        I.daysSize.textContent = fill('journey2_hexes_n', { n: n(b.quantity) });
+      }
+      const dirty = notesDirty && notesDirty.batchId === b.id;
+      if (inspectorShown !== b.id || document.activeElement !== ui.inspNotes) ui.inspNotes.value = dirty ? notesDirty.value : b.notes;
+      ui.inspNotes.disabled = editLocked;
+      if (inspectorShown !== b.id || wasHidden || document.activeElement !== ui.inspNotes) autosizeNotes(ui.inspNotes);
+      if (inspectorShown !== b.id) ui.inspector.querySelector('.j2-insp-scroll').scrollTop = 0;
+      inspectorShown = b.id;
+    }
+
+    /** Anchor hex in map-area px (centre + half width), or null when there is no anchor or it is off screen. */
+    function inspectorAnchor(view) {
+      const tile = inspector.tileId ? Model.derive(doc).byId.get(inspector.tileId) : null;
+      if (!tile) return null;
+      const c = Geo.parseCellId(tile.cell), ctr = data.grid.cellCenter(c.q, c.r);
+      const vp = ui.viewport.getBoundingClientRect(), wrap = ui.mapwrap.getBoundingClientRect();
+      const s = Geo.worldToScreen(cam, ctr[0], ctr[1]);
+      const x = vp.left - wrap.left + s[0], y = vp.top - wrap.top + s[1];
+      if (x < 0 || y < 0 || x > view.w || y > view.h) return null;
+      const xs = data.grid.cellCorners(c.q, c.r).map(p => p[0]);
+      return { x: x, y: y, r: (Math.max.apply(null, xs) - Math.min.apply(null, xs)) / 2 * cam.scale };
+    }
+
+    /** The rectangles (map-area px) the inspector must stay clear of: the actual visible sidebar/rail, tile bar and diagnostics drawer. */
+    function inspectorBlocked(wrap) {
+      const out = [];
+      for (const node of [ui.sidewrap, ui.tilebar, ui.panel]) {
+        if (!node || node.hidden) continue;
+        const r = node.getBoundingClientRect();
+        if (r.width > 0 && r.height > 0) out.push({ x: r.left - wrap.left, y: r.top - wrap.top, w: r.width, h: r.height, soft: node === ui.tilebar });
+      }
+      return out;
+    }
+
+    function positionInspector() {
+      if (inspector.batchId == null || !ui.inspector || ui.inspector.hidden || !data) return;
+      const wrap = ui.mapwrap.getBoundingClientRect();
+      const view = { w: wrap.width, h: wrap.height };
+      if (!view.w || !view.h) return;
+      const pos = Geo.placeInspector({
+        view: view, size: { w: ui.inspector.offsetWidth, h: ui.inspector.offsetHeight }, anchor: inspectorAnchor(view),
+        blocked: inspectorBlocked(wrap), narrow: window.innerWidth <= 900,
+      });
+      ui.inspector.style.transform = 'translate(' + pos.x + 'px,' + pos.y + 'px)';
+      ui.inspector.setAttribute('data-side', pos.side);
+      if (pos.caret) { ui.inspector.setAttribute('data-caret', pos.caret.edge); ui.inspector.style.setProperty('--j2-caret', pos.caret.offset + 'px'); }
+      else ui.inspector.removeAttribute('data-caret');
+    }
+
+    /** Re-positions every frame for `ms` (the sidebar slides for 250 ms and moves the rectangle the inspector avoids). */
+    function followInspector(ms) {
+      followUntil = Math.max(followUntil, performance.now() + ms);
+      const step = () => {
+        if (inst.disposed) return;
+        positionInspector();
+        if (performance.now() < followUntil) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
     }
 
     /* ---- tiles layer ---- */
@@ -936,11 +1114,14 @@
       const tile = sel.tileId ? Model.derive(doc).byId.get(sel.tileId) : null;
       // the diagnostic cell/marker selection shares this layer
       let h = renderDiagSelectMarkup();
+      // soft outline on the whole inspected region (whichever way the inspector was opened), strong outline on the selected hex only
+      const byId = Model.derive(doc).byId;
+      let region = '';
+      for (const id of Model.inspectedTileIds(inspector, doc)) { const xc = Geo.parseCellId(byId.get(id).cell); region += hexPath(xc.q, xc.r); }
+      if (region) h += '<path class="j2-region-hl" d="' + region + '"/>';
       if (tile) {
         const c = Geo.parseCellId(tile.cell), d = hexPath(c.q, c.r);
-        let region = '';
-        for (const x of doc.tiles) if (x.batchId === tile.batchId) { const xc = Geo.parseCellId(x.cell); region += hexPath(xc.q, xc.r); }
-        h += '<path class="j2-region-hl" d="' + region + '"/><path class="j2-sel-casing" d="' + d + '"/><path class="j2-tile-sel" d="' + d + '"/>';
+        h += '<path class="j2-sel-casing" d="' + d + '"/><path class="j2-tile-sel" d="' + d + '"/>';
       }
       ui.g.select.innerHTML = h;
       if (!ui.tilebar) return;
@@ -964,6 +1145,8 @@
       renderInventory(full);
       renderTiles();
       renderSelection();
+      renderInspector();
+      positionInspector();
       updateHistoryButtons();
       renderSave();
       renderBanner();
@@ -1039,6 +1222,7 @@
         ui.world.style.transform = 'translate(' + cam.tx + 'px,' + cam.ty + 'px) scale(' + cam.scale + ')';
         ui.world.style.setProperty('--j2-inv', String(1 / cam.scale));
         ui.world.classList.toggle('is-pixel', cam.scale >= 2);
+        positionInspector();
         updateReadouts();
       });
     }
@@ -1066,6 +1250,12 @@
         ro.observe(vp);
         cleanups.push(() => ro.disconnect());
       }
+      if (typeof ResizeObserver === 'function') {
+        const ro2 = new ResizeObserver(() => { if (!inst.disposed) scheduleApply(); });
+        ro2.observe(ui.inspector);
+        cleanups.push(() => ro2.disconnect());
+      }
+      listen(ui.sidewrap, 'transitionend', () => { positionInspector(); });
       listen(ui.root, 'click', onRootClick);
       listen(ui.root, 'change', onRootChange);
       listen(ui.root, 'input', onRootInput);
@@ -1181,15 +1371,19 @@
       if (tr && tr.kind === 'armed') { commitArmed(); return; }
       const tile = editLocked ? null : tileAtScreen(sx, sy);
       if (tile) { selectTile(tile.id); return; }
+      // a click on empty map (a pan never gets here) closes the inspector and clears the hex it selected
+      if (inspectorOpen()) closeInspector();
       if (sel.tileId) { sel.tileId = null; renderSelection(); renderInventory(false); }
       if (diagOpen) handleDiagClick(sx, sy);
     }
 
-    function selectTile(id) {
-      sel.tileId = id;
-      // a map click never expands or scrolls the sidebar: the card only gets a subtle selected state
-      renderSelection();
-      renderInventory(false);
+    /** Plain click on a placed hex: inspect its region. A map click never expands, collapses or scrolls the sidebar. */
+    function selectTile(id) { openInspectorFromTile(id); }
+
+    /** Drops the selected hex; when the inspector was anchored to it, it closes with it. */
+    function deselectTile() {
+      if (inspectorOpen() && inspector.tileId && inspector.tileId === sel.tileId) { closeInspector({ focus: true }); return; }
+      sel.tileId = null; renderSelection(); renderInventory(false);
     }
 
     function onWheel(e) {
@@ -1215,11 +1409,6 @@
         case '0': fitToView(); break;
         case 'Delete': case 'Backspace':
           if (sel.tileId) returnSelected(); else handled = false;
-          break;
-        case 'Escape':
-          if (pan) { setCamera({ scale: pan.scale0, tx: pan.tx0, ty: pan.ty0 }); endPan(); }
-          else if (tr) cancelTransient();
-          else { sel.tileId = null; selCell = null; selMarker = null; placeMode = false; renderSelection(); renderInventory(false); updateReadouts(); }
           break;
         default: handled = false;
       }
@@ -1397,7 +1586,7 @@
       const r = dispatch({ type: 'place', batchId: x.batchId, tiles: tiles }, 'place', true);
       if (!r.ok) { hint(fill('journey2_hint_rejected', { reason: errorText(r.error) })); return; }
       announce(fill('journey2_live_placed', { n: n(tiles.length) }));
-      if (tiles.length === 1) sel.tileId = null;
+      if (tiles.length === 1 && !inspectorOpen()) sel.tileId = null;
       warnHoles(x.batchId);
     }
 
@@ -1424,7 +1613,11 @@
       if (!preview.valid) { hint(fill('journey2_hint_rejected', { reason: reasonText(preview) })); return; }
       const r = dispatch({ type: 'move', tileId: x.tileId, to: preview.cells[0].id }, 'move', true);
       if (!r.ok) hint(fill('journey2_hint_rejected', { reason: errorText(r.error) }));
-      else { sel.tileId = x.tileId; renderSelection(); announce(t('journey2_live_moved')); warnHoles(x.batchId); }
+      else {
+        // the moved hex becomes the selection, unless a different region is being inspected; an inspector anchored on it follows it
+        if (!inspectorOpen() || inspector.tileId === x.tileId) sel.tileId = x.tileId;
+        renderSelection(); positionInspector(); announce(t('journey2_live_moved')); warnHoles(x.batchId);
+      }
     }
 
     function errorText(err) {
@@ -1464,7 +1657,11 @@
       if (e.key === 'Escape') {
         if (document.querySelector('dialog[open]')) return;
         if (openMenu) { const b = openMenu.btn; closeMenus(); b.focus(); return; }
-        if (tr) { cancelTransient(); e.preventDefault(); }
+        // priority: menu, then a drag / armed placement / pan, then the Region Inspector, then the diagnostic selection
+        if (pan) { setCamera({ scale: pan.scale0, tx: pan.tx0, ty: pan.ty0 }); endPan(); e.preventDefault(); return; }
+        if (tr) { cancelTransient(); e.preventDefault(); return; }
+        if (inspectorOpen()) { closeInspector({ focus: true }); e.preventDefault(); return; }
+        if (e.target === ui.viewport) { sel.tileId = null; selCell = null; selMarker = null; placeMode = false; renderSelection(); renderInventory(false); updateReadouts(); }
         return;
       }
       if (isEditableTarget(e.target) || e.defaultPrevented) return;
@@ -1487,14 +1684,15 @@
         else if (b.getAttribute('aria-disabled') !== 'true') zoomStep(z === 'in' ? 1 : -1);
       }
       else if (b.hasAttribute('data-j2-card-toggle')) toggleCard(b.closest('[data-batch]').getAttribute('data-batch'));
-      else if (b.hasAttribute('data-j2-detail')) toggleDetail(b.closest('[data-batch]').getAttribute('data-batch'), b.getAttribute('data-j2-detail'));
+      else if (b.hasAttribute('data-j2-inspect')) openInspectorFromCard(b.closest('[data-batch]').getAttribute('data-batch'));
+      else if (b.hasAttribute('data-j2-insp-close')) closeInspector({ focus: true });
       else if (b.hasAttribute('data-j2-delete')) confirmDelete(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-side-toggle')) toggleSide();
       else if (b.hasAttribute('data-j2-fit')) fitToView();
       else if (b.hasAttribute('data-j2-undo')) undo();
       else if (b.hasAttribute('data-j2-redo')) redo();
       else if (b.hasAttribute('data-j2-return')) returnSelected();
-      else if (b.hasAttribute('data-j2-deselect')) { sel.tileId = null; renderSelection(); renderInventory(false); }
+      else if (b.hasAttribute('data-j2-deselect')) deselectTile();
       else if (b.hasAttribute('data-j2-menu-btn')) toggleMenu(b);
       else if (b.hasAttribute('data-j2-act')) { closeMenus(); runAction(b.getAttribute('data-j2-act')); }
       else if (b.hasAttribute('data-j2-layer')) toggleLayer(b.getAttribute('data-j2-layer'), b);
@@ -1512,9 +1710,9 @@
     }
 
     function onRootInput(e) {
-      const ta = e.target.closest && e.target.closest('textarea[data-j2-c="notes"]');
-      if (ta) {
-        const id = ta.closest('[data-batch]').getAttribute('data-batch');
+      const ta = e.target.closest && e.target.closest('textarea[data-j2-insp-notes]');
+      if (ta && inspectorOpen()) {
+        const id = inspector.batchId;
         notesDirty = { batchId: id, value: ta.value };
         autosizeNotes(ta);
         const refs = cardRefs.get(id);
@@ -1524,7 +1722,7 @@
     }
 
     function onRootChange(e) {
-      const ta = e.target.closest && e.target.closest('textarea[data-j2-c="notes"]');
+      const ta = e.target.closest && e.target.closest('textarea[data-j2-insp-notes]');
       if (ta) flushNotes();      // blur/commit: one grouped history entry
     }
 
@@ -1633,7 +1831,7 @@
       const r = Model.parseBackupText(text, data.ctx);
       if (!r.ok) { await showImportError(r); return; }
       if (inst.disposed) return;
-      flushNotes(true);
+      closeInspector({ quiet: true });                   // flushes pending notes first; a replaced map never keeps a stale inspector
       const hasData = !Model.isEmptyDocument(doc);
       if (hasData) {
         // Nothing is written until the user confirms: a cancelled or failed import changes nothing at all.
@@ -1660,6 +1858,7 @@
     /** Replaces the whole document (import / start-empty). Clears Undo so history can never combine two different maps. */
     function replaceDocument(next) {
       cancelTransient();
+      closeInspector({ quiet: true });
       notesDirty = null;
       doc = next;
       Model.historyClear(history);
@@ -1683,14 +1882,15 @@
        Diagnostics (Phase 0 inspector) — secondary, closed by default
        ============================================================ */
 
-    function setDiagnostics(open) {
+    function setDiagnostics(open, keepCamera) {
+      if (open) closeInspector({ quiet: true });           // the inspector and the diagnostics drawer never share the map
       diagOpen = open;
       ui.panel.hidden = !open;
       ui.root.classList.toggle('is-diag-open', open);
       const item = ui.root.querySelector('[data-j2-act="diagnostics"]');
       if (item) item.setAttribute('aria-checked', String(open));
       if (!open) { hoverCell = null; hoverMarker = null; selCell = null; selMarker = null; placeMode = false; ui.viewport.classList.remove('is-placing', 'is-over-marker'); renderSelection(); }
-      if (fitMode) fitToView();
+      if (fitMode && !keepCamera) fitToView();
       updateReadouts();
     }
 
@@ -2109,7 +2309,7 @@
         hoverCell: hoverCell && Geo.cellId(hoverCell.q, hoverCell.r), userPlacements: userPlacements.length,
         ready: data ? data.readiness.ready : null, anchors: data ? data.anchorsDoc.anchors.length : 0,
         validCells: data ? data.grid.validCellCount() : 0, allowedCells: data ? data.ctx.allowedCellCount : 0, placeMode: placeMode,
-        activeBatchId: activeBatchId, detailSection: detailSection, sideCollapsed: sideCollapsed, diagnosticsOpen: diagOpen, saveStatus: saveState.status, saveReason: saveState.reason, editLocked: editLocked,
+        activeBatchId: activeBatchId, inspector: { batchId: inspector.batchId, tileId: inspector.tileId, source: inspector.source, open: inspectorOpen() }, sideCollapsed: sideCollapsed, diagnosticsOpen: diagOpen, saveStatus: saveState.status, saveReason: saveState.reason, editLocked: editLocked,
         selectedTile: sel.tileId, transient: tr ? { kind: tr.kind, mode: tr.mode || null, moved: !!tr.moved, cells: tr.preview ? tr.preview.cells.length : 0, valid: tr.preview ? tr.preview.valid : null, anchor: tr.preview ? Geo.cellId(tr.preview.anchor.q, tr.preview.anchor.r) : null, conflicts: tr.preview ? tr.preview.cells.filter(c => !c.ok).map(c => [c.id, c.reason]) : [] } : null,
         history: history ? { undo: history.undo.length, redo: history.redo.length } : null,
         batches: doc ? doc.batches.map(b => Object.assign({ id: b.id, habitat: b.habitat, terrain: b.terrain, quantity: b.quantity, quantitySource: b.quantitySource, rumor: b.rumor, encounter: b.encounter, notes: b.notes }, d.counts.get(b.id))) : [],

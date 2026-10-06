@@ -157,7 +157,7 @@ body[data-route="journey2"] #grid-wrap { display: block; }
 .j2-gen-hint { margin: 0; font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--muted); }
 .j2-field { display: grid; gap: var(--s-1); min-width: 0; }
 .j2-label { font-size: var(--fs-xs); color: var(--muted); }
-.j2-handle:focus-visible, .j2-card-head:focus-visible, .j2-tab:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
+.j2-handle:focus-visible, .j2-card-head:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
 .j2-gen-go { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2); min-height: var(--h-md); }
 .j2-ico { display: inline-flex; flex: none; }
 .j2-ico svg { width: 18px; height: 18px; }
@@ -174,7 +174,14 @@ body[data-route="journey2"] #grid-wrap { display: block; }
   display: grid; gap: var(--s-1); padding: var(--s-2) var(--s-3); background: var(--ink); border: 1px solid var(--line); border-radius: var(--r-md);
 }
 .j2-card.is-active { border-color: var(--hope-border); border-left-width: 3px; padding-left: calc(var(--s-3) - 2px); }
-.j2-card.is-current { border-color: var(--hope-border); }   /* subtle: the selected map tile belongs to this region */
+.j2-card.is-inspected { border-color: var(--line-strong); border-style: dashed; }   /* subtle: this region is open in the inspector; never stronger than the active card */
+.j2-card.is-active.is-inspected { border-style: solid; border-color: var(--hope-border); }
+.j2-card-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-1); align-items: center; }
+.j2-inspect { position: relative; flex: none; color: var(--parchment-dim); }
+.j2-inspect:hover { color: var(--parchment); }
+.j2-inspect.is-on { color: var(--hope-soft); background: var(--hope-selected-bg); border-color: var(--hope-border); }
+.j2-inspect .j2-notes-dot { position: absolute; top: 3px; right: 3px; }
+.j2-inspect:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
 .j2-card-head {
   display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: var(--s-2); align-items: center; width: 100%;
   margin: 0; padding: 0; background: transparent; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer;
@@ -192,7 +199,7 @@ body[data-route="journey2"] #grid-wrap { display: block; }
 .j2-blight { padding: 0 var(--s-1); border: 1px solid var(--fear); border-radius: var(--r-xs); color: var(--fear-soft); font-family: var(--font-mono); font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tracking-badge); }
 .j2-blight[hidden] { display: none; }
 .j2-card-sum { margin: 0; padding-left: calc(32px + var(--s-2)); font-family: var(--font-mono); font-size: var(--fs-xs); font-variant-numeric: tabular-nums; color: var(--parchment-dim); }
-.j2-card-sum[hidden], .j2-warn[hidden], .j2-card-body[hidden], .j2-done[hidden], .j2-status[hidden], .j2-actions[hidden], .j2-detail[hidden], .j2-tab-dot[hidden] { display: none; }
+.j2-card-sum[hidden], .j2-warn[hidden], .j2-card-body[hidden], .j2-done[hidden], .j2-status[hidden], .j2-actions[hidden], .j2-notes-dot[hidden] { display: none; }
 /* enclosed-hole warning: icon + text + a dashed edge, so it never relies on colour alone */
 .j2-warn { margin: 0; display: flex; align-items: center; gap: var(--s-1); padding: 2px var(--s-2); border: 1px dashed var(--fear-soft); border-radius: var(--r-xs); font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--fear-soft); }
 .j2-warn-ico { display: inline-flex; flex: none; }
@@ -221,23 +228,12 @@ body[data-route="journey2"] #grid-wrap { display: block; }
 .j2-handle.is-dragging, .j2-handle.is-armed { border-style: solid; border-color: var(--hope); background: var(--hope-selected-bg); color: var(--hope-soft); }
 .j2-handle:disabled { cursor: not-allowed; color: var(--muted); border-color: var(--line); opacity: 0.55; }
 
-/* detail switcher: one section open at a time; the open one gets a gold fill AND an underline */
-.j2-detailbar { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
-.j2-detail-tabs { display: flex; flex-wrap: wrap; gap: var(--s-1); min-width: 0; }
-.j2-tab {
-  position: relative; display: inline-flex; align-items: center; gap: var(--s-1); height: var(--h-sm); padding: 0 var(--s-2);
-  background: transparent; color: var(--parchment-dim); border: 1px solid var(--line); border-radius: var(--r-sm); font: inherit; font-size: var(--fs-xs); cursor: pointer;
-}
-.j2-tab:hover { border-color: var(--line-strong); color: var(--parchment); }
-.j2-tab[aria-pressed="true"] { background: var(--hope-selected-bg); border-color: var(--hope); color: var(--hope-soft); font-weight: 600; box-shadow: inset 0 -2px 0 var(--hope); }
-.j2-tab-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--hope); }
+.j2-card-foot { display: flex; justify-content: flex-end; }
+.j2-notes-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--hope); }
 .j2-delete { flex: none; color: var(--muted); }
 .j2-delete:hover:not(:disabled) { color: var(--fear-soft); }
-.j2-detail { font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); display: grid; gap: var(--s-2); }
-.j2-enc { margin: 0; }
-.j2-rumor { margin: 0; }
 .j2-notes {
-  width: 100%; min-height: 3.2em; max-height: 180px; resize: none; padding: var(--s-2); background: var(--ink-raised); color: var(--parchment);
+  width: 100%; min-height: 4.8em; max-height: 240px; resize: none; padding: var(--s-2); background: var(--ink-raised); color: var(--parchment);
   border: 1px solid var(--line); border-radius: var(--r-sm); font-family: var(--font-body); font-size: var(--fs-sm); line-height: var(--lh-sm);
 }
 .j2-notes:hover { border-color: var(--line-strong); }
@@ -279,7 +275,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 }
 .j2-hint-chip[hidden] { display: none; }
 .j2-tilebar {
-  position: absolute; left: var(--j2-inset-left); bottom: var(--s-3); z-index: 3; max-width: calc(100% - var(--j2-inset-left) - var(--s-3));
+  position: absolute; left: var(--j2-inset-left); bottom: var(--s-3); z-index: 5; max-width: calc(100% - var(--j2-inset-left) - var(--s-3));
   transition: left 250ms var(--j2-ease);
   display: flex; align-items: center; gap: var(--s-2); padding: var(--s-2); background: var(--ink-raised);
   border: 1px solid var(--hope-border); border-radius: var(--r-md); box-shadow: var(--e-2);
@@ -324,7 +320,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-tile-dot, .j2-pvt-dot { fill: var(--ink); stroke: none; }
 .j2-overlay .j2-tile-blight, .j2-overlay .j2-pvt-blight { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; vector-effect: none; }
 .j2-tile-hex.is-glyphless { stroke-dasharray: 4 3; stroke-opacity: 0.8; stroke-width: 1.4; }
-.j2-region-hl { fill: var(--hope-wash); stroke: var(--hope); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.j2-region-hl { fill: none; stroke: var(--hope); stroke-opacity: 0.75; stroke-width: 1.8; stroke-dasharray: 4 3; }
 .j2-tile-sel { fill: var(--hope-wash); stroke: var(--hope); stroke-width: 2.5; }
 .j2-pv { stroke-width: 2; }
 .j2-pv.is-ok { fill: var(--hope-selected-bg); stroke: var(--hope); stroke-dasharray: 5 3; }
@@ -360,6 +356,44 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-test-label {
   font-family: var(--font-body); font-weight: 600; font-size: calc(12px * var(--j2-inv, 1));
   fill: var(--ink); stroke: #fff; stroke-width: calc(4px * var(--j2-inv, 1)); paint-order: stroke; vector-effect: none;
+}
+
+/* ---------- Region Inspector: a screen-space panel over the map, a sibling of the zoomed world so it never scales ---------- */
+.j2-region-inspector {
+  position: absolute; left: 0; top: 0; z-index: 4;
+  width: clamp(400px, 34vw, 480px); max-height: min(72vh, calc(100% - 24px));
+  display: flex; flex-direction: column;
+  background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-lg); box-shadow: var(--e-3);
+  font-family: var(--font-ui); color: var(--parchment); overscroll-behavior: contain;
+}
+.j2-region-inspector[hidden] { display: none; }
+.j2-insp-head { flex: none; display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-3) var(--s-2); border-bottom: 1px solid var(--line-faint); }
+.j2-insp-sym { flex: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--parchment); border-radius: var(--r-sm); }
+.j2-insp-sym img { max-width: 30px; max-height: 28px; display: block; }
+.j2-insp-titles { flex: 1 1 auto; min-width: 0; }
+.j2-insp-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-lg); line-height: var(--lh-lg); color: var(--parchment); overflow-wrap: anywhere; }
+.j2-insp-sub { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-2); font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); }
+.j2-insp-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--s-3); display: grid; gap: var(--s-3); align-content: start; scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
+.j2-insp-examples, .j2-insp-terrain-text { margin: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); }
+.j2-insp-examples[hidden], .j2-insp-terrain-text[hidden], .j2-insp-empty[hidden] { display: none; }
+.j2-insp-summary { display: grid; gap: var(--s-1); }
+.j2-insp-line { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--s-2); font-size: var(--fs-sm); color: var(--parchment-dim); font-variant-numeric: tabular-nums; }
+.j2-insp-line strong { font-weight: 600; color: var(--parchment); }
+.j2-insp-empty { color: var(--fear-soft); }
+.j2-insp-sec { display: grid; gap: var(--s-1); padding-top: var(--s-3); border-top: 1px solid var(--line-faint); }
+.j2-insp-h { margin: 0; font-family: var(--font-mono); font-weight: 400; font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--hope-soft); }
+.j2-insp-p { margin: 0 0 var(--s-2); font-size: var(--fs-md); line-height: var(--lh-md); color: var(--parchment); }
+.j2-insp-p:last-child { margin-bottom: 0; }
+.j2-region-inspector .j2-note { margin: 0 0 var(--s-2); font-size: var(--fs-xs); color: var(--muted); }
+/* decorative pointer toward the selected hex */
+.j2-insp-caret { display: none; position: absolute; width: 10px; height: 10px; background: var(--ink-raised); border: 1px solid var(--line-strong); transform: rotate(45deg); pointer-events: none; }
+.j2-region-inspector[data-caret] .j2-insp-caret { display: block; }
+.j2-region-inspector[data-caret="left"] .j2-insp-caret { left: -6px; top: calc(var(--j2-caret, 24px) - 5px); border-right: 0; border-top: 0; }
+.j2-region-inspector[data-caret="right"] .j2-insp-caret { right: -6px; top: calc(var(--j2-caret, 24px) - 5px); border-left: 0; border-bottom: 0; }
+.j2-region-inspector[data-caret="top"] .j2-insp-caret { top: -6px; left: calc(var(--j2-caret, 24px) - 5px); border-right: 0; border-bottom: 0; }
+.j2-region-inspector[data-caret="bottom"] .j2-insp-caret { bottom: -6px; left: calc(var(--j2-caret, 24px) - 5px); border-left: 0; border-top: 0; }
+@media (max-width: 900px) {
+  .j2-region-inspector { width: calc(100% - 24px); max-height: min(60vh, calc(100% - 24px)); }
 }
 
 /* ---------- diagnostics drawer (secondary, closed by default) ---------- */

@@ -552,3 +552,34 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   100%. Fog of war, sanctuaries, player preview and printing are later phases;
   `#/journey` is not replaced yet.
 - **Where:** [architecture.md](architecture.md) "Journey 2 map editor".
+
+## PD-018: Journey 2 Phase B — the map is the inspection surface (Region Inspector)
+- **Date:** 2026-10-06
+- **Decision:** the sidebar is for **generating, placing, deleting and opening
+  the inspector**; reading a region is done in one **Region Inspector**, a
+  large floating panel over the map. Clicking any placed hex opens it, and
+  every card has an **Inspect region** button (also for an unplaced region,
+  also while the card is collapsed). Cards no longer carry Encounter / Rumor /
+  Notes tabs.
+- **Generated details are region-level:** Habitat, Terrain, Encounter, Rumor and
+  GM notes belong to the region, never to a hex. Clicking any hex of region #6
+  shows the same panel; the clicked hex is only the visual anchor and the
+  selected tile. Nothing is copied into tile records.
+- **Independent state:** the card expanded for placement (`activeBatchId`) and
+  the inspected region (`inspector`) are separate. A map click never expands,
+  collapses, opens or scrolls the sidebar; the inspected card only gets a
+  subtle `is-inspected` look. The inspector is transient view state — never
+  persisted (not in `dhcodex_journey2_ui`), never in the document, backups or
+  Undo history; Undo of a region's creation or a deletion closes it and Redo /
+  Undo-of-delete never reopens it; import and route exit clear it.
+- **Read-only except notes:** no dice, reroll, Keep/Discard or value editing.
+  GM notes stay `batch.notes` via the existing `setNotes` command (one
+  pending-notes pipeline, flushed on close, region switch, import, Undo/Redo,
+  `pagehide`).
+- **Priority:** open dialog > active drag or pan > armed Place > (future map
+  tools, e.g. fog) > neutral inspection. Escape: menu, then drag/armed
+  placement, then the inspector. The inspector and the Diagnostics drawer are
+  mutually exclusive.
+- **Still GM-only and out of scope:** fog of war, player-facing output,
+  printing, sanctuaries, region reroll and editing are later phases.
+- **Where:** [architecture.md](architecture.md) "Region Inspector (Phase B)".

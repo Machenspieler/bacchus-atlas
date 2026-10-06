@@ -550,8 +550,8 @@ async function main() {
       const s = await state(page); const b = s.batches[s.batches.length - 1];
       const card = cardOf(page, b.id); const txt = await card.innerText();
       const expanded = await card.locator('[data-j2-card-toggle]').getAttribute('aria-expanded');
-      await card.locator('[data-j2-detail="encounter"]').click(); await page.waitForTimeout(60);
-      const enc = await card.innerText();
+      await card.locator('[data-j2-inspect]').click(); await page.waitForTimeout(60);
+      const enc = await page.locator('[data-j2-inspector]').innerText();
       return { ok: s.batches.length === before + 1 && b.quantity >= 1 && b.quantity <= 12 && b.quantitySource === 'rolled' && b.habitat.source === 'rolled' && Array.isArray(b.habitat.rolls) && b.terrain.source === 'rolled' && b.rumor >= 1 && b.rumor <= 100 && b.encounter.entries.length >= 1 && s.activeBatchId === b.id && expanded === 'true' && s.history.undo >= 1 && !/\bd\d+\b|\b\d+\s*\+\s*\d+\b/i.test(txt + enc), detail: { b, expanded, txt } };
     });
     await check('neg.chosen-habitat-and-terrain-change-the-stored-batch-not-just-the-label', async () => {
@@ -701,10 +701,10 @@ async function main() {
       const s1 = await state(pg);
       const scroll1 = await pg.evaluate(() => document.querySelector('[data-j2-side-scroll]').scrollTop);
       const owner = s1.tiles.find(t => t.cell === SEVEN[4]).batchId;
-      const subtle = await pg.locator(`.j2-card[data-batch="${owner}"]`).evaluate(c => c.classList.contains('is-current'));
+      const subtle = await pg.locator(`.j2-card[data-batch="${owner}"]`).evaluate(c => c.classList.contains('is-inspected') && !c.classList.contains('is-active'));
       const hl = await pg.locator('[data-j2-g="select"] .j2-region-hl').count();
       await pg.keyboard.press('Escape');
-      return { ok: s1.selectedTile && s1.activeBatchId === active0 && owner !== active0 && scroll0 === scroll1 && subtle && hl === 1, detail: { active0, active1: s1.activeBatchId, owner, scroll0, scroll1, subtle, hl } };
+      return { ok: s1.selectedTile && s1.inspector.open && s1.inspector.batchId === owner && s1.activeBatchId === active0 && owner !== active0 && scroll0 === scroll1 && subtle && hl === 1, detail: { active0, active1: s1.activeBatchId, owner, scroll0, scroll1, subtle, hl } };
     });
     await check('neg.click-to-place-arms-places-and-escape-exits-keyboard-arming-works', async () => {
       const s0 = await state(pg);
@@ -767,9 +767,8 @@ async function main() {
 
     /* notes: native text shortcuts must not drive the map; one grouped history entry */
     await check('neg.typing-in-notes-keeps-native-space-delete-and-undo-and-commits-one-history-entry', async () => {
-      await activateCard(pg, bidB);
-      await pg.click(`.j2-card[data-batch="${bidB}"] [data-j2-detail="notes"]`);
-      const ta = pg.locator(`.j2-card[data-batch="${bidB}"] textarea`);
+      await pg.click(`.j2-card[data-batch="${bidB}"] [data-j2-inspect]`); await pg.waitForTimeout(80);
+      const ta = pg.locator('[data-j2-insp-notes]');
       const s0 = await state(pg); const camera0 = JSON.stringify(s0.camera);
       await ta.click(); await pg.keyboard.type('hello world', { delay: 15 });
       await pg.keyboard.press('Backspace'); await pg.keyboard.press('Control+z'); await pg.waitForTimeout(80);   // native text undo
@@ -785,9 +784,9 @@ async function main() {
       return { ok: mid.history.undo === s0.history.undo && JSON.stringify(mid.camera) === camera0 && /hello/.test(val) && status === 'unsaved' && s1.history.undo === s0.history.undo + 1 && noteSaved === typed && typed.includes(' ') && s1.tiles.length === s0.tiles.length, detail: { val, typed, status, noteSaved, h: [s0.history.undo, mid.history.undo, s1.history.undo] } };
     });
     await check('neg.notes-edit-is-undoable-as-a-map-command-and-html-in-notes-is-text-only', async () => {
-      const ta = pg.locator(`.j2-card[data-batch="${bidB}"] textarea`);
+      const ta = pg.locator('[data-j2-insp-notes]');
       await ta.fill('<img src=x onerror="window.__pwn=1"><b>bold</b>'); await pg.locator('.j2-title').click(); await pg.waitForTimeout(150);
-      const injected = await pg.evaluate(() => ({ pwn: window.__pwn || null, imgs: document.querySelectorAll('.j2-card img[src="x"]').length, bold: document.querySelectorAll('.j2-card b:not([data-j2-c])').length }));
+      const injected = await pg.evaluate(() => ({ pwn: window.__pwn || null, imgs: document.querySelectorAll('.j2-region-inspector img[src="x"], .j2-card img[src="x"]').length, bold: document.querySelectorAll('.j2-region-inspector b, .j2-card b:not([data-j2-c])').length }));
       await pg.click('[data-j2-undo]'); await pg.waitForTimeout(100);
       const afterUndo = await ta.inputValue();
       await pg.click('[data-j2-redo]'); await pg.waitForTimeout(100);
@@ -1050,6 +1049,294 @@ async function main() {
       await c2.close(); await s2.close();
     }
     await sub.close();
+  }
+
+  /* ===== H. Region Inspector (Phase B): map click, card Inspect, notes, closing, positioning ===== */
+  {
+    const context = await newCtx(browser, { viewport: VP_SMALL });
+    const pg = await context.newPage(); attachLogging(pg, logs, 'inspector');
+    await openEditor(pg, base);
+    const mkBatch = (spec) => pg.evaluate(s => {
+      const M = Journey2Model, id = M.newId('b');
+      const region = { habitat: { biome: s.biome, blighted: !!s.blighted, overtaken: !!s.overtaken, source: 'rolled', rolls: s.rolls || [1] }, terrain: { value: s.terrain, source: 'rolled' }, size: s.size, encounter: s.encounter || { entries: [[3, 4]], combines: 0 }, rumor: s.rumor || 17 };
+      const r = Journey2View.debugApi().dispatch({ type: 'createBatch', batch: M.batchFromRegion(region, { id, createdAt: new Date().toISOString() }) });
+      return r.ok ? id : null;
+    }, spec);
+    const placeCells = (batchId, cells) => pg.evaluate(([b, cs]) => Journey2View.debugApi().dispatch({ type: 'place', batchId: b, tiles: cs.map(c => ({ id: Journey2Model.newId('t'), cell: c })) }).ok, [batchId, cells]);
+    const A = await mkBatch({ biome: 'forest', terrain: 3, size: 6 });
+    const B = await mkBatch({ biome: 'mountain', terrain: 1, size: 3 });
+    const C = await mkBatch({ biome: 'forest', terrain: 2, size: 4, blighted: true, rolls: [1, 11], encounter: { entries: [[3, 4], [2, 2]], combines: 1 }, rumor: 33 });
+    const D = await mkBatch({ biome: null, terrain: 4, size: 2, blighted: true, overtaken: true, rolls: [1, 1] });
+    await placeCells(A, SEVEN.slice(0, 5));
+    const bCell = allowedNear(SEAM_X - 250, 800, SEVEN.concat(ADJ));    // well clear of region A, so the inspector opened on A never covers it
+    await placeCells(B, [bCell]);
+    await viewWorld(pg, SEAM_X, 800, 1);
+    const insp = pg.locator('[data-j2-inspector]');
+    const open = async () => (await state(pg)).inspector;
+    const storageKeys = () => pg.evaluate(() => Object.fromEntries(Object.keys(localStorage).filter(k => k.startsWith('dhcodex_journey2_')).sort().map(k => [k, localStorage.getItem(k)])));
+    const clickCell = async c => { const p = await clientOf(pg, c); await pg.mouse.click(p.x, p.y); await pg.waitForTimeout(100); };
+    const inspTexts = () => insp.evaluate(n => ({ title: n.querySelector('.j2-insp-title').textContent, sub: n.querySelector('.j2-insp-sub').innerText, text: n.innerText, h4: [...n.querySelectorAll('h4')].map(h => h.textContent), buttons: n.querySelectorAll('button').length, enc: [...n.querySelectorAll('.j2-enc')].length }));
+    const rectOf = sel => pg.evaluate(s => { const r = document.querySelector(s).getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; }, sel);
+    const regionCells = () => pg.evaluate(() => { const p = document.querySelector('[data-j2-g="select"] .j2-region-hl'); return p ? p.getAttribute('d').split('M').length - 1 : 0; });
+    await check('insp.00.cards-have-no-inline-encounter-rumor-or-notes-and-each-has-an-inspect-button', async () => {
+      const r = await pg.evaluate(() => ({ detail: document.querySelectorAll('.j2-card [data-j2-detail], .j2-detail-tabs, .j2-card textarea, .j2-card .j2-rumor, .j2-card .j2-enc').length, inspect: document.querySelectorAll('.j2-card [data-j2-inspect]').length, cards: document.querySelectorAll('.j2-card').length, nestedBtn: document.querySelectorAll('button button').length }));
+      return { ok: r.detail === 0 && r.inspect === r.cards && r.cards === 4 && r.nestedBtn === 0 && (await insp.isHidden()), detail: r };
+    });
+    await shot(pg, 'insp-00-cards.png');
+
+    /* ---- map click ---- */
+    const s0 = await state(pg), store0 = await storageKeys();
+    const scroll0 = await pg.evaluate(() => document.querySelector('[data-j2-side-scroll]').scrollTop);
+    await clickCell(SEVEN[2]);
+    await check('insp.01.clicking-a-placed-hex-opens-the-region-and-selects-that-hex-without-touching-the-sidebar', async () => {
+      const s1 = await state(pg), scroll1 = await pg.evaluate(() => document.querySelector('[data-j2-side-scroll]').scrollTop);
+      const tile = s1.tiles.find(t => t.cell === SEVEN[2]);
+      const d = await insp.evaluate(n => ({ role: n.getAttribute('role'), modal: n.getAttribute('aria-modal'), lab: document.getElementById(n.getAttribute('aria-labelledby')).textContent, vis: !n.hidden }));
+      return { ok: s1.inspector.open && s1.inspector.batchId === A && s1.inspector.source === 'map' && s1.inspector.tileId === tile.id && s1.selectedTile === tile.id && s1.activeBatchId === s0.activeBatchId && s1.sideCollapsed === s0.sideCollapsed && scroll0 === scroll1 && d.role === 'dialog' && d.modal === 'false' && d.vis && /Forest/.test(d.lab), detail: { s1: s1.inspector, d, active: [s0.activeBatchId, s1.activeBatchId] } };
+    });
+    await check('insp.02.the-inspector-state-is-transient-no-history-no-storage-no-document-change', async () => {
+      const s1 = await state(pg), store1 = await storageKeys();
+      return { ok: s1.history.undo === s0.history.undo && s1.history.redo === s0.history.redo && JSON.stringify(store0) === JSON.stringify(store1) && JSON.stringify(s1.batches) === JSON.stringify(s0.batches) && JSON.stringify(s1.tiles) === JSON.stringify(s0.tiles) && !JSON.stringify(store1).includes('inspector'), detail: { h0: s0.history, h1: s1.history } };
+    });
+    await check('insp.03.content-is-region-level-and-has-no-dice-reroll-keep-or-discard', async () => {
+      const x = await inspTexts();
+      return { ok: x.title === 'Forest' && /Region #1/.test(x.sub) && /Terrain 3/.test(x.text) && /\d+ days? per hex/.test(x.text) && /6 hexes/.test(x.text) && /5 placed/.test(x.text) && /1 remaining/.test(x.text) && x.enc === 1 && x.h4.join('|') === 'Encounter|Rumor|GM notes' && x.buttons === 1 && !/\bd\d+\b|d8\s*\+\s*d6|reroll|re-roll|keep|discard/i.test(x.text), detail: x };
+    });
+    await check('insp.04.the-whole-region-gets-a-soft-outline-and-only-the-clicked-hex-the-strong-one', async () => {
+      const r = await pg.evaluate(() => ({ region: document.querySelector('[data-j2-g="select"] .j2-region-hl') && document.querySelector('[data-j2-g="select"] .j2-region-hl').getAttribute('d').split('M').length - 1, strong: document.querySelectorAll('[data-j2-g="select"] .j2-tile-sel').length, card: document.querySelector('.j2-card[data-batch]').closest('.j2-cards') && [...document.querySelectorAll('.j2-card.is-inspected')].map(c => c.getAttribute('data-batch')) }));
+      return { ok: r.region === 5 && r.strong === 1 && r.card.length === 1 && r.card[0] === A, detail: r };
+    });
+    await shot(pg, 'insp-01-map-click.png');
+    await check('insp.05.clicking-another-hex-of-the-region-keeps-the-region-and-moves-the-selection-and-anchor', async () => {
+      const a0 = await rectOf('[data-j2-inspector]'), t0 = (await state(pg)).selectedTile;
+      await clickCell(SEVEN[4]);
+      const s = await state(pg), a1 = await rectOf('[data-j2-inspector]');
+      return { ok: s.inspector.batchId === A && s.selectedTile !== t0 && s.selectedTile === s.inspector.tileId && (await regionCells()) === 5 && a1.w === a0.w, detail: { t0, sel: s.selectedTile } };
+    });
+    await check('insp.06.clicking-the-selected-hex-again-does-not-close-it', async () => {
+      await clickCell(SEVEN[4]);
+      return { ok: (await open()).open && (await open()).batchId === A, detail: await open() };
+    });
+    await check('insp.07.clicking-a-hex-of-another-region-replaces-the-content-and-the-highlight', async () => {
+      await clickCell(bCell);
+      const s = await state(pg), x = await inspTexts();
+      return { ok: s.inspector.batchId === B && x.title === 'Mountain' && /Region #2/.test(x.sub) && (await regionCells()) === 1 && /1 placed/.test(x.text) && /2 remaining/.test(x.text) && s.activeBatchId === s0.activeBatchId, detail: { x: x.sub, b: s.inspector.batchId } };
+    });
+    await check('insp.08.panning-empty-map-keeps-it-open-and-a-click-on-empty-map-closes-it-and-clears-the-selection', async () => {
+      const r = await pg.evaluate(() => { const v = document.querySelector('.j2-viewport').getBoundingClientRect(); return { x: v.right - 40, y: v.bottom - 50 }; });
+      await pg.mouse.move(r.x, r.y); await pg.mouse.down(); await pg.mouse.move(r.x - 30, r.y - 20, { steps: 5 }); await pg.mouse.up(); await pg.waitForTimeout(80);
+      const stillOpen = (await open()).open;
+      await pg.mouse.click(r.x - 60, r.y - 20); await pg.waitForTimeout(100);
+      const s = await state(pg);
+      return { ok: stillOpen && !s.inspector.open && s.selectedTile === null && (await regionCells()) === 0 && (await insp.isHidden()), detail: { stillOpen, s: s.inspector } };
+    });
+    await viewWorld(pg, SEAM_X, 800, 1);
+    await check('insp.09.a-collapsed-sidebar-stays-collapsed-when-a-hex-is-clicked', async () => {
+      await pg.click('.j2-gen [data-j2-side-toggle]'); await pg.waitForTimeout(350);
+      await clickCell(SEVEN[1]);
+      const s = await state(pg);
+      const r = { ok: s.sideCollapsed && s.inspector.open && s.inspector.batchId === A, detail: { collapsed: s.sideCollapsed } };
+      await pg.keyboard.press('Escape');
+      return r;
+    });
+    await check('insp.10.the-inspector-never-covers-the-collapsed-rail-or-the-expanded-sidebar', async () => {
+      const bad = [];
+      for (const collapsed of [true, false]) {
+        if (!collapsed) { await pg.click('.j2-rail [data-j2-side-toggle]'); await pg.waitForTimeout(350); }
+        for (const [wx, wy, sc] of [[SEAM_X, 800, 1], [SEAM_X, 800, 2], [SEAM_X, 800, 0.5]]) {
+          await viewWorld(pg, wx, wy, sc);
+          await clickCell(SEVEN[0]);
+          const r = await pg.evaluate(() => { const i = document.querySelector('[data-j2-inspector]').getBoundingClientRect(), w = document.querySelector('.j2-mapwrap').getBoundingClientRect(), s = document.querySelector('[data-j2-sidewrap]').getBoundingClientRect(); return { i: [i.left, i.top, i.right, i.bottom], w: [w.left, w.top, w.right, w.bottom], s: [s.left, s.top, s.right, s.bottom] }; });
+          const inside = r.i[0] >= r.w[0] + 11 && r.i[1] >= r.w[1] + 11 && r.i[2] <= r.w[2] - 11 && r.i[3] <= r.w[3] - 11;
+          const overlap = r.i[0] < r.s[2] && r.i[2] > r.s[0] && r.i[1] < r.s[3] && r.i[3] > r.s[1];
+          if (!inside || overlap) bad.push({ collapsed, sc, r });
+          await pg.keyboard.press('Escape');
+        }
+      }
+      return { ok: bad.length === 0, detail: bad.slice(0, 2) };
+    });
+    await check('insp.11.the-inspector-keeps-the-same-screen-size-at-every-zoom', async () => {
+      const sizes = [];
+      for (const sc of [0.5, 1, 2]) { await viewWorld(pg, SEAM_X, 800, sc); await clickCell(SEVEN[0]); sizes.push(await rectOf('[data-j2-inspector]')); await pg.keyboard.press('Escape'); }
+      return { ok: sizes.every(z => Math.abs(z.w - sizes[0].w) < 0.5 && Math.abs(z.h - sizes[0].h) < 0.5), detail: sizes.map(z => [z.w, z.h]) };
+    });
+    await viewWorld(pg, SEAM_X, 800, 1);
+    await check('insp.12.the-inspector-follows-pan-and-zoom-of-its-anchor-hex', async () => {
+      await clickCell(SEVEN[0]);
+      const a0 = await rectOf('[data-j2-inspector]');
+      await pg.evaluate(() => { const c = Journey2View.debugState().camera; Journey2View.debugApi().setCamera({ scale: c.scale, tx: c.tx - 70, ty: c.ty + 10 }); });
+      await pg.waitForTimeout(150);
+      const a1 = await rectOf('[data-j2-inspector]');
+      await pg.keyboard.press('Escape');
+      return { ok: Math.abs(a1.x - a0.x) > 20 || Math.abs(a1.y - a0.y) > 5, detail: { a0, a1 } };
+    });
+
+    /* ---- card Inspect ---- */
+    await check('insp.13.a-cards-inspect-button-opens-an-unplaced-region-without-expanding-selecting-or-moving-anything', async () => {
+      const cardD = cardOf(pg, D);
+      const expanded0 = await cardD.locator('[data-j2-card-toggle]').getAttribute('aria-expanded');
+      const sA = await state(pg), scrollA = await pg.evaluate(() => document.querySelector('[data-j2-side-scroll]').scrollTop);
+      await cardD.locator('[data-j2-inspect]').click(); await pg.waitForTimeout(100);
+      const s = await state(pg), x = await inspTexts();
+      const expanded1 = await cardD.locator('[data-j2-card-toggle]').getAttribute('aria-expanded');
+      const scrollB = await pg.evaluate(() => document.querySelector('[data-j2-side-scroll]').scrollTop);
+      return { ok: expanded0 === 'false' && expanded1 === 'false' && s.inspector.open && s.inspector.batchId === D && s.inspector.source === 'card' && s.inspector.tileId === null && s.selectedTile === null && s.activeBatchId === sA.activeBatchId && JSON.stringify(s.camera) === JSON.stringify(sA.camera) && scrollA === scrollB && /no placed hexes/.test(x.text) && /fully shadowblighted/i.test(x.sub) && (await regionCells()) === 0, detail: { s: s.inspector, expanded0, expanded1, x: x.sub } };
+    });
+    await check('insp.14.blighted-and-combined-regions-show-their-badge-and-every-encounter-in-order', async () => {
+      await cardOf(pg, C).locator('[data-j2-inspect]').click(); await pg.waitForTimeout(100);
+      const x = await inspTexts(), s = await state(pg);
+      return { ok: s.inspector.batchId === C && /shadowblighted/i.test(x.sub) && x.enc === 2 && /Rolled 2/.test(x.text), detail: { sub: x.sub, enc: x.enc } };
+    });
+    await check('insp.15.inspecting-a-placed-region-from-its-card-highlights-all-its-hexes-and-selects-none', async () => {
+      await cardOf(pg, A).locator('[data-j2-inspect]').click(); await pg.waitForTimeout(100);
+      const s = await state(pg), strong = await pg.locator('[data-j2-g="select"] .j2-tile-sel').count();
+      return { ok: s.inspector.batchId === A && s.inspector.source === 'card' && (await regionCells()) === 5 && strong === 0 && s.selectedTile === null, detail: { strong } };
+    });
+    await shot(pg, 'insp-02-card-open.png');
+
+    /* ---- notes ---- */
+    await check('insp.16.gm-notes-commit-through-setNotes-as-one-history-entry-and-undo-redo-restore-them', async () => {
+      const ta = pg.locator('[data-j2-insp-notes]');
+      const h0 = (await state(pg)).history.undo;
+      await ta.click(); await pg.keyboard.type('Beware the ford', { delay: 8 });
+      const dot = await cardOf(pg, A).locator('.j2-notes-dot').isVisible();
+      const midUnsaved = await pg.locator('.j2-save').getAttribute('data-state');
+      await pg.locator('.j2-title').click(); await pg.waitForTimeout(150);
+      const s1 = await state(pg), raw = JSON.parse((await storageKeys()).dhcodex_journey2_map);
+      await pg.click('[data-j2-undo]'); await pg.waitForTimeout(100);
+      const afterUndo = await ta.inputValue(), notesUndo = (await state(pg)).batches.find(b => b.id === A).notes;
+      await pg.click('[data-j2-redo]'); await pg.waitForTimeout(100);
+      const afterRedo = await ta.inputValue();
+      const srName = await cardOf(pg, A).locator('[data-j2-inspect]').innerText();
+      return { ok: dot && midUnsaved === 'unsaved' && s1.history.undo === h0 + 1 && s1.batches.find(b => b.id === A).notes === 'Beware the ford' && raw.batches.find(b => b.id === A).notes === 'Beware the ford' && afterUndo === '' && notesUndo === '' && afterRedo === 'Beware the ford' && /has notes/.test(srName), detail: { dot, midUnsaved, h: [h0, s1.history.undo], afterUndo, afterRedo, srName } };
+    });
+    await check('insp.17.inspecting-another-region-flushes-pending-notes-and-escape-closes-and-flushes', async () => {
+      const ta = pg.locator('[data-j2-insp-notes]');
+      await ta.fill('pending note A');           // typed, not blurred
+      await cardOf(pg, B).locator('[data-j2-inspect]').click(); await pg.waitForTimeout(120);
+      const sa = await state(pg);
+      const ok1 = sa.batches.find(b => b.id === A).notes === 'pending note A' && sa.inspector.batchId === B && (await ta.inputValue()) === '';
+      await ta.fill('note for B');
+      await pg.keyboard.press('Escape'); await pg.waitForTimeout(120);
+      const sb = await state(pg);
+      return { ok: ok1 && sb.batches.find(b => b.id === B).notes === 'note for B' && !sb.inspector.open, detail: { ok1, open: sb.inspector.open } };
+    });
+
+    /* ---- closing, focus, priority ---- */
+    await check('insp.18.the-close-button-closes-and-returns-focus-to-the-cards-inspect-button-or-the-map', async () => {
+      await cardOf(pg, B).locator('[data-j2-inspect]').click(); await pg.waitForTimeout(80);
+      await pg.click('[data-j2-insp-close]'); await pg.waitForTimeout(80);
+      const f1 = await pg.evaluate(() => document.activeElement && document.activeElement.closest('[data-batch]') && document.activeElement.hasAttribute('data-j2-inspect') ? document.activeElement.closest('[data-batch]').getAttribute('data-batch') : null);
+      await clickCell(SEVEN[0]);
+      await pg.click('[data-j2-insp-close]'); await pg.waitForTimeout(80);
+      const f2 = await pg.evaluate(() => document.activeElement && document.activeElement.classList.contains('j2-viewport'));
+      return { ok: f1 === B && f2 === true && !(await open()).open && (await state(pg)).selectedTile === null, detail: { f1, f2 } };
+    });
+    await check('insp.19.escape-first-cancels-an-armed-placement-then-closes-the-inspector-and-armed-placement-beats-inspection', async () => {
+      await cardOf(pg, B).locator('[data-j2-card-toggle]').click(); await pg.waitForTimeout(60);
+      await clickCell(SEVEN[0]);
+      const handle = cardOf(pg, B).locator('[data-j2-handle="one"]'); await handle.scrollIntoViewIfNeeded(); await handle.click(); await pg.waitForTimeout(60);
+      const armed = (await state(pg)).transient;
+      const t0 = (await state(pg)).tiles.length;
+      const sBefore = await open();
+      await pg.keyboard.press('Escape'); await pg.waitForTimeout(60);
+      const afterEsc1 = await state(pg);
+      await pg.keyboard.press('Escape'); await pg.waitForTimeout(60);
+      const afterEsc2 = await state(pg);
+      // armed placement: place one hex of B next to its own tile by clicking; the inspector must not change
+      await clickCell(SEVEN[0]);
+      await handle.click(); await pg.waitForTimeout(60);
+      const sPlace0 = await state(pg), insp0 = sPlace0.inspector;
+      const nb = Geo.NEIGHBOR_DELTAS.map(d => { const c = Geo.parseCellId(bCell); return Geo.cellId(c.q + d.dq, c.r + d.dr); }).find(id => { const p = Geo.parseCellId(id); return ctx0.policy(p.q, p.r).ok && !SEVEN.includes(id) && !sPlace0.tiles.some(t => t.cell === id); });
+      const p = await clientOf(pg, nb); await pg.mouse.move(p.x, p.y, { steps: 4 }); await pg.mouse.click(p.x, p.y); await pg.waitForTimeout(120);
+      const sPlace1 = await state(pg);
+      await pg.keyboard.press('Escape'); await pg.keyboard.press('Escape'); await pg.waitForTimeout(60);
+      return { ok: armed && armed.kind === 'armed' && afterEsc1.transient === null && afterEsc1.inspector.open && sBefore.open && !afterEsc2.inspector.open && sPlace1.tiles.length === sPlace0.tiles.length + 1 && sPlace1.inspector.batchId === insp0.batchId && sPlace1.inspector.tileId === insp0.tileId, detail: { armed, e1: afterEsc1.inspector, e2: afterEsc2.inspector, t0, placed: [sPlace0.tiles.length, sPlace1.tiles.length] } };
+    });
+
+    /* ---- click vs drag ---- */
+    await check('insp.20.dragging-a-hex-moves-it-and-never-opens-an-inspector-an-open-one-follows-its-hex-and-a-cancelled-drag-changes-nothing', async () => {
+      const bNow = (await state(pg)).tiles.filter(t => t.batchId === B);
+      const tile = bNow[bNow.length - 1];
+      const nbCells = c0 => Geo.NEIGHBOR_DELTAS.map(d => { const c = Geo.parseCellId(c0); return Geo.cellId(c.q + d.dq, c.r + d.dr); });
+      const occupied = new Set((await state(pg)).tiles.map(t => t.cell));
+      const target = nbCells(tile.cell).find(id => { const p = Geo.parseCellId(id); return ctx0.policy(p.q, p.r).ok && !occupied.has(id) && Model.isConnected(bNow.filter(t => t.id !== tile.id).map(t => t.cell).concat([id])); });
+      // drag with no inspector open
+      const sClosed = await state(pg);
+      await dragTile(pg, tile.cell, target, 'drop');
+      const s1 = await state(pg);
+      const noOpen = !s1.inspector.open && s1.tiles.find(t => t.id === tile.id).cell === target;
+      // open on that hex, then drag it back: stays open on the same hex
+      await pg.keyboard.press('Escape');
+      await clickCell(target);
+      const r0 = await rectOf('[data-j2-inspector]'), sOpen = await state(pg);
+      await dragTile(pg, target, tile.cell, 'drop');
+      const s2 = await state(pg);
+      const follows = s2.inspector.open && s2.inspector.tileId === tile.id && s2.selectedTile === tile.id && s2.tiles.find(t => t.id === tile.id).cell === tile.cell;
+      // cancelled drag: Escape mid-drag keeps the inspector and the hex where it is
+      await dragTile(pg, tile.cell, target, 'escape');
+      const s3 = await state(pg);
+      const cancelled = s3.inspector.open && s3.inspector.tileId === tile.id && s3.tiles.find(t => t.id === tile.id).cell === tile.cell;
+      await pg.keyboard.press('Escape');
+      return { ok: noOpen && sOpen.inspector.open && follows && cancelled && sClosed.history.undo + 1 <= s1.history.undo, detail: { noOpen, follows, cancelled, closedOpen: s1.inspector, s2: s2.inspector, s3: s3.inspector } };
+    });
+
+    /* ---- deletion, undo, import, language, diagnostics ---- */
+    await check('insp.21.undoing-the-creation-of-the-inspected-region-closes-it-and-redo-does-not-reopen-it', async () => {
+      const E = await mkBatch({ biome: 'aquatic', terrain: 2, size: 2 });
+      await cardOf(pg, E).locator('[data-j2-inspect]').click(); await pg.waitForTimeout(80);
+      const was = (await open()).batchId === E;
+      await pg.click('[data-j2-undo]'); await pg.waitForTimeout(100);
+      const closed = !(await open()).open;
+      await pg.click('[data-j2-redo]'); await pg.waitForTimeout(100);
+      return { ok: was && closed && !(await open()).open && (await insp.isHidden()), detail: { was, closed } };
+    });
+    await check('insp.22.deleting-the-inspected-region-closes-it-clears-the-highlight-and-moves-focus-to-a-surviving-control', async () => {
+      await cardOf(pg, A).locator('[data-j2-inspect]').click(); await pg.waitForTimeout(80);
+      await cardOf(pg, A).locator('[data-j2-card-toggle]').click(); await pg.waitForTimeout(60);
+      const act = (await state(pg)).activeBatchId;
+      if (act !== A) await cardOf(pg, A).locator('[data-j2-card-toggle]').click();
+      await cardOf(pg, A).locator('[data-j2-delete]').click(); await pg.waitForTimeout(100);
+      await pg.locator('.j2-dialog .btn-danger').click(); await pg.waitForTimeout(150);
+      const s = await state(pg);
+      const focusOk = await pg.evaluate(() => !!document.activeElement && document.activeElement !== document.body && !!document.activeElement.closest('.j2-side'));
+      return { ok: !s.inspector.open && !s.batches.some(b => b.id === A) && (await regionCells()) === 0 && (await insp.isHidden()) && focusOk, detail: { s: s.inspector, focusOk } };
+    });
+    await check('insp.23.the-language-switch-keeps-the-inspected-region-and-relocalizes-it', async () => {
+      await cardOf(pg, B).locator('[data-j2-inspect]').click(); await pg.waitForTimeout(80);
+      await pg.click('[data-lang="ru"]'); await pg.waitForTimeout(250);
+      const s = await state(pg), x = await inspTexts();
+      const btn = await cardOf(pg, B).locator('[data-j2-inspect]').getAttribute('title');
+      const r = { ok: s.inspector.open && s.inspector.batchId === B && /Регион №/.test(x.sub) && x.title === 'Горное' && /Местность 1/.test(x.text) && x.h4.join('|') === 'Встреча|Слух|Заметки ГМа' && btn === 'Осмотреть регион' && !/[A-Za-z]{5,}/.test(x.text.replace(/\bterrain\b/g, '')), detail: { x: x.sub, h4: x.h4, title: x.title, btn, latin: x.text.match(/[A-Za-z]{5,}/g) } };
+      await pg.click('[data-lang="en"]'); await pg.waitForTimeout(250);
+      return r;
+    });
+    await check('insp.24.opening-diagnostics-closes-the-inspector-and-never-overlaps-it', async () => {
+      await pg.click('[data-j2-menu-btn="more"]'); await pg.click('[data-j2-act="diagnostics"]'); await pg.waitForTimeout(150);
+      const s = await state(pg);
+      const r = { ok: s.diagnosticsOpen && !s.inspector.open && (await insp.isHidden()), detail: s.inspector };
+      await pg.click('[data-j2-act="diagnostics"]').catch(() => {});
+      await pg.click('[data-j2-menu-btn="more"]').catch(() => {});
+      if ((await state(pg)).diagnosticsOpen) { await pg.click('[data-j2-panel-close]'); }
+      return r;
+    });
+    await check('insp.25.importing-a-backup-closes-the-inspector-even-when-the-region-id-survives', async () => {
+      await cardOf(pg, B).locator('[data-j2-inspect]').click(); await pg.waitForTimeout(80);
+      const backup = await pg.evaluate(() => Journey2View.debugApi().document());
+      const file = path.join(TMP, 'inspector-import.json'); fs.writeFileSync(file, JSON.stringify(backup));
+      await pg.setInputFiles('input[type="file"]', file); await pg.waitForTimeout(200);
+      await pg.locator('.j2-dialog .btn-danger').click(); await pg.waitForTimeout(200);
+      const s = await state(pg);
+      return { ok: !s.inspector.open && s.batches.some(b => b.id === B) && (await insp.isHidden()), detail: s.inspector };
+    });
+    await check('insp.26.leaving-the-route-removes-the-inspector-and-its-state', async () => {
+      await cardOf(pg, B).locator('[data-j2-inspect]').click(); await pg.waitForTimeout(80);
+      await pg.evaluate(() => { location.hash = '#/prep'; }); await pg.waitForTimeout(500);
+      const r = await pg.evaluate(() => ({ mounted: Journey2View.isMounted(), dom: document.querySelectorAll('.j2-region-inspector').length, state: Journey2View.debugState() }));
+      return { ok: !r.mounted && r.dom === 0 && r.state === null, detail: r };
+    });
+    await shot(pg, 'insp-03-after-leave.png');
+    await pg.close(); await context.close();
   }
 
   /* ===== G. hygiene ===== */

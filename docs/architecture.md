@@ -935,7 +935,7 @@ stays copy-only.
 
 Run all of them with `node --test tests/*.test.js`.
 
-## Journey 2 map editor (`#/journey2`, Phase 1)
+## Journey 2 map editor (`#/journey2`, Phase 1; Phase A and B below)
 - **Files (load order in `index.html`):** `js/journey2-geometry.js` (pure, UMD:
   measured lattice, cell ids, neighbours, validity, camera maths, readiness
   gate, glyph layout), `js/journey2-model.js` (pure: the map **document**,
@@ -999,13 +999,40 @@ Run all of them with `node --test tests/*.test.js`.
   `inert` on the hidden half, `aria-expanded` on both toggles); its state is
   stored via `store.loadUi/saveUi`, never in the document, and toggling never
   touches camera, selection or the active card. Cards are compact; exactly one
-  (`activeBatchId`) is expanded and one detail section (Encounter / Rumor /
-  Notes) is open at a time; both are view state, not history. Zoom buttons use
+  (`activeBatchId`) is expanded (placement controls only — Encounter, Rumor and
+  Notes live in the Region Inspector, below); it is view state, not history. Zoom buttons use
   `Geo.ZOOM_STEPS` via `Geo.stepZoom()` (exactly 100% is a stop; Fit may land
   between stops); the readout is a button that resets to exactly 100%.
+- **Region Inspector (Phase B):** `inspector = { batchId, tileId, source }`
+  (`source` `'map'` | `'card'`) is transient view state next to `activeBatchId`
+  and independent of it. The pure helpers live in `js/journey2-model.js`
+  (`NO_INSPECTION`, `inspectTile`, `inspectBatch`, `syncInspection`,
+  `inspectedTileIds`); the view calls them and never persists the result. One
+  `<aside role="dialog" aria-modal="false">` is built once in `.j2-mapwrap`, a
+  **sibling** of the scaled `.j2-world`, so it keeps its screen size at every
+  zoom; `renderInspector()` fills it in place (the notes textarea node is never
+  replaced). Entry points: a plain click on a placed hex (`selectTile` →
+  `openInspectorFromTile`, strong outline on that hex + soft `.j2-region-hl`
+  outline on the whole region) and a card's Inspect button
+  (`openInspectorFromCard`: soft outline only, no hex selected, works for an
+  unplaced region). Positioning is `Geo.placeInspector()` (pure, tested): right
+  of the hex, else left, above/below, else clamped; it avoids the *measured*
+  rectangles of the sidebar/rail and diagnostics drawer (the selected-tile bar is
+  a soft constraint) and falls back to a stable top-right corner without an
+  anchor or a bottom-centred panel at ≤900px. It is re-run from the camera `rAF`
+  (pan, zoom, resize, Fit), a `ResizeObserver` on the panel, the sidebar's
+  transition and after every render, never per pointer event. `syncInspection`
+  runs after every document change (deleted region → closed; vanished anchor
+  hex → dropped). Close paths: button, Escape (after menu and drag/armed
+  placement), empty-map click (never a pan), deletion, import/replace, opening
+  Diagnostics, unmount — each flushes pending notes first; focus returns to the
+  opener (the card's Inspect button, or the map). The pending-notes pipeline is
+  the single `notesDirty` (committed through `setNotes`). Browser coverage:
+  `scripts/journey2/stage1-verify.js` checks `insp.*` and `browser-verify.js`
+  `inspector.*`; pure coverage: `tests/journey2-inspector.test.js`.
 - **Interaction state** (view-only, never persisted, never in history):
   `tr` = a stock drag, a tile drag or an armed click-to-place; `pan`;
-  selection. The "All N" footprint is generated once per drag
+  selection; the open Region Inspector. The "All N" footprint is generated once per drag
   (`compactFootprint(N)`, a pure function of N) and frozen. A drag remembers
   the document it started on; release revalidates and a changed document
   cancels it. Escape, `pointercancel`, lost capture, a drop outside the map,

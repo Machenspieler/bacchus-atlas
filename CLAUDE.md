@@ -188,8 +188,11 @@ and full JSON backup). The rules live in the pure `js/journey2-model.js`
 (document, placement policy, atomic commands, history); the view only builds
 commands. It owns exactly four `dhcodex_journey2_*` storage keys and never
 touches `#/journey`'s data; a corrupt saved map is never autosaved over;
-preparation never implies discovery; original markers are immutable. Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016, detail:
+preparation never implies discovery; original markers are immutable. Regions are
+read in one transient, GM-only Region Inspector over the map (opened from a hex
+or a card's Inspect button, independent of the expanded card, never persisted,
+never in history); the sidebar only generates, places and deletes. Decisions:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018, detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

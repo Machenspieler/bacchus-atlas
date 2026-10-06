@@ -360,7 +360,58 @@
     };
   }
 
+  /**
+   * Screen-space placement of the Region Inspector inside the map area (all values px, origin = the map area's top-left).
+   *   view     { w, h }              the visible map area
+   *   size     { w, h }              the inspector's own measured size
+   *   anchor   { x, y, r } | null    the clicked hex (centre + half width); null when opened from a card or when the hex is off screen
+   *   blocked  [{ x, y, w, h, soft? }] rectangles the inspector must not cover (sidebar or rail, diagnostics drawer); a `soft` one (the
+   *                                 selected-tile bar) is avoided only while a clean spot beside the hex exists
+   *   margin, gap, narrow            edge margin (default 12), gap to the hex (default 14), phone/narrow layout flag
+   * Returns { x, y, side, caret } — `side` is where the panel sits relative to the hex ('right' | 'left' | 'above' | 'below'),
+   * or 'corner' (stable top-right, no hex) / 'clamped' / 'narrow'; `caret` is { edge, offset } pointing at the hex, or null.
+   */
+  function placeInspector(o) {
+    const margin = o.margin == null ? 12 : o.margin, gap = o.gap == null ? 14 : o.gap;
+    const view = o.view, w = Math.min(o.size.w, Math.max(0, view.w - 2 * margin)), h = Math.min(o.size.h, Math.max(0, view.h - 2 * margin));
+    const all = o.blocked || [];
+    const maxX = Math.max(margin, view.w - margin - w), maxY = Math.max(margin, view.h - margin - h);
+    const clampX = x => Math.min(maxX, Math.max(margin, x)), clampY = y => Math.min(maxY, Math.max(margin, y));
+    const hits = (x, y, blocked) => blocked.some(b => x < b.x + b.w && x + w > b.x && y < b.y + b.h && y + h > b.y);
+    const overlap = (x, y, blocked) => blocked.reduce((s, b) => s + Math.max(0, Math.min(x + w, b.x + b.w) - Math.max(x, b.x)) * Math.max(0, Math.min(y + h, b.y + b.h) - Math.max(y, b.y)), 0);
+    if (o.narrow) return { x: clampX((view.w - w) / 2), y: maxY, side: 'narrow', caret: null };
+    const a = o.anchor;
+    const out = (x, y, side, caret) => ({ x: Math.round(x), y: Math.round(y), side: side, caret: caret });
+    if (!a) {
+      // stable top-right; slide left of whatever covers that corner (e.g. a drawer) before giving up
+      const tries = [clampX(view.w - margin - w)];
+      for (const b of all) if (b.x + b.w > view.w / 2) tries.push(clampX(b.x - margin - w));
+      for (const x of tries) if (!hits(x, margin, all)) return out(x, margin, 'corner', null);
+      return out(tries[0], margin, 'corner', null);
+    }
+    const cands = [
+      { side: 'right', x: a.x + a.r + gap, y: clampY(a.y - h / 2), fits: a.x + a.r + gap + w <= view.w - margin },
+      { side: 'left', x: a.x - a.r - gap - w, y: clampY(a.y - h / 2), fits: a.x - a.r - gap - w >= margin },
+      { side: 'below', x: clampX(a.x - w / 2), y: a.y + a.r + gap, fits: a.y + a.r + gap + h <= view.h - margin },
+      { side: 'above', x: clampX(a.x - w / 2), y: a.y - a.r - gap - h, fits: a.y - a.r - gap - h >= margin },
+    ];
+    const caretFor = (side, x, y) => {
+      const horiz = side === 'right' || side === 'left';
+      const off = horiz ? a.y - y : a.x - x, len = horiz ? h : w;
+      return { edge: side === 'right' ? 'left' : side === 'left' ? 'right' : side === 'below' ? 'top' : 'bottom', offset: Math.round(Math.min(len - 18, Math.max(18, off))) };
+    };
+    const hard = all.filter(b => !b.soft);
+    for (const list of [all, hard]) for (const c of cands) if (c.fits && !hits(c.x, c.y, list)) return out(c.x, c.y, c.side, caretFor(c.side, c.x, c.y));
+    // nothing sits cleanly beside the hex: clamp inside the map and take the spot that is least covered
+    const fall = cands.map(c => ({ side: 'clamped', x: clampX(c.x), y: clampY(c.y) })).concat([{ side: 'clamped', x: clampX(view.w - margin - w), y: margin }]);
+    for (const b of all) { for (const x of [b.x - margin - w, b.x + b.w + margin]) fall.push({ side: 'clamped', x: clampX(x), y: clampY(a.y - h / 2) }); }
+    let best = fall[0], bestO = overlap(best.x, best.y, all);
+    for (const c of fall) { const ov = overlap(c.x, c.y, all); if (ov < bestO) { best = c; bestO = ov; } }
+    return out(best.x, best.y, best.side, null);
+  }
+
   return {
+    placeInspector: placeInspector,
     NEIGHBOR_DELTAS: NEIGHBOR_DELTAS,
     cellId: cellId,
     parseCellId: parseCellId,

@@ -515,7 +515,42 @@
     return out.slice(0, n);
   }
 
+  /* ---------------- region inspection (transient view state — never part of the document, history or storage) ---------------- */
+
+  /** The one empty inspection. `source` is where it was opened from: 'map' (a placed hex, the visual anchor) or 'card' (a sidebar card). */
+  const NO_INSPECTION = Object.freeze({ batchId: null, tileId: null, source: null });
+
+  /** Inspect the region a placed hex belongs to; that hex is the selected anchor. An unknown hex changes nothing. */
+  function inspectTile(state, doc, tileId) {
+    const tile = derive(doc).byId.get(tileId);
+    if (!tile) return state;
+    return Object.freeze({ batchId: tile.batchId, tileId: tile.id, source: 'map' });
+  }
+
+  /** Inspect a region from its card: no hex is selected, so an unplaced region works too. An unknown region changes nothing. */
+  function inspectBatch(state, doc, batchId) {
+    if (!batchById(doc, batchId)) return state;
+    return Object.freeze({ batchId: batchId, tileId: null, source: 'card' });
+  }
+
+  /** Reconciles an inspection with a (possibly new) document: a vanished region closes it, a vanished or foreign anchor hex is dropped. */
+  function syncInspection(state, doc) {
+    if (!state.batchId) return state;
+    if (!batchById(doc, state.batchId)) return NO_INSPECTION;
+    if (state.tileId) {
+      const tile = derive(doc).byId.get(state.tileId);
+      if (!tile || tile.batchId !== state.batchId) return Object.freeze({ batchId: state.batchId, tileId: null, source: state.source });
+    }
+    return state;
+  }
+
+  /** Every placed hex of the inspected region (the soft region highlight); empty when closed or when nothing is placed. */
+  function inspectedTileIds(state, doc) {
+    return state.batchId ? doc.tiles.filter(t => t.batchId === state.batchId).map(t => t.id) : [];
+  }
+
   return {
+    NO_INSPECTION: NO_INSPECTION, inspectTile: inspectTile, inspectBatch: inspectBatch, syncInspection: syncInspection, inspectedTileIds: inspectedTileIds,
     SCHEMA_VERSION: SCHEMA_VERSION, KIND: KIND, HABITAT_IDS: HABITAT_IDS, OVERTAKEN_SYMBOL: OVERTAKEN_SYMBOL,
     MAX_BATCH_QUANTITY: MAX_BATCH_QUANTITY, MAX_BATCHES: MAX_BATCHES, MAX_NOTES_LENGTH: MAX_NOTES_LENGTH, MAX_IMPORT_BYTES: MAX_IMPORT_BYTES, HISTORY_LIMIT: HISTORY_LIMIT,
     createContext: createContext, newId: newId, emptyDocument: emptyDocument, isEmptyDocument: isEmptyDocument, symbolIdOf: symbolIdOf,
