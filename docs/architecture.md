@@ -972,8 +972,9 @@ Run all of them with `node --test tests/*.test.js`.
   (other batches never count). `place`, `move` and `returnTile` fail with
   `disconnected-region` otherwise; the view's preview calls the same
   `Model.checkPlacement()` so preview and commit never disagree. A region that
-  is *already* split (an old save) is not made un-editable: an edit is only
-  refused when it would split a connected region or leave a split one split.
+  is *already* split (an old save) stays usable under a non-worsening rule: an
+  edit may keep or reduce the number of components but never increase it; once
+  the region is connected the strict one-component rule applies.
   Enclosed empty cells are detected by `enclosedHoles()` / `holeCounts()`
   (flood fill of the batch's bounding area + 1 from its outer ring; only that
   batch's tiles are barriers; pure axial maths, so map edges never give false

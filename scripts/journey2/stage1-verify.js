@@ -60,9 +60,20 @@ function allowedNear(x, y, avoid) {
   throw new Error('no allowed cell near ' + x + ',' + y);
 }
 const markerCell = id => anchorsDoc.anchors.find(a => a.stableId === id).cellId;
-// Seven deliberately nonsequential, disconnected cells across both halves and the seam (real allowed cells).
-const SEVEN_WORLD = [[3300, 1100], [1500, 260], [3200, 350], [SEAM_X, 800], [SEAM_X + 66, 450], [1700, 1300], [2300, 1200]];
-const SEVEN = []; for (const [x, y] of SEVEN_WORLD) SEVEN.push(allowedNear(x, y, SEVEN));
+// Seven cells forming ONE connected cluster (a region must stay edge-connected), near the seam, in breadth-first
+// order so every single placement touches the tiles placed before it. Real allowed cells of the template.
+const SEVEN_WORLD = [[SEAM_X, 800]];
+const SEVEN = (() => {
+  const out = [allowedNear(SEAM_X, 800, [])], seen = new Set(out);
+  for (let i = 0; i < out.length && out.length < 7; i++) {
+    const c = Geo.parseCellId(out[i]);
+    for (const d of Geo.NEIGHBOR_DELTAS) {
+      const id = Geo.cellId(c.q + d.dq, c.r + d.dr);
+      if (out.length < 7 && !seen.has(id) && ctx0.policy(c.q + d.dq, c.r + d.dr).ok) { seen.add(id); out.push(id); }
+    }
+  }
+  return out;
+})();
 const MARKER_CELL_IN_VIEW = (() => { const a = anchorsDoc.anchors.find(m => m.worldPixelAnchor[0] > 1400 && m.worldPixelAnchor[0] < 3500 && m.worldPixelAnchor[1] > 200 && m.worldPixelAnchor[1] < 1300 && ctx0.policy(...Object.values(Geo.parseCellId(m.cellId))).ok); return a; })();
 function footprintCells(anchorId, n) { const a = Geo.parseCellId(anchorId); return Model.compactFootprint(n).map(o => Geo.cellId(a.q + o.dq, a.r + o.dr)); }
 function clearAnchorFor13(avoid, near) {
@@ -76,7 +87,19 @@ function clearAnchorFor13(avoid, near) {
   }
   throw new Error('no clear 13-cell area');
 }
-const ALL13_ANCHOR = clearAnchorFor13(SEVEN.concat([MARKER_CELL_IN_VIEW.cellId]), [2950, 1000]);
+/** An anchor whose 13-cell footprint is allowed, free, and — together with the seven — one connected shape. */
+function connectedAnchorFor13(avoid, near) {
+  const av = new Set(avoid);
+  const c0 = grid.worldToCell(near[0], near[1]);
+  for (let ring = 0; ring < 40; ring++) for (let dq = -ring; dq <= ring; dq++) for (let dr = -ring; dr <= ring; dr++) {
+    if (Math.max(Math.abs(dq), Math.abs(dr), Math.abs(dq + dr)) !== ring) continue;
+    const id = Geo.cellId(c0.q + dq, c0.r + dr);
+    const cells = footprintCells(id, 13);
+    if (cells.every(c => { const p = Geo.parseCellId(c); return ctx0.policy(p.q, p.r).ok && !av.has(c); }) && Model.isConnected(SEVEN.concat(cells))) return id;
+  }
+  throw new Error('no connected 13-cell area');
+}
+const ALL13_ANCHOR = connectedAnchorFor13(SEVEN, grid.cellCenter(...Object.values(Geo.parseCellId(SEVEN[0]))));
 const ALL13_CELLS = footprintCells(ALL13_ANCHOR, 13);
 // an anchor whose 13-cell footprint overlaps exactly ONE of the seven (a single collision), everything else free
 function singleCollisionAnchor() {
@@ -91,7 +114,32 @@ function singleCollisionAnchor() {
   throw new Error('no single-collision anchor');
 }
 const COLLIDE_ANCHOR = singleCollisionAnchor();
-const MOVE_TARGET = allowedNear(3450, 800, SEVEN.concat(ALL13_CELLS));
+// A tile of the final 20-cell shape that can leave without splitting it, and a free cell touching the rest.
+const MOVE = (() => {
+  const all = SEVEN.concat(ALL13_CELLS), occupied = new Set(all);
+  for (let i = all.length - 1; i >= 7; i--) {
+    const rest = all.filter((_, j) => j !== i);
+    if (!Model.isConnected(rest)) continue;
+    for (const r of rest) {
+      const c = Geo.parseCellId(r);
+      for (const d of Geo.NEIGHBOR_DELTAS) {
+        const id = Geo.cellId(c.q + d.dq, c.r + d.dr);
+        if (!occupied.has(id) && ctx0.policy(c.q + d.dq, c.r + d.dr).ok && Model.isConnected(rest.concat([id]))) return { index: i - 7, from: all[i], to: id };
+      }
+    }
+  }
+  throw new Error('no connected move');
+})();
+const MOVE_TARGET = MOVE.to;
+// Free cells touching the seven (valid places to grow the region): used wherever a check needs one more legal tile.
+const ADJ = (() => {
+  const seen = new Set(SEVEN), out = [];
+  for (const c0 of SEVEN) {
+    const c = Geo.parseCellId(c0);
+    for (const d of Geo.NEIGHBOR_DELTAS) { const id = Geo.cellId(c.q + d.dq, c.r + d.dr); if (!seen.has(id) && ctx0.policy(c.q + d.dq, c.r + d.dr).ok) { seen.add(id); out.push(id); } }
+  }
+  return out.filter(id => !ALL13_CELLS.includes(id));
+})();
 
 const compass = template.decorativeAreas.find(d => d.id === 'compass').rectPx;
 function decorativeAnchor() {
@@ -157,14 +205,34 @@ const shot = (page, name, opts) => page.screenshot(Object.assign({ path: path.jo
 const snapshot = async page => { const s = await state(page); return { batches: s.batches, tiles: s.tiles, history: s.history, saveStatus: s.saveStatus, selectedTile: s.selectedTile }; };
 const storageDump = page => page.evaluate(() => Object.fromEntries(Object.keys(localStorage).sort().map(k => [k, localStorage.getItem(k)])));
 const cardOf = (page, batchId) => page.locator(`.j2-card[data-batch="${batchId}"]`);
+/**
+ * Creates a region with a KNOWN habitat / terrain / size. The editor itself only offers the fully random
+ * "Generate region" action (Phase A), so scenario fixtures go through the same createBatch command the button
+ * dispatches, with a deterministic region; the real random button is exercised separately (see
+ * `generate.*` checks). The new card is made active the way a click would.
+ */
 async function genRegion(page, o) {
-  await page.selectOption('[data-j2-habitat]', o.habitat || '');
-  await page.click(`[data-j2-terrain-btn="${o.terrain || 0}"]`);
-  await page.fill('[data-j2-qty]', o.qty == null ? '' : String(o.qty));
-  await page.click('[data-j2-generate]');
+  const id = await page.evaluate(spec => {
+    const M = Journey2Model, id = M.newId('b');
+    const region = {
+      habitat: { biome: spec.habitat || 'forest', blighted: false, overtaken: false, source: 'rolled', rolls: [1] },
+      terrain: { value: spec.terrain || 2, source: 'rolled' }, size: spec.qty || 7, encounter: { entries: [[3, 4]], combines: 0 }, rumor: 17,
+    };
+    const r = Journey2View.debugApi().dispatch({ type: 'createBatch', batch: M.batchFromRegion(region, { id: id, createdAt: new Date().toISOString() }) });
+    return r.ok ? id : null;
+  }, o);
+  await activateCard(page, id);
   await page.waitForTimeout(120);
+  return id;
+}
+/** Expands one region card (the sidebar keeps exactly one open); a no-op when it already is. */
+async function activateCard(page, batchId) {
+  const head = page.locator(`.j2-card[data-batch="${batchId}"] [data-j2-card-toggle]`);
+  if ((await head.getAttribute('aria-expanded')) !== 'true') await head.click();
+  await page.waitForTimeout(60);
 }
 async function handleCenter(page, batchId, mode) {
+  await activateCard(page, batchId);
   const loc = cardOf(page, batchId).locator(`[data-j2-handle="${mode}"]`);
   await loc.scrollIntoViewIfNeeded();   // the sidebar scrolls internally; a real user scrolls the card into view first
   const b = await loc.boundingBox();
@@ -204,7 +272,7 @@ const sameCells = (a, b) => JSON.stringify(a.slice().sort()) === JSON.stringify(
 async function main() {
   const { server, port, requests } = await serve(SITE_ROOT, {}).then(s => ({ server: s.server, port: s.port, requests: s.requests }));
   const base = `http://127.0.0.1:${port}/`;
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(process.env.J2_BROWSER_CHANNEL ? { channel: process.env.J2_BROWSER_CHANNEL } : {});   // J2_BROWSER_CHANNEL=chrome uses an installed Chrome
   const logs = [];
   const evidence = { seven: SEVEN, all13: ALL13_CELLS };
 
@@ -221,7 +289,7 @@ async function main() {
     await check('scn.02.generator-ui-creates-forest-terrain-2-quantity-20-with-0-placed-20-remaining', async () => {
       const b = s1.batches[0];
       const txt = await cardOf(page, batchId).innerText();
-      return { ok: s1.batches.length === 1 && b.habitat.biome === 'forest' && b.terrain.value === 2 && b.quantity === 20 && b.placed === 0 && b.remaining === 20 && b.habitat.source === 'manual' && b.terrain.source === 'manual' && b.quantitySource === 'manual' && !('rolls' in b.habitat) && /0\s*\/\s*20/.test(txt) && /All 20/.test(txt) && s1.tiles.length === 0, detail: { b, txt } };
+      return { ok: s1.batches.length === 1 && b.habitat.biome === 'forest' && b.terrain.value === 2 && b.quantity === 20 && b.placed === 0 && b.remaining === 20 && b.terrain.source === 'rolled' && b.quantitySource === 'rolled' && /0\s*\/\s*20/.test(txt) && /all 20/i.test(txt) && s1.tiles.length === 0, detail: { b, txt } };
     });
     await check('scn.03.generation-places-nothing-and-keeps-camera-unchanged', async () => { const a = (await state(page)).camera; await genRegion(page, { habitat: 'aquatic', terrain: 1, qty: 1 }); const s = await state(page); const b = s.camera; return { ok: s.tiles.length === 0 && JSON.stringify(a) === JSON.stringify(b), detail: { a, b } }; });
     await page.keyboard.press('Control+z'); await page.waitForTimeout(100);   // undo the extra aquatic batch (keyboard Undo path)
@@ -229,7 +297,7 @@ async function main() {
     await viewWorld(page, SEAM_X, 800, 0.41);
     await shot(page, 'scn-01-1366x768-empty-region-generated.png');
 
-    // 7 single placements, deliberately nonsequential and disconnected, through real pointer input
+    // 7 single placements, each touching the previous ones (a region is one connected shape), through real pointer input
     const sevenStates = [];
     for (let i = 0; i < SEVEN.length; i++) {
       const r = await dragStock(page, batchId, 'one', SEVEN[i], 'hold');
@@ -243,7 +311,7 @@ async function main() {
     await check('scn.04.seven-single-drags-each-previewed-valid-and-committed-one-tile', async () => ({ ok: sevenStates.every((x, i) => x.okMid && x.placed === i + 1 && x.remaining === 19 - i) && s7.tiles.length === 7 && sameCells(s7.tiles.map(t => t.cell), SEVEN), detail: sevenStates }));
     await check('scn.05.counts-are-7-placed-13-remaining-and-the-handle-says-All-13', async () => {
       const txt = await cardOf(page, batchId).innerText();
-      return { ok: s7.batches[0].placed === 7 && s7.batches[0].remaining === 13 && /7\s*\/\s*20/.test(txt) && /All 13/.test(txt), detail: txt };
+      return { ok: s7.batches[0].placed === 7 && s7.batches[0].remaining === 13 && /7\s*\/\s*20/.test(txt) && /all 13/i.test(txt), detail: txt };
     });
     await check('scn.05b.seven-tiles-render-seven-glyph-groups-with-no-preview-left', async () => ({ ok: (await page.locator('[data-j2-g="preview"] *').count()) === 0 && s7.domTileGlyphs >= 6, detail: s7.domTileGlyphs }));
     await shot(page, 'scn-03-1366x768-seven-of-twenty.png');
@@ -266,21 +334,21 @@ async function main() {
     writeJson(path.join(FIX, 'scenario-03-after-all-13.json'), await snapshot(page));
     await check('scn.07.all-13-previews-13-valid-cells-and-commits-all-atomically-one-undo-entry', async () => ({ ok: holdOk.mid.valid && holdOk.mid.cells === 13 && holdOk.mid.anchor === ALL13_ANCHOR && s20.batches[0].placed === 20 && s20.batches[0].remaining === 0 && s20.history.undo === histBefore + 1 && sameCells(s20.tiles.slice(7).map(t => t.cell), ALL13_CELLS), detail: { mid: holdOk.mid, placed: s20.batches[0].placed, undo: s20.history.undo, before: histBefore, tip } }));
     await check('scn.08.the-first-seven-keep-exactly-their-old-cells-and-ids', async () => ({ ok: JSON.stringify(s20.tiles.slice(0, 7)) === JSON.stringify(s7.tiles), detail: null }));
-    await check('scn.08b.exhausted-stock-keeps-the-card-and-disables-both-handles', async () => {
-      const dis = await cardOf(page, batchId).locator('[data-j2-handle]').evaluateAll(hs => hs.map(h => h.disabled));
+    await check('scn.08b.exhausted-stock-keeps-the-card-and-removes-both-handles', async () => {
+      const shown = await cardOf(page, batchId).locator('[data-j2-handle]').evaluateAll(hs => hs.filter(h => h.offsetParent !== null).length);
       const txt = await cardOf(page, batchId).innerText();
-      return { ok: dis.length === 2 && dis.every(Boolean) && /20\s*\/\s*20/.test(txt) && /All placed/.test(txt), detail: { dis, txt } };
+      return { ok: shown === 0 && /All 20 hexes placed/.test(txt) && !/Place 1|Place all/.test(txt), detail: { shown, txt } };
     });
     await shot(page, 'scn-06-1366x768-committed-20.png');
 
     // move one tile (individual tile), counts unchanged
-    const moveFrom = ALL13_CELLS[5];
+    const moveFrom = MOVE.from;
     const histMove = (await state(page)).history.undo;
     await dragTile(page, moveFrom, MOVE_TARGET, 'drop');
     const sMove = await state(page);
     writeJson(path.join(FIX, 'scenario-04-after-move.json'), await snapshot(page));
     await check('scn.09.moving-one-tile-keeps-counts-batch-and-generated-details', async () => {
-      const moved = sMove.tiles.find(t => t.id === s20.tiles[7 + 5].id);
+      const moved = sMove.tiles.find(t => t.id === s20.tiles[7 + MOVE.index].id);
       return { ok: moved && moved.cell === MOVE_TARGET && moved.batchId === batchId && sMove.batches[0].placed === 20 && sMove.batches[0].remaining === 0 && JSON.stringify(sMove.batches[0].encounter) === JSON.stringify(s20.batches[0].encounter) && sMove.batches[0].rumor === s20.batches[0].rumor && sMove.history.undo === histMove + 1, detail: { moved, undo: sMove.history.undo } };
     });
     await check('scn.09b.the-click-generated-after-a-drag-does-not-select-or-place-anything', async () => { const s = await state(page); return { ok: s.tiles.length === 20 && s.transient === null, detail: s.selectedTile }; });
@@ -292,7 +360,7 @@ async function main() {
     await page.click('[data-j2-undo]'); await page.waitForTimeout(150);
     const sU2 = await state(page);
     writeJson(path.join(FIX, 'scenario-05-after-undo-move-and-undo-all.json'), await snapshot(page));
-    await check('scn.11.second-undo-leaves-exactly-the-original-seven-and-13-in-stock', async () => ({ ok: JSON.stringify(sU2.tiles) === JSON.stringify(s7.tiles) && sU2.batches[0].placed === 7 && sU2.batches[0].remaining === 13 && /All 13/.test(await cardOf(page, batchId).innerText()), detail: { tiles: sU2.tiles.length } }));
+    await check('scn.11.second-undo-leaves-exactly-the-original-seven-and-13-in-stock', async () => ({ ok: JSON.stringify(sU2.tiles) === JSON.stringify(s7.tiles) && sU2.batches[0].placed === 7 && sU2.batches[0].remaining === 13 && /all 13/i.test(await cardOf(page, batchId).innerText()), detail: { tiles: sU2.tiles.length } }));
     await check('scn.11b.undo-persisted-the-state-after-undo-immediately', async () => {
       const raw = JSON.parse(await page.evaluate(() => localStorage.getItem('dhcodex_journey2_map')));
       return { ok: raw.tiles.length === 7 && sameCells(raw.tiles.map(t => t.cell), SEVEN), detail: raw.tiles.length };
@@ -465,23 +533,25 @@ async function main() {
     await openEditor(page, base);
     const gen = async o => { await genRegion(page, o); const s = await state(page); return s.batches[s.batches.length - 1].id; };
 
-    await check('neg.quantities-1-12-20-are-accepted-and-stored-exactly', async () => {
-      const ids = []; for (const q of [1, 12, 20]) ids.push(await gen({ habitat: 'wetland', terrain: 1, qty: q }));
+    await check('neg.region-sizes-1-12-20-are-stored-exactly-as-rolled', async () => {
+      for (const q of [1, 12, 20]) await gen({ habitat: 'wetland', terrain: 1, qty: q });
       const s = await state(page);
-      return { ok: s.batches.map(b => b.quantity).join() === '1,12,20' && s.batches.every(b => b.quantitySource === 'manual'), detail: s.batches.map(b => b.quantity) };
+      return { ok: s.batches.map(b => b.quantity).join() === '1,12,20' && s.batches.every(b => b.quantitySource === 'rolled'), detail: s.batches.map(b => b.quantity) };
     });
-    await check('neg.invalid-quantities-show-an-inline-error-and-create-no-batch', async () => {
-      const before = (await state(page)).batches.length; const out = {};
-      for (const v of ['0', '-3', '2.5', 'abc', '1e3', '1001', '99999']) {
-        await page.selectOption('[data-j2-habitat]', 'forest'); await page.fill('[data-j2-qty]', v); await page.click('[data-j2-generate]'); await page.waitForTimeout(60);
-        out[v] = { err: await page.locator('[data-j2-gen-error]').innerText().catch(() => ''), n: (await state(page)).batches.length, val: await page.inputValue('[data-j2-qty]'), invalid: await page.getAttribute('[data-j2-qty]', 'aria-invalid') };
-      }
-      return { ok: Object.values(out).every(o => o.err.length > 3 && o.n === before && o.invalid === 'true') && out['1001'].val === '1001' && /At most 1[, ]?000/.test(out['1001'].err), detail: out };
+    await check('generate.there-are-no-manual-habitat-size-or-terrain-controls', async () => {
+      const n = await page.locator('[data-j2-habitat], [data-j2-qty], [data-j2-terrain-btn], [data-j2-terrain], select, input[inputmode="numeric"]').count();
+      const hint = await page.locator('.j2-gen-hint').innerText();
+      return { ok: n === 0 && /random/i.test(hint), detail: { n, hint } };
     });
-    await check('neg.empty-quantity-rolls-the-d12-and-records-it-as-rolled', async () => {
-      await page.fill('[data-j2-qty]', ''); await page.selectOption('[data-j2-habitat]', ''); await page.click('[data-j2-terrain-btn="0"]'); await page.click('[data-j2-generate]'); await page.waitForTimeout(80);
+    await check('generate.the-real-random-button-rolls-every-value-activates-the-new-card-and-shows-no-dice', async () => {
+      const before = (await state(page)).batches.length;
+      await page.click('[data-j2-generate]'); await page.waitForTimeout(120);
       const s = await state(page); const b = s.batches[s.batches.length - 1];
-      return { ok: b.quantity >= 1 && b.quantity <= 12 && b.quantitySource === 'rolled' && b.habitat.source === 'rolled' && Array.isArray(b.habitat.rolls) && b.terrain.source === 'rolled' && b.rumor >= 1 && b.rumor <= 100 && b.encounter.entries.length >= 1, detail: b };
+      const card = cardOf(page, b.id); const txt = await card.innerText();
+      const expanded = await card.locator('[data-j2-card-toggle]').getAttribute('aria-expanded');
+      await card.locator('[data-j2-detail="encounter"]').click(); await page.waitForTimeout(60);
+      const enc = await card.innerText();
+      return { ok: s.batches.length === before + 1 && b.quantity >= 1 && b.quantity <= 12 && b.quantitySource === 'rolled' && b.habitat.source === 'rolled' && Array.isArray(b.habitat.rolls) && b.terrain.source === 'rolled' && b.rumor >= 1 && b.rumor <= 100 && b.encounter.entries.length >= 1 && s.activeBatchId === b.id && expanded === 'true' && s.history.undo >= 1 && !/\bd\d+\b|\b\d+\s*\+\s*\d+\b/i.test(txt + enc), detail: { b, expanded, txt } };
     });
     await check('neg.chosen-habitat-and-terrain-change-the-stored-batch-not-just-the-label', async () => {
       const id = await gen({ habitat: 'frozen', terrain: 4, qty: 5 }); const b = (await state(page)).batches.find(x => x.id === id);
@@ -492,7 +562,7 @@ async function main() {
       // Force the real generator's d20 results (1 then 11 = blighted forest-class habitat; 1 then 1 = fully overtaken); every later die is real.
       const forced = async seq => {
         await page.evaluate(sq => { const orig = Math.random; let i = 0; window.__restoreRandom = () => { Math.random = orig; }; Math.random = () => (i < sq.length ? sq[i++] : orig()); }, seq);
-        await page.selectOption('[data-j2-habitat]', ''); await page.fill('[data-j2-qty]', '2'); await page.click('[data-j2-terrain-btn="0"]'); await page.click('[data-j2-generate]'); await page.waitForTimeout(80);
+        await page.click('[data-j2-generate]'); await page.waitForTimeout(80);
         await page.evaluate(() => window.__restoreRandom());
         const st = await state(page); return st.batches[st.batches.length - 1];
       };
@@ -517,13 +587,13 @@ async function main() {
     const base7 = await snapshot(pg);
 
     await check('neg.escape-cancels-a-stock-drag-no-tile-consumed-no-history-no-ghost', async () => {
-      const r = await dragStock(pg, bidA, 'one', allowedNear(2800, 1000, SEVEN), 'escape'); const s = await state(pg);
+      const r = await dragStock(pg, bidA, 'one', ADJ[0], 'escape'); const s = await state(pg);
       return { ok: r.mid.valid && s.tiles.length === 7 && s.history.undo === base7.history.undo && s.transient === null && (await pg.locator('[data-j2-g="preview"] *').count()) === 0 && await pg.isHidden('[data-j2-tip]') && !(await pg.evaluate(() => document.body.classList.contains('j2-dragging'))), detail: s.history };
     });
     await check('neg.releasing-outside-the-map-cancels-and-consumes-nothing', async () => { await dragStock(pg, bidA, 'all', ALL13_ANCHOR, 'outside'); const s = await state(pg); return { ok: s.tiles.length === 7 && s.history.undo === base7.history.undo && s.transient === null, detail: s.tiles.length }; });
     await check('neg.lost-pointer-capture-and-pointercancel-end-the-drag-without-placing', async () => {
       for (const evType of ['pointercancel', 'lostpointercapture']) {
-        const h = await handleCenter(pg, bidA, 'one'), t = await clientOf(pg, allowedNear(2800, 1000, SEVEN));
+        const h = await handleCenter(pg, bidA, 'one'), t = await clientOf(pg, ADJ[0]);
         await pg.mouse.move(h.x, h.y); await pg.mouse.down(); await pg.mouse.move(t.x, t.y, { steps: 8 });
         const was = (await state(pg)).transient;
         await pg.evaluate(type => { const hnd = document.querySelector('.j2-card [data-j2-handle="one"]'); hnd.dispatchEvent(new PointerEvent(type, { pointerId: 1, bubbles: true })); }, evType);
@@ -549,7 +619,7 @@ async function main() {
     await viewWorld(pg, SEAM_X, 800, 0.41);
     await check('neg.stale-drag-an-undo-or-a-command-during-the-drag-cancels-it-and-never-completes-stale', async () => {
       // one committed edit so there is something to undo (history is intentionally not kept across route changes)
-      await dragStock(pg, bidA, 'one', allowedNear(2800, 1450, SEVEN), 'drop');
+      await dragStock(pg, bidA, 'one', ADJ[1], 'drop');
       const base8 = await state(pg);
       // 1) keyboard Undo while dragging
       let h = await handleCenter(pg, bidA, 'all'), t = await clientOf(pg, ALL13_ANCHOR);
@@ -560,7 +630,7 @@ async function main() {
       const a1 = await state(pg);
       // 2) another command (a generator action through the API) while dragging
       await viewWorld(pg, SEAM_X, 800, 0.41);
-      h = await handleCenter(pg, bidA, 'one'); t = await clientOf(pg, allowedNear(2800, 1000, SEVEN));
+      h = await handleCenter(pg, bidA, 'one'); t = await clientOf(pg, ADJ[0]);
       await pg.mouse.move(h.x, h.y); await pg.mouse.down(); await pg.mouse.move(t.x, t.y, { steps: 8 });
       const histBefore = (await state(pg)).history.undo;
       await pg.evaluate(() => Journey2View.debugApi().dispatch({ type: 'setNotes', batchId: Journey2View.debugState().batches[0].id, notes: 'changed mid-drag' }));
@@ -624,7 +694,7 @@ async function main() {
     });
     await check('neg.click-to-place-arms-places-and-escape-exits-keyboard-arming-works', async () => {
       const s0 = await state(pg);
-      const free = allowedNear(2750, 1500, SEVEN);
+      const free = ADJ[2];
       const h = await handleCenter(pg, bidA, 'one'); await pg.mouse.click(h.x, h.y); await pg.waitForTimeout(80);
       const armed = (await state(pg)).transient;
       const t = await clientOf(pg, free); await pg.mouse.move(t.x, t.y, { steps: 6 }); await pg.mouse.click(t.x, t.y); await pg.waitForTimeout(100);
@@ -639,7 +709,7 @@ async function main() {
       const a = (await state(pg)).camera.scale; const b = await pg.locator('.j2-side-scroll').boundingBox();
       await pg.mouse.move(b.x + 100, b.y + 100); await pg.mouse.wheel(0, -400); await pg.waitForTimeout(100);
       const c = (await state(pg)).camera.scale; const v = await pg.locator('.j2-viewport').boundingBox();
-      await pg.mouse.move(v.x + 300, v.y + 300); await pg.mouse.wheel(0, -400); await pg.waitForTimeout(150);
+      await pg.mouse.move(v.x + 700, v.y + 300); await pg.mouse.wheel(0, -400);   // right of the overlay sidebar await pg.waitForTimeout(150);
       const d = (await state(pg)).camera.scale;
       await viewWorld(pg, SEAM_X, 800, 0.41);
       return { ok: a === c && d > a, detail: { a, c, d } };
@@ -683,7 +753,8 @@ async function main() {
 
     /* notes: native text shortcuts must not drive the map; one grouped history entry */
     await check('neg.typing-in-notes-keeps-native-space-delete-and-undo-and-commits-one-history-entry', async () => {
-      await pg.click(`.j2-card[data-batch="${bidB}"] summary:has-text("Rumor and notes")`);
+      await activateCard(pg, bidB);
+      await pg.click(`.j2-card[data-batch="${bidB}"] [data-j2-detail="notes"]`);
       const ta = pg.locator(`.j2-card[data-batch="${bidB}"] textarea`);
       const s0 = await state(pg); const camera0 = JSON.stringify(s0.camera);
       await ta.click(); await pg.keyboard.type('hello world', { delay: 15 });
@@ -714,14 +785,14 @@ async function main() {
     await check('neg.storage-write-failure-never-says-Saved-keeps-the-map-usable-and-backup-still-downloads', async () => {
       await pg.evaluate(() => { const orig = Storage.prototype.setItem; window.__origSetItem = orig; Storage.prototype.setItem = function (k, v) { if (k === 'dhcodex_journey2_map') { const e = new DOMException('quota', 'QuotaExceededError'); throw e; } return orig.call(this, k, v); }; });
       const before = (await state(pg)).tiles.length;
-      await dragStock(pg, bidA, 'one', allowedNear(3000, 1450, SEVEN), 'drop');
+      await dragStock(pg, bidA, 'one', ADJ[3], 'drop');
       const s = await state(pg);
       const txt = await pg.locator('.j2-save').innerText(); const banner = await pg.locator('[data-j2-banner]').innerText();
       await pg.click('[data-j2-menu-btn="backup"]');
       const [dl] = await Promise.all([pg.waitForEvent('download'), pg.click('[data-j2-menu="backup"] [data-j2-act="export"]')]);
       const bk = JSON.parse(fs.readFileSync(await dl.path(), 'utf8'));
       await pg.evaluate(() => { Storage.prototype.setItem = window.__origSetItem; });
-      await dragStock(pg, bidA, 'one', allowedNear(3050, 1500, SEVEN), 'drop');
+      await dragStock(pg, bidA, 'one', ADJ[4], 'drop');
       const s2 = await state(pg);
       return { ok: s.saveStatus === 'failed' && !/^Saved/.test(txt) && /could not save/.test(banner) && s.tiles.length === before + 1 && bk.tiles.length === s.tiles.length && s2.saveStatus === 'saved' && (await pg.isHidden('[data-j2-banner]')), detail: { txt, banner, status: s.saveStatus, after: s2.saveStatus } };
     });
@@ -824,15 +895,23 @@ async function main() {
     const context = await newCtx(browser, { viewport: VP_SMALL });
     const page = await context.newPage(); attachLogging(page, logs, 'markers');
     await openEditor(page, base);
-    await genRegion(page, { habitat: 'mountain', terrain: 3, qty: 400 });
-    const bid = (await state(page)).batches[0].id;
     const markerCells = anchorsDoc.anchors.map(a => a.cellId).filter(c => { const p = Geo.parseCellId(c); return ctx0.policy(p.q, p.r).ok; });
     const edgeCells = []; let minQ = Infinity, maxQ = -Infinity;
     grid.forEachValidCell((q, r) => { minQ = Math.min(minQ, q); maxQ = Math.max(maxQ, q); });
     grid.forEachValidCell((q, r) => { if ((q === minQ || q === maxQ || (q >= 45 && q <= 47 && r % 7 === 0)) && ctx0.policy(q, r).ok && edgeCells.length < 40) edgeCells.push(Geo.cellId(q, r)); });
     const neg = []; grid.forEachValidCell((q, r) => { if (r < -10 && neg.length < 20 && ctx0.policy(q, r).ok && q % 9 === 0) neg.push(Geo.cellId(q, r)); });
     const cells = [...new Set(markerCells.concat(edgeCells, neg))];
-    const r = await page.evaluate(([bidv, list]) => Journey2View.debugApi().dispatch({ type: 'place', batchId: bidv, tiles: list.map((c, i) => ({ id: 'mk' + i, cell: c })) }), [bid, cells]);
+    // Regions must be connected, and these cells are scattered on purpose: one single-hex region per cell (the glyph/protection rules are per tile).
+    const r = await page.evaluate(list => {
+      const api = Journey2View.debugApi(), M = Journey2Model; let err = null;
+      list.forEach((c, i) => {
+        const region = { habitat: { biome: 'mountain', blighted: false, overtaken: false, source: 'rolled', rolls: [1] }, terrain: { value: 3, source: 'rolled' }, size: 1, encounter: { entries: [[3, 4]], combines: 0 }, rumor: 5 };
+        const a = api.dispatch({ type: 'createBatch', batch: M.batchFromRegion(region, { id: 'mkb' + i, createdAt: new Date().toISOString() }) });
+        const b = a.ok && api.dispatch({ type: 'place', batchId: 'mkb' + i, tiles: [{ id: 'mk' + i, cell: c }] });
+        if (!(a.ok && b.ok) && !err) err = (a.ok ? b : a).error;
+      });
+      return { ok: !err, error: err };
+    }, cells);
     await check('mrk.all-58-marker-cells-both-map-edges-the-seam-and-negative-r-cells-accept-tiles-atomically', async () => ({ ok: r.ok === true && (await state(page)).tiles.length === cells.length && cells.length >= 58 + 20, detail: { cells: cells.length, markerCells: markerCells.length, edge: edgeCells.length, neg: neg.length, err: r.error } }));
     await check('mrk.negative-r-cell-ids-survive-reload', async () => {
       await page.reload(); await page.waitForSelector('.j2-viewport'); await page.waitForFunction(() => Journey2View.debugState() && Journey2View.debugState().anchors > 0); await page.waitForTimeout(300);
@@ -871,13 +950,16 @@ async function main() {
       const mk = (id, biome, terrain, q) => Model.batchFromRegion({ habitat: { biome, blighted: false, overtaken: false, source: 'manual' }, terrain: { value: terrain, source: 'manual' }, encounter: { entries: [[3, 4]], combines: 0 }, rumor: 12 }, { id, createdAt: '2026-10-06T10:00:00.000Z', quantity: { value: q, source: 'manual' } });
       const spec = [['big-forest', 'forest', 2, 500], ['big-mountain', 'mountain', 3, 400], ['big-aquatic', 'aquatic', 1, 300], ['big-wetland', 'wetland', 4, 250]];
       for (const [id, biome, terr, q] of spec) doc = Model.apply(doc, { type: 'createBatch', batch: mk(id, biome, terr, q), at: doc.updatedAt }, ctx0).doc;
-      const used = new Set(); const [W, H] = template.worldSizePx; const per = {}; let k = 0;
-      for (let y = 140; y < H - 60 && doc.tiles.length < 1050; y += 36) for (let x = 90; x < W - 60 && doc.tiles.length < 1050; x += 66) {
-        const c = grid.worldToCell(x, y), id = Geo.cellId(c.q, c.r);
-        if (!ctx0.policy(c.q, c.r).ok || used.has(id)) continue;
-        const b = spec[k++ % spec.length]; per[b[0]] = per[b[0]] || 0; if (per[b[0]] >= b[3]) continue; per[b[0]]++; used.add(id);
-        doc = Model.apply(doc, { type: 'place', batchId: b[0], tiles: [{ id: 'syn' + doc.tiles.length, cell: id }], at: doc.updatedAt }, ctx0).doc;
-      }
+      // four connected blobs (breadth-first from spread-out starts), 1050 tiles in total; every batch keeps stock
+      const used = new Set(); const starts = [[900, 700], [3900, 700], [900, 2400], [3900, 2400]]; const place = [400, 300, 200, 150];
+      spec.forEach(([id], si) => {
+        const out = [allowedNear(starts[si][0], starts[si][1], [...used])]; used.add(out[0]);
+        for (let i = 0; i < out.length && out.length < place[si]; i++) {
+          const c = Geo.parseCellId(out[i]);
+          for (const d of Geo.NEIGHBOR_DELTAS) { const nid = Geo.cellId(c.q + d.dq, c.r + d.dr); if (out.length < place[si] && !used.has(nid) && ctx0.policy(c.q + d.dq, c.r + d.dr).ok) { used.add(nid); out.push(nid); } }
+        }
+        doc = Model.apply(doc, { type: 'place', batchId: id, tiles: out.map((cell, i) => ({ id: 'syn' + si + '-' + i, cell })), at: doc.updatedAt }, ctx0).doc;
+      });
       return doc;
     })();
     const bigPath = path.join(FIX, 'synthetic-1000-tiles-backup.json');
@@ -896,7 +978,11 @@ async function main() {
     perf.commit = await page.evaluate(() => {
       const api = Journey2View.debugApi(); const s = Journey2View.debugState();
       const free = s.batches.find(b => b.remaining > 0); const used = new Set(api.document().tiles.map(t => t.cell));
-      const nextFree = () => { for (let q = 5; q < 90; q++) for (let r = -5; r < 70; r++) { const id = q + ',' + r; if (!used.has(id) && api.allowedCell(id).ok) { used.add(id); return id; } } return null; };
+      const nextFree = () => {   // a free allowed cell touching a tile of the same region (regions stay connected)
+        const dirs = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1]];
+        for (const t of api.document().tiles.filter(x => x.batchId === free.id)) { const [q, r] = t.cell.split(',').map(Number); for (const [a, b] of dirs) { const id = (q + a) + ',' + (r + b); if (!used.has(id) && api.allowedCell(id).ok) { used.add(id); return id; } } }
+        return null;
+      };
       const times = [];
       for (let i = 0; i < 5; i++) { const cell = nextFree(); const t0 = performance.now(); const res = api.dispatch({ type: 'place', batchId: free.id, tiles: [{ id: 'perf' + i, cell: cell }] }); times.push({ ok: res.ok, ms: Math.round((performance.now() - t0) * 10) / 10 }); }
       return times;

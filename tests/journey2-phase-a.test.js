@@ -210,11 +210,24 @@ test('connectivity: preview and commit use one rule (checkPlacement agrees with 
   assert.equal(place(doc, 'a', [cid(farC.q, farC.r)], 'z').error.code, 'disconnected-region');
 });
 
-test('connectivity: a region that is already split (an old save) is not made un-editable', () => {
+test('connectivity: a legacy split region stays usable — an edit may keep or reduce, never increase, the component count', () => {
+  const far = shift(CENTER, { dq: 6, dr: 0 });
   const doc = docWith('a');
-  const legacy = Object.assign({}, doc, { tiles: [{ id: 'x', batchId: 'a', cell: CENTER }, { id: 'y', batchId: 'a', cell: shift(CENTER, { dq: 6, dr: 0 }) }] });
+  const legacy = Object.assign({}, doc, { tiles: [{ id: 'x', batchId: 'a', cell: CENTER }, { id: 'y', batchId: 'a', cell: far }, { id: 'z', batchId: 'a', cell: shift(far, NB[0]) }] });
   assert.equal(M.validateDocument(legacy, ctx).ok, true);
+  assert.equal(M.componentCount(legacy.tiles.map(t => t.cell)), 2);
+  // reducing: returning the lone tile, or joining it to the pair, is fine
   assert.equal(M.apply(legacy, { type: 'returnTile', tileId: 'x', at: AT }, ctx).ok, true);
+  assert.equal(M.apply(legacy, { type: 'move', tileId: 'x', to: shift(far, { dq: 0, dr: 1 }), at: AT }, ctx).ok, true);
+  // keeping: moving a tile without changing the count is fine
+  assert.equal(M.apply(legacy, { type: 'move', tileId: 'x', to: shift(CENTER, NB[2]), at: AT }, ctx).ok, true);
+  // worsening: a new detached tile, or splitting the pair into a third piece, is refused
+  assert.equal(place(legacy, 'a', [shift(CENTER, { dq: -2, dr: 0 })], 'n').error.code, 'disconnected-region');
+  assert.equal(M.apply(legacy, { type: 'move', tileId: 'z', to: shift(CENTER, { dq: 0, dr: -2 }), at: AT }, ctx).error.code, 'disconnected-region');
+  // once connected, the strict rule applies
+  const joined = must(M.apply(legacy, { type: 'move', tileId: 'x', to: shift(far, { dq: 0, dr: 1 }), at: AT }, ctx));
+  assert.equal(M.componentCount(joined.tiles.map(t => t.cell)), 1);
+  assert.equal(place(joined, 'a', [shift(CENTER, { dq: -2, dr: 0 })], 'n').error.code, 'disconnected-region');
 });
 
 /* ---------------- enclosed holes ---------------- */
@@ -350,4 +363,11 @@ test('localization: every key the Journey 2 view uses exists in English and Russ
 test('localization: the removed manual-generator strings are gone from both languages', () => {
   const i18n = JSON.parse(read('data/i18n.json'));
   for (const lang of ['en', 'ru']) for (const k of Object.keys(i18n[lang])) assert.doesNotMatch(k, /^journey2_(gen_hexes|gen_roll|gen_random|qty_)/, k);
+});
+
+test('selection: clicking a map tile never expands or scrolls a sidebar card', () => {
+  const view = read('js/journey2-view.js');
+  const body = view.slice(view.indexOf('function selectTile(id)'), view.indexOf('function onWheel'));
+  assert.doesNotMatch(body, /activeBatchId|scrollIntoView|detailSection/);
+  assert.match(view, /j2-region-hl/, 'the whole region is highlighted on the map');
 });

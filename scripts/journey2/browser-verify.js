@@ -131,7 +131,7 @@ async function main() {
   for (const d of [IMG, TESTS, PRINT, DATA]) fs.mkdirSync(d, { recursive: true });
   const { server, port, requests } = await serve(SITE_ROOT, '');
   const base = `http://127.0.0.1:${port}/`;
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(process.env.J2_BROWSER_CHANNEL ? { channel: process.env.J2_BROWSER_CHANNEL } : {});   // J2_BROWSER_CHANNEL=chrome uses an installed Chrome
   const logs = [];
 
   /* ===== 1. route load, layout and overlay alignment at the two desktop sizes ===== */
@@ -199,14 +199,20 @@ async function main() {
     return { ok: s1.camera.scale > s0.camera.scale * 1.5 && Math.hypot(w1[0] - w0[0], w1[1] - w0[1]) < 0.6, detail: { s0: s0.camera.scale, s1: s1.camera.scale, w0, w1 } };
   });
   await check('zoom.buttons-and-readout', async () => {
+    // fixed stops: from a fitted (non-standard) scale + goes to the next stop above, - to the next below; the readout resets to exactly 100%
     await page.click('[data-j2-fit]'); await page.waitForTimeout(150);
     const a = await state(page);
     await page.click('[data-j2-zoom="in"]'); await page.waitForTimeout(150);
     const b = await state(page);
+    await page.click('[data-j2-zoom="in"]'); await page.waitForTimeout(150);   // out is unavailable (aria-disabled) at the first stop
     await page.click('[data-j2-zoom="out"]'); await page.waitForTimeout(150);
     const c = await state(page);
+    await page.click('[data-j2-zoom="reset"]'); await page.waitForTimeout(150);
+    const d = await state(page);
     const readout = await page.textContent('[data-j2-zoom-readout]');
-    return { ok: Math.abs(b.camera.scale / a.camera.scale - 1.25) < 0.01 && Math.abs(c.camera.scale / b.camera.scale - 0.8) < 0.01 && readout === Math.round(c.camera.scale * 100) + '%', detail: { a: a.camera.scale, b: b.camera.scale, c: c.camera.scale, readout } };
+    const STEPS = [0.5, 0.67, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 2];
+    const next = STEPS.find(s => s > a.camera.scale + 1e-4);
+    return { ok: Math.abs(b.camera.scale - next) < 1e-9 && c.camera.scale === b.camera.scale && d.camera.scale === 1 && readout === '100%', detail: { a: a.camera.scale, b: b.camera.scale, c: c.camera.scale, d: d.camera.scale, readout } };
   });
   await check('fit.restores-whole-map', async () => {
     await zoomTo(page, 1.5);
@@ -217,7 +223,7 @@ async function main() {
   await check('pan.drag-moves-map-and-does-not-select', async () => {
     await page.click('[data-j2-fit]'); await page.waitForTimeout(150);
     const before = await state(page), r = await vpRect(page);
-    await page.mouse.move(r.x + 300, r.y + 300); await page.mouse.down(); await page.mouse.move(r.x + 340, r.y + 330, { steps: 6 }); await page.mouse.up();
+    await page.mouse.move(r.x + 700, r.y + 300); await page.mouse.down(); await page.mouse.move(r.x + 740, r.y + 330, { steps: 6 });   // right of the 340px overlay sidebar await page.mouse.up();
     await page.waitForTimeout(200);
     const after = await state(page);
     return { ok: Math.abs(after.camera.tx - before.camera.tx - 40) < 1.5 && Math.abs(after.camera.ty - before.camera.ty - 30) < 1.5 && after.selectedCell === before.selectedCell && !after.fitMode, detail: { before: before.camera, after: after.camera, sel: after.selectedCell } };
@@ -248,7 +254,7 @@ async function main() {
     let seed = 12345; const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
     await page.click('[data-j2-fit]'); await page.waitForTimeout(150);
     for (let i = 0; i < 20; i++) {
-      const px = r.x + 20 + rnd() * (r.w - 360), py = r.y + 20 + rnd() * (r.h - 40);
+      const px = r.x + 380 + rnd() * (r.w - 380 - 340), py = r.y + 20 + rnd() * (r.h - 40);   // clear of the overlay sidebar (left) and the diagnostics drawer (right)
       await page.mouse.move(px, py); await page.waitForTimeout(40);
       const s = await state(page);
       const w = [(px - r.x - s.camera.tx) / s.camera.scale, (py - r.y - s.camera.ty) / s.camera.scale];

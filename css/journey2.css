@@ -322,7 +322,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-overlay .j2-tile-halo { fill: #fff; fill-opacity: 0.7; stroke: none; }
 .j2-tile-sym, .j2-pvt-sym { image-rendering: auto; }
 .j2-tile-dot, .j2-pvt-dot { fill: var(--ink); stroke: none; }
-.j2-overlay .j2-tile-blight, .j2-overlay .j2-pvt-blight { fill: none; stroke: var(--ink); stroke-width: 1.4; stroke-linecap: round; vector-effect: none; }
+.j2-overlay .j2-tile-blight, .j2-overlay .j2-pvt-blight { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; vector-effect: none; }
 .j2-tile-hex.is-glyphless { stroke-dasharray: 4 3; stroke-opacity: 0.8; stroke-width: 1.4; }
 .j2-region-hl { fill: var(--hope-wash); stroke: var(--hope); stroke-width: 1.5; stroke-dasharray: 4 3; }
 .j2-tile-sel { fill: var(--hope-wash); stroke: var(--hope); stroke-width: 2.5; }
