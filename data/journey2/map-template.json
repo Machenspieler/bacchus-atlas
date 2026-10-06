@@ -1,0 +1,1296 @@
+{
+ "schemaVersion": 1,
+ "templateId": "journey-to-horizon-original",
+ "templateVersion": "1.0.0",
+ "status": "promoted-geometry-verified",
+ "readyForInteractivePlacement": true,
+ "verdict": "geometry-ready-for-owner-review",
+ "generatedBy": "scripts/journey2/build-template.js",
+ "verification": {
+  "preparedAssets": {
+   "status": "pass",
+   "checks": [
+    {
+     "check": "source panel hash west",
+     "ok": true
+    },
+    {
+     "check": "source panel hash east",
+     "ok": true
+    },
+    {
+     "check": "world raster exists",
+     "ok": true
+    },
+    {
+     "check": "world raster file hash matches template",
+     "ok": true
+    },
+    {
+     "check": "world raster pixel hash matches template",
+     "ok": true
+    },
+    {
+     "check": "world raster size matches template",
+     "ok": true
+    },
+    {
+     "check": "12 runtime symbols present with matching hashes",
+     "ok": true
+    }
+   ],
+   "verifiedBy": "scripts/journey2/verify-template.js"
+  },
+  "geometry": {
+   "status": "pass",
+   "checks": [
+    {
+     "check": "hold-out max residual <= 3% of short dimension (1.82 px)",
+     "ok": true
+    },
+    {
+     "check": "all 19 control cells within tolerance",
+     "ok": true
+    },
+    {
+     "check": ">= 12 control cells",
+     "ok": true
+    },
+    {
+     "check": "control cells cover west, east, seam, outer areas, Marrogate and Horizon",
+     "ok": true
+    },
+    {
+     "check": "cell adjacency continues across the panel joint (reciprocal, exactly one lattice step)",
+     "ok": true
+    },
+    {
+     "check": "grid is regular (anisotropy within 0.1 %)",
+     "ok": true
+    },
+    {
+     "check": "anchor survey complete and every anchor visually verified",
+     "ok": true
+    },
+    {
+     "check": "hold-out-verification.csv parses and round-trips (14/14 checks)",
+     "ok": true
+    },
+    {
+     "check": "every anchor lies in a valid cell",
+     "ok": true
+    }
+   ],
+   "verifiedBy": "scripts/journey2/verify-template.js"
+  },
+  "browserBehavior": {
+   "status": "pass",
+   "checks": 55,
+   "failed": [],
+   "verifiedBy": "scripts/journey2/browser-verify.js (Playwright Chromium 1366x768 + 1920x1080, isolated contexts)",
+   "note": "Chromium only; Firefox/WebKit/Safari and touch devices were not exercised."
+  },
+  "printProof": {
+   "status": "pass",
+   "checks": [
+    {
+     "check": "[background printing ON (canonical proof)] PDF has the 2 proof pages",
+     "ok": true,
+     "value": 2
+    },
+    {
+     "check": "[background printing ON (canonical proof)] page 1 is A4 landscape (297 x 210 mm, +/-0.6)",
+     "ok": true,
+     "value": [
+      297.011,
+      209.889
+     ]
+    },
+    {
+     "check": "[background printing ON (canonical proof)] page 1 map raster is placed at 1385 x 860 world px * 0.2 mm = 277 x 172 mm (from the PDF transform, no unexpected scaling)",
+     "ok": true,
+     "value": {
+      "widthMm": 277,
+      "heightMm": 172,
+      "xMm": 10.05,
+      "yFromTopMm": 16.14,
+      "yFromBottomMm": 21.75
+     }
+    },
+    {
+     "check": "[background printing ON (canonical proof)] page 1 raster lies inside the 10 mm margins on both axes (top-left origin, no clipping)",
+     "ok": true,
+     "value": {
+      "x": [
+       10.05,
+       287.05
+      ],
+      "y": [
+       16.14,
+       188.14
+      ]
+     }
+    },
+    {
+     "check": "[background printing ON (canonical proof)] page 1 smallest text >= 5.5 pt",
+     "ok": true,
+     "value": [
+      5.7,
+      6.2,
+      6.8,
+      7,
+      7.4,
+      10
+     ]
+    },
+    {
+     "check": "[background printing ON (canonical proof)] page 1 outer-margin patches (4 corners + 4 mid-edges) are white: every channel >= 250",
+     "ok": true,
+     "value": {
+      "patches": 8,
+      "minChannel": 255
+     }
+    },
+    {
+     "check": "[background printing ON (canonical proof)] page 1 map linework and annotations survive (dark pixels inside the raster rectangle >= 0.5 %)",
+     "ok": true,
+     "value": {
+      "darkPixelFraction": 0.0212,
+      "pixels": 1531725
+     }
+    },
+    {
+     "check": "[background printing ON (canonical proof)] page 2 is A4 landscape (297 x 210 mm, +/-0.6)",
+     "ok": true,
+     "value": [
+      297.011,
+      209.889
+     ]
+    },
+    {
+     "check": "[background printing ON (canonical proof)] page 2 map raster is placed at 1385 x 860 world px * 0.2 mm = 277 x 172 mm (from the PDF transform, no unexpected scaling)",
+     "ok": true,
+     "value": {
+      "widthMm": 277,
+      "heightMm": 172,
+      "xMm": 10.05,
+      "yFromTopMm": 16.14,
+      "yFromBottomMm": 21.75
+     }
+    },
+    {
+     "check": "[background printing ON (canonical proof)] page 2 raster lies inside the 10 mm margins on both axes (top-left origin, no clipping)",
+     "ok": true,
+     "value": {
+      "x": [
+       10.05,
+       287.05
+      ],
+      "y": [
+       16.14,
+       188.14
+      ]
+     }
+    },
+    {
+     "check": "[background printing ON (canonical proof)] page 2 smallest text >= 5.5 pt",
+     "ok": true,
+     "value": [
+      5.7,
+      6.2,
+      6.8,
+      7,
+      7.4,
+      10
+     ]
+    },
+    {
+     "check": "[background printing ON (canonical proof)] page 2 outer-margin patches (4 corners + 4 mid-edges) are white: every channel >= 250",
+     "ok": true,
+     "value": {
+      "patches": 8,
+      "minChannel": 255
+     }
+    },
+    {
+     "check": "[background printing ON (canonical proof)] page 2 map linework and annotations survive (dark pixels inside the raster rectangle >= 0.5 %)",
+     "ok": true,
+     "value": {
+      "darkPixelFraction": 0.0123,
+      "pixels": 1531725
+     }
+    },
+    {
+     "check": "[background printing ON (canonical proof)] first full-page fill in the content stream is absent or white (not a dark root/page fill)",
+     "ok": true,
+     "value": {
+      "fillRgb": [
+       1,
+       1,
+       1
+      ],
+      "rect": [
+       0,
+       0,
+       1047,
+       718
+      ]
+     }
+    },
+    {
+     "check": "[background printing OFF] PDF has the 2 proof pages",
+     "ok": true,
+     "value": 2
+    },
+    {
+     "check": "[background printing OFF] page 1 is A4 landscape (297 x 210 mm, +/-0.6)",
+     "ok": true,
+     "value": [
+      297.011,
+      209.889
+     ]
+    },
+    {
+     "check": "[background printing OFF] page 1 map raster is placed at 1385 x 860 world px * 0.2 mm = 277 x 172 mm (from the PDF transform, no unexpected scaling)",
+     "ok": true,
+     "value": {
+      "widthMm": 277,
+      "heightMm": 172,
+      "xMm": 10.05,
+      "yFromTopMm": 16.14,
+      "yFromBottomMm": 21.75
+     }
+    },
+    {
+     "check": "[background printing OFF] page 1 raster lies inside the 10 mm margins on both axes (top-left origin, no clipping)",
+     "ok": true,
+     "value": {
+      "x": [
+       10.05,
+       287.05
+      ],
+      "y": [
+       16.14,
+       188.14
+      ]
+     }
+    },
+    {
+     "check": "[background printing OFF] page 1 smallest text >= 5.5 pt",
+     "ok": true,
+     "value": [
+      5.7,
+      6.2,
+      6.8,
+      7,
+      7.4,
+      10
+     ]
+    },
+    {
+     "check": "[background printing OFF] page 1 outer-margin patches (4 corners + 4 mid-edges) are white: every channel >= 250",
+     "ok": true,
+     "value": {
+      "patches": 8,
+      "minChannel": 255
+     }
+    },
+    {
+     "check": "[background printing OFF] page 1 map linework and annotations survive (dark pixels inside the raster rectangle >= 0.5 %)",
+     "ok": true,
+     "value": {
+      "darkPixelFraction": 0.0212,
+      "pixels": 1531725
+     }
+    },
+    {
+     "check": "[background printing OFF] page 2 is A4 landscape (297 x 210 mm, +/-0.6)",
+     "ok": true,
+     "value": [
+      297.011,
+      209.889
+     ]
+    },
+    {
+     "check": "[background printing OFF] page 2 map raster is placed at 1385 x 860 world px * 0.2 mm = 277 x 172 mm (from the PDF transform, no unexpected scaling)",
+     "ok": true,
+     "value": {
+      "widthMm": 277,
+      "heightMm": 172,
+      "xMm": 10.05,
+      "yFromTopMm": 16.14,
+      "yFromBottomMm": 21.75
+     }
+    },
+    {
+     "check": "[background printing OFF] page 2 raster lies inside the 10 mm margins on both axes (top-left origin, no clipping)",
+     "ok": true,
+     "value": {
+      "x": [
+       10.05,
+       287.05
+      ],
+      "y": [
+       16.14,
+       188.14
+      ]
+     }
+    },
+    {
+     "check": "[background printing OFF] page 2 smallest text >= 5.5 pt",
+     "ok": true,
+     "value": [
+      5.7,
+      6.2,
+      6.8,
+      7,
+      7.4,
+      10
+     ]
+    },
+    {
+     "check": "[background printing OFF] page 2 outer-margin patches (4 corners + 4 mid-edges) are white: every channel >= 250",
+     "ok": true,
+     "value": {
+      "patches": 8,
+      "minChannel": 255
+     }
+    },
+    {
+     "check": "[background printing OFF] page 2 map linework and annotations survive (dark pixels inside the raster rectangle >= 0.5 %)",
+     "ok": true,
+     "value": {
+      "darkPixelFraction": 0.0123,
+      "pixels": 1531725
+     }
+    },
+    {
+     "check": "[background printing OFF] first full-page fill in the content stream is absent or white (not a dark root/page fill)",
+     "ok": true,
+     "value": {
+      "fillRgb": [
+       1,
+       1,
+       1
+      ],
+      "rect": [
+       0,
+       0,
+       1047,
+       719
+      ]
+     }
+    }
+   ],
+   "scope": "browser print-to-PDF (Chromium, Playwright page.pdf, preferCSSPageSize) with background printing ON and OFF; PDF structure, white page margins and map-artwork survival checked on pdf.js renders over an explicit white canvas plus a content-stream fill scan",
+   "verifiedBy": "scripts/journey2/inspect-pdf.js + scripts/journey2/lib/pdf-checks.js + scripts/journey2/verify-print.js",
+   "note": "Single rasteriser (pdf.js); no MuPDF/Poppler available in this environment, so the content-stream fill scan is the second opinion. No physical printer test was performed (physicalPrintTest: not-tested)."
+  },
+  "physicalPrintTest": {
+   "status": "not-tested",
+   "note": "Browser print-to-PDF only; no physical printer test was performed."
+  }
+ },
+ "coordinateConvention": {
+  "sourcePanels": "native image pixels; origin top-left; x right; y down",
+  "world": "assembled world raster pixels (scale 1:1 with the native panels); origin top-left of the raster; independent of screen size and camera zoom",
+  "cells": "integer axial q,r; id string \"q,r\"; centre = origin + q*basisQ + r*basisR; independent from browser pixels and camera zoom"
+ },
+ "worldSizePx": [
+  4848,
+  3185
+ ],
+ "assembledAsset": {
+  "path": "img/journey2/valloren-world.webp",
+  "format": "webp-lossless",
+  "sizePx": [
+   4848,
+   3185
+  ],
+  "bytes": 8706624,
+  "fileSha256": "2989c4eabdc2813199c8ee1d4566762df0ffc05a2253c2251131125bbe14f0f8",
+  "pixelSha256": "9dc1da16aa76595758cb691346380ce58a71a2ebc29fbde0d036ecbda93d7e8a",
+  "cacheKey": "2989c4eabdc28131",
+  "note": "Lossless. Cache key is the first 16 hex chars of the file SHA-256, generated by build-template.js (never hand-edited)."
+ },
+ "composition": {
+  "compositionId": "valloren-world-v1",
+  "descriptor": "scripts/journey2/composition.json",
+  "reproduce": "node scripts/journey2/prepare-map.js [--check]",
+  "sources": [
+   {
+    "id": "west",
+    "sourcePath": "assets/maps/valloren-west.native.png",
+    "sha256": "2280b6c725930fad9902e6b3f3f4d1b06b17654f86e4d8361cf29bcb9e289165",
+    "nativeSizePx": [
+     2553,
+     3300
+    ]
+   },
+   {
+    "id": "east",
+    "sourcePath": "assets/maps/valloren-east.native.png",
+    "sha256": "b8ae04e65b75f1bc4ced3a937fd8c837f31bd9ef0a9226126fa869c402869bfe",
+    "nativeSizePx": [
+     2553,
+     3300
+    ]
+   }
+  ],
+  "panels": [
+   {
+    "id": "west",
+    "cropRectPx": [
+     58,
+     58,
+     2424,
+     3185
+    ],
+    "worldTranslatePx": [
+     -58,
+     -58
+    ],
+    "worldRectPx": [
+     0,
+     0,
+     2424,
+     3185
+    ]
+   },
+   {
+    "id": "east",
+    "cropRectPx": [
+     71,
+     58,
+     2424,
+     3185
+    ],
+    "worldTranslatePx": [
+     2353,
+     -58
+    ],
+    "worldRectPx": [
+     2424,
+     0,
+     2424,
+     3185
+    ]
+   }
+  ],
+  "seam": {
+   "worldX": 2424,
+   "relation": "west_native_x = east_native_x + 2411 (dy = 0)",
+   "registrationMethod": "Hex-lattice phase on both sides of the joint (local lattice fits give east->west x shift 2411.1 mod the 104.86 px lattice period) cross-checked by coastline/hill-stroke continuity at 3x zoom. The panels overlap by 6 native columns (west 2479-2484 = east 68-73); the frames are print-tile frames, not geography.",
+   "cutNote": "West is used up to native x 2481, east from native x 71 (= west 2482): the cut lies inside the 6-column overlap, in clean (frame-free) pixels on both sides."
+  },
+  "derivedImageScale": 1
+ },
+ "mapFrame": {
+  "innerRectPx": [
+   7,
+   7,
+   4834,
+   3171
+  ],
+  "note": "Interior of the printed outer frame (frame lines and white print margin lie outside it). Half-open: x0 <= x < x0+w."
+ },
+ "grid": {
+  "orientation": "flat-top",
+  "calibrationStatus": "measured-verified",
+  "cellIdFormat": "\"q,r\" (integers)",
+  "hexShortDimensionPx": 60.5442,
+  "hexCircumradiusPx": 34.9552,
+  "measurement": {
+   "method": "per-cell observation of the six printed grid lines (perpendicular line-profile centroids), robust least-squares affine lattice on the fit cells; hold-out cells never influence the fit",
+   "report": "docs/journey2-implementation/stage-0/CALIBRATION_REPORT.md",
+   "counts": {
+    "cells": 4975,
+    "usable": 4047,
+    "fit": 3537,
+    "holdout": 510
+   },
+   "fitResidualPx": {
+    "n": 3537,
+    "rms": 0.19029178517960754,
+    "mean": 0.10579293816656027,
+    "median": 0.07346244335626134,
+    "p95": 0.2925076793203071,
+    "p99": 0.6513127716043081,
+    "max": 6.41265419661114
+   },
+   "holdoutResidualPx": {
+    "n": 510,
+    "rms": 0.19159037315207747,
+    "mean": 0.11598497774313776,
+    "median": 0.07484194077945198,
+    "p95": 0.35274129308603963,
+    "p99": 0.8470998708683894,
+    "max": 1.4597399823957975
+   },
+   "anisotropy": 1.0000613132508913
+  },
+  "originPx": [
+   12.4404,
+   17.8522
+  ],
+  "basisQPx": [
+   52.436,
+   30.272
+  ],
+  "basisRPx": [
+   -0.0002,
+   60.5442
+  ],
+  "hexCornersRelativePx": [
+   [
+    34.9574,
+    -0.0001
+   ],
+   [
+    17.4788,
+    -30.2721
+   ],
+   [
+    -17.4786,
+    -30.2721
+   ],
+   [
+    -34.9574,
+    0.0001
+   ],
+   [
+    -17.4788,
+    30.2721
+   ],
+   [
+    17.4786,
+    30.2721
+   ]
+  ],
+  "validCells": {
+   "rule": "centre-in-frame-interior",
+   "ruleDetail": "A cell is valid iff its centre lies in the half-open frame interior [x0,x1) x [y0,y1) (grid.frameInnerRectPx). Partial edge cells whose centre is inside are valid; cells whose centre is outside the frame are not, even when a sliver of them is drawn. Water and old coastlines never invalidate a cell; title, compass and legend areas stay valid (see decorativeAreas).",
+   "format": "column-ranges",
+   "columnRangeMeaning": "columns[q] = [rMin, rMax], inclusive; every integer r in the range is valid",
+   "count": 4883,
+   "fullyInsideFrameCount": 4687,
+   "clippedByFrameCount": 196,
+   "columns": {
+    "0": [
+     0,
+     52
+    ],
+    "1": [
+     0,
+     51
+    ],
+    "2": [
+     -1,
+     51
+    ],
+    "3": [
+     -1,
+     50
+    ],
+    "4": [
+     -2,
+     50
+    ],
+    "5": [
+     -2,
+     49
+    ],
+    "6": [
+     -3,
+     49
+    ],
+    "7": [
+     -3,
+     48
+    ],
+    "8": [
+     -4,
+     48
+    ],
+    "9": [
+     -4,
+     47
+    ],
+    "10": [
+     -5,
+     47
+    ],
+    "11": [
+     -5,
+     46
+    ],
+    "12": [
+     -6,
+     46
+    ],
+    "13": [
+     -6,
+     45
+    ],
+    "14": [
+     -7,
+     45
+    ],
+    "15": [
+     -7,
+     44
+    ],
+    "16": [
+     -8,
+     44
+    ],
+    "17": [
+     -8,
+     43
+    ],
+    "18": [
+     -9,
+     43
+    ],
+    "19": [
+     -9,
+     42
+    ],
+    "20": [
+     -10,
+     42
+    ],
+    "21": [
+     -10,
+     41
+    ],
+    "22": [
+     -11,
+     41
+    ],
+    "23": [
+     -11,
+     40
+    ],
+    "24": [
+     -12,
+     40
+    ],
+    "25": [
+     -12,
+     39
+    ],
+    "26": [
+     -13,
+     39
+    ],
+    "27": [
+     -13,
+     38
+    ],
+    "28": [
+     -14,
+     38
+    ],
+    "29": [
+     -14,
+     37
+    ],
+    "30": [
+     -15,
+     37
+    ],
+    "31": [
+     -15,
+     36
+    ],
+    "32": [
+     -16,
+     36
+    ],
+    "33": [
+     -16,
+     35
+    ],
+    "34": [
+     -17,
+     35
+    ],
+    "35": [
+     -17,
+     34
+    ],
+    "36": [
+     -18,
+     34
+    ],
+    "37": [
+     -18,
+     33
+    ],
+    "38": [
+     -19,
+     33
+    ],
+    "39": [
+     -19,
+     32
+    ],
+    "40": [
+     -20,
+     32
+    ],
+    "41": [
+     -20,
+     31
+    ],
+    "42": [
+     -21,
+     31
+    ],
+    "43": [
+     -21,
+     30
+    ],
+    "44": [
+     -22,
+     30
+    ],
+    "45": [
+     -22,
+     29
+    ],
+    "46": [
+     -23,
+     29
+    ],
+    "47": [
+     -23,
+     28
+    ],
+    "48": [
+     -24,
+     28
+    ],
+    "49": [
+     -24,
+     27
+    ],
+    "50": [
+     -25,
+     27
+    ],
+    "51": [
+     -25,
+     26
+    ],
+    "52": [
+     -26,
+     26
+    ],
+    "53": [
+     -26,
+     25
+    ],
+    "54": [
+     -27,
+     25
+    ],
+    "55": [
+     -27,
+     24
+    ],
+    "56": [
+     -28,
+     24
+    ],
+    "57": [
+     -28,
+     23
+    ],
+    "58": [
+     -29,
+     23
+    ],
+    "59": [
+     -29,
+     22
+    ],
+    "60": [
+     -30,
+     22
+    ],
+    "61": [
+     -30,
+     21
+    ],
+    "62": [
+     -31,
+     21
+    ],
+    "63": [
+     -31,
+     20
+    ],
+    "64": [
+     -32,
+     20
+    ],
+    "65": [
+     -32,
+     19
+    ],
+    "66": [
+     -33,
+     19
+    ],
+    "67": [
+     -33,
+     18
+    ],
+    "68": [
+     -34,
+     18
+    ],
+    "69": [
+     -34,
+     17
+    ],
+    "70": [
+     -35,
+     17
+    ],
+    "71": [
+     -35,
+     16
+    ],
+    "72": [
+     -36,
+     16
+    ],
+    "73": [
+     -36,
+     15
+    ],
+    "74": [
+     -37,
+     15
+    ],
+    "75": [
+     -37,
+     14
+    ],
+    "76": [
+     -38,
+     14
+    ],
+    "77": [
+     -38,
+     13
+    ],
+    "78": [
+     -39,
+     13
+    ],
+    "79": [
+     -39,
+     12
+    ],
+    "80": [
+     -40,
+     12
+    ],
+    "81": [
+     -40,
+     11
+    ],
+    "82": [
+     -41,
+     11
+    ],
+    "83": [
+     -41,
+     10
+    ],
+    "84": [
+     -42,
+     10
+    ],
+    "85": [
+     -42,
+     9
+    ],
+    "86": [
+     -43,
+     9
+    ],
+    "87": [
+     -43,
+     8
+    ],
+    "88": [
+     -44,
+     8
+    ],
+    "89": [
+     -44,
+     7
+    ],
+    "90": [
+     -45,
+     7
+    ],
+    "91": [
+     -45,
+     6
+    ],
+    "92": [
+     -46,
+     6
+    ]
+   }
+  },
+  "controlPoints": [
+   {
+    "id": "2,5",
+    "label": "NW outer ocean",
+    "area": "west / outer",
+    "predictedCenterPx": [
+     117.311,
+     381.117
+    ],
+    "observedCenterPx": [
+     117.275,
+     381.178
+    ],
+    "residualPx": 0.07,
+    "residualFractionOfShortDimension": 0.0012,
+    "edgesObserved": 6
+   },
+   {
+    "id": "3,28",
+    "label": "W outer ocean, mid-height",
+    "area": "west / outer",
+    "predictedCenterPx": [
+     169.743,
+     1803.906
+    ],
+    "observedCenterPx": [
+     169.731,
+     1803.852
+    ],
+    "residualPx": 0.055,
+    "residualFractionOfShortDimension": 0.0009,
+    "edgesObserved": 6
+   },
+   {
+    "id": "1,46",
+    "label": "SW corner ocean",
+    "area": "west / corner",
+    "predictedCenterPx": [
+     64.867,
+     2833.157
+    ],
+    "observedCenterPx": [
+     64.829,
+     2833.21
+    ],
+    "residualPx": 0.065,
+    "residualFractionOfShortDimension": 0.0011,
+    "edgesObserved": 6
+   },
+   {
+    "id": "4,43",
+    "label": "Near Marrogate (land, east of the gate)",
+    "area": "west / Marrogate",
+    "predictedCenterPx": [
+     222.176,
+     2742.341
+    ],
+    "observedCenterPx": [
+     222.163,
+     2742.296
+    ],
+    "residualPx": 0.047,
+    "residualFractionOfShortDimension": 0.0008,
+    "edgesObserved": 6
+   },
+   {
+    "id": "30,1",
+    "label": "West interior, north",
+    "area": "west / interior",
+    "predictedCenterPx": [
+     1585.52,
+     986.556
+    ],
+    "observedCenterPx": [
+     1585.545,
+     986.595
+    ],
+    "residualPx": 0.046,
+    "residualFractionOfShortDimension": 0.0008,
+    "edgesObserved": 6
+   },
+   {
+    "id": "24,15",
+    "label": "West interior, centre",
+    "area": "west / interior",
+    "predictedCenterPx": [
+     1270.901,
+     1652.543
+    ],
+    "observedCenterPx": [
+     1270.808,
+     1652.592
+    ],
+    "residualPx": 0.106,
+    "residualFractionOfShortDimension": 0.0018,
+    "edgesObserved": 5
+   },
+   {
+    "id": "46,-15",
+    "label": "Seam, upper",
+    "area": "seam",
+    "predictedCenterPx": [
+     2424.499,
+     502.201
+    ],
+    "observedCenterPx": [
+     2424.557,
+     502.222
+    ],
+    "residualPx": 0.061,
+    "residualFractionOfShortDimension": 0.001,
+    "edgesObserved": 6
+   },
+   {
+    "id": "46,1",
+    "label": "Seam, middle",
+    "area": "seam",
+    "predictedCenterPx": [
+     2424.496,
+     1470.908
+    ],
+    "observedCenterPx": [
+     2424.497,
+     1470.689
+    ],
+    "residualPx": 0.219,
+    "residualFractionOfShortDimension": 0.0036,
+    "edgesObserved": 6
+   },
+   {
+    "id": "46,17",
+    "label": "Seam, lower",
+    "area": "seam",
+    "predictedCenterPx": [
+     2424.493,
+     2439.616
+    ],
+    "observedCenterPx": [
+     2424.496,
+     2439.646
+    ],
+    "residualPx": 0.03,
+    "residualFractionOfShortDimension": 0.0005,
+    "edgesObserved": 5
+   },
+   {
+    "id": "46,9",
+    "label": "Immediately west of the seam",
+    "area": "seam / west side",
+    "predictedCenterPx": [
+     2424.495,
+     1955.262
+    ],
+    "observedCenterPx": [
+     2424.499,
+     1955.17
+    ],
+    "residualPx": 0.092,
+    "residualFractionOfShortDimension": 0.0015,
+    "edgesObserved": 6
+   },
+   {
+    "id": "47,8",
+    "label": "Immediately east of the seam",
+    "area": "seam / east side",
+    "predictedCenterPx": [
+     2476.931,
+     1924.99
+    ],
+    "observedCenterPx": [
+     2476.84,
+     1924.997
+    ],
+    "residualPx": 0.092,
+    "residualFractionOfShortDimension": 0.0015,
+    "edgesObserved": 6
+   },
+   {
+    "id": "45,-22",
+    "label": "North centre ocean",
+    "area": "outer",
+    "predictedCenterPx": [
+     2372.065,
+     48.12
+    ],
+    "observedCenterPx": [
+     2372.183,
+     48.184
+    ],
+    "residualPx": 0.135,
+    "residualFractionOfShortDimension": 0.0022,
+    "edgesObserved": 6
+   },
+   {
+    "id": "65,-10",
+    "label": "East interior, centre",
+    "area": "east / interior",
+    "predictedCenterPx": [
+     3420.782,
+     1380.09
+    ],
+    "observedCenterPx": [
+     3420.751,
+     1380.132
+    ],
+    "residualPx": 0.052,
+    "residualFractionOfShortDimension": 0.0009,
+    "edgesObserved": 6
+   },
+   {
+    "id": "71,8",
+    "label": "East interior, south",
+    "area": "east / interior",
+    "predictedCenterPx": [
+     3735.395,
+     2651.518
+    ],
+    "observedCenterPx": [
+     3735.389,
+     2651.514
+    ],
+    "residualPx": 0.007,
+    "residualFractionOfShortDimension": 0.0001,
+    "edgesObserved": 6
+   },
+   {
+    "id": "83,-36",
+    "label": "Near Horizon (below the figure)",
+    "area": "east / Horizon",
+    "predictedCenterPx": [
+     4364.636,
+     350.837
+    ],
+    "observedCenterPx": [
+     4364.683,
+     350.797
+    ],
+    "residualPx": 0.062,
+    "residualFractionOfShortDimension": 0.001,
+    "edgesObserved": 5
+   },
+   {
+    "id": "91,-44",
+    "label": "NE corner ocean",
+    "area": "east / corner",
+    "predictedCenterPx": [
+     4784.125,
+     108.659
+    ],
+    "observedCenterPx": [
+     4784.173,
+     108.711
+    ],
+    "residualPx": 0.071,
+    "residualFractionOfShortDimension": 0.0012,
+    "edgesObserved": 6
+   },
+   {
+    "id": "90,-19",
+    "label": "E outer ocean, mid-height",
+    "area": "east / outer",
+    "predictedCenterPx": [
+     4731.684,
+     1591.992
+    ],
+    "observedCenterPx": [
+     4731.734,
+     1591.994
+    ],
+    "residualPx": 0.05,
+    "residualFractionOfShortDimension": 0.0008,
+    "edgesObserved": 6
+   },
+   {
+    "id": "90,5",
+    "label": "SE corner ocean",
+    "area": "east / corner",
+    "predictedCenterPx": [
+     4731.679,
+     3045.053
+    ],
+    "observedCenterPx": [
+     4731.725,
+     3045.106
+    ],
+    "residualPx": 0.07,
+    "residualFractionOfShortDimension": 0.0012,
+    "edgesObserved": 6
+   },
+   {
+    "id": "43,28",
+    "label": "South centre ocean",
+    "area": "outer",
+    "predictedCenterPx": [
+     2267.183,
+     3014.786
+    ],
+    "observedCenterPx": [
+     2267.179,
+     3014.749
+    ],
+    "residualPx": 0.037,
+    "residualFractionOfShortDimension": 0.0006,
+    "edgesObserved": 5
+   }
+  ]
+ },
+ "decorativeAreas": [
+  {
+   "id": "title",
+   "kind": "title-lettering",
+   "rectPx": [
+    77,
+    67,
+    1077,
+    79
+   ],
+   "placementPolicy": "protected: overlays avoid it; cells stay valid"
+  },
+  {
+   "id": "compass",
+   "kind": "compass-rose",
+   "rectPx": [
+    4333,
+    2613,
+    457,
+    538
+   ],
+   "placementPolicy": "protected: overlays avoid it; cells stay valid"
+  },
+  {
+   "id": "scale-statement",
+   "kind": "scale-and-credit-lettering",
+   "rectPx": [
+    3106,
+    3021,
+    1304,
+    97
+   ],
+   "placementPolicy": "protected: overlays avoid it; cells stay valid"
+  }
+ ],
+ "sanctuaryAnchorsFile": "map-anchors.json"
+}

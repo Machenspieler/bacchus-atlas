@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "compositionId": "valloren-world-v1",
+  "description": "Deterministic assembly of the two native Valloren map panels into one canonical world raster. Pure integer crop + translate; no resampling, warp, filling or redraw.",
+  "worldSizePx": [
+    4848,
+    3185
+  ],
+  "output": {
+    "path": "img/journey2/valloren-world.webp",
+    "colorModel": "srgb-rgb8",
+    "alpha": "flattened onto #ffffff (alpha is 255 everywhere inside the print-margin crop; only the outer frame anti-alias wings are 240-254)",
+    "format": "webp-lossless",
+    "encoderOptions": {
+      "lossless": true,
+      "effort": 6,
+      "exact": true
+    }
+  },
+  "panels": [
+    {
+      "id": "west",
+      "sourcePath": "assets/maps/valloren-west.native.png",
+      "sha256": "2280b6c725930fad9902e6b3f3f4d1b06b17654f86e4d8361cf29bcb9e289165",
+      "nativeSizePx": [
+        2553,
+        3300
+      ],
+      "cropRectPx": [
+        58,
+        58,
+        2424,
+        3185
+      ],
+      "worldTranslatePx": [
+        -58,
+        -58
+      ],
+      "worldRectPx": [
+        0,
+        0,
+        2424,
+        3185
+      ],
+      "notes": "x 58..2481, y 58..3242 (native). Keeps the outer frame (cols 60-64 left, rows 60-64 top, rows 3236-3240 bottom) with a 2 px white margin; cuts 4 columns inside the seam frame (frame wings 2485-2489 are excluded; cols 2482-2484 are clean and duplicated in the east panel)."
+    },
+    {
+      "id": "east",
+      "sourcePath": "assets/maps/valloren-east.native.png",
+      "sha256": "b8ae04e65b75f1bc4ced3a937fd8c837f31bd9ef0a9226126fa869c402869bfe",
+      "nativeSizePx": [
+        2553,
+        3300
+      ],
+      "cropRectPx": [
+        71,
+        58,
+        2424,
+        3185
+      ],
+      "worldTranslatePx": [
+        2353,
+        -58
+      ],
+      "worldRectPx": [
+        2424,
+        0,
+        2424,
+        3185
+      ],
+      "notes": "x 71..2494, y 58..3242 (native). Keeps the outer right/top/bottom frame with a 2 px white margin; drops the seam frame (cols 63-67) and cols 68-70 which duplicate west cols 2479-2481."
+    }
+  ],
+  "seam": {
+    "worldX": 2424,
+    "relation": "west_native_x = east_native_x + 2411 (dy = 0)",
+    "registrationMethod": "Hex-lattice phase on both sides of the joint (local lattice fits give east->west x shift 2411.1 mod the 104.86 px lattice period) cross-checked by coastline/hill-stroke continuity at 3x zoom. The panels overlap by 6 native columns (west 2479-2484 = east 68-73); the frames are print-tile frames, not geography.",
+    "cutNote": "West is used up to native x 2481, east from native x 71 (= west 2482): the cut lies inside the 6-column overlap, in clean (frame-free) pixels on both sides."
+  }
+}

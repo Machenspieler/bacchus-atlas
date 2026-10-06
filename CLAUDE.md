@@ -180,6 +180,19 @@ undo, drag-to-delete or `+` grid cell. Pointer/geometry logic lives in
 [docs/product-decisions.md](docs/product-decisions.md) PD-012, detail:
 [docs/architecture.md](docs/architecture.md) "Prep manual ordering".
 
+### Journey 2 map editor
+
+`#/journey2` is a GM tile editor on the original Valloren map (generate a
+batch → drag one / drag all remaining → move, return, Undo/Redo → local save
+and full JSON backup). The rules live in the pure `js/journey2-model.js`
+(document, placement policy, atomic commands, history); the view only builds
+commands. It owns exactly three `dhcodex_journey2_*` storage keys and never
+touches `#/journey`'s data; a corrupt saved map is never autosaved over;
+preparation never implies discovery; original markers are immutable. Decisions:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016, detail:
+[docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
+[.claude/rules/browser-state.md](.claude/rules/browser-state.md).
+
 ## Commands
 
 ```bash

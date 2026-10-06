@@ -1,0 +1,187 @@
+{
+ "schemaVersion": 1,
+ "source": {
+  "handoff": "journey2-handoff",
+  "catalog": "data/symbol-catalog.json",
+  "note": "Native raster artwork (not vector); aspect ratio must be preserved."
+ },
+ "symbols": [
+  {
+   "id": "underground",
+   "sourceLabel": "Underground",
+   "kind": "habitat",
+   "path": "img/journey2/symbols/underground.png",
+   "sizePx": [
+    60,
+    36
+   ],
+   "sha256": "c6043a3df6b37983aae0a62b0d914b740fe961168ab115826207506b90169ce9",
+   "habitatD20Range": [
+    2,
+    2
+   ]
+  },
+  {
+   "id": "aquatic",
+   "sourceLabel": "Aquatic",
+   "kind": "habitat",
+   "path": "img/journey2/symbols/aquatic.png",
+   "sizePx": [
+    60,
+    20
+   ],
+   "sha256": "dc6593538e1c1b31507e75ca0a6ecb34addeec8307635674c0e399acea28e646",
+   "habitatD20Range": [
+    3,
+    4
+   ]
+  },
+  {
+   "id": "wetland",
+   "sourceLabel": "Wetland",
+   "kind": "habitat",
+   "path": "img/journey2/symbols/wetland.png",
+   "sizePx": [
+    60,
+    36
+   ],
+   "sha256": "d4f4792c67c7c77969ee627c2793768116e00ea438fafcfc4aa11efdbe747f53",
+   "habitatD20Range": [
+    5,
+    6
+   ]
+  },
+  {
+   "id": "grassland",
+   "sourceLabel": "Grassland",
+   "kind": "habitat",
+   "path": "img/journey2/symbols/grassland.png",
+   "sizePx": [
+    44,
+    36
+   ],
+   "sha256": "b8fc384d5a43ec2f21b060ed17a790eabb4069d476335e3405973794a76b9660",
+   "habitatD20Range": [
+    7,
+    8
+   ]
+  },
+  {
+   "id": "tropical",
+   "sourceLabel": "Tropical",
+   "kind": "habitat",
+   "path": "img/journey2/symbols/tropical.png",
+   "sizePx": [
+    44,
+    52
+   ],
+   "sha256": "60b1e7fb068012fcd6390c7ceae08c3ffdb4bcd2ec62f77060461f31a1b2b6f1",
+   "habitatD20Range": [
+    9,
+    10
+   ]
+  },
+  {
+   "id": "forest",
+   "sourceLabel": "Forest",
+   "kind": "habitat",
+   "path": "img/journey2/symbols/forest.png",
+   "sizePx": [
+    44,
+    52
+   ],
+   "sha256": "ed5c8a3ba2bcf9093ad0e88c1f6270f27e6b4fe5da0f962860b01852f312c1a6",
+   "habitatD20Range": [
+    11,
+    12
+   ]
+  },
+  {
+   "id": "drylands",
+   "sourceLabel": "Drylands",
+   "kind": "habitat",
+   "path": "img/journey2/symbols/drylands.png",
+   "sizePx": [
+    44,
+    44
+   ],
+   "sha256": "e588a743d9d4eeb8159cf56ccd07aa8f2cba2c13ca1f6e0fc2a38bcfdd4c903f",
+   "habitatD20Range": [
+    13,
+    14
+   ]
+  },
+  {
+   "id": "rolling",
+   "sourceLabel": "Rolling",
+   "kind": "habitat",
+   "path": "img/journey2/symbols/rolling.png",
+   "sizePx": [
+    60,
+    28
+   ],
+   "sha256": "27a3c33a96bfee709200f00aee19d0e138b25e449915b8cb75c9c28faa581e43",
+   "habitatD20Range": [
+    15,
+    16
+   ]
+  },
+  {
+   "id": "mountain",
+   "sourceLabel": "Mountain",
+   "kind": "habitat",
+   "path": "img/journey2/symbols/mountain.png",
+   "sizePx": [
+    52,
+    36
+   ],
+   "sha256": "7b0c7582e4b1cbc76ac31109cf43b6147117bef4b03519e60cc2a9fcd24957d2",
+   "habitatD20Range": [
+    17,
+    18
+   ]
+  },
+  {
+   "id": "frozen",
+   "sourceLabel": "Frozen",
+   "kind": "habitat",
+   "path": "img/journey2/symbols/frozen.png",
+   "sizePx": [
+    44,
+    44
+   ],
+   "sha256": "79007b8ae569371be7afd1ddb1f5f75d362bb67ae09a1eb19924ad2d315ad7dc",
+   "habitatD20Range": [
+    19,
+    19
+   ]
+  },
+  {
+   "id": "badlands",
+   "sourceLabel": "Badlands",
+   "kind": "habitat",
+   "path": "img/journey2/symbols/badlands.png",
+   "sizePx": [
+    68,
+    44
+   ],
+   "sha256": "f5ae3037b3b039bbe74707e997484f2ccfbb43283383743cb121e3e4b1238fe8",
+   "habitatD20Range": [
+    20,
+    20
+   ]
+  },
+  {
+   "id": "fully-shadowblighted",
+   "sourceLabel": "Fully shadowblighted",
+   "kind": "special-state",
+   "path": "img/journey2/symbols/fully-shadowblighted.png",
+   "sizePx": [
+    44,
+    44
+   ],
+   "sha256": "bada84a8bf04e71215934221dec725f1279a879e9d27e8e37ab82e84c5019a37",
+   "habitatD20Range": null
+  }
+ ]
+}

@@ -33,6 +33,18 @@ paths:
   prerenderer or start reading `environments.json` to bake HTML — that
   would break the public-but-unlisted deployment model (see
   [docs/product-decisions.md](../../docs/product-decisions.md) PD-003).
+- **Development-only material never reaches `dist/`.** `scripts/build.js`'s `EXCLUDE_PATHS`
+  (`docs/journey2-*`, root `journey2-*` staging, `journey2*.zip`, any `stage-<n>[a].zip`) keeps the Journey 2
+  handoff, reference PDFs, review packages and evidence out of the published site. Matching is
+  host-independent (`normalizeRelPath()` folds `\` to `/`; never rely on `path.sep`).
+  `scripts/check-journey2-build.js` (a CI step) fails if any of that — or a known Journey source/reference
+  file by name — appears in `dist/`, or if a Journey 2 runtime file (`img/journey2/`, `data/journey2/`,
+  `js/journey2-*`, `css/journey2.css`) goes missing. It is scoped to Journey development inputs: an
+  unrelated public PDF/ZIP is not rejected for its extension. Extend the pattern list (and its fixtures in
+  `tests/journey2-build-guard.test.js`) rather than adding a second copy route.
+- **A print/PDF proof is judged on the exported file**, not the on-screen emulation: the app theme is
+  `color-scheme: dark`, so any print view must set `color-scheme: light` (not just a white background) or
+  Chromium paints its `#121212` canvas into the page margins. See `scripts/journey2/verify-print.js`.
 - **Don't add SEO/discovery output** — `llms.txt`, `sitemap.xml`, a
   project-level `robots.txt`, JSON-LD catalog listings, or server-side
   environment prerendering — without an explicit product decision
@@ -45,6 +57,7 @@ paths:
   node scripts/version-assets.js
   node scripts/check-asset-versioning.js
   node scripts/check-unlisted-build.js
+  node scripts/check-journey2-build.js
   ```
   This is the same sequence `.github/workflows/deploy.yml` runs before
   every deploy — a change that doesn't pass it locally won't deploy either.

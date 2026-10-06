@@ -89,6 +89,24 @@ paths:
 - **List IDs and routes never change on rename** — a rename is a name-field
   update only, never a re-keying of the list.
 
+## Journey 2 map storage
+
+- **Journey 2 owns exactly three keys**, all `dhcodex_journey2_*`
+  (`js/journey2-store.js`): `map`, `map_recovery`, `map_previous`. It never
+  reads, writes or clears a legacy Journey, Prep or unrelated key, and
+  `tests/journey2-store.test.js` plus `scripts/journey2/stage1-verify.js` assert
+  every non-Journey-2 value stays byte-identical.
+- **Never autosave over an unreadable map.** A stored document that fails
+  `Journey2Model.validateDocument` is reported (`status: 'corrupt'`), left
+  untouched under its own key, copied to `map_recovery`, and edits are locked
+  until the user imports a backup or explicitly starts an empty map. Don't use
+  `SafeStorage.loadStoredJson`'s recover-and-overwrite behaviour for it.
+- **The success state is the write result.** Show "Saved" only after
+  `store.save()` returned `{ ok: true }`; a failure shows the banner and keeps
+  the in-memory map usable and exportable.
+- **A schema change needs a version bump and an explicit rejection of unknown
+  versions** — import never repairs or drops fields silently.
+
 ## General
 
 - Never clear or reset all user data merely to simplify a migration or a

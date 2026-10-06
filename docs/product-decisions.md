@@ -461,3 +461,73 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   allowlist or an `if (source === …)` check. Supported names are sent under
   the catalogue spelling. Making an adversary linkable means adding it to
   `data/prep.json`.
+
+## PD-015: Journey 2 is a separate experimental route on the original Valloren map
+- **Date:** 2026-10-06
+- **Decision:** `#/journey2` is a GM-only map workspace built on the
+  *original* Journey to Horizon artwork (two native panels assembled into one
+  world raster), with one measured hex grid and an immutable catalogue of the
+  fixed original markers. `#/journey` and its saved data are untouched;
+  there is no migration and no navigation entry yet. Stage 0 delivered only
+  geometry, a read-only diagnostic surface and a print proof. (Phase 1 added
+  the editor, inventory and its own storage — see PD-016; the immutability
+  and legacy-isolation rules here are unchanged.)
+- **Immutable by design:** marker positions/artwork live in
+  `data/journey2/map-anchors.json` (template), never in campaign state; there
+  is no create/move/delete/re-icon control. Marrogate and Horizon are *named
+  destinations* with lettering in the artwork (no duplicate text, no sanctuary
+  mechanics). The other 56 repeated glyphs are catalogued as kind
+  "sanctuary" — the source artwork does not name them, so this follows the
+  handoff's convention and is flagged for owner confirmation.
+- **Valid cells:** a cell is valid iff its centre lies inside the printed
+  frame interior; water and old coastlines never invalidate a cell, and the
+  title/compass/legend areas stay valid but are protected from overlays.
+- **Gate:** `readyForInteractivePlacement` may be true only when the four
+  verification slots (assets, geometry, browser, print proof) all pass; the
+  view shows "Unverified" otherwise and never substitutes guessed geometry.
+- **Where:** [architecture.md](architecture.md) "Journey 2 diagnostic view";
+  evidence in `docs/journey2-implementation/stage-0/`.
+
+## PD-016: Journey 2 Phase 1 — a batch/tile map editor with its own storage
+- **Date:** 2026-10-06
+- **Decision:** `#/journey2` becomes a usable GM tile editor: generate a
+  *batch* (one card per generated region, not per hex), place it one hex at a
+  time or all remaining hexes in one drag, move individual tiles, return a
+  tile to stock, Undo/Redo, local saving, full GM JSON backup. The map owns
+  its data: a batch is copied by value from the generator, so editing or
+  deleting a legacy `#/journey` entry never changes a Journey 2 batch.
+- **Batches, not merged regions:** two forests are two batches even with equal
+  habitat and terrain. A batch may be disconnected and placed in any order; the
+  source-book contiguity/d12 limits are *not* enforced by the editor.
+- **Quantity:** any positive integer up to 1000 (about a fifth of the map's
+  ~4,670 placeable cells; it must stay placeable by one "All N" drop). Zero,
+  negative, fractional and non-numeric input, and anything over the limit, is
+  *rejected with an inline error — never clamped*. Leaving the field empty
+  rolls the legacy d12. A chosen habitat/terrain/quantity is recorded as
+  `manual`; no die result is fabricated for it.
+- **"All N" means the unplaced stock**, as one atomic, all-or-nothing
+  transaction with one Undo entry. The footprint is a deterministic compact
+  connected ring walk of exactly N cells, frozen for the drag; one occupied,
+  outside or decorative cell rejects the whole drop (no truncation, no
+  nearest-free fill, no overwrite). Moving an already placed batch as a unit
+  is deliberately out of scope.
+- **Placement policy:** water/coast/marker cells are usable; terrain is refused
+  on cells overlapping the title, compass or scale/credit furniture (the cells
+  stay valid template cells). One policy serves preview, commit, load and
+  import. Fixed markers and labels are protected in the *renderer* — a glyph
+  that cannot fit without covering one is withheld, never drawn over it.
+- **Preparation is not discovery.** Generating, placing, moving and returning
+  tiles never touch any discovered-cell state (there is none yet).
+- **History:** Undo/Redo covers batch creation, placement, "All N", move,
+  return and notes edits (grouped per commit, not per keystroke); it is in
+  memory, bounded (100), survives re-renders but not route changes/reload.
+  Importing a backup clears it. The map data always persists.
+- **Backup/import:** the export is the versioned document, no assets. Import
+  validates everything before replacing anything, rejects unknown schema or
+  template versions and unknown fields as a whole, asks for confirmation before
+  replacing a non-empty map, and keeps the replaced map as a recovery copy
+  (plus a download offer). A corrupt saved map is never autosaved over.
+- **Click-to-place** (arm a stock handle, click a cell; Esc exits) exists as a
+  supplement to, never a replacement for, the two drag targets.
+- **Where:** [architecture.md](architecture.md) "Journey 2 map editor";
+  evidence in `docs/journey2-implementation/stage-1/`.

@@ -1,0 +1,596 @@
+{
+ "schemaVersion": 1,
+ "reviewedBy": "visual review of docs/journey2-implementation/stage-0/images/markers-candidates-sheet-{1,2,3}.png and markers-candidates-overview.png against the native artwork",
+ "candidateCount": 104,
+ "decisions": [
+  {
+   "candidateId": 1,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 2,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 3,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 4,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 5,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 6,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 7,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 8,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 9,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 10,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 11,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 12,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 13,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 14,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 15,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 16,
+   "decision": "reject",
+   "reason": "title lettering \"JOURNEY TO HORIZON\" (glyph fragment)"
+  },
+  {
+   "candidateId": 17,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 18,
+   "decision": "reject",
+   "reason": "built-in label text \"HORIZON\" (artwork label, not a marker)"
+  },
+  {
+   "candidateId": 19,
+   "decision": "reject",
+   "reason": "built-in label text \"HORIZON\" (artwork label, not a marker)"
+  },
+  {
+   "candidateId": 20,
+   "decision": "accept",
+   "kind": "destination",
+   "builtInLabel": "HORIZON",
+   "notes": "Named destination (large figure, 114x156 px). Not a sanctuary: no sanctuary mechanics are assigned. Label is lettered in the artwork above it (candidates 18-19)."
+  },
+  {
+   "candidateId": 21,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 22,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 23,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 24,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 25,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 26,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 27,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 28,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 29,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 30,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 31,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 32,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 33,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 34,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 35,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 36,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 37,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 38,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 39,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 40,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 41,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 42,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 43,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 44,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 45,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 46,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 47,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 48,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 49,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 50,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 51,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 52,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 53,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 54,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 55,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 56,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 57,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 58,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 59,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 60,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 61,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 62,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 63,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 64,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 65,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 66,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 67,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 68,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 69,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 70,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 71,
+   "decision": "reject",
+   "reason": "compass rose: letter N"
+  },
+  {
+   "candidateId": 72,
+   "decision": "reject",
+   "reason": "compass rose artwork (ring / needle)"
+  },
+  {
+   "candidateId": 73,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 74,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 75,
+   "decision": "reject",
+   "reason": "compass rose artwork (ring / needle)"
+  },
+  {
+   "candidateId": 76,
+   "decision": "reject",
+   "reason": "compass rose artwork (ring / needle)"
+  },
+  {
+   "candidateId": 77,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 78,
+   "decision": "reject",
+   "reason": "compass rose artwork (ring / needle)"
+  },
+  {
+   "candidateId": 79,
+   "decision": "reject",
+   "reason": "compass rose artwork (ring / needle)"
+  },
+  {
+   "candidateId": 80,
+   "decision": "reject",
+   "reason": "compass rose artwork (ring / needle)"
+  },
+  {
+   "candidateId": 81,
+   "decision": "accept",
+   "kind": "destination",
+   "builtInLabel": "MARROGATE",
+   "notes": "Named destination (ornate gate icon). Not a generic sanctuary glyph. Label is lettered in the artwork below it (candidate 85)."
+  },
+  {
+   "candidateId": 82,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 83,
+   "decision": "reject",
+   "reason": "compass rose artwork (ring / needle)"
+  },
+  {
+   "candidateId": 84,
+   "decision": "reject",
+   "reason": "compass rose artwork (ring / needle)"
+  },
+  {
+   "candidateId": 85,
+   "decision": "reject",
+   "reason": "built-in label text \"MARROGATE\" (artwork label, not a marker)"
+  },
+  {
+   "candidateId": 86,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 87,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 88,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 89,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 90,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 91,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 92,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 93,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 94,
+   "decision": "reject",
+   "reason": "compass rose artwork (ring / needle)"
+  },
+  {
+   "candidateId": 95,
+   "decision": "accept",
+   "kind": "sanctuary",
+   "builtInLabel": null
+  },
+  {
+   "candidateId": 96,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 97,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 98,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 99,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 100,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 101,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 102,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 103,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  },
+  {
+   "candidateId": 104,
+   "decision": "reject",
+   "reason": "scale statement / download notice lettering"
+  }
+ ],
+ "builtInLabelCandidates": {
+  "MARROGATE": [
+   85
+  ],
+  "HORIZON": [
+   18,
+   19
+  ]
+ }
+}

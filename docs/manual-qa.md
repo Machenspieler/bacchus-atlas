@@ -415,6 +415,36 @@ Desktop pointer only (mouse or trackpad); also 1366×768, 1440×900, 1536×864,
 - [ ] A touch-only device shows no grab cursor and cannot start a
       drag. No Reset order, undo or drag-to-delete anywhere.
 
+## Journey 2 map editor (`#/journey2`)
+
+Automated coverage: `scripts/journey2/stage1-verify.js` (real pointer input, isolated
+contexts). The manual path below is for a quick human pass in your own browser — use a
+private window, or accept that it writes the three `dhcodex_journey2_*` keys.
+
+- [ ] Open `#/journey2`: header, one compact toolbar (map name, save status, Undo/Redo,
+      zoom, Backup menu, ⋯), a left sidebar (generator + stock), the map fills the rest. No page scroll
+      at 1366×768 and 1920×1080; Diagnostics is closed.
+- [ ] Generator: Habitat Forest, Terrain 2, Hexes 20 → **Generate region**. A card appears:
+      Placed 0 / 20, Left 20, drag targets **1 hex** and **All 20**. Nothing is on the map.
+- [ ] Enter 0, -3, 2.5, abc, 1001 → inline error, no card; empty Hexes rolls a d12.
+- [ ] Drag **1 hex** onto the map: gold preview + tooltip while dragging; release places one.
+      Do this seven times at scattered, unconnected places (both halves, near the seam).
+      Counts read 7 / 20 and **All 13**; the targets do not move.
+- [ ] Drag **All 13**: a 13-hex cluster previews under the pointer; over an occupied cell, outside the
+      map or over the title/compass/scale it turns red with a reason and a release places nothing.
+      On a clear area, release → 20 / 20, **All 0** disabled, the first seven unchanged.
+- [ ] Drag a placed tile to a free cell (counts unchanged); drop it back on itself (nothing happens);
+      drag it onto an occupied cell (rejected, stays). Click a tile → **Return to stock** (or Delete).
+- [ ] Esc during any drag, releasing outside the map, or leaving the route → nothing changes.
+- [ ] Undo/Redo (buttons or Ctrl+Z / Ctrl+Y outside text fields): undo the move, then the whole All-13
+      drop → exactly the seven and 13 in stock. Reload → the same seven, details and 13 remaining.
+- [ ] Notes (card → Rumor and notes): typing, Space, Delete and Ctrl+Z behave as in any text field;
+      leaving the field commits one Undo step.
+- [ ] Backup → Export, then Import the file: replacing a non-empty map asks first; a bad file is rejected
+      with the reason and changes nothing.
+- [ ] More → Diagnostics opens the inspector (grid, markers, protection, print proof) and closes again.
+- [ ] RU and EN: no clipped labels in the toolbar, cards or dialogs; `#/journey` still works.
+
 ## Language
 
 - [ ] English: full pass over whatever changed.

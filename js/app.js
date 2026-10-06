@@ -1316,6 +1316,9 @@ function render() {
   }
   document.body.dataset.route = state.route.name;
   document.title = routeTitle();
+  // The Journey 2 diagnostic map owns listeners, observers and a large raster;
+  // this is the one place it is released when any other route renders.
+  if (state.route.name !== 'journey2') Journey2View.unmount();
   renderHeader();
   // renderPrepPage() owns creating/destroying the item strip and the
   // top-chrome controller for its own re-renders; this is the one place
@@ -1337,6 +1340,8 @@ function render() {
     renderListsHome();
   } else if (state.route.name === 'journey') {
     renderJourneyPage();
+  } else if (state.route.name === 'journey2') {
+    renderJourney2Page();
   } else if (state.route.name === 'prep') {
     renderPrepPage();
   } else {
@@ -1419,6 +1424,7 @@ function routeTitle() {
   if (env) return `${envName(env)} — ${t('app_title')}`;
   if (state.route.name === 'catalog') return t('browser_title');
   if (state.route.name === 'journey') return `${t('journey_title')} — ${t('app_title')}`;
+  if (state.route.name === 'journey2') return `${t('journey2_title')} — ${t('app_title')}`;
   if (state.route.name === 'prep') return `${t('prep_title')} — ${t('app_title')}`;
   if (state.route.name === 'list') {
     const list = state.lists.find(l => l.id === state.route.id);
@@ -3034,6 +3040,59 @@ function renderJourneyPage(focus = null) {
   bindJourneyDelegation(el);
   if (focus) document.querySelector(focus)?.focus();
 }
+
+/** #/journey2 — the Journey 2 map editor (js/journey2-view.js).
+ * Mounted once into #grid-wrap and kept across re-renders (a language switch
+ * only re-localizes it), so the camera, selection and unsaved text survive.
+ * It owns its own dhcodex_journey2_* storage keys (js/journey2-store.js) and
+ * never reads or writes #/journey's state or storage keys. */
+function renderJourney2Page() {
+  document.getElementById('toolbar').innerHTML = '';
+  document.getElementById('result-count').innerHTML = '';
+  Journey2View.mount(document.getElementById('grid-wrap'), {
+    t, lang: state.lang, generator: journey2Generator, toast: showToast, storage: lsStorage,
+  });
+}
+
+/** The Journey 2 region generator: the SAME rolls and tables as #/journey (rollHabitat, rollEncounter,
+ * rollDie, state.journey), exposed through a small adapter so the map editor never calls the legacy page
+ * renderer and never copies the tables. A chosen biome or terrain replaces its roll outright and is marked
+ * 'manual' — no die result is fabricated for it. The size die is only thrown when the caller did not enter
+ * a quantity. Returns plain data; nothing is shared with a saved #/journey entry. */
+const journey2Generator = {
+  ready() { return journeyReady(); },
+  biomes() { return state.journey.habitat.filter(r => r.biome).map(r => r.biome); },
+  roll({ biome = null, terrain = null, rollSize = true } = {}) {
+    let habitat;
+    if (biome) habitat = { biome, blighted: false, overtaken: false, source: 'manual' };
+    else {
+      const rolled = rollHabitat();
+      const view = habitatView(rolled);
+      habitat = { biome: view.biome, blighted: view.blighted, overtaken: view.overtaken, source: 'rolled', rolls: rolled.rolls };
+    }
+    return {
+      habitat,
+      terrain: terrain ? { value: terrain, source: 'manual' } : { value: rollDie(4), source: 'rolled' },
+      size: rollSize ? rollDie(12) : null,
+      encounter: rollEncounter(),
+      rumor: rollDie(100),
+    };
+  },
+  /** Display text (current language) for a stored batch, read from the same tables the roll came from. */
+  describe(batch) {
+    const j = state.journey;
+    const terrain = tableRow(j.terrain, batch.terrain.value);
+    const habitatRowForBiome = j.habitat.find(r => r.biome === batch.habitat.biome);
+    const combined = batch.encounter.combines > 0;
+    return {
+      examples: habitatRowForBiome ? jText(habitatRowForBiome.examples) : '',
+      combined,
+      encounter: batch.encounter.entries.map(pair => ({ sum: pair[0] + pair[1], text: jText(tableRow(j.encounter, pair[0] + pair[1])?.text) })),
+      terrain: terrain ? { name: jText(terrain.name), days: terrain.days, text: jText(terrain.text) } : null,
+      rumor: jText(tableRow(j.rumors, batch.rumor)?.text),
+    };
+  },
+};
 
 function journeyPanelHtml(kind) {
   const region = kind === 'region';

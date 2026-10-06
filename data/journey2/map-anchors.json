@@ -1,0 +1,3982 @@
+{
+ "schemaVersion": 1,
+ "templateId": "journey-to-horizon-original",
+ "status": "surveyed-visually-verified",
+ "complete": true,
+ "counts": {
+  "total": 58,
+  "sanctuary": 56,
+  "destination": 2
+ },
+ "surveyMethod": "Assisted detection (black connected components, scripts/journey2/survey-markers.js) with every accepted and rejected candidate reviewed by eye against docs/journey2-implementation/stage-0/images/markers-candidates-*.png; decisions in scripts/journey2/marker-review.json.",
+ "glyphClasses": [
+  {
+   "glyphClass": "G1",
+   "sizePx": [
+    47,
+    43
+   ],
+   "inkPx": 634,
+   "exemplars": 10
+  },
+  {
+   "glyphClass": "G2",
+   "sizePx": [
+    42,
+    47
+   ],
+   "inkPx": 797,
+   "exemplars": 9
+  },
+  {
+   "glyphClass": "G3",
+   "sizePx": [
+    36,
+    36
+   ],
+   "inkPx": 388,
+   "exemplars": 8
+  },
+  {
+   "glyphClass": "G4",
+   "sizePx": [
+    37,
+    59
+   ],
+   "inkPx": 616,
+   "exemplars": 8
+  },
+  {
+   "glyphClass": "G5",
+   "sizePx": [
+    44,
+    59
+   ],
+   "inkPx": 598,
+   "exemplars": 2
+  },
+  {
+   "glyphClass": "G6",
+   "sizePx": [
+    37,
+    56
+   ],
+   "inkPx": 587,
+   "exemplars": 2
+  },
+  {
+   "glyphClass": "G7",
+   "sizePx": [
+    39,
+    48
+   ],
+   "inkPx": 669,
+   "exemplars": 2
+  }
+ ],
+ "anchors": [
+  {
+   "stableId": "mk-001",
+   "kind": "sanctuary",
+   "glyphClass": "G1",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    1801.5,
+    164.5
+   ],
+   "worldPixelAnchor": [
+    1743.5,
+    106.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "33,-15",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "32,-15",
+     "32,-14",
+     "34,-16",
+     "34,-15"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     1716,
+     81,
+     55,
+     51
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     1716,
+     81,
+     55,
+     51
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     1743.5,
+     138
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 17,
+    "ink": 634,
+    "rawBboxPx": [
+     1720,
+     85,
+     47,
+     43
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.976
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-002",
+   "kind": "destination",
+   "glyphClass": null,
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    2063,
+    320
+   ],
+   "worldPixelAnchor": [
+    4416,
+    262
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "84,-38",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "83,-39",
+     "83,-38",
+     "83,-37",
+     "83,-36",
+     "84,-39",
+     "84,-37",
+     "84,-36",
+     "85,-40",
+     "85,-39",
+     "85,-38",
+     "85,-37"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     4353.5,
+     162,
+     125,
+     200
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     4355,
+     178,
+     125,
+     200
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": null,
+   "builtInLabel": {
+    "text": "HORIZON",
+    "source": "artwork",
+    "bboxPx": [
+     4321,
+     142,
+     192,
+     32
+    ],
+    "protectionRectPx": [
+     4315,
+     137,
+     204,
+     42
+    ],
+    "suppressDuplicateText": true
+   },
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 20,
+    "ink": 3599,
+    "rawBboxPx": [
+     4359,
+     184,
+     114,
+     156
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": null
+   },
+   "notes": "Named destination (large figure, 114x156 px). Not a sanctuary: no sanctuary mechanics are assigned. Label is lettered in the artwork above it (candidates 18-19)."
+  },
+  {
+   "stableId": "mk-003",
+   "kind": "sanctuary",
+   "glyphClass": "G1",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    1072.5,
+    340.5
+   ],
+   "worldPixelAnchor": [
+    3425.5,
+    282.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "65,-28",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "64,-28",
+     "65,-29",
+     "66,-29",
+     "66,-28"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     3398,
+     257,
+     55,
+     51
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     3398,
+     257,
+     55,
+     51
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     3425.5,
+     314
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 21,
+    "ink": 634,
+    "rawBboxPx": [
+     3398,
+     261,
+     51,
+     43
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.969
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-004",
+   "kind": "sanctuary",
+   "glyphClass": "G3",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    2166,
+    375
+   ],
+   "worldPixelAnchor": [
+    2108,
+    317
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "40,-15",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "39,-15"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2086,
+     295,
+     44,
+     44
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2086,
+     295,
+     44,
+     44
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2108,
+     345
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 22,
+    "ink": 388,
+    "rawBboxPx": [
+     2090,
+     299,
+     36,
+     36
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.974
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-005",
+   "kind": "sanctuary",
+   "glyphClass": "G3",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    702,
+    498
+   ],
+   "worldPixelAnchor": [
+    3055,
+    440
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "58,-22",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "59,-23",
+     "59,-22"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     3033,
+     418,
+     44,
+     44
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     3033,
+     418,
+     44,
+     44
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     3055,
+     468
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 23,
+    "ink": 390,
+    "rawBboxPx": [
+     3037,
+     412,
+     49,
+     46
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.962
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-006",
+   "kind": "sanctuary",
+   "glyphClass": "G4",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    176.5,
+    549.5
+   ],
+   "worldPixelAnchor": [
+    2529.5,
+    491.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "48,-16",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "47,-16",
+     "47,-15",
+     "48,-17",
+     "49,-17",
+     "49,-16"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2507,
+     458,
+     45,
+     67
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2507,
+     458,
+     45,
+     67
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2529.5,
+     531
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 24,
+    "ink": 598,
+    "rawBboxPx": [
+     2511,
+     462,
+     44,
+     59
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.88
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-007",
+   "kind": "sanctuary",
+   "glyphClass": "G1",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    1756.5,
+    554.5
+   ],
+   "worldPixelAnchor": [
+    4109.5,
+    496.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "78,-31",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "77,-31",
+     "78,-32",
+     "79,-32",
+     "79,-31"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     4082,
+     471,
+     55,
+     51
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     4082,
+     471,
+     55,
+     51
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     4109.5,
+     528
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 25,
+    "ink": 607,
+    "rawBboxPx": [
+     4086,
+     475,
+     47,
+     43
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.871
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-008",
+   "kind": "sanctuary",
+   "glyphClass": "G1",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    1114.5,
+    615.5
+   ],
+   "worldPixelAnchor": [
+    1056.5,
+    557.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "20,-1",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "19,-1",
+     "19,0",
+     "20,-2",
+     "21,-2"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     1029,
+     532,
+     55,
+     51
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     1029,
+     532,
+     55,
+     51
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     1056.5,
+     589
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 26,
+    "ink": 636,
+    "rawBboxPx": [
+     1033,
+     536,
+     47,
+     43
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.984
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-009",
+   "kind": "sanctuary",
+   "glyphClass": "G2",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    2221,
+    649.5
+   ],
+   "worldPixelAnchor": [
+    2163,
+    591.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "41,-11",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "40,-11",
+     "40,-10",
+     "42,-12",
+     "42,-11"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2138,
+     564,
+     50,
+     55
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2138,
+     564,
+     50,
+     55
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2163,
+     625
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 27,
+    "ink": 797,
+    "rawBboxPx": [
+     2142,
+     568,
+     42,
+     47
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.981
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-010",
+   "kind": "sanctuary",
+   "glyphClass": "G2",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    1121,
+    682.5
+   ],
+   "worldPixelAnchor": [
+    3474,
+    624.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "66,-23",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "65,-23",
+     "65,-22",
+     "67,-24",
+     "67,-23"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     3449,
+     597,
+     50,
+     55
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     3449,
+     597,
+     50,
+     55
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     3474,
+     658
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 28,
+    "ink": 798,
+    "rawBboxPx": [
+     3453,
+     601,
+     42,
+     47
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.981
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-011",
+   "kind": "sanctuary",
+   "glyphClass": "G6",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    858.5,
+    829
+   ],
+   "worldPixelAnchor": [
+    3211.5,
+    771
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "61,-18",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "60,-18",
+     "60,-17",
+     "61,-19",
+     "62,-19",
+     "62,-18"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     3189,
+     739,
+     45,
+     64
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     3189,
+     739,
+     45,
+     64
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     3211.5,
+     809
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 29,
+    "ink": 587,
+    "rawBboxPx": [
+     3193,
+     743,
+     37,
+     56
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.946
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-012",
+   "kind": "sanctuary",
+   "glyphClass": "G1",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    2270.5,
+    854.5
+   ],
+   "worldPixelAnchor": [
+    4623.5,
+    796.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "88,-31",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "87,-31",
+     "87,-30",
+     "88,-32",
+     "89,-32"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     4596,
+     771,
+     55,
+     51
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     4596,
+     771,
+     55,
+     51
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     4623.5,
+     828
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 30,
+    "ink": 628,
+    "rawBboxPx": [
+     4600,
+     775,
+     47,
+     43
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.953
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-013",
+   "kind": "sanctuary",
+   "glyphClass": "G2",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    229,
+    886.5
+   ],
+   "worldPixelAnchor": [
+    2582,
+    828.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "49,-11",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "48,-11",
+     "48,-10",
+     "49,-12",
+     "50,-12",
+     "50,-11"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2557,
+     801,
+     50,
+     55
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2557,
+     801,
+     50,
+     55
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2582,
+     862
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 31,
+    "ink": 796,
+    "rawBboxPx": [
+     2561,
+     805,
+     42,
+     47
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.991
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-014",
+   "kind": "sanctuary",
+   "glyphClass": "G3",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    489,
+    923
+   ],
+   "worldPixelAnchor": [
+    431,
+    865
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "8,10",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "7,10",
+     "7,11"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     409,
+     843,
+     44,
+     44
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     409,
+     843,
+     44,
+     44
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     431,
+     893
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 33,
+    "ink": 364,
+    "rawBboxPx": [
+     413,
+     847,
+     36,
+     36
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.821
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-015",
+   "kind": "sanctuary",
+   "glyphClass": "G1",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    2274,
+    924.5
+   ],
+   "worldPixelAnchor": [
+    2216,
+    866.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "42,-7",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "41,-7",
+     "41,-6",
+     "43,-8",
+     "43,-7"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2188,
+     841,
+     56,
+     51
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2188,
+     841,
+     56,
+     51
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2216,
+     898
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 32,
+    "ink": 633,
+    "rawBboxPx": [
+     2192,
+     845,
+     48,
+     43
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.973
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-016",
+   "kind": "sanctuary",
+   "glyphClass": "G6",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    1485.5,
+    950
+   ],
+   "worldPixelAnchor": [
+    3838.5,
+    892
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "73,-22",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "72,-22",
+     "72,-21",
+     "73,-23",
+     "74,-23",
+     "74,-22"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     3816,
+     860,
+     45,
+     64
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     3816,
+     860,
+     45,
+     64
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     3838.5,
+     930
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 34,
+    "ink": 616,
+    "rawBboxPx": [
+     3820,
+     861,
+     37,
+     59
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.992
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-017",
+   "kind": "sanctuary",
+   "glyphClass": "G4",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    2009.5,
+    1066
+   ],
+   "worldPixelAnchor": [
+    1951.5,
+    1008
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "37,-2",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "36,-2",
+     "36,-1",
+     "37,-3",
+     "38,-3",
+     "38,-2"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     1929,
+     974,
+     45,
+     68
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     1929,
+     974,
+     45,
+     68
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     1951.5,
+     1048
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 35,
+    "ink": 617,
+    "rawBboxPx": [
+     1933,
+     978,
+     37,
+     60
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.96
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-018",
+   "kind": "sanctuary",
+   "glyphClass": "G3",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    1113,
+    1102
+   ],
+   "worldPixelAnchor": [
+    1055,
+    1044
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "20,7",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "19,7",
+     "19,8"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     1033,
+     1022,
+     44,
+     44
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     1033,
+     1022,
+     44,
+     44
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     1055,
+     1072
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 36,
+    "ink": 365,
+    "rawBboxPx": [
+     1037,
+     1026,
+     36,
+     36
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.827
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-019",
+   "kind": "sanctuary",
+   "glyphClass": "G7",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    1073.5,
+    1195
+   ],
+   "worldPixelAnchor": [
+    3426.5,
+    1137
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "65,-14",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "66,-15",
+     "66,-14"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     3403,
+     1109,
+     47,
+     56
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     3403,
+     1109,
+     47,
+     56
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     3426.5,
+     1171
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 37,
+    "ink": 659,
+    "rawBboxPx": [
+     3398,
+     1113,
+     48,
+     55
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.897
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-020",
+   "kind": "sanctuary",
+   "glyphClass": "G4",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    2114.5,
+    1241.5
+   ],
+   "worldPixelAnchor": [
+    4467.5,
+    1183.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "85,-23",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "84,-23",
+     "84,-22",
+     "85,-24",
+     "86,-24"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     4445,
+     1150,
+     45,
+     67
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     4445,
+     1150,
+     45,
+     67
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     4467.5,
+     1223
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 38,
+    "ink": 615,
+    "rawBboxPx": [
+     4449,
+     1153,
+     44,
+     60
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.948
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-021",
+   "kind": "sanctuary",
+   "glyphClass": "G1",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    597.5,
+    1281.5
+   ],
+   "worldPixelAnchor": [
+    2950.5,
+    1223.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "56,-8",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "55,-8",
+     "55,-7",
+     "56,-9",
+     "57,-9",
+     "57,-8"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2923,
+     1198,
+     55,
+     51
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2923,
+     1198,
+     55,
+     51
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2950.5,
+     1255
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 39,
+    "ink": 632,
+    "rawBboxPx": [
+     2927,
+     1202,
+     47,
+     43
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.973
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-022",
+   "kind": "sanctuary",
+   "glyphClass": "G2",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    1855,
+    1345.5
+   ],
+   "worldPixelAnchor": [
+    1797,
+    1287.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "34,4",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "33,4",
+     "33,5",
+     "35,3",
+     "35,4"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     1772,
+     1260,
+     50,
+     55
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     1772,
+     1260,
+     50,
+     55
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     1797,
+     1321
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 40,
+    "ink": 795,
+    "rawBboxPx": [
+     1776,
+     1264,
+     42,
+     47
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.981
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-023",
+   "kind": "sanctuary",
+   "glyphClass": "G3",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    1067,
+    1437
+   ],
+   "worldPixelAnchor": [
+    1009,
+    1379
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "19,13",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "18,13",
+     "20,12"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     987,
+     1357,
+     44,
+     44
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     987,
+     1357,
+     44,
+     44
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     1009,
+     1407
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 41,
+    "ink": 387,
+    "rawBboxPx": [
+     991,
+     1361,
+     36,
+     36
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.974
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-024",
+   "kind": "sanctuary",
+   "glyphClass": "G1",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    1434.5,
+    1463.5
+   ],
+   "worldPixelAnchor": [
+    3787.5,
+    1405.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "72,-13",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "71,-13",
+     "71,-12",
+     "72,-14",
+     "73,-14",
+     "73,-13"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     3760,
+     1380,
+     55,
+     51
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     3760,
+     1380,
+     55,
+     51
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     3787.5,
+     1437
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 43,
+    "ink": 624,
+    "rawBboxPx": [
+     3764,
+     1384,
+     47,
+     43
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.933
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-025",
+   "kind": "sanctuary",
+   "glyphClass": "G4",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    698.5,
+    1466.5
+   ],
+   "worldPixelAnchor": [
+    640.5,
+    1408.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "12,17",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "11,17",
+     "11,18",
+     "12,16",
+     "12,18",
+     "13,16",
+     "13,17"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     618,
+     1375,
+     45,
+     67
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     618,
+     1375,
+     45,
+     67
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     640.5,
+     1448
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 42,
+    "ink": 631,
+    "rawBboxPx": [
+     618,
+     1379,
+     42,
+     59
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.988
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-026",
+   "kind": "sanctuary",
+   "glyphClass": "G1",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    1012.5,
+    1516.5
+   ],
+   "worldPixelAnchor": [
+    3365.5,
+    1458.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "64,-8",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "63,-8",
+     "63,-7",
+     "64,-9",
+     "65,-9"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     3338,
+     1433,
+     55,
+     51
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     3338,
+     1433,
+     55,
+     51
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     3365.5,
+     1490
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 44,
+    "ink": 631,
+    "rawBboxPx": [
+     3340,
+     1440,
+     49,
+     47
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.937
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-027",
+   "kind": "sanctuary",
+   "glyphClass": "G1",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    2065.5,
+    1522.5
+   ],
+   "worldPixelAnchor": [
+    2007.5,
+    1464.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "38,5",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "37,5",
+     "37,6",
+     "38,4",
+     "39,4",
+     "39,5"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     1980,
+     1439,
+     55,
+     51
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     1980,
+     1439,
+     55,
+     51
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2007.5,
+     1496
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 45,
+    "ink": 636,
+    "rawBboxPx": [
+     1984,
+     1443,
+     47,
+     43
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.976
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-028",
+   "kind": "sanctuary",
+   "glyphClass": "G3",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    387,
+    1524
+   ],
+   "worldPixelAnchor": [
+    2740,
+    1466
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "52,-2",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "51,-2",
+     "53,-3"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2718,
+     1444,
+     44,
+     44
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2718,
+     1444,
+     44,
+     44
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2740,
+     1494
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 47,
+    "ink": 390,
+    "rawBboxPx": [
+     2722,
+     1448,
+     36,
+     36
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.994
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-029",
+   "kind": "sanctuary",
+   "glyphClass": "G2",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    1752,
+    1525.5
+   ],
+   "worldPixelAnchor": [
+    4105,
+    1467.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "78,-15",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "77,-15",
+     "77,-14",
+     "78,-16",
+     "79,-16",
+     "79,-15"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     4080,
+     1440,
+     50,
+     55
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     4080,
+     1440,
+     50,
+     55
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     4105,
+     1501
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 46,
+    "ink": 797,
+    "rawBboxPx": [
+     4084,
+     1444,
+     42,
+     47
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.984
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-030",
+   "kind": "sanctuary",
+   "glyphClass": "G4",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    173.5,
+    1576.5
+   ],
+   "worldPixelAnchor": [
+    2526.5,
+    1518.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "48,1",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "47,1",
+     "47,2",
+     "48,0",
+     "49,0"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2504,
+     1485,
+     45,
+     67
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2504,
+     1485,
+     45,
+     67
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2526.5,
+     1558
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 48,
+    "ink": 611,
+    "rawBboxPx": [
+     2508,
+     1489,
+     37,
+     59
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.948
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-031",
+   "kind": "sanctuary",
+   "glyphClass": "G2",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    2220,
+    1730.5
+   ],
+   "worldPixelAnchor": [
+    2162,
+    1672.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "41,7",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "40,7",
+     "40,8",
+     "41,6",
+     "42,6"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2137,
+     1645,
+     50,
+     55
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2137,
+     1645,
+     50,
+     55
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2162,
+     1706
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 49,
+    "ink": 771,
+    "rawBboxPx": [
+     2141,
+     1651,
+     42,
+     45
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.899
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-032",
+   "kind": "sanctuary",
+   "glyphClass": "G4",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    1853.5,
+    1759.5
+   ],
+   "worldPixelAnchor": [
+    4206.5,
+    1701.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "80,-12",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "79,-12",
+     "79,-11",
+     "80,-13",
+     "81,-13"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     4184,
+     1668,
+     45,
+     67
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     4184,
+     1668,
+     45,
+     67
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     4206.5,
+     1741
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 50,
+    "ink": 614,
+    "rawBboxPx": [
+     4188,
+     1672,
+     37,
+     59
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.96
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-033",
+   "kind": "sanctuary",
+   "glyphClass": "G7",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    1532.5,
+    1771
+   ],
+   "worldPixelAnchor": [
+    1474.5,
+    1713
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "28,14",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "27,14",
+     "27,15"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     1451,
+     1685,
+     47,
+     56
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     1451,
+     1685,
+     47,
+     56
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     1474.5,
+     1747
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 51,
+    "ink": 671,
+    "rawBboxPx": [
+     1455,
+     1689,
+     42,
+     54
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.959
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-034",
+   "kind": "sanctuary",
+   "glyphClass": "G6",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    753.5,
+    1797
+   ],
+   "worldPixelAnchor": [
+    695.5,
+    1739
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "13,22",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "12,22",
+     "12,23",
+     "13,21",
+     "14,21",
+     "14,22"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     673,
+     1707,
+     45,
+     64
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     673,
+     1707,
+     45,
+     64
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     695.5,
+     1777
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 52,
+    "ink": 617,
+    "rawBboxPx": [
+     677,
+     1708,
+     37,
+     59
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.983
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-035",
+   "kind": "sanctuary",
+   "glyphClass": "G2",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    1487,
+    1856.5
+   ],
+   "worldPixelAnchor": [
+    3840,
+    1798.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "73,-7",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "72,-7",
+     "72,-6",
+     "73,-8",
+     "74,-8",
+     "74,-7"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     3815,
+     1771,
+     50,
+     55
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     3815,
+     1771,
+     50,
+     55
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     3840,
+     1832
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 53,
+    "ink": 795,
+    "rawBboxPx": [
+     3819,
+     1775,
+     42,
+     47
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.978
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-036",
+   "kind": "sanctuary",
+   "glyphClass": "G3",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    2175,
+    1937
+   ],
+   "worldPixelAnchor": [
+    4528,
+    1879
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "86,-12",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "86,-13",
+     "87,-13"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     4506,
+     1857,
+     44,
+     44
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     4506,
+     1857,
+     44,
+     44
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     4528,
+     1907
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 54,
+    "ink": 375,
+    "rawBboxPx": [
+     4510,
+     1863,
+     36,
+     41
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.897
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-037",
+   "kind": "sanctuary",
+   "glyphClass": "G1",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    2065,
+    1958.5
+   ],
+   "worldPixelAnchor": [
+    2007,
+    1900.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "38,12",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "37,12",
+     "37,13",
+     "38,13",
+     "39,11",
+     "39,12"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     1980,
+     1875,
+     54,
+     51
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     1980,
+     1875,
+     54,
+     51
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2007,
+     1932
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 55,
+    "ink": 626,
+    "rawBboxPx": [
+     1984,
+     1879,
+     46,
+     43
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.941
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-038",
+   "kind": "sanctuary",
+   "glyphClass": "G3",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    1272,
+    2046
+   ],
+   "worldPixelAnchor": [
+    3625,
+    1988
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "69,-2",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "68,-2",
+     "68,-1"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     3603,
+     1966,
+     44,
+     44
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     3603,
+     1966,
+     44,
+     44
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     3625,
+     2016
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 56,
+    "ink": 397,
+    "rawBboxPx": [
+     3607,
+     1963,
+     45,
+     43
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.987
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-039",
+   "kind": "sanctuary",
+   "glyphClass": "G3",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    1745,
+    2068
+   ],
+   "worldPixelAnchor": [
+    1687,
+    2010
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "32,17",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "31,17"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     1665,
+     1988,
+     44,
+     44
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     1665,
+     1988,
+     44,
+     44
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     1687,
+     2038
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 57,
+    "ink": 390,
+    "rawBboxPx": [
+     1669,
+     1992,
+     39,
+     44
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.968
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-040",
+   "kind": "sanctuary",
+   "glyphClass": "G2",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    492,
+    2127.5
+   ],
+   "worldPixelAnchor": [
+    2845,
+    2069.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "54,7",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "53,7",
+     "53,8",
+     "54,6",
+     "55,6",
+     "55,7"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2820,
+     2042,
+     50,
+     55
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2820,
+     2042,
+     50,
+     55
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2845,
+     2103
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 58,
+    "ink": 796,
+    "rawBboxPx": [
+     2824,
+     2046,
+     42,
+     47
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.991
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-041",
+   "kind": "sanctuary",
+   "glyphClass": "G3",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    2322,
+    2163
+   ],
+   "worldPixelAnchor": [
+    2264,
+    2105
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "43,13",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "42,13",
+     "42,14"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2242,
+     2083,
+     44,
+     44
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2242,
+     2083,
+     44,
+     44
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2264,
+     2133
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 59,
+    "ink": 386,
+    "rawBboxPx": [
+     2246,
+     2087,
+     36,
+     36
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.968
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-042",
+   "kind": "sanctuary",
+   "glyphClass": "G6",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    1329.5,
+    2250
+   ],
+   "worldPixelAnchor": [
+    3682.5,
+    2192
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "70,1",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "69,1",
+     "69,2",
+     "70,0",
+     "71,0",
+     "71,1"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     3660,
+     2160,
+     45,
+     64
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     3660,
+     2160,
+     45,
+     64
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     3682.5,
+     2230
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 60,
+    "ink": 614,
+    "rawBboxPx": [
+     3664,
+     2161,
+     37,
+     59
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.963
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-043",
+   "kind": "sanctuary",
+   "glyphClass": "G2",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    804,
+    2251.5
+   ],
+   "worldPixelAnchor": [
+    746,
+    2193.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "14,29",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "13,29",
+     "13,30",
+     "14,28",
+     "15,28",
+     "15,29"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     721,
+     2166,
+     50,
+     55
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     721,
+     2166,
+     50,
+     55
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     746,
+     2227
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 61,
+    "ink": 800,
+    "rawBboxPx": [
+     725,
+     2170,
+     42,
+     53
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.987
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-044",
+   "kind": "sanctuary",
+   "glyphClass": "G2",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    1959,
+    2254.5
+   ],
+   "worldPixelAnchor": [
+    4312,
+    2196.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "82,-5",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "81,-5",
+     "81,-4",
+     "83,-6",
+     "83,-5"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     4287,
+     2169,
+     50,
+     55
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     4287,
+     2169,
+     50,
+     55
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     4312,
+     2230
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 62,
+    "ink": 794,
+    "rawBboxPx": [
+     4291,
+     2173,
+     42,
+     47
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.978
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-045",
+   "kind": "sanctuary",
+   "glyphClass": "G7",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    227.5,
+    2468
+   ],
+   "worldPixelAnchor": [
+    169.5,
+    2410
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "3,38",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "2,38",
+     "2,39",
+     "4,37",
+     "4,38"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     146,
+     2382,
+     47,
+     56
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     146,
+     2382,
+     47,
+     56
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     169.5,
+     2444
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 63,
+    "ink": 669,
+    "rawBboxPx": [
+     150,
+     2386,
+     39,
+     48
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.967
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-046",
+   "kind": "sanctuary",
+   "glyphClass": "G3",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    595,
+    2493
+   ],
+   "worldPixelAnchor": [
+    2948,
+    2435
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "56,12",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "55,12",
+     "57,11"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2926,
+     2413,
+     44,
+     44
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2926,
+     2413,
+     44,
+     44
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2948,
+     2463
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 64,
+    "ink": 386,
+    "rawBboxPx": [
+     2930,
+     2417,
+     36,
+     36
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.974
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-047",
+   "kind": "sanctuary",
+   "glyphClass": "G4",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    124.5,
+    2515.5
+   ],
+   "worldPixelAnchor": [
+    2477.5,
+    2457.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "47,17",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "46,17",
+     "47,16",
+     "48,16",
+     "48,17"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2455,
+     2424,
+     45,
+     67
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2455,
+     2424,
+     45,
+     67
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2477.5,
+     2497
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 65,
+    "ink": 617,
+    "rawBboxPx": [
+     2459,
+     2428,
+     37,
+     59
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.968
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-048",
+   "kind": "sanctuary",
+   "glyphClass": "G7",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    1382.5,
+    2526
+   ],
+   "worldPixelAnchor": [
+    1324.5,
+    2468
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "25,28",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "24,28",
+     "24,29",
+     "26,27",
+     "26,28"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     1301,
+     2440,
+     47,
+     56
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     1301,
+     2440,
+     47,
+     56
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     1324.5,
+     2502
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 66,
+    "ink": 670,
+    "rawBboxPx": [
+     1305,
+     2444,
+     39,
+     48
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.971
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-049",
+   "kind": "sanctuary",
+   "glyphClass": "G2",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    1120,
+    2546.5
+   ],
+   "worldPixelAnchor": [
+    3473,
+    2488.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "66,8",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "65,8",
+     "66,7",
+     "67,7"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     3448,
+     2461,
+     50,
+     55
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     3448,
+     2461,
+     50,
+     55
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     3473,
+     2522
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 67,
+    "ink": 729,
+    "rawBboxPx": [
+     3452,
+     2465,
+     42,
+     53
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.758
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-050",
+   "kind": "sanctuary",
+   "glyphClass": "G3",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    1747,
+    2558
+   ],
+   "worldPixelAnchor": [
+    1689,
+    2500
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "32,25",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "31,25",
+     "31,26"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     1667,
+     2478,
+     44,
+     44
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     1667,
+     2478,
+     44,
+     44
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     1689,
+     2528
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 68,
+    "ink": 387,
+    "rawBboxPx": [
+     1671,
+     2482,
+     36,
+     36
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.968
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-051",
+   "kind": "sanctuary",
+   "glyphClass": "G4",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    856.5,
+    2636.5
+   ],
+   "worldPixelAnchor": [
+    798.5,
+    2578.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "15,35",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "14,35",
+     "14,36",
+     "15,34",
+     "16,34"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     776,
+     2545,
+     45,
+     67
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     776,
+     2545,
+     45,
+     67
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     798.5,
+     2618
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 69,
+    "ink": 597,
+    "rawBboxPx": [
+     780,
+     2549,
+     37,
+     59
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.888
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-052",
+   "kind": "sanctuary",
+   "glyphClass": "G2",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    2119,
+    2653.5
+   ],
+   "worldPixelAnchor": [
+    2061,
+    2595.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "39,23",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "38,24",
+     "39,24",
+     "40,22",
+     "40,23"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2036,
+     2568,
+     50,
+     55
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2036,
+     2568,
+     50,
+     55
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2061,
+     2629
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 70,
+    "ink": 733,
+    "rawBboxPx": [
+     2037,
+     2572,
+     45,
+     47
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.774
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-053",
+   "kind": "sanctuary",
+   "glyphClass": "G2",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    491,
+    2794.5
+   ],
+   "worldPixelAnchor": [
+    2844,
+    2736.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "54,18",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "53,18",
+     "53,19",
+     "54,17",
+     "55,17",
+     "55,18"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2819,
+     2709,
+     50,
+     55
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2819,
+     2709,
+     50,
+     55
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2844,
+     2770
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 73,
+    "ink": 798,
+    "rawBboxPx": [
+     2823,
+     2713,
+     42,
+     47
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.994
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-054",
+   "kind": "sanctuary",
+   "glyphClass": "G6",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    1800.5,
+    2827
+   ],
+   "worldPixelAnchor": [
+    1742.5,
+    2769
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "33,29",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "32,29",
+     "32,30",
+     "33,28",
+     "34,28",
+     "34,29"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     1720,
+     2737,
+     45,
+     64
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     1720,
+     2737,
+     45,
+     64
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     1742.5,
+     2807
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 74,
+    "ink": 592,
+    "rawBboxPx": [
+     1724,
+     2741,
+     37,
+     56
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.967
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-055",
+   "kind": "sanctuary",
+   "glyphClass": "G4",
+   "sourcePanel": "east",
+   "sourcePixelAnchor": [
+    858.5,
+    2876.5
+   ],
+   "worldPixelAnchor": [
+    3211.5,
+    2818.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "61,16",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "60,16",
+     "61,15",
+     "62,15"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     3189,
+     2785,
+     45,
+     67
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     3189,
+     2785,
+     45,
+     67
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     3211.5,
+     2858
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 77,
+    "ink": 612,
+    "rawBboxPx": [
+     3193,
+     2789,
+     37,
+     66
+    ],
+    "bboxSource": "glyph-template-match",
+    "glyphMatchScore": 0.948
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-056",
+   "kind": "destination",
+   "glyphClass": null,
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    226,
+    3006
+   ],
+   "worldPixelAnchor": [
+    168,
+    2948
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "3,47",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "2,47",
+     "2,48",
+     "3,46",
+     "4,46",
+     "4,47"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     142,
+     2914,
+     52,
+     68
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     142,
+     2914,
+     52,
+     68
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": null,
+   "builtInLabel": {
+    "text": "MARROGATE",
+    "source": "artwork",
+    "bboxPx": [
+     38,
+     2997,
+     261,
+     32
+    ],
+    "protectionRectPx": [
+     32,
+     2992,
+     273,
+     42
+    ],
+    "suppressDuplicateText": true
+   },
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 81,
+    "ink": 771,
+    "rawBboxPx": [
+     146,
+     2918,
+     44,
+     60
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": null
+   },
+   "notes": "Named destination (ornate gate icon). Not a generic sanctuary glyph. Label is lettered in the artwork below it (candidate 85)."
+  },
+  {
+   "stableId": "mk-057",
+   "kind": "sanctuary",
+   "glyphClass": "G1",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    647.5,
+    3008.5
+   ],
+   "worldPixelAnchor": [
+    589.5,
+    2950.5
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "11,43",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "10,43",
+     "10,44",
+     "12,42",
+     "12,43"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     562,
+     2925,
+     55,
+     51
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     562,
+     2925,
+     55,
+     51
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     589.5,
+     2982
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 82,
+    "ink": 628,
+    "rawBboxPx": [
+     566,
+     2929,
+     47,
+     43
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.953
+   },
+   "notes": null
+  },
+  {
+   "stableId": "mk-058",
+   "kind": "sanctuary",
+   "glyphClass": "G3",
+   "sourcePanel": "west",
+   "sourcePixelAnchor": [
+    2222,
+    3135
+   ],
+   "worldPixelAnchor": [
+    2164,
+    3077
+   ],
+   "anchorRule": "centre of the icon's tight ink bounding box (observed position; never snapped to the cell centre)",
+   "cellId": "41,30",
+   "cellAssociation": {
+    "rule": "cell containing the anchor point",
+    "alternateCellIds": [
+     "42,29",
+     "42,30"
+    ]
+   },
+   "hitArea": {
+    "shape": "rect",
+    "rectPx": [
+     2142,
+     3055,
+     44,
+     44
+    ]
+   },
+   "iconProtectionArea": {
+    "shape": "rect",
+    "rectPx": [
+     2142,
+     3055,
+     44,
+     44
+    ],
+    "note": "tight ink bbox + 4 px (covers the knocked-out white halo); Horizon is surveyed by hand to include sun rays and hatched base"
+   },
+   "labelAnchor": {
+    "pointPx": [
+     2164,
+     3105
+    ],
+    "textAlign": "center",
+    "verticalAlign": "top"
+   },
+   "builtInLabel": null,
+   "verificationStatus": "visually-verified",
+   "survey": {
+    "candidateId": 95,
+    "ink": 386,
+    "rawBboxPx": [
+     2146,
+     3059,
+     36,
+     36
+    ],
+    "bboxSource": "raw-component",
+    "glyphMatchScore": 0.962
+   },
+   "notes": null
+  }
+ ],
+ "notes": [
+  "Anchors are immutable template data, not campaign state. Do not create, delete, move, duplicate or re-icon them.",
+  "IDs are sequential in reading order of the final anchor positions and never depend on editable names.",
+  "Marrogate and Horizon are named destinations lettered in the artwork (builtInLabel); no duplicate text is drawn and no sanctuary mechanics are assigned to either.",
+  "kind \"sanctuary\" = the repeated unlabeled settlement glyphs (classes G1..); the source artwork itself does not name them, see CALIBRATION_REPORT.md \"Marker survey\"."
+ ]
+}

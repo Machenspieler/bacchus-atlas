@@ -924,3 +924,95 @@ stays copy-only.
 | Soundboard manifest, stored levels, audio engine races | `js/soundboard-manifest.js`, `js/soundboard-engine.js` | `tests/soundboard.test.js` |
 
 Run all of them with `node --test tests/*.test.js`.
+
+## Journey 2 map editor (`#/journey2`, Phase 1)
+- **Files (load order in `index.html`):** `js/journey2-geometry.js` (pure, UMD:
+  measured lattice, cell ids, neighbours, validity, camera maths, readiness
+  gate, glyph layout), `js/journey2-model.js` (pure: the map **document**,
+  the editor **placement policy**, the command/transaction reducers, bounded
+  Undo/Redo history, the "All N" footprint, quantity parsing, full-document
+  validation for load **and** import), `js/journey2-store.js` (persistence
+  over `SafeStorage`, storage injected), `js/journey2-view.js`
+  (`Journey2View.mount/unmount`: DOM, transient pointer state, rendering),
+  `css/journey2.css` (scoped to `.j2`, `body[data-route="journey2"]`, the
+  print root). Data: `data/journey2/{map-template,map-anchors,symbols}.json`;
+  raster `img/journey2/valloren-world.webp` (loaded only on this route).
+  The model owns every rule; the view builds commands and never mutates a
+  document. Both pure modules are `require()`d by `tests/journey2-*.test.js`.
+- **Document** (`schemaVersion` 1, `kind` `bacchus-atlas.journey2.gm-backup`):
+  `{ templateId, templateVersion, createdAt, updatedAt, batches[], tiles[] }`.
+  A **batch** is one generated region copied *by value* from the generator
+  (habitat + provenance, terrain, quantity, encounter rolls, rumor roll,
+  notes); a **tile** is `{ id, batchId, cell:"q,r" }`. Counts are derived
+  (`remaining = quantity - placed`), never stored; occupancy is keyed by the
+  canonical cell id (one tile per cell). Provenance is explicit: a chosen
+  habitat/terrain/quantity is `source:"manual"` and carries **no** dice
+  rolls; a rolled one keeps its rolls. The export/backup *is* this document —
+  no raster, SVG or asset bytes; the template is referenced by identity.
+- **Placement policy** (`Journey2Model.createContext().policy`) — the single
+  rule for preview, commit, load and import: a cell must be structurally
+  valid (`grid.isValid`, i.e. inside the printed frame) and must not overlap a
+  template `decorativeAreas` rectangle (title, compass, scale/credit). The
+  decorative cells stay *valid template cells* (counts and ids are untouched);
+  terrain simply cannot be placed there. Water, coast and fixed-marker cells
+  are allowed. Markers and labels are protected by the **renderer**:
+  `Geo.layoutProofGlyph` keeps every glyph box clear of every protection rect
+  and inside its hexagon, otherwise the glyph is withheld (the tile stays,
+  drawn as a dashed outline). `tests/journey2-model.test.js` proves this over
+  every allowed cell and symbol.
+- **Commands** (`createBatch`, `place`, `move`, `returnTile`, `setNotes`)
+  carry every generated value (ids, cells, timestamps), so Redo replays the
+  same transaction and never re-rolls. `place` is atomic (all N or nothing).
+  `View.dispatch()` is the one path for UI and tests: cancel any drag →
+  flush a pending notes edit → `Model.apply` → history → persist → repaint.
+  A no-op returns the same document reference and records nothing.
+- **Interaction state** (view-only, never persisted, never in history):
+  `tr` = a stock drag, a tile drag or an armed click-to-place; `pan`;
+  selection. The "All N" footprint is generated once per drag
+  (`compactFootprint(N)`, a pure function of N) and frozen. A drag remembers
+  the document it started on; release revalidates and a changed document
+  cancels it. Escape, `pointercancel`, lost capture, a drop outside the map,
+  route exit and any dispatched command cancel without touching state.
+  Wheel/zoom during a drag recompute the preview with the *current* camera.
+- **Storage:** exactly three keys, all `dhcodex_journey2_*` (`js/journey2-store.js`):
+  `map` (the document), `map_recovery` (raw text of a map that failed
+  validation), `map_previous` (the map an import replaced). Nothing else is
+  read or written; legacy Journey, Prep and unrelated keys stay byte-identical.
+  A document that fails validation is **never** replaced by an empty autosave:
+  `load()` reports `corrupt`, the raw text stays under its own key and is
+  copied to `map_recovery`, edits are locked until the user imports a backup or
+  explicitly starts an empty map. `save()` reports the real outcome; "Saved"
+  is shown only after a successful write. Committed edits are written
+  immediately; a notes edit is grouped (commit on blur) and the status reads
+  "unsaved" until then. Undo history lives in memory only: it survives
+  re-renders and language switches but **not** a route change or reload; the
+  map itself always does. Import validates the whole document first, requires
+  confirmation when replacing a non-empty map, writes the recovery copy only
+  after confirmation, and clears the Undo history (so Undo can never combine
+  two documents).
+- **Lifecycle:** `render()` calls `renderJourney2Page()` on the route and
+  `Journey2View.unmount()` on every other one (which flushes a pending notes
+  edit). A re-render (language switch) only re-localizes the live mount, so
+  camera, selection, sidebar scroll and unsaved text survive; stock cards are
+  updated in place (never re-created mid-drag). Teardown releases listeners —
+  including the two document-level ones (Escape, Undo/Redo, both ignored while
+  a text field or dialog is active) — ResizeObservers, rAF, fetches, blob URLs,
+  dialogs, the print root. A late load checks `disposed`.
+- **Generator integration:** `journey2Generator` in `js/app.js` is a thin
+  adapter over the *existing* `rollHabitat`, `rollEncounter`, `rollDie` and
+  `state.journey` tables (no copy of any table). A chosen biome or terrain
+  replaces its roll; the d12 size is thrown only when no quantity was entered.
+  `describe(batch)` returns display text from the same tables.
+- **Diagnostics:** the Phase 0 inspector (calibration grid, control cells,
+  markers, protection areas, proof overlay, print proof) is a secondary
+  drawer behind the toolbar's "More → Diagnostics", closed by default.
+- **Dev pipeline (not shipped):** `scripts/journey2/` — `prepare-map.js`,
+  `measure-grid.js`, `survey-markers.js`, `build-template.js`,
+  `verify-template.js`, `browser-verify.js` (Phase 0 behaviours, via the
+  diagnostics drawer), `stage1-verify.js` (the editor: real pointer input in
+  isolated Playwright contexts), `print-proof.js` + `verify-print.js`.
+- **Deployment note:** `scripts/build.js` copies everything not excluded;
+  `docs/journey2-*` (handoff PDFs, review packages, evidence, stage ZIPs) are
+  excluded and `scripts/check-journey2-build.js` fails the build if any of it
+  — or a known Journey source file — appears in `dist/`. It no longer bans
+  PDFs/ZIPs as a class.
