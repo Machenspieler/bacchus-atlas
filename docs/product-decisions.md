@@ -560,9 +560,9 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   large floating panel over the map. Clicking any placed hex opens it, and
   every card has an **Inspect region** button (also for an unplaced region,
   also while the card is collapsed). Cards no longer carry Encounter / Rumor /
-  Notes tabs.
-- **Generated details are region-level:** Habitat, Terrain, Encounter, Rumor and
-  GM notes belong to the region, never to a hex. Clicking any hex of region #6
+  Notes tabs. (GM notes were later removed — PD-019.)
+- **Generated details are region-level:** Habitat, Terrain, Encounter and Rumor
+  belong to the region, never to a hex. Clicking any hex of region #6
   shows the same panel; the clicked hex is only the visual anchor and the
   selected tile. Nothing is copied into tile records.
 - **Independent state:** the card expanded for placement (`activeBatchId`) and
@@ -572,10 +572,9 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   persisted (not in `dhcodex_journey2_ui`), never in the document, backups or
   Undo history; Undo of a region's creation or a deletion closes it and Redo /
   Undo-of-delete never reopens it; import and route exit clear it.
-- **Read-only except notes:** no dice, reroll, Keep/Discard or value editing.
-  GM notes stay `batch.notes` via the existing `setNotes` command (one
-  pending-notes pipeline, flushed on close, region switch, import, Undo/Redo,
-  `pagehide`).
+- **Read-only:** no dice, reroll, Keep/Discard or value editing. (There used to
+  be one editable field, GM notes; PD-019 removed it, so the inspector is now
+  purely read-only apart from Return to stock.)
 - **Priority:** open dialog > active drag or pan > armed Place > (future map
   tools, e.g. fog) > neutral inspection. Escape: menu, then drag/armed
   placement, then the inspector. The inspector and the Diagnostics drawer are
@@ -584,8 +583,34 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   Diagnostics drawer) never changes pan or zoom; only an explicit Fit does.
   The Inspect button never toggles: same region keeps it open, another region
   replaces it, closing is explicit (Close, Escape, empty-map click). Hexes
-  covered by the panel are not click-through; the selected-tile bar is a soft
-  positioning constraint kept above the inspector.
+  covered by the panel are not click-through.
 - **Still GM-only and out of scope:** fog of war, player-facing output,
   printing, sanctuaries, region reroll and editing are later phases.
 - **Where:** [architecture.md](architecture.md) "Region Inspector (Phase B)".
+
+## PD-019: Journey 2 — no GM notes, tile info inside the inspector, environments on the card
+- **Date:** 2026-10-06
+- **Decision (GM notes removed):** the Region Inspector no longer has a GM notes
+  field, the card no longer shows a notes dot, and there is no pending-notes
+  pipeline (`notesDirty`/`flushNotes`) any more. The **document keeps** the
+  `notes` field and the `setNotes` command: removing them would make every
+  already-saved map or backup that carries notes fail validation (and a map that
+  fails validation is never autosaved over). Old notes therefore survive in
+  saves and exports but are no longer shown or editable.
+- **Decision (one panel for a hex):** the separate bottom "selected tile" bar is
+  gone. Its content lives in the inspector's footer — "Hex q,r" and **Return to
+  stock** — shown only while the inspector is anchored on a placed hex (opened
+  by clicking one) and hidden when it was opened from a card's Inspect button.
+  The bar's Deselect button went with it (the inspector's Close is the same
+  action). A hex dragged to a new cell stays selected only while the inspector
+  is anchored on it; otherwise nothing is selected afterwards (Undo remains).
+- **Decision (environments on the card):** an *expanded* region card has an
+  **Environments (N)** disclosure listing every catalog environment whose
+  `biomes` contains the region's biome, sorted by tier then name. Each row is a
+  plain link to that environment's overlay on `#/journey2/env/<id>` (the same
+  route-driven overlay as everywhere else), so the map and the open card are
+  untouched. Matching is exact: `universal` and `settlement` environments are
+  *not* mixed into a terrain's list. An overtaken region has no biome and shows
+  no dropdown.
+- **Where:** [architecture.md](architecture.md) "Region Inspector (Phase B)" and
+  "Journey 2 map editor".

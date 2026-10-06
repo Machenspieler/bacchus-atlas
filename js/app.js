@@ -3051,7 +3051,19 @@ function renderJourney2Page() {
   document.getElementById('result-count').innerHTML = '';
   Journey2View.mount(document.getElementById('grid-wrap'), {
     t, lang: state.lang, generator: journey2Generator, toast: showToast, storage: lsStorage,
+    environmentsForBiome: journey2EnvironmentsForBiome,
   });
+}
+
+/** The environments a Journey 2 region card lists for its biome: every catalog environment whose `biomes` carries that
+ * id, in catalog order (tier, then name). Each `href` is the overlay address on #/journey2, so opening one is a plain
+ * link and the map underneath is never re-rendered. */
+function journey2EnvironmentsForBiome(biome) {
+  const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
+  return allEnvs()
+    .filter(env => env.biomes.includes(biome))
+    .sort((a, b) => a.tier - b.tier || collator.compare(envName(a), envName(b)))
+    .map(env => ({ id: env.id, name: envName(env), tier: env.tier, href: envHash(env.id, { name: 'journey2' }) }));
 }
 
 /** The Journey 2 region generator: the SAME rolls and tables as #/journey (rollHabitat, rollEncounter,

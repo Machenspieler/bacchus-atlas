@@ -765,35 +765,6 @@ async function main() {
       return g0 === g1 && g0.length > 0;
     });
 
-    /* notes: native text shortcuts must not drive the map; one grouped history entry */
-    await check('neg.typing-in-notes-keeps-native-space-delete-and-undo-and-commits-one-history-entry', async () => {
-      await pg.click(`.j2-card[data-batch="${bidB}"] [data-j2-inspect]`); await pg.waitForTimeout(80);
-      const ta = pg.locator('[data-j2-insp-notes]');
-      const s0 = await state(pg); const camera0 = JSON.stringify(s0.camera);
-      await ta.click(); await pg.keyboard.type('hello world', { delay: 15 });
-      await pg.keyboard.press('Backspace'); await pg.keyboard.press('Control+z'); await pg.waitForTimeout(80);   // native text undo
-      const mid = await state(pg);
-      const val = await ta.inputValue();
-      await pg.keyboard.type(' ok x', { delay: 10 }); await pg.keyboard.press('Delete'); await pg.keyboard.press('Home'); await pg.keyboard.press('Delete');
-      const typed = await ta.inputValue();
-      const status = await pg.locator('.j2-save').getAttribute('data-state');
-      await pg.locator('.j2-title').click();    // blur commits
-      await pg.waitForTimeout(150);
-      const s1 = await state(pg);
-      const noteSaved = s1.batches.find(b => b.id === bidB).notes;
-      return { ok: mid.history.undo === s0.history.undo && JSON.stringify(mid.camera) === camera0 && /hello/.test(val) && status === 'unsaved' && s1.history.undo === s0.history.undo + 1 && noteSaved === typed && typed.includes(' ') && s1.tiles.length === s0.tiles.length, detail: { val, typed, status, noteSaved, h: [s0.history.undo, mid.history.undo, s1.history.undo] } };
-    });
-    await check('neg.notes-edit-is-undoable-as-a-map-command-and-html-in-notes-is-text-only', async () => {
-      const ta = pg.locator('[data-j2-insp-notes]');
-      await ta.fill('<img src=x onerror="window.__pwn=1"><b>bold</b>'); await pg.locator('.j2-title').click(); await pg.waitForTimeout(150);
-      const injected = await pg.evaluate(() => ({ pwn: window.__pwn || null, imgs: document.querySelectorAll('.j2-region-inspector img[src="x"], .j2-card img[src="x"]').length, bold: document.querySelectorAll('.j2-region-inspector b, .j2-card b:not([data-j2-c])').length }));
-      await pg.click('[data-j2-undo]'); await pg.waitForTimeout(100);
-      const afterUndo = await ta.inputValue();
-      await pg.click('[data-j2-redo]'); await pg.waitForTimeout(100);
-      const afterRedo = await ta.inputValue();
-      return { ok: !injected.pwn && injected.imgs === 0 && afterUndo !== afterRedo && /<b>bold<\/b>/.test(afterRedo), detail: { injected, afterUndo, afterRedo } };
-    });
-
     /* storage failure / unavailable */
     await check('neg.storage-write-failure-never-says-Saved-keeps-the-map-usable-and-backup-still-downloads', async () => {
       await pg.evaluate(() => { const orig = Storage.prototype.setItem; window.__origSetItem = orig; Storage.prototype.setItem = function (k, v) { if (k === 'dhcodex_journey2_map') { const e = new DOMException('quota', 'QuotaExceededError'); throw e; } return orig.call(this, k, v); }; });
@@ -1051,7 +1022,7 @@ async function main() {
     await sub.close();
   }
 
-  /* ===== H. Region Inspector (Phase B): map click, card Inspect, notes, closing, positioning ===== */
+  /* ===== H. Region Inspector (Phase B): map click, card Inspect, hex footer, closing, positioning ===== */
   {
     const context = await newCtx(browser, { viewport: VP_SMALL });
     const pg = await context.newPage(); attachLogging(pg, logs, 'inspector');
@@ -1100,7 +1071,7 @@ async function main() {
     });
     await check('insp.03.content-is-region-level-and-has-no-dice-reroll-keep-or-discard', async () => {
       const x = await inspTexts();
-      return { ok: x.title === 'Forest' && /Region #1/.test(x.sub) && /Terrain 3/.test(x.text) && /\d+ days? per hex/.test(x.text) && /6 hexes/.test(x.text) && /5 placed/.test(x.text) && /1 remaining/.test(x.text) && x.enc === 1 && x.h4.join('|') === 'Encounter|Rumor|GM notes' && x.buttons === 1 && !/\bd\d+\b|d8\s*\+\s*d6|reroll|re-roll|keep|discard/i.test(x.text), detail: x };
+      return { ok: x.title === 'Forest' && /Region #1/.test(x.sub) && /Terrain 3/.test(x.text) && /\d+ days? per hex/.test(x.text) && /6 hexes/.test(x.text) && /5 placed/.test(x.text) && /1 remaining/.test(x.text) && x.enc === 1 && x.h4.join('|') === 'Encounter|Rumor' && x.buttons === 1 && !/\bd\d+\b|d8\s*\+\s*d6|reroll|re-roll|keep|discard/i.test(x.text), detail: x };
     });
     await check('insp.04.the-whole-region-gets-a-soft-outline-and-only-the-clicked-hex-the-strong-one', async () => {
       const r = await pg.evaluate(() => ({ region: document.querySelector('[data-j2-g="select"] .j2-region-hl') && document.querySelector('[data-j2-g="select"] .j2-region-hl').getAttribute('d').split('M').length - 1, strong: document.querySelectorAll('[data-j2-g="select"] .j2-tile-sel').length, card: document.querySelector('.j2-card[data-batch]').closest('.j2-cards') && [...document.querySelectorAll('.j2-card.is-inspected')].map(c => c.getAttribute('data-batch')) }));
@@ -1194,32 +1165,18 @@ async function main() {
     });
     await shot(pg, 'insp-02-card-open.png');
 
-    /* ---- notes ---- */
-    await check('insp.16.gm-notes-commit-through-setNotes-as-one-history-entry-and-undo-redo-restore-them', async () => {
-      const ta = pg.locator('[data-j2-insp-notes]');
-      const h0 = (await state(pg)).history.undo;
-      await ta.click(); await pg.keyboard.type('Beware the ford', { delay: 8 });
-      const dot = await cardOf(pg, A).locator('.j2-notes-dot').isVisible();
-      const midUnsaved = await pg.locator('.j2-save').getAttribute('data-state');
-      await pg.locator('.j2-title').click(); await pg.waitForTimeout(150);
-      const s1 = await state(pg), raw = JSON.parse((await storageKeys()).dhcodex_journey2_map);
-      await pg.click('[data-j2-undo]'); await pg.waitForTimeout(100);
-      const afterUndo = await ta.inputValue(), notesUndo = (await state(pg)).batches.find(b => b.id === A).notes;
-      await pg.click('[data-j2-redo]'); await pg.waitForTimeout(100);
-      const afterRedo = await ta.inputValue();
-      const srName = await cardOf(pg, A).locator('[data-j2-inspect]').innerText();
-      return { ok: dot && midUnsaved === 'unsaved' && s1.history.undo === h0 + 1 && s1.batches.find(b => b.id === A).notes === 'Beware the ford' && raw.batches.find(b => b.id === A).notes === 'Beware the ford' && afterUndo === '' && notesUndo === '' && afterRedo === 'Beware the ford' && /has notes/.test(srName), detail: { dot, midUnsaved, h: [h0, s1.history.undo], afterUndo, afterRedo, srName } };
+    /* ---- GM notes are gone; the anchored hex's info + Return to stock live in the inspector (PD-019) ---- */
+    await check('insp.16.no-notes-field-or-dot-and-no-separate-tile-bar', async () => {
+      const r = await pg.evaluate(() => ({ ta: document.querySelectorAll('.j2 textarea').length, dot: document.querySelectorAll('.j2-notes-dot').length, bar: document.querySelectorAll('.j2-tilebar, [data-j2-deselect]').length }));
+      return { ok: r.ta === 0 && r.dot === 0 && r.bar === 0, detail: r };
     });
-    await check('insp.17.inspecting-another-region-flushes-pending-notes-and-escape-closes-and-flushes', async () => {
-      const ta = pg.locator('[data-j2-insp-notes]');
-      await ta.fill('pending note A');           // typed, not blurred
-      await cardOf(pg, B).locator('[data-j2-inspect]').click(); await pg.waitForTimeout(120);
-      const sa = await state(pg);
-      const ok1 = sa.batches.find(b => b.id === A).notes === 'pending note A' && sa.inspector.batchId === B && (await ta.inputValue()) === '';
-      await ta.fill('note for B');
+    await check('insp.17.footer-shows-hex-and-return-only-when-opened-from-a-hex', async () => {
+      await cardOf(pg, A).locator('[data-j2-inspect]').click(); await pg.waitForTimeout(120);
+      const fromCard = await pg.locator('[data-j2-insp-tile]').isHidden();
+      await clickCell(SEVEN[2]); await pg.waitForTimeout(150);
+      const fromHex = await pg.evaluate(() => { const f = document.querySelector('[data-j2-insp-tile]'); return { hidden: f.hidden, text: f.innerText, btn: !!f.querySelector('button[data-j2-return]') }; });
       await pg.keyboard.press('Escape'); await pg.waitForTimeout(120);
-      const sb = await state(pg);
-      return { ok: ok1 && sb.batches.find(b => b.id === B).notes === 'note for B' && !sb.inspector.open, detail: { ok1, open: sb.inspector.open } };
+      return { ok: fromCard && !fromHex.hidden && /\d+,-?\d+/.test(fromHex.text) && fromHex.btn && !(await state(pg)).inspector.open, detail: { fromCard, fromHex } };
     });
 
     /* ---- closing, focus, priority ---- */

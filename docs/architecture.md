@@ -953,7 +953,8 @@ Run all of them with `node --test tests/*.test.js`.
   `{ templateId, templateVersion, createdAt, updatedAt, batches[], tiles[] }`.
   A **batch** is one generated region copied *by value* from the generator
   (habitat + provenance, terrain, quantity, encounter rolls, rumor roll,
-  notes); a **tile** is `{ id, batchId, cell:"q,r" }`. Counts are derived
+  notes — kept in the document for already-saved maps but no longer shown or
+  edited, PD-019); a **tile** is `{ id, batchId, cell:"q,r" }`. Counts are derived
   (`remaining = quantity - placed`), never stored; occupancy is keyed by the
   canonical cell id (one tile per cell). Provenance is explicit: a chosen
   habitat/terrain/quantity is `source:"manual"` and carries **no** dice
@@ -974,7 +975,7 @@ Run all of them with `node --test tests/*.test.js`.
   carry every generated value (ids, cells, timestamps), so Redo replays the
   same transaction and never re-rolls. `place` is atomic (all N or nothing).
   `View.dispatch()` is the one path for UI and tests: cancel any drag →
-  flush a pending notes edit → `Model.apply` → history → persist → repaint.
+  `Model.apply` → history → persist → repaint.
   A no-op returns the same document reference and records nothing.
   `deleteBatch` removes the batch and all its tiles atomically (one Undo entry).
 - **Region shape rules (Phase A, in the model):** all placed tiles of one batch
@@ -999,8 +1000,9 @@ Run all of them with `node --test tests/*.test.js`.
   `inert` on the hidden half, `aria-expanded` on both toggles); its state is
   stored via `store.loadUi/saveUi`, never in the document, and toggling never
   touches camera, selection or the active card. Cards are compact; exactly one
-  (`activeBatchId`) is expanded (placement controls only — Encounter, Rumor and
-  Notes live in the Region Inspector, below); it is view state, not history. Zoom buttons use
+  (`activeBatchId`) is expanded (placement controls and, for a region with a biome, the Environments
+  dropdown — see "Environments dropdown" below; Encounter and Rumor live in the
+  Region Inspector); it is view state, not history. Zoom buttons use
   `Geo.ZOOM_STEPS` via `Geo.stepZoom()` (exactly 100% is a stop; Fit may land
   between stops); the readout is a button that resets to exactly 100%.
 - **Region Inspector (Phase B):** `inspector = { batchId, tileId, source }`
@@ -1010,26 +1012,40 @@ Run all of them with `node --test tests/*.test.js`.
   `inspectedTileIds`); the view calls them and never persists the result. One
   `<aside role="dialog" aria-modal="false">` is built once in `.j2-mapwrap`, a
   **sibling** of the scaled `.j2-world`, so it keeps its screen size at every
-  zoom; `renderInspector()` fills it in place (the notes textarea node is never
-  replaced). Entry points: a plain click on a placed hex (`selectTile` →
+  zoom; `renderInspector()` fills it in place (it never replaces a node under the
+  reader's scroll). Entry points: a plain click on a placed hex (`selectTile` →
   `openInspectorFromTile`, strong outline on that hex + soft `.j2-region-hl`
   outline on the whole region) and a card's Inspect button
   (`openInspectorFromCard`: soft outline only, no hex selected, works for an
   unplaced region). Positioning is `Geo.placeInspector()` (pure, tested): right
   of the hex, else left, above/below, else clamped; it avoids the *measured*
-  rectangles of the sidebar/rail and diagnostics drawer (the selected-tile bar is
-  a soft constraint) and falls back to a stable top-right corner without an
+  rectangles of the sidebar/rail and diagnostics drawer and falls back to a stable top-right corner without an
   anchor or a bottom-centred panel at ≤900px. It is re-run from the camera `rAF`
   (pan, zoom, resize, Fit), a `ResizeObserver` on the panel, the sidebar's
   transition and after every render, never per pointer event. `syncInspection`
   runs after every document change (deleted region → closed; vanished anchor
   hex → dropped). Close paths: button, Escape (after menu and drag/armed
   placement), empty-map click (never a pan), deletion, import/replace, opening
-  Diagnostics, unmount — each flushes pending notes first; focus returns to the
-  opener (the card's Inspect button, or the map). The pending-notes pipeline is
-  the single `notesDirty` (committed through `setNotes`). Browser coverage:
+  Diagnostics, unmount; focus returns to the
+  opener (the card's Inspect button, or the map). When the inspector is anchored
+  on a placed hex a footer (`[data-j2-insp-tile]`, outside the scroller) shows
+  "Hex q,r" and the one **Return to stock** button (`returnSelected`); there is
+  no separate tile bar (PD-019). Browser coverage:
   `scripts/journey2/stage1-verify.js` checks `insp.*` and `browser-verify.js`
   `inspector.*`; pure coverage: `tests/journey2-inspector.test.js`.
+- **Environments dropdown (card, PD-019):** `app.js` passes the view
+  `environmentsForBiome` (`journey2EnvironmentsForBiome`): the catalog
+  environments whose `biomes` includes the region's biome, sorted tier → name in
+  the current language, each with an `href` built by `envHash(id, { name:
+  'journey2' })`. `updateEnvironments()` (called from `updateCard`, expanded
+  cards only) fills a disclosure — a toggle button + `<ul>` of plain `<a>`
+  links — once per biome + language (`data-sig`), so an open list and the focus
+  inside it survive every re-render. Following a link is an ordinary hash
+  change: `hashchange` sees only the card suffix changed and opens the
+  environment overlay without re-rendering the page. While any
+  `.modal-overlay` is open, the view's document-level Escape handler stands
+  down so Escape closes only the overlay. An overtaken region (no biome) has no
+  dropdown.
 - **Interaction state** (view-only, never persisted, never in history):
   `tr` = a stock drag, a tile drag or an armed click-to-place; `pan`;
   selection; the open Region Inspector. The "All N" footprint is generated once per drag
@@ -1048,16 +1064,14 @@ Run all of them with `node --test tests/*.test.js`.
   copied to `map_recovery`, edits are locked until the user imports a backup or
   explicitly starts an empty map. `save()` reports the real outcome; "Saved"
   is shown only after a successful write. Committed edits are written
-  immediately; a notes edit is grouped (commit on blur) and the status reads
-  "unsaved" until then. Undo history lives in memory only: it survives
+  immediately. Undo history lives in memory only: it survives
   re-renders and language switches but **not** a route change or reload; the
   map itself always does. Import validates the whole document first, requires
   confirmation when replacing a non-empty map, writes the recovery copy only
   after confirmation, and clears the Undo history (so Undo can never combine
   two documents).
 - **Lifecycle:** `render()` calls `renderJourney2Page()` on the route and
-  `Journey2View.unmount()` on every other one (which flushes a pending notes
-  edit). A re-render (language switch) only re-localizes the live mount, so
+  `Journey2View.unmount()` on every other one. A re-render (language switch) only re-localizes the live mount, so
   camera, selection, sidebar scroll and unsaved text survive; stock cards are
   updated in place (never re-created mid-drag). Teardown releases listeners —
   including the two document-level ones (Escape, Undo/Redo, both ignored while

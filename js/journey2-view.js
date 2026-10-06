@@ -9,7 +9,7 @@
    secondary "Diagnostics" action, closed by default.
 
    Phase A: the generator is one fully random action (no manual habitat, size
-   or terrain); a generated region is immutable apart from its GM notes and
+   or terrain); a generated region is immutable and
    can be deleted whole. The sidebar is an animated overlay on the map, region
    cards are compact with one expanded at a time, zoom uses fixed steps
    including exactly 100%, and the model enforces connected region shapes
@@ -18,7 +18,8 @@
    Phase B: the map is the primary inspection surface. Clicking any placed hex
    (or the card's Inspect button, which also works for an unplaced region) opens
    one screen-space Region Inspector over the map: the region's Habitat, Terrain,
-   Encounter, Rumor and counts, plus the one editable field, its GM notes. The
+   Encounter, Rumor and counts, plus — when opened from a placed hex — that
+   hex's cell and its Return to stock action. The
    sidebar is only for generating, placing, deleting and opening the inspector;
    the inspector's state is transient and independent of which card is expanded.
 
@@ -124,6 +125,7 @@
     let t = (opts && opts.t) || (k => k);
     let lang = (opts && opts.lang) || 'en';
     let generator = (opts && opts.generator) || null;
+    let environmentsFor = (opts && opts.environmentsForBiome) || (() => []);   // biome id -> [{ id, name, tier, href }], supplied by app.js from the catalog
     const toast = (opts && opts.toast) || (() => {});
     const storage = opts && 'storage' in opts ? opts.storage : null;
     let nf = makeNumberFormat();
@@ -151,12 +153,11 @@
     let spaceDown = false;
     let sel = { tileId: null };
     let inspector = Model.NO_INSPECTION;                    // { batchId, tileId, source } — the open Region Inspector (transient: never persisted, never in history)
-    let inspectorShown = null;                              // batchId the inspector DOM currently shows (so the notes textarea survives re-renders)
+    let inspectorShown = null;                              // batchId the inspector DOM currently shows (so its scroll position survives re-renders)
     let followUntil = 0;                                    // keep re-positioning the inspector every frame until this time (sidebar slide)
     let hintTimer = 0;
     let liveTimer = 0;
     let cardRefs = new Map();                               // batchId -> { root, ...nodes }
-    let notesDirty = null;                                  // { batchId, value } typed but not yet committed
     let openMenu = null;
     const dialogs = new Set();
     const urls = [];
@@ -194,7 +195,6 @@
 
     function dispose() {
       if (inst.disposed) return;
-      try { flushNotes(); } catch (e) { /* best effort: the write below is the one that matters */ }
       inst.disposed = true;
       abort.abort();
       cancelAnimationFrame(rafId);
@@ -223,6 +223,7 @@
       if (o && o.t) t = o.t;
       if (o && o.lang && o.lang !== lang) { lang = o.lang; nf = makeNumberFormat(); }
       if (o && o.generator) generator = o.generator;
+      if (o && o.environmentsForBiome) environmentsFor = o.environmentsForBiome;
       applyStrings();
       if (data && ui.root) {
         updateStatus(); updateReadouts(); renderControlList(); renderAll(true);
@@ -367,12 +368,6 @@
                 <div class="j2-badge" data-j2-proof-badge hidden data-t="journey2_proof_badge"></div>
               </div>
               <div class="j2-hint-chip" data-j2-hint role="status" aria-live="polite" hidden></div>
-              <div class="j2-tilebar" data-j2-tilebar hidden>
-                <span class="j2-tilebar-sym"><img alt="" width="22" height="22" data-j2-tilebar-img></span>
-                <span class="j2-tilebar-text" data-j2-tilebar-text></span>
-                <button type="button" class="btn btn-sm j2-tilebar-return" data-j2-return data-t="journey2_return"></button>
-                <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-deselect data-t-aria="journey2_deselect" data-t-title="journey2_deselect">${ICON.close}</button>
-              </div>
               <aside class="j2-panel" id="j2-panel" data-t-aria="journey2_panel_label" hidden></aside>
               <aside class="j2-region-inspector" id="j2-region-inspector" role="dialog" aria-modal="false" aria-labelledby="j2-region-inspector-title" data-j2-inspector hidden>
                 <span class="j2-insp-caret" aria-hidden="true"></span>
@@ -395,9 +390,11 @@
                   </div>
                   <section class="j2-insp-sec"><h4 class="j2-insp-h" data-t="journey_k_encounter"></h4><div data-j2-i="enc"></div></section>
                   <section class="j2-insp-sec"><h4 class="j2-insp-h" data-t="journey_k_rumor"></h4><p class="j2-insp-p" data-j2-i="rumor"></p></section>
-                  <section class="j2-insp-sec"><h4 class="j2-insp-h"><label for="j2-insp-notes" data-t="journey2_notes"></label></h4>
-                    <textarea class="j2-notes" id="j2-insp-notes" rows="3" maxlength="${Model.MAX_NOTES_LENGTH}" data-j2-insp-notes data-t-ph="journey2_notes_ph"></textarea></section>
                 </div>
+                <footer class="j2-insp-tile" data-j2-insp-tile hidden>
+                  <span class="j2-insp-tile-text" data-j2-i="tileText"></span>
+                  <button type="button" class="btn btn-sm j2-insp-return" data-j2-return data-t="journey2_return"></button>
+                </footer>
               </aside>
             </div>
             <div class="j2-sidewrap" data-j2-sidewrap>
@@ -441,7 +438,7 @@
       ui.inspector = container.querySelector('[data-j2-inspector]');
       ui.i = {};
       for (const x of ui.inspector.querySelectorAll('[data-j2-i]')) ui.i[x.getAttribute('data-j2-i')] = x;
-      ui.inspNotes = ui.inspector.querySelector('[data-j2-insp-notes]');
+      ui.inspTile = ui.inspector.querySelector('[data-j2-insp-tile]');
       ui.zoomReadout = container.querySelector('[data-j2-zoom-readout]');
       ui.badge = container.querySelector('[data-j2-proof-badge]');
       ui.side = container.querySelector('.j2-side');
@@ -465,9 +462,6 @@
       ui.hint = container.querySelector('[data-j2-hint]');
       ui.tip = container.querySelector('[data-j2-tip]');
       ui.live = container.querySelector('[data-j2-live]');
-      ui.tilebar = container.querySelector('[data-j2-tilebar]');
-      ui.tilebarImg = container.querySelector('[data-j2-tilebar-img]');
-      ui.tilebarText = container.querySelector('[data-j2-tilebar-text]');
       ui.g = {};
       for (const g of container.querySelectorAll('[data-j2-g]')) ui.g[g.getAttribute('data-j2-g')] = g;
       baseImg.className = 'j2-base'; baseImg.alt = ''; baseImg.draggable = false; baseImg.width = W; baseImg.height = H;
@@ -529,8 +523,7 @@
 
     function renderSave() {
       if (!ui.save) return;
-      const dirty = !!notesDirty && saveState.status === 'saved';
-      const s = dirty ? 'unsaved' : saveState.status;
+      const s = saveState.status;
       ui.save.setAttribute('data-state', s);
       ui.save.querySelector('.j2-save-text').textContent = t('journey2_save_' + s);
       ui.save.title = s === 'failed' ? t('journey2_banner_failed') : s === 'unavailable' ? t('journey2_banner_unavailable') : '';
@@ -555,14 +548,13 @@
     }
 
     /**
-     * The one path for every committed edit (UI and tests): cancel any drag, flush a pending notes edit,
+     * The one path for every committed edit (UI and tests): cancel any drag,
      * apply the command through the model, record history, persist, repaint. Returns the model result.
      */
     function dispatch(cmd, label, keepTransient) {
       if (inst.disposed || !doc) return { ok: false, error: { code: 'disposed' } };
       if (editLocked) return { ok: false, error: { code: 'locked' } };
       if (!keepTransient) cancelTransient();
-      if (cmd.type !== 'setNotes') flushNotes(true);
       const at = new Date().toISOString();
       const r = Model.apply(doc, Object.assign({ at: at }, cmd), data.ctx);
       if (!r.ok) return r;
@@ -582,7 +574,6 @@
 
     function undo() {
       if (inst.disposed || editLocked) return;
-      flushNotes(true);
       cancelTransient();
       const e = Model.historyUndo(history);
       if (!e) return;
@@ -592,23 +583,12 @@
     }
     function redo() {
       if (inst.disposed || editLocked) return;
-      flushNotes(true);
       cancelTransient();
       const e = Model.historyRedo(history);
       if (!e) return;
       doc = e.after;
       afterDocChange();
       announce(t('journey2_live_redo'));
-    }
-
-    /** Commits a typed-but-uncommitted notes edit as ONE history entry. */
-    function flushNotes() {
-      if (!notesDirty || !doc) return;
-      const d = notesDirty;
-      notesDirty = null;
-      const r = Model.apply(doc, { type: 'setNotes', batchId: d.batchId, notes: d.value, at: new Date().toISOString() }, data.ctx);
-      if (r.ok && r.doc !== doc) { Model.historyCommit(history, doc, r.doc, 'setNotes'); doc = r.doc; persist(); updateHistoryButtons(); }
-      else renderSave();
     }
 
     /* ============================================================
@@ -707,11 +687,9 @@
 
     function symbolFor(b) { return data.symbolById.get(Model.symbolIdOf(b)); }
 
-    const NOTES_MAX_PX = 240;
-
     function createCard(b) {
       const root = el('article', { class: 'j2-card', 'data-batch': b.id });
-      const bodyId = 'j2-cb-' + b.id;
+      const bodyId = 'j2-cb-' + b.id, envsId = 'j2-ce-' + b.id;
       root.innerHTML = `
         <div class="j2-card-top">
           <button type="button" class="j2-card-head" data-j2-card-toggle aria-expanded="false" aria-controls="${bodyId}" data-j2-c="toggle">
@@ -721,7 +699,7 @@
               <span class="j2-card-meta"><span class="j2-dots" data-j2-c="dots" role="img"></span><span data-j2-c="days"></span><span class="j2-blight" data-j2-c="blight" hidden></span></span>
             </span>
           </button>
-          <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-inspect" data-j2-inspect data-j2-c="inspect" aria-controls="j2-region-inspector" aria-haspopup="dialog">${ICON.info}<i class="j2-notes-dot" data-j2-c="notesDot" aria-hidden="true" hidden></i><span class="sr-only" data-j2-c="inspectSr"></span></button>
+          <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-inspect" data-j2-inspect data-j2-c="inspect" aria-controls="j2-region-inspector" aria-haspopup="dialog">${ICON.info}<span class="sr-only" data-j2-c="inspectSr"></span></button>
         </div>
         <p class="j2-card-sum" data-j2-c="sum"></p>
         <p class="j2-warn" data-j2-c="warn" hidden><span class="j2-warn-ico" aria-hidden="true">${ICON.warn}</span><span data-j2-c="warnText"></span></p>
@@ -732,6 +710,10 @@
             <button type="button" class="j2-handle j2-handle--all" data-j2-handle="all"><span class="j2-handle-label" data-j2-c="allLabel"></span><span class="j2-grip">${ICON.grip}</span></button>
           </div>
           <p class="j2-done" data-j2-c="done" hidden><span class="j2-done-ico" aria-hidden="true">${ICON.check}</span><span data-j2-c="doneText"></span></p>
+          <div class="j2-envs" data-j2-c="envs" hidden>
+            <button type="button" class="j2-envs-toggle" data-j2-env-toggle data-j2-c="envToggle" aria-expanded="false" aria-controls="${envsId}"><span data-j2-c="envLabel"></span><span class="j2-envs-chev" aria-hidden="true">${ICON.caret}</span></button>
+            <ul class="j2-envs-list" id="${envsId}" data-j2-c="envList" hidden></ul>
+          </div>
           <div class="j2-card-foot">
             <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-delete" data-j2-delete data-j2-c="del">${ICON.trash}</button>
           </div>
@@ -742,14 +724,6 @@
       refs.handleAll = root.querySelector('[data-j2-handle="all"]');
       return refs;
     }
-
-    function autosizeNotes(ta) {
-      if (!ta || ta.closest('[hidden]')) return;
-      ta.style.height = 'auto';
-      ta.style.height = Math.min(ta.scrollHeight + 2, NOTES_MAX_PX) + 'px';
-    }
-
-    function batchHasNotes(b) { return !!((notesDirty && notesDirty.batchId === b.id) ? notesDirty.value : b.notes); }
 
     /** Updates a card's text and state in place (the handle elements are never recreated mid-drag). */
     function updateCard(refs, b, index, counts, full, holes) {
@@ -771,9 +745,7 @@
       refs.inspect.classList.toggle('is-on', inspected);
       refs.inspect.setAttribute('title', t('journey2_inspect_region'));
       refs.inspect.disabled = false;
-      const hasNotes = batchHasNotes(b);
-      refs.notesDot.hidden = !hasNotes;
-      refs.inspectSr.textContent = fill('journey2_inspect_aria', { name: name, n: ord }) + (hasNotes ? ' (' + t('journey2_notes_has') + ')' : '') + (inspected ? ' (' + t('journey2_inspect_open') + ')' : '');
+      refs.inspectSr.textContent = fill('journey2_inspect_aria', { name: name, n: ord }) + (inspected ? ' (' + t('journey2_inspect_open') + ')' : '');
       if (active) refs.root.setAttribute('aria-current', 'true'); else refs.root.removeAttribute('aria-current');
       refs.toggle.setAttribute('aria-expanded', String(active));
       refs.body.hidden = !active;
@@ -805,6 +777,32 @@
       refs.del.setAttribute('aria-label', fill('journey2_delete_aria', { name: name, n: ord }));
       refs.del.setAttribute('title', t('journey2_delete_region'));
       refs.del.disabled = editLocked;
+      updateEnvironments(refs, b);
+    }
+
+    /**
+     * The card's "Environments" dropdown: every catalog environment tagged with the region's biome, each a plain link to
+     * that environment's overlay on #/journey2 (the overlay is route-driven, so the map underneath is never re-rendered).
+     * Built once per biome + language and then left alone, so an open list and the focus inside it survive every re-render.
+     * An overtaken region has no biome and therefore no list.
+     */
+    function updateEnvironments(refs, b) {
+      const biome = b.habitat.overtaken ? null : b.habitat.biome;
+      const list = biome ? environmentsFor(biome) : [];
+      refs.envs.hidden = !list.length;
+      if (!list.length) return;
+      refs.envLabel.textContent = fill('journey2_envs_label', { n: n(list.length) });
+      const sig = lang + '|' + list.map(e => e.id + ':' + e.name).join(',');
+      if (refs.envList.getAttribute('data-sig') !== sig) {
+        refs.envList.setAttribute('data-sig', sig);
+        refs.envList.innerHTML = list.map(e => '<li><a class="j2-env-link" href="' + esc(e.href) + '" data-j2-env><span class="j2-env-tier" aria-hidden="true">' + esc(e.tier) + '</span><span class="j2-env-name">' + esc(e.name) + '</span><span class="sr-only">' + esc(t('tier_label') + ' ' + e.tier) + '</span></a></li>').join('');
+      }
+    }
+
+    function toggleEnvironments(btn) {
+      const open = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', String(open));
+      btn.closest('.j2-envs').querySelector('.j2-envs-list').hidden = !open;
     }
 
     function renderInventory(full) {
@@ -862,7 +860,6 @@
         if (inst.disposed || v !== 'delete') { const r = cardRefs.get(batchId); if (r && !inst.disposed) r.del.focus({ preventScroll: true }); return; }
         const r = dispatch({ type: 'deleteBatch', batchId: batchId }, 'deleteBatch');
         if (!r.ok) { hint(errorText(r.error)); return; }
-        notesDirty = notesDirty && notesDirty.batchId === batchId ? null : notesDirty;
         if (sel.tileId && !Model.derive(doc).byId.has(sel.tileId)) sel.tileId = null;
         announce(t('journey2_live_deleted'));
         const next = cardRefs.get(activeBatchId);
@@ -872,7 +869,7 @@
 
     /* ============================================================
        Region Inspector (screen-space, over the map, region-level and GM-only)
-       The one place a generated region's Encounter, Rumor and GM notes are read. Opened by clicking a placed hex
+       The one place a generated region's Encounter and Rumor are read. Opened by clicking a placed hex
        (source 'map', that hex is the selected anchor) or from a card's Inspect button (source 'card', works for an
        unplaced region). Its state — `inspector` — is transient and independent of `activeBatchId`: opening, moving
        or closing it never expands, collapses or scrolls a sidebar card, and it is never saved or put in history.
@@ -893,7 +890,6 @@
       const next = Model.inspectTile(inspector, doc, tileId);
       if (next === inspector) return;
       announceInspector(next);
-      if (next.batchId !== inspector.batchId) flushNotes();
       inspector = next;
       sel.tileId = tileId;
       if (diagOpen) setDiagnostics(false);
@@ -905,7 +901,6 @@
       const next = Model.inspectBatch(inspector, doc, batchId);
       if (next === inspector) return;
       announceInspector(next);
-      if (next.batchId !== inspector.batchId) flushNotes();
       const keepSel = inspector.tileId && sel.tileId === inspector.tileId;
       inspector = next;
       if (keepSel) sel.tileId = null;                    // the strong outline belonged to the inspected hex of the previous region
@@ -918,13 +913,12 @@
     }
 
     /**
-     * Closes the inspector: flushes pending notes, removes the highlight and the inspected hex's outline, optionally returns focus
+     * Closes the inspector: removes the highlight and the inspected hex's outline, optionally returns focus
      * to the opener (the card's Inspect button, or the map). `quiet` skips the live announcement (deletion, import, teardown).
      */
     function closeInspector(opts) {
       if (!inspectorOpen()) return false;
       const o = opts || {};
-      flushNotes();
       const was = inspector;
       inspector = Model.NO_INSPECTION;
       if (was.tileId && sel.tileId === was.tileId) sel.tileId = null;
@@ -950,13 +944,12 @@
       inspector = next;
     }
 
-    /** Paints the open inspector from the committed document. The notes textarea node is never replaced. */
+    /** Paints the open inspector from the committed document. */
     function renderInspector() {
       if (!ui.inspector) return;
       const b = inspectorOpen() ? Model.batchById(doc, inspector.batchId) : null;
       if (!b) { ui.inspector.hidden = true; inspectorShown = null; return; }
       const I = ui.i, idx = doc.batches.indexOf(b), c = Model.derive(doc).counts.get(b.id), sym = symbolFor(b);
-      const wasHidden = ui.inspector.hidden;
       ui.inspector.hidden = false;
       if (sym && I.img.getAttribute('data-sym') !== sym.id) { I.img.src = sym.path; I.img.setAttribute('data-sym', sym.id); }
       I.name.textContent = batchName(b);
@@ -984,10 +977,13 @@
         I.terrainName.textContent = ''; I.terrainText.hidden = true; I.examples.hidden = true; I.enc.innerHTML = ''; I.rumor.textContent = '';
         I.daysSize.textContent = fill('journey2_hexes_n', { n: n(b.quantity) });
       }
-      const dirty = notesDirty && notesDirty.batchId === b.id;
-      if (inspectorShown !== b.id || document.activeElement !== ui.inspNotes) ui.inspNotes.value = dirty ? notesDirty.value : b.notes;
-      ui.inspNotes.disabled = editLocked;
-      if (inspectorShown !== b.id || wasHidden || document.activeElement !== ui.inspNotes) autosizeNotes(ui.inspNotes);
+      // the anchored hex's placement info + the one action on it (a card-opened inspector has no anchor, so no footer)
+      const tile = inspector.tileId ? Model.derive(doc).byId.get(inspector.tileId) : null;
+      ui.inspTile.hidden = !tile;
+      if (tile) {
+        I.tileText.textContent = fill('journey2_tile_cell', { cell: tile.cell });
+        ui.inspTile.querySelector('[data-j2-return]').disabled = editLocked;
+      }
       if (inspectorShown !== b.id) ui.inspector.querySelector('.j2-insp-scroll').scrollTop = 0;
       inspectorShown = b.id;
     }
@@ -1005,13 +1001,13 @@
       return { x: x, y: y, r: (Math.max.apply(null, xs) - Math.min.apply(null, xs)) / 2 * cam.scale };
     }
 
-    /** The rectangles (map-area px) the inspector must stay clear of: the actual visible sidebar/rail, tile bar and diagnostics drawer. */
+    /** The rectangles (map-area px) the inspector must stay clear of: the actual visible sidebar/rail and diagnostics drawer. */
     function inspectorBlocked(wrap) {
       const out = [];
-      for (const node of [ui.sidewrap, ui.tilebar, ui.panel]) {
+      for (const node of [ui.sidewrap, ui.panel]) {
         if (!node || node.hidden) continue;
         const r = node.getBoundingClientRect();
-        if (r.width > 0 && r.height > 0) out.push({ x: r.left - wrap.left, y: r.top - wrap.top, w: r.width, h: r.height, soft: node === ui.tilebar });
+        if (r.width > 0 && r.height > 0) out.push({ x: r.left - wrap.left, y: r.top - wrap.top, w: r.width, h: r.height });
       }
       return out;
     }
@@ -1124,13 +1120,6 @@
         h += '<path class="j2-sel-casing" d="' + d + '"/><path class="j2-tile-sel" d="' + d + '"/>';
       }
       ui.g.select.innerHTML = h;
-      if (!ui.tilebar) return;
-      ui.tilebar.hidden = !tile;
-      if (tile) {
-        const b = Model.batchById(doc, tile.batchId), sym = symbolFor(b);
-        if (sym) ui.tilebarImg.src = sym.path;
-        ui.tilebarText.textContent = fill('journey2_tile_label', { name: batchName(b), terrain: b.terrain.value, cell: tile.cell });
-      }
     }
 
     function updateHistoryButtons() {
@@ -1257,8 +1246,6 @@
       }
       listen(ui.sidewrap, 'transitionend', () => { positionInspector(); });
       listen(ui.root, 'click', onRootClick);
-      listen(ui.root, 'change', onRootChange);
-      listen(ui.root, 'input', onRootInput);
       listen(ui.gen, 'submit', onGenerate);
       listen(ui.panel.querySelector('[data-j2-goto]'), 'submit', onGoto);
       listen(ui.p.proofSymbol, 'change', () => { proofSymbolId = ui.p.proofSymbol.value; });
@@ -1270,7 +1257,6 @@
       listen(ui.side, 'lostpointercapture', onHandleCancel);
       listen(ui.side, 'keydown', onHandleKey);
       // document-level: only Escape + Undo/Redo, both ignored while editing text or a dialog is open
-      listen(window, 'pagehide', () => { if (!inst.disposed) flushNotes(); });   // a typed-but-uncommitted notes edit is saved when the tab goes away (never only beforeunload)
       listen(document, 'keydown', onDocumentKey);
       listen(document, 'keydown', onMenuKey);
       listen(document, 'pointerdown', e => { if (openMenu && !e.target.closest('.j2-menu-wrap')) closeMenus(); }, true);
@@ -1380,12 +1366,6 @@
     /** Plain click on a placed hex: inspect its region. A map click never expands, collapses or scrolls the sidebar. */
     function selectTile(id) { openInspectorFromTile(id); }
 
-    /** Drops the selected hex; when the inspector was anchored to it, it closes with it. */
-    function deselectTile() {
-      if (inspectorOpen() && inspector.tileId && inspector.tileId === sel.tileId) { closeInspector({ focus: true }); return; }
-      sel.tileId = null; renderSelection(); renderInventory(false);
-    }
-
     function onWheel(e) {
       e.preventDefault();
       const [x, y] = localPoint(e);
@@ -1424,7 +1404,6 @@
       if (!h || h.disabled || e.button !== 0) return;
       if (pan) endPan();
       cancelTransient();
-      flushNotes(true);
       clearHint();
       const card = h.closest('[data-batch]');
       const batchId = card.getAttribute('data-batch');
@@ -1614,8 +1593,8 @@
       const r = dispatch({ type: 'move', tileId: x.tileId, to: preview.cells[0].id }, 'move', true);
       if (!r.ok) hint(fill('journey2_hint_rejected', { reason: errorText(r.error) }));
       else {
-        // the moved hex becomes the selection, unless a different region is being inspected; an inspector anchored on it follows it
-        if (!inspectorOpen() || inspector.tileId === x.tileId) sel.tileId = x.tileId;
+        // the moved hex stays selected only while the inspector is anchored on it (the inspector now carries Return to stock); it follows it
+        if (inspectorOpen() && inspector.tileId === x.tileId) sel.tileId = x.tileId;
         renderSelection(); positionInspector(); announce(t('journey2_live_moved')); warnHoles(x.batchId);
       }
     }
@@ -1655,7 +1634,7 @@
     function onDocumentKey(e) {
       if (inst.disposed) return;
       if (e.key === 'Escape') {
-        if (document.querySelector('dialog[open]')) return;
+        if (document.querySelector('dialog[open]') || document.querySelector('.modal-overlay')) return;   // an environment overlay (app.js) owns Escape while it is open
         if (openMenu) { const b = openMenu.btn; closeMenus(); b.focus(); return; }
         // priority: menu, then a drag / armed placement / pan, then the Region Inspector, then the diagnostic selection
         if (pan) { setCamera({ scale: pan.scale0, tx: pan.tx0, ty: pan.ty0 }); endPan(); e.preventDefault(); return; }
@@ -1692,7 +1671,7 @@
       else if (b.hasAttribute('data-j2-undo')) undo();
       else if (b.hasAttribute('data-j2-redo')) redo();
       else if (b.hasAttribute('data-j2-return')) returnSelected();
-      else if (b.hasAttribute('data-j2-deselect')) deselectTile();
+      else if (b.hasAttribute('data-j2-env-toggle')) toggleEnvironments(b);
       else if (b.hasAttribute('data-j2-menu-btn')) toggleMenu(b);
       else if (b.hasAttribute('data-j2-act')) { closeMenus(); runAction(b.getAttribute('data-j2-act')); }
       else if (b.hasAttribute('data-j2-layer')) toggleLayer(b.getAttribute('data-j2-layer'), b);
@@ -1707,23 +1686,6 @@
         ui.viewport.classList.toggle('is-placing', placeMode);
       } else if (b.hasAttribute('data-j2-clear')) clearProof();
       else if (b.hasAttribute('data-j2-print')) runPrint(b.getAttribute('data-j2-print'));
-    }
-
-    function onRootInput(e) {
-      const ta = e.target.closest && e.target.closest('textarea[data-j2-insp-notes]');
-      if (ta && inspectorOpen()) {
-        const id = inspector.batchId;
-        notesDirty = { batchId: id, value: ta.value };
-        autosizeNotes(ta);
-        const refs = cardRefs.get(id);
-        if (refs) refs.notesDot.hidden = !ta.value;
-        renderSave();
-      }
-    }
-
-    function onRootChange(e) {
-      const ta = e.target.closest && e.target.closest('textarea[data-j2-insp-notes]');
-      if (ta) flushNotes();      // blur/commit: one grouped history entry
     }
 
     function toggleMenu(btn) {
@@ -1779,7 +1741,6 @@
     }
 
     function exportBackup() {
-      flushNotes(true);
       download(Model.serializeBackup(doc), backupFileName());
       toast(t('journey2_export_done'));
     }
@@ -1831,7 +1792,7 @@
       const r = Model.parseBackupText(text, data.ctx);
       if (!r.ok) { await showImportError(r); return; }
       if (inst.disposed) return;
-      closeInspector({ quiet: true });                   // flushes pending notes first; a replaced map never keeps a stale inspector
+      closeInspector({ quiet: true });                   // a replaced map never keeps a stale inspector
       const hasData = !Model.isEmptyDocument(doc);
       if (hasData) {
         // Nothing is written until the user confirms: a cancelled or failed import changes nothing at all.
@@ -1859,7 +1820,6 @@
     function replaceDocument(next) {
       cancelTransient();
       closeInspector({ quiet: true });
-      notesDirty = null;
       doc = next;
       Model.historyClear(history);
       sel.tileId = null;
