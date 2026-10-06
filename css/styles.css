@@ -2486,6 +2486,22 @@ body[data-route="prep"][data-sp-header-mode="compact"] .lang-switch {
   transition: height var(--t-base) var(--ease-out);
 }
 
+/* Journey 2 always uses the same compact header as Prep's compact mode. */
+body[data-route="journey2"] .header-inner {
+  padding-block: var(--s-2);
+  min-height: 45px;
+}
+body[data-route="journey2"] .brand-meta { display: none; }
+body[data-route="journey2"] .brand-text h1 {
+  font-size: var(--fs-base); line-height: 1.15; letter-spacing: 0.06em;
+}
+@media (max-width: 640px) {
+  body[data-route="journey2"] .brand-title-text { display: none; }
+}
+body[data-route="journey2"] .brand-mark { height: 28px; }
+body[data-route="journey2"] .header-actions .btn,
+body[data-route="journey2"] .lang-switch { height: 28px; }
+
 /* ---- compact mode: the Prep Bar comes out of layout entirely, not
    merely shrunk. It is prep *management* — a GM mid-prep wants the
    workspace, not this chrome. */
