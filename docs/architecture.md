@@ -69,6 +69,16 @@ only as a side effect of `renderToolbar()`/`renderGrid()`/`renderLoadError()`/
 contents on the first real render — nothing re-injects an equivalent
 skeleton afterward.
 
+**Route-specific shell.** `index.html` still holds one static shell, but it
+carries two skeleton layouts: the catalog card grid (default) and a
+`.sk-j2` editor-shaped one (toolbar strip, side panel, map). A synchronous
+inline script in `<head>` sets `html[data-boot-route="journey2"]` from
+`location.hash` before first paint, and `css/journey2.css` swaps which one is
+visible (and applies the route's chrome, so nothing jumps on mount). The
+script only sets that attribute — routing stays in `js/route-utils.js`. A new
+route that wants its own skeleton follows the same pattern; `js/app.js` still
+never builds skeleton markup.
+
 ## State ownership (`state` object, top of `js/app.js`)
 
 One module-level `state` object holds everything: `lang`, the loaded

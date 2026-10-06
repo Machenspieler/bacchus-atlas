@@ -33,6 +33,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Forum&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
 <link rel="stylesheet" href="css/styles.css" data-cache-version="ui">
 <link rel="stylesheet" href="css/journey2.css" data-cache-version="ui">
+<!-- Picks which static loading skeleton shows before js/app.js runs: the
+     route is only known from the hash, so this runs synchronously, pre-paint.
+     It only sets a data attribute; routing itself stays in js/route-utils.js. -->
+<script>if(/^#\/journey2(?:[\/?]|$)/.test(location.hash))document.documentElement.dataset.bootRoute='journey2';</script>
 </head>
 <body>
   <!-- Static fallback shown before js/app.js runs. renderHeader() overwrites
@@ -80,6 +84,22 @@
       <div class="sk sk-card" aria-hidden="true"></div>
       <div class="sk sk-card" aria-hidden="true"></div>
       <div class="sk sk-card" aria-hidden="true"></div>
+      <!-- Journey 2 only (html[data-boot-route="journey2"], see css/journey2.css):
+           the map editor's own layout — toolbar strip, side panel, map — instead
+           of the catalog's card grid. Hidden on every other route. -->
+      <div class="sk-j2" aria-hidden="true">
+        <div class="sk sk-j2-bar"></div>
+        <div class="sk-j2-stage">
+          <div class="sk sk-j2-map"></div>
+          <div class="sk-j2-side">
+            <div class="sk sk-j2-line wide"></div>
+            <div class="sk sk-j2-line"></div>
+            <div class="sk sk-j2-btn"></div>
+            <div class="sk sk-j2-line wide"></div>
+            <div class="sk sk-j2-block"></div>
+          </div>
+        </div>
+      </div>
     </div>
     <!-- Main catalog only (never Lists/Journey/Prep): the progressive
          "Show more" status and button, filled in by renderCatalogMore() in
