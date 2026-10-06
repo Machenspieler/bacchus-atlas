@@ -174,7 +174,7 @@ body[data-route="journey2"] #grid-wrap { display: block; }
   display: grid; gap: var(--s-1); padding: var(--s-2) var(--s-3); background: var(--ink); border: 1px solid var(--line); border-radius: var(--r-md);
 }
 .j2-card.is-active { border-color: var(--hope-border); border-left-width: 3px; padding-left: calc(var(--s-3) - 2px); }
-.j2-card.is-current:not(.is-active) { border-color: var(--hope-border); }
+.j2-card.is-current { border-color: var(--hope-border); }   /* subtle: the selected map tile belongs to this region */
 .j2-card-head {
   display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: var(--s-2); align-items: center; width: 100%;
   margin: 0; padding: 0; background: transparent; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer;
@@ -324,6 +324,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-tile-dot, .j2-pvt-dot { fill: var(--ink); stroke: none; }
 .j2-overlay .j2-tile-blight, .j2-overlay .j2-pvt-blight { fill: none; stroke: var(--ink); stroke-width: 1.4; stroke-linecap: round; vector-effect: none; }
 .j2-tile-hex.is-glyphless { stroke-dasharray: 4 3; stroke-opacity: 0.8; stroke-width: 1.4; }
+.j2-region-hl { fill: var(--hope-wash); stroke: var(--hope); stroke-width: 1.5; stroke-dasharray: 4 3; }
 .j2-tile-sel { fill: var(--hope-wash); stroke: var(--hope); stroke-width: 2.5; }
 .j2-pv { stroke-width: 2; }
 .j2-pv.is-ok { fill: var(--hope-selected-bg); stroke: var(--hope); stroke-dasharray: 5 3; }

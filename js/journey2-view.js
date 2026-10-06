@@ -54,7 +54,7 @@
   const CLICK_SLOP_PX = 4;
   const MARKER_HIT_SCREEN_PX = 14;
   const GLYPH_SCALE = 0.55;                         // native symbol px -> world px
-  const BLIGHT_X_HALF = 3;                          // half-size of the blight X drawn at the top of a blighted tile
+  const BLIGHT_X_HALF = 5.5;                         // half-size of the blight X drawn at the top of a blighted tile
   const TERRAIN_DEMO = [1, 2, 3, 4, 2, 3, 1];
   const HABITAT_DEMO = ['forest', 'mountain', 'aquatic', 'grassland', 'tropical', 'drylands', 'rolling'];
   // Fixed world rectangles for the print proof (A4 landscape, 0.2 mm per world px).
@@ -938,7 +938,9 @@
       let h = renderDiagSelectMarkup();
       if (tile) {
         const c = Geo.parseCellId(tile.cell), d = hexPath(c.q, c.r);
-        h += '<path class="j2-sel-casing" d="' + d + '"/><path class="j2-tile-sel" d="' + d + '"/>';
+        let region = '';
+        for (const x of doc.tiles) if (x.batchId === tile.batchId) { const xc = Geo.parseCellId(x.cell); region += hexPath(xc.q, xc.r); }
+        h += '<path class="j2-region-hl" d="' + region + '"/><path class="j2-sel-casing" d="' + d + '"/><path class="j2-tile-sel" d="' + d + '"/>';
       }
       ui.g.select.innerHTML = h;
       if (!ui.tilebar) return;
@@ -1185,12 +1187,9 @@
 
     function selectTile(id) {
       sel.tileId = id;
-      const tile = Model.derive(doc).byId.get(id);
-      if (tile && tile.batchId !== activeBatchId) { activeBatchId = tile.batchId; detailSection = null; }
+      // a map click never expands or scrolls the sidebar: the card only gets a subtle selected state
       renderSelection();
       renderInventory(false);
-      const refs = tile && cardRefs.get(tile.batchId);
-      if (refs && !sideCollapsed) refs.root.scrollIntoView({ block: 'nearest' });
     }
 
     function onWheel(e) {

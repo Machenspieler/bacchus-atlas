@@ -303,22 +303,29 @@
 
   const NB = Geo.NEIGHBOR_DELTAS;
 
-  /** True when every cell id is reachable from every other over the six axial neighbours (0 or 1 cells: true). */
-  function isConnected(cellIds) {
-    const set = new Set(cellIds);
-    if (set.size <= 1) return true;
-    const start = set.values().next().value;
-    const seen = new Set([start]), stack = [start];
-    while (stack.length) {
-      const c = Geo.parseCellId(stack.pop());
-      if (!c) continue;
-      for (const d of NB) {
-        const id = Geo.cellId(c.q + d.dq, c.r + d.dr);
-        if (set.has(id) && !seen.has(id)) { seen.add(id); stack.push(id); }
+  /** Number of edge-connected components over the six axial neighbours (0 cells: 0). */
+  function componentCount(cellIds) {
+    const set = new Set(cellIds), seen = new Set();
+    let count = 0;
+    for (const start of set) {
+      if (seen.has(start)) continue;
+      count++;
+      seen.add(start);
+      const stack = [start];
+      while (stack.length) {
+        const c = Geo.parseCellId(stack.pop());
+        if (!c) continue;
+        for (const d of NB) {
+          const id = Geo.cellId(c.q + d.dq, c.r + d.dr);
+          if (set.has(id) && !seen.has(id)) { seen.add(id); stack.push(id); }
+        }
       }
     }
-    return seen.size === set.size;
+    return count;
   }
+
+  /** True when every cell id is reachable from every other (0 or 1 cells: true). */
+  function isConnected(cellIds) { return componentCount(cellIds) <= 1; }
 
   /**
    * Empty cells fully enclosed by the given cells (one region's tiles — nothing else is a barrier).
@@ -374,15 +381,16 @@
 
   /**
    * The one shape rule behind preview AND commit. The batch's resulting cells (its tiles, minus `ignoreTileId`,
-   * plus `addIds`) must be one connected component. A region that is ALREADY split (an old save) is not made
-   * stuck by this: edits are only refused when they would split a connected region or leave a split one split.
+   * plus `addIds`) must be one connected component. Legacy rule for an ALREADY split region (an old save): an
+   * edit must not INCREASE the number of components — it may keep or reduce it — so the save stays usable and
+   * the strict one-component rule applies as soon as the region is connected.
    * Returns { ok, connected } — `connected` is the raw result, `ok` the verdict.
    */
   function regionConnectivity(doc, batchId, addIds, ignoreTileId) {
     const mine = doc.tiles.filter(t => t.batchId === batchId);
-    const before = isConnected(mine.map(t => t.cell));
-    const after = isConnected(mine.filter(t => t.id !== ignoreTileId).map(t => t.cell).concat(addIds));
-    return { ok: after || !before, connected: after };
+    const before = componentCount(mine.map(t => t.cell));
+    const after = componentCount(mine.filter(t => t.id !== ignoreTileId).map(t => t.cell).concat(addIds));
+    return { ok: after <= Math.max(1, before), connected: after <= 1 };
   }
 
   /** Cell policy + shape rule for placing `cells` for `batchId` (or moving `ignoreTileId`). */
@@ -513,7 +521,7 @@
     createContext: createContext, newId: newId, emptyDocument: emptyDocument, isEmptyDocument: isEmptyDocument, symbolIdOf: symbolIdOf,
     derive: derive, batchById: batchById, parseQuantity: parseQuantity, batchFromRegion: batchFromRegion, validateBatch: validateBatch,
     validateDocument: validateDocument, parseBackupText: parseBackupText, serializeBackup: serializeBackup,
-    checkCells: checkCells, checkPlacement: checkPlacement, regionConnectivity: regionConnectivity, isConnected: isConnected, enclosedHoles: enclosedHoles, holeCounts: holeCounts, apply: apply,
+    checkCells: checkCells, checkPlacement: checkPlacement, regionConnectivity: regionConnectivity, isConnected: isConnected, componentCount: componentCount, enclosedHoles: enclosedHoles, holeCounts: holeCounts, apply: apply,
     createHistory: createHistory, historyCommit: historyCommit, historyUndo: historyUndo, historyRedo: historyRedo, historyClear: historyClear,
     compactFootprint: compactFootprint,
   };
