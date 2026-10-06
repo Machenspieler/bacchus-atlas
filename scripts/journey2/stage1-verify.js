@@ -887,7 +887,7 @@ async function main() {
       list.forEach((c, i) => {
         const region = { habitat: { biome: 'mountain', blighted: false, overtaken: false, source: 'rolled', rolls: [1] }, terrain: { value: 3, source: 'rolled' }, size: 1, encounter: { entries: [[3, 4]], combines: 0 }, rumor: 5 };
         const a = api.dispatch({ type: 'createBatch', batch: M.batchFromRegion(region, { id: 'mkb' + i, createdAt: new Date().toISOString() }) });
-        const b = a.ok && api.dispatch({ type: 'place', batchId: 'mkb' + i, tiles: [{ id: 'mk' + i, cell: c }] });
+        const b = a.ok && api.dispatch({ type: 'place', separate: true, batchId: 'mkb' + i, tiles: [{ id: 'mk' + i, cell: c }] });
         if (!(a.ok && b.ok) && !err) err = (a.ok ? b : a).error;
       });
       return { ok: !err, error: err };
@@ -938,7 +938,7 @@ async function main() {
           const c = Geo.parseCellId(out[i]);
           for (const d of Geo.NEIGHBOR_DELTAS) { const nid = Geo.cellId(c.q + d.dq, c.r + d.dr); if (out.length < place[si] && !used.has(nid) && ctx0.policy(c.q + d.dq, c.r + d.dr).ok) { used.add(nid); out.push(nid); } }
         }
-        doc = Model.apply(doc, { type: 'place', batchId: id, tiles: out.map((cell, i) => ({ id: 'syn' + si + '-' + i, cell })), at: doc.updatedAt }, ctx0).doc;
+        doc = Model.apply(doc, { type: 'place', separate: true, batchId: id, tiles: out.map((cell, i) => ({ id: 'syn' + si + '-' + i, cell })), at: doc.updatedAt }, ctx0).doc;
       });
       return doc;
     })();
@@ -964,7 +964,7 @@ async function main() {
         return null;
       };
       const times = [];
-      for (let i = 0; i < 5; i++) { const cell = nextFree(); const t0 = performance.now(); const res = api.dispatch({ type: 'place', batchId: free.id, tiles: [{ id: 'perf' + i, cell: cell }] }); times.push({ ok: res.ok, ms: Math.round((performance.now() - t0) * 10) / 10 }); }
+      for (let i = 0; i < 5; i++) { const cell = nextFree(); const t0 = performance.now(); const res = api.dispatch({ type: 'place', separate: true, batchId: free.id, tiles: [{ id: 'perf' + i, cell: cell }] }); times.push({ ok: res.ok, ms: Math.round((performance.now() - t0) * 10) / 10 }); }
       return times;
     });
     perf.undoRedo = await page.evaluate(async () => { const t0 = performance.now(); document.querySelector('[data-j2-undo]').click(); const t1 = performance.now(); document.querySelector('[data-j2-redo]').click(); return { undoMs: Math.round((t1 - t0) * 10) / 10, redoMs: Math.round((performance.now() - t1) * 10) / 10 }; });
@@ -1029,7 +1029,7 @@ async function main() {
       const r = Journey2View.debugApi().dispatch({ type: 'createBatch', batch: M.batchFromRegion(region, { id, createdAt: new Date().toISOString() }) });
       return r.ok ? id : null;
     }, spec);
-    const placeCells = (batchId, cells) => pg.evaluate(([b, cs]) => Journey2View.debugApi().dispatch({ type: 'place', batchId: b, tiles: cs.map(c => ({ id: Journey2Model.newId('t'), cell: c })) }).ok, [batchId, cells]);
+    const placeCells = (batchId, cells) => pg.evaluate(([b, cs]) => Journey2View.debugApi().dispatch({ type: 'place', separate: true, batchId: b, tiles: cs.map(c => ({ id: Journey2Model.newId('t'), cell: c })) }).ok, [batchId, cells]);
     const A = await mkBatch({ biome: 'forest', terrain: 3, size: 6 });
     const B = await mkBatch({ biome: 'mountain', terrain: 1, size: 3 });
     const C = await mkBatch({ biome: 'forest', terrain: 2, size: 4, blighted: true, rolls: [1, 11], encounter: { entries: [[3, 4], [2, 2]], combines: 1 }, rumor: 33 });

@@ -192,11 +192,14 @@ preparation never implies discovery; original markers are immutable. Fog of War 
 cell-based campaign data (`playerVisibility`), hidden by default, edited only by Reveal/Hide strokes
 (one stroke = one Undo entry) and rendered to players solely through the pure projection
 `js/journey2-projection.js` (Player Preview now, print later); the base map and its sanctuary
-icons are never fogged away (PD-020). Regions are
+icons are never fogged away (PD-020). The prepared map stays connected — a later region's first
+tile must share a full edge with another region unless the GM picks "Start separate area", and an
+ordinary move/return may not detach a region — and every region gets a derived, never-stored thick
+perimeter that Player Preview draws only between revealed cells (PD-021). Regions are
 read in one transient, GM-only Region Inspector over the map (opened from a hex
 or a card's Inspect button, independent of the expanded card, never persisted,
 never in history); the sidebar only generates, places and deletes. Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020, detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021, detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

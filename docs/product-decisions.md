@@ -657,3 +657,45 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   sanctuary state, Soul Echo, points-of-interest creation, automatic or region-wide reveal, brushes
   larger than one hex, live player view or accounts, replacing `#/journey`, mobile redesign.
 - **Where:** [architecture.md](architecture.md) "Fog of War and Player Preview (Phase C, PD-020)".
+
+## PD-021: Journey 2 — a connected prepared map and a derived region perimeter
+- **Status:** Active
+- **Date:** 2026-10-06
+- **Decision (adjacency):** a Journey 2 map is one prepared area, not scattered islands. The first
+  region may begin in any valid empty cell. Every later region's **first placed tile(s)** must share a
+  **full hex edge** with a tile of *another* region; one touching tile is enough (a *Place all* footprint
+  must be internally connected, free of occupied/prohibited cells and touch the map at least once). The
+  remaining tiles only have to stay connected to their own region (Phase A rule). On the flat-top hex
+  grid contact at a corner alone cannot occur (cells meeting at a corner already share an edge); a cell
+  two steps away is simply rejected. The rule applies when a region has **no tile placed yet** — once it
+  is on the map, more tiles only need to join it.
+- **Decision (moves and returns):** an ordinary **move** or **return to stock** must not split a region
+  internally (unchanged) and must not leave a region that was attached to the prepared map entirely
+  detached — neither the edited region nor a neighbour that leaned on the moved tile. A region that was
+  never attached (the first region, a separate area, an old save) stays freely editable. Returning the
+  last tile of a region is allowed whenever it does not strand another region. **Delete region** is an
+  explicit destructive action and is not restricted. Undo/Redo restore snapshots and never re-check.
+- **Decision (override):** isolated preparation is allowed only through the explicit **Start separate
+  area** toggle on an unplaced region's card — a transient, one-shot choice (`separate: true` on that
+  one `place` command; never stored in the document, history, backup or `localStorage`; it turns itself
+  off after the placement). Its absence means "must touch". Loading or importing a document does **not**
+  re-validate adjacency: separate areas and older saves load as they are.
+- **Decision (feedback):** the preview, the tooltip, the rejection hint and the model all use the same
+  check (`Model.checkPlacement` → `attachmentCheck`); the messages are localized
+  (`journey2_reason_not_adjacent`, `…_detaches_region`, `…_detaches_other`).
+- **Decision (perimeter):** every placed region is outlined by a thick near-black cartographic line,
+  drawn in a dedicated pointer-transparent SVG layer between the tiles and the fog (selection gold and
+  the placement preview stay above it). It is **derived** on every render from the tiles
+  (`Model.regionBoundarySegments`, chained by `Geo.chainEdgeSegments`) and is never stored in the
+  document, backup, history or UI storage: same-region neighbours draw no edge, an empty neighbour or the
+  map edge draws an outer edge, a different region draws one shared divider; a split legacy region is
+  outlined per component, an enclosed hole gets an inner outline (the hole warning stays), an unplaced
+  region draws nothing.
+- **Decision (players):** the perimeter is generated New Valloren content. In Player Preview (and the
+  future print output) it comes from the player projection, which emits an edge only when the tile's cell
+  *and* the cell on the other side are both revealed (a neighbour the fog never covers — off-map or
+  title/compass/scale furniture — needs only the tile). A line therefore never ends falsely against fog and
+  never reveals the shape of a hidden region; the GM view always shows the complete perimeter.
+- **Explicitly excluded:** storing perimeter geometry or a "separate area" flag, a thick border on every
+  tile, and restricting delete/import/Undo by adjacency.
+- **Where:** [architecture.md](architecture.md) "Connected placement and region perimeter (PD-021)".

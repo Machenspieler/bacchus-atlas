@@ -1171,6 +1171,26 @@ Run all of them with `node --test tests/*.test.js`.
   diagnostics drawer), `stage1-verify.js` (the editor: real pointer input in
   isolated Playwright contexts), both of which also run `lib/fog-checks.js` (Phase C: Fog of War,
   Player Preview, suggested environments), `print-proof.js` + `verify-print.js`.
+- **Connected placement and region perimeter (PD-021):**
+  - *Adjacency.* `Model.attachmentCheck(doc, batchId, addCells, removeTileId, separate)` is the one pure
+    rule behind preview (`Model.checkPlacement` → `{ attached, attachCode }`), commit (`place`, `move`,
+    `returnTile` in `Model.apply`) and the tests. Placing the first tiles of a region with none placed needs a
+    cell sharing an edge with another region's tile (`not-adjacent`), unless the map is empty or the
+    command carries `separate: true`. A move/return compares `attachedBatchIds()` before and after and
+    refuses any region that would lose its last edge contact while other regions remain
+    (`detaches-region` for the edited region, else `detaches-other`). Nothing is stored: attachment is
+    derived from the tiles, `validateDocument` does not enforce it (old saves and separate areas load).
+  - *View.* `separateBatchId` is transient view state behind the card's **Start separate area** toggle
+    (`data-j2-separate`, shown only for a region with nothing placed while other tiles exist); it is passed
+    to `checkPlacement` for the preview and cleared after one successful placement.
+  - *Perimeter.* `Model.regionBoundarySegments(doc, ctx, visible?, foggable?)` returns deduplicated edges
+    `{ cell, dir, kind: 'outer'|'divider' }` (`dir` = index in `NEIGHBOR_DELTAS`, the edge shared with that
+    neighbour = between corner `dir-1` and `dir`); `Geo.chainEdgeSegments` joins them into polylines on exact
+    corner identities and `Geo.polylinesPath` makes one stroke-only `<path class="j2-perimeter">` in
+    `<g data-j2-g="perimeter" pointer-events="none">`. `renderPerimeter()` runs from every `renderTiles()`
+    (place, move, return, delete, Undo/Redo, import, reset) and redraws only when `doc.tiles`, the visibility
+    or the mode changed. Player Preview draws `playerProjection.perimeter`
+    (`buildPlayerProjection(doc, ctx)`, projection `version: 2`) — edges only where both cells are revealed.
 - **Deployment note:** `scripts/build.js` copies everything not excluded;
   `docs/journey2-*` (handoff PDFs, review packages, evidence, stage ZIPs) are
   excluded and `scripts/check-journey2-build.js` fails the build if any of it

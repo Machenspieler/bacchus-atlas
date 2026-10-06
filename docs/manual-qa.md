@@ -429,11 +429,20 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
 - [ ] **Generate region** rolls everything at random. A card appears: Placed 0 / N, drag targets
       **1 hex** and **All N**. Nothing is on the map.
 - [ ] Drag **1 hex** onto the map: gold preview + tooltip while dragging; release places one.
-      Do this seven times at scattered, unconnected places (both halves, near the seam).
+      Do this seven times in a connected chain (the first hex anywhere, each next one touching an edge of
+      the previous). A hex placed apart from the map is rejected with "A new region must share a full edge…".
       Counts read 7 / 20 and **All 13**; the targets do not move.
 - [ ] Drag **All 13**: a 13-hex cluster previews under the pointer; over an occupied cell, outside the
       map or over the title/compass/scale it turns red with a reason and a release places nothing.
       On a clear area, release → 20 / 20, **All 0** disabled, the first seven unchanged.
+- [ ] Connected map: generate a second region — its first hex (or *All* footprint) must touch the first region's
+      edge (red preview + reason otherwise); the card's **Start separate area** toggle lets one placement go
+      apart and turns itself off afterwards. Dragging the only touching hex of a region away, or returning it,
+      is refused ("…cut the region off from the map"); Undo/Redo restore exactly.
+- [ ] Region perimeter: every placed region has a thick dark outline with one divider between touching regions
+      and the thin grid visible inside; it follows place / move / return / delete / Undo / Redo / import; clicks,
+      drags and panning pass through it; the gold selection stays above it. In Player Preview the outline
+      appears only where the hexes on both sides are revealed (no line ends against fog).
 - [ ] Drag a placed tile to a free cell (counts unchanged); drop it back on itself (nothing happens);
       drag it onto an occupied cell (rejected, stays). Click a tile → **Return to stock** (or Delete).
 - [ ] Esc during any drag, releasing outside the map, or leaving the route → nothing changes.

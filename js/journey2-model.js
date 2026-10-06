@@ -27,6 +27,13 @@
    batches never count), and an enclosed empty hole is reported as a warning
    (enclosedHoles / holeCounts) but never blocks an edit.
 
+   Prepared-map adjacency (PD-021), enforced by the same preview/commit path: the FIRST tiles of a region that has
+   none placed yet must share a full hex edge with a tile of ANOTHER region (corner contact never counts; the very
+   first region of an empty map is exempt; the explicit `separate` flag of the place command is the only override),
+   and an ordinary move or return-to-stock may never cut a region (or its neighbour) off from the prepared map
+   entirely. Nothing about attachment is stored: it is derived from the tiles, so old saves and imports load as-is.
+   The region perimeter is likewise derived (regionBoundarySegments) and never stored.
+
    Commands carry every generated value (ids, cells, timestamps, rolls), so
    replaying one (Redo) can never re-roll. Documents are treated as
    immutable: a command returns a new document that shares unchanged parts.
@@ -461,11 +468,106 @@
     return { ok: after <= Math.max(1, before), connected: after <= 1 };
   }
 
-  /** Cell policy + shape rule for placing `cells` for `batchId` (or moving `ignoreTileId`). */
-  function checkPlacement(doc, ctx, batchId, cells, ignoreTileId) {
+  /* ---------------- prepared-map adjacency (edge contact between regions) ---------------- */
+
+  /** Canonical ids of the six edge neighbours of a cell id ("q,r"). */
+  function neighborIds(cellKey) {
+    const c = Geo.parseCellId(cellKey);
+    return c ? NB.map(d => Geo.cellId(c.q + d.dq, c.r + d.dr)) : [];
+  }
+
+  /** Cell id -> batch id for a tile list. */
+  function cellOwners(tiles) {
+    const m = new Map();
+    for (const t of tiles) m.set(t.cell, t.batchId);
+    return m;
+  }
+
+  /** The batches that have at least one tile sharing a full edge with a tile of ANOTHER batch (corner contact never counts). */
+  function attachedBatchIds(tiles) {
+    const owners = cellOwners(tiles), out = new Set();
+    for (const t of tiles) {
+      if (out.has(t.batchId)) continue;
+      for (const id of neighborIds(t.cell)) {
+        const o = owners.get(id);
+        if (o !== undefined && o !== t.batchId) { out.add(t.batchId); out.add(o); break; }
+      }
+    }
+    return out;
+  }
+
+  /**
+   * The prepared-map attachment rule for one edit — a pure function of the document and the proposed change:
+   *   placing  (removeTileId null)  a batch with NO tiles yet needs one added cell sharing an edge with another batch's tile,
+   *                                 unless the map holds no other tiles (the first region) or `separate` is set;
+   *   moving / returning (removeTileId set)  no batch that was attached to the prepared map before may end up unattached while
+   *                                 other regions still exist — neither the edited region nor a neighbour that leaned on the tile.
+   * Returns { ok:true } or { ok:false, code: 'not-adjacent' | 'detaches-region' | 'detaches-other', batchId }.
+   */
+  function attachmentCheck(doc, batchId, addIds, removeTileId, separate) {
+    const tiles = doc.tiles;
+    if (!removeTileId) {
+      if (separate || !addIds.length) return { ok: true };
+      if (tiles.some(t => t.batchId === batchId)) return { ok: true };          // already part of the map: shape rule keeps it joined
+      if (!tiles.length) return { ok: true };                                    // the first region may start anywhere
+      const owners = cellOwners(tiles);
+      for (const id of addIds) for (const nb of neighborIds(id)) { const o = owners.get(nb); if (o !== undefined && o !== batchId) return { ok: true }; }
+      return { ok: false, code: 'not-adjacent', batchId: batchId };
+    }
+    const before = attachedBatchIds(tiles);
+    if (!before.size) return { ok: true };
+    const after = tiles.filter(t => t.id !== removeTileId).concat(addIds.map(cell => ({ id: '~', batchId: batchId, cell: cell })));
+    const attached = attachedBatchIds(after), present = new Set(after.map(t => t.batchId));
+    if (present.size < 2) return { ok: true };                                   // nothing else left to be attached to
+    const cut = Array.from(before).filter(id => present.has(id) && !attached.has(id));
+    if (!cut.length) return { ok: true };
+    const own = cut.includes(batchId);                                            // report the edited region first
+    return { ok: false, code: own ? 'detaches-region' : 'detaches-other', batchId: own ? batchId : cut[0] };
+  }
+
+  /* ---------------- region perimeter (derived, never stored) ---------------- */
+
+  /**
+   * The thick cartographic outline of every placed region as deduplicated hex edges — a pure function of the tiles.
+   * One entry per edge: { cell: "q,r", dir: 0-5, kind: 'outer' | 'divider' } where `dir` indexes Geo.NEIGHBOR_DELTAS (the edge shared
+   * with that neighbour). Between two tiles of the SAME batch there is no edge; between tiles of DIFFERENT batches there is exactly one
+   * `divider` (emitted from the smaller cell id); between a tile and an empty cell, or the edge of the valid map, an `outer` edge. A split
+   * (legacy) region is outlined around every component and an enclosed hole gets its inner outline, because only neighbours matter.
+   *
+   * `visible(key)` (optional) restricts the result to what players may see: an edge is produced only when its tile is visible AND the
+   * cell on the other side is visible too — except a neighbour that is not foggable (outside the map or title/compass/scale furniture,
+   * which the fog never covers), for which the tile alone decides. An edge towards a hidden cell is never drawn, so the line can neither
+   * end falsely nor reveal the shape of an unexplored region. `foggable(key)` defaults to "every cell is foggable" (the strictest reading: an unrevealed neighbour never draws).
+   */
+  function regionBoundarySegments(doc, ctx, visible, foggable) {
+    const owners = cellOwners(doc.tiles), out = [];
+    const seeVisible = typeof visible === 'function' ? visible : null;
+    const isFog = typeof foggable === 'function' ? foggable : () => true;
+    for (const t of doc.tiles) {
+      if (seeVisible && !seeVisible(t.cell)) continue;
+      const nbs = neighborIds(t.cell);
+      for (let k = 0; k < 6; k++) {
+        const other = owners.get(nbs[k]);
+        if (other === t.batchId) continue;
+        const kind = other === undefined ? 'outer' : 'divider';
+        if (kind === 'divider' && compareCellKeys(t.cell, nbs[k]) > 0) continue;   // the other tile emits it
+        if (seeVisible && !(other !== undefined ? seeVisible(nbs[k]) : (!isFog(nbs[k]) || seeVisible(nbs[k])))) continue;
+        out.push({ cell: t.cell, dir: k, kind: kind });
+      }
+    }
+    return out;
+  }
+
+  /**
+   * Cell policy + shape rule + prepared-map attachment for placing `cells` for `batchId` (or moving `ignoreTileId`).
+   * `opts.separate` is the explicit "Start separate area" override of the attachment rule for a first placement.
+   * Returns { cells, connected, attached, attachCode, valid }.
+   */
+  function checkPlacement(doc, ctx, batchId, cells, ignoreTileId, opts) {
     const checked = checkCells(doc, ctx, cells, ignoreTileId);
     const rc = regionConnectivity(doc, batchId, checked.map(c => c.id), ignoreTileId);
-    return { cells: checked, connected: rc.ok, valid: rc.ok && checked.every(c => c.ok) };
+    const at = attachmentCheck(doc, batchId, checked.map(c => c.id), ignoreTileId, !!(opts && opts.separate));
+    return { cells: checked, connected: rc.ok, attached: at.ok, attachCode: at.ok ? null : at.code, valid: rc.ok && at.ok && checked.every(c => c.ok) };
   }
 
   /* ---------------- commands ---------------- */
@@ -477,9 +579,10 @@
    * Applies one command to an (immutable) document: { ok:true, doc, noop? } or { ok:false, error }.
    * Commands (all values pre-generated, so replay is exact):
    *   createBatch { batch, at }
-   *   place       { batchId, tiles:[{id, cell}], at }          atomic: all or nothing
-   *   move        { tileId, to:"q,r", at }                     same cell => noop
-   *   returnTile  { tileId, at }
+   *   place       { batchId, tiles:[{id, cell}], separate?, at }   atomic: all or nothing; the first tiles of an unplaced region must
+   *                                                                share an edge with another region unless `separate: true` (PD-021)
+   *   move        { tileId, to:"q,r", at }                     same cell => noop; may not detach a region from the map (PD-021)
+   *   returnTile  { tileId, at }                                   same detach rule
    *   deleteBatch { batchId, at }                                  removes the batch AND all its tiles, atomically
    *   setNotes    { batchId, notes, at }                       unchanged => noop
    *   setCellsRevealed { cellKeys:["q,r"...], revealed:boolean, at }   Fog of War: reveal (true) or hide (false) cells;
@@ -512,6 +615,8 @@
         const conflicts = checkCells(doc, ctx, cells).filter(c => !c.ok);
         if (conflicts.length) return fail('blocked', { conflicts: conflicts });
         if (!regionConnectivity(doc, batch.id, cmd.tiles.map(t => t.cell)).ok) return fail('disconnected-region');
+        const att = attachmentCheck(doc, batch.id, cmd.tiles.map(t => t.cell), null, cmd.separate === true);
+        if (!att.ok) return fail(att.code);
         return { ok: true, doc: touch(doc, cmd.at, { tiles: doc.tiles.concat(cmd.tiles.map(t => ({ id: t.id, batchId: batch.id, cell: t.cell }))) }) };
       }
       case 'move': {
@@ -523,12 +628,16 @@
         const chk = checkCells(doc, ctx, [c], tile.id)[0];
         if (!chk.ok) return fail('blocked', { conflicts: [chk] });
         if (!regionConnectivity(doc, tile.batchId, [cmd.to], tile.id).ok) return fail('disconnected-region');
+        const att = attachmentCheck(doc, tile.batchId, [cmd.to], tile.id, false);
+        if (!att.ok) return fail(att.code, { batchId: att.batchId });
         return { ok: true, doc: touch(doc, cmd.at, { tiles: doc.tiles.map(t => (t.id === tile.id ? { id: t.id, batchId: t.batchId, cell: cmd.to } : t)) }) };
       }
       case 'returnTile': {
         const tile = derive(doc).byId.get(cmd.tileId);
         if (!tile) return fail('no-tile');
         if (!regionConnectivity(doc, tile.batchId, [], tile.id).ok) return fail('disconnected-region');
+        const att = attachmentCheck(doc, tile.batchId, [], tile.id, false);
+        if (!att.ok) return fail(att.code, { batchId: att.batchId });
         return { ok: true, doc: touch(doc, cmd.at, { tiles: doc.tiles.filter(t => t.id !== cmd.tileId) }) };
       }
       case 'deleteBatch': {
@@ -635,7 +744,7 @@
     createContext: createContext, newId: newId, emptyDocument: emptyDocument, isEmptyDocument: isEmptyDocument, symbolIdOf: symbolIdOf,
     derive: derive, batchById: batchById, parseQuantity: parseQuantity, batchFromRegion: batchFromRegion, validateBatch: validateBatch,
     validateDocument: validateDocument, parseBackupText: parseBackupText, serializeBackup: serializeBackup,
-    checkCells: checkCells, checkPlacement: checkPlacement, regionConnectivity: regionConnectivity, isConnected: isConnected, componentCount: componentCount, enclosedHoles: enclosedHoles, holeCounts: holeCounts, apply: apply,
+    checkCells: checkCells, checkPlacement: checkPlacement, attachmentCheck: attachmentCheck, attachedBatchIds: attachedBatchIds, neighborIds: neighborIds, regionBoundarySegments: regionBoundarySegments, regionConnectivity: regionConnectivity, isConnected: isConnected, componentCount: componentCount, enclosedHoles: enclosedHoles, holeCounts: holeCounts, apply: apply,
     createHistory: createHistory, historyCommit: historyCommit, historyUndo: historyUndo, historyRedo: historyRedo, historyClear: historyClear,
     compactFootprint: compactFootprint,
     isFoggableCell: isFoggableCell, getRevealedCellSet: getRevealedCellSet, isCellRevealed: isCellRevealed, cellsToChange: cellsToChange, compareCellKeys: compareCellKeys,

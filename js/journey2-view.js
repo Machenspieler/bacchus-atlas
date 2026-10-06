@@ -197,6 +197,8 @@
     let fogPaintRaf = 0;
     let fogDrawn = { vis: null, mode: null, doc: null };   // what the fog layer currently shows (so an unrelated document change never rebuilds it)
     let foggable = null;                                    // Map cellKey -> hex path, every cell the GM can reveal/hide (built once)
+    let separateBatchId = null;                             // transient: the region whose first placement may start a separate area (never stored, never in history)
+    let perimDrawn = { tiles: null, vis: null, mode: null }; // what the perimeter layer currently shows (an unrelated change never rebuilds it)
     let previewMode = false;                                // Player Preview: a read-only render of the player projection
     let previewReturn = null;                               // camera / fit state to restore on the Back-to-GM action
     let playerProjection = null;                            // the projection currently drawn in Player Preview
@@ -388,7 +390,7 @@
                   <img class="j2-base" alt="" draggable="false" width="${W}" height="${H}">
                   <svg class="j2-overlay" xmlns="${SVG_NS}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">
                     <defs data-j2-defs></defs>
-                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="fog" mask="url(#j2-fog-mask)"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="fogstroke"></g>
+                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fog" mask="url(#j2-fog-mask)"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="fogstroke"></g>
                     <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
                     <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g>
                   </svg>
@@ -771,6 +773,10 @@
             <button type="button" class="j2-handle" data-j2-handle="one"><span class="j2-handle-label" data-j2-c="oneLabel"></span><span class="j2-grip">${ICON.grip}</span></button>
             <button type="button" class="j2-handle j2-handle--all" data-j2-handle="all"><span class="j2-handle-label" data-j2-c="allLabel"></span><span class="j2-grip">${ICON.grip}</span></button>
           </div>
+          <div class="j2-sep" data-j2-c="sepWrap" hidden>
+            <button type="button" class="btn btn-ghost btn-sm j2-sep-btn" data-j2-separate data-j2-c="sep" aria-pressed="false"></button>
+            <p class="j2-sep-note" data-j2-c="sepNote"></p>
+          </div>
           <p class="j2-done" data-j2-c="done" hidden><span class="j2-done-ico" aria-hidden="true">${ICON.check}</span><span data-j2-c="doneText"></span></p>
           <div class="j2-card-foot">
             <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-delete" data-j2-delete data-j2-c="del">${ICON.trash}</button>
@@ -832,6 +838,14 @@
       for (const h of [refs.handleOne, refs.handleAll]) h.disabled = editLocked;
       refs.handleOne.setAttribute('aria-label', fill('journey2_handle_one_aria', { name: name }));
       refs.handleAll.setAttribute('aria-label', fill('journey2_handle_all_aria', { name: name, n: n(c.remaining) }));
+      // prepared-map adjacency: a region with nothing placed must touch the map by an edge (PD-021) unless the GM explicitly starts a separate area
+      const needsAnchor = c.placed === 0 && doc.tiles.length > 0;
+      if (!needsAnchor && separateBatchId === b.id) separateBatchId = null;
+      refs.sepWrap.hidden = complete || !needsAnchor;
+      refs.sep.textContent = t('journey2_separate_area');
+      refs.sep.setAttribute('aria-pressed', String(separateBatchId === b.id));
+      refs.sep.disabled = editLocked;
+      refs.sepNote.textContent = t(separateBatchId === b.id ? 'journey2_separate_on_note' : 'journey2_separate_note');
       refs.del.setAttribute('aria-label', fill('journey2_delete_aria', { name: name, n: ord }));
       refs.del.setAttribute('title', t('journey2_delete_region'));
       refs.del.disabled = editLocked;
@@ -898,6 +912,15 @@
       if (tr && tr.kind === 'armed') cancelTransient();
       activeBatchId = id;
       renderInventory(false);
+    }
+
+    /** "Start separate area": a transient, one-shot override of the edge-contact rule for the first placement of one region. */
+    function toggleSeparate(batchId) {
+      if (editLocked || previewMode) return;
+      separateBatchId = separateBatchId === batchId ? null : batchId;
+      renderInventory(false);
+      if (tr && tr.kind === 'armed') updatePreview();
+      announce(t(separateBatchId ? 'journey2_separate_on_note' : 'journey2_separate_note'));
     }
 
     function toggleCard(id) { setActiveBatch(activeBatchId === id ? null : id); }
@@ -1192,13 +1215,32 @@
       if (previewMode) {
         // Player Preview: the GM layer is emptied (not hidden) and only the projection is produced
         ui.g.tiles.innerHTML = '';
-        playerProjection = Projection.buildPlayerProjection(doc);
+        playerProjection = Projection.buildPlayerProjection(doc, data.ctx);
         ui.g.player.innerHTML = overlayMarkup(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark } })));
+        renderPerimeter();
         return;
       }
       ui.g.player.innerHTML = '';
       const byBatch = new Map(doc.batches.map(b => [b.id, b]));
       ui.g.tiles.innerHTML = overlayMarkup(doc.tiles.map(tile => { const c = Geo.parseCellId(tile.cell); return { q: c.q, r: c.r, spec: specOfBatch(byBatch.get(tile.batchId)) }; }));
+      renderPerimeter();
+    }
+
+    /**
+     * The thick cartographic region outline — derived on every render from the tiles, never stored. GM: the complete perimeter of every
+     * placed region. Player Preview: only the projection's perimeter (edges whose cells are revealed). One path, no fill, no pointer events;
+     * redrawn only when the tiles, the visibility or the mode changed.
+     */
+    function renderPerimeter() {
+      if (!ui.g || !ui.g.perimeter || !doc) return;
+      const mode = previewMode ? 'player' : 'gm';
+      const vis = previewMode ? playerProjection : doc.playerVisibility;
+      if (perimDrawn.tiles === doc.tiles && perimDrawn.vis === vis && perimDrawn.mode === mode) return;
+      const segs = previewMode ? playerProjection.perimeter : Model.regionBoundarySegments(doc, data.ctx);
+      const d = Geo.polylinesPath(Geo.chainEdgeSegments(data.grid, segs));
+      ui.g.perimeter.innerHTML = d ? '<path class="j2-perimeter" d="' + d + '"/>' : '';
+      ui.g.perimeter.setAttribute('data-segments', String(segs.length));
+      perimDrawn = { tiles: doc.tiles, vis: vis, mode: mode };
     }
 
     function renderSelection() {
@@ -1850,10 +1892,10 @@
       const offsets = x.kind === 'tile' ? [{ dq: 0, dr: 0 }] : x.footprint;
       const cells = offsets.map(o => ({ q: anchor.q + o.dq, r: anchor.r + o.dr }));
       // the same cell policy AND region-shape rule the commit applies (Model.apply), so preview and result never disagree
-      const chk = Model.checkPlacement(doc, data.ctx, x.batchId, cells, x.kind === 'tile' ? x.tileId : null);
+      const chk = Model.checkPlacement(doc, data.ctx, x.batchId, cells, x.kind === 'tile' ? x.tileId : null, { separate: x.kind !== 'tile' && separateBatchId === x.batchId });
       const checked = chk.cells;
       const origin = x.kind === 'tile' && checked[0].id === x.from;
-      return { anchor: anchor, cells: checked, valid: chk.valid, connected: chk.connected, isOrigin: origin };
+      return { anchor: anchor, cells: checked, valid: chk.valid, connected: chk.connected, attached: chk.attached, attachCode: chk.attachCode, isOrigin: origin };
     }
 
     function updatePreview() {
@@ -1871,7 +1913,7 @@
       const batch = Model.batchById(doc, tr.batchId);
       let h = '';
       for (const c of p.cells) {
-        h += '<path class="j2-pv ' + (c.ok && p.connected ? 'is-ok' : 'is-bad') + (p.isOrigin ? ' is-origin' : '') + '" d="' + hexPath(c.q, c.r) + '"/>';
+        h += '<path class="j2-pv ' + (c.ok && p.connected && p.attached ? 'is-ok' : 'is-bad') + (p.isOrigin ? ' is-origin' : '') + '" d="' + hexPath(c.q, c.r) + '"/>';
       }
       if (batch && p.valid) for (const c of p.cells) if (c.ok) h += '<g class="j2-pv-glyph">' + tileMarkup(c.q, c.r, specOfBatch(batch), 'j2-pvt', true) + '</g>';
       ui.g.preview.innerHTML = h;
@@ -1879,7 +1921,7 @@
 
     function reasonText(preview) {
       const bad = preview.cells.filter(c => !c.ok);
-      if (!bad.length) return preview.connected === false ? t('journey2_reason_disconnected_region') : '';
+      if (!bad.length) return preview.connected === false ? t('journey2_reason_disconnected_region') : preview.attached === false ? attachText(preview.attachCode) : '';
       const first = t('journey2_reason_' + bad[0].reason);
       return bad.length > 1 ? first + ' · ' + fill('journey2_reason_blocked_n', { n: n(bad.length) }) : first;
     }
@@ -1929,8 +1971,10 @@
       if (!preview) return;
       if (!preview.valid) { hint(fill('journey2_hint_rejected', { reason: reasonText(preview) })); return; }
       const tiles = preview.cells.map(c => ({ id: Model.newId('t'), cell: c.id }));
-      const r = dispatch({ type: 'place', batchId: x.batchId, tiles: tiles }, 'place', true);
+      const separate = separateBatchId === x.batchId;
+      const r = dispatch(separate ? { type: 'place', batchId: x.batchId, tiles: tiles, separate: true } : { type: 'place', batchId: x.batchId, tiles: tiles }, 'place', true);
       if (!r.ok) { hint(fill('journey2_hint_rejected', { reason: errorText(r.error) })); return; }
+      if (separate) { separateBatchId = null; renderInventory(false); }       // a one-shot override: the region is now on the map
       announce(fill('journey2_live_placed', { n: n(tiles.length) }));
       if (tiles.length === 1 && !inspectorOpen()) sel.tileId = null;
       warnHoles(x.batchId);
@@ -1966,9 +2010,13 @@
       }
     }
 
+    /** Localized text for a prepared-map attachment failure (model codes 'not-adjacent' | 'detaches-region' | 'detaches-other'). */
+    function attachText(code) { return t('journey2_reason_' + String(code || 'not-adjacent').replace(/-/g, '_')); }
+
     function errorText(err) {
       if (err && err.conflicts && err.conflicts.length) return t('journey2_reason_' + err.conflicts[0].reason);
       if (err && err.code === 'disconnected-region') return t('journey2_reason_disconnected_region');
+      if (err && (err.code === 'not-adjacent' || err.code === 'detaches-region' || err.code === 'detaches-other')) return attachText(err.code);
       return t('journey2_gen_failed');
     }
 
@@ -2050,6 +2098,7 @@
       else if (b.hasAttribute('data-j2-card-toggle')) toggleCard(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-inspect')) openInspectorFromCard(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-insp-close')) closeInspector({ focus: true });
+      else if (b.hasAttribute('data-j2-separate')) toggleSeparate(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-delete')) confirmDelete(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-side-toggle')) toggleSide();
       else if (b.hasAttribute('data-j2-fit')) fitToView();
@@ -2660,7 +2709,7 @@
         ready: data ? data.readiness.ready : null, anchors: data ? data.anchorsDoc.anchors.length : 0,
         validCells: data ? data.grid.validCellCount() : 0, allowedCells: data ? data.ctx.allowedCellCount : 0, placeMode: placeMode,
         activeBatchId: activeBatchId, inspector: { batchId: inspector.batchId, tileId: inspector.tileId, source: inspector.source, open: inspectorOpen() }, sideCollapsed: sideCollapsed, diagnosticsOpen: diagOpen, saveStatus: saveState.status, saveReason: saveState.reason, editLocked: editLocked,
-        selectedTile: sel.tileId, transient: tr ? { kind: tr.kind, mode: tr.mode || null, moved: !!tr.moved, cells: tr.preview ? tr.preview.cells.length : 0, valid: tr.preview ? tr.preview.valid : null, anchor: tr.preview ? Geo.cellId(tr.preview.anchor.q, tr.preview.anchor.r) : null, conflicts: tr.preview ? tr.preview.cells.filter(c => !c.ok).map(c => [c.id, c.reason]) : [] } : null,
+        selectedTile: sel.tileId, transient: tr ? { kind: tr.kind, mode: tr.mode || null, moved: !!tr.moved, cells: tr.preview ? tr.preview.cells.length : 0, valid: tr.preview ? tr.preview.valid : null, attached: tr.preview ? tr.preview.attached : null, anchor: tr.preview ? Geo.cellId(tr.preview.anchor.q, tr.preview.anchor.r) : null, conflicts: tr.preview ? tr.preview.cells.filter(c => !c.ok).map(c => [c.id, c.reason]) : [] } : null,
         history: history ? { undo: history.undo.length, redo: history.redo.length } : null,
         batches: doc ? doc.batches.map(b => Object.assign({ id: b.id, habitat: b.habitat, terrain: b.terrain, quantity: b.quantity, quantitySource: b.quantitySource, rumor: b.rumor, encounter: b.encounter, notes: b.notes }, d.counts.get(b.id))) : [],
         tiles: doc ? doc.tiles.map(x => ({ id: x.id, batchId: x.batchId, cell: x.cell })) : [],
@@ -2668,6 +2717,8 @@
         glyphlessTiles: ui.g && ui.g.tiles && ui.g.tiles.querySelector('.is-glyphless') ? ui.g.tiles.querySelector('.is-glyphless').getAttribute('d').split('M').length - 1 : 0,
         discoveredState: 'none',
         fog: { tool: fogTool, showFogState: showFog, previewMode: previewMode, revealed: doc ? Model.getRevealedCellSet(doc).size : 0, strokeCells: fogStroke ? fogStroke.cells.length : 0, strokePointer: fogStroke ? fogStroke.pointerId : null, hover: fogHover ? Geo.cellId(fogHover.q, fogHover.r) : null },
+        separateBatchId: separateBatchId,
+        perimeter: { mode: perimDrawn.mode, segments: ui.g && ui.g.perimeter ? Number(ui.g.perimeter.getAttribute('data-segments') || 0) : 0, hasPath: !!(ui.g && ui.g.perimeter && ui.g.perimeter.querySelector('path')) },
         playerGlyphs: ui.g && ui.g.player ? ui.g.player.querySelectorAll('image').length : 0,
       };
     }
@@ -2687,7 +2738,7 @@
         zoomStep(dir) { zoomStep(dir); },
         document() { return JSON.parse(Model.serializeBackup(doc)); },
         runAction(act) { runAction(act); },
-        projection() { return JSON.parse(JSON.stringify(Projection.buildPlayerProjection(doc))); },
+        projection() { return JSON.parse(JSON.stringify(Projection.buildPlayerProjection(doc, data.ctx))); },
         dispatch(cmd) { return dispatch(cmd, cmd.type); },
         decorativeCells() { return Array.from(data.ctx.decorativeCells); },
         markers() { return data.anchorsDoc.anchors.map(a => ({ id: a.stableId, cellId: a.cellId, rect: a.iconProtectionArea.rectPx })); },

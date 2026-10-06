@@ -315,6 +315,53 @@
     return { hidden: true, shifted: false, offsetPx: null, glyphRectPx: null, dotsPx: [], boxPx: null, reason: 'no clear space in the cell' };
   }
 
+  /* ---------------- region perimeter geometry ---------------- */
+
+  /**
+   * Chains hex-edge segments ({ cell: "q,r", dir }, dir = index into NEIGHBOR_DELTAS: the edge shared with that neighbour, which runs
+   * between corner dir-1 and corner dir) into continuous polylines in world px, so joins are drawn as joins instead of overlapping caps.
+   * Corner identity is exact: the three cells that meet at a corner (sorted ids) name it, so neighbouring cells never disagree by float
+   * noise. A walk prefers to start at an open end; what remains is walked as closed loops (`closed: true`). Pure; order follows input.
+   */
+  function chainEdgeSegments(grid, segments) {
+    const nodes = new Map(), edges = [];
+    function node(q, r, j) {
+      const a = NEIGHBOR_DELTAS[j], b = NEIGHBOR_DELTAS[(j + 1) % 6];
+      const key = [cellId(q, r), cellId(q + a.dq, r + a.dr), cellId(q + b.dq, r + b.dr)].sort().join('|');
+      let n = nodes.get(key);
+      if (!n) { n = { key: key, pt: grid.cellCorners(q, r)[j], edges: [] }; nodes.set(key, n); }
+      return n;
+    }
+    for (const sg of segments) {
+      const c = parseCellId(sg.cell);
+      if (!c) continue;
+      const n0 = node(c.q, c.r, (sg.dir + 5) % 6), n1 = node(c.q, c.r, sg.dir);
+      const e = { a: n0, b: n1, used: false };
+      edges.push(e); n0.edges.push(e); n1.edges.push(e);
+    }
+    const lines = [];
+    function walk(start, closedHint) {
+      const pts = [start.pt];
+      let cur = start;
+      for (;;) {
+        const e = cur.edges.find(x => !x.used);
+        if (!e) break;
+        e.used = true;
+        cur = e.a === cur ? e.b : e.a;
+        pts.push(cur.pt);
+      }
+      lines.push({ points: pts.map(p => [p[0], p[1]]), closed: closedHint && cur === start && pts.length > 2 });
+    }
+    for (const n of nodes.values()) if (n.edges.length % 2 === 1) while (n.edges.some(x => !x.used)) walk(n, false);
+    for (const n of nodes.values()) while (n.edges.some(x => !x.used)) walk(n, true);
+    return lines;
+  }
+
+  /** SVG path data (no fill, stroke only) for chained polylines; a closed loop ends in Z so its last join is a join, not two caps. */
+  function polylinesPath(lines) {
+    return lines.map(l => 'M' + l.points.map(p => round(p[0], 2) + ' ' + round(p[1], 2)).join('L') + (l.closed ? 'Z' : '')).join('');
+  }
+
   /* ---------------- camera (world <-> screen) ---------------- */
 
   /** A camera is { scale, tx, ty }: screen = world * scale + (tx, ty). */
@@ -442,6 +489,8 @@
 
   return {
     cellLine: cellLine,
+    chainEdgeSegments: chainEdgeSegments,
+    polylinesPath: polylinesPath,
     placeInspector: placeInspector,
     NEIGHBOR_DELTAS: NEIGHBOR_DELTAS,
     cellId: cellId,

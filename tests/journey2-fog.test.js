@@ -140,7 +140,7 @@ test('the command never mutates a batch or a tile; other commands never touch vi
   // generating, placing, moving and deleting do not reveal or hide anything
   const free = AREA[10];
   let d = must(M.apply(d1, { type: 'createBatch', batch: batch('b2'), at: AT2 }, ctx));
-  d = must(M.apply(d, { type: 'place', batchId: 'b2', tiles: [{ id: 'tx', cell: free }], at: AT2 }, ctx));
+  d = must(M.apply(d, { type: 'place', batchId: 'b2', tiles: [{ id: 'tx', cell: free }], separate: true, at: AT2 }, ctx));
   assert.equal(d.playerVisibility, d1.playerVisibility);
   d = must(M.apply(d, { type: 'move', tileId: 'tx', to: AREA[11], at: AT2 }, ctx));
   assert.equal(M.isCellRevealed(d, AREA[11]), false, 'moving content into a hidden cell does not reveal it');
@@ -256,7 +256,7 @@ test('projection: GM-only data never appears (region ids, Encounter, Rumor, note
   for (const secret of ['SECRET-GM-NOTE', 'region-secret-id', 'tile-secret', 'batchId', 'encounter', 'rumor', 'notes', 'environment', 'inspector', 'selection', 'diagnostic', 'warning', 'history', 'undo']) {
     assert.ok(!text.toLowerCase().includes(secret.toLowerCase()), 'leaked: ' + secret);
   }
-  assert.deepEqual(Object.keys(P.buildPlayerProjection(doc)).sort(), ['overlays', 'revealedCells', 'version']);
+  assert.deepEqual(Object.keys(P.buildPlayerProjection(doc)).sort(), ['overlays', 'perimeter', 'revealedCells', 'version']);
   for (const o of P.buildPlayerProjection(doc).overlays) assert.deepEqual(Object.keys(o).sort(), ['blightMark', 'dots', 'q', 'r', 'symbolId']);
 });
 
@@ -392,7 +392,7 @@ test('strokes: interpolated with cellLine, each cell once, one command on releas
 });
 
 test('GM view: every generated tile is drawn whatever the fog says; the veil sits above the tiles and below selection', () => {
-  const gm = fn('renderTiles', 'renderSelection').split('ui.g.player.innerHTML = \'\';')[1];
+  const gm = fn('renderTiles', 'renderPerimeter').split('ui.g.player.innerHTML = \'\';')[1];
   assert.ok(gm && gm.includes('doc.tiles.map'));
   assert.doesNotMatch(gm, /isCellRevealed|getRevealedCellSet|playerVisibility|Projection/, 'the GM render does not look at visibility');
   const svg = view.slice(view.indexOf('<defs data-j2-defs>'), view.indexOf('</svg>', view.indexOf('<defs data-j2-defs>')));
@@ -412,7 +412,7 @@ test('Player Preview: read-only, projection-driven, document and history untouch
   assert.match(view, /setCamera\(back\.cam, true\); fitMode = back\.fitMode/);
   const tiles = fn('renderTiles', 'renderSelection').split('ui.g.player.innerHTML = \'\';')[0];
   assert.match(tiles, /ui\.g\.tiles\.innerHTML = '';/, 'GM tiles are removed, not hidden');
-  assert.match(tiles, /Projection\.buildPlayerProjection\(doc\)/);
+  assert.match(tiles, /Projection\.buildPlayerProjection\(doc, data\.ctx\)/);
   assert.doesNotMatch(tiles, /doc\.tiles|doc\.batches/, 'the preview never reads regions directly');
   const chrome = fn('applyPreviewChrome', 'enterPreview');
   for (const part of ['ui.sidewrap.hidden = on', 'ui.historyGroup.hidden = on', 'ui.fogGroup.hidden = on', 'ui.save.hidden = on', 'ui.previewBar.hidden = !on']) assert.ok(chrome.includes(part), part);

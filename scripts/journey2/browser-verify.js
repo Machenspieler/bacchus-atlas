@@ -672,7 +672,7 @@ async function main() {
       api.dispatch({ type: 'createBatch', batch: M.batchFromRegion(region, { id: id, createdAt: new Date().toISOString() }) });
       const c0 = api.clientToCell(700, 450).split(',').map(Number);
       const want = [[0, 0], [1, 0], [0, 1]].map(([a, b]) => (c0[0] + a) + ',' + (c0[1] + b));
-      const ok = api.dispatch({ type: 'place', batchId: id, tiles: want.map(c => ({ id: M.newId('t'), cell: c })) }).ok;
+      const ok = api.dispatch({ type: 'place', separate: true, batchId: id, tiles: want.map(c => ({ id: M.newId('t'), cell: c })) }).ok;
       return { id: id, want: want, ok: ok };
     });
     const center = await p4.evaluate(c => Journey2View.debugApi().cellToClient(c), cells.want[0]);

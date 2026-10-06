@@ -95,7 +95,7 @@ async function runFogChecks(env) {
     const region = { habitat: { biome: 'forest', blighted: false, overtaken: false, source: 'rolled', rolls: [4] }, terrain: { value: 3, source: 'rolled' }, size: 7, encounter: { entries: [[3, 4]], combines: 0 }, rumor: 17 };
     return Journey2View.debugApi().dispatch({ type: 'createBatch', batch: M.batchFromRegion(region, { id, createdAt: new Date().toISOString() }) }).ok ? id : null;
   });
-  await page.evaluate(([b, cs]) => Journey2View.debugApi().dispatch({ type: 'place', batchId: b, tiles: cs.map(c => ({ id: Journey2Model.newId('t'), cell: c })) }), [bid, SEVEN]);
+  await page.evaluate(([b, cs]) => Journey2View.debugApi().dispatch({ type: 'place', separate: true, batchId: b, tiles: cs.map(c => ({ id: Journey2Model.newId('t'), cell: c })) }), [bid, SEVEN]);
   await view(...grid.cellCenter(...Object.values(Geo.parseCellId(SEVEN[0]))), 1);
   const pristine = await st();
 
@@ -292,7 +292,7 @@ async function runFogChecks(env) {
       const nb = M.newId('b');
       api.dispatch({ type: 'createBatch', batch: M.batchFromRegion({ habitat: { biome: 'rolling', blighted: false, overtaken: false, source: 'rolled', rolls: [3] }, terrain: { value: 2, source: 'rolled' }, size: 2, encounter: { entries: [[3, 4]], combines: 0 }, rumor: 5 }, { id: nb, createdAt: new Date().toISOString() }) });
       const t = M.newId('t');
-      api.dispatch({ type: 'place', batchId: nb, tiles: [{ id: t, cell: c }] });
+      api.dispatch({ type: 'place', separate: true, batchId: nb, tiles: [{ id: t, cell: c }] });
       api.dispatch({ type: 'returnTile', tileId: t });
       api.dispatch({ type: 'deleteBatch', batchId: nb });
       return nb;

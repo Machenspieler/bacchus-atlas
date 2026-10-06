@@ -12,6 +12,10 @@
        revealed tiles; revealing one cell never reveals its region.
      - `revealedCells`: the revealed cell ids (sorted), from which a renderer derives the hidden area (every
        placeable cell not listed). Fog is drawn from this set, never from region data.
+     - `perimeter`: the thick region outline as deduplicated hex edges [{ cell, dir, kind: 'outer'|'divider' }] — generated New
+       Valloren content, so an edge exists only where the tile's cell AND the cell on the other side are both revealed (a neighbour the
+       fog never covers — off-map or title/compass furniture — needs only the tile). No line ends falsely at the edge of the revealed
+       area and the shape of a hidden region is never leaked. Cells only: no region ids.
    What it never contains (GM-only): batch/tile/region ids, Encounter, Rumor, notes, the suggested-environment
    list, placement state, selection, warnings, diagnostics, history.
 
@@ -32,7 +36,7 @@
    * Builds the player-facing projection of `doc`. Pure; the result is a plain JSON-safe object that shares nothing
    * mutable with the document.
    */
-  function buildPlayerProjection(doc) {
+  function buildPlayerProjection(doc, ctx) {
     const revealed = Model.getRevealedCellSet(doc);
     const byBatch = new Map(doc.batches.map(b => [b.id, b]));
     const overlays = [];
@@ -43,10 +47,13 @@
       if (!b || !c) continue;
       overlays.push({ q: c.q, r: c.r, symbolId: Model.symbolIdOf(b), dots: b.terrain.value, blightMark: !!(b.habitat.blighted && !b.habitat.overtaken) });
     }
+    // without a context nothing counts as "never fogged", which is the strictest (never leaking) reading
+    const foggable = ctx ? (key => Model.isFoggableCell(ctx, key)) : null;
     return {
-      version: 1,
+      version: 2,
       revealedCells: Array.from(revealed).sort(Model.compareCellKeys),
       overlays: overlays,
+      perimeter: Model.regionBoundarySegments(doc, ctx || null, key => revealed.has(key), foggable),
     };
   }
 

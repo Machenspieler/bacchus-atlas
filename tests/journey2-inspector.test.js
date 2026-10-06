@@ -73,7 +73,7 @@ test('inspection: every hex of the inspected region is highlighted, and no other
 test('inspection: clicking a hex of another region replaces the inspected region', () => {
   let doc = fixture();
   const free = open().map(c => { const p = Geo.parseCellId(c); return Geo.cellId(p.q + 4, p.r); }).find(c => { const p = Geo.parseCellId(c); return ctx.policy(p.q, p.r).ok; });
-  doc = must(M.apply(doc, { type: 'place', batchId: 'b2', tiles: [{ id: 'x1', cell: free }], at: AT }, ctx));
+  doc = must(M.apply(doc, { type: 'place', batchId: 'b2', tiles: [{ id: 'x1', cell: free }], separate: true, at: AT }, ctx));
   const a = M.inspectTile(M.NO_INSPECTION, doc, 't0');
   const b = M.inspectTile(a, doc, 'x1');
   assert.equal(b.batchId, 'b2');
