@@ -1320,6 +1320,7 @@ function render() {
   // this is the one place it is released when any other route renders.
   if (state.route.name !== 'journey2') Journey2View.unmount();
   renderHeader();
+  renderJourneyVersionSwitch();
   // renderPrepPage() owns creating/destroying the item strip and the
   // top-chrome controller for its own re-renders; this is the one place
   // that tears both down when navigating to any *other* route.
@@ -1433,12 +1434,34 @@ function routeTitle() {
   return `${t('lists_title')} — ${t('app_title')}`;
 }
 
+/** Corner [V1][V2] switch shown only on #/journey (V1) and #/journey2 (V2, the default
+ * Journey entry point). A plain body-level control so it survives the page redraws. */
+function renderJourneyVersionSwitch() {
+  let el = document.getElementById('journey-version-switch');
+  const name = state.route.name;
+  if (name !== 'journey' && name !== 'journey2') { if (el) el.remove(); return; }
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'journey-version-switch';
+    el.className = 'journey-version-switch';
+    el.setAttribute('role', 'group');
+    el.addEventListener('click', e => {
+      const b = e.target.closest('button[data-href]');
+      if (b) navigate(b.dataset.href);
+    });
+    document.body.appendChild(el);
+  }
+  el.setAttribute('aria-label', t('journey_version_label'));
+  el.innerHTML = [['V1', '#/journey', 'journey'], ['V2', '#/journey2', 'journey2']].map(([label, href, id]) =>
+    `<button type="button" data-href="${href}" aria-pressed="${name === id}" class="${name === id ? 'active' : ''}">${label}</button>`).join('');
+}
+
 function renderHeader() {
   const el = document.getElementById('header');
   /* Named routes, not "anything but the catalog" — with a third section that
    * test marked Lists as the current page while the generators were open. */
   const onLists = state.route.name === 'lists' || state.route.name === 'list';
-  const onJourney = state.route.name === 'journey';
+  const onJourney = state.route.name === 'journey' || state.route.name === 'journey2';
   const onPrep = state.route.name === 'prep';
   el.innerHTML = `
     <a class="skip-link" href="#grid-wrap">${t('skip_to_content')}</a>
@@ -1476,7 +1499,7 @@ function renderHeader() {
   SoundboardUI.sync();
   document.getElementById('btn-lists').addEventListener('click', () => navigate('#/lists'));
   document.getElementById('btn-prep').addEventListener('click', () => navigate('#/prep'));
-  document.getElementById('btn-journey').addEventListener('click', () => navigate('#/journey'));
+  document.getElementById('btn-journey').addEventListener('click', () => navigate('#/journey2'));
   // A real <button> now, so Enter and Space come for free — the old div carried
   // role="button" and tabindex but no key handler, and did nothing when focused.
   document.getElementById('brand-home').addEventListener('click', () => navigate(''));
