@@ -299,6 +299,8 @@
           symbolById: new Map(symbols.map(s => [s.id, s])),
           readiness: Geo.assessPlacementReadiness(template, anchorsDoc),
           protections: ctx.protections,
+          glyphProtections: ctx.protections.filter(p => p.kind !== 'built-in-label'),
+          labelRects: ctx.protections.filter(p => p.kind === 'built-in-label').map(p => p.rectPx),
         };
         return loadImage(versioned(template.assembledAsset.path, template.assembledAsset.cacheKey));
       }).then(img => {
@@ -1134,12 +1136,21 @@
         const boxW = gw;
         // the blight X sits at the top of the hexagon (as in the book's icon), so that strip is reserved like protected artwork
         const xc = blightMarkCenter(q, r);
-        const prot = blight ? data.protections.concat([{ rectPx: [xc[0] - BLIGHT_X_HALF - 1, xc[1] - BLIGHT_X_HALF - 1, 2 * BLIGHT_X_HALF + 2, 2 * BLIGHT_X_HALF + 2] }]) : data.protections;
+        const base = data.glyphProtections;
+        const prot = blight ? base.concat([{ rectPx: [xc[0] - BLIGHT_X_HALF - 1, xc[1] - BLIGHT_X_HALF - 1, 2 * BLIGHT_X_HALF + 2, 2 * BLIGHT_X_HALF + 2] }]) : base;
         const lay = Geo.layoutProofGlyph(data.grid, q, r, { w: boxW, h: gh, dots: dots }, prot, 2);
         L = { lay: lay, sym: sym, gw: gw, gh: gh, boxW: boxW, blight: blight };
         glyphCache.set(key, L);
       }
       return L;
+    }
+
+    /** A placed hex sits above the artwork's printed labels (MARROGATE, HORIZON): true when the cell overlaps one, so it is painted over them. */
+    function overlapsBuiltInLabel(q, r) {
+      const poly = data.grid.cellCorners(q, r);
+      const xs = poly.map(p => p[0]), ys = poly.map(p => p[1]);
+      const bx = Math.min.apply(null, xs), by = Math.min.apply(null, ys), bw = Math.max.apply(null, xs) - bx, bh = Math.max.apply(null, ys) - by;
+      return data.labelRects.some(([x, y, w, h]) => bx < x + w && x < bx + bw && by < y + h && y < by + bh);
     }
 
     /** Committed-tile markup: one monochrome symbol, terrain dots and (when blighted) a blight mark. `cls` selects committed/preview. */
@@ -1166,13 +1177,14 @@
      * already been decided (GM: every placed tile; players: the projection's overlays).
      */
     function overlayMarkup(entries) {
-      let outlines = '', quiet = '', body = '';
+      let outlines = '', quiet = '', body = '', cover = '';
       for (const e of entries) {
         const L = layoutFor(e.q, e.r, e.spec);
         if (L && L.lay.hidden) quiet += hexPath(e.q, e.r); else outlines += hexPath(e.q, e.r);
+        if (overlapsBuiltInLabel(e.q, e.r)) cover += hexPath(e.q, e.r);
         body += tileMarkup(e.q, e.r, e.spec, 'j2-tile');
       }
-      return (outlines ? '<path class="j2-tile-hex" d="' + outlines + '"/>' : '') + (quiet ? '<path class="j2-tile-hex is-glyphless" d="' + quiet + '"/>' : '') + body;
+      return (cover ? '<path class="j2-tile-cover" d="' + cover + '"/>' : '') + (outlines ? '<path class="j2-tile-hex" d="' + outlines + '"/>' : '') + (quiet ? '<path class="j2-tile-hex is-glyphless" d="' + quiet + '"/>' : '') + body;
     }
 
     function renderTiles() {
