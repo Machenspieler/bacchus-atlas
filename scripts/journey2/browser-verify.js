@@ -686,10 +686,10 @@ async function main() {
       if (!cells.ok) return true;
       await toggleDiag(p4);
       const s1 = await state(p4);
-      const c1 = await p4.evaluate(c => Journey2View.debugApi().cellToClient(c), cells.want[0]);   // opening the drawer re-fits the map
+      const c1 = await p4.evaluate(c => Journey2View.debugApi().cellToClient(c), cells.want[0]);
       await p4.mouse.click(c1.x, c1.y); await sleep(200);
       const s2 = await state(p4);
-      return { ok: s1.diagnosticsOpen && !s1.inspector.open && !s2.diagnosticsOpen && s2.inspector.open, detail: { d1: s1.diagnosticsOpen, i1: s1.inspector.open, d2: s2.diagnosticsOpen, i2: s2.inspector.open } };
+      return { ok: s1.diagnosticsOpen && !s1.inspector.open && !s2.diagnosticsOpen && s2.inspector.open && JSON.stringify(s1.camera) === JSON.stringify(s2.camera), detail: { d1: s1.diagnosticsOpen, i1: s1.inspector.open, d2: s2.diagnosticsOpen, i2: s2.inspector.open } };
     });
     await check('inspector.escape-closes-it-and-the-card-inspect-button-is-localized', async () => {
       await p4.keyboard.press('Escape'); await sleep(80);

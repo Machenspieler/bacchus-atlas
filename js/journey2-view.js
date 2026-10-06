@@ -896,7 +896,7 @@
       if (next.batchId !== inspector.batchId) flushNotes();
       inspector = next;
       sel.tileId = tileId;
-      if (diagOpen) setDiagnostics(false, true);         // the map must not jump under the click that opened the inspector
+      if (diagOpen) setDiagnostics(false);
       afterInspectorChange();
     }
 
@@ -909,7 +909,7 @@
       const keepSel = inspector.tileId && sel.tileId === inspector.tileId;
       inspector = next;
       if (keepSel) sel.tileId = null;                    // the strong outline belonged to the inspected hex of the previous region
-      if (diagOpen) setDiagnostics(false, true);
+      if (diagOpen) setDiagnostics(false);
       afterInspectorChange();
     }
 
@@ -1882,7 +1882,7 @@
        Diagnostics (Phase 0 inspector) — secondary, closed by default
        ============================================================ */
 
-    function setDiagnostics(open, keepCamera) {
+    function setDiagnostics(open) {
       if (open) closeInspector({ quiet: true });           // the inspector and the diagnostics drawer never share the map
       diagOpen = open;
       ui.panel.hidden = !open;
@@ -1890,8 +1890,7 @@
       const item = ui.root.querySelector('[data-j2-act="diagnostics"]');
       if (item) item.setAttribute('aria-checked', String(open));
       if (!open) { hoverCell = null; hoverMarker = null; selCell = null; selMarker = null; placeMode = false; ui.viewport.classList.remove('is-placing', 'is-over-marker'); renderSelection(); }
-      if (fitMode && !keepCamera) fitToView();
-      updateReadouts();
+      updateReadouts();                                   // opening or closing the drawer never moves the camera; only an explicit Fit does
     }
 
     function buildPanel() {

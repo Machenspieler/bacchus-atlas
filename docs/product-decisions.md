@@ -580,6 +580,12 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   tools, e.g. fog) > neutral inspection. Escape: menu, then drag/armed
   placement, then the inspector. The inspector and the Diagnostics drawer are
   mutually exclusive.
+- **Camera rule:** opening or closing any transient UI (inspector, sidebar,
+  Diagnostics drawer) never changes pan or zoom; only an explicit Fit does.
+  The Inspect button never toggles: same region keeps it open, another region
+  replaces it, closing is explicit (Close, Escape, empty-map click). Hexes
+  covered by the panel are not click-through; the selected-tile bar is a soft
+  positioning constraint kept above the inspector.
 - **Still GM-only and out of scope:** fog of war, player-facing output,
   printing, sanctuaries, region reroll and editing are later phases.
 - **Where:** [architecture.md](architecture.md) "Region Inspector (Phase B)".
