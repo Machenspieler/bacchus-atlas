@@ -338,21 +338,6 @@
               <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-zoom="in" data-t-aria="journey2_zoom_in" data-t-title="journey2_zoom_in">+</button>
               <button type="button" class="btn btn-ghost btn-sm" data-j2-fit data-t="journey2_fit"></button>
             </div>
-            <div class="j2-tb-group j2-tb-end">
-              <div class="j2-menu-wrap">
-                <button type="button" class="btn btn-ghost btn-sm j2-menu-btn" data-j2-menu-btn="backup" aria-haspopup="menu" aria-expanded="false"><span data-t="journey2_backup"></span>${ICON.caret}</button>
-                <div class="j2-menu" role="menu" data-j2-menu="backup" hidden>
-                  <button type="button" class="j2-menu-item" role="menuitem" data-j2-act="export" data-t="journey2_backup_export"></button>
-                  <button type="button" class="j2-menu-item" role="menuitem" data-j2-act="import" data-t="journey2_backup_import"></button>
-                </div>
-              </div>
-              <div class="j2-menu-wrap">
-                <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-menu-btn="more" aria-haspopup="menu" aria-expanded="false" data-t-aria="journey2_more" data-t-title="journey2_more">${ICON.more}</button>
-                <div class="j2-menu j2-menu--end" role="menu" data-j2-menu="more" hidden>
-                  <button type="button" class="j2-menu-item" role="menuitemcheckbox" aria-checked="false" data-j2-act="diagnostics" data-t="journey2_diagnostics"></button>
-                </div>
-              </div>
-            </div>
           </div>
           <div class="j2-stage" data-j2-stage>
             <div class="j2-mapwrap">
