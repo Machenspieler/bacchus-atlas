@@ -417,9 +417,11 @@ Desktop pointer only (mouse or trackpad); also 1366×768, 1440×900, 1536×864,
 
 ## Journey 2 map editor (`#/journey2`)
 
-Automated coverage: `scripts/journey2/stage1-verify.js` (real pointer input, isolated
-contexts). The manual path below is for a quick human pass in your own browser — use a
-private window, or accept that it writes the three `dhcodex_journey2_*` keys.
+Automated coverage: `scripts/journey2/stage1-verify.js` and `browser-verify.js` (real pointer input, isolated
+contexts; run them with `--out <scratch dir>` so the committed evidence is not rewritten, and
+`J2_BROWSER_CHANNEL=chrome` to use an installed Chrome). Scenario regions are created through the
+`createBatch` command because the editor only offers the fully random Generate action. The manual path below is for a quick human pass in your own browser — use a
+private window, or accept that it writes the four `dhcodex_journey2_*` keys.
 
 - [ ] Open `#/journey2`: header, one compact toolbar (map name, save status, Undo/Redo,
       zoom, Backup menu, ⋯), a left sidebar (generator + stock), the map fills the rest. No page scroll
