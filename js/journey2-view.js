@@ -54,7 +54,7 @@
   const CLICK_SLOP_PX = 4;
   const MARKER_HIT_SCREEN_PX = 14;
   const GLYPH_SCALE = 0.55;                         // native symbol px -> world px
-  const BLIGHT_X_HALF = 5.5;                         // half-size of the blight X drawn at the top of a blighted tile
+  const BLIGHT_X_HALF = 7;                           // half-size of the blight X drawn at the top of a blighted tile
   const TERRAIN_DEMO = [1, 2, 3, 4, 2, 3, 1];
   const HABITAT_DEMO = ['forest', 'mountain', 'aquatic', 'grassland', 'tropical', 'drylands', 'rolling'];
   // Fixed world rectangles for the print proof (A4 landscape, 0.2 mm per world px).

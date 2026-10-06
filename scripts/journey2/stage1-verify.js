@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /* ============================================================
    Bacchus's Atlas — scripts/journey2/stage1-verify.js
-   Dev-only browser verification of the Journey 2 Phase 1 tile editor with Playwright's Chromium against a
+   Dev-only browser verification of the Journey 2 tile editor (Phase 1 behaviours as adapted for Phase A: random
+   generation, overlay sidebar, one active card, connected regions) with Playwright's Chromium against a
    throw-away static server. Every scenario runs in a FRESH browser context (empty localStorage), so the owner's
    real browser storage is never read or written. All placements, drags, moves, undo/redo, reload, export and
    import use real pointer / keyboard input and the real UI (the debug API is only used to read state and to
@@ -539,7 +540,7 @@ async function main() {
       return { ok: s.batches.map(b => b.quantity).join() === '1,12,20' && s.batches.every(b => b.quantitySource === 'rolled'), detail: s.batches.map(b => b.quantity) };
     });
     await check('generate.there-are-no-manual-habitat-size-or-terrain-controls', async () => {
-      const n = await page.locator('[data-j2-habitat], [data-j2-qty], [data-j2-terrain-btn], [data-j2-terrain], select, input[inputmode="numeric"]').count();
+      const n = await page.locator('.j2-side select, .j2-side input, [data-j2-habitat], [data-j2-qty], [data-j2-terrain-btn]').count();
       const hint = await page.locator('.j2-gen-hint').innerText();
       return { ok: n === 0 && /random/i.test(hint), detail: { n, hint } };
     });
@@ -570,7 +571,7 @@ async function main() {
       const ov = await forced([0, 0]);         // 1, 1 -> overtaken
       const ovSym = await cardOf(page, ov.id).locator('img').getAttribute('src');
       const blSym = await cardOf(page, bl.id).locator('img').getAttribute('src');
-      return { ok: bl.habitat.blighted && !bl.habitat.overtaken && bl.habitat.biome === 'forest' && bl.habitat.rolls.join() === '1,11' && ov.habitat.overtaken && ov.habitat.biome === null && ov.habitat.rolls.join() === '1,1' && /fully-shadowblighted/.test(ovSym) && /forest.png/.test(blSym) && (await cardOf(page, bl.id).locator('.j2-blight').isVisible()) && ov.quantity === 2, detail: { bl: bl.habitat, ov: ov.habitat } };
+      return { ok: bl.habitat.blighted && !bl.habitat.overtaken && bl.habitat.biome === 'forest' && bl.habitat.rolls.join() === '1,11' && ov.habitat.overtaken && ov.habitat.biome === null && ov.habitat.rolls.join() === '1,1' && /fully-shadowblighted/.test(ovSym) && /forest.png/.test(blSym) && (await cardOf(page, bl.id).locator('.j2-blight').isVisible()) && ov.quantity >= 1 && ov.quantity <= 12, detail: { bl: bl.habitat, ov: ov.habitat } };
     });
     await page.evaluate(() => { for (let i = 0; i < 0; i++); });
 
@@ -691,6 +692,19 @@ async function main() {
       await pg.focus('.j2-viewport'); await pg.keyboard.press('Delete'); await pg.waitForTimeout(100);
       const s1 = await state(pg);
       return { ok: s1.tiles.length === s0.tiles.length - 1 && (await pg.locator('[data-j2-return]').evaluate(b => b.tagName === 'BUTTON')), detail: null };
+    });
+    await check('sel.clicking-a-map-tile-highlights-its-region-and-never-expands-or-scrolls-the-sidebar', async () => {
+      const s0 = await state(pg); const active0 = s0.activeBatchId;
+      const scroll0 = await pg.evaluate(() => document.querySelector('[data-j2-side-scroll]').scrollTop);
+      const a = await clientOf(pg, SEVEN[4]);
+      await pg.mouse.click(a.x, a.y); await pg.waitForTimeout(100);
+      const s1 = await state(pg);
+      const scroll1 = await pg.evaluate(() => document.querySelector('[data-j2-side-scroll]').scrollTop);
+      const owner = s1.tiles.find(t => t.cell === SEVEN[4]).batchId;
+      const subtle = await pg.locator(`.j2-card[data-batch="${owner}"]`).evaluate(c => c.classList.contains('is-current'));
+      const hl = await pg.locator('[data-j2-g="select"] .j2-region-hl').count();
+      await pg.keyboard.press('Escape');
+      return { ok: s1.selectedTile && s1.activeBatchId === active0 && owner !== active0 && scroll0 === scroll1 && subtle && hl === 1, detail: { active0, active1: s1.activeBatchId, owner, scroll0, scroll1, subtle, hl } };
     });
     await check('neg.click-to-place-arms-places-and-escape-exits-keyboard-arming-works', async () => {
       const s0 = await state(pg);
