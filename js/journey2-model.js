@@ -18,6 +18,11 @@
      remaining(batch) = quantity(batch) - placedTileCount(batch)
    Occupancy is keyed by the canonical cell id; one tile per cell.
 
+   Region shape rules (enforced here, not in the view): all placed tiles of
+   one batch form ONE edge-connected component (six axial neighbours; other
+   batches never count), and an enclosed empty hole is reported as a warning
+   (enclosedHoles / holeCounts) but never blocks an edit.
+
    Commands carry every generated value (ids, cells, timestamps, rolls), so
    replaying one (Redo) can never re-roll. Documents are treated as
    immutable: a command returns a new document that shares unchanged parts.
@@ -149,17 +154,19 @@
   /**
    * Builds a persisted batch from a generator result (see the adapter in js/app.js):
    *   region = { habitat: { biome, blighted, overtaken, source:'rolled'|'manual', rolls? }, terrain, size, encounter, rumor }
-   * `quantity` = { value, source:'rolled'|'manual' }, `terrain`/`habitat` carry their own provenance.
+   * `meta.quantity` = { value, source } is optional: without it the quantity is the rolled d12 `region.size`
+   * (the only path Journey 2 uses). `terrain`/`habitat` carry their own provenance.
    * Copies by value — nothing is shared with the legacy Journey entry.
    */
   function batchFromRegion(region, meta) {
     const h = region.habitat;
+    const quantity = meta.quantity || { value: region.size, source: 'rolled' };
     const habitat = { biome: h.overtaken ? null : h.biome, blighted: !!h.blighted, overtaken: !!h.overtaken, source: h.source };
     if (h.source === 'rolled' && Array.isArray(h.rolls)) habitat.rolls = h.rolls.slice();
     return {
       id: meta.id, createdAt: meta.createdAt, habitat: habitat,
       terrain: { value: region.terrain.value, source: region.terrain.source },
-      quantity: meta.quantity.value, quantitySource: meta.quantity.source,
+      quantity: quantity.value, quantitySource: quantity.source,
       encounter: { entries: region.encounter.entries.map(p => [p[0], p[1]]), combines: region.encounter.combines },
       rumor: region.rumor, notes: '',
     };
@@ -292,6 +299,99 @@
     });
   }
 
+  /* ---------------- region shape: connectivity and enclosed holes ---------------- */
+
+  const NB = Geo.NEIGHBOR_DELTAS;
+
+  /** True when every cell id is reachable from every other over the six axial neighbours (0 or 1 cells: true). */
+  function isConnected(cellIds) {
+    const set = new Set(cellIds);
+    if (set.size <= 1) return true;
+    const start = set.values().next().value;
+    const seen = new Set([start]), stack = [start];
+    while (stack.length) {
+      const c = Geo.parseCellId(stack.pop());
+      if (!c) continue;
+      for (const d of NB) {
+        const id = Geo.cellId(c.q + d.dq, c.r + d.dr);
+        if (set.has(id) && !seen.has(id)) { seen.add(id); stack.push(id); }
+      }
+    }
+    return seen.size === set.size;
+  }
+
+  /**
+   * Empty cells fully enclosed by the given cells (one region's tiles — nothing else is a barrier).
+   * Flood-fills the non-region cells of the bounding area, expanded by one cell, from its outer ring; whatever
+   * inside the area the flood cannot reach is a hole. The area is pure axial arithmetic, so a region against the
+   * map edge never produces a false hole. `countable(q, r)` (optional) limits the report to cells the editor
+   * could actually place on (a hole made only of unplaceable cells is not an "empty hex").
+   */
+  function enclosedHoles(cellIds, countable) {
+    const set = new Set();
+    let minQ = Infinity, maxQ = -Infinity, minR = Infinity, maxR = -Infinity;
+    for (const id of cellIds) {
+      const c = Geo.parseCellId(id);
+      if (!c) continue;
+      set.add(id);
+      if (c.q < minQ) minQ = c.q; if (c.q > maxQ) maxQ = c.q;
+      if (c.r < minR) minR = c.r; if (c.r > maxR) maxR = c.r;
+    }
+    if (set.size < 6) return [];                       // a hole needs six surrounding tiles
+    const q0 = minQ - 1, q1 = maxQ + 1, r0 = minR - 1, r1 = maxR + 1;
+    const start = Geo.cellId(q0, r0), reach = new Set([start]), stack = [[q0, r0]];
+    while (stack.length) {
+      const [q, r] = stack.pop();
+      for (const d of NB) {
+        const nq = q + d.dq, nr = r + d.dr;
+        if (nq < q0 || nq > q1 || nr < r0 || nr > r1) continue;
+        const id = Geo.cellId(nq, nr);
+        if (set.has(id) || reach.has(id)) continue;
+        reach.add(id); stack.push([nq, nr]);
+      }
+    }
+    const holes = [];
+    for (let q = q0; q <= q1; q++) for (let r = r0; r <= r1; r++) {
+      const id = Geo.cellId(q, r);
+      if (!set.has(id) && !reach.has(id) && (!countable || countable(q, r))) holes.push(id);
+    }
+    return holes;
+  }
+
+  const holeCache = new WeakMap();
+  /** Map batchId -> number of enclosed empty cells (only batches that have any). Cached per document. */
+  function holeCounts(doc, ctx) {
+    let m = holeCache.get(doc);
+    if (m) return m;
+    m = new Map();
+    const byBatch = new Map();
+    for (const t of doc.tiles) { let a = byBatch.get(t.batchId); if (!a) byBatch.set(t.batchId, a = []); a.push(t.cell); }
+    const placeable = (q, r) => ctx.policy(q, r).ok;
+    for (const [id, cells] of byBatch) { const n = enclosedHoles(cells, placeable).length; if (n) m.set(id, n); }
+    holeCache.set(doc, m);
+    return m;
+  }
+
+  /**
+   * The one shape rule behind preview AND commit. The batch's resulting cells (its tiles, minus `ignoreTileId`,
+   * plus `addIds`) must be one connected component. A region that is ALREADY split (an old save) is not made
+   * stuck by this: edits are only refused when they would split a connected region or leave a split one split.
+   * Returns { ok, connected } — `connected` is the raw result, `ok` the verdict.
+   */
+  function regionConnectivity(doc, batchId, addIds, ignoreTileId) {
+    const mine = doc.tiles.filter(t => t.batchId === batchId);
+    const before = isConnected(mine.map(t => t.cell));
+    const after = isConnected(mine.filter(t => t.id !== ignoreTileId).map(t => t.cell).concat(addIds));
+    return { ok: after || !before, connected: after };
+  }
+
+  /** Cell policy + shape rule for placing `cells` for `batchId` (or moving `ignoreTileId`). */
+  function checkPlacement(doc, ctx, batchId, cells, ignoreTileId) {
+    const checked = checkCells(doc, ctx, cells, ignoreTileId);
+    const rc = regionConnectivity(doc, batchId, checked.map(c => c.id), ignoreTileId);
+    return { cells: checked, connected: rc.ok, valid: rc.ok && checked.every(c => c.ok) };
+  }
+
   /* ---------------- commands ---------------- */
 
   const fail = (code, extra) => ({ ok: false, error: Object.assign({ code: code }, extra || {}) });
@@ -304,6 +404,7 @@
    *   place       { batchId, tiles:[{id, cell}], at }          atomic: all or nothing
    *   move        { tileId, to:"q,r", at }                     same cell => noop
    *   returnTile  { tileId, at }
+   *   deleteBatch { batchId, at }                                  removes the batch AND all its tiles, atomically
    *   setNotes    { batchId, notes, at }                       unchanged => noop
    */
   function apply(doc, cmd, ctx) {
@@ -331,6 +432,7 @@
         }
         const conflicts = checkCells(doc, ctx, cells).filter(c => !c.ok);
         if (conflicts.length) return fail('blocked', { conflicts: conflicts });
+        if (!regionConnectivity(doc, batch.id, cmd.tiles.map(t => t.cell)).ok) return fail('disconnected-region');
         return { ok: true, doc: touch(doc, cmd.at, { tiles: doc.tiles.concat(cmd.tiles.map(t => ({ id: t.id, batchId: batch.id, cell: t.cell }))) }) };
       }
       case 'move': {
@@ -341,11 +443,18 @@
         if (cmd.to === tile.cell) return { ok: true, doc: doc, noop: true };
         const chk = checkCells(doc, ctx, [c], tile.id)[0];
         if (!chk.ok) return fail('blocked', { conflicts: [chk] });
+        if (!regionConnectivity(doc, tile.batchId, [cmd.to], tile.id).ok) return fail('disconnected-region');
         return { ok: true, doc: touch(doc, cmd.at, { tiles: doc.tiles.map(t => (t.id === tile.id ? { id: t.id, batchId: t.batchId, cell: cmd.to } : t)) }) };
       }
       case 'returnTile': {
-        if (!derive(doc).byId.has(cmd.tileId)) return fail('no-tile');
+        const tile = derive(doc).byId.get(cmd.tileId);
+        if (!tile) return fail('no-tile');
+        if (!regionConnectivity(doc, tile.batchId, [], tile.id).ok) return fail('disconnected-region');
         return { ok: true, doc: touch(doc, cmd.at, { tiles: doc.tiles.filter(t => t.id !== cmd.tileId) }) };
+      }
+      case 'deleteBatch': {
+        if (!batchById(doc, cmd.batchId)) return fail('no-batch');
+        return { ok: true, doc: touch(doc, cmd.at, { batches: doc.batches.filter(b => b.id !== cmd.batchId), tiles: doc.tiles.filter(t => t.batchId !== cmd.batchId) }) };
       }
       case 'setNotes': {
         const batch = batchById(doc, cmd.batchId);
@@ -404,7 +513,7 @@
     createContext: createContext, newId: newId, emptyDocument: emptyDocument, isEmptyDocument: isEmptyDocument, symbolIdOf: symbolIdOf,
     derive: derive, batchById: batchById, parseQuantity: parseQuantity, batchFromRegion: batchFromRegion, validateBatch: validateBatch,
     validateDocument: validateDocument, parseBackupText: parseBackupText, serializeBackup: serializeBackup,
-    checkCells: checkCells, apply: apply,
+    checkCells: checkCells, checkPlacement: checkPlacement, regionConnectivity: regionConnectivity, isConnected: isConnected, enclosedHoles: enclosedHoles, holeCounts: holeCounts, apply: apply,
     createHistory: createHistory, historyCommit: historyCommit, historyUndo: historyUndo, historyRedo: historyRedo, historyClear: historyClear,
     compactFootprint: compactFootprint,
   };

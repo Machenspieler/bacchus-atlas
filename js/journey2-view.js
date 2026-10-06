@@ -8,6 +8,13 @@
    areas, temporary proof overlay, print proof) are still here, but behind a
    secondary "Diagnostics" action, closed by default.
 
+   Phase A: the generator is one fully random action (no manual habitat, size
+   or terrain); a generated region is immutable apart from its GM notes and
+   can be deleted whole. The sidebar is an animated overlay on the map, region
+   cards are compact with one expanded at a time, zoom uses fixed steps
+   including exactly 100%, and the model enforces connected region shapes
+   while only warning about enclosed empty hexes.
+
    Layering (see docs/architecture.md "Journey 2 map editor"):
      js/journey2-geometry.js  measured lattice + camera math (pure)
      js/journey2-model.js     document, policy, commands, history (pure)
@@ -156,7 +163,9 @@
     const pointer = { x: 0, y: 0, inside: false, cx: 0, cy: 0 };
     const glyphCache = new Map();
     const hexPathCache = new Map();
-    let genState = { habitat: '', terrain: 0 };
+    let activeBatchId = null;                               // the one expanded region card
+    let detailSection = null;                               // 'encounter' | 'rumor' | 'notes' | null — only on the active card
+    let sideCollapsed = false;                              // view preference, persisted apart from the document
 
     container.innerHTML = '';
     container.classList.add('j2-host');
@@ -207,7 +216,6 @@
       if (o && o.generator) generator = o.generator;
       applyStrings();
       if (data && ui.root) {
-        buildHabitatOptions();
         updateStatus(); updateReadouts(); renderControlList(); renderAll(true);
       }
       if (ui.loading) renderLoading();
@@ -292,6 +300,10 @@
       more: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><g fill="currentColor"><circle cx="4.5" cy="10" r="1.5"/><circle cx="10" cy="10" r="1.5"/><circle cx="15.5" cy="10" r="1.5"/></g></svg>',
       caret: '<svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       check: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m3 7.5 2.7 2.7L11 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      trash: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4.5 6h11M8 6V4h4v2M6 6l.6 9.5h6.8L14 6M8.5 9v4M11.5 9v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      warn: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M7 1.8 12.8 12H1.2zM7 5.6v3M7 10.3v.1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      chevL: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m8.8 3 -4 4 4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      chevR: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m5.2 3 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       close: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m3.5 3.5 7 7m0-7-7 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
     };
 
@@ -311,7 +323,7 @@
             </div>
             <div class="j2-tb-group" role="group" data-t-aria="journey2_zoom_label">
               <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-zoom="out" data-t-aria="journey2_zoom_out" data-t-title="journey2_zoom_out">−</button>
-              <output class="j2-zoom-readout" data-j2-zoom-readout aria-live="off">100%</output>
+              <button type="button" class="btn btn-ghost btn-sm j2-zoom-readout" data-j2-zoom="reset" data-j2-zoom-readout data-t-title="journey2_zoom_reset_title">100%</button>
               <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-zoom="in" data-t-aria="journey2_zoom_in" data-t-title="journey2_zoom_in">+</button>
               <button type="button" class="btn btn-ghost btn-sm" data-j2-fit data-t="journey2_fit"></button>
             </div>
@@ -331,42 +343,7 @@
               </div>
             </div>
           </div>
-          <div class="j2-stage">
-            <aside class="j2-side" data-t-aria="journey2_side_label">
-              <div class="j2-side-scroll" data-j2-side-scroll>
-                <div class="j2-banner" data-j2-banner hidden role="alert"></div>
-                <form class="j2-gen" data-j2-gen novalidate>
-                  <h3 class="j2-h" data-t="journey2_gen_title"></h3>
-                  <div class="j2-gen-row">
-                    <div class="j2-field j2-field--habitat">
-                      <label class="j2-label" for="j2-habitat" data-t="journey_k_habitat"></label>
-                      <select id="j2-habitat" class="j2-select" data-j2-habitat></select>
-                    </div>
-                    <div class="j2-field j2-field--qty">
-                      <label class="j2-label" for="j2-qty" data-t="journey2_gen_hexes"></label>
-                      <input id="j2-qty" class="j2-input" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" data-j2-qty data-t-ph="journey2_gen_hexes_ph" aria-describedby="j2-gen-error">
-                    </div>
-                  </div>
-                  <div class="j2-field">
-                    <span class="j2-label" id="j2-terrain-label" data-t="journey_k_terrain"></span>
-                    <div class="j2-seg" role="group" aria-labelledby="j2-terrain-label" data-j2-terrain>
-                      <button type="button" class="j2-seg-btn" data-j2-terrain-btn="0" aria-pressed="true" data-t="journey2_gen_roll"></button>
-                      <button type="button" class="j2-seg-btn" data-j2-terrain-btn="1" aria-pressed="false">1</button>
-                      <button type="button" class="j2-seg-btn" data-j2-terrain-btn="2" aria-pressed="false">2</button>
-                      <button type="button" class="j2-seg-btn" data-j2-terrain-btn="3" aria-pressed="false">3</button>
-                      <button type="button" class="j2-seg-btn" data-j2-terrain-btn="4" aria-pressed="false">4</button>
-                    </div>
-                  </div>
-                  <p class="j2-field-error" id="j2-gen-error" data-j2-gen-error role="alert" hidden></p>
-                  <button type="submit" class="btn btn-primary j2-gen-go" data-j2-generate><span class="j2-ico">${ICON.dice}</span><span data-t="journey2_gen_go"></span></button>
-                </form>
-                <section class="j2-stock" aria-labelledby="j2-stock-title">
-                  <h3 class="j2-h j2-h--row" id="j2-stock-title"><span data-t="journey2_stock_title"></span><span class="j2-count" data-j2-stock-count></span></h3>
-                  <p class="j2-empty" data-j2-stock-empty data-t="journey2_stock_empty"></p>
-                  <div class="j2-cards" data-j2-cards></div>
-                </section>
-              </div>
-            </aside>
+          <div class="j2-stage" data-j2-stage>
             <div class="j2-mapwrap">
               <div class="j2-viewport" tabindex="0" role="application" data-t-aria="journey2_map_label" aria-describedby="j2-keys">
                 <div class="j2-world" style="width:${W}px;height:${H}px">
@@ -388,6 +365,33 @@
               </div>
               <aside class="j2-panel" id="j2-panel" data-t-aria="journey2_panel_label" hidden></aside>
             </div>
+            <div class="j2-sidewrap" data-j2-sidewrap>
+              <aside class="j2-side" id="j2-side" data-t-aria="journey2_side_label">
+                <div class="j2-side-scroll" data-j2-side-scroll>
+                  <div class="j2-banner" data-j2-banner hidden role="alert"></div>
+                  <form class="j2-gen" data-j2-gen novalidate>
+                    <div class="j2-gen-head">
+                      <h3 class="j2-h" data-t="journey2_gen_title"></h3>
+                      <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-side-toggle aria-controls="j2-side" aria-expanded="true" data-t-aria="journey2_side_collapse" data-t-title="journey2_side_collapse">${ICON.chevL}</button>
+                    </div>
+                    <p class="j2-gen-hint" data-t="journey2_gen_hint"></p>
+                    <p class="j2-field-error" id="j2-gen-error" data-j2-gen-error role="alert" hidden></p>
+                    <button type="submit" class="btn btn-primary j2-gen-go" data-j2-generate><span class="j2-ico">${ICON.dice}</span><span data-t="journey2_gen_go"></span></button>
+                  </form>
+                  <section class="j2-stock" aria-labelledby="j2-stock-title">
+                    <h3 class="j2-h j2-h--row" id="j2-stock-title"><span data-t="journey2_stock_title"></span><span class="j2-count" data-j2-stock-count></span></h3>
+                    <p class="j2-empty" data-j2-stock-empty data-t="journey2_stock_empty"></p>
+                    <p class="j2-place-hint" data-j2-place-hint data-t="journey2_place_hint_shared" hidden></p>
+                    <div class="j2-cards" data-j2-cards></div>
+                  </section>
+                </div>
+              </aside>
+              <div class="j2-rail" data-j2-rail>
+                <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-side-toggle aria-controls="j2-side" aria-expanded="false" data-t-aria="journey2_side_expand" data-t-title="journey2_side_expand">${ICON.chevR}</button>
+                <span class="j2-rail-ico" aria-hidden="true">${ICON.hexes}</span>
+                <span class="j2-rail-count" data-j2-rail-count></span>
+              </div>
+            </div>
           </div>
           <div class="j2-tip" data-j2-tip hidden></div>
           <p class="sr-only" data-j2-live role="status" aria-live="polite"></p>
@@ -401,14 +405,18 @@
       ui.zoomReadout = container.querySelector('[data-j2-zoom-readout]');
       ui.badge = container.querySelector('[data-j2-proof-badge]');
       ui.side = container.querySelector('.j2-side');
+      ui.sidewrap = container.querySelector('[data-j2-sidewrap]');
+      ui.stage = container.querySelector('[data-j2-stage]');
+      ui.rail = container.querySelector('[data-j2-rail]');
+      ui.railCount = container.querySelector('[data-j2-rail-count]');
+      ui.placeHint = container.querySelector('[data-j2-place-hint]');
+      ui.sideToggles = Array.from(container.querySelectorAll('[data-j2-side-toggle]'));
       ui.sideScroll = container.querySelector('[data-j2-side-scroll]');
       ui.save = container.querySelector('[data-j2-save]');
       ui.undo = container.querySelector('[data-j2-undo]');
       ui.redo = container.querySelector('[data-j2-redo]');
       ui.banner = container.querySelector('[data-j2-banner]');
       ui.gen = container.querySelector('[data-j2-gen]');
-      ui.habitat = container.querySelector('[data-j2-habitat]');
-      ui.qty = container.querySelector('[data-j2-qty]');
       ui.genError = container.querySelector('[data-j2-gen-error]');
       ui.generate = container.querySelector('[data-j2-generate]');
       ui.cards = container.querySelector('[data-j2-cards]');
@@ -427,9 +435,11 @@
       ui.base = baseImg;
       syncHeaderHeight();
       initDocument();
+      sideCollapsed = !!store.loadUi().sideCollapsed;
+      activeBatchId = doc.batches.length ? doc.batches[doc.batches.length - 1].id : null;
       buildStaticLayers();
       buildPanel();
-      buildHabitatOptions();
+      applySideState(false);
       bindSurface();
       applyStrings();
       updateStatus();
@@ -601,45 +611,50 @@
       renderProof();
     }
 
-    function buildHabitatOptions() {
-      if (!ui.habitat) return;
-      const keep = ui.habitat.value;
-      const ids = generator && generator.biomes ? generator.biomes() : Model.HABITAT_IDS;
-      ui.habitat.innerHTML = '<option value="">' + esc(t('journey2_gen_random')) + '</option>' +
-        ids.map(id => '<option value="' + esc(id) + '">' + esc(t('biome_' + id)) + '</option>').join('');
-      ui.habitat.value = ids.includes(keep) ? keep : '';
-    }
-
-    function setTerrainChoice(v) {
-      genState.terrain = v;
-      for (const b of ui.gen.querySelectorAll('[data-j2-terrain-btn]')) b.setAttribute('aria-pressed', String(Number(b.getAttribute('data-j2-terrain-btn')) === v));
-    }
-
     function showGenError(msg) {
       ui.genError.hidden = !msg;
       ui.genError.textContent = msg || '';
-      ui.qty.setAttribute('aria-invalid', msg ? 'true' : 'false');
     }
 
-    /** Generate through the shared adapter, copy the result into a new map-owned batch. */
+    /** One fully random region: the adapter rolls every value, the new batch is committed as ONE history entry and becomes the active card. */
     function onGenerate(e) {
       if (e) e.preventDefault();
       if (editLocked) return;
       if (!generator || !generator.ready()) { showGenError(t('journey2_gen_unavailable')); return; }
-      const raw = ui.qty.value;
-      let qty = null;
-      if (String(raw).trim() !== '') {
-        const q = Model.parseQuantity(raw);
-        if (!q.ok) { showGenError(fill('journey2_qty_' + q.code.replace(/-/g, '_'), { max: n(Model.MAX_BATCH_QUANTITY) })); ui.qty.focus(); return; }
-        qty = q.value;
-      }
       showGenError('');
-      const region = generator.roll({ biome: ui.habitat.value || null, terrain: genState.terrain || null, rollSize: qty == null });
-      const quantity = qty != null ? { value: qty, source: 'manual' } : { value: region.size, source: 'rolled' };
-      const batch = Model.batchFromRegion(region, { id: Model.newId('b'), createdAt: new Date().toISOString(), quantity: quantity });
+      const region = generator.roll();
+      const batch = Model.batchFromRegion(region, { id: Model.newId('b'), createdAt: new Date().toISOString() });
       const r = dispatch({ type: 'createBatch', batch: batch }, 'createBatch');
       if (!r.ok) { showGenError(t('journey2_gen_failed')); return; }
+      setActiveBatch(batch.id, null);
+      ui.sideScroll.scrollTop = 0;
       announce(fill('journey2_live_created', { name: batchName(batch), n: n(batch.quantity) }));
+    }
+
+    /* ---- sidebar overlay ---- */
+
+    function applySideState(persistIt) {
+      ui.stage.setAttribute('data-side', sideCollapsed ? 'collapsed' : 'expanded');
+      for (const b of ui.sideToggles) b.setAttribute('aria-expanded', String(!sideCollapsed));
+      // the hidden half is taken out of the tab order and the accessibility tree; the transition itself is CSS-only
+      ui.side.inert = sideCollapsed;
+      ui.rail.inert = !sideCollapsed;
+      if (persistIt && store) store.saveUi({ sideCollapsed: sideCollapsed });
+    }
+
+    /** Explicit toggle only. Never touches the camera, selection or active region; focus moves to the control that replaces the one used. */
+    function toggleSide() {
+      sideCollapsed = !sideCollapsed;
+      applySideState(true);
+      const target = ui.sideToggles[sideCollapsed ? 1 : 0];
+      if (target) target.focus({ preventScroll: true });
+    }
+
+    /** Width the overlay sidebar covers on the left of the map (used by Fit only; toggling never refits). */
+    function sideInset() {
+      if (!ui.sidewrap) return 0;
+      const w = sideCollapsed ? ui.rail.offsetWidth : ui.sidewrap.offsetWidth;
+      return Math.min(w + 2 * 8, viewSize()[0] * 0.5);
     }
 
     /* ============================================================
@@ -650,32 +665,44 @@
 
     function symbolFor(b) { return data.symbolById.get(Model.symbolIdOf(b)); }
 
+    const DETAIL_SECTIONS = ['encounter', 'rumor', 'notes'];
+    const NOTES_MAX_PX = 180;
+
     function createCard(b) {
       const root = el('article', { class: 'j2-card', 'data-batch': b.id });
+      const bodyId = 'j2-cb-' + b.id;
       root.innerHTML = `
-        <header class="j2-card-head">
+        <button type="button" class="j2-card-head" data-j2-card-toggle aria-expanded="false" aria-controls="${bodyId}" data-j2-c="toggle">
           <span class="j2-card-sym"><img alt="" data-j2-c="img"></span>
-          <div class="j2-card-title">
-            <h4 class="j2-card-name"><span data-j2-c="name"></span><span class="j2-card-ord" data-j2-c="ord"></span></h4>
-            <p class="j2-card-meta"><span class="j2-dots" data-j2-c="dots" role="img"></span><span data-j2-c="days"></span><span class="j2-blight" data-j2-c="blight" hidden></span></p>
+          <span class="j2-card-title">
+            <span class="j2-card-name"><span data-j2-c="name"></span><span class="j2-card-ord" data-j2-c="ord"></span></span>
+            <span class="j2-card-meta"><span class="j2-dots" data-j2-c="dots" role="img"></span><span data-j2-c="days"></span><span class="j2-blight" data-j2-c="blight" hidden></span></span>
+          </span>
+        </button>
+        <p class="j2-card-sum" data-j2-c="sum"></p>
+        <p class="j2-warn" data-j2-c="warn" hidden><span class="j2-warn-ico" aria-hidden="true">${ICON.warn}</span><span data-j2-c="warnText"></span></p>
+        <div class="j2-card-body" id="${bodyId}" data-j2-c="body" hidden>
+          <div class="j2-status" data-j2-c="status"><span class="j2-num" data-j2-c="placedText"></span><span class="j2-bar" role="presentation"><span data-j2-c="bar"></span></span><span class="j2-num" data-j2-c="leftText"></span></div>
+          <div class="j2-actions" data-j2-c="actions">
+            <button type="button" class="j2-handle" data-j2-handle="one"><span class="j2-handle-label" data-j2-c="oneLabel"></span><span class="j2-grip">${ICON.grip}</span></button>
+            <button type="button" class="j2-handle j2-handle--all" data-j2-handle="all"><span class="j2-handle-label" data-j2-c="allLabel"></span><span class="j2-grip">${ICON.grip}</span></button>
           </div>
-        </header>
-        <div class="j2-card-count"><span data-j2-c="placedLabel"></span><span class="j2-num"><b data-j2-c="placed"></b> / <b data-j2-c="qty"></b></span></div>
-        <div class="j2-bar" role="presentation"><span data-j2-c="bar"></span></div>
-        <p class="j2-card-left"><span data-j2-c="leftLabel"></span> <b class="j2-num" data-j2-c="left"></b></p>
-        <div class="j2-actions">
-          <button type="button" class="j2-handle" data-j2-handle="one"><span class="j2-ico">${ICON.hex}</span><span class="j2-handle-label" data-j2-c="oneLabel"></span><span class="j2-grip">${ICON.grip}</span></button>
-          <button type="button" class="j2-handle j2-handle--all" data-j2-handle="all"><span class="j2-ico">${ICON.hexes}</span><span class="j2-handle-label" data-j2-c="allLabel"></span><span class="j2-grip">${ICON.grip}</span></button>
-        </div>
-        <p class="j2-card-hint" data-j2-c="hint"></p>
-        <details class="j2-details"><summary data-j2-c="encSummary"></summary><div class="j2-details-body" data-j2-c="enc"></div></details>
-        <details class="j2-details"><summary data-j2-c="notesSummary"></summary>
-          <div class="j2-details-body">
-            <p class="j2-rumor" data-j2-c="rumor"></p>
-            <label class="j2-label" data-j2-c="notesLabel"></label>
-            <textarea class="j2-notes" rows="3" maxlength="${Model.MAX_NOTES_LENGTH}" data-j2-c="notes"></textarea>
+          <p class="j2-done" data-j2-c="done" hidden><span class="j2-done-ico" aria-hidden="true">${ICON.check}</span><span data-j2-c="doneText"></span></p>
+          <div class="j2-detailbar">
+            <div class="j2-detail-tabs" role="group" data-j2-c="tabs">
+              <button type="button" class="j2-tab" data-j2-detail="encounter" aria-pressed="false" data-j2-c="tabEncounter"></button>
+              <button type="button" class="j2-tab" data-j2-detail="rumor" aria-pressed="false" data-j2-c="tabRumor"></button>
+              <button type="button" class="j2-tab" data-j2-detail="notes" aria-pressed="false" data-j2-c="tabNotes"><span data-j2-c="tabNotesText"></span><i class="j2-tab-dot" data-j2-c="notesDot" aria-hidden="true" hidden></i><span class="sr-only" data-j2-c="notesSr"></span></button>
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-delete" data-j2-delete data-j2-c="del">${ICON.trash}</button>
           </div>
-        </details>`;
+          <div class="j2-detail" data-j2-c="enc" hidden></div>
+          <p class="j2-detail j2-rumor" data-j2-c="rumor" hidden></p>
+          <div class="j2-detail" data-j2-c="notesBox" hidden>
+            <label class="sr-only" data-j2-c="notesLabel"></label>
+            <textarea class="j2-notes" rows="2" maxlength="${Model.MAX_NOTES_LENGTH}" data-j2-c="notes"></textarea>
+          </div>
+        </div>`;
       const refs = { root: root, id: b.id };
       for (const x of root.querySelectorAll('[data-j2-c]')) refs[x.getAttribute('data-j2-c')] = x;
       refs.handleOne = root.querySelector('[data-j2-handle="one"]');
@@ -685,67 +712,156 @@
       return refs;
     }
 
+    function autosizeNotes(ta) {
+      if (!ta || ta.closest('[hidden]')) return;
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight + 2, NOTES_MAX_PX) + 'px';
+    }
+
     /** Updates a card's text and state in place (the handle elements are never recreated mid-drag). */
-    function updateCard(refs, b, index, counts, full) {
+    function updateCard(refs, b, index, counts, full, holes) {
       const c = counts.get(b.id);
       const sym = symbolFor(b);
+      const active = b.id === activeBatchId;
+      const name = batchName(b), ord = n(index + 1);
       if (full || refs.img.getAttribute('data-sym') !== (sym && sym.id)) { if (sym) refs.img.src = sym.path; refs.img.setAttribute('data-sym', sym ? sym.id : ''); }
-      refs.name.textContent = batchName(b);
-      refs.ord.textContent = '#' + n(index + 1);
+      refs.name.textContent = name;
+      refs.ord.textContent = '#' + ord;
       refs.dots.innerHTML = [1, 2, 3, 4].map(i => '<i' + (i <= b.terrain.value ? ' class="on"' : '') + '></i>').join('');
       refs.dots.setAttribute('aria-label', fill('journey2_terrain_n', { n: b.terrain.value }));
       refs.blight.hidden = !(b.habitat.blighted && !b.habitat.overtaken);
       refs.blight.textContent = t('journey_shadowblighted');
-      refs.placedLabel.textContent = t('journey2_placed');
-      refs.placed.textContent = n(c.placed);
-      refs.qty.textContent = n(c.quantity);
-      refs.bar.style.width = (c.quantity ? (100 * c.placed / c.quantity) : 0) + '%';
-      refs.leftLabel.textContent = t(c.remaining > 0 ? 'journey2_left' : 'journey2_none_left');
-      refs.left.textContent = c.remaining > 0 ? n(c.remaining) : '';
-      refs.oneLabel.textContent = t('journey2_one_hex');
-      refs.allLabel.textContent = fill('journey2_all_n', { n: n(c.remaining) });
-      const none = c.remaining === 0 || editLocked;
-      for (const h of [refs.handleOne, refs.handleAll]) { h.disabled = none; h.setAttribute('aria-disabled', String(none)); }
-      const name = batchName(b);
-      refs.handleOne.setAttribute('aria-label', fill('journey2_handle_one_aria', { name: name }));
-      refs.handleAll.setAttribute('aria-label', fill('journey2_handle_all_aria', { name: name, n: n(c.remaining) }));
-      refs.hint.textContent = none ? '' : t('journey2_drag_hint');
-      refs.root.classList.toggle('is-exhausted', c.remaining === 0);
+      // active region: expanded, programmatically identifiable
+      refs.root.classList.toggle('is-active', active);
+      if (active) refs.root.setAttribute('aria-current', 'true'); else refs.root.removeAttribute('aria-current');
+      refs.toggle.setAttribute('aria-expanded', String(active));
+      refs.body.hidden = !active;
+      const complete = c.remaining === 0;
+      refs.root.classList.toggle('is-exhausted', complete);
+      refs.sum.hidden = active;
+      refs.sum.textContent = complete ? fill('journey2_all_placed', { n: n(c.quantity) }) : fill('journey2_status_placed', { placed: n(c.placed), total: n(c.quantity) }) + ' · ' + fill('journey2_status_left', { n: n(c.remaining) });
+      refs.warn.hidden = !holes;
+      if (holes) refs.warnText.textContent = fill('journey2_warn_holes', { n: n(holes) });
+      refs.root.classList.toggle('has-holes', !!holes);
       refs.root.classList.toggle('is-current', !!(sel.tileId && Model.derive(doc).byId.get(sel.tileId) && Model.derive(doc).byId.get(sel.tileId).batchId === b.id));
-      refs.encSummary.textContent = t('journey_k_encounter');
-      refs.notesSummary.textContent = t('journey2_rumor_notes');
-      refs.notesLabel.textContent = t('journey2_notes');
-      refs.notes.placeholder = t('journey2_notes_ph');
-      if (document.activeElement !== refs.notes) refs.notes.value = (notesDirty && notesDirty.batchId === b.id) ? notesDirty.value : b.notes;
       if (generator && generator.ready()) {
         const d = generator.describe(b);
-        const days = d.terrain ? fill('journey2_days_per_hex', { n: d.terrain.days }) : '';
-        refs.days.textContent = days;
-        refs.enc.innerHTML = (d.combined ? '<p class="j2-note">' + esc(t('journey_encounter_combined')) + '</p>' : '') +
-          d.encounter.map(e => '<p class="j2-enc"><span class="j2-roll">' + esc(n(e.sum)) + '</span><span>' + esc(e.text) + '</span></p>').join('');
-        refs.rumor.textContent = d.rumor;
+        refs.days.textContent = d.terrain ? fill('journey2_days_per_hex', { n: d.terrain.days }) : '';
+        if (active) {
+          refs.enc.innerHTML = (d.combined ? '<p class="j2-note">' + esc(t('journey_encounter_combined')) + '</p>' : '') +
+            d.encounter.map(e => '<p class="j2-enc">' + esc(e.text) + '</p>').join('');
+          refs.rumor.textContent = d.rumor;
+        }
       }
+      if (!active) return;
+      // placement: one status row, or — when nothing is left — a single confirmation and no controls at all
+      refs.status.hidden = complete;
+      refs.actions.hidden = complete;
+      refs.done.hidden = !complete;
+      refs.doneText.textContent = fill('journey2_all_placed', { n: n(c.quantity) });
+      refs.placedText.textContent = fill('journey2_status_placed', { placed: n(c.placed), total: n(c.quantity) });
+      refs.leftText.textContent = fill('journey2_status_left', { n: n(c.remaining) });
+      refs.bar.style.width = (c.quantity ? (100 * c.placed / c.quantity) : 0) + '%';
+      refs.oneLabel.textContent = t('journey2_place_one');
+      refs.allLabel.textContent = fill('journey2_place_all_n', { n: n(c.remaining) });
+      for (const h of [refs.handleOne, refs.handleAll]) h.disabled = editLocked;
+      refs.handleOne.setAttribute('aria-label', fill('journey2_handle_one_aria', { name: name }));
+      refs.handleAll.setAttribute('aria-label', fill('journey2_handle_all_aria', { name: name, n: n(c.remaining) }));
+      refs.tabs.setAttribute('aria-label', t('journey2_detail_label'));
+      refs.tabEncounter.textContent = t('journey_k_encounter');
+      refs.tabRumor.textContent = t('journey_k_rumor');
+      refs.tabNotesText.textContent = t('journey2_detail_notes');
+      const hasNotes = !!((notesDirty && notesDirty.batchId === b.id) ? notesDirty.value : b.notes);
+      refs.notesDot.hidden = !hasNotes;
+      refs.notesSr.textContent = hasNotes ? ' (' + t('journey2_notes_has') + ')' : '';
+      for (const sec of DETAIL_SECTIONS) {
+        const open = detailSection === sec;
+        refs['tab' + sec[0].toUpperCase() + sec.slice(1)].setAttribute('aria-pressed', String(open));
+      }
+      refs.enc.hidden = detailSection !== 'encounter';
+      refs.rumor.hidden = detailSection !== 'rumor';
+      refs.notesBox.hidden = detailSection !== 'notes';
+      refs.notesLabel.textContent = t('journey2_notes');
+      refs.notes.placeholder = t('journey2_notes_ph');
+      refs.del.setAttribute('aria-label', fill('journey2_delete_aria', { name: name, n: ord }));
+      refs.del.setAttribute('title', t('journey2_delete_region'));
+      refs.del.disabled = editLocked;
+      if (document.activeElement !== refs.notes) refs.notes.value = (notesDirty && notesDirty.batchId === b.id) ? notesDirty.value : b.notes;
+      if (detailSection === 'notes') autosizeNotes(refs.notes);
     }
 
     function renderInventory(full) {
       if (!ui.cards || !doc) return;
       const counts = Model.derive(doc).counts;
+      const holes = Model.holeCounts(doc, data.ctx);
       const seen = new Set();
       const list = doc.batches;
+      if (activeBatchId && !list.some(b => b.id === activeBatchId)) { activeBatchId = list.length ? list[list.length - 1].id : null; detailSection = null; }
       // newest first
       for (let i = list.length - 1, pos = 0; i >= 0; i--, pos++) {
         const b = list[i];
         let refs = cardRefs.get(b.id);
         if (!refs) { refs = createCard(b); cardRefs.set(b.id, refs); }
         seen.add(b.id);
-        updateCard(refs, b, i, counts, full);
+        updateCard(refs, b, i, counts, full, holes.get(b.id) || 0);
         const atPos = ui.cards.children[pos];
         if (atPos !== refs.root) ui.cards.insertBefore(refs.root, atPos || null);
       }
       for (const [id, refs] of cardRefs) if (!seen.has(id)) { refs.root.remove(); cardRefs.delete(id); }
       ui.stockEmpty.hidden = list.length > 0;
+      ui.placeHint.hidden = list.length === 0;
       ui.stockCount.textContent = list.length ? n(list.length) : '';
+      ui.railCount.textContent = list.length ? n(list.length) : '';
+      ui.railCount.setAttribute('aria-label', fill('journey2_rail_count_aria', { n: n(list.length) }));
       ui.generate.disabled = editLocked;
+    }
+
+    /** Makes one card the single expanded one (or none). Optionally opens a detail section on it. */
+    function setActiveBatch(id, section) {
+      flushNotes();
+      if (tr && tr.kind === 'armed') cancelTransient();
+      activeBatchId = id;
+      detailSection = id ? (section || null) : null;
+      renderInventory(false);
+    }
+
+    function toggleCard(id) { setActiveBatch(activeBatchId === id ? null : id, null); }
+
+    function toggleDetail(id, section) {
+      flushNotes();
+      if (activeBatchId !== id) activeBatchId = id;
+      detailSection = detailSection === section ? null : section;
+      renderInventory(false);
+      const refs = cardRefs.get(id);
+      if (refs && detailSection === 'notes') { autosizeNotes(refs.notes); refs.notes.focus({ preventScroll: true }); }
+    }
+
+    function warnHoles(batchId) {
+      const nHoles = Model.holeCounts(doc, data.ctx).get(batchId) || 0;
+      if (nHoles) toast(fill('journey2_warn_holes', { n: n(nHoles) }));
+    }
+
+    function confirmDelete(batchId) {
+      const b = Model.batchById(doc, batchId);
+      if (!b || editLocked) return;
+      const idx = doc.batches.indexOf(b), tiles = Model.derive(doc).counts.get(batchId).placed;
+      openDialog({
+        title: t('journey2_delete_title'),
+        lines: [fill('journey2_delete_msg', { name: batchName(b), n: n(idx + 1) }), t('journey2_delete_tiles_note')].concat(tiles ? [fill('journey2_delete_tiles_n', { n: n(tiles) })] : []),
+        actions: [
+          { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
+          { label: t('journey2_delete_region'), kind: 'btn-danger', value: 'delete' },
+        ],
+      }).then(v => {
+        if (inst.disposed || v !== 'delete') { const r = cardRefs.get(batchId); if (r && !inst.disposed) r.del.focus({ preventScroll: true }); return; }
+        const r = dispatch({ type: 'deleteBatch', batchId: batchId }, 'deleteBatch');
+        if (!r.ok) { hint(errorText(r.error)); return; }
+        notesDirty = notesDirty && notesDirty.batchId === batchId ? null : notesDirty;
+        if (sel.tileId && !Model.derive(doc).byId.has(sel.tileId)) sel.tileId = null;
+        announce(t('journey2_live_deleted'));
+        const next = cardRefs.get(activeBatchId);
+        (next ? next.toggle : ui.generate).focus({ preventScroll: true });
+      });
     }
 
     /* ---- tiles layer ---- */
@@ -859,7 +975,9 @@
     function fitToView() {
       const [vw, vh] = viewSize();
       if (!vw || !vh) { cam = { scale: 0.25, tx: 0, ty: 0 }; scheduleApply(); return; }
-      cam = Geo.fitCamera(Math.max(200, vw - panelInset()), vh, data.template.worldSizePx[0], data.template.worldSizePx[1], 8);
+      const left = sideInset();
+      cam = Geo.fitCamera(Math.max(200, vw - panelInset() - left), vh, data.template.worldSizePx[0], data.template.worldSizePx[1], 8);
+      cam.tx += left;                                  // the overlay sidebar covers the left edge: fit into what stays visible
       fitMode = true;
       scheduleApply();
     }
@@ -869,6 +987,7 @@
       cam = Geo.clampCamera(next, vw, vh, data.template.worldSizePx[0], data.template.worldSizePx[1], 120);
       if (!keepFit) fitMode = false;
       scheduleApply();
+      updateReadouts();                               // synchronous: the zoom label and +/- availability never wait for a frame
       if (tr) updatePreview();                        // the CURRENT camera always decides the snap — never a stale transform
     }
 
@@ -876,6 +995,22 @@
       const [vw, vh] = viewSize();
       const cx = sx == null ? vw / 2 : sx, cy = sy == null ? vh / 2 : sy;
       setCamera(Geo.zoomAt(cam, cx, cy, factor, minScale(), MAX_ZOOM));
+    }
+
+    /** Steps to the next/previous standard zoom stop (exactly 100% is one of them) around the viewport centre. */
+    function zoomStep(dir) {
+      const next = Geo.stepZoom(cam.scale, dir);
+      if (next !== cam.scale) zoomToScale(next);
+    }
+
+    /** Sets an exact scale keeping the world point under (sx, sy) — by default the viewport centre — fixed; pan is otherwise untouched. */
+    function zoomToScale(target, sx, sy) {
+      const [vw, vh] = viewSize();
+      const cx = sx == null ? vw / 2 : sx, cy = sy == null ? vh / 2 : sy;
+      const next = Math.min(MAX_ZOOM, Math.max(Math.min(minScale(), Geo.ZOOM_STEPS[0]), target));
+      const k = next / cam.scale;
+      // the scale is assigned, not multiplied into place, so a stop such as 100% is exactly 1 (no float drift)
+      setCamera({ scale: next, tx: cx - (cx - cam.tx) * k, ty: cy - (cy - cam.ty) * k });
     }
 
     function centerOnWorld(x, y, scale) {
@@ -950,9 +1085,12 @@
       const r = ui.viewport.getBoundingClientRect();
       return [e.clientX - r.left, e.clientY - r.top];
     }
+    /** True while the pointer is over the visible map: inside the viewport and not under the overlay sidebar. */
     function insideViewport(e) {
       const r = ui.viewport.getBoundingClientRect();
-      return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+      if (!(e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom)) return false;
+      const s = ui.sidewrap.getBoundingClientRect();
+      return !(e.clientX >= s.left && e.clientX <= s.right && e.clientY >= s.top && e.clientY <= s.bottom);
     }
 
     function tileAtScreen(sx, sy) {
@@ -982,7 +1120,7 @@
 
     function onViewportMove(e) {
       const [x, y] = localPoint(e);
-      pointer.x = x; pointer.y = y; pointer.inside = true; pointer.cx = e.clientX; pointer.cy = e.clientY;
+      pointer.x = x; pointer.y = y; pointer.inside = insideViewport(e); pointer.cx = e.clientX; pointer.cy = e.clientY;
       if (pan && pan.id === e.pointerId) {
         const dx = x - pan.x0, dy = y - pan.y0;
         if (!pan.moved && Math.hypot(dx, dy) > CLICK_SLOP_PX) { pan.moved = true; ui.viewport.classList.add('is-panning'); }
@@ -1038,8 +1176,12 @@
 
     function selectTile(id) {
       sel.tileId = id;
+      const tile = Model.derive(doc).byId.get(id);
+      if (tile && tile.batchId !== activeBatchId) { activeBatchId = tile.batchId; detailSection = null; }
       renderSelection();
       renderInventory(false);
+      const refs = tile && cardRefs.get(tile.batchId);
+      if (refs && !sideCollapsed) refs.root.scrollIntoView({ block: 'nearest' });
     }
 
     function onWheel(e) {
@@ -1060,8 +1202,8 @@
         case 'ArrowRight': setCamera({ scale: cam.scale, tx: cam.tx - step, ty: cam.ty }); break;
         case 'ArrowUp': setCamera({ scale: cam.scale, tx: cam.tx, ty: cam.ty + step }); break;
         case 'ArrowDown': setCamera({ scale: cam.scale, tx: cam.tx, ty: cam.ty - step }); break;
-        case '+': case '=': zoomBy(1.25); break;
-        case '-': case '_': zoomBy(0.8); break;
+        case '+': case '=': zoomStep(1); break;
+        case '-': case '_': zoomStep(-1); break;
         case '0': fitToView(); break;
         case 'Delete': case 'Backspace':
           if (sel.tileId) returnSelected(); else handled = false;
@@ -1164,9 +1306,11 @@
       const anchor = data.grid.worldToCell(w[0], w[1]);
       const offsets = x.kind === 'tile' ? [{ dq: 0, dr: 0 }] : x.footprint;
       const cells = offsets.map(o => ({ q: anchor.q + o.dq, r: anchor.r + o.dr }));
-      const checked = Model.checkCells(doc, data.ctx, cells, x.kind === 'tile' ? x.tileId : null);
+      // the same cell policy AND region-shape rule the commit applies (Model.apply), so preview and result never disagree
+      const chk = Model.checkPlacement(doc, data.ctx, x.batchId, cells, x.kind === 'tile' ? x.tileId : null);
+      const checked = chk.cells;
       const origin = x.kind === 'tile' && checked[0].id === x.from;
-      return { anchor: anchor, cells: checked, valid: checked.every(c => c.ok), isOrigin: origin };
+      return { anchor: anchor, cells: checked, valid: chk.valid, connected: chk.connected, isOrigin: origin };
     }
 
     function updatePreview() {
@@ -1184,15 +1328,15 @@
       const batch = Model.batchById(doc, tr.batchId);
       let h = '';
       for (const c of p.cells) {
-        h += '<path class="j2-pv ' + (c.ok ? 'is-ok' : 'is-bad') + (p.isOrigin ? ' is-origin' : '') + '" d="' + hexPath(c.q, c.r) + '"/>';
+        h += '<path class="j2-pv ' + (c.ok && p.connected ? 'is-ok' : 'is-bad') + (p.isOrigin ? ' is-origin' : '') + '" d="' + hexPath(c.q, c.r) + '"/>';
       }
-      if (batch) for (const c of p.cells) if (c.ok) h += '<g class="j2-pv-glyph">' + tileMarkup(c.q, c.r, batch, 'j2-pvt', true) + '</g>';
+      if (batch && p.valid) for (const c of p.cells) if (c.ok) h += '<g class="j2-pv-glyph">' + tileMarkup(c.q, c.r, batch, 'j2-pvt', true) + '</g>';
       ui.g.preview.innerHTML = h;
     }
 
     function reasonText(preview) {
       const bad = preview.cells.filter(c => !c.ok);
-      if (!bad.length) return '';
+      if (!bad.length) return preview.connected === false ? t('journey2_reason_disconnected_region') : '';
       const first = t('journey2_reason_' + bad[0].reason);
       return bad.length > 1 ? first + ' · ' + fill('journey2_reason_blocked_n', { n: n(bad.length) }) : first;
     }
@@ -1246,6 +1390,7 @@
       if (!r.ok) { hint(fill('journey2_hint_rejected', { reason: errorText(r.error) })); return; }
       announce(fill('journey2_live_placed', { n: n(tiles.length) }));
       if (tiles.length === 1) sel.tileId = null;
+      warnHoles(x.batchId);
     }
 
     function commitArmed() {
@@ -1271,18 +1416,21 @@
       if (!preview.valid) { hint(fill('journey2_hint_rejected', { reason: reasonText(preview) })); return; }
       const r = dispatch({ type: 'move', tileId: x.tileId, to: preview.cells[0].id }, 'move', true);
       if (!r.ok) hint(fill('journey2_hint_rejected', { reason: errorText(r.error) }));
-      else { sel.tileId = x.tileId; renderSelection(); announce(t('journey2_live_moved')); }
+      else { sel.tileId = x.tileId; renderSelection(); announce(t('journey2_live_moved')); warnHoles(x.batchId); }
     }
 
     function errorText(err) {
       if (err && err.conflicts && err.conflicts.length) return t('journey2_reason_' + err.conflicts[0].reason);
+      if (err && err.code === 'disconnected-region') return t('journey2_reason_disconnected_region');
       return t('journey2_gen_failed');
     }
 
     function returnSelected() {
       if (!sel.tileId) return;
+      const tile = Model.derive(doc).byId.get(sel.tileId);
       const r = dispatch({ type: 'returnTile', tileId: sel.tileId }, 'returnTile');
-      if (r.ok) { sel.tileId = null; renderSelection(); announce(t('journey2_live_returned')); }
+      if (r.ok) { sel.tileId = null; renderSelection(); announce(t('journey2_live_returned')); if (tile) warnHoles(tile.batchId); }
+      else hint(fill('journey2_hint_rejected', { reason: errorText(r.error) }));
     }
 
     function hint(msg) {
@@ -1325,13 +1473,20 @@
     function onRootClick(e) {
       const b = e.target.closest('button');
       if (!b || !ui.root.contains(b)) return;
-      if (b.hasAttribute('data-j2-zoom')) zoomBy(b.getAttribute('data-j2-zoom') === 'in' ? 1.25 : 0.8);
+      if (b.hasAttribute('data-j2-zoom')) {
+        const z = b.getAttribute('data-j2-zoom');
+        if (z === 'reset') zoomToScale(1);
+        else if (b.getAttribute('aria-disabled') !== 'true') zoomStep(z === 'in' ? 1 : -1);
+      }
+      else if (b.hasAttribute('data-j2-card-toggle')) toggleCard(b.closest('[data-batch]').getAttribute('data-batch'));
+      else if (b.hasAttribute('data-j2-detail')) toggleDetail(b.closest('[data-batch]').getAttribute('data-batch'), b.getAttribute('data-j2-detail'));
+      else if (b.hasAttribute('data-j2-delete')) confirmDelete(b.closest('[data-batch]').getAttribute('data-batch'));
+      else if (b.hasAttribute('data-j2-side-toggle')) toggleSide();
       else if (b.hasAttribute('data-j2-fit')) fitToView();
       else if (b.hasAttribute('data-j2-undo')) undo();
       else if (b.hasAttribute('data-j2-redo')) redo();
       else if (b.hasAttribute('data-j2-return')) returnSelected();
       else if (b.hasAttribute('data-j2-deselect')) { sel.tileId = null; renderSelection(); renderInventory(false); }
-      else if (b.hasAttribute('data-j2-terrain-btn')) setTerrainChoice(Number(b.getAttribute('data-j2-terrain-btn')));
       else if (b.hasAttribute('data-j2-menu-btn')) toggleMenu(b);
       else if (b.hasAttribute('data-j2-act')) { closeMenus(); runAction(b.getAttribute('data-j2-act')); }
       else if (b.hasAttribute('data-j2-layer')) toggleLayer(b.getAttribute('data-j2-layer'), b);
@@ -1351,9 +1506,13 @@
     function onRootInput(e) {
       const ta = e.target.closest && e.target.closest('textarea[data-j2-c="notes"]');
       if (ta) {
-        notesDirty = { batchId: ta.closest('[data-batch]').getAttribute('data-batch'), value: ta.value };
+        const id = ta.closest('[data-batch]').getAttribute('data-batch');
+        notesDirty = { batchId: id, value: ta.value };
+        autosizeNotes(ta);
+        const refs = cardRefs.get(id);
+        if (refs) refs.notesDot.hidden = !ta.value;
         renderSave();
-      } else if (e.target === ui.qty && !ui.genError.hidden) showGenError('');
+      }
     }
 
     function onRootChange(e) {
@@ -1648,7 +1807,13 @@
 
     function updateReadouts() {
       if (!data || !ui.zoomReadout) return;
-      ui.zoomReadout.textContent = Math.round(cam.scale * 100) + '%';
+      const pct = Math.round(cam.scale * 100);
+      ui.zoomReadout.textContent = pct + '%';
+      ui.zoomReadout.setAttribute('aria-label', fill('journey2_zoom_reset_aria', { n: pct }));
+      for (const z of ['in', 'out']) {
+        const btn = ui.root.querySelector('[data-j2-zoom="' + z + '"]');
+        if (btn) btn.setAttribute('aria-disabled', String(Geo.stepZoom(cam.scale, z === 'in' ? 1 : -1) === cam.scale));
+      }
       if (!ui.p || !diagOpen) return;
       const p = ui.p;
       if (pointer.inside) {
@@ -1936,7 +2101,7 @@
         hoverCell: hoverCell && Geo.cellId(hoverCell.q, hoverCell.r), userPlacements: userPlacements.length,
         ready: data ? data.readiness.ready : null, anchors: data ? data.anchorsDoc.anchors.length : 0,
         validCells: data ? data.grid.validCellCount() : 0, allowedCells: data ? data.ctx.allowedCellCount : 0, placeMode: placeMode,
-        diagnosticsOpen: diagOpen, saveStatus: saveState.status, saveReason: saveState.reason, editLocked: editLocked,
+        activeBatchId: activeBatchId, detailSection: detailSection, sideCollapsed: sideCollapsed, diagnosticsOpen: diagOpen, saveStatus: saveState.status, saveReason: saveState.reason, editLocked: editLocked,
         selectedTile: sel.tileId, transient: tr ? { kind: tr.kind, mode: tr.mode || null, moved: !!tr.moved, cells: tr.preview ? tr.preview.cells.length : 0, valid: tr.preview ? tr.preview.valid : null, anchor: tr.preview ? Geo.cellId(tr.preview.anchor.q, tr.preview.anchor.r) : null, conflicts: tr.preview ? tr.preview.cells.filter(c => !c.ok).map(c => [c.id, c.reason]) : [] } : null,
         history: history ? { undo: history.undo.length, redo: history.redo.length } : null,
         batches: doc ? doc.batches.map(b => Object.assign({ id: b.id, habitat: b.habitat, terrain: b.terrain, quantity: b.quantity, quantitySource: b.quantitySource, rumor: b.rumor, encounter: b.encounter, notes: b.notes }, d.counts.get(b.id))) : [],
@@ -1958,7 +2123,8 @@
         clientToCell(cx, cy) { const r = ui.viewport.getBoundingClientRect(), w = Geo.screenToWorld(cam, cx - r.left, cy - r.top), c = data.grid.worldToCell(w[0], w[1]); return Geo.cellId(c.q, c.r); },
         allowedCell(cellId) { const c = Geo.parseCellId(cellId); return c ? data.ctx.policy(c.q, c.r) : { ok: false, reason: 'outside' }; },
         setCamera(c) { setCamera(c); },
-        zoomTo(scale, cx, cy) { zoomBy(scale / cam.scale, cx, cy); },
+        zoomTo(scale, cx, cy) { zoomToScale(scale, cx, cy); },
+        zoomStep(dir) { zoomStep(dir); },
         document() { return JSON.parse(Model.serializeBackup(doc)); },
         dispatch(cmd) { return dispatch(cmd, cmd.type); },
         decorativeCells() { return Array.from(data.ctx.decorativeCells); },

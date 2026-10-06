@@ -28,7 +28,21 @@ function allowedNear(x, y, skip) {
   }
   throw new Error('no allowed cell near ' + x + ',' + y);
 }
-function sample(n, seed) { return Array.from({ length: n }, (_, i) => ({ id: 't' + (seed || '') + i, cell: allowedNear(900 + i * 211, 900 + (i % 3) * 400, []) })); }
+/** n allowed cells forming ONE connected cluster (breadth-first from a fixed start) — regions must stay connected. */
+function cluster(n, startId, skip) {
+  const start = startId || allowedNear(1500, 1500, []);
+  const out = [start], seen = new Set([start, ...(skip || [])]);
+  for (let i = 0; i < out.length && out.length < n; i++) {
+    const c = Geo.parseCellId(out[i]);
+    for (const d of Geo.NEIGHBOR_DELTAS) {
+      const id = Geo.cellId(c.q + d.dq, c.r + d.dr);
+      if (out.length < n && !seen.has(id) && ctx.policy(c.q + d.dq, c.r + d.dr).ok) { seen.add(id); out.push(id); }
+    }
+  }
+  assert.equal(out.length, n);
+  return out;
+}
+function sample(n, seed) { return cluster(n).map((cell, i) => ({ id: 't' + (seed || '') + i, cell: cell })); }
 
 function region(over) {
   return Object.assign({
@@ -112,20 +126,22 @@ test('footprint: exactly n unique connected offsets, centred, deterministic, pre
 test('scenario (with ctx): move keeps counts; undo/redo restore exact snapshots; redo never re-rolls', () => {
   const history = M.createHistory();
   let doc = withBatch('b1', 20);
-  const seven = [[800, 700], [2500, 1300], [1500, 2500], [3900, 800], [2420, 1700], [600, 2800], [3700, 2400]].map(([x, y]) => allowedNear(x, y));
+  const grown = cluster(21);
+  const seven = grown.slice(0, 7);
   const r7 = M.apply(doc, { type: 'place', batchId: 'b1', tiles: seven.map((cell, i) => ({ id: 's' + i, cell: cell })), at: AT }, ctx);
+  assert.equal(r7.ok, true);
   doc = r7.doc;
   const original = doc;
-  const anchor = Geo.parseCellId(allowedNear(1700, 1900));
-  const cells = M.compactFootprint(13).map(o => Geo.cellId(anchor.q + o.dq, anchor.r + o.dr));
+  const cells = grown.slice(7, 20);                       // 13 more cells, each reaching the placed shape through its BFS parent
   const all = M.apply(doc, { type: 'place', batchId: 'b1', tiles: cells.map((cell, i) => ({ id: 'a' + i, cell: cell })), at: AT }, ctx);
   assert.equal(all.ok, true); M.historyCommit(history, doc, all.doc, 'all'); doc = all.doc;
   const afterAll = doc;
-  const target = allowedNear(3000, 2800);
-  const mv = M.apply(doc, { type: 'move', tileId: 'a4', to: target, at: AT }, ctx);
-  assert.equal(mv.ok, true); M.historyCommit(history, doc, mv.doc, 'move'); doc = mv.doc;
+  const target = grown[20];                               // a free cell touching the shape: move a tile whose departure keeps it connected
+  const mover = doc.tiles.slice().reverse().find(x => M.isConnected(doc.tiles.filter(y => y.id !== x.id).map(y => y.cell).concat([target])));
+  const mv = M.apply(doc, { type: 'move', tileId: mover.id, to: target, at: AT }, ctx);
+  assert.equal(mv.ok, true, JSON.stringify(mv)); M.historyCommit(history, doc, mv.doc, 'move'); doc = mv.doc;
   assert.deepEqual(M.derive(doc).counts.get('b1'), { quantity: 20, placed: 20, remaining: 0 });
-  assert.equal(M.derive(doc).byId.get('a4').cell, target);
+  assert.equal(M.derive(doc).byId.get(mover.id).cell, target);
   // Undo the move, Undo the all-drop
   let e = M.historyUndo(history); doc = e.before; assert.equal(doc, afterAll);
   e = M.historyUndo(history); doc = e.before; assert.equal(doc, original);
@@ -172,7 +188,7 @@ test('place: outside-frame, decorative and over-stock drops are refused atomical
 
 test('move: origin is a no-op (same doc reference); a blocked move leaves the source in place; return restores one unit', () => {
   let doc = withBatch('b1', 4);
-  const [a, b] = [allowedNear(1000, 1000), allowedNear(2000, 1200)];
+  const [a, b] = cluster(2);
   doc = M.apply(doc, { type: 'place', batchId: 'b1', tiles: [{ id: 'A', cell: a }, { id: 'B', cell: b }], at: AT }, ctx).doc;
   const same = M.apply(doc, { type: 'move', tileId: 'A', to: a, at: AT }, ctx);
   assert.equal(same.ok, true); assert.equal(same.noop, true); assert.equal(same.doc, doc);

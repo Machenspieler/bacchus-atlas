@@ -335,6 +335,20 @@
     return { scale: next, tx: sx - (sx - cam.tx) * k, ty: sy - (sy - cam.ty) * k };
   }
 
+  /** Standard zoom stops for the +/- controls; 1 is exactly 100%. Fit and the wheel may land between them. */
+  const ZOOM_STEPS = Object.freeze([0.5, 0.67, 0.8, 0.9, 1.0, 1.1, 1.25, 1.5, 2.0]);
+  const ZOOM_EPSILON = 1e-4;
+
+  /**
+   * The next standard stop in `dir` (> 0 larger, < 0 smaller) strictly beyond `scale` (a scale already on a stop,
+   * within ZOOM_EPSILON, moves to the neighbouring stop). Past either end it returns `scale` unchanged.
+   */
+  function stepZoom(scale, dir) {
+    if (dir > 0) { for (const s of ZOOM_STEPS) if (s > scale + ZOOM_EPSILON) return s; return scale; }
+    for (let i = ZOOM_STEPS.length - 1; i >= 0; i--) if (ZOOM_STEPS[i] < scale - ZOOM_EPSILON) return ZOOM_STEPS[i];
+    return scale;
+  }
+
   /** Keeps at least `keep` screen px of the world visible on every side while panning. */
   function clampCamera(cam, viewW, viewH, worldW, worldH, keep) {
     const k = keep == null ? 80 : keep;
@@ -364,6 +378,8 @@
     screenToWorld: screenToWorld,
     fitCamera: fitCamera,
     zoomAt: zoomAt,
+    ZOOM_STEPS: ZOOM_STEPS,
+    stepZoom: stepZoom,
     clampCamera: clampCamera,
   };
 });

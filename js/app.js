@@ -3056,25 +3056,19 @@ function renderJourney2Page() {
 
 /** The Journey 2 region generator: the SAME rolls and tables as #/journey (rollHabitat, rollEncounter,
  * rollDie, state.journey), exposed through a small adapter so the map editor never calls the legacy page
- * renderer and never copies the tables. A chosen biome or terrain replaces its roll outright and is marked
- * 'manual' — no die result is fabricated for it. The size die is only thrown when the caller did not enter
- * a quantity. Returns plain data; nothing is shared with a saved #/journey entry. */
+ * renderer and never copies the tables. Every value is rolled — the editor has no way to choose or override
+ * one — following the official sequence d20 habitat, d12 size, d8+d6 encounter, d4 terrain, d100 rumor.
+ * Returns plain data; nothing is shared with a saved #/journey entry. */
 const journey2Generator = {
   ready() { return journeyReady(); },
-  biomes() { return state.journey.habitat.filter(r => r.biome).map(r => r.biome); },
-  roll({ biome = null, terrain = null, rollSize = true } = {}) {
-    let habitat;
-    if (biome) habitat = { biome, blighted: false, overtaken: false, source: 'manual' };
-    else {
-      const rolled = rollHabitat();
-      const view = habitatView(rolled);
-      habitat = { biome: view.biome, blighted: view.blighted, overtaken: view.overtaken, source: 'rolled', rolls: rolled.rolls };
-    }
+  roll() {
+    const rolled = rollHabitat();
+    const view = habitatView(rolled);
     return {
-      habitat,
-      terrain: terrain ? { value: terrain, source: 'manual' } : { value: rollDie(4), source: 'rolled' },
-      size: rollSize ? rollDie(12) : null,
+      habitat: { biome: view.biome, blighted: view.blighted, overtaken: view.overtaken, source: 'rolled', rolls: rolled.rolls },
+      size: rollDie(12),
       encounter: rollEncounter(),
+      terrain: { value: rollDie(4), source: 'rolled' },
       rumor: rollDie(100),
     };
   },
@@ -3087,7 +3081,7 @@ const journey2Generator = {
     return {
       examples: habitatRowForBiome ? jText(habitatRowForBiome.examples) : '',
       combined,
-      encounter: batch.encounter.entries.map(pair => ({ sum: pair[0] + pair[1], text: jText(tableRow(j.encounter, pair[0] + pair[1])?.text) })),
+      encounter: batch.encounter.entries.map(pair => ({ text: jText(tableRow(j.encounter, pair[0] + pair[1])?.text) })),   // text only: the dice sum is never shown
       terrain: terrain ? { name: jText(terrain.name), days: terrain.days, text: jText(terrain.text) } : null,
       rumor: jText(tableRow(j.rumors, batch.rumor)?.text),
     };

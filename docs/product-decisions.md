@@ -497,9 +497,9 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   its data: a batch is copied by value from the generator, so editing or
   deleting a legacy `#/journey` entry never changes a Journey 2 batch.
 - **Batches, not merged regions:** two forests are two batches even with equal
-  habitat and terrain. A batch may be disconnected and placed in any order; the
-  source-book contiguity/d12 limits are *not* enforced by the editor.
-- **Quantity:** any positive integer up to 1000 (about a fifth of the map's
+  habitat and terrain. A batch is placed in any order; Phase A (PD-017) later
+  made every batch one connected shape (the d12 limit is the rolled quantity).
+- **Quantity (superseded by PD-017 — the quantity is now always the rolled d12):** any positive integer up to 1000 (about a fifth of the map's
   ~4,670 placeable cells; it must stay placeable by one "All N" drop). Zero,
   negative, fractional and non-numeric input, and anything over the limit, is
   *rejected with an inline error — never clamped*. Leaving the field empty
@@ -531,3 +531,24 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   supplement to, never a replacement for, the two drag targets.
 - **Where:** [architecture.md](architecture.md) "Journey 2 map editor";
   evidence in `docs/journey2-implementation/stage-1/`.
+
+## PD-017: Journey 2 Phase A — random, immutable, connected regions
+- **Date:** 2026-10-06
+- **Decision:** supersedes the manual-input parts of PD-016. Journey 2 has one
+  generator action: every value (habitat, size, terrain, encounter, rumor) is
+  rolled; there is no habitat picker, hex-count field or terrain override, and
+  the rolled d12 is the region's quantity. A generated region is immutable
+  (no reroll, no editing) except its GM notes, and can be deleted whole (with
+  all its placed tiles, confirmed, one Undo entry). Raw dice results are never
+  shown, only the generated result.
+- **Connected regions:** all placed tiles of a region form one edge-connected
+  shape (enforced in the model for place, move and return). Different regions
+  may touch. This replaces PD-016's "a batch may be disconnected".
+- **Enclosed empty hexes are a warning, not a rule:** a toast after the edit
+  and a persistent badge on the card; the GM may keep the shape.
+- **UI:** the sidebar is an animated overlay with a 44px rail (explicit toggle
+  only, persisted separately from the document, never refits the map); one
+  compact card is expanded at a time; zoom uses fixed steps including exactly
+  100%. Fog of war, sanctuaries, player preview and printing are later phases;
+  `#/journey` is not replaced yet.
+- **Where:** [architecture.md](architecture.md) "Journey 2 map editor".

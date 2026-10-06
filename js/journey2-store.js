@@ -7,7 +7,7 @@
 
    Contract (see .claude/rules/browser-state.md and docs/architecture.md
    "Journey 2 map editor"):
-   - Three dedicated keys, all prefixed dhcodex_journey2_. Legacy Journey,
+   - Four dedicated keys (the map document, its recovery copy, the pre-import copy, and view preferences), all prefixed dhcodex_journey2_. Legacy Journey,
      Prep and every other key are never read, written or cleared here.
    - A stored document that fails validation is NEVER replaced by an empty
      autosave. load() reports { status: 'corrupt' } and keeps the raw text
@@ -27,6 +27,7 @@
     map: 'dhcodex_journey2_map',
     recovery: 'dhcodex_journey2_map_recovery',     // raw text of a map that failed validation
     previous: 'dhcodex_journey2_map_previous',     // the map that an import replaced
+    ui: 'dhcodex_journey2_ui',                     // view preferences (sidebar state) — never part of the map or its history
   });
 
   /** All Journey 2-owned keys; anything else in storage must stay byte-identical across any Journey 2 use. */
@@ -58,7 +59,17 @@
       return r.ok ? r.doc : null;
     }
 
-    return { load: load, save: save, savePrevious: savePrevious, loadPrevious: loadPrevious, keys: KEYS };
+    /** View preferences, separate from the map document: { sideCollapsed: boolean }. Unreadable or malformed -> defaults. */
+    function loadUi() {
+      const out = { sideCollapsed: false };
+      const raw = SafeStorage.readRawFlag(storage, KEYS.ui);
+      if (typeof raw !== 'string') return out;
+      try { const v = JSON.parse(raw); if (v && typeof v === 'object' && typeof v.sideCollapsed === 'boolean') out.sideCollapsed = v.sideCollapsed; } catch (e) { /* defaults */ }
+      return out;
+    }
+    function saveUi(ui) { return SafeStorage.writeJson(storage, KEYS.ui, { sideCollapsed: !!(ui && ui.sideCollapsed) }); }
+
+    return { load: load, save: save, savePrevious: savePrevious, loadPrevious: loadPrevious, loadUi: loadUi, saveUi: saveUi, keys: KEYS };
   }
 
   return { KEYS: KEYS, ownedKeys: ownedKeys, createStore: createStore };

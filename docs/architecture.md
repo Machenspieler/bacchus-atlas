@@ -960,12 +960,38 @@ Run all of them with `node --test tests/*.test.js`.
   and inside its hexagon, otherwise the glyph is withheld (the tile stays,
   drawn as a dashed outline). `tests/journey2-model.test.js` proves this over
   every allowed cell and symbol.
-- **Commands** (`createBatch`, `place`, `move`, `returnTile`, `setNotes`)
+- **Commands** (`createBatch`, `place`, `move`, `returnTile`, `deleteBatch`, `setNotes`)
   carry every generated value (ids, cells, timestamps), so Redo replays the
   same transaction and never re-rolls. `place` is atomic (all N or nothing).
   `View.dispatch()` is the one path for UI and tests: cancel any drag →
   flush a pending notes edit → `Model.apply` → history → persist → repaint.
   A no-op returns the same document reference and records nothing.
+  `deleteBatch` removes the batch and all its tiles atomically (one Undo entry).
+- **Region shape rules (Phase A, in the model):** all placed tiles of one batch
+  must form one edge-connected component over the six axial neighbours
+  (other batches never count). `place`, `move` and `returnTile` fail with
+  `disconnected-region` otherwise; the view's preview calls the same
+  `Model.checkPlacement()` so preview and commit never disagree. A region that
+  is *already* split (an old save) is not made un-editable: an edit is only
+  refused when it would split a connected region or leave a split one split.
+  Enclosed empty cells are detected by `enclosedHoles()` / `holeCounts()`
+  (flood fill of the batch's bounding area + 1 from its outer ring; only that
+  batch's tiles are barriers; pure axial maths, so map edges never give false
+  holes; only placeable cells are counted). A hole is a **warning**: a toast
+  after the edit and a persistent badge on the card, never a refusal.
+- **Generated values are immutable:** the generator is one fully random roll
+  (`journey2Generator.roll()`, no arguments); the only commands that touch a
+  batch after creation are `setNotes` and `deleteBatch`. No raw dice are shown
+  (the stored `rolls`/entry pairs are provenance only).
+- **Sidebar / cards / zoom (Phase A, view):** the map fills the stage and the
+  sidebar is a `transform`-animated overlay (340px / 44px rail,
+  `inert` on the hidden half, `aria-expanded` on both toggles); its state is
+  stored via `store.loadUi/saveUi`, never in the document, and toggling never
+  touches camera, selection or the active card. Cards are compact; exactly one
+  (`activeBatchId`) is expanded and one detail section (Encounter / Rumor /
+  Notes) is open at a time; both are view state, not history. Zoom buttons use
+  `Geo.ZOOM_STEPS` via `Geo.stepZoom()` (exactly 100% is a stop; Fit may land
+  between stops); the readout is a button that resets to exactly 100%.
 - **Interaction state** (view-only, never persisted, never in history):
   `tr` = a stock drag, a tile drag or an armed click-to-place; `pan`;
   selection. The "All N" footprint is generated once per drag
@@ -974,9 +1000,10 @@ Run all of them with `node --test tests/*.test.js`.
   cancels it. Escape, `pointercancel`, lost capture, a drop outside the map,
   route exit and any dispatched command cancel without touching state.
   Wheel/zoom during a drag recompute the preview with the *current* camera.
-- **Storage:** exactly three keys, all `dhcodex_journey2_*` (`js/journey2-store.js`):
+- **Storage:** exactly four keys, all `dhcodex_journey2_*` (`js/journey2-store.js`):
   `map` (the document), `map_recovery` (raw text of a map that failed
-  validation), `map_previous` (the map an import replaced). Nothing else is
+  validation), `map_previous` (the map an import replaced), `ui` (sidebar
+  collapsed state). Nothing else is
   read or written; legacy Journey, Prep and unrelated keys stay byte-identical.
   A document that fails validation is **never** replaced by an empty autosave:
   `load()` reports `corrupt`, the raw text stays under its own key and is
@@ -1000,9 +1027,10 @@ Run all of them with `node --test tests/*.test.js`.
   dialogs, the print root. A late load checks `disposed`.
 - **Generator integration:** `journey2Generator` in `js/app.js` is a thin
   adapter over the *existing* `rollHabitat`, `rollEncounter`, `rollDie` and
-  `state.journey` tables (no copy of any table). A chosen biome or terrain
-  replaces its roll; the d12 size is thrown only when no quantity was entered.
-  `describe(batch)` returns display text from the same tables.
+  `state.journey` tables (no copy of any table). `roll()` takes no arguments
+  and rolls everything (d20 habitat, d12 size = the quantity, d8+d6 encounter,
+  d4 terrain, d100 rumor). `describe(batch)` returns display text (no dice
+  sums) from the same tables.
 - **Diagnostics:** the Phase 0 inspector (calibration grid, control cells,
   markers, protection areas, proof overlay, print proof) is a secondary
   drawer behind the toolbar's "More → Diagnostics", closed by default.

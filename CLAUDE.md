@@ -186,7 +186,7 @@ undo, drag-to-delete or `+` grid cell. Pointer/geometry logic lives in
 batch → drag one / drag all remaining → move, return, Undo/Redo → local save
 and full JSON backup). The rules live in the pure `js/journey2-model.js`
 (document, placement policy, atomic commands, history); the view only builds
-commands. It owns exactly three `dhcodex_journey2_*` storage keys and never
+commands. It owns exactly four `dhcodex_journey2_*` storage keys and never
 touches `#/journey`'s data; a corrupt saved map is never autosaved over;
 preparation never implies discovery; original markers are immutable. Decisions:
 [docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016, detail:
