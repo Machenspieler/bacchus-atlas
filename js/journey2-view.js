@@ -54,7 +54,7 @@
   const CLICK_SLOP_PX = 4;
   const MARKER_HIT_SCREEN_PX = 14;
   const GLYPH_SCALE = 0.55;                         // native symbol px -> world px
-  const BLIGHT_MIN_WIDTH_PX = 38;                   // a blighted tile's box is at least this wide: the blight mark sits beside the terrain dots, so wide symbols are never widened
+  const BLIGHT_MIN_WIDTH_PX = 42;                   // a blighted tile's box is at least this wide: the blight mark sits beside the terrain dots, so wide symbols are never widened
   const TERRAIN_DEMO = [1, 2, 3, 4, 2, 3, 1];
   const HABITAT_DEMO = ['forest', 'mountain', 'aquatic', 'grassland', 'tropical', 'drylands', 'rolling'];
   // Fixed world rectangles for the print proof (A4 landscape, 0.2 mm per world px).
@@ -902,8 +902,10 @@
       h += '<image class="' + cls + '-sym" href="' + esc(L.sym.path) + '" x="' + fmt(gx, 1) + '" y="' + fmt(g[1], 1) + '" width="' + L.gw + '" height="' + L.gh + '" preserveAspectRatio="xMidYMid meet"/>';
       for (const d of L.lay.dotsPx) h += '<circle class="' + cls + '-dot" cx="' + fmt(d[0], 1) + '" cy="' + fmt(d[1], 1) + '" r="1.7"/>';
       if (L.blight) {
-        const last = L.lay.dotsPx[L.lay.dotsPx.length - 1], mx = last[0] + 8, my = last[1];   // the blight mark sits just right of the terrain dots
-        h += '<path class="' + cls + '-blight" d="M' + fmt(mx - 2.6, 1) + ' ' + fmt(my - 2.6, 1) + 'l5.2 5.2m0-5.2l-5.2 5.2"/>';
+        // the book's blight icon: a small flat-top hexagon outline with the X in its upper half, just right of the terrain dots
+        const last = L.lay.dotsPx[L.lay.dotsPx.length - 1], mx = last[0] + 9, my = last[1], R = 4.8, rh = R * 0.866;
+        const hexD = 'M' + fmt(mx - R, 1) + ' ' + fmt(my, 1) + 'l' + fmt(R / 2, 2) + ' ' + fmt(-rh, 2) + 'h' + fmt(R, 2) + 'l' + fmt(R / 2, 2) + ' ' + fmt(rh, 2) + 'l' + fmt(-R / 2, 2) + ' ' + fmt(rh, 2) + 'h' + fmt(-R, 2) + 'z';
+        h += '<path class="' + cls + '-blight" d="' + hexD + 'M' + fmt(mx - 1.5, 1) + ' ' + fmt(my - 3, 1) + 'l3 3m0-3l-3 3"/>';
       }
       return h;
     }
