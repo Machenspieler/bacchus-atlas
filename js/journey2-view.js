@@ -54,7 +54,7 @@
   const CLICK_SLOP_PX = 4;
   const MARKER_HIT_SCREEN_PX = 14;
   const GLYPH_SCALE = 0.55;                         // native symbol px -> world px
-  const BLIGHT_MIN_WIDTH_PX = 42;                   // a blighted tile's box is at least this wide: the blight mark sits beside the terrain dots, so wide symbols are never widened
+  const BLIGHT_X_HALF = 3;                          // half-size of the blight X drawn at the top of a blighted tile
   const TERRAIN_DEMO = [1, 2, 3, 4, 2, 3, 1];
   const HABITAT_DEMO = ['forest', 'mountain', 'aquatic', 'grassland', 'tropical', 'drylands', 'rolling'];
   // Fixed world rectangles for the print proof (A4 landscape, 0.2 mm per world px).
@@ -873,6 +873,12 @@
       return p;
     }
 
+    /** Centre of the blight X: top of the hexagon, as in the book's icon. */
+    function blightMarkCenter(q, r) {
+      const c = data.grid.cellCenter(q, r), top = Math.min.apply(null, data.grid.cellCorners(q, r).map(p => p[1]));
+      return [c[0], top + BLIGHT_X_HALF + 5];
+    }
+
     /** Glyph layout (symbol + terrain dots + optional blight mark) that never covers protected artwork; cached. */
     function layoutFor(q, r, b) {
       const sym = symbolFor(b);
@@ -882,8 +888,11 @@
       let L = glyphCache.get(key);
       if (L === undefined) {
         const gw = Math.round(sym.sizePx[0] * GLYPH_SCALE * 10) / 10, gh = Math.round(sym.sizePx[1] * GLYPH_SCALE * 10) / 10;
-        const boxW = blight ? Math.max(gw, BLIGHT_MIN_WIDTH_PX) : gw;
-        const lay = Geo.layoutProofGlyph(data.grid, q, r, { w: boxW, h: gh, dots: dots }, data.protections, 2);
+        const boxW = gw;
+        // the blight X sits at the top of the hexagon (as in the book's icon), so that strip is reserved like protected artwork
+        const xc = blightMarkCenter(q, r);
+        const prot = blight ? data.protections.concat([{ rectPx: [xc[0] - BLIGHT_X_HALF - 1, xc[1] - BLIGHT_X_HALF - 1, 2 * BLIGHT_X_HALF + 2, 2 * BLIGHT_X_HALF + 2] }]) : data.protections;
+        const lay = Geo.layoutProofGlyph(data.grid, q, r, { w: boxW, h: gh, dots: dots }, prot, 2);
         L = { lay: lay, sym: sym, gw: gw, gh: gh, boxW: boxW, blight: blight };
         glyphCache.set(key, L);
       }
@@ -902,10 +911,8 @@
       h += '<image class="' + cls + '-sym" href="' + esc(L.sym.path) + '" x="' + fmt(gx, 1) + '" y="' + fmt(g[1], 1) + '" width="' + L.gw + '" height="' + L.gh + '" preserveAspectRatio="xMidYMid meet"/>';
       for (const d of L.lay.dotsPx) h += '<circle class="' + cls + '-dot" cx="' + fmt(d[0], 1) + '" cy="' + fmt(d[1], 1) + '" r="1.7"/>';
       if (L.blight) {
-        // the book's blight icon: a small flat-top hexagon outline with the X in its upper half, just right of the terrain dots
-        const last = L.lay.dotsPx[L.lay.dotsPx.length - 1], mx = last[0] + 9, my = last[1], R = 4.8, rh = R * 0.866;
-        const hexD = 'M' + fmt(mx - R, 1) + ' ' + fmt(my, 1) + 'l' + fmt(R / 2, 2) + ' ' + fmt(-rh, 2) + 'h' + fmt(R, 2) + 'l' + fmt(R / 2, 2) + ' ' + fmt(rh, 2) + 'l' + fmt(-R / 2, 2) + ' ' + fmt(rh, 2) + 'h' + fmt(-R, 2) + 'z';
-        h += '<path class="' + cls + '-blight" d="' + hexD + 'M' + fmt(mx - 1.5, 1) + ' ' + fmt(my - 3, 1) + 'l3 3m0-3l-3 3"/>';
+        const m = blightMarkCenter(q, r), k = BLIGHT_X_HALF;
+        h += '<path class="' + cls + '-blight" d="M' + fmt(m[0] - k, 1) + ' ' + fmt(m[1] - k, 1) + 'l' + fmt(2 * k, 1) + ' ' + fmt(2 * k, 1) + 'm0 ' + fmt(-2 * k, 1) + 'l' + fmt(-2 * k, 1) + ' ' + fmt(2 * k, 1) + '"/>';
       }
       return h;
     }
