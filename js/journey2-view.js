@@ -1405,8 +1405,8 @@
       for (const e of doc.sanctuaries.entries) {
         const a = at.get(e.anchorId);
         if (!a) continue;
-        const x = fmt(a.worldPixelAnchor[0], 1), y = fmt(a.worldPixelAnchor[1], 1);
-        h += '<g class="j2-sanc' + (e.anchorId === sanctuaryOpen ? ' is-open' : '') + '" data-sanc="' + esc(e.anchorId) + '"><circle class="j2-sanc-halo" cx="' + x + '" cy="' + y + '" r="' + SANC_RING_R + '"/><circle class="j2-sanc-ring" cx="' + x + '" cy="' + y + '" r="' + SANC_RING_R + '"/></g>';
+        const pr = a.iconProtectionArea.rectPx, x = fmt(a.worldPixelAnchor[0], 1), y = fmt(pr[1] + pr[3], 1);   // a small dot at the foot of the icon
+        h += '<g class="j2-sanc" data-sanc="' + esc(e.anchorId) + '"><circle class="j2-sanc-dot" cx="' + x + '" cy="' + y + '" r="3"/></g>';
       }
       ui.g.sanct.innerHTML = h;
       sancDrawn = { sanctuaries: doc.sanctuaries, open: sanctuaryOpen };
@@ -1428,9 +1428,8 @@
       ui.s.name.textContent = sanctuaryTitle(e);
       const rows = generator && generator.ready() && typeof generator.describeSanctuary === 'function' ? generator.describeSanctuary(e) : [];
       const html = rows.map(r =>
-        '<section class="j2-sanc-row"><h4 class="j2-sanc-k"><span>' + esc(t(r.label)) + '</span><span class="j2-sanc-die">' + esc(r.die) + '</span></h4>' +
-        (r.combined ? '<p class="j2-note">' + esc(t('journey_politics_combined')) + '</p>' : '') +
-        r.results.map(x => '<p class="j2-sanc-v"><span class="j2-sanc-roll">' + esc(x.roll) + '</span><span class="j2-sanc-text">' + esc(x.text) + '</span></p>').join('') + '</section>').join('');
+        '<section class="j2-sanc-row"><h4 class="j2-sanc-k"><span>' + esc(t(r.label)) + '</span></h4>' +
+        r.results.map(x => '<p class="j2-sanc-v"><span class="j2-sanc-text">' + esc(x.text) + '</span></p>').join('') + '</section>').join('');
       if (ui.s.rows.getAttribute('data-sig') !== html) { ui.s.rows.innerHTML = html; ui.s.rows.setAttribute('data-sig', html); }
       ui.sancReroll.disabled = editLocked || !sanctuaryReady();
       ui.sancDelete.disabled = editLocked;

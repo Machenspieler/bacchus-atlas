@@ -195,7 +195,7 @@ test('projection: sanctuaries never reach the player projection (GM-only, PD-023
 
 const fn = (from, to) => view.slice(view.indexOf('function ' + from), view.indexOf('function ' + to, view.indexOf('function ' + from) + 1));
 
-test('view: the ring layer sits above the fog, below selection, never takes pointer events, and the overlay is not part of the SVG', () => {
+test('view: the dot layer sits above the fog, below selection, never takes pointer events, and the overlay is not part of the SVG', () => {
   const svg = view.slice(view.indexOf('<defs data-j2-defs>'), view.indexOf('</svg>', view.indexOf('<defs data-j2-defs>')));
   const at = k => svg.indexOf('data-j2-g="' + k + '"');
   assert.ok(at('fogstroke') < at('sanct') && at('sanct') < at('select') && at('select') < at('preview'));
