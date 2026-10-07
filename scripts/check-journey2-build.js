@@ -21,7 +21,7 @@ const ROOT = path.join(__dirname, '..');
 const DIST = path.join(ROOT, 'dist');
 
 const RUNTIME = [
-  'js/journey2-geometry.js', 'js/journey2-model.js', 'js/journey2-store.js', 'js/journey2-projection.js', 'js/journey2-view.js', 'css/journey2.css',
+  'js/journey2-geometry.js', 'js/journey2-model.js', 'js/journey2-store.js', 'js/journey2-biome-tint.js', 'js/journey2-projection.js', 'js/journey2-view.js', 'css/journey2.css',
   'data/journey2/map-template.json', 'data/journey2/map-anchors.json', 'data/journey2/symbols.json',
   'img/journey2/valloren-world.webp',
 ];

@@ -326,16 +326,16 @@ function fakeStorage(initial) {
 
 test('sidebar preference: stored apart from the map document, round-trips, and malformed values fall back', () => {
   const s = fakeStorage({ dhcodex_lang: '"ru"' }), store = Store.createStore(s, ctx);
-  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showFogState: true });
+  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showFogState: true, showBiomeColors: true });
   assert.deepEqual(store.saveUi({ sideCollapsed: true }), { ok: true });
-  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showFogState: true });
+  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showFogState: true, showBiomeColors: true });
   assert.deepEqual(s.writes, [Store.KEYS.ui]);
   assert.notEqual(Store.KEYS.ui, Store.KEYS.map);
   assert.equal(s.data.get('dhcodex_lang'), '"ru"');
-  for (const raw of ['{broken', '[]', '{"sideCollapsed":"yes"}', 'null']) { s.data.set(Store.KEYS.ui, raw); assert.deepEqual(store.loadUi(), { sideCollapsed: false, showFogState: true }, raw); }
+  for (const raw of ['{broken', '[]', '{"sideCollapsed":"yes"}', 'null']) { s.data.set(Store.KEYS.ui, raw); assert.deepEqual(store.loadUi(), { sideCollapsed: false, showFogState: true, showBiomeColors: true }, raw); }
   assert.ok(Store.ownedKeys().every(k => k.startsWith('dhcodex_journey2_')));
   assert.equal(store.load().status, 'empty', 'the preference never looks like a saved map');
-  assert.deepEqual(Store.createStore(null, ctx).loadUi(), { sideCollapsed: false, showFogState: true });
+  assert.deepEqual(Store.createStore(null, ctx).loadUi(), { sideCollapsed: false, showFogState: true, showBiomeColors: true });
 });
 
 /* ---------------- localization ---------------- */

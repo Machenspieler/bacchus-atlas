@@ -8,7 +8,8 @@
 
    What a projection contains
      - `overlays`: one entry per generated tile that sits in a REVEALED cell, reduced to what is drawn
-       ({ q, r, symbolId, dots, blightMark }). A region spanning revealed and hidden cells contributes only its
+       ({ q, r, symbolId, dots, blightMark, tint }). `tint` is the Biome Tint key (js/journey2-biome-tint.js) of the tile's Habitat; it exists only on
+       overlays of revealed cells, so hidden cells leak no colour, and `buildPrintProjection` omits it for black-and-white print. A region spanning revealed and hidden cells contributes only its
        revealed tiles; revealing one cell never reveals its region.
      - `revealedCells`: the revealed cell ids (sorted), from which a renderer derives the hidden area (every
        placeable cell not listed). Fog is drawn from this set, never from region data.
@@ -25,9 +26,9 @@
    cut-outs, and the base-map asset itself is never modified.
    ============================================================ */
 (function (root, factory) {
-  if (typeof module !== 'undefined' && module.exports) module.exports = factory(require('./journey2-geometry.js'), require('./journey2-model.js'));
-  else root.Journey2Projection = factory(root.Journey2Geometry, root.Journey2Model);
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (Geo, Model) {
+  if (typeof module !== 'undefined' && module.exports) module.exports = factory(require('./journey2-geometry.js'), require('./journey2-model.js'), require('./journey2-biome-tint.js'));
+  else root.Journey2Projection = factory(root.Journey2Geometry, root.Journey2Model, root.Journey2BiomeTint);
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (Geo, Model, Tint) {
   'use strict';
 
   /** True when generated content in this cell may be shown to players. */
@@ -37,7 +38,8 @@
    * Builds the player-facing projection of `doc`. Pure; the result is a plain JSON-safe object that shares nothing
    * mutable with the document.
    */
-  function buildPlayerProjection(doc, ctx) {
+  function buildPlayerProjection(doc, ctx, opts) {
+    const withTint = !(opts && opts.biomeTint === false);
     const revealed = Model.getRevealedCellSet(doc);
     const byBatch = new Map(doc.batches.map(b => [b.id, b]));
     const overlays = [];
@@ -46,7 +48,9 @@
       const b = byBatch.get(tile.batchId);
       const c = Geo.parseCellId(tile.cell);
       if (!b || !c) continue;
-      overlays.push({ q: c.q, r: c.r, symbolId: Model.symbolIdOf(b), dots: b.terrain.value, blightMark: !!(b.habitat.blighted && !b.habitat.overtaken) });
+      const o = { q: c.q, r: c.r, symbolId: Model.symbolIdOf(b), dots: b.terrain.value, blightMark: !!(b.habitat.blighted && !b.habitat.overtaken) };
+      if (withTint) { const key = Tint.tintKeyOf(b.habitat); if (key) o.tint = key; }
+      overlays.push(o);
     }
     // without a context nothing counts as "never fogged", which is the strictest (never leaking) reading
     const foggable = ctx ? (key => Model.isFoggableCell(ctx, key)) : null;
@@ -58,5 +62,18 @@
     };
   }
 
-  return { buildPlayerProjection: buildPlayerProjection, isCellVisibleToPlayers: isCellVisibleToPlayers };
+  /**
+   * The projection a print renderer draws. Black-and-white (the default and the only mode implemented) contains NO biome tint at all —
+   * not converted to grey, not desaturated, not a hatch — so a printed hex returns to the original monochrome map. It takes no UI state:
+   * neither the GM "Biome colors" preference nor the screen Player Preview setting can change it. `{ color: true }` is reserved for a
+   * future colour mode and simply keeps the tint keys the screen projection carries.
+   */
+  function buildPrintProjection(doc, ctx, opts) {
+    const color = !!(opts && opts.color === true);
+    const p = buildPlayerProjection(doc, ctx, { biomeTint: color });
+    p.printMode = color ? 'color' : 'bw';
+    return p;
+  }
+
+  return { buildPlayerProjection: buildPlayerProjection, buildPrintProjection: buildPrintProjection, isCellVisibleToPlayers: isCellVisibleToPlayers };
 });

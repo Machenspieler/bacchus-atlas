@@ -465,6 +465,11 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       the hex and a hover tooltip. Change = one Undo step; Detach needs no dialog; moving the hex carries the marker; Return to stock
       + Undo restores it; the same environment may sit on several hexes. Player Preview (even on a revealed hex) shows no marker.
       A card-opened inspector keeps the read-only Suggested environments. RU/EN relabels names without changing the saved map.
+- [ ] Biome Tint: placed hexes carry a very faint, distinct wash per Habitat (greens stay distinguishable; a Shadowblighted Wetland is still
+      Wetland-coloured, a fully overtaken region is violet-grey); black symbols, Terrain dots, the thick perimeter and the thin grid stay clear
+      and no colored outline appears. **Biome colors** (Fog group) hides/shows it with no Undo entry, no "Saving" flash, no camera or fog change,
+      and the choice survives a reload. Move / Return / Undo / Redo / Import move the wash with the tiles. Player Preview tints only revealed
+      cells (hidden cells show nothing, even in DOM); the GM toggle does not affect it. Sanctuary icons and Soul Echoes are unchanged.
 - [ ] A card's **Inspect region** button opens the same panel for an unplaced region too, without
       expanding the card; the panel never sits under the sidebar/rail and stays the same size at 50%, 100%
       and 200%. Esc cancels an armed Place first, then closes the panel; focus returns to the opener.

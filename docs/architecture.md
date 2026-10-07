@@ -1285,3 +1285,12 @@ Run all of them with `node --test tests/*.test.js`.
   excluded and `scripts/check-journey2-build.js` fails the build if any of it
   — or a known Journey source file — appears in `dist/`. It no longer bans
   PDFs/ZIPs as a class.
+
+### Journey 2 Biome Tint (PD-026)
+
+`js/journey2-biome-tint.js` (pure, loaded before `journey2-projection.js`) owns the palette and `tintKeyOf(habitat)` / `gmTintByCell(doc, enabled)`.
+`overlayMarkup()` in the view accepts an optional `tint` key per entry and emits one merged `<path class="j2-biome-tint">` per key inside a
+`pointer-events: none; aria-hidden` group, ordered label-cover → tint → hex outlines → symbols, so GM and Player Preview share one drawing
+path. GM entries get their key from `gmTintByCell(doc, showBiome)`; Player Preview entries get it from the projection's overlays (revealed
+cells only). The `showBiomeColors` preference lives in `dhcodex_journey2_ui` (`Journey2Store.loadUi/saveUi`). `buildPrintProjection` is the
+renderer-facing entry for print: black-and-white mode never carries a tint.

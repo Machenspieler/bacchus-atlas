@@ -856,3 +856,27 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Consequences:** the backup (v1, unchanged) carries `environmentId`; `TILE_KEYS` gained it; a malformed id
   fails import like any other schema error. Out of scope: several Environments per tile, custom/random/automatic
   assignment, player-visible points of interest, encounter tracking, routes, printing.
+
+## PD-026: Journey 2 — Biome Tint (derived, GM display preference, revealed-only for players)
+- **Status:** Active
+- **Date:** 2026-10-07
+- **Decision (what it is):** a very faint, watercolour-like fill (`fill-opacity` about 0.06–0.10, tuned per hue) inside every placed generated
+  hex, taken from the region's Habitat. It is presentation of existing data, never campaign data: nothing is stored in the document, backup,
+  history or geometry, and it is recomputed on every render, so place / move / return / delete / Undo / Redo / import need no extra code.
+- **Decision (palette):** one table, `js/journey2-biome-tint.js` (`PALETTE`): the eleven Habitats plus `overtaken`. The four greens (Grassland,
+  Tropical, Forest, Wetland) must stay distinct in hue. No gradients, glow, colored outline or animation; the layer is `aria-hidden`,
+  `pointer-events: none`, painted after the label cover and before the hex outlines and black symbols.
+- **Decision (Shadowblight):** it never replaces the Habitat colour (a blighted Wetland is Wetland-tinted; the X mark carries the corruption).
+  Only a **fully overtaken** region (no base Habitat) uses the neutral violet-grey fallback.
+- **Decision (independence):** the tint comes only from Habitat. Hex Environment, Tier, Encounter, Rumor, Soul Echoes, sanctuaries and Terrain
+  never affect it; fixed sanctuary icons, Marrogate, Horizon and empty Old Valloren cells are never tinted.
+- **Decision (GM preference):** **Biome colors**, default ON, stored only as `showBiomeColors` in `dhcodex_journey2_ui` (a toggle beside **Fog**,
+  as no secondary options menu exists in the toolbar). Toggling is a pure display change: no command, no Undo entry, no autosave, no fog,
+  visibility or camera change.
+- **Decision (Player Preview):** follows Fog of War. The player projection puts `tint` only on overlays of revealed cells, so hidden cells leak
+  neither colour nor shape through opacity, DOM or accessibility output. The GM preference does not control the preview.
+- **Decision (print):** black-and-white print omits the tint entirely — not grayscale, not desaturated, not gray fills, not hatch density.
+  `Journey2Projection.buildPrintProjection(doc, ctx)` returns overlays without `tint` and takes no UI state; `{ color: true }` is reserved for a
+  future colour print that may reuse the same keys. Colour printing is **not** implemented; the tint is never baked into the base map raster.
+- **Where:** `js/journey2-biome-tint.js`, `js/journey2-projection.js`, `js/journey2-view.js` (`overlayMarkup`, `toggleBiomeColors`),
+  tests in `tests/journey2-biome-tint.test.js`.

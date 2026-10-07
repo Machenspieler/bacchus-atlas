@@ -209,8 +209,12 @@ overlay with Delete / Reroll / close, and none of it reaches Player Preview or p
 A placed hex may carry one optional catalog Environment (`tile.environmentId`, id only; follows the tile, dies with
 it; picker limited to the region's biome via the existing adapter, none for an overtaken region; opened from a hex's
 Region Inspector, never from a card; GM-only, never in Player Preview or print — PD-025).
+Biome Tint (PD-026): a faint derived wash inside each placed hex from its Habitat (palette only in `js/journey2-biome-tint.js`;
+Shadowblight keeps the Habitat colour, a fully overtaken region uses a violet-grey fallback); never stored; GM toggle "Biome colors" lives
+in `dhcodex_journey2_ui`; Player Preview tints revealed cells only (the projection omits it for hidden cells); black-and-white print
+(`buildPrintProjection`) carries no tint at all — never grayscale.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025, detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026, detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

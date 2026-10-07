@@ -200,7 +200,7 @@ test('projection: a revealed assigned tile exposes no environment data at all', 
   const proj = P.buildPlayerProjection(doc, ctx), json = JSON.stringify(proj);
   assert.equal(proj.overlays.length, 2);
   assert.doesNotMatch(json, /environment|buzzing-swamp/i);
-  assert.deepEqual(Object.keys(proj.overlays[0]).sort(), ['blightMark', 'dots', 'q', 'r', 'symbolId']);
+  assert.deepEqual(Object.keys(proj.overlays[0]).sort(), ['blightMark', 'dots', 'q', 'r', 'symbolId', 'tint']);
   const hidden = P.buildPlayerProjection(must(set(fixture(), 't0', 'buzzing-swamp')), ctx);
   assert.doesNotMatch(JSON.stringify(hidden), /environment|buzzing-swamp/i);
 });

@@ -219,7 +219,7 @@ test('projection: a tile in a revealed cell is included, a hidden one is not pro
   const d1 = must(M.apply(d0, { type: 'setCellsRevealed', cellKeys: [AREA[0], AREA[2]], revealed: true, at: AT2 }, ctx));
   const p = P.buildPlayerProjection(d1);
   assert.deepEqual(p.overlays.map(o => cid(o.q, o.r)), [AREA[0], AREA[2]], 'a region spanning revealed and hidden cells contributes only its revealed tiles');
-  assert.deepEqual(p.overlays[0], { q: Geo.parseCellId(AREA[0]).q, r: Geo.parseCellId(AREA[0]).r, symbolId: 'forest', dots: 3, blightMark: true });
+  assert.deepEqual(p.overlays[0], { q: Geo.parseCellId(AREA[0]).q, r: Geo.parseCellId(AREA[0]).r, symbolId: 'forest', dots: 3, blightMark: true, tint: 'forest' });
   assert.equal(P.isCellVisibleToPlayers(d1, AREA[0]), true);
   assert.equal(P.isCellVisibleToPlayers(d1, AREA[1]), false);
   assert.deepEqual(p.revealedCells, [AREA[0], AREA[2]].sort(M.compareCellKeys));
@@ -257,7 +257,7 @@ test('projection: GM-only data never appears (region ids, Encounter, Rumor, note
     assert.ok(!text.toLowerCase().includes(secret.toLowerCase()), 'leaked: ' + secret);
   }
   assert.deepEqual(Object.keys(P.buildPlayerProjection(doc)).sort(), ['overlays', 'perimeter', 'revealedCells', 'version']);
-  for (const o of P.buildPlayerProjection(doc).overlays) assert.deepEqual(Object.keys(o).sort(), ['blightMark', 'dots', 'q', 'r', 'symbolId']);
+  for (const o of P.buildPlayerProjection(doc).overlays) assert.deepEqual(Object.keys(o).sort(), ['blightMark', 'dots', 'q', 'r', 'symbolId', 'tint']);
 });
 
 test('projection: it is a pure function — the document is untouched and the result shares nothing mutable with it', () => {
@@ -287,11 +287,11 @@ test('"Show fog state" is a stored UI preference (default on); preview mode, too
   const s = fakeStorage(), store = Store.createStore(s, ctx);
   assert.equal(store.loadUi().showFogState, true);
   assert.deepEqual(store.saveUi({ sideCollapsed: false, showFogState: false }), { ok: true });
-  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showFogState: false });
-  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['showFogState', 'sideCollapsed']);
+  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showFogState: false, showBiomeColors: true });
+  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['showBiomeColors', 'showFogState', 'sideCollapsed']);
   assert.deepEqual(s.writes, [Store.KEYS.ui], 'nothing else is written');
   s.data.set(Store.KEYS.ui, '{"showFogState":"no","sideCollapsed":true}');
-  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showFogState: true }, 'a malformed value falls back to its default');
+  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showFogState: true, showBiomeColors: true }, 'a malformed value falls back to its default');
   // it is not part of the document / backup
   assert.ok(!JSON.stringify(M.emptyDocument(ctx, AT)).includes('showFogState'));
   // saving the sidebar state alone never switches the fog preference off
