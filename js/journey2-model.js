@@ -20,7 +20,7 @@
    Fog of War (Phase C) is CELL-based and lives only in `playerVisibility.revealedCells` — never on a batch or a
    tile. Every placeable cell is hidden by default; the list is the single source of truth (no hiddenCells twin),
    kept sorted so a serialized document is deterministic.
-   Soul Echoes (PD-022) are GM-only secrets: at most nine sanctuary stable ids (never a destination), optional on
+   Soul Echoes (PD-024) are GM-only secrets: at most nine sanctuary stable ids (never a destination), optional on
    load (missing = none, so schemaVersion stays 1), and never part of the player projection.
    Sanctuaries (PD-023) are GM-only generated settlements: one entry per printed sanctuary icon (keyed by its stable anchor id),
    holding the NUMBERS that came up — never the table sentences — so a saved map reads back in either language. Optional on load
@@ -34,12 +34,13 @@
    batches never count), and an enclosed empty hole is reported as a warning
    (enclosedHoles / holeCounts) but never blocks an edit.
 
-   Prepared-map adjacency (PD-021), enforced by the same preview/commit path: the FIRST tiles of a region that has
-   none placed yet must share a full hex edge with a tile of ANOTHER region (corner contact never counts; the very
-   first region of an empty map is exempt; the explicit `separate` flag of the place command is the only override),
-   and an ordinary move or return-to-stock may never cut a region (or its neighbour) off from the prepared map
-   entirely. Nothing about attachment is stored: it is derived from the tiles, so old saves and imports load as-is.
-   The region perimeter is likewise derived (regionBoundarySegments) and never stored.
+   Prepared-map connectivity (PD-021, PD-024) is a SECOND, independent rule: the union of every placed tile across all batches has some
+   number of edge-connected components ("prepared areas"). An ordinary place / move / return may never INCREASE that number beyond
+   max(1, before) — so a later region must share a full hex edge with ANY placed tile (corner contact never counts), a move or return
+   may not cut the map in two, and an already split map stays editable under the same non-worsening rule. The only override is the
+   transient `allowDetached` flag of a `place` command for a region with nothing placed yet; it may add exactly one component and is
+   never stored. Nothing about topology is stored: it is derived from the tiles, so old saves and imports load as-is.
+   The region boundary is likewise derived (regionBoundarySegments) and never stored.
 
    Commands carry every generated value (ids, cells, timestamps, rolls), so
    replaying one (Redo) can never re-roll. Documents are treated as
@@ -79,7 +80,7 @@
   const POLITICS_SYSTEMS = 7;          // political system rows 1-7; an 8 is "roll twice and combine" and is never stored
   const MAX_POLITICS_SYSTEMS = 4;      // a combine may itself combine once more (two draws, each of which may split in two)
   const MAX_SANCTUARY_NAME = 80;
-  /** The campaign frame hides exactly nine Soul Echoes in nine different sanctuaries (PD-022). A hard limit. */
+  /** The campaign frame hides exactly nine Soul Echoes in nine different sanctuaries (PD-024). A hard limit. */
   const MAX_SOUL_ECHOES = 9;
   const BATCH_KEYS = ['id', 'createdAt', 'habitat', 'terrain', 'quantity', 'quantitySource', 'encounter', 'rumor', 'notes'];
   const HABITAT_KEYS = ['biome', 'blighted', 'overtaken', 'source', 'rolls'];
@@ -359,7 +360,7 @@
     return { revealedCells: Array.from(set).sort(compareCellKeys) };
   }
 
-  /* ---------------- Soul Echoes (GM-only, PD-022) ---------------- */
+  /* ---------------- Soul Echoes (GM-only, PD-024) ---------------- */
 
   /** Canonical stored order: plain string order of the stable anchor ids ("mk-001" < "mk-012"), so equal sets serialize identically. */
   const sortEchoIds = ids => Array.from(new Set(ids)).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
@@ -655,6 +656,9 @@
     return c ? NB.map(d => Geo.cellId(c.q + d.dq, c.r + d.dr)) : [];
   }
 
+  /** Canonical key of the hex edge between two neighbouring cells, independent of which side is visited first. */
+  function canonicalEdgeKey(cellA, cellB) { return compareCellKeys(cellA, cellB) <= 0 ? cellA + '|' + cellB : cellB + '|' + cellA; }
+
   /** Cell id -> batch id for a tile list. */
   function cellOwners(tiles) {
     const m = new Map();
@@ -662,46 +666,38 @@
     return m;
   }
 
-  /** The batches that have at least one tile sharing a full edge with a tile of ANOTHER batch (corner contact never counts). */
-  function attachedBatchIds(tiles) {
-    const owners = cellOwners(tiles), out = new Set();
-    for (const t of tiles) {
-      if (out.has(t.batchId)) continue;
-      for (const id of neighborIds(t.cell)) {
-        const o = owners.get(id);
-        if (o !== undefined && o !== t.batchId) { out.add(t.batchId); out.add(o); break; }
-      }
-    }
-    return out;
+  /** Number of prepared areas: edge-connected components over ALL placed cells, whatever batch they belong to (0 cells: 0). */
+  function preparedMapComponentCount(cellIds) { return componentCount(cellIds); }
+
+  /**
+   * Prepared-map connectivity of one proposed edit: `resultingTiles` is the whole tile list after the edit.
+   * { before, after, ok } with ok = after <= max(1, before) — the non-worsening rule (the first area is always allowed).
+   */
+  function preparedMapConnectivity(doc, resultingTiles) {
+    const before = componentCount(doc.tiles.map(t => t.cell));
+    const after = componentCount(resultingTiles.map(t => t.cell));
+    return { before: before, after: after, ok: after <= Math.max(1, before) };
   }
 
   /**
-   * The prepared-map attachment rule for one edit — a pure function of the document and the proposed change:
-   *   placing  (removeTileId null)  a batch with NO tiles yet needs one added cell sharing an edge with another batch's tile,
-   *                                 unless the map holds no other tiles (the first region) or `separate` is set;
-   *   moving / returning (removeTileId set)  no batch that was attached to the prepared map before may end up unattached while
-   *                                 other regions still exist — neither the edited region nor a neighbour that leaned on the tile.
-   * Returns { ok:true } or { ok:false, code: 'not-adjacent' | 'detaches-region' | 'detaches-other', batchId }.
+   * The prepared-map rule for one edit — a pure function of the document and the proposed change:
+   *   place (removeTileId null)   code 'detached-prepared-map' when the result would have more areas than allowed, unless
+   *                               `allowDetached` is set, the batch has nothing placed yet and exactly ONE new area appears;
+   *   move / return (removeTileId set)   code 'would-split-prepared-map' — never overridable.
+   * Returns { ok, before, after } or { ok:false, code, before, after }.
    */
-  function attachmentCheck(doc, batchId, addIds, removeTileId, separate) {
-    const tiles = doc.tiles;
-    if (!removeTileId) {
-      if (separate || !addIds.length) return { ok: true };
-      if (tiles.some(t => t.batchId === batchId)) return { ok: true };          // already part of the map: shape rule keeps it joined
-      if (!tiles.length) return { ok: true };                                    // the first region may start anywhere
-      const owners = cellOwners(tiles);
-      for (const id of addIds) for (const nb of neighborIds(id)) { const o = owners.get(nb); if (o !== undefined && o !== batchId) return { ok: true }; }
-      return { ok: false, code: 'not-adjacent', batchId: batchId };
-    }
-    const before = attachedBatchIds(tiles);
-    if (!before.size) return { ok: true };
-    const after = tiles.filter(t => t.id !== removeTileId).concat(addIds.map(cell => ({ id: '~', batchId: batchId, cell: cell })));
-    const attached = attachedBatchIds(after), present = new Set(after.map(t => t.batchId));
-    if (present.size < 2) return { ok: true };                                   // nothing else left to be attached to
-    const cut = Array.from(before).filter(id => present.has(id) && !attached.has(id));
-    if (!cut.length) return { ok: true };
-    const own = cut.includes(batchId);                                            // report the edited region first
-    return { ok: false, code: own ? 'detaches-region' : 'detaches-other', batchId: own ? batchId : cut[0] };
+  function topologyCheck(doc, batchId, addIds, removeTileId, allowDetached) {
+    const resulting = doc.tiles.filter(t => t.id !== removeTileId).concat(addIds.map(cell => ({ id: '~', batchId: batchId, cell: cell })));
+    const pc = preparedMapConnectivity(doc, resulting);
+    if (pc.ok) return { ok: true, before: pc.before, after: pc.after };
+    if (removeTileId) return { ok: false, code: 'would-split-prepared-map', before: pc.before, after: pc.after };
+    if (allowDetached === true && !doc.tiles.some(t => t.batchId === batchId) && pc.after === pc.before + 1) return { ok: true, before: pc.before, after: pc.after, detached: true };
+    return { ok: false, code: 'detached-prepared-map', before: pc.before, after: pc.after };
+  }
+
+  /** What deleting a batch does to the prepared map: { before, after } area counts (the confirmation warns when after > before). */
+  function deleteTopology(doc, batchId) {
+    return { before: componentCount(doc.tiles.map(t => t.cell)), after: componentCount(doc.tiles.filter(t => t.batchId !== batchId).map(t => t.cell)) };
   }
 
   /* ---------------- region perimeter (derived, never stored) ---------------- */
@@ -729,7 +725,7 @@
         const other = owners.get(nbs[k]);
         if (other === t.batchId) continue;
         const kind = other === undefined ? 'outer' : 'divider';
-        if (kind === 'divider' && compareCellKeys(t.cell, nbs[k]) > 0) continue;   // the other tile emits it
+        if (kind === 'divider' && canonicalEdgeKey(t.cell, nbs[k]) !== t.cell + '|' + nbs[k]) continue;   // the other tile emits it (one divider per shared edge)
         if (seeVisible && !(other !== undefined ? seeVisible(nbs[k]) : (!isFog(nbs[k]) || seeVisible(nbs[k])))) continue;
         out.push({ cell: t.cell, dir: k, kind: kind });
       }
@@ -738,15 +734,20 @@
   }
 
   /**
-   * Cell policy + shape rule + prepared-map attachment for placing `cells` for `batchId` (or moving `ignoreTileId`).
-   * `opts.separate` is the explicit "Start separate area" override of the attachment rule for a first placement.
-   * Returns { cells, connected, attached, attachCode, valid }.
+   * Cell policy + shape rule + prepared-map connectivity for placing `cells` for `batchId` (or moving `ignoreTileId`).
+   * `opts.allowDetached` is the confirmed "Start separate area" override of a first placement. Returns
+   * { cells, connected, attached, attachCode, separateEligible, valid }: `separateEligible` is true when the ONLY failed rule is
+   * 'detached-prepared-map' of an otherwise valid, internally connected first placement (the view may then offer the override).
    */
   function checkPlacement(doc, ctx, batchId, cells, ignoreTileId, opts) {
     const checked = checkCells(doc, ctx, cells, ignoreTileId);
-    const rc = regionConnectivity(doc, batchId, checked.map(c => c.id), ignoreTileId);
-    const at = attachmentCheck(doc, batchId, checked.map(c => c.id), ignoreTileId, !!(opts && opts.separate));
-    return { cells: checked, connected: rc.ok, attached: at.ok, attachCode: at.ok ? null : at.code, valid: rc.ok && at.ok && checked.every(c => c.ok) };
+    const ids = checked.map(c => c.id);
+    const rc = regionConnectivity(doc, batchId, ids, ignoreTileId);
+    const strict = topologyCheck(doc, batchId, ids, ignoreTileId, false);
+    const tc = opts && opts.allowDetached && !strict.ok ? topologyCheck(doc, batchId, ids, ignoreTileId, true) : strict;
+    const cellsOk = checked.every(c => c.ok);
+    const eligible = !strict.ok && strict.code === 'detached-prepared-map' && !ignoreTileId && cellsOk && rc.ok && doc.tiles.length > 0 && !doc.tiles.some(t => t.batchId === batchId) && strict.after === strict.before + 1;
+    return { cells: checked, connected: rc.ok, attached: tc.ok, attachCode: tc.ok ? null : tc.code, separateEligible: eligible, valid: rc.ok && tc.ok && cellsOk };
   }
 
   /* ---------------- commands ---------------- */
@@ -758,11 +759,12 @@
    * Applies one command to an (immutable) document: { ok:true, doc, noop? } or { ok:false, error }.
    * Commands (all values pre-generated, so replay is exact):
    *   createBatch { batch, at }
-   *   place       { batchId, tiles:[{id, cell}], separate?, at }   atomic: all or nothing; the first tiles of an unplaced region must
-   *                                                                share an edge with another region unless `separate: true` (PD-021)
-   *   move        { tileId, to:"q,r", at }                     same cell => noop; may not detach a region from the map (PD-021)
-   *   returnTile  { tileId, at }                                   same detach rule
-   *   deleteBatch { batchId, at }                                  removes the batch AND all its tiles, atomically
+   *   place       { batchId, tiles:[{id, cell}], allowDetached?, at }   atomic: all or nothing; may not increase the number of prepared areas
+   *                                                                beyond max(1, before) ('detached-prepared-map') unless `allowDetached: true` on a
+   *                                                                region with nothing placed (adds exactly one area; PD-024)
+   *   move        { tileId, to:"q,r", at }                     same cell => noop; may not split the prepared map ('would-split-prepared-map')
+   *   returnTile  { tileId, at }                                   same prepared-map rule
+   *   deleteBatch { batchId, at }                                  removes the batch AND all its tiles, atomically; reports { topology: {before, after} }
    *   setNotes    { batchId, notes, at }                       unchanged => noop
    *   setCellsRevealed { cellKeys:["q,r"...], revealed:boolean, at }   Fog of War: reveal (true) or hide (false) cells;
    *                                                                   touches ONLY playerVisibility, never batches or tiles;
@@ -800,8 +802,8 @@
         const conflicts = checkCells(doc, ctx, cells).filter(c => !c.ok);
         if (conflicts.length) return fail('blocked', { conflicts: conflicts });
         if (!regionConnectivity(doc, batch.id, cmd.tiles.map(t => t.cell)).ok) return fail('disconnected-region');
-        const att = attachmentCheck(doc, batch.id, cmd.tiles.map(t => t.cell), null, cmd.separate === true);
-        if (!att.ok) return fail(att.code);
+        const topo = topologyCheck(doc, batch.id, cmd.tiles.map(t => t.cell), null, cmd.allowDetached === true);
+        if (!topo.ok) return fail(topo.code);
         return { ok: true, doc: touch(doc, cmd.at, { tiles: doc.tiles.concat(cmd.tiles.map(t => ({ id: t.id, batchId: batch.id, cell: t.cell }))) }) };
       }
       case 'move': {
@@ -813,21 +815,21 @@
         const chk = checkCells(doc, ctx, [c], tile.id)[0];
         if (!chk.ok) return fail('blocked', { conflicts: [chk] });
         if (!regionConnectivity(doc, tile.batchId, [cmd.to], tile.id).ok) return fail('disconnected-region');
-        const att = attachmentCheck(doc, tile.batchId, [cmd.to], tile.id, false);
-        if (!att.ok) return fail(att.code, { batchId: att.batchId });
+        const topo = topologyCheck(doc, tile.batchId, [cmd.to], tile.id, false);
+        if (!topo.ok) return fail(topo.code);
         return { ok: true, doc: touch(doc, cmd.at, { tiles: doc.tiles.map(t => (t.id === tile.id ? { id: t.id, batchId: t.batchId, cell: cmd.to } : t)) }) };
       }
       case 'returnTile': {
         const tile = derive(doc).byId.get(cmd.tileId);
         if (!tile) return fail('no-tile');
         if (!regionConnectivity(doc, tile.batchId, [], tile.id).ok) return fail('disconnected-region');
-        const att = attachmentCheck(doc, tile.batchId, [], tile.id, false);
-        if (!att.ok) return fail(att.code, { batchId: att.batchId });
+        const topo = topologyCheck(doc, tile.batchId, [], tile.id, false);
+        if (!topo.ok) return fail(topo.code);
         return { ok: true, doc: touch(doc, cmd.at, { tiles: doc.tiles.filter(t => t.id !== cmd.tileId) }) };
       }
       case 'deleteBatch': {
         if (!batchById(doc, cmd.batchId)) return fail('no-batch');
-        return { ok: true, doc: touch(doc, cmd.at, { batches: doc.batches.filter(b => b.id !== cmd.batchId), tiles: doc.tiles.filter(t => t.batchId !== cmd.batchId) }) };
+        return { ok: true, doc: touch(doc, cmd.at, { batches: doc.batches.filter(b => b.id !== cmd.batchId), tiles: doc.tiles.filter(t => t.batchId !== cmd.batchId) }), topology: deleteTopology(doc, cmd.batchId) };
       }
       case 'setNotes': {
         const batch = batchById(doc, cmd.batchId);
@@ -963,7 +965,7 @@
     createContext: createContext, newId: newId, emptyDocument: emptyDocument, isEmptyDocument: isEmptyDocument, symbolIdOf: symbolIdOf,
     derive: derive, batchById: batchById, parseQuantity: parseQuantity, batchFromRegion: batchFromRegion, validateBatch: validateBatch,
     validateDocument: validateDocument, parseBackupText: parseBackupText, serializeBackup: serializeBackup,
-    checkCells: checkCells, checkPlacement: checkPlacement, attachmentCheck: attachmentCheck, attachedBatchIds: attachedBatchIds, neighborIds: neighborIds, regionBoundarySegments: regionBoundarySegments, regionConnectivity: regionConnectivity, isConnected: isConnected, componentCount: componentCount, enclosedHoles: enclosedHoles, holeCounts: holeCounts, apply: apply,
+    checkCells: checkCells, checkPlacement: checkPlacement, topologyCheck: topologyCheck, preparedMapComponentCount: preparedMapComponentCount, preparedMapConnectivity: preparedMapConnectivity, deleteTopology: deleteTopology, cellOwners: cellOwners, canonicalEdgeKey: canonicalEdgeKey, neighborIds: neighborIds, regionBoundarySegments: regionBoundarySegments, regionConnectivity: regionConnectivity, isConnected: isConnected, componentCount: componentCount, enclosedHoles: enclosedHoles, holeCounts: holeCounts, apply: apply,
     createHistory: createHistory, historyCommit: historyCommit, historyUndo: historyUndo, historyRedo: historyRedo, historyClear: historyClear,
     compactFootprint: compactFootprint,
     MAX_SOUL_ECHOES: MAX_SOUL_ECHOES, planSoulEchoes: planSoulEchoes,

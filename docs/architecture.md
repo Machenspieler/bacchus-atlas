@@ -1098,9 +1098,9 @@ Run all of them with `node --test tests/*.test.js`.
     The fog is one `<path>` of all hidden foggable cells in `<g data-j2-g="fog">`, filled with a
     shared hatch pattern, above the tiles and below the selection/region outlines and the placement
     preview, plus a very faint outline of the revealed cells; it is rebuilt only when the
-    visibility object or the mode changes. The group is **masked** (`#j2-fog-mask`) around every
-    sanctuary icon protection area and printed label (`Projection.fogMaskRects`), so the base map
-    is never modified, masked or covered there. "Show fog state" off hides only the veil.
+    visibility object or the mode changes. The veil is translucent and covers the whole base map
+    (printed labels and sanctuary icons included — no mask or cut-out since PD-024), so the base map
+    is never modified. "Show fog state" off hides only the veil.
   - *Player projection.* `Journey2Projection.buildPlayerProjection(doc)` (pure, DOM-free) returns
     `{ version, revealedCells[], overlays[{ q, r, symbolId, dots, blightMark }] }`: only generated
     tiles in revealed cells, reduced to what is drawn — no region/tile ids, Encounter, Rumor, notes,
@@ -1118,7 +1118,7 @@ Run all of them with `node --test tests/*.test.js`.
   - *Reuse by printing (not built yet).* The future print renderer must call
     `buildPlayerProjection(doc)` and draw its result — the shared drawing routine is
     `overlayMarkup(entries)` (cells + glyph specs only; it reads no camera, selection or DOM) —
-    with the same `fogMaskRects` cut-outs, once per A4 map half. It must not clip the screen,
+    including its projected `perimeter` segments, once per A4 map half. It must not clip the screen,
     CSS-hide the GM render, clone the interactive DOM or depend on scroll or sidebar state.
   - *Accessibility.* Tools are real buttons with `aria-pressed` and a text + icon status chip
     ("Reveal tool active · Hold Space and drag to pan · Esc"); brush shape and glyph differ for
@@ -1170,27 +1170,57 @@ Run all of them with `node --test tests/*.test.js`.
   `verify-template.js`, `browser-verify.js` (Phase 0 behaviours, via the
   diagnostics drawer), `stage1-verify.js` (the editor: real pointer input in
   isolated Playwright contexts), both of which also run `lib/fog-checks.js` (Phase C: Fog of War,
-  Player Preview, suggested environments), `print-proof.js` + `verify-print.js`.
-- **Connected placement and region perimeter (PD-021):**
-  - *Adjacency.* `Model.attachmentCheck(doc, batchId, addCells, removeTileId, separate)` is the one pure
-    rule behind preview (`Model.checkPlacement` → `{ attached, attachCode }`), commit (`place`, `move`,
-    `returnTile` in `Model.apply`) and the tests. Placing the first tiles of a region with none placed needs a
-    cell sharing an edge with another region's tile (`not-adjacent`), unless the map is empty or the
-    command carries `separate: true`. A move/return compares `attachedBatchIds()` before and after and
-    refuses any region that would lose its last edge contact while other regions remain
-    (`detaches-region` for the edited region, else `detaches-other`). Nothing is stored: attachment is
-    derived from the tiles, `validateDocument` does not enforce it (old saves and separate areas load).
-  - *View.* `separateBatchId` is transient view state behind the card's **Start separate area** toggle
-    (`data-j2-separate`, shown only for a region with nothing placed while other tiles exist); it is passed
-    to `checkPlacement` for the preview and cleared after one successful placement.
-  - *Perimeter.* `Model.regionBoundarySegments(doc, ctx, visible?, foggable?)` returns deduplicated edges
-    `{ cell, dir, kind: 'outer'|'divider' }` (`dir` = index in `NEIGHBOR_DELTAS`, the edge shared with that
-    neighbour = between corner `dir-1` and `dir`); `Geo.chainEdgeSegments` joins them into polylines on exact
-    corner identities and `Geo.polylinesPath` makes one stroke-only `<path class="j2-perimeter">` in
-    `<g data-j2-g="perimeter" pointer-events="none">`. `renderPerimeter()` runs from every `renderTiles()`
-    (place, move, return, delete, Undo/Redo, import, reset) and redraws only when `doc.tiles`, the visibility
-    or the mode changed. Player Preview draws `playerProjection.perimeter`
-    (`buildPlayerProjection(doc, ctx)`, projection `version: 2`) — edges only where both cells are revealed.
+  Player Preview, suggested environments) and `lib/topology-checks.js` (Phase D: prepared-map connectivity,
+  the Start-separate-area dialog, boundaries; run with `J2_BROWSER_CHANNEL=chrome` to use an installed Chrome), `print-proof.js` + `verify-print.js`.
+- **Prepared-map connectivity and region boundaries (PD-021, PD-024):**
+  - *Two independent rules.* Region connectivity (`Model.regionConnectivity`: one batch is one edge-connected
+    component) and **prepared-map connectivity** (`Model.topologyCheck` / `preparedMapConnectivity` /
+    `preparedMapComponentCount`: the components of ALL placed cells across all batches, six axial neighbours,
+    a full edge only). A command must satisfy both; neither replaces the other.
+  - *Non-worsening rule.* An ordinary `place` / `move` / `returnTile` needs `after <= max(1, before)`
+    components. A later region must therefore share an edge with ANY placed tile
+    (`detached-prepared-map`), a move or return may not cut the map (`would-split-prepared-map`), an
+    already split (legacy / separate-area) map stays editable, and an edit may keep or reduce the count but
+    never raise it. The first region of an empty map is exempt. `validateDocument` never enforces any of it
+    (old saves, imports and separate areas load as they are).
+  - *Start separate area.* The only override is the transient command flag `allowDetached: true` on a `place`
+    for a batch with nothing placed; `topologyCheck` accepts it only when exactly one new component appears
+    (the candidate is internally connected, checked before). `Model.checkPlacement(...)` returns
+    `{ cells, connected, attached, attachCode, separateEligible, valid }`; `separateEligible` is true only when
+    the sole failed rule is `detached-prepared-map`. The flag is never stored (not on the batch or document,
+    not in history entries, backups or `localStorage`); topology is re-derived from coordinates after a reload.
+  - *View flow.* The preview has three states: valid (`is-ok`), invalid (`is-bad`) and detached
+    (`is-detached`: amber dashed outline + a broken-link marker per cell + a tooltip with
+    `journey2_detached_hint`, never colour alone). Releasing/clicking a detached candidate calls
+    `confirmSeparateArea`, which freezes ids and cells at that moment, opens a real `<dialog>` (focus on
+    Cancel, returned to the originating handle on cancel) and, on confirm, commits exactly those tiles with
+    `allowDetached` (one history entry; Undo removes it, Redo replays the snapshot with no dialog).
+    `detachedConfirm` is transient. There is no per-card control. Move/return failures use
+    `journey2_reason_move_split` / `…_return_split`; the delete dialog adds `journey2_delete_splits` when
+    `Model.deleteTopology(doc, batchId)` reports `after > before` (a bridge region can always be deleted;
+    `deleteBatch` also returns `topology: { before, after }`).
+  - *Boundaries.* `Model.regionBoundarySegments(doc, ctx, visible?, foggable?)` returns deduplicated edges
+    `{ cell, dir, kind: 'outer'|'divider' }` (`dir` = index in `NEIGHBOR_DELTAS`; `Model.canonicalEdgeKey` is the
+    side-independent key). Same-batch neighbours draw nothing, an empty or off-map neighbour an outer edge, a
+    different batch exactly one divider; split legacy regions and enclosed holes get their own outlines.
+    `grid.cellEdge(q, r, dir)` returns the two world corners of an edge (corner `dir-1`, corner `dir`);
+    `Geo.chainEdgeSegments` joins segments into polylines and `Geo.polylinesPath` makes one stroke-only
+    `<path class="j2-perimeter">` (2.8 world px, ~2.8x the 1 px hex outline). Boundaries are derived on every
+    render and never stored.
+  - *Layers* (all inside the `aria-hidden` overlay, `pointer-events="none"`): tiles → player overlays →
+    `perimeterPlayer` (the projection's safe edges, Player Preview only) → fog veil → `perimeter` (the
+    complete GM boundary, normal GM mode only; above the subtle GM fog state) → fog-stroke feedback → grid
+    / markers → selection → placement preview. `renderPerimeter()` runs from every `renderTiles()` (place,
+    move, return, delete, Undo/Redo, import, reset) and redraws only when `doc.tiles`, the visibility or the mode
+    changed; recomputing boundaries is never a history entry or a live-region announcement.
+  - *Player safety.* `buildPlayerProjection(doc, ctx)` (version 2) carries `perimeter`: an edge exists only
+    where its tile's cell AND the cell on the other side are revealed (a neighbour the fog never covers —
+    off-map or furniture — needs only the tile). A revealed cell next to an unrevealed one draws nothing, so a
+    line never ends falsely and never reveals a hidden region; no region ids are present. The future print
+    renderer reuses the same projected segments.
+  - *Fog and the base map.* The fog veil is a translucent pattern over the WHOLE base-map image: there is no
+    mask and no rectangular cut-out around the printed MARROGATE / HORIZON labels or the fixed sanctuary icons
+    (`fogMaskRects` is gone); the base-map asset is never modified. Tuned at 67 / 100 / 150 %.
 - **Soul Echoes (PD-022):**
   - *Document.* Optional `doc.soulEchoes = { anchorIds: [...] }` (<= `Model.MAX_SOUL_ECHOES` = 9 distinct
     sanctuary stable ids, sorted). `validateSoulEchoes` treats a missing object as "none" (so `schemaVersion`

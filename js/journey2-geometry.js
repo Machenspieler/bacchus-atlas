@@ -77,6 +77,15 @@
       return corners.map(o => [c[0] + o[0], c[1] + o[1]]);
     }
 
+    /**
+     * The two world-space end points of the edge a cell shares with its neighbour `dir` (index into NEIGHBOR_DELTAS):
+     * corner dir-1 then corner dir. The one place the direction-to-corner mapping lives.
+     */
+    function cellEdge(q, r, dir) {
+      const pts = cellCorners(q, r), d = ((dir % 6) + 6) % 6;
+      return [pts[(d + 5) % 6], pts[d]];
+    }
+
     /** Fractional axial coordinates of a world point (continuous, unrounded). */
     function worldToFractional(x, y) {
       const dx = x - ox, dy = y - oy;
@@ -159,7 +168,7 @@
     }
 
     return {
-      cellCenter: cellCenter, cellCorners: cellCorners, worldToFractional: worldToFractional, worldToCell: worldToCell,
+      cellCenter: cellCenter, cellCorners: cellCorners, cellEdge: cellEdge, worldToFractional: worldToFractional, worldToCell: worldToCell,
       neighbors: neighbors, validNeighbors: validNeighbors, isValid: isValid, forEachValidCell: forEachValidCell,
       validCellCount: validCellCount, cellPath: cellPath, cellsInRect: cellsInRect,
       cornerOffsets: corners.map(p => [p[0], p[1]]),

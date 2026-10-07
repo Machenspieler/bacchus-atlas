@@ -95,7 +95,7 @@ async function runFogChecks(env) {
     const region = { habitat: { biome: 'forest', blighted: false, overtaken: false, source: 'rolled', rolls: [4] }, terrain: { value: 3, source: 'rolled' }, size: 7, encounter: { entries: [[3, 4]], combines: 0 }, rumor: 17 };
     return Journey2View.debugApi().dispatch({ type: 'createBatch', batch: M.batchFromRegion(region, { id, createdAt: new Date().toISOString() }) }).ok ? id : null;
   });
-  await page.evaluate(([b, cs]) => Journey2View.debugApi().dispatch({ type: 'place', separate: true, batchId: b, tiles: cs.map(c => ({ id: Journey2Model.newId('t'), cell: c })) }), [bid, SEVEN]);
+  await page.evaluate(([b, cs]) => Journey2View.debugApi().dispatch({ type: 'place', allowDetached: true, batchId: b, tiles: cs.map(c => ({ id: Journey2Model.newId('t'), cell: c })) }), [bid, SEVEN]);
   await view(...grid.cellCenter(...Object.values(Geo.parseCellId(SEVEN[0]))), 1);
   const pristine = await st();
 
@@ -118,12 +118,9 @@ async function runFogChecks(env) {
     const order = await page.evaluate(() => [...document.querySelectorAll('.j2-overlay > g')].map(g => g.getAttribute('data-j2-g')));
     return { ok: d.playerVisibility.revealedCells.length === 0 && n === ctx0.allowedCellCount && s.fog.revealed === 0 && order.indexOf('tiles') < order.indexOf('fog') && order.indexOf('fog') < order.indexOf('select') && s.domTileGlyphs >= 6, detail: { n, allowed: ctx0.allowedCellCount, order, glyphs: s.domTileGlyphs } };
   });
-  await check('fog.03.the-veil-is-cut-around-every-sanctuary-icon-and-printed-label-of-the-base-map', async () => {
-    const r = await page.evaluate(() => ({ rects: [...document.querySelectorAll('#j2-fog-mask rect')].map(x => ['x', 'y', 'width', 'height'].map(k => Number(x.getAttribute(k)))), mask: document.querySelector('[data-j2-g="fog"]').getAttribute('mask') }));
-    const wanted = anchorsDoc.anchors.reduce((n, a) => n + (a.iconProtectionArea ? 1 : 0) + (a.builtInLabel && a.builtInLabel.protectionRectPx ? 1 : 0), 0);
-    const covers = (rect, p) => p[0] >= rect[0] && p[0] <= rect[0] + rect[2] && p[1] >= rect[1] && p[1] <= rect[1] + rect[3];
-    const every = anchorsDoc.anchors.every(a => r.rects.slice(1).some(rc => covers(rc, a.worldPixelAnchor)));
-    return { ok: r.mask === 'url(#j2-fog-mask)' && r.rects.length === wanted + 1 && every, detail: { rects: r.rects.length, wanted: wanted + 1, every } };
+  await check('fog.03.the-veil-covers-the-whole-base-map-with-no-rectangular-cut-outs-around-icons-or-labels', async () => {
+    const r = await page.evaluate(() => ({ masks: document.querySelectorAll('#j2-fog-mask, mask').length, attr: document.querySelector('[data-j2-g="fog"]').getAttribute('mask'), rects: document.querySelectorAll('[data-j2-g="fog"] rect').length }));
+    return { ok: r.masks === 0 && r.attr === null && r.rects === 0, detail: r };
   });
 
   /* ===== reveal / hide, single click ===== */
@@ -292,7 +289,7 @@ async function runFogChecks(env) {
       const nb = M.newId('b');
       api.dispatch({ type: 'createBatch', batch: M.batchFromRegion({ habitat: { biome: 'rolling', blighted: false, overtaken: false, source: 'rolled', rolls: [3] }, terrain: { value: 2, source: 'rolled' }, size: 2, encounter: { entries: [[3, 4]], combines: 0 }, rumor: 5 }, { id: nb, createdAt: new Date().toISOString() }) });
       const t = M.newId('t');
-      api.dispatch({ type: 'place', separate: true, batchId: nb, tiles: [{ id: t, cell: c }] });
+      api.dispatch({ type: 'place', allowDetached: true, batchId: nb, tiles: [{ id: t, cell: c }] });
       api.dispatch({ type: 'returnTile', tileId: t });
       api.dispatch({ type: 'deleteBatch', batchId: nb });
       return nb;
@@ -472,9 +469,9 @@ async function runFogChecks(env) {
       await page.locator('[data-j2-fog-state]').click(); await sleep(150);
       const barePatch = await patchAt();
       await page.locator('[data-j2-fog-state]').click(); await sleep(150);
-      await check('fog.41.the-sanctuary-icon-pixels-are-identical-in-player-preview-and-on-the-bare-map-while-other-hidden-cells-are-veiled', async () => {
+      await check('fog.41.the-sanctuary-icon-and-its-surroundings-are-veiled-alike-so-no-untouched-rectangle-is-left-around-it', async () => {
         const iconDiff = await diff(bare, under), patchDiff = await diff(barePatch, fogPatch);
-        return { ok: iconDiff < 0.6 && patchDiff > 3 && patchDiff > iconDiff * 4, detail: { iconDiff, patchDiff, marker: markerOnly.stableId } };
+        return { ok: iconDiff > 3 && patchDiff > 3 && iconDiff > patchDiff * 0.3, detail: { iconDiff, patchDiff, marker: markerOnly.stableId } };
       });
       await view(...grid.cellCenter(...Object.values(Geo.parseCellId(SEVEN[0]))), 1);
     }

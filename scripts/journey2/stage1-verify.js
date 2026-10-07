@@ -252,6 +252,10 @@ async function dragStock(page, batchId, mode, cell, finish) {
   else if (finish === 'outside') { await page.mouse.move(h.x, h.y + 40, { steps: 6 }); await page.mouse.up(); }
   else await page.mouse.up();
   await page.waitForTimeout(120);
+  // PD-024: a drop that does not touch the prepared map opens the "Start separate area" confirmation. Scenarios that only need the hex
+  // placed there confirm it; the rule itself (cancel / confirm / Undo / Redo) is verified in lib/topology-checks.js.
+  const sep = page.locator('dialog[open]:has-text("Start a separate area?")');
+  if (mid && mid.separateEligible && (await sep.count())) { await sep.locator('button:has-text("Start separate area")').click(); await page.waitForTimeout(120); }
   return { mid };
 }
 async function dragTile(page, fromCell, toCell, finish) {
@@ -887,7 +891,7 @@ async function main() {
       list.forEach((c, i) => {
         const region = { habitat: { biome: 'mountain', blighted: false, overtaken: false, source: 'rolled', rolls: [1] }, terrain: { value: 3, source: 'rolled' }, size: 1, encounter: { entries: [[3, 4]], combines: 0 }, rumor: 5 };
         const a = api.dispatch({ type: 'createBatch', batch: M.batchFromRegion(region, { id: 'mkb' + i, createdAt: new Date().toISOString() }) });
-        const b = a.ok && api.dispatch({ type: 'place', separate: true, batchId: 'mkb' + i, tiles: [{ id: 'mk' + i, cell: c }] });
+        const b = a.ok && api.dispatch({ type: 'place', allowDetached: true, batchId: 'mkb' + i, tiles: [{ id: 'mk' + i, cell: c }] });
         if (!(a.ok && b.ok) && !err) err = (a.ok ? b : a).error;
       });
       return { ok: !err, error: err };
@@ -938,7 +942,7 @@ async function main() {
           const c = Geo.parseCellId(out[i]);
           for (const d of Geo.NEIGHBOR_DELTAS) { const nid = Geo.cellId(c.q + d.dq, c.r + d.dr); if (out.length < place[si] && !used.has(nid) && ctx0.policy(c.q + d.dq, c.r + d.dr).ok) { used.add(nid); out.push(nid); } }
         }
-        doc = Model.apply(doc, { type: 'place', separate: true, batchId: id, tiles: out.map((cell, i) => ({ id: 'syn' + si + '-' + i, cell })), at: doc.updatedAt }, ctx0).doc;
+        doc = Model.apply(doc, { type: 'place', allowDetached: true, batchId: id, tiles: out.map((cell, i) => ({ id: 'syn' + si + '-' + i, cell })), at: doc.updatedAt }, ctx0).doc;
       });
       return doc;
     })();
@@ -964,7 +968,7 @@ async function main() {
         return null;
       };
       const times = [];
-      for (let i = 0; i < 5; i++) { const cell = nextFree(); const t0 = performance.now(); const res = api.dispatch({ type: 'place', separate: true, batchId: free.id, tiles: [{ id: 'perf' + i, cell: cell }] }); times.push({ ok: res.ok, ms: Math.round((performance.now() - t0) * 10) / 10 }); }
+      for (let i = 0; i < 5; i++) { const cell = nextFree(); const t0 = performance.now(); const res = api.dispatch({ type: 'place', allowDetached: true, batchId: free.id, tiles: [{ id: 'perf' + i, cell: cell }] }); times.push({ ok: res.ok, ms: Math.round((performance.now() - t0) * 10) / 10 }); }
       return times;
     });
     perf.undoRedo = await page.evaluate(async () => { const t0 = performance.now(); document.querySelector('[data-j2-undo]').click(); const t1 = performance.now(); document.querySelector('[data-j2-redo]').click(); return { undoMs: Math.round((t1 - t0) * 10) / 10, redoMs: Math.round((performance.now() - t1) * 10) / 10 }; });
@@ -1029,7 +1033,7 @@ async function main() {
       const r = Journey2View.debugApi().dispatch({ type: 'createBatch', batch: M.batchFromRegion(region, { id, createdAt: new Date().toISOString() }) });
       return r.ok ? id : null;
     }, spec);
-    const placeCells = (batchId, cells) => pg.evaluate(([b, cs]) => Journey2View.debugApi().dispatch({ type: 'place', separate: true, batchId: b, tiles: cs.map(c => ({ id: Journey2Model.newId('t'), cell: c })) }).ok, [batchId, cells]);
+    const placeCells = (batchId, cells) => pg.evaluate(([b, cs]) => Journey2View.debugApi().dispatch({ type: 'place', allowDetached: true, batchId: b, tiles: cs.map(c => ({ id: Journey2Model.newId('t'), cell: c })) }).ok, [batchId, cells]);
     const A = await mkBatch({ biome: 'forest', terrain: 3, size: 6 });
     const B = await mkBatch({ biome: 'mountain', terrain: 1, size: 3 });
     const C = await mkBatch({ biome: 'forest', terrain: 2, size: 4, blighted: true, rolls: [1, 11], encounter: { entries: [[3, 4], [2, 2]], combines: 1 }, rumor: 33 });
@@ -1292,6 +1296,8 @@ async function main() {
 
   /* ===== I. Fog of War, Player Preview and suggested environments in the inspector (Phase C) ===== */
   await require('./lib/fog-checks.js').runFogChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc, full: true });
+  /* Phase D: prepared-map connectivity, the Start-separate-area confirmation, derived region boundaries and the fog without cut-outs */
+  await require('./lib/topology-checks.js').runTopologyChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc });
 
   /* ===== G. hygiene ===== */
   const relevant = logs.filter(l => !/favicon|fonts\.g(oogleapis|static)\.com|ERR_INTERNET_DISCONNECTED|net::ERR_(NAME_NOT_RESOLVED|CONNECTION|FAILED)/.test(l));

@@ -201,7 +201,7 @@
     let fogPaintRaf = 0;
     let fogDrawn = { vis: null, mode: null, doc: null };   // what the fog layer currently shows (so an unrelated document change never rebuilds it)
     let foggable = null;                                    // Map cellKey -> hex path, every cell the GM can reveal/hide (built once)
-    let separateBatchId = null;                             // transient: the region whose first placement may start a separate area (never stored, never in history)
+    let detachedConfirm = null;                             // transient: the frozen detached candidate whose "Start separate area" dialog is open (never stored, never in history)
     let perimDrawn = { tiles: null, vis: null, mode: null }; // what the perimeter layer currently shows (an unrelated change never rebuilds it)
     let previewMode = false;                                // Player Preview: a read-only render of the player projection
     let previewReturn = null;                               // camera / fit state to restore on the Back-to-GM action
@@ -363,7 +363,7 @@
     };
 
     /**
-     * Soul Echo crystal (PD-022): a small floating diamond with a pale core, drawn right above the sanctuary icon, not tied to any hex. Gradients live in <defs>; the shape is inlined per Echo.
+     * Soul Echo crystal (PD-024): a small floating diamond with a pale core, drawn right above the sanctuary icon, not tied to any hex. Gradients live in <defs>; the shape is inlined per Echo.
      * Fixed blues (a map object, not UI chrome) with a dark outline so it reads on the parchment in both themes; the shimmer is CSS only.
      */
     const ECHO_DEFS =
@@ -423,7 +423,7 @@
                   <img class="j2-base" alt="" draggable="false" width="${W}" height="${H}">
                   <svg class="j2-overlay" xmlns="${SVG_NS}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">
                     <defs data-j2-defs></defs><defs>${ECHO_DEFS}</defs>
-                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fog" mask="url(#j2-fog-mask)"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g>
+                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g>
                     <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
                     <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g>
                   </svg>
@@ -830,10 +830,6 @@
             <button type="button" class="j2-handle" data-j2-handle="one"><span class="j2-handle-label" data-j2-c="oneLabel"></span><span class="j2-grip">${ICON.grip}</span></button>
             <button type="button" class="j2-handle j2-handle--all" data-j2-handle="all"><span class="j2-handle-label" data-j2-c="allLabel"></span><span class="j2-grip">${ICON.grip}</span></button>
           </div>
-          <div class="j2-sep" data-j2-c="sepWrap" hidden>
-            <button type="button" class="btn btn-ghost btn-sm j2-sep-btn" data-j2-separate data-j2-c="sep" aria-pressed="false"></button>
-            <p class="j2-sep-note" data-j2-c="sepNote"></p>
-          </div>
           <p class="j2-done" data-j2-c="done" hidden><span class="j2-done-ico" aria-hidden="true">${ICON.check}</span><span data-j2-c="doneText"></span></p>
           <div class="j2-card-foot">
             <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-delete" data-j2-delete data-j2-c="del">${ICON.trash}</button>
@@ -895,14 +891,6 @@
       for (const h of [refs.handleOne, refs.handleAll]) h.disabled = editLocked;
       refs.handleOne.setAttribute('aria-label', fill('journey2_handle_one_aria', { name: name }));
       refs.handleAll.setAttribute('aria-label', fill('journey2_handle_all_aria', { name: name, n: n(c.remaining) }));
-      // prepared-map adjacency: a region with nothing placed must touch the map by an edge (PD-021) unless the GM explicitly starts a separate area
-      const needsAnchor = c.placed === 0 && doc.tiles.length > 0;
-      if (!needsAnchor && separateBatchId === b.id) separateBatchId = null;
-      refs.sepWrap.hidden = complete || !needsAnchor;
-      refs.sep.textContent = t('journey2_separate_area');
-      refs.sep.setAttribute('aria-pressed', String(separateBatchId === b.id));
-      refs.sep.disabled = editLocked;
-      refs.sepNote.textContent = t(separateBatchId === b.id ? 'journey2_separate_on_note' : 'journey2_separate_note');
       refs.del.setAttribute('aria-label', fill('journey2_delete_aria', { name: name, n: ord }));
       refs.del.setAttribute('title', t('journey2_delete_region'));
       refs.del.disabled = editLocked;
@@ -971,15 +959,6 @@
       renderInventory(false);
     }
 
-    /** "Start separate area": a transient, one-shot override of the edge-contact rule for the first placement of one region. */
-    function toggleSeparate(batchId) {
-      if (editLocked || previewMode) return;
-      separateBatchId = separateBatchId === batchId ? null : batchId;
-      renderInventory(false);
-      if (tr && tr.kind === 'armed') updatePreview();
-      announce(t(separateBatchId ? 'journey2_separate_on_note' : 'journey2_separate_note'));
-    }
-
     function toggleCard(id) { setActiveBatch(activeBatchId === id ? null : id); }
 
     function warnHoles(batchId) {
@@ -991,9 +970,10 @@
       const b = Model.batchById(doc, batchId);
       if (!b || editLocked) return;
       const idx = doc.batches.indexOf(b), tiles = Model.derive(doc).counts.get(batchId).placed;
+      const topo = Model.deleteTopology(doc, batchId);          // a bridge region may still be deleted — the dialog just says what it splits
       openDialog({
         title: t('journey2_delete_title'),
-        lines: [fill('journey2_delete_msg', { name: batchName(b), n: n(idx + 1) }), t('journey2_delete_tiles_note')].concat(tiles ? [fill('journey2_delete_tiles_n', { n: n(tiles) })] : []),
+        lines: [fill('journey2_delete_msg', { name: batchName(b), n: n(idx + 1) }), t('journey2_delete_tiles_note')].concat(tiles ? [fill('journey2_delete_tiles_n', { n: n(tiles) })] : []).concat(topo.after > topo.before ? [fill('journey2_delete_splits', { n: n(topo.after) })] : []),
         actions: [
           { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
           { label: t('journey2_delete_region'), kind: 'btn-danger', value: 'delete' },
@@ -1298,19 +1278,23 @@
      * redrawn only when the tiles, the visibility or the mode changed.
      */
     function renderPerimeter() {
-      if (!ui.g || !ui.g.perimeter || !doc) return;
+      if (!ui.g || !ui.g.perimeter || !ui.g.perimeterPlayer || !doc) return;
       const mode = previewMode ? 'player' : 'gm';
       const vis = previewMode ? playerProjection : doc.playerVisibility;
       if (perimDrawn.tiles === doc.tiles && perimDrawn.vis === vis && perimDrawn.mode === mode) return;
+      // GM: the complete outline above the (subtle) fog state. Player Preview: only the projection's safe edges, beneath the veil.
       const segs = previewMode ? playerProjection.perimeter : Model.regionBoundarySegments(doc, data.ctx);
       const d = Geo.polylinesPath(Geo.chainEdgeSegments(data.grid, segs));
-      ui.g.perimeter.innerHTML = d ? '<path class="j2-perimeter" d="' + d + '"/>' : '';
-      ui.g.perimeter.setAttribute('data-segments', String(segs.length));
+      const live = previewMode ? ui.g.perimeterPlayer : ui.g.perimeter, idle = previewMode ? ui.g.perimeter : ui.g.perimeterPlayer;
+      live.innerHTML = d ? '<path class="j2-perimeter" d="' + d + '"/>' : '';
+      live.setAttribute('data-segments', String(segs.length));
+      idle.innerHTML = '';
+      idle.setAttribute('data-segments', '0');
       perimDrawn = { tiles: doc.tiles, vis: vis, mode: mode };
     }
 
     /**
-     * Soul Echoes (PD-022): GM-only crystals on the chosen sanctuaries. Like the tiles, the layer is EMPTIED (not hidden) in Player Preview, and
+     * Soul Echoes (PD-024): GM-only crystals on the chosen sanctuaries. Like the tiles, the layer is EMPTIED (not hidden) in Player Preview, and
      * the player projection has no field for it, so the secret cannot reach the preview or a future print. Redrawn only when the set changed.
      */
     function renderEchoes() {
@@ -1689,23 +1673,19 @@
        Visibility is cell-based campaign data (doc.playerVisibility), changed only by the model's setCellsRevealed
        command. The GM view never hides generated content: with "Show fog state" on, a subtle hatched veil marks
        the unexplored cells. Player Preview re-renders the same document through the player projection, so
-       generated overlays in unexplored cells are simply not produced. The veil is masked around the sanctuary icons
-       and printed labels of the base map, which therefore stay visible in both views. The active tool, the hover
+       generated overlays in unexplored cells are simply not produced. The veil is translucent and passes over the whole base map
+       (printed labels and sanctuary icons included — no cut-outs, PD-024). The active tool, the hover
        cell, an in-progress stroke and the preview mode are transient: never persisted, never in history.
        ============================================================ */
 
-    /** One shared set of SVG patterns + the mask that keeps the original sanctuary icons / printed labels clear of the fog. */
+    /** One shared set of SVG patterns for the fog veil and the fog tools. */
     function buildFogLayer() {
-      const [W, H] = data.template.worldSizePx;
       foggable = new Map();
       data.grid.forEachValidCell((q, r) => { if (data.ctx.policy(q, r).ok) foggable.set(Geo.cellId(q, r), hexPath(q, r)); });
-      let cut = '';
-      for (const rc of Projection.fogMaskRects(data.anchorsDoc)) cut += '<rect ' + rectAttrs(rc) + ' fill="#000"/>';
       ui.defs.innerHTML =
         '<pattern id="j2-fog-gm" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect class="j2-fogp-wash" width="9" height="9"/><line class="j2-fogp-line" x1="0" y1="0" x2="0" y2="9"/></pattern>' +
         '<pattern id="j2-fog-player" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect class="j2-fogp-wash is-player" width="7" height="7"/><line class="j2-fogp-line is-player" x1="0" y1="0" x2="0" y2="7"/><line class="j2-fogp-line is-player-x" x1="0" y1="3.5" x2="7" y2="3.5"/></pattern>' +
-        '<pattern id="j2-fog-hide-pat" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line class="j2-fogp-hide" x1="0" y1="0" x2="0" y2="6"/></pattern>' +
-        '<mask id="j2-fog-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="' + W + '" height="' + H + '"><rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#fff"/>' + cut + '</mask>';
+        '<pattern id="j2-fog-hide-pat" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line class="j2-fogp-hide" x1="0" y1="0" x2="0" y2="6"/></pattern>';
     }
 
     const FOG_COUNT_KEYS = { revealed: ['journey2_fog_revealed_n', 'journey2_fog_revealed_one'], hidden: ['journey2_fog_hidden_n', 'journey2_fog_hidden_one'] };
@@ -2226,10 +2206,10 @@
       const offsets = x.kind === 'tile' ? [{ dq: 0, dr: 0 }] : x.footprint;
       const cells = offsets.map(o => ({ q: anchor.q + o.dq, r: anchor.r + o.dr }));
       // the same cell policy AND region-shape rule the commit applies (Model.apply), so preview and result never disagree
-      const chk = Model.checkPlacement(doc, data.ctx, x.batchId, cells, x.kind === 'tile' ? x.tileId : null, { separate: x.kind !== 'tile' && separateBatchId === x.batchId });
+      const chk = Model.checkPlacement(doc, data.ctx, x.batchId, cells, x.kind === 'tile' ? x.tileId : null);
       const checked = chk.cells;
       const origin = x.kind === 'tile' && checked[0].id === x.from;
-      return { anchor: anchor, cells: checked, valid: chk.valid, connected: chk.connected, attached: chk.attached, attachCode: chk.attachCode, isOrigin: origin };
+      return { anchor: anchor, cells: checked, valid: chk.valid, connected: chk.connected, attached: chk.attached, attachCode: chk.attachCode, separateEligible: chk.separateEligible, isKind: x.kind, isOrigin: origin };
     }
 
     function updatePreview() {
@@ -2247,15 +2227,19 @@
       const batch = Model.batchById(doc, tr.batchId);
       let h = '';
       for (const c of p.cells) {
-        h += '<path class="j2-pv ' + (c.ok && p.connected && p.attached ? 'is-ok' : 'is-bad') + (p.isOrigin ? ' is-origin' : '') + '" d="' + hexPath(c.q, c.r) + '"/>';
+        const cls = p.separateEligible ? 'is-detached' : c.ok && p.connected && p.attached ? 'is-ok' : 'is-bad';
+        h += '<path class="j2-pv ' + cls + (p.isOrigin ? ' is-origin' : '') + '" d="' + hexPath(c.q, c.r) + '"/>';
       }
+      // detached candidate: a non-colour marker (a broken-link glyph on every cell) next to the amber dashed outline
+      if (p.separateEligible) for (const c of p.cells) { const ctr = data.grid.cellCenter(c.q, c.r); h += '<g class="j2-pv-detach" transform="translate(' + ctr[0] + ' ' + ctr[1] + ')"><circle r="7"/><path d="M-4 4L4 -4"/></g>'; }
       if (batch && p.valid) for (const c of p.cells) if (c.ok) h += '<g class="j2-pv-glyph">' + tileMarkup(c.q, c.r, specOfBatch(batch), 'j2-pvt', true) + '</g>';
       ui.g.preview.innerHTML = h;
     }
 
     function reasonText(preview) {
       const bad = preview.cells.filter(c => !c.ok);
-      if (!bad.length) return preview.connected === false ? t('journey2_reason_disconnected_region') : preview.attached === false ? attachText(preview.attachCode) : '';
+      if (preview.separateEligible) return t('journey2_detached_hint');
+      if (!bad.length) return preview.connected === false ? t('journey2_reason_disconnected_region') : preview.attached === false ? attachText(preview.attachCode, preview.isKind === 'tile' ? 'move' : 'place') : '';
       const first = t('journey2_reason_' + bad[0].reason);
       return bad.length > 1 ? first + ' · ' + fill('journey2_reason_blocked_n', { n: n(bad.length) }) : first;
     }
@@ -2265,17 +2249,19 @@
       if (!tr || (tr.kind === 'tile' && !tr.moved)) { ui.tip.hidden = true; return; }
       const batch = Model.batchById(doc, tr.batchId);
       const count = tr.kind === 'tile' ? 1 : tr.footprint.length;
-      let text, bad = false;
+      let text, bad = false, warn = false;
       if (tr.kind === 'armed' && !pointer.inside) text = t('journey2_tip_armed');
       else if (tr.kind !== 'armed' && !pointer.inside) text = t('journey2_tip_outside');
+      else if (tr.preview && tr.preview.separateEligible) { text = t('journey2_detached_label') + ' · ' + reasonText(tr.preview); warn = true; }
       else if (tr.preview && !tr.preview.valid) { text = reasonText(tr.preview); bad = true; }
-      else text = '';
+      else text = tr.kind !== 'tile' && tr.preview && tr.preview.valid && doc.tiles.length ? t('journey2_connected_label') : '';
       const title = tr.kind === 'tile' ? fill('journey2_tip_move', { name: batchName(batch) }) : fill(count > 1 ? 'journey2_tip_place_all' : 'journey2_tip_place_one', { name: batchName(batch), n: n(count) });
       ui.tip.innerHTML = '<strong></strong><span></span><em></em>';
       ui.tip.children[0].textContent = title;
       ui.tip.children[1].textContent = text;
       ui.tip.children[2].textContent = t('journey2_tip_cancel');
       ui.tip.classList.toggle('is-bad', bad);
+      ui.tip.classList.toggle('is-warn', warn);
       ui.tip.hidden = false;
       const x = Math.min(window.innerWidth - ui.tip.offsetWidth - 8, pointer.cx + 18), y = Math.min(window.innerHeight - ui.tip.offsetHeight - 8, pointer.cy + 18);
       ui.tip.style.transform = 'translate(' + Math.max(8, x) + 'px,' + Math.max(8, y) + 'px)';
@@ -2303,15 +2289,50 @@
     function commitStock(x, preview) {
       if (stale(x)) { hint(t('journey2_hint_stale')); return; }
       if (!preview) return;
-      if (!preview.valid) { hint(fill('journey2_hint_rejected', { reason: reasonText(preview) })); return; }
-      const tiles = preview.cells.map(c => ({ id: Model.newId('t'), cell: c.id }));
-      const separate = separateBatchId === x.batchId;
-      const r = dispatch(separate ? { type: 'place', batchId: x.batchId, tiles: tiles, separate: true } : { type: 'place', batchId: x.batchId, tiles: tiles }, 'place', true);
-      if (!r.ok) { hint(fill('journey2_hint_rejected', { reason: errorText(r.error) })); return; }
-      if (separate) { separateBatchId = null; renderInventory(false); }       // a one-shot override: the region is now on the map
-      announce(fill('journey2_live_placed', { n: n(tiles.length) }));
+      if (!preview.valid) {
+        // the only failed rule is "touches the prepared map": offer the explicit override on this exact, frozen candidate
+        if (preview.separateEligible) { confirmSeparateArea(x, preview); return; }
+        hint(fill('journey2_hint_rejected', { reason: reasonText(preview) })); return;
+      }
+      placeTiles(x.batchId, preview.cells.map(c => ({ id: Model.newId('t'), cell: c.id })), false);
+    }
+
+    /** Dispatches one atomic `place`; `allowDetached` is transient command intent only (never stored). */
+    function placeTiles(batchId, tiles, allowDetached) {
+      const cmd = { type: 'place', batchId: batchId, tiles: tiles };
+      if (allowDetached) cmd.allowDetached = true;
+      const r = dispatch(cmd, 'place', true);
+      if (!r.ok) { hint(fill('journey2_hint_rejected', { reason: errorText(r.error) })); return false; }
+      announce(fill(allowDetached ? 'journey2_live_separate_started' : 'journey2_live_placed', { n: n(tiles.length) }));
       if (tiles.length === 1 && !inspectorOpen()) sel.tileId = null;
-      warnHoles(x.batchId);
+      warnHoles(batchId);
+      return true;
+    }
+
+    /**
+     * "Start separate area": a confirmation for a region that does not touch the prepared map. The candidate (ids and cells) is
+     * frozen at the moment of the attempt — confirming commits exactly it, never a re-rolled or re-anchored one; Cancel changes nothing.
+     */
+    function confirmSeparateArea(x, preview) {
+      if (detachedConfirm || editLocked) return;
+      const tiles = preview.cells.map(c => ({ id: Model.newId('t'), cell: c.id }));
+      detachedConfirm = { batchId: x.batchId, tiles: tiles };
+      announce(t('journey2_detached_hint'));
+      openDialog({
+        title: t('journey2_detached_title'),
+        lines: [t('journey2_detached_body')],
+        actions: [
+          { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
+          { label: t('journey2_separate_area'), kind: 'btn-primary', value: 'confirm' },
+        ],
+      }).then(v => {
+        detachedConfirm = null;
+        if (inst.disposed) return;
+        if (v === 'confirm') { placeTiles(x.batchId, tiles, true); return; }
+        const refs = cardRefs.get(x.batchId);
+        const back = x.handle && x.handle.isConnected ? x.handle : refs && (x.mode === 'all' ? refs.handleAll : refs.handleOne);
+        if (back && !back.disabled) back.focus({ preventScroll: true });
+      });
     }
 
     function commitArmed() {
@@ -2319,8 +2340,8 @@
       if (!x) return;
       const preview = computePreview(x);
       if (!preview) return;
-      if (!preview.valid) { hint(fill('journey2_hint_rejected', { reason: reasonText(preview) })); return; }
-      const stay = x.mode === 'one' && Model.derive(doc).counts.get(x.batchId).remaining > 1;
+      if (!preview.valid && !preview.separateEligible) { hint(fill('journey2_hint_rejected', { reason: reasonText(preview) })); return; }
+      const stay = x.mode === 'one' && preview.valid && Model.derive(doc).counts.get(x.batchId).remaining > 1;
       endTransient();
       commitStock(x, preview);
       if (stay) armStock(x.mode, x.batchId, cardRefs.get(x.batchId).handleOne);
@@ -2336,7 +2357,7 @@
       if (preview.isOrigin) return;                          // back on its own cell: a no-op, no history entry
       if (!preview.valid) { hint(fill('journey2_hint_rejected', { reason: reasonText(preview) })); return; }
       const r = dispatch({ type: 'move', tileId: x.tileId, to: preview.cells[0].id }, 'move', true);
-      if (!r.ok) hint(fill('journey2_hint_rejected', { reason: errorText(r.error) }));
+      if (!r.ok) hint(fill('journey2_hint_rejected', { reason: errorText(r.error, 'move') }));
       else {
         // the moved hex stays selected only while the inspector is anchored on it (the inspector now carries Return to stock); it follows it
         if (inspectorOpen() && inspector.tileId === x.tileId) sel.tileId = x.tileId;
@@ -2344,13 +2365,16 @@
       }
     }
 
-    /** Localized text for a prepared-map attachment failure (model codes 'not-adjacent' | 'detaches-region' | 'detaches-other'). */
-    function attachText(code) { return t('journey2_reason_' + String(code || 'not-adjacent').replace(/-/g, '_')); }
+    /** Localized text for a prepared-map failure (model codes 'detached-prepared-map' | 'would-split-prepared-map'); `how` is 'place' | 'move' | 'return'. */
+    function attachText(code, how) {
+      if (code === 'would-split-prepared-map') return t(how === 'return' ? 'journey2_reason_return_split' : how === 'move' ? 'journey2_reason_move_split' : 'journey2_reason_would_split');
+      return t('journey2_reason_detached_prepared_map');
+    }
 
-    function errorText(err) {
+    function errorText(err, how) {
       if (err && err.conflicts && err.conflicts.length) return t('journey2_reason_' + err.conflicts[0].reason);
       if (err && err.code === 'disconnected-region') return t('journey2_reason_disconnected_region');
-      if (err && (err.code === 'not-adjacent' || err.code === 'detaches-region' || err.code === 'detaches-other')) return attachText(err.code);
+      if (err && (err.code === 'detached-prepared-map' || err.code === 'would-split-prepared-map')) return attachText(err.code, how);
       return t('journey2_gen_failed');
     }
 
@@ -2359,7 +2383,7 @@
       const tile = Model.derive(doc).byId.get(sel.tileId);
       const r = dispatch({ type: 'returnTile', tileId: sel.tileId }, 'returnTile');
       if (r.ok) { sel.tileId = null; renderSelection(); announce(t('journey2_live_returned')); if (tile) warnHoles(tile.batchId); }
-      else hint(fill('journey2_hint_rejected', { reason: errorText(r.error) }));
+      else hint(fill('journey2_hint_rejected', { reason: errorText(r.error, 'return') }));
     }
 
     function hint(msg) {
@@ -2433,7 +2457,6 @@
       else if (b.hasAttribute('data-j2-card-toggle')) toggleCard(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-inspect')) openInspectorFromCard(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-insp-close')) closeInspector({ focus: true });
-      else if (b.hasAttribute('data-j2-separate')) toggleSeparate(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-delete')) confirmDelete(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-side-toggle')) toggleSide();
       else if (b.hasAttribute('data-j2-fit')) fitToView();
@@ -3052,7 +3075,7 @@
         ready: data ? data.readiness.ready : null, anchors: data ? data.anchorsDoc.anchors.length : 0,
         validCells: data ? data.grid.validCellCount() : 0, allowedCells: data ? data.ctx.allowedCellCount : 0, placeMode: placeMode,
         activeBatchId: activeBatchId, inspector: { batchId: inspector.batchId, tileId: inspector.tileId, source: inspector.source, open: inspectorOpen() }, sanctuaryOpen: sanctuaryOpen, sideCollapsed: sideCollapsed, diagnosticsOpen: diagOpen, saveStatus: saveState.status, saveReason: saveState.reason, editLocked: editLocked,
-        selectedTile: sel.tileId, transient: tr ? { kind: tr.kind, mode: tr.mode || null, moved: !!tr.moved, cells: tr.preview ? tr.preview.cells.length : 0, valid: tr.preview ? tr.preview.valid : null, attached: tr.preview ? tr.preview.attached : null, anchor: tr.preview ? Geo.cellId(tr.preview.anchor.q, tr.preview.anchor.r) : null, conflicts: tr.preview ? tr.preview.cells.filter(c => !c.ok).map(c => [c.id, c.reason]) : [] } : null,
+        selectedTile: sel.tileId, transient: tr ? { kind: tr.kind, mode: tr.mode || null, moved: !!tr.moved, cells: tr.preview ? tr.preview.cells.length : 0, valid: tr.preview ? tr.preview.valid : null, attached: tr.preview ? tr.preview.attached : null, separateEligible: tr.preview ? !!tr.preview.separateEligible : null, anchor: tr.preview ? Geo.cellId(tr.preview.anchor.q, tr.preview.anchor.r) : null, conflicts: tr.preview ? tr.preview.cells.filter(c => !c.ok).map(c => [c.id, c.reason]) : [] } : null,
         history: history ? { undo: history.undo.length, redo: history.redo.length } : null,
         batches: doc ? doc.batches.map(b => Object.assign({ id: b.id, habitat: b.habitat, terrain: b.terrain, quantity: b.quantity, quantitySource: b.quantitySource, rumor: b.rumor, encounter: b.encounter, notes: b.notes }, d.counts.get(b.id))) : [],
         tiles: doc ? doc.tiles.map(x => ({ id: x.id, batchId: x.batchId, cell: x.cell })) : [],
@@ -3060,8 +3083,8 @@
         glyphlessTiles: ui.g && ui.g.tiles && ui.g.tiles.querySelector('.is-glyphless') ? ui.g.tiles.querySelector('.is-glyphless').getAttribute('d').split('M').length - 1 : 0,
         discoveredState: 'none',
         fog: { tool: fogTool, showFogState: showFog, previewMode: previewMode, revealed: doc ? Model.getRevealedCellSet(doc).size : 0, strokeCells: fogStroke ? fogStroke.cells.length : 0, strokePointer: fogStroke ? fogStroke.pointerId : null, hover: fogHover ? Geo.cellId(fogHover.q, fogHover.r) : null },
-        separateBatchId: separateBatchId,
-        perimeter: { mode: perimDrawn.mode, segments: ui.g && ui.g.perimeter ? Number(ui.g.perimeter.getAttribute('data-segments') || 0) : 0, hasPath: !!(ui.g && ui.g.perimeter && ui.g.perimeter.querySelector('path')) },
+        detachedConfirm: detachedConfirm ? { batchId: detachedConfirm.batchId, cells: detachedConfirm.tiles.map(x => x.cell) } : null,
+        perimeter: (() => { const g = ui.g && (previewMode ? ui.g.perimeterPlayer : ui.g.perimeter); return { mode: perimDrawn.mode, segments: g ? Number(g.getAttribute('data-segments') || 0) : 0, hasPath: !!(g && g.querySelector('path')), above: !previewMode }; })(),
         playerGlyphs: ui.g && ui.g.player ? ui.g.player.querySelectorAll('image').length : 0,
       };
     }

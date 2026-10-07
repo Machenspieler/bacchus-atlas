@@ -191,11 +191,13 @@ touches `#/journey`'s data; a corrupt saved map is never autosaved over;
 preparation never implies discovery; original markers are immutable. Fog of War is
 cell-based campaign data (`playerVisibility`), hidden by default, edited only by Reveal/Hide strokes
 (one stroke = one Undo entry) and rendered to players solely through the pure projection
-`js/journey2-projection.js` (Player Preview now, print later); the base map and its sanctuary
-icons are never fogged away (PD-020). The prepared map stays connected — a later region's first
-tile must share a full edge with another region unless the GM picks "Start separate area", and an
-ordinary move/return may not detach a region — and every region gets a derived, never-stored thick
-perimeter that Player Preview draws only between revealed cells (PD-021). Regions are
+`js/journey2-projection.js` (Player Preview now, print later); the fog is translucent over the whole base map with
+no cut-outs, so its labels and sanctuary icons stay readable (PD-020/PD-024). The prepared map stays continuous: a
+later region must share a full edge with ANY placed tile, an ordinary place/move/return may never increase the
+number of prepared areas (non-worsening, so an already split map stays editable), and the only override is the
+confirmed "Start separate area" dialog on the exact attempted candidate (transient `allowDetached`, never stored;
+PD-024). Every region gets a derived, never-stored thick boundary — one divider between regions, thin
+same-region edges — that Player Preview draws only between revealed cells via the projection (PD-021/PD-024). Regions are
 read in one transient, GM-only Region Inspector over the map (opened from a hex
 or a card's Inspect button, independent of the expanded card, never persisted,
 never in history); the sidebar only generates, places and deletes. Soul Echoes are GM-only
@@ -205,7 +207,7 @@ Generated sanctuaries are GM-only too (`sanctuaries.entries`, one per printed sa
 sentences): one toolbar button rolls all 56 through `#/journey`'s own generator, clicking an icon opens an
 overlay with Delete / Reroll / close, and none of it reaches Player Preview or print (PD-023).
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023, detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024, detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

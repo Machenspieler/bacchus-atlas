@@ -1,5 +1,5 @@
 'use strict';
-/* Journey 2: connected prepared-map placement (PD-021) and the derived region perimeter. Pure — no browser (the click/drag/render
+/* Journey 2: the derived region perimeter (PD-021). Pure — no browser (the click/drag/render
    behaviour in a real browser is checked through the view's debug API, see docs/manual-qa.md). */
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -44,181 +44,7 @@ let seq = 0;
 const tiles = cells => cells.map(c => ({ id: 'x' + (++seq), cell: c }));
 const place = (doc, batchId, cells, extra) => M.apply(doc, Object.assign({ type: 'place', batchId: batchId, tiles: tiles(cells), at: AT }, extra || {}), ctx);
 
-/* ---------------- adjacency: placement ---------------- */
-
-test('the very first region may start in any valid empty cell', () => {
-  const doc = withBatches('A');
-  must(place(doc, 'A', [at(0, 0)]));
-  must(place(doc, 'A', [at(3, 3), at(3, 2)]));
-});
-
-test('a later region must share a full edge with an already placed region — one tile touching is enough', () => {
-  let doc = withBatches('A', 'B');
-  doc = must(place(doc, 'A', [at(0, 0), at(0, 1)]));
-  for (const dir of Object.keys(D)) {
-    const cell = at(D[dir][0], D[dir][1]);
-    if (cell !== at(0, 1)) must(place(doc, 'B', [cell]));         // every free neighbour of A's tile works; (0,1) is A's own second tile
-  }
-  // a footprint where only ONE tile touches the map is accepted
-  must(place(doc, 'B', [at(1, 0), at(2, 0), at(3, 0)]));
-});
-
-test('a later region that touches nothing is rejected with not-adjacent, and nothing is placed', () => {
-  let doc = withBatches('A', 'B');
-  doc = must(place(doc, 'A', [at(0, 0)]));
-  const r = place(doc, 'B', [at(2, 0)]);          // distance 2: no shared edge (hex grids have no corner-only contact)
-  assert.equal(r.ok, false);
-  assert.equal(r.error.code, 'not-adjacent');
-  const far = place(doc, 'B', [at(3, 3)]);
-  assert.equal(far.error.code, 'not-adjacent');
-  assert.equal(doc.tiles.length, 1);
-});
-
-test('Place all: the whole footprint must be connected AND touch the map by at least one edge', () => {
-  let doc = withBatches('A', 'B');
-  doc = must(place(doc, 'A', [at(0, 0)]));
-  const fp = M.compactFootprint(6);
-  const cellsAround = (cq, cr) => fp.map(o => Geo.cellId(cq + o.dq, cr + o.dr));
-  const touching = M.checkPlacement(doc, ctx, 'B', cellsAround(BASE.q + 1, BASE.r + 0).map(Geo.parseCellId));
-  assert.equal(touching.valid, true);
-  assert.equal(touching.attached, true);
-  const apart = M.checkPlacement(doc, ctx, 'B', cellsAround(BASE.q + 3, BASE.r + 3).map(Geo.parseCellId));
-  assert.equal(apart.connected, true);
-  assert.equal(apart.attached, false);
-  assert.equal(apart.attachCode, 'not-adjacent');
-  assert.equal(apart.valid, false);
-  // preview and commit agree
-  assert.equal(place(doc, 'B', cellsAround(BASE.q + 3, BASE.r + 3)).error.code, 'not-adjacent');
-  must(place(doc, 'B', cellsAround(BASE.q + 1, BASE.r)));
-});
-
-test('"Start separate area" is the only override: it applies to the one place command and is not stored', () => {
-  let doc = withBatches('A', 'B');
-  doc = must(place(doc, 'A', [at(0, 0)]));
-  assert.equal(place(doc, 'B', [at(3, 3)], { separate: false }).ok, false);
-  assert.equal(place(doc, 'B', [at(3, 3)], { separate: 'yes' }).ok, false, 'only the boolean true counts');
-  const sep = must(place(doc, 'B', [at(3, 3)], { separate: true }));
-  assert.equal(sep.tiles.length, 2);
-  for (const k of Object.keys(sep)) assert.ok(!/separate/i.test(k), 'no field of the document carries the override');
-  assert.ok(!/separate/i.test(M.serializeBackup(sep)));
-  assert.equal(M.checkPlacement(doc, ctx, 'B', [{ q: BASE.q + 3, r: BASE.r + 3 }], null, { separate: true }).valid, true);
-});
-
-test('once a region is on the map, further tiles only need to stay connected to their own region', () => {
-  let doc = withBatches('A', 'B');
-  doc = must(place(doc, 'A', [at(0, 0)]));
-  doc = must(place(doc, 'B', [at(3, 3)], { separate: true }));
-  must(place(doc, 'B', [at(3, 4)]));                       // joins its own (separate) region: no override needed again
-  assert.equal(place(doc, 'B', [at(3, 6)]).error.code, 'disconnected-region');
-});
-
-test('an empty map or a map whose other regions have no tiles never blocks placement', () => {
-  let doc = withBatches('A', 'B');
-  doc = must(place(doc, 'A', [at(0, 0)]));
-  doc = must(M.apply(doc, { type: 'returnTile', tileId: doc.tiles[0].id, at: AT }, ctx));
-  must(place(doc, 'B', [at(5, 5)]));
-});
-
-/* ---------------- adjacency: moves and returns ---------------- */
-
-function chain() {            // A: (0,0),(0,1)   B: (1,0) touching A   C: (1,1)? built per test
-  let doc = withBatches('A', 'B');
-  doc = must(place(doc, 'A', [at(0, 0), at(0, 1)]));
-  doc = must(place(doc, 'B', [at(1, 0), at(2, 0)]));
-  return doc;
-}
-const tileAt = (doc, cell) => doc.tiles.find(t => t.cell === cell);
-
-test('an ordinary move may not detach a region from the prepared map entirely', () => {
-  const doc = chain();                                     // A: (0,0),(0,1)   B: (1,0),(2,0) — B touches A through (1,0)
-  assert.ok(M.attachedBatchIds(doc.tiles).has('B'));
-  // moving B's far tile along its own region keeps contact
-  must(M.apply(doc, { type: 'move', tileId: tileAt(doc, at(2, 0)).id, to: at(2, -1), at: AT }, ctx));
-  // a region of one tile that is moved off the map
-  let single = withBatches('A', 'B');
-  single = must(place(single, 'A', [at(0, 0)]));
-  single = must(place(single, 'B', [at(1, 0)]));
-  const r = M.apply(single, { type: 'move', tileId: tileAt(single, at(1, 0)).id, to: at(1, 2), at: AT }, ctx);
-  assert.equal(r.ok, false);
-  assert.equal(r.error.code, 'detaches-region');
-  const pv = M.checkPlacement(single, ctx, 'B', [{ q: BASE.q + 1, r: BASE.r + 2 }], tileAt(single, at(1, 0)).id);
-  assert.equal(pv.attachCode, 'detaches-region');
-  assert.equal(pv.valid, false, 'the preview refuses what the command refuses');
-  // sliding along the contact keeps it
-  must(M.apply(single, { type: 'move', tileId: tileAt(single, at(1, 0)).id, to: at(0, 1), at: AT }, ctx));
-});
-
-test('an ordinary move may not split the region internally', () => {
-  const doc = chain();
-  const r = M.apply(doc, { type: 'move', tileId: tileAt(doc, at(1, 0)).id, to: at(4, 4), at: AT }, ctx);
-  assert.equal(r.ok, false);
-  assert.equal(r.error.code, 'disconnected-region');
-});
-
-test('a move may not cut a NEIGHBOUR off the map either', () => {
-  // A single tile at (0,0); B single tile at (1,0) leaning only on A; C touches only B.
-  let doc = withBatches('A', 'B', 'C');
-  doc = must(place(doc, 'A', [at(0, 0)]));
-  doc = must(place(doc, 'B', [at(1, 0)]));
-  doc = must(place(doc, 'C', [at(2, 0)]));
-  // B is the only link: moving A's tile off B would detach A (it only touched B)
-  const r = M.apply(doc, { type: 'move', tileId: tileAt(doc, at(0, 0)).id, to: at(-1, 0), at: AT }, ctx);
-  assert.equal(r.ok, false);
-  assert.equal(r.error.code, 'detaches-region');
-  // returning B's tile would detach both A and C
-  const ret = M.apply(doc, { type: 'returnTile', tileId: tileAt(doc, at(1, 0)).id, at: AT }, ctx);
-  assert.equal(ret.ok, false);
-  assert.equal(ret.error.code, 'detaches-other');
-});
-
-test('return-to-stock may not detach a region, but returning the far tile first is fine', () => {
-  let doc = withBatches('A', 'B');
-  doc = must(place(doc, 'A', [at(0, 0)]));
-  doc = must(place(doc, 'B', [at(1, 0), at(2, 0)]));
-  // B's contact tile is (1,0); returning it would leave (2,0) connected? (2,0) is no longer adjacent to A and split nothing
-  const r = M.apply(doc, { type: 'returnTile', tileId: tileAt(doc, at(1, 0)).id, at: AT }, ctx);
-  assert.equal(r.ok, false);
-  assert.equal(r.error.code, 'detaches-region');
-  doc = must(M.apply(doc, { type: 'returnTile', tileId: tileAt(doc, at(2, 0)).id, at: AT }, ctx));
-  doc = must(M.apply(doc, { type: 'returnTile', tileId: tileAt(doc, at(1, 0)).id, at: AT }, ctx));
-  assert.equal(doc.tiles.length, 1, 'the last tile of the second region may always be returned when only one region is left');
-});
-
-test('regions that were never attached (first region, separate areas, old saves) can still be edited freely', () => {
-  let doc = withBatches('A', 'B');
-  doc = must(place(doc, 'A', [at(0, 0)]));
-  doc = must(place(doc, 'B', [at(3, 3)], { separate: true }));
-  must(M.apply(doc, { type: 'move', tileId: tileAt(doc, at(3, 3)).id, to: at(5, 5), at: AT }, ctx));
-  must(M.apply(doc, { type: 'returnTile', tileId: tileAt(doc, at(3, 3)).id, at: AT }, ctx));
-});
-
-test('deleting a region is an explicit destructive action and is not restricted by attachment', () => {
-  let doc = withBatches('A', 'B', 'C');
-  doc = must(place(doc, 'A', [at(0, 0)]));
-  doc = must(place(doc, 'B', [at(1, 0)]));
-  doc = must(place(doc, 'C', [at(2, 0)]));
-  must(M.apply(doc, { type: 'deleteBatch', batchId: 'B', at: AT }, ctx));
-});
-
-test('Undo / Redo snapshots restore attachment-valid documents and replaying never re-checks differently', () => {
-  let doc = withBatches('A', 'B');
-  const h = M.createHistory();
-  const d1 = must(place(doc, 'A', [at(0, 0)])); M.historyCommit(h, doc, d1, 'place');
-  const bad = place(d1, 'B', [at(4, 4)]);
-  assert.equal(bad.ok, false);
-  const d2 = must(place(d1, 'B', [at(1, 0)])); M.historyCommit(h, d1, d2, 'place');
-  const e = M.historyUndo(h); assert.equal(e.before, d1);
-  const again = M.historyRedo(h); assert.equal(again.after, d2);
-  assert.ok(M.attachedBatchIds(again.after.tiles).has('B'));
-});
-
-test('imported documents are not re-validated for attachment (old saves and separate areas load as they are)', () => {
-  let doc = withBatches('A', 'B');
-  doc = must(place(doc, 'A', [at(0, 0)]));
-  doc = must(place(doc, 'B', [at(3, 3)], { separate: true }));
-  const r = M.parseBackupText(M.serializeBackup(doc), ctx);
-  assert.equal(r.ok, true);
-});
+/* Prepared-map connectivity (the placement / move / return / delete rules) is covered in tests/journey2-phase-d.test.js. */
 
 /* ---------------- perimeter ---------------- */
 
@@ -365,24 +191,29 @@ test('player perimeter: a map-edge or furniture neighbour (never fogged) needs o
 
 const view = read('js/journey2-view.js');
 const i18n = JSON.parse(read('data/i18n.json'));
-const NEW_KEYS = ['journey2_reason_not_adjacent', 'journey2_reason_detaches_region', 'journey2_reason_detaches_other', 'journey2_separate_area', 'journey2_separate_note', 'journey2_separate_on_note'];
+const NEW_KEYS = ['journey2_reason_detached_prepared_map', 'journey2_reason_would_split', 'journey2_reason_move_split', 'journey2_reason_return_split', 'journey2_separate_area', 'journey2_detached_title', 'journey2_detached_body', 'journey2_detached_hint', 'journey2_detached_label', 'journey2_connected_label', 'journey2_delete_splits', 'journey2_live_separate_started'];
 
-test('localization: every attachment string exists in English and Russian', () => {
+test('localization: every prepared-map string exists in English and Russian', () => {
   for (const k of NEW_KEYS) {
     assert.ok(i18n.en[k] && i18n.ru[k], k);
     assert.notEqual(i18n.en[k], i18n.ru[k]);
   }
+  for (const k of ['journey2_reason_not_adjacent', 'journey2_reason_detaches_region', 'journey2_reason_detaches_other', 'journey2_separate_note', 'journey2_separate_on_note']) assert.ok(!i18n.en[k] && !i18n.ru[k], k + ' was removed with the card toggle');
+  assert.match(i18n.en.journey2_delete_splits, /\{n\}/);
+  assert.match(i18n.ru.journey2_delete_splits, /\{n\}/);
 });
 
-test('view: the perimeter is its own pointer-transparent layer between the tiles and the fog, and selection stays above it', () => {
+test('view: the GM perimeter is above the fog, the player-safe one below it, both pointer-transparent and aria-hidden, selection above both', () => {
   const svg = view.slice(view.indexOf('<defs data-j2-defs>'), view.indexOf('</svg>', view.indexOf('<defs data-j2-defs>')));
   const idx = k => svg.indexOf('data-j2-g="' + k + '"');
-  assert.ok(idx('tiles') < idx('perimeter') && idx('perimeter') < idx('fog') && idx('perimeter') < idx('select') && idx('select') < idx('preview'));
+  assert.ok(idx('tiles') < idx('perimeterPlayer') && idx('perimeterPlayer') < idx('fog') && idx('fog') < idx('perimeter') && idx('perimeter') < idx('select') && idx('select') < idx('preview'));
   assert.match(svg, /data-j2-g="perimeter" pointer-events="none"/);
+  assert.match(svg, /data-j2-g="perimeterPlayer" pointer-events="none"/);
+  assert.match(view, /<svg class="j2-overlay"[^>]*aria-hidden="true"/, 'every boundary group lives inside the aria-hidden overlay');
   const css = read('css/journey2.css');
   assert.match(css, /\.j2-perimeter \{[^}]*fill: none[^}]*pointer-events: none/);
-  assert.match(css, /\.j2-perimeter \{[^}]*stroke-width: (\d+(\.\d+)?)/);
-  assert.ok(Number(/\.j2-perimeter \{[^}]*stroke-width: (\d+(\.\d+)?)/.exec(css)[1]) >= 3, 'visibly thicker than the 1px grid');
+  const w = Number(/\.j2-perimeter \{[^}]*stroke-width: (\d+(\.\d+)?)/.exec(css)[1]);
+  assert.ok(w >= 2.5 && w <= 3, 'about 2.5-3x the 1px grid outline');
 });
 
 test('view: the perimeter is recomputed from the tiles on every render and never stored or persisted', () => {
@@ -392,15 +223,6 @@ test('view: the perimeter is recomputed from the tiles on every render and never
   assert.match(view, /playerProjection\.perimeter/, 'Player Preview draws only the projection perimeter');
   const store = read('js/journey2-store.js');
   assert.ok(!/perimeter/i.test(store));
-});
-
-test('view: preview and commit use the same attachment rule, the override is transient and one-shot', () => {
-  assert.match(view, /Model\.checkPlacement\([^)]*separate:/);
-  assert.match(view, /let separateBatchId = null/);
-  assert.match(view, /separate: true/);
-  assert.match(view, /attachText\(preview\.attachCode\)/);
-  assert.match(view, /err\.code === 'not-adjacent'/);
-  assert.ok(!/separateBatchId/.test(read('js/journey2-store.js')), 'never persisted');
 });
 
 test('documentation records the rule (PD-021) and the perimeter', () => {

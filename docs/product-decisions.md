@@ -645,7 +645,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   Fog edits are campaign data: autosaved, exported/imported, validated and undoable.
 - **Decision (print):** printing is not part of this phase, but Player Preview is the print
   renderer's first customer: the future print phase draws `buildPlayerProjection(doc)` (via the
-  shared `overlayMarkup` routine and `fogMaskRects`) into the two original A4 map halves — never a
+  shared `overlayMarkup` routine; the fog has no cut-outs since PD-024) into the two original A4 map halves — never a
   clipped screen, CSS-hidden GM markup or a cloned interactive DOM.
 - **Decision (cleanup in the same phase):** suggested environments moved from the sidebar card
   (where a long list swamped it) into a read-only, collapsed-by-default section of the Region
@@ -659,7 +659,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Where:** [architecture.md](architecture.md) "Fog of War and Player Preview (Phase C, PD-020)".
 
 ## PD-021: Journey 2 — a connected prepared map and a derived region perimeter
-- **Status:** Active
+- **Status:** Active — the adjacency, move/return and override decisions below are superseded by PD-024 (global component count, confirmation dialog); the perimeter and player decisions stand
 - **Date:** 2026-10-06
 - **Decision (adjacency):** a Journey 2 map is one prepared area, not scattered islands. The first
   region may begin in any valid empty cell. Every later region's **first placed tile(s)** must share a
@@ -768,3 +768,51 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Explicitly excluded:** editing or pinning a single roll, a number of sanctuaries to generate, notes on a
   sanctuary, sanctuaries on hexes without a printed icon, showing sanctuaries to players or in print.
 - **Where:** [architecture.md](architecture.md) "Sanctuaries (PD-023)".
+
+## PD-024: Journey 2 Phase D — a continuous prepared map and dynamic region boundaries
+- **Status:** Active
+- **Date:** 2026-10-06
+- **Decision (two kinds of connectivity):** *region connectivity* (all placed tiles of one batch form one
+  edge-connected component — Phase A, unchanged) and *prepared-map connectivity* (the placed tiles of ALL
+  batches form edge-connected "prepared areas") are independent rules; every command must satisfy both.
+  Adjacency always means a full shared hex edge.
+- **Decision (continuous placement):** the first placed region may start in any valid empty cell. Every later
+  region's first tile / footprint must share a full edge with ANY placed tile (not only the latest region);
+  one touching tile is enough. Otherwise the placement is rejected with the specific reason
+  `detached-prepared-map` — never the generic `blocked` / `disconnected-region`.
+- **Decision (non-worsening):** an ordinary place, move or return may not increase the number of prepared
+  areas beyond `max(1, before)`. A move or return that would cut the map is rejected with
+  `would-split-prepared-map` (a split of the region itself stays `disconnected-region`). An already
+  disconnected (legacy or intentionally separated) map stays editable: an edit may keep or reduce the count,
+  never increase it. There is no override for moves and returns.
+- **Decision (Start separate area):** the only way to prepare a distant area is an explicit confirmation. It is
+  offered only for a batch with nothing placed, an otherwise valid and internally connected candidate whose
+  only failed rule is `detached-prepared-map`. Releasing/clicking such a candidate (the preview shows an amber
+  dashed outline, a broken-link marker and a hint — not colour alone) opens a dialog (*Start a separate
+  area?* — Cancel / Start separate area). Confirming commits **exactly the attempted candidate** (no reroll,
+  no re-anchored Place-all footprint) with the transient command flag `allowDetached`, which may add exactly
+  one prepared area. The flag is never stored (no `isSeparateArea` on a batch or the document, nothing in the
+  backup); it is one Undo entry and Redo never reopens the dialog. This replaces PD-021's per-card toggle.
+- **Decision (delete):** deleting a region stays an explicit destructive action even when it is a bridge; if it
+  would raise the number of areas the existing confirmation adds "Deleting this region will also split the
+  prepared map into N separate areas." One Undo entry restores region, tiles and topology.
+- **Decision (boundaries):** every placed region has a permanent, dark, thick cartographic boundary
+  (about 2.8x the hex outline), always derived from the current tile coordinates and never persisted.
+  Same-batch shared edges stay thin and internal; an empty or off-map neighbour draws an outer edge; two
+  different batches share exactly one divider; concave shapes, enclosed holes and legacy split regions follow
+  their real outlines. It is recomputed after every committed document change (place, move, return, delete,
+  Undo/Redo, import, reset, load) without a history entry. GM mode shows the complete boundary above the
+  subtle fog state; selection gold stays above it; it never takes pointer events or focus and is aria-hidden.
+- **Decision (players):** boundaries are generated New Valloren content and follow visibility: the player
+  projection emits an edge only between revealed cells (a never-fogged neighbour needs only the tile), so a
+  hidden neighbour never produces a false ending line and a hidden region's shape cannot be inferred. Fog
+  painting changes only visibility, never topology or the GM boundary. The future print renderer reuses the
+  projected segments.
+- **Decision (fog and the base map):** Player Preview fog is translucent and passes over the whole base-map image,
+  including the printed MARROGATE / HORIZON labels and the fixed sanctuary icons; the large rectangular
+  cut-outs are removed (they read as stickers). The original base-map asset is never modified, and the labels
+  and icons stay readable under the fog.
+- **Explicitly excluded:** sanctuary generation or naming, printing, GM Notes (still out of scope), region reroll,
+  storing boundaries / component counts / the override flag, and rejecting an imported map for having several
+  prepared areas.
+- **Where:** [architecture.md](architecture.md) "Prepared-map connectivity and region boundaries (PD-021, PD-024)".

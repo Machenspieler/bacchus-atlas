@@ -19,9 +19,10 @@
    What it never contains (GM-only): batch/tile/region ids, Encounter, Rumor, notes, the suggested-environment
    list, placement state, selection, warnings, diagnostics, history.
 
-   Always visible regardless of the projection (it is not filtered at all): the original base-map image, the
+   Always present regardless of the projection (it is not filtered at all): the original base-map image, the
    Old Valloren geography and hex grid printed in it, the printed MARROGATE / HORIZON labels and every sanctuary
-   icon already embedded in the base image. The renderer must not cover those with the fog (see `fogMaskRects`).
+   icon already embedded in the base image. The fog is translucent and passes over all of it (PD-024): no rectangular
+   cut-outs, and the base-map asset itself is never modified.
    ============================================================ */
 (function (root, factory) {
   if (typeof module !== 'undefined' && module.exports) module.exports = factory(require('./journey2-geometry.js'), require('./journey2-model.js'));
@@ -57,19 +58,5 @@
     };
   }
 
-  /**
-   * Rectangles (world px) the fog must never cover: every sanctuary icon's protection area and every printed label
-   * (MARROGATE, HORIZON, ...) of the base map. A renderer cuts these out of the fog (an SVG mask), so the original
-   * artwork stays fully visible without being modified, masked or replaced.
-   */
-  function fogMaskRects(anchorsDoc) {
-    const out = [];
-    for (const a of (anchorsDoc && anchorsDoc.anchors) || []) {
-      if (a.iconProtectionArea && a.iconProtectionArea.rectPx) out.push(a.iconProtectionArea.rectPx.slice());
-      if (a.builtInLabel && a.builtInLabel.protectionRectPx) out.push(a.builtInLabel.protectionRectPx.slice());
-    }
-    return out;
-  }
-
-  return { buildPlayerProjection: buildPlayerProjection, isCellVisibleToPlayers: isCellVisibleToPlayers, fogMaskRects: fogMaskRects };
+  return { buildPlayerProjection: buildPlayerProjection, isCellVisibleToPlayers: isCellVisibleToPlayers };
 });

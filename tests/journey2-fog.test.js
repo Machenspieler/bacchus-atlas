@@ -140,7 +140,7 @@ test('the command never mutates a batch or a tile; other commands never touch vi
   // generating, placing, moving and deleting do not reveal or hide anything
   const free = AREA[10];
   let d = must(M.apply(d1, { type: 'createBatch', batch: batch('b2'), at: AT2 }, ctx));
-  d = must(M.apply(d, { type: 'place', batchId: 'b2', tiles: [{ id: 'tx', cell: free }], separate: true, at: AT2 }, ctx));
+  d = must(M.apply(d, { type: 'place', batchId: 'b2', tiles: [{ id: 'tx', cell: free }], allowDetached: true, at: AT2 }, ctx));
   assert.equal(d.playerVisibility, d1.playerVisibility);
   d = must(M.apply(d, { type: 'move', tileId: 'tx', to: AREA[11], at: AT2 }, ctx));
   assert.equal(M.isCellRevealed(d, AREA[11]), false, 'moving content into a hidden cell does not reveal it');
@@ -269,16 +269,11 @@ test('projection: it is a pure function — the document is untouched and the re
   assert.equal(P.buildPlayerProjection(doc).overlays.length, 3);
 });
 
-test('projection: the base map is never filtered — the fog is cut out around every sanctuary icon and printed label', () => {
-  const rects = P.fogMaskRects(anchorsDoc);
-  const icons = anchorsDoc.anchors.filter(a => a.iconProtectionArea).length, labels = anchorsDoc.anchors.filter(a => a.builtInLabel && a.builtInLabel.protectionRectPx).length;
-  assert.equal(rects.length, icons + labels);
-  assert.ok(icons > 10 && labels >= 2, 'the real template has icons and the MARROGATE / HORIZON labels');
-  assert.ok(anchorsDoc.anchors.some(a => a.builtInLabel && /MARROGATE/i.test(a.builtInLabel.text)) && anchorsDoc.anchors.some(a => a.builtInLabel && /HORIZON/i.test(a.builtInLabel.text)));
-  for (const r of rects) assert.ok(Array.isArray(r) && r.length === 4 && r.every(Number.isFinite));
-  assert.deepEqual(P.fogMaskRects(null), []);
+test('projection: the base map is never filtered, and the fog is never cut out around icons or labels (PD-024)', () => {
+  assert.equal(P.fogMaskRects, undefined, 'no rectangular fog cut-outs exist any more');
   // the projection carries generated overlays only: there is no base-layer switch to turn off
   assert.ok(!('base' in P.buildPlayerProjection(fixture())));
+  assert.ok(!/fog-mask|fogMaskRects/.test(view), 'the view builds no fog mask');
 });
 
 /* ---------------- UI-only preference ---------------- */
@@ -398,7 +393,8 @@ test('GM view: every generated tile is drawn whatever the fog says; the veil sit
   const svg = view.slice(view.indexOf('<defs data-j2-defs>'), view.indexOf('</svg>', view.indexOf('<defs data-j2-defs>')));
   const at = k => svg.indexOf('data-j2-g="' + k + '"');
   assert.ok(at('tiles') < at('fog') && at('fog') < at('fogstroke') && at('fogstroke') < at('select') && at('select') < at('preview'), 'tiles < fog < stroke feedback < selection outlines < placement preview');
-  assert.match(svg, /data-j2-g="fog" mask="url\(#j2-fog-mask\)"/, 'the fog is masked around icons and printed labels');
+  assert.match(svg, /data-j2-g="fog"><path class="j2-fog-veil"/, 'the veil covers the whole base map: no mask around icons and printed labels');
+  assert.ok(at('fog') < at('perimeter') && at('perimeter') < at('fogstroke'), 'the full GM boundary stays above the veil');
   assert.match(fn('renderFog', 'updateFogUi'), /previewMode \|\| showFog/, 'the preference only hides the GM veil; the preview always shows fog');
   assert.doesNotMatch(fn('toggleFogState', 'fogCellFromEvent'), /dispatch|doc =/, 'toggling the overlay never changes the document');
 });

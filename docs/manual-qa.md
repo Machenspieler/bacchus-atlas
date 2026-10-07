@@ -435,10 +435,15 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
 - [ ] Drag **All 13**: a 13-hex cluster previews under the pointer; over an occupied cell, outside the
       map or over the title/compass/scale it turns red with a reason and a release places nothing.
       On a clear area, release → 20 / 20, **All 0** disabled, the first seven unchanged.
-- [ ] Connected map: generate a second region — its first hex (or *All* footprint) must touch the first region's
-      edge (red preview + reason otherwise); the card's **Start separate area** toggle lets one placement go
-      apart and turns itself off afterwards. Dragging the only touching hex of a region away, or returning it,
-      is refused ("…cut the region off from the map"); Undo/Redo restore exactly.
+- [ ] Connected map: generate a second region — its first hex (or *All* footprint) must touch ANY placed hex by a full
+      edge. A detached but otherwise valid candidate previews amber/dashed with a marker and the hint; releasing
+      opens "Start a separate area?" (Cancel keeps focus on the handle and changes nothing; confirming places
+      exactly the previewed hexes, one Undo entry, Redo needs no dialog). Occupied/prohibited/internally split
+      candidates are red and never offer the override. Moving or returning a hex that would split the prepared map is
+      refused ("Moving/Returning this hex would split the prepared map"); deleting a bridge region works and the
+      dialog warns "…split the prepared map into N separate areas"; Undo restores exactly.
+- [ ] Player Preview fog: MARROGATE, HORIZON and the sanctuary icons stay readable under the fog at 67 / 100 / 150 %
+      with no white rectangular patches.
 - [ ] Region perimeter: every placed region has a thick dark outline with one divider between touching regions
       and the thin grid visible inside; it follows place / move / return / delete / Undo / Redo / import; clicks,
       drags and panning pass through it; the gold selection stays above it. In Player Preview the outline

@@ -672,7 +672,7 @@ async function main() {
       api.dispatch({ type: 'createBatch', batch: M.batchFromRegion(region, { id: id, createdAt: new Date().toISOString() }) });
       const c0 = api.clientToCell(700, 450).split(',').map(Number);
       const want = [[0, 0], [1, 0], [0, 1]].map(([a, b]) => (c0[0] + a) + ',' + (c0[1] + b));
-      const ok = api.dispatch({ type: 'place', separate: true, batchId: id, tiles: want.map(c => ({ id: M.newId('t'), cell: c })) }).ok;
+      const ok = api.dispatch({ type: 'place', allowDetached: true, batchId: id, tiles: want.map(c => ({ id: M.newId('t'), cell: c })) }).ok;
       return { id: id, want: want, ok: ok };
     });
     const center = await p4.evaluate(c => Journey2View.debugApi().cellToClient(c), cells.want[0]);
@@ -741,6 +741,8 @@ async function main() {
 
   /* Phase C: Fog of War, Player Preview and the suggested environments in the Region Inspector (real pointer and keyboard input; the same checks stage1-verify.js runs, minus the pixel comparison) */
   await require('./lib/fog-checks.js').runFogChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc, full: false });
+  /* Phase D: prepared-map connectivity, the Start-separate-area confirmation, derived region boundaries and the fog without cut-outs */
+  await require('./lib/topology-checks.js').runTopologyChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc });
 
   await browser.close(); server.close();
   const failed = results.filter(r => !r.ok);

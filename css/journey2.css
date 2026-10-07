@@ -227,11 +227,6 @@ body[data-route="journey2"] #grid-wrap { display: block; }
 .j2-num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--parchment); white-space: nowrap; }
 .j2-bar { height: 4px; background: var(--line-faint); border-radius: var(--r-pill); overflow: hidden; }
 .j2-bar span { display: block; height: 100%; background: var(--teal-soft); }
-.j2-sep { display: grid; gap: var(--s-1); }
-.j2-sep[hidden] { display: none; }
-.j2-sep-btn { justify-self: start; }
-.j2-sep-btn[aria-pressed="true"] { border-color: var(--hope); background: var(--hope-selected-bg); color: var(--hope-soft); }
-.j2-sep-note { margin: 0; font-size: var(--fs-xs, 0.75rem); color: var(--muted); }
 .j2-done { margin: 0; display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-sm); color: var(--teal-soft); }
 .j2-done-ico { display: inline-flex; }
 .j2-done-ico svg { width: 14px; height: 14px; }
@@ -328,6 +323,8 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 }
 .j2-tip[hidden] { display: none; }
 .j2-tip.is-bad { border-color: var(--fear-soft); }
+.j2-tip.is-warn { border-color: #e0a324; }
+.j2-tip.is-warn span { color: #e0a324; }
 .j2-tip strong { font-weight: 600; color: var(--parchment); }
 .j2-tip span { color: var(--fear-soft); }
 .j2-tip span:empty { display: none; }
@@ -387,12 +384,15 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-tile-dot, .j2-pvt-dot { fill: var(--ink); stroke: none; }
 .j2-overlay .j2-tile-blight, .j2-overlay .j2-pvt-blight { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; vector-effect: none; }
 .j2-tile-hex.is-glyphless { stroke-dasharray: 4 3; stroke-opacity: 0.8; stroke-width: 1.4; }
-.j2-perimeter { fill: none; stroke: #16120e; stroke-opacity: 0.92; stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; pointer-events: none; }
+.j2-perimeter { fill: none; stroke: #16120e; stroke-opacity: 0.92; stroke-width: 2.8; stroke-linejoin: round; stroke-linecap: round; pointer-events: none; }
 .j2-region-hl { fill: none; stroke: var(--hope); stroke-opacity: 0.75; stroke-width: 1.8; stroke-dasharray: 4 3; }
 .j2-tile-sel { fill: var(--hope-wash); stroke: var(--hope); stroke-width: 2.5; }
 .j2-pv { stroke-width: 2; }
 .j2-pv.is-ok { fill: var(--hope-selected-bg); stroke: var(--hope); stroke-dasharray: 5 3; }
 .j2-pv.is-bad { fill: var(--fear-tint); stroke: var(--fear-soft); }
+.j2-pv.is-detached { fill: rgba(224, 163, 36, 0.16); stroke: #e0a324; stroke-width: 2.4; stroke-dasharray: 2 4; stroke-linecap: round; }
+.j2-pv-detach circle { fill: #2a2110; fill-opacity: 0.85; stroke: #e0a324; stroke-width: 1.6; stroke-dasharray: 2 2; }
+.j2-pv-detach path { stroke: #e0a324; stroke-width: 1.8; stroke-linecap: round; fill: none; }
 .j2-pv.is-origin { fill: none; stroke: var(--parchment-dim); }
 .j2-pv-glyph { opacity: 0.8; }
 .j2-grid { fill: none; stroke: var(--teal); stroke-width: 1; stroke-opacity: 0.9; }
