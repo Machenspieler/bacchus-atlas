@@ -77,7 +77,9 @@ inline script in `<head>` sets `html[data-boot-route="journey2"]` from
 visible (and applies the route's chrome, so nothing jumps on mount). The
 script only sets that attribute — routing stays in `js/route-utils.js`. A new
 route that wants its own skeleton follows the same pattern; `js/app.js` still
-never builds skeleton markup.
+never builds skeleton markup. `finishInitialLoading()` removes the attribute once
+the first render is done — a boot-only flag left on `<html>` would keep
+overriding `#grid-wrap` (e.g. `display:block`) after navigating off the route.
 
 ## State ownership (`state` object, top of `js/app.js`)
 

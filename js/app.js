@@ -668,6 +668,9 @@ function finishInitialLoading() {
   const grid = document.getElementById('grid-wrap');
   grid.removeAttribute('aria-busy');
   grid.classList.remove('is-loading');
+  // The boot-route skeleton flag only styles the shell until the app has
+  // rendered; left on <html> it keeps overriding #grid-wrap on every route.
+  delete document.documentElement.dataset.bootRoute;
 }
 
 function failInitialLoading() {
