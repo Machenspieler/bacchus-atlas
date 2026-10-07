@@ -218,7 +218,7 @@ test('view: the GM perimeter is above the fog, the player-safe one below it, bot
 
 test('view: the perimeter is recomputed from the tiles on every render and never stored or persisted', () => {
   assert.match(view, /function renderPerimeter\(\)/);
-  assert.match(view, /renderPerimeter\(\);\s*return;/, 'Player Preview draws the projection perimeter');
+  assert.match(view, /renderPerimeter\(\);\s*renderSanctuaryLabels\(\);\s*return;/, 'Player Preview draws the projection perimeter');
   assert.match(view, /Model\.regionBoundarySegments\(doc, data\.ctx\)/, 'GM mode draws the complete perimeter');
   assert.match(view, /playerProjection\.perimeter/, 'Player Preview draws only the projection perimeter');
   const store = read('js/journey2-store.js');

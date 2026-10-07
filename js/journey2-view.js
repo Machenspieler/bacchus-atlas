@@ -35,6 +35,8 @@
    Sanctuaries (PD-023): GM-only generated settlements on the printed sanctuary icons. One toolbar button rolls all of them
    (one undoable `setSanctuaries` command); clicking a generated icon opens a screen-space overlay with the seven tables and
    Delete / Reroll / close. The open sanctuary is transient view state; the ring layer is emptied in Player Preview.
+   Sanctuary names (PD-027): the overlay's Player map row reveals / hides ONE name (`setSanctuaryNameRevealed`); Player Preview draws only the
+   projection's `sanctuaryLabels` (world-px layout from Geo.layoutSanctuaryLabels) above the fog, never the tables.
 
    Layering (see docs/architecture.md "Journey 2 map editor"):
      js/journey2-geometry.js  measured lattice + camera math (pure)
@@ -214,7 +216,8 @@
     let echoDrawn = null;                                   // the soulEchoes object the GM echoes layer currently shows (an unrelated change never rebuilds it)
     let sanctuaryOpen = null;                               // anchor id of the sanctuary whose overlay is open (transient: never persisted, never in history)
     let sanctuaryShown = null;                              // anchor id the overlay DOM currently shows (so its scroll position survives re-renders)
-    let sancDrawn = { sanctuaries: null, open: null };      // what the sanctuary ring layer currently shows
+    let sancDrawn = { sanctuaries: null, open: null, names: null };   // what the sanctuary ring layer currently shows
+    let sancLabelsDrawn = null;                             // the projection's sanctuaryLabels currently drawn in Player Preview
     let sancAnchors = null;                                 // Map anchor id -> the printed sanctuary anchor (built once)
 
     container.innerHTML = '';
@@ -364,6 +367,7 @@
       conceal: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.8 10S5 4.8 10 4.8 18.2 10 18.2 10 15 15.2 10 15.2 1.8 10 1.8 10z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 16.5 16.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
       players: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7" r="2.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 16c0-2.9 2.2-4.7 5-4.7s5 1.8 5 4.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="14" cy="8" r="2.1" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M14.4 11.6c2 .2 3.4 1.6 3.4 4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
       close: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m3.5 3.5 7 7m0-7-7 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+      eye: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.5 10C4 5.8 7 4 10 4s6 1.8 8.5 6c-2.5 4.2-5.5 6-8.5 6s-6-1.8-8.5-6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.6" fill="currentColor"/></svg>',
       sanctuary: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 17h14M5 17V9l5-5.5L15 9v8M8.5 17v-4.5h3V17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       crystal: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 1.8 6.6 6.6 7.6 14 10 17.4 12.4 14 13.4 6.6zM10 1.8v15.6M6.6 6.6h6.8M6.2 13.2 3 15.4l2.6-5.2M13.8 13.2 17 15.4l-2.6-5.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/></svg>',
     };
@@ -426,7 +430,7 @@
                   <img class="j2-base" alt="" draggable="false" width="${W}" height="${H}">
                   <svg class="j2-overlay" xmlns="${SVG_NS}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">
                     <defs data-j2-defs></defs><defs>${ECHO_DEFS}</defs>
-                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="envmarks" pointer-events="none" aria-hidden="true"></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g>
+                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="envmarks" pointer-events="none" aria-hidden="true"></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g>
                     <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
                     <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g>
                   </svg>
@@ -484,6 +488,13 @@
                   <div class="j2-insp-titles"><h3 class="j2-insp-title" id="j2-sanctuary-title" data-j2-s="name"></h3></div>
                   <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-close data-t-aria="journey2_sanc_close" data-t-title="journey2_sanc_close">${ICON.close}</button>
                 </header>
+                <section class="j2-sanc-player" aria-labelledby="j2-sanc-player-h" data-j2-s="player">
+                  <h4 class="j2-sanc-k" id="j2-sanc-player-h"><span data-t="journey2_sanc_player_map"></span></h4>
+                  <div class="j2-sanc-player-row">
+                    <span class="j2-sanc-player-state" data-j2-s="nameState" data-t-title="journey2_sanc_name_help"><span class="j2-sanc-eye" aria-hidden="true">${ICON.eye}</span><span data-j2-s="nameText"></span></span>
+                    <button type="button" class="btn btn-sm" data-j2-sanc-name aria-pressed="false"></button>
+                  </div>
+                </section>
                 <div class="j2-insp-scroll j2-sanc-rows" data-j2-s="rows"></div>
                 <footer class="j2-sanc-foot">
                   <button type="button" class="btn btn-sm btn-danger" data-j2-sanc-delete data-t="journey2_sanc_delete"></button>
@@ -521,6 +532,7 @@
           </div>
           <div class="j2-tip" data-j2-tip hidden></div>
           <p class="sr-only" data-j2-live role="status" aria-live="polite"></p>
+          <ul class="sr-only" data-j2-known-sanc data-t-aria="journey2_sanc_known" hidden></ul>
         </section>`;
       ui.root = container.querySelector('.j2');
       ui.viewport = container.querySelector('.j2-viewport');
@@ -541,6 +553,8 @@
       ui.sancGenerateLabel = container.querySelector('[data-j2-sanc-generate-label]');
       ui.sancReroll = ui.sanctuary.querySelector('[data-j2-sanc-reroll]');
       ui.sancDelete = ui.sanctuary.querySelector('[data-j2-sanc-delete]');
+      ui.sancName = ui.sanctuary.querySelector('[data-j2-sanc-name]');
+      ui.knownSanc = container.querySelector('[data-j2-known-sanc]');
       ui.zoomReadout = container.querySelector('[data-j2-zoom-readout]');
       ui.badge = container.querySelector('[data-j2-proof-badge]');
       ui.side = container.querySelector('.j2-side');
@@ -1381,6 +1395,7 @@
         ui.g.player.innerHTML = overlayMarkup(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, tint: o.tint })));
         renderEchoes();
         renderPerimeter();
+        renderSanctuaryLabels();
         return;
       }
       ui.g.player.innerHTML = '';
@@ -1389,6 +1404,38 @@
       const byBatch = new Map(doc.batches.map(b => [b.id, b])), tints = Tint.gmTintByCell(doc, showBiome);
       ui.g.tiles.innerHTML = overlayMarkup(doc.tiles.map(tile => { const c = Geo.parseCellId(tile.cell); return { q: c.q, r: c.r, spec: specOfBatch(byBatch.get(tile.batchId)), tint: tints.get(tile.cell) || null }; }));
       renderPerimeter();
+      renderSanctuaryLabels();
+    }
+
+    /**
+     * Player Preview only (PD-027): the names the GM revealed, as ink on the map beside each fixed icon. They are drawn from the projection's
+     * `sanctuaryLabels` alone (never from the document), laid out in WORLD px by Geo.layoutSanctuaryLabels — no viewport, zoom or sidebar input, so a
+     * print renderer can call the same two functions. The layer is above the fog, emptied (not hidden) in the GM view, aria-hidden and pointer-transparent;
+     * assistive technology reads the visually-hidden "Known sanctuaries" list instead. An unrevealed name is in neither.
+     */
+    function renderSanctuaryLabels() {
+      const g = ui.g && ui.g.sanctlabels;
+      if (!g || !doc) return;
+      if (!previewMode || !playerProjection) {
+        if (sancLabelsDrawn !== null) { g.innerHTML = ''; sancLabelsDrawn = null; }
+        if (ui.knownSanc) { ui.knownSanc.hidden = true; ui.knownSanc.innerHTML = ''; }
+        return;
+      }
+      const labels = playerProjection.sanctuaryLabels;
+      const sig = JSON.stringify(labels);
+      if (sancLabelsDrawn === sig) return;
+      const placed = Geo.layoutSanctuaryLabels(labels, data.ctx.sanctuaries.map(s => ({ id: s.id, rect: s.rect })), { icons: data.ctx.iconRects, world: data.ctx.worldSize });
+      let h = '';
+      for (const l of placed) {
+        h += '<text class="j2-sanc-label" data-anchor="' + esc(l.anchorId) + '" data-placement="' + l.placement + '" font-size="' + l.fontSize + '">' +
+          l.lines.map((line, i) => '<tspan x="' + fmt(l.cx, 1) + '" y="' + fmt(l.y + l.lineHeight * (i + 0.8), 1) + '">' + esc(line) + '</tspan>').join('') + '</text>';
+      }
+      g.innerHTML = h;
+      sancLabelsDrawn = sig;
+      if (ui.knownSanc) {
+        ui.knownSanc.innerHTML = labels.map(l => '<li>' + esc(l.name) + '</li>').join('');
+        ui.knownSanc.hidden = !labels.length;
+      }
     }
 
     /**
@@ -1524,18 +1571,25 @@
     /** The ring round every generated sanctuary icon (the affordance that says "click me"); the open one is stronger. Redrawn only when the set or the open one changed. */
     function renderSanctuaryRings() {
       if (!ui.g || !ui.g.sanct || !doc) return;
-      if (previewMode) { ui.g.sanct.innerHTML = ''; sancDrawn = { sanctuaries: null, open: null }; return; }
-      if (sancDrawn.sanctuaries === doc.sanctuaries && sancDrawn.open === sanctuaryOpen) return;
+      if (previewMode) { ui.g.sanct.innerHTML = ''; sancDrawn = { sanctuaries: null, open: null, names: null }; return; }
+      const names = doc.playerVisibility.revealedSanctuaryNameAnchorIds;
+      if (sancDrawn.sanctuaries === doc.sanctuaries && sancDrawn.open === sanctuaryOpen && sancDrawn.names === names) return;
       const at = sanctuaryAnchorMap();
       let h = '';
       for (const e of doc.sanctuaries.entries) {
         const a = at.get(e.anchorId);
         if (!a) continue;
         const pr = a.iconProtectionArea.rectPx, x = fmt(a.worldPixelAnchor[0], 1), y = fmt(pr[1] + pr[3], 1);   // a small dot at the foot of the icon
-        h += '<g class="j2-sanc" data-sanc="' + esc(e.anchorId) + '"><circle class="j2-sanc-dot" cx="' + x + '" cy="' + y + '" r="3"/></g>';
+        if (Model.isSanctuaryNameRevealed(doc, e.anchorId)) {
+          // name visible to players: the dot becomes a small ringed eye (a shape cue, not only a colour; never the blue Echo diamond)
+          h += '<g class="j2-sanc is-name-visible" data-sanc="' + esc(e.anchorId) + '" data-name-visible="true" style="transform:translate(' + x + 'px,' + y + 'px) scale(var(--j2-inv,1))">' +
+            '<circle class="j2-sanc-ring" r="7.5"/><path class="j2-sanc-eye-lid" d="M-5 0C-3 -3.2 -1.5 -4 0 -4S3 -3.2 5 0C3 3.2 1.5 4 0 4S-3 3.2 -5 0z"/><circle class="j2-sanc-eye-iris" r="1.7"/></g>';
+        } else {
+          h += '<g class="j2-sanc" data-sanc="' + esc(e.anchorId) + '" data-name-visible="false"><circle class="j2-sanc-dot" cx="' + x + '" cy="' + y + '" r="3"/></g>';
+        }
       }
       ui.g.sanct.innerHTML = h;
-      sancDrawn = { sanctuaries: doc.sanctuaries, open: sanctuaryOpen };
+      sancDrawn = { sanctuaries: doc.sanctuaries, open: sanctuaryOpen, names: names };
     }
 
     /** Toolbar state: the one button carries the sanctuary count of the printed map and is disabled while edits are locked. */
@@ -1545,11 +1599,18 @@
       ui.sancGenerate.disabled = editLocked;
     }
 
+    /** Hides the overlay AND empties it: a closed panel keeps no sanctuary name or table in the DOM (Player Preview must not carry any). */
+    function clearSanctuaryPanel() {
+      if (!ui.sanctuary) return;
+      ui.sanctuary.hidden = true; sanctuaryShown = null;
+      ui.s.name.textContent = ''; ui.s.rows.innerHTML = ''; ui.s.rows.removeAttribute('data-sig');
+    }
+
     /** Paints the open overlay from the committed document (rows only when they changed, so a scroll position survives). */
     function renderSanctuaryPanel() {
       if (!ui.sanctuary) return;
       const e = previewMode ? null : sanctuaryEntry(sanctuaryOpen);
-      if (!e) { ui.sanctuary.hidden = true; sanctuaryShown = null; return; }
+      if (!e) { clearSanctuaryPanel(); return; }
       ui.sanctuary.hidden = false;
       ui.s.name.textContent = sanctuaryTitle(e);
       const rows = generator && generator.ready() && typeof generator.describeSanctuary === 'function' ? generator.describeSanctuary(e) : [];
@@ -1557,6 +1618,13 @@
         '<section class="j2-sanc-row"><h4 class="j2-sanc-k"><span>' + esc(t(r.label)) + '</span></h4>' +
         r.results.map(x => '<p class="j2-sanc-v"><span class="j2-sanc-text">' + esc(x.text) + '</span></p>').join('') + '</section>').join('');
       if (ui.s.rows.getAttribute('data-sig') !== html) { ui.s.rows.innerHTML = html; ui.s.rows.setAttribute('data-sig', html); }
+      const shown = Model.isSanctuaryNameRevealed(doc, e.anchorId);
+      ui.s.nameText.textContent = t(shown ? 'journey2_sanc_name_visible' : 'journey2_sanc_name_hidden');
+      ui.s.nameState.classList.toggle('is-visible', shown);
+      ui.sancName.textContent = t(shown ? 'journey2_sanc_name_hide' : 'journey2_sanc_name_reveal');
+      ui.sancName.title = t(shown ? 'journey2_sanc_name_hide_title' : 'journey2_sanc_name_reveal_title');
+      ui.sancName.setAttribute('aria-pressed', String(shown));
+      ui.sancName.disabled = editLocked;
       ui.sancReroll.disabled = editLocked || !sanctuaryReady();
       ui.sancDelete.disabled = editLocked;
       if (sanctuaryShown !== sanctuaryOpen) ui.s.rows.scrollTop = 0;
@@ -1615,7 +1683,7 @@
       if (!sanctuaryOpen) return false;
       const o = opts || {};
       sanctuaryOpen = null; sanctuaryShown = null;
-      if (ui.sanctuary) { ui.sanctuary.hidden = true; ui.sanctuary.style.transform = ''; }
+      if (ui.sanctuary) { clearSanctuaryPanel(); ui.sanctuary.style.transform = ''; }
       renderSanctuaryRings();
       if (!o.quiet) announce(t('journey2_live_sanc_closed'));
       if (o.focus && ui.viewport) ui.viewport.focus({ preventScroll: true });
@@ -1644,11 +1712,11 @@
         if (!r.ok) { hint(t('journey2_sanc_failed')); return; }
         announce(fill('journey2_live_sanc_generated', { n: n(entries.length) }));
       };
-      const have = doc.sanctuaries.entries.length;
+      const have = doc.sanctuaries.entries.length, visibleNames = Model.getRevealedSanctuaryNameSet(doc).size;
       if (!have) { commit(); return; }
       openDialog({
         title: t('journey2_sanc_replace_title'),
-        lines: [fill('journey2_sanc_replace_msg', { n: n(have) }), t('journey2_echo_undo_note')],
+        lines: [fill('journey2_sanc_replace_msg', { n: n(have) })].concat(visibleNames ? [fill('journey2_sanc_replace_visible_msg', { n: n(visibleNames) })] : [], [t('journey2_echo_undo_note')]),
         actions: [
           { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
           { label: t('journey2_sanc_replace_go'), kind: 'btn-danger', value: 'replace' },
@@ -1656,12 +1724,42 @@
       }).then(v => { if (inst.disposed) return; if (v === 'replace') commit(); if (ui.sancGenerate) ui.sancGenerate.focus({ preventScroll: true }); });
     }
 
-    /** Throws the open sanctuary again — name and all seven tables — keeping its place on the map. One Undo entry. */
+    /** Player map: reveals or hides the open sanctuary's NAME (a manual player-knowledge state, one Undo entry). The overlay stays open and focus stays on the button. */
+    function toggleSanctuaryName() {
+      if (inst.disposed || editLocked || previewMode || !doc || !sanctuaryOpen) return;
+      const e = sanctuaryEntry(sanctuaryOpen);
+      if (!e) return;
+      const reveal = !Model.isSanctuaryNameRevealed(doc, e.anchorId);
+      const r = dispatch({ type: 'setSanctuaryNameRevealed', anchorId: e.anchorId, revealed: reveal }, reveal ? 'sanctuaryNameReveal' : 'sanctuaryNameHide', true);
+      if (!r.ok) { hint(t('journey2_sanc_failed')); return; }
+      announce(reveal ? fill('journey2_live_sanc_name_revealed', { name: sanctuaryTitle(e) }) : t('journey2_live_sanc_name_hidden'));
+    }
+
+    /** Throws the open sanctuary again — name and all seven tables — keeping its place on the map. One Undo entry. A visible name is replaced on the player map, so that asks first (and rolls only after the confirmation). */
     function rerollSanctuary() {
       if (inst.disposed || editLocked || previewMode || !doc || !sanctuaryOpen) return;
       const e = sanctuaryEntry(sanctuaryOpen);
       if (!e) return;
       if (!sanctuaryReady()) { hint(t('journey2_sanc_unavailable')); return; }
+      if (!Model.isSanctuaryNameRevealed(doc, e.anchorId)) { commitReroll(e.anchorId); return; }
+      openDialog({
+        title: t('journey2_sanc_reroll_visible_title'),
+        lines: [t('journey2_sanc_reroll_visible_msg'), t('journey2_echo_undo_note')],
+        actions: [
+          { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
+          { label: t('journey2_sanc_reroll'), kind: 'btn-primary', value: 'reroll' },
+        ],
+      }).then(v => {
+        if (inst.disposed) return;
+        if (v === 'reroll' && sanctuaryOpen === e.anchorId) commitReroll(e.anchorId);
+        if (ui.sancReroll && ui.sanctuary && !ui.sanctuary.hidden) ui.sancReroll.focus({ preventScroll: true });
+      });
+    }
+
+    function commitReroll(anchorId) {
+      if (inst.disposed || editLocked || previewMode || !doc) return;
+      const e = sanctuaryEntry(anchorId);
+      if (!e) return;
       const taken = new Set(doc.sanctuaries.entries.filter(x => x.anchorId !== e.anchorId).map(x => x.name.toLowerCase()));
       let rolled = generator.rollSanctuary();
       for (let i = 0; i < 6 && rolled.name && taken.has(rolled.name.toLowerCase()); i++) rolled = generator.rollSanctuary();
@@ -1677,7 +1775,7 @@
       if (!e) return;
       openDialog({
         title: t('journey2_sanc_delete_title'),
-        lines: [fill('journey2_sanc_delete_msg', { name: sanctuaryTitle(e) }), t('journey2_echo_undo_note')],
+        lines: [fill('journey2_sanc_delete_msg', { name: sanctuaryTitle(e) })].concat(Model.isSanctuaryNameRevealed(doc, e.anchorId) ? [t('journey2_sanc_delete_visible_note')] : [], [t('journey2_echo_undo_note')]),
         actions: [
           { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
           { label: t('journey2_sanc_delete_go'), kind: 'btn-danger', value: 'delete' },
@@ -2037,7 +2135,7 @@
       ui.sidewrap.hidden = on; ui.sidewrap.inert = on;
       ui.historyGroup.hidden = on; ui.fogGroup.hidden = on; ui.echoGroup.hidden = on; ui.sancGroup.hidden = on;
       ui.previewBar.hidden = !on;
-      ui.hint.hidden = true; ui.tip.hidden = true;
+      ui.hint.hidden = true; ui.tip.hidden = true; ui.tip.innerHTML = ''; envTipKey = null;
       ui.viewport.setAttribute('aria-label', t(on ? 'journey2_preview_map_label' : 'journey2_map_label'));
       ui.viewport.classList.toggle('is-preview', on);
       const keys = container.querySelector('#j2-keys');
@@ -2622,6 +2720,7 @@
       else if (b.hasAttribute('data-j2-echo-clear')) confirmClearSoulEchoes();
       else if (b.hasAttribute('data-j2-sanc-generate')) generateSanctuaries();
       else if (b.hasAttribute('data-j2-sanc-close')) closeSanctuary({ focus: true });
+      else if (b.hasAttribute('data-j2-sanc-name')) toggleSanctuaryName();
       else if (b.hasAttribute('data-j2-sanc-reroll')) rerollSanctuary();
       else if (b.hasAttribute('data-j2-sanc-delete')) confirmDeleteSanctuary();
       else if (b.hasAttribute('data-j2-preview-back')) leavePreview();
@@ -3026,6 +3125,21 @@
       ui.tip.style.transform = 'translate(' + Math.max(8, x) + 'px,' + Math.max(8, y) + 'px)';
     }
 
+    /** Neutral GM hover over a generated sanctuary icon: its name and whether players can see it (nothing about Soul Echoes or the tables). */
+    function updateSanctuaryTip() {
+      const id = !tr && !pan && !fogStroke && !fogTool && !previewMode && !placeMode && pointer.inside ? sanctuaryAtScreen(pointer.x, pointer.y) : null;
+      const e = id ? sanctuaryEntry(id) : null;
+      if (!e) { if (envTipKey && String(envTipKey).indexOf('sanc:') === 0) hideEnvTip(); return; }
+      ui.tip.innerHTML = '<strong></strong><span></span>';
+      ui.tip.children[0].textContent = fill(Model.isSanctuaryNameRevealed(doc, id) ? 'journey2_sanc_tip_name_visible' : 'journey2_sanc_tip_name_hidden', { name: sanctuaryTitle(e) });
+      ui.tip.children[1].textContent = '';
+      ui.tip.classList.remove('is-bad', 'is-warn');
+      ui.tip.hidden = false;
+      envTipKey = 'sanc:' + id;
+      const x = Math.min(window.innerWidth - ui.tip.offsetWidth - 8, pointer.cx + 18), y = Math.min(window.innerHeight - ui.tip.offsetHeight - 8, pointer.cy + 18);
+      ui.tip.style.transform = 'translate(' + Math.max(8, x) + 'px,' + Math.max(8, y) + 'px)';
+    }
+
     function updateHover() {
       if (!data || !doc) return;
       const w = Geo.screenToWorld(cam, pointer.x, pointer.y);
@@ -3033,6 +3147,7 @@
       ui.viewport.classList.toggle('is-over-tile', !editLocked && !previewMode && !fogTool && Model.derive(doc).occupancy.has(Geo.cellId(c.q, c.r)));
       ui.viewport.classList.toggle('is-over-sanctuary', !fogTool && !!sanctuaryAtScreen(pointer.x, pointer.y));
       updateEnvTip(c);
+      updateSanctuaryTip();
       if (!diagOpen) return;
       hoverCell = data.grid.isValid(c.q, c.r) ? c : null;
       hoverMarker = markerAt(w[0], w[1]);

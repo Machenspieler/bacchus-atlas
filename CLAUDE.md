@@ -213,8 +213,11 @@ Biome Tint (PD-026): a faint derived wash inside each placed hex from its Habita
 Shadowblight keeps the Habitat colour, a fully overtaken region uses a violet-grey fallback); never stored; GM toggle "Biome colors" lives
 in `dhcodex_journey2_ui`; Player Preview tints revealed cells only (the projection omits it for hidden cells); black-and-white print
 (`buildPrintProjection`) carries no tint at all — never grayscale.
+Sanctuary names (PD-027): the only sanctuary datum players ever get is a name the GM revealed by hand
+(`playerVisibility.revealedSanctuaryNameAnchorIds`, independent of fog; projection `sanctuaryLabels: [{ anchorId, name }]` and nothing else);
+reroll keeps it, delete removes it atomically, Soul Echoes stay secret.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026, detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027, detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

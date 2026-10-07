@@ -17,6 +17,8 @@
        Valloren content, so an edge exists only where the tile's cell AND the cell on the other side are both revealed (a neighbour the
        fog never covers — off-map or title/compass furniture — needs only the tile). No line ends falsely at the edge of the revealed
        area and the shape of a hidden region is never leaked. Cells only: no region ids.
+     - `sanctuaryLabels`: [{ anchorId, name }] sorted by anchor id — ONLY the names the GM revealed by hand (PD-027), independent of fog. Nothing else
+       about a sanctuary (tables, rolls, Soul Echo, notes) is ever emitted, and an unrevealed sanctuary is absent altogether. `Geo.layoutSanctuaryLabels` places them.
    What it never contains (GM-only): batch/tile/region ids, Encounter, Rumor, notes, the suggested-environment
    list, placement state, selection, warnings, diagnostics, history.
 
@@ -52,12 +54,20 @@
       if (withTint) { const key = Tint.tintKeyOf(b.habitat); if (key) o.tint = key; }
       overlays.push(o);
     }
+    // Player knowledge of sanctuary names: only an explicitly revealed name of an existing generated entry, reduced to { anchorId, name } — never the rest of the entry
+    const named = new Map(((doc.sanctuaries && doc.sanctuaries.entries) || []).map(e => [e.anchorId, e.name]));
+    const sanctuaryLabels = [];
+    for (const id of Array.from(Model.getRevealedSanctuaryNameSet(doc)).sort()) {
+      const name = named.get(id);
+      if (typeof name === 'string' && name.trim() !== '') sanctuaryLabels.push({ anchorId: id, name: name });
+    }
     // without a context nothing counts as "never fogged", which is the strictest (never leaking) reading
     const foggable = ctx ? (key => Model.isFoggableCell(ctx, key)) : null;
     return {
-      version: 2,
+      version: 3,
       revealedCells: Array.from(revealed).sort(Model.compareCellKeys),
       overlays: overlays,
+      sanctuaryLabels: sanctuaryLabels,
       perimeter: Model.regionBoundarySegments(doc, ctx || null, key => revealed.has(key), foggable),
     };
   }

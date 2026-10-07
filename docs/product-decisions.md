@@ -880,3 +880,30 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   future colour print that may reuse the same keys. Colour printing is **not** implemented; the tint is never baked into the base map raster.
 - **Where:** `js/journey2-biome-tint.js`, `js/journey2-projection.js`, `js/journey2-view.js` (`overlayMarkup`, `toggleBiomeColors`),
   tests in `tests/journey2-biome-tint.test.js`.
+
+## PD-027: Journey 2 — a sanctuary's generated name can be revealed to players (manual, independent of fog)
+- **Status:** Active
+- **Date:** 2026-10-07
+- **Decision (what players always see):** the 56 fixed sanctuary icons, the printed MARROGATE and HORIZON labels — they are part of the immutable base map.
+- **Decision (what is hidden):** the generated name of a sanctuary is hidden from players by default. Only an explicit GM action reveals it
+  (**Reveal name** / **Hide name** in the Sanctuary Overlay, "Player map" row). Visibility is never inferred from fog, nearby revealed cells,
+  the party's position, Soul Echoes, generation, clicking or opening the overlay. There is no generic "visited" flag.
+- **Decision (storage):** `playerVisibility.revealedSanctuaryNameAnchorIds` — a sorted, duplicate-free list of stable anchor ids, each of a
+  printed sanctuary (never Marrogate/Horizon) that currently has a generated entry (cross-checked on load/import; an orphan or malformed id rejects the
+  document). Missing = none, so `schemaVersion` stays 1. No names, coordinates, label geometry or UI state are stored.
+- **Decision (command):** `setSanctuaryNameRevealed { anchorId, revealed }` — one Undo entry; already in that state is a pure no-op.
+  Reroll (`setSanctuary`) keeps the state (a visible name becomes the new name). `deleteSanctuary` removes the id in the same command.
+  `setSanctuaries` keeps ids only for anchors that still have an entry and never reveals a new one; an empty set clears all.
+- **Decision (confirmations):** rerolling a visible sanctuary asks first (and rolls only after the confirmation); deleting one adds the
+  line "its visible name will also disappear from the player map"; replacing all adds the count of currently visible names.
+- **Decision (what players get):** the projection's `sanctuaryLabels: [{ anchorId, name }]` — exactly those two fields, only for revealed
+  sanctuaries with a non-empty name, sorted. Trade, Quirk, Crisis, Drive, Politics, Size, Population, rolls, Soul Echoes and GM marker state
+  never enter it. A revealed name appears even while its surrounding cells are under fog. Soul Echoes stay entirely secret.
+- **Decision (look):** ink on the map — dark serif, tight light halo (`paint-order: stroke fill`), no box, no glow, no tint; up to two lines;
+  placed in world px by `Journey2Geometry.layoutSanctuaryLabels` (below, right, left, above; inside the map; clear of every printed icon and
+  of other labels; deterministic). The same projection and layout helper serve Player Preview and the future black-and-white print.
+- **Decision (GM view):** normal GM mode does not draw names; a visible-name sanctuary's ring dot becomes a small ringed eye (a shape, not only
+  a colour), and the hover tooltip reads "Name · Name visible/hidden to players".
+- **Out of scope:** auto-reveal, party token/route, a visited system, notes, name editing, other sanctuary data for players, print UI.
+- **Where:** `js/journey2-model.js`, `js/journey2-projection.js`, `js/journey2-geometry.js`, `js/journey2-view.js`, `css/journey2.css`,
+  tests in `tests/journey2-sanctuary-names.test.js`, browser checks in `scripts/journey2/lib/sanctuary-name-checks.js`.

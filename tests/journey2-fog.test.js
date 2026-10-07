@@ -53,7 +53,7 @@ function fixture() {
 
 test('a new document has a visibility object and every cell is hidden', () => {
   const doc = M.emptyDocument(ctx, AT);
-  assert.deepEqual(doc.playerVisibility, { revealedCells: [] });
+  assert.deepEqual(doc.playerVisibility, { revealedCells: [], revealedSanctuaryNameAnchorIds: [] });
   assert.equal(M.isCellRevealed(doc, AREA[0]), false);
   assert.equal(M.getRevealedCellSet(doc).size, 0);
 });
@@ -63,7 +63,7 @@ test('a document without playerVisibility (old / partial prototype) normalizes t
   delete raw.playerVisibility;
   const r = M.validateDocument(raw, ctx);
   assert.equal(r.ok, true, JSON.stringify(r));
-  assert.deepEqual(r.doc.playerVisibility, { revealedCells: [] });
+  assert.deepEqual(r.doc.playerVisibility, { revealedCells: [], revealedSanctuaryNameAnchorIds: [] });
   for (const bad of [{}, { revealedCells: undefined }, { revealedCells: null }]) {
     const x = M.validateDocument(Object.assign({}, raw, { playerVisibility: bad }), ctx);
     if (bad.revealedCells === null) assert.equal(x.ok, false); else assert.equal(x.ok, true, JSON.stringify(bad));
@@ -95,7 +95,7 @@ test('export -> import keeps the visibility, byte for byte, and only one list ex
   assert.deepEqual(back.doc.playerVisibility, doc.playerVisibility);
   assert.equal(M.serializeBackup(back.doc), text);
   const j = JSON.parse(text);
-  assert.deepEqual(Object.keys(j.playerVisibility), ['revealedCells']);
+  assert.deepEqual(Object.keys(j.playerVisibility), ['revealedCells', 'revealedSanctuaryNameAnchorIds']);
   assert.ok(!('hiddenCells' in j) && j.batches.every(b => !('revealed' in b) && !('fog' in b)) && j.tiles.every(t => Object.keys(t).sort().join() === 'batchId,cell,id'), 'fog never lives on a batch or a tile');
 });
 
@@ -256,7 +256,7 @@ test('projection: GM-only data never appears (region ids, Encounter, Rumor, note
   for (const secret of ['SECRET-GM-NOTE', 'region-secret-id', 'tile-secret', 'batchId', 'encounter', 'rumor', 'notes', 'environment', 'inspector', 'selection', 'diagnostic', 'warning', 'history', 'undo']) {
     assert.ok(!text.toLowerCase().includes(secret.toLowerCase()), 'leaked: ' + secret);
   }
-  assert.deepEqual(Object.keys(P.buildPlayerProjection(doc)).sort(), ['overlays', 'perimeter', 'revealedCells', 'version']);
+  assert.deepEqual(Object.keys(P.buildPlayerProjection(doc)).sort(), ['overlays', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'version']);
   for (const o of P.buildPlayerProjection(doc).overlays) assert.deepEqual(Object.keys(o).sort(), ['blightMark', 'dots', 'q', 'r', 'symbolId', 'tint']);
 });
 
@@ -387,7 +387,7 @@ test('strokes: interpolated with cellLine, each cell once, one command on releas
 });
 
 test('GM view: every generated tile is drawn whatever the fog says; the veil sits above the tiles and below selection', () => {
-  const gm = fn('renderTiles', 'renderPerimeter').split('ui.g.player.innerHTML = \'\';')[1];
+  const gm = fn('renderTiles', 'renderSanctuaryLabels').split('ui.g.player.innerHTML = \'\';')[1];
   assert.ok(gm && gm.includes('doc.tiles.map'));
   assert.doesNotMatch(gm, /isCellRevealed|getRevealedCellSet|playerVisibility|Projection/, 'the GM render does not look at visibility');
   const svg = view.slice(view.indexOf('<defs data-j2-defs>'), view.indexOf('</svg>', view.indexOf('<defs data-j2-defs>')));

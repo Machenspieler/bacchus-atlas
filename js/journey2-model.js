@@ -14,7 +14,7 @@
        batches: [ { id, createdAt, habitat, terrain, quantity, quantitySource,
                     encounter, rumor, notes } ],
        tiles:   [ { id, batchId, cell: "q,r", environmentId? } ],
-       playerVisibility: { revealedCells: [ "q,r", ... ] },
+       playerVisibility: { revealedCells: [ "q,r", ... ], revealedSanctuaryNameAnchorIds: [ "mk-012", ... ] },
        soulEchoes: { anchorIds: [ "mk-012", ... ] },
        sanctuaries: { entries: [ { anchorId, name, trade, quirk, crisis, drive, politics: { rolls }, size, population } ] } }
    A tile may carry ONE optional `environmentId` (a stable catalog id, never a name or stat block; missing = none). It belongs to the
@@ -28,6 +28,9 @@
    Sanctuaries (PD-023) are GM-only generated settlements: one entry per printed sanctuary icon (keyed by its stable anchor id),
    holding the NUMBERS that came up — never the table sentences — so a saved map reads back in either language. Optional on load
    (missing = none, schemaVersion stays 1), never part of the player projection or a print.
+   The ONLY sanctuary datum a player ever sees is a name the GM revealed by hand (PD-027): `playerVisibility.revealedSanctuaryNameAnchorIds`
+   (sorted stable anchor ids of sanctuaries that currently have a generated entry; missing = none, schemaVersion stays 1). It is independent of
+   cell Fog of War, of Soul Echoes and of where the party is.
    Counts (placed / remaining) are DERIVED from tiles, never stored:
      remaining(batch) = quantity(batch) - placedTileCount(batch)
    Occupancy is keyed by the canonical cell id; one tile per cell.
@@ -74,7 +77,7 @@
 
   const ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
   const DOC_KEYS = ['schemaVersion', 'kind', 'templateId', 'templateVersion', 'createdAt', 'updatedAt', 'batches', 'tiles', 'playerVisibility', 'soulEchoes', 'sanctuaries'];
-  const VISIBILITY_KEYS = ['revealedCells'];
+  const VISIBILITY_KEYS = ['revealedCells', 'revealedSanctuaryNameAnchorIds'];
   const SOUL_ECHO_KEYS = ['anchorIds'];
   const SANCTUARY_KEYS = ['entries'];
   const SANCTUARY_ENTRY_KEYS = ['anchorId', 'name', 'trade', 'quirk', 'crisis', 'drive', 'politics', 'size', 'population'];
@@ -126,7 +129,7 @@
     /* The 56 real sanctuaries (never the HORIZON / MARROGATE destinations), west to east: the only places a Soul Echo can be. */
     const sanctuaries = ((anchorsDoc && anchorsDoc.anchors) || [])
       .filter(a => a && a.kind === 'sanctuary' && typeof a.stableId === 'string' && Array.isArray(a.worldPixelAnchor))
-      .map(a => ({ id: a.stableId, x: a.worldPixelAnchor[0], y: a.worldPixelAnchor[1], top: a.iconProtectionArea.rectPx[1] }))
+      .map(a => ({ id: a.stableId, x: a.worldPixelAnchor[0], y: a.worldPixelAnchor[1], top: a.iconProtectionArea.rectPx[1], rect: a.iconProtectionArea.rectPx.slice(), labelPoint: a.labelAnchor && Array.isArray(a.labelAnchor.pointPx) ? a.labelAnchor.pointPx.slice() : null }))
       .sort((a, b) => a.x - b.x || a.y - b.y || (a.id < b.id ? -1 : 1));
     const sanctuaryCells = new Set(((anchorsDoc && anchorsDoc.anchors) || []).filter(a => a && typeof a.cellId === 'string').map(a => a.cellId));
     return {
@@ -135,6 +138,9 @@
       placeable: (q, r) => policy(q, r).ok && !sanctuaryCells.has(Geo.cellId(q, r)),
       allowedCellCount: grid.validCellCount() - decorative.size,
       sanctuaries: sanctuaries, sanctuaryIds: new Set(sanctuaries.map(s => s.id)),
+      /* Every printed icon (sanctuaries AND the Horizon / Marrogate destinations): the label layout keeps a player-visible name clear of all of them. */
+      iconRects: ((anchorsDoc && anchorsDoc.anchors) || []).filter(a => a && a.iconProtectionArea && Array.isArray(a.iconProtectionArea.rectPx)).map(a => ({ id: a.stableId, rect: a.iconProtectionArea.rectPx.slice() })),
+      worldSize: Array.isArray(template.worldSizePx) ? template.worldSizePx.slice() : null,
       /* Cells holding a printed sanctuary or destination (Horizon / Marrogate) icon: refused for NEW placement/moves only (checkCells), never by `policy`, so an older save with a tile there still loads. */
       sanctuaryCells: sanctuaryCells,
     };
@@ -148,12 +154,12 @@
 
   function emptyDocument(ctx, nowIso) {
     const now = nowIso || new Date().toISOString();
-    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [] }, soulEchoes: { anchorIds: [] }, sanctuaries: { entries: [] } };
+    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [], revealedSanctuaryNameAnchorIds: [] }, soulEchoes: { anchorIds: [] }, sanctuaries: { entries: [] } };
   }
 
   function isEmptyDocument(doc) {
     return !doc || (doc.batches.length === 0 && doc.tiles.length === 0
-      && !(doc.playerVisibility && doc.playerVisibility.revealedCells.length)
+      && !(doc.playerVisibility && (doc.playerVisibility.revealedCells.length || (doc.playerVisibility.revealedSanctuaryNameAnchorIds || []).length))
       && !(doc.soulEchoes && doc.soulEchoes.anchorIds.length)
       && !(doc.sanctuaries && doc.sanctuaries.entries.length));
   }
@@ -325,6 +331,7 @@
     const vis = validateVisibility(doc.playerVisibility, ctx, errors);
     const echoes = validateSoulEchoes(doc.soulEchoes, ctx, errors);
     const sanctuaries = validateSanctuaries(doc.sanctuaries, ctx, errors);
+    vis.revealedSanctuaryNameAnchorIds = validateRevealedSanctuaryNames(doc.playerVisibility, sanctuaries, ctx, errors);
     if (errors.length) return { ok: false, code: 'invalid', errors: errors.slice(0, 20) };
     return { ok: true, doc: { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: doc.templateId, templateVersion: doc.templateVersion, createdAt: doc.createdAt, updatedAt: doc.updatedAt, batches: batches, tiles: tiles, playerVisibility: vis, soulEchoes: echoes, sanctuaries: sanctuaries } };
   }
@@ -360,12 +367,12 @@
    * collapsed, order is normalized, anything else is reported (never silently repaired). Returns the normalized object.
    */
   function validateVisibility(v, ctx, errors) {
-    if (v === undefined || v === null) return { revealedCells: [] };
-    if (!isObj(v)) { errors.push('playerVisibility: not an object'); return { revealedCells: [] }; }
+    if (v === undefined || v === null) return { revealedCells: [], revealedSanctuaryNameAnchorIds: [] };
+    if (!isObj(v)) { errors.push('playerVisibility: not an object'); return { revealedCells: [], revealedSanctuaryNameAnchorIds: [] }; }
     checkKeys(v, VISIBILITY_KEYS, 'playerVisibility', errors);
-    if (v.revealedCells === undefined) return { revealedCells: [] };
-    if (!Array.isArray(v.revealedCells)) { errors.push('playerVisibility.revealedCells: not an array'); return { revealedCells: [] }; }
-    if (v.revealedCells.length > ctx.allowedCellCount * 2) { errors.push('playerVisibility.revealedCells: too many entries'); return { revealedCells: [] }; }
+    if (v.revealedCells === undefined) return { revealedCells: [], revealedSanctuaryNameAnchorIds: [] };
+    if (!Array.isArray(v.revealedCells)) { errors.push('playerVisibility.revealedCells: not an array'); return { revealedCells: [], revealedSanctuaryNameAnchorIds: [] }; }
+    if (v.revealedCells.length > ctx.allowedCellCount * 2) { errors.push('playerVisibility.revealedCells: too many entries'); return { revealedCells: [], revealedSanctuaryNameAnchorIds: [] }; }
     const set = new Set();
     for (let i = 0; i < v.revealedCells.length; i++) {
       const key = v.revealedCells[i];
@@ -373,7 +380,7 @@
       if (!isFoggableCell(ctx, key)) { errors.push('playerVisibility.revealedCells[' + i + ']: cell ' + key + ' is not on the map'); continue; }
       set.add(key);
     }
-    return { revealedCells: Array.from(set).sort(compareCellKeys) };
+    return { revealedCells: Array.from(set).sort(compareCellKeys), revealedSanctuaryNameAnchorIds: [] };
   }
 
   /* ---------------- Soul Echoes (GM-only, PD-024) ---------------- */
@@ -456,6 +463,46 @@
     });
     return { entries: sortSanctuaries(out) };
   }
+
+  /* ---------------- Sanctuary name visibility (player knowledge, PD-027) ---------------- */
+
+  const sortAnchorIds = ids => Array.from(new Set(ids)).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+
+  /**
+   * Validates `playerVisibility.revealedSanctuaryNameAnchorIds` (load + import) against the sanctuaries that were just validated. MISSING is
+   * not an error (every name is hidden); a present value must be an array of DISTINCT stable ids of printed sanctuaries (never the Horizon /
+   * Marrogate destinations) that each have a generated entry. Anything else rejects the whole document — a player-visible name is never
+   * silently dropped or invented.
+   */
+  function validateRevealedSanctuaryNames(vis, sanctuaries, ctx, errors) {
+    if (!isObj(vis) || vis.revealedSanctuaryNameAnchorIds === undefined) return [];
+    const v = vis.revealedSanctuaryNameAnchorIds, w = 'playerVisibility.revealedSanctuaryNameAnchorIds';
+    if (!Array.isArray(v)) { errors.push(w + ': not an array'); return []; }
+    if (v.length > ctx.sanctuaries.length) { errors.push(w + ': more entries than the map has sanctuaries'); return []; }
+    const have = new Set(sanctuaries.entries.map(e => e.anchorId)), seen = new Set();
+    for (let i = 0; i < v.length; i++) {
+      const id = v[i];
+      if (typeof id !== 'string' || !ctx.sanctuaryIds.has(id)) { errors.push(w + '[' + i + ']: not a sanctuary'); continue; }
+      if (!have.has(id)) { errors.push(w + '[' + i + ']: no generated sanctuary for "' + id + '"'); continue; }
+      if (seen.has(id)) { errors.push(w + '[' + i + ']: duplicate "' + id + '"'); continue; }
+      seen.add(id);
+    }
+    return sortAnchorIds(Array.from(seen));
+  }
+
+  const revealedNamesCache = new WeakMap();
+  /** The revealed-name anchor ids as a Set (cached per list, never mutated); a missing field is empty. */
+  function getRevealedSanctuaryNameSet(doc) {
+    const list = doc && doc.playerVisibility && doc.playerVisibility.revealedSanctuaryNameAnchorIds;
+    if (!Array.isArray(list)) return new Set();
+    let s = revealedNamesCache.get(list);
+    if (!s) { s = new Set(list); revealedNamesCache.set(list, s); }
+    return s;
+  }
+  function isSanctuaryNameRevealed(doc, anchorId) { return getRevealedSanctuaryNameSet(doc).has(anchorId); }
+  const revealedNameList = doc => (doc.playerVisibility && doc.playerVisibility.revealedSanctuaryNameAnchorIds) || [];
+  /** A `playerVisibility` with ONLY the revealed-name list replaced (the cell list is carried over untouched). */
+  const withRevealedNames = (doc, ids) => ({ revealedCells: doc.playerVisibility ? doc.playerVisibility.revealedCells : [], revealedSanctuaryNameAnchorIds: ids });
 
   /**
    * The one-click plan: a fresh settlement for EVERY sanctuary on the map. `roll()` is the generator adapter (a plain
@@ -793,7 +840,10 @@
    *   setSanctuaries { entries:[{anchorId,name,trade,...}], at }   GM-only: REPLACES every generated sanctuary (one entry per sanctuary id; [] removes
    *                                                                all); touches ONLY sanctuaries; same set => noop; anything invalid is refused whole
    *   setSanctuary   { entry, at }                                 replaces ONE existing sanctuary (the reroll); an unknown one is refused
-   *   deleteSanctuary { anchorId, at }                             removes ONE generated sanctuary; the printed icon is never touched
+   *   deleteSanctuary { anchorId, at }                             removes ONE generated sanctuary (and its revealed name, in the same command); the printed icon is never touched
+   *   setSanctuaryNameRevealed { anchorId, revealed, at }          Player map: reveal / hide ONE generated sanctuary's name (needs a generated entry); touches ONLY
+   *                                                                playerVisibility.revealedSanctuaryNameAnchorIds; already in that state => noop. Reroll (setSanctuary) keeps it;
+   *                                                                setSanctuaries keeps it only for anchors that still have an entry and never reveals a new one
    */
   function apply(doc, cmd, ctx) {
     switch (cmd && cmd.type) {
@@ -872,7 +922,7 @@
         if (!change.length) return { ok: true, doc: doc, noop: true };
         const next = new Set(getRevealedCellSet(doc));
         for (const key of change) { if (cmd.revealed) next.add(key); else next.delete(key); }
-        return { ok: true, doc: touch(doc, cmd.at, { playerVisibility: { revealedCells: Array.from(next).sort(compareCellKeys) } }), changed: change.length };
+        return { ok: true, doc: touch(doc, cmd.at, { playerVisibility: { revealedCells: Array.from(next).sort(compareCellKeys), revealedSanctuaryNameAnchorIds: revealedNameList(doc) } }), changed: change.length };
       }
       case 'setSoulEchoes': {
         if (!Array.isArray(cmd.anchorIds)) return fail('bad-echoes');
@@ -892,7 +942,10 @@
         }
         const sorted = sortSanctuaries(next), have = doc.sanctuaries ? doc.sanctuaries.entries : [];
         if (JSON.stringify(sorted) === JSON.stringify(have)) return { ok: true, doc: doc, noop: true };
-        return { ok: true, doc: touch(doc, cmd.at, { sanctuaries: { entries: sorted } }), changed: sorted.length };
+        // a revealed name stays revealed only for an anchor that still has an entry; a new entry is never revealed by the replacement
+        const kept = revealedNameList(doc).filter(id => seen.has(id)), patch = { sanctuaries: { entries: sorted } };
+        if (kept.length !== revealedNameList(doc).length) patch.playerVisibility = withRevealedNames(doc, kept);
+        return { ok: true, doc: touch(doc, cmd.at, patch), changed: sorted.length };
       }
       case 'setSanctuary': {
         const r = validateSanctuaryEntry(cmd.entry, ctx, 'entry');
@@ -906,7 +959,19 @@
       case 'deleteSanctuary': {
         const have = doc.sanctuaries ? doc.sanctuaries.entries : [];
         if (!have.some(e => e.anchorId === cmd.anchorId)) return fail('no-sanctuary');
-        return { ok: true, doc: touch(doc, cmd.at, { sanctuaries: { entries: have.filter(e => e.anchorId !== cmd.anchorId) } }) };
+        const patch = { sanctuaries: { entries: have.filter(e => e.anchorId !== cmd.anchorId) } };
+        if (getRevealedSanctuaryNameSet(doc).has(cmd.anchorId)) patch.playerVisibility = withRevealedNames(doc, revealedNameList(doc).filter(id => id !== cmd.anchorId));   // the visible name leaves with its sanctuary, atomically
+        return { ok: true, doc: touch(doc, cmd.at, patch) };
+      }
+      case 'setSanctuaryNameRevealed': {
+        if (typeof cmd.revealed !== 'boolean') return fail('bad-revealed');
+        if (typeof cmd.anchorId !== 'string' || !ctx.sanctuaryIds.has(cmd.anchorId)) return fail('bad-anchor');
+        const have = doc.sanctuaries ? doc.sanctuaries.entries : [];
+        if (!have.some(e => e.anchorId === cmd.anchorId)) return fail('no-sanctuary');
+        const set = getRevealedSanctuaryNameSet(doc);
+        if (set.has(cmd.anchorId) === cmd.revealed) return { ok: true, doc: doc, noop: true };
+        const ids = cmd.revealed ? sortAnchorIds(revealedNameList(doc).concat([cmd.anchorId])) : revealedNameList(doc).filter(id => id !== cmd.anchorId);
+        return { ok: true, doc: touch(doc, cmd.at, { playerVisibility: withRevealedNames(doc, ids) }) };
       }
       default: return fail('unknown-command');
     }
@@ -999,6 +1064,7 @@
     compactFootprint: compactFootprint,
     MAX_SOUL_ECHOES: MAX_SOUL_ECHOES, planSoulEchoes: planSoulEchoes,
     SANCTUARY_DICE: SANCTUARY_DICE, MAX_SANCTUARY_NAME: MAX_SANCTUARY_NAME, validateSanctuaryEntry: validateSanctuaryEntry, planSanctuaries: planSanctuaries,
+    getRevealedSanctuaryNameSet: getRevealedSanctuaryNameSet, isSanctuaryNameRevealed: isSanctuaryNameRevealed,
     isFoggableCell: isFoggableCell, getRevealedCellSet: getRevealedCellSet, isCellRevealed: isCellRevealed, cellsToChange: cellsToChange, compareCellKeys: compareCellKeys,
   };
 });

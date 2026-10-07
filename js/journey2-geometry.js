@@ -496,7 +496,89 @@
     return out;
   }
 
+  /* ---------------- sanctuary name labels (derived layout, never stored) ---------------- */
+
+  const LABEL_FONT_PX = 17, LABEL_LINE_PX = 18.5, LABEL_GAP_PX = 3, LABEL_MAX_CHARS = 13, LABEL_CHAR_EM = 0.52, LABEL_MARGIN_PX = 4;
+
+  /** Splits a name into at most two lines at word boundaries; a name that cannot fit gets one restrained ellipsis (the caller keeps the full name for assistive text). */
+  function wrapLabelName(name, maxChars, maxLines) {
+    const limit = maxChars || LABEL_MAX_CHARS, cap = maxLines || 2;
+    const words = String(name == null ? '' : name).trim().split(/\s+/).filter(Boolean);
+    if (!words.length) return [];
+    const greedy = lim => {
+      const lines = [];
+      let cur = '';
+      for (const w of words) {
+        if (!cur) cur = w;
+        else if ((cur + ' ' + w).length <= lim) cur += ' ' + w;
+        else { lines.push(cur); cur = w; }
+      }
+      lines.push(cur);
+      return lines;
+    };
+    // widen the line a little (up to 1.6x) before giving up, so a longer name still reads as two ordinary lines
+    const hard = Math.ceil(limit * 1.6);
+    let lines = null;
+    for (let lim = limit; lim <= hard && !lines; lim++) { const g = greedy(lim); if (g.length <= cap && g.every(l => l.length <= hard)) lines = g; }
+    if (lines) return lines;
+    const g = greedy(limit);
+    const out = g.slice(0, cap - 1);
+    out.push(g.slice(cap - 1).join(' '));
+    return out.map(l => (l.length > hard ? l.slice(0, hard - 1).replace(/\s+$/, '') + '…' : l));
+  }
+
+  const overlapArea = (a, b) => Math.max(0, Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x)) * Math.max(0, Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y));
+
+  /**
+   * Deterministic world-space placement of the revealed sanctuary names — the one helper Player Preview and the future print renderer share.
+   * It reads no viewport, camera, pan, zoom or DOM. `labels` = [{ anchorId, name }]; `anchors` = [{ id, rect: [x,y,w,h] }] (the printed icon's protection rectangle);
+   * `opts.icons` = every printed icon rectangle (sanctuaries and the MARROGATE / HORIZON destinations) a label must stay clear of;
+   * `opts.world` = [width, height] of the map. Candidates are tried in a fixed order — below, right, left, above — each clamped inside the map; the first
+   * with no overlap (own icon, any other icon, an already placed label) wins, otherwise the one with the smallest overlap. Labels are placed in anchor-id order.
+   * Returns [{ anchorId, name, lines, x, y, w, h, cx, fontSize, lineHeight, placement }] where (x, y, w, h) is the text box and cx its horizontal centre.
+   */
+  function layoutSanctuaryLabels(labels, anchors, opts) {
+    const o = opts || {}, world = o.world || null;
+    const rectOf = new Map((anchors || []).map(a => [a.id, a.rect]));
+    const icons = (o.icons || (anchors || [])).map(a => ({ id: a.id, box: { x: a.rect[0] - 2, y: a.rect[1] - 2, w: a.rect[2] + 4, h: a.rect[3] + 4 } }));
+    const ordered = (labels || []).filter(l => l && rectOf.has(l.anchorId)).slice().sort((a, b) => (a.anchorId < b.anchorId ? -1 : a.anchorId > b.anchorId ? 1 : 0));
+    const placed = [], out = [];
+    for (const l of ordered) {
+      const lines = wrapLabelName(l.name, o.maxChars, 2);
+      if (!lines.length) continue;
+      const w = Math.max.apply(null, lines.map(x => x.length)) * LABEL_FONT_PX * LABEL_CHAR_EM, h = lines.length * LABEL_LINE_PX;
+      const r = rectOf.get(l.anchorId), cx0 = r[0] + r[2] / 2, cy0 = r[1] + r[3] / 2;
+      const raw = [
+        ['below', cx0 - w / 2, r[1] + r[3] + LABEL_GAP_PX],
+        ['right', r[0] + r[2] + LABEL_GAP_PX, cy0 - h / 2],
+        ['left', r[0] - LABEL_GAP_PX - w, cy0 - h / 2],
+        ['above', cx0 - w / 2, r[1] - LABEL_GAP_PX - h],
+      ];
+      let best = null;
+      for (const c of raw) {
+        let x = c[1], y = c[2];
+        if (world) {
+          x = Math.min(Math.max(x, LABEL_MARGIN_PX), Math.max(LABEL_MARGIN_PX, world[0] - LABEL_MARGIN_PX - w));
+          y = Math.min(Math.max(y, LABEL_MARGIN_PX), Math.max(LABEL_MARGIN_PX, world[1] - LABEL_MARGIN_PX - h));
+        }
+        const box = { x: x, y: y, w: w, h: h };
+        let penalty = 0;
+        for (const ic of icons) penalty += overlapArea(box, ic.box) * (ic.id === l.anchorId ? 4 : 2);
+        for (const p of placed) penalty += overlapArea(box, p);
+        if (!best || penalty < best.penalty) best = { penalty: penalty, box: box, placement: c[0] };
+        if (penalty === 0) break;
+      }
+      placed.push(best.box);
+      out.push({ anchorId: l.anchorId, name: l.name, lines: lines, x: best.box.x, y: best.box.y, w: w, h: h, cx: best.box.x + w / 2, fontSize: LABEL_FONT_PX, lineHeight: LABEL_LINE_PX, placement: best.placement });
+    }
+    return out;
+  }
+
   return {
+    layoutSanctuaryLabels: layoutSanctuaryLabels,
+    wrapLabelName: wrapLabelName,
+    LABEL_FONT_PX: LABEL_FONT_PX,
+    LABEL_LINE_PX: LABEL_LINE_PX,
     cellLine: cellLine,
     chainEdgeSegments: chainEdgeSegments,
     polylinesPath: polylinesPath,

@@ -507,6 +507,10 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       keeps the overlay open, and is one Undo entry. Pressing the toolbar button again asks before replacing. Clicking empty map closes the overlay; opening a hex's Region Inspector replaces it.
       `S` / `Shift+S` (map focused) step through the sanctuaries. Reload keeps them; the JSON backup round-trips them. **Player Preview** shows no ring, no overlay and no button.
       Check RU wording against daggerheart.ru/frame/journey-to-horizon, a narrow window (overlay full width) and the overlay beside the sidebar.
+- [ ] Sanctuary names for players (PD-027): in the overlay the **Player map** row reads "Name hidden from players" + **Reveal name**; pressing it flips to "Name visible to players" + **Hide name**
+      (overlay stays open, map does not move, focus stays on the button, one Undo entry each way). The ring dot becomes a small ringed eye; hovering the icon shows "Name · Name visible to players".
+      **Player Preview** shows the name in dark serif with a thin light halo beside that fixed icon (not covering it, inside the map, never over MARROGATE/HORIZON), even under fog;
+      hidden names, tables and Soul Echoes are absent. Rerolling a visible sanctuary and deleting it each ask first; replacing all mentions how many names are visible. Check RU and a long name (two lines).
 - [ ] Export/Import (no toolbar button since the Backup menu was removed — use `Journey2View.debugApi().runAction('export')`
       and the corrupt-map banner's Import): replacing a non-empty map asks first; a bad file is rejected with the
       reason and changes nothing; an import also ends Player Preview and any fog tool.

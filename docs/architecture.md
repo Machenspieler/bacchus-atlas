@@ -1288,6 +1288,24 @@ Run all of them with `node --test tests/*.test.js`.
   — or a known Journey source file — appears in `dist/`. It no longer bans
   PDFs/ZIPs as a class.
 
+### Journey 2 sanctuary names for players (PD-027)
+
+- *Schema.* `playerVisibility = { revealedCells, revealedSanctuaryNameAnchorIds }`; the second list is sorted anchor ids, optional on load
+  (`validateRevealedSanctuaryNames` runs after `validateSanctuaries`, so an id without a generated entry rejects the document).
+  `Model.getRevealedSanctuaryNameSet(doc)` / `isSanctuaryNameRevealed(doc, id)` are the cached read helpers; `setCellsRevealed` carries the list over.
+- *Command.* `setSanctuaryNameRevealed { anchorId, revealed, at }` (no-op when unchanged). `deleteSanctuary` drops the id atomically,
+  `setSanctuaries` keeps it only for surviving anchors, `setSanctuary` (reroll) never touches it.
+- *Projection.* `buildPlayerProjection` (version 3) adds `sanctuaryLabels: [{ anchorId, name }]`; `buildPrintProjection` inherits it (tint-free).
+- *Layout.* `Journey2Geometry.layoutSanctuaryLabels(labels, anchors, { icons, world })` + `wrapLabelName` — pure, world px, deterministic
+  (below → right → left → above, clamped to the map, penalised overlap with any printed icon or placed label). `ctx.sanctuaries[i].rect`,
+  `ctx.iconRects` and `ctx.worldSize` feed it. Print will call the same functions.
+- *Rendering order.* `… fog, envmarks, perimeter, fogstroke, sanct (GM rings), echoes, sanctlabels (Player Preview names), grid …, select, preview`.
+  `renderSanctuaryLabels()` (called from both branches of `renderTiles`) fills `<g data-j2-g="sanctlabels">` only in Player Preview and the
+  visually-hidden `[data-j2-known-sanc]` list; the GM view empties both. The GM ring (`renderSanctuaryRings`) swaps its dot for a ringed eye
+  when the name is visible and redraws when the list identity changes.
+- *Overlay.* A "Player map" row between the header and the tables: status text + `aria-pressed` button (`toggleSanctuaryName`, dispatches with
+  `keepTransient`, announces, keeps the overlay, camera and focus). `rerollSanctuary` confirms for a visible name then calls `commitReroll`.
+
 ### Journey 2 Biome Tint (PD-026)
 
 `js/journey2-biome-tint.js` (pure, loaded before `journey2-projection.js`) owns the palette and `tintKeyOf(habitat)` / `gmTintByCell(doc, enabled)`.

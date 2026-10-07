@@ -186,9 +186,10 @@ test('projection: sanctuaries never reach the player projection (GM-only, PD-023
   doc = must(M.apply(doc, { type: 'setSanctuaries', entries: M.planSanctuaries(ctx, counterRoll(['Secretburg', 'Hiddenford'])), at: AT }, ctx));
   const proj = P.buildPlayerProjection(doc, ctx);
   const text = JSON.stringify(proj).toLowerCase();
-  assert.ok(!text.includes('sanctuar') && !text.includes('secretburg') && !text.includes('hiddenford') && !text.includes('mk-'), 'leaked into the projection');
-  assert.deepEqual(Object.keys(proj).sort(), ['overlays', 'perimeter', 'revealedCells', 'version']);
-  assert.ok(!/sanctuaries/.test(read('js/journey2-projection.js').replace(/\/\*[\s\S]*?\*\//g, '')), 'the projection code never reads the field');
+  assert.ok(!text.includes('secretburg') && !text.includes('hiddenford') && !text.includes('mk-'), 'leaked into the projection');
+  assert.deepEqual(proj.sanctuaryLabels, [], 'a generated but unrevealed sanctuary emits nothing (PD-027)');
+  assert.deepEqual(Object.keys(proj).sort(), ['overlays', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'version']);
+  assert.ok(!/\b(trade|quirk|crisis|drive|politics|population)\b/.test(read('js/journey2-projection.js').replace(/\/\*[\s\S]*?\*\//g, '')), 'the projection code never reads any sanctuary characteristic');
 });
 
 /* ---------------- view source guards ---------------- */
