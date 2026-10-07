@@ -240,6 +240,13 @@ test('projection: an empty generated name emits no visual label; destinations ar
   assert.ok(all.every(l => !DEST.includes(l.anchorId)));
 });
 
+test('sanctuaryLabelsOf: the one list the GM map and the projection both draw — revealed, named, sorted, nothing else', () => {
+  const doc = must(reveal(must(reveal(withSanctuaries(SANCT.slice(0, 3)), SANCT[2], true)), SANCT[0], true));
+  assert.deepEqual(P.sanctuaryLabelsOf(doc), [{ anchorId: SANCT[0], name: 'Town0' }, { anchorId: SANCT[2], name: 'Town2' }]);
+  assert.deepEqual(P.sanctuaryLabelsOf(doc), P.buildPlayerProjection(doc, ctx).sanctuaryLabels);
+  assert.deepEqual(P.sanctuaryLabelsOf(withSanctuaries(SANCT.slice(0, 3))), []);
+});
+
 test('print projection: carries the revealed labels, no biome tint, no GM data', () => {
   const doc = must(reveal(withSanctuaries(SANCT.slice(0, 3)), SANCT[2], true));
   const p = P.buildPrintProjection(doc, ctx);
@@ -318,17 +325,18 @@ test('layout: reads no viewport, camera or DOM state', () => {
 
 const fn = (from, to) => view.slice(view.indexOf('function ' + from), view.indexOf('function ' + to, view.indexOf('function ' + from) + 1));
 
-test('view: the label layer is above the fog, pointer-transparent and aria-hidden; the GM view empties it', () => {
+test('view: the label layer is above the fog, pointer-transparent and aria-hidden; the GM map draws the revealed names too, Player Preview from the projection', () => {
   const svg = view.slice(view.indexOf('<defs data-j2-defs>'), view.indexOf('</svg>', view.indexOf('<defs data-j2-defs>')));
   const at = k => svg.indexOf('data-j2-g="' + k + '"');
   assert.ok(at('fog') < at('sanctlabels') && at('sanctlabels') < at('select'));
   assert.match(svg, /data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"/);
   const body = fn('renderSanctuaryLabels', 'renderPerimeter');
-  assert.match(body, /playerProjection\.sanctuaryLabels/);
+  assert.match(body, /playerProjection\.sanctuaryLabels/, 'Player Preview draws the projection only');
+  assert.match(body, /Projection\.sanctuaryLabelsOf\(doc\)/, 'the GM map draws the same revealed list');
   assert.match(body, /Geo\.layoutSanctuaryLabels/);
-  assert.doesNotMatch(body, /doc\.sanctuaries|cam\.|getBoundingClientRect/, 'drawn from the projection in world px only');
-  assert.match(body, /!previewMode/);
+  assert.doesNotMatch(body, /doc\.sanctuaries|cam\.|getBoundingClientRect/, 'drawn in world px only');
   assert.match(css, /\.j2-sanc-label\s*\{[^}]*paint-order: stroke fill[^}]*\}/);
+  assert.match(css, /\.j2-sanc-label\s*\{[^}]*font-family: var\(--font-map\)[^}]*text-transform: uppercase/, 'hand-lettered capitals like the printed book');
   const rule = css.match(/\.j2-overlay \.j2-sanc-label \{[^}]*\}/)[0];
   assert.doesNotMatch(rule, /background|glow|box-shadow|filter/, 'ink on the map: no sticker, no glow');
 });

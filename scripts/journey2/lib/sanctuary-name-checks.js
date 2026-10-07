@@ -89,12 +89,13 @@ async function runSanctuaryNameChecks(env) {
     return { ok: r.names.length === 1 && r.names[0] === ID && r.open && r.status === 'Name visible to players' && r.btn === 'Hide name' && r.pressed === 'true' && r.cam && r.fog && r.echo && r.undo === 1 && r.focus && r.live.includes((await entryOf(ID)).name), detail: r };
   });
 
-  await check('sancname.03.the-gm-ring-shows-a-non-colour-shape-and-stays-pointer-transparent-and-hidden-from-assistive-tech', async () => {
+  await check('sancname.03.the-gm-map-letters-the-revealed-name-and-the-ring-shows-a-non-colour-shape-and-stays-pointer-transparent-and-hidden-from-assistive-tech', async () => {
     const r = await page.evaluate(id => {
       const g = document.querySelector('[data-j2-g="sanct"]'), m = g.querySelector('[data-sanc="' + id + '"]');
-      return { visible: m && m.classList.contains('is-name-visible'), parts: m ? Array.from(m.children).map(c => c.getAttribute('class')) : [], pe: g.getAttribute('pointer-events'), other: g.querySelectorAll('.is-name-visible').length, echoLike: g.querySelectorAll('.j2-echo').length, ariaHiddenLayer: !!g.closest('svg') };
+      const lab = document.querySelector('[data-j2-g="sanctlabels"] .j2-sanc-label[data-anchor="' + id + '"]');
+      return { gmLabel: !!lab && getComputedStyle(lab).textTransform === 'uppercase' && /Architects Daughter/.test(getComputedStyle(lab).fontFamily), gmLabels: document.querySelectorAll('[data-j2-g="sanctlabels"] .j2-sanc-label').length, visible: m && m.classList.contains('is-name-visible'), parts: m ? Array.from(m.children).map(c => c.getAttribute('class')) : [], pe: g.getAttribute('pointer-events'), other: g.querySelectorAll('.is-name-visible').length, echoLike: g.querySelectorAll('.j2-echo').length, ariaHiddenLayer: !!g.closest('svg') };
     }, ID);
-    return { ok: r.visible && r.parts.includes('j2-sanc-eye-lid') && r.pe === 'none' && r.other === 1 && r.echoLike === 0, detail: r };
+    return { ok: r.gmLabel && r.gmLabels === 1 && r.visible && r.parts.includes('j2-sanc-eye-lid') && r.pe === 'none' && r.other === 1 && r.echoLike === 0, detail: r };
   });
 
   await check('sancname.04.hovering-the-icon-names-the-state-without-echo-information', async () => {

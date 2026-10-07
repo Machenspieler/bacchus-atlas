@@ -498,7 +498,7 @@
 
   /* ---------------- sanctuary name labels (derived layout, never stored) ---------------- */
 
-  const LABEL_FONT_PX = 17, LABEL_LINE_PX = 18.5, LABEL_GAP_PX = 3, LABEL_MAX_CHARS = 13, LABEL_CHAR_EM = 0.52, LABEL_MARGIN_PX = 4;
+  const LABEL_FONT_PX = 17, LABEL_LINE_PX = 18.5, LABEL_GAP_PX = 3, LABEL_MAX_CHARS = 13, LABEL_CHAR_EM = 0.6, LABEL_MARGIN_PX = 4;
 
   /** Splits a name into at most two lines at word boundaries; a name that cannot fit gets one restrained ellipsis (the caller keeps the full name for assistive text). */
   function wrapLabelName(name, maxChars, maxLines) {

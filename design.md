@@ -157,6 +157,7 @@ hexagon drop-shadows, ink overlays and the page-wash gradients stay literal.
 | `--font-body` | Spectral | body copy, buttons, form fields |
 | `--font-mono` | JetBrains Mono | dice notation, stat numbers, counters |
 | `--font-ui` | system sans (`system-ui`, Segoe UI, …) | **Prep only** — see below |
+| `--font-map` | Architects Daughter | **Journey 2 map lettering only** — the revealed sanctuary names, drawn in uppercase on the map like the printed book's hand-lettered place names; never body or UI text |
 
 Fonts are requested via a `<link>` in `index.html` with `preconnect`, not an
 `@import` inside `styles.css` — an `@import` can't start downloading until
@@ -524,7 +525,7 @@ table says. The layouts in between are valid, just one column narrower.
   treatment.
 - Don't add a second reading typeface (serif or otherwise) outside the
   Forum/Spectral/JetBrains Mono trio, and don't use `--font-ui` outside
-  Prep.
+  Prep or `--font-map` outside the Journey 2 map's SVG lettering.
 - Don't add `content-visibility` or a similar layout-estimate optimization to
   `.card` — it was tried and measured to make the scrollbar lie.
 - Don't reach for a native `<select multiple>` for a new multi-choice filter

@@ -216,7 +216,7 @@
     let sanctuaryOpen = null;                               // anchor id of the sanctuary whose overlay is open (transient: never persisted, never in history)
     let sanctuaryShown = null;                              // anchor id the overlay DOM currently shows (so its scroll position survives re-renders)
     let sancDrawn = { sanctuaries: null, open: null, names: null };   // what the sanctuary ring layer currently shows
-    let sancLabelsDrawn = null;                             // the projection's sanctuaryLabels currently drawn in Player Preview
+    let sancLabelsDrawn = null;                             // the sanctuaryLabels currently drawn (GM map and Player Preview share them)
     let sancAnchors = null;                                 // Map anchor id -> the printed sanctuary anchor (built once)
 
     container.innerHTML = '';
@@ -1404,22 +1404,19 @@
     }
 
     /**
-     * Player Preview only (PD-027): the names the GM revealed, as ink on the map beside each fixed icon. They are drawn from the projection's
-     * `sanctuaryLabels` alone (never from the document), laid out in WORLD px by Geo.layoutSanctuaryLabels — no viewport, zoom or sidebar input, so a
-     * print renderer can call the same two functions. The layer is above the fog, emptied (not hidden) in the GM view, aria-hidden and pointer-transparent;
-     * assistive technology reads the visually-hidden "Known sanctuaries" list instead. An unrevealed name is in neither.
+     * The names the GM revealed (PD-027), as ink on the map beside each fixed icon, in the printed book's hand lettering. Player Preview draws them from the
+     * projection's `sanctuaryLabels` alone; the GM map draws the same list through the projection module's `sanctuaryLabelsOf`, so the GM sees what the players were given. Both are
+     * laid out in WORLD px by Geo.layoutSanctuaryLabels — no viewport, zoom or sidebar input, so a print renderer can call the same two functions. The layer is
+     * above the fog, aria-hidden and pointer-transparent; assistive technology reads the visually-hidden "Known sanctuaries" list (Player Preview only).
+     * An unrevealed name is in neither.
      */
     function renderSanctuaryLabels() {
       const g = ui.g && ui.g.sanctlabels;
       if (!g || !doc) return;
-      if (!previewMode || !playerProjection) {
-        if (sancLabelsDrawn !== null) { g.innerHTML = ''; sancLabelsDrawn = null; }
-        if (ui.knownSanc) { ui.knownSanc.hidden = true; ui.knownSanc.innerHTML = ''; }
-        return;
-      }
-      const labels = playerProjection.sanctuaryLabels;
+      if (ui.knownSanc && !previewMode) { ui.knownSanc.hidden = true; ui.knownSanc.innerHTML = ''; }
+      const labels = previewMode && playerProjection ? playerProjection.sanctuaryLabels : Projection.sanctuaryLabelsOf(doc);
       const sig = JSON.stringify(labels);
-      if (sancLabelsDrawn === sig) return;
+      if (sancLabelsDrawn === sig) { if (previewMode) renderKnownSanctuaries(labels); return; }
       const placed = Geo.layoutSanctuaryLabels(labels, data.ctx.sanctuaries.map(s => ({ id: s.id, rect: s.rect })), { icons: data.ctx.iconRects, world: data.ctx.worldSize });
       let h = '';
       for (const l of placed) {
@@ -1428,10 +1425,13 @@
       }
       g.innerHTML = h;
       sancLabelsDrawn = sig;
-      if (ui.knownSanc) {
-        ui.knownSanc.innerHTML = labels.map(l => '<li>' + esc(l.name) + '</li>').join('');
-        ui.knownSanc.hidden = !labels.length;
-      }
+      if (previewMode) renderKnownSanctuaries(labels);
+    }
+
+    function renderKnownSanctuaries(labels) {
+      if (!ui.knownSanc) return;
+      ui.knownSanc.innerHTML = labels.map(l => '<li>' + esc(l.name) + '</li>').join('');
+      ui.knownSanc.hidden = !labels.length;
     }
 
     /**

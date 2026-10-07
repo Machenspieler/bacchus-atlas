@@ -37,6 +37,20 @@
   function isCellVisibleToPlayers(doc, cellKey) { return Model.isCellRevealed(doc, cellKey); }
 
   /**
+   * Player knowledge of sanctuary names (PD-027): only an explicitly revealed name of an existing generated entry, reduced to { anchorId, name },
+   * sorted by anchor id — never the rest of the entry. The GM map draws the same labels, so both views read this one function.
+   */
+  function sanctuaryLabelsOf(doc) {
+    const named = new Map(((doc.sanctuaries && doc.sanctuaries.entries) || []).map(e => [e.anchorId, e.name]));
+    const labels = [];
+    for (const id of Array.from(Model.getRevealedSanctuaryNameSet(doc)).sort()) {
+      const name = named.get(id);
+      if (typeof name === 'string' && name.trim() !== '') labels.push({ anchorId: id, name: name });
+    }
+    return labels;
+  }
+
+  /**
    * Builds the player-facing projection of `doc`. Pure; the result is a plain JSON-safe object that shares nothing
    * mutable with the document.
    */
@@ -54,13 +68,7 @@
       if (withTint) { const key = Tint.tintKeyOf(b.habitat); if (key) o.tint = key; }
       overlays.push(o);
     }
-    // Player knowledge of sanctuary names: only an explicitly revealed name of an existing generated entry, reduced to { anchorId, name } — never the rest of the entry
-    const named = new Map(((doc.sanctuaries && doc.sanctuaries.entries) || []).map(e => [e.anchorId, e.name]));
-    const sanctuaryLabels = [];
-    for (const id of Array.from(Model.getRevealedSanctuaryNameSet(doc)).sort()) {
-      const name = named.get(id);
-      if (typeof name === 'string' && name.trim() !== '') sanctuaryLabels.push({ anchorId: id, name: name });
-    }
+    const sanctuaryLabels = sanctuaryLabelsOf(doc);
     // without a context nothing counts as "never fogged", which is the strictest (never leaking) reading
     const foggable = ctx ? (key => Model.isFoggableCell(ctx, key)) : null;
     return {
@@ -85,5 +93,5 @@
     return p;
   }
 
-  return { buildPlayerProjection: buildPlayerProjection, buildPrintProjection: buildPrintProjection, isCellVisibleToPlayers: isCellVisibleToPlayers };
+  return { buildPlayerProjection: buildPlayerProjection, buildPrintProjection: buildPrintProjection, isCellVisibleToPlayers: isCellVisibleToPlayers, sanctuaryLabelsOf: sanctuaryLabelsOf };
 });

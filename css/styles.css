@@ -79,6 +79,7 @@
 
   /* ---- type ---- */
   --font-display: 'Forum', 'Times New Roman', serif;   /* 400 only — no bold face exists */
+  --font-map: 'Architects Daughter', 'Segoe Print', 'Bradley Hand', cursive;   /* Journey 2 map lettering only (sanctuary names), after the book's hand-lettered labels */
   --font-body: 'Spectral', Georgia, serif;
   --font-mono: 'JetBrains Mono', 'Courier New', monospace;
   /* Prep's own dense-UI typeface — a readable system sans, never

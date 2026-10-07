@@ -899,11 +899,14 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Decision (what players get):** the projection's `sanctuaryLabels: [{ anchorId, name }]` — exactly those two fields, only for revealed
   sanctuaries with a non-empty name, sorted. Trade, Quirk, Crisis, Drive, Politics, Size, Population, rolls, Soul Echoes and GM marker state
   never enter it. A revealed name appears even while its surrounding cells are under fog. Soul Echoes stay entirely secret.
-- **Decision (look):** ink on the map — dark serif, tight light halo (`paint-order: stroke fill`), no box, no glow, no tint; up to two lines;
+- **Decision (look):** ink on the map, lettered like the printed book's place names — hand-lettered capitals (`--font-map`, Architects Daughter,
+  `text-transform: uppercase`), tight light halo (`paint-order: stroke fill`), no box, no glow, no tint; up to two lines;
   placed in world px by `Journey2Geometry.layoutSanctuaryLabels` (below, right, left, above; inside the map; clear of every printed icon and
   of other labels; deterministic). The same projection and layout helper serve Player Preview and the future black-and-white print.
-- **Decision (GM view):** normal GM mode does not draw names; a visible-name sanctuary's ring dot becomes a small ringed eye (a shape, not only
-  a colour), and the hover tooltip reads "Name · Name visible/hidden to players".
+- **Decision (GM view):** the GM map letters every revealed name exactly as Player Preview does (same list — `Journey2Projection.sanctuaryLabelsOf` —
+  same layout, same lettering), so the GM sees what the players were given; a hidden name is not drawn. The visually-hidden "Known sanctuaries" list
+  stays Player Preview only. A visible-name sanctuary's ring dot still becomes a small ringed eye (a shape, not only a colour), and the hover
+  tooltip reads "Name · Name visible/hidden to players". (Amended 2026-10-07: the first version drew names in Player Preview only.)
 - **Out of scope:** auto-reveal, party token/route, a visited system, notes, name editing, other sanctuary data for players, print UI.
 - **Where:** `js/journey2-model.js`, `js/journey2-projection.js`, `js/journey2-geometry.js`, `js/journey2-view.js`, `css/journey2.css`,
   tests in `tests/journey2-sanctuary-names.test.js`, browser checks in `scripts/journey2/lib/sanctuary-name-checks.js`.
