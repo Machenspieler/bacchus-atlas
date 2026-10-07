@@ -319,3 +319,7 @@ test('docs: the decision and the architecture section exist', () => {
   assert.match(read('docs/product-decisions.md'), /PD-025/);
   assert.match(read('docs/architecture.md'), /Hex Environment/);
 });
+
+test('css: a hidden inspector section really disappears (display:grid must not override [hidden])', () => {
+  assert.match(css, /\.j2-insp-sec\[hidden\]\s*\{\s*display:\s*none/);
+});

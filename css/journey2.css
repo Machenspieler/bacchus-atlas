@@ -435,6 +435,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-insp-line strong { font-weight: 600; color: var(--parchment); }
 .j2-insp-empty { color: var(--fear-soft); }
 .j2-insp-sec { display: grid; gap: var(--s-1); padding-top: var(--s-3); border-top: 1px solid var(--line-faint); }
+.j2-insp-sec[hidden] { display: none; }
 .j2-insp-h { margin: 0; font-family: var(--font-mono); font-weight: 400; font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--hope-soft); }
 .j2-insp-p { margin: 0 0 var(--s-2); font-size: var(--fs-md); line-height: var(--lh-md); color: var(--parchment); }
 .j2-insp-p:last-child { margin-bottom: 0; }
