@@ -31,6 +31,7 @@ silently breaks the roll button.
 | Impulses | Импульсы |
 | Potential Adversaries | Потенциальные Противники |
 | Soul Echo (Journey 2 map, PD-022) | Эхо Души (daggerheart.ru/frame/journey-to-horizon; plural «Эхо Душ»; short form «Эхо») |
+| Drive (sanctuary table, PD-023) | Движущая сила (daggerheart.ru/frame/journey-to-horizon; was «Стремление») |
 | Passive (feature type) | Пассивно |
 | Action (feature type) | Действие |
 | Reaction (feature type) | Реакция |

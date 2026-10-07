@@ -1215,6 +1215,28 @@ Run all of them with `node --test tests/*.test.js`.
     `buildPlayerProjection` is a field whitelist with no Echo field, so Player Preview and the future print
     (which must keep drawing the projection only) cannot show them; `tests/journey2-soul-echoes.test.js`
     asserts this. The GM JSON backup does include them.
+- **Sanctuaries (PD-023):**
+  - *Document.* Optional `doc.sanctuaries = { entries: [...] }`, one entry per sanctuary stable id (sorted), each
+    `{ anchorId, name, trade, quirk, crisis, drive, politics: { rolls: [1-4 distinct of 1-7] }, size, population }`
+    with every roll inside its own die (`Model.SANCTUARY_DICE`). `validateSanctuaries` / `validateSanctuaryEntry`
+    treat a missing object as "none" (`schemaVersion` stays 1), and reject duplicates, non-sanctuary ids, bad rolls and
+    unknown fields as a whole. `isEmptyDocument` counts them.
+  - *Commands and planner.* `setSanctuaries { entries }` (replace all; `[]` removes all; noop for an equal set),
+    `setSanctuary { entry }` (replace one existing — the reroll) and `deleteSanctuary { anchorId }`; all values are
+    pre-rolled so Redo never re-rolls. `Model.planSanctuaries(ctx, roll)` is pure (`roll` injected): one entry per
+    `ctx.sanctuaries`, re-rolling a duplicate name up to six times.
+  - *Generator adapter.* `journey2Generator` (js/app.js) gains `rollSanctuary()` (plain numbers + name, from the same
+    `rollSanctuary()` as `#/journey`) and `describeSanctuary(entry)` (the seven rows in the current language, via
+    `SANCTUARY_ROWS` / `jText`). The view never copies the tables.
+  - *View.* Toolbar group `[data-j2-sanc-group]` with one button (`generateSanctuaries()`); the screen-space overlay
+    `[data-j2-sanctuary]` reuses the Region Inspector's panel class and `positionPanel()` (shared with
+    `positionInspector()`), anchored to the open icon; `renderSanctuaryRings()` draws `<g data-j2-g="sanct"
+    pointer-events="none">` (above `fogstroke`, below `select`) and redraws only when `doc.sanctuaries` or the open id
+    changed. `sanctuaryAtScreen()` hit-tests the icon's `hitArea`; it is checked before the hex in both
+    `onViewportDown` and `handleMapClick`. `sanctuaryOpen` is transient (never stored, never in history);
+    `afterDocChange` closes it when its entry vanishes (delete, Undo).
+  - *GM-only.* In Player Preview the ring layer is emptied, the group is hidden and `openSanctuary` refuses;
+    `buildPlayerProjection` has no sanctuary field. `tests/journey2-sanctuaries.test.js` asserts all of this.
 - **Deployment note:** `scripts/build.js` copies everything not excluded;
   `docs/journey2-*` (handoff PDFs, review packages, evidence, stage ZIPs) are
   excluded and `scripts/check-journey2-build.js` fails the build if any of it

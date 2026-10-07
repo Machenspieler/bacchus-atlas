@@ -3107,6 +3107,23 @@ const journey2Generator = {
       rumor: rollDie(100),
     };
   },
+  /** One settlement from the SAME rolls as #/journey's sanctuary generator (rollSanctuary): the name from two d100 name
+   * elements and one die per table. Plain numbers only — what the book's tables print is looked up again on display. */
+  rollSanctuary() {
+    const s = rollSanctuary();
+    return { name: s.name, trade: s.trade, quirk: s.quirk, crisis: s.crisis, drive: s.drive, politics: { rolls: s.politics.rolls.slice() }, size: s.size, population: s.population };
+  },
+  /** The seven rows of a stored sanctuary in the current language, in the order the book rolls them. `label` is an i18n key. */
+  describeSanctuary(entry) {
+    return SANCTUARY_ROWS.map(([key, labelKey]) => {
+      const table = sanctuaryTable(key);
+      const rolls = key === 'politics' ? entry.politics.rolls : [entry[key]];
+      return {
+        key, label: labelKey, die: 'd' + (table ? table.die : ''), combined: rolls.length > 1,
+        results: rolls.map(r => ({ roll: r, text: jText(tableRow(table?.rows, r)?.text) })),
+      };
+    });
+  },
   /** Display text (current language) for a stored batch, read from the same tables the roll came from. */
   describe(batch) {
     const j = state.journey;

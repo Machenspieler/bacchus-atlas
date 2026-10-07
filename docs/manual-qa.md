@@ -483,6 +483,13 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       **Remove Echoes** is disabled when there are none, otherwise asks first and removes all. Each action is one Undo entry
       and Redo restores the same sanctuaries. Reload keeps them; the shimmer stops with reduced motion; crystals stay
       visible over the fog veil. **Player Preview** shows no crystal and no Echo button. The JSON backup round-trips them.
+- [ ] Sanctuaries (GM only, PD-023): the toolbar button reads **Generate 56 sanctuaries** (RU: «Создать убежища: 56») and puts a dashed ring round every printed sanctuary icon
+      (never HORIZON/MARROGATE). Clicking an icon (also one with a hex under it) opens the overlay: name, then Trade & Exports d20, Quirk d12, Crisis d10, Drive d10,
+      Political System d8, Size d6, Population d4, each with its die and result; a combined political system shows the note and one line per system.
+      **×** and Esc close it; **Delete sanctuary** asks first (Cancel focused), removes the entry and leaves the printed icon; **Reroll sanctuary** changes the name and all rows,
+      keeps the overlay open, and is one Undo entry. Pressing the toolbar button again asks before replacing. Clicking empty map closes the overlay; opening a hex's Region Inspector replaces it.
+      `S` / `Shift+S` (map focused) step through the sanctuaries. Reload keeps them; the JSON backup round-trips them. **Player Preview** shows no ring, no overlay and no button.
+      Check RU wording against daggerheart.ru/frame/journey-to-horizon, a narrow window (overlay full width) and the overlay beside the sidebar.
 - [ ] Export/Import (no toolbar button since the Backup menu was removed — use `Journey2View.debugApi().runAction('export')`
       and the corrupt-map banner's Import): replacing a non-empty map asks first; a bad file is rejected with the
       reason and changes nothing; an import also ends Player Preview and any fog tool.

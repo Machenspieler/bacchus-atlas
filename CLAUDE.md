@@ -201,8 +201,11 @@ or a card's Inspect button, independent of the expanded card, never persisted,
 never in history); the sidebar only generates, places and deletes. Soul Echoes are GM-only
 campaign data (`soulEchoes`, at most nine sanctuaries): one toolbar button places all nine by the
 book's west-to-east rule, one removes them, and they never reach Player Preview or print (PD-022).
+Generated sanctuaries are GM-only too (`sanctuaries.entries`, one per printed sanctuary icon, numbers not
+sentences): one toolbar button rolls all 56 through `#/journey`'s own generator, clicking an icon opens an
+overlay with Delete / Reroll / close, and none of it reaches Player Preview or print (PD-023).
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022, detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023, detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

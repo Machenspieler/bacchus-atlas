@@ -15,12 +15,16 @@
                     encounter, rumor, notes } ],
        tiles:   [ { id, batchId, cell: "q,r" } ],
        playerVisibility: { revealedCells: [ "q,r", ... ] },
-       soulEchoes: { anchorIds: [ "mk-012", ... ] } }
+       soulEchoes: { anchorIds: [ "mk-012", ... ] },
+       sanctuaries: { entries: [ { anchorId, name, trade, quirk, crisis, drive, politics: { rolls }, size, population } ] } }
    Fog of War (Phase C) is CELL-based and lives only in `playerVisibility.revealedCells` — never on a batch or a
    tile. Every placeable cell is hidden by default; the list is the single source of truth (no hiddenCells twin),
    kept sorted so a serialized document is deterministic.
    Soul Echoes (PD-022) are GM-only secrets: at most nine sanctuary stable ids (never a destination), optional on
    load (missing = none, so schemaVersion stays 1), and never part of the player projection.
+   Sanctuaries (PD-023) are GM-only generated settlements: one entry per printed sanctuary icon (keyed by its stable anchor id),
+   holding the NUMBERS that came up — never the table sentences — so a saved map reads back in either language. Optional on load
+   (missing = none, schemaVersion stays 1), never part of the player projection or a print.
    Counts (placed / remaining) are DERIVED from tiles, never stored:
      remaining(batch) = quantity(batch) - placedTileCount(batch)
    Occupancy is keyed by the canonical cell id; one tile per cell.
@@ -65,9 +69,16 @@
   const HISTORY_LIMIT = 100;
 
   const ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
-  const DOC_KEYS = ['schemaVersion', 'kind', 'templateId', 'templateVersion', 'createdAt', 'updatedAt', 'batches', 'tiles', 'playerVisibility', 'soulEchoes'];
+  const DOC_KEYS = ['schemaVersion', 'kind', 'templateId', 'templateVersion', 'createdAt', 'updatedAt', 'batches', 'tiles', 'playerVisibility', 'soulEchoes', 'sanctuaries'];
   const VISIBILITY_KEYS = ['revealedCells'];
   const SOUL_ECHO_KEYS = ['anchorIds'];
+  const SANCTUARY_KEYS = ['entries'];
+  const SANCTUARY_ENTRY_KEYS = ['anchorId', 'name', 'trade', 'quirk', 'crisis', 'drive', 'politics', 'size', 'population'];
+  /** The book's sanctuary tables (Journey to Horizon, "Creating Sanctuaries"): the die behind each single-roll row. Political system is d8 with its own rule. */
+  const SANCTUARY_DICE = Object.freeze({ trade: 20, quirk: 12, crisis: 10, drive: 10, size: 6, population: 4 });
+  const POLITICS_SYSTEMS = 7;          // political system rows 1-7; an 8 is "roll twice and combine" and is never stored
+  const MAX_POLITICS_SYSTEMS = 4;      // a combine may itself combine once more (two draws, each of which may split in two)
+  const MAX_SANCTUARY_NAME = 80;
   /** The campaign frame hides exactly nine Soul Echoes in nine different sanctuaries (PD-022). A hard limit. */
   const MAX_SOUL_ECHOES = 9;
   const BATCH_KEYS = ['id', 'createdAt', 'habitat', 'terrain', 'quantity', 'quantitySource', 'encounter', 'rumor', 'notes'];
@@ -125,13 +136,14 @@
 
   function emptyDocument(ctx, nowIso) {
     const now = nowIso || new Date().toISOString();
-    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [] }, soulEchoes: { anchorIds: [] } };
+    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [] }, soulEchoes: { anchorIds: [] }, sanctuaries: { entries: [] } };
   }
 
   function isEmptyDocument(doc) {
     return !doc || (doc.batches.length === 0 && doc.tiles.length === 0
       && !(doc.playerVisibility && doc.playerVisibility.revealedCells.length)
-      && !(doc.soulEchoes && doc.soulEchoes.anchorIds.length));
+      && !(doc.soulEchoes && doc.soulEchoes.anchorIds.length)
+      && !(doc.sanctuaries && doc.sanctuaries.entries.length));
   }
 
   function symbolIdOf(batch) { return batch.habitat.overtaken ? OVERTAKEN_SYMBOL : batch.habitat.biome; }
@@ -295,8 +307,9 @@
     for (const [id, n] of placed) if (n > quantity.get(id)) errors.push('batch "' + id + '": ' + n + ' tiles placed but quantity is ' + quantity.get(id));
     const vis = validateVisibility(doc.playerVisibility, ctx, errors);
     const echoes = validateSoulEchoes(doc.soulEchoes, ctx, errors);
+    const sanctuaries = validateSanctuaries(doc.sanctuaries, ctx, errors);
     if (errors.length) return { ok: false, code: 'invalid', errors: errors.slice(0, 20) };
-    return { ok: true, doc: { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: doc.templateId, templateVersion: doc.templateVersion, createdAt: doc.createdAt, updatedAt: doc.updatedAt, batches: batches, tiles: tiles, playerVisibility: vis, soulEchoes: echoes } };
+    return { ok: true, doc: { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: doc.templateId, templateVersion: doc.templateVersion, createdAt: doc.createdAt, updatedAt: doc.updatedAt, batches: batches, tiles: tiles, playerVisibility: vis, soulEchoes: echoes, sanctuaries: sanctuaries } };
   }
 
   /** Text -> validated document. Size-limited; never throws. */
@@ -371,6 +384,77 @@
       ids.push(id);
     }
     return { anchorIds: sortEchoIds(ids) };
+  }
+
+  /* ---------------- Sanctuaries (GM-only generated settlements, PD-023) ---------------- */
+
+  /**
+   * Strict check of one stored sanctuary. Returns { errors, entry } (entry = normalized copy). `name` is free text up to
+   * MAX_SANCTUARY_NAME characters (it may be empty); every roll is an integer within its own die; the political system
+   * is 1-4 DISTINCT results of 1-7 (a rolled 8 is resolved at roll time and never stored), kept in the order they were drawn.
+   */
+  function validateSanctuaryEntry(e, ctx, where) {
+    const errors = [];
+    if (!isObj(e)) return { errors: [where + ': not an object'], entry: null };
+    checkKeys(e, SANCTUARY_ENTRY_KEYS, where, errors);
+    if (typeof e.anchorId !== 'string' || !ctx.sanctuaryIds.has(e.anchorId)) errors.push(where + ': anchorId is not a sanctuary');
+    if (typeof e.name !== 'string' || e.name.length > MAX_SANCTUARY_NAME) errors.push(where + ': name must be text up to ' + MAX_SANCTUARY_NAME + ' characters');
+    for (const k of Object.keys(SANCTUARY_DICE)) if (!(isInt(e[k]) && e[k] >= 1 && e[k] <= SANCTUARY_DICE[k])) errors.push(where + ': ' + k + ' must be an integer 1-' + SANCTUARY_DICE[k]);
+    const p = e.politics;
+    if (!isObj(p) || Object.keys(p).some(k => k !== 'rolls') || !Array.isArray(p.rolls) || p.rolls.length < 1 || p.rolls.length > MAX_POLITICS_SYSTEMS ||
+        !p.rolls.every(n => isInt(n) && n >= 1 && n <= POLITICS_SYSTEMS) || new Set(p.rolls).size !== p.rolls.length) {
+      errors.push(where + ': politics must be { rolls: 1-' + MAX_POLITICS_SYSTEMS + ' distinct results of 1-' + POLITICS_SYSTEMS + ' }');
+    }
+    if (errors.length) return { errors: errors, entry: null };
+    return {
+      errors: [], entry: {
+        anchorId: e.anchorId, name: e.name, trade: e.trade, quirk: e.quirk, crisis: e.crisis, drive: e.drive,
+        politics: { rolls: p.rolls.slice() }, size: e.size, population: e.population,
+      },
+    };
+  }
+
+  /** Canonical stored order: the stable anchor id, so equal sets serialize identically. */
+  const sortSanctuaries = entries => entries.slice().sort((a, b) => (a.anchorId < b.anchorId ? -1 : a.anchorId > b.anchorId ? 1 : 0));
+
+  /**
+   * Validates `sanctuaries` (load + import). MISSING is not an error (an old document simply has none); a present one must be
+   * { entries: [one valid entry per sanctuary, no duplicates] }. Anything else rejects the whole document, never silently repaired.
+   */
+  function validateSanctuaries(v, ctx, errors) {
+    const none = { entries: [] };
+    if (v === undefined || v === null) return none;
+    if (!isObj(v)) { errors.push('sanctuaries: not an object'); return none; }
+    checkKeys(v, SANCTUARY_KEYS, 'sanctuaries', errors);
+    if (v.entries === undefined) return none;
+    if (!Array.isArray(v.entries)) { errors.push('sanctuaries.entries: not an array'); return none; }
+    if (v.entries.length > ctx.sanctuaries.length) { errors.push('sanctuaries.entries: more entries than the map has sanctuaries'); return none; }
+    const out = [], seen = new Set();
+    v.entries.forEach((raw, i) => {
+      const r = validateSanctuaryEntry(raw, ctx, 'sanctuaries.entries[' + i + ']');
+      errors.push.apply(errors, r.errors.slice(0, 2));
+      if (!r.entry) return;
+      if (seen.has(r.entry.anchorId)) { errors.push('sanctuaries.entries[' + i + ']: duplicate sanctuary "' + r.entry.anchorId + '"'); return; }
+      seen.add(r.entry.anchorId); out.push(r.entry);
+    });
+    return { entries: sortSanctuaries(out) };
+  }
+
+  /**
+   * The one-click plan: a fresh settlement for EVERY sanctuary on the map. `roll()` is the generator adapter (a plain
+   * { name, trade, ..., politics: { rolls } } of numbers); a name already taken by another sanctuary is rolled again a few
+   * times so the map does not repeat itself. The result is only a proposal: the caller commits these exact entries as one
+   * setSanctuaries command, so Redo never re-rolls.
+   */
+  function planSanctuaries(ctx, roll) {
+    const used = new Set(), entries = [];
+    for (const s of ctx.sanctuaries) {
+      let r = roll();
+      for (let i = 0; i < 6 && r.name && used.has(r.name.toLowerCase()); i++) r = roll();
+      if (r.name) used.add(r.name.toLowerCase());
+      entries.push(Object.assign({ anchorId: s.id }, r));
+    }
+    return entries;
   }
 
   /* Placement thresholds, as fractions of the sanctuaries' own bounding box so they follow the fixed map. */
@@ -685,6 +769,10 @@
    *                                                                   invalid/duplicate keys are ignored; nothing to change => noop
    *   setSoulEchoes { anchorIds:["mk-012"...], at }                GM-only: REPLACES the whole set (<= 9 distinct sanctuary ids; [] removes all);
    *                                                                touches ONLY soulEchoes; same set => noop; anything else is refused whole
+   *   setSanctuaries { entries:[{anchorId,name,trade,...}], at }   GM-only: REPLACES every generated sanctuary (one entry per sanctuary id; [] removes
+   *                                                                all); touches ONLY sanctuaries; same set => noop; anything invalid is refused whole
+   *   setSanctuary   { entry, at }                                 replaces ONE existing sanctuary (the reroll); an unknown one is refused
+   *   deleteSanctuary { anchorId, at }                             removes ONE generated sanctuary; the printed icon is never touched
    */
   function apply(doc, cmd, ctx) {
     switch (cmd && cmd.type) {
@@ -763,6 +851,32 @@
         const next = sortEchoIds(cmd.anchorIds), have = doc.soulEchoes ? doc.soulEchoes.anchorIds : [];
         if (next.length === have.length && next.every((id, i) => id === have[i])) return { ok: true, doc: doc, noop: true };
         return { ok: true, doc: touch(doc, cmd.at, { soulEchoes: { anchorIds: next } }), changed: next.length };
+      }
+      case 'setSanctuaries': {
+        if (!Array.isArray(cmd.entries) || cmd.entries.length > ctx.sanctuaries.length) return fail('bad-sanctuaries');
+        const seen = new Set(), next = [];
+        for (const raw of cmd.entries) {
+          const r = validateSanctuaryEntry(raw, ctx, 'entry');
+          if (!r.entry || seen.has(r.entry.anchorId)) return fail('bad-sanctuaries');
+          seen.add(r.entry.anchorId); next.push(r.entry);
+        }
+        const sorted = sortSanctuaries(next), have = doc.sanctuaries ? doc.sanctuaries.entries : [];
+        if (JSON.stringify(sorted) === JSON.stringify(have)) return { ok: true, doc: doc, noop: true };
+        return { ok: true, doc: touch(doc, cmd.at, { sanctuaries: { entries: sorted } }), changed: sorted.length };
+      }
+      case 'setSanctuary': {
+        const r = validateSanctuaryEntry(cmd.entry, ctx, 'entry');
+        if (!r.entry) return fail('bad-sanctuary');
+        const have = doc.sanctuaries ? doc.sanctuaries.entries : [];
+        if (!have.some(e => e.anchorId === r.entry.anchorId)) return fail('no-sanctuary');
+        const next = have.map(e => (e.anchorId === r.entry.anchorId ? r.entry : e));
+        if (JSON.stringify(next) === JSON.stringify(have)) return { ok: true, doc: doc, noop: true };
+        return { ok: true, doc: touch(doc, cmd.at, { sanctuaries: { entries: next } }) };
+      }
+      case 'deleteSanctuary': {
+        const have = doc.sanctuaries ? doc.sanctuaries.entries : [];
+        if (!have.some(e => e.anchorId === cmd.anchorId)) return fail('no-sanctuary');
+        return { ok: true, doc: touch(doc, cmd.at, { sanctuaries: { entries: have.filter(e => e.anchorId !== cmd.anchorId) } }) };
       }
       default: return fail('unknown-command');
     }
@@ -853,6 +967,7 @@
     createHistory: createHistory, historyCommit: historyCommit, historyUndo: historyUndo, historyRedo: historyRedo, historyClear: historyClear,
     compactFootprint: compactFootprint,
     MAX_SOUL_ECHOES: MAX_SOUL_ECHOES, planSoulEchoes: planSoulEchoes,
+    SANCTUARY_DICE: SANCTUARY_DICE, MAX_SANCTUARY_NAME: MAX_SANCTUARY_NAME, validateSanctuaryEntry: validateSanctuaryEntry, planSanctuaries: planSanctuaries,
     isFoggableCell: isFoggableCell, getRevealedCellSet: getRevealedCellSet, isCellRevealed: isCellRevealed, cellsToChange: cellsToChange, compareCellKeys: compareCellKeys,
   };
 });

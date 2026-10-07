@@ -470,6 +470,29 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
   .j2-region-inspector { width: calc(100% - 24px); max-height: min(60vh, calc(100% - 24px)); }
 }
 
+/* ---------- Sanctuary overlay (PD-023): the same screen-space panel as the Region Inspector, narrower, with its own footer ---------- */
+.j2-region-inspector.j2-sanctuary { width: clamp(320px, 28vw, 380px); }
+.j2-sanc-rows { gap: 0; padding: var(--s-1) var(--s-3) var(--s-3); }
+.j2-sanc-row { display: grid; gap: var(--s-1); padding: var(--s-3) 0; border-top: 1px solid var(--line-faint); }
+.j2-sanc-row:first-child { border-top: 0; }
+.j2-sanc-k { margin: 0; display: flex; align-items: baseline; gap: var(--s-2); font-family: var(--font-mono); font-weight: 400; font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--muted); }
+.j2-sanc-die { font-size: var(--fs-micro); letter-spacing: 0; text-transform: none; color: var(--teal-soft); }
+.j2-sanc-v { margin: 0; display: grid; grid-template-columns: 2.25em minmax(0, 1fr); gap: var(--s-2); align-items: baseline; font-size: var(--fs-md); line-height: var(--lh-md); color: var(--parchment); }
+.j2-sanc-roll { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--hope-soft); }
+.j2-sanc-text { overflow-wrap: anywhere; }
+.j2-sanc-foot { flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); padding: var(--s-2) var(--s-3); border-top: 1px solid var(--line-faint); }
+.j2-sanc-foot .j2-ico { display: inline-flex; margin-right: var(--s-1); }
+.j2-sanc-foot .j2-ico svg { width: 16px; height: 16px; }
+.j2-tb-sanc { padding-left: var(--s-3); border-left: 1px solid var(--line-faint); }
+@media (max-width: 900px) {
+  .j2-region-inspector.j2-sanctuary { width: calc(100% - 24px); }
+}
+/* the ring round every generated sanctuary icon: a map object, so fixed colours on a pale halo read on the parchment in both themes */
+.j2-viewport.is-over-sanctuary { cursor: pointer; }
+.j2-overlay .j2-sanc-halo { fill: none; stroke: #fff; stroke-opacity: 0.8; stroke-width: 4.5; }
+.j2-overlay .j2-sanc-ring { fill: none; stroke: #a9680f; stroke-width: 2; stroke-dasharray: 5 3; }
+.j2-overlay .j2-sanc.is-open .j2-sanc-ring { stroke: #7a4300; stroke-width: 3; stroke-dasharray: none; fill: rgba(217, 164, 65, 0.22); }
+
 /* ---------- diagnostics drawer (secondary, closed by default) ---------- */
 .j2-panel {
   position: absolute; top: var(--s-3); right: var(--s-3); z-index: 4;

@@ -730,5 +730,41 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   deliberately instead of the "bump on schema change" default because nothing existing is reinterpreted.
   Consequence: a backup *with* Echoes is rejected by an older build as an unknown field (never silently dropped).
 - **Explicitly excluded:** manual placing/moving of single Echoes, a "collected/found" state, Echo names or
-  effects, showing Echoes to players, and any sanctuary state other than "holds an Echo".
+  effects, showing Echoes to players, and any sanctuary state other than "holds an Echo" (generated
+  settlement data is the separate, GM-only PD-023).
 - **Where:** [architecture.md](architecture.md) "Soul Echoes (PD-022)".
+
+## PD-023: Journey 2 — generated sanctuaries are GM-only, made by one button, opened by clicking the icon
+- **Status:** Active
+- **Date:** 2026-10-07
+- **Context:** `#/journey` already rolls the book's "Creating Sanctuaries" tables (trade & exports d20, quirk
+  d12, crisis d10, drive d10, political system d8, size d6, population d4, plus a name from two d100 elements).
+  The GM wants the same generator on the Journey 2 map, attached to the 56 printed sanctuary icons.
+- **Decision (what it is):** `doc.sanctuaries = { entries: [{ anchorId, name, trade, quirk, crisis, drive,
+  politics: { rolls }, size, population }] }` — at most **one entry per printed sanctuary** (`kind: "sanctuary"`
+  anchor stable id, never HORIZON/MARROGATE), sorted by id. It stores the **numbers that came up**, not the table
+  sentences, so a save reads back in either language; the only free text is the generated `name`. It is **GM
+  campaign data**: autosaved, in the full JSON backup, validated on load/import and undoable.
+- **Decision (how it is made):** one toolbar button, **Generate 56 sanctuaries** (the count is the map's own),
+  rolls a settlement for every sanctuary through the **same** rolls as `#/journey` (`journey2Generator
+  .rollSanctuary()` over `rollSanctuary()`), re-rolling a name another sanctuary already took a few times
+  (`Model.planSanctuaries`), and commits those exact entries as **one** `setSanctuaries` command — one Undo entry,
+  Redo never re-rolls. When sanctuaries already exist the button asks before replacing all of them (Cancel
+  focused). There is no per-sanctuary "generate", no manual editing of rolls and no number the GM chooses.
+- **Decision (the overlay):** clicking a generated sanctuary icon opens a screen-space overlay (not the
+  `#/journey` card design) with the name and the seven tables as *label + die → result* rows, and exactly three
+  actions: **×** closes it; **Delete sanctuary** (confirmed, undoable) removes that entry — the printed icon
+  always stays; **Reroll sanctuary** re-throws the name and all seven tables at once (`setSanctuary`, undoable,
+  no confirm). A generated icon is marked by a ring so the GM can see which ones are clickable; it outranks the
+  hex under it. The overlay never shares the map with the Region Inspector or the diagnostics drawer. Keyboard:
+  `S` / `Shift+S` step through the generated sanctuaries west to east.
+- **Decision (players):** sanctuaries are GM prep. The ring layer is **emptied** (not CSS-hidden) in Player
+  Preview, the toolbar group is hidden there, the overlay cannot open, and `buildPlayerProjection` has no field
+  for them — so neither Player Preview nor the printed player map can show one.
+- **Decision (schema):** optional with a default (missing = none), so `schemaVersion` stays 1 — the same approach
+  as PD-020/PD-022. A backup *with* sanctuaries is rejected by an older build as an unknown field.
+- **Decision (Russian):** wording is the official one on daggerheart.ru/frame/journey-to-horizon — all table rows
+  match `data/journey.json`; the *Drive* row label is «Движущая сила» (it was «Стремление» before this check).
+- **Explicitly excluded:** editing or pinning a single roll, a number of sanctuaries to generate, notes on a
+  sanctuary, sanctuaries on hexes without a printed icon, showing sanctuaries to players or in print.
+- **Where:** [architecture.md](architecture.md) "Sanctuaries (PD-023)".
