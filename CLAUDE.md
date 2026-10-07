@@ -198,8 +198,11 @@ ordinary move/return may not detach a region — and every region gets a derived
 perimeter that Player Preview draws only between revealed cells (PD-021). Regions are
 read in one transient, GM-only Region Inspector over the map (opened from a hex
 or a card's Inspect button, independent of the expanded card, never persisted,
-never in history); the sidebar only generates, places and deletes. Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021, detail:
+never in history); the sidebar only generates, places and deletes. Soul Echoes are GM-only
+campaign data (`soulEchoes`, at most nine sanctuaries): one toolbar button places all nine by the
+book's west-to-east rule, one removes them, and they never reach Player Preview or print (PD-022).
+Decisions:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022, detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

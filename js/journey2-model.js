@@ -14,10 +14,13 @@
        batches: [ { id, createdAt, habitat, terrain, quantity, quantitySource,
                     encounter, rumor, notes } ],
        tiles:   [ { id, batchId, cell: "q,r" } ],
-       playerVisibility: { revealedCells: [ "q,r", ... ] } }
+       playerVisibility: { revealedCells: [ "q,r", ... ] },
+       soulEchoes: { anchorIds: [ "mk-012", ... ] } }
    Fog of War (Phase C) is CELL-based and lives only in `playerVisibility.revealedCells` — never on a batch or a
    tile. Every placeable cell is hidden by default; the list is the single source of truth (no hiddenCells twin),
    kept sorted so a serialized document is deterministic.
+   Soul Echoes (PD-022) are GM-only secrets: at most nine sanctuary stable ids (never a destination), optional on
+   load (missing = none, so schemaVersion stays 1), and never part of the player projection.
    Counts (placed / remaining) are DERIVED from tiles, never stored:
      remaining(batch) = quantity(batch) - placedTileCount(batch)
    Occupancy is keyed by the canonical cell id; one tile per cell.
@@ -62,8 +65,11 @@
   const HISTORY_LIMIT = 100;
 
   const ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
-  const DOC_KEYS = ['schemaVersion', 'kind', 'templateId', 'templateVersion', 'createdAt', 'updatedAt', 'batches', 'tiles', 'playerVisibility'];
+  const DOC_KEYS = ['schemaVersion', 'kind', 'templateId', 'templateVersion', 'createdAt', 'updatedAt', 'batches', 'tiles', 'playerVisibility', 'soulEchoes'];
   const VISIBILITY_KEYS = ['revealedCells'];
+  const SOUL_ECHO_KEYS = ['anchorIds'];
+  /** The campaign frame hides exactly nine Soul Echoes in nine different sanctuaries (PD-022). A hard limit. */
+  const MAX_SOUL_ECHOES = 9;
   const BATCH_KEYS = ['id', 'createdAt', 'habitat', 'terrain', 'quantity', 'quantitySource', 'encounter', 'rumor', 'notes'];
   const HABITAT_KEYS = ['biome', 'blighted', 'overtaken', 'source', 'rolls'];
   const TILE_KEYS = ['id', 'batchId', 'cell'];
@@ -98,10 +104,16 @@
       if (decorative.has(Geo.cellId(q, r))) return { ok: false, reason: 'decorative' };
       return { ok: true, reason: null };
     }
+    /* The 56 real sanctuaries (never the HORIZON / MARROGATE destinations), west to east: the only places a Soul Echo can be. */
+    const sanctuaries = ((anchorsDoc && anchorsDoc.anchors) || [])
+      .filter(a => a && a.kind === 'sanctuary' && typeof a.stableId === 'string' && Array.isArray(a.worldPixelAnchor))
+      .map(a => ({ id: a.stableId, x: a.worldPixelAnchor[0], y: a.worldPixelAnchor[1] }))
+      .sort((a, b) => a.x - b.x || a.y - b.y || (a.id < b.id ? -1 : 1));
     return {
       grid: grid, templateId: template.templateId, templateVersion: template.schemaVersion,
       protections: Geo.protectionRects(template, anchorsDoc || null), decorativeCells: decorative, policy: policy,
       allowedCellCount: grid.validCellCount() - decorative.size,
+      sanctuaries: sanctuaries, sanctuaryIds: new Set(sanctuaries.map(s => s.id)),
     };
   }
 
@@ -113,10 +125,14 @@
 
   function emptyDocument(ctx, nowIso) {
     const now = nowIso || new Date().toISOString();
-    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [] } };
+    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [] }, soulEchoes: { anchorIds: [] } };
   }
 
-  function isEmptyDocument(doc) { return !doc || (doc.batches.length === 0 && doc.tiles.length === 0 && !(doc.playerVisibility && doc.playerVisibility.revealedCells.length)); }
+  function isEmptyDocument(doc) {
+    return !doc || (doc.batches.length === 0 && doc.tiles.length === 0
+      && !(doc.playerVisibility && doc.playerVisibility.revealedCells.length)
+      && !(doc.soulEchoes && doc.soulEchoes.anchorIds.length));
+  }
 
   function symbolIdOf(batch) { return batch.habitat.overtaken ? OVERTAKEN_SYMBOL : batch.habitat.biome; }
 
@@ -278,8 +294,9 @@
     }
     for (const [id, n] of placed) if (n > quantity.get(id)) errors.push('batch "' + id + '": ' + n + ' tiles placed but quantity is ' + quantity.get(id));
     const vis = validateVisibility(doc.playerVisibility, ctx, errors);
+    const echoes = validateSoulEchoes(doc.soulEchoes, ctx, errors);
     if (errors.length) return { ok: false, code: 'invalid', errors: errors.slice(0, 20) };
-    return { ok: true, doc: { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: doc.templateId, templateVersion: doc.templateVersion, createdAt: doc.createdAt, updatedAt: doc.updatedAt, batches: batches, tiles: tiles, playerVisibility: vis } };
+    return { ok: true, doc: { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: doc.templateId, templateVersion: doc.templateVersion, createdAt: doc.createdAt, updatedAt: doc.updatedAt, batches: batches, tiles: tiles, playerVisibility: vis, soulEchoes: echoes } };
   }
 
   /** Text -> validated document. Size-limited; never throws. */
@@ -327,6 +344,84 @@
       set.add(key);
     }
     return { revealedCells: Array.from(set).sort(compareCellKeys) };
+  }
+
+  /* ---------------- Soul Echoes (GM-only, PD-022) ---------------- */
+
+  /** Canonical stored order: plain string order of the stable anchor ids ("mk-001" < "mk-012"), so equal sets serialize identically. */
+  const sortEchoIds = ids => Array.from(new Set(ids)).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+
+  /**
+   * Validates `soulEchoes` (load + import). MISSING is not an error (an old document simply has none); a present one must be
+   * { anchorIds: [<= 9 distinct sanctuary stable ids] }. Unknown fields, non-sanctuary ids (including the HORIZON / MARROGATE
+   * destinations) and more than nine entries are reported — the whole document is rejected, never silently repaired.
+   */
+  function validateSoulEchoes(v, ctx, errors) {
+    const none = { anchorIds: [] };
+    if (v === undefined || v === null) return none;
+    if (!isObj(v)) { errors.push('soulEchoes: not an object'); return none; }
+    checkKeys(v, SOUL_ECHO_KEYS, 'soulEchoes', errors);
+    if (v.anchorIds === undefined) return none;
+    if (!Array.isArray(v.anchorIds)) { errors.push('soulEchoes.anchorIds: not an array'); return none; }
+    if (v.anchorIds.length > MAX_SOUL_ECHOES) { errors.push('soulEchoes.anchorIds: more than ' + MAX_SOUL_ECHOES + ' Soul Echoes'); return none; }
+    const ids = [];
+    for (let i = 0; i < v.anchorIds.length; i++) {
+      const id = v.anchorIds[i];
+      if (typeof id !== 'string' || !ctx.sanctuaryIds.has(id)) { errors.push('soulEchoes.anchorIds[' + i + ']: not a sanctuary'); continue; }
+      ids.push(id);
+    }
+    return { anchorIds: sortEchoIds(ids) };
+  }
+
+  /* Placement thresholds, as fractions of the sanctuaries' own bounding box so they follow the fixed map. */
+  const ECHO_MIN_SEPARATION = 0.14;    // of the box diagonal: no two Echoes nearly on top of each other
+  const ECHO_MIN_NORTH_SOUTH = 0.45;   // of the box height: the nine must not hug one coastline / one latitude
+  const ECHO_MIN_SCATTER = 0.07;       // of the box height: RMS distance from the best-fit line — not "every third sanctuary in a line"
+  const ECHO_ATTEMPTS = 200;
+
+  /**
+   * The book's placement rule as a pure planner: choose nine of the sanctuaries, spread EVENLY WEST TO EAST (one per
+   * equal-count west-to-east band, so the first Echoes are far from Horizon and the last is near it), far apart,
+   * and neither collinear nor confined to one latitude. Randomness is inspiration, not edict: the result is only a
+   * proposal — the caller turns it into a setSoulEchoes command with these exact ids, so Redo never re-rolls.
+   * `rng` is any () => [0,1) (injected for tests). Bounded retries; the best attempt is returned if none satisfies every rule.
+   */
+  function planSoulEchoes(ctx, rng) {
+    const rand = typeof rng === 'function' ? rng : Math.random;
+    const all = ctx.sanctuaries;
+    if (!all.length) return { anchorIds: [], satisfied: false };
+    const n = Math.min(MAX_SOUL_ECHOES, all.length);
+    const bands = [];
+    for (let i = 0; i < n; i++) bands.push(all.slice(Math.floor(i * all.length / n), Math.floor((i + 1) * all.length / n)));
+
+    const xs = all.map(s => s.x), ys = all.map(s => s.y);
+    const w = Math.max.apply(null, xs) - Math.min.apply(null, xs), h = Math.max.apply(null, ys) - Math.min.apply(null, ys);
+    const minSep = ECHO_MIN_SEPARATION * Math.hypot(w, h), minNS = ECHO_MIN_NORTH_SOUTH * h, minScatter = ECHO_MIN_SCATTER * h;
+
+    function measure(picks) {
+      let sep = Infinity;
+      for (let i = 0; i < picks.length; i++) for (let j = i + 1; j < picks.length; j++) sep = Math.min(sep, Math.hypot(picks[i].x - picks[j].x, picks[i].y - picks[j].y));
+      const py = picks.map(p => p.y);
+      const northSouth = Math.max.apply(null, py) - Math.min.apply(null, py);
+      /* least-squares line y = a x + b over the picks; RMS vertical residual */
+      const m = picks.length, mx = picks.reduce((s, p) => s + p.x, 0) / m, my = py.reduce((s, y) => s + y, 0) / m;
+      let sxx = 0, sxy = 0;
+      for (const p of picks) { sxx += (p.x - mx) * (p.x - mx); sxy += (p.x - mx) * (p.y - my); }
+      const a = sxx ? sxy / sxx : 0;
+      const scatter = Math.sqrt(picks.reduce((s, p) => s + Math.pow(p.y - (my + a * (p.x - mx)), 2), 0) / m);
+      const satisfied = sep >= minSep && northSouth >= minNS && scatter >= minScatter;
+      const score = Math.min(sep / minSep, 1) + Math.min(northSouth / minNS, 1) + Math.min(scatter / minScatter, 1);
+      return { satisfied: satisfied, score: score };
+    }
+
+    let best = null;
+    for (let k = 0; k < ECHO_ATTEMPTS; k++) {
+      const picks = bands.map(b => b[Math.min(b.length - 1, Math.floor(rand() * b.length))]);
+      const m = measure(picks);
+      if (!best || m.score > best.score) best = { picks: picks, score: m.score, satisfied: m.satisfied };
+      if (m.satisfied) break;
+    }
+    return { anchorIds: sortEchoIds(best.picks.map(p => p.id)), satisfied: best.satisfied };
   }
 
   const revealedCache = new WeakMap();
@@ -588,6 +683,8 @@
    *   setCellsRevealed { cellKeys:["q,r"...], revealed:boolean, at }   Fog of War: reveal (true) or hide (false) cells;
    *                                                                   touches ONLY playerVisibility, never batches or tiles;
    *                                                                   invalid/duplicate keys are ignored; nothing to change => noop
+   *   setSoulEchoes { anchorIds:["mk-012"...], at }                GM-only: REPLACES the whole set (<= 9 distinct sanctuary ids; [] removes all);
+   *                                                                touches ONLY soulEchoes; same set => noop; anything else is refused whole
    */
   function apply(doc, cmd, ctx) {
     switch (cmd && cmd.type) {
@@ -658,6 +755,14 @@
         const next = new Set(getRevealedCellSet(doc));
         for (const key of change) { if (cmd.revealed) next.add(key); else next.delete(key); }
         return { ok: true, doc: touch(doc, cmd.at, { playerVisibility: { revealedCells: Array.from(next).sort(compareCellKeys) } }), changed: change.length };
+      }
+      case 'setSoulEchoes': {
+        if (!Array.isArray(cmd.anchorIds)) return fail('bad-echoes');
+        if (cmd.anchorIds.length > MAX_SOUL_ECHOES) return fail('too-many-echoes');
+        if (!cmd.anchorIds.every(id => typeof id === 'string' && ctx.sanctuaryIds.has(id))) return fail('bad-echoes');
+        const next = sortEchoIds(cmd.anchorIds), have = doc.soulEchoes ? doc.soulEchoes.anchorIds : [];
+        if (next.length === have.length && next.every((id, i) => id === have[i])) return { ok: true, doc: doc, noop: true };
+        return { ok: true, doc: touch(doc, cmd.at, { soulEchoes: { anchorIds: next } }), changed: next.length };
       }
       default: return fail('unknown-command');
     }
@@ -747,6 +852,7 @@
     checkCells: checkCells, checkPlacement: checkPlacement, attachmentCheck: attachmentCheck, attachedBatchIds: attachedBatchIds, neighborIds: neighborIds, regionBoundarySegments: regionBoundarySegments, regionConnectivity: regionConnectivity, isConnected: isConnected, componentCount: componentCount, enclosedHoles: enclosedHoles, holeCounts: holeCounts, apply: apply,
     createHistory: createHistory, historyCommit: historyCommit, historyUndo: historyUndo, historyRedo: historyRedo, historyClear: historyClear,
     compactFootprint: compactFootprint,
+    MAX_SOUL_ECHOES: MAX_SOUL_ECHOES, planSoulEchoes: planSoulEchoes,
     isFoggableCell: isFoggableCell, getRevealedCellSet: getRevealedCellSet, isCellRevealed: isCellRevealed, cellsToChange: cellsToChange, compareCellKeys: compareCellKeys,
   };
 });

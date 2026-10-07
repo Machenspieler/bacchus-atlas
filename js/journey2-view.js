@@ -202,6 +202,7 @@
     let previewMode = false;                                // Player Preview: a read-only render of the player projection
     let previewReturn = null;                               // camera / fit state to restore on the Back-to-GM action
     let playerProjection = null;                            // the projection currently drawn in Player Preview
+    let echoDrawn = null;                                   // the soulEchoes object the GM echoes layer currently shows (an unrelated change never rebuilds it)
 
     container.innerHTML = '';
     container.classList.add('j2-host');
@@ -349,7 +350,25 @@
       conceal: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.8 10S5 4.8 10 4.8 18.2 10 18.2 10 15 15.2 10 15.2 1.8 10 1.8 10z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 16.5 16.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
       players: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7" r="2.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 16c0-2.9 2.2-4.7 5-4.7s5 1.8 5 4.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="14" cy="8" r="2.1" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M14.4 11.6c2 .2 3.4 1.6 3.4 4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
       close: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m3.5 3.5 7 7m0-7-7 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+      crystal: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 1.8 6.6 6.6 7.6 14 10 17.4 12.4 14 13.4 6.6zM10 1.8v15.6M6.6 6.6h6.8M6.2 13.2 3 15.4l2.6-5.2M13.8 13.2 17 15.4l-2.6-5.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/></svg>',
     };
+
+    /**
+     * Soul Echo crystal (PD-022), drawn in the SVG overlay at a sanctuary's icon centre. Gradients live in <defs>; the shape is inlined per Echo.
+     * Fixed blues (a map object, not UI chrome) with a dark outline so it reads on the parchment in both themes; the shimmer is CSS only.
+     */
+    const ECHO_DEFS =
+      '<radialGradient id="j2-echo-glow"><stop offset="0" stop-color="#9fe0ff" stop-opacity=".85"/><stop offset=".55" stop-color="#4a90ff" stop-opacity=".35"/><stop offset="1" stop-color="#2a5fd6" stop-opacity="0"/></radialGradient>' +
+      '<linearGradient id="j2-echo-l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e8f9ff"/><stop offset="1" stop-color="#4fb0ff"/></linearGradient>' +
+      '<linearGradient id="j2-echo-r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6cb6ff"/><stop offset="1" stop-color="#1f4fc4"/></linearGradient>';
+
+    /** The crystal shape, centred on (0,0): inlined once per Echo (CSS does not reach a <use> clone). */
+    const ECHO_CRYSTAL =
+      '<path class="j2-echo-shard" d="M-12 18-19 1-26 18z" fill="url(#j2-echo-l)"/><path class="j2-echo-shard" d="M12 18 19 4 25 18z" fill="url(#j2-echo-r)"/>' +
+      '<path class="j2-echo-facet" d="M0-34-12-16-9 14 0 24z" fill="url(#j2-echo-l)"/><path class="j2-echo-facet" d="M0-34 12-16 9 14 0 24z" fill="url(#j2-echo-r)"/>' +
+      '<path class="j2-echo-top" d="M0-34-12-16 0-8 12-16z"/>' +
+      '<path class="j2-echo-spark" d="M11-24l1.6 4.4 4.4 1.6-4.4 1.6L11-12l-1.6-4.4L5-18l4.4-1.6z"/>';
+
 
     function buildSurface() {
       const tpl = data.template, [W, H] = tpl.worldSizePx;
@@ -377,6 +396,11 @@
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-fog-tool="hide" aria-pressed="false" data-t-aria="journey2_fog_hide_title" data-t-title="journey2_fog_hide_title"><span class="j2-ico" aria-hidden="true">${ICON.conceal}</span><span data-t="journey2_fog_hide"></span></button>
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-preview data-t-title="journey2_preview_title"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><span data-t="journey2_preview"></span></button>
             </div>
+            <div class="j2-tb-group j2-tb-echo" role="group" data-j2-echo-group data-t-aria="journey2_echo_group">
+              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-echo-place data-t-title="journey2_echo_place_title"><span class="j2-ico" aria-hidden="true">${ICON.crystal}</span><span data-t="journey2_echo_place"></span></button>
+              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-echo-clear data-t-title="journey2_echo_clear_title"><span class="j2-ico" aria-hidden="true">${ICON.trash}</span><span data-t="journey2_echo_clear"></span></button>
+              <span class="j2-echo-count" data-j2-echo-count></span>
+            </div>
             <div class="j2-tb-group j2-tb-preview" data-j2-preview-bar hidden>
               <span class="j2-preview-flag" role="status"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><strong data-t="journey2_preview"></strong></span>
               <span class="j2-preview-note" data-t="journey2_preview_hint"></span>
@@ -389,8 +413,8 @@
                 <div class="j2-world" style="width:${W}px;height:${H}px">
                   <img class="j2-base" alt="" draggable="false" width="${W}" height="${H}">
                   <svg class="j2-overlay" xmlns="${SVG_NS}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">
-                    <defs data-j2-defs></defs>
-                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fog" mask="url(#j2-fog-mask)"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="fogstroke"></g>
+                    <defs data-j2-defs></defs><defs>${ECHO_DEFS}</defs>
+                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fog" mask="url(#j2-fog-mask)"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="fogstroke"></g><g data-j2-g="echoes" pointer-events="none"></g>
                     <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
                     <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g>
                   </svg>
@@ -496,6 +520,10 @@
       ui.fogGroup = container.querySelector('[data-j2-fog-group]');
       ui.fogState = container.querySelector('[data-j2-fog-state]');
       ui.fogTools = { reveal: container.querySelector('[data-j2-fog-tool="reveal"]'), hide: container.querySelector('[data-j2-fog-tool="hide"]') };
+      ui.echoGroup = container.querySelector('[data-j2-echo-group]');
+      ui.echoPlace = container.querySelector('[data-j2-echo-place]');
+      ui.echoClear = container.querySelector('[data-j2-echo-clear]');
+      ui.echoCount = container.querySelector('[data-j2-echo-count]');
       ui.previewBtn = container.querySelector('[data-j2-preview]');
       ui.previewBar = container.querySelector('[data-j2-preview-bar]');
       ui.previewBack = container.querySelector('[data-j2-preview-back]');
@@ -1217,10 +1245,12 @@
         ui.g.tiles.innerHTML = '';
         playerProjection = Projection.buildPlayerProjection(doc, data.ctx);
         ui.g.player.innerHTML = overlayMarkup(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark } })));
+        renderEchoes();
         renderPerimeter();
         return;
       }
       ui.g.player.innerHTML = '';
+      renderEchoes();
       const byBatch = new Map(doc.batches.map(b => [b.id, b]));
       ui.g.tiles.innerHTML = overlayMarkup(doc.tiles.map(tile => { const c = Geo.parseCellId(tile.cell); return { q: c.q, r: c.r, spec: specOfBatch(byBatch.get(tile.batchId)) }; }));
       renderPerimeter();
@@ -1241,6 +1271,75 @@
       ui.g.perimeter.innerHTML = d ? '<path class="j2-perimeter" d="' + d + '"/>' : '';
       ui.g.perimeter.setAttribute('data-segments', String(segs.length));
       perimDrawn = { tiles: doc.tiles, vis: vis, mode: mode };
+    }
+
+    /**
+     * Soul Echoes (PD-022): GM-only crystals on the chosen sanctuaries. Like the tiles, the layer is EMPTIED (not hidden) in Player Preview, and
+     * the player projection has no field for it, so the secret cannot reach the preview or a future print. Redrawn only when the set changed.
+     */
+    function renderEchoes() {
+      if (!ui.g || !ui.g.echoes || !doc) return;
+      if (previewMode) { ui.g.echoes.innerHTML = ''; echoDrawn = null; return; }
+      if (echoDrawn === doc.soulEchoes) return;
+      const at = new Map(data.ctx.sanctuaries.map(s => [s.id, s]));
+      let h = '', i = 0;
+      for (const id of doc.soulEchoes.anchorIds) {
+        const s = at.get(id);
+        if (!s) continue;
+        const x = fmt(s.x, 1), y = fmt(s.y, 1);
+        h += '<g class="j2-echo" data-echo="' + esc(id) + '" style="--j2-echo-i:' + (i++) + '"><circle class="j2-echo-glow" cx="' + x + '" cy="' + y + '" r="84"/><g transform="translate(' + x + ' ' + fmt(s.y - 14, 1) + ') scale(1.8)">' + ECHO_CRYSTAL + '</g></g>';
+      }
+      ui.g.echoes.innerHTML = h;
+      echoDrawn = doc.soulEchoes;
+    }
+
+    /** Toolbar state of the Soul Echoes group: the n / 9 count, Remove disabled when there is nothing to remove, both disabled while edits are locked. */
+    function updateEchoUi() {
+      if (!ui.echoGroup || !doc) return;
+      const count = doc.soulEchoes.anchorIds.length;
+      ui.echoCount.textContent = fill('journey2_echo_count', { n: n(count), max: n(Model.MAX_SOUL_ECHOES) });
+      ui.echoPlace.disabled = editLocked;
+      ui.echoClear.disabled = editLocked || !count;
+    }
+
+    /** One button, nine Echoes: rolls the book's placement rule once, then commits those exact ids as ONE undoable command. */
+    function placeSoulEchoes() {
+      if (inst.disposed || editLocked || previewMode || !doc) return;
+      const commit = () => {
+        const plan = Model.planSoulEchoes(data.ctx);
+        const r = dispatch({ type: 'setSoulEchoes', anchorIds: plan.anchorIds }, 'echoesPlace');
+        if (!r.ok) { hint(errorText(r.error)); return; }
+        announce(fill('journey2_live_echoes_placed', { n: n(plan.anchorIds.length) }));
+      };
+      if (!doc.soulEchoes.anchorIds.length) { commit(); return; }
+      openDialog({
+        title: t('journey2_echo_replace_title'),
+        lines: [t('journey2_echo_replace_msg'), t('journey2_echo_undo_note')],
+        actions: [
+          { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
+          { label: t('journey2_echo_replace_go'), kind: 'btn-danger', value: 'replace' },
+        ],
+      }).then(v => { if (inst.disposed) return; if (v === 'replace') commit(); if (ui.echoPlace) ui.echoPlace.focus({ preventScroll: true }); });
+    }
+
+    function confirmClearSoulEchoes() {
+      if (inst.disposed || editLocked || previewMode || !doc || !doc.soulEchoes.anchorIds.length) return;
+      openDialog({
+        title: t('journey2_echo_clear_title_dlg'),
+        lines: [fill('journey2_echo_clear_msg', { n: n(doc.soulEchoes.anchorIds.length) }), t('journey2_echo_undo_note')],
+        actions: [
+          { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
+          { label: t('journey2_echo_clear_go'), kind: 'btn-danger', value: 'clear' },
+        ],
+      }).then(v => {
+        if (inst.disposed) return;
+        if (v === 'clear') {
+          const r = dispatch({ type: 'setSoulEchoes', anchorIds: [] }, 'echoesClear');
+          if (!r.ok) { hint(errorText(r.error)); return; }
+          announce(t('journey2_live_echoes_cleared'));
+        }
+        if (ui.echoPlace) ui.echoPlace.focus({ preventScroll: true });
+      });
     }
 
     function renderSelection() {
@@ -1273,6 +1372,7 @@
       renderTiles();
       renderFog();
       updateFogUi();
+      updateEchoUi();
       renderSelection();
       renderInspector();
       positionInspector();
@@ -1571,7 +1671,7 @@
       const on = previewMode;
       ui.root.setAttribute('data-mode', on ? 'preview' : 'gm');
       ui.sidewrap.hidden = on; ui.sidewrap.inert = on;
-      ui.historyGroup.hidden = on; ui.fogGroup.hidden = on; ui.save.hidden = on;
+      ui.historyGroup.hidden = on; ui.fogGroup.hidden = on; ui.echoGroup.hidden = on; ui.save.hidden = on;
       ui.previewBar.hidden = !on;
       ui.hint.hidden = true; ui.tip.hidden = true;
       ui.viewport.setAttribute('aria-label', t(on ? 'journey2_preview_map_label' : 'journey2_map_label'));
@@ -2074,7 +2174,7 @@
     }
 
     /** Space pans (rather than activating something) only when focus is on the map, the page body or one of the fog toolbar buttons. */
-    function fogSpaceTarget(t0) { return t0 === document.body || t0 === ui.viewport || !!(t0 && t0.closest && t0.closest('[data-j2-fog-group]')); }
+    function fogSpaceTarget(t0) { return t0 === document.body || t0 === ui.viewport || !!(t0 && t0.closest && t0.closest('[data-j2-fog-group], [data-j2-echo-group]')); }
 
     function onDocumentKeyUp(e) {
       if (inst.disposed || e.key !== ' ' || !spaceDown) return;
@@ -2104,6 +2204,8 @@
       else if (b.hasAttribute('data-j2-fit')) fitToView();
       else if (b.hasAttribute('data-j2-fog-state')) toggleFogState();
       else if (b.hasAttribute('data-j2-fog-tool')) setFogTool(b.getAttribute('data-j2-fog-tool'));
+      else if (b.hasAttribute('data-j2-echo-place')) placeSoulEchoes();
+      else if (b.hasAttribute('data-j2-echo-clear')) confirmClearSoulEchoes();
       else if (b.hasAttribute('data-j2-preview-back')) leavePreview();
       else if (b.hasAttribute('data-j2-preview')) enterPreview();
       else if (b.hasAttribute('data-j2-undo')) undo();

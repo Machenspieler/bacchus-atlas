@@ -368,7 +368,7 @@ test('priority: fog stroke beats neutral tile selection; Space or the middle but
   const esc = view.slice(view.indexOf('function onDocumentKey'), view.indexOf('if (e.key === \' \' && fogTool'));
   const order = ['openMenu', 'fogStroke', 'if (pan)', 'if (tr)', 'previewMode', 'fogTool', 'inspectorOpen()'].map(s => esc.indexOf(s));
   assert.ok(order.every(i => i > 0) && order.every((x, i) => i === 0 || x > order[i - 1]), 'menu, stroke, pan, drag, preview, tool, inspector: ' + order);
-  assert.match(view, /return t0 === document\.body \|\| t0 === ui\.viewport \|\| !!\(t0 && t0\.closest && t0\.closest\('\[data-j2-fog-group\]'\)\)/, 'Space pans from the map, the page or a fog button');
+  assert.match(view, /return t0 === document\.body \|\| t0 === ui\.viewport \|\| !!\(t0 && t0\.closest && t0\.closest\('\[data-j2-fog-group\], \[data-j2-echo-group\]'\)\)/, 'Space pans from the map, the page, a fog button or a Soul Echoes button');
   assert.match(fn('onViewportKey', 'handleFromEvent').slice(0, 900) + view, /Delete/);
   assert.match(view, /if \(sel\.tileId && !fogTool && !previewMode\) returnSelected\(\)/, 'Return to stock is unavailable while a tool is active');
 });

@@ -97,7 +97,9 @@ paths:
   `store.loadUi()/saveUi()`, malformed -> defaults (sidebar open, fog state on), never part of
   the document or Undo history). The active Reveal/Hide tool, Player Preview, the fog hover cell and
   an in-progress stroke are transient view state and are **never** stored. Fog of War itself
-  (`playerVisibility.revealedCells`) is campaign data in the `map` document. It never
+  (`playerVisibility.revealedCells`) is campaign data in the `map` document, and so are the GM-only
+  Soul Echoes (`soulEchoes.anchorIds`, <= 9 sanctuary ids, PD-022): both are optional with a default, which
+  is why `schemaVersion` deliberately stays 1 for them (no existing field is reinterpreted). It never
   reads, writes or clears a legacy Journey, Prep or unrelated key, and
   `tests/journey2-store.test.js` plus `scripts/journey2/stage1-verify.js` assert
   every non-Journey-2 value stays byte-identical.

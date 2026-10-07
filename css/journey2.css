@@ -55,6 +55,9 @@ body[data-route="journey2"] #grid-wrap { display: block; }
 .j2-tb-end { margin-left: auto; gap: var(--s-2); }
 /* Fog of War tools: a labelled group (icon + text, so a tool is never identified by colour alone) */
 .j2-tb-fog { padding-left: var(--s-3); border-left: 1px solid var(--line-faint); }
+/* Soul Echoes (PD-022): GM-only; hidden in Player Preview */
+.j2-tb-echo { padding-left: var(--s-3); border-left: 1px solid var(--line-faint); }
+.j2-echo-count { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--hope-soft); padding: 0 var(--s-2); white-space: nowrap; }
 .j2-tool { display: inline-flex; align-items: center; gap: var(--s-1); }
 .j2-tool .j2-ico svg { width: 16px; height: 16px; }
 /* Player Preview bar: replaces the GM controls while previewing */
@@ -368,6 +371,14 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-overlay .j2-fog-glyph { fill: none; stroke-width: 2.2; stroke-linecap: round; }
 .j2-overlay .j2-fog-glyph.is-reveal { stroke: var(--hope); }
 .j2-overlay .j2-fog-glyph.is-hide { stroke: var(--ink); }
+/* Soul Echo crystals (GM only): fixed blues on a dark outline so they read on the map in both themes; the shimmer is decoration only */
+.j2-overlay .j2-echo-glow { fill: url(#j2-echo-glow); animation: j2-echo-pulse 3.6s ease-in-out infinite; animation-delay: calc(var(--j2-echo-i, 0) * -0.45s); }
+.j2-overlay .j2-echo-shard, .j2-overlay .j2-echo-facet { stroke: #0b2a6b; stroke-width: 1.6; stroke-linejoin: round; }
+.j2-overlay .j2-echo-top { fill: #f4fcff; fill-opacity: 0.85; stroke: #0b2a6b; stroke-width: 1; stroke-linejoin: round; }
+.j2-overlay .j2-echo-spark { fill: #fff; animation: j2-echo-twinkle 2.4s ease-in-out infinite; animation-delay: calc(var(--j2-echo-i, 0) * -0.3s); }
+@keyframes j2-echo-pulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes j2-echo-twinkle { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .j2-overlay .j2-echo-glow, .j2-overlay .j2-echo-spark { animation: none; } }
 /* committed terrain: monochrome — the base geography stays visible; gold is only selection/valid preview, red an invalid preview */
 .j2-tile-cover { fill: #fff; fill-opacity: 0.95; stroke: none; }
 .j2-tile-hex { fill: none; stroke: var(--ink); stroke-opacity: 0.55; stroke-width: 1; }

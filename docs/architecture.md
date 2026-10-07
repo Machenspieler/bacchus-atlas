@@ -1191,6 +1191,28 @@ Run all of them with `node --test tests/*.test.js`.
     (place, move, return, delete, Undo/Redo, import, reset) and redraws only when `doc.tiles`, the visibility
     or the mode changed. Player Preview draws `playerProjection.perimeter`
     (`buildPlayerProjection(doc, ctx)`, projection `version: 2`) — edges only where both cells are revealed.
+- **Soul Echoes (PD-022):**
+  - *Document.* Optional `doc.soulEchoes = { anchorIds: [...] }` (<= `Model.MAX_SOUL_ECHOES` = 9 distinct
+    sanctuary stable ids, sorted). `validateSoulEchoes` treats a missing object as "none" (so `schemaVersion`
+    stays 1 and old saves/backups load) and rejects more than nine, non-sanctuary ids (destinations included),
+    unknown fields and malformed values as a whole. `createContext` exposes `ctx.sanctuaries`
+    (`{id, x, y}`, west to east) and `ctx.sanctuaryIds` from `map-anchors.json`; `isEmptyDocument` counts Echoes
+    (so importing over a map that only has Echoes still asks for confirmation).
+  - *Command and planner.* `setSoulEchoes { anchorIds, at }` replaces the whole set (`[]` = remove all),
+    touches nothing else and is a `noop` for an equal set; history is whole-document snapshots, so Undo/Redo
+    is free and Redo never re-rolls. `Model.planSoulEchoes(ctx, rng)` is pure (rng injected): nine equal-count
+    west-to-east bands, one random sanctuary per band, bounded retries until the picks are far apart, not on
+    one latitude and not collinear (thresholds are fractions of the sanctuaries' bounding box); it returns the
+    best attempt if none passes, so the button never fails.
+  - *View.* A toolbar group `[data-j2-echo-group]` (Place / Remove / `n / 9`) — one-shot buttons, not a tool, so
+    no transient state. `placeSoulEchoes()` plans once and dispatches one command (confirming first when
+    Echoes exist); `confirmClearSoulEchoes()` confirms, then dispatches `[]`. `renderEchoes()` draws
+    `<g data-j2-g="echoes" pointer-events="none">` (above `fogstroke`, below `select`; the crystal is inlined
+    per Echo because CSS does not reach a `<use>` clone) and redraws only when `doc.soulEchoes` changed.
+  - *GM-only.* In Player Preview `renderEchoes()` empties the layer and `applyPreviewChrome` hides the group.
+    `buildPlayerProjection` is a field whitelist with no Echo field, so Player Preview and the future print
+    (which must keep drawing the projection only) cannot show them; `tests/journey2-soul-echoes.test.js`
+    asserts this. The GM JSON backup does include them.
 - **Deployment note:** `scripts/build.js` copies everything not excluded;
   `docs/journey2-*` (handoff PDFs, review packages, evidence, stage ZIPs) are
   excluded and `scripts/check-journey2-build.js` fails the build if any of it

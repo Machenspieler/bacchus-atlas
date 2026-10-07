@@ -30,6 +30,7 @@ silently breaks the roll button.
 | Difficulty | Сложность |
 | Impulses | Импульсы |
 | Potential Adversaries | Потенциальные Противники |
+| Soul Echo (Journey 2 map, PD-022) | Эхо души (**unverified** — not confirmed on daggerheart.su; replace with the site's wording once checked) |
 | Passive (feature type) | Пассивно |
 | Action (feature type) | Действие |
 | Reaction (feature type) | Реакция |

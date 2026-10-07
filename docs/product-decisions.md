@@ -699,3 +699,34 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Explicitly excluded:** storing perimeter geometry or a "separate area" flag, a thick border on every
   tile, and restricting delete/import/Undo by adjacency.
 - **Where:** [architecture.md](architecture.md) "Connected placement and region perimeter (PD-021)".
+
+## PD-022: Journey 2 — Soul Echoes are GM-only, placed by one button
+- **Status:** Active
+- **Date:** 2026-10-07
+- **Context:** the *Journey to Horizon* campaign frame says the GM chooses nine sanctuaries before the first
+  session to hold a Soul Echo: far enough apart that the PCs cross all of Valloren, not predictable (no
+  coastline line, not "every third sanctuary"), and spread **evenly from west to east** so the first Echoes
+  come early and the last lies near Horizon. Randomness is inspiration, not edict.
+- **Decision (what it is):** `doc.soulEchoes = { anchorIds: ["mk-012", …] }` — **at most nine** distinct
+  `kind: "sanctuary"` anchor stable ids (never HORIZON/MARROGATE), canonical string order. It is **GM campaign
+  data**: autosaved, in the full JSON backup, validated on load/import and undoable, like Fog of War. The
+  hard limit of nine is enforced by the model (validator and command), not just the UI.
+- **Decision (how it is placed):** there is **no manual click-to-place**. One toolbar button, **Soul Echoes**,
+  rolls the book's rule once (`Model.planSoulEchoes`: the 56 sanctuaries are split into nine equal-count
+  west-to-east bands and one is drawn from each, with bounded retries until the picks are far apart, not
+  confined to one latitude and not collinear) and commits those exact ids as **one** `setSoulEchoes` command
+  — one Undo entry, and Redo never re-rolls. When Echoes already exist the button asks before replacing them
+  (Cancel focused). **Remove Echoes** clears them all (confirmed, undoable, disabled when there are none).
+- **Decision (look):** blue shimmering crystals drawn **on top of the sanctuary icon** in a dedicated
+  pointer-transparent SVG layer above the fog and below selection; the shimmer is CSS and is disabled under
+  `prefers-reduced-motion`. A count chip (`n / 9`) makes the state readable without colour.
+- **Decision (players):** Echoes are a secret. The layer is **emptied** (not CSS-hidden) in Player Preview, the
+  toolbar group is hidden there, and `buildPlayerProjection` has no field for them — so neither Player Preview
+  nor a future player print can show them. The future print renderer must keep using the projection only.
+- **Decision (schema):** the field is **optional with a default** (missing = none), so `schemaVersion` stays 1
+  and every existing save/backup loads unchanged — the same approach as `playerVisibility` (PD-020), chosen
+  deliberately instead of the "bump on schema change" default because nothing existing is reinterpreted.
+  Consequence: a backup *with* Echoes is rejected by an older build as an unknown field (never silently dropped).
+- **Explicitly excluded:** manual placing/moving of single Echoes, a "collected/found" state, Echo names or
+  effects, showing Echoes to players, and any sanctuary state other than "holds an Echo".
+- **Where:** [architecture.md](architecture.md) "Soul Echoes (PD-022)".
