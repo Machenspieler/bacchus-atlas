@@ -30,7 +30,7 @@ silently breaks the roll button.
 | Difficulty | Сложность |
 | Impulses | Импульсы |
 | Potential Adversaries | Потенциальные Противники |
-| Soul Echo (Journey 2 map, PD-022) | Эхо души (**unverified** — not confirmed on daggerheart.su; replace with the site's wording once checked) |
+| Soul Echo (Journey 2 map, PD-022) | Эхо Души (daggerheart.ru/frame/journey-to-horizon; plural «Эхо Душ»; short form «Эхо») |
 | Passive (feature type) | Пассивно |
 | Action (feature type) | Действие |
 | Reaction (feature type) | Реакция |
