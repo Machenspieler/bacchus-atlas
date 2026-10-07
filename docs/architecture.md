@@ -1232,7 +1232,7 @@ Run all of them with `node --test tests/*.test.js`.
     mask and no rectangular cut-out around the printed MARROGATE / HORIZON labels or the fixed sanctuary icons
     (`fogMaskRects` is gone); the base-map asset is never modified. Tuned at 67 / 100 / 150 %.
 - **Soul Echoes (PD-022):**
-  - *Document.* Optional `doc.soulEchoes = { anchorIds: [...] }` (<= `Model.MAX_SOUL_ECHOES` = 9 distinct
+  - *Document.* Optional `doc.soulEchoes = { anchorIds: [...], collectedAnchorIds: [...] }` (PD-030 added the collected list; <= `Model.MAX_SOUL_ECHOES` = 9 distinct
     sanctuary stable ids, sorted). `validateSoulEchoes` treats a missing object as "none" (so `schemaVersion`
     stays 1 and old saves/backups load) and rejects more than nine, non-sanctuary ids (destinations included),
     unknown fields and malformed values as a whole. `createContext` exposes `ctx.sanctuaries`
@@ -1294,6 +1294,36 @@ Run all of them with `node --test tests/*.test.js`.
   excluded and `scripts/check-journey2-build.js` fails the build if any of it
   — or a known Journey source file — appears in `dist/`. It no longer bans
   PDFs/ZIPs as a class.
+
+### Journey 2 Locate Soul Echoes (PD-030)
+
+- *Document.* `doc.soulEchoes = { anchorIds, collectedAnchorIds }`; `validateSoulEchoes` canonicalizes (dedupe + sort) `collectedAnchorIds`, treats a missing field as `[]`, and rejects a collected id that is not
+  in the distribution (destinations and unknown ids included), a non-array, an unknown field, or collected without a distribution — the whole import is refused, never repaired. `emptyDocument` starts with both lists empty.
+  `ctx.sanctuaries[]` now also carries `cellId` (the printed icon's mapped hex) for the "here" test.
+- *Commands.* `setSoulEchoCollected { anchorId, collected, at }` (refuses `bad-anchor` / `no-echo` / `bad-collected`; the same state is a `noop` that leaves `updatedAt`). `setSoulEchoes` resets
+  `collectedAnchorIds` to `[]` in the same command (a no-op only for the same set with nothing collected), so generate/remove is one Undo entry that restores the old distribution *and* collected state.
+- *Pure module `js/journey2-locate.js`* (UMD, depends only on geometry): `SIXTEEN_DIRECTIONS` (the one table: `id`, English `abbreviation`, `abbrKey`, `labelKey`, `centerAngle`; no translated text),
+  `bearingDegrees`, `directionForBearing`, `soulEchoCandidates(doc, ctx)` (distributed, uncollected, with geometry), `findNearestSoulEcho({ origin, originCellId, candidates, random, epsilon })`
+  (`here` wins; ties within `NEAREST_TIE_EPSILON` draw once from the injected RNG), `locateSoulEcho({ doc, ctx, originCellId, random })` (returns only `{ ok, type, originCellId, targetAnchorId, bearing,
+  direction }`), `animationPlan` (final angle ≥ 720 + bearing; short spin for "here"; direct with reduced motion) and `createLocateSession` (below).
+- *Session and transient state.* `createLocateSession({ schedule, cancel, reducedMotion, onChange })`: `null → selecting → animating → result`, one pending completion guarded by a token, so a late
+  callback after Choose another / Close / dispose is ignored; `dispose()` cancels without notifying. The view owns one session per instance plus `locateHover`, `locateNeedleStarted`, `locateRandom`;
+  none of it is in the document, history, `store.saveUi`, backup or storage.
+- *View.* Toolbar button `[data-j2-echo-locate]` in the Echo group (`aria-pressed` while active, `aria-disabled` + title + `sr-only` description when unavailable; hidden with the group in Player Preview and
+  inert under Print Preview). `startLocate` closes menus/inspector/overlay/diagnostics, cancels drags/strokes/fog tool, clears the selection and leaves camera, sidebar and fog untouched. Starting Reveal/Hide,
+  armed placement, the inspector or Player Preview calls `exitLocate({ quiet })`. **Selection priority:** dialog > print/player preview > active drag or pan > Locate selection > armed placement > Reveal/Hide >
+  neutral inspection: `onViewportDown` never starts a tile drag while Locate is active (the click path runs), `handleMapClick` decides Locate before any sanctuary/tile hit-test and requires `foggable.has(cell)`
+  (valid, non-decorative), `onViewportUp` ignores a release under the sidebar, Space/middle-button pans, Escape (after menu/stroke/pan/drag) leaves Locate. `paintLocate` draws the hover hex (dashed + star) and the
+  origin hex on `<g data-j2-g="locate">`; `renderLocatePanel` paints the chip, the cursor class and the popover (a `.j2-region-inspector.j2-locate` dialog positioned by `positionPanel` beside the origin hex; text
+  only after the result settles; `role=status` region; focus enters it on `result`, returns to the button on close). The needle is one CSS transition started by `startNeedle(plan)`.
+- *Undo/Redo and stale results.* `afterDocChange` (dispatch, Undo, Redo) calls `syncLocate`: no Echoes → exit ("No Soul Echoes have been distributed."), no Available Echo while selecting → exit, a result whose
+  `sig` (anchor + collected ids) differs from the document → exit as stale. `replaceDocument` (import / reset), `enterPreview`, `dispose` close it; nothing ever restores a result.
+- *Sanctuary overlay.* `sanctuaryOpenable(id)` = has a generated entry **or** an Echo; `sanctuaryAtScreen`, `cycleSanctuary`, `openSanctuary` and `afterDocChange` use it. `renderSanctuaryPanel` shows the Soul Echo row
+  (`[data-j2-s="echo"]`, text + `[data-j2-echo-collect]`) only for an Echo sanctuary; an Echo-only sanctuary hides the player-map row, tables and footer. `toggleEchoCollected` dispatches with `keepTransient`, so the
+  overlay, its scroll position and the camera stay.
+- *Projection isolation.* `journey2-projection.js` and `journey2-print.js` never read `soulEchoes`/`collectedAnchorIds`; tests assert it on the projection, print projection and print model.
+- *Tests.* `tests/journey2-locate.test.js` (schema, command, history, bearing, sixteen sectors and boundaries, nearest, ties, here, plan, session lifecycle, isolation, view/i18n/docs guards);
+  `scripts/journey2/lib/locate-checks.js` (real browser, run from `stage1-verify.js`).
 
 ### Journey 2 sanctuary names for players (PD-027)
 

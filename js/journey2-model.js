@@ -15,7 +15,7 @@
                     encounter, rumor, notes } ],
        tiles:   [ { id, batchId, cell: "q,r", environmentId? } ],
        playerVisibility: { revealedCells: [ "q,r", ... ], revealedSanctuaryNameAnchorIds: [ "mk-012", ... ] },
-       soulEchoes: { anchorIds: [ "mk-012", ... ] },
+       soulEchoes: { anchorIds: [ "mk-012", ... ], collectedAnchorIds: [ "mk-012" ] },
        sanctuaries: { entries: [ { anchorId, name, trade, quirk, crisis, drive, politics: { rolls }, size, population } ] } }
    A tile may carry ONE optional `environmentId` (a stable catalog id, never a name or stat block; missing = none). It belongs to the
    tile object, so it moves with the tile and disappears with it; an id the catalog no longer knows is kept as-is (the view shows it
@@ -24,7 +24,8 @@
    tile. Every placeable cell is hidden by default; the list is the single source of truth (no hiddenCells twin),
    kept sorted so a serialized document is deterministic.
    Soul Echoes (PD-024) are GM-only secrets: at most nine sanctuary stable ids (never a destination), optional on
-   load (missing = none, so schemaVersion stays 1), and never part of the player projection.
+   load (missing = none, so schemaVersion stays 1), and never part of the player projection. `collectedAnchorIds` (PD-030) is the sorted
+   subset the GM has collected; missing = every Echo Available, and a new or removed distribution always resets it.
    Sanctuaries (PD-023) are GM-only generated settlements: one entry per printed sanctuary icon (keyed by its stable anchor id),
    holding the NUMBERS that came up — never the table sentences — so a saved map reads back in either language. Optional on load
    (missing = none, schemaVersion stays 1), never part of the player projection or a print.
@@ -78,7 +79,7 @@
   const ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
   const DOC_KEYS = ['schemaVersion', 'kind', 'templateId', 'templateVersion', 'createdAt', 'updatedAt', 'batches', 'tiles', 'playerVisibility', 'soulEchoes', 'sanctuaries'];
   const VISIBILITY_KEYS = ['revealedCells', 'revealedSanctuaryNameAnchorIds'];
-  const SOUL_ECHO_KEYS = ['anchorIds'];
+  const SOUL_ECHO_KEYS = ['anchorIds', 'collectedAnchorIds'];
   const SANCTUARY_KEYS = ['entries'];
   const SANCTUARY_ENTRY_KEYS = ['anchorId', 'name', 'trade', 'quirk', 'crisis', 'drive', 'politics', 'size', 'population'];
   /** The book's sanctuary tables (Journey to Horizon, "Creating Sanctuaries"): the die behind each single-roll row. Political system is d8 with its own rule. */
@@ -129,7 +130,7 @@
     /* The 56 real sanctuaries (never the HORIZON / MARROGATE destinations), west to east: the only places a Soul Echo can be. */
     const sanctuaries = ((anchorsDoc && anchorsDoc.anchors) || [])
       .filter(a => a && a.kind === 'sanctuary' && typeof a.stableId === 'string' && Array.isArray(a.worldPixelAnchor))
-      .map(a => ({ id: a.stableId, x: a.worldPixelAnchor[0], y: a.worldPixelAnchor[1], top: a.iconProtectionArea.rectPx[1], rect: a.iconProtectionArea.rectPx.slice(), labelPoint: a.labelAnchor && Array.isArray(a.labelAnchor.pointPx) ? a.labelAnchor.pointPx.slice() : null }))
+      .map(a => ({ id: a.stableId, x: a.worldPixelAnchor[0], y: a.worldPixelAnchor[1], cellId: typeof a.cellId === 'string' ? a.cellId : null, top: a.iconProtectionArea.rectPx[1], rect: a.iconProtectionArea.rectPx.slice(), labelPoint: a.labelAnchor && Array.isArray(a.labelAnchor.pointPx) ? a.labelAnchor.pointPx.slice() : null }))
       .sort((a, b) => a.x - b.x || a.y - b.y || (a.id < b.id ? -1 : 1));
     const sanctuaryCells = new Set(((anchorsDoc && anchorsDoc.anchors) || []).filter(a => a && typeof a.cellId === 'string').map(a => a.cellId));
     return {
@@ -154,7 +155,7 @@
 
   function emptyDocument(ctx, nowIso) {
     const now = nowIso || new Date().toISOString();
-    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [], revealedSanctuaryNameAnchorIds: [] }, soulEchoes: { anchorIds: [] }, sanctuaries: { entries: [] } };
+    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [], revealedSanctuaryNameAnchorIds: [] }, soulEchoes: { anchorIds: [], collectedAnchorIds: [] }, sanctuaries: { entries: [] } };
   }
 
   function isEmptyDocument(doc) {
@@ -394,11 +395,14 @@
    * destinations) and more than nine entries are reported — the whole document is rejected, never silently repaired.
    */
   function validateSoulEchoes(v, ctx, errors) {
-    const none = { anchorIds: [] };
+    const none = { anchorIds: [], collectedAnchorIds: [] };
     if (v === undefined || v === null) return none;
     if (!isObj(v)) { errors.push('soulEchoes: not an object'); return none; }
     checkKeys(v, SOUL_ECHO_KEYS, 'soulEchoes', errors);
-    if (v.anchorIds === undefined) return none;
+    if (v.anchorIds === undefined) {
+      if (v.collectedAnchorIds !== undefined && !(Array.isArray(v.collectedAnchorIds) && v.collectedAnchorIds.length === 0)) errors.push('soulEchoes.collectedAnchorIds: collected without a distribution');
+      return none;
+    }
     if (!Array.isArray(v.anchorIds)) { errors.push('soulEchoes.anchorIds: not an array'); return none; }
     if (v.anchorIds.length > MAX_SOUL_ECHOES) { errors.push('soulEchoes.anchorIds: more than ' + MAX_SOUL_ECHOES + ' Soul Echoes'); return none; }
     const ids = [];
@@ -407,7 +411,28 @@
       if (typeof id !== 'string' || !ctx.sanctuaryIds.has(id)) { errors.push('soulEchoes.anchorIds[' + i + ']: not a sanctuary'); continue; }
       ids.push(id);
     }
-    return { anchorIds: sortEchoIds(ids) };
+    const anchorIds = sortEchoIds(ids), have = new Set(anchorIds), collected = [];
+    if (v.collectedAnchorIds !== undefined) {
+      if (!Array.isArray(v.collectedAnchorIds)) errors.push('soulEchoes.collectedAnchorIds: not an array');
+      else if (v.collectedAnchorIds.length > MAX_SOUL_ECHOES) errors.push('soulEchoes.collectedAnchorIds: more than ' + MAX_SOUL_ECHOES + ' entries');
+      else {
+        for (let i = 0; i < v.collectedAnchorIds.length; i++) {
+          const id = v.collectedAnchorIds[i];
+          if (typeof id !== 'string' || !have.has(id)) { errors.push('soulEchoes.collectedAnchorIds[' + i + ']: not a distributed Soul Echo'); continue; }
+          collected.push(id);
+        }
+      }
+    }
+    return { anchorIds: anchorIds, collectedAnchorIds: sortEchoIds(collected) };
+  }
+
+  /** The Soul Echoes the GM has collected (always a subset of the distribution; a missing field reads as none). */
+  function getCollectedEchoSet(doc) { return new Set((doc.soulEchoes && doc.soulEchoes.collectedAnchorIds) || []); }
+  function isEchoCollected(doc, anchorId) { return getCollectedEchoSet(doc).has(anchorId); }
+  /** Distributed, not yet collected: the only Echoes "Locate Soul Echoes" can point at. */
+  function availableEchoIds(doc) {
+    const got = getCollectedEchoSet(doc);
+    return ((doc.soulEchoes && doc.soulEchoes.anchorIds) || []).filter(id => !got.has(id));
   }
 
   /* ---------------- Sanctuaries (GM-only generated settlements, PD-023) ---------------- */
@@ -835,8 +860,10 @@
    *   setCellsRevealed { cellKeys:["q,r"...], revealed:boolean, at }   Fog of War: reveal (true) or hide (false) cells;
    *                                                                   touches ONLY playerVisibility, never batches or tiles;
    *                                                                   invalid/duplicate keys are ignored; nothing to change => noop
-   *   setSoulEchoes { anchorIds:["mk-012"...], at }                GM-only: REPLACES the whole set (<= 9 distinct sanctuary ids; [] removes all);
-   *                                                                touches ONLY soulEchoes; same set => noop; anything else is refused whole
+   *   setSoulEchoes { anchorIds:["mk-012"...], at }                GM-only: REPLACES the whole set (<= 9 distinct sanctuary ids; [] removes all) and CLEARS
+   *                                                                the collected state; touches ONLY soulEchoes; same set with nothing collected => noop; anything else is refused whole
+   *   setSoulEchoCollected { anchorId, collected:boolean, at }     GM-only: mark one distributed Echo Collected / Available again; unknown anchor, a destination
+   *                                                                (Marrogate / Horizon) or an anchor without an Echo is refused; already in that state => noop
    *   setSanctuaries { entries:[{anchorId,name,trade,...}], at }   GM-only: REPLACES every generated sanctuary (one entry per sanctuary id; [] removes
    *                                                                all); touches ONLY sanctuaries; same set => noop; anything invalid is refused whole
    *   setSanctuary   { entry, at }                                 replaces ONE existing sanctuary (the reroll); an unknown one is refused
@@ -928,9 +955,20 @@
         if (!Array.isArray(cmd.anchorIds)) return fail('bad-echoes');
         if (cmd.anchorIds.length > MAX_SOUL_ECHOES) return fail('too-many-echoes');
         if (!cmd.anchorIds.every(id => typeof id === 'string' && ctx.sanctuaryIds.has(id))) return fail('bad-echoes');
-        const next = sortEchoIds(cmd.anchorIds), have = doc.soulEchoes ? doc.soulEchoes.anchorIds : [];
-        if (next.length === have.length && next.every((id, i) => id === have[i])) return { ok: true, doc: doc, noop: true };
-        return { ok: true, doc: touch(doc, cmd.at, { soulEchoes: { anchorIds: next } }), changed: next.length };
+        const next = sortEchoIds(cmd.anchorIds), have = doc.soulEchoes ? doc.soulEchoes.anchorIds : [], got = doc.soulEchoes ? (doc.soulEchoes.collectedAnchorIds || []) : [];
+        if (next.length === have.length && next.every((id, i) => id === have[i]) && !got.length) return { ok: true, doc: doc, noop: true };
+        // a new (or removed) distribution always starts with every Echo Available: collected state never outlives the set it belonged to
+        return { ok: true, doc: touch(doc, cmd.at, { soulEchoes: { anchorIds: next, collectedAnchorIds: [] } }), changed: next.length };
+      }
+      case 'setSoulEchoCollected': {
+        if (typeof cmd.collected !== 'boolean') return fail('bad-collected');
+        if (typeof cmd.anchorId !== 'string' || !ctx.sanctuaryIds.has(cmd.anchorId)) return fail('bad-anchor');
+        const have = doc.soulEchoes ? doc.soulEchoes.anchorIds : [];
+        if (!have.includes(cmd.anchorId)) return fail('no-echo');
+        const got = getCollectedEchoSet(doc);
+        if (got.has(cmd.anchorId) === cmd.collected) return { ok: true, doc: doc, noop: true };
+        if (cmd.collected) got.add(cmd.anchorId); else got.delete(cmd.anchorId);
+        return { ok: true, doc: touch(doc, cmd.at, { soulEchoes: { anchorIds: have, collectedAnchorIds: sortEchoIds(Array.from(got)) } }) };
       }
       case 'setSanctuaries': {
         if (!Array.isArray(cmd.entries) || cmd.entries.length > ctx.sanctuaries.length) return fail('bad-sanctuaries');
@@ -1062,7 +1100,7 @@
     checkCells: checkCells, checkPlacement: checkPlacement, topologyCheck: topologyCheck, preparedMapComponentCount: preparedMapComponentCount, preparedMapConnectivity: preparedMapConnectivity, deleteTopology: deleteTopology, cellOwners: cellOwners, canonicalEdgeKey: canonicalEdgeKey, neighborIds: neighborIds, regionBoundarySegments: regionBoundarySegments, regionConnectivity: regionConnectivity, isConnected: isConnected, componentCount: componentCount, enclosedHoles: enclosedHoles, holeCounts: holeCounts, apply: apply,
     createHistory: createHistory, historyCommit: historyCommit, historyUndo: historyUndo, historyRedo: historyRedo, historyClear: historyClear,
     compactFootprint: compactFootprint,
-    MAX_SOUL_ECHOES: MAX_SOUL_ECHOES, planSoulEchoes: planSoulEchoes,
+    MAX_SOUL_ECHOES: MAX_SOUL_ECHOES, planSoulEchoes: planSoulEchoes, getCollectedEchoSet: getCollectedEchoSet, isEchoCollected: isEchoCollected, availableEchoIds: availableEchoIds,
     SANCTUARY_DICE: SANCTUARY_DICE, MAX_SANCTUARY_NAME: MAX_SANCTUARY_NAME, validateSanctuaryEntry: validateSanctuaryEntry, planSanctuaries: planSanctuaries,
     getRevealedSanctuaryNameSet: getRevealedSanctuaryNameSet, isSanctuaryNameRevealed: isSanctuaryNameRevealed,
     isFoggableCell: isFoggableCell, getRevealedCellSet: getRevealedCellSet, isCellRevealed: isCellRevealed, cellsToChange: cellsToChange, compareCellKeys: compareCellKeys,

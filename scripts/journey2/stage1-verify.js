@@ -1272,6 +1272,8 @@ async function main() {
   await require('./lib/sanctuary-name-checks.js').runSanctuaryNameChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc });
   /* Player map Print Preview and print (PD-028): two A4 pages, no fog/tint/Environment/Echo, only revealed content, camera independence, one window.print(), PDF page count, EN / RU */
   await require('./lib/print-checks.js').runPrintChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc });
+  /* Locate Soul Echoes (PD-030): Available / Collected overlay row, location selection, animated compass, direction-only result, "here", staleness, isolation, backup, EN / RU, reduced motion */
+  await require('./lib/locate-checks.js').runLocateChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc });
 
   /* ===== G. hygiene ===== */
   const relevant = logs.filter(l => !/favicon|fonts\.g(oogleapis|static)\.com|ERR_INTERNET_DISCONNECTED|net::ERR_(NAME_NOT_RESOLVED|CONNECTION|FAILED)/.test(l));

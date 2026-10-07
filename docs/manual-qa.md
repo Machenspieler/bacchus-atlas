@@ -504,6 +504,13 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       **Remove Echoes** is disabled when there are none, otherwise asks first and removes all. Each action is one Undo entry
       and Redo restores the same sanctuaries. Reload keeps them; the shimmer stops with reduced motion; crystals stay
       visible over the fog veil. **Player Preview** shows no crystal and no Echo button. The JSON backup round-trips them.
+- [ ] Locate Soul Echoes (GM only, PD-030): the **Locate Soul Echoes** button (RU «Найти Эхо Души») is disabled with a reason ("Generate Soul Echoes first." / "All Soul Echoes have been collected.") until an Echo is
+      Available. Pressing it shows the chip "Select the hex where the party is currently located." (Cancel / Esc leave it; Reveal, Hide, the inspector and the overlay close); hovering shows a dashed hex with a star,
+      clicking any valid hex — also one under a sanctuary icon, a tile or an Environment badge — starts the compass: a popover beside that hex, the needle spins two turns and settles on the true bearing, then
+      "The compass points …" + `NNE · North-northeast` + the GM reminder appear (not before). No name, distance, route or target is shown, fog and names are unchanged and Undo gains no entry.
+      On an Echo sanctuary's own hex it says "The nearest Soul Echo is here." and the centre pulses. **Choose another location** returns to selecting, **Close** (or Esc) returns focus to the button.
+      Open an Echo sanctuary: the **Soul Echo** row shows Available + **Mark collected** → Collected + **Restore Echo** (overlay and scroll stay, one Undo each; the map crystal dims). Locate skips collected Echoes.
+      Undo/Redo or regenerating Echoes while a result is open closes it. With reduced motion the needle jumps straight to the bearing. Player Preview and Print Preview show none of it; the JSON backup keeps the collected state; EN/RU.
 - [ ] Sanctuaries (GM only, PD-023): the toolbar button reads **Generate 56 sanctuaries** (RU: «Создать убежища: 56») and puts a dashed ring round every printed sanctuary icon
       (never HORIZON/MARROGATE). Clicking an icon (also one with a hex under it) opens the overlay: name, then Trade & Exports d20, Quirk d12, Crisis d10, Drive d10,
       Political System d8, Size d6, Population d4, each with its die and result; a combined political system shows the note and one line per system.

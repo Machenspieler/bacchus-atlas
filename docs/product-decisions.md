@@ -947,3 +947,37 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Out of scope:** renaming internals, any editor behaviour change, removing the legacy redirect.
 - **Where:** `js/route-utils.js`, `js/app.js` (`render`, `routeTitle`, `renderJourneyPage`), `index.html` boot script, `tests/routing.test.js`, `tests/journey-route-cutover.test.js`,
   browser check `scripts/journey2/route-cutover-verify.js`.
+
+## PD-030: Journey — "Locate Soul Echoes" is a GM-only map tool with a magic compass, and Echoes can be collected
+- **Status:** Active
+- **Date:** 2026-10-07
+- **Decision (what it is):** the campaign's downtime move "Locate Soul Echoes" becomes a GM-only toolbar action beside **Soul Echoes** / **Remove Echoes**. The GM picks the party's
+  hex on the map; the app answers with an animated magical compass pointing toward the **nearest uncollected Soul Echo** and one text line (`NNE · North-northeast`).
+  It is a product enhancement, not a book rule: the book says the Vessel reveals the general direction; the sixteen-point rose and the animation are ours.
+- **Decision (what it reveals):** **direction only.** Never the sanctuary, its name (even when already revealed to players), the target hex, a route or line, the distance, travel days or
+  difficult terrain. It never reveals the origin or any cell, never changes Fog of War or sanctuary-name visibility, and never highlights the destination. The initial Echo already in the
+  Vessel (the one Marrogate starts with) is not one of the nine map candidates; Horizon and Marrogate are not sanctuaries and can never be candidates.
+- **Decision (math):** the origin is the world-space centre of the picked hex (never the pointer, pan or zoom); the target is the canonical `worldPixelAnchor` of the fixed sanctuary.
+  Map north is treated as geographic north (no declination). Bearing `atan2(dx, originY - targetY)`, 0° = north, clockwise; sixteen 22.5° sectors with half-sector rounding
+  (`floor((bearing + 11.25) / 22.5) % 16`); the needle stops at the exact bearing, the text uses the sector. Distance is straight-line map-world distance — no hex path, terrain,
+  roads, rivers, Fog or revealed cells. Equal distances (within `NEAREST_TIE_EPSILON` = 0.5 world px, far below one hex) pick **one** candidate with an injectable RNG, frozen for the
+  animation and the text. If the party's hex is the Echo sanctuary's mapped hex the answer is **"The nearest Soul Echo is here."** — no random direction, the centre crystal pulses.
+- **Decision (collected state):** `doc.soulEchoes = { anchorIds, collectedAnchorIds }`. Collected is a sorted subset of the distribution, missing = every Echo Available (`schemaVersion`
+  stays 1). It belongs to the **fixed anchor**, not to generated sanctuary data: rerolling or deleting a sanctuary's characteristics changes nothing. The sanctuary overlay shows a GM-only
+  **Soul Echo** row (explicit text *Available / Collected* + a real *Mark collected / Restore Echo* button; one command, one Undo entry, overlay and camera stay) only for a sanctuary that holds
+  an Echo. Because the state lives on the anchor, the overlay also opens for an Echo sanctuary whose characteristics were deleted (it then shows just that row). Generating or removing Echoes
+  clears the collected state in the same command; Undo restores both. A collected crystal is drawn smaller, flat and dim on the GM map. Locate only offers **Available** Echoes: the button
+  is unavailable (with a reason) with no distribution ("Generate Soul Echoes first.") or when all are collected.
+- **Decision (transience):** the tool state (selecting / animating / result, hover hex, frozen bearing and target) and the compass popover are transient — never in the document, history,
+  autosave, JSON backup or storage, and Undo/Redo never reopens or restores a result. A result computed from a different Echo set (regenerate, remove, collect, restore, Undo, Redo) is closed as
+  stale; import, reset, Player Preview, another map tool (Reveal / Hide / placement), route change and unmount cancel it and its pending timer. Escape and Close leave the tool.
+- **Decision (isolation):** Locate, the Available/Collected state, the target and the reminder never reach Player Preview, the player projection, Print Preview or print — the same rule as
+  PD-022. The line "GM reminder: Nearby Seekers-in-Shadow may sense the Vessel's general direction." is narrative only: no Seeker marker, Fear change or encounter.
+- **Decision (interaction):** while selecting, any valid non-decorative hex can be picked (wilderness, ungenerated Old Valloren, sanctuary, coast); a click on a sanctuary icon picks the hex
+  under it instead of opening the overlay; tiles, markers and Environment badges do not intercept; a drag above the pan slope (or Space + drag) pans. The popover is a screen-space dialog (not
+  modal, `clamp(280px, 28vw, 380px)`), anchored beside the party's hex. Reduced motion: the needle goes straight to the bearing in ~0.2 s with identical text.
+- **Out of scope:** party token or persisted location, auto-reveal of the origin/neighbours, routes, distance or day counts, destination highlighting, sound, Seeker automation, GM notes,
+  keyboard hex selection (the map has no keyboard cell selection).
+- **Where:** `js/journey2-model.js` (`validateSoulEchoes`, `setSoulEchoes`, `setSoulEchoCollected`, `getCollectedEchoSet`, `availableEchoIds`), `js/journey2-locate.js` (pure),
+  `js/journey2-view.js` ("Locate Soul Echoes" block, overlay row), `css/journey2.css`, `data/i18n.json` (`journey2_loc_*`, `journey2_echo_*`), `tests/journey2-locate.test.js`,
+  browser check `scripts/journey2/lib/locate-checks.js`.

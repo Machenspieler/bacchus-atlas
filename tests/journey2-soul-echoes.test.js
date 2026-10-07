@@ -37,13 +37,13 @@ test('context: exposes exactly the 56 sanctuaries (never HORIZON / MARROGATE), w
 
 test('a new document has no Soul Echoes; a document without the field loads unchanged (schemaVersion stays 1)', () => {
   const doc = M.emptyDocument(ctx, AT);
-  assert.deepEqual(doc.soulEchoes, { anchorIds: [] });
+  assert.deepEqual(doc.soulEchoes, { anchorIds: [], collectedAnchorIds: [] });
   assert.equal(M.SCHEMA_VERSION, 1);
   const old = JSON.parse(JSON.stringify(doc));
   delete old.soulEchoes;
   const r = M.validateDocument(old, ctx);
   assert.equal(r.ok, true);
-  assert.deepEqual(r.doc.soulEchoes, { anchorIds: [] });
+  assert.deepEqual(r.doc.soulEchoes, { anchorIds: [], collectedAnchorIds: [] });
 });
 
 test('validation: dedupes and sorts, rejects more than nine, non-sanctuaries, unknown fields and malformed values', () => {

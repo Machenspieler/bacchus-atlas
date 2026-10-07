@@ -38,10 +38,16 @@
    Sanctuary names (PD-027): the overlay's Player map row reveals / hides ONE name (`setSanctuaryNameRevealed`); Player Preview draws only the
    projection's `sanctuaryLabels` (world-px layout from Geo.layoutSanctuaryLabels) above the fog, never the tables.
 
+   Locate Soul Echoes (PD-030): a GM-only map tool. "Locate Soul Echoes" asks for the party's hex, finds the nearest uncollected Echo by
+   straight-line map distance (js/journey2-locate.js, pure) and shows an animated sixteen-point compass in a screen-space popover —
+   direction only, never a name, distance or target. The tool state (selecting / animating / result, hover, frozen bearing) is transient:
+   never in the document, history, backup or storage; the sanctuary overlay's Soul Echo row (Available / Collected) is the only persisted part.
+
    Layering (see docs/architecture.md "Journey 2 map editor"):
      js/journey2-geometry.js  measured lattice + camera math (pure)
      js/journey2-model.js     document, policy, commands, history (pure)
      js/journey2-projection.js the player-facing projection (pure)
+     js/journey2-locate.js    Locate Soul Echoes: bearing, sixteen directions, nearest Echo, session state machine (pure)
      js/journey2-store.js     local persistence over safe-storage
      js/journey2-view.js      this file: DOM, pointer state, rendering
    The model owns every rule; this file never mutates a document, it only
@@ -78,6 +84,7 @@
   const Projection = root.Journey2Projection;
   const Tint = root.Journey2BiomeTint;
   const Print = root.Journey2Print;
+  const Locate = root.Journey2Locate;
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const MAX_ZOOM = 8;
   const CLICK_SLOP_PX = 4;
@@ -220,6 +227,16 @@
     let sancDrawn = { sanctuaries: null, open: null, names: null };   // what the sanctuary ring layer currently shows
     let sancLabelsDrawn = null;                             // the sanctuaryLabels currently drawn (GM map and Player Preview share them)
     let sancAnchors = null;                                 // Map anchor id -> the printed sanctuary anchor (built once)
+    let locateHover = null;                                 // { q, r } under the pointer while Locate Soul Echoes is selecting (transient: never persisted, never in history)
+    let locateNeedleStarted = false;                        // the needle transition of the current result has been started (a re-render must not restart it)
+    let locateNote = '';                                    // why an Undo/Redo closed a stale result (appended to the Undo/Redo announcement)
+    let locateRandom = Math.random;                         // the one RNG a tie is drawn with (replaceable through the debug API for the browser checks)
+    /* the Locate state machine (js/journey2-locate.js): selecting -> animating -> result, one guarded completion timer, never persisted */
+    const locateSession = Locate.createLocateSession({
+      schedule: (fn, ms) => setTimeout(fn, ms), cancel: h => clearTimeout(h),
+      reducedMotion: () => { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (err) { return false; } },
+      onChange: (state, ev) => onLocateChange(state, ev),
+    });
 
     container.innerHTML = '';
     container.classList.add('j2-host');
@@ -243,6 +260,7 @@
       abort.abort();
       cancelAnimationFrame(rafId);
       clearTimeout(hintTimer); clearTimeout(liveTimer);
+      locateSession.dispose(); locateHover = null;   // cancels a pending compass completion: nothing may write into the detached DOM
       tr = null; pan = null; fogStroke = null; fogTool = null; previewMode = false; inspector = Model.NO_INSPECTION;
       cancelAnimationFrame(fogPaintRaf);
       document.body.classList.remove('j2-dragging');
@@ -372,6 +390,7 @@
       eye: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.5 10C4 5.8 7 4 10 4s6 1.8 8.5 6c-2.5 4.2-5.5 6-8.5 6s-6-1.8-8.5-6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.6" fill="currentColor"/></svg>',
       sanctuary: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 17h14M5 17V9l5-5.5L15 9v8M8.5 17v-4.5h3V17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       crystal: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 1.8 6.6 6.6 7.6 14 10 17.4 12.4 14 13.4 6.6zM10 1.8v15.6M6.6 6.6h6.8M6.2 13.2 3 15.4l2.6-5.2M13.8 13.2 17 15.4l-2.6-5.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/></svg>',
+      compass: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="7.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m13.2 6.8-1.7 4.7-4.7 1.7 1.7-4.7z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M10 1.6v1.8M10 16.6v1.8M1.6 10h1.8M16.6 10h1.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
     };
 
     /**
@@ -388,6 +407,26 @@
     const ECHO_CRYSTAL =
       '<g class="j2-echo-bob"><path class="j2-echo-body" d="M0-15 8.5 0 0 15-8.5 0z" fill="url(#j2-echo-body)"/><path class="j2-echo-core" d="M0-8 3.8 0 0 8-3.8 0z"/></g>';
 
+
+    /**
+     * The Locate compass (decorative: the equivalent text sits right under it). 200x200 user units, centre (100,100); sixteen ticks (stronger on
+     * N / E / S / W), a gold ring, a central crystal and ONE needle that CSS rotates about the centre. Colours are fixed (a map-style instrument on its own dark panel).
+     */
+    const COMPASS_SVG = (() => {
+      let ticks = '';
+      for (let i = 0; i < 16; i++) {
+        const major = i % 4 === 0, len = major ? 15 : 8, a = i * 22.5;
+        ticks += '<line class="j2-cmp-tick' + (major ? ' is-major' : '') + '" x1="100" y1="' + (12 + 0) + '" x2="100" y2="' + (12 + len) + '" transform="rotate(' + a + ' 100 100)"/>';
+      }
+      return '<svg class="j2-compass" data-j2-l="compass" viewBox="0 0 200 200" aria-hidden="true" focusable="false">' +
+        '<defs><radialGradient id="j2-cmp-glow"><stop offset="0" stop-color="#f6dc9a" stop-opacity=".9"/><stop offset=".6" stop-color="#d9a441" stop-opacity=".25"/><stop offset="1" stop-color="#d9a441" stop-opacity="0"/></radialGradient></defs>' +
+        '<circle class="j2-cmp-face" cx="100" cy="100" r="92"/><circle class="j2-cmp-ring" cx="100" cy="100" r="92"/><circle class="j2-cmp-ring is-inner" cx="100" cy="100" r="76"/>' + ticks +
+        '<text class="j2-cmp-letter" data-j2-l="cn" x="100" y="52" text-anchor="middle"></text><text class="j2-cmp-letter" data-j2-l="ce" x="152" y="105" text-anchor="middle"></text>' +
+        '<text class="j2-cmp-letter" data-j2-l="cs" x="100" y="158" text-anchor="middle"></text><text class="j2-cmp-letter" data-j2-l="cw" x="48" y="105" text-anchor="middle"></text>' +
+        '<circle class="j2-cmp-core-glow" data-j2-l="glow" cx="100" cy="100" r="30" fill="url(#j2-cmp-glow)"/>' +
+        '<g class="j2-cmp-needle" data-j2-l="needle"><path class="j2-cmp-needle-n" d="M100 30 108 100 100 108 92 100Z"/><path class="j2-cmp-needle-s" d="M100 170 108 100 100 92 92 100Z"/></g>' +
+        '<path class="j2-cmp-core" data-j2-l="core" d="M100 90 108 100 100 110 92 100Z"/></svg>';
+    })();
 
     function buildSurface() {
       const tpl = data.template, [W, H] = tpl.worldSizePx;
@@ -415,6 +454,8 @@
             <div class="j2-tb-group j2-tb-echo" role="group" data-j2-echo-group data-t-aria="journey2_echo_group">
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-echo-place data-t-title="journey2_echo_place_title"><span class="j2-ico" aria-hidden="true">${ICON.crystal}</span><span data-t="journey2_echo_place"></span></button>
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-echo-clear data-t-title="journey2_echo_clear_title"><span class="j2-ico" aria-hidden="true">${ICON.trash}</span><span data-t="journey2_echo_clear"></span></button>
+              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-echo-locate aria-pressed="false" aria-describedby="j2-locate-reason"><span class="j2-ico" aria-hidden="true">${ICON.compass}</span><span data-t="journey2_echo_locate"></span></button>
+              <span class="sr-only" id="j2-locate-reason" data-j2-locate-reason></span>
             </div>
             <div class="j2-tb-group j2-tb-sanc" role="group" data-j2-sanc-group data-t-aria="journey2_sanc_group">
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-sanc-generate data-t-title="journey2_sanc_generate_title"><span class="j2-ico" aria-hidden="true">${ICON.sanctuary}</span><span data-j2-sanc-generate-label></span></button>
@@ -435,7 +476,7 @@
                     <defs data-j2-defs></defs><defs>${ECHO_DEFS}</defs>
                     <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g>
                     <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
-                    <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g>
+                    <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g><g data-j2-g="locate" pointer-events="none"></g>
                   </svg>
                 </div>
                 <p class="sr-only" id="j2-keys" data-t="journey2_keys_hint"></p>
@@ -447,6 +488,13 @@
                 <strong data-j2-fog-chip-title></strong>
                 <span class="j2-fog-chip-count" data-j2-fog-chip-count></span>
                 <span class="j2-fog-chip-hint" data-j2-fog-chip-hint></span>
+              </div>
+              <div class="j2-fog-chip j2-locate-chip" data-j2-locate-chip hidden>
+                <span class="j2-ico" aria-hidden="true">${ICON.compass}</span>
+                <strong data-t="journey2_echo_locate"></strong>
+                <span class="j2-fog-chip-hint" data-t="journey2_loc_select_hint"></span>
+                <span class="j2-fog-chip-hint" data-t="journey2_loc_esc_hint"></span>
+                <button type="button" class="btn btn-sm" data-j2-locate-cancel data-t="journey2_loc_cancel"></button>
               </div>
               <aside class="j2-panel" id="j2-panel" data-t-aria="journey2_panel_label" hidden></aside>
               <aside class="j2-region-inspector" id="j2-region-inspector" role="dialog" aria-modal="false" aria-labelledby="j2-region-inspector-title" data-j2-inspector hidden>
@@ -498,10 +546,34 @@
                     <button type="button" class="btn btn-sm" data-j2-sanc-name aria-pressed="false"></button>
                   </div>
                 </section>
+                <section class="j2-sanc-player j2-sanc-echo" aria-labelledby="j2-sanc-echo-h" data-j2-s="echo" hidden>
+                  <h4 class="j2-sanc-k" id="j2-sanc-echo-h"><span data-t="journey2_echo_section"></span></h4>
+                  <div class="j2-sanc-player-row">
+                    <span class="j2-sanc-player-state is-visible" data-j2-s="echoState"><span class="j2-sanc-eye" aria-hidden="true">${ICON.crystal}</span><span data-j2-s="echoText"></span></span>
+                    <button type="button" class="btn btn-sm" data-j2-echo-collect></button>
+                  </div>
+                </section>
                 <div class="j2-insp-scroll j2-sanc-rows" data-j2-s="rows"></div>
-                <footer class="j2-sanc-foot">
+                <footer class="j2-sanc-foot" data-j2-s="foot">
                   <button type="button" class="btn btn-sm btn-danger" data-j2-sanc-delete data-t="journey2_sanc_delete"></button>
                   <button type="button" class="btn btn-sm btn-primary" data-j2-sanc-reroll><span class="j2-ico" aria-hidden="true">${ICON.dice}</span><span data-t="journey2_sanc_reroll"></span></button>
+                </footer>
+              </aside>
+              <aside class="j2-region-inspector j2-locate" id="j2-locate" role="dialog" aria-modal="false" aria-labelledby="j2-locate-title" tabindex="-1" data-j2-locate hidden>
+                <span class="j2-insp-caret" aria-hidden="true"></span>
+                <header class="j2-insp-head"><div class="j2-insp-titles"><h3 class="j2-insp-title" id="j2-locate-title" data-t="journey2_loc_title"></h3></div></header>
+                <div class="j2-locate-body">
+                  ${COMPASS_SVG}
+                  <p class="j2-locate-searching" data-j2-l="searching" data-t="journey2_loc_searching"></p>
+                  <div class="j2-locate-out" data-j2-l="out" role="status" aria-live="polite" aria-atomic="true">
+                    <p class="j2-locate-line" data-j2-l="line"></p>
+                    <p class="j2-locate-dir" data-j2-l="dir" hidden></p>
+                    <p class="j2-locate-note" data-j2-l="note"></p>
+                  </div>
+                </div>
+                <footer class="j2-sanc-foot j2-locate-foot">
+                  <button type="button" class="btn btn-sm" data-j2-locate-again data-t="journey2_loc_again"></button>
+                  <button type="button" class="btn btn-sm btn-primary" data-j2-locate-close data-t-aria="journey2_loc_close"><span data-t="journey2_loc_close_label"></span></button>
                 </footer>
               </aside>
             </div>
@@ -557,6 +629,7 @@
       ui.sancReroll = ui.sanctuary.querySelector('[data-j2-sanc-reroll]');
       ui.sancDelete = ui.sanctuary.querySelector('[data-j2-sanc-delete]');
       ui.sancName = ui.sanctuary.querySelector('[data-j2-sanc-name]');
+      ui.echoCollect = ui.sanctuary.querySelector('[data-j2-echo-collect]');
       ui.knownSanc = container.querySelector('[data-j2-known-sanc]');
       ui.zoomReadout = container.querySelector('[data-j2-zoom-readout]');
       ui.badge = container.querySelector('[data-j2-proof-badge]');
@@ -576,6 +649,12 @@
       ui.echoGroup = container.querySelector('[data-j2-echo-group]');
       ui.echoPlace = container.querySelector('[data-j2-echo-place]');
       ui.echoClear = container.querySelector('[data-j2-echo-clear]');
+      ui.echoLocate = container.querySelector('[data-j2-echo-locate]');
+      ui.locateReason = container.querySelector('[data-j2-locate-reason]');
+      ui.locateChip = container.querySelector('[data-j2-locate-chip]');
+      ui.locate = container.querySelector('[data-j2-locate]');
+      ui.l = {};
+      for (const x of ui.locate.querySelectorAll('[data-j2-l]')) ui.l[x.getAttribute('data-j2-l')] = x;
       ui.previewBtn = container.querySelector('[data-j2-preview]');
       ui.previewBar = container.querySelector('[data-j2-preview-bar]');
       ui.previewBack = container.querySelector('[data-j2-preview-back]');
@@ -700,9 +779,11 @@
 
     function afterDocChange() {
       persist();
+      locateNote = '';
       if (sel.tileId && !Model.derive(doc).byId.has(sel.tileId)) sel.tileId = null;
       syncInspector();
-      if (sanctuaryOpen && !sanctuaryEntry(sanctuaryOpen)) closeSanctuary({ quiet: true });   // deleted, or undone away
+      if (sanctuaryOpen && !sanctuaryOpenable(sanctuaryOpen)) closeSanctuary({ quiet: true });   // deleted with no Echo left, or undone away
+      syncLocate();
       renderAll(false);
     }
 
@@ -714,7 +795,7 @@
       envPicker = null;
       doc = e.before;
       afterDocChange();
-      announce(t('journey2_live_undo'));
+      announce(t('journey2_live_undo') + (locateNote ? '. ' + locateNote : ''));
     }
     function redo() {
       if (inst.disposed || editLocked || previewMode) return;
@@ -724,7 +805,7 @@
       envPicker = null;
       doc = e.after;
       afterDocChange();
-      announce(t('journey2_live_redo'));
+      announce(t('journey2_live_redo') + (locateNote ? '. ' + locateNote : ''));
     }
 
     /* ============================================================
@@ -1130,6 +1211,7 @@
     function openInspectorFromTile(tileId) {
       const next = Model.inspectTile(inspector, doc, tileId);
       if (next === inspector) return;
+      exitLocate({ quiet: true });
       closeSanctuary({ quiet: true });
       announceInspector(next);
       inspector = next;
@@ -1143,6 +1225,7 @@
     function openInspectorFromCard(batchId) {
       const next = Model.inspectBatch(inspector, doc, batchId);
       if (next === inspector) return;
+      exitLocate({ quiet: true });
       closeSanctuary({ quiet: true });
       announceInspector(next);
       const keepSel = inspector.tileId && sel.tileId === inspector.tileId;
@@ -1282,6 +1365,7 @@
     function positionInspector() {
       if (inspector.batchId != null && ui.inspector && !ui.inspector.hidden && data) positionPanel(ui.inspector, inspectorAnchor);
       positionSanctuary();
+      positionLocate();
     }
 
     /** Re-positions every frame for `ms` (the sidebar slides for 250 ms and moves the rectangle the inspector avoids). */
@@ -1469,13 +1553,17 @@
       if (previewMode) { ui.g.echoes.innerHTML = ''; echoDrawn = null; return; }
       if (echoDrawn === doc.soulEchoes) return;
       const at = new Map(data.ctx.sanctuaries.map(s => [s.id, s]));
+      const got = new Set(doc.soulEchoes.collectedAnchorIds);
       let h = '', i = 0;
       for (const id of doc.soulEchoes.anchorIds) {
         const s = at.get(id);
         if (!s) continue;
         // right above the printed icon (its centre line, just over its top edge), independent of the hex grid, so the icon itself stays clear
         const x = fmt(s.x, 1), y = fmt(s.top - ECHO_LIFT, 1);
-        h += '<g class="j2-echo" data-echo="' + esc(id) + '" style="--j2-echo-i:' + (i++) + '"><circle class="j2-echo-glow" cx="' + x + '" cy="' + y + '" r="34"/><g transform="translate(' + x + ' ' + y + ') scale(1.25)">' + ECHO_CRYSTAL + '</g></g>';
+        // a collected Echo is drawn smaller, flat and dim (no glow, no shimmer): shape and brightness, not only colour, tell it from an Available one
+        h += got.has(id)
+          ? '<g class="j2-echo is-collected" data-echo="' + esc(id) + '" data-collected="true"><g transform="translate(' + x + ' ' + y + ') scale(.8)">' + ECHO_CRYSTAL + '</g></g>'
+          : '<g class="j2-echo" data-echo="' + esc(id) + '" style="--j2-echo-i:' + (i++) + '"><circle class="j2-echo-glow" cx="' + x + '" cy="' + y + '" r="34"/><g transform="translate(' + x + ' ' + y + ') scale(1.25)">' + ECHO_CRYSTAL + '</g></g>';
       }
       ui.g.echoes.innerHTML = h;
       echoDrawn = doc.soulEchoes;
@@ -1487,6 +1575,13 @@
       const count = doc.soulEchoes.anchorIds.length;
       ui.echoPlace.disabled = editLocked;
       ui.echoClear.disabled = editLocked || !count;
+      // Locate: a real button that stays focusable while unavailable (aria-disabled), with its reason as the title AND a description screen readers read
+      const a = locateAvailability(), active = locateSession.isActive();
+      ui.echoLocate.disabled = editLocked;
+      ui.echoLocate.setAttribute('aria-disabled', String(!a.ok));
+      ui.echoLocate.setAttribute('aria-pressed', String(active));
+      ui.echoLocate.title = a.ok ? t('journey2_echo_locate_title') : t(a.key);
+      ui.locateReason.textContent = a.ok ? '' : t(a.key);
     }
 
     /** One button, nine Echoes: rolls the book's placement rule once, then commits those exact ids as ONE undoable command. */
@@ -1530,6 +1625,206 @@
     }
 
     /* ============================================================
+       Locate Soul Echoes (PD-030): GM-only. "Locate Soul Echoes" -> the GM clicks the party's hex -> the nearest UNCOLLECTED Echo (straight-line map
+       distance, pure js/journey2-locate.js) is frozen and an animated compass answers with a direction on a sixteen-point rose — and nothing else.
+       The state machine (selecting -> animating -> result), the hover hex, the frozen bearing and the popover are all transient: never in the
+       document, history, autosave, backup or storage, and never in the player projection or a print. Fog, sanctuary names, generated sanctuary data
+       and terrain are not inputs. Collected state (the only persisted part) is changed by the sanctuary overlay's Soul Echo row.
+       ============================================================ */
+
+    /** The fingerprint of the Echo set a result was computed from: any change (regenerate, remove, collect, restore, Undo, Redo) makes an open result stale. */
+    function echoSig() { const e = doc.soulEchoes; return e.anchorIds.join(',') + '|' + e.collectedAnchorIds.join(','); }
+
+    /** { ok, key }: whether a search can start; `key` is the localized reason when it cannot. */
+    function locateAvailability() {
+      if (!doc || !doc.soulEchoes.anchorIds.length) return { ok: false, key: 'journey2_echo_locate_none' };
+      if (!Model.availableEchoIds(doc).length) return { ok: false, key: 'journey2_echo_locate_all' };
+      return { ok: true, key: null };
+    }
+
+    /** Enters the transient location-selection tool: everything that could compete for the map is cancelled first; pan, zoom, the sidebar and Fog of War are untouched. */
+    function startLocate() {
+      if (inst.disposed || previewMode || editLocked || !doc || !data) return;
+      if (locateSession.isActive()) { exitLocate({ focus: true }); return; }
+      const a = locateAvailability();
+      if (!a.ok) { hint(t(a.key)); return; }
+      cancelTransient(); cancelFogStroke(); setFogTool(null, { quiet: true });
+      closeMenus(); hideEnvTip(); clearHint();
+      if (diagOpen) setDiagnostics(false);
+      closeInspector({ quiet: true }); closeSanctuary({ quiet: true });
+      if (sel.tileId) { sel.tileId = null; renderSelection(); renderInventory(false); }
+      locateHover = null;
+      locateSession.start();
+      announce(t('journey2_echo_locate') + '. ' + t('journey2_loc_select_hint'));      // the instruction is announced once
+    }
+
+    /** Leaves Locate (Escape, Close, Cancel, another tool, import, teardown): cancels the pending completion and removes the origin, the popover and the chip. `quiet` skips the announcement. */
+    function exitLocate(o) {
+      if (!locateSession.isActive()) return false;
+      locateHover = null;
+      locateSession.close();                                   // onChange('closed') repaints everything
+      if (!(o && o.quiet)) announce(t('journey2_loc_off'));
+      if (o && o.focus && ui.echoLocate) ui.echoLocate.focus({ preventScroll: true });
+      return true;
+    }
+
+    /** The GM clicked a valid hex: one search, frozen, then the animation. The document is not touched (no history, no autosave, no fog change). */
+    function chooseLocateOrigin(cellId) {
+      const st = locateSession.state;
+      if (!st || st.status !== 'selecting' || !doc) return;
+      const out = Locate.locateSoulEcho({ doc: doc, ctx: data.ctx, originCellId: cellId, random: locateRandom });
+      if (!out.ok) {
+        if (out.reason === 'no-echo') { exitLocate({ quiet: true }); hint(t('journey2_loc_none_remain')); if (ui.echoLocate) ui.echoLocate.focus({ preventScroll: true }); }
+        return;                                                // a 'bad-origin' hex is never offered, so it is ignored
+      }
+      locateHover = null;
+      locateSession.select(out, echoSig());
+    }
+
+    function chooseLocateAgain() {
+      if (!locateSession.isActive()) return;
+      locateHover = null;
+      locateSession.chooseAnother();
+      announce(t('journey2_loc_select_hint'));
+      if (ui.viewport) ui.viewport.focus({ preventScroll: true });
+    }
+
+    /** After a document change (dispatch, Undo, Redo): a result computed from a different Echo set is stale; no Echo left (or none available) ends the tool. */
+    function syncLocate() {
+      const st = locateSession.state;
+      if (!st || !doc) return;
+      let note = '';
+      if (!doc.soulEchoes.anchorIds.length) note = t('journey2_loc_none_distributed');
+      else if (st.status === 'selecting') { if (!Model.availableEchoIds(doc).length) note = t('journey2_loc_none_remain'); }
+      else if (st.sig !== echoSig()) note = t('journey2_loc_stale');
+      if (!note) return;
+      exitLocate({ quiet: true });
+      locateNote = note;
+      announce(note);
+    }
+
+    /** Session transitions drive every repaint; nothing here reads a timer, so a late callback can never write into a closed popover. */
+    function onLocateChange(state, ev) {
+      if (inst.disposed || !ui.locate) return;
+      if (ev === 'selecting' || ev === 'closed') locateHover = null;
+      paintLocate(); renderLocatePanel(); updateEchoUi();
+      if (ev === 'animating' || ev === 'result') positionLocate();
+      if (ev === 'result' && !ui.locate.hidden) ui.locate.focus({ preventScroll: true });   // focus enters the popover once its content is ready
+    }
+
+    function updateLocateHover(e) {
+      const cell = fogCellFromEvent(e);
+      const next = cell && foggable.has(Geo.cellId(cell.q, cell.r)) ? cell : null;
+      if ((next && locateHover && next.q === locateHover.q && next.r === locateHover.r) || (!next && !locateHover)) return;
+      locateHover = next;
+      paintLocate();
+    }
+
+    /** The hover hex while choosing (dashed outline + compass star: shape, not colour) and the origin hex of a search (solid outline + star; "here" adds a pulse). */
+    function paintLocate() {
+      const g = ui.g && ui.g.locate;
+      if (!g) return;
+      const st = locateSession.state;
+      if (!st || previewMode || !data) { g.innerHTML = ''; return; }
+      const star = (q, r) => {
+        const c = data.grid.cellCenter(q, r), k = data.grid.shortDimensionPx * 0.3, m = k * 0.28, x = c[0], y = c[1];
+        return '<path class="j2-loc-star" d="M' + fmt(x, 1) + ' ' + fmt(y - k, 1) + 'L' + fmt(x + m, 1) + ' ' + fmt(y - m, 1) + 'L' + fmt(x + k, 1) + ' ' + fmt(y, 1) + 'L' + fmt(x + m, 1) + ' ' + fmt(y + m, 1) +
+          'L' + fmt(x, 1) + ' ' + fmt(y + k, 1) + 'L' + fmt(x - m, 1) + ' ' + fmt(y + m, 1) + 'L' + fmt(x - k, 1) + ' ' + fmt(y, 1) + 'L' + fmt(x - m, 1) + ' ' + fmt(y - m, 1) + 'Z"/>';
+      };
+      let h = '';
+      if (st.status === 'selecting' && locateHover) h = '<path class="j2-loc-hover" d="' + hexPath(locateHover.q, locateHover.r) + '"/>' + star(locateHover.q, locateHover.r);
+      else if (st.status !== 'selecting' && st.originCellId) {
+        const c = Geo.parseCellId(st.originCellId);
+        if (c) h = '<path class="j2-loc-origin' + (st.resultType === 'here' && st.status === 'result' ? ' is-here' : '') + '" d="' + hexPath(c.q, c.r) + '"/>' + star(c.q, c.r);
+      }
+      g.innerHTML = h;
+    }
+
+    /** The party's hex in map-area px (centre + half width) for the popover's caret, or null when it is off screen. */
+    function locateAnchor(view) {
+      const st = locateSession.state, c = st && st.originCellId ? Geo.parseCellId(st.originCellId) : null;
+      if (!c) return null;
+      const ctr = data.grid.cellCenter(c.q, c.r);
+      const vp = ui.viewport.getBoundingClientRect(), wrap = ui.mapwrap.getBoundingClientRect();
+      const s = Geo.worldToScreen(cam, ctr[0], ctr[1]);
+      const x = vp.left - wrap.left + s[0], y = vp.top - wrap.top + s[1];
+      if (x < 0 || y < 0 || x > view.w || y > view.h) return null;
+      const xs = data.grid.cellCorners(c.q, c.r).map(p => p[0]);
+      return { x: x, y: y, r: (Math.max.apply(null, xs) - Math.min.apply(null, xs)) / 2 * cam.scale };
+    }
+
+    function positionLocate() {
+      if (!ui.locate || ui.locate.hidden || !data || !locateSession.state) return;
+      positionPanel(ui.locate, locateAnchor);
+    }
+
+    /** Starts the needle: one CSS transition from the start angle to the frozen final angle (>= 720 + bearing; direct with reduced motion). */
+    function startNeedle(plan) {
+      const nd = ui.l.needle;
+      nd.style.transition = 'none';
+      nd.style.transform = 'rotate(' + plan.startAngle + 'deg)';
+      void nd.getBoundingClientRect();                         // commit the start angle so the transition really runs from it
+      nd.style.transition = 'transform ' + plan.durationMs + 'ms cubic-bezier(0.2, 0.9, 0.25, 1.012)';
+      nd.style.transform = 'rotate(' + plan.finalAngle + 'deg)';
+      nd.setAttribute('data-final-angle', String(Math.round(plan.finalAngle * 100) / 100));
+      ui.locate.style.setProperty('--j2-loc-dur', plan.durationMs + 'ms');
+    }
+
+    function hideLocatePopover() {
+      if (!ui.locate || ui.locate.hidden) { locateNeedleStarted = false; return; }
+      const had = ui.locate.contains(document.activeElement);
+      ui.locate.hidden = true; ui.locate.style.transform = '';
+      ui.locate.removeAttribute('data-state'); ui.locate.removeAttribute('data-kind'); ui.locate.classList.remove('is-done');
+      ui.l.line.textContent = ''; ui.l.dir.textContent = ''; ui.l.dir.hidden = true; ui.l.note.textContent = '';
+      ui.l.needle.style.transition = 'none'; ui.l.needle.style.transform = ''; ui.l.needle.removeAttribute('data-final-angle');
+      locateNeedleStarted = false;
+      if (had && ui.echoLocate) ui.echoLocate.focus({ preventScroll: true });   // closing returns focus to the toolbar button
+    }
+
+    /** Paints the selection chip, the cursor and the compass popover from the session state. The direction text exists only once the result has settled. */
+    function renderLocatePanel() {
+      if (!ui.locate || !doc) return;
+      const st = locateSession.state, L = ui.l;
+      const selecting = !!st && st.status === 'selecting' && !previewMode;
+      ui.locateChip.hidden = !selecting;
+      ui.viewport.classList.toggle('is-locating', selecting);
+      ui.root.setAttribute('data-locate', st && !previewMode ? st.status : '');
+      if (!st || st.status === 'selecting' || previewMode) { hideLocatePopover(); return; }
+      ui.locate.hidden = false;
+      ui.locate.setAttribute('data-state', st.status);
+      ui.locate.setAttribute('data-kind', st.resultType);
+      for (const k of ['n', 'e', 's', 'w']) L['c' + k].textContent = t('journey2_loc_dir_' + k + '_abbr');
+      if (!locateNeedleStarted) { locateNeedleStarted = true; startNeedle(st.plan); }
+      const done = st.status === 'result';
+      ui.locate.classList.toggle('is-done', done);
+      L.searching.hidden = done;
+      if (!done) { L.line.textContent = ''; L.dir.textContent = ''; L.dir.hidden = true; L.note.textContent = ''; return; }
+      if (st.resultType === 'here') { L.line.textContent = t('journey2_loc_here'); L.dir.textContent = ''; L.dir.hidden = true; }
+      else {
+        const d = Locate.SIXTEEN_DIRECTIONS[st.directionIndex];
+        L.line.textContent = fill('journey2_loc_points', { direction: t(d.labelKey).toLocaleLowerCase(lang) });
+        L.dir.textContent = t(d.abbrKey) + ' · ' + t(d.labelKey);
+        L.dir.hidden = false;
+      }
+      L.note.innerHTML = '<strong>' + esc(t('journey2_loc_reminder_label')) + '</strong> ' + esc(t('journey2_loc_reminder'));
+    }
+
+    /** One Undo entry: mark the open sanctuary's Echo Collected, or restore it. The overlay stays open, keeps its scroll position and the camera is untouched. */
+    function toggleEchoCollected() {
+      if (inst.disposed || editLocked || previewMode || !doc || !sanctuaryOpen || !sanctuaryHasEcho(sanctuaryOpen)) return;
+      const collect = !Model.isEchoCollected(doc, sanctuaryOpen);
+      const r = dispatch({ type: 'setSoulEchoCollected', anchorId: sanctuaryOpen, collected: collect }, collect ? 'echoCollect' : 'echoRestore', true);
+      if (!r.ok) { hint(t('journey2_echo_failed')); return; }
+      announce(t(collect ? 'journey2_live_echo_collected' : 'journey2_live_echo_restored'));
+    }
+
+    /** Read-only snapshot for the browser checks (the frozen target is exposed here for verification only; no UI shows it). */
+    function locateDebug() {
+      const st = locateSession.state;
+      return st ? { status: st.status, originCellId: st.originCellId, targetAnchorId: st.targetAnchorId, bearing: st.bearing, directionIndex: st.directionIndex, resultType: st.resultType, hover: locateHover ? Geo.cellId(locateHover.q, locateHover.r) : null, needle: ui.l && ui.l.needle ? ui.l.needle.getAttribute('data-final-angle') : null } : null;
+    }
+
+    /* ============================================================
        Sanctuaries (PD-023): GM-only generated settlements on the printed sanctuary icons. One toolbar button generates
        all of them as ONE undoable command; clicking a generated icon opens a screen-space overlay with its details,
        a Delete and a Reroll action. Like Soul Echoes the ring layer is EMPTIED in Player Preview and the player
@@ -1543,6 +1838,10 @@
       return sancAnchors;
     }
     function sanctuaryEntry(id) { return id && doc ? (doc.sanctuaries.entries.find(e => e.anchorId === id) || null) : null; }
+    /** The overlay opens for a sanctuary with generated characteristics OR a Soul Echo (the Echo's state belongs to the fixed anchor, not to the generated data). */
+    function sanctuaryHasEcho(id) { return !!(id && doc && doc.soulEchoes.anchorIds.includes(id)); }
+    function sanctuaryOpenable(id) { return !!(sanctuaryEntry(id) || sanctuaryHasEcho(id)); }
+    function openableSanctuaryIds() { const ids = new Set(doc.sanctuaries.entries.map(e => e.anchorId)); for (const id of doc.soulEchoes.anchorIds) ids.add(id); return ids; }
     function sanctuaryTitle(entry) { return entry.name || t('journey2_sanc_fallback'); }
     function sanctuaryReady() { return !!(generator && generator.ready() && typeof generator.rollSanctuary === 'function'); }
 
@@ -1583,24 +1882,36 @@
     /** Paints the open overlay from the committed document (rows only when they changed, so a scroll position survives). */
     function renderSanctuaryPanel() {
       if (!ui.sanctuary) return;
-      const e = previewMode ? null : sanctuaryEntry(sanctuaryOpen);
-      if (!e) { clearSanctuaryPanel(); return; }
+      const e = previewMode ? null : sanctuaryEntry(sanctuaryOpen), echo = !previewMode && sanctuaryHasEcho(sanctuaryOpen);
+      if (!e && !echo) { clearSanctuaryPanel(); return; }
       ui.sanctuary.hidden = false;
-      ui.s.name.textContent = sanctuaryTitle(e);
-      const rows = generator && generator.ready() && typeof generator.describeSanctuary === 'function' ? generator.describeSanctuary(e) : [];
-      const html = rows.map(r =>
-        '<section class="j2-sanc-row"><h4 class="j2-sanc-k"><span>' + esc(t(r.label)) + '</span></h4>' +
-        r.results.map(x => '<p class="j2-sanc-v"><span class="j2-sanc-text">' + esc(x.text) + '</span></p>').join('') + '</section>').join('');
-      if (ui.s.rows.getAttribute('data-sig') !== html) { ui.s.rows.innerHTML = html; ui.s.rows.setAttribute('data-sig', html); }
-      const shown = Model.isSanctuaryNameRevealed(doc, e.anchorId);
-      ui.s.nameText.textContent = t(shown ? 'journey2_sanc_name_visible' : 'journey2_sanc_name_hidden');
-      ui.s.nameState.classList.toggle('is-visible', shown);
-      ui.sancName.textContent = t(shown ? 'journey2_sanc_name_hide' : 'journey2_sanc_name_reveal');
-      ui.sancName.title = t(shown ? 'journey2_sanc_name_hide_title' : 'journey2_sanc_name_reveal_title');
-      ui.sancName.setAttribute('aria-pressed', String(shown));
-      ui.sancName.disabled = editLocked;
-      ui.sancReroll.disabled = editLocked || !sanctuaryReady();
-      ui.sancDelete.disabled = editLocked;
+      ui.s.name.textContent = e ? sanctuaryTitle(e) : t('journey2_sanc_fallback');
+      // an Echo-only sanctuary (its characteristics were deleted) shows just the Soul Echo row: no name toggle, no tables, no Reroll / Delete
+      ui.s.player.hidden = !e; ui.s.rows.hidden = !e; ui.s.foot.hidden = !e;
+      if (e) {
+        const rows = generator && generator.ready() && typeof generator.describeSanctuary === 'function' ? generator.describeSanctuary(e) : [];
+        const html = rows.map(r =>
+          '<section class="j2-sanc-row"><h4 class="j2-sanc-k"><span>' + esc(t(r.label)) + '</span></h4>' +
+          r.results.map(x => '<p class="j2-sanc-v"><span class="j2-sanc-text">' + esc(x.text) + '</span></p>').join('') + '</section>').join('');
+        if (ui.s.rows.getAttribute('data-sig') !== html) { ui.s.rows.innerHTML = html; ui.s.rows.setAttribute('data-sig', html); }
+        const shown = Model.isSanctuaryNameRevealed(doc, e.anchorId);
+        ui.s.nameText.textContent = t(shown ? 'journey2_sanc_name_visible' : 'journey2_sanc_name_hidden');
+        ui.s.nameState.classList.toggle('is-visible', shown);
+        ui.sancName.textContent = t(shown ? 'journey2_sanc_name_hide' : 'journey2_sanc_name_reveal');
+        ui.sancName.title = t(shown ? 'journey2_sanc_name_hide_title' : 'journey2_sanc_name_reveal_title');
+        ui.sancName.setAttribute('aria-pressed', String(shown));
+        ui.sancName.disabled = editLocked;
+        ui.sancReroll.disabled = editLocked || !sanctuaryReady();
+        ui.sancDelete.disabled = editLocked;
+      } else if (ui.s.rows.getAttribute('data-sig')) { ui.s.rows.innerHTML = ''; ui.s.rows.removeAttribute('data-sig'); }
+      // GM-only Soul Echo row: explicit text state + a real button (never colour alone); only when this sanctuary holds an Echo
+      ui.s.echo.hidden = !echo;
+      if (echo) {
+        const got = Model.isEchoCollected(doc, sanctuaryOpen);
+        ui.s.echoText.textContent = t(got ? 'journey2_echo_state_collected' : 'journey2_echo_state_available');
+        ui.echoCollect.textContent = t(got ? 'journey2_echo_restore' : 'journey2_echo_mark');
+        ui.echoCollect.disabled = editLocked;
+      }
       if (sanctuaryShown !== sanctuaryOpen) ui.s.rows.scrollTop = 0;
       sanctuaryShown = sanctuaryOpen;
     }
@@ -1623,16 +1934,18 @@
 
     /** The generated sanctuary under a viewport point (the icon's hit rectangle, or the usual marker slop), or null. */
     function sanctuaryAtScreen(sx, sy) {
-      if (previewMode || !doc || !data || !doc.sanctuaries.entries.length) return null;
+      if (previewMode || !doc || !data) return null;
+      const ids = openableSanctuaryIds();
+      if (!ids.size) return null;
       const w = Geo.screenToWorld(cam, sx, sy), at = sanctuaryAnchorMap();
       let best = null, bestD = Infinity;
-      for (const e of doc.sanctuaries.entries) {
-        const a = at.get(e.anchorId);
+      for (const id of ids) {
+        const a = at.get(id);
         if (!a) continue;
         const hr = a.hitArea.rectPx;
         const inRect = w[0] >= hr[0] && w[0] <= hr[0] + hr[2] && w[1] >= hr[1] && w[1] <= hr[1] + hr[3];
         const d = Math.hypot(w[0] - a.worldPixelAnchor[0], w[1] - a.worldPixelAnchor[1]);
-        if ((inRect || d * cam.scale <= MARKER_HIT_SCREEN_PX) && d < bestD) { best = e.anchorId; bestD = d; }
+        if ((inRect || d * cam.scale <= MARKER_HIT_SCREEN_PX) && d < bestD) { best = id; bestD = d; }
       }
       return best;
     }
@@ -1641,14 +1954,15 @@
     function openSanctuary(id) {
       if (inst.disposed || previewMode || !doc) return false;
       const e = sanctuaryEntry(id);
-      if (!e) return false;
+      if (!sanctuaryOpenable(id)) return false;
       if (sanctuaryOpen === id) { positionSanctuary(); return true; }
+      exitLocate({ quiet: true });
       closeInspector({ quiet: true });
       if (diagOpen) setDiagnostics(false);
       if (sel.tileId) { sel.tileId = null; renderSelection(); renderInventory(false); }
       sanctuaryOpen = id;
       renderSanctuaryRings(); renderSanctuaryPanel(); positionSanctuary();
-      announce(fill('journey2_live_sanc_opened', { name: sanctuaryTitle(e) }));
+      announce(fill('journey2_live_sanc_opened', { name: e ? sanctuaryTitle(e) : t('journey2_sanc_fallback') }));
       return true;
     }
 
@@ -1667,7 +1981,7 @@
     /** Keyboard path to the overlay: S / Shift+S step through the generated sanctuaries west to east, centring the map on each. */
     function cycleSanctuary(dir) {
       if (previewMode || !doc || !data) return;
-      const have = new Set(doc.sanctuaries.entries.map(e => e.anchorId));
+      const have = openableSanctuaryIds();
       const order = data.ctx.sanctuaries.filter(s => have.has(s.id));
       if (!order.length) { hint(t('journey2_sanc_none')); return; }
       const i = order.findIndex(s => s.id === sanctuaryOpen);
@@ -1799,6 +2113,7 @@
       updateSanctuaryUi();
       renderSanctuaryRings();
       renderSanctuaryPanel();
+      renderLocatePanel();
       renderSelection();
       renderInspector();
       positionInspector();
@@ -1958,6 +2273,7 @@
       if (mode && (previewMode || editLocked || !data)) return;
       if (mode && mode === fogTool) mode = null;
       if (mode) {
+        exitLocate({ quiet: true });                       // the two map tools are mutually exclusive
         cancelTransient();
         cancelFogStroke();
         hideEnvTip();
@@ -2125,6 +2441,7 @@
     function enterPreview() {
       if (previewMode || !data || !doc) return;
       cancelTransient(); cancelFogStroke(); closeMenus();
+      exitLocate({ quiet: true });
       if (diagOpen) setDiagnostics(false);
       setFogTool(null, { quiet: true });
       closeInspector({ quiet: true });
@@ -2297,7 +2614,7 @@
       listen(vp, 'pointerup', onViewportUp);
       listen(vp, 'pointercancel', onViewportCancel);
       listen(vp, 'lostpointercapture', onViewportCancel);
-      listen(vp, 'pointerleave', () => { pointer.inside = false; hideEnvTip(); hoverCell = null; hoverMarker = null; if (fogHover) { fogHover = null; scheduleFogPaint(); } if (diagOpen) renderSelection(); updateReadouts(); if (tr && tr.kind === 'armed') updatePreview(); });
+      listen(vp, 'pointerleave', () => { pointer.inside = false; hideEnvTip(); hoverCell = null; hoverMarker = null; if (fogHover) { fogHover = null; scheduleFogPaint(); } if (locateHover) { locateHover = null; paintLocate(); } if (diagOpen) renderSelection(); updateReadouts(); if (tr && tr.kind === 'armed') updatePreview(); });
       listen(vp, 'wheel', onWheel, { passive: false });
       listen(vp, 'keydown', onViewportKey);
       listen(vp, 'keyup', e => { if (e.key === ' ') { spaceDown = false; vp.classList.remove('is-space'); } });
@@ -2367,9 +2684,9 @@
       ui.viewport.focus({ preventScroll: true });
       const [x, y] = localPoint(e);
       pointer.x = x; pointer.y = y; pointer.inside = true; pointer.cx = e.clientX; pointer.cy = e.clientY;
-      // priority: dialog > preview > an existing drag/pan > armed placement > fog tool > neutral selection. Space (or the middle button) pans instead of painting.
+      // priority: dialog > preview > an existing drag/pan > Locate location selection (a click, never a tile drag) > armed placement > fog tool > neutral selection. Space (or the middle button) pans instead of painting.
       if (fogTool && !previewMode && e.button === 0 && !spaceDown && !editLocked && !(tr && tr.kind === 'armed')) { startFogStroke(e); e.preventDefault(); return; }
-      const tile = e.button === 0 && !spaceDown && !editLocked && !previewMode && !fogTool && !(tr && tr.kind === 'armed') && !sanctuaryAtScreen(x, y) ? tileAtScreen(x, y) : null;
+      const tile = e.button === 0 && !spaceDown && !editLocked && !previewMode && !fogTool && !(tr && tr.kind === 'armed') && !locateSession.isActive() && !sanctuaryAtScreen(x, y) ? tileAtScreen(x, y) : null;
       if (tile) {
         tr = { kind: 'tile', tileId: tile.id, batchId: tile.batchId, from: tile.cell, docRef: doc, pointerId: e.pointerId, moved: false, x0: e.clientX, y0: e.clientY, preview: null };
       } else {
@@ -2393,6 +2710,7 @@
         if (tr.moved) { updatePreview(); return; }
       }
       if (tr && tr.kind === 'armed') { updatePreview(); return; }
+      if (locateSession.state && locateSession.state.status === 'selecting' && !pan) { updateLocateHover(e); return; }
       if (fogTool && !pan && !previewMode) { updateFogHover(e); return; }
       if (!tr) updateHover();
     }
@@ -2405,7 +2723,7 @@
         const [x, y] = localPoint(e);
         endPan();
         if (moved) markDragged();
-        if (wasClick) handleMapClick(x, y);
+        if (wasClick && (!locateSession.isActive() || insideViewport(e))) handleMapClick(x, y);
         return;
       }
       if (tr && tr.kind === 'tile' && tr.pointerId === e.pointerId) {
@@ -2433,6 +2751,13 @@
 
     function handleMapClick(sx, sy) {
       if (previewMode || fogTool) return;                    // read-only preview / an active fog tool never selects or inspects
+      if (locateSession.state) {                             // Locate owns the map: no inspector, sanctuary overlay, Environment marker or tile selection opens
+        if (locateSession.state.status === 'selecting' && !spaceDown) {
+          const w = Geo.screenToWorld(cam, sx, sy), c = data.grid.worldToCell(w[0], w[1]), id = Geo.cellId(c.q, c.r);
+          if (foggable.has(id)) chooseLocateOrigin(id);      // any valid, non-decorative hex of the calibrated grid — whatever is (or is not) on it
+        }
+        return;
+      }
       if (tr && tr.kind === 'armed') { commitArmed(); return; }
       const sanctuary = sanctuaryAtScreen(sx, sy);          // a generated sanctuary icon outranks the hex under it
       if (sanctuary) { openSanctuary(sanctuary); return; }
@@ -2469,7 +2794,7 @@
         case '+': case '=': zoomStep(1); break;
         case '-': case '_': zoomStep(-1); break;
         case '0': fitToView(); break;
-        case 's': case 'S': if (fogTool) handled = false; else cycleSanctuary(e.shiftKey ? -1 : 1); break;
+        case 's': case 'S': if (fogTool || locateSession.isActive()) handled = false; else cycleSanctuary(e.shiftKey ? -1 : 1); break;
         case 'Delete': case 'Backspace':
           if (sel.tileId && !fogTool && !previewMode) returnSelected(); else handled = false;
           break;
@@ -2487,6 +2812,7 @@
       if (!h || h.disabled || e.button !== 0) return;
       if (pan) endPan();
       cancelTransient();
+      exitLocate({ quiet: true });
       if (fogTool) setFogTool(null, { quiet: true });          // placement outranks the fog tools: they are mutually exclusive
       clearHint();
       const card = h.closest('[data-batch]');
@@ -2549,6 +2875,7 @@
     function armStock(mode, batchId, handle) {
       if (tr && tr.kind === 'armed' && tr.mode === mode && tr.batchId === batchId) { cancelTransient(); return; }
       cancelTransient();
+      exitLocate({ quiet: true });
       if (fogTool) setFogTool(null, { quiet: true });
       const remaining = Model.derive(doc).counts.get(batchId).remaining;
       if (remaining < 1) return;
@@ -2776,6 +3103,7 @@
         if (fogStroke) { cancelFogStroke(true); e.preventDefault(); return; }
         if (pan) { setCamera({ scale: pan.scale0, tx: pan.tx0, ty: pan.ty0 }); endPan(); e.preventDefault(); return; }
         if (tr) { cancelTransient(); e.preventDefault(); return; }
+        if (locateSession.isActive()) { exitLocate({ focus: true }); e.preventDefault(); return; }   // a result or the selection: leave Locate (no document change)
         if (previewMode) { leavePreview(); e.preventDefault(); return; }
         if (fogTool) { setFogTool(null); e.preventDefault(); return; }
         if (sanctuaryOpen) { closeSanctuary({ focus: true }); e.preventDefault(); return; }
@@ -2828,6 +3156,10 @@
       else if (b.hasAttribute('data-j2-fog-tool')) setFogTool(b.getAttribute('data-j2-fog-tool'));
       else if (b.hasAttribute('data-j2-echo-place')) placeSoulEchoes();
       else if (b.hasAttribute('data-j2-echo-clear')) confirmClearSoulEchoes();
+      else if (b.hasAttribute('data-j2-echo-locate')) startLocate();
+      else if (b.hasAttribute('data-j2-locate-again')) chooseLocateAgain();
+      else if (b.hasAttribute('data-j2-locate-close') || b.hasAttribute('data-j2-locate-cancel')) exitLocate({ focus: true });
+      else if (b.hasAttribute('data-j2-echo-collect')) toggleEchoCollected();
       else if (b.hasAttribute('data-j2-sanc-generate')) generateSanctuaries();
       else if (b.hasAttribute('data-j2-sanc-close')) closeSanctuary({ focus: true });
       else if (b.hasAttribute('data-j2-sanc-name')) toggleSanctuaryName();
@@ -2990,6 +3322,7 @@
       cancelTransient();
       leavePreview({ quiet: true });                     // import / reset: no preview, no fog tool, no stale stroke, no inspector
       setFogTool(null, { quiet: true });
+      exitLocate({ quiet: true });                       // import / reset: no compass, no stale origin or target
       closeInspector({ quiet: true });
       closeSanctuary({ quiet: true });
       doc = next;
@@ -3475,7 +3808,7 @@
         hoverCell: hoverCell && Geo.cellId(hoverCell.q, hoverCell.r), userPlacements: userPlacements.length,
         ready: data ? data.readiness.ready : null, anchors: data ? data.anchorsDoc.anchors.length : 0,
         validCells: data ? data.grid.validCellCount() : 0, allowedCells: data ? data.ctx.allowedCellCount : 0, placeMode: placeMode,
-        activeBatchId: activeBatchId, inspector: { batchId: inspector.batchId, tileId: inspector.tileId, source: inspector.source, open: inspectorOpen() }, sanctuaryOpen: sanctuaryOpen, sideCollapsed: sideCollapsed, diagnosticsOpen: diagOpen, saveStatus: saveState.status, saveReason: saveState.reason, editLocked: editLocked,
+        activeBatchId: activeBatchId, inspector: { batchId: inspector.batchId, tileId: inspector.tileId, source: inspector.source, open: inspectorOpen() }, sanctuaryOpen: sanctuaryOpen, locate: locateDebug(), sideCollapsed: sideCollapsed, diagnosticsOpen: diagOpen, saveStatus: saveState.status, saveReason: saveState.reason, editLocked: editLocked,
         selectedTile: sel.tileId, transient: tr ? { kind: tr.kind, mode: tr.mode || null, moved: !!tr.moved, cells: tr.preview ? tr.preview.cells.length : 0, valid: tr.preview ? tr.preview.valid : null, attached: tr.preview ? tr.preview.attached : null, separateEligible: tr.preview ? !!tr.preview.separateEligible : null, anchor: tr.preview ? Geo.cellId(tr.preview.anchor.q, tr.preview.anchor.r) : null, conflicts: tr.preview ? tr.preview.cells.filter(c => !c.ok).map(c => [c.id, c.reason]) : [] } : null,
         history: history ? { undo: history.undo.length, redo: history.redo.length } : null,
         batches: doc ? doc.batches.map(b => Object.assign({ id: b.id, habitat: b.habitat, terrain: b.terrain, quantity: b.quantity, quantitySource: b.quantitySource, rumor: b.rumor, encounter: b.encounter, notes: b.notes }, d.counts.get(b.id))) : [],
@@ -3509,6 +3842,7 @@
         projection() { return JSON.parse(JSON.stringify(Projection.buildPlayerProjection(doc, data.ctx))); },
         dispatch(cmd) { return dispatch(cmd, cmd.type); },
         decorativeCells() { return Array.from(data.ctx.decorativeCells); },
+        setLocateRandom(fn) { locateRandom = typeof fn === 'function' ? fn : Math.random; },
         sanctuaryClient(id) { const a = sanctuaryAnchorMap().get(id); return a ? this.worldToClient(a.worldPixelAnchor[0], a.worldPixelAnchor[1]) : null; },
         markers() { return data.anchorsDoc.anchors.map(a => ({ id: a.stableId, cellId: a.cellId, rect: a.iconProtectionArea.rectPx })); },
       };
