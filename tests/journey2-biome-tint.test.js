@@ -26,7 +26,7 @@ const apply = (doc, cmd) => M.apply(doc, Object.assign({ at: AT }, cmd), ctx);
 const BASE = (() => {
   for (let q = 40; q < 80; q++) for (let r = -20; r < 20; r++) {
     let ok = true;
-    for (let dq = -4; dq <= 4 && ok; dq++) for (let dr = -4; dr <= 4; dr++) if (!ctx.policy(q + dq, r + dr).ok) { ok = false; break; }
+    for (let dq = -4; dq <= 4 && ok; dq++) for (let dr = -4; dr <= 4; dr++) if (!ctx.placeable(q + dq, r + dr)) { ok = false; break; }
     if (ok) return { q: q, r: r };
   }
   throw new Error('no open area');

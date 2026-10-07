@@ -22,7 +22,7 @@ const must = r => { assert.equal(r.ok, true, JSON.stringify(r)); return r.doc; }
 function open(ids) {
   for (let q = 30; q < 90; q++) for (let r = -40; r < 40; r++) {
     const cells = [Geo.cellId(q, r), Geo.cellId(q + 1, r), Geo.cellId(q, r + 1)];
-    if (cells.every(c => { const p = Geo.parseCellId(c); return ctx.policy(p.q, p.r).ok; })) return cells;
+    if (cells.every(c => { const p = Geo.parseCellId(c); return ctx.placeable(p.q, p.r); })) return cells;
   }
   throw new Error('no open cells');
 }
@@ -72,7 +72,7 @@ test('inspection: every hex of the inspected region is highlighted, and no other
 
 test('inspection: clicking a hex of another region replaces the inspected region', () => {
   let doc = fixture();
-  const free = open().map(c => { const p = Geo.parseCellId(c); return Geo.cellId(p.q + 4, p.r); }).find(c => { const p = Geo.parseCellId(c); return ctx.policy(p.q, p.r).ok; });
+  const free = open().map(c => { const p = Geo.parseCellId(c); return Geo.cellId(p.q + 4, p.r); }).find(c => { const p = Geo.parseCellId(c); return ctx.placeable(p.q, p.r); });
   doc = must(M.apply(doc, { type: 'place', batchId: 'b2', tiles: [{ id: 'x1', cell: free }], allowDetached: true, at: AT }, ctx));
   const a = M.inspectTile(M.NO_INSPECTION, doc, 't0');
   const b = M.inspectTile(a, doc, 'x1');

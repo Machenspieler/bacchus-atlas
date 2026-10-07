@@ -511,7 +511,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   outside or decorative cell rejects the whole drop (no truncation, no
   nearest-free fill, no overwrite). Moving an already placed batch as a unit
   is deliberately out of scope.
-- **Placement policy:** water/coast/marker cells are usable; terrain is refused
+- **Placement policy:** water/coast cells are usable; a cell holding a printed sanctuary or destination (Horizon/Marrogate) icon is refused for new placement/moves (`checkCells`, reason `sanctuary`; saved tiles already there still load); terrain is refused
   on cells overlapping the title, compass or scale/credit furniture (the cells
   stay valid template cells). One policy serves preview, commit, load and
   import. Fixed markers and labels are protected in the *renderer* — a glyph

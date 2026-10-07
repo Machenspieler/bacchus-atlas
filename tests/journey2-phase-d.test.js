@@ -21,7 +21,7 @@ const must = r => { assert.equal(r.ok, true, JSON.stringify(r)); return r.doc; }
 const BASE = (() => {
   for (let q = 40; q < 80; q++) for (let r = -20; r < 20; r++) {
     let ok = true;
-    for (let dq = -6; dq <= 6 && ok; dq++) for (let dr = -6; dr <= 6; dr++) if (!ctx.policy(q + dq, r + dr).ok) { ok = false; break; }
+    for (let dq = -6; dq <= 6 && ok; dq++) for (let dr = -6; dr <= 6; dr++) if (!ctx.placeable(q + dq, r + dr)) { ok = false; break; }
     if (ok) return { q: q, r: r };
   }
   throw new Error('no open area');
@@ -427,7 +427,7 @@ test('player boundary: a hidden region cell emits no overlay and no boundary, an
 test('player boundary: the outside-map edge of a revealed cell is emitted; the GM projection still has everything', () => {
   let found = null;
   for (const id of ctx.decorativeCells) {
-    for (const n of M.neighborIds(id)) { const p = Geo.parseCellId(n); if (ctx.policy(p.q, p.r).ok) { found = { tile: n, dir: M.neighborIds(n).indexOf(id) }; break; } }
+    for (const n of M.neighborIds(id)) { const p = Geo.parseCellId(n); if (ctx.placeable(p.q, p.r)) { found = { tile: n, dir: M.neighborIds(n).indexOf(id) }; break; } }
     if (found) break;
   }
   let doc = must(place(withBatches('A'), 'A', [found.tile]));

@@ -128,11 +128,15 @@
       .filter(a => a && a.kind === 'sanctuary' && typeof a.stableId === 'string' && Array.isArray(a.worldPixelAnchor))
       .map(a => ({ id: a.stableId, x: a.worldPixelAnchor[0], y: a.worldPixelAnchor[1], top: a.iconProtectionArea.rectPx[1] }))
       .sort((a, b) => a.x - b.x || a.y - b.y || (a.id < b.id ? -1 : 1));
+    const sanctuaryCells = new Set(((anchorsDoc && anchorsDoc.anchors) || []).filter(a => a && typeof a.cellId === 'string').map(a => a.cellId));
     return {
       grid: grid, templateId: template.templateId, templateVersion: template.schemaVersion,
       protections: Geo.protectionRects(template, anchorsDoc || null), decorativeCells: decorative, policy: policy,
+      placeable: (q, r) => policy(q, r).ok && !sanctuaryCells.has(Geo.cellId(q, r)),
       allowedCellCount: grid.validCellCount() - decorative.size,
       sanctuaries: sanctuaries, sanctuaryIds: new Set(sanctuaries.map(s => s.id)),
+      /* Cells holding a printed sanctuary or destination (Horizon / Marrogate) icon: refused for NEW placement/moves only (checkCells), never by `policy`, so an older save with a tile there still loads. */
+      sanctuaryCells: sanctuaryCells,
     };
   }
 
@@ -552,7 +556,7 @@
   /**
    * Evaluates candidate cells against the policy and current occupancy.
    * `ignoreTileId` lets a tile being moved ignore its own origin. Returns one record per cell:
-   *   { q, r, id, ok, reason }  reason: 'outside' | 'decorative' | 'occupied' | null
+   *   { q, r, id, ok, reason }  reason: 'outside' | 'decorative' | 'sanctuary' | 'occupied' | null
    */
   function checkCells(doc, ctx, cells, ignoreTileId) {
     const occ = derive(doc).occupancy;
@@ -560,6 +564,7 @@
       const id = Geo.cellId(c.q, c.r);
       const p = ctx.policy(c.q, c.r);
       if (!p.ok) return { q: c.q, r: c.r, id: id, ok: false, reason: p.reason };
+      if (ctx.sanctuaryCells.has(id)) return { q: c.q, r: c.r, id: id, ok: false, reason: 'sanctuary' };
       const t = occ.get(id);
       if (t && t.id !== ignoreTileId) return { q: c.q, r: c.r, id: id, ok: false, reason: 'occupied' };
       return { q: c.q, r: c.r, id: id, ok: true, reason: null };

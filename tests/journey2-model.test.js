@@ -23,7 +23,7 @@ function allowedNear(x, y, skip) {
     for (let dq = -ring; dq <= ring; dq++) for (let dr = -ring; dr <= ring; dr++) {
       if (Math.max(Math.abs(dq), Math.abs(dr), Math.abs(dq + dr)) !== ring) continue;
       const q = c0.q + dq, r = c0.r + dr, id = Geo.cellId(q, r);
-      if (ctx.policy(q, r).ok && !skipSet.has(id)) return id;
+      if (ctx.placeable(q, r) && !skipSet.has(id)) return id;
     }
   }
   throw new Error('no allowed cell near ' + x + ',' + y);
@@ -36,7 +36,7 @@ function cluster(n, startId, skip) {
     const c = Geo.parseCellId(out[i]);
     for (const d of Geo.NEIGHBOR_DELTAS) {
       const id = Geo.cellId(c.q + d.dq, c.r + d.dr);
-      if (out.length < n && !seen.has(id) && ctx.policy(c.q + d.dq, c.r + d.dr).ok) { seen.add(id); out.push(id); }
+      if (out.length < n && !seen.has(id) && ctx.placeable(c.q + d.dq, c.r + d.dr)) { seen.add(id); out.push(id); }
     }
   }
   assert.equal(out.length, n);
@@ -319,7 +319,7 @@ test('large synthetic document: 1000 placed tiles validate and derive quickly', 
   const [W, H] = template.worldSizePx;
   for (let y = 150; tiles.length < 1000 && y < H - 50; y += 40) for (let x = 100; tiles.length < 1000 && x < W - 50; x += 70) {
     const c = grid.worldToCell(x, y), id = Geo.cellId(c.q, c.r);
-    if (ctx.policy(c.q, c.r).ok && !seen.has(id)) { seen.add(id); tiles.push({ id: 'g' + tiles.length, cell: id }); }
+    if (ctx.placeable(c.q, c.r) && !seen.has(id)) { seen.add(id); tiles.push({ id: 'g' + tiles.length, cell: id }); }
   }
   assert.equal(tiles.length, 1000);
   const t0 = Date.now();
@@ -358,8 +358,19 @@ test('glyph layout: on every allowed cell, for every symbol at worst-case size (
 test('glyph layout: every marker cell withholds or shifts its glyph so the original icon is never covered', () => {
   for (const a of anchorsDoc.anchors) {
     const c = Geo.parseCellId(a.cellId);
-    if (!ctx.policy(c.q, c.r).ok) continue;
+    if (!ctx.placeable(c.q, c.r)) continue;
     const L = Geo.layoutProofGlyph(grid, c.q, c.r, { w: 33, h: 29, dots: 4 }, ctx.protections, 2);
     if (!L.hidden) assert.equal(Geo.rectsIntersect(L.boxPx, a.iconProtectionArea.rectPx), false, a.stableId);
+  }
+});
+
+test('placement refuses every printed marker cell (sanctuaries, Horizon, Marrogate); load still accepts them', () => {
+  const doc = M.emptyDocument ? M.emptyDocument(ctx, '2026-10-07T00:00:00.000Z') : null;
+  assert.equal(ctx.sanctuaryCells.size, anchorsDoc.anchors.length);
+  for (const a of anchorsDoc.anchors) {
+    const c = Geo.parseCellId(a.cellId);
+    assert.equal(ctx.policy(c.q, c.r).ok, true, a.stableId);
+    assert.equal(ctx.placeable(c.q, c.r), false, a.stableId);
+    if (doc) assert.deepEqual(M.checkCells(doc, ctx, [c]).map(r => r.reason), ['sanctuary'], a.stableId);
   }
 });

@@ -22,7 +22,7 @@ const BASE = (() => {
   for (let q = 40; q < 80; q++) for (let r = -20; r < 20; r++) {
     const ids = [];
     for (let dq = -3; dq <= 3; dq++) for (let dr = -3; dr <= 3; dr++) ids.push([q + dq, r + dr]);
-    if (ids.every(([a, b]) => ctx.policy(a, b).ok)) return { q: q, r: r };
+    if (ids.every(([a, b]) => ctx.placeable(a, b))) return { q: q, r: r };
   }
   throw new Error('no open area');
 })();
@@ -169,7 +169,7 @@ test('player perimeter: a map-edge or furniture neighbour (never fogged) needs o
   let found = null;
   for (const id of ctx.decorativeCells) {
     const c = Geo.parseCellId(id);
-    for (const n of M.neighborIds(id)) { const p = Geo.parseCellId(n); if (ctx.policy(p.q, p.r).ok) { found = { tile: n, deco: id, dir: M.neighborIds(n).indexOf(id) }; break; } }
+    for (const n of M.neighborIds(id)) { const p = Geo.parseCellId(n); if (ctx.placeable(p.q, p.r)) { found = { tile: n, deco: id, dir: M.neighborIds(n).indexOf(id) }; break; } }
     if (found) break;
   }
   assert.ok(found, 'the template has furniture cells');
@@ -178,7 +178,7 @@ test('player perimeter: a map-edge or furniture neighbour (never fogged) needs o
   doc = must(M.apply(doc, { type: 'setCellsRevealed', cellKeys: [found.tile], revealed: true, at: AT }, ctx));
   const per = P.buildPlayerProjection(doc, ctx).perimeter;
   const nbs = M.neighborIds(found.tile);
-  const expectDirs = nbs.map((id, k) => [id, k]).filter(([id]) => { const c = Geo.parseCellId(id); return !ctx.policy(c.q, c.r).ok; }).map(([, k]) => k);
+  const expectDirs = nbs.map((id, k) => [id, k]).filter(([id]) => { const c = Geo.parseCellId(id); return !ctx.placeable(c.q, c.r); }).map(([, k]) => k);
   assert.ok(expectDirs.includes(found.dir));
   assert.deepEqual(per.map(s => s.dir).sort(), expectDirs.sort(), 'exactly the edges towards never-fogged cells (furniture, off-map) are drawn; hidden placeable neighbours draw none');
   const strict = P.buildPlayerProjection(doc).perimeter;

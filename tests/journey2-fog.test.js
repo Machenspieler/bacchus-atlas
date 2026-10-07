@@ -27,7 +27,7 @@ const cid = Geo.cellId;
 const CENTER = (() => {
   for (let q = 30; q < 90; q++) for (let r = -40; r < 40; r++) {
     let ok = true;
-    for (let dq = -2; dq <= 2 && ok; dq++) for (let dr = -2; dr <= 2 && ok; dr++) if (Math.abs(dq + dr) <= 2 && !ctx.policy(q + dq, r + dr).ok) ok = false;
+    for (let dq = -2; dq <= 2 && ok; dq++) for (let dr = -2; dr <= 2 && ok; dr++) if (Math.abs(dq + dr) <= 2 && !ctx.placeable(q + dq, r + dr)) ok = false;
     if (ok) return { q, r };
   }
   throw new Error('no open area');

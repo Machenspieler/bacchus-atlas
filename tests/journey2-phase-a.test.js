@@ -28,7 +28,7 @@ const CENTER = (() => {
     const q = c0.q + dq, r = c0.r + dr;
     let ok = true;
     for (let a = -2; a <= 2 && ok; a++) for (let b = -2; b <= 2 && ok; b++) {
-      if (Math.max(Math.abs(a), Math.abs(b), Math.abs(a + b)) <= 2 && !ctx.policy(q + a, r + b).ok) ok = false;
+      if (Math.max(Math.abs(a), Math.abs(b), Math.abs(a + b)) <= 2 && !ctx.placeable(q + a, r + b)) ok = false;
     }
     if (ok) return cid(q, r);
   }
