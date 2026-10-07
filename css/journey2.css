@@ -622,7 +622,6 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 /* Hex Environment (Region Inspector, map-opened only): the assigned catalog environment of the selected hex. */
 .j2-hexenv[hidden], .j2-hexenv-actions:empty { display: none; }
 .j2-hexenv-card { display: grid; gap: 2px; padding: var(--s-2) var(--s-3); border: 1px solid var(--hope-border); border-radius: var(--r-sm); background: var(--hope-wash); }
-.j2-hexenv-tier { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); }
 .j2-hexenv-link { padding: 0; font-size: var(--fs-md); font-weight: 600; color: var(--hope-soft); }
 .j2-hexenv-link:hover { background: transparent; text-decoration: underline; }
 .j2-hexenv-ext { margin-left: var(--s-1); color: var(--muted); }

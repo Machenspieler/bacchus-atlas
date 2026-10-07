@@ -970,8 +970,7 @@
       const dis = editLocked ? ' disabled' : '';
       if (!list.length) h += '<p class="j2-insp-p j2-insp-muted">' + esc(t('journey2_hexenv_no_habitat')) + '</p>';
       if (id && found) {
-        h += '<div class="j2-hexenv-card"><span class="j2-hexenv-tier">' + esc(fill('journey2_hexenv_tier', { n: n(found.tier) })) + '</span>' +
-          '<a class="j2-env-link j2-hexenv-link" href="' + esc(found.href) + '" data-j2-env data-j2-hexenv-link><span class="j2-env-name">' + esc(found.name) + '</span><span class="j2-hexenv-ext" aria-hidden="true">\u2197</span><span class="sr-only"> (' + esc(t('journey2_hexenv_open')) + ')</span></a></div>';
+        h += '<div class="j2-hexenv-card"><a class="j2-env-link j2-hexenv-link" href="' + esc(found.href) + '" data-j2-env data-j2-hexenv-link><span class="j2-env-name">' + esc(found.name) + '</span><span class="j2-hexenv-ext" aria-hidden="true">\u2197</span><span class="sr-only"> (' + esc(t('journey2_hexenv_open')) + ')</span></a></div>';
       } else if (id) {
         h += '<div class="j2-hexenv-card is-unavailable"><strong class="j2-hexenv-gone">' + esc(t('journey2_hexenv_unavailable')) + '</strong>' +
           '<span class="j2-hexenv-id">' + esc(t('journey2_hexenv_stored_id')) + ': <code>' + esc(id) + '</code></span>' +
