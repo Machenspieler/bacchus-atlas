@@ -174,7 +174,6 @@
     let sel = { tileId: null };
     let inspector = Model.NO_INSPECTION;                    // { batchId, tileId, source } — the open Region Inspector (transient: never persisted, never in history)
     let envPicker = null;                                   // transient: { tileId } while the inline Hex Environment picker is open (never persisted, never in history)
-    let envMarksDrawn = null;                               // the tiles array the GM environment-marker layer currently shows
     let envTipKey = null;                                   // tileId whose environment tooltip is showing
     let inspectorShown = null;                              // batchId the inspector DOM currently shows (so its scroll position survives re-renders)
     let followUntil = 0;                                    // keep re-positioning the inspector every frame until this time (sidebar slide)
@@ -430,7 +429,7 @@
                   <img class="j2-base" alt="" draggable="false" width="${W}" height="${H}">
                   <svg class="j2-overlay" xmlns="${SVG_NS}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">
                     <defs data-j2-defs></defs><defs>${ECHO_DEFS}</defs>
-                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="envmarks" pointer-events="none" aria-hidden="true"></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g>
+                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g>
                     <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
                     <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g>
                   </svg>
@@ -1389,7 +1388,6 @@
       if (previewMode) {
         // Player Preview: the GM layer is emptied (not hidden) and only the projection is produced
         ui.g.tiles.innerHTML = '';
-        renderEnvMarks();
         playerProjection = Projection.buildPlayerProjection(doc, data.ctx);
         ui.g.player.innerHTML = overlayMarkup(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, tint: o.tint })));
         renderEchoes();
@@ -1399,7 +1397,6 @@
       }
       ui.g.player.innerHTML = '';
       renderEchoes();
-      renderEnvMarks();
       const byBatch = new Map(doc.batches.map(b => [b.id, b])), tints = Tint.gmTintByCell(doc, showBiome);
       ui.g.tiles.innerHTML = overlayMarkup(doc.tiles.map(tile => { const c = Geo.parseCellId(tile.cell); return { q: c.q, r: c.r, spec: specOfBatch(byBatch.get(tile.batchId)), tint: tints.get(tile.cell) || null }; }));
       renderPerimeter();
@@ -1435,29 +1432,6 @@
         ui.knownSanc.innerHTML = labels.map(l => '<li>' + esc(l.name) + '</li>').join('');
         ui.knownSanc.hidden = !labels.length;
       }
-    }
-
-    /**
-     * GM-only environment markers: one small card glyph in the upper-left corner of every placed hex that carries an `environmentId`.
-     * Decorative (aria-hidden, no pointer events) and never drawn in Player Preview — the player projection does not carry the id at all.
-     * Redrawn only when the tiles array changed, so an unrelated edit (fog, a sanctuary) never rebuilds it.
-     */
-    function renderEnvMarks() {
-      const g = ui.g && ui.g.envmarks;
-      if (!g || !doc) return;
-      if (previewMode) { g.innerHTML = ''; envMarksDrawn = null; hideEnvTip(); return; }
-      if (envMarksDrawn === doc.tiles) return;
-      envMarksDrawn = doc.tiles;
-      hideEnvTip();
-      let h = '';
-      for (const tile of doc.tiles) {
-        if (!tile.environmentId) continue;
-        const c = Geo.parseCellId(tile.cell), ctr = data.grid.cellCenter(c.q, c.r);
-        const corner = data.grid.cellCorners(c.q, c.r).filter(p => p[0] < ctr[0] - 1 && p[1] < ctr[1]).sort((a, b) => a[1] - b[1])[0] || [ctr[0] - 8, ctr[1] - 8];
-        const x = ctr[0] + (corner[0] - ctr[0]) * 0.55 - 3.2, y = ctr[1] + (corner[1] - ctr[1]) * 0.55 - 4.2;
-        h += '<g class="j2-envmark" transform="translate(' + fmt(x, 1) + ' ' + fmt(y, 1) + ')"><rect width="6.4" height="8.4" rx="1.1"/><path d="M1.7 2.6h3M1.7 4.3h3M1.7 6h1.8"/></g>';
-      }
-      g.innerHTML = h;
     }
 
     /**

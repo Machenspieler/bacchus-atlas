@@ -323,7 +323,7 @@ test('view: the label layer is above the fog, pointer-transparent and aria-hidde
   const at = k => svg.indexOf('data-j2-g="' + k + '"');
   assert.ok(at('fog') < at('sanctlabels') && at('sanctlabels') < at('select'));
   assert.match(svg, /data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"/);
-  const body = fn('renderSanctuaryLabels', 'renderEnvMarks');
+  const body = fn('renderSanctuaryLabels', 'renderPerimeter');
   assert.match(body, /playerProjection\.sanctuaryLabels/);
   assert.match(body, /Geo\.layoutSanctuaryLabels/);
   assert.doesNotMatch(body, /doc\.sanctuaries|cam\.|getBoundingClientRect/, 'drawn from the projection in world px only');
@@ -335,7 +335,7 @@ test('view: the label layer is above the fog, pointer-transparent and aria-hidde
 
 test('view: the Player Preview "Known sanctuaries" list holds revealed names only and is emptied in the GM view', () => {
   assert.match(view, /data-j2-known-sanc data-t-aria="journey2_sanc_known" hidden/);
-  const body = fn('renderSanctuaryLabels', 'renderEnvMarks');
+  const body = fn('renderSanctuaryLabels', 'renderPerimeter');
   assert.match(body, /labels\.map\(l => '<li>'/);
   assert.match(body, /ui\.knownSanc\.hidden = true; ui\.knownSanc\.innerHTML = ''/);
 });

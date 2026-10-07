@@ -637,5 +637,3 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-hexenv-row.is-current { background: var(--hope-wash); }
 .j2-hexenv-assigned { flex: none; font-size: var(--fs-xs); color: var(--hope-soft); }
 /* GM-only map marker for a hex that carries an environment: a tiny card glyph, decorative, never interactive. */
-.j2-overlay .j2-envmark rect { fill: var(--hope); stroke: var(--ink); stroke-width: 0.9; }
-.j2-overlay .j2-envmark path { fill: none; stroke: var(--ink); stroke-width: 0.8; stroke-linecap: round; }

@@ -1255,9 +1255,8 @@ Run all of them with `node --test tests/*.test.js`.
   - *View.* `renderHexEnvironment()` fills the inspector's `[data-j2-i="hexEnvSec"]` only for `inspector.source === 'map'`; the list is
     `hexEnvironmentList(b)` = `environmentsFor(biome)` (the app.js adapter; none when overtaken) and rows reuse its `href`, so the
     overlay stays route-driven and the map is never re-rendered. The body is rebuilt only when its signature changes, so a focused link
-    and the picker's scroll survive. `envPicker` is transient view state (cleared on any inspector change, Undo/Redo). Markers:
-    `renderEnvMarks()` draws the `envmarks` layer (above the glyph layer, below the perimeter) from `doc.tiles` only when the array
-    changed; Player Preview empties it. `updateEnvTip()` reuses `[data-j2-tip]` for neutral hover.
+    and the picker's scroll survive. `envPicker` is transient view state (cleared on any inspector change, Undo/Redo). There is no map
+    marker (removed: the hex shows no environment icon). `updateEnvTip()` reuses `[data-j2-tip]` for neutral hover.
   - *GM-only.* `buildPlayerProjection` builds overlays from an explicit field list, so `environmentId` can never reach Player Preview or
     the future print; `tests/journey2-hex-environment.test.js` asserts it. Browser checks: `scripts/journey2/lib/hex-environment-checks.js`.
 - **Sanctuaries (PD-023):**
@@ -1299,7 +1298,7 @@ Run all of them with `node --test tests/*.test.js`.
 - *Layout.* `Journey2Geometry.layoutSanctuaryLabels(labels, anchors, { icons, world })` + `wrapLabelName` — pure, world px, deterministic
   (below → right → left → above, clamped to the map, penalised overlap with any printed icon or placed label). `ctx.sanctuaries[i].rect`,
   `ctx.iconRects` and `ctx.worldSize` feed it. Print will call the same functions.
-- *Rendering order.* `… fog, envmarks, perimeter, fogstroke, sanct (GM rings), echoes, sanctlabels (Player Preview names), grid …, select, preview`.
+- *Rendering order.* `… fog, perimeter, fogstroke, sanct (GM rings), echoes, sanctlabels (Player Preview names), grid …, select, preview`.
   `renderSanctuaryLabels()` (called from both branches of `renderTiles`) fills `<g data-j2-g="sanctlabels">` only in Player Preview and the
   visually-hidden `[data-j2-known-sanc]` list; the GM view empties both. The GM ring (`renderSanctuaryRings`) swaps its dot for a ringed eye
   when the name is visible and redraws when the list identity changes.

@@ -285,19 +285,11 @@ test('view: focus rules — detach lands on Choose, assign on the selected link,
   assert.match(fn('setEnvPicker', 'onHexEnvClick'), /tile\.environmentId \? 'change' : 'choose'/);
 });
 
-test('view: the map marker is GM-only, decorative, non-interactive and absent in Player Preview', () => {
-  assert.match(view, /<g data-j2-g="envmarks" pointer-events="none" aria-hidden="true"><\/g>/);
-  const r = fn('renderEnvMarks', 'renderTiles');
-  const m = view.slice(view.indexOf('function renderEnvMarks'), view.indexOf('function renderPerimeter'));
-  assert.match(m, /if \(previewMode\) \{ g\.innerHTML = ''/);
-  assert.match(m, /tile\.environmentId/);
-  assert.doesNotMatch(m, /addEventListener|onclick|tabindex|role=/);
-  const order = view.indexOf('data-j2-g="tiles"') < view.indexOf('data-j2-g="envmarks"') && view.indexOf('data-j2-g="envmarks"') < view.indexOf('data-j2-g="perimeter"');
-  assert.ok(order, 'above the glyphs, below the perimeter');
-  assert.ok(r !== undefined);
+test('view: the map carries no environment marker; the shared drawing and the projection know nothing about environments', () => {
+  assert.doesNotMatch(view, /envmarks|j2-envmark|renderEnvMarks/);
+  assert.doesNotMatch(css, /j2-envmark/);
   assert.doesNotMatch(fn('overlayMarkup', 'renderTiles'), /environment/i, 'the shared drawing routine (and so Player Preview / print) knows nothing about environments');
   assert.doesNotMatch(read('js/journey2-projection.js').replace(/\/\*[\s\S]*?\*\//g, ''), /environment/i);
-  assert.match(css, /\.j2-overlay \.j2-envmark rect/);
 });
 
 test('view: the hover tooltip is neutral-GM only and never competes with a drag, fog tool, placement or preview', () => {
