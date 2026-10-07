@@ -285,9 +285,14 @@ test('view: focus rules — detach lands on Choose, assign on the selected link,
   assert.match(fn('setEnvPicker', 'onHexEnvClick'), /tile\.environmentId \? 'change' : 'choose'/);
 });
 
-test('view: the map carries no environment marker; the shared drawing and the projection know nothing about environments', () => {
-  assert.doesNotMatch(view, /envmarks|j2-envmark|renderEnvMarks/);
-  assert.doesNotMatch(css, /j2-envmark/);
+test('view: the GM map carries a small environment marker drawn only in the GM branch; the shared drawing and the projection know nothing about environments', () => {
+  const gm = fn('renderTiles', 'envMarkersMarkup');
+  const [previewBranch, gmBranch] = gm.split('ui.g.player.innerHTML = \'\';');
+  assert.doesNotMatch(previewBranch, /envMarkersMarkup/, 'Player Preview never draws the marker');
+  assert.match(gmBranch, /envMarkersMarkup\(doc\.tiles\)/);
+  assert.match(fn('envMarkersMarkup', 'renderSanctuaryLabels'), /tile\.environmentId/);
+  assert.match(css, /\.j2-envmark-card/);
+  assert.doesNotMatch(read('js/journey2-print.js'), /envmark|environmentId/);
   assert.doesNotMatch(fn('overlayMarkup', 'renderTiles'), /environment/i, 'the shared drawing routine (and so Player Preview / print) knows nothing about environments');
   assert.doesNotMatch(read('js/journey2-projection.js').replace(/\/\*[\s\S]*?\*\//g, ''), /environment/i);
 });

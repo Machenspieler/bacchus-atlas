@@ -421,11 +421,13 @@
       return '<svg class="j2-compass" data-j2-l="compass" viewBox="0 0 200 200" aria-hidden="true" focusable="false">' +
         '<defs><radialGradient id="j2-cmp-glow"><stop offset="0" stop-color="#f6dc9a" stop-opacity=".9"/><stop offset=".6" stop-color="#d9a441" stop-opacity=".25"/><stop offset="1" stop-color="#d9a441" stop-opacity="0"/></radialGradient></defs>' +
         '<circle class="j2-cmp-face" cx="100" cy="100" r="92"/><circle class="j2-cmp-ring" cx="100" cy="100" r="92"/><circle class="j2-cmp-ring is-inner" cx="100" cy="100" r="76"/>' + ticks +
-        '<text class="j2-cmp-letter" data-j2-l="cn" x="100" y="52" text-anchor="middle"></text><text class="j2-cmp-letter" data-j2-l="ce" x="152" y="105" text-anchor="middle"></text>' +
-        '<text class="j2-cmp-letter" data-j2-l="cs" x="100" y="158" text-anchor="middle"></text><text class="j2-cmp-letter" data-j2-l="cw" x="48" y="105" text-anchor="middle"></text>' +
         '<circle class="j2-cmp-core-glow" data-j2-l="glow" cx="100" cy="100" r="30" fill="url(#j2-cmp-glow)"/>' +
         '<g class="j2-cmp-needle" data-j2-l="needle"><path class="j2-cmp-needle-n" d="M100 30 108 100 100 108 92 100Z"/><path class="j2-cmp-needle-s" d="M100 170 108 100 100 92 92 100Z"/></g>' +
-        '<path class="j2-cmp-core" data-j2-l="core" d="M100 90 108 100 100 110 92 100Z"/></svg>';
+        '<path class="j2-cmp-core" data-j2-l="core" d="M100 90 108 100 100 110 92 100Z"/>' +
+        // painted last (with a dark halo) so the needle, whatever its direction, never hides a cardinal letter
+        '<text class="j2-cmp-letter" data-j2-l="cn" x="100" y="52" text-anchor="middle"></text><text class="j2-cmp-letter" data-j2-l="ce" x="152" y="105" text-anchor="middle"></text>' +
+        '<text class="j2-cmp-letter" data-j2-l="cs" x="100" y="158" text-anchor="middle"></text><text class="j2-cmp-letter" data-j2-l="cw" x="48" y="105" text-anchor="middle"></text>' +
+        '</svg>';
     })();
 
     function buildSurface() {
@@ -451,6 +453,7 @@
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-fog-tool="hide" aria-pressed="false" data-t-aria="journey2_fog_hide_title" data-t-title="journey2_fog_hide_title"><span class="j2-ico" aria-hidden="true">${ICON.conceal}</span><span data-t="journey2_fog_hide"></span></button>
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-preview data-t-title="journey2_preview_title"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><span data-t="journey2_preview"></span></button>
             </div>
+            <div class="j2-tb-gm">
             <div class="j2-tb-group j2-tb-echo" role="group" data-j2-echo-group data-t-aria="journey2_echo_group">
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-echo-place data-t-title="journey2_echo_place_title"><span class="j2-ico" aria-hidden="true">${ICON.crystal}</span><span data-t="journey2_echo_place"></span></button>
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-echo-clear data-t-title="journey2_echo_clear_title"><span class="j2-ico" aria-hidden="true">${ICON.trash}</span><span data-t="journey2_echo_clear"></span></button>
@@ -459,6 +462,7 @@
             </div>
             <div class="j2-tb-group j2-tb-sanc" role="group" data-j2-sanc-group data-t-aria="journey2_sanc_group">
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-sanc-generate data-t-title="journey2_sanc_generate_title"><span class="j2-ico" aria-hidden="true">${ICON.sanctuary}</span><span data-j2-sanc-generate-label></span></button>
+            </div>
             </div>
             <div class="j2-tb-group j2-tb-preview" data-j2-preview-bar hidden>
               <span class="j2-preview-flag" role="status"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><strong data-t="journey2_preview"></strong></span>
@@ -884,13 +888,25 @@
     /** The stored view preferences (sidebar state, "Show fog state") — never the document, never history. */
     function saveUiPrefs() { if (store) store.saveUi({ sideCollapsed: sideCollapsed, showFogState: showFog, showBiomeColors: showBiome }); }
 
-    /** Explicit toggle only. Never touches the camera, selection or active region; focus moves to the control that replaces the one used. */
+    /** Explicit toggle only (the user's own click): re-centres the map horizontally in the new free area at the same zoom; never a Fit, and it leaves the selection and active region alone; focus moves to the control that replaces the one used. */
     function toggleSide() {
+      const before = sideInset();
       sideCollapsed = !sideCollapsed;
       applySideState(true);
+      // the free map area grows/shrinks by the inset difference: keep the zoom and slide the map by half of it, so what was centred stays centred (no Fit)
+      if (data && ui.viewport) { const dx = (sideInset() - before) / 2; if (Math.abs(dx) >= 1) animateCameraBy(dx, 0, 250); }
       followInspector(320);
       const target = ui.sideToggles[sideCollapsed ? 1 : 0];
       if (target) target.focus({ preventScroll: true });
+    }
+
+    function snapSideHeader() {
+      const sc = ui.sideScroll, stock = sc && sc.querySelector('.j2-stock');
+      if (inst.disposed || !stock || !sc.clientHeight) return;
+      const st = sc.scrollTop, pad = parseFloat(getComputedStyle(sc).paddingTop) || 0;
+      const end = Math.max(0, Math.round(stock.getBoundingClientRect().top - sc.getBoundingClientRect().top + st - pad));
+      if (st <= 0 || st >= end) return;
+      sc.scrollTop = st < end / 2 ? 0 : end;
     }
 
     /** Width the overlay sidebar covers on the left of the map (used by Fit only; toggling never refits). */
@@ -1091,6 +1107,7 @@
       envPicker = open ? { tileId: tile.id } : null;
       renderInspector();
       positionInspector();
+      ensureInspectorClear();
       if (o && o.focus) { const b = hexEnvButton(tile.environmentId ? 'change' : 'choose'); if (b) b.focus({ preventScroll: true }); }
     }
 
@@ -1114,7 +1131,7 @@
         const had = !!tile.environmentId;
         const r = dispatch({ type: 'setTileEnvironment', tileId: tile.id, environmentId: pick.id }, had ? 'changeEnvironment' : 'assignEnvironment', true);
         if (!r.ok) { hint(t('journey2_hexenv_failed')); return; }
-        envPicker = null; renderInspector(); positionInspector();
+        envPicker = null; renderInspector(); positionInspector(); ensureInspectorClear();
         announce(fill(had ? 'journey2_hexenv_live_changed' : 'journey2_hexenv_live_assigned', { name: pick.name }));
         const l = ui.i.hexEnvBody.querySelector('[data-j2-hexenv-link]'); if (l) l.focus({ preventScroll: true });
       }
@@ -1205,6 +1222,7 @@
       renderInventory(false);
       renderInspector();
       positionInspector();
+      ensureInspectorClear();
     }
 
     /** Opens/keeps the inspector on the region of a placed hex and makes that hex the selected anchor. */
@@ -1332,8 +1350,8 @@
       const s = Geo.worldToScreen(cam, ctr[0], ctr[1]);
       const x = vp.left - wrap.left + s[0], y = vp.top - wrap.top + s[1];
       if (x < 0 || y < 0 || x > view.w || y > view.h) return null;
-      const xs = data.grid.cellCorners(c.q, c.r).map(p => p[0]);
-      return { x: x, y: y, r: (Math.max.apply(null, xs) - Math.min.apply(null, xs)) / 2 * cam.scale };
+      const pts = data.grid.cellCorners(c.q, c.r), xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+      return { x: x, y: y, r: (Math.max.apply(null, xs) - Math.min.apply(null, xs)) / 2 * cam.scale, ry: (Math.max.apply(null, ys) - Math.min.apply(null, ys)) / 2 * cam.scale };
     }
 
     /** The rectangles (map-area px) the inspector must stay clear of: the actual visible sidebar/rail and diagnostics drawer. */
@@ -1360,6 +1378,36 @@
       node.setAttribute('data-side', pos.side);
       if (pos.caret) { node.setAttribute('data-caret', pos.caret.edge); node.style.setProperty('--j2-caret', pos.caret.offset + 'px'); }
       else node.removeAttribute('data-caret');
+    }
+
+    /**
+     * Keeps the selected hex in sight beside the open inspector: when no side of the hex has room for the panel (small laptop windows), pans the map
+     * by the least amount that makes room — never a Fit, never a zoom change. Called when the inspector opens on a hex or changes height
+     * (not while the user pans or zooms, so it never fights the pointer).
+     */
+    function ensureInspectorClear() {
+      if (inspector.batchId == null || !inspector.tileId || !ui.inspector || ui.inspector.hidden || !data || previewMode) return;
+      const wrap = ui.mapwrap.getBoundingClientRect(), view = { w: wrap.width, h: wrap.height };
+      if (!view.w || !view.h) return;
+      const pan = Geo.panForInspector({ view: view, size: { w: ui.inspector.offsetWidth, h: ui.inspector.offsetHeight }, anchor: inspectorAnchor(view), blocked: inspectorBlocked(wrap), narrow: window.innerWidth <= 900 });
+      if (pan && (pan.dx || pan.dy)) animateCameraBy(pan.dx, pan.dy, 220);
+    }
+
+    function prefersReducedMotion() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (err) { return false; } }
+
+    /** Eases the camera by (dx, dy) screen px at the current zoom (instant under reduced motion); any other camera change (pan, zoom, Fit) cancels the rest of it. */
+    function animateCameraBy(dx, dy, ms) {
+      const from = cam, start = performance.now();
+      if (prefersReducedMotion() || !ms) { setCamera({ scale: from.scale, tx: from.tx + dx, ty: from.ty + dy }, true); return; }
+      let last = from;
+      const step = now => {
+        if (inst.disposed || cam !== last) return;
+        const k = Math.min(1, (now - start) / ms), e = 1 - Math.pow(1 - k, 3);
+        setCamera({ scale: from.scale, tx: from.tx + dx * e, ty: from.ty + dy * e }, true);
+        last = cam;
+        if (k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
     }
 
     function positionInspector() {
@@ -1488,8 +1536,28 @@
       renderEchoes();
       const byBatch = new Map(doc.batches.map(b => [b.id, b])), tints = Tint.gmTintByCell(doc, showBiome);
       ui.g.tiles.innerHTML = overlayMarkup(doc.tiles.map(tile => { const c = Geo.parseCellId(tile.cell); return { q: c.q, r: c.r, spec: specOfBatch(byBatch.get(tile.batchId)), tint: tints.get(tile.cell) || null }; }));
+      ui.g.tiles.innerHTML += envMarkersMarkup(doc.tiles);
       renderPerimeter();
       renderSanctuaryLabels();
+    }
+
+    /**
+     * GM-only Environment marker (PD-025): a small card glyph in the upper-left of every placed hex that carries an Environment. Decorative
+     * (aria-hidden, no pointer events), world-space like the glyphs, and produced ONLY here in the GM branch — the Player Preview and the print
+     * never call it and the player projection has no `environmentId` to draw from.
+     */
+    function envMarkersMarkup(tiles) {
+      let h = '';
+      for (const tile of tiles) {
+        if (!tile.environmentId) continue;
+        const c = Geo.parseCellId(tile.cell), pts = data.grid.cellCorners(c.q, c.r), ctr = data.grid.cellCenter(c.q, c.r);
+        const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+        const hw = (Math.max.apply(null, xs) - Math.min.apply(null, xs)) / 2, hh = (Math.max.apply(null, ys) - Math.min.apply(null, ys)) / 2;
+        const w = hw * 0.42, ht = w * 1.25, x = ctr[0] - hw * 0.46 - w / 2, y = ctr[1] - hh * 0.36 - ht / 2, k = w / 12;
+        h += '<g class="j2-envmark" data-tile="' + esc(tile.id) + '" aria-hidden="true" pointer-events="none" transform="translate(' + fmt(x, 1) + ' ' + fmt(y, 1) + ') scale(' + fmt(k, 3) + ')">' +
+          '<rect class="j2-envmark-card" x="0" y="0" width="12" height="15" rx="1.8"/><path class="j2-envmark-lines" d="M2.8 4.6h6.4M2.8 7.6h6.4M2.8 10.6h4"/></g>';
+      }
+      return h ? '<g class="j2-envmark-layer">' + h + '</g>' : '';
     }
 
     /**
@@ -1961,6 +2029,7 @@
       if (diagOpen) setDiagnostics(false);
       if (sel.tileId) { sel.tileId = null; renderSelection(); renderInventory(false); }
       sanctuaryOpen = id;
+      if (envTipKey && String(envTipKey).indexOf('sanc:') === 0) hideEnvTip();
       renderSanctuaryRings(); renderSanctuaryPanel(); positionSanctuary();
       announce(fill('journey2_live_sanc_opened', { name: e ? sanctuaryTitle(e) : t('journey2_sanc_fallback') }));
       return true;
@@ -2424,7 +2493,7 @@
       const on = previewMode;
       ui.root.setAttribute('data-mode', on ? 'preview' : 'gm');
       ui.sidewrap.hidden = on; ui.sidewrap.inert = on;
-      ui.historyGroup.hidden = on; ui.fogGroup.hidden = on; ui.echoGroup.hidden = on; ui.sancGroup.hidden = on;
+      ui.historyGroup.hidden = on; ui.fogGroup.hidden = on; ui.echoGroup.hidden = on; ui.sancGroup.hidden = on; ui.echoGroup.parentNode.hidden = on;
       ui.previewBar.hidden = !on;
       ui.hint.hidden = true; ui.tip.hidden = true; ui.tip.innerHTML = ''; envTipKey = null;
       ui.viewport.setAttribute('aria-label', t(on ? 'journey2_preview_map_label' : 'journey2_map_label'));
@@ -2627,11 +2696,37 @@
         cleanups.push(() => ro.disconnect());
       }
       if (typeof ResizeObserver === 'function') {
+        // when Soul Echoes + sanctuaries wrap onto their own second row the vertical divider that separated them from the Fog tools would sit at the row start: drop it
+        const tb = ui.root.querySelector('.j2-toolbar'), gm = tb.querySelector('.j2-tb-gm'), fog = tb.querySelector('.j2-tb-fog');
+        // decided from the toolbar's natural single-row width (not from where the browser happened to wrap), so dropping the divider can never flip the answer back
+        let sepExtra = -1;
+        const syncWrap = () => {
+          if (inst.disposed || !gm.offsetParent || !fog.offsetParent) return;
+          const cs = getComputedStyle(tb), echo = gm.querySelector('.j2-tb-echo');
+          if (sepExtra < 0 && !tb.classList.contains('is-wrapped')) { const ec = getComputedStyle(echo); sepExtra = (parseFloat(ec.paddingLeft) || 0) + (parseFloat(ec.borderLeftWidth) || 0); }
+          const kids = Array.from(tb.children).filter(k => k.offsetParent), gap = parseFloat(cs.columnGap) || 0;
+          const need = kids.reduce((w, k) => w + k.getBoundingClientRect().width, 0) + gap * Math.max(0, kids.length - 1) + (tb.classList.contains('is-wrapped') ? Math.max(0, sepExtra) : 0);
+          const avail = tb.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+          tb.classList.toggle('is-wrapped', need > avail + 0.5);
+        };
+        const ro3 = new ResizeObserver(syncWrap);
+        for (const n of [tb, gm, fog]) ro3.observe(n);
+        cleanups.push(() => ro3.disconnect());
+        syncWrap();
+      }
+      if (typeof ResizeObserver === 'function') {
         const ro2 = new ResizeObserver(() => { if (!inst.disposed) scheduleApply(); });
         ro2.observe(ui.inspector);
         cleanups.push(() => ro2.disconnect());
       }
       listen(ui.sidewrap, 'transitionend', () => { positionInspector(); });
+      // the "New region" block never rests half cut off at the top edge: once scrolling settles inside it, snap to fully shown or fully scrolled away
+      let snapTimer = 0;
+      listen(ui.sideScroll, 'scroll', () => {
+        clearTimeout(snapTimer);
+        snapTimer = setTimeout(snapSideHeader, 140);
+      });
+      cleanups.push(() => clearTimeout(snapTimer));
       listen(ui.root, 'click', onRootClick);
       listen(ui.gen, 'submit', onGenerate);
       listen(ui.panel.querySelector('[data-j2-goto]'), 'submit', onGoto);
@@ -3572,7 +3667,8 @@
     /** Neutral GM hover over a generated sanctuary icon: its name and whether players can see it (nothing about Soul Echoes or the tables). */
     function updateSanctuaryTip() {
       const id = !tr && !pan && !fogStroke && !fogTool && !previewMode && !placeMode && pointer.inside ? sanctuaryAtScreen(pointer.x, pointer.y) : null;
-      const e = id ? sanctuaryEntry(id) : null;
+      // while that sanctuary's own overlay is open the pointer normally still rests on its icon: the tip would sit on top of the overlay text
+      const e = id && id !== sanctuaryOpen ? sanctuaryEntry(id) : null;
       if (!e) { if (envTipKey && String(envTipKey).indexOf('sanc:') === 0) hideEnvTip(); return; }
       ui.tip.innerHTML = '<strong></strong><span></span>';
       ui.tip.children[0].textContent = fill(Model.isSanctuaryNameRevealed(doc, id) ? 'journey2_sanc_tip_name_visible' : 'journey2_sanc_tip_name_hidden', { name: sanctuaryTitle(e) });

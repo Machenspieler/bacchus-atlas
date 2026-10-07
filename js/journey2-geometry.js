@@ -445,11 +445,12 @@
       for (const x of tries) if (!hits(x, margin, all)) return out(x, margin, 'corner', null);
       return out(tries[0], margin, 'corner', null);
     }
+    const ry = a.ry == null ? a.r : a.ry;
     const cands = [
       { side: 'right', x: a.x + a.r + gap, y: clampY(a.y - h / 2), fits: a.x + a.r + gap + w <= view.w - margin },
       { side: 'left', x: a.x - a.r - gap - w, y: clampY(a.y - h / 2), fits: a.x - a.r - gap - w >= margin },
-      { side: 'below', x: clampX(a.x - w / 2), y: a.y + a.r + gap, fits: a.y + a.r + gap + h <= view.h - margin },
-      { side: 'above', x: clampX(a.x - w / 2), y: a.y - a.r - gap - h, fits: a.y - a.r - gap - h >= margin },
+      { side: 'below', x: clampX(a.x - w / 2), y: a.y + ry + gap, fits: a.y + ry + gap + h <= view.h - margin },
+      { side: 'above', x: clampX(a.x - w / 2), y: a.y - ry - gap - h, fits: a.y - ry - gap - h >= margin },
     ];
     const caretFor = (side, x, y) => {
       const horiz = side === 'right' || side === 'left';
@@ -458,12 +459,36 @@
     };
     const hard = all.filter(b => !b.soft);
     for (const list of [all, hard]) for (const c of cands) if (c.fits && !hits(c.x, c.y, list)) return out(c.x, c.y, c.side, caretFor(c.side, c.x, c.y));
-    // nothing sits cleanly beside the hex: clamp inside the map and take the spot that is least covered
+    // nothing sits cleanly beside the hex: clamp inside the map and take the spot that covers the least (the hex itself counts far more than the sidebar)
+    const hexBox = [{ x: a.x - a.r, y: a.y - ry, w: 2 * a.r, h: 2 * ry }];
     const fall = cands.map(c => ({ side: 'clamped', x: clampX(c.x), y: clampY(c.y) })).concat([{ side: 'clamped', x: clampX(view.w - margin - w), y: margin }]);
     for (const b of all) { for (const x of [b.x - margin - w, b.x + b.w + margin]) fall.push({ side: 'clamped', x: clampX(x), y: clampY(a.y - h / 2) }); }
-    let best = fall[0], bestO = overlap(best.x, best.y, all);
-    for (const c of fall) { const ov = overlap(c.x, c.y, all); if (ov < bestO) { best = c; bestO = ov; } }
+    const cost = c => overlap(c.x, c.y, all) + 8 * overlap(c.x, c.y, hexBox);
+    let best = fall[0], bestO = cost(best);
+    for (const c of fall) { const ov = cost(c); if (ov < bestO) { best = c; bestO = ov; } }
     return out(best.x, best.y, best.side, null);
+  }
+
+  /**
+   * The smallest camera pan { dx, dy } (map-area px; the world moves by it) after which the panel can sit cleanly beside the anchor hex AND the whole hex
+   * stays visible and clear of every blocked rectangle; { dx: 0, dy: 0 } when it already does, null when no pan within the map area helps. Takes the same
+   * options as placeInspector. Horizontal pans are tried first (the panel is a side panel); a vertical pan is only the fallback.
+   */
+  function panForInspector(o) {
+    const a = o.anchor, margin = o.margin == null ? 12 : o.margin;
+    if (!a || o.narrow) return { dx: 0, dy: 0 };
+    const ry = a.ry == null ? a.r : a.ry, blocked = o.blocked || [];
+    const ok = (dx, dy) => {
+      const x = a.x + dx, y = a.y + dy;
+      if (x - a.r < margin || x + a.r > o.view.w - margin || y - ry < margin || y + ry > o.view.h - margin) return false;
+      if (blocked.some(b => x - a.r < b.x + b.w && x + a.r > b.x && y - ry < b.y + b.h && y + ry > b.y)) return false;
+      return placeInspector(Object.assign({}, o, { anchor: { x: x, y: y, r: a.r, ry: ry } })).side !== 'clamped';
+    };
+    if (ok(0, 0)) return { dx: 0, dy: 0 };
+    const reach = Math.max(o.view.w, o.view.h);
+    for (let d = 4; d <= reach; d += 4) for (const dx of [-d, d]) if (ok(dx, 0)) return { dx: dx, dy: 0 };
+    for (let d = 4; d <= reach; d += 4) for (const dy of [-d, d]) if (ok(0, dy)) return { dx: 0, dy: dy };
+    return null;
   }
 
   /* ---------------- hex line (fog painting) ---------------- */
@@ -585,6 +610,7 @@
     chainEdgeSegments: chainEdgeSegments,
     polylinesPath: polylinesPath,
     placeInspector: placeInspector,
+    panForInspector: panForInspector,
     NEIGHBOR_DELTAS: NEIGHBOR_DELTAS,
     cellId: cellId,
     parseCellId: parseCellId,

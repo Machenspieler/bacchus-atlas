@@ -303,3 +303,17 @@ test('view: raw hex coordinates appear in the inspector footer only while Diagno
   assert.match(body, /diagOpen \? fill\('journey2_tile_cell'/);
   assert.match(body, /data-j2-return|\[data-j2-return\]\)\.disabled/, 'Return to stock stays available');
 });
+
+/* ---------------- keeping the selected hex in sight (visual audit 01, F-04) ---------------- */
+
+test('panForInspector: no pan when a side already has room; a hex crowded by the panel is moved the minimum that makes room', () => {
+  const side = { x: 12, y: 12, w: 340, h: 680 };
+  const base = { view: { w: 1000, h: 700 }, size: { w: 440, h: 420 }, blocked: [side] };
+  assert.deepEqual(Geo.panForInspector(Object.assign({ anchor: { x: 500, y: 350, r: 30, ry: 35 } }, base)), { dx: 0, dy: 0 });
+  const crowded = Object.assign({ anchor: { x: 800, y: 350, r: 30, ry: 35 } }, base);   // right side lacks room, left side hits the sidebar
+  assert.equal(Geo.placeInspector(crowded).side, 'clamped');
+  const pan = Geo.panForInspector(crowded);
+  assert.ok(pan && pan.dy === 0 && pan.dx !== 0 && Math.abs(pan.dx) < 120, JSON.stringify(pan));
+  const moved = Object.assign({}, crowded, { anchor: { x: 800 + pan.dx, y: 350, r: 30, ry: 35 } });
+  assert.notEqual(Geo.placeInspector(moved).side, 'clamped');
+});

@@ -52,6 +52,11 @@ body[data-route="journey"] #grid-wrap { display: block; }
 }
 .j2-tb-group { display: flex; align-items: center; gap: var(--s-1); min-width: 0; }
 .j2-tb-end { margin-left: auto; gap: var(--s-2); }
+/* Soul Echoes + sanctuaries (the GM's campaign tools) travel as ONE unit: they share a row or the whole unit drops to its own second row, never one orphan button */
+.j2-tb-gm { display: flex; flex-wrap: nowrap; align-items: center; gap: var(--s-4); min-width: 0; }
+.j2-tb-gm[hidden] { display: none; }
+.j2-toolbar.is-wrapped .j2-tb-gm { flex-basis: 100%; }
+.j2-toolbar.is-wrapped .j2-tb-echo { padding-left: 0; border-left: 0; }
 /* Fog of War tools: a labelled group (icon + text, so a tool is never identified by colour alone) */
 .j2-tb-fog { padding-left: var(--s-3); border-left: 1px solid var(--line-faint); }
 /* Soul Echoes (PD-022): GM-only; hidden in Player Preview */
@@ -429,6 +434,14 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-insp-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-lg); line-height: var(--lh-lg); color: var(--parchment); overflow-wrap: anywhere; }
 .j2-insp-sub { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-2); font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); }
 .j2-insp-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--s-3); display: grid; gap: var(--s-3); align-content: start; scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
+/* a quiet edge shadow appears on whichever side still has content (the classic CSS-only scroll cue: shadows are fixed, covers scroll with the content) — nothing shows when it all fits, and no gutter is added */
+.j2-insp-scroll {
+  background:
+    linear-gradient(var(--ink-raised) 35%, transparent) 0 0 / 100% 18px no-repeat local,
+    linear-gradient(transparent, var(--ink-raised) 65%) 0 100% / 100% 18px no-repeat local,
+    radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.55), transparent) 0 0 / 100% 9px no-repeat scroll,
+    radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.55), transparent) 0 100% / 100% 9px no-repeat scroll;
+}
 .j2-insp-examples, .j2-insp-terrain-text { margin: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); }
 .j2-insp-examples[hidden], .j2-insp-terrain-text[hidden], .j2-insp-empty[hidden] { display: none; }
 .j2-insp-summary { display: grid; gap: var(--s-1); }
@@ -517,7 +530,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-cmp-ring.is-inner { stroke-width: 0.8; stroke-opacity: 0.55; }
 .j2-cmp-tick { stroke: #d9a441; stroke-opacity: 0.6; stroke-width: 1.4; stroke-linecap: round; }
 .j2-cmp-tick.is-major { stroke-opacity: 1; stroke-width: 3; }
-.j2-cmp-letter { font-family: var(--font-display, serif); font-size: 15px; fill: #f0cf8c; dominant-baseline: middle; }
+.j2-cmp-letter { font-family: var(--font-display, serif); font-size: 15px; fill: #f0cf8c; stroke: #1b1610; stroke-width: 4px; stroke-linejoin: round; paint-order: stroke fill; dominant-baseline: middle; }
 .j2-cmp-needle { transform-origin: 100px 100px; }
 .j2-cmp-needle-n { fill: #f0cf8c; stroke: #d9a441; stroke-width: 1.2; stroke-linejoin: round; }
 .j2-cmp-needle-s { fill: #6b5a3a; stroke: #d9a441; stroke-width: 1; stroke-linejoin: round; stroke-opacity: 0.7; }
@@ -689,6 +702,8 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-hexenv-row.is-current { background: var(--hope-wash); }
 .j2-hexenv-assigned { flex: none; font-size: var(--fs-xs); color: var(--hope-soft); }
 /* GM-only map marker for a hex that carries an environment: a tiny card glyph, decorative, never interactive. */
+.j2-overlay .j2-envmark-card { fill: var(--hope); stroke: var(--ink); stroke-width: 1.2; stroke-linejoin: round; }
+.j2-overlay .j2-envmark-lines { fill: none; stroke: var(--ink); stroke-width: 1.2; stroke-linecap: round; }
 
 /* ---------- player map print (PD-028) ----------
  * One DOM for the on-screen preview and the physical print: `.j2-print-root` holds exactly two `.j2-print-page` sections (the west and

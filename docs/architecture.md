@@ -1048,7 +1048,12 @@ Run all of them with `node --test tests/*.test.js`.
   rectangles of the sidebar/rail and diagnostics drawer and falls back to a stable top-right corner without an
   anchor or a bottom-centred panel at ≤900px. It is re-run from the camera `rAF`
   (pan, zoom, resize, Fit), a `ResizeObserver` on the panel, the sidebar's
-  transition and after every render, never per pointer event. `syncInspection`
+  transition and after every render, never per pointer event. The selected hex is a protected area: when no side has room (small
+  laptop windows) `ensureInspectorClear()` pans the camera by the least amount `Geo.panForInspector()` finds — never a Fit, never a zoom
+  change, only when the inspector opens on a hex or changes height (not while the user pans). The drawer's "New region" block snaps to
+  fully shown / fully scrolled away after any scroll settles (`snapSideHeader()`), and a manual drawer toggle slides the camera by half the
+  inset difference (`toggleSide()` → `animateCameraBy()`; selecting a hex or any automatic change never does). The toolbar's Soul Echoes +
+  sanctuary controls are one `.j2-tb-gm` unit that wraps as a whole (`is-wrapped` is decided from the natural single-row width, not from the wrap). `syncInspection`
   runs after every document change (deleted region → closed; vanished anchor
   hex → dropped). Close paths: button, Escape (after menu and drag/armed
   placement), empty-map click (never a pan), deletion, import/replace, opening
@@ -1263,8 +1268,9 @@ Run all of them with `node --test tests/*.test.js`.
   - *View.* `renderHexEnvironment()` fills the inspector's `[data-j2-i="hexEnvSec"]` only for `inspector.source === 'map'`; the list is
     `hexEnvironmentList(b)` = `environmentsFor(biome)` (the app.js adapter; none when overtaken) and rows reuse its `href`, so the
     overlay stays route-driven and the map is never re-rendered. The body is rebuilt only when its signature changes, so a focused link
-    and the picker's scroll survive. `envPicker` is transient view state (cleared on any inspector change, Undo/Redo). There is no map
-    marker (removed: the hex shows no environment icon). `updateEnvTip()` reuses `[data-j2-tip]` for neutral hover.
+    and the picker's scroll survive. `envPicker` is transient view state (cleared on any inspector change, Undo/Redo). The map shows a small GM-only card
+    marker (`envMarkersMarkup()`, upper-left of the hex, appended to the tiles layer in the GM branch of `renderTiles()` only — Player
+    Preview and print never call it). `updateEnvTip()` reuses `[data-j2-tip]` for neutral hover.
   - *GM-only.* `buildPlayerProjection` builds overlays from an explicit field list, so `environmentId` can never reach Player Preview or
     the future print; `tests/journey2-hex-environment.test.js` asserts it. Browser checks: `scripts/journey2/lib/hex-environment-checks.js`.
 - **Sanctuaries (PD-023):**
