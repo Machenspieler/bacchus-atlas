@@ -13,10 +13,13 @@
      { schemaVersion, kind, templateId, templateVersion, createdAt, updatedAt,
        batches: [ { id, createdAt, habitat, terrain, quantity, quantitySource,
                     encounter, rumor, notes } ],
-       tiles:   [ { id, batchId, cell: "q,r" } ],
+       tiles:   [ { id, batchId, cell: "q,r", environmentId? } ],
        playerVisibility: { revealedCells: [ "q,r", ... ] },
        soulEchoes: { anchorIds: [ "mk-012", ... ] },
        sanctuaries: { entries: [ { anchorId, name, trade, quirk, crisis, drive, politics: { rolls }, size, population } ] } }
+   A tile may carry ONE optional `environmentId` (a stable catalog id, never a name or stat block; missing = none). It belongs to the
+   tile object, so it moves with the tile and disappears with it; an id the catalog no longer knows is kept as-is (the view shows it
+   as unavailable). GM-only: the player projection never reads it.
    Fog of War (Phase C) is CELL-based and lives only in `playerVisibility.revealedCells` — never on a batch or a
    tile. Every placeable cell is hidden by default; the list is the single source of truth (no hiddenCells twin),
    kept sorted so a serialized document is deterministic.
@@ -84,7 +87,11 @@
   const MAX_SOUL_ECHOES = 9;
   const BATCH_KEYS = ['id', 'createdAt', 'habitat', 'terrain', 'quantity', 'quantitySource', 'encounter', 'rumor', 'notes'];
   const HABITAT_KEYS = ['biome', 'blighted', 'overtaken', 'source', 'rolls'];
-  const TILE_KEYS = ['id', 'batchId', 'cell'];
+  const TILE_KEYS = ['id', 'batchId', 'cell', 'environmentId'];
+  /** A catalog environment id (lowercase kebab-case, like every id in data/environments.json). Syntax only: whether the catalog still knows it is the view's question. */
+  const ENVIRONMENT_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  const MAX_ENVIRONMENT_ID_LENGTH = 64;
+  const isEnvironmentId = v => typeof v === 'string' && v.length <= MAX_ENVIRONMENT_ID_LENGTH && ENVIRONMENT_ID_PATTERN.test(v);
 
   const isInt = v => typeof v === 'number' && Number.isInteger(v);
   const isObj = v => typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -303,7 +310,12 @@
       if (cells.has(t.cell)) errors.push(where + ': cell ' + t.cell + ' is occupied twice');
       cells.add(t.cell);
       placed.set(t.batchId, (placed.get(t.batchId) || 0) + 1);
-      tiles.push({ id: t.id, batchId: t.batchId, cell: t.cell });
+      const tile = { id: t.id, batchId: t.batchId, cell: t.cell };
+      if (own(t, 'environmentId')) {
+        if (!isEnvironmentId(t.environmentId)) { errors.push(where + ': invalid environmentId'); continue; }
+        tile.environmentId = t.environmentId;
+      }
+      tiles.push(tile);
     }
     for (const [id, n] of placed) if (n > quantity.get(id)) errors.push('batch "' + id + '": ' + n + ' tiles placed but quantity is ' + quantity.get(id));
     const vis = validateVisibility(doc.playerVisibility, ctx, errors);
@@ -764,6 +776,8 @@
    *                                                                region with nothing placed (adds exactly one area; PD-024)
    *   move        { tileId, to:"q,r", at }                     same cell => noop; may not split the prepared map ('would-split-prepared-map')
    *   returnTile  { tileId, at }                                   same prepared-map rule
+   *   setTileEnvironment { tileId, environmentId|null, at }       assign / replace (one command) / detach (null) the tile's catalog environment;
+   *                                                                the same id => noop; catalog/biome eligibility is the view's check, not the model's
    *   deleteBatch { batchId, at }                                  removes the batch AND all its tiles, atomically; reports { topology: {before, after} }
    *   setNotes    { batchId, notes, at }                       unchanged => noop
    *   setCellsRevealed { cellKeys:["q,r"...], revealed:boolean, at }   Fog of War: reveal (true) or hide (false) cells;
@@ -817,7 +831,7 @@
         if (!regionConnectivity(doc, tile.batchId, [cmd.to], tile.id).ok) return fail('disconnected-region');
         const topo = topologyCheck(doc, tile.batchId, [cmd.to], tile.id, false);
         if (!topo.ok) return fail(topo.code);
-        return { ok: true, doc: touch(doc, cmd.at, { tiles: doc.tiles.map(t => (t.id === tile.id ? { id: t.id, batchId: t.batchId, cell: cmd.to } : t)) }) };
+        return { ok: true, doc: touch(doc, cmd.at, { tiles: doc.tiles.map(t => (t.id === tile.id ? Object.assign({}, t, { cell: cmd.to }) : t)) }) };
       }
       case 'returnTile': {
         const tile = derive(doc).byId.get(cmd.tileId);
@@ -830,6 +844,15 @@
       case 'deleteBatch': {
         if (!batchById(doc, cmd.batchId)) return fail('no-batch');
         return { ok: true, doc: touch(doc, cmd.at, { batches: doc.batches.filter(b => b.id !== cmd.batchId), tiles: doc.tiles.filter(t => t.batchId !== cmd.batchId) }), topology: deleteTopology(doc, cmd.batchId) };
+      }
+      case 'setTileEnvironment': {
+        const tile = derive(doc).byId.get(cmd.tileId);
+        if (!tile) return fail('no-tile');
+        const id = cmd.environmentId;
+        if (id !== null && !isEnvironmentId(id)) return fail('bad-environment');
+        if ((id === null ? undefined : id) === tile.environmentId) return { ok: true, doc: doc, noop: true };
+        const next = t => { const o = Object.assign({}, t); if (id === null) delete o.environmentId; else o.environmentId = id; return o; };
+        return { ok: true, doc: touch(doc, cmd.at, { tiles: doc.tiles.map(t => (t.id === tile.id ? next(t) : t)) }) };
       }
       case 'setNotes': {
         const batch = batchById(doc, cmd.batchId);
@@ -959,6 +982,7 @@
   }
 
   return {
+    isEnvironmentId: isEnvironmentId, MAX_ENVIRONMENT_ID_LENGTH: MAX_ENVIRONMENT_ID_LENGTH,
     NO_INSPECTION: NO_INSPECTION, inspectTile: inspectTile, inspectBatch: inspectBatch, syncInspection: syncInspection, inspectedTileIds: inspectedTileIds,
     SCHEMA_VERSION: SCHEMA_VERSION, KIND: KIND, HABITAT_IDS: HABITAT_IDS, OVERTAKEN_SYMBOL: OVERTAKEN_SYMBOL,
     MAX_BATCH_QUANTITY: MAX_BATCH_QUANTITY, MAX_BATCHES: MAX_BATCHES, MAX_NOTES_LENGTH: MAX_NOTES_LENGTH, MAX_IMPORT_BYTES: MAX_IMPORT_BYTES, HISTORY_LIMIT: HISTORY_LIMIT,

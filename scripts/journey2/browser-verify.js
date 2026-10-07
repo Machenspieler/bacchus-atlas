@@ -743,6 +743,8 @@ async function main() {
   await require('./lib/fog-checks.js').runFogChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc, full: false });
   /* Phase D: prepared-map connectivity, the Start-separate-area confirmation, derived region boundaries and the fog without cut-outs */
   await require('./lib/topology-checks.js').runTopologyChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc });
+  /* Per-hex Environment assignment (PD-025): inline picker, reused overlay, GM-only marker, Player Preview, tile lifecycle */
+  await require('./lib/hex-environment-checks.js').runHexEnvironmentChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc });
 
   await browser.close(); server.close();
   const failed = results.filter(r => !r.ok);

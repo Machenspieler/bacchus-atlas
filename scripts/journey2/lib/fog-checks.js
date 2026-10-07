@@ -480,12 +480,12 @@ async function runFogChecks(env) {
   /* ===== suggested environments, moved from the sidebar card to the inspector ===== */
   await check('fog.50.suggested-environments-are-gone-from-the-card-and-collapsed-in-the-inspector', async () => {
     const card = await page.evaluate(() => ({ envs: document.querySelectorAll('.j2-card .j2-envs, .j2-card [data-j2-env-toggle], .j2-card .j2-env-link').length, cardH: [...document.querySelectorAll('.j2-card')].map(c => Math.round(c.getBoundingClientRect().height)) }));
-    await click(SEVEN[2]);
+    await page.locator(`.j2-card[data-batch="${bid}"] [data-j2-inspect]`).click(); await sleep(150);   // a card-opened inspector keeps the read-only list (a hex-opened one shows Hex Environment instead, PD-025)
     const r = await page.evaluate(() => {
       const t = document.querySelector('[data-j2-env-toggle]'), l = document.querySelector('[data-j2-insp-envs], .j2-region-inspector .j2-envs-list');
       return { exp: t.getAttribute('aria-expanded'), hiddenList: l.hidden, label: t.innerText, links: l.querySelectorAll('a.j2-env-link').length, readonly: !document.querySelector('.j2-region-inspector textarea, .j2-region-inspector input'), pos: [...document.querySelectorAll('.j2-region-inspector .j2-insp-h')].map(h => h.textContent.trim().slice(0, 24)) };
     });
-    return { ok: card.envs === 0 && r.exp === 'false' && r.hiddenList && /^suggested environments · \d+$/i.test(r.label.replace(/\s+/g, ' ').trim()) && r.links > 0 && r.readonly && /^Encounter$/.test(r.pos[0]) && /^Rumor$/.test(r.pos[1]) && /^Suggested/.test(r.pos[2]), detail: { card, r } };
+    return { ok: card.envs === 0 && r.exp === 'false' && r.hiddenList && /^suggested environments · \d+$/i.test(r.label.replace(/\s+/g, ' ').trim()) && r.links > 0 && r.readonly && /^Hex Environment$/.test(r.pos[0]) && /^Encounter$/.test(r.pos[1]) && /^Rumor$/.test(r.pos[2]) && /^Suggested/.test(r.pos[3]), detail: { card, r } };
   });
   await check('fog.51.the-section-opens-lists-tier-then-name-links-and-collapses-again-for-another-region', async () => {
     await page.locator('[data-j2-env-toggle]').click(); await sleep(100);

@@ -458,6 +458,13 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       region softly outlined and that hex strongly; a footer shows **Return to stock** and no raw "Hex q,r"
       (click it: the hex goes back to stock, the footer disappears; Undo restores it). There is no separate bar at the bottom of the map; the sidebar does not expand, scroll or open. Click another hex of the region,
       then a hex of another region, then empty map (closes). A pan keeps it open; a hex drag never opens it.
+- [ ] Hex Environment: click a placed hex → the inspector shows **Hex Environment** (above Encounter) and no Suggested environments;
+      *Choose Environment* opens an inline scrollable list with only that biome's environments (a Shadowblighted region uses
+      its base biome; an Overtaken one says "No habitat-specific environments…"). A name opens the normal overlay without assigning
+      (camera, inspector and picker unchanged after Esc); *Assign* closes the picker, shows Tier + name, adds a small card marker on
+      the hex and a hover tooltip. Change = one Undo step; Detach needs no dialog; moving the hex carries the marker; Return to stock
+      + Undo restores it; the same environment may sit on several hexes. Player Preview (even on a revealed hex) shows no marker.
+      A card-opened inspector keeps the read-only Suggested environments. RU/EN relabels names without changing the saved map.
 - [ ] A card's **Inspect region** button opens the same panel for an unplaced region too, without
       expanding the card; the panel never sits under the sidebar/rail and stays the same size at 50%, 100%
       and 200%. Esc cancels an armed Place first, then closes the panel; focus returns to the opener.

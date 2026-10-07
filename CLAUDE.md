@@ -206,8 +206,11 @@ book's west-to-east rule, one removes them, and they never reach Player Preview 
 Generated sanctuaries are GM-only too (`sanctuaries.entries`, one per printed sanctuary icon, numbers not
 sentences): one toolbar button rolls all 56 through `#/journey`'s own generator, clicking an icon opens an
 overlay with Delete / Reroll / close, and none of it reaches Player Preview or print (PD-023).
+A placed hex may carry one optional catalog Environment (`tile.environmentId`, id only; follows the tile, dies with
+it; picker limited to the region's biome via the existing adapter, none for an overtaken region; opened from a hex's
+Region Inspector, never from a card; GM-only, never in Player Preview or print — PD-025).
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024, detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025, detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

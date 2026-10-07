@@ -242,7 +242,7 @@ test('view: the inspector is a non-modal dialog, a sibling of the zoomed world, 
   assert.match(markup, /role="dialog"/);
   assert.match(markup, /aria-modal="false"/);
   assert.match(markup, /aria-labelledby="j2-region-inspector-title"/);
-  assert.equal((markup.match(/<h4/g) || []).length, 3, 'real headings for Encounter, Rumor and Suggested environments');
+  assert.equal((markup.match(/<h4/g) || []).length, 4, 'real headings for Hex Environment, Encounter, Rumor and Suggested environments');
   assert.doesNotMatch(markup, /<textarea|notes/i, 'no GM notes field');
   assert.match(markup, /<footer class="j2-insp-tile" data-j2-insp-tile hidden>[\s\S]*data-j2-return/, 'the anchored hex and its Return to stock action live in the inspector');
   assert.doesNotMatch(markup, /d20|d12|d8|d4|d100|reroll|keep|discard/i);

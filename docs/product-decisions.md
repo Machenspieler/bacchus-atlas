@@ -816,3 +816,43 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   storing boundaries / component counts / the override flag, and rejecting an imported map for having several
   prepared areas.
 - **Where:** [architecture.md](architecture.md) "Prepared-map connectivity and region boundaries (PD-021, PD-024)".
+
+## PD-025: Journey 2 — one optional Environment per placed hex (GM-only)
+- **Status:** Active
+- **Date:** 2026-10-07
+- **Decision (region data vs tile data):** the generated batch still owns Habitat, Terrain, size, Encounter,
+  Rumor and the perimeter. A *placed tile* may additionally own **zero or one** catalog Environment. Nothing
+  else is assigned: no second Environment, no stock tile, no sanctuary anchor, no Soul Echo, no free text, no
+  GM Notes (still out of scope, PD-019).
+- **Decision (stored by id only):** the tile gains an optional `environmentId` (a stable catalog id: lowercase
+  kebab-case, at most 64 characters, never empty). A missing key means "none"; `null`, names, Tier, biome and
+  URLs are never stored, so old documents load unchanged and RU/EN switching never rewrites the document. An
+  id the catalog no longer knows (or that no longer matches the habitat) is **kept** and shown as
+  *Environment unavailable* with *Stored id: …*; it can be changed or detached, never silently cleared.
+- **Decision (follows the tile):** the id belongs to the tile object, not the coordinate. Moving a tile keeps
+  it; returning a tile to stock or deleting its region removes it; Undo restores it exactly; a stock tile placed
+  again starts clean. The fog is cell-based and independent: assigning, moving or detaching never reveals or
+  hides anything, and fog commands never touch the id.
+- **Decision (one command):** `setTileEnvironment { tileId, environmentId | null }` assigns, replaces and
+  detaches. Change is ONE history entry (Undo restores the previous id directly); assigning the stored id is a
+  no-op (no history, no `updatedAt`, no autosave, no announcement). Catalog/biome eligibility is the view's
+  check, so the model stays independent of localized content.
+- **Decision (which Environments):** exactly the list the existing `environmentsForBiome` adapter (app.js)
+  returns for the region's biome, in its order — no second index, no fetch of `environments.json`, no
+  hand-built overlay URLs. A Shadowblighted region uses its surviving base biome; a **fully overtaken** region
+  has no base biome and offers no picker ("No habitat-specific environments are available for this region") —
+  never a fall-back to all / universal / settlement lists. No search and no cross-biome browsing.
+- **Decision (surface):** the Region Inspector shows *Hex Environment* only when opened from a placed hex
+  (source `map`), between the summary and Encounter, and then hides the generic Suggested Environments
+  disclosure; opened from a card (no hex) it keeps that read-only list. Unassigned: *Choose Environment*;
+  assigned: Tier + name (a real link to the **existing** Environment Overlay) with *Change* / *Detach*; the
+  picker is inline, vertically scrollable, one row per Environment (name link and a separate *Assign* button;
+  the current one reads *Assigned*). Detach needs no confirmation (Undo recovers). Picker state is transient
+  (never stored, never in history) and closes on any inspector change, Undo/Redo, fog tool or preview.
+- **Decision (GM-only):** a small card-shaped marker sits in the upper-left of every assigned hex on the GM
+  map (decorative, `aria-hidden`, no pointer events) and neutral hover shows the name in the shared tooltip.
+  The player projection is a field whitelist without `environmentId`; Player Preview and the future print show
+  no marker, name, id, picker or tooltip even for a revealed cell.
+- **Consequences:** the backup (v1, unchanged) carries `environmentId`; `TILE_KEYS` gained it; a malformed id
+  fails import like any other schema error. Out of scope: several Environments per tile, custom/random/automatic
+  assignment, player-visible points of interest, encounter tracking, routes, printing.

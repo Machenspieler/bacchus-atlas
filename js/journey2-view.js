@@ -170,6 +170,9 @@
     let spaceDown = false;
     let sel = { tileId: null };
     let inspector = Model.NO_INSPECTION;                    // { batchId, tileId, source } — the open Region Inspector (transient: never persisted, never in history)
+    let envPicker = null;                                   // transient: { tileId } while the inline Hex Environment picker is open (never persisted, never in history)
+    let envMarksDrawn = null;                               // the tiles array the GM environment-marker layer currently shows
+    let envTipKey = null;                                   // tileId whose environment tooltip is showing
     let inspectorShown = null;                              // batchId the inspector DOM currently shows (so its scroll position survives re-renders)
     let followUntil = 0;                                    // keep re-positioning the inspector every frame until this time (sidebar slide)
     let hintTimer = 0;
@@ -423,7 +426,7 @@
                   <img class="j2-base" alt="" draggable="false" width="${W}" height="${H}">
                   <svg class="j2-overlay" xmlns="${SVG_NS}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">
                     <defs data-j2-defs></defs><defs>${ECHO_DEFS}</defs>
-                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g>
+                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="envmarks" pointer-events="none" aria-hidden="true"></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g>
                     <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
                     <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g>
                   </svg>
@@ -458,6 +461,10 @@
                     <p class="j2-insp-line j2-insp-empty" data-j2-i="noTiles" hidden></p>
                     <p class="j2-insp-terrain-text" data-j2-i="terrainText" hidden></p>
                   </div>
+                  <section class="j2-insp-sec j2-hexenv" data-j2-i="hexEnvSec" aria-labelledby="j2-hexenv-title" hidden>
+                    <h4 class="j2-insp-h" id="j2-hexenv-title" data-t="journey2_hexenv_title"></h4>
+                    <div data-j2-i="hexEnvBody"></div>
+                  </section>
                   <section class="j2-insp-sec"><h4 class="j2-insp-h" data-t="journey_k_encounter"></h4><div data-j2-i="enc"></div></section>
                   <section class="j2-insp-sec"><h4 class="j2-insp-h" data-t="journey_k_rumor"></h4><p class="j2-insp-p" data-j2-i="rumor"></p></section>
                   <section class="j2-insp-sec j2-insp-envs" data-j2-i="envSec">
@@ -694,6 +701,7 @@
       cancelTransient();
       const e = Model.historyUndo(history);
       if (!e) return;
+      envPicker = null;
       doc = e.before;
       afterDocChange();
       announce(t('journey2_live_undo'));
@@ -703,6 +711,7 @@
       cancelTransient();
       const e = Model.historyRedo(history);
       if (!e) return;
+      envPicker = null;
       doc = e.after;
       afterDocChange();
       announce(t('journey2_live_redo'));
@@ -907,6 +916,7 @@
       const I = ui.i;
       const biome = b.habitat.overtaken ? null : b.habitat.biome;
       const list = biome ? environmentsFor(biome) : [];
+      I.envSec.hidden = !!(inspector.source === 'map' && inspector.tileId);   // a hex-opened inspector shows the picker in Hex Environment instead of repeating this list
       I.envLabel.textContent = t('journey2_envs_suggested') + (list.length ? ' · ' + n(list.length) : '');
       I.envToggle.hidden = !list.length;
       I.envNone.hidden = list.length > 0;
@@ -917,6 +927,106 @@
       if (I.envList.getAttribute('data-sig') !== sig) {
         I.envList.setAttribute('data-sig', sig);
         I.envList.innerHTML = list.map(e => '<li><a class="j2-env-link" href="' + esc(e.href) + '" data-j2-env><span class="j2-env-tier" aria-hidden="true">' + esc(e.tier) + '</span><span class="j2-env-name">' + esc(e.name) + '</span><span class="sr-only">' + esc(t('tier_label') + ' ' + e.tier) + '</span></a></li>').join('');
+      }
+    }
+
+    /** The catalog environments this region's hexes may carry: the existing biome adapter's list, untouched. A fully overtaken region has no base biome and no list. */
+    function hexEnvironmentList(b) {
+      const biome = b.habitat.overtaken ? null : b.habitat.biome;
+      return biome ? environmentsFor(biome) : [];
+    }
+
+    function envRowHtml(e, current, i) {
+      return '<li class="j2-hexenv-row' + (current ? ' is-current' : '') + '"><a class="j2-env-link" href="' + esc(e.href) + '" data-j2-env><span class="j2-env-tier" aria-hidden="true">' + esc(n(e.tier)) + '</span><span class="j2-env-name">' + esc(e.name) + '</span><span class="sr-only">' + esc(fill('journey2_hexenv_tier', { n: n(e.tier) }) + ' · ' + t('journey2_hexenv_open')) + '</span></a>' +
+        (current ? '<span class="j2-hexenv-assigned">' + esc(t('journey2_hexenv_assigned')) + '</span>'
+          : '<button type="button" class="btn btn-sm" data-j2-hexenv="assign" data-env-id="' + esc(e.id) + '" aria-label="' + esc(fill('journey2_hexenv_assign_aria', { name: e.name })) + '"' + (editLocked ? ' disabled' : '') + '>' + esc(t('journey2_hexenv_assign')) + '</button>') + '</li>';
+    }
+
+    /**
+     * The Region Inspector's "Hex Environment" section — only for an inspector opened from a placed hex (a card-opened one has no hex and
+     * keeps the read-only Suggested environments list). The assignment is the tile's `environmentId`; everything shown (name, tier, link)
+     * is looked up again in the current language from the catalog adapter, never stored. Rebuilt only when its signature changes, so an open
+     * picker keeps its scroll position and a focused link survives unrelated re-renders.
+     */
+    function renderHexEnvironment(b, tile) {
+      const I = ui.i;
+      if (!tile) { clearHexEnvironment(); return; }
+      if (envPicker && envPicker.tileId !== tile.id) envPicker = null;
+      I.hexEnvSec.hidden = false;
+      const list = hexEnvironmentList(b), id = tile.environmentId || null;
+      const found = id ? list.find(e => e.id === id) || null : null;
+      const open = !!(envPicker && list.length);
+      if (envPicker && !list.length) envPicker = null;
+      const sig = [lang, tile.id, id || '', open ? 1 : 0, editLocked ? 1 : 0, list.map(e => e.id + ':' + e.name + ':' + e.tier).join(',')].join('|');
+      if (I.hexEnvBody.getAttribute('data-sig') === sig) return;
+      I.hexEnvBody.setAttribute('data-sig', sig);
+      let h = '';
+      const dis = editLocked ? ' disabled' : '';
+      if (!list.length) h += '<p class="j2-insp-p j2-insp-muted">' + esc(t('journey2_hexenv_no_habitat')) + '</p>';
+      if (id && found) {
+        h += '<div class="j2-hexenv-card"><span class="j2-hexenv-tier">' + esc(fill('journey2_hexenv_tier', { n: n(found.tier) })) + '</span>' +
+          '<a class="j2-env-link j2-hexenv-link" href="' + esc(found.href) + '" data-j2-env data-j2-hexenv-link><span class="j2-env-name">' + esc(found.name) + '</span><span class="j2-hexenv-ext" aria-hidden="true">\u2197</span><span class="sr-only"> (' + esc(t('journey2_hexenv_open')) + ')</span></a></div>';
+      } else if (id) {
+        h += '<div class="j2-hexenv-card is-unavailable"><strong class="j2-hexenv-gone">' + esc(t('journey2_hexenv_unavailable')) + '</strong>' +
+          '<span class="j2-hexenv-id">' + esc(t('journey2_hexenv_stored_id')) + ': <code>' + esc(id) + '</code></span>' +
+          (list.length ? '<span class="j2-insp-muted">' + esc(t('journey2_hexenv_gone')) + '</span>' : '') + '</div>';
+      } else if (list.length) {
+        h += '<p class="j2-insp-p j2-insp-muted">' + esc(t('journey2_hexenv_none')) + '</p>';
+      }
+      if (list.length || id) {
+        h += '<div class="j2-hexenv-actions">';
+        if (list.length) h += '<button type="button" class="btn btn-sm' + (id ? '' : ' btn-primary') + '" data-j2-hexenv="' + (id ? 'change' : 'choose') + '" aria-expanded="' + open + '" aria-controls="j2-hexenv-picker"' + dis + '>' + esc(t(id ? 'journey2_hexenv_change' : 'journey2_hexenv_choose')) + '</button>';
+        if (id) h += '<button type="button" class="btn btn-sm" data-j2-hexenv="detach"' + dis + '>' + esc(t('journey2_hexenv_detach')) + '</button>';
+        h += '</div>';
+      }
+      if (open) h += '<ul class="j2-envs-list j2-hexenv-list" id="j2-hexenv-picker" role="group" aria-label="' + esc(t('journey2_hexenv_picker')) + '">' + list.map((e, i) => envRowHtml(e, e.id === id, i)).join('') + '</ul>';
+      I.hexEnvBody.innerHTML = h;
+    }
+
+    /** Empties the Hex Environment section: a closed inspector (and so Player Preview) keeps no assignment markup, ids or controls in the DOM. */
+    function clearHexEnvironment() {
+      envPicker = null;
+      if (!ui.i || !ui.i.hexEnvBody) return;
+      ui.i.hexEnvSec.hidden = true;
+      ui.i.hexEnvBody.innerHTML = '';
+      ui.i.hexEnvBody.removeAttribute('data-sig');
+    }
+
+    function hexEnvButton(kind) { return ui.i.hexEnvBody.querySelector('[data-j2-hexenv="' + kind + '"]'); }
+
+    /** Opens/closes the inline picker. Pure UI state: no command, no history, no autosave. */
+    function setEnvPicker(open, o) {
+      const tile = inspector.tileId ? Model.derive(doc).byId.get(inspector.tileId) : null;
+      if (!tile || previewMode) { envPicker = null; return; }
+      envPicker = open ? { tileId: tile.id } : null;
+      renderInspector();
+      positionInspector();
+      if (o && o.focus) { const b = hexEnvButton(tile.environmentId ? 'change' : 'choose'); if (b) b.focus({ preventScroll: true }); }
+    }
+
+    function onHexEnvClick(btn) {
+      const kind = btn.getAttribute('data-j2-hexenv');
+      const tile = inspector.tileId ? Model.derive(doc).byId.get(inspector.tileId) : null;
+      const b = tile ? Model.batchById(doc, tile.batchId) : null;
+      if (!tile || !b) return;
+      if (kind === 'choose' || kind === 'change') { setEnvPicker(!envPicker, { focus: true }); return; }
+      if (kind === 'detach') {
+        const r = dispatch({ type: 'setTileEnvironment', tileId: tile.id, environmentId: null }, 'detachEnvironment', true);
+        if (!r.ok) { hint(t('journey2_hexenv_failed')); return; }
+        envPicker = null; renderInspector();
+        announce(t('journey2_hexenv_live_detached'));
+        const c = hexEnvButton('choose'); if (c) c.focus({ preventScroll: true });
+        return;
+      }
+      if (kind === 'assign') {
+        const id = btn.getAttribute('data-env-id'), pick = hexEnvironmentList(b).find(e => e.id === id);
+        if (!pick) return;                                    // only what the biome adapter currently offers can be assigned
+        const had = !!tile.environmentId;
+        const r = dispatch({ type: 'setTileEnvironment', tileId: tile.id, environmentId: pick.id }, had ? 'changeEnvironment' : 'assignEnvironment', true);
+        if (!r.ok) { hint(t('journey2_hexenv_failed')); return; }
+        envPicker = null; renderInspector(); positionInspector();
+        announce(fill(had ? 'journey2_hexenv_live_changed' : 'journey2_hexenv_live_assigned', { name: pick.name }));
+        const l = ui.i.hexEnvBody.querySelector('[data-j2-hexenv-link]'); if (l) l.focus({ preventScroll: true });
       }
     }
 
@@ -1014,6 +1124,7 @@
       closeSanctuary({ quiet: true });
       announceInspector(next);
       inspector = next;
+      envPicker = null;
       sel.tileId = tileId;
       if (diagOpen) setDiagnostics(false);
       afterInspectorChange();
@@ -1027,6 +1138,7 @@
       announceInspector(next);
       const keepSel = inspector.tileId && sel.tileId === inspector.tileId;
       inspector = next;
+      envPicker = null;
       if (keepSel) sel.tileId = null;                    // the strong outline belonged to the inspected hex of the previous region
       if (diagOpen) setDiagnostics(false);
       afterInspectorChange();
@@ -1045,9 +1157,11 @@
       const o = opts || {};
       const was = inspector;
       inspector = Model.NO_INSPECTION;
+      envPicker = null;
       if (was.tileId && sel.tileId === was.tileId) sel.tileId = null;
       if (ui.inspector) { ui.inspector.hidden = true; ui.inspector.style.transform = ''; }
       inspectorShown = null;
+      clearHexEnvironment();
       renderSelection();
       renderInventory(false);
       if (!o.quiet) announce(t('journey2_live_inspector_closed'));
@@ -1072,7 +1186,7 @@
     function renderInspector() {
       if (!ui.inspector) return;
       const b = inspectorOpen() ? Model.batchById(doc, inspector.batchId) : null;
-      if (!b) { ui.inspector.hidden = true; inspectorShown = null; return; }
+      if (!b) { ui.inspector.hidden = true; inspectorShown = null; clearHexEnvironment(); return; }
       const I = ui.i, idx = doc.batches.indexOf(b), c = Model.derive(doc).counts.get(b.id), sym = symbolFor(b);
       ui.inspector.hidden = false;
       if (sym && I.img.getAttribute('data-sym') !== sym.id) { I.img.src = sym.path; I.img.setAttribute('data-sym', sym.id); }
@@ -1101,6 +1215,8 @@
         I.terrainName.textContent = ''; I.terrainText.hidden = true; I.examples.hidden = true; I.enc.innerHTML = ''; I.rumor.textContent = '';
         I.daysSize.textContent = fill('journey2_hexes_n', { n: n(b.quantity) });
       }
+      const hexTile = inspector.source === 'map' && inspector.tileId ? Model.derive(doc).byId.get(inspector.tileId) : null;
+      renderHexEnvironment(b, hexTile);
       renderSuggestedEnvironments(b, inspectorShown !== b.id);
       // the anchored hex's placement info + the one action on it (a card-opened inspector has no anchor, so no footer)
       const tile = inspector.tileId ? Model.derive(doc).byId.get(inspector.tileId) : null;
@@ -1259,6 +1375,7 @@
       if (previewMode) {
         // Player Preview: the GM layer is emptied (not hidden) and only the projection is produced
         ui.g.tiles.innerHTML = '';
+        renderEnvMarks();
         playerProjection = Projection.buildPlayerProjection(doc, data.ctx);
         ui.g.player.innerHTML = overlayMarkup(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark } })));
         renderEchoes();
@@ -1267,9 +1384,33 @@
       }
       ui.g.player.innerHTML = '';
       renderEchoes();
+      renderEnvMarks();
       const byBatch = new Map(doc.batches.map(b => [b.id, b]));
       ui.g.tiles.innerHTML = overlayMarkup(doc.tiles.map(tile => { const c = Geo.parseCellId(tile.cell); return { q: c.q, r: c.r, spec: specOfBatch(byBatch.get(tile.batchId)) }; }));
       renderPerimeter();
+    }
+
+    /**
+     * GM-only environment markers: one small card glyph in the upper-left corner of every placed hex that carries an `environmentId`.
+     * Decorative (aria-hidden, no pointer events) and never drawn in Player Preview — the player projection does not carry the id at all.
+     * Redrawn only when the tiles array changed, so an unrelated edit (fog, a sanctuary) never rebuilds it.
+     */
+    function renderEnvMarks() {
+      const g = ui.g && ui.g.envmarks;
+      if (!g || !doc) return;
+      if (previewMode) { g.innerHTML = ''; envMarksDrawn = null; hideEnvTip(); return; }
+      if (envMarksDrawn === doc.tiles) return;
+      envMarksDrawn = doc.tiles;
+      hideEnvTip();
+      let h = '';
+      for (const tile of doc.tiles) {
+        if (!tile.environmentId) continue;
+        const c = Geo.parseCellId(tile.cell), ctr = data.grid.cellCenter(c.q, c.r);
+        const corner = data.grid.cellCorners(c.q, c.r).filter(p => p[0] < ctr[0] - 1 && p[1] < ctr[1]).sort((a, b) => a[1] - b[1])[0] || [ctr[0] - 8, ctr[1] - 8];
+        const x = ctr[0] + (corner[0] - ctr[0]) * 0.55 - 3.2, y = ctr[1] + (corner[1] - ctr[1]) * 0.55 - 4.2;
+        h += '<g class="j2-envmark" transform="translate(' + fmt(x, 1) + ' ' + fmt(y, 1) + ')"><rect width="6.4" height="8.4" rx="1.1"/><path d="M1.7 2.6h3M1.7 4.3h3M1.7 6h1.8"/></g>';
+      }
+      g.innerHTML = h;
     }
 
     /**
@@ -1744,6 +1885,7 @@
       if (mode) {
         cancelTransient();
         cancelFogStroke();
+        hideEnvTip();
         closeMenus();
         if (diagOpen) setDiagnostics(false);
         closeInspector({ quiet: true });
@@ -1935,7 +2077,7 @@
       listen(vp, 'pointerup', onViewportUp);
       listen(vp, 'pointercancel', onViewportCancel);
       listen(vp, 'lostpointercapture', onViewportCancel);
-      listen(vp, 'pointerleave', () => { pointer.inside = false; hoverCell = null; hoverMarker = null; if (fogHover) { fogHover = null; scheduleFogPaint(); } if (diagOpen) renderSelection(); updateReadouts(); if (tr && tr.kind === 'armed') updatePreview(); });
+      listen(vp, 'pointerleave', () => { pointer.inside = false; hideEnvTip(); hoverCell = null; hoverMarker = null; if (fogHover) { fogHover = null; scheduleFogPaint(); } if (diagOpen) renderSelection(); updateReadouts(); if (tr && tr.kind === 'armed') updatePreview(); });
       listen(vp, 'wheel', onWheel, { passive: false });
       listen(vp, 'keydown', onViewportKey);
       listen(vp, 'keyup', e => { if (e.key === ' ') { spaceDown = false; vp.classList.remove('is-space'); } });
@@ -2474,6 +2616,7 @@
       else if (b.hasAttribute('data-j2-redo')) redo();
       else if (b.hasAttribute('data-j2-return')) returnSelected();
       else if (b.hasAttribute('data-j2-env-toggle')) toggleEnvironments();
+      else if (b.hasAttribute('data-j2-hexenv')) onHexEnvClick(b);
       else if (b.hasAttribute('data-j2-menu-btn')) toggleMenu(b);
       else if (b.hasAttribute('data-j2-act')) { closeMenus(); runAction(b.getAttribute('data-j2-act')); }
       else if (b.hasAttribute('data-j2-layer')) toggleLayer(b.getAttribute('data-j2-layer'), b);
@@ -2852,12 +2995,30 @@
       return best;
     }
 
+    /** Neutral GM hover over a hex with an assignment: the Environment's current-language name in the shared tooltip. Never while a drag, fog tool, placement or preview is active. */
+    function hideEnvTip() { if (envTipKey) { envTipKey = null; if (ui.tip) ui.tip.hidden = true; } }
+
+    function updateEnvTip(c) {
+      const tile = !tr && !pan && !fogStroke && !fogTool && !previewMode && !placeMode && pointer.inside && !sanctuaryAtScreen(pointer.x, pointer.y) ? Model.derive(doc).occupancy.get(Geo.cellId(c.q, c.r)) : null;
+      if (!tile || !tile.environmentId) { if (envTipKey) { envTipKey = null; ui.tip.hidden = true; } return; }
+      const b = Model.batchById(doc, tile.batchId), found = b ? hexEnvironmentList(b).find(e => e.id === tile.environmentId) : null;
+      ui.tip.innerHTML = '<strong></strong><span></span>';
+      ui.tip.children[0].textContent = found ? found.name : t('journey2_hexenv_unavailable');
+      ui.tip.children[1].textContent = '';
+      ui.tip.classList.remove('is-bad', 'is-warn');
+      ui.tip.hidden = false;
+      envTipKey = tile.id;
+      const x = Math.min(window.innerWidth - ui.tip.offsetWidth - 8, pointer.cx + 18), y = Math.min(window.innerHeight - ui.tip.offsetHeight - 8, pointer.cy + 18);
+      ui.tip.style.transform = 'translate(' + Math.max(8, x) + 'px,' + Math.max(8, y) + 'px)';
+    }
+
     function updateHover() {
       if (!data || !doc) return;
       const w = Geo.screenToWorld(cam, pointer.x, pointer.y);
       const c = data.grid.worldToCell(w[0], w[1]);
       ui.viewport.classList.toggle('is-over-tile', !editLocked && !previewMode && !fogTool && Model.derive(doc).occupancy.has(Geo.cellId(c.q, c.r)));
       ui.viewport.classList.toggle('is-over-sanctuary', !fogTool && !!sanctuaryAtScreen(pointer.x, pointer.y));
+      updateEnvTip(c);
       if (!diagOpen) return;
       hoverCell = data.grid.isValid(c.q, c.r) ? c : null;
       hoverMarker = markerAt(w[0], w[1]);

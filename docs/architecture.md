@@ -1245,6 +1245,19 @@ Run all of them with `node --test tests/*.test.js`.
     `buildPlayerProjection` is a field whitelist with no Echo field, so Player Preview and the future print
     (which must keep drawing the projection only) cannot show them; `tests/journey2-soul-echoes.test.js`
     asserts this. The GM JSON backup does include them.
+- **Hex Environment (PD-025):**
+  - *Document.* Optional `tile.environmentId` (`Model.isEnvironmentId`: `/^[a-z0-9]+(?:-[a-z0-9]+)*$/`, <= 64 chars). It is in
+    `TILE_KEYS`, validated on load/import and copied by `validateDocument`; `move` spreads the tile so the id travels, `place` creates
+    tiles without it, `returnTile` / `deleteBatch` drop it with the tile. Unknown-but-well-formed ids are preserved.
+  - *Command.* `setTileEnvironment { tileId, environmentId | null }` (assign / replace / detach in one entry; same id is a no-op).
+  - *View.* `renderHexEnvironment()` fills the inspector's `[data-j2-i="hexEnvSec"]` only for `inspector.source === 'map'`; the list is
+    `hexEnvironmentList(b)` = `environmentsFor(biome)` (the app.js adapter; none when overtaken) and rows reuse its `href`, so the
+    overlay stays route-driven and the map is never re-rendered. The body is rebuilt only when its signature changes, so a focused link
+    and the picker's scroll survive. `envPicker` is transient view state (cleared on any inspector change, Undo/Redo). Markers:
+    `renderEnvMarks()` draws the `envmarks` layer (above the glyph layer, below the perimeter) from `doc.tiles` only when the array
+    changed; Player Preview empties it. `updateEnvTip()` reuses `[data-j2-tip]` for neutral hover.
+  - *GM-only.* `buildPlayerProjection` builds overlays from an explicit field list, so `environmentId` can never reach Player Preview or
+    the future print; `tests/journey2-hex-environment.test.js` asserts it. Browser checks: `scripts/journey2/lib/hex-environment-checks.js`.
 - **Sanctuaries (PD-023):**
   - *Document.* Optional `doc.sanctuaries = { entries: [...] }`, one entry per sanctuary stable id (sorted), each
     `{ anchorId, name, trade, quirk, crisis, drive, politics: { rolls: [1-4 distinct of 1-7] }, size, population }`

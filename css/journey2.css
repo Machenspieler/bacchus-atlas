@@ -616,3 +616,25 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .sk-j2-line.wide { width: 80%; }
 .sk-j2-btn { height: var(--h-md); }
 .sk-j2-block { flex: 1 1 auto; }
+
+/* Hex Environment (Region Inspector, map-opened only): the assigned catalog environment of the selected hex. */
+.j2-hexenv[hidden], .j2-hexenv-actions:empty { display: none; }
+.j2-hexenv-card { display: grid; gap: 2px; padding: var(--s-2) var(--s-3); border: 1px solid var(--hope-border); border-radius: var(--r-sm); background: var(--hope-wash); }
+.j2-hexenv-tier { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); }
+.j2-hexenv-link { padding: 0; font-size: var(--fs-md); font-weight: 600; color: var(--hope-soft); }
+.j2-hexenv-link:hover { background: transparent; text-decoration: underline; }
+.j2-hexenv-ext { margin-left: var(--s-1); color: var(--muted); }
+.j2-hexenv-card.is-unavailable { border-color: var(--line); background: transparent; }
+.j2-hexenv-gone { color: var(--parchment); }
+.j2-hexenv-id { font-size: var(--fs-xs); color: var(--muted); }
+.j2-hexenv-id code { font-family: var(--font-mono); overflow-wrap: anywhere; }
+.j2-hexenv-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-2); }
+.j2-hexenv-list { margin-top: var(--s-2); max-height: 14rem; overflow-y: auto; overscroll-behavior: contain; }
+.j2-hexenv-row { display: flex; align-items: center; gap: var(--s-2); padding-right: var(--s-2); }
+.j2-hexenv-row .j2-env-link { flex: 1 1 auto; min-width: 0; }
+.j2-hexenv-row .btn { flex: none; }
+.j2-hexenv-row.is-current { background: var(--hope-wash); }
+.j2-hexenv-assigned { flex: none; font-size: var(--fs-xs); color: var(--hope-soft); }
+/* GM-only map marker for a hex that carries an environment: a tiny card glyph, decorative, never interactive. */
+.j2-overlay .j2-envmark rect { fill: var(--hope); stroke: var(--ink); stroke-width: 0.9; }
+.j2-overlay .j2-envmark path { fill: none; stroke: var(--ink); stroke-width: 0.8; stroke-linecap: round; }

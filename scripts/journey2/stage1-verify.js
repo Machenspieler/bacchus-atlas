@@ -1071,7 +1071,7 @@ async function main() {
     });
     await check('insp.03.content-is-region-level-and-has-no-dice-reroll-keep-or-discard', async () => {
       const x = await inspTexts();
-      return { ok: x.title === 'Forest' && /Region #1/.test(x.sub) && /Terrain 3/.test(x.text) && /\d+ days? per hex/.test(x.text) && /6 hexes/.test(x.text) && /5 placed/.test(x.text) && /1 remaining/.test(x.text) && x.enc === 1 && /^Encounter\|Rumor\|Suggested environments( · \d+)?$/.test(x.h4.join('|')) && x.buttons === 3 && !/\bd\d+\b|d8\s*\+\s*d6|reroll|re-roll|keep|discard/i.test(x.text), detail: x };
+      return { ok: x.title === 'Forest' && /Region #1/.test(x.sub) && /Terrain 3/.test(x.text) && /\d+ days? per hex/.test(x.text) && /6 hexes/.test(x.text) && /5 placed/.test(x.text) && /1 remaining/.test(x.text) && x.enc === 1 && /^Hex Environment\|Encounter\|Rumor\|Suggested environments( · \d+)?$/.test(x.h4.join('|')) && x.buttons === 4 && !/\bd\d+\b|d8\s*\+\s*d6|reroll|re-roll|keep|discard/i.test(x.text), detail: x };
     });
     await check('insp.04.the-whole-region-gets-a-soft-outline-and-only-the-clicked-hex-the-strong-one', async () => {
       const r = await pg.evaluate(() => ({ region: document.querySelector('[data-j2-g="select"] .j2-region-hl') && document.querySelector('[data-j2-g="select"] .j2-region-hl').getAttribute('d').split('M').length - 1, strong: document.querySelectorAll('[data-j2-g="select"] .j2-tile-sel').length, card: document.querySelector('.j2-card[data-batch]').closest('.j2-cards') && [...document.querySelectorAll('.j2-card.is-inspected')].map(c => c.getAttribute('data-batch')) }));
@@ -1264,7 +1264,7 @@ async function main() {
       await pg.click('[data-lang="ru"]'); await pg.waitForTimeout(250);
       const s = await state(pg), x = await inspTexts();
       const btn = await cardOf(pg, B).locator('[data-j2-inspect]').getAttribute('title');
-      const r = { ok: s.inspector.open && s.inspector.batchId === B && /Регион №/.test(x.sub) && x.title === 'Горное' && /Местность 1/.test(x.text) && /^Встреча\|Слух\|Подходящие окружения( · \d+)?$/.test(x.h4.join('|')) && btn === 'Осмотреть регион' && !/[A-Za-z]{5,}/.test(x.text.replace(/\bterrain\b/g, '')), detail: { x: x.sub, h4: x.h4, title: x.title, btn, latin: x.text.match(/[A-Za-z]{5,}/g) } };
+      const r = { ok: s.inspector.open && s.inspector.batchId === B && /Регион №/.test(x.sub) && x.title === 'Горное' && /Местность 1/.test(x.text) && /^Окружение гекса\|Встреча\|Слух\|Подходящие окружения( · \d+)?$/.test(x.h4.join('|')) && btn === 'Осмотреть регион' && !/[A-Za-z]{5,}/.test(x.text.replace(/\bterrain\b/g, '')), detail: { x: x.sub, h4: x.h4, title: x.title, btn, latin: x.text.match(/[A-Za-z]{5,}/g) } };
       await pg.click('[data-lang="en"]'); await pg.waitForTimeout(250);
       return r;
     });
@@ -1298,6 +1298,8 @@ async function main() {
   await require('./lib/fog-checks.js').runFogChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc, full: true });
   /* Phase D: prepared-map connectivity, the Start-separate-area confirmation, derived region boundaries and the fog without cut-outs */
   await require('./lib/topology-checks.js').runTopologyChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc });
+  /* Per-hex Environment assignment (PD-025): inline picker, reused overlay, GM-only marker, Player Preview, tile lifecycle */
+  await require('./lib/hex-environment-checks.js').runHexEnvironmentChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc });
 
   /* ===== G. hygiene ===== */
   const relevant = logs.filter(l => !/favicon|fonts\.g(oogleapis|static)\.com|ERR_INTERNET_DISCONNECTED|net::ERR_(NAME_NOT_RESOLVED|CONNECTION|FAILED)/.test(l));
