@@ -222,8 +222,10 @@ test('view: the tint layer is aria-hidden, no events, under the symbols, with no
   assert.match(view, /<g class="j2-biome-layer" pointer-events="none" aria-hidden="true">/);
   const order = view.match(/return \(cover \? [^\n]+/)[0];
   assert.ok(order.indexOf('wash') > order.indexOf('cover') && order.indexOf('wash') < order.indexOf('outlines') && order.indexOf('outlines') < order.indexOf('body'), 'cover, tint, outlines, then symbols');
-  assert.match(css, /\.j2-biome-tint\s*\{[^}]*stroke:\s*none[^}]*pointer-events:\s*none/);
-  assert.doesNotMatch(css.match(/\.j2-biome-tint\s*\{[^}]*\}/)[0], /gradient|filter|animation|drop-shadow/);
+  const rule = css.match(/\.j2-biome-tint[^{]*\{[^}]*\}/)[0];
+  assert.match(rule, /\.j2-biome-halo/, 'the symbol halo is washed with the same tint');
+  assert.match(rule, /stroke:\s*none[^}]*pointer-events:\s*none/);
+  assert.doesNotMatch(rule, /gradient|filter|animation|drop-shadow/);
   assert.doesNotMatch(view, /markers[^\n]*tint|sanct[^\n]*Tint\./i);
 });
 

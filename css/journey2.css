@@ -363,7 +363,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 /* committed terrain: monochrome — the base geography stays visible; gold is only selection/valid preview, red an invalid preview */
 .j2-tile-cover { fill: #fff; fill-opacity: 0.95; stroke: none; }
 /* Biome Tint (PD-026): a faint wash inside the hex — fill and fill-opacity come from js/journey2-biome-tint.js; no stroke, no glow, no events */
-.j2-overlay .j2-biome-tint { stroke: none; pointer-events: none; }
+.j2-overlay .j2-biome-tint, .j2-overlay .j2-biome-halo { stroke: none; pointer-events: none; }
 .j2-tile-hex { fill: none; stroke: var(--ink); stroke-opacity: 0.55; stroke-width: 1; }
 .j2-overlay .j2-tile-halo { fill: #fff; fill-opacity: 0.7; stroke: none; }
 .j2-tile-sym, .j2-pvt-sym { image-rendering: auto; }

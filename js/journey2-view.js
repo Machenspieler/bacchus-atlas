@@ -1329,13 +1329,16 @@
     }
 
     /** Committed-tile markup: one monochrome symbol, terrain dots and (when blighted) a blight mark. `cls` selects committed/preview. */
-    function tileMarkup(q, r, spec, cls, bodyOnly) {
+    function tileMarkup(q, r, spec, cls, bodyOnly, tint) {
       const L = layoutFor(q, r, spec);
       let h = '';
       if (!L) return h;
       if (L.lay.hidden) return h;       // no clear space: the glyph is withheld (never drawn over a marker); the tile stays, outlined
       const box = L.lay.boxPx, g = L.lay.glyphRectPx;
       if (!bodyOnly) h += '<rect class="' + cls + '-halo" x="' + fmt(box[0], 1) + '" y="' + fmt(box[1], 1) + '" width="' + fmt(box[2], 1) + '" height="' + fmt(box[3], 1) + '" rx="3"/>';
+        // the white halo would otherwise punch a pale patch into the wash: lay the same faint tint over it so the box matches its hex
+        const def = tint ? Tint.definitionOf(tint) : null;
+        if (def) h += '<rect class="j2-biome-halo" pointer-events="none" aria-hidden="true" fill="' + def.color + '" fill-opacity="' + def.opacity + '" x="' + fmt(box[0], 1) + '" y="' + fmt(box[1], 1) + '" width="' + fmt(box[2], 1) + '" height="' + fmt(box[3], 1) + '" rx="3"/>';
       const gx = g[0] + (L.boxW - L.gw) / 2;
       h += '<image class="' + cls + '-sym" href="' + esc(L.sym.path) + '" x="' + fmt(gx, 1) + '" y="' + fmt(g[1], 1) + '" width="' + L.gw + '" height="' + L.gh + '" preserveAspectRatio="xMidYMid meet"/>';
       for (const d of L.lay.dotsPx) h += '<circle class="' + cls + '-dot" cx="' + fmt(d[0], 1) + '" cy="' + fmt(d[1], 1) + '" r="1.7"/>';
@@ -1359,7 +1362,7 @@
         const L = layoutFor(e.q, e.r, e.spec);
         if (L && L.lay.hidden) quiet += hexPath(e.q, e.r); else outlines += hexPath(e.q, e.r);
         if (overlapsBuiltInLabel(e.q, e.r)) cover += hexPath(e.q, e.r);
-        body += tileMarkup(e.q, e.r, e.spec, 'j2-tile');
+        body += tileMarkup(e.q, e.r, e.spec, 'j2-tile', false, e.tint);
       }
       // order inside the layer: label cover, biome tint (aria-hidden, no events), hex outlines, then the black symbols / dots / blight marks
       let wash = '';
