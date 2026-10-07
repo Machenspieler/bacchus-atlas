@@ -354,20 +354,19 @@
     };
 
     /**
-     * Soul Echo crystal (PD-022), drawn in the SVG overlay at a sanctuary's icon centre. Gradients live in <defs>; the shape is inlined per Echo.
+     * Soul Echo crystal (PD-022): a small floating diamond with a pale core and radiating rays, drawn right above the sanctuary icon, not tied to any hex. Gradients live in <defs>; the shape is inlined per Echo.
      * Fixed blues (a map object, not UI chrome) with a dark outline so it reads on the parchment in both themes; the shimmer is CSS only.
      */
     const ECHO_DEFS =
       '<radialGradient id="j2-echo-glow"><stop offset="0" stop-color="#9fe0ff" stop-opacity=".85"/><stop offset=".55" stop-color="#4a90ff" stop-opacity=".35"/><stop offset="1" stop-color="#2a5fd6" stop-opacity="0"/></radialGradient>' +
-      '<linearGradient id="j2-echo-l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e8f9ff"/><stop offset="1" stop-color="#4fb0ff"/></linearGradient>' +
-      '<linearGradient id="j2-echo-r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6cb6ff"/><stop offset="1" stop-color="#1f4fc4"/></linearGradient>';
+      '<linearGradient id="j2-echo-body" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4db4ff"/><stop offset="1" stop-color="#1b5fd0"/></linearGradient>';
+
+    const ECHO_LIFT = 30;                                   // world px from the icon's top edge to the crystal's centre (rays included, they stay clear of the icon)
 
     /** The crystal shape, centred on (0,0): inlined once per Echo (CSS does not reach a <use> clone). */
     const ECHO_CRYSTAL =
-      '<path class="j2-echo-shard" d="M-12 18-19 1-26 18z" fill="url(#j2-echo-l)"/><path class="j2-echo-shard" d="M12 18 19 4 25 18z" fill="url(#j2-echo-r)"/>' +
-      '<path class="j2-echo-facet" d="M0-34-12-16-9 14 0 24z" fill="url(#j2-echo-l)"/><path class="j2-echo-facet" d="M0-34 12-16 9 14 0 24z" fill="url(#j2-echo-r)"/>' +
-      '<path class="j2-echo-top" d="M0-34-12-16 0-8 12-16z"/>' +
-      '<path class="j2-echo-spark" d="M11-24l1.6 4.4 4.4 1.6-4.4 1.6L11-12l-1.6-4.4L5-18l4.4-1.6z"/>';
+      '<g class="j2-echo-rays">' + [0, 45, 90, 135, 180, 225, 270, 315].map((a, k) => '<g transform="rotate(' + a + ')"><line class="j2-echo-ray" style="--j2-ray-i:' + k + '" x1="0" y1="-21" x2="0" y2="-29"/></g>').join('') + '</g>' +
+      '<g class="j2-echo-bob"><path class="j2-echo-body" d="M0-15 8.5 0 0 15-8.5 0z" fill="url(#j2-echo-body)"/><path class="j2-echo-core" d="M0-8 3.8 0 0 8-3.8 0z"/></g>';
 
 
     function buildSurface() {
@@ -1286,8 +1285,9 @@
       for (const id of doc.soulEchoes.anchorIds) {
         const s = at.get(id);
         if (!s) continue;
-        const x = fmt(s.x, 1), y = fmt(s.y, 1);
-        h += '<g class="j2-echo" data-echo="' + esc(id) + '" style="--j2-echo-i:' + (i++) + '"><circle class="j2-echo-glow" cx="' + x + '" cy="' + y + '" r="84"/><g transform="translate(' + x + ' ' + fmt(s.y - 14, 1) + ') scale(1.8)">' + ECHO_CRYSTAL + '</g></g>';
+        // right above the printed icon (its centre line, just over its top edge), independent of the hex grid, so the icon itself stays clear
+        const x = fmt(s.x, 1), y = fmt(s.top - ECHO_LIFT, 1);
+        h += '<g class="j2-echo" data-echo="' + esc(id) + '" style="--j2-echo-i:' + (i++) + '"><circle class="j2-echo-glow" cx="' + x + '" cy="' + y + '" r="34"/><g transform="translate(' + x + ' ' + y + ') scale(1.25)">' + ECHO_CRYSTAL + '</g></g>';
       }
       ui.g.echoes.innerHTML = h;
       echoDrawn = doc.soulEchoes;

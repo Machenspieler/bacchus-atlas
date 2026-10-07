@@ -1208,7 +1208,9 @@ Run all of them with `node --test tests/*.test.js`.
     no transient state. `placeSoulEchoes()` plans once and dispatches one command (confirming first when
     Echoes exist); `confirmClearSoulEchoes()` confirms, then dispatches `[]`. `renderEchoes()` draws
     `<g data-j2-g="echoes" pointer-events="none">` (above `fogstroke`, below `select`; the crystal is inlined
-    per Echo because CSS does not reach a `<use>` clone) and redraws only when `doc.soulEchoes` changed.
+    per Echo because CSS does not reach a `<use>` clone) and redraws only when `doc.soulEchoes` changed. Each
+    crystal is positioned from `ctx.sanctuaries[i]` — the icon's `x` and `top` edge minus `ECHO_LIFT` — never from
+    a hex, so it sits right above the icon wherever the icon is.
   - *GM-only.* In Player Preview `renderEchoes()` empties the layer and `applyPreviewChrome` hides the group.
     `buildPlayerProjection` is a field whitelist with no Echo field, so Player Preview and the future print
     (which must keep drawing the projection only) cannot show them; `tests/journey2-soul-echoes.test.js`

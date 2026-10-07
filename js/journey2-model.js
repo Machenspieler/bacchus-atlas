@@ -107,7 +107,7 @@
     /* The 56 real sanctuaries (never the HORIZON / MARROGATE destinations), west to east: the only places a Soul Echo can be. */
     const sanctuaries = ((anchorsDoc && anchorsDoc.anchors) || [])
       .filter(a => a && a.kind === 'sanctuary' && typeof a.stableId === 'string' && Array.isArray(a.worldPixelAnchor))
-      .map(a => ({ id: a.stableId, x: a.worldPixelAnchor[0], y: a.worldPixelAnchor[1] }))
+      .map(a => ({ id: a.stableId, x: a.worldPixelAnchor[0], y: a.worldPixelAnchor[1], top: a.iconProtectionArea.rectPx[1] }))
       .sort((a, b) => a.x - b.x || a.y - b.y || (a.id < b.id ? -1 : 1));
     return {
       grid: grid, templateId: template.templateId, templateVersion: template.schemaVersion,

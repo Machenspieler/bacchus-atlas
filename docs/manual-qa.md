@@ -477,7 +477,7 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       revealed hexes; the base map, labels and sanctuary icons are unchanged. Pan and zoom work, clicks do
       nothing, Ctrl+Z does nothing. **Back to GM** (or Esc) restores the previous pan/zoom, the sidebar state and
       the Fog preference without reopening the inspector or adding an Undo entry. Reload leaves the preview.
-- [ ] Soul Echoes (GM only, PD-022): **Soul Echoes** places nine blue crystals on nine different sanctuaries
+- [ ] Soul Echoes (GM only, PD-022): **Soul Echoes** places nine small animated blue diamonds, each right above its sanctuary icon (the icon stays visible), on nine different sanctuaries
       (never HORIZON/MARROGATE), one in each of nine west-to-east bands, spread over the whole map, and the
       chip reads `9 / 9`; pressing it again asks "Place new Soul Echoes?" (Cancel is focused) and replaces them;
       **Remove Echoes** is disabled at `0 / 9`, otherwise asks first and removes all. Each action is one Undo entry
