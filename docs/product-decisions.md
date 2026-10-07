@@ -717,11 +717,11 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   confined to one latitude and not collinear) and commits those exact ids as **one** `setSoulEchoes` command
   — one Undo entry, and Redo never re-rolls. When Echoes already exist the button asks before replacing them
   (Cancel focused). **Remove Echoes** clears them all (confirmed, undoable, disabled when there are none).
-- **Decision (look):** a small blue floating diamond with a pale core and eight radiating rays, drawn
+- **Decision (look):** a small blue floating diamond with a pale core, drawn
   **right above the printed sanctuary icon** (centred on the icon, just over its top edge; deliberately **not**
   tied to a hex) so the icon stays visible, in a dedicated pointer-transparent SVG layer above the fog and
-  below selection; the bobbing, pulsing rays and glow are CSS and are disabled under
-  `prefers-reduced-motion`. A count chip (`n / 9`) makes the state readable without colour.
+  below selection; the bobbing and the pulsing glow are CSS and are disabled under
+  `prefers-reduced-motion`.
 - **Decision (players):** Echoes are a secret. The layer is **emptied** (not CSS-hidden) in Player Preview, the
   toolbar group is hidden there, and `buildPlayerProjection` has no field for them — so neither Player Preview
   nor a future player print can show them. The future print renderer must keep using the projection only.

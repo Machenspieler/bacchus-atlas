@@ -215,7 +215,7 @@ test('view: the echoes are never drawn from the diagnostics layer toggles and th
 test('i18n: every Soul Echoes string exists in en and ru with identical placeholders, and the view has no hard-coded copy', () => {
   const i18n = JSON.parse(read('data/i18n.json'));
   const keys = Object.keys(i18n.en).filter(k => /^journey2_(echo_|live_echoes_)/.test(k));
-  assert.ok(keys.length >= 15);
+  assert.ok(keys.length >= 14);
   for (const k of keys) {
     assert.ok(i18n.ru[k] && i18n.ru[k].length, 'ru missing ' + k);
     const ph = s => (s.match(/\{[a-z]+\}/g) || []).sort().join();

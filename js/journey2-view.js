@@ -354,18 +354,17 @@
     };
 
     /**
-     * Soul Echo crystal (PD-022): a small floating diamond with a pale core and radiating rays, drawn right above the sanctuary icon, not tied to any hex. Gradients live in <defs>; the shape is inlined per Echo.
+     * Soul Echo crystal (PD-022): a small floating diamond with a pale core, drawn right above the sanctuary icon, not tied to any hex. Gradients live in <defs>; the shape is inlined per Echo.
      * Fixed blues (a map object, not UI chrome) with a dark outline so it reads on the parchment in both themes; the shimmer is CSS only.
      */
     const ECHO_DEFS =
       '<radialGradient id="j2-echo-glow"><stop offset="0" stop-color="#9fe0ff" stop-opacity=".85"/><stop offset=".55" stop-color="#4a90ff" stop-opacity=".35"/><stop offset="1" stop-color="#2a5fd6" stop-opacity="0"/></radialGradient>' +
       '<linearGradient id="j2-echo-body" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4db4ff"/><stop offset="1" stop-color="#1b5fd0"/></linearGradient>';
 
-    const ECHO_LIFT = 30;                                   // world px from the icon's top edge to the crystal's centre (rays included, they stay clear of the icon)
+    const ECHO_LIFT = 26;                                   // world px from the icon's top edge to the diamond's centre (it is ~19 px tall at scale, so it clears the icon)
 
     /** The crystal shape, centred on (0,0): inlined once per Echo (CSS does not reach a <use> clone). */
     const ECHO_CRYSTAL =
-      '<g class="j2-echo-rays">' + [0, 45, 90, 135, 180, 225, 270, 315].map((a, k) => '<g transform="rotate(' + a + ')"><line class="j2-echo-ray" style="--j2-ray-i:' + k + '" x1="0" y1="-21" x2="0" y2="-29"/></g>').join('') + '</g>' +
       '<g class="j2-echo-bob"><path class="j2-echo-body" d="M0-15 8.5 0 0 15-8.5 0z" fill="url(#j2-echo-body)"/><path class="j2-echo-core" d="M0-8 3.8 0 0 8-3.8 0z"/></g>';
 
 
@@ -398,7 +397,6 @@
             <div class="j2-tb-group j2-tb-echo" role="group" data-j2-echo-group data-t-aria="journey2_echo_group">
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-echo-place data-t-title="journey2_echo_place_title"><span class="j2-ico" aria-hidden="true">${ICON.crystal}</span><span data-t="journey2_echo_place"></span></button>
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-echo-clear data-t-title="journey2_echo_clear_title"><span class="j2-ico" aria-hidden="true">${ICON.trash}</span><span data-t="journey2_echo_clear"></span></button>
-              <span class="j2-echo-count" data-j2-echo-count></span>
             </div>
             <div class="j2-tb-group j2-tb-preview" data-j2-preview-bar hidden>
               <span class="j2-preview-flag" role="status"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><strong data-t="journey2_preview"></strong></span>
@@ -522,7 +520,6 @@
       ui.echoGroup = container.querySelector('[data-j2-echo-group]');
       ui.echoPlace = container.querySelector('[data-j2-echo-place]');
       ui.echoClear = container.querySelector('[data-j2-echo-clear]');
-      ui.echoCount = container.querySelector('[data-j2-echo-count]');
       ui.previewBtn = container.querySelector('[data-j2-preview]');
       ui.previewBar = container.querySelector('[data-j2-preview-bar]');
       ui.previewBack = container.querySelector('[data-j2-preview-back]');
@@ -1293,11 +1290,10 @@
       echoDrawn = doc.soulEchoes;
     }
 
-    /** Toolbar state of the Soul Echoes group: the n / 9 count, Remove disabled when there is nothing to remove, both disabled while edits are locked. */
+    /** Toolbar state of the Soul Echoes group: Remove disabled when there is nothing to remove, both disabled while edits are locked. */
     function updateEchoUi() {
       if (!ui.echoGroup || !doc) return;
       const count = doc.soulEchoes.anchorIds.length;
-      ui.echoCount.textContent = fill('journey2_echo_count', { n: n(count), max: n(Model.MAX_SOUL_ECHOES) });
       ui.echoPlace.disabled = editLocked;
       ui.echoClear.disabled = editLocked || !count;
     }

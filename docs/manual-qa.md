@@ -479,8 +479,8 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       the Fog preference without reopening the inspector or adding an Undo entry. Reload leaves the preview.
 - [ ] Soul Echoes (GM only, PD-022): **Soul Echoes** places nine small animated blue diamonds, each right above its sanctuary icon (the icon stays visible), on nine different sanctuaries
       (never HORIZON/MARROGATE), one in each of nine west-to-east bands, spread over the whole map, and the
-      chip reads `9 / 9`; pressing it again asks "Place new Soul Echoes?" (Cancel is focused) and replaces them;
-      **Remove Echoes** is disabled at `0 / 9`, otherwise asks first and removes all. Each action is one Undo entry
+      pressing it again asks "Place new Soul Echoes?" (Cancel is focused) and replaces them;
+      **Remove Echoes** is disabled when there are none, otherwise asks first and removes all. Each action is one Undo entry
       and Redo restores the same sanctuaries. Reload keeps them; the shimmer stops with reduced motion; crystals stay
       visible over the fog veil. **Player Preview** shows no crystal and no Echo button. The JSON backup round-trips them.
 - [ ] Export/Import (no toolbar button since the Backup menu was removed — use `Journey2View.debugApi().runAction('export')`

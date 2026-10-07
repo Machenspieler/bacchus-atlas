@@ -1204,7 +1204,7 @@ Run all of them with `node --test tests/*.test.js`.
     west-to-east bands, one random sanctuary per band, bounded retries until the picks are far apart, not on
     one latitude and not collinear (thresholds are fractions of the sanctuaries' bounding box); it returns the
     best attempt if none passes, so the button never fails.
-  - *View.* A toolbar group `[data-j2-echo-group]` (Place / Remove / `n / 9`) — one-shot buttons, not a tool, so
+  - *View.* A toolbar group `[data-j2-echo-group]` (Place / Remove) — one-shot buttons, not a tool, so
     no transient state. `placeSoulEchoes()` plans once and dispatches one command (confirming first when
     Echoes exist); `confirmClearSoulEchoes()` confirms, then dispatches `[]`. `renderEchoes()` draws
     `<g data-j2-g="echoes" pointer-events="none">` (above `fogstroke`, below `select`; the crystal is inlined
