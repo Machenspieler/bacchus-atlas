@@ -1309,8 +1309,8 @@ Run all of them with `node --test tests/*.test.js`.
 - *Rendering order.* `… fog, perimeter, fogstroke, sanct (GM rings), echoes, sanctlabels (Player Preview names), grid …, select, preview`.
   `renderSanctuaryLabels()` (called from both branches of `renderTiles`) fills `<g data-j2-g="sanctlabels">` — in Player Preview from the projection's
   `sanctuaryLabels`, on the GM map from `Journey2Projection.sanctuaryLabelsOf(doc)` (the same list; same layout, same hand lettering) — and the
-  visually-hidden `[data-j2-known-sanc]` list in Player Preview only; the GM view empties that list. The GM ring (`renderSanctuaryRings`) swaps its dot for a ringed eye
-  when the name is visible and redraws when the list identity changes.
+  visually-hidden `[data-j2-known-sanc]` list in Player Preview only; the GM view empties that list. The GM ring (`renderSanctuaryRings`) drops its dot entirely
+  when the name is visible (the lettered name is the cue) and redraws when the list identity changes.
 - *Overlay.* A "Player map" row between the header and the tables: status text + `aria-pressed` button (`toggleSanctuaryName`, dispatches with
   `keepTransient`, announces, keeps the overlay, camera and focus). `rerollSanctuary` confirms for a visible name then calls `commitReroll`.
 

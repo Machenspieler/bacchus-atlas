@@ -370,14 +370,13 @@ test('view: a visible sanctuary asks before reroll (rolling only after the confi
   assert.match(fn('generateSanctuaries', 'toggleSanctuaryName'), /journey2_sanc_replace_visible_msg/);
 });
 
-test('view: the GM ring layer marks a visible name with a non-colour shape, pointer-transparent, and never reuses the Echo or Environment markers', () => {
+test('view: the GM ring layer draws no marker for a visible name (the lettered name is the cue), pointer-transparent, and never reuses the Echo or Environment markers', () => {
   const rings = fn('renderSanctuaryRings', 'updateSanctuaryUi');
-  assert.match(rings, /is-name-visible/); assert.match(rings, /isSanctuaryNameRevealed/);
+  assert.doesNotMatch(rings, /is-name-visible|sanc-eye/); assert.match(rings, /isSanctuaryNameRevealed/);
   assert.match(rings, /names/, 'redrawn when the visibility list changes');
   assert.doesNotMatch(rings, /j2-echo|j2-envmark/);
   assert.match(view, /data-j2-g="sanct" pointer-events="none"/);
-  assert.match(css, /\.j2-sanc-eye-lid/);
-  assert.doesNotMatch(css.slice(css.indexOf('.j2-sanc-ring'), css.indexOf('.j2-sanc-ring') + 600), /#0b3b8c|#d6f1ff/, 'not the blue Echo palette');
+  assert.doesNotMatch(css, /\.j2-sanc-eye-lid/);
   const tip = fn('updateSanctuaryTip', 'updateHover');
   assert.match(tip, /journey2_sanc_tip_name_visible/);
   assert.doesNotMatch(tip, /soulEchoes|echo/i);

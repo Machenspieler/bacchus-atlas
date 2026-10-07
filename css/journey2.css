@@ -476,10 +476,6 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 /* a small dot at the foot of every generated sanctuary icon (a map object: fixed colours with a white edge read on the parchment in both themes) */
 .j2-viewport.is-over-sanctuary { cursor: pointer; }
 .j2-overlay .j2-sanc-dot { fill: #a9680f; stroke: #fff; stroke-width: 1.5; r: calc(4px * var(--j2-inv, 1)); }
-/* name visible to players (PD-027): the dot becomes a small ringed eye — a shape cue that is neither the blue Echo diamond nor an Environment card; decorative and pointer-transparent */
-.j2-overlay .j2-sanc-ring { fill: rgba(255, 255, 255, 0.92); stroke: #a9680f; stroke-width: 1.6; }
-.j2-overlay .j2-sanc-eye-lid { fill: #fff; stroke: #a9680f; stroke-width: 1.3; stroke-linejoin: round; }
-.j2-overlay .j2-sanc-eye-iris { fill: #a9680f; }
 /* A revealed name is ink on the map, hand-lettered capitals like the printed book's place names (GM map and Player Preview alike): a thin light halo (paint-order), no box, no glow; world-space, so it scales with the map */
 .j2-overlay .j2-sanc-label { font-family: var(--font-map); font-weight: 400; text-transform: uppercase; letter-spacing: 0.02em; fill: #14110d; stroke: rgba(255, 255, 255, 0.9); stroke-width: 3px; stroke-linejoin: round; paint-order: stroke fill; text-anchor: middle; pointer-events: none; user-select: none; }
 /* the overlay's Player map row, directly under its header */

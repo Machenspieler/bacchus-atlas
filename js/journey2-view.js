@@ -1558,13 +1558,9 @@
         const a = at.get(e.anchorId);
         if (!a) continue;
         const pr = a.iconProtectionArea.rectPx, x = fmt(a.worldPixelAnchor[0], 1), y = fmt(pr[1] + pr[3], 1);   // a small dot at the foot of the icon
-        if (Model.isSanctuaryNameRevealed(doc, e.anchorId)) {
-          // name visible to players: the dot becomes a small ringed eye (a shape cue, not only a colour; never the blue Echo diamond)
-          h += '<g class="j2-sanc is-name-visible" data-sanc="' + esc(e.anchorId) + '" data-name-visible="true" style="transform:translate(' + x + 'px,' + y + 'px) scale(var(--j2-inv,1))">' +
-            '<circle class="j2-sanc-ring" r="7.5"/><path class="j2-sanc-eye-lid" d="M-5 0C-3 -3.2 -1.5 -4 0 -4S3 -3.2 5 0C3 3.2 1.5 4 0 4S-3 3.2 -5 0z"/><circle class="j2-sanc-eye-iris" r="1.7"/></g>';
-        } else {
-          h += '<g class="j2-sanc" data-sanc="' + esc(e.anchorId) + '" data-name-visible="false"><circle class="j2-sanc-dot" cx="' + x + '" cy="' + y + '" r="3"/></g>';
-        }
+        // a name revealed to players is already lettered on the map beside the icon, so it carries no marker; only a hidden name keeps the dot
+        if (Model.isSanctuaryNameRevealed(doc, e.anchorId)) continue;
+        h += '<g class="j2-sanc" data-sanc="' + esc(e.anchorId) + '" data-name-visible="false"><circle class="j2-sanc-dot" cx="' + x + '" cy="' + y + '" r="3"/></g>';
       }
       ui.g.sanct.innerHTML = h;
       sancDrawn = { sanctuaries: doc.sanctuaries, open: sanctuaryOpen, names: names };
