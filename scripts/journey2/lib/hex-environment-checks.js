@@ -78,7 +78,7 @@ async function runHexEnvironmentChecks(env) {
   const cam = async () => (await st()).camera;
   const press = key => page.keyboard.press(key);
 
-  await page.goto(base + '#/journey2');
+  await page.goto(base + '#/journey');
   await boot();
   const c0 = grid.cellCenter(open.q, open.r);
   await view(c0[0] + 60, c0[1] + 40, 0.8);

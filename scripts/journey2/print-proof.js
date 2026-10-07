@@ -42,7 +42,7 @@ const themeProbe = () => {
   const browser = await chromium.launch();
   const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } });
   const page = await ctx.newPage();
-  await page.goto(`http://127.0.0.1:${server.address().port}/#/journey2`);
+  await page.goto(`http://127.0.0.1:${server.address().port}/#/journey`);
   await page.waitForSelector('.j2-viewport', { timeout: 60000 });
   await page.waitForFunction(() => Journey2View.isMounted() && Journey2View.debugState().anchors > 0, null, { timeout: 60000 });
   await page.waitForTimeout(400);

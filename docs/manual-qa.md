@@ -415,7 +415,7 @@ Desktop pointer only (mouse or trackpad); also 1366×768, 1440×900, 1536×864,
 - [ ] A touch-only device shows no grab cursor and cannot start a
       drag. No Reset order, undo or drag-to-delete anywhere.
 
-## Journey 2 map editor (`#/journey2`)
+## Journey map editor (`#/journey`)
 
 Automated coverage: `scripts/journey2/stage1-verify.js` and `browser-verify.js` (real pointer input, isolated
 contexts; run them with `--out <scratch dir>` so the committed evidence is not rewritten, and
@@ -423,7 +423,11 @@ contexts; run them with `--out <scratch dir>` so the committed evidence is not r
 `createBatch` command because the editor only offers the fully random Generate action. The manual path below is for a quick human pass in your own browser — use a
 private window, or accept that it writes the four `dhcodex_journey2_*` keys.
 
-- [ ] Open `#/journey2`: header, one compact toolbar (map name, save status, Undo/Redo,
+- [ ] Route cutover: `#/journey2` and `#/journey2/env/<id>` replace themselves with `#/journey` / `#/journey/env/<id>` (Back does not
+      bounce); the Journey nav button stays active on the overlay route; opening/closing an Environment overlay, Back and Forward never
+      remount the map (camera, selection, sidebar kept); `#/prep` then Back returns to the same saved campaign; no old generator page,
+      V1/V2 switch or "Journey 2" text in EN or RU. Automated: `node scripts/journey2/route-cutover-verify.js` (`J2_BROWSER_CHANNEL=chrome`).
+- [ ] Open `#/journey`: header, one compact toolbar (map name, save status, Undo/Redo,
       zoom, the Fog group: Fog / Reveal / Hide / Player Preview), a left sidebar (generator + stock), the map fills the rest. No page scroll
       at 1366×768 and 1920×1080; Diagnostics is closed.
 - [ ] **Generate region** rolls everything at random. A card appears: Placed 0 / N, drag targets

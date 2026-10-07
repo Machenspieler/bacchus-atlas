@@ -55,7 +55,7 @@ async function runPrintChecks(env) {
   const storage = () => page.evaluate(() => JSON.stringify(Object.keys(localStorage).filter(k => k.startsWith('dhcodex_journey2_')).sort().map(k => [k, localStorage.getItem(k)])));
   const rootHtml = () => page.evaluate(() => { const r = document.querySelector('.j2-print-root'); return r ? r.outerHTML : null; });
 
-  await page.goto(base + '#/journey2');
+  await page.goto(base + '#/journey');
   await page.waitForSelector('.j2-viewport', { timeout: 60000 });
   await page.waitForFunction(() => Journey2View.isMounted() && Journey2View.debugState() && Journey2View.debugState().anchors > 0, null, { timeout: 60000 });
   await sleep(300);

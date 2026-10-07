@@ -34,7 +34,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     });
   });
   const page = await context.newPage();
-  await page.goto(s.base + '#/journey2');
+  await page.goto(s.base + '#/journey');
   await page.waitForSelector('.j2-viewport'); await page.waitForFunction(() => Journey2View.debugState() && Journey2View.debugState().anchors > 0);
   await sleep(500);
   const seam = template.composition.seam.worldX;

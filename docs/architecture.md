@@ -937,7 +937,17 @@ stays copy-only.
 
 Run all of them with `node --test tests/*.test.js`.
 
-## Journey 2 map editor (`#/journey2`, Phase 1; Phases A, B and C below)
+## Journey 2 map editor (`#/journey`, Phase 1; Phases A, B and C below)
+- **Route cutover (Phase G, PD-029).** The public canonical route is `#/journey` (+ `#/journey/env/:id`), route name `journey`,
+  rendered by `renderJourneyPage()` → `Journey2View.mount()`; `render()` unmounts the view on every other route and an overlay
+  open/close (same base route) only calls `syncDetail()`, so the editor is never remounted by it. `#/journey2[/env/:id]` is parsed by
+  `RouteUtils.parseRouteHash()` as a legacy alias (same shape as `#/session-prep`): `canonicalHash` makes `readCurrentRoute()` repair the address with
+  `replaceState` — no extra history entry, no loop. Player Preview, Print Preview and sanctuary overlays are transient editor modes, not routes.
+  The old standalone generator page (`renderJourneyPage` V1, panels, saved `dhcodex_journey_regions/_sanctuaries` state, the V1/V2 switch) is removed;
+  the pure rolls (`rollHabitat`, `rollEncounter`, `rollSanctuary`, tables in `state.journey`) stay behind `journey2Generator`. Those two old keys are no longer read
+  or written (data is left in the browser untouched; `SafeStorage` still has their validators). **Retained internal names:** `js/journey2-*.js`, `css/journey2.css`,
+  `.j2-*`, `data-boot-route="journey2"` (index.html boot script matches both `#/journey` and `#/journey2`) and the four `dhcodex_journey2_*` storage keys, so
+  campaigns saved before the cutover load unchanged. Section text below that says `#/journey2` describes that same route under its pre-cutover address.
 - **Files (load order in `index.html`):** `js/journey2-geometry.js` (pure, UMD:
   measured lattice, cell ids, neighbours, validity, camera maths, readiness
   gate, glyph layout, the hex line behind fog strokes), `js/journey2-model.js`
@@ -948,7 +958,7 @@ Run all of them with `node --test tests/*.test.js`.
   **player projection**, Phase C), `js/journey2-store.js` (persistence
   over `SafeStorage`, storage injected), `js/journey2-view.js`
   (`Journey2View.mount/unmount`: DOM, transient pointer state, rendering),
-  `css/journey2.css` (scoped to `.j2`, `body[data-route="journey2"]`, the
+  `css/journey2.css` (scoped to `.j2`, `body[data-route="journey"]`, the
   print root). Data: `data/journey2/{map-template,map-anchors,symbols}.json`;
   raster `img/journey2/valloren-world.webp` (loaded only on this route).
   The model owns every rule; the view builds commands and never mutates a
@@ -1268,7 +1278,7 @@ Run all of them with `node --test tests/*.test.js`.
     pre-rolled so Redo never re-rolls. `Model.planSanctuaries(ctx, roll)` is pure (`roll` injected): one entry per
     `ctx.sanctuaries`, re-rolling a duplicate name up to six times.
   - *Generator adapter.* `journey2Generator` (js/app.js) gains `rollSanctuary()` (plain numbers + name, from the same
-    `rollSanctuary()` as `#/journey`) and `describeSanctuary(entry)` (the seven rows in the current language, via
+    the book's sanctuary rolls) and `describeSanctuary(entry)` (the seven rows in the current language, via
     `SANCTUARY_ROWS` / `jText`). The view never copies the tables.
   - *View.* Toolbar group `[data-j2-sanc-group]` with one button (`generateSanctuaries()`); the screen-space overlay
     `[data-j2-sanctuary]` reuses the Region Inspector's panel class and `positionPanel()` (shared with

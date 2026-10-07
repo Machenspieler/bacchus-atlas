@@ -932,3 +932,18 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Out of scope:** a party marker, auto-reveal, travel history, colour print, one-page or poster tiling, PDF/PNG export, printer settings, manual label placement, GM notes.
 - **Where:** `js/journey2-print.js`, `js/journey2-view.js` (`openPrintPreview`, `printPageMarkup`), `css/journey2.css`, tests in `tests/journey2-print.test.js`,
   browser checks in `scripts/journey2/lib/print-checks.js`.
+
+## PD-029: Journey — the map editor becomes the canonical `#/journey`; `#/journey2` is a legacy redirect
+- **Status:** Active
+- **Date:** 2026-10-07
+- **Decision (route):** the interactive map editor is the final Journey product and lives at `#/journey` with the overlay route `#/journey/env/:id`. `#/journey2`
+  and `#/journey2/env/:id` stay valid forever as compatibility redirects, repaired in place with `replaceState` (no extra history entry, no Back loop).
+  Nothing emits `#/journey2` any more (header, region-card Environment links, docs). Player Preview, Print Preview and the sanctuary overlay remain transient modes — no new routes.
+- **Decision (retirement):** the standalone wilderness/sanctuary generator page and the V1/V2 switch are removed. Shared generation code (habitat/encounter/rumor/terrain/sanctuary tables,
+  name rolls, `journey2Generator`) is kept because the editor uses it. The legacy `dhcodex_journey_regions` / `dhcodex_journey_sanctuaries` browser data is no longer used or deleted.
+- **Decision (names/storage):** the `journey2` prefix (modules, `.j2-*` CSS, `data-boot-route`, and the four `dhcodex_journey2_*` storage keys) is a retained internal name. Keys are **not**
+  renamed or duplicated, so a campaign prepared before the cutover loads unchanged; a future rename needs an explicit migration plan. Public text says "Journey" / "Путешествие"
+  (title "Journey · map editor — Bacchus's Atlas"); the GM backup file is now `bacchus-atlas-journey-map-<date>.json` (same JSON schema/kind, import unchanged).
+- **Out of scope:** renaming internals, any editor behaviour change, removing the legacy redirect.
+- **Where:** `js/route-utils.js`, `js/app.js` (`render`, `routeTitle`, `renderJourneyPage`), `index.html` boot script, `tests/routing.test.js`, `tests/journey-route-cutover.test.js`,
+  browser check `scripts/journey2/route-cutover-verify.js`.

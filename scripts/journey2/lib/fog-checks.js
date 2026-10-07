@@ -84,7 +84,7 @@ async function runFogChecks(env) {
   const live = () => page.locator('[data-j2-live]').innerText();
   const worldOfAnchor = m => m.worldPixelAnchor;
 
-  await page.goto(base + '#/journey2');
+  await page.goto(base + '#/journey');
   await page.waitForSelector('.j2-viewport', { timeout: 60000 });
   await page.waitForFunction(() => Journey2View.isMounted() && Journey2View.debugState() && Journey2View.debugState().anchors > 0, null, { timeout: 60000 });
   await sleep(300);
@@ -496,7 +496,7 @@ async function runFogChecks(env) {
     const none = await page.evaluate(() => ({ toggleHidden: document.querySelector('[data-j2-env-toggle]').hidden, msg: [...document.querySelectorAll('.j2-region-inspector .j2-insp-muted')].filter(p => !p.hidden).map(p => p.textContent) }));
     await page.locator(`.j2-card[data-batch="${bid}"] [data-j2-inspect]`).click(); await sleep(150);
     const again = await page.evaluate(() => ({ exp: document.querySelector('[data-j2-env-toggle]').getAttribute('aria-expanded'), hidden: document.querySelector('.j2-region-inspector .j2-envs-list').hidden }));
-    return { ok: !open.hidden && open.exp === 'true' && open.tiers.length > 0 && sorted && open.hrefs.every(h => /^#\/journey2\/env\//.test(h)) && none.toggleHidden && none.msg.join() === 'No suggested environments' && again.exp === 'false' && again.hidden, detail: { open, none, again } };
+    return { ok: !open.hidden && open.exp === 'true' && open.tiers.length > 0 && sorted && open.hrefs.every(h => /^#\/journey\/env\//.test(h)) && none.toggleHidden && none.msg.join() === 'No suggested environments' && again.exp === 'false' && again.hidden, detail: { open, none, again } };
   });
   await check('fog.52.raw-hex-coordinates-are-not-in-the-inspector-footer-but-return-to-stock-is', async () => {
     await page.keyboard.press('Escape'); await sleep(100);

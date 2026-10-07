@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* ============================================================
    Bacchus's Atlas — scripts/journey2/browser-verify.js
-   Dev-only browser verification of the #/journey2 diagnostics (Phase 0 behaviours, now reached through the
+   Dev-only browser verification of the #/journey diagnostics (Phase 0 behaviours, now reached through the
    secondary "More > Diagnostics" drawer of the Phase 1 editor) and the
    legacy pages around it) with Playwright's Chromium against a throw-away
    static server. Every run uses fresh, isolated browser contexts, so the
@@ -77,7 +77,7 @@ async function toggleDiag(page) { await page.evaluate(() => Journey2View.debugAp
 async function openDiag(page) { if (!(await state(page)).diagnosticsOpen) await toggleDiag(page); }
 async function openJ2(page, base, viewport, keepClosed) {
   if (viewport) await page.setViewportSize(viewport);
-  await page.goto(base + '#/journey2');
+  await page.goto(base + '#/journey');
   await page.waitForSelector('.j2-viewport', { timeout: 60000 });
   await page.waitForFunction(() => Journey2View.isMounted() && Journey2View.debugState().anchors > 0, null, { timeout: 60000 });
   await page.waitForTimeout(400);
@@ -454,13 +454,13 @@ async function main() {
     return { ok: s.anchors === 58 && s.fitMode, detail: s };
   });
   await check('lifecycle.history-back-forward-restores-routes', async () => {
-    await page.evaluate(() => { location.hash = '#/journey'; });
-    await page.waitForSelector('.journey-wrap'); const a = await page.evaluate(() => [document.body.dataset.route, !!document.querySelector('.j2'), Journey2View.isMounted()]);
+    await page.evaluate(() => { location.hash = '#/lists'; });
+    await page.waitForSelector('.lists-home-wrap'); const a = await page.evaluate(() => [document.body.dataset.route, !!document.querySelector('.j2'), Journey2View.isMounted()]);
     await page.goBack(); await page.waitForSelector('.j2-viewport');
     const b = await page.evaluate(() => [document.body.dataset.route, !!document.querySelector('.j2'), Journey2View.isMounted()]);
-    await page.goForward(); await page.waitForSelector('.journey-wrap');
+    await page.goForward(); await page.waitForSelector('.lists-home-wrap');
     const c = await page.evaluate(() => [document.body.dataset.route, !!document.querySelector('.j2'), Journey2View.isMounted()]);
-    return { ok: JSON.stringify(a) === '["journey",false,false]' && JSON.stringify(b) === '["journey2",true,true]' && JSON.stringify(c) === '["journey",false,false]', detail: { a, b, c } };
+    return { ok: JSON.stringify(a) === '["lists",false,false]' && JSON.stringify(b) === '["journey",true,true]' && JSON.stringify(c) === '["lists",false,false]', detail: { a, b, c } };
   });
   const cdp = await ctx.newCDPSession(page);
   await cdp.send('Performance.enable');
@@ -482,8 +482,8 @@ async function main() {
   const m0 = await metrics();
   // The existing routes also add some listeners on every visit (pre-existing behaviour, see the report), so
   // Journey 2's own contribution is measured as treatment minus control: the same 20 route cycles, once
-  // without and once with a #/journey2 mount in every cycle.
-  const routes = ['#/journey', '#/prep', '#/', '#/lists'];
+  // without and once with a #/journey mount in every cycle.
+  const routes = ['#/prep', '#/', '#/lists'];
   const cycle = async withJ2 => {
     const c = await browser.newContext({ viewport: { width: 1366, height: 768 } });
     const pg = await c.newPage(); attachLogging(pg, logs, withJ2 ? 'cycles-j2' : 'cycles-control');
@@ -506,7 +506,7 @@ async function main() {
     const a = await met();
     for (let i = 0; i < 20; i++) {
       if (withJ2) {
-        await pg.evaluate(() => { location.hash = '#/journey2'; });
+        await pg.evaluate(() => { location.hash = '#/journey'; });
         await pg.waitForFunction(() => document.querySelector('.j2-viewport') && Journey2View.debugState() && Journey2View.debugState().anchors > 0, null, { timeout: 60000 });
         if (i % 5 === 0) await pg.evaluate(() => { document.querySelector('[data-j2-layer="markers"]').click(); document.querySelector('[data-j2-layer="proof"]').click(); });
       }
@@ -549,14 +549,14 @@ async function main() {
     await p2.route('**/valloren-world.webp*', async route => { await sleep(3500); try { await route.continue(); } catch (e) { /* page moved on */ } });
     await check('lifecycle.late-asset-load-does-not-mount-on-another-route', async () => {
       /* 'commit', not 'load': a slow third-party font request can hold the load event past the 3.5 s raster delay, so the loading state would be gone before the wait began (flaky in Task 01A runs). */
-      await p2.goto(base + '#/journey2', { waitUntil: 'commit' });
+      await p2.goto(base + '#/journey', { waitUntil: 'commit' });
       await p2.waitForFunction(() => document.querySelector('.j2-state'), null, { timeout: 30000, polling: 100 });
       await sleep(500);
-      await p2.evaluate(() => { location.hash = '#/journey'; });
-      await p2.waitForSelector('.journey-wrap');
+      await p2.evaluate(() => { location.hash = '#/lists'; });
+      await p2.waitForSelector('.lists-home-wrap');
       await sleep(5000);
-      const r = await p2.evaluate(() => ({ j2: !!document.querySelector('.j2, .j2-state'), journey: !!document.querySelector('.journey-wrap'), mounted: Journey2View.isMounted(), route: document.body.dataset.route, host: document.querySelector('#grid-wrap').classList.contains('j2-host') }));
-      return { ok: !r.j2 && r.journey && !r.mounted && r.route === 'journey' && !r.host, detail: r };
+      const r = await p2.evaluate(() => ({ j2: !!document.querySelector('.j2, .j2-state'), journey: !!document.querySelector('.lists-home-wrap'), mounted: Journey2View.isMounted(), route: document.body.dataset.route, host: document.querySelector('#grid-wrap').classList.contains('j2-host') }));
+      return { ok: !r.j2 && r.journey && !r.mounted && r.route === 'lists' && !r.host, detail: r };
     });
     await c2.close();
   }
@@ -568,7 +568,7 @@ async function main() {
     const p3 = await c3.newPage();
     attachLogging(p3, logs, 'base-path');
     await check('deploy.works-under-a-sub-path-with-only-relative-urls', async () => {
-      await p3.goto(`http://127.0.0.1:${sub.port}/atlas/#/journey2`);
+      await p3.goto(`http://127.0.0.1:${sub.port}/atlas/#/journey`);
       await p3.waitForSelector('.j2-viewport', { timeout: 60000 });
       await p3.waitForFunction(() => Journey2View.debugState() && Journey2View.debugState().anchors > 0);
       const outside = sub.requests.filter(u => !u.startsWith('/atlas'));
@@ -584,34 +584,19 @@ async function main() {
     const p4 = await c4.newPage();
     attachLogging(p4, logs, 'legacy');
     p4.on('dialog', d => d.accept());
-    await p4.goto(base + '#/journey');
-    await p4.waitForSelector('.journey-wrap');
+    await p4.goto(base + '#/lists');
+    await p4.waitForSelector('.lists-home-wrap');
     const ls = () => p4.evaluate(() => Object.fromEntries(Object.keys(localStorage).sort().map(k => [k, localStorage.getItem(k)])));
-    await check('legacy.journey-roll-keep-rename', async () => {
-      await p4.click('.journey-panel[data-kind="region"] [data-roll-new]');
-      await p4.waitForSelector('.journey-panel[data-kind="region"] .journey-draft .journey-entry');
-      await p4.click('.journey-panel[data-kind="region"] [data-save]');
-      await p4.waitForSelector('.journey-panel[data-kind="region"] .journey-saved .journey-entry.is-saved');
-      await p4.click('.journey-panel[data-kind="sanctuary"] [data-roll-new]');
-      await p4.waitForSelector('.journey-panel[data-kind="sanctuary"] .journey-draft .journey-entry');
-      await p4.click('.journey-panel[data-kind="sanctuary"] [data-save]');
-      await p4.waitForSelector('.journey-panel[data-kind="sanctuary"] .journey-saved .journey-entry.is-saved');
-      const input = p4.locator('.journey-panel[data-kind="region"] .journey-saved .jr-name').first();
-      await input.fill('Тестовый регион'); await input.press('Enter'); await p4.waitForTimeout(200);
-      const s = await ls();
-      const regions = JSON.parse(s.dhcodex_journey_regions), sanct = JSON.parse(s.dhcodex_journey_sanctuaries);
-      return { ok: regions.length === 1 && sanct.length === 1 && regions[0].name === 'Тестовый регион', detail: { regions: regions.length, sanct: sanct.length, name: regions[0] && regions[0].name } };
-    });
     let snapshot = await ls();
     await check('legacy.visiting-journey2-changes-no-legacy-key-and-merely-viewing-writes-no-journey2-key', async () => {
       for (let i = 0; i < 3; i++) {
-        await p4.evaluate(() => { location.hash = '#/journey2'; });
+        await p4.evaluate(() => { location.hash = '#/journey'; });
         await p4.waitForFunction(() => document.querySelector('.j2-viewport') && Journey2View.debugState() && Journey2View.debugState().anchors > 0, null, { timeout: 60000 });
         await openDiag(p4);
         await p4.click('[data-j2-layer="markers"]'); await p4.click('[data-j2-layer="proof"]');
         await gotoCellP(p4, '46,1');
-        await p4.evaluate(() => { location.hash = '#/journey'; });
-        await p4.waitForSelector('.journey-wrap');
+        await p4.evaluate(() => { location.hash = '#/lists'; });
+        await p4.waitForSelector('.lists-home-wrap');
       }
       const after = await ls();
       const sessionKeys = await p4.evaluate(() => Object.keys(sessionStorage));
@@ -621,27 +606,18 @@ async function main() {
       const nonJ2 = changed.filter(k => !k.startsWith('dhcodex_journey2_'));
       return { ok: nonJ2.length === 0 && changed.length === 0 && sessionKeys.length === 0 && idb.length === 0, detail: { changed, nonJ2, keys: Object.keys(after), sessionKeys, idb } };
     });
-    await check('legacy.journey-saved-entries-survive-and-rename-delete-still-work', async () => {
-      const n = await p4.locator('.journey-panel[data-kind="region"] .journey-saved .journey-entry.is-saved').count();
-      const nameShown = await p4.locator('.journey-panel[data-kind="region"] .journey-saved .jr-name').first().inputValue();
-      await p4.locator('.journey-panel[data-kind="sanctuary"] .journey-saved [data-delete]').first().click();
-      await p4.waitForTimeout(250);
-      const s = await ls();
-      return { ok: n === 1 && nameShown === 'Тестовый регион' && JSON.parse(s.dhcodex_journey_sanctuaries).length === 0 && JSON.parse(s.dhcodex_journey_regions).length === 1, detail: { n, nameShown } };
-    });
-    await check('legacy.journey-language-switch-ru-en', async () => {
-      const ru = await p4.textContent('.page-title');
-      await p4.click('.lang-switch button:has-text("EN")'); await p4.waitForTimeout(250);
-      const en = await p4.textContent('.page-title'); const langEn = await p4.evaluate(() => document.documentElement.lang);
-      await p4.evaluate(() => { location.hash = '#/journey2'; });
-      await p4.waitForSelector('.j2-viewport');
-      await p4.waitForFunction(() => Journey2View.debugState() && Journey2View.debugState().anchors > 0);
-      const j2en = await p4.evaluate(() => document.title + ' | ' + document.querySelector('.j2-title').textContent);
-      await p4.click('.lang-switch button:has-text("RU")'); await p4.waitForTimeout(300);
-      const j2ru = await p4.evaluate(() => document.title + ' | ' + document.querySelector('.j2-title').textContent); const stillMounted = await p4.evaluate(() => Journey2View.isMounted());
+    await check('journey.title-and-labels-in-ru-and-en-never-say-journey-2', async () => {
       await p4.evaluate(() => { location.hash = '#/journey'; });
-      await p4.waitForSelector('.journey-wrap');
-      return { ok: /Journey to Horizon/.test(en) && langEn === 'en' && /Путешествие к Горизонту/.test(ru) && /Journey 2/.test(j2en) && /Valloren/.test(j2en) && /Путешествие 2/.test(j2ru) && /Валлорен/.test(j2ru) && stillMounted, detail: { ru, en, j2en, j2ru } };
+      await p4.waitForFunction(() => Journey2View.debugState() && Journey2View.debugState().anchors > 0);
+      const grab = () => p4.evaluate(() => ({ title: document.title, nav: document.getElementById('btn-journey').textContent.trim(), cur: document.getElementById('btn-journey').getAttribute('aria-current'), j2: /Journey 2|Путешествие 2/.test(document.body.innerText) }));
+      const ru = await grab();
+      await p4.click('.lang-switch button:has-text("EN")'); await p4.waitForTimeout(300);
+      const en = await grab();
+      await p4.click('.lang-switch button:has-text("RU")'); await p4.waitForTimeout(300);
+      const stillMounted = await p4.evaluate(() => Journey2View.isMounted());
+      await p4.evaluate(() => { location.hash = '#/lists'; });
+      await p4.waitForSelector('.lists-home-wrap');
+      return { ok: /Journey · map editor/.test(en.title) && /Путешествие · редактор карты/.test(ru.title) && en.nav === 'Journey' && ru.nav === 'Путешествие' && en.cur === 'page' && !en.j2 && !ru.j2 && stillMounted, detail: { ru, en, stillMounted } };
     });
     await check('legacy.catalog-search-prep-lists-smoke', async () => {
       await p4.evaluate(() => { location.hash = '#/'; });
@@ -653,7 +629,7 @@ async function main() {
       await p4.evaluate(() => { location.hash = '#/prep'; });
       await p4.waitForSelector('.prep-wrap', { timeout: 30000 });
       await p4.evaluate(() => { location.hash = '#/lists'; });
-      await p4.waitForSelector('.lists-wrap, .journey-wrap, .empty-state, .lists-home, #grid-wrap > *', { timeout: 30000 });
+      await p4.waitForSelector('.lists-wrap, .lists-home-wrap, .empty-state, .lists-home, #grid-wrap > *', { timeout: 30000 });
       const sb = await p4.locator('[data-soundboard-trigger], .sb-trigger, #soundboard-trigger, .header-utils button').count();
       return { ok: total > 5 && filtered >= 0 && sb > 0, detail: { total, filtered, soundboardControls: sb } };
     });

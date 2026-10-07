@@ -195,8 +195,8 @@ test('the production build contains the same generic loading shell and passes th
   execFileSync('node', ['scripts/check-unlisted-build.js'], { cwd: ROOT, stdio: 'pipe' });
 });
 
-test('a #/journey2 URL gets its own static skeleton, chosen pre-paint by an inline script', () => {
-  assert.match(INDEX_HTML, /<script>if\(\/\^#\\\/journey2[^<]*dataset\.bootRoute='journey2'/);
+test('a #/journey (or legacy #/journey2) URL gets its own static skeleton, chosen pre-paint by an inline script', () => {
+  assert.match(INDEX_HTML, /<script>if\(\/\^#\\\/journey2\?[^<]*dataset\.bootRoute='journey2'/);
   assert.equal(countOccurrences(INDEX_HTML, 'class="sk-j2"'), 1);
   const css = fs.readFileSync(path.join(ROOT, 'css', 'journey2.css'), 'utf8');
   assert.match(css, /html\[data-boot-route="journey2"\] #grid-wrap > \.sk-card \{ display: none; \}/);

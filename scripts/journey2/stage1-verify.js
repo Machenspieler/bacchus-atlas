@@ -194,7 +194,7 @@ async function newCtx(browser, opts) {
 }
 async function openEditor(page, base, vp) {
   if (vp) await page.setViewportSize(vp);
-  await page.goto(base + '#/journey2');
+  await page.goto(base + '#/journey');
   await page.waitForSelector('.j2-viewport', { timeout: 60000 });
   await page.waitForFunction(() => Journey2View.isMounted() && Journey2View.debugState() && Journey2View.debugState().anchors > 0, null, { timeout: 60000 });
   await page.waitForTimeout(250);
@@ -423,39 +423,7 @@ async function main() {
       return { ok: nonJ2Changed.length === 0 && removed.length === 0 && after.unrelated_key === 'keep-me' && after.dhcodex_journey_regions === legacyBefore.dhcodex_journey_regions, detail: { changed, removed } };
     });
 
-    /* legacy Journey (with pre-seeded legacy entries), same context */
-    const seedRegion = { id: 'reg-seed', name: 'Seeded region', habitat: { rolls: [11] }, size: 4, encounter: { entries: [[3, 4]], combines: 0 }, terrain: 2, rumor: 7 };
-    await page.evaluate(r => { localStorage.setItem('dhcodex_journey_regions', JSON.stringify([r])); }, seedRegion);
-    const legacyKeysBefore = await storageDump(page);
-    page.on('dialog', d => d.accept());
-    await page.evaluate(() => { location.hash = '#/journey'; }); await page.reload(); await page.waitForSelector('.journey-wrap');
-    await check('scn.19.legacy-journey-still-shows-the-seeded-entry-and-generation-save-rename-delete-work', async () => {
-      const seeded = await page.locator('.journey-panel[data-kind="region"] .jr-name').first().inputValue();
-      await page.click('.journey-panel[data-kind="region"] [data-roll-new]');
-      await page.waitForSelector('.journey-panel[data-kind="region"] .journey-draft .journey-entry');
-      await page.click('.journey-panel[data-kind="region"] [data-save]');
-      await page.waitForTimeout(150);
-      const input = page.locator('.journey-panel[data-kind="region"] .journey-saved .jr-name').first();
-      await input.fill('Renamed legacy'); await input.press('Enter'); await page.waitForTimeout(150);
-      await page.click('.journey-panel[data-kind="sanctuary"] [data-roll-new]');
-      await page.waitForSelector('.journey-panel[data-kind="sanctuary"] .journey-draft .journey-entry');
-      await page.click('.journey-panel[data-kind="sanctuary"] [data-save]'); await page.waitForTimeout(150);
-      await page.locator('.journey-panel[data-kind="sanctuary"] .journey-saved [data-delete]').first().click(); await page.waitForTimeout(200);
-      const st = await storageDump(page);
-      const regions = JSON.parse(st.dhcodex_journey_regions), sanct = JSON.parse(st.dhcodex_journey_sanctuaries);
-      return { ok: seeded === 'Seeded region' || seeded.length > 0, detail: { seeded, regions: regions.map(r => r.name), sanct: sanct.length, legacyBefore: Object.keys(legacyKeysBefore) }, extra: regions.length === 2 && sanct.length === 0 }
-        && regions.length === 2 && sanct.length === 0 && regions.some(r => r.name === 'Renamed legacy') && regions.some(r => r.id === 'reg-seed');
-    });
-    await check('scn.20.legacy-journey-language-switch-works-and-journey2-map-data-was-not-touched-by-legacy-use', async () => {
-      const ru0 = await page.textContent('.page-title');
-      await page.click('.lang-switch button:has-text("RU")'); await page.waitForTimeout(250);
-      const ru = await page.textContent('.page-title');
-      await page.click('.lang-switch button:has-text("EN")'); await page.waitForTimeout(250);
-      const en = await page.textContent('.page-title');
-      const st = await storageDump(page);
-      const j2 = JSON.parse(st.dhcodex_journey2_map);
-      return { ok: /Journey to Horizon/.test(ru0) && /Путешествие к Горизонту/.test(ru) && /Journey to Horizon/.test(en) && j2.tiles.length === 7 && j2.batches.length === 1, detail: { ru0, ru, en } };
-    });
+    /* The standalone legacy #/journey generator page (scn.19/scn.20 here) was retired by the route cutover (PD-029). */
     await page.close(); await context.close();
   }
 
@@ -609,11 +577,11 @@ async function main() {
     await check('neg.route-exit-mid-drag-leaves-stock-and-placements-unchanged-and-no-ghost', async () => {
       const h = await handleCenter(pg, bidA, 'all'), t = await clientOf(pg, ALL13_ANCHOR);
       await pg.mouse.move(h.x, h.y); await pg.mouse.down(); await pg.mouse.move(t.x, t.y, { steps: 8 });
-      await pg.evaluate(() => { location.hash = '#/journey'; });
-      await pg.waitForSelector('.journey-wrap');
+      await pg.evaluate(() => { location.hash = '#/lists'; });
+      await pg.waitForSelector('.lists-home-wrap');
       const ghost = await pg.evaluate(() => ({ tip: !!document.querySelector('.j2-tip'), cls: document.body.classList.contains('j2-dragging'), mounted: Journey2View.isMounted() }));
       await pg.mouse.up();
-      await pg.evaluate(() => { location.hash = '#/journey2'; });
+      await pg.evaluate(() => { location.hash = '#/journey'; });
       await pg.waitForFunction(() => Journey2View.isMounted() && Journey2View.debugState() && Journey2View.debugState().anchors > 0); await pg.waitForTimeout(250);
       const s = await state(pg);
       return { ok: !ghost.tip && !ghost.cls && !ghost.mounted && s.tiles.length === 7 && s.batches[0].remaining === 13, detail: { ghost, tiles: s.tiles.length } };
@@ -1000,7 +968,7 @@ async function main() {
     const sub = await serve(SITE_ROOT, { prefix: '/atlas' });
     const c = await newCtx(browser, { viewport: VP_SMALL }); const p = await c.newPage(); attachLogging(p, logs, 'base-path');
     await check('deploy.root-and-subpath-loading-uses-only-relative-urls', async () => {
-      await p.goto(sub.base + '#/journey2'); await p.waitForSelector('.j2-viewport', { timeout: 60000 }); await p.waitForFunction(() => Journey2View.debugState() && Journey2View.debugState().anchors > 0);
+      await p.goto(sub.base + '#/journey'); await p.waitForSelector('.j2-viewport', { timeout: 60000 }); await p.waitForFunction(() => Journey2View.debugState() && Journey2View.debugState().anchors > 0);
       await genRegion(p, { habitat: 'forest', terrain: 2, qty: 4 }); await p.reload(); await p.waitForSelector('.j2-viewport'); await p.waitForFunction(() => Journey2View.debugState() && Journey2View.debugState().batches.length === 1);
       const outside = sub.requests.filter(u => !u.startsWith('/atlas'));
       const need = ['/atlas/js/journey2-model.js', '/atlas/js/journey2-store.js', '/atlas/data/journey2/map-template.json', '/atlas/img/journey2/valloren-world.webp'].every(u => sub.requests.includes(u));
@@ -1012,7 +980,7 @@ async function main() {
       const c2 = await newCtx(browser, { viewport: VP_SMALL }); const p2 = await c2.newPage();
       p2.on('console', () => {});
       await check(`deploy.${what}-fetch-failure-shows-an-error-state-with-retry-and-no-guessed-geometry`, async () => {
-        await p2.goto(s2.base + '#/journey2'); await p2.waitForSelector('.j2-state--error', { timeout: 30000 });
+        await p2.goto(s2.base + '#/journey'); await p2.waitForSelector('.j2-state--error', { timeout: 30000 });
         const errText = await p2.locator('.j2-state--error').innerText(); const noSurface = (await p2.locator('.j2-viewport').count()) === 0;
         s2.failing.clear(); await p2.click('[data-j2-retry]'); await p2.waitForSelector('.j2-viewport', { timeout: 30000 });
         return { ok: /could not be loaded|не удалось/i.test(errText) && noSurface && (await p2.locator('.j2-viewport').count()) === 1, detail: errText.slice(0, 120) };

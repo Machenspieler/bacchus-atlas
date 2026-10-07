@@ -57,7 +57,7 @@ async function runSanctuaryNameChecks(env) {
   async function enterPreview() { await page.click('[data-j2-preview]'); await sleep(350); }
   async function leavePreview() { await page.click('[data-j2-preview-back]'); await sleep(300); }
 
-  await page.goto(base + '#/journey2');
+  await page.goto(base + '#/journey');
   await boot();
   // fixture: one region with an Environment on its first hex (to prove the name toggles leave Environments and Biome Tint alone)
   const open = (() => { const c0 = ctx0.grid.worldToCell(2424, 900); return { q: c0.q, r: c0.r }; })();

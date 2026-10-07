@@ -82,7 +82,7 @@ async function runTopologyChecks(env) {
   });
   const tilesOf = async () => (await docNow()).tiles;
 
-  await page.goto(base + '#/journey2');
+  await page.goto(base + '#/journey');
   await page.waitForSelector('.j2-viewport', { timeout: 60000 });
   await page.waitForFunction(() => Journey2View.isMounted() && Journey2View.debugState() && Journey2View.debugState().anchors > 0, null, { timeout: 60000 });
   await sleep(300);

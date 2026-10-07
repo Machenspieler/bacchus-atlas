@@ -180,14 +180,17 @@ undo, drag-to-delete or `+` grid cell. Pointer/geometry logic lives in
 [docs/product-decisions.md](docs/product-decisions.md) PD-012, detail:
 [docs/architecture.md](docs/architecture.md) "Prep manual ordering".
 
-### Journey 2 map editor
+### Journey map editor (internally "Journey 2")
 
-`#/journey2` is a GM tile editor on the original Valloren map (generate a
+`#/journey` is the one canonical Journey page and a GM tile editor on the original Valloren map (generate a
 batch → drag one / drag all remaining → move, return, Undo/Redo → local save
 and full JSON backup). The rules live in the pure `js/journey2-model.js`
 (document, placement policy, atomic commands, history); the view only builds
-commands. It owns exactly four `dhcodex_journey2_*` storage keys and never
-touches `#/journey`'s data; a corrupt saved map is never autosaved over;
+commands. Route cutover (PD-029): `#/journey` (+ `/env/<id>`) is the only public route;
+`#/journey2[/env/<id>]` is a replace-redirect kept for old bookmarks; the standalone generator page is retired.
+The `journey2` prefix in modules, `j2-*` classes, `css/journey2.css` and the four `dhcodex_journey2_*` storage
+keys is a retained internal name — never rename the keys without a migration plan, and never say "Journey 2" in public text.
+It owns exactly those four storage keys; a corrupt saved map is never autosaved over;
 preparation never implies discovery; original markers are immutable. Fog of War is
 cell-based campaign data (`playerVisibility`), hidden by default, edited only by Reveal/Hide strokes
 (one stroke = one Undo entry) and rendered to players solely through the pure projection
@@ -204,7 +207,7 @@ never in history); the sidebar only generates, places and deletes. Soul Echoes a
 campaign data (`soulEchoes`, at most nine sanctuaries): one toolbar button places all nine by the
 book's west-to-east rule, one removes them, and they never reach Player Preview or print (PD-022).
 Generated sanctuaries are GM-only too (`sanctuaries.entries`, one per printed sanctuary icon, numbers not
-sentences): one toolbar button rolls all 56 through `#/journey`'s own generator, clicking an icon opens an
+sentences): one toolbar button rolls all 56 through the book's sanctuary tables (`journey2Generator`), clicking an icon opens an
 overlay with Delete / Reroll / close, and none of it reaches Player Preview or print (PD-023).
 A placed hex may carry one optional catalog Environment (`tile.environmentId`, id only; follows the tile, dies with
 it; picker limited to the region's biome via the existing adapter, none for an overtaken region; opened from a hex's
@@ -221,7 +224,7 @@ of the original map, SVG over the raster), built by the pure `js/journey2-print.
 draws NO fog: fog is a data filter, so unrevealed cells are the untouched Old Valloren map and hidden content is absent, not hidden. Black and white: no tint
 (omitted, never greyed), no Environments, Soul Echoes or GM data; sanctuary names only when revealed by hand. Never a screenshot; camera/zoom/sidebar are irrelevant.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028, detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029, detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

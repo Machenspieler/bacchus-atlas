@@ -35,7 +35,7 @@ const assembly = JSON.parse(fs.readFileSync(path.join(STAGE, 'data', 'assembly-s
 /* Verification evidence, one optional file per slot (each written by the step that
  * actually performed the check; a missing file means "pending", never "pass"):
  *   geometry-verification.json   scripts/journey2/verify-template.js (preparedAssets + geometry + control points)
- *   browser-verification.json    the browser run of the #/journey2 route (stage-0/tests)
+ *   browser-verification.json    the browser run of the #/journey route (stage-0/tests)
  *   print-verification.json      the print-to-PDF proof                  (stage-0/print)  */
 /* --verification <stage dir> (Task 01A): read the geometry/browser/print slots from that package's data/ instead of Stage 0's. */
 const vArg = process.argv.indexOf('--verification');

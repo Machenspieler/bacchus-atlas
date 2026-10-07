@@ -20,6 +20,7 @@
 
   const ENV_SUFFIX_PATTERN = /\/env\/([^/]+)$/;
   const LEGACY_PREP_HASH = '#/session-prep';
+  const LEGACY_JOURNEY2_HASH = '#/journey2';
   const LIST_ID_PATTERN = /^#\/lists\/(.+)$/;
 
   /**
@@ -51,7 +52,7 @@
    * Lists overview while a valid environment suffix on it is preserved.
    *
    * Returns { route, malformed, canonicalHash }:
-   *   route: { name: 'catalog'|'lists'|'list'|'journey'|'journey2'|'prep', id?, env }
+   *   route: { name: 'catalog'|'lists'|'list'|'journey'|'prep', id?, env }
    *   malformed: whether any segment failed to decode
    *   canonicalHash: the safe hash the address should be repaired to, or
    *     null when nothing was malformed
@@ -80,10 +81,13 @@
       route = { name: 'lists', env: env };
     } else if (working === '#/journey') {
       route = { name: 'journey', env: env };
-    } else if (working === '#/journey2') {
-      // Experimental Journey 2 diagnostic map. A separate route: #/journey and its
-      // saved data are untouched by it.
-      route = { name: 'journey2', env: env };
+    } else if (working === LEGACY_JOURNEY2_HASH) {
+      // Compatibility artifact: the map editor shipped at #/journey2 before it
+      // became the canonical #/journey. Old bookmarks and shared overlay links
+      // (#/journey2/env/<id>) resolve to the same route and the address is
+      // repaired in place (replaceState), so Back never loops.
+      route = { name: 'journey', env: env };
+      legacy = true;
     } else if (working === '#/prep') {
       route = { name: 'prep', env: env };
     } else if (working === LEGACY_PREP_HASH) {
@@ -108,7 +112,6 @@
     if (route.name === 'list') return '#/lists/' + encodeURIComponent(route.id);
     if (route.name === 'lists') return '#/lists';
     if (route.name === 'journey') return '#/journey';
-    if (route.name === 'journey2') return '#/journey2';
     if (route.name === 'prep') return '#/prep';
     return '';
   }

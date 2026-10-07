@@ -1,7 +1,7 @@
 /* ============================================================
    Bacchus's Atlas — journey2.css
    Styles for the #/journey2 map editor (js/journey2-view.js). Scoped:
-   every rule is under body[data-route="journey2"], .j2 or the print root, so
+   every rule is under body[data-route="journey"], .j2 or the print root, so
    nothing here can touch another route. Tokens come from css/styles.css —
    no new colour, spacing or radius values are invented. Gold only marks a
    selection, a valid drop preview or a temporary test placement; red is an invalid
@@ -10,16 +10,16 @@
    ============================================================ */
 
 /* ---------- route shell ---------- */
-body[data-route="journey2"] .shell {
+body[data-route="journey"] .shell {
   max-width: none; width: 100%;
   padding-inline: max(var(--s-3), env(safe-area-inset-left)) max(var(--s-3), env(safe-area-inset-right));
   padding-bottom: 0;
 }
-body[data-route="journey2"] .catalog-bar-wrap,
-body[data-route="journey2"] #catalog-more,
-body[data-route="journey2"] #footer { display: none; }
+body[data-route="journey"] .catalog-bar-wrap,
+body[data-route="journey"] #catalog-more,
+body[data-route="journey"] #footer { display: none; }
 /* #grid-wrap is the card grid on every other route. */
-body[data-route="journey2"] #grid-wrap { display: block; }
+body[data-route="journey"] #grid-wrap { display: block; }
 
 .j2-host {
   height: calc(100dvh - var(--j2-header-h, 76px) - var(--s-3) - var(--s-3));

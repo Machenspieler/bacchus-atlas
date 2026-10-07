@@ -441,22 +441,43 @@ test('the legacy route keeps a valid environment overlay while being repaired', 
   assert.equal(parsed.canonicalHash, '#/prep/env/ancient-grove');
 });
 
-/* ---------------- Journey 2 (experimental diagnostic route) ---------------- */
+/* ---------------- Journey 2 → Journey route cutover (Phase G) ---------------- */
 
-test('"#/journey2" resolves to its own route and never to "#/journey"', () => {
+test('"#/journey2" is a legacy alias: it parses to the canonical journey route and asks for a repair to "#/journey"', () => {
   const r = parseRouteHash('#/journey2');
-  assert.deepEqual(r.route, { name: 'journey2', env: null });
+  assert.deepEqual(r.route, { name: 'journey', env: null });
   assert.equal(r.malformed, false);
-  assert.equal(parseRouteHash('#/journey').route.name, 'journey');
+  assert.equal(r.canonicalHash, '#/journey');
+  assert.equal(parseRouteHash('#/journey').canonicalHash, null);
   assert.equal(parseRouteHash('#/journey22').route.name, 'catalog');
-  assert.equal(baseHash({ name: 'journey2' }), '#/journey2');
-  assert.equal(routeToHash(parseRouteHash('#/journey2').route), '#/journey2');
+  assert.equal(routeToHash(parseRouteHash('#/journey2').route), '#/journey');
 });
 
-test('the journey2 route keeps an environment overlay and survives a malformed one', () => {
-  assert.deepEqual(parseRouteHash('#/journey2/env/foo').route, { name: 'journey2', env: 'foo' });
-  const bad = parseRouteHash('#/journey2/env/%E0%A4%A');
-  assert.equal(bad.route.name, 'journey2');
-  assert.equal(bad.malformed, true);
-  assert.equal(bad.canonicalHash, '#/journey2');
+test('no route is ever named "journey2": baseHash never emits the legacy prefix', () => {
+  assert.equal(baseHash({ name: 'journey2' }), '');
+  for (const h of ['#/journey', '#/journey2', '#/journey/env/a', '#/journey2/env/a']) {
+    assert.doesNotMatch(routeToHash(parseRouteHash(h).route), /journey2/);
+  }
+});
+
+test('"#/journey2/env/<id>" keeps the id and is repaired to "#/journey/env/<id>"', () => {
+  const r = parseRouteHash('#/journey2/env/buzzing-swamp');
+  assert.deepEqual(r.route, { name: 'journey', env: 'buzzing-swamp' });
+  assert.equal(r.canonicalHash, '#/journey/env/buzzing-swamp');
+  const enc = parseRouteHash('#/journey2/env/' + encodeURIComponent('a b/ü'));
+  assert.equal(enc.route.env, 'a b/ü');
+  assert.equal(enc.canonicalHash, '#/journey/env/' + encodeURIComponent('a b/ü'));
+  assert.equal(envHash('x', { name: 'journey' }), '#/journey/env/x');
+});
+
+test('the journey route keeps an environment overlay and survives a malformed one (legacy prefix too)', () => {
+  assert.deepEqual(parseRouteHash('#/journey/env/foo').route, { name: 'journey', env: 'foo' });
+  assert.equal(parseRouteHash('#/journey/env/foo').canonicalHash, null);
+  for (const h of ['#/journey/env/%E0%A4%A', '#/journey2/env/%E0%A4%A']) {
+    const bad = parseRouteHash(h);
+    assert.equal(bad.route.name, 'journey');
+    assert.equal(bad.route.env, null);
+    assert.equal(bad.malformed, true);
+    assert.equal(bad.canonicalHash, '#/journey');
+  }
 });

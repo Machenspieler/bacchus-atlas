@@ -254,7 +254,7 @@ test('i18n: every sanctuary string exists in en and ru with identical placeholde
     assert.equal(ph(i18n.ru[k]), ph(i18n.en[k]), 'placeholders ' + k);
   }
   for (const k of view.match(/journey2_(sanc_|live_sanc_)[a-z_]+/g) || []) assert.ok(i18n.en[k], 'view uses an undefined key ' + k);
-  for (const k of ['journey_k_trade', 'journey_k_quirk', 'journey_k_crisis', 'journey_k_drive', 'journey_k_politics', 'journey_k_settlement_size', 'journey_k_population', 'journey_politics_combined']) {
+  for (const k of ['journey_k_trade', 'journey_k_quirk', 'journey_k_crisis', 'journey_k_drive', 'journey_k_politics', 'journey_k_settlement_size', 'journey_k_population']) {
     assert.ok(i18n.en[k] && i18n.ru[k], k);
   }
   assert.equal(i18n.ru.journey_k_drive, 'Движущая сила', 'official daggerheart.ru wording');

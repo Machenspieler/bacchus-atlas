@@ -89,7 +89,9 @@ paths:
 - **List IDs and routes never change on rename** — a rename is a name-field
   update only, never a re-keying of the list.
 
-## Journey 2 map storage
+## Journey map storage (internal name "Journey 2")
+
+The editor's public route is `#/journey` (`#/journey2` redirects, PD-029); the `dhcodex_journey2_*` key names are a retained internal compatibility name — never rename, duplicate or dual-write them without an explicit migration plan.
 
 - **Journey 2 owns exactly four keys**, all `dhcodex_journey2_*`
   (`js/journey2-store.js`): `map`, `map_recovery`, `map_previous`, and `ui`

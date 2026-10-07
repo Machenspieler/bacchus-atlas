@@ -36,7 +36,7 @@
 <!-- Picks which static loading skeleton shows before js/app.js runs: the
      route is only known from the hash, so this runs synchronously, pre-paint.
      It only sets a data attribute; routing itself stays in js/route-utils.js. -->
-<script>if(/^#\/journey2(?:[\/?]|$)/.test(location.hash))document.documentElement.dataset.bootRoute='journey2';</script>
+<script>if(/^#\/journey2?(?:[\/?]|$)/.test(location.hash))document.documentElement.dataset.bootRoute='journey2';</script>
 </head>
 <body>
   <!-- Static fallback shown before js/app.js runs. renderHeader() overwrites

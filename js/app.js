@@ -10,8 +10,6 @@ const LS_KEYS = {
   lists: 'dhcodex_lists',
   envLists: 'dhcodex_env_lists',
   storageNoticeDismissed: 'dhcodex_storage_notice_dismissed',
-  journeyRegions: 'dhcodex_journey_regions',
-  journeySanctuaries: 'dhcodex_journey_sanctuaries',
   prep: 'dhcodex_session_prep',
   prepHeaderMode: 'dhcodex_session_prep_header_mode',
   prepSessionHintSeen: 'dhcodex_session_prep_hint_seen',
@@ -22,7 +20,7 @@ const LS_KEYS = {
 const BIOMES = ['underground', 'aquatic', 'wetland', 'grassland', 'tropical', 'forest', 'drylands', 'rolling', 'mountain', 'frozen', 'badlands', 'settlement', 'universal'];
 const TYPES = ['traversal', 'social', 'event', 'exploration'];
 
-/* Shape of data/journey.json, so the generator page can be reached before — or
+/* Shape of data/journey.json, so the Journey editor can be reached before — or
  * instead of — that file landing, and read empty tables rather than throwing. */
 const JOURNEY_EMPTY = { habitat: [], encounter: [], terrain: [], rumors: [], sanctuary: [], nameElements: [] };
 
@@ -128,18 +126,6 @@ const state = {
     lastSavedAt: null, saveFailed: false,
   },
   journey: JOURNEY_EMPTY,
-  journeyRegions: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.journeyRegions, {
-    fallback: () => [],
-    validate: SafeStorage.validators.journeyRegions,
-  }),
-  journeySanctuaries: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.journeySanctuaries, {
-    fallback: () => [],
-    validate: SafeStorage.validators.journeySanctuaries,
-  }),
-  /* The roll on screen that has not been kept yet. Deliberately not persisted:
-   * an unsaved roll is a suggestion the GM is still looking at, and it should
-   * not outlive the visit the way a saved one does. */
-  journeyDraft: { region: null, sanctuary: null },
   lists: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.lists, {
     fallback: () => [],
     validate: SafeStorage.validators.lists,
@@ -731,7 +717,6 @@ const ICON_CHECK_PLAIN = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true
 const ICON_TRASH = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 6.5h15M9.8 6.5V4.9a1 1 0 0 1 1-1h2.4a1 1 0 0 1 1 1v1.6M6.8 6.5l.8 12.3a1 1 0 0 0 1 .9h6.8a1 1 0 0 0 1-.9l.8-12.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.4 10.2v6M13.6 10.2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
 const ICON_COMPASS =`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="m15 9-2.1 4.9L8 16l2.1-4.9L15 9z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
 const ICON_HEX = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.6 20.1 7v10L12 21.4 3.9 17V7L12 2.6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
-const ICON_REROLL = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v4h-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_CHECKLIST = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="1.6" stroke="currentColor" stroke-width="1.6"/><path d="M9 4V3.3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1V4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="m7.8 9.6 1.1 1.1 1.7-1.9M7.8 14.3l1.1 1.1 1.7-1.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 9.4h4.2M13 14.1h4.2M8 17.9h9.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
 const ICON_ADVERSARY_FALLBACK = `<img src="img/adv_fallback.png" alt="" loading="lazy" decoding="async" draggable="false">`;
 const ICON_ITEM_FALLBACK = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 10.5h15v8a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1v-8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M4 8a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2.5H4V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 10.5v9" stroke="currentColor" stroke-width="1.4"/></svg>`;
@@ -1319,11 +1304,10 @@ function render() {
   }
   document.body.dataset.route = state.route.name;
   document.title = routeTitle();
-  // The Journey 2 diagnostic map owns listeners, observers and a large raster;
+  // The Journey map editor owns listeners, observers and a large raster;
   // this is the one place it is released when any other route renders.
-  if (state.route.name !== 'journey2') Journey2View.unmount();
+  if (state.route.name !== 'journey') Journey2View.unmount();
   renderHeader();
-  renderJourneyVersionSwitch();
   // renderPrepPage() owns creating/destroying the item strip and the
   // top-chrome controller for its own re-renders; this is the one place
   // that tears both down when navigating to any *other* route.
@@ -1344,8 +1328,6 @@ function render() {
     renderListsHome();
   } else if (state.route.name === 'journey') {
     renderJourneyPage();
-  } else if (state.route.name === 'journey2') {
-    renderJourney2Page();
   } else if (state.route.name === 'prep') {
     renderPrepPage();
   } else {
@@ -1428,7 +1410,6 @@ function routeTitle() {
   if (env) return `${envName(env)} — ${t('app_title')}`;
   if (state.route.name === 'catalog') return t('browser_title');
   if (state.route.name === 'journey') return `${t('journey_title')} — ${t('app_title')}`;
-  if (state.route.name === 'journey2') return `${t('journey2_title')} — ${t('app_title')}`;
   if (state.route.name === 'prep') return `${t('prep_title')} — ${t('app_title')}`;
   if (state.route.name === 'list') {
     const list = state.lists.find(l => l.id === state.route.id);
@@ -1437,34 +1418,12 @@ function routeTitle() {
   return `${t('lists_title')} — ${t('app_title')}`;
 }
 
-/** Corner [V1][V2] switch shown only on #/journey (V1) and #/journey2 (V2, the default
- * Journey entry point). A plain body-level control so it survives the page redraws. */
-function renderJourneyVersionSwitch() {
-  let el = document.getElementById('journey-version-switch');
-  const name = state.route.name;
-  if (name !== 'journey' && name !== 'journey2') { if (el) el.remove(); return; }
-  if (!el) {
-    el = document.createElement('div');
-    el.id = 'journey-version-switch';
-    el.className = 'journey-version-switch';
-    el.setAttribute('role', 'group');
-    el.addEventListener('click', e => {
-      const b = e.target.closest('button[data-href]');
-      if (b) navigate(b.dataset.href);
-    });
-    document.body.appendChild(el);
-  }
-  el.setAttribute('aria-label', t('journey_version_label'));
-  el.innerHTML = [['V1', '#/journey', 'journey'], ['V2', '#/journey2', 'journey2']].map(([label, href, id]) =>
-    `<button type="button" data-href="${href}" aria-pressed="${name === id}" class="${name === id ? 'active' : ''}">${label}</button>`).join('');
-}
-
 function renderHeader() {
   const el = document.getElementById('header');
   /* Named routes, not "anything but the catalog" — with a third section that
    * test marked Lists as the current page while the generators were open. */
   const onLists = state.route.name === 'lists' || state.route.name === 'list';
-  const onJourney = state.route.name === 'journey' || state.route.name === 'journey2';
+  const onJourney = state.route.name === 'journey';
   const onPrep = state.route.name === 'prep';
   el.innerHTML = `
     <a class="skip-link" href="#grid-wrap">${t('skip_to_content')}</a>
@@ -1502,7 +1461,7 @@ function renderHeader() {
   SoundboardUI.sync();
   document.getElementById('btn-lists').addEventListener('click', () => navigate('#/lists'));
   document.getElementById('btn-prep').addEventListener('click', () => navigate('#/prep'));
-  document.getElementById('btn-journey').addEventListener('click', () => navigate('#/journey2'));
+  document.getElementById('btn-journey').addEventListener('click', () => navigate('#/journey'));
   // A real <button> now, so Enter and Space come for free — the old div carried
   // role="button" and tabindex but no key handler, and did nothing when focused.
   document.getElementById('brand-home').addEventListener('click', () => navigate(''));
@@ -2793,10 +2752,11 @@ function openAddToListPopup(envId, { expanded = false } = {}) {
 
 /* ---------------- Journey to Horizon ---------------- */
 
-/* The book's two mapping procedures: "Filling Wilderness Hexes" on the left and
- * "Creating Sanctuaries" on the right. A kept entry stores the numbers that came
- * up rather than the sentences they printed, so a saved map reads back in either
- * language — and picks up the Russian the moment data/journey.json carries it.
+/* The book's two mapping procedures — "Filling Wilderness Hexes" and "Creating
+ * Sanctuaries" — as pure rolls, consumed by the map editor through
+ * journey2Generator below. Stored results are the numbers that came up rather
+ * than the sentences they printed, so a saved map reads back in either language.
+ * (The retired standalone generator page that once rendered these is gone.)
  *
  * The habitat table is, row for row, the atlas's own eleven biomes, so a rolled
  * habitat can hand the GM straight over to the catalog filtered to it. */
@@ -2933,18 +2893,6 @@ function newJourneyId(prefix) {
   return prefix + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 }
 
-function rollRegion() {
-  return {
-    id: newJourneyId('reg'),
-    name: '',
-    habitat: rollHabitat(),
-    size: rollDie(12),
-    encounter: rollEncounter(),
-    terrain: rollDie(4),
-    rumor: rollDie(100),
-  };
-}
-
 function rollSanctuary() {
   return {
     id: newJourneyId('san'),
@@ -2957,68 +2905,6 @@ function rollSanctuary() {
     size: rollDie(6),
     population: rollDie(4),
   };
-}
-
-/** One table of one entry thrown again, leaving the rest of it standing. */
-function rerollRow(kind, entry, key) {
-  if (kind === 'region') {
-    if (key === 'habitat') entry.habitat = rollHabitat();
-    else if (key === 'size') entry.size = rollDie(12);
-    else if (key === 'encounter') entry.encounter = rollEncounter();
-    else if (key === 'terrain') entry.terrain = rollDie(4);
-    else if (key === 'rumor') entry.rumor = rollDie(100);
-    return;
-  }
-  if (key === 'politics') { entry.politics = rollPolitics(); return; }
-  const table = sanctuaryTable(key);
-  if (table) entry[key] = rollDie(table.die);
-}
-
-/* ---- storage ---- */
-
-function journeySaved(kind) { return kind === 'region' ? state.journeyRegions : state.journeySanctuaries; }
-function journeyLsKey(kind) { return kind === 'region' ? LS_KEYS.journeyRegions : LS_KEYS.journeySanctuaries; }
-
-function journeyEntryById(kind, id) {
-  const draft = state.journeyDraft[kind];
-  if (draft && draft.id === id) return draft;
-  return journeySaved(kind).find(e => e.id === id) || null;
-}
-
-/** A draft lives in memory only, so editing one writes nothing; a kept entry is
- * written through on every change. */
-function persistJourney(kind, entry) {
-  if (state.journeyDraft[kind] === entry) return;
-  persist(journeyLsKey(kind), journeySaved(kind));
-}
-
-function saveJourneyDraft(kind) {
-  const draft = state.journeyDraft[kind];
-  if (!draft) return;
-  journeySaved(kind).push(draft);
-  state.journeyDraft[kind] = null;
-  const result = persist(journeyLsKey(kind), journeySaved(kind));
-  renderJourneyPage(journeySel(kind, null, '[data-roll-new]'));
-  if (result.ok) showToast(t(kind === 'region' ? 'journey_region_saved' : 'journey_sanctuary_saved'));
-}
-
-function deleteJourneyEntry(kind, id) {
-  if (!confirm(t('journey_delete_confirm'))) return;
-  if (kind === 'region') state.journeyRegions = state.journeyRegions.filter(e => e.id !== id);
-  else state.journeySanctuaries = state.journeySanctuaries.filter(e => e.id !== id);
-  persist(journeyLsKey(kind), journeySaved(kind));
-  renderJourneyPage(journeySel(kind, null, '[data-roll-new]'));
-}
-
-/** The habitat table and the atlas's biome filter are the same eleven terrains,
- * so a rolled habitat can produce the stat blocks that suit it. The disclosure
- * is opened along with it: on a phone the filter that did this would otherwise
- * be hidden, leaving a short catalog with no visible reason for being short. */
-function showBiomeInCatalog(biome) {
-  state.filters = { search: '', tiers: new Set(), types: new Set(), sources: new Set(), biomes: new Set([biome]), regionOnly: false };
-  state.filtersOpen = true;
-  resetCatalogVisibility();
-  navigate('');
 }
 
 /* ---- rendering ---- */
@@ -3036,43 +2922,12 @@ const SANCTUARY_ROWS = [
   ['population', 'journey_k_population'],
 ];
 
-function journeySel(kind, id, inner) {
-  return id ? `.journey-entry[data-id="${id}"] ${inner}`
-            : `.journey-panel[data-kind="${kind}"] ${inner}`;
-}
-
-/** `focus` names the element to hand focus back to. The page is redrawn whole on
- * every roll, which throws away the button that was clicked, so without this a
- * keyboard user is dropped back at the top of the document each time. */
-function renderJourneyPage(focus = null) {
-  document.getElementById('toolbar').innerHTML = '';
-  document.getElementById('result-count').innerHTML = '';
-  const el = document.getElementById('grid-wrap');
-  if (!journeyReady()) {
-    el.innerHTML = `<div class="journey-wrap">${emptyStateHtml({
-      icon: ICON_ALERT, title: t('load_error'), hint: t('load_error_hint'), error: true,
-    })}</div>`;
-    return;
-  }
-  el.innerHTML = `
-    <div class="journey-wrap">
-      <h2 class="page-title">${t('journey_title')}</h2>
-      <p class="journey-intro">${t('journey_intro')}</p>
-      <div class="journey-cols">
-        ${journeyPanelHtml('region')}
-        ${journeyPanelHtml('sanctuary')}
-      </div>
-    </div>`;
-  bindJourneyDelegation(el);
-  if (focus) document.querySelector(focus)?.focus();
-}
-
-/** #/journey2 — the Journey 2 map editor (js/journey2-view.js).
+/** #/journey — the Journey map editor (js/journey2-view.js; "journey2" is a retained internal name).
  * Mounted once into #grid-wrap and kept across re-renders (a language switch
  * only re-localizes it), so the camera, selection and unsaved text survive.
- * It owns its own dhcodex_journey2_* storage keys (js/journey2-store.js) and
- * never reads or writes #/journey's state or storage keys. */
-function renderJourney2Page() {
+ * It owns its own dhcodex_journey2_* storage keys (js/journey2-store.js);
+ * those keys keep their name so campaigns saved before the route cutover load unchanged. */
+function renderJourneyPage() {
   document.getElementById('toolbar').innerHTML = '';
   document.getElementById('result-count').innerHTML = '';
   Journey2View.mount(document.getElementById('grid-wrap'), {
@@ -3082,21 +2937,20 @@ function renderJourney2Page() {
 }
 
 /** The environments a Journey 2 region card lists for its biome: every catalog environment whose `biomes` carries that
- * id, in catalog order (tier, then name). Each `href` is the overlay address on #/journey2, so opening one is a plain
+ * id, in catalog order (tier, then name). Each `href` is the overlay address on #/journey, so opening one is a plain
  * link and the map underneath is never re-rendered. */
 function journey2EnvironmentsForBiome(biome) {
   const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
   return allEnvs()
     .filter(env => env.biomes.includes(biome))
     .sort((a, b) => a.tier - b.tier || collator.compare(envName(a), envName(b)))
-    .map(env => ({ id: env.id, name: envName(env), tier: env.tier, href: envHash(env.id, { name: 'journey2' }) }));
+    .map(env => ({ id: env.id, name: envName(env), tier: env.tier, href: envHash(env.id, { name: 'journey' }) }));
 }
 
-/** The Journey 2 region generator: the SAME rolls and tables as #/journey (rollHabitat, rollEncounter,
- * rollDie, state.journey), exposed through a small adapter so the map editor never calls the legacy page
- * renderer and never copies the tables. Every value is rolled — the editor has no way to choose or override
+/** The Journey region generator: the book's rolls and tables (rollHabitat, rollEncounter,
+ * rollDie, state.journey), exposed through a small adapter so the map editor never copies the tables. Every value is rolled — the editor has no way to choose or override
  * one — following the official sequence d20 habitat, d12 size, d8+d6 encounter, d4 terrain, d100 rumor.
- * Returns plain data; nothing is shared with a saved #/journey entry. */
+ * Returns plain data. */
 const journey2Generator = {
   ready() { return journeyReady(); },
   roll() {
@@ -3110,7 +2964,7 @@ const journey2Generator = {
       rumor: rollDie(100),
     };
   },
-  /** One settlement from the SAME rolls as #/journey's sanctuary generator (rollSanctuary): the name from two d100 name
+  /** One settlement from the book's sanctuary rolls (rollSanctuary): the name from two d100 name
    * elements and one die per table. Plain numbers only — what the book's tables print is looked up again on display. */
   rollSanctuary() {
     const s = rollSanctuary();
@@ -3143,213 +2997,12 @@ const journey2Generator = {
   },
 };
 
-function journeyPanelHtml(kind) {
-  const region = kind === 'region';
-  const saved = journeySaved(kind);
-  const draft = state.journeyDraft[kind];
-  return `
-    <section class="journey-panel" data-kind="${kind}">
-      <h3 class="journey-panel-title">
-        ${region ? ICON_HEX : ICON_COMPASS}
-        <span>${t(region ? 'journey_wilderness_title' : 'journey_sanctuaries_title')}</span>
-      </h3>
-      <p class="hint journey-panel-hint">${t(region ? 'journey_wilderness_hint' : 'journey_sanctuaries_hint')}</p>
-      <button type="button" class="btn btn-primary journey-roll" data-roll-new>
-        ${diceIconSVG()}<span>${t(region ? 'journey_roll_region' : 'journey_roll_sanctuary')}</span>
-      </button>
-      ${draft ? `<div class="journey-draft">${journeyEntryHtml(kind, draft, false, 0)}</div>` : ''}
-      <div class="journey-saved">
-        <h4 class="journey-saved-title">
-          <span>${t(region ? 'journey_saved_regions' : 'journey_saved_sanctuaries')}</span>
-          <span class="journey-count">${saved.length}</span>
-        </h4>
-        ${saved.length
-          ? saved.map((e, i) => journeyEntryHtml(kind, e, true, i + 1)).join('')
-          : `<p class="journey-empty">${t(region ? 'journey_no_regions' : 'journey_no_sanctuaries')}</p>`}
-      </div>
-    </section>`;
-}
-
-function journeyEntryHtml(kind, entry, saved, index) {
-  const rows = kind === 'region' ? regionRows(entry) : sanctuaryRows(entry);
-  const fallback = t(kind === 'region' ? 'journey_region_fallback' : 'journey_sanctuary_fallback')
-    .replace('{n}', index);
-  return `
-    <article class="journey-entry${saved ? ' is-saved' : ''}" data-kind="${kind}" data-id="${escapeAttr(entry.id)}">
-      <div class="jr-name-row">
-        <input type="text" class="jr-name" value="${escapeAttr(entry.name || '')}"
-               placeholder="${escapeAttr(saved ? fallback : t('journey_name_placeholder'))}"
-               aria-label="${escapeAttr(t('journey_name_placeholder'))}">
-        <button type="button" class="icon-btn icon-btn--utility jr-icon-btn" data-roll-name
-                aria-label="${escapeAttr(t('journey_roll_name'))}"
-                data-tip="${escapeAttr(t('journey_roll_name'))}">${diceIconSVG()}</button>
-      </div>
-      <dl class="jr-rows">
-        ${rows.map(row => `
-          <div class="jr-row">
-            <dt class="jr-k"><span>${escapeHtml(row.label)}</span><span class="jr-die">${escapeHtml(row.die)}</span></dt>
-            <dd class="jr-v">
-              <span class="jr-roll">${escapeHtml(row.roll)}</span>
-              <div class="jr-body">${row.html}</div>
-              <button type="button" class="icon-btn icon-btn--utility jr-icon-btn jr-reroll" data-reroll="${row.key}"
-                      aria-label="${escapeAttr(t('journey_reroll'))}"
-                      data-tip="${escapeAttr(t('journey_reroll'))}">${ICON_REROLL}</button>
-            </dd>
-          </div>`).join('')}
-      </dl>
-      <div class="jr-foot">
-        ${saved
-          ? `<button type="button" class="btn btn-sm btn-danger" data-delete>${t('delete')}</button>`
-          : `<button type="button" class="btn btn-sm btn-primary" data-save>${t('journey_save')}</button>
-             <button type="button" class="btn btn-sm btn-ghost" data-discard>${t('journey_discard')}</button>`}
-      </div>
-    </article>`;
-}
-
-function regionRows(r) {
-  const habitat = habitatView(r.habitat);
-  const terrain = tableRow(state.journey.terrain, r.terrain);
-  const rumor = tableRow(state.journey.rumors, r.rumor);
-  return [
-    { key: 'habitat', label: t('journey_k_habitat'), die: 'd20',
-      roll: r.habitat.rolls.join(' → '), html: habitatValueHtml(habitat) },
-    { key: 'size', label: t('journey_k_size'), die: 'd12', roll: String(r.size),
-      html: `<span class="jr-strong">${escapeHtml(t('journey_hexes').replace('{n}', r.size))}</span>` },
-    { key: 'encounter', label: t('journey_k_encounter'), die: 'd8+d6',
-      roll: r.encounter.combines ? '2' : String(r.encounter.entries[0][0] + r.encounter.entries[0][1]),
-      html: encounterValueHtml(r.encounter) },
-    { key: 'terrain', label: t('journey_k_terrain'), die: 'd4', roll: String(r.terrain),
-      html: terrainValueHtml(terrain) },
-    { key: 'rumor', label: t('journey_k_rumor'), die: 'd100', roll: String(r.rumor),
-      html: `<span class="jr-text">${escapeHtml(jText(rumor?.text))}</span>` },
-  ];
-}
-
-function sanctuaryRows(s) {
-  return SANCTUARY_ROWS.map(([key, labelKey]) => {
-    const table = sanctuaryTable(key);
-    const label = t(labelKey);
-    const die = 'd' + (table ? table.die : '');
-    if (key !== 'politics') {
-      return { key, label, die, roll: String(s[key]),
-               html: `<span class="jr-strong">${escapeHtml(jText(tableRow(table?.rows, s[key])?.text))}</span>` };
-    }
-    /* A combined result keeps "8" in the roll column and hangs each system's own
-     * roll off the system instead. Listing them all in the column would widen it
-     * and push this one row's text out of line with every other row's. */
-    const rolls = s.politics.rolls;
-    if (rolls.length === 1) {
-      return { key, label, die, roll: String(rolls[0]),
-               html: `<span class="jr-strong">${escapeHtml(jText(tableRow(table?.rows, rolls[0])?.text))}</span>` };
-    }
-    return {
-      key, label, die, roll: '8',
-      html: `<span class="jr-note">${escapeHtml(t('journey_politics_combined'))}</span>`
-        + rolls.map(r => `<span class="jr-strong"><span class="jr-subroll">${r}</span>`
-            + `${escapeHtml(jText(tableRow(table?.rows, r)?.text))}</span>`).join(''),
-    };
-  });
-}
-
-function habitatValueHtml(habitat) {
-  const bits = [];
-  if (habitat.blighted) bits.push(`<span class="jr-blight">${escapeHtml(t('journey_shadowblighted'))}</span>`);
-  if (habitat.overtaken) {
-    bits.push(`<span class="jr-text">${escapeHtml(t('journey_overtaken'))}</span>`);
-  } else if (habitat.biome) {
-    bits.push(`<button type="button" class="biome-chip jr-biome" data-biome="${escapeAttr(habitat.biome)}"
-                       data-tip="${escapeAttr(t('journey_show_in_catalog'))}">${escapeHtml(t('biome_' + habitat.biome))}</button>`);
-    if (habitat.examples) bits.push(`<span class="jr-examples">${escapeHtml(habitat.examples)}</span>`);
-  }
-  return bits.join('');
-}
-
-/* Combined results carry their own roll, for the same reason the political
- * systems do: the roll column stays one width down the whole card. */
-function encounterValueHtml(encounter) {
-  const combined = encounter.combines > 0;
-  const bits = encounter.entries.map(pair => {
-    const sum = pair[0] + pair[1];
-    return `<span class="jr-text">${combined ? `<span class="jr-subroll">${sum}</span>` : ''}`
-      + `${boldMarkupHtml(jText(tableRow(state.journey.encounter, sum)?.text))}</span>`;
-  });
-  if (combined) bits.unshift(`<span class="jr-note">${escapeHtml(t('journey_encounter_combined'))}</span>`);
-  return bits.join('');
-}
-
-function terrainValueHtml(row) {
-  if (!row) return '';
-  return `<span class="jr-strong">${escapeHtml(jText(row.name))}</span>`
-       + `<span class="jr-days">${escapeHtml(t('journey_travel_days').replace('{n}', row.days))}</span>`
-       + `<span class="jr-text">${escapeHtml(jText(row.text))}</span>`;
-}
-
-/* One listener for the whole page, kept across re-renders the way the grid's is
- * — every roll rebuilds every entry, so per-button binding would re-register the
- * lot each time. */
-function bindJourneyDelegation(el) {
-  if (el._journeyDelegated) return;
-  el._journeyDelegated = true;
-
-  el.addEventListener('click', e => {
-    const fresh = e.target.closest('[data-roll-new]');
-    if (fresh) {
-      const kind = fresh.closest('.journey-panel').dataset.kind;
-      state.journeyDraft[kind] = kind === 'region' ? rollRegion() : rollSanctuary();
-      renderJourneyPage(journeySel(kind, null, '[data-roll-new]'));
-      return;
-    }
-    const entryEl = e.target.closest('.journey-entry');
-    if (!entryEl) return;
-    const { kind, id } = entryEl.dataset;
-    const entry = journeyEntryById(kind, id);
-    if (!entry) return;
-
-    const biome = e.target.closest('[data-biome]');
-    if (biome) { showBiomeInCatalog(biome.dataset.biome); return; }
-    if (e.target.closest('[data-roll-name]')) {
-      entry.name = rollSettlementName();
-      persistJourney(kind, entry);
-      renderJourneyPage(journeySel(kind, id, '[data-roll-name]'));
-      return;
-    }
-    const reroll = e.target.closest('[data-reroll]');
-    if (reroll) {
-      const key = reroll.dataset.reroll;
-      rerollRow(kind, entry, key);
-      persistJourney(kind, entry);
-      renderJourneyPage(journeySel(kind, id, `[data-reroll="${key}"]`));
-      return;
-    }
-    if (e.target.closest('[data-save]')) { saveJourneyDraft(kind); return; }
-    if (e.target.closest('[data-discard]')) {
-      state.journeyDraft[kind] = null;
-      renderJourneyPage(journeySel(kind, null, '[data-roll-new]'));
-      return;
-    }
-    if (e.target.closest('[data-delete]')) deleteJourneyEntry(kind, id);
-  });
-
-  /* A typed name is the one thing on this page that is the GM's own text rather
-   * than a roll, so it is written through on commit instead of on a re-render. */
-  el.addEventListener('change', e => {
-    const input = e.target.closest('.jr-name');
-    if (!input) return;
-    const entryEl = input.closest('.journey-entry');
-    const { kind, id } = entryEl.dataset;
-    const entry = journeyEntryById(kind, id);
-    if (!entry) return;
-    entry.name = input.value.trim();
-    persistJourney(kind, entry);
-  });
-}
-
 /* ---------------- Prep (#/prep) ----------------
    MVP: one active preparation, three binary-selection catalogs (no primary
    environment, no quantity anywhere). Pure selection/search logic lives in
    js/prep-utils.js (PrepUtils); this section is the DOM layer
    over it, following the same render-into-#grid-wrap architecture as
-   renderListsHome()/renderJourneyPage() above. See the "Prep"
+   renderListsHome() above. See the "Prep"
    sections in CLAUDE.md for the full contract.
 
    Rendering is split deliberately: renderPrepPage() builds the whole

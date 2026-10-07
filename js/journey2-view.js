@@ -1,6 +1,6 @@
 /* ============================================================
    Bacchus's Atlas — journey2-view.js
-   The #/journey2 GM map editor (Journey 2, Phase 1): a fixed, measured map
+   The #/journey GM map editor (internally "Journey 2"; Phase 1): a fixed, measured map
    of Valloren with a region generator, a per-batch hex stock, drag-one /
    drag-all-remaining placement, individual tile movement, return-to-stock,
    Undo/Redo, local saving and full GM JSON backup import/export. The
@@ -107,7 +107,7 @@
     if (current) { const c = current; current = null; c.dispose(); }
   }
   function isMounted() { return !!(current && !current.disposed); }
-  function preparePrintProof(id) { return current ? current.preparePrintProof(id) : Promise.reject(new Error('Journey 2 view is not mounted')); }
+  function preparePrintProof(id) { return current ? current.preparePrintProof(id) : Promise.reject(new Error('Journey view is not mounted')); }
   function cleanupPrintProof() { if (current) current.cleanupPrintProof(); }
   function debugState() { return current ? current.debugState() : null; }
   function debugApi() { return current ? current.debugApi : null; }
@@ -393,7 +393,7 @@
       const tpl = data.template, [W, H] = tpl.worldSizePx;
       ui = {};
       container.innerHTML = `
-        <section class="j2" aria-label="Journey 2">
+        <section class="j2" data-t-aria="journey_title">
           <div class="j2-toolbar" role="toolbar" data-t-aria="journey2_toolbar_label">
             <div class="j2-tb-group" role="group" data-j2-history-group data-t-aria="journey2_history_label">
               <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-undo data-t-aria="journey2_undo" data-t-title="journey2_undo">${ICON.undo}</button>
@@ -917,7 +917,7 @@
 
     /**
      * The inspector's read-only "Suggested environments" disclosure: every catalog environment tagged with the region's biome, each a
-     * plain link to that environment's overlay on #/journey2 (the overlay is route-driven, so the map underneath is never re-rendered).
+     * plain link to that environment's overlay on #/journey (the overlay is route-driven, so the map underneath is never re-rendered).
      * The matching itself is supplied by app.js (`environmentsForBiome`) — nothing here re-implements it, and the order is kept as
      * given. Collapsed by default every time a region is shown; the list is built once per biome + language so an open list and the
      * focus inside it survive every re-render. An overtaken region has no biome and therefore no list.
@@ -2898,7 +2898,7 @@
        Backup export / import
        ============================================================ */
 
-    function backupFileName() { return 'journey2-map-' + new Date().toISOString().slice(0, 10) + '.json'; }
+    function backupFileName() { return 'bacchus-atlas-journey-map-' + new Date().toISOString().slice(0, 10) + '.json'; }
 
     function download(text, name) {
       const blob = new Blob([text], { type: 'application/json' });

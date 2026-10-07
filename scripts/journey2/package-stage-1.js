@@ -49,10 +49,10 @@ for (const [f, note] of SNAPSHOT_FILES) {
 /* excerpts of the large shared files (the full diff is in working-tree.patch) */
 {
   const app = fs.readFileSync(path.join(ROOT, 'js', 'app.js'), 'utf8').replace(/\r\n/g, '\n');
-  const a = app.indexOf('/** #/journey2 — the Journey 2 map editor'), b = app.indexOf('function journeyPanelHtml(kind)');
+  const a = app.indexOf('/** #/journey — the Journey map editor'), b = app.indexOf('/* ---------------- Prep (#/prep)');
   const d = path.join(SNAP, 'js'); fs.mkdirSync(d, { recursive: true });
-  fs.writeFileSync(path.join(d, 'app.journey2-excerpt.js'), '/* REVIEW-ONLY EXCERPT of js/app.js (renderJourney2Page + the journey2Generator adapter). Not a module. */\n' + app.slice(a, b));
-  files.push({ sourcePath: 'js/app.js', snapshotPath: 'review-snapshots/js/app.journey2-excerpt.js', sha256: sha(path.join(ROOT, 'js', 'app.js')), bytes: fs.statSync(path.join(ROOT, 'js', 'app.js')).size, note: 'EXCERPT only (sha256/bytes are of the full js/app.js): renderJourney2Page + journey2Generator adapter over the existing rolls' });
+  fs.writeFileSync(path.join(d, 'app.journey2-excerpt.js'), '/* REVIEW-ONLY EXCERPT of js/app.js (renderJourneyPage + the journey2Generator adapter). Not a module. */\n' + app.slice(a, b));
+  files.push({ sourcePath: 'js/app.js', snapshotPath: 'review-snapshots/js/app.journey2-excerpt.js', sha256: sha(path.join(ROOT, 'js', 'app.js')), bytes: fs.statSync(path.join(ROOT, 'js', 'app.js')).size, note: 'EXCERPT only (sha256/bytes are of the full js/app.js): renderJourneyPage + journey2Generator adapter over the existing rolls' });
   const i18n = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'i18n.json'), 'utf8'));
   const ex = {}; for (const lang of ['en', 'ru']) { ex[lang] = {}; for (const k of Object.keys(i18n[lang])) if (k.startsWith('journey2_')) ex[lang][k] = i18n[lang][k]; }
   fs.mkdirSync(path.join(SNAP, 'data'), { recursive: true });

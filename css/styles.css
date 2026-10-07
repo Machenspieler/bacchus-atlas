@@ -204,7 +204,6 @@ body {
 body[data-route="catalog"]::before,
 body[data-route="lists"]::before,
 body[data-route="list"]::before,
-body[data-route="journey"]::before,
 body[data-route="prep"]::before {
   --catalog-art-opacity: 0.26;
   --catalog-art-size: min(1024px, 82vw, 100vh);
@@ -231,7 +230,6 @@ body[data-route="prep"]::before {
   body[data-route="catalog"]::before,
   body[data-route="lists"]::before,
   body[data-route="list"]::before,
-  body[data-route="journey"]::before,
   body[data-route="prep"]::before {
     --catalog-art-opacity: 0.14;
     --catalog-art-size: min(140vw, 640px);
@@ -243,7 +241,6 @@ body[data-route="prep"]::before {
   body[data-route="catalog"]::before,
   body[data-route="lists"]::before,
   body[data-route="list"]::before,
-  body[data-route="journey"]::before,
   body[data-route="prep"]::before { display: none; }
 }
 
@@ -1816,131 +1813,6 @@ ol.feature-bullets { list-style: decimal; }
   border: solid var(--hope-ink); border-width: 0 2px 2px 0; transform: rotate(45deg);
 }
 
-/* ---------- Journey to Horizon ---------- */
-
-/* #grid-wrap is a CSS grid on every route, so a page that is prose and panels
- * rather than a card grid has to claim the full track. The top margin matches
- * the one the toolbar carries when it leads instead. */
-.journey-wrap { grid-column: 1 / -1; margin-top: var(--s-6); }
-.journey-intro {
-  margin: 0 0 var(--s-6); max-width: var(--measure);
-  font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--muted);
-}
-
-/* The two generators sit side by side, and each grows downwards on its own as
- * entries are kept — so the tracks are independent and aligned to the top
- * rather than stretched to the taller one. */
-.journey-cols {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s-6); align-items: start;
-}
-.journey-panel { min-width: 0; display: flex; flex-direction: column; gap: var(--s-3); }
-.journey-panel-title {
-  display: flex; align-items: center; gap: var(--s-2); margin: 0;
-  font-family: var(--font-display); font-weight: 400;
-  font-size: var(--fs-lg); line-height: var(--lh-lg); letter-spacing: var(--tracking-display);
-  color: var(--parchment);
-}
-.journey-panel-title svg { width: var(--s-5); height: var(--s-5); flex: none; color: var(--hope); }
-.journey-panel-hint { max-width: 54ch; }
-.journey-roll { align-self: flex-start; }
-.journey-roll svg { width: var(--icon-md); height: var(--icon-md); flex: none; }
-
-.journey-saved { display: flex; flex-direction: column; gap: var(--s-3); margin-top: var(--s-2); }
-.journey-saved-title {
-  display: flex; align-items: center; gap: var(--s-2); margin: 0;
-  padding-top: var(--s-3); border-top: 1px solid var(--line-faint);
-  font-size: var(--fs-xs); line-height: var(--lh-xs);
-  letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--muted);
-}
-.journey-count {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 22px; height: 18px; padding: 0 5px;
-  border: 1px solid var(--line); border-radius: var(--r-pill);
-  font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: 0;
-  color: var(--parchment-dim);
-}
-.journey-empty { margin: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--muted); }
-
-/* One rolled region or sanctuary. The unsaved one is ringed in gold: it is what
- * just happened, and the only one still carrying a decision. */
-.journey-entry {
-  background: var(--ink-card); border: 1px solid var(--line); border-radius: var(--r-md);
-  padding: var(--s-4); display: flex; flex-direction: column; gap: var(--s-3);
-  box-shadow: var(--e-1);
-}
-.journey-draft .journey-entry { border-color: var(--hope); box-shadow: var(--e-2); }
-
-.jr-name-row { display: flex; align-items: center; gap: var(--s-2); }
-.jr-name {
-  flex: 1; min-width: 0; background: transparent; border: none;
-  border-bottom: 1px solid var(--line-faint); color: var(--parchment);
-  font-family: var(--font-display); font-size: var(--fs-lg); line-height: var(--lh-lg);
-  letter-spacing: var(--tracking-display); padding: var(--s-1) 0;
-  transition: border-color var(--t-fast) var(--ease-out);
-}
-/* The placeholder is a prompt, not a name, so it steps out of the display face
- * the field itself is set in. */
-.jr-name::placeholder {
-  font-family: var(--font-body); font-size: var(--fs-base); letter-spacing: 0; color: var(--muted);
-}
-.jr-name:hover { border-bottom-color: var(--line-strong); }
-.jr-name:focus { border-bottom-color: var(--hope); }
-
-.jr-icon-btn { --ib-size: 28px; }
-.jr-icon-btn:active { transform: scale(0.92); }
-
-.jr-rows { margin: 0; display: flex; flex-direction: column; }
-.jr-row { padding: var(--s-2) 0; border-top: 1px solid var(--line-faint); }
-.jr-row:first-child { border-top: none; padding-top: 0; }
-.jr-k {
-  display: flex; align-items: baseline; gap: var(--s-2); margin: 0 0 var(--s-1);
-  font-size: var(--fs-xs); line-height: var(--lh-xs);
-  letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--muted);
-}
-/* Opting out of the label row's caps: dice notation is written lowercase
- * everywhere else on the site, and "D8+D6" is not how the books set it. */
-.jr-die {
-  font-family: var(--font-mono); font-size: var(--fs-micro);
-  letter-spacing: 0; text-transform: none; color: var(--teal-soft);
-}
-
-/* The roll is pinned left so the numbers line up down the card, and the button
- * that throws it again pinned right, clear of the text between them. */
-.jr-v { display: flex; align-items: flex-start; gap: var(--s-3); margin: 0; }
-.jr-roll {
-  flex: none; min-width: 4.5em; padding-top: 2px; white-space: nowrap;
-  font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--hope);
-}
-.jr-body { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-1); }
-.jr-reroll { margin-left: auto; }
-
-.jr-strong { font-size: var(--fs-base); line-height: var(--lh-base); color: var(--parchment); }
-.jr-text { font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); }
-.jr-examples { font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--muted); }
-.jr-days { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--hope-soft); }
-.jr-note { font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--teal-soft); }
-/* The roll behind one of several combined results, hung off the result itself
- * rather than crowded into the roll column. */
-.jr-subroll {
-  display: inline-block; min-width: 1.6em; margin-right: var(--s-2);
-  font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--hope);
-}
-.jr-blight {
-  display: inline-flex; align-items: center; height: var(--h-xs); padding: 0 var(--s-2);
-  border: 1px solid var(--fear); border-radius: var(--r-xs);
-  font-family: var(--font-mono); font-size: var(--fs-micro); line-height: 1;
-  letter-spacing: var(--tracking-badge); text-transform: uppercase; color: var(--fear-soft);
-}
-
-/* The habitat chip is the one thing on this page that goes somewhere, so unlike
- * the chips on a stat block card it takes a pointer and a hover. A bare button
- * would otherwise draw the platform's own grey fill through the border. */
-button.jr-biome { background: transparent; cursor: pointer; }
-button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
-
-.jr-foot { display: flex; gap: var(--s-2); flex-wrap: wrap; }
-
 /* ---------- footer ---------- */
 .site-footer {
   max-width: 1180px; margin: var(--s-8) auto 0; padding: var(--s-5) var(--s-5) 0;
@@ -2131,13 +2003,6 @@ button.jr-biome:hover { border-color: var(--hope); color: var(--hope-soft); }
   }
   .toast { animation-name: toast-in-top; }
   @keyframes toast-in-top { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
-}
-
-/* Two panels of prose side by side stop being readable once each track is
- * narrower than a catalog card. Below that they stack, and the sanctuary
- * generator sits under the wilderness one. */
-@media (max-width: 760px) {
-  .journey-cols { grid-template-columns: 1fr; gap: var(--s-7); }
 }
 
 /* Two nav labels plus the language switch no longer fit beside the logo here —
@@ -2487,21 +2352,21 @@ body[data-route="prep"][data-sp-header-mode="compact"] .lang-switch {
   transition: height var(--t-base) var(--ease-out);
 }
 
-/* Journey 2 always uses the same compact header as Prep's compact mode. */
-body[data-route="journey2"] .header-inner {
+/* Journey always uses the same compact header as Prep's compact mode. */
+body[data-route="journey"] .header-inner {
   padding-block: var(--s-2);
   min-height: 45px;
 }
-body[data-route="journey2"] .brand-meta { display: none; }
-body[data-route="journey2"] .brand-text h1 {
+body[data-route="journey"] .brand-meta { display: none; }
+body[data-route="journey"] .brand-text h1 {
   font-size: var(--fs-base); line-height: 1.15; letter-spacing: 0.06em;
 }
 @media (max-width: 640px) {
-  body[data-route="journey2"] .brand-title-text { display: none; }
+  body[data-route="journey"] .brand-title-text { display: none; }
 }
-body[data-route="journey2"] .brand-mark { height: 28px; }
-body[data-route="journey2"] .header-actions .btn,
-body[data-route="journey2"] .lang-switch { height: 28px; }
+body[data-route="journey"] .brand-mark { height: 28px; }
+body[data-route="journey"] .header-actions .btn,
+body[data-route="journey"] .lang-switch { height: 28px; }
 
 /* ---- compact mode: the Prep Bar comes out of layout entirely, not
    merely shrunk. It is prep *management* — a GM mid-prep wants the
@@ -3993,16 +3858,3 @@ body.is-prep-dragging, body.is-prep-dragging * { cursor: grabbing !important; us
 @media (any-pointer: coarse) and (not (any-pointer: fine)) { .prep-drag-ghost { display: none; } }
 /* Hover tooltips would trail the pointer across every card it crosses. */
 body.is-prep-dragging .tooltip { display: none !important; }
-
-/* Journey [V1][V2] version switch — fixed corner control on #/journey and #/journey2 */
-.journey-version-switch {
-  position: fixed; right: var(--s-3); bottom: var(--s-3); z-index: 80;
-  display: inline-flex; border: 1px solid var(--hope-border); border-radius: 999px; overflow: hidden;
-  background: var(--ink-card);
-}
-.journey-version-switch button {
-  font: inherit; font-size: 0.8rem; padding: 4px 12px; color: inherit; background: transparent; border: 0; cursor: pointer;
-}
-.journey-version-switch button:hover { background: var(--hope-hover-bg); }
-.journey-version-switch button.active { background: var(--hope-selected-bg); }
-.journey-version-switch button:focus-visible { outline: 2px solid var(--hope); outline-offset: -2px; }

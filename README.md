@@ -340,14 +340,15 @@ drawn.
 
 ## Journey to Horizon (map generators)
 
-The "Journey" button in the header, next to "Lists", opens `#/journey` — a
-page with two generators from the Journey to Horizon book:
+The "Journey" button in the header, next to "Lists", opens `#/journey` — the
+interactive GM map editor on the Valloren map (older `#/journey2` links redirect
+there). It rolls the book's two procedures and places the results on the map:
 
-* on the left, **"Wilderness Hexes"** — a region: habitat (d20), size in
-  hexes (d12), encounter (d8+d6), terrain and travel days (d4), rumor (d100);
-* on the right, **"Sanctuaries"** — trade (d20), feature (d12), crisis (d10),
-  aspiration (d10), government (d8), size (d6), population (d4), and a name
-  built from the element table (d100 × 2).
+* a **wilderness region** — habitat (d20), size in hexes (d12), encounter
+  (d8+d6), terrain and travel days (d4), rumor (d100);
+* **sanctuaries** — trade (d20), feature (d12), crisis (d10), aspiration (d10),
+  government (d8), size (d6), population (d4), and a name built from the
+  element table (d100 × 2).
 
 All the tables live in `data/journey.json`. The book's special rows are
 implemented:
