@@ -411,7 +411,7 @@ test('Player Preview: read-only, projection-driven, document and history untouch
   assert.match(tiles, /Projection\.buildPlayerProjection\(doc, data\.ctx\)/);
   assert.doesNotMatch(tiles, /doc\.tiles|doc\.batches/, 'the preview never reads regions directly');
   const chrome = fn('applyPreviewChrome', 'enterPreview');
-  for (const part of ['ui.sidewrap.hidden = on', 'ui.historyGroup.hidden = on', 'ui.fogGroup.hidden = on', 'ui.save.hidden = on', 'ui.previewBar.hidden = !on']) assert.ok(chrome.includes(part), part);
+  for (const part of ['ui.sidewrap.hidden = on', 'ui.historyGroup.hidden = on', 'ui.fogGroup.hidden = on', 'ui.previewBar.hidden = !on']) assert.ok(chrome.includes(part), part);
   assert.match(fn('undo', 'redo'), /previewMode\) return/);
   assert.match(view, /if \(previewMode\) return;\s+\/\/ the preview is read-only: no Undo\/Redo/);
   assert.match(fn('applyLayerVisibility', 'clearProof'), /layers\[k\] && !previewMode/);

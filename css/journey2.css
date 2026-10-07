@@ -51,7 +51,6 @@ body[data-route="journey2"] #grid-wrap { display: block; }
   background: var(--ink-raised); border: 1px solid var(--line-faint); border-radius: var(--r-md);
 }
 .j2-tb-group { display: flex; align-items: center; gap: var(--s-1); min-width: 0; }
-.j2-tb-title { gap: var(--s-3); }
 .j2-tb-end { margin-left: auto; gap: var(--s-2); }
 /* Fog of War tools: a labelled group (icon + text, so a tool is never identified by colour alone) */
 .j2-tb-fog { padding-left: var(--s-3); border-left: 1px solid var(--line-faint); }
@@ -71,11 +70,6 @@ body[data-route="journey2"] #grid-wrap { display: block; }
 .j2-tb-preview .btn { margin-left: auto; }
 .j2[data-mode="preview"] .j2-toolbar { border-color: var(--hope-border); }
 .j2[data-mode="preview"] .j2-viewport { box-shadow: inset 0 0 0 2px var(--hope-border); cursor: grab; }
-.j2-title {
-  margin: 0; font-family: var(--font-display); font-weight: 400;
-  font-size: var(--fs-lg); line-height: var(--lh-lg); letter-spacing: var(--tracking-display); color: var(--parchment);
-  white-space: nowrap;
-}
 .j2-chip {
   display: inline-flex; align-items: center; height: var(--h-xs); padding: 0 var(--s-2);
   border: 1px solid var(--type-chip-border); border-radius: var(--r-xs);
@@ -95,16 +89,6 @@ body[data-route="journey2"] #grid-wrap { display: block; }
 .j2 .btn[aria-pressed="true"] { background: var(--hope-selected-bg); border-color: var(--hope); color: var(--hope-soft); }
 .j2 .btn[aria-pressed="true"]:hover { background: var(--hope-selected-hover-bg); }
 
-/* save status: fixed footprint so a state change never shifts the toolbar */
-.j2-save {
-  display: inline-flex; align-items: center; gap: var(--s-2); min-width: 21ch;
-  font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--parchment-dim); white-space: nowrap;
-}
-.j2-save-ico { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
-.j2-save[data-state="saved"] .j2-save-ico { background: var(--teal-soft); }
-.j2-save[data-state="unsaved"] .j2-save-ico, .j2-save[data-state="loading"] .j2-save-ico { background: var(--hope); }
-.j2-save[data-state="failed"], .j2-save[data-state="unavailable"], .j2-save[data-state="blocked"] { color: var(--fear-soft); }
-.j2-save[data-state="failed"] .j2-save-ico, .j2-save[data-state="unavailable"] .j2-save-ico, .j2-save[data-state="blocked"] .j2-save-ico { background: var(--fear-soft); }
 
 /* menus */
 .j2-menu-wrap { position: relative; }
@@ -217,7 +201,7 @@ body[data-route="journey2"] #grid-wrap { display: block; }
 .j2-blight[hidden] { display: none; }
 .j2-card-sum { margin: 0; padding-left: calc(32px + var(--s-2)); font-family: var(--font-mono); font-size: var(--fs-xs); font-variant-numeric: tabular-nums; color: var(--parchment-dim); }
 .j2-card-sum[hidden], .j2-warn[hidden], .j2-card-body[hidden], .j2-done[hidden], .j2-status[hidden], .j2-actions[hidden], .j2-envs-list[hidden], .j2-insp-tile[hidden], .j2-insp-envs-toggle[hidden], .j2-insp-muted[hidden], .j2-insp-tile-text[hidden],
-.j2-tb-group[hidden], .j2-save[hidden], .j2-fog-chip[hidden], .j2-sidewrap[hidden] { display: none; }
+.j2-tb-group[hidden], .j2-fog-chip[hidden], .j2-sidewrap[hidden] { display: none; }
 /* enclosed-hole warning: icon + text + a dashed edge, so it never relies on colour alone */
 .j2-warn { margin: 0; display: flex; align-items: center; gap: var(--s-1); padding: 2px var(--s-2); border: 1px dashed var(--fear-soft); border-radius: var(--r-xs); font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--fear-soft); }
 .j2-warn-ico { display: inline-flex; flex: none; }

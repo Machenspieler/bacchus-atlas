@@ -389,10 +389,6 @@
       container.innerHTML = `
         <section class="j2" aria-label="Journey 2">
           <div class="j2-toolbar" role="toolbar" data-t-aria="journey2_toolbar_label">
-            <div class="j2-tb-group j2-tb-title">
-              <h2 class="j2-title" data-t="journey2_map_name"></h2>
-              <span class="j2-save" data-j2-save role="status" aria-live="polite"><span class="j2-save-ico" aria-hidden="true"></span><span class="j2-save-text"></span></span>
-            </div>
             <div class="j2-tb-group" role="group" data-j2-history-group data-t-aria="journey2_history_label">
               <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-undo data-t-aria="journey2_undo" data-t-title="journey2_undo">${ICON.undo}</button>
               <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-redo data-t-aria="journey2_redo" data-t-title="journey2_redo">${ICON.redo}</button>
@@ -555,7 +551,6 @@
       ui.placeHint = container.querySelector('[data-j2-place-hint]');
       ui.sideToggles = Array.from(container.querySelectorAll('[data-j2-side-toggle]'));
       ui.sideScroll = container.querySelector('[data-j2-side-scroll]');
-      ui.save = container.querySelector('[data-j2-save]');
       ui.historyGroup = container.querySelector('[data-j2-history-group]');
       ui.fogGroup = container.querySelector('[data-j2-fog-group]');
       ui.fogState = container.querySelector('[data-j2-fog-state]');
@@ -643,19 +638,10 @@
 
     function persist() {
       if (inst.disposed || !store) return;
-      if (editLocked) { saveState = { status: 'blocked', reason: loadInfo && loadInfo.code }; renderSave(); return; }
+      if (editLocked) { saveState = { status: 'blocked', reason: loadInfo && loadInfo.code }; return; }
       const r = store.save(doc);
       saveState = r.ok ? { status: 'saved', reason: null } : { status: r.reason === 'unavailable' ? 'unavailable' : 'failed', reason: r.reason };
-      renderSave();
       renderBanner();
-    }
-
-    function renderSave() {
-      if (!ui.save) return;
-      const s = saveState.status;
-      ui.save.setAttribute('data-state', s);
-      ui.save.querySelector('.j2-save-text').textContent = t('journey2_save_' + s);
-      ui.save.title = s === 'failed' ? t('journey2_banner_failed') : s === 'unavailable' ? t('journey2_banner_unavailable') : '';
     }
 
     function renderBanner() {
@@ -1742,7 +1728,6 @@
       renderInspector();
       positionInspector();
       updateHistoryButtons();
-      renderSave();
       renderBanner();
       if (ui.stockCount) updateReadouts();
     }
@@ -2047,7 +2032,7 @@
       const on = previewMode;
       ui.root.setAttribute('data-mode', on ? 'preview' : 'gm');
       ui.sidewrap.hidden = on; ui.sidewrap.inert = on;
-      ui.historyGroup.hidden = on; ui.fogGroup.hidden = on; ui.echoGroup.hidden = on; ui.sancGroup.hidden = on; ui.save.hidden = on;
+      ui.historyGroup.hidden = on; ui.fogGroup.hidden = on; ui.echoGroup.hidden = on; ui.sancGroup.hidden = on;
       ui.previewBar.hidden = !on;
       ui.hint.hidden = true; ui.tip.hidden = true;
       ui.viewport.setAttribute('aria-label', t(on ? 'journey2_preview_map_label' : 'journey2_map_label'));
