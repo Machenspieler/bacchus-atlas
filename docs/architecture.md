@@ -1268,9 +1268,7 @@ Run all of them with `node --test tests/*.test.js`.
   - *View.* `renderHexEnvironment()` fills the inspector's `[data-j2-i="hexEnvSec"]` only for `inspector.source === 'map'`; the list is
     `hexEnvironmentList(b)` = `environmentsFor(biome)` (the app.js adapter; none when overtaken) and rows reuse its `href`, so the
     overlay stays route-driven and the map is never re-rendered. The body is rebuilt only when its signature changes, so a focused link
-    and the picker's scroll survive. `envPicker` is transient view state (cleared on any inspector change, Undo/Redo). The map shows a small GM-only card
-    marker (`envMarkersMarkup()`, upper-left of the hex, appended to the tiles layer in the GM branch of `renderTiles()` only — Player
-    Preview and print never call it). `updateEnvTip()` reuses `[data-j2-tip]` for neutral hover.
+    and the picker's scroll survive. `envPicker` is transient view state (cleared on any inspector change, Undo/Redo). There is no persistent map marker (product decision, F-02 of Journey audit 01: the hex shows no environment icon; assigned Environments are reached through the hex inspector, and a future biome-compatible auto-assignment may revisit this). `updateEnvTip()` reuses `[data-j2-tip]` for neutral hover.
   - *GM-only.* `buildPlayerProjection` builds overlays from an explicit field list, so `environmentId` can never reach Player Preview or
     the future print; `tests/journey2-hex-environment.test.js` asserts it. Browser checks: `scripts/journey2/lib/hex-environment-checks.js`.
 - **Sanctuaries (PD-023):**

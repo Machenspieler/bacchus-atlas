@@ -1536,28 +1536,8 @@
       renderEchoes();
       const byBatch = new Map(doc.batches.map(b => [b.id, b])), tints = Tint.gmTintByCell(doc, showBiome);
       ui.g.tiles.innerHTML = overlayMarkup(doc.tiles.map(tile => { const c = Geo.parseCellId(tile.cell); return { q: c.q, r: c.r, spec: specOfBatch(byBatch.get(tile.batchId)), tint: tints.get(tile.cell) || null }; }));
-      ui.g.tiles.innerHTML += envMarkersMarkup(doc.tiles);
       renderPerimeter();
       renderSanctuaryLabels();
-    }
-
-    /**
-     * GM-only Environment marker (PD-025): a small card glyph in the upper-left of every placed hex that carries an Environment. Decorative
-     * (aria-hidden, no pointer events), world-space like the glyphs, and produced ONLY here in the GM branch — the Player Preview and the print
-     * never call it and the player projection has no `environmentId` to draw from.
-     */
-    function envMarkersMarkup(tiles) {
-      let h = '';
-      for (const tile of tiles) {
-        if (!tile.environmentId) continue;
-        const c = Geo.parseCellId(tile.cell), pts = data.grid.cellCorners(c.q, c.r), ctr = data.grid.cellCenter(c.q, c.r);
-        const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
-        const hw = (Math.max.apply(null, xs) - Math.min.apply(null, xs)) / 2, hh = (Math.max.apply(null, ys) - Math.min.apply(null, ys)) / 2;
-        const w = hw * 0.42, ht = w * 1.25, x = ctr[0] - hw * 0.46 - w / 2, y = ctr[1] - hh * 0.36 - ht / 2, k = w / 12;
-        h += '<g class="j2-envmark" data-tile="' + esc(tile.id) + '" aria-hidden="true" pointer-events="none" transform="translate(' + fmt(x, 1) + ' ' + fmt(y, 1) + ') scale(' + fmt(k, 3) + ')">' +
-          '<rect class="j2-envmark-card" x="0" y="0" width="12" height="15" rx="1.8"/><path class="j2-envmark-lines" d="M2.8 4.6h6.4M2.8 7.6h6.4M2.8 10.6h4"/></g>';
-      }
-      return h ? '<g class="j2-envmark-layer">' + h + '</g>' : '';
     }
 
     /**

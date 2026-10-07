@@ -701,9 +701,6 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-hexenv-row .btn { flex: none; }
 .j2-hexenv-row.is-current { background: var(--hope-wash); }
 .j2-hexenv-assigned { flex: none; font-size: var(--fs-xs); color: var(--hope-soft); }
-/* GM-only map marker for a hex that carries an environment: a tiny card glyph, decorative, never interactive. */
-.j2-overlay .j2-envmark-card { fill: var(--hope); stroke: var(--ink); stroke-width: 1.2; stroke-linejoin: round; }
-.j2-overlay .j2-envmark-lines { fill: none; stroke: var(--ink); stroke-width: 1.2; stroke-linecap: round; }
 
 /* ---------- player map print (PD-028) ----------
  * One DOM for the on-screen preview and the physical print: `.j2-print-root` holds exactly two `.j2-print-page` sections (the west and
