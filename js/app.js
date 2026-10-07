@@ -3136,7 +3136,7 @@ const journey2Generator = {
     return {
       examples: habitatRowForBiome ? jText(habitatRowForBiome.examples) : '',
       combined,
-      encounter: batch.encounter.entries.map(pair => ({ text: jText(tableRow(j.encounter, pair[0] + pair[1])?.text) })),   // text only: the dice sum is never shown
+      encounter: batch.encounter.entries.map(pair => { const raw = jText(tableRow(j.encounter, pair[0] + pair[1])?.text); return { text: String(raw ?? '').replace(/\*\*/g, ''), html: boldMarkupHtml(raw) }; }),   // text only: the dice sum is never shown
       terrain: terrain ? { name: jText(terrain.name), days: terrain.days, text: jText(terrain.text) } : null,
       rumor: jText(tableRow(j.rumors, batch.rumor)?.text),
     };
@@ -3271,7 +3271,7 @@ function encounterValueHtml(encounter) {
   const bits = encounter.entries.map(pair => {
     const sum = pair[0] + pair[1];
     return `<span class="jr-text">${combined ? `<span class="jr-subroll">${sum}</span>` : ''}`
-      + `${escapeHtml(jText(tableRow(state.journey.encounter, sum)?.text))}</span>`;
+      + `${boldMarkupHtml(jText(tableRow(state.journey.encounter, sum)?.text))}</span>`;
   });
   if (combined) bits.unshift(`<span class="jr-note">${escapeHtml(t('journey_encounter_combined'))}</span>`);
   return bits.join('');
@@ -7913,6 +7913,12 @@ function showDiceResultPop(btn, label, rolls, mod, total) {
 }
 
 /* ---------------- utils ---------------- */
+
+/** Escapes text, then turns the data's `**bold**` marks into <strong> (the
+ * book's bold key words in the Encounter table). Escaping first keeps it safe. */
+function boldMarkupHtml(str) {
+  return escapeHtml(str).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
 
 function escapeHtml(str) {
   return String(str ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));

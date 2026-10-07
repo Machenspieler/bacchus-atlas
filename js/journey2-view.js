@@ -1213,7 +1213,7 @@
         I.daysSize.textContent = (d.terrain ? fill('journey2_days_per_hex', { n: n(d.terrain.days) }) + ' · ' : '') + fill('journey2_hexes_n', { n: n(b.quantity) });
         I.examples.hidden = !d.examples;
         I.examples.textContent = d.examples || '';
-        I.enc.innerHTML = (d.combined ? '<p class="j2-note">' + esc(t('journey_encounter_combined')) + '</p>' : '') + d.encounter.map(x => '<p class="j2-insp-p j2-enc">' + esc(x.text) + '</p>').join('');
+        I.enc.innerHTML = (d.combined ? '<p class="j2-note">' + esc(t('journey_encounter_combined')) + '</p>' : '') + d.encounter.map(x => '<p class="j2-insp-p j2-enc">' + x.html + '</p>').join('');
         I.rumor.textContent = d.rumor;
       } else {
         I.terrainName.textContent = ''; I.terrainText.hidden = true; I.examples.hidden = true; I.enc.innerHTML = ''; I.rumor.textContent = '';
