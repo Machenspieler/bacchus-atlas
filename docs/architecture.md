@@ -1088,6 +1088,13 @@ Run all of them with `node --test tests/*.test.js`.
   the document it started on; release revalidates and a changed document
   cancels it. Escape, `pointercancel`, lost capture, a drop outside the map,
   route exit and any dispatched command cancel without touching state.
+  "The map" is `insideViewport()`: inside the viewport rect, not under the overlay
+  sidebar, and `document.elementFromPoint()` lands inside `.j2-viewport` — so any
+  floating panel that covers the map (Region Inspector, sanctuary overlay, Locate
+  popover) is outside the interaction area for drag/drop, with no hard-coded panel
+  geometry; pointer-transparent decoration falls through. Opening an inspector from a
+  card's Inspect button cancels an armed placement (inspecting and armed placement
+  never coexist).
   Wheel/zoom during a drag recompute the preview with the *current* camera.
 - **Fog of War and Player Preview (Phase C, PD-020):**
   - *Model.* Visibility is cell-based and lives only in `doc.playerVisibility` (see above);

@@ -1241,6 +1241,7 @@
 
     /** Opens the inspector on a region from its card; no hex is selected and the card is not expanded. */
     function openInspectorFromCard(batchId) {
+      if (tr && tr.kind === 'armed') cancelTransient();   // inspecting and armed placement never coexist
       const next = Model.inspectBatch(inspector, doc, batchId);
       if (next === inspector) return;
       exitLocate({ quiet: true });
@@ -2736,12 +2737,16 @@
       const r = ui.viewport.getBoundingClientRect();
       return [e.clientX - r.left, e.clientY - r.top];
     }
-    /** True while the pointer is over the visible map: inside the viewport and not under the overlay sidebar. */
+    /** True while the pointer is over the visible map: inside the viewport, not under the overlay sidebar or a floating panel. */
     function insideViewport(e) {
       const r = ui.viewport.getBoundingClientRect();
       if (!(e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom)) return false;
       const s = ui.sidewrap.getBoundingClientRect();
-      return !(e.clientX >= s.left && e.clientX <= s.right && e.clientY >= s.top && e.clientY <= s.bottom);
+      if (e.clientX >= s.left && e.clientX <= s.right && e.clientY >= s.top && e.clientY <= s.bottom) return false;
+      // Hit-test the real topmost element: the Region Inspector, the sanctuary overlay, the Locate panel and any other floating panel
+      // that visually covers the map also block it. Pointer-transparent decoration (SVG overlay, tooltip, chips) falls through to the viewport.
+      const hit = document.elementFromPoint(e.clientX, e.clientY);
+      return !!hit && ui.viewport.contains(hit);
     }
 
     function tileAtScreen(sx, sy) {
