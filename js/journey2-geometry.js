@@ -539,6 +539,8 @@
    */
   function layoutSanctuaryLabels(labels, anchors, opts) {
     const o = opts || {}, world = o.world || null;
+    // `bounds` [x0, y0, x1, y1] (print pages) clamps a label into one world rectangle; without it `world` [w, h] clamps to the whole map
+    const bnd = Array.isArray(o.bounds) ? o.bounds : (world ? [0, 0, world[0], world[1]] : null);
     const rectOf = new Map((anchors || []).map(a => [a.id, a.rect]));
     const icons = (o.icons || (anchors || [])).map(a => ({ id: a.id, box: { x: a.rect[0] - 2, y: a.rect[1] - 2, w: a.rect[2] + 4, h: a.rect[3] + 4 } }));
     const ordered = (labels || []).filter(l => l && rectOf.has(l.anchorId)).slice().sort((a, b) => (a.anchorId < b.anchorId ? -1 : a.anchorId > b.anchorId ? 1 : 0));
@@ -557,9 +559,9 @@
       let best = null;
       for (const c of raw) {
         let x = c[1], y = c[2];
-        if (world) {
-          x = Math.min(Math.max(x, LABEL_MARGIN_PX), Math.max(LABEL_MARGIN_PX, world[0] - LABEL_MARGIN_PX - w));
-          y = Math.min(Math.max(y, LABEL_MARGIN_PX), Math.max(LABEL_MARGIN_PX, world[1] - LABEL_MARGIN_PX - h));
+        if (bnd) {
+          x = Math.min(Math.max(x, bnd[0] + LABEL_MARGIN_PX), Math.max(bnd[0] + LABEL_MARGIN_PX, bnd[2] - LABEL_MARGIN_PX - w));
+          y = Math.min(Math.max(y, bnd[1] + LABEL_MARGIN_PX), Math.max(bnd[1] + LABEL_MARGIN_PX, bnd[3] - LABEL_MARGIN_PX - h));
         }
         const box = { x: x, y: y, w: w, h: h };
         let penalty = 0;

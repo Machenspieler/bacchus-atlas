@@ -518,6 +518,16 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       and closes again; the inspector's footer then shows "Hex q,r".
 - [ ] RU and EN: no clipped labels in the toolbar, cards or dialogs; `#/journey` still works.
 
+## Journey 2 player map print
+
+- [ ] Prepare regions, reveal a few cells, reveal one sanctuary name and leave another hidden, assign a hex Environment, place Soul Echoes, Biome colors on.
+- [ ] Player Preview still shows its fog hatch; the toolbar has "Print player map".
+- [ ] Print Preview: exactly two white A4 sheets ("Page 1 of 2", "Page 2 of 2") on a neutral ground; no fog hatch, tint, Environment marker or Echo on either; the full Old Valloren map
+      is present; generated symbols/dots/boundaries only in revealed cells; only the revealed sanctuary name shows.
+- [ ] Pan/zoom/Fit/sidebar before opening it never changes the pages. Escape and "Back to Player Preview" return to Player Preview (not the GM view) and refocus "Print player map".
+- [ ] The browser print dialog (Save as PDF, A4 portrait, default and no margins): two pages, no third blank page, no controls or labels, compass / MARROGATE / HORIZON unclipped.
+- [ ] RU and EN: heading, status, buttons and page labels are translated and do not clip.
+
 ## Language
 
 - [ ] English: full pass over whatever changed.

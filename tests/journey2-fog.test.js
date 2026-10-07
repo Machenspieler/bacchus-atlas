@@ -425,7 +425,7 @@ test('print readiness: the projection and the overlay drawing routine do not dep
   assert.doesNotMatch(code, /document\.|window\.|innerHTML|getBoundingClientRect|scroll|viewport|sidebar/i, 'pure and DOM-free');
   const draw = fn('overlayMarkup', 'renderTiles');
   assert.doesNotMatch(draw, /cam\.|ui\.|sel\.|inspector|document\./, 'draws from a list of cells and specs only');
-  assert.match(proj, /future print renderer/);
+  assert.match(proj, /player map print \(js\/journey2-print\.js/);
 });
 
 test('CSS: the fog is a restrained translucent texture — no black fill, no blur, no animation', () => {

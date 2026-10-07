@@ -1117,11 +1117,9 @@ Run all of them with `node --test tests/*.test.js`.
     Delete are ignored. Back to GM (or Escape) restores the saved camera and fit mode and returns
     to neutral — nothing is reopened or re-selected, no history entry, no document change. It never
     persists across reloads. Import/reset ends the preview, the tool and any stroke.
-  - *Reuse by printing (not built yet).* The future print renderer must call
-    `buildPlayerProjection(doc)` and draw its result — the shared drawing routine is
-    `overlayMarkup(entries)` (cells + glyph specs only; it reads no camera, selection or DOM) —
-    including its projected `perimeter` segments, once per A4 map half. It must not clip the screen,
-    CSS-hide the GM render, clone the interactive DOM or depend on scroll or sidebar state.
+  - *Reuse by printing.* Built in Phase F — see "Journey 2 player map print (PD-028)" below. It calls
+    `buildPrintProjection` (via `Journey2Print.buildPrintModel`) and the shared `overlayMarkup(entries)`; it never clips the screen,
+    CSS-hides the GM render, clones the interactive DOM or depends on scroll or sidebar state.
   - *Accessibility.* Tools are real buttons with `aria-pressed` and a text + icon status chip
     ("Reveal tool active · Hold Space and drag to pan · Esc"); brush shape and glyph differ for
     Reveal (solid ring) and Hide (dashed outline, slash); entering/leaving the preview and a
@@ -1314,3 +1312,34 @@ Run all of them with `node --test tests/*.test.js`.
 path. GM entries get their key from `gmTintByCell(doc, showBiome)`; Player Preview entries get it from the projection's overlays (revealed
 cells only). The `showBiomeColors` preference lives in `dhcodex_journey2_ui` (`Journey2Store.loadUi/saveUi`). `buildPrintProjection` is the
 renderer-facing entry for print: black-and-white mode never carries a tint.
+
+### Journey 2 player map print (PD-028)
+
+- *Model.* `js/journey2-print.js` (`Journey2Print`, pure, loaded after the projection and before the view). `pagesFromTemplate(template)` reads
+  the two panels of `template.composition.panels` (west = page `v1`, east = `v2`) and **throws** on bad geometry (not exactly two, a gap/overlap,
+  a different height, no asset) — there is no stretched-map fallback. A page is `{ rect (world px), viewBox [0,0,w,h], translate [-x,-y],
+  scaleMmPerPx, source }`; `worldToPage` / `pageToWorld` are pure translations (the page is a 1:1 crop), `pageOfPoint` is half-open (the seam belongs
+  to the east page), `clipRect` / `clipSegment` are the pure clip helpers. `buildPrintModel(doc, ctx, template)` → `{ version, printMode: 'bw', pages: [{ …page,
+  overlays[{q,r,symbolId,dots,blightMark}], segments[{cell,dir,kind}], labels[placed] }], summary { wildernessHexes, sanctuaryNames } }`. It is built from
+  `Projection.buildPrintProjection` only (revealed cells → overlays, projected `perimeter`, `sanctuaryLabels`) and takes no UI input. Fog is not drawn: hidden
+  content is not in the model.
+- *Seam.* An overlay or boundary edge is assigned to every page whose rect (plus a few px of ink slack) it touches; each page's SVG viewport clips the
+  part that is not its own, nothing is moved. A sanctuary label is laid out only on the page containing its icon centre, with `Journey2Geometry.layoutSanctuaryLabels(…,
+  { bounds: [x0, y0, x1, y1] })` clamping it inside that page.
+- *DOM.* `printPageMarkup(page)` (view): `<section class="j2-print-page" data-page>` → `<svg class="j2-pp-svg" viewBox="0 0 w h" aria-hidden>` → `<g transform="translate(-x -y)">`
+  holding the base `<image>` (the world raster, `href` = the already-loaded, content-hashed URL), `.j2-pp-gen` (`overlayMarkup`, no tint), `.j2-pp-perimeter`
+  (`chainEdgeSegments` + `polylinesPath`) and `.j2-pp-labels`. Both sheets sit in `.j2-print-root` inside the body-level `.j2-printpreview`
+  (toolbar with the `h2`, status `role=status`, Back / Retry / Print, and an `.sr-only` summary). While open, `.j2` is `inert`. The legacy diagnostic proof now uses `.j2-proof-*`.
+- *CSS.* Screen: neutral `--ink` ground, white 210x297 mm sheets. `@page j2player { size: A4 portrait; margin: 0 }` is a **named** page (the proof has its own
+  `j2proof`, landscape), selected by `page:` on `.j2-print-root`. `@media print`: every other `body` child and the toolbar/labels are `display: none`; the sheets are 296 mm
+  tall (never 297, so rounding cannot add a third page) with `break-after: page` on all but the last; the SVG is 190 mm wide (a 10 mm printable margin, uniform scale ≈ 0.078 mm/px).
+  Ink is black on white only; the classes restate the screen map's rules without any state colour.
+- *Readiness.* `printAssetsReady()` waits for the map-lettering font, `Image.decode()` of the world raster and of every symbol used, then two animation frames. Print stays
+  disabled until then (`journey2_pp_preparing` → `journey2_pp_ready`); a failure shows `journey2_pp_failed` with Retry and no blank print. `runPlayerPrint()` re-checks and
+  calls `window.print()` once. Cancelling or printing leaves the preview as it was; no command, history entry or save is involved.
+- *Lifecycle.* `openPrintPreview()` only from Player Preview; it cancels transients, closes the inspector/sanctuary overlay, keeps the camera. Escape / Back →
+  `closePrintPreview({ focus })` → Player Preview, focus on "Print player map". `leavePreview`, `dispose` and `renderAll` (language switch, a replaced document)
+  close or rebuild it (`paintPrintPreview(true)` keeps the ready state and focus). It lives in no storage key.
+- *Tests.* `tests/journey2-print.test.js` (pure model, pages, seam, boundaries, names, source guards for DOM/CSS/i18n/wiring); `scripts/journey2/lib/print-checks.js`
+  (real browser: fog visible on screen, none in print, two A4 pages incl. a print-to-PDF page count and MediaBox, camera independence, one `window.print()`, no document /
+  storage / history change, Back + focus, EN/RU, empty reveal set).

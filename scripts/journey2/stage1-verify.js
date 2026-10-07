@@ -1302,6 +1302,8 @@ async function main() {
   await require('./lib/hex-environment-checks.js').runHexEnvironmentChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc });
   /* Player-visible sanctuary names (PD-027): overlay toggle, GM ring state, Player Preview labels, confirmations, Undo/Redo, EN / RU */
   await require('./lib/sanctuary-name-checks.js').runSanctuaryNameChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc });
+  /* Player map Print Preview and print (PD-028): two A4 pages, no fog/tint/Environment/Echo, only revealed content, camera independence, one window.print(), PDF page count, EN / RU */
+  await require('./lib/print-checks.js').runPrintChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc });
 
   /* ===== G. hygiene ===== */
   const relevant = logs.filter(l => !/favicon|fonts\.g(oogleapis|static)\.com|ERR_INTERNET_DISCONNECTED|net::ERR_(NAME_NOT_RESOLVED|CONNECTION|FAILED)/.test(l));

@@ -216,8 +216,12 @@ in `dhcodex_journey2_ui`; Player Preview tints revealed cells only (the projecti
 Sanctuary names (PD-027): the only sanctuary datum players ever get is a name the GM revealed by hand
 (`playerVisibility.revealedSanctuaryNameAnchorIds`, independent of fog; projection `sanctuaryLabels: [{ anchorId, name }]` and nothing else);
 reroll keeps it, delete removes it atomically, Soul Echoes stay secret.
+Player map print (PD-028): "Print player map" in Player Preview opens a Print Preview that IS the print — exactly two A4 portrait pages (the west/east halves
+of the original map, SVG over the raster), built by the pure `js/journey2-print.js` from the print projection. Screen Player Preview keeps its fog hatch; the print
+draws NO fog: fog is a data filter, so unrevealed cells are the untouched Old Valloren map and hidden content is absent, not hidden. Black and white: no tint
+(omitted, never greyed), no Environments, Soul Echoes or GM data; sanctuary names only when revealed by hand. Never a screenshot; camera/zoom/sidebar are irrelevant.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027, detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028, detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

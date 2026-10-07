@@ -910,3 +910,25 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Out of scope:** auto-reveal, party token/route, a visited system, notes, name editing, other sanctuary data for players, print UI.
 - **Where:** `js/journey2-model.js`, `js/journey2-projection.js`, `js/journey2-geometry.js`, `js/journey2-view.js`, `css/journey2.css`,
   tests in `tests/journey2-sanctuary-names.test.js`, browser checks in `scripts/journey2/lib/sanctuary-name-checks.js`.
+
+## PD-028: Journey 2 — the player map prints as two A4 portrait pages, black and white, with no printed fog
+- **Status:** Active
+- **Date:** 2026-10-07
+- **Decision (screen fog vs print fog):** Player Preview on screen may keep its fog hatch — it helps the GM verify what is revealed. The
+  physical print and the Print Preview draw **no fog at all**: no hatch, wash, grey, dark layer or translucent polygon. Fog of War is a **data
+  filter** there: generated New Valloren content exists in the print only for cells in `playerVisibility.revealedCells`; an unrevealed cell is
+  the untouched Old Valloren map (nothing is hidden by CSS — it is absent from the model and the DOM).
+- **Decision (two pages):** the print is always exactly two A4 portrait pages — the west and the east half of the original map
+  (`template.composition.panels`; each page is a 1:1 crop of the lossless world raster, never resampled, stretched or re-tiled). The camera, zoom, pan, sidebar and viewport
+  are irrelevant; the pages are built from map data, not a screenshot. The user cannot pick a page count.
+- **Decision (black and white):** Biome Tint is **omitted**, not converted to grey (the print model has no tint field, and takes no UI preference).
+  Soul Echoes, generated-sanctuary data, per-hex Environments, Encounter/Rumor, ids, selection and every GM marker are omitted. A sanctuary name
+  prints only when the GM revealed it by hand (PD-027), as `{ anchorId, name }`, laid out on the page holding its icon (clamped inside that page, never split).
+  Generated symbols, Terrain dots and Shadowblight marks print in black; region boundaries are black and use the same player-safe edge rule as Player
+  Preview (no edge toward an unrevealed neighbour, so no false ending line leaks the hidden shape).
+- **Decision (one renderer):** the on-screen Print Preview and the physical print are the same DOM (`.j2-print-root` → two `.j2-print-page`, each a vector SVG over the map raster);
+  `@media print` only hides everything else. Entry is the "Print player map" button in Player Preview; Back returns to Player Preview (never to the GM view). The
+  preview is transient: not stored, not in `dhcodex_journey2_ui`, not in history; printing or cancelling changes nothing.
+- **Out of scope:** a party marker, auto-reveal, travel history, colour print, one-page or poster tiling, PDF/PNG export, printer settings, manual label placement, GM notes.
+- **Where:** `js/journey2-print.js`, `js/journey2-view.js` (`openPrintPreview`, `printPageMarkup`), `css/journey2.css`, tests in `tests/journey2-print.test.js`,
+  browser checks in `scripts/journey2/lib/print-checks.js`.

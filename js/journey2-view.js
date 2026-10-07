@@ -77,6 +77,7 @@
   const Store = root.Journey2Store;
   const Projection = root.Journey2Projection;
   const Tint = root.Journey2BiomeTint;
+  const Print = root.Journey2Print;
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const MAX_ZOOM = 8;
   const CLICK_SLOP_PX = 4;
@@ -193,6 +194,7 @@
     let userPlacements = [];
     let ui = {};
     let printRoot = null, printUrls = [];
+    let printOpen = false, pp = null;                        // Print Preview (transient, never stored): pp = { el, model, ready, failed, token }
     const pointer = { x: 0, y: 0, inside: false, cx: 0, cy: 0 };
     const glyphCache = new Map();
     const hexPathCache = new Map();
@@ -247,6 +249,7 @@
       for (const d of Array.from(dialogs)) { try { d.close(); d.remove(); } catch (e) { /* gone */ } }
       dialogs.clear();
       cleanupPrintProof();
+      closePrintPreview({ quiet: true });
       for (const fn of cleanups.splice(0)) { try { fn(); } catch (e) { /* teardown is best-effort */ } }
       for (const u of urls.splice(0)) URL.revokeObjectURL(u);
       if (baseImg) { baseImg.onload = baseImg.onerror = null; baseImg.src = ''; baseImg = null; }
@@ -419,6 +422,7 @@
             <div class="j2-tb-group j2-tb-preview" data-j2-preview-bar hidden>
               <span class="j2-preview-flag" role="status"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><strong data-t="journey2_preview"></strong></span>
               <span class="j2-preview-note" data-t="journey2_preview_hint"></span>
+              <button type="button" class="btn btn-ghost btn-sm" data-j2-print-open data-t-title="journey2_pp_open_title" data-t="journey2_pp_open"></button>
               <button type="button" class="btn btn-sm" data-j2-preview-back data-t="journey2_preview_back"></button>
             </div>
           </div>
@@ -575,6 +579,7 @@
       ui.previewBtn = container.querySelector('[data-j2-preview]');
       ui.previewBar = container.querySelector('[data-j2-preview-bar]');
       ui.previewBack = container.querySelector('[data-j2-preview-back]');
+      ui.printOpen = container.querySelector('[data-j2-print-open]');
       ui.fogChip = container.querySelector('[data-j2-fog-chip]');
       ui.fogChipIco = container.querySelector('[data-j2-fog-chip-ico]');
       ui.fogChipTitle = container.querySelector('[data-j2-fog-chip-title]');
@@ -1804,6 +1809,7 @@
       updateHistoryButtons();
       renderBanner();
       if (ui.stockCount) updateReadouts();
+      if (printOpen) paintPrintPreview(true);                 // read-only, but never stale: a replaced document or a language switch rebuilds the pages
     }
 
     /* ============================================================
@@ -2140,6 +2146,7 @@
     /** Back to the GM view: the camera, sidebar state and fog preference are as they were; nothing is reopened or re-selected. */
     function leavePreview(o) {
       if (!previewMode) return;
+      closePrintPreview({ quiet: true });
       previewMode = false;
       playerProjection = null;
       const back = previewReturn; previewReturn = null;
@@ -2148,6 +2155,139 @@
       renderTiles(); renderFog(); renderSelection(); renderInventory(false); updateFogUi(); updateHistoryButtons(); renderSanctuaryRings();
       if (back) { setCamera(back.cam, true); fitMode = back.fitMode; }
       if (!(o && o.quiet)) { announce(t('journey2_live_preview_off')); ui.previewBtn.focus({ preventScroll: true }); }
+    }
+
+    /* ============================================================
+       Player map Print Preview (PD-028). Two A4 portrait pages built from `Journey2Print.buildPrintModel` — a data filter over the
+       revealed cells with NO fog layer, tint or GM data — drawn as the original map half (a 1:1 crop of the world raster through the
+       SVG viewBox) plus a vector overlay. The pages shown on screen ARE the printed DOM: the same `.j2-print-root` is what
+       `@media print` leaves visible, so there is one renderer. Read-only and transient: no document change, history entry or autosave.
+       ============================================================ */
+
+    function printPageMarkup(page, index, count) {
+      const [vx, vy, vw, vh] = page.viewBox, baseHref = esc(baseImg ? baseImg.src : versioned(data.template.assembledAsset.path, data.template.assembledAsset.cacheKey));
+      const W = data.template.worldSizePx[0], H = data.template.worldSizePx[1];
+      const polylines = Geo.chainEdgeSegments(data.grid, page.segments);
+      const d = Geo.polylinesPath(polylines);
+      let labels = '';
+      for (const l of page.labels) {
+        labels += '<text class="j2-sanc-label" data-anchor="' + esc(l.anchorId) + '" font-size="' + l.fontSize + '">' +
+          l.lines.map((line, i) => '<tspan x="' + fmt(l.cx, 1) + '" y="' + fmt(l.y + l.lineHeight * (i + 0.8), 1) + '">' + esc(line) + '</tspan>').join('') + '</text>';
+      }
+      const mm = page.scaleMmPerPx;
+      return '<section class="j2-print-page" data-page="' + page.id + '" role="group" aria-label="' + esc(fill('journey2_pp_page_n', { n: n(index + 1), total: n(count) })) + '">' +
+        '<svg class="j2-pp-svg" xmlns="' + SVG_NS + '" width="' + fmt(vw * mm, 2) + 'mm" height="' + fmt(vh * mm, 2) + 'mm" viewBox="' + vx + ' ' + vy + ' ' + vw + ' ' + vh + '" aria-hidden="true" focusable="false">' +
+        '<g transform="translate(' + page.translate[0] + ' ' + page.translate[1] + ')">' +
+        '<image class="j2-pp-base" href="' + baseHref + '" x="0" y="0" width="' + W + '" height="' + H + '" preserveAspectRatio="none"/>' +
+        '<g class="j2-pp-gen" data-pp-overlays="' + page.overlays.length + '">' + overlayMarkup(page.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, tint: null }))) + '</g>' +
+        '<g class="j2-pp-perimeter" data-pp-segments="' + page.segments.length + '">' + (d ? '<path class="j2-perimeter" d="' + d + '"/>' : '') + '</g>' +
+        '<g class="j2-pp-labels" data-pp-labels="' + page.labels.length + '">' + labels + '</g>' +
+        '</g></svg>' +
+        '<p class="j2-pp-pagelabel">' + esc(fill('journey2_pp_page_n', { n: n(index + 1), total: n(count) })) + '</p></section>';
+    }
+
+    /** Everything the preview says, rebuilt from state so a language switch or a replaced document never leaves stale text or pages. */
+    function printPreviewMarkup() {
+      const m = pp.model;
+      const status = pp.failed ? t('journey2_pp_failed') : pp.ready ? t('journey2_pp_ready') : t('journey2_pp_preparing');
+      const summary = m ? fill('journey2_pp_summary', { hexes: countFor('journey2_pp_hexes', m.summary.wildernessHexes), names: countFor('journey2_pp_names', m.summary.sanctuaryNames) }) : '';
+      return '<div class="j2-pp-bar">' +
+        '<h2 class="j2-pp-title" tabindex="-1" data-pp-title>' + esc(t('journey2_pp_title')) + '</h2>' +
+        '<p class="j2-pp-note">' + esc(t('journey2_pp_note_visible')) + ' ' + esc(t('journey2_pp_note_blank')) + '</p>' +
+        '<p class="j2-pp-status" role="status" data-pp-status' + (pp.failed ? ' data-failed' : '') + '>' + esc(status) + '</p>' +
+        '<div class="j2-pp-actions">' +
+        '<button type="button" class="btn btn-ghost btn-sm" data-pp-back>' + esc(t('journey2_pp_back')) + '</button>' +
+        (pp.failed ? '<button type="button" class="btn btn-sm" data-pp-retry>' + esc(t('journey2_pp_retry')) + '</button>' : '') +
+        '<button type="button" class="btn btn-sm" data-pp-print' + (pp.ready && m ? '' : ' disabled') + '>' + esc(t('journey2_pp_print')) + '</button>' +
+        '</div></div>' +
+        '<p class="sr-only" data-pp-summary>' + esc(t('journey2_pp_two_page') + '. ' + summary) + '</p>' +
+        '<div class="j2-print-root" data-pp-root>' + (m ? m.pages.map((pg, i) => printPageMarkup(pg, i, m.pages.length)).join('') : '') + '</div>';
+    }
+    function countFor(key, count) { return fill(key + (count === 1 ? '_one' : '_n'), { n: n(count) }); }
+
+    /** (Re)builds the model from the CURRENT document and repaints. `keep`: a refresh of an open preview (keeps the ready state and focus). */
+    function paintPrintPreview(keep) {
+      if (!printOpen || !pp || !doc || !data) return;
+      const focused = pp.el.contains(document.activeElement) ? document.activeElement.hasAttribute('data-pp-title') ? 'title' : document.activeElement.hasAttribute('data-pp-back') ? 'back' : document.activeElement.hasAttribute('data-pp-print') ? 'print' : document.activeElement.hasAttribute('data-pp-retry') ? 'retry' : null : null;
+      try { pp.model = Print.buildPrintModel(doc, data.ctx, data.template); pp.failed = false; }
+      catch (err) { pp.model = null; pp.failed = true; pp.ready = false; }
+      if (!keep) pp.ready = false;
+      pp.el.innerHTML = printPreviewMarkup();
+      if (focused) { const b = pp.el.querySelector(focused === 'title' ? '[data-pp-title]' : focused === 'back' ? '[data-pp-back]' : focused === 'print' ? '[data-pp-print]:not([disabled])' : '[data-pp-retry]'); if (b) b.focus({ preventScroll: true }); }
+    }
+
+    /** Fonts, the world raster and every symbol decoded, and the SVG painted, before Print can be pressed. Resolves false (never throws) on failure. */
+    function printAssetsReady() {
+      const decode = src => new Promise(resolve => { const i = new Image(); i.onload = () => resolve(i.decode ? i.decode().then(() => true, () => true) : true); i.onerror = () => resolve(false); i.src = src; });
+      const raster = baseImg ? baseImg.src : versioned(data.template.assembledAsset.path, data.template.assembledAsset.cacheKey);
+      const used = new Set();
+      if (pp && pp.model) for (const pg of pp.model.pages) for (const o of pg.overlays) used.add(o.symbolId);
+      const syms = Array.from(used).map(id => data.symbolById.get(id)).filter(Boolean);
+      const fonts = document.fonts ? (document.fonts.load ? document.fonts.load('17px "Architects Daughter"').catch(() => null) : Promise.resolve()).then(() => document.fonts.ready).then(() => true, () => true) : Promise.resolve(true);
+      return Promise.all([
+        fonts,
+        decode(raster), Promise.all(syms.map(s => decode(s.path))).then(r => r.every(Boolean)),
+      ]).then(r => r.every(Boolean)).then(ok => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve(ok)))));
+    }
+
+    function preparePrintAssets() {
+      const token = ++pp.token;
+      pp.ready = false; pp.failed = !pp.model;
+      paintPrintPreview(true);
+      if (pp.failed) { announce(t('journey2_pp_failed')); return; }
+      announce(t('journey2_pp_preparing'));
+      printAssetsReady().then(ok => {
+        if (inst.disposed || !printOpen || !pp || pp.token !== token) return;
+        pp.ready = ok; pp.failed = !ok;
+        paintPrintPreview(true);
+        announce(ok ? t('journey2_pp_ready') : t('journey2_pp_failed'));
+      });
+    }
+
+    function openPrintPreview() {
+      if (!previewMode || printOpen || !data || !doc || !Print) return;
+      cancelTransient(); cancelFogStroke(); closeMenus(); closeInspector({ quiet: true }); closeSanctuary({ quiet: true });
+      printOpen = true;
+      const host = el('div', { class: 'j2-printpreview', 'data-j2-printpreview': '' });
+      pp = { el: host, model: null, ready: false, failed: false, token: 0 };
+      host.addEventListener('click', e => {
+        const b = e.target.closest('button');
+        if (!b || b.disabled) return;
+        if (b.hasAttribute('data-pp-back')) closePrintPreview({ focus: true });
+        else if (b.hasAttribute('data-pp-retry')) preparePrintAssets();
+        else if (b.hasAttribute('data-pp-print')) runPlayerPrint();
+      });
+      document.body.appendChild(host);
+      document.body.classList.add('j2-printpreview-mode');
+      ui.root.inert = true;
+      preparePrintAssets();
+      announce(t('journey2_pp_live_on'));
+      const h = pp.el.querySelector('[data-pp-title]');
+      if (h) h.focus({ preventScroll: true });
+    }
+
+    /** Back to the screen Player Preview (never to the editable GM view). The camera, document and history were never touched. */
+    function closePrintPreview(o) {
+      if (!printOpen) return;
+      printOpen = false;
+      if (pp) { pp.token++; pp.el.remove(); }
+      pp = null;
+      document.body.classList.remove('j2-printpreview-mode');
+      if (ui.root) ui.root.inert = false;
+      if (o && o.quiet) return;
+      announce(t('journey2_pp_live_off'));
+      if (o && o.focus && ui.printOpen) ui.printOpen.focus({ preventScroll: true });
+    }
+
+    /** The system print dialog, once, only when the pages are ready; cancelling (or printing) leaves the preview exactly as it was. */
+    function runPlayerPrint() {
+      if (!printOpen || !pp || !pp.ready || !pp.model) return;
+      const token = pp.token;
+      printAssetsReady().then(ok => {
+        if (inst.disposed || !printOpen || !pp || pp.token !== token) return;
+        if (!ok) { pp.ready = false; pp.failed = true; paintPrintPreview(true); announce(t('journey2_pp_failed')); return; }
+        window.print();
+      });
     }
 
     /* ============================================================
@@ -2634,6 +2774,7 @@
       if (inst.disposed) return;
       if (e.key === 'Escape') {
         if (document.querySelector('dialog[open]') || document.querySelector('.modal-overlay')) return;   // an environment overlay (app.js) owns Escape while it is open
+        if (printOpen) { closePrintPreview({ focus: true }); e.preventDefault(); return; }
         if (openMenu) { const b = openMenu.btn; closeMenus(); b.focus(); return; }
         // priority: menu, a fog stroke, a drag / armed placement / pan, Player Preview, the fog tool, the Region Inspector, then the diagnostic selection
         if (fogStroke) { cancelFogStroke(true); e.preventDefault(); return; }
@@ -2697,6 +2838,7 @@
       else if (b.hasAttribute('data-j2-sanc-reroll')) rerollSanctuary();
       else if (b.hasAttribute('data-j2-sanc-delete')) confirmDeleteSanctuary();
       else if (b.hasAttribute('data-j2-preview-back')) leavePreview();
+      else if (b.hasAttribute('data-j2-print-open')) openPrintPreview();
       else if (b.hasAttribute('data-j2-preview')) enterPreview();
       else if (b.hasAttribute('data-j2-undo')) undo();
       else if (b.hasAttribute('data-j2-redo')) redo();
@@ -3297,7 +3439,7 @@
         printUrls = rasterUrls;
         printRoot = el('div', { id: 'j2-print-root', 'aria-hidden': 'true' });
         const tplv = data.template.verification;
-        printRoot.innerHTML = proofs.map((p, i) => '<section class="j2-print-page">' +
+        printRoot.innerHTML = proofs.map((p, i) => '<section class="j2-proof-page">' +
           '<header class="j2-print-head"><strong>' + esc(t('journey2_print_heading')) + '</strong> · ' + esc(t(p.titleKey)) + '</header>' +
           proofPageMarkup(p, rasterUrls[i]) +
           '<footer class="j2-print-foot">' + esc(t('journey2_print_foot')

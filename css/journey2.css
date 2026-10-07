@@ -68,6 +68,7 @@ body[data-route="journey2"] #grid-wrap { display: block; }
 .j2-preview-flag .j2-ico svg { width: 14px; height: 14px; }
 .j2-preview-note { min-width: 0; font-size: var(--fs-sm); color: var(--parchment-dim); }
 .j2-tb-preview .btn { margin-left: auto; }
+.j2-tb-preview .btn + .btn { margin-left: 0; }
 .j2[data-mode="preview"] .j2-toolbar { border-color: var(--hope-border); }
 .j2[data-mode="preview"] .j2-viewport { box-shadow: inset 0 0 0 2px var(--hope-border); cursor: grab; }
 .j2-chip {
@@ -555,9 +556,9 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 }
 
 /* ---------- print proof ---------- */
-#j2-print-root { display: none; }
+#j2-print-root { display: none; page: j2proof; }
+@page j2proof { size: A4 landscape; margin: 10mm; }   /* named: the player map print below uses its own page box */
 @media print {
-  @page { size: A4 landscape; margin: 10mm; }
   body.j2-print-mode > *:not(#j2-print-root) { display: none !important; }
   /* The theme is `color-scheme: dark`, so the browser's default canvas/page-margin paint is its dark
    * canvas colour (#121212) — and the root/body backgrounds only cover the content box, leaving that
@@ -567,8 +568,8 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
   body.j2-print-mode { background: #fff !important; background-image: none !important; color: #000; min-height: 0; }
   body.j2-print-mode #j2-print-root { display: block; }
 }
-.j2-print-page { width: 277mm; height: 190mm; overflow: hidden; break-after: page; page-break-after: always; background: #fff; color: #000; font-family: Arial, Helvetica, sans-serif; }
-.j2-print-page:last-child { break-after: auto; page-break-after: auto; }
+.j2-proof-page { width: 277mm; height: 190mm; overflow: hidden; break-after: page; page-break-after: always; background: #fff; color: #000; font-family: Arial, Helvetica, sans-serif; }
+.j2-proof-page:last-child { break-after: auto; page-break-after: auto; }
 .j2-print-head { height: 6mm; margin: 0; font-size: 10pt; line-height: 6mm; white-space: nowrap; overflow: hidden; }
 .j2-print-foot { height: 9mm; margin: 2mm 0 0; font-size: 7pt; line-height: 3.4mm; overflow: hidden; }
 .j2-print-svg { display: block; width: 277mm; height: 172mm; }
@@ -637,3 +638,41 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-hexenv-row.is-current { background: var(--hope-wash); }
 .j2-hexenv-assigned { flex: none; font-size: var(--fs-xs); color: var(--hope-soft); }
 /* GM-only map marker for a hex that carries an environment: a tiny card glyph, decorative, never interactive. */
+
+/* ---------- player map print (PD-028) ----------
+ * One DOM for the on-screen preview and the physical print: `.j2-print-root` holds exactly two `.j2-print-page` sections (the west and
+ * the east half of the Old Valloren map, a vector overlay over the original raster). There is NO fog, hatch, wash or grey anywhere in it —
+ * unrevealed cells are just the untouched map — and everything is black on white. Screen: a neutral ground behind the white sheets. */
+@page j2player { size: A4 portrait; margin: 0; }
+.j2-printpreview { position: fixed; inset: 0; z-index: 3000; overflow: auto; background: var(--ink); color: var(--parchment); padding: 0 var(--s-4) var(--s-6); }
+.j2-pp-bar { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); margin: 0 calc(-1 * var(--s-4)) var(--s-4); padding: var(--s-3) var(--s-4); background: var(--ink-raised); border-bottom: 1px solid var(--line); }
+.j2-pp-title { margin: 0; font-size: var(--fs-lg); font-weight: 600; }
+.j2-pp-title:focus-visible { outline: 2px solid var(--focus-ring, var(--hope)); outline-offset: 3px; }
+.j2-pp-note { flex: 1 1 18rem; min-width: 0; margin: 0; font-size: var(--fs-sm); color: var(--parchment-dim); }
+.j2-pp-status { margin: 0; font-size: var(--fs-sm); color: var(--parchment-dim); }
+.j2-pp-status[data-failed] { color: var(--fear-soft); }
+.j2-pp-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-left: auto; }
+.j2-print-root { display: flex; flex-direction: column; align-items: center; gap: var(--s-5); page: j2player; }
+.j2-print-page { position: relative; width: 210mm; max-width: 100%; height: 297mm; margin: 0; padding: 10mm 10mm 0; box-sizing: border-box; background: #fff; color: #000; box-shadow: 0 2px 18px rgba(0, 0, 0, 0.55); overflow: hidden; }
+.j2-pp-svg { display: block; width: 190mm; max-width: 100%; height: auto; margin: 0 auto; background: #fff; }
+.j2-pp-pagelabel { position: absolute; left: 0; right: 0; bottom: 3mm; margin: 0; text-align: center; font: 10pt/1.2 Arial, Helvetica, sans-serif; color: #555; }
+/* black ink only: the same classes the screen map uses, restated without any screen-state colour */
+.j2-pp-svg .j2-tile-cover { fill: #fff; fill-opacity: 0.95; stroke: none; }
+.j2-pp-svg .j2-tile-hex { fill: none; stroke: #000; stroke-opacity: 0.55; stroke-width: 1; }
+.j2-pp-svg .j2-tile-hex.is-glyphless { stroke-dasharray: 4 3; stroke-opacity: 0.8; stroke-width: 1.4; }
+.j2-pp-svg .j2-tile-halo { fill: #fff; fill-opacity: 0.7; stroke: none; }
+.j2-pp-svg .j2-tile-dot { fill: #000; stroke: none; }
+.j2-pp-svg .j2-tile-blight { fill: none; stroke: #000; stroke-width: 2.2; stroke-linecap: round; }
+.j2-pp-svg .j2-perimeter { fill: none; stroke: #000; stroke-opacity: 1; stroke-width: 2.8; stroke-linejoin: round; stroke-linecap: round; }
+.j2-pp-svg .j2-sanc-label { font-family: var(--font-map); font-weight: 400; text-transform: uppercase; letter-spacing: 0.02em; fill: #000; stroke: #fff; stroke-width: 3px; stroke-linejoin: round; paint-order: stroke fill; text-anchor: middle; }
+@media print {
+  body.j2-printpreview-mode > *:not(.j2-printpreview) { display: none !important; }
+  :root:has(body.j2-printpreview-mode) { color-scheme: light; background: #fff !important; }
+  body.j2-printpreview-mode { background: #fff !important; background-image: none !important; color: #000; min-height: 0; margin: 0; padding: 0; }
+  .j2-printpreview { position: static; inset: auto; overflow: visible; background: #fff; padding: 0; }
+  .j2-printpreview > :not(.j2-print-root) { display: none !important; }
+  .j2-print-root { display: block; }
+  .j2-print-page { width: 210mm; height: 296mm; margin: 0; box-shadow: none; break-after: page; page-break-after: always; break-inside: avoid; }
+  .j2-print-page:last-child { break-after: auto; page-break-after: auto; }
+  .j2-pp-pagelabel { display: none; }
+}

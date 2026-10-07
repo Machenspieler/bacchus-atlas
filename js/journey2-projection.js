@@ -2,8 +2,8 @@
    Bacchus's Atlas — journey2-projection.js
    The PLAYER PROJECTION of a Journey 2 map document: a pure, DOM-free function that decides, from the one GM
    document, which generated New Valloren overlays a player may see. It is the single place that filtering
-   happens; Player Preview renders its output, and the future print renderer (two A4 map halves) is meant to call
-   exactly this and draw the result — it must never filter the GM render with CSS, clone the interactive DOM or
+   happens; Player Preview renders its output, and the player map print (js/journey2-print.js, two A4 map halves, PD-028) calls
+   `buildPrintProjection` and draws the result — it must never filter the GM render with CSS, clone the interactive DOM or
    depend on the viewport, scroll position or sidebar state.
 
    What a projection contains
