@@ -231,7 +231,9 @@ body[data-route="journey"] #grid-wrap { display: block; }
 .j2-blight { padding: 0 var(--s-1); border: 1px solid var(--fear); border-radius: var(--r-xs); color: var(--fear-soft); font-family: var(--font-mono); font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tracking-badge); }
 .j2-blight[hidden] { display: none; }
 .j2-card-sum { margin: 0; padding-left: calc(32px + var(--s-2)); font-family: var(--font-mono); font-size: var(--fs-xs); font-variant-numeric: tabular-nums; color: var(--parchment-dim); }
-.j2-card-sum[hidden], .j2-warn[hidden], .j2-card-body[hidden], .j2-done[hidden], .j2-status[hidden], .j2-actions[hidden], .j2-envs-list[hidden], .j2-insp-tile[hidden], .j2-insp-envs-toggle[hidden], .j2-insp-muted[hidden], .j2-insp-tile-text[hidden],
+.j2-card.has-unplaced:not(.is-active) { border-color: var(--hope-border); background: var(--hope-wash); }   /* hexes still to place: stands out among finished cards */
+.j2-card.has-unplaced .j2-card-sum { color: var(--hope-soft); font-weight: 700; }
+.j2-card-sum[hidden],.j2-warn[hidden], .j2-card-body[hidden], .j2-done[hidden], .j2-status[hidden], .j2-actions[hidden], .j2-envs-list[hidden], .j2-insp-tile[hidden], .j2-insp-envs-toggle[hidden], .j2-insp-muted[hidden], .j2-insp-tile-text[hidden],
 .j2-tb-group[hidden], .j2-fog-chip[hidden], .j2-sidewrap[hidden] { display: none; }
 /* enclosed-hole warning: icon + text + a dashed edge, so it never relies on colour alone */
 .j2-warn { margin: 0; display: flex; align-items: center; gap: var(--s-1); padding: 2px var(--s-2); border: 1px dashed var(--fear-soft); border-radius: var(--r-xs); font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--fear-soft); }

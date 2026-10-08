@@ -1130,6 +1130,7 @@
       const complete = c.remaining === 0;
       refs.root.classList.toggle('is-exhausted', complete);
       refs.sum.hidden = active;
+      refs.root.classList.toggle('has-unplaced', !complete);   // unused hexes stand out in the collapsed card
       refs.sum.textContent = complete ? fill('journey2_all_placed', { n: n(c.quantity) }) : fill('journey2_status_placed', { placed: n(c.placed), total: n(c.quantity) }) + ' · ' + fill('journey2_status_left', { n: n(c.remaining) });
       refs.warn.hidden = !holes;
       if (holes) refs.warnText.textContent = fill('journey2_warn_holes', { n: n(holes) });
