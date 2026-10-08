@@ -403,6 +403,8 @@
       info: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 9.2v4.3M10 6.3v.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
       palette: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 2.8c-4.1 0-7.2 2.9-7.2 6.6 0 3.8 3 7.4 6.6 7.4 1.5 0 1.9-1 1.3-1.9-.7-1 .1-2.1 1.2-2.1h1.7c1.4 0 2.6-1 2.6-2.7C16.2 5.4 13.6 2.8 10 2.8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><g fill="currentColor"><circle cx="6.3" cy="8.6" r="1.1"/><circle cx="9.2" cy="6" r="1.1"/><circle cx="12.6" cy="6.6" r="1.1"/></g></svg>',
       fog: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 3.5h9l4.5 6.5-4.5 6.5h-9L1 10z" transform="translate(0 0) scale(.9) translate(1.1 .8)" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 8.5 9 5.5M6 12.5 12 6.5M9 14.5l5-5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>',
+      mouseLeft: '<svg viewBox="0 0 14 20" aria-hidden="true" focusable="false"><path class="j2-mouse-hit" d="M7 1.2H6.5A5 5 0 0 0 1.5 6.2V7.6H7z"/><rect x="1.5" y="1.2" width="11" height="17.6" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 7.6h11M7 1.2v6.4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>',
+      mouseRight: '<svg viewBox="0 0 14 20" aria-hidden="true" focusable="false"><path class="j2-mouse-hit" d="M7 1.2h.5a5 5 0 0 1 5 5V7.6H7z"/><rect x="1.5" y="1.2" width="11" height="17.6" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 7.6h11M7 1.2v6.4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>',
       reveal: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.8 10S5 4.8 10 4.8 18.2 10 18.2 10 15 15.2 10 15.2 1.8 10 1.8 10z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.4" fill="currentColor"/></svg>',
       conceal: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.8 10S5 4.8 10 4.8 18.2 10 18.2 10 15 15.2 10 15.2 1.8 10 1.8 10z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 16.5 16.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
       players: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7" r="2.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 16c0-2.9 2.2-4.7 5-4.7s5 1.8 5 4.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="14" cy="8" r="2.1" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M14.4 11.6c2 .2 3.4 1.6 3.4 4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
@@ -490,8 +492,7 @@
               <span class="j2-preview-flag" role="status"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><strong data-t="journey2_preview"></strong></span>
               <span class="j2-preview-note" data-t="journey2_preview_hint"></span>
               <span class="j2-tb-tools" role="group" data-t-aria="journey2_fog_group">
-                <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-fog-tool="reveal" aria-pressed="false" data-t-aria="journey2_fog_reveal_title" data-t-title="journey2_fog_reveal_title"><span class="j2-ico" aria-hidden="true">${ICON.reveal}</span><span data-t="journey2_fog_reveal"></span></button>
-                <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-fog-tool="hide" aria-pressed="false" data-t-aria="journey2_fog_hide_title" data-t-title="journey2_fog_hide_title"><span class="j2-ico" aria-hidden="true">${ICON.conceal}</span><span data-t="journey2_fog_hide"></span></button>
+                <button type="button" class="btn btn-ghost btn-sm j2-tool j2-paint-tool" data-j2-fog-tool="paint" aria-pressed="false" data-t-aria="journey2_fog_paint_title" data-t-title="journey2_fog_paint_title"><span class="j2-mouse-pair" aria-hidden="true"><span class="j2-mouse-ico">${ICON.mouseLeft}</span><span data-t="journey2_fog_reveal"></span><span class="j2-mouse-ico">${ICON.mouseRight}</span><span data-t="journey2_fog_hide"></span></span></button>
               </span>
               <button type="button" class="btn btn-ghost btn-sm" data-j2-print-open data-t-title="journey2_pp_open_title" data-t="journey2_pp_open"></button>
               <button type="button" class="btn btn-sm" data-j2-preview-back data-t="journey2_preview_back"></button>
@@ -686,7 +687,7 @@
       ui.fogGroup = container.querySelector('[data-j2-fog-group]');
       ui.fogState = container.querySelector('[data-j2-fog-state]');
       ui.biomeColors = container.querySelector('[data-j2-biome-colors]');
-      ui.fogTools = { reveal: container.querySelector('[data-j2-fog-tool="reveal"]'), hide: container.querySelector('[data-j2-fog-tool="hide"]') };
+      ui.fogTool = container.querySelector('[data-j2-fog-tool="paint"]');
       ui.echoGroup = container.querySelector('[data-j2-echo-group]');
       ui.echoPlace = container.querySelector('[data-j2-echo-place]');
       ui.echoClear = container.querySelector('[data-j2-echo-clear]');
@@ -2718,19 +2719,14 @@
       ui.biomeColors.setAttribute('aria-pressed', String(showBiome));
       ui.biomeColors.title = showBiome ? t('journey2_biome_hide') : t('journey2_biome_show');
       ui.fogState.title = showFog ? t('journey2_fog_hide_state') : t('journey2_fog_show');
-      for (const k of ['reveal', 'hide']) {
-        const b = ui.fogTools[k];
-        b.setAttribute('aria-pressed', String(fogTool === k));
-        b.disabled = editLocked;
-      }
+      ui.fogTool.setAttribute('aria-pressed', String(!!fogTool));
+      ui.fogTool.disabled = editLocked;
       ui.viewport.classList.toggle('is-fog-tool', !!fogTool);
-      ui.viewport.classList.toggle('is-fog-reveal', fogTool === 'reveal');
-      ui.viewport.classList.toggle('is-fog-hide', fogTool === 'hide');
       ui.root.setAttribute('data-fog-tool', fogTool || '');
       ui.fogChip.hidden = !fogTool;
       if (fogTool) {
-        ui.fogChipIco.innerHTML = fogTool === 'reveal' ? ICON.reveal : ICON.conceal;
-        ui.fogChipTitle.textContent = t(fogTool === 'reveal' ? 'journey2_fog_reveal_active' : 'journey2_fog_hide_active');
+        ui.fogChipIco.innerHTML = ICON.reveal;
+        ui.fogChipTitle.textContent = t('journey2_fog_paint_active');
         ui.fogChipCount.textContent = countText('revealed', Model.getRevealedCellSet(doc).size);
         ui.fogChipHint.textContent = t('journey2_fog_pan_hint') + ' · ' + t('journey2_fog_ghost_hint') + ' · ' + t('journey2_fog_esc_hint');
       }
@@ -2761,7 +2757,7 @@
       fogTool = mode; fogHover = null;
       if (ui.viewport) ui.viewport.classList.remove('is-over-tile');
       updateFogUi(); renderFog(); scheduleFogPaint();
-      if (!opts.quiet) announce(mode ? t(mode === 'reveal' ? 'journey2_fog_reveal_active' : 'journey2_fog_hide_active') : t('journey2_fog_tool_off'));
+      if (!opts.quiet) announce(mode ? t('journey2_fog_paint_active') : t('journey2_fog_tool_off'));
     }
 
     /** "Show fog state": UI preference only — the persisted reveal state and Player Preview are unaffected. */
@@ -2794,7 +2790,7 @@
     function startFogStroke(e) {
       clearHint();
       ui.viewport.focus({ preventScroll: true });
-      fogStroke = { mode: fogTool, pointerId: e.pointerId, seen: new Set(), cells: [], pendD: '', last: null, hover: null };
+      fogStroke = { mode: e.button === 2 ? 'hide' : 'reveal', pointerId: e.pointerId, seen: new Set(), cells: [], pendD: '', last: null, hover: null };
       fogHover = null;
       try { ui.viewport.setPointerCapture(e.pointerId); } catch (err) { /* synthetic events may lack a capturable pointer */ }
       ui.viewport.classList.add('is-fog-painting');
@@ -2874,14 +2870,15 @@
       const g = ui.g && ui.g.fogstroke;
       if (!g) return;
       if (!fogTool || !previewMode || !data) { g.innerHTML = ''; return; }
-      const mode = fogTool, s = fogStroke;
+      const s = fogStroke, mode = s ? s.mode : 'idle';   // idle: no button held yet — a neutral outline, no glyph
       let h = '';
       if (s && s.pendD) h += '<path class="j2-fog-pend is-' + mode + '" d="' + s.pendD + '"/>';
       const cell = s ? s.hover : fogHover;
       if (cell) {
         const c = data.grid.cellCenter(cell.q, cell.r), k = data.grid.shortDimensionPx * 0.16;
         h += '<path class="j2-fog-brush is-' + mode + '" d="' + hexPath(cell.q, cell.r) + '"/>';
-        h += mode === 'reveal'
+        h += mode === 'idle' ? ''
+          : mode === 'reveal'
           ? '<circle class="j2-fog-glyph is-reveal" cx="' + fmt(c[0], 1) + '" cy="' + fmt(c[1], 1) + '" r="' + fmt(k, 1) + '"/>'
           : '<path class="j2-fog-glyph is-hide" d="M' + fmt(c[0] - k, 1) + ' ' + fmt(c[1] - k, 1) + 'l' + fmt(2 * k, 1) + ' ' + fmt(2 * k, 1) + 'm0 ' + fmt(-2 * k, 1) + 'l' + fmt(-2 * k, 1) + ' ' + fmt(2 * k, 1) + '"/>';
       }
@@ -3183,13 +3180,14 @@
 
     function onViewportDown(e) {
       if (pan || fogStroke || tr && tr.kind !== 'armed') return;
-      if (e.button !== 0 && e.button !== 1) return;
+      const fogPaint = fogTool && previewMode && !spaceDown && !editLocked && !(tr && tr.kind === 'armed');
+      if (e.button !== 0 && e.button !== 1 && !(e.button === 2 && fogPaint)) return;   // the right button only exists as the Hide brush
       clearHint();
       ui.viewport.focus({ preventScroll: true });
       const [x, y] = localPoint(e);
       pointer.x = x; pointer.y = y; pointer.inside = true; pointer.cx = e.clientX; pointer.cy = e.clientY;
       // priority: dialog > preview > an existing drag/pan > Locate location selection (a click, never a tile drag) > armed placement > fog tool > neutral selection. Space (or the middle button) pans instead of painting.
-      if (fogTool && previewMode && e.button === 0 && !spaceDown && !editLocked && !(tr && tr.kind === 'armed')) { startFogStroke(e); e.preventDefault(); return; }
+      if (fogPaint && (e.button === 0 || e.button === 2)) { startFogStroke(e); e.preventDefault(); return; }
       const tile = e.button === 0 && !spaceDown && !editLocked && !previewMode && !fogTool && !(tr && tr.kind === 'armed') && !locateSession.isActive() && !routeSelecting() && !sanctuaryAtScreen(x, y) ? tileAtScreen(x, y) : null;
       if (tile) {
         tr = { kind: 'tile', tileId: tile.id, batchId: tile.batchId, from: tile.cell, docRef: doc, pointerId: e.pointerId, moved: false, x0: e.clientX, y0: e.clientY, preview: null };

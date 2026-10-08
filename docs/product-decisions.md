@@ -1056,6 +1056,10 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Decision (where):** **Reveal** and **Hide** are in the Player Preview bar, beside the picture they change. The GM toolbar keeps **Fog** (the veil overlay toggle), Biome colors and
   **Player Preview**. A tool is armed only inside the preview; leaving the preview, opening Print Preview or pressing Esc turns it off (Esc: stroke → tool → leave the preview).
   Undo / Redo stay in the toolbar while previewing and undo whatever the shared history holds. The sanctuary-name reveal stays in the GM sanctuary overlay.
+- **Decision (one fog brush, 2026-10-08):** the two buttons became ONE button in the Player Preview bar showing two schematic mice — left button gold + "Reveal", right button gold + "Hide".
+  Arming it gives a single brush (`fogTool` is `null | 'paint'`): the **left** button paints Reveal, the **right** button paints Hide (the stroke's mode is fixed by the button that
+  started it), the middle button or Space + left drag still pans. The right button does nothing outside the armed brush (the context menu stays suppressed). With no button held the
+  brush outline is neutral (no glyph); the reveal circle / hide cross appear once a stroke starts.
 - **Decision (hidden-hex outline):** while a tool is armed in the preview, every placed hex still hidden from the players is outlined with a dashed line — no symbol, Environment or text — so
   the GM can find what there is to reveal. It is a GM aid: drawn only while a tool is armed, never part of the projection, Print Preview, print or any stored value. Without it the preview
   shows nothing under the fog, and painting there would be blind.

@@ -307,8 +307,8 @@ test('localization: every Phase C string exists in English and Russian with the 
   const keys = new Set(Object.keys(i18n.en).filter(k => /^journey2_(fog|preview|live_preview)/.test(k)));
   for (const m of view.matchAll(/['"`](journey2_(?:fog|preview|live_preview)[a-z_]*)['"`]/g)) keys.add(m[1]);
   for (const m of view.matchAll(/data-t(?:-aria|-title|-ph)?="(journey2_(?:fog|preview|live_preview)[a-z_]*)"/g)) keys.add(m[1]);
-  for (const k of ['journey2_fog_group', 'journey2_fog_show', 'journey2_fog_hide_state', 'journey2_fog_reveal', 'journey2_fog_hide', 'journey2_fog_reveal_title', 'journey2_fog_hide_title', 'journey2_preview', 'journey2_preview_back',
-    'journey2_fog_unexplored', 'journey2_fog_tool_active', 'journey2_fog_reveal_active', 'journey2_fog_hide_active', 'journey2_fog_revealed_n', 'journey2_fog_hidden_n', 'journey2_fog_pan_hint'])assert.ok(keys.has(k), 'required string: ' + k);
+  for (const k of ['journey2_fog_group', 'journey2_fog_show', 'journey2_fog_hide_state', 'journey2_fog_reveal', 'journey2_fog_hide', 'journey2_fog_paint_title', 'journey2_preview', 'journey2_preview_back',
+    'journey2_fog_unexplored', 'journey2_fog_tool_active', 'journey2_fog_paint_active', 'journey2_fog_revealed_n', 'journey2_fog_hidden_n', 'journey2_fog_pan_hint'])assert.ok(keys.has(k), 'required string: ' + k);
   const ph = s => (String(s).match(/\{[A-Za-z0-9_]+\}/g) || []).sort().join();
   for (const k of keys) {
     assert.ok(typeof i18n.en[k] === 'string' && i18n.en[k], 'en:' + k);
@@ -317,7 +317,7 @@ test('localization: every Phase C string exists in English and Russian with the 
   }
   assert.deepEqual(Object.keys(i18n.en).filter(k => k.startsWith('journey2_') && !(k in i18n.ru)), []);
   assert.equal(i18n.en.journey2_preview, 'Player Preview'); assert.equal(i18n.en.journey2_preview_back, 'Back to GM');
-  assert.equal(i18n.en.journey2_fog_reveal_title, 'Reveal unexplored hexes'); assert.equal(i18n.en.journey2_fog_hide_title, 'Hide explored hexes');
+  assert.match(i18n.en.journey2_fog_paint_title, /left button reveals.*right button hides/);
   assert.equal(i18n.en.journey2_fog_pan_hint, 'Hold Space and drag to pan');
   const code = view.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '').replace(/\s\/\/\s.*$/gm, '');   // comments may quote the English names
   const literals = code.match(/(['"`])(?:(?!\1)[^\\\n]|\\.)*\1/g) || [];
@@ -333,13 +333,13 @@ const view = read('js/journey2-view.js');
 const fn = (name, next) => view.slice(view.indexOf('function ' + name), view.indexOf('function ' + next));
 
 test('toolbar: Reveal and Hide are real toggle buttons with aria-pressed, the fog-state toggle and Player Preview are discoverable', () => {
-  assert.match(view, /<button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-fog-tool="reveal" aria-pressed="false"/);
-  assert.match(view, /<button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-fog-tool="hide" aria-pressed="false"/);
+  assert.match(view, /<button type="button" class="btn btn-ghost btn-sm j2-tool j2-paint-tool" data-j2-fog-tool="paint" aria-pressed="false"/);
+  assert.doesNotMatch(view, /data-j2-fog-tool="(reveal|hide)"/, 'one brush button replaces Reveal and Hide');
   assert.match(view, /data-j2-fog-state aria-pressed="true"/);
   assert.match(view, /data-j2-preview data-t-title="journey2_preview_title"/);
   assert.match(view, /<button type="button" class="btn btn-sm" data-j2-preview-back data-t="journey2_preview_back">/);
   assert.match(view, /role="group" data-j2-fog-group/);
-  assert.match(fn('updateFogUi', 'setFogTool'), /setAttribute\('aria-pressed', String\(fogTool === k\)\)/);
+  assert.match(fn('updateFogUi', 'setFogTool'), /setAttribute\('aria-pressed', String\(!!fogTool\)\)/);
 });
 
 test('tools: activating one cancels armed placement, drags and the inspector, works only inside Player Preview, and never touches camera or sidebar', () => {
@@ -356,7 +356,9 @@ test('tools: activating one cancels armed placement, drags and the inspector, wo
 test('priority: fog stroke beats neutral tile selection; Space or the middle button pans; Escape order is documented in code', () => {
   const down = fn('onViewportDown', 'onViewportMove');
   assert.ok(down.indexOf('startFogStroke(e)') > 0 && down.indexOf('startFogStroke(e)') < down.indexOf('tileAtScreen(x, y)'), 'the stroke is decided before a tile can be grabbed');
-  assert.match(down, /fogTool && previewMode && e\.button === 0 && !spaceDown/, 'Space-held and the middle button fall through to the pan');
+  assert.match(down, /fogTool && previewMode && !spaceDown/, 'Space-held and the middle button fall through to the pan');
+  assert.match(down, /fogPaint && \(e\.button === 0 \|\| e\.button === 2\)/, 'left reveals, right hides');
+  assert.match(fn('startFogStroke', 'fogStrokeTo'), /e\.button === 2 \? 'hide' : 'reveal'/);
   assert.match(down, /!previewMode && !fogTool && !\(tr && tr\.kind === 'armed'\)/, 'no tile grab in preview or with a tool');
   assert.match(down, /if \(pan \|\| fogStroke \|\| tr && tr\.kind !== 'armed'\) return;/, 'an existing drag or pan wins');
   assert.match(fn('handleMapClick', 'selectTile'), /if \(previewMode \|\| fogTool\) return;/, 'no inspector from a map click under a tool or in preview');
@@ -450,8 +452,7 @@ test('PD-034: Reveal / Hide are in the Player Preview bar, not the GM toolbar', 
   const bar = html.slice(html.indexOf('data-j2-preview-bar'));
   assert.doesNotMatch(gm, /data-j2-fog-tool=/, 'the GM toolbar has no Reveal / Hide');
   assert.match(gm, /data-j2-fog-state/, 'the Fog overlay toggle stays in the GM view');
-  assert.match(bar, /data-j2-fog-tool="reveal"/);
-  assert.match(bar, /data-j2-fog-tool="hide"/);
+  assert.match(bar, /data-j2-fog-tool="paint"/);
   assert.match(fn('leavePreview', 'printPageMarkup'), /setFogTool\(null/, 'the tool never outlives the preview');
 });
 
