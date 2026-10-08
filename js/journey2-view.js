@@ -1429,7 +1429,7 @@
       if (!r) { I.rollDice.textContent = ''; I.rollDice.removeAttribute('data-n'); return; }
       // rebuilt only for a new roll, so an unrelated re-render never replays the tumble
       if (I.rollDice.getAttribute('data-n') !== String(r.n)) {
-        I.rollDice.innerHTML = r.faces.map((f, i) => '<i class="j2-die' + (f === 1 ? ' is-one' : '') + '" style="--i:' + i + '"><img src="img/journey2/dice/d6-' + f + '.png" alt="" width="32" height="32" draggable="false"></i>').join('');
+        I.rollDice.innerHTML = r.faces.map((f, i) => '<i class="j2-die' + (f === 1 ? ' is-one' : '') + '" style="--i:' + i + '"><img src="img/journey2/dice/d6-' + f + '.png" alt="" width="44" height="44" draggable="false"></i>').join('');
         I.rollDice.setAttribute('data-n', String(r.n));
       }
       I.rollDice.setAttribute('aria-label', fill('journey2_roll_dice_aria', { faces: r.faces.map(n).join(', ') }));
