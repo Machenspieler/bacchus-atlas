@@ -233,7 +233,7 @@ Ratings of the hexes entered; sanctuary / Marrogate / Horizon hexes are known an
 deterministic ties). Click a bubble to select a route, click the selected one for details; no permanent panel. "Fewer encounters", Swap and the strategy tabs were dropped. Terrain is never invented for
 ungenerated cells: Fastest enters only known hexes, and Shortest then reports days as Unknown. It reads no Fog, Echoes, Environments or Shadowblight, writes nothing (no history, storage or fog change),
 recomputes on edits, is mutually exclusive with the other map tools, and none of it reaches Player Preview or print.
-Encounter Roll (PD-039): a GM-only "Nd6" button in the Region Inspector's Terrain line (N = the region's Terrain Rating; pure `js/journey2-encounter-roll.js`, fixed d6): the dice stay visible, ones red,
+Encounter Roll (PD-039): a GM-only "Nd6" button in the Region Inspector's Encounter header (N = the region's Terrain Rating; pure `js/journey2-encounter-roll.js`, fixed d6): the dice stay visible, ones red,
 "Encounter!" on any 1 (red frame + "Triggered" flag on the Encounter section) or "No 1s" + a reminder that a Fear may be spent; transient, never stored, never in Player Preview or print.
 A fully overtaken region (PD-038) has no roll: its inspector keeps only the title, badge and Return, and its card has no Inspect button.
 Decisions:

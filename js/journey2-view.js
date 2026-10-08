@@ -506,27 +506,31 @@
                   <span class="j2-insp-sym"><img alt="" width="28" height="28" data-j2-i="img"></span>
                   <div class="j2-insp-titles">
                     <h3 class="j2-insp-title" id="j2-region-inspector-title" data-j2-i="name"></h3>
-                    <p class="j2-insp-sub"><span data-j2-i="ord"></span><span class="j2-blight" data-j2-i="blight" hidden></span></p>
+                    <p class="j2-insp-sub"><span data-j2-i="ord"></span><span class="j2-insp-ex" data-j2-i="examples" hidden></span><span class="j2-blight" data-j2-i="blight" hidden></span></p>
                   </div>
                   <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-insp-close data-t-aria="journey2_inspector_close" data-t-title="journey2_inspector_close">${ICON.close}</button>
                 </header>
                 <div class="j2-insp-scroll" data-j2-i="scroll">
-                  <p class="j2-insp-examples" data-j2-i="examples" hidden></p>
-                  <div class="j2-insp-summary" data-j2-i="summary">
-                    <p class="j2-insp-line"><span class="j2-dots" data-j2-i="dots" role="img"></span><strong data-j2-i="terrainName"></strong><span data-j2-i="terrainN"></span>
-                      <button type="button" class="btn btn-sm j2-roll-btn" data-j2-roll data-j2-i="roll" data-t-title="journey2_roll_tip"><span class="j2-ico" aria-hidden="true">${ICON.d6}</span><span data-j2-i="rollLabel"></span></button></p>
+                  <details class="j2-insp-summary" data-j2-i="summary">
+                    <summary class="j2-insp-line"><span class="j2-dots" data-j2-i="dots" role="img"></span><strong data-j2-i="terrainName"></strong><span data-j2-i="terrainN"></span></summary>
                     <p class="j2-insp-terrain-text" data-j2-i="terrainText" hidden></p>
+                  </details>
+                  <section class="j2-insp-sec j2-hexenv" data-j2-i="hexEnvSec" aria-labelledby="j2-hexenv-title" hidden>
+                    <h4 class="j2-insp-h" id="j2-hexenv-title" data-t="journey2_hexenv_title"></h4>
+                    <div data-j2-i="hexEnvBody"></div>
+                  </section>
+                  <section class="j2-insp-sec j2-enc-sec" data-j2-i="encSec">
+                    <div class="j2-insp-sechead">
+                      <h4 class="j2-insp-h"><span data-t="journey_k_encounter"></span><span class="j2-enc-flag" data-j2-i="encFlag" data-t="journey2_roll_triggered" hidden></span></h4>
+                      <button type="button" class="btn btn-sm j2-roll-btn" data-j2-roll data-j2-i="roll" data-t-title="journey2_roll_tip"><span class="j2-ico" aria-hidden="true">${ICON.d6}</span><span data-j2-i="rollLabel"></span></button>
+                    </div>
                     <div class="j2-roll-out" data-j2-i="rollOut" hidden>
                       <span class="j2-roll-dice" data-j2-i="rollDice" role="img"></span>
                       <span class="j2-roll-verdict" data-j2-i="rollVerdict"></span>
                       <span class="j2-roll-hint" data-j2-i="rollHint" data-t="journey2_roll_fear" hidden></span>
                     </div>
-                  </div>
-                  <section class="j2-insp-sec j2-hexenv" data-j2-i="hexEnvSec" aria-labelledby="j2-hexenv-title" hidden>
-                    <h4 class="j2-insp-h" id="j2-hexenv-title" data-t="journey2_hexenv_title"></h4>
-                    <div data-j2-i="hexEnvBody"></div>
+                    <div data-j2-i="enc"></div>
                   </section>
-                  <section class="j2-insp-sec j2-enc-sec" data-j2-i="encSec"><h4 class="j2-insp-h"><span data-t="journey_k_encounter"></span><span class="j2-enc-flag" data-j2-i="encFlag" data-t="journey2_roll_triggered" hidden></span></h4><div data-j2-i="enc"></div></section>
                   <section class="j2-insp-sec" data-j2-i="rumorSec"><h4 class="j2-insp-h" data-t="journey_k_rumor"></h4><p class="j2-insp-p" data-j2-i="rumor"></p></section>
                 </div>
                 <footer class="j2-insp-tile" data-j2-insp-tile hidden>
@@ -1188,19 +1192,19 @@
       I.hexEnvBody.setAttribute('data-sig', sig);
       let h = '';
       const dis = editLocked ? ' disabled' : '';
+      // PD-033: the Environment is dealt at placement, so the one control is Change (no Choose, no Detach), at the right of the card; a hex without one has nothing to click
+      const change = list.length && id
+        ? '<button type="button" class="btn btn-sm" data-j2-hexenv="change" aria-expanded="' + open + '" aria-controls="j2-hexenv-picker"' + dis + '>' + esc(t('journey2_hexenv_change')) + '</button>' : '';
       if (!list.length) h += '<p class="j2-insp-p j2-insp-muted">' + esc(t('journey2_hexenv_no_habitat')) + '</p>';
       if (id && found) {
-        h += '<div class="j2-hexenv-card"><a class="j2-env-link j2-hexenv-link" href="' + esc(found.href) + '" data-j2-env data-j2-hexenv-link><span class="j2-env-name">' + esc(found.name) + '</span><span class="j2-hexenv-ext" aria-hidden="true">\u2197</span><span class="sr-only"> (' + esc(t('journey2_hexenv_open')) + ')</span></a></div>';
+        // the link opens the Environment overlay on this same page (not a new tab), so it carries no external-link arrow
+        h += '<div class="j2-hexenv-card"><a class="j2-env-link j2-hexenv-link" href="' + esc(found.href) + '" data-j2-env data-j2-hexenv-link><span class="j2-env-name">' + esc(found.name) + '</span><span class="sr-only"> (' + esc(t('journey2_hexenv_open')) + ')</span></a>' + change + '</div>';
       } else if (id) {
-        h += '<div class="j2-hexenv-card is-unavailable"><strong class="j2-hexenv-gone">' + esc(t('journey2_hexenv_unavailable')) + '</strong>' +
+        h += '<div class="j2-hexenv-card is-unavailable"><div class="j2-hexenv-info"><strong class="j2-hexenv-gone">' + esc(t('journey2_hexenv_unavailable')) + '</strong>' +
           '<span class="j2-hexenv-id">' + esc(t('journey2_hexenv_stored_id')) + ': <code>' + esc(id) + '</code></span>' +
-          (list.length ? '<span class="j2-insp-muted">' + esc(t('journey2_hexenv_gone')) + '</span>' : '') + '</div>';
+          (list.length ? '<span class="j2-insp-muted">' + esc(t('journey2_hexenv_gone')) + '</span>' : '') + '</div>' + change + '</div>';
       } else if (list.length) {
         h += '<p class="j2-insp-p j2-insp-muted">' + esc(t('journey2_hexenv_none')) + '</p>';
-      }
-      // PD-033: the Environment is dealt at placement, so the one control is Change (no Choose, no Detach); a hex without one has nothing to click
-      if (list.length && id) {
-        h += '<div class="j2-hexenv-actions"><button type="button" class="btn btn-sm" data-j2-hexenv="change" aria-expanded="' + open + '" aria-controls="j2-hexenv-picker"' + dis + '>' + esc(t('journey2_hexenv_change')) + '</button></div>';
       }
       if (open) h += '<ul class="j2-envs-list j2-hexenv-list" id="j2-hexenv-picker" role="group" aria-label="' + esc(t('journey2_hexenv_picker')) + '">' + list.map((e, i) => envRowHtml(e, e.id === id, i)).join('') + '</ul>';
       I.hexEnvBody.innerHTML = h;
@@ -1453,19 +1457,20 @@
       I.scroll.hidden = bare;
       renderEncounterRoll(b);
       if (bare) {
-        I.examples.hidden = true; I.terrainText.hidden = true; I.terrainName.textContent = ''; I.enc.innerHTML = ''; I.rumor.textContent = '';
+        I.examples.hidden = true; I.terrainText.hidden = true; I.summary.classList.remove('has-more'); I.terrainName.textContent = ''; I.enc.innerHTML = ''; I.rumor.textContent = '';
       } else if (generator && generator.ready()) {
         const d = generator.describe(b);
         I.terrainName.textContent = d.terrain ? d.terrain.name : '';
         I.terrainText.hidden = !(d.terrain && d.terrain.text);
         I.terrainText.textContent = d.terrain ? d.terrain.text : '';
+        I.summary.classList.toggle('has-more', !!(d.terrain && d.terrain.text));
         I.terrainN.textContent = d.terrain ? ' · ' + fill('journey2_days_per_hex', { n: n(d.terrain.days) }) : '';
         I.examples.hidden = !d.examples;
         I.examples.textContent = d.examples || '';
         I.enc.innerHTML = (d.combined ? '<p class="j2-note">' + esc(t('journey_encounter_combined')) + '</p>' : '') + d.encounter.map(x => '<p class="j2-insp-p j2-enc">' + x.html + '</p>').join('');
         I.rumor.textContent = d.rumor;
       } else {
-        I.terrainName.textContent = ''; I.terrainText.hidden = true; I.examples.hidden = true; I.enc.innerHTML = ''; I.rumor.textContent = '';
+        I.terrainName.textContent = ''; I.terrainText.hidden = true; I.summary.classList.remove('has-more'); I.examples.hidden = true; I.enc.innerHTML = ''; I.rumor.textContent = '';
       }
       const hexTile = inspector.source === 'map' && inspector.tileId ? Model.derive(doc).byId.get(inspector.tileId) : null;
       renderHexEnvironment(b, hexTile);

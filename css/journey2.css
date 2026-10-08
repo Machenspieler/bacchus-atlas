@@ -474,10 +474,20 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
     radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.55), transparent) 0 0 / 100% 9px no-repeat scroll,
     radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.55), transparent) 0 100% / 100% 9px no-repeat scroll;
 }
-.j2-insp-examples, .j2-insp-terrain-text { margin: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); }
-.j2-insp-examples[hidden], .j2-insp-terrain-text[hidden] { display: none; }
-.j2-insp-summary { display: grid; gap: var(--s-1); }
-.j2-insp-line { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--s-2); font-size: var(--fs-sm); color: var(--parchment-dim); font-variant-numeric: tabular-nums; }
+.j2-insp-terrain-text { margin: var(--s-1) 0 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); }
+.j2-insp-terrain-text[hidden] { display: none; }
+.j2-insp-ex[hidden] { display: none; }
+.j2-insp-ex::before { content: "\00b7\00a0"; }
+/* the Terrain line is a disclosure: its flavour text stays folded until asked for, and a region without text shows no chevron */
+.j2-insp-summary { display: block; }
+.j2-insp-line { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--s-2); font-size: var(--fs-sm); color: var(--parchment-dim); font-variant-numeric: tabular-nums; list-style: none; }
+.j2-insp-line::-webkit-details-marker { display: none; }
+.j2-insp-summary.has-more > .j2-insp-line { cursor: pointer; }
+.j2-insp-summary.has-more > .j2-insp-line::after { content: ""; width: 6px; height: 6px; margin-left: auto; border: solid var(--muted); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg) translateY(-2px); transition: transform var(--t-base) var(--ease-out); }
+.j2-insp-summary.has-more[open] > .j2-insp-line::after { transform: rotate(-135deg) translateY(-2px); }
+.j2-insp-summary:not(.has-more) > .j2-insp-line { pointer-events: none; }
+.j2-insp-summary > .j2-insp-line:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.j2-insp-sechead { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
 .j2-insp-line strong { font-weight: 600; color: var(--parchment); }
 .j2-insp-sec { display: grid; gap: var(--s-1); padding-top: var(--s-3); border-top: 1px solid var(--line-faint); }
 .j2-insp-sec[hidden] { display: none; }
@@ -715,16 +725,16 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .sk-j2-block { flex: 1 1 auto; }
 
 /* Hex Environment (Region Inspector, map-opened only): the assigned catalog environment of the selected hex. */
-.j2-hexenv[hidden], .j2-hexenv-actions:empty { display: none; }
-.j2-hexenv-card { display: grid; gap: 2px; padding: var(--s-2) var(--s-3); border: 1px solid var(--hope-border); border-radius: var(--r-sm); background: var(--hope-wash); }
-.j2-hexenv-link { padding: 0; font-size: var(--fs-md); font-weight: 600; color: var(--hope-soft); }
+.j2-hexenv[hidden] { display: none; }
+.j2-hexenv-card { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: var(--s-2) var(--s-3); border: 1px solid var(--hope-border); border-radius: var(--r-sm); background: var(--hope-wash); }
+.j2-hexenv-card .btn { flex: none; }
+.j2-hexenv-info { display: grid; gap: 2px; min-width: 0; }
+.j2-hexenv-link { flex: 1 1 auto; min-width: 0; padding: 0; font-size: var(--fs-md); font-weight: 600; color: var(--hope-soft); }
 .j2-hexenv-link:hover { background: transparent; text-decoration: underline; }
-.j2-hexenv-ext { margin-left: var(--s-1); color: var(--muted); }
 .j2-hexenv-card.is-unavailable { border-color: var(--line); background: transparent; }
 .j2-hexenv-gone { color: var(--parchment); }
 .j2-hexenv-id { font-size: var(--fs-xs); color: var(--muted); }
 .j2-hexenv-id code { font-family: var(--font-mono); overflow-wrap: anywhere; }
-.j2-hexenv-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-2); }
 .j2-hexenv-list { margin-top: var(--s-2); max-height: 14rem; overflow-y: auto; overscroll-behavior: contain; }
 .j2-hexenv-row { display: flex; align-items: center; gap: var(--s-2); padding-right: var(--s-2); }
 .j2-hexenv-row .j2-env-link { flex: 1 1 auto; min-width: 0; }
@@ -771,7 +781,7 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
   .j2-pp-pagelabel { display: none; }
 }
 
-/* ---------- Encounter Roll (PD-039): the "Nd6" button in the Terrain line, the dice of the last roll, and the Encounter frame ---------- */
+/* ---------- Encounter Roll (PD-039): the "Nd6" button in the Encounter header, the dice of the last roll, and the Encounter frame ---------- */
 .j2-insp-scroll[hidden], .j2-inspect[hidden], .j2-roll-btn[hidden] { display: none; }
 .j2-roll-btn { margin-left: auto; display: inline-flex; align-items: center; gap: var(--s-1); font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 .j2-roll-btn .j2-ico { display: inline-flex; }
