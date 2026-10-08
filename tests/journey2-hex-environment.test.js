@@ -226,11 +226,10 @@ test('localization: every Hex Environment string exists in English and Russian w
 const view = read('js/journey2-view.js'), css = read('css/journey2.css');
 const fn = (from, to) => view.slice(view.indexOf('function ' + from), view.indexOf('function ' + to, view.indexOf('function ' + from) + 1));
 
-test('view: Hex Environment is map-opened only; the card-opened inspector keeps Suggested environments', () => {
+test('view: Hex Environment is map-opened only; the card-opened inspector shows no environment section', () => {
   const r = fn('renderHexEnvironment', 'hexEnvButton');
   assert.match(r, /if \(!tile\)[\s\S]*hexEnvSec\.hidden = true/);
   assert.match(fn('renderInspector', 'inspectorAnchor'), /inspector\.source === 'map' && inspector\.tileId \? Model\.derive\(doc\)\.byId\.get/);
-  assert.match(fn('renderSuggestedEnvironments', 'hexEnvironmentList'), /I\.envSec\.hidden = !!\(inspector\.source === 'map' && inspector\.tileId\)/);
 });
 
 test('view: the list comes only from the existing biome adapter; an overtaken region has none; nothing is re-sorted or re-fetched', () => {

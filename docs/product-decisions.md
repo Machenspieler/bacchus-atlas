@@ -843,8 +843,8 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   has no base biome and offers no picker ("No habitat-specific environments are available for this region") —
   never a fall-back to all / universal / settlement lists. No search and no cross-biome browsing.
 - **Decision (surface):** the Region Inspector shows *Hex Environment* only when opened from a placed hex
-  (source `map`), between the summary and Encounter, and then hides the generic Suggested Environments
-  disclosure; opened from a card (no hex) it keeps that read-only list. Unassigned: *Choose Environment*;
+  (source `map`), between the summary and Encounter, ; opened from a card (no hex) it shows no
+  environment section (the generic Suggested Environments disclosure was removed entirely). Unassigned: *Choose Environment*;
   assigned: Tier + name (a real link to the **existing** Environment Overlay) with *Change* / *Detach*; the
   picker is inline, vertically scrollable, one row per Environment (name link and a separate *Assign* button;
   the current one reads *Assigned*). Detach needs no confirmation (Undo recovers). Picker state is transient

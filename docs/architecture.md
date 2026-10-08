@@ -1065,18 +1065,13 @@ Run all of them with `node --test tests/*.test.js`.
   no separate tile bar (PD-019). Browser coverage:
   `scripts/journey2/stage1-verify.js` checks `insp.*` and `browser-verify.js`
   `inspector.*`; pure coverage: `tests/journey2-inspector.test.js`.
-- **Suggested environments (Region Inspector, PD-019/PD-020):** `app.js` passes the view
+- **Environment adapter (Region Inspector, PD-019/PD-020):** `app.js` passes the view
   `environmentsForBiome` (`journey2EnvironmentsForBiome`): the catalog
   environments whose `biomes` includes the region's biome, sorted tier → name in
   the current language, each with an `href` built by `envHash(id, { name:
-  'journey2' })`. The view does not re-implement the matching or the order. The inspector's
-  last section (after Rumor) is a read-only, **collapsed-by-default** disclosure "Suggested
-  environments · N" (`renderSuggestedEnvironments`); it collapses again whenever a different
-  region is shown, is built once per biome + language (`data-sig`) so an open list and the
-  focus inside it survive re-renders, and scrolls with the inspector body (the list never
-  nests a scroller). A region with no biome or no match shows "No suggested environments".
-  Region cards no longer carry any environment list, so a card is equally compact for 0, 5
-  or 20 matches. Following a link is an ordinary hash change: `hashchange` sees only the
+  'journey2' })`. The view does not re-implement the matching or the order. It feeds only the
+  Hex Environment picker; the former read-only "Suggested environments" disclosure was removed
+  from the inspector, and region cards carry no environment list. Following a link is an ordinary hash change: `hashchange` sees only the
   suffix changed and opens the environment overlay without re-rendering the page. While any
   `.modal-overlay` is open, the view's document-level Escape handler stands down so Escape
   closes only the overlay.

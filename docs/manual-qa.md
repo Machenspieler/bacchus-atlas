@@ -468,7 +468,7 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       (camera, inspector and picker unchanged after Esc); *Assign* closes the picker, shows Tier + name, adds a small card marker on
       the hex and a hover tooltip. Change = one Undo step; Detach needs no dialog; moving the hex carries the marker; Return to stock
       + Undo restores it; the same environment may sit on several hexes. Player Preview (even on a revealed hex) shows no marker.
-      A card-opened inspector keeps the read-only Suggested environments. RU/EN relabels names without changing the saved map.
+      A card-opened inspector shows no environment section. RU/EN relabels names without changing the saved map.
 - [ ] Biome Tint: placed hexes carry a very faint, distinct wash per Habitat (greens stay distinguishable; a Shadowblighted Wetland is still
       Wetland-coloured, a fully overtaken region is violet-grey); black symbols, Terrain dots, the thick perimeter and the thin grid stay clear
       and no colored outline appears. **Biome colors** (Fog group) hides/shows it with no Undo entry, no "Saving" flash, no camera or fog change,
@@ -478,12 +478,8 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       expanding the card; the panel never sits under the sidebar/rail and stays the same size at 50%, 100%
       and 200%. Esc cancels an armed Place first, then closes the panel; focus returns to the opener.
 - [ ] A card opened with **Inspect region** has no Hex/Return to stock footer (no anchor hex).
-- [ ] An expanded region card has no environment list (equally compact for any region). The inspector's
-      last section reads "Suggested environments · N" and is **collapsed**; opening it lists exactly that
-      biome's catalog environments (tier, name; absent text "No suggested environments" for an Overtaken
-      region); picking one opens its overlay over the map without moving the camera; Esc closes only the
-      overlay (the inspector stays) and focus returns to that row; the section is collapsed again for another
-      region; the inspector body scrolls normally; RU/EN switch relabels the rows.
+- [ ] An expanded region card has no environment list (equally compact for any region), and the Region
+      Inspector has no "Suggested environments" section (its last section is Rumor); the inspector body scrolls normally.
 - [ ] Fog of War (Fog group): Reveal / Hide are toggles (`aria-pressed`, a status chip names the tool and
       "Hold Space and drag to pan"); click and drag paint hexes (a fast flick leaves no gap); one stroke =
       one Undo / Redo; Space + drag pans, the wheel zooms; Esc cancels a stroke, then leaves the tool;

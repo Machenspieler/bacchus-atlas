@@ -304,11 +304,11 @@ test('"Show fog state" is a stored UI preference (default on); preview mode, too
 test('localization: every Phase C string exists in English and Russian with the same placeholders, and the view hard-codes none', () => {
   const i18n = JSON.parse(read('data/i18n.json'));
   const view = read('js/journey2-view.js');
-  const keys = new Set(Object.keys(i18n.en).filter(k => /^journey2_(fog|preview|live_preview|envs_(suggested|none))/.test(k)));
-  for (const m of view.matchAll(/['"`](journey2_(?:fog|preview|live_preview|envs_suggested|envs_none)[a-z_]*)['"`]/g)) keys.add(m[1]);
+  const keys = new Set(Object.keys(i18n.en).filter(k => /^journey2_(fog|preview|live_preview)/.test(k)));
+  for (const m of view.matchAll(/['"`](journey2_(?:fog|preview|live_preview)[a-z_]*)['"`]/g)) keys.add(m[1]);
   for (const m of view.matchAll(/data-t(?:-aria|-title|-ph)?="(journey2_(?:fog|preview|live_preview)[a-z_]*)"/g)) keys.add(m[1]);
   for (const k of ['journey2_fog_group', 'journey2_fog_show', 'journey2_fog_hide_state', 'journey2_fog_reveal', 'journey2_fog_hide', 'journey2_fog_reveal_title', 'journey2_fog_hide_title', 'journey2_preview', 'journey2_preview_back',
-    'journey2_fog_unexplored', 'journey2_fog_tool_active', 'journey2_fog_reveal_active', 'journey2_fog_hide_active', 'journey2_fog_revealed_n', 'journey2_fog_hidden_n', 'journey2_fog_pan_hint', 'journey2_envs_suggested', 'journey2_envs_none']) assert.ok(keys.has(k), 'required string: ' + k);
+    'journey2_fog_unexplored', 'journey2_fog_tool_active', 'journey2_fog_reveal_active', 'journey2_fog_hide_active', 'journey2_fog_revealed_n', 'journey2_fog_hidden_n', 'journey2_fog_pan_hint'])assert.ok(keys.has(k), 'required string: ' + k);
   const ph = s => (String(s).match(/\{[A-Za-z0-9_]+\}/g) || []).sort().join();
   for (const k of keys) {
     assert.ok(typeof i18n.en[k] === 'string' && i18n.en[k], 'en:' + k);

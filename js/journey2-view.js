@@ -544,11 +544,6 @@
                   </section>
                   <section class="j2-insp-sec"><h4 class="j2-insp-h" data-t="journey_k_encounter"></h4><div data-j2-i="enc"></div></section>
                   <section class="j2-insp-sec"><h4 class="j2-insp-h" data-t="journey_k_rumor"></h4><p class="j2-insp-p" data-j2-i="rumor"></p></section>
-                  <section class="j2-insp-sec j2-insp-envs" data-j2-i="envSec">
-                    <h4 class="j2-insp-h j2-insp-h--toggle"><button type="button" class="j2-insp-envs-toggle" data-j2-env-toggle data-j2-i="envToggle" aria-expanded="false" aria-controls="j2-insp-envs-list"><span data-j2-i="envLabel"></span><span class="j2-envs-chev" aria-hidden="true">${ICON.caret}</span></button></h4>
-                    <p class="j2-insp-p j2-insp-muted" data-j2-i="envNone" hidden></p>
-                    <ul class="j2-envs-list" id="j2-insp-envs-list" data-j2-i="envList" hidden></ul>
-                  </section>
                 </div>
                 <footer class="j2-insp-tile" data-j2-insp-tile hidden>
                   <span class="j2-insp-tile-text" data-j2-i="tileText"></span>
@@ -1058,31 +1053,6 @@
       refs.del.disabled = editLocked;
     }
 
-    /**
-     * The inspector's read-only "Suggested environments" disclosure: every catalog environment tagged with the region's biome, each a
-     * plain link to that environment's overlay on #/journey (the overlay is route-driven, so the map underneath is never re-rendered).
-     * The matching itself is supplied by app.js (`environmentsForBiome`) — nothing here re-implements it, and the order is kept as
-     * given. Collapsed by default every time a region is shown; the list is built once per biome + language so an open list and the
-     * focus inside it survive every re-render. An overtaken region has no biome and therefore no list.
-     */
-    function renderSuggestedEnvironments(b, regionChanged) {
-      const I = ui.i;
-      const biome = b.habitat.overtaken ? null : b.habitat.biome;
-      const list = biome ? environmentsFor(biome) : [];
-      I.envSec.hidden = !!(inspector.source === 'map' && inspector.tileId);   // a hex-opened inspector shows the picker in Hex Environment instead of repeating this list
-      I.envLabel.textContent = t('journey2_envs_suggested') + (list.length ? ' · ' + n(list.length) : '');
-      I.envToggle.hidden = !list.length;
-      I.envNone.hidden = list.length > 0;
-      I.envNone.textContent = t('journey2_envs_none');
-      if (regionChanged || !list.length) setEnvironmentsOpen(false);
-      if (!list.length) { I.envList.innerHTML = ''; I.envList.removeAttribute('data-sig'); return; }
-      const sig = lang + '|' + list.map(e => e.id + ':' + e.name).join(',');
-      if (I.envList.getAttribute('data-sig') !== sig) {
-        I.envList.setAttribute('data-sig', sig);
-        I.envList.innerHTML = list.map(e => '<li><a class="j2-env-link" href="' + esc(e.href) + '" data-j2-env><span class="j2-env-tier" aria-hidden="true">' + esc(e.tier) + '</span><span class="j2-env-name">' + esc(e.name) + '</span><span class="sr-only">' + esc(t('tier_label') + ' ' + e.tier) + '</span></a></li>').join('');
-      }
-    }
-
     /** The catalog environments this region's hexes may carry: the existing biome adapter's list, untouched. A fully overtaken region has no base biome and no list. */
     function hexEnvironmentList(b) {
       const biome = b.habitat.overtaken ? null : b.habitat.biome;
@@ -1182,12 +1152,6 @@
         const l = ui.i.hexEnvBody.querySelector('[data-j2-hexenv-link]'); if (l) l.focus({ preventScroll: true });
       }
     }
-
-    function setEnvironmentsOpen(open) {
-      ui.i.envToggle.setAttribute('aria-expanded', String(open));
-      ui.i.envList.hidden = !open;
-    }
-    function toggleEnvironments() { setEnvironmentsOpen(ui.i.envToggle.getAttribute('aria-expanded') !== 'true'); }
 
     function renderInventory(full) {
       if (!ui.cards || !doc) return;
@@ -1374,7 +1338,6 @@
       }
       const hexTile = inspector.source === 'map' && inspector.tileId ? Model.derive(doc).byId.get(inspector.tileId) : null;
       renderHexEnvironment(b, hexTile);
-      renderSuggestedEnvironments(b, inspectorShown !== b.id);
       // the anchored hex's placement info + the one action on it (a card-opened inspector has no anchor, so no footer)
       const tile = inspector.tileId ? Model.derive(doc).byId.get(inspector.tileId) : null;
       ui.inspTile.hidden = !tile;
@@ -3675,7 +3638,6 @@
       else if (b.hasAttribute('data-j2-undo')) undo();
       else if (b.hasAttribute('data-j2-redo')) redo();
       else if (b.hasAttribute('data-j2-return')) returnSelected();
-      else if (b.hasAttribute('data-j2-env-toggle')) toggleEnvironments();
       else if (b.hasAttribute('data-j2-hexenv')) onHexEnvClick(b);
       else if (b.hasAttribute('data-j2-menu-btn')) toggleMenu(b);
       else if (b.hasAttribute('data-j2-act')) { closeMenus(); runAction(b.getAttribute('data-j2-act')); }
