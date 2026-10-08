@@ -1884,9 +1884,15 @@
     const ROUTE_LABEL = { fastest: 'journey2_route_fastest', shortest: 'journey2_route_shortest' };
     const ROUTE_GAP_PX = 6;                                 // centre-to-centre distance of the two parallel lines, in screen px
 
+    /** Cells of fully overtaken regions: impassable to the Route Planner. */
+    function blockedCells(d) {
+      const over = new Set(d.batches.filter(b => b.habitat.overtaken).map(b => b.id));
+      return new Set(d.tiles.filter(tl => over.has(tl.batchId)).map(tl => tl.cell));
+    }
+
     /** Terrain Ratings by cell for the current document (rebuilt only when the document object changes). */
     function routeIndex() {
-      if (routeTerrain.doc !== doc) routeTerrain = { doc: doc, index: Route.buildTerrainIndex(doc) };
+      if (routeTerrain.doc !== doc) routeTerrain = { doc: doc, index: Route.buildTerrainIndex(doc), blocked: blockedCells(doc) };
       return routeTerrain.index;
     }
 
@@ -1896,6 +1902,7 @@
       return Route.planRoutes({
         startCell: a, goalCell: b,
         isRouteableCell: id => foggable.has(id),
+        isBlockedCell: id => routeTerrain.blocked.has(id),   // a fully overtaken region cannot be crossed
         getNeighbors: id => { const c = Geo.parseCellId(id); return grid.neighbors(c.q, c.r).filter(x => x.valid).map(x => x.id); },
         getTerrainRating: id => (idx.has(id) ? idx.get(id) : (data.ctx.sanctuaryCells.has(id) ? 0 : null)),   // a sanctuary / Marrogate / Horizon hex is a known, free settlement
         hasZeroCostCells: data.ctx.sanctuaryCells.size > 0,
@@ -2197,7 +2204,7 @@
         if (routes.fastest.status !== 'ok' && routes.fastest.reason === 'unknown-terrain') body += '<p class="j2-route-warn">' + esc(t('journey2_route_no_terrain')) + ' ' + esc(t('journey2_route_no_terrain_short')) + '</p>';
         body += routeStatsHtml(v.route);
       } else {
-        body += '<p class="j2-route-warn">' + esc(t(v.route.reason === 'unknown-terrain' ? 'journey2_route_no_terrain' : 'journey2_route_none')) + '</p>';
+        body += '<p class="j2-route-warn">' + esc(t(v.route.reason === 'unknown-terrain' ? 'journey2_route_no_terrain' : v.route.reason === 'impassable' ? 'journey2_route_impassable' : 'journey2_route_none')) + '</p>';
       }
       R.body.innerHTML = body;
       const cmp = routeCompareHtml(routes);

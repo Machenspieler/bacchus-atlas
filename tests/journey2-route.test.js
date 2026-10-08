@@ -323,3 +323,23 @@ test('navigator-style bubbles: two parallel lines, a bubble per drawn route, cli
   assert.ok(css.includes('.j2-route-bubbles { position: absolute; inset: 0; z-index: 3; pointer-events: none; }'));
   for (const k of ['journey2_route_both', 'journey2_route_bub_stats', 'journey2_route_bub_unknown', 'journey2_route_bub_hint']) assert.ok(i18n.en[k] && i18n.ru[k], k);
 });
+
+test('impassable (fully overtaken) hexes are never entered; both strategies route around them', () => {
+  const t = fill(['0,0', '1,0', '2,0', '3,0', '1,-1', '2,-1', '3,-1'], 1);
+  const g = Object.assign(grid(3, t), { isBlockedCell: id => id === '2,0' });
+  for (const k of ['fastest', 'shortest']) {
+    const r = route(g, '0,0', '3,0', k);
+    assert.equal(r.status, 'ok', k);
+    assert.ok(!r.cells.includes('2,0'), k);
+  }
+});
+
+test('impassable: a blocked start or destination, or a wall of blocked hexes, is reported as impassable', () => {
+  const ring = ['1,0', '1,-1', '0,-1', '-1,0', '-1,1', '0,1'];
+  const t = fill(['0,0', '2,0', '3,0'], 1);
+  const wall = Object.assign(grid(3, t), { isBlockedCell: id => ring.includes(id) });
+  for (const k of ['fastest', 'shortest']) assert.deepEqual(route(wall, '0,0', '3,0', k), { status: 'no-route', strategy: k, reason: 'impassable' });
+  const end = Object.assign(grid(3, t), { isBlockedCell: id => id === '3,0' });
+  assert.equal(route(end, '0,0', '3,0', 'fastest').reason, 'impassable');
+});
+

@@ -1089,3 +1089,8 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Rules:** the shape always contains the seed cell (the cell under the pointer, or the nearest free cell when the pointer is on a placed tile). A pocket smaller than N is filled and the rest spills out connected; a pocket larger than N is filled inside with N cells, any form. Among attempts a valid placement ranks first, then fewest NEW enclosed holes, then least exposed perimeter. Preview and commit use the same cells (`checkPlacement`, same cell policy and prepared-map rule); nothing is stored. Shapes for more than 60 hexes are not fitted.
 - **Stability:** the shape is a pure function of the document, the anchor cell, N and a per-drag seed, cached per (document, anchor cell), so it never flickers and returning to a cell restores the same shape.
 - **Where:** `js/journey2-model.js` (`fitFootprint`), `js/journey2-view.js` (`computePreview`, `seededRandom`, `tr.seed`), `tests/journey2-model.test.js`.
+
+## PD-038: Journey — fully shadowblighted regions are impassable to the Route Planner
+
+- **Decision:** a region rolled 1-then-1 on the habitat table ("completely overtaken and nigh impossible to traverse") cannot be crossed: neither Fastest nor Shortest ever enters one of its hexes, and one cannot be the start or destination. When that is the only thing between A and B the planner says so ("a fully shadowblighted region cannot be crossed") instead of "no route". Ordinary Shadowblighted regions (a 1 followed by a habitat) stay passable. Extends PD-031.
+- **Where:** `js/journey2-route.js` (`isBlockedCell`, reason `impassable`), `js/journey2-view.js` (`blockedCells`, `planRoutesFor`), `tests/journey2-route.test.js`.

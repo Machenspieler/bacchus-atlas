@@ -115,7 +115,8 @@
    * Equal-cost candidates are ordered by f, then h, then canonical cell order, and neighbours are visited in canonical order, so the same input
    * always yields the same path. The result also carries `segments` (per step: the entered cell's rating is known) for the view's dashed line.
    *   { status:'ok', strategy, cells, totalCost, stats, segmentKnown }
-   *   { status:'no-route', strategy, reason: 'invalid-endpoint' | 'unknown-terrain' | 'disconnected' }
+   *   isBlockedCell(id)     -> optional: a hex that can never be entered (fully shadowblighted); neither start nor goal may be one
+   *   { status:'no-route', strategy, reason: 'invalid-endpoint' | 'impassable' | 'unknown-terrain' | 'disconnected' }
    */
   function findHexRoute(o) {
     const strategy = o && STRATEGY_MODEL[o.strategy] ? o.strategy : null;
@@ -126,7 +127,10 @@
     const rating = o.getTerrainRating || (() => null);
     if (!Geo.parseCellId(start) || !Geo.parseCellId(goal) || !o.isRouteableCell(start) || !o.isRouteableCell(goal)) return fail('invalid-endpoint');
 
-    const enterable = id => o.isRouteableCell(id) && (!model.terrainAware || isRating(rating(id)));
+    // an impassable hex (a fully shadowblighted region) is never entered, and is not a valid start or destination either
+    const blocked = typeof o.isBlockedCell === 'function' ? o.isBlockedCell : () => false;
+    if (blocked(start) || blocked(goal)) return fail('impassable');
+    const enterable = id => o.isRouteableCell(id) && !blocked(id) && (!model.terrainAware || isRating(rating(id)));
     const stepCost = id => (model.terrainAware ? model.edgeCost(rating(id)) : 1);
     // a zero-cost settlement hex makes every per-step lower bound 0 (still admissible: it degrades A* to Dijkstra)
     const minStep = o.hasZeroCostCells && model.terrainAware ? 0 : model.minStep;
@@ -161,11 +165,13 @@
       }
     }
     // No path under this strategy. A terrain-aware miss with a geometric path means "terrain is the reason"; otherwise the cells are simply not connected.
-    if (model.terrainAware) {
-      const geo = findHexRoute({ startCell: start, goalCell: goal, strategy: 'shortest', getNeighbors: o.getNeighbors, getTerrainRating: rating, isRouteableCell: o.isRouteableCell });
-      return fail(geo.status === 'ok' ? 'unknown-terrain' : 'disconnected');
-    }
-    return fail('disconnected');
+    if (o.probe) return fail('disconnected');   // an internal reachability check never explains itself
+    // Impassable hexes are the reason when the cells connect once they are ignored.
+    const geoOpts = { startCell: start, goalCell: goal, strategy: 'shortest', getNeighbors: o.getNeighbors, getTerrainRating: rating, isRouteableCell: o.isRouteableCell, probe: true };
+    const open = findHexRoute(geoOpts);
+    if (open.status !== 'ok') return fail('disconnected');
+    if (o.isBlockedCell && findHexRoute(Object.assign({}, geoOpts, { isBlockedCell: o.isBlockedCell })).status !== 'ok') return fail('impassable');
+    return fail(model.terrainAware ? 'unknown-terrain' : 'disconnected');
 
     function finish(cells, totalCost) {
       const stats = calculateRouteStats(cells, rating);
