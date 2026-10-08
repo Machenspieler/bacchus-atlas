@@ -324,6 +324,29 @@
     return { hidden: true, shifted: false, offsetPx: null, glyphRectPx: null, dotsPx: [], boxPx: null, reason: 'no clear space in the cell' };
   }
 
+  /**
+   * Last resort for a cell whose printed marker (a sanctuary) fills it, so layoutProofGlyph finds no clear box: a compact glyph (height capped
+   * at maxH, aspect kept) is tucked against the top edge of the hexagon, above the marker. It may overlap the marker's padded protection area
+   * (the white halo behind the glyph keeps both readable) but never leaves the hexagon. Returns the same shape as layoutProofGlyph, with `compact: true`.
+   */
+  function layoutCompactGlyph(grid, q, r, glyph, maxH, pad) {
+    const p = pad == null ? 1 : pad;
+    const k = Math.min(1, maxH / glyph.h);
+    const w = glyph.w * k, h = glyph.h * k, dotsH = glyph.dots > 0 ? 6 : 0;
+    const boxW = w + 2 * p, boxH = h + dotsH + 2 * p;
+    const c = grid.cellCenter(q, r), poly = grid.cellCorners(q, r);
+    const top = Math.min.apply(null, poly.map(pt => pt[1]));
+    for (let down = 1; down <= 12; down++) {
+      const box = [c[0] - boxW / 2, top + down, boxW, boxH];
+      const corners = [[box[0], box[1]], [box[0] + box[2], box[1]], [box[0], box[1] + box[3]], [box[0] + box[2], box[1] + box[3]]];
+      if (!corners.every(pt => pointInConvexPolygon(pt, poly))) continue;
+      const gx = box[0] + p, gy = box[1] + p, dots = [];
+      for (let d = 0; d < glyph.dots; d++) dots.push([gx + w / 2 + (d - (glyph.dots - 1) / 2) * 5, gy + h + 4]);
+      return { hidden: false, shifted: true, compact: true, offsetPx: [0, box[1] + boxH / 2 - c[1]], glyphRectPx: [gx, gy, w, h], glyphScale: k, dotsPx: dots, boxPx: box };
+    }
+    return null;
+  }
+
   /* ---------------- region perimeter geometry ---------------- */
 
   /**
@@ -623,6 +646,7 @@
     pointInConvexPolygon: pointInConvexPolygon,
     protectionRects: protectionRects,
     layoutProofGlyph: layoutProofGlyph,
+    layoutCompactGlyph: layoutCompactGlyph,
     PROOF_OFFSETS: PROOF_OFFSETS,
     worldToScreen: worldToScreen,
     screenToWorld: screenToWorld,

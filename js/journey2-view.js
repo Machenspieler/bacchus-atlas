@@ -100,7 +100,8 @@
   const CLICK_SLOP_PX = 4;
   const MARKER_HIT_SCREEN_PX = 14;
   const GLYPH_SCALE = 0.55;                         // native symbol px -> world px
-  const BLIGHT_X_HALF = 7;                           // half-size of the blight X drawn at the top of a blighted tile
+  const COMPACT_GLYPH_MAX_H = 14;                    // height cap of the habitat glyph tucked above a sanctuary icon that fills its hexagon
+  const BLIGHT_X_HALF = 7;                          // half-size of the blight X drawn at the top of a blighted tile
   const TERRAIN_DEMO = [1, 2, 3, 4, 2, 3, 1];
   const HABITAT_DEMO = ['forest', 'mountain', 'aquatic', 'grassland', 'tropical', 'drylands', 'rolling'];
   // Fixed world rectangles for the print proof (A4 landscape, 0.2 mm per world px).
@@ -1602,8 +1603,14 @@
         const xc = blightMarkCenter(q, r);
         const base = data.glyphProtections;
         const prot = blight ? base.concat([{ rectPx: [xc[0] - BLIGHT_X_HALF - 1, xc[1] - BLIGHT_X_HALF - 1, 2 * BLIGHT_X_HALF + 2, 2 * BLIGHT_X_HALF + 2] }]) : base;
-        const lay = Geo.layoutProofGlyph(data.grid, q, r, { w: boxW, h: gh, dots: dots }, prot, 2);
-        L = { lay: lay, sym: sym, gw: gw, gh: gh, boxW: boxW, blight: blight };
+        let lay = Geo.layoutProofGlyph(data.grid, q, r, { w: boxW, h: gh, dots: dots }, prot, 2);
+        let gwL = gw, ghL = gh, boxWL = boxW;
+        // a printed marker (sanctuary) can fill the whole hexagon: rather than losing the habitat glyph, tuck a compact one against the top edge
+        if (lay.hidden && !blight) {
+          const compact = Geo.layoutCompactGlyph(data.grid, q, r, { w: boxW, h: gh, dots: dots }, COMPACT_GLYPH_MAX_H, 1);
+          if (compact) { lay = compact; gwL = boxWL = compact.glyphRectPx[2]; ghL = compact.glyphRectPx[3]; }
+        }
+        L = { lay: lay, sym: sym, gw: gwL, gh: ghL, boxW: boxWL, blight: blight };
         glyphCache.set(key, L);
       }
       return L;
