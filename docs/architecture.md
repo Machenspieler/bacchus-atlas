@@ -1118,7 +1118,7 @@ Run all of them with `node --test tests/*.test.js`.
     pointer moves only collect cells and schedule one `requestAnimationFrame` repaint of the
     pending-cell / brush layer, and **release commits one `setCellsRevealed` command** — one Undo
     entry, one autosave. `pointercancel`, lost capture, Escape, Undo/Redo and route exit cancel
-    the stroke without a history entry. Space (or the middle button) pans instead of painting;
+    the stroke without a history entry. Space (or the middle button; the right button too outside fog painting) pans instead of painting;
     the Space handler also covers a focused fog toolbar button so it never presses it. Cells under
     the overlay sidebar or outside the map are not paintable (no click-through).
     Priority: dialog > Player Preview > an existing drag/pan > armed placement > fog tool >

@@ -3313,7 +3313,7 @@
     function onViewportDown(e) {
       if (pan || fogStroke || tr && tr.kind !== 'armed') return;
       const fogPaint = fogTool && previewMode && !spaceDown && !editLocked && !(tr && tr.kind === 'armed');
-      if (e.button !== 0 && e.button !== 1 && !(e.button === 2 && fogPaint)) return;   // the right button only exists as the Hide brush
+      if (e.button !== 0 && e.button !== 1 && e.button !== 2) return;   // the right button pans, except as the Hide brush while fog painting
       clearHint();
       ui.viewport.focus({ preventScroll: true });
       const [x, y] = localPoint(e);
@@ -3327,7 +3327,7 @@
         pan = { id: e.pointerId, x0: x, y0: y, tx0: cam.tx, ty0: cam.ty, scale0: cam.scale, moved: false, button: e.button };
       }
       try { ui.viewport.setPointerCapture(e.pointerId); } catch (err) { /* synthetic events may lack a capturable pointer */ }
-      if (e.button === 1) e.preventDefault();
+      if (e.button === 1 || e.button === 2) e.preventDefault();
     }
 
     function onViewportMove(e) {
