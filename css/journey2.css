@@ -806,3 +806,4 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 @media (max-width: 900px) { .j2-route { left: var(--s-3); right: var(--s-3); width: auto; max-height: 55%; } }
 @media (prefers-reduced-motion: reduce) { .j2-overlay .j2-route-line { animation: none; } }
 @media print { .j2-route, .j2-route-chip { display: none !important; } }
+.j2-route-tab[hidden] { display: none; }
