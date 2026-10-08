@@ -429,7 +429,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-region-inspector[hidden] { display: none; }
 .j2-insp-head { flex: none; display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-3) var(--s-2); border-bottom: 1px solid var(--line-faint); }
 .j2-insp-sym { flex: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--parchment); border-radius: var(--r-sm); }
-.j2-insp-sym img { max-width: 30px; max-height: 28px; display: block; }
+.j2-insp-sym img { width: auto; height: auto; max-width: 30px; max-height: 28px; display: block; }
 .j2-insp-titles { flex: 1 1 auto; min-width: 0; }
 .j2-insp-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-lg); line-height: var(--lh-lg); color: var(--parchment); overflow-wrap: anywhere; }
 .j2-insp-sub { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-2); font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); }
