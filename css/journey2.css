@@ -804,7 +804,7 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-insp-scroll[hidden], .j2-inspect[hidden], .j2-roll-btn[hidden] { display: none; }
 .j2-roll-btn { margin-left: auto; display: inline-flex; align-items: center; gap: var(--s-1); font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 .j2-roll-btn .j2-ico { display: inline-flex; }
-.j2-roll-btn .j2-ico img { width: 28px; height: 28px; display: block; }
+.j2-roll-btn .j2-ico img { width: 38px; height: 38px; margin: -5px -2px; display: block; }
 .j2-roll-out { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); padding-top: var(--s-1); }
 .j2-roll-out[hidden] { display: none; }
 .j2-roll-dice { display: inline-flex; gap: var(--s-1); }
