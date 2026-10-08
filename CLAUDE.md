@@ -209,9 +209,11 @@ book's west-to-east rule, one removes them, and they never reach Player Preview 
 Generated sanctuaries are GM-only too (`sanctuaries.entries`, one per printed sanctuary icon, numbers not
 sentences): one toolbar button rolls all 56 through the book's sanctuary tables (`journey2Generator`), clicking an icon opens an
 overlay with Delete / Reroll / close, and none of it reaches Player Preview or print (PD-023).
-A placed hex may carry one optional catalog Environment (`tile.environmentId`, id only; follows the tile, dies with
-it; picker limited to the region's biome via the existing adapter, none for an overtaken region; opened from a hex's
-Region Inspector, never from a card; GM-only, never in Player Preview or print — PD-025).
+A placed hex carries one optional catalog Environment (`tile.environmentId`, id only; follows the tile, dies with
+it; GM-only, never in Player Preview or print — PD-025). It is dealt automatically at placement (PD-033): from the region's biome
+list via the existing adapter, least-used-in-the-region first and random among equals (pure `js/journey2-env-deal.js`), carried
+inside the atomic `place` command; none for an overtaken region. The Region Inspector (opened from a hex, never from a card)
+offers only Change — no Choose, no Detach.
 Biome Tint (PD-026): a faint derived wash inside each placed hex from its Habitat (palette only in `js/journey2-biome-tint.js`;
 Shadowblight keeps the Habitat colour, a fully overtaken region uses a violet-grey fallback); never stored; GM toggle "Biome colors" lives
 in `dhcodex_journey2_ui`; Player Preview tints revealed cells only (the projection omits it for hidden cells); black-and-white print
@@ -232,7 +234,7 @@ deterministic ties). Click a bubble to select a route, click the selected one fo
 ungenerated cells: Fastest enters only known hexes, and Shortest then reports days as Unknown. It reads no Fog, Echoes, Environments or Shadowblight, writes nothing (no history, storage or fog change),
 recomputes on edits, is mutually exclusive with the other map tools, and none of it reaches Player Preview or print.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032 (Place all rolls a random frozen footprint per press), detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033 (Place all rolls a random frozen footprint per press), detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

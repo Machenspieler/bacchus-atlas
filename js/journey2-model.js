@@ -848,7 +848,8 @@
    * Applies one command to an (immutable) document: { ok:true, doc, noop? } or { ok:false, error }.
    * Commands (all values pre-generated, so replay is exact):
    *   createBatch { batch, at }
-   *   place       { batchId, tiles:[{id, cell}], allowDetached?, at }   atomic: all or nothing; may not increase the number of prepared areas
+   *   place       { batchId, tiles:[{id, cell, environmentId?}], allowDetached?, at }   atomic: all or nothing; each tile may carry the
+   *                                                                catalog id dealt to it (PD-033; format-checked here, eligibility is the view's); may not increase the number of prepared areas
    *                                                                beyond max(1, before) ('detached-prepared-map') unless `allowDetached: true` on a
    *                                                                region with nothing placed (adds exactly one area; PD-024)
    *   move        { tileId, to:"q,r", at }                     same cell => noop; may not split the prepared map ('would-split-prepared-map')
@@ -893,6 +894,7 @@
           if (!c) return fail('bad-cell', { cell: t && t.cell });
           if (seenCell.has(t.cell)) return fail('duplicate-cell', { cell: t.cell });
           if (typeof t.id !== 'string' || !ID_PATTERN.test(t.id) || seenId.has(t.id)) return fail('bad-tile-id');
+          if (own(t, 'environmentId') && t.environmentId !== undefined && !isEnvironmentId(t.environmentId)) return fail('bad-environment');
           seenCell.add(t.cell); seenId.add(t.id); cells.push(c);
         }
         const conflicts = checkCells(doc, ctx, cells).filter(c => !c.ok);
@@ -900,7 +902,11 @@
         if (!regionConnectivity(doc, batch.id, cmd.tiles.map(t => t.cell)).ok) return fail('disconnected-region');
         const topo = topologyCheck(doc, batch.id, cmd.tiles.map(t => t.cell), null, cmd.allowDetached === true);
         if (!topo.ok) return fail(topo.code);
-        return { ok: true, doc: touch(doc, cmd.at, { tiles: doc.tiles.concat(cmd.tiles.map(t => ({ id: t.id, batchId: batch.id, cell: t.cell }))) }) };
+        return { ok: true, doc: touch(doc, cmd.at, { tiles: doc.tiles.concat(cmd.tiles.map(t => {
+          const tile = { id: t.id, batchId: batch.id, cell: t.cell };
+          if (typeof t.environmentId === 'string') tile.environmentId = t.environmentId;
+          return tile;
+        })) }) };
       }
       case 'move': {
         const tile = derive(doc).byId.get(cmd.tileId);

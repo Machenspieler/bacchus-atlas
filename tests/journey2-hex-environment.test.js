@@ -128,9 +128,28 @@ test('command: the same environment may sit on many tiles', () => {
   assert.equal(doc.tiles.filter(t => t.environmentId === 'buzzing-swamp').length, 3);
 });
 
-test('place never carries an assignment: a fresh tile starts without one', () => {
-  const doc = must(apply(must(set(fixture(), 't0', 'buzzing-swamp')), { type: 'place', batchId: 'b1', tiles: [{ id: 'n1', cell: at(0, -1) }] }));
-  assert.equal('environmentId' in tile(doc, 'n1'), false);
+test('place: a tile may carry the id dealt to it, in the same atomic command (PD-033); without one it starts clean', () => {
+  const doc = must(apply(must(set(fixture(), 't0', 'buzzing-swamp')), { type: 'place', batchId: 'b1', tiles: [{ id: 'n1', cell: at(0, -1), environmentId: 'blood-marsh' }, { id: 'n2', cell: at(1, -1) }] }));
+  assert.equal(tile(doc, 'n1').environmentId, 'blood-marsh');
+  assert.equal('environmentId' in tile(doc, 'n2'), false, 'no id is ever inherited from another tile');
+  assert.equal(M.validateDocument(JSON.parse(JSON.stringify(doc)), ctx).ok, true);
+});
+
+test('place: a malformed carried id refuses the whole command', () => {
+  for (const bad of ['', 'BAD', 7, null, {}, 'x'.repeat(80)]) {
+    const r = apply(fixture(), { type: 'place', batchId: 'b1', tiles: [{ id: 'n1', cell: at(0, -1), environmentId: bad }] });
+    assert.equal(r.ok, false, JSON.stringify(bad));
+    assert.equal(r.error.code, 'bad-environment');
+  }
+});
+
+test('history: one Undo of a place removes the tiles together with their dealt ids; Redo restores them exactly', () => {
+  const h = M.createHistory(), doc = fixture();
+  const r = must(apply(doc, { type: 'place', batchId: 'b1', tiles: [{ id: 'n1', cell: at(0, -1), environmentId: 'blood-marsh' }] }));
+  M.historyCommit(h, doc, r, 'place');
+  assert.equal(h.undo.length, 1);
+  assert.equal(tile(M.historyUndo(h).before, 'n1'), undefined);
+  assert.equal(tile(M.historyRedo(h).after, 'n1').environmentId, 'blood-marsh');
 });
 
 /* ---------------- tile lifecycle ---------------- */
@@ -210,13 +229,13 @@ test('projection: a revealed assigned tile exposes no environment data at all', 
 test('localization: every Hex Environment string exists in English and Russian with the same placeholders', () => {
   const i18n = JSON.parse(read('data/i18n.json'));
   const keys = Object.keys(i18n.en).filter(k => k.startsWith('journey2_hexenv_'));
-  assert.ok(keys.length >= 18);
+  assert.ok(keys.length >= 16);
   const ph = s => (s.match(/\{\w+\}/g) || []).sort().join();
   for (const k of keys) {
     assert.ok(i18n.ru[k], 'ru:' + k);
     assert.equal(ph(i18n.en[k]), ph(i18n.ru[k]), 'placeholders:' + k);
   }
-  for (const k of ['Hex Environment', 'No Environment assigned to this hex', 'Choose Environment', 'Detach', 'Assign', 'Assigned', 'Environment unavailable', 'Stored id', 'Open Environment details', 'Tier {n}', 'No habitat-specific environments are available for this region']) {
+  for (const k of ['Hex Environment', 'No Environment assigned to this hex', 'Assign', 'Assigned', 'Environment unavailable', 'Stored id', 'Open Environment details', 'Tier {n}', 'No habitat-specific environments are available for this region']) {
     assert.ok(Object.values(i18n.en).some(v => v.replace(/\.$/, '') === k), k);
   }
 });
@@ -242,10 +261,10 @@ test('view: the list comes only from the existing biome adapter; an overtaken re
 });
 
 test('view: Assign goes through one setTileEnvironment command and re-checks the adapter list first', () => {
-  const h = fn('onHexEnvClick', 'setEnvironmentsOpen');
-  assert.equal((h.match(/type: 'setTileEnvironment'/g) || []).length, 2, 'assign / change share one command; detach is the second');
+  const h = fn('onHexEnvClick', 'renderInventory');
+  assert.equal((h.match(/type: 'setTileEnvironment'/g) || []).length, 1, 'change is the one command; there is no detach (PD-033)');
   assert.match(h, /hexEnvironmentList\(b\)\.find\(e => e\.id === id\)[\s\S]*if \(!pick\) return/);
-  assert.match(h, /environmentId: null/);
+  assert.doesNotMatch(h, /environmentId: null|detach/);
   assert.doesNotMatch(fn('setEnvPicker', 'onHexEnvClick'), /dispatch\(|persist\(|historyCommit/, 'opening or closing the picker is pure UI state');
 });
 
@@ -258,10 +277,11 @@ test('view: names are real links to the existing overlay href, Assign is a real 
   assert.match(r, /journey2_hexenv_open/);
 });
 
-test('view: unknown ids render an unavailable state with Detach and no link; nothing is auto-cleared', () => {
+test('view: unknown ids render an unavailable state with Change and no link; nothing is auto-cleared', () => {
   const r = fn('renderHexEnvironment', 'hexEnvButton');
   assert.match(r, /is-unavailable[\s\S]*journey2_hexenv_unavailable[\s\S]*journey2_hexenv_stored_id/);
-  assert.match(r, /data-j2-hexenv="detach"/);
+  assert.match(r, /data-j2-hexenv="change"/);
+  assert.doesNotMatch(r, /data-j2-hexenv="(detach|choose)"/, 'Change is the only control (PD-033)');
   assert.doesNotMatch(r, /dispatch\(/);
 });
 
@@ -277,11 +297,11 @@ test('view: picker state is transient — never stored, closed on every inspecto
   assert.match(fn('setFogTool', 'toggleFogState'), /closeInspector\(/);
 });
 
-test('view: focus rules — detach lands on Choose, assign on the selected link, closing the picker on its opener', () => {
-  const h = fn('onHexEnvClick', 'setEnvironmentsOpen');
-  assert.match(h, /hexEnvButton\('choose'\)[\s\S]*focus/);
+test('view: focus rules — assign lands on the selected link, opening or closing the picker keeps focus on Change', () => {
+  const h = fn('onHexEnvClick', 'renderInventory');
   assert.match(h, /querySelector\('\[data-j2-hexenv-link\]'\)[\s\S]*focus/);
-  assert.match(fn('setEnvPicker', 'onHexEnvClick'), /tile\.environmentId \? 'change' : 'choose'/);
+  assert.match(fn('setEnvPicker', 'onHexEnvClick'), /hexEnvButton\('change'\)/);
+  assert.doesNotMatch(fn('setEnvPicker', 'onHexEnvClick') + h, /'choose'|'detach'/);
 });
 
 test('view: the map carries no environment marker; the shared drawing and the projection know nothing about environments', () => {

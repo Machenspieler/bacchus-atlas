@@ -52,6 +52,7 @@
      js/journey2-model.js     document, policy, commands, history (pure)
      js/journey2-projection.js the player-facing projection (pure)
      js/journey2-locate.js    Locate Soul Echoes: bearing, sixteen directions, nearest Echo, session state machine (pure)
+     js/journey2-env-deal.js  Environment dealer: least-used-first random Environments for freshly placed hexes (pure)
      js/journey2-route.js     Route Planner: A* over the hex grid, three strategies, route statistics, planner state machine (pure)
      js/journey2-store.js     local persistence over safe-storage
      js/journey2-view.js      this file: DOM, pointer state, rendering
@@ -91,6 +92,7 @@
   const Print = root.Journey2Print;
   const Locate = root.Journey2Locate;
   const Route = root.Journey2Route;
+  const EnvDeal = root.Journey2EnvDeal;
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const MAX_ZOOM = 8;
   const CLICK_SLOP_PX = 4;
@@ -236,6 +238,7 @@
     let locateHover = null;                                 // { q, r } under the pointer while Locate Soul Echoes is selecting (transient: never persisted, never in history)
     let locateNeedleStarted = false;                        // the needle transition of the current result has been started (a re-render must not restart it)
     let locateNote = '';                                    // why an Undo/Redo closed a stale result (appended to the Undo/Redo announcement)
+    let dealRandom = Math.random;                           // the RNG the Environment dealer draws with (replaceable through the debug API for the browser checks)
     let locateRandom = Math.random;                         // the one RNG a tie is drawn with (replaceable through the debug API for the browser checks)
     let routeHover = null;                                  // { q, r } under the pointer while the Route Planner is selecting A or B (transient: never persisted, never in history)
     let routeTerrain = { doc: null, index: null };          // Terrain Ratings by cell for the current document (derived, never stored)
@@ -1075,8 +1078,8 @@
       I.hexEnvSec.hidden = false;
       const list = hexEnvironmentList(b), id = tile.environmentId || null;
       const found = id ? list.find(e => e.id === id) || null : null;
-      const open = !!(envPicker && list.length);
-      if (envPicker && !list.length) envPicker = null;
+      const open = !!(envPicker && list.length && id);
+      if (envPicker && !(list.length && id)) envPicker = null;
       const sig = [lang, tile.id, id || '', open ? 1 : 0, editLocked ? 1 : 0, list.map(e => e.id + ':' + e.name + ':' + e.tier).join(',')].join('|');
       if (I.hexEnvBody.getAttribute('data-sig') === sig) return;
       I.hexEnvBody.setAttribute('data-sig', sig);
@@ -1092,11 +1095,9 @@
       } else if (list.length) {
         h += '<p class="j2-insp-p j2-insp-muted">' + esc(t('journey2_hexenv_none')) + '</p>';
       }
-      if (list.length || id) {
-        h += '<div class="j2-hexenv-actions">';
-        if (list.length) h += '<button type="button" class="btn btn-sm' + (id ? '' : ' btn-primary') + '" data-j2-hexenv="' + (id ? 'change' : 'choose') + '" aria-expanded="' + open + '" aria-controls="j2-hexenv-picker"' + dis + '>' + esc(t(id ? 'journey2_hexenv_change' : 'journey2_hexenv_choose')) + '</button>';
-        if (id) h += '<button type="button" class="btn btn-sm" data-j2-hexenv="detach"' + dis + '>' + esc(t('journey2_hexenv_detach')) + '</button>';
-        h += '</div>';
+      // PD-033: the Environment is dealt at placement, so the one control is Change (no Choose, no Detach); a hex without one has nothing to click
+      if (list.length && id) {
+        h += '<div class="j2-hexenv-actions"><button type="button" class="btn btn-sm" data-j2-hexenv="change" aria-expanded="' + open + '" aria-controls="j2-hexenv-picker"' + dis + '>' + esc(t('journey2_hexenv_change')) + '</button></div>';
       }
       if (open) h += '<ul class="j2-envs-list j2-hexenv-list" id="j2-hexenv-picker" role="group" aria-label="' + esc(t('journey2_hexenv_picker')) + '">' + list.map((e, i) => envRowHtml(e, e.id === id, i)).join('') + '</ul>';
       I.hexEnvBody.innerHTML = h;
@@ -1121,7 +1122,7 @@
       renderInspector();
       positionInspector();
       ensureInspectorClear();
-      if (o && o.focus) { const b = hexEnvButton(tile.environmentId ? 'change' : 'choose'); if (b) b.focus({ preventScroll: true }); }
+      if (o && o.focus) { const b = hexEnvButton('change'); if (b) b.focus({ preventScroll: true }); }
     }
 
     function onHexEnvClick(btn) {
@@ -1129,23 +1130,14 @@
       const tile = inspector.tileId ? Model.derive(doc).byId.get(inspector.tileId) : null;
       const b = tile ? Model.batchById(doc, tile.batchId) : null;
       if (!tile || !b) return;
-      if (kind === 'choose' || kind === 'change') { setEnvPicker(!envPicker, { focus: true }); return; }
-      if (kind === 'detach') {
-        const r = dispatch({ type: 'setTileEnvironment', tileId: tile.id, environmentId: null }, 'detachEnvironment', true);
-        if (!r.ok) { hint(t('journey2_hexenv_failed')); return; }
-        envPicker = null; renderInspector();
-        announce(t('journey2_hexenv_live_detached'));
-        const c = hexEnvButton('choose'); if (c) c.focus({ preventScroll: true });
-        return;
-      }
+      if (kind === 'change') { setEnvPicker(!envPicker, { focus: true }); return; }
       if (kind === 'assign') {
         const id = btn.getAttribute('data-env-id'), pick = hexEnvironmentList(b).find(e => e.id === id);
         if (!pick) return;                                    // only what the biome adapter currently offers can be assigned
-        const had = !!tile.environmentId;
-        const r = dispatch({ type: 'setTileEnvironment', tileId: tile.id, environmentId: pick.id }, had ? 'changeEnvironment' : 'assignEnvironment', true);
+        const r = dispatch({ type: 'setTileEnvironment', tileId: tile.id, environmentId: pick.id }, 'changeEnvironment', true);
         if (!r.ok) { hint(t('journey2_hexenv_failed')); return; }
         envPicker = null; renderInspector(); positionInspector(); ensureInspectorClear();
-        announce(fill(had ? 'journey2_hexenv_live_changed' : 'journey2_hexenv_live_assigned', { name: pick.name }));
+        announce(fill('journey2_hexenv_live_changed', { name: pick.name }));
         const l = ui.i.hexEnvBody.querySelector('[data-j2-hexenv-link]'); if (l) l.focus({ preventScroll: true });
       }
     }
@@ -3440,8 +3432,24 @@
       placeTiles(x.batchId, preview.cells.map(c => ({ id: Model.newId('t'), cell: c.id })), false);
     }
 
+    /**
+     * PD-033: every freshly placed hex gets one Environment of its region's habitat, dealt once here (least used in this region first, random
+     * among equals — what already stands counts, manual changes included) and carried by the same atomic `place` command. A region without a
+     * habitat list (fully overtaken) deals nothing. The ids are frozen into `tiles`, so a re-dispatched or confirmed candidate keeps them.
+     */
+    function dealEnvironmentsTo(batchId, tiles) {
+      const b = Model.batchById(doc, batchId);
+      if (!b || tiles.some(t => t.environmentId)) return;
+      const pool = hexEnvironmentList(b).map(e => e.id);
+      const used = {};
+      for (const t of doc.tiles) if (t.batchId === batchId && t.environmentId) used[t.environmentId] = (used[t.environmentId] || 0) + 1;
+      const ids = EnvDeal.dealEnvironments({ pool: pool, used: used, count: tiles.length, random: dealRandom });
+      ids.forEach((id, i) => { tiles[i].environmentId = id; });
+    }
+
     /** Dispatches one atomic `place`; `allowDetached` is transient command intent only (never stored). */
     function placeTiles(batchId, tiles, allowDetached) {
+      dealEnvironmentsTo(batchId, tiles);
       const cmd = { type: 'place', batchId: batchId, tiles: tiles };
       if (allowDetached) cmd.allowDetached = true;
       const r = dispatch(cmd, 'place', true);
@@ -4303,6 +4311,7 @@
         projection() { return JSON.parse(JSON.stringify(Projection.buildPlayerProjection(doc, data.ctx))); },
         dispatch(cmd) { return dispatch(cmd, cmd.type); },
         decorativeCells() { return Array.from(data.ctx.decorativeCells); },
+        setDealRandom(fn) { dealRandom = typeof fn === 'function' ? fn : Math.random; },
         setLocateRandom(fn) { locateRandom = typeof fn === 'function' ? fn : Math.random; },
         sanctuaryClient(id) { const a = sanctuaryAnchorMap().get(id); return a ? this.worldToClient(a.worldPixelAnchor[0], a.worldPixelAnchor[1]) : null; },
         markers() { return data.anchorsDoc.anchors.map(a => ({ id: a.stableId, cellId: a.cellId, rect: a.iconProtectionArea.rectPx })); },

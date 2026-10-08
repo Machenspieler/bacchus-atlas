@@ -1262,14 +1262,17 @@ Run all of them with `node --test tests/*.test.js`.
     `buildPlayerProjection` is a field whitelist with no Echo field, so Player Preview and the future print
     (which must keep drawing the projection only) cannot show them; `tests/journey2-soul-echoes.test.js`
     asserts this. The GM JSON backup does include them.
-- **Hex Environment (PD-025):**
+- **Hex Environment (PD-025, PD-033):**
   - *Document.* Optional `tile.environmentId` (`Model.isEnvironmentId`: `/^[a-z0-9]+(?:-[a-z0-9]+)*$/`, <= 64 chars). It is in
     `TILE_KEYS`, validated on load/import and copied by `validateDocument`; `move` spreads the tile so the id travels, `place` creates
-    tiles without it, `returnTile` / `deleteBatch` drop it with the tile. Unknown-but-well-formed ids are preserved.
-  - *Command.* `setTileEnvironment { tileId, environmentId | null }` (assign / replace / detach in one entry; same id is a no-op).
+    tiles with the id the view dealt (PD-033; optional, format-checked only), `returnTile` / `deleteBatch` drop it with the tile. Unknown-but-well-formed ids are preserved.
+  - *Command.* `setTileEnvironment { tileId, environmentId | null }` (replace in one entry; same id is a no-op; the view only ever sends an id, never `null`).
+  - *Automatic assignment (PD-033).* `placeTiles` calls `dealEnvironmentsTo(batchId, tiles)` once, before the single atomic `place`: pool = `hexEnvironmentList(b)`, used = this region's tiles' ids,
+    result from the pure `Journey2EnvDeal.dealEnvironments({ pool, used, count, random })` (`js/journey2-env-deal.js`, loaded before the view; least used first, random among equals; the RNG is
+    replaceable through the debug API `setDealRandom`). The ids are frozen into the command, so Undo/Redo replay them and Redo never re-rolls. An empty pool deals nothing.
   - *View.* `renderHexEnvironment()` fills the inspector's `[data-j2-i="hexEnvSec"]` only for `inspector.source === 'map'`; the list is
     `hexEnvironmentList(b)` = `environmentsFor(biome)` (the app.js adapter; none when overtaken) and rows reuse its `href`, so the
-    overlay stays route-driven and the map is never re-rendered. The body is rebuilt only when its signature changes, so a focused link
+    overlay stays route-driven and the map is never re-rendered. The only control is *Change* (no Choose / Detach). The body is rebuilt only when its signature changes, so a focused link
     and the picker's scroll survive. `envPicker` is transient view state (cleared on any inspector change, Undo/Redo). There is no persistent map marker (product decision, F-02 of Journey audit 01: the hex shows no environment icon; assigned Environments are reached through the hex inspector, and a future biome-compatible auto-assignment may revisit this). `updateEnvTip()` reuses `[data-j2-tip]` for neutral hover.
   - *GM-only.* `buildPlayerProjection` builds overlays from an explicit field list, so `environmentId` can never reach Player Preview or
     the future print; `tests/journey2-hex-environment.test.js` asserts it. Browser checks: `scripts/journey2/lib/hex-environment-checks.js`.

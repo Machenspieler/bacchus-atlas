@@ -818,7 +818,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Where:** [architecture.md](architecture.md) "Prepared-map connectivity and region boundaries (PD-021, PD-024)".
 
 ## PD-025: Journey 2 — one optional Environment per placed hex (GM-only)
-- **Status:** Active
+- **Status:** Active (manual assignment and Detach are superseded by PD-033: the Environment is now dealt at placement and the Inspector only offers Change)
 - **Date:** 2026-10-07
 - **Decision (region data vs tile data):** the generated batch still owns Habitat, Terrain, size, Encounter,
   Rumor and the perimeter. A *placed tile* may additionally own **zero or one** catalog Environment. Nothing
@@ -1026,3 +1026,25 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Decision (shape):** each roll draws a raggedness and grows the shape one cell at a time, weighting a frontier cell by (touching shape cells)^p — low raggedness gives round blobs, high raggedness gives arms and peninsulas, so some rolls are round and some spiky. The reach from the seed is capped at the compact ring radius + 2 (no worms); a straight line (N >= 3) or an enclosed hole is re-rolled; after bounded attempts the compact footprint is used. The cell under the pointer is the member nearest the shape's centroid.
 - **Decision (persistence):** nothing about the shape is stored; tiles are saved as concrete cells, so Undo/Redo replay the exact placed cells and Redo never re-rolls.
 - **Where:** `Model.randomFootprint(n, rng)` in `js/journey2-model.js` (pure, RNG injectable; `compactFootprint` remains as the fallback), called from `js/journey2-view.js` where the stock drag / armed placement start; `tests/journey2-model.test.js`.
+
+## PD-033: Journey — a placed hex gets an Environment automatically; the Inspector only offers Change
+- **Status:** Active (supersedes the manual-assignment parts of PD-025: *Choose Environment* and *Detach* are gone and "automatic assignment" is no longer out of scope; every other PD-025
+  rule — one optional id per tile, stored by id only, follows the tile, GM-only, never in Player Preview or print — stands)
+- **Date:** 2026-10-08
+- **Decision (when):** every hex placed from a region's stock — one hex, Place all N, a "Start separate area" confirmation — immediately receives one catalog Environment of that region's
+  habitat. There is no switch: it is always on. A region with no habitat list (**fully overtaken**) places hexes without one; nothing is borrowed from other habitats, settlement or universal.
+- **Decision (which):** the pool is exactly the list the existing `environmentsForBiome` adapter returns for the region's biome (PD-025). **No Tier filter.** Nothing is dealt across regions:
+  "used" is counted inside the region (batch) only, so two neighbouring regions of one habitat may share an Environment.
+- **Decision (the rule — least used first, random among equals):** each hex takes an Environment with the lowest running use count in its region and draws at random among the tied ones. So:
+  fewer hexes than Environments never repeats one; as many hexes as Environments uses each exactly once in a random order; more hexes than Environments uses every Environment `floor(N/K)` or
+  `ceil(N/K)` times (3 Environments on 6 hexes: two each). The cap is therefore *derived*, not a fixed "twice": a habitat with two Environments (grassland) must repeat each of them on a long region.
+- **Decision (what already stands counts):** the counts start from the hexes already placed in the region, including ones whose Environment the GM changed by hand. One-by-one placement thus
+  spreads exactly like a batch, and a manual change is respected by every later placement. Returning a hex or deleting a region lowers the counts naturally.
+- **Decision (one history entry):** the ids are dealt once, at the moment of placement, and travel inside the single atomic `place` command (`tiles[i].environmentId`); one Undo removes the
+  hexes and their Environments together and Redo restores the same ids, never re-rolling. An Environment is never dealt to a moved hex (it keeps its own, PD-025).
+- **Decision (Inspector):** *Hex Environment* shows the assigned Environment (a link to the existing overlay) and **one** button, *Change*, which opens the inline picker (one *Assign* per
+  listed Environment). *Choose Environment* and *Detach* no longer exist; a hex always has an Environment unless its region has no habitat list. A stored id the catalog no longer offers still
+  reads *Environment unavailable* and can be changed, never silently cleared.
+- **Out of scope:** a "Fill empty hexes" button for older saved hexes without an Environment (none are expected), a Tier or party-level filter, map-wide balancing, an off switch.
+- **Where:** `js/journey2-env-deal.js` (pure `dealEnvironments({ pool, used, count, random })`), `placeTiles` / `dealEnvironmentsTo` in `js/journey2-view.js`, `Model.apply` `place`,
+  `tests/journey2-env-deal.test.js`, `tests/journey2-hex-environment.test.js`.
