@@ -232,7 +232,6 @@
     let perimDrawn = { tiles: null, vis: null, mode: null }; // what the perimeter layer currently shows (an unrelated change never rebuilds it)
     let resumePreview = false;                              // the stored "Player Preview was open" flag, consumed once the camera is restored
     let previewMode = false;                               // Player Preview: a read-only render of the player projection
-    let previewReturn = null;                               // camera / fit state to restore on the Back-to-GM action
     let playerProjection = null;                            // the projection currently drawn in Player Preview
     let echoDrawn = null;                                   // the soulEchoes object the GM echoes layer currently shows (an unrelated change never rebuilds it)
     let sanctuaryOpen = null;                               // anchor id of the sanctuary whose overlay is open (transient: never persisted, never in history)
@@ -423,6 +422,9 @@
       sanctuary: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 17h14M5 17V9l5-5.5L15 9v8M8.5 17v-4.5h3V17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       crystal: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 1.8 6.6 6.6 7.6 14 10 17.4 12.4 14 13.4 6.6zM10 1.8v15.6M6.6 6.6h6.8M6.2 13.2 3 15.4l2.6-5.2M13.8 13.2 17 15.4l-2.6-5.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/></svg>',
       route: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="4.6" cy="15.4" r="2.2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="15.4" cy="4.6" r="2.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6.6 14.2c3.4-1.4 1.2-4.4 3.8-5.6 1.6-.7 2.6-.8 3-2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2.4 2.2"/></svg>',
+      fit: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 7V3h4M13 3h4v4M17 13v4h-4M7 17H3v-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      print: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 7.5V3h9v4.5M5.5 14.5h-2v-6h13v6h-2M5.5 12h9v5h-9z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>',
+      back: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16.5 10h-13M8.5 4.5 3 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       compass: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="7.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m13.2 6.8-1.7 4.7-4.7 1.7 1.7-4.7z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M10 1.6v1.8M10 16.6v1.8M1.6 10h1.8M16.6 10h1.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
     };
 
@@ -468,45 +470,6 @@
       ui = {};
       container.innerHTML = `
         <section class="j2" data-t-aria="journey_title">
-          <div class="j2-toolbar" role="toolbar" data-t-aria="journey2_toolbar_label">
-            <div class="j2-tb-group" role="group" data-j2-history-group data-t-aria="journey2_history_label">
-              <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-undo data-t-aria="journey2_undo" data-t-title="journey2_undo">${ICON.undo}</button>
-              <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-redo data-t-aria="journey2_redo" data-t-title="journey2_redo">${ICON.redo}</button>
-            </div>
-            <div class="j2-tb-group" role="group" data-t-aria="journey2_zoom_label">
-              <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-zoom="out" data-t-aria="journey2_zoom_out" data-t-title="journey2_zoom_out">−</button>
-              <button type="button" class="btn btn-ghost btn-sm j2-zoom-readout" data-j2-zoom="reset" data-j2-zoom-readout data-t-title="journey2_zoom_reset_title">100%</button>
-              <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-zoom="in" data-t-aria="journey2_zoom_in" data-t-title="journey2_zoom_in">+</button>
-              <button type="button" class="btn btn-ghost btn-sm" data-j2-fit data-t="journey2_fit"></button>
-            </div>
-            <div class="j2-tb-group j2-tb-fog" role="group" data-j2-fog-group data-t-aria="journey2_fog_group">
-                <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-biome-colors aria-pressed="true" data-t-aria="journey2_biome_show"><span class="j2-ico" aria-hidden="true">${ICON.palette}</span><span data-t="journey2_biome_label"></span></button>
-              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-preview data-t-title="journey2_preview_title"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><span data-t="journey2_preview"></span></button>
-            </div>
-            <div class="j2-tb-gm">
-            <div class="j2-tb-group j2-tb-echo" role="group" data-j2-echo-group data-t-aria="journey2_echo_group">
-              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-echo-place data-t-title="journey2_echo_place_title"><span class="j2-ico" aria-hidden="true">${ICON.crystal}</span><span data-t="journey2_echo_place"></span></button>
-              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-echo-clear data-t-title="journey2_echo_clear_title"><span class="j2-ico" aria-hidden="true">${ICON.trash}</span><span data-t="journey2_echo_clear"></span></button>
-              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-echo-locate aria-pressed="false" aria-describedby="j2-locate-reason"><span class="j2-ico" aria-hidden="true">${ICON.compass}</span><span data-t="journey2_echo_locate"></span></button>
-              <span class="sr-only" id="j2-locate-reason" data-j2-locate-reason></span>
-            </div>
-            <div class="j2-tb-group j2-tb-sanc" role="group" data-j2-sanc-group data-t-aria="journey2_sanc_group">
-              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-sanc-generate data-t-title="journey2_sanc_generate_title"><span class="j2-ico" aria-hidden="true">${ICON.sanctuary}</span><span data-j2-sanc-generate-label></span></button>
-            </div>
-            <div class="j2-tb-group j2-tb-route" role="group" data-j2-route-group data-t-aria="journey2_route_group">
-              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-route-plan aria-pressed="false" data-t-title="journey2_route_plan_title"><span class="j2-ico" aria-hidden="true">${ICON.route}</span><span data-t="journey2_route_plan"></span></button>
-            </div>
-            </div>
-            <div class="j2-tb-group j2-tb-preview" data-j2-preview-bar hidden>
-              <span class="j2-preview-flag" role="status"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><strong data-t="journey2_preview"></strong></span>
-              <span class="j2-preview-note" data-t="journey2_preview_hint"></span>
-              <span class="j2-tb-tools" role="group" data-t-aria="journey2_fog_group">
-                <button type="button" class="btn btn-ghost btn-sm j2-tool j2-paint-tool" data-j2-fog-tool="paint" aria-pressed="false" data-t-aria="journey2_fog_paint_title" data-t-title="journey2_fog_paint_title"><span class="j2-mouse-pair" aria-hidden="true"><span class="j2-mouse-ico">${ICON.mouseLeft}</span><span data-t="journey2_fog_reveal"></span><span class="j2-mouse-ico">${ICON.mouseRight}</span><span data-t="journey2_fog_hide"></span></span></button>
-              </span>
-              <button type="button" class="btn btn-ghost btn-sm" data-j2-print-open data-t-title="journey2_pp_open_title" data-t="journey2_pp_open"></button>
-              <button type="button" class="btn btn-sm" data-j2-preview-back data-t="journey2_preview_back"></button>
-            </div>
-          </div>
           <div class="j2-stage" data-j2-stage>
             <div class="j2-mapwrap">
               <div class="j2-viewport" tabindex="0" role="application" data-t-aria="journey2_map_label" aria-describedby="j2-keys">
@@ -628,12 +591,53 @@
             </div>
             <div class="j2-sidewrap" data-j2-sidewrap>
               <aside class="j2-side" id="j2-side" data-t-aria="journey2_side_label">
+                <div class="j2-controls" role="toolbar" data-t-aria="journey2_toolbar_label">
+                  <div class="j2-ctl-row j2-ctl-nav">
+                    <div class="j2-tb-group" role="group" data-j2-history-group data-t-aria="journey2_history_label">
+                      <button type="button" class="btn btn-sm j2-btn-icon" data-j2-undo data-t-aria="journey2_undo" data-t-title="journey2_undo">${ICON.undo}</button>
+                      <button type="button" class="btn btn-sm j2-btn-icon" data-j2-redo data-t-aria="journey2_redo" data-t-title="journey2_redo">${ICON.redo}</button>
+                    </div>
+                    <div class="j2-tb-group" role="group" data-t-aria="journey2_zoom_label">
+                      <button type="button" class="btn btn-sm j2-btn-icon" data-j2-zoom="out" data-t-aria="journey2_zoom_out" data-t-title="journey2_zoom_out">−</button>
+                      <button type="button" class="btn btn-sm j2-zoom-readout" data-j2-zoom="reset" data-j2-zoom-readout data-t-title="journey2_zoom_reset_title">100%</button>
+                      <button type="button" class="btn btn-sm j2-btn-icon" data-j2-zoom="in" data-t-aria="journey2_zoom_in" data-t-title="journey2_zoom_in">+</button>
+                      <button type="button" class="btn btn-sm j2-tool" data-j2-fit><span class="j2-ico" aria-hidden="true">${ICON.fit}</span><span data-t="journey2_fit"></span></button>
+                    </div>
+                    <button type="button" class="btn btn-sm j2-btn-icon j2-ctl-collapse" data-j2-side-toggle aria-controls="j2-side" aria-expanded="true" data-t-aria="journey2_side_collapse" data-t-title="journey2_side_collapse">${ICON.chevL}</button>
+                  </div>
+                  <div class="j2-ctl-gm" data-j2-gm-controls>
+                    <div class="j2-ctl-row j2-tb-fog" role="group" data-j2-fog-group data-t-aria="journey2_fog_group">
+                      <button type="button" class="btn btn-sm j2-tool" data-j2-biome-colors aria-pressed="true" data-t-aria="journey2_biome_show"><span class="j2-ico" aria-hidden="true">${ICON.palette}</span><span data-t="journey2_biome_label"></span></button>
+                      <button type="button" class="btn btn-sm j2-tool" data-j2-preview data-t-title="journey2_preview_title"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><span data-t="journey2_preview"></span></button>
+                    </div>
+                    <div class="j2-ctl-row j2-tb-route" role="group" data-j2-route-group data-t-aria="journey2_route_group">
+                      <button type="button" class="btn btn-sm j2-tool" data-j2-route-plan aria-pressed="false" data-t-title="journey2_route_plan_title"><span class="j2-ico" aria-hidden="true">${ICON.route}</span><span data-t="journey2_route_plan"></span></button>
+                      <button type="button" class="btn btn-sm j2-tool" data-j2-echo-locate aria-pressed="false" aria-describedby="j2-locate-reason"><span class="j2-ico" aria-hidden="true">${ICON.compass}</span><span data-t="journey2_echo_locate"></span></button>
+                      <span class="sr-only" id="j2-locate-reason" data-j2-locate-reason></span>
+                    </div>
+                    <div class="j2-ctl-row j2-tb-echo" role="group" data-j2-echo-group data-t-aria="journey2_echo_group">
+                      <button type="button" class="btn btn-sm j2-tool" data-j2-echo-place data-t-title="journey2_echo_place_title"><span class="j2-ico" aria-hidden="true">${ICON.crystal}</span><span data-t="journey2_echo_place"></span></button>
+                      <button type="button" class="btn btn-sm j2-tool" data-j2-echo-clear data-t-title="journey2_echo_clear_title"><span class="j2-ico" aria-hidden="true">${ICON.trash}</span><span data-t="journey2_echo_clear"></span></button>
+                    </div>
+                    <div class="j2-ctl-row j2-tb-sanc" role="group" data-j2-sanc-group data-t-aria="journey2_sanc_group">
+                      <button type="button" class="btn btn-sm j2-tool" data-j2-sanc-generate data-t-title="journey2_sanc_generate_title"><span class="j2-ico" aria-hidden="true">${ICON.sanctuary}</span><span data-j2-sanc-generate-label></span></button>
+                    </div>
+                  </div>
+                  <div class="j2-ctl-preview" data-j2-preview-bar hidden>
+                    <span class="j2-preview-flag" role="status"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><strong data-t="journey2_preview"></strong></span>
+                    <p class="j2-preview-note" data-t="journey2_preview_hint"></p>
+                    <span class="j2-tb-tools" role="group" data-t-aria="journey2_fog_group">
+                      <button type="button" class="btn btn-sm j2-tool j2-paint-tool" data-j2-fog-tool="paint" aria-pressed="false" data-t-aria="journey2_fog_paint_title" data-t-title="journey2_fog_paint_title"><span class="j2-mouse-pair" aria-hidden="true"><span class="j2-mouse-ico">${ICON.mouseLeft}</span><span data-t="journey2_fog_reveal"></span><span class="j2-mouse-ico">${ICON.mouseRight}</span><span data-t="journey2_fog_hide"></span></span></button>
+                    </span>
+                    <button type="button" class="btn btn-sm j2-tool" data-j2-print-open data-t-title="journey2_pp_open_title"><span class="j2-ico" aria-hidden="true">${ICON.print}</span><span data-t="journey2_pp_open"></span></button>
+                    <button type="button" class="btn btn-sm j2-tool j2-preview-back" data-j2-preview-back><span class="j2-ico" aria-hidden="true">${ICON.back}</span><span data-t="journey2_preview_back"></span></button>
+                  </div>
+                </div>
                 <div class="j2-side-scroll" data-j2-side-scroll>
                   <div class="j2-banner" data-j2-banner hidden role="alert"></div>
                   <form class="j2-gen" data-j2-gen novalidate>
                     <div class="j2-gen-head">
                       <h3 class="j2-h" data-t="journey2_gen_title"></h3>
-                      <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-side-toggle aria-controls="j2-side" aria-expanded="true" data-t-aria="journey2_side_collapse" data-t-title="journey2_side_collapse">${ICON.chevL}</button>
                     </div>
                     <p class="j2-gen-hint" data-t="journey2_gen_hint"></p>
                     <p class="j2-field-error" id="j2-gen-error" data-j2-gen-error role="alert" hidden></p>
@@ -647,10 +651,40 @@
                   </section>
                 </div>
               </aside>
-              <div class="j2-rail" data-j2-rail>
-                <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-side-toggle aria-controls="j2-side" aria-expanded="false" data-t-aria="journey2_side_expand" data-t-title="journey2_side_expand">${ICON.chevR}</button>
-                <span class="j2-rail-ico" aria-hidden="true">${ICON.hexes}</span>
-                <span class="j2-rail-count" data-j2-rail-count></span>
+              <div class="j2-rail" data-j2-rail role="toolbar" aria-orientation="vertical" data-t-aria="journey2_toolbar_label">
+                <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-side-toggle aria-controls="j2-side" aria-expanded="false" data-t-aria="journey2_side_expand" data-t-title="journey2_side_expand">${ICON.chevR}</button>
+                <div class="j2-rail-grp">
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-undo data-j2-rail-src="undo">${ICON.undo}</button>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-redo data-j2-rail-src="redo">${ICON.redo}</button>
+                </div>
+                <div class="j2-rail-grp">
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-zoom="in" data-j2-rail-src="zoomIn">+</button>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn j2-rail-zoom" data-j2-zoom="reset" data-j2-rail-src="zoomReset">100%</button>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-zoom="out" data-j2-rail-src="zoomOut">−</button>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-fit data-j2-rail-src="fit">${ICON.fit}</button>
+                </div>
+                <div class="j2-rail-grp" data-j2-rail-gm>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-biome-colors data-j2-rail-src="biome">${ICON.palette}</button>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-preview data-j2-rail-src="preview">${ICON.players}</button>
+                </div>
+                <div class="j2-rail-grp" data-j2-rail-gm>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-route-plan data-j2-rail-src="route">${ICON.route}</button>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-echo-locate data-j2-rail-src="locate">${ICON.compass}</button>
+                </div>
+                <div class="j2-rail-grp" data-j2-rail-gm>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-echo-place data-j2-rail-src="place">${ICON.crystal}</button>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-echo-clear data-j2-rail-src="clear">${ICON.trash}</button>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-sanc-generate data-j2-rail-src="sanc">${ICON.sanctuary}</button>
+                </div>
+                <div class="j2-rail-grp" data-j2-rail-pv hidden>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-fog-tool="paint" data-j2-rail-src="paint">${ICON.mouseLeft}</button>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-print-open data-j2-rail-src="print">${ICON.print}</button>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-preview-back data-j2-rail-src="back">${ICON.back}</button>
+                </div>
+                <div class="j2-rail-grp j2-rail-stock" data-j2-rail-stock>
+                  <span class="j2-rail-ico" aria-hidden="true">${ICON.hexes}</span>
+                  <span class="j2-rail-count" data-j2-rail-count></span>
+                </div>
               </div>
             </div>
           </div>
@@ -691,6 +725,9 @@
       ui.sideToggles = Array.from(container.querySelectorAll('[data-j2-side-toggle]'));
       ui.sideScroll = container.querySelector('[data-j2-side-scroll]');
       ui.historyGroup = container.querySelector('[data-j2-history-group]');
+      ui.controls = container.querySelector('.j2-controls');
+      ui.gmControls = container.querySelector('[data-j2-gm-controls]');
+      ui.railStock = container.querySelector('[data-j2-rail-stock]');
       ui.fogGroup = container.querySelector('[data-j2-fog-group]');
       ui.biomeColors = container.querySelector('[data-j2-biome-colors]');
       ui.fogTool = container.querySelector('[data-j2-fog-tool="paint"]');
@@ -742,6 +779,7 @@
       ui.base.replaceWith(baseImg);
       ui.base = baseImg;
       syncHeaderHeight();
+      setupRail();
       initDocument();
       const prefs = store.loadUi();
       sideCollapsed = !!prefs.sideCollapsed;
@@ -942,6 +980,54 @@
       if (persistIt) saveUiPrefs();
     }
 
+    /* ---- collapsed rail: one icon-only proxy per control ----
+     * A proxy carries the same data-j2-* attribute as its source, so the one delegated click handler serves both; only the state is mirrored
+     * (disabled / aria-pressed / aria-disabled / accessible name / visibility), so no state-updating code needs to know the rail exists. */
+    const RAIL_SOURCES = {
+      undo: () => ui.undo, redo: () => ui.redo, zoomIn: () => ui.controls.querySelector('[data-j2-zoom="in"]'), zoomOut: () => ui.controls.querySelector('[data-j2-zoom="out"]'),
+      zoomReset: () => ui.zoomReadout, fit: () => ui.controls.querySelector('[data-j2-fit]'), biome: () => ui.biomeColors, preview: () => ui.previewBtn,
+      route: () => ui.routePlan, locate: () => ui.echoLocate, place: () => ui.echoPlace, clear: () => ui.echoClear, sanc: () => ui.sancGenerate,
+      paint: () => ui.fogTool, print: () => ui.printOpen, back: () => ui.previewBack,
+    };
+    let railProxies = [];
+    const railOf = new Map();
+
+    function setupRail() {
+      railProxies = Array.from(ui.rail.querySelectorAll('[data-j2-rail-src]')).map(el => ({ el: el, src: RAIL_SOURCES[el.getAttribute('data-j2-rail-src')]() }));
+      for (const x of railProxies) railOf.set(x.src, x.el);
+      if (typeof MutationObserver === 'function') {
+        const mo = new MutationObserver(syncRail);
+        mo.observe(ui.controls, { subtree: true, attributes: true, attributeFilter: ['hidden', 'disabled', 'aria-pressed', 'aria-disabled', 'aria-label', 'title'], childList: true, characterData: true });
+        cleanups.push(() => mo.disconnect());
+      }
+      syncRail();
+    }
+
+    function syncRail() {
+      if (inst.disposed || !ui.rail) return;
+      for (const x of railProxies) {
+        const el = x.el, src = x.src;
+        if (!src) continue;
+        el.hidden = !!src.closest('[hidden]');
+        el.disabled = !!src.disabled;
+        for (const a of ['aria-pressed', 'aria-disabled']) { const v = src.getAttribute(a); if (v == null) el.removeAttribute(a); else el.setAttribute(a, v); }
+        const label = src.getAttribute('aria-label') || src.textContent.trim();
+        el.setAttribute('aria-label', label);
+        el.title = label;
+        if (el.getAttribute('data-j2-zoom') === 'reset') el.textContent = src.textContent;
+      }
+      for (const g of ui.rail.querySelectorAll('.j2-rail-grp')) {
+        if (g.hasAttribute('data-j2-rail-stock')) continue;
+        g.hidden = Array.from(g.querySelectorAll('[data-j2-rail-src]')).every(b => b.hidden);
+      }
+    }
+
+    /** Focuses a toolbar control — its rail proxy while the panel is collapsed (the panel's own half is inert then). */
+    function focusTool(src) {
+      const el = (sideCollapsed && railOf.get(src)) || src;
+      if (el) el.focus({ preventScroll: true });
+    }
+
     /** The stored view preferences (sidebar state, "Show fog state") — never the document, never history. */
     function saveUiPrefs() { if (store) store.saveUi({ sideCollapsed: sideCollapsed, showBiomeColors: showBiome, playerPreview: previewMode, view: currentView() }); }
 
@@ -968,7 +1054,7 @@
 
     /** Width the overlay sidebar covers on the left of the map (used by Fit only; toggling never refits). */
     function sideInset() {
-      if (!ui.sidewrap || previewMode) return 0;
+      if (!ui.sidewrap) return 0;
       const w = sideCollapsed ? ui.rail.offsetWidth : ui.sidewrap.offsetWidth;
       return Math.min(w + 2 * 8, viewSize()[0] * 0.5);
     }
@@ -1703,7 +1789,7 @@
           { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
           { label: t('journey2_echo_replace_go'), kind: 'btn-danger', value: 'replace' },
         ],
-      }).then(v => { if (inst.disposed) return; if (v === 'replace') commit(); if (ui.echoPlace) ui.echoPlace.focus({ preventScroll: true }); });
+      }).then(v => { if (inst.disposed) return; if (v === 'replace') commit(); if (ui.echoPlace) focusTool(ui.echoPlace); });
     }
 
     function confirmClearSoulEchoes() {
@@ -1722,7 +1808,7 @@
           if (!r.ok) { hint(errorText(r.error)); return; }
           announce(t('journey2_live_echoes_cleared'));
         }
-        if (ui.echoPlace) ui.echoPlace.focus({ preventScroll: true });
+        if (ui.echoPlace) focusTool(ui.echoPlace);
       });
     }
 
@@ -1767,7 +1853,7 @@
       locateHover = null;
       locateSession.close();                                   // onChange('closed') repaints everything
       if (!(o && o.quiet)) announce(t('journey2_loc_off'));
-      if (o && o.focus && ui.echoLocate) ui.echoLocate.focus({ preventScroll: true });
+      if (o && o.focus && ui.echoLocate) focusTool(ui.echoLocate);
       return true;
     }
 
@@ -1777,7 +1863,7 @@
       if (!st || st.status !== 'selecting' || !doc) return;
       const out = Locate.locateSoulEcho({ doc: doc, ctx: data.ctx, originCellId: cellId, random: locateRandom });
       if (!out.ok) {
-        if (out.reason === 'no-echo') { exitLocate({ quiet: true }); hint(t('journey2_loc_none_remain')); if (ui.echoLocate) ui.echoLocate.focus({ preventScroll: true }); }
+        if (out.reason === 'no-echo') { exitLocate({ quiet: true }); hint(t('journey2_loc_none_remain')); if (ui.echoLocate) focusTool(ui.echoLocate); }
         return;                                                // a 'bad-origin' hex is never offered, so it is ignored
       }
       locateHover = null;
@@ -1881,7 +1967,7 @@
       ui.l.line.textContent = ''; ui.l.dir.textContent = ''; ui.l.dir.hidden = true; ui.l.note.textContent = '';
       ui.l.needle.style.transition = 'none'; ui.l.needle.style.transform = ''; ui.l.needle.removeAttribute('data-final-angle');
       locateNeedleStarted = false;
-      if (had && ui.echoLocate) ui.echoLocate.focus({ preventScroll: true });   // closing returns focus to the toolbar button
+      if (had && ui.echoLocate) focusTool(ui.echoLocate);   // closing returns focus to the toolbar button
     }
 
     /** Paints the selection chip, the cursor and the compass popover from the session state. The direction text exists only once the result has settled. */
@@ -1999,7 +2085,7 @@
       routeHover = null;
       routePlanner.close();                                   // onChange('closed') repaints everything
       if (!(o && o.quiet)) announce(t('journey2_route_off'));
-      if (o && o.focus && ui.routePlan) ui.routePlan.focus({ preventScroll: true });
+      if (o && o.focus && ui.routePlan) focusTool(ui.routePlan);
       return true;
     }
 
@@ -2493,7 +2579,7 @@
           { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
           { label: t('journey2_sanc_replace_go'), kind: 'btn-danger', value: 'replace' },
         ],
-      }).then(v => { if (inst.disposed) return; if (v === 'replace') commit(); if (ui.sancGenerate) ui.sancGenerate.focus({ preventScroll: true }); });
+      }).then(v => { if (inst.disposed) return; if (v === 'replace') commit(); if (ui.sancGenerate) focusTool(ui.sancGenerate); });
     }
 
     /** Player map: reveals or hides the open sanctuary's NAME (a manual player-knowledge state, one Undo entry). The overlay stays open and focus stays on the button. */
@@ -2949,9 +3035,9 @@
       if (!ui.root) return;
       const on = previewMode;
       ui.root.setAttribute('data-mode', on ? 'preview' : 'gm');
-      ui.sidewrap.hidden = on; ui.sidewrap.inert = on;
-      ui.fogGroup.hidden = on; ui.echoGroup.hidden = on; ui.sancGroup.hidden = on; ui.echoGroup.parentNode.hidden = on;
-      ui.previewBar.hidden = !on;
+      // the panel stays where it is in both modes (one screen); only its content changes: GM tools, New region and the stock give way to the preview controls
+      ui.gmControls.hidden = on; ui.sideScroll.hidden = on; ui.previewBar.hidden = !on; ui.railStock.hidden = on;
+      syncRail();
       ui.hint.hidden = true; ui.tip.hidden = true; ui.tip.innerHTML = ''; envTipKey = null;
       ui.viewport.setAttribute('aria-label', t(on ? 'journey2_preview_map_label' : 'journey2_map_label'));
       ui.viewport.classList.toggle('is-preview', on);
@@ -2961,7 +3047,7 @@
 
     /**
      * Opens the read-only Player Preview. Everything transient is closed first (armed placement, drags, an active fog stroke/tool, menus,
-     * the inspector and its highlight, the tile selection); pan and zoom are kept and remembered for the Back-to-GM action. GM notes do not
+     * the inspector and its highlight, the tile selection); pan and zoom are one shared state with the GM view (never saved or restored per mode). GM notes do not
      * exist any more (PD-019), so there is no pending text to flush. Never touches the document or history.
      */
     function enterPreview() {
@@ -2974,23 +3060,22 @@
       closeSanctuary({ quiet: true });
       sel.tileId = null;
       clearHint();
-      previewReturn = { cam: { scale: cam.scale, tx: cam.tx, ty: cam.ty }, fitMode: fitMode };
       previewMode = true;
       saveUiPrefs();
       renderTiles(); renderFog(); renderSelection(); paintFogStroke(); renderSanctuaryRings();
       applyPreviewChrome(); applyLayerVisibility(); updateFogUi();
       announce(t('journey2_live_preview_on'));
-      ui.previewBack.focus({ preventScroll: true });
+      focusTool(ui.previewBack);
     }
 
-    /** A reload reopens Player Preview if it was open (PD-035); waits for the restored camera so Back-to-GM returns to the right view. */
+    /** A reload reopens Player Preview if it was open (PD-035); waits for the restored camera so it opens on the same view. */
     function maybeResumePreview() {
       if (!resumePreview || !cameraReady) return;
       resumePreview = false;
       enterPreview();
     }
 
-    /** Back to the GM view: the camera, sidebar state and fog preference are as they were; nothing is reopened or re-selected. */
+    /** Back to the GM view: the camera (including any pan or zoom made in the preview), sidebar state and fog preference carry over; nothing is reopened or re-selected. */
     function leavePreview(o) {
       if (!previewMode) return;
       closePrintPreview({ quiet: true });
@@ -2998,12 +3083,10 @@
       previewMode = false;
       saveUiPrefs();
       playerProjection = null;
-      const back = previewReturn; previewReturn = null;
       cancelTransient();
       applyPreviewChrome(); applyLayerVisibility();
       renderTiles(); renderFog(); renderSelection(); renderInventory(false); updateFogUi(); updateHistoryButtons(); renderSanctuaryRings();
-      if (back) { setCamera(back.cam, true); fitMode = back.fitMode; }
-      if (!(o && o.quiet)) { announce(t('journey2_live_preview_off')); ui.previewBtn.focus({ preventScroll: true }); }
+      if (!(o && o.quiet)) { announce(t('journey2_live_preview_off')); focusTool(ui.previewBtn); }
     }
 
     /* ============================================================
@@ -3126,7 +3209,7 @@
       if (ui.root) ui.root.inert = false;
       if (o && o.quiet) return;
       announce(t('journey2_pp_live_off'));
-      if (o && o.focus && ui.printOpen) ui.printOpen.focus({ preventScroll: true });
+      if (o && o.focus && ui.printOpen) focusTool(ui.printOpen);
     }
 
     /** The system print dialog, once, only when the pages are ready; cancelling (or printing) leaves the preview exactly as it was. */
@@ -3162,25 +3245,6 @@
         const ro = new ResizeObserver(() => { if (inst.disposed || !data) return; if (!cameraReady && restoreCamera()) { maybeResumePreview(); return; } if (fitMode) fitToView(); else setCamera(cam, true); });
         ro.observe(vp);
         cleanups.push(() => ro.disconnect());
-      }
-      if (typeof ResizeObserver === 'function') {
-        // when Soul Echoes + sanctuaries wrap onto their own second row the vertical divider that separated them from the Fog tools would sit at the row start: drop it
-        const tb = ui.root.querySelector('.j2-toolbar'), gm = tb.querySelector('.j2-tb-gm'), fog = tb.querySelector('.j2-tb-fog');
-        // decided from the toolbar's natural single-row width (not from where the browser happened to wrap), so dropping the divider can never flip the answer back
-        let sepExtra = -1;
-        const syncWrap = () => {
-          if (inst.disposed || !gm.offsetParent || !fog.offsetParent) return;
-          const cs = getComputedStyle(tb), echo = gm.querySelector('.j2-tb-echo');
-          if (sepExtra < 0 && !tb.classList.contains('is-wrapped')) { const ec = getComputedStyle(echo); sepExtra = (parseFloat(ec.paddingLeft) || 0) + (parseFloat(ec.borderLeftWidth) || 0); }
-          const kids = Array.from(tb.children).filter(k => k.offsetParent), gap = parseFloat(cs.columnGap) || 0;
-          const need = kids.reduce((w, k) => w + k.getBoundingClientRect().width, 0) + gap * Math.max(0, kids.length - 1) + (tb.classList.contains('is-wrapped') ? Math.max(0, sepExtra) : 0);
-          const avail = tb.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
-          tb.classList.toggle('is-wrapped', need > avail + 0.5);
-        };
-        const ro3 = new ResizeObserver(syncWrap);
-        for (const n of [tb, gm, fog]) ro3.observe(n);
-        cleanups.push(() => ro3.disconnect());
-        syncWrap();
       }
       if (typeof ResizeObserver === 'function') {
         const ro2 = new ResizeObserver(() => { if (!inst.disposed) scheduleApply(); });
@@ -3731,7 +3795,7 @@
     }
 
     /** Space pans (rather than activating something) only when focus is on the map, the page body or one of the fog toolbar buttons. */
-    function fogSpaceTarget(t0) { return t0 === document.body || t0 === ui.viewport || !!(t0 && t0.closest && t0.closest('[data-j2-fog-group], [data-j2-echo-group], [data-j2-preview-bar]')); }
+    function fogSpaceTarget(t0) { return t0 === document.body || t0 === ui.viewport || !!(t0 && t0.closest && t0.closest('[data-j2-fog-group], [data-j2-echo-group], [data-j2-preview-bar], [data-j2-rail]')); }
 
     function onDocumentKeyUp(e) {
       if (inst.disposed || e.key !== ' ' || !spaceDown) return;

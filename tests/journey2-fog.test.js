@@ -330,11 +330,11 @@ const view = read('js/journey2-view.js');
 const fn = (name, next) => view.slice(view.indexOf('function ' + name), view.indexOf('function ' + next));
 
 test('toolbar: Reveal and Hide are real toggle buttons with aria-pressed, the fog-state toggle and Player Preview are discoverable', () => {
-  assert.match(view, /<button type="button" class="btn btn-ghost btn-sm j2-tool j2-paint-tool" data-j2-fog-tool="paint" aria-pressed="false"/);
+  assert.match(view, /<button type="button" class="btn btn-sm j2-tool j2-paint-tool" data-j2-fog-tool="paint" aria-pressed="false"/);
   assert.doesNotMatch(view, /data-j2-fog-tool="(reveal|hide)"/, 'one brush button replaces Reveal and Hide');
   assert.doesNotMatch(view, /data-j2-fog-state/, 'no Fog overlay toggle (PD-036)');
   assert.match(view, /data-j2-preview data-t-title="journey2_preview_title"/);
-  assert.match(view, /<button type="button" class="btn btn-sm" data-j2-preview-back data-t="journey2_preview_back">/);
+  assert.match(view, /<button type="button" class="btn btn-sm j2-tool j2-preview-back" data-j2-preview-back>/);
   assert.match(view, /role="group" data-j2-fog-group/);
   assert.match(fn('updateFogUi', 'setFogTool'), /setAttribute\('aria-pressed', String\(!!fogTool\)\)/);
 });
@@ -362,7 +362,7 @@ test('priority: fog stroke beats neutral tile selection; Space or the middle but
   const esc = view.slice(view.indexOf('function onDocumentKey'), view.indexOf('if (e.key === \' \' && fogTool'));
   const order = ['openMenu', 'fogStroke', 'if (pan)', 'if (tr)', 'if (fogTool)', 'if (previewMode)', 'inspectorOpen()'].map(s => esc.indexOf(s));
   assert.ok(order.every(i => i > 0) && order.every((x, i) => i === 0 || x > order[i - 1]), 'menu, stroke, pan, drag, tool, preview, inspector: ' + order);
-  assert.match(view, /return t0 === document\.body \|\| t0 === ui\.viewport \|\| !!\(t0 && t0\.closest && t0\.closest\('\[data-j2-fog-group\], \[data-j2-echo-group\], \[data-j2-preview-bar\]'\)\)/, 'Space pans from the map, the page, a fog button or a Soul Echoes button');
+  assert.match(view, /return t0 === document\.body \|\| t0 === ui\.viewport \|\| !!\(t0 && t0\.closest && t0\.closest\('\[data-j2-fog-group\], \[data-j2-echo-group\], \[data-j2-preview-bar\], \[data-j2-rail\]'\)\)/, 'Space pans from the map, the page, a fog button, a Soul Echoes button or the collapsed rail');
   assert.match(fn('onViewportKey', 'handleFromEvent').slice(0, 900) + view, /Delete/);
   assert.match(view, /if \(sel\.tileId && !fogTool && !previewMode\) returnSelected\(\)/, 'Return to stock is unavailable while a tool is active');
 });
@@ -398,19 +398,20 @@ test('GM view: every generated tile is drawn whatever the fog says; the veil sit
   assert.doesNotMatch(view, /showFog|toggleFogState/);
 });
 
-test('Player Preview: read-only, projection-driven, document and history untouched, camera restored', () => {
+test('Player Preview: read-only, projection-driven, document and history untouched, camera shared with the GM view', () => {
   const enter = fn('enterPreview', 'leavePreview'), leave = fn('leavePreview', 'onViewportDown'.replace('onViewportDown', 'startFogStrokeNever'));
   for (const body of [enter, view.slice(view.indexOf('function leavePreview'), view.indexOf('/* ====', view.indexOf('function leavePreview')))]) {
     assert.doesNotMatch(body, /dispatch\(|persist\(|historyCommit|historyUndo|historyRedo|doc = /, 'no document or history change');
   }
-  for (const part of ['cancelTransient()', 'cancelFogStroke()', 'closeMenus()', 'setFogTool(null', 'closeInspector({ quiet: true })', 'sel.tileId = null', 'previewReturn = { cam:']) assert.ok(enter.includes(part), part);
-  assert.match(view, /setCamera\(back\.cam, true\); fitMode = back\.fitMode/);
+  for (const part of ['cancelTransient()', 'cancelFogStroke()', 'closeMenus()', 'setFogTool(null', 'closeInspector({ quiet: true })', 'sel.tileId = null']) assert.ok(enter.includes(part), part);
+  assert.doesNotMatch(view, /previewReturn/, 'GM view and Player Preview are one screen: the camera is never saved or restored per mode (PD-040)');
   const tiles = fn('renderTiles', 'renderSelection').split('ui.g.player.innerHTML = \'\';')[0];
   assert.match(tiles, /ui\.g\.tiles\.innerHTML = '';/, 'GM tiles are removed, not hidden');
   assert.match(tiles, /Projection\.buildPlayerProjection\(doc, data\.ctx\)/);
   assert.doesNotMatch(tiles, /doc\.tiles|doc\.batches/, 'the preview never reads regions directly');
   const chrome = fn('applyPreviewChrome', 'enterPreview');
-  for (const part of ['ui.sidewrap.hidden = on', 'ui.fogGroup.hidden = on', 'ui.previewBar.hidden = !on']) assert.ok(chrome.includes(part), part);
+  for (const part of ['ui.gmControls.hidden = on', 'ui.sideScroll.hidden = on', 'ui.previewBar.hidden = !on']) assert.ok(chrome.includes(part), part);
+  assert.doesNotMatch(chrome, /ui\.sidewrap\.(hidden|inert) = on/, 'the panel stays in place: only its content is swapped (PD-040)');
   assert.doesNotMatch(chrome, /ui\.historyGroup\.hidden = on/, 'Undo / Redo stay available beside Reveal / Hide');
   assert.doesNotMatch(fn('undo', 'redo'), /previewMode\) return/, 'Undo works in Player Preview (PD-034)');
   assert.match(fn('applyLayerVisibility', 'clearProof'), /layers\[k\] && !previewMode/);
@@ -444,7 +445,7 @@ test('documentation names the projection renderer the future print phase must re
 /* ---------------- PD-034: Reveal / Hide live in Player Preview; the camera is remembered ---------------- */
 
 test('PD-034: Reveal / Hide are in the Player Preview bar, not the GM toolbar', () => {
-  const html = view.slice(view.indexOf('function buildSurface'), view.indexOf('<div class="j2-stage"'));
+  const html = view.slice(view.indexOf('function buildSurface'), view.indexOf('<div class="j2-tip"'));
   const gm = html.slice(html.indexOf('data-j2-fog-group'), html.indexOf('data-j2-preview-bar'));
   const bar = html.slice(html.indexOf('data-j2-preview-bar'));
   assert.doesNotMatch(gm, /data-j2-fog-tool=/, 'the GM toolbar has no Reveal / Hide');

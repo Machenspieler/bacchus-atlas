@@ -182,7 +182,7 @@ undo, drag-to-delete or `+` grid cell. Pointer/geometry logic lives in
 
 ### Journey map editor (internally "Journey 2")
 
-`#/journey` is the one canonical Journey page and a GM tile editor on the original Valloren map (generate a
+`#/journey` is the one canonical Journey page and a GM tile editor on the original Valloren map (its toolbar is the top of the left side panel, repeated icon-only on the collapsed rail; Player Preview is the same screen, panel and camera — PD-040; generate a
 batch → drag one / drag all remaining → move, return, Undo/Redo → local save
 and full JSON backup). The rules live in the pure `js/journey2-model.js`
 (document, placement policy, atomic commands, history); the view only builds
@@ -237,7 +237,7 @@ Encounter Roll (PD-039): a GM-only "Nd6" button in the Region Inspector's Terrai
 "Encounter!" on any 1 (red frame + "Triggered" flag on the Encounter section) or "No 1s" + a reminder that a Fear may be spent; transient, never stored, never in Player Preview or print.
 A fully overtaken region (PD-038) has no roll: its inspector keeps only the title, badge and Return, and its card has no Inspect button.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039 (Place all rolls a random frozen footprint per press), detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040 (Place all rolls a random frozen footprint per press), detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

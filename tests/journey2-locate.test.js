@@ -423,8 +423,8 @@ test('isolation: Locate keeps no storage keys and the document has no Locate fie
 const fn = (from, to) => view.slice(view.indexOf('function ' + from), view.indexOf('function ' + to, view.indexOf('function ' + from) + 1));
 
 test('view: Locate is a real, GM-only toolbar button inside the Echo group (hidden in Player Preview), unavailable with a reason', () => {
-  assert.match(view, /<button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-echo-locate aria-pressed="false" aria-describedby="j2-locate-reason">/);
-  assert.match(fn('applyPreviewChrome', 'enterPreview'), /ui\.echoGroup\.hidden = on/);
+  assert.match(view, /<button type="button" class="btn btn-sm j2-tool" data-j2-echo-locate aria-pressed="false" aria-describedby="j2-locate-reason">/);
+  assert.match(fn('applyPreviewChrome', 'enterPreview'), /ui\.gmControls\.hidden = on/);
   const ui = fn('updateEchoUi', 'placeSoulEchoes');
   assert.match(ui, /aria-disabled/); assert.match(ui, /locateReason\.textContent/); assert.match(ui, /ui\.echoLocate\.title/);
   const av = fn('locateAvailability', 'startLocate');
@@ -471,7 +471,7 @@ test('view: the compass is transient, screen-space, decorative, and shows text o
   assert.match(view, /<aside class="j2-region-inspector j2-locate" id="j2-locate" role="dialog" aria-modal="false" aria-labelledby="j2-locate-title"/);
   assert.match(view, /data-j2-l="out" role="status" aria-live="polite"/);
   assert.match(fn('onLocateChange', 'updateLocateHover'), /ui\.locate\.focus/, 'focus enters the popover when the result is ready');
-  assert.match(fn('hideLocatePopover', 'renderLocatePanel'), /ui\.echoLocate\.focus/, 'closing returns focus to the toolbar button');
+  assert.match(fn('hideLocatePopover', 'renderLocatePanel'), /focusTool\(ui\.echoLocate\)/, 'closing returns focus to the toolbar button (or its rail proxy)');
   assert.match(view, /prefers-reduced-motion: reduce/);
   assert.doesNotMatch(panel + fn('paintLocate', 'locateAnchor'), /distance|targetAnchorId|sanctuaryTitle|sanctuaryEntry|\.name\b/, 'no target, name or distance in the result UI');
   assert.doesNotMatch(strip(view), /setInterval/, 'no uncontrolled timer loop');

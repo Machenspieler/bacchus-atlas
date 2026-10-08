@@ -190,7 +190,7 @@ test('view: Player Preview empties the echoes layer (data, not CSS) and hides th
   const body = fn('renderEchoes', 'updateEchoUi');
   assert.match(body, /if \(previewMode\) \{ ui\.g\.echoes\.innerHTML = ''/);
   assert.doesNotMatch(body, /Projection|playerProjection/, 'the layer is never fed from the projection');
-  assert.match(fn('applyPreviewChrome', 'enterPreview'), /ui\.echoGroup\.hidden = on/);
+  assert.match(fn('applyPreviewChrome', 'enterPreview'), /ui\.gmControls\.hidden = on/);
   assert.match(fn('placeSoulEchoes', 'confirmClearSoulEchoes'), /previewMode/, 'no placing from the preview');
 });
 

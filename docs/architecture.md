@@ -71,7 +71,7 @@ skeleton afterward.
 
 **Route-specific shell.** `index.html` still holds one static shell, but it
 carries two skeleton layouts: the catalog card grid (default) and a
-`.sk-j2` editor-shaped one (toolbar strip, side panel, map). A synchronous
+`.sk-j2` editor-shaped one (side panel, map). A synchronous
 inline script in `<head>` sets `html[data-boot-route="journey2"]` from
 `location.hash` before first paint, and `css/journey2.css` swaps which one is
 visible (and applies the route's chrome, so nothing jumps on mount). The
@@ -1023,7 +1023,12 @@ Run all of them with `node --test tests/*.test.js`.
   (the stored `rolls`/entry pairs are provenance only).
 - **Sidebar / cards / zoom (Phase A, view):** the map fills the stage and the
   sidebar is a `transform`-animated overlay (340px / 44px rail,
-  `inert` on the hidden half, `aria-expanded` on both toggles); its state is
+  `inert` on the hidden half, `aria-expanded` on both toggles). The toolbar lives at the top of that panel (PD-040): `.j2-controls`
+  (Undo / Redo, zoom, Fit, collapse; then Biome colors + Player Preview; Plan route + Locate Soul Echoes; Soul Echoes + Remove Echoes;
+  Generate sanctuaries) above the scrolling New region + Hex stock. The collapsed rail repeats the same buttons icon-only: each rail
+  button is a *proxy* carrying the same `data-j2-*` attribute as its source (the one delegated click handler serves both) and only its
+  state is mirrored by `syncRail()` (a `MutationObserver` on `.j2-controls`: disabled, aria-pressed, aria-disabled, accessible name,
+  hidden). `focusTool()` focuses the proxy when the panel is collapsed. No code that updates a toolbar button needs to know the rail exists; its state is
   stored via `store.loadUi/saveUi`, never in the document, and toggling never
   touches camera, selection or the active card. Cards are compact; exactly one
   (`activeBatchId`) is expanded (placement controls and, for a region with a biome, the Environments
@@ -1052,8 +1057,7 @@ Run all of them with `node --test tests/*.test.js`.
   laptop windows) `ensureInspectorClear()` pans the camera by the least amount `Geo.panForInspector()` finds — never a Fit, never a zoom
   change, only when the inspector opens on a hex or changes height (not while the user pans). The drawer's "New region" block snaps to
   fully shown / fully scrolled away after any scroll settles (`snapSideHeader()`), and a manual drawer toggle slides the camera by half the
-  inset difference (`toggleSide()` → `animateCameraBy()`; selecting a hex or any automatic change never does). The toolbar's Soul Echoes +
-  sanctuary controls are one `.j2-tb-gm` unit that wraps as a whole (`is-wrapped` is decided from the natural single-row width, not from the wrap). `syncInspection`
+  inset difference (`toggleSide()` → `animateCameraBy()`; selecting a hex or any automatic change never does). `syncInspection`
   runs after every document change (deleted region → closed; vanished anchor
   hex → dropped). Close paths: button, Escape (after menu and drag/armed
   placement), empty-map click (never a pan), deletion, import/replace, opening
@@ -1128,12 +1132,11 @@ Run all of them with `node --test tests/*.test.js`.
     environments, selection, warnings or diagnostics. Filtering is a **data** rule: a tile in a
     hidden cell is simply not produced (no veil-over, no opacity, no hidden DOM).
   - *Player Preview.* A temporary read-only render of that projection, not a saved document: it
-    first cancels the tool/stroke/placement/inspector/menus, remembers the camera, then hides the
-    sidebar and rail, the history, fog and save controls and the diagnostics layers, shows a
-    "Player Preview" flag + **Back to GM**, empties the GM tile layer and draws
+    first cancels the tool/stroke/placement/inspector/menus, then swaps the content of the same left panel (PD-040: GM controls, New region and the stock give way to a "Player Preview" flag,
+    the hint, the brush, Print and **Back to GM**; the panel, its Undo / Redo / zoom / Fit row and its collapse state stay), hides the diagnostics layers, empties the GM tile layer and draws
     `overlayMarkup(projection overlays)`; fog uses the stronger `j2-fog-player` texture (static,
     translucent, no blur or animation). Pan, zoom and Fit still work. Undo/Redo, tile clicks and
-    Delete are ignored. Back to GM (or Escape) restores the saved camera and fit mode and returns
+    Delete are ignored. Back to GM (or Escape) keeps the camera as it is (GM view and preview are one screen, PD-040) and returns
     to neutral — nothing is reopened or re-selected, no history entry, no document change. It never
     persists across reloads. Import/reset ends the preview, the tool and any stroke.
   - *Reuse by printing.* Built in Phase F — see "Journey 2 player map print (PD-028)" below. It calls
@@ -1260,7 +1263,7 @@ Run all of them with `node --test tests/*.test.js`.
     per Echo because CSS does not reach a `<use>` clone) and redraws only when `doc.soulEchoes` changed. Each
     crystal is positioned from `ctx.sanctuaries[i]` — the icon's `x` and `top` edge minus `ECHO_LIFT` — never from
     a hex, so it sits right above the icon wherever the icon is.
-  - *GM-only.* In Player Preview `renderEchoes()` empties the layer and `applyPreviewChrome` hides the group.
+  - *GM-only.* In Player Preview `renderEchoes()` empties the layer and `applyPreviewChrome` hides the group (with the rest of `[data-j2-gm-controls]`).
     `buildPlayerProjection` is a field whitelist with no Echo field, so Player Preview and the future print
     (which must keep drawing the projection only) cannot show them; `tests/journey2-soul-echoes.test.js`
     asserts this. The GM JSON backup does include them.

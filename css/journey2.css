@@ -44,39 +44,41 @@ body[data-route="journey"] #grid-wrap { display: block; }
 @keyframes j2-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .j2-spinner { animation: none; } }
 
-/* ---------- toolbar ---------- */
-.j2-toolbar {
-  display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--s-4); row-gap: var(--s-1);
-  min-height: 48px; padding: var(--s-1) var(--s-3);
-  background: var(--ink-raised); border: 1px solid var(--line-faint); border-radius: var(--r-md);
+/* ---------- controls: the toolbar lives at the top of the side panel (PD-040); the collapsed rail repeats the same buttons icon-only ---------- */
+.j2-controls {
+  flex: none; display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-3);
+  border-bottom: 1px solid var(--line-faint);
 }
+.j2-ctl-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1); min-width: 0; }
+.j2-ctl-nav { gap: var(--s-2); }
+.j2-ctl-nav .j2-tb-group + .j2-tb-group { padding-left: var(--s-2); border-left: 1px solid var(--line-faint); }
+.j2-ctl-collapse { margin-left: auto; }
+/* dense: 28px controls, tight padding, so the longest Russian rows (Fit; Plan route + Locate) still fit the 340px panel */
+.j2-controls .btn { height: 28px; min-height: 0; }
+.j2-controls .j2-btn-icon { width: 28px; }
+.j2-controls .j2-tool, .j2-controls .j2-zoom-readout { padding-inline: var(--s-2); }
+.j2-controls .j2-zoom-readout { min-width: 5ch; padding-inline: var(--s-1); }
+.j2-ctl-nav .j2-tb-group + .j2-tb-group { padding-left: var(--s-1); }
+.j2-ctl-nav { gap: var(--s-1); }
+.j2-ctl-gm { display: flex; flex-direction: column; gap: var(--s-1); padding-top: var(--s-2); border-top: 1px solid var(--line-faint); }
+.j2-ctl-gm[hidden], .j2-ctl-preview[hidden], .j2-side-scroll[hidden], .j2-rail-grp[hidden], .j2-rail-btn[hidden] { display: none; }
 .j2-tb-group { display: flex; align-items: center; gap: var(--s-1); min-width: 0; }
-.j2-tb-end { margin-left: auto; gap: var(--s-2); }
-/* Soul Echoes + sanctuaries (the GM's campaign tools) travel as ONE unit: they share a row or the whole unit drops to its own second row, never one orphan button */
-.j2-tb-gm { display: flex; flex-wrap: nowrap; align-items: center; gap: var(--s-4); min-width: 0; }
-.j2-tb-gm[hidden] { display: none; }
-.j2-toolbar.is-wrapped .j2-tb-gm { flex-basis: 100%; }
-.j2-toolbar.is-wrapped .j2-tb-echo { padding-left: 0; border-left: 0; }
-/* Fog of War tools: a labelled group (icon + text, so a tool is never identified by colour alone) */
-.j2-tb-fog { padding-left: var(--s-3); border-left: 1px solid var(--line-faint); }
-/* Soul Echoes (PD-022): GM-only; hidden in Player Preview */
-.j2-tb-echo { padding-left: var(--s-3); border-left: 1px solid var(--line-faint); }
+/* every tool is a labelled button (icon + text, so a tool is never identified by colour alone); the groups are rows of the panel */
 .j2-tool { display: inline-flex; align-items: center; gap: var(--s-1); }
 .j2-tool .j2-ico svg { width: 16px; height: 16px; }
-/* Player Preview bar: replaces the GM controls while previewing */
-.j2-tb-preview { flex: 1 1 auto; flex-wrap: wrap; gap: var(--s-3); }
+/* Player Preview controls: replace the GM controls (and New region / stock) in the same panel while previewing */
+.j2-ctl-preview { display: flex; flex-direction: column; align-items: stretch; gap: var(--s-2); padding-top: var(--s-2); border-top: 1px solid var(--line-faint); }
+.j2-ctl-preview .j2-preview-flag { align-self: flex-start; }
+.j2-ctl-preview .btn, .j2-ctl-preview .j2-tb-tools { width: 100%; justify-content: flex-start; }
 .j2-preview-flag {
   display: inline-flex; align-items: center; gap: var(--s-2); height: var(--h-xs); padding: 0 var(--s-2);
   border: 1px solid var(--hope-border); border-radius: var(--r-xs); background: var(--hope-wash); color: var(--hope-soft);
   font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: var(--tracking-badge); text-transform: uppercase; white-space: nowrap;
 }
 .j2-preview-flag .j2-ico svg { width: 14px; height: 14px; }
-.j2-preview-note { min-width: 0; font-size: var(--fs-sm); color: var(--parchment-dim); }
-.j2-tb-preview .btn { margin-left: auto; }
-.j2-tb-preview .btn + .btn { margin-left: 0; }
+.j2-preview-note { margin: 0; min-width: 0; font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--parchment-dim); }
 /* Reveal / Hide live here, in Player Preview, beside the picture they change (PD-034) */
-.j2-tb-tools { display: inline-flex; align-items: center; gap: var(--s-1); padding: 0 var(--s-2); border-left: 1px solid var(--line-faint); border-right: 1px solid var(--line-faint); }
-.j2-tb-preview .j2-tb-tools .btn { margin-left: 0; }
+.j2-tb-tools { display: flex; align-items: center; gap: var(--s-1); }
 /* One fog brush button: two schematic mice, the pressed button in gold — left = Reveal, right = Hide */
 .j2-mouse-pair { display: inline-flex; align-items: center; gap: var(--s-1); }
 .j2-mouse-pair .j2-mouse-ico + span { margin-right: var(--s-2); }
@@ -84,7 +86,11 @@ body[data-route="journey"] #grid-wrap { display: block; }
 .j2-mouse-ico { display: inline-flex; }
 .j2-mouse-ico svg { width: 14px; height: 20px; }
 .j2-mouse-hit { fill: var(--hope); stroke: none; }
-.j2[data-mode="preview"] .j2-toolbar { border-color: var(--hope-border); }
+.j2[data-mode="preview"] .j2-side, .j2[data-mode="preview"] .j2-rail { border-color: var(--hope-border); }
+/* in the preview the panel is only as tall as its controls (the map stays reachable below it) */
+.j2[data-mode="preview"] .j2-sidewrap { bottom: auto; }
+.j2[data-mode="preview"] .j2-side { position: relative; inset: auto; }
+.j2[data-mode="preview"] .j2-rail { max-height: none; }
 .j2[data-mode="preview"] .j2-viewport { box-shadow: inset 0 0 0 2px var(--hope-border); cursor: grab; }
 .j2[data-mode="preview"] .j2-viewport.is-fog-tool { cursor: crosshair; }
 .j2[data-mode="preview"] .j2-viewport.is-fog-tool.is-space { cursor: grab; }
@@ -154,12 +160,16 @@ body[data-route="journey"] #grid-wrap { display: block; }
 }
 .j2-stage[data-side="collapsed"] .j2-side { opacity: 0; pointer-events: none; }
 .j2-rail {
-  position: absolute; top: 0; bottom: 0; right: 0; width: var(--j2-rail-w);
-  display: flex; flex-direction: column; align-items: center; gap: var(--s-3); padding: var(--s-2) 0;
+  position: absolute; top: 0; right: 0; max-height: 100%; width: var(--j2-rail-w); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none;
+  display: flex; flex-direction: column; align-items: center; gap: var(--s-1); padding: var(--s-1) 0;
   background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-md); box-shadow: var(--e-3);
   opacity: 0; pointer-events: none; transition: opacity 140ms ease;
 }
 .j2-stage[data-side="collapsed"] .j2-rail { opacity: 1; pointer-events: auto; transition-delay: 110ms; }
+.j2-rail::-webkit-scrollbar { display: none; }
+.j2-rail-grp { display: flex; flex-direction: column; align-items: center; gap: var(--s-1); width: 28px; padding-top: var(--s-1); border-top: 1px solid var(--line-faint); }
+.j2-rail-btn { width: 28px; height: 28px; min-height: 0; padding: 0; flex: none; }
+.j2-rail-zoom { font-family: var(--font-mono); font-size: 10px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .j2-rail-ico { display: inline-flex; color: var(--parchment-dim); }
 .j2-rail-ico svg { width: 20px; height: 20px; }
 .j2-rail-count { font-family: var(--font-mono); font-size: var(--fs-sm); font-variant-numeric: tabular-nums; color: var(--parchment); }
@@ -513,7 +523,6 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-sanc-foot { flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); padding: var(--s-2) var(--s-3); border-top: 1px solid var(--line-faint); }
 .j2-sanc-foot .j2-ico { display: inline-flex; margin-right: var(--s-1); }
 .j2-sanc-foot .j2-ico svg { width: 16px; height: 16px; }
-.j2-tb-sanc { padding-left: var(--s-3); border-left: 1px solid var(--line-faint); }
 @media (max-width: 900px) {
   .j2-region-inspector.j2-sanctuary { width: calc(100% - 2 * var(--s-3)); }
 }
@@ -636,7 +645,6 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 
 @media (max-width: 900px) {
   .j2-panel { left: var(--s-3); width: auto; top: auto; bottom: var(--s-3); max-height: 46%; }
-  .j2-tb-end { margin-left: 0; }
 }
 
 /* ---------- print proof ---------- */
@@ -673,9 +681,9 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 /* ---------- initial loading skeleton (static, index.html) ---------- */
 /* index.html ships one generic card-grid shell. On a #/journey2 URL a tiny inline script sets
  * html[data-boot-route="journey2"] before first paint, which swaps that shell for this
- * editor-shaped one (toolbar strip + floating side panel + map) and applies the same route chrome
+ * editor-shaped one (floating side panel + map) and applies the same route chrome
  * the editor will have, so nothing jumps when the real view mounts. Dimensions mirror .j2-host /
- * .j2-toolbar / .j2-sidewrap above. */
+ * .j2-sidewrap above. */
 .sk-j2 { display: none; }
 html[data-boot-route="journey2"] .catalog-bar-wrap,
 html[data-boot-route="journey2"] #catalog-more,
@@ -690,7 +698,6 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
   display: flex; flex-direction: column; gap: var(--s-2);
   height: calc(100dvh - 76px - 2 * var(--s-3)); min-height: 420px; margin-top: var(--s-3);
 }
-.sk-j2-bar { flex: none; height: 48px; border-radius: var(--r-md); border: 1px solid var(--line-faint); }
 .sk-j2-stage { flex: 1 1 auto; min-height: 0; position: relative; }
 .sk-j2-map { position: absolute; inset: 0; border-radius: var(--r-md); border: 1px solid var(--line); }
 .sk-j2-side {
@@ -788,8 +795,6 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 @media (prefers-reduced-motion: reduce) { .j2-die { animation: none; } }
 
 /* ---------- Route Planner (PD-031): GM-only selection chip, A / B pins, two side-by-side route lines with navigator-style bubbles, details popover ---------- */
-.j2-tb-route { padding-left: var(--s-3); border-left: 1px solid var(--line-faint); }
-.j2-toolbar.is-wrapped .j2-tb-route { padding-left: 0; border-left: 0; }
 .j2-viewport.is-routing { cursor: crosshair; }
 .j2-viewport.is-routing.is-space { cursor: grab; }
 .j2-viewport.is-routing.is-panning { cursor: grabbing; }

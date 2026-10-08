@@ -207,7 +207,7 @@ test('view: Player Preview empties the ring layer (data, not CSS), closes the ov
   assert.match(fn('renderSanctuaryRings', 'updateSanctuaryUi'), /if \(previewMode\) \{ ui\.g\.sanct\.innerHTML = ''/);
   assert.doesNotMatch(fn('renderSanctuaryRings', 'updateSanctuaryUi'), /Projection|playerProjection/, 'never fed from the projection');
   assert.match(fn('renderSanctuaryPanel', 'sanctuaryAnchorPx'), /previewMode \? null/);
-  assert.match(fn('applyPreviewChrome', 'enterPreview'), /ui\.sancGroup\.hidden = on/);
+  assert.match(fn('applyPreviewChrome', 'enterPreview'), /ui\.gmControls\.hidden = on/);
   assert.match(fn('enterPreview', 'leavePreview'), /closeSanctuary\(\{ quiet: true \}\)/);
   assert.match(fn('openSanctuary', 'closeSanctuary'), /previewMode/);
   assert.match(fn('sanctuaryAtScreen', 'openSanctuary'), /previewMode/, 'no clicking a sanctuary in the preview');
