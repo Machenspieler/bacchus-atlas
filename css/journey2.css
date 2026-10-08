@@ -236,6 +236,8 @@ body[data-route="journey"] #grid-wrap { display: block; }
 
 /* the two drag targets: equal fixed columns, so a count change never moves them */
 .j2-actions { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2); }
+.j2-actions.is-single { grid-template-columns: 1fr; }
+.j2-handle--all[hidden] { display: none; }
 .j2-handle {
   display: grid; grid-template-columns: minmax(0, 1fr) 12px; align-items: center; gap: var(--s-2);
   height: 40px; padding: 0 var(--s-2); background: transparent; color: var(--parchment);

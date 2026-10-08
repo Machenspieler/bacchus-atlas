@@ -981,7 +981,7 @@
             <span class="j2-card-sym"><img alt="" data-j2-c="img"></span>
             <span class="j2-card-title">
               <span class="j2-card-name"><span data-j2-c="name"></span><span class="j2-card-ord" data-j2-c="ord"></span></span>
-              <span class="j2-card-meta"><span class="j2-dots" data-j2-c="dots" role="img"></span><span data-j2-c="days"></span><span class="j2-blight" data-j2-c="blight" hidden></span></span>
+              <span class="j2-card-meta"><span class="j2-dots" data-j2-c="dots" role="img"></span><span class="j2-blight" data-j2-c="blight" hidden></span></span>
             </span>
           </button>
           <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-inspect" data-j2-inspect data-j2-c="inspect" aria-controls="j2-region-inspector" aria-haspopup="dialog">${ICON.info}<span class="sr-only" data-j2-c="inspectSr"></span></button>
@@ -1037,10 +1037,6 @@
       refs.warn.hidden = !holes;
       if (holes) refs.warnText.textContent = fill('journey2_warn_holes', { n: n(holes) });
       refs.root.classList.toggle('has-holes', !!holes);
-      if (generator && generator.ready()) {
-        const d = generator.describe(b);
-        refs.days.textContent = d.terrain ? fill('journey2_days_per_hex', { n: d.terrain.days }) : '';
-      }
       if (!active) return;
       // placement: one status row, or — when nothing is left — a single confirmation and no controls at all
       refs.status.hidden = complete;
@@ -1052,6 +1048,9 @@
       refs.bar.style.width = (c.quantity ? (100 * c.placed / c.quantity) : 0) + '%';
       refs.oneLabel.textContent = t('journey2_place_one');
       refs.allLabel.textContent = fill('journey2_place_all_n', { n: n(c.remaining) });
+      const single = c.remaining === 1;                  // one hex left: "Place 1" and "Place all 1" are the same action
+      refs.actions.classList.toggle('is-single', single);
+      refs.handleAll.hidden = single;
       for (const h of [refs.handleOne, refs.handleAll]) h.disabled = editLocked;
       refs.handleOne.setAttribute('aria-label', fill('journey2_handle_one_aria', { name: name }));
       refs.handleAll.setAttribute('aria-label', fill('journey2_handle_all_aria', { name: name, n: n(c.remaining) }));
@@ -3668,7 +3667,11 @@
         else if (b.getAttribute('aria-disabled') !== 'true') zoomStep(z === 'in' ? 1 : -1);
       }
       else if (b.hasAttribute('data-j2-card-toggle')) toggleCard(b.closest('[data-batch]').getAttribute('data-batch'));
-      else if (b.hasAttribute('data-j2-inspect')) openInspectorFromCard(b.closest('[data-batch]').getAttribute('data-batch'));
+      else if (b.hasAttribute('data-j2-inspect')) {
+        const id = b.closest('[data-batch]').getAttribute('data-batch');
+        if (inspectorOpen() && inspector.batchId === id) closeInspector({ focus: true });
+        else openInspectorFromCard(id);
+      }
       else if (b.hasAttribute('data-j2-insp-close')) closeInspector({ focus: true });
       else if (b.hasAttribute('data-j2-delete')) confirmDelete(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-side-toggle')) toggleSide();
