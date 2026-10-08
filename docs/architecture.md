@@ -1336,6 +1336,28 @@ Run all of them with `node --test tests/*.test.js`.
 - *Tests.* `tests/journey2-locate.test.js` (schema, command, history, bearing, sixteen sectors and boundaries, nearest, ties, here, plan, session lifecycle, isolation, view/i18n/docs guards);
   `scripts/journey2/lib/locate-checks.js` (real browser, run from `stage1-verify.js`).
 
+### Journey 2 Route Planner (PD-031)
+
+`js/journey2-route.js` is pure (UMD, no DOM, storage or strings) and loads after the geometry module, before the view.
+- **Graph.** Nodes are canonical `"q,r"` cell ids; a move is one of the six edge neighbours (`grid.neighbors`; corner contact is not adjacency). The view injects `isRouteableCell`
+  (the editor's `foggable` set: valid, non-decorative), `getNeighbors` and `getTerrainRating` (from `buildTerrainIndex(doc)`: each placed tile's region `terrain.value`; cells without a
+  tile are simply absent = unknown). The engine never reads Fog, Echoes, sanctuaries, Environments or Shadowblight.
+- **Costs.** The cost of entering a hex: Fastest = its rating; Shortest = 1; Fewer encounters = `encounterExpectation(rating) = 1 - (5/6)^rating` (the one home of that formula). The start is
+  never charged, so costs are directional. Terrain-aware strategies enter only known-rating cells (the goal included); Shortest ignores terrain.
+- **A\*.** Binary-heap open set, lazy deletion, closed set; heuristic = `hexDistance(cell, goal) * minStep` with `minStep` 1 / 1 / `MIN_ENCOUNTER_COST` (1/6, Terrain 1) — admissible and
+  consistent, so the first pop of the goal is optimal. Costs are compared with `ROUTE_COST_EPSILON` (1e-9), never `===`. Determinism: heap order is f, then h, then canonical cell
+  order (`compareCellIds`: q, then r), and neighbours are visited in canonical order regardless of the injected order, so equal-cost alternatives resolve identically every time.
+- **Failure.** `{ status: 'no-route', reason }`: `invalid-endpoint`; `unknown-terrain` (a terrain-aware miss while a geometric path exists — the engine re-runs Shortest to tell); `disconnected`.
+- **Statistics.** `calculateRouteStats(cells, getTerrainRating)` over `cells.slice(1)`: `hexes`, `knownHexes` / `unknownHexes`, `complete`, `travelDays` and `expectedEncounters` (**null** when any
+  entered hex is unknown — never a partial total), `knownDays` (explicitly partial) and `terrainCounts`. `planRoutes` computes all three strategies at once so switching is instant;
+  `effectiveStrategy` shows the preferred one or, when it has no route, Shortest (never a guessed terrain route).
+- **State.** `createRoutePlanner`: null -> `select-start` -> `select-end` -> `result`, frozen snapshots, the preferred strategy (default Fastest) kept across Swap. Swap, new destination / start,
+  strategy change and recompute are all methods; none touches the document. The view owns one instance, recomputes an open result in `afterDocChange` (`syncRoute`) and exits it from every other
+  map tool, Player Preview, import / reset and unmount.
+- **Rendering.** Two pointer-transparent SVG layers: `routeline` (halo + solid known segments + dashed unknown segments + chevrons + dots, above fog / perimeters / sanctuary rings, below the grid
+  and controls) and `routemark` (A / B pins and the hover hex, on top). Sizes use `--j2-inv` so they stay constant on screen. The layers and the panel are emptied in Player Preview; the print
+  builders never import the route module.
+
 ### Journey 2 sanctuary names for players (PD-027)
 
 - *Schema.* `playerVisibility = { revealedCells, revealedSanctuaryNameAnchorIds }`; the second list is sorted anchor ids, optional on load

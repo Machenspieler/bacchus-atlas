@@ -226,8 +226,12 @@ Player map print (PD-028): "Print player map" in Player Preview opens a Print Pr
 of the original map, SVG over the raster), built by the pure `js/journey2-print.js` from the print projection. Screen Player Preview keeps its fog hatch; the print
 draws NO fog: fog is a data filter, so unrevealed cells are the untouched Old Valloren map and hidden content is absent, not hidden. Black and white: no tint
 (omitted, never greyed), no Environments, Soul Echoes or GM data; sanctuary names only when revealed by hand. Never a screenshot; camera/zoom/sidebar are irrelevant.
+Route Planner (PD-031): a GM-only toolbar tool — pick A then B, and Fastest (default; travel days = the Terrain Ratings of the hexes entered), Shortest (hex count) and Fewer encounters (minimum expected encounter
+triggers, `sum(1 - (5/6)^rating)`; encounters are never called dangerous or "safest") are computed by the pure `js/journey2-route.js` (A*, six-neighbour grid, admissible heuristics, deterministic ties). Terrain is never invented for ungenerated
+cells: Fastest and Fewer encounters enter only known-rating hexes, and Shortest then reports travel days and encounters as Unknown. It reads no Fog, Echoes, Environments or Shadowblight, writes nothing (no history, storage or fog change),
+recomputes on edits, is mutually exclusive with the other map tools, and none of it reaches Player Preview or print.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030, detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031, detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

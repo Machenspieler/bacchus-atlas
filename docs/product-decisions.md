@@ -981,3 +981,33 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Where:** `js/journey2-model.js` (`validateSoulEchoes`, `setSoulEchoes`, `setSoulEchoCollected`, `getCollectedEchoSet`, `availableEchoIds`), `js/journey2-locate.js` (pure),
   `js/journey2-view.js` ("Locate Soul Echoes" block, overlay row), `css/journey2.css`, `data/i18n.json` (`journey2_loc_*`, `journey2_echo_*`), `tests/journey2-locate.test.js`,
   browser check `scripts/journey2/lib/locate-checks.js`.
+
+## PD-031: Journey — the Route Planner is a GM-only, transient map tool that never invents terrain
+- **Status:** Active
+- **Date:** 2026-10-08
+- **Decision (what it is):** a GM-only toolbar action **Plan route** (RU «Проложить маршрут») beside the Soul Echo / sanctuary tools. The GM picks hex **A**, then hex **B**; the app draws a route
+  on the map and a compact summary panel (not a modal). It is a planning aid: it never moves the party, never changes the campaign document and creates no Undo entry.
+- **Decision (three strategies, Fastest first):** **Fastest** (default) minimizes total travel days, the cost of entering a hex being its Terrain Rating (1-4). **Shortest** minimizes the
+  number of hexes entered, whatever the terrain. **Fewer encounters** minimizes the *expected number of triggered encounters*, `sum(1 - (5/6)^rating)` over the entered hexes (an encounter
+  triggers when at least one of the `rating` d6 shows a 1). The cost belongs to the hex **entered**: the start is free, so A -> B and B -> A can legitimately differ. Expected triggers, not
+  "probability of at least one encounter on the whole route", is what is minimized: the latter is governed by the sum of ratings and would just duplicate Fastest.
+- **Decision (wording):** an encounter is **not** treated as danger. The mode is called **Fewer encounters** and its help says "This minimizes expected encounter triggers. Encounters are not
+  necessarily dangerous." Never "Safest", "Least dangerous" or "Low-risk" — in code, i18n or docs. The encounter figure is labelled an *estimate*.
+- **Decision (unknown terrain):** a Terrain Rating exists only where the GM generated a region (a placed tile's region). Terrain-aware routing (Fastest, Fewer encounters) may enter **only**
+  cells with a known rating (the start may lack one); it never assumes 1, an average or a biome default. When no fully known path exists the strategy is shown as unavailable with the reason
+  and **Shortest** (which ignores terrain and may cross any valid cell) is shown instead; its statistics then say **Unknown** for travel days and expected encounters rather than a partial
+  total (an optional "Known portion: N travel days (partial)" line is clearly labelled partial). Segments entering an unknown hex are drawn dashed.
+- **Decision (what it does not read):** Fog of War, revealed cells, sanctuary names, Soul Echoes, generated sanctuary data, per-hex Environments, Shadowblight and region boundaries. A route
+  crosses fog freely and never reveals or hides anything. Routeable = the editor's own valid, non-decorative cell set (the same one Reveal / Hide and Locate use); sanctuary hexes are
+  ordinary cells and a click on a sanctuary icon selects its hex instead of opening the overlay.
+- **Decision (transience / isolation):** planner state (A, B, strategy, routes, hover) is never in the document, history, autosave, JSON backup or storage and survives no reload. Undo / Redo or
+  any edit **recomputes** an open result (never a stale one) and never reopens a closed planner. The route line, A / B pins, statistics and strategy never reach Player Preview, the player
+  projection, Print Preview or print. Route Planner, Locate Soul Echoes, Reveal / Hide and armed placement are mutually exclusive map tools; Player Preview, import and reset close it.
+- **Decision (interaction):** while choosing A or B the planner owns the map (no tile drag, inspector, overlay or tile selection; a drag above the pan slope, or Space + drag, still pans). Escape
+  steps back (choosing B -> choosing A -> closed; a shown route closes after any open panel). In the result the map behaves normally. Switching strategy, **Swap A / B**, **Choose new
+  destination** and **Choose new start** change no camera and no document. A = B is not an error: 0 hexes, 0 days, no line. Honours `prefers-reduced-motion` (the 300 ms fade is dropped).
+- **Out of scope:** saved routes, a party token or automatic movement, a travel calendar, encounter rolls or simulation, resources, user-weighted costs, "safest" or danger ratings, Environment
+  or adversary difficulty as cost, a Shadowblight penalty, sharing or printing a route for players, automatic fog reveal, assumed terrain for unknown cells, roads / rivers / blocked hexes,
+  multi-stop routes, keyboard hex selection (the map has none), "Plan route here" from the sanctuary overlay.
+- **Where:** `js/journey2-route.js` (pure engine + planner state machine), `js/journey2-view.js` ("Route Planner" block), `css/journey2.css`, `data/i18n.json` (`journey2_route_*`),
+  `tests/journey2-route.test.js`.

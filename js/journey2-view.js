@@ -43,11 +43,16 @@
    direction only, never a name, distance or target. The tool state (selecting / animating / result, hover, frozen bearing) is transient:
    never in the document, history, backup or storage; the sanctuary overlay's Soul Echo row (Available / Collected) is the only persisted part.
 
+   Route Planner (PD-031): a GM-only map tool. "Plan route" asks for A then B and shows Fastest (default), Shortest and Fewer encounters as a line
+   with A / B pins and a compact summary (js/journey2-route.js, pure). Terrain Ratings are never invented for ungenerated cells. The state is
+   transient: never in the document, history, backup or storage, and never in Player Preview, the projection or a print.
+
    Layering (see docs/architecture.md "Journey 2 map editor"):
      js/journey2-geometry.js  measured lattice + camera math (pure)
      js/journey2-model.js     document, policy, commands, history (pure)
      js/journey2-projection.js the player-facing projection (pure)
      js/journey2-locate.js    Locate Soul Echoes: bearing, sixteen directions, nearest Echo, session state machine (pure)
+     js/journey2-route.js     Route Planner: A* over the hex grid, three strategies, route statistics, planner state machine (pure)
      js/journey2-store.js     local persistence over safe-storage
      js/journey2-view.js      this file: DOM, pointer state, rendering
    The model owns every rule; this file never mutates a document, it only
@@ -85,6 +90,7 @@
   const Tint = root.Journey2BiomeTint;
   const Print = root.Journey2Print;
   const Locate = root.Journey2Locate;
+  const Route = root.Journey2Route;
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const MAX_ZOOM = 8;
   const CLICK_SLOP_PX = 4;
@@ -231,6 +237,11 @@
     let locateNeedleStarted = false;                        // the needle transition of the current result has been started (a re-render must not restart it)
     let locateNote = '';                                    // why an Undo/Redo closed a stale result (appended to the Undo/Redo announcement)
     let locateRandom = Math.random;                         // the one RNG a tie is drawn with (replaceable through the debug API for the browser checks)
+    let routeHover = null;                                  // { q, r } under the pointer while the Route Planner is selecting A or B (transient: never persisted, never in history)
+    let routeTerrain = { doc: null, index: null };          // Terrain Ratings by cell for the current document (derived, never stored)
+    let routeDrawn = { line: '', mark: '' };                                    // signature of what the route layers currently show (a re-render with the same state must not restart the draw-in)
+    /* the Route Planner state machine (js/journey2-route.js): select-start -> select-end -> result, GM-only, never persisted */
+    const routePlanner = Route.createRoutePlanner({ plan: (a, b) => planRoutesFor(a, b), onChange: (state, ev) => onRouteChange(state, ev) });
     /* the Locate state machine (js/journey2-locate.js): selecting -> animating -> result, one guarded completion timer, never persisted */
     const locateSession = Locate.createLocateSession({
       schedule: (fn, ms) => setTimeout(fn, ms), cancel: h => clearTimeout(h),
@@ -260,6 +271,7 @@
       abort.abort();
       cancelAnimationFrame(rafId);
       clearTimeout(hintTimer); clearTimeout(liveTimer);
+      routePlanner.dispose(); routeHover = null;
       locateSession.dispose(); locateHover = null;   // cancels a pending compass completion: nothing may write into the detached DOM
       tr = null; pan = null; fogStroke = null; fogTool = null; previewMode = false; inspector = Model.NO_INSPECTION;
       cancelAnimationFrame(fogPaintRaf);
@@ -390,6 +402,7 @@
       eye: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.5 10C4 5.8 7 4 10 4s6 1.8 8.5 6c-2.5 4.2-5.5 6-8.5 6s-6-1.8-8.5-6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.6" fill="currentColor"/></svg>',
       sanctuary: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 17h14M5 17V9l5-5.5L15 9v8M8.5 17v-4.5h3V17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       crystal: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 1.8 6.6 6.6 7.6 14 10 17.4 12.4 14 13.4 6.6zM10 1.8v15.6M6.6 6.6h6.8M6.2 13.2 3 15.4l2.6-5.2M13.8 13.2 17 15.4l-2.6-5.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/></svg>',
+      route: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="4.6" cy="15.4" r="2.2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="15.4" cy="4.6" r="2.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6.6 14.2c3.4-1.4 1.2-4.4 3.8-5.6 1.6-.7 2.6-.8 3-2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2.4 2.2"/></svg>',
       compass: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="7.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m13.2 6.8-1.7 4.7-4.7 1.7 1.7-4.7z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M10 1.6v1.8M10 16.6v1.8M1.6 10h1.8M16.6 10h1.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
     };
 
@@ -463,6 +476,9 @@
             <div class="j2-tb-group j2-tb-sanc" role="group" data-j2-sanc-group data-t-aria="journey2_sanc_group">
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-sanc-generate data-t-title="journey2_sanc_generate_title"><span class="j2-ico" aria-hidden="true">${ICON.sanctuary}</span><span data-j2-sanc-generate-label></span></button>
             </div>
+            <div class="j2-tb-group j2-tb-route" role="group" data-j2-route-group data-t-aria="journey2_route_group">
+              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-route-plan aria-pressed="false" data-t-title="journey2_route_plan_title"><span class="j2-ico" aria-hidden="true">${ICON.route}</span><span data-t="journey2_route_plan"></span></button>
+            </div>
             </div>
             <div class="j2-tb-group j2-tb-preview" data-j2-preview-bar hidden>
               <span class="j2-preview-flag" role="status"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><strong data-t="journey2_preview"></strong></span>
@@ -478,9 +494,9 @@
                   <img class="j2-base" alt="" draggable="false" width="${W}" height="${H}">
                   <svg class="j2-overlay" xmlns="${SVG_NS}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">
                     <defs data-j2-defs></defs><defs>${ECHO_DEFS}</defs>
-                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g>
+                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routeline" pointer-events="none" aria-hidden="true"></g>
                     <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
-                    <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g><g data-j2-g="locate" pointer-events="none"></g>
+                    <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g><g data-j2-g="locate" pointer-events="none"></g><g data-j2-g="routemark" pointer-events="none" aria-hidden="true"></g>
                   </svg>
                 </div>
                 <p class="sr-only" id="j2-keys" data-t="journey2_keys_hint"></p>
@@ -580,6 +596,30 @@
                   <button type="button" class="btn btn-sm btn-primary" data-j2-locate-close data-t-aria="journey2_loc_close"><span data-t="journey2_loc_close_label"></span></button>
                 </footer>
               </aside>
+              <div class="j2-fog-chip j2-route-chip" data-j2-route-chip hidden>
+                <span class="j2-ico" aria-hidden="true">${ICON.route}</span>
+                <strong data-t="journey2_route_plan"></strong>
+                <span class="j2-fog-chip-hint" data-j2-route-chip-text></span>
+                <span class="j2-fog-chip-hint" data-t="journey2_route_esc_hint"></span>
+                <button type="button" class="btn btn-sm" data-j2-route-cancel data-t="journey2_route_cancel"></button>
+              </div>
+              <aside class="j2-route" id="j2-route" role="region" aria-labelledby="j2-route-title" tabindex="-1" data-j2-route hidden>
+                <header class="j2-route-head">
+                  <h3 class="j2-route-title" id="j2-route-title"><span class="j2-ico" aria-hidden="true">${ICON.route}</span><span data-t="journey2_route_title"></span></h3>
+                  <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-route-close data-t-aria="journey2_route_close" data-t-title="journey2_route_close">${ICON.close}</button>
+                </header>
+                <p class="j2-route-ab" data-j2-r="ab"></p>
+                <div class="j2-route-tabs" role="group" data-t-aria="journey2_route_strategy_label" data-j2-r="tabs"></div>
+                <p class="j2-route-help" data-j2-r="help"></p>
+                <div class="j2-route-body" data-j2-r="body" role="status" aria-live="polite" aria-atomic="true"></div>
+                <div class="j2-route-cmp" data-j2-r="cmp" hidden></div>
+                <footer class="j2-route-foot">
+                  <button type="button" class="btn btn-sm" data-j2-route-swap data-t="journey2_route_swap"></button>
+                  <button type="button" class="btn btn-sm" data-j2-route-newdest data-t="journey2_route_new_dest"></button>
+                  <button type="button" class="btn btn-sm" data-j2-route-newstart data-t="journey2_route_new_start"></button>
+                  <button type="button" class="btn btn-sm btn-primary" data-j2-route-close data-t="journey2_route_close"></button>
+                </footer>
+              </aside>
             </div>
             <div class="j2-sidewrap" data-j2-sidewrap>
               <aside class="j2-side" id="j2-side" data-t-aria="journey2_side_label">
@@ -655,6 +695,13 @@
       ui.echoClear = container.querySelector('[data-j2-echo-clear]');
       ui.echoLocate = container.querySelector('[data-j2-echo-locate]');
       ui.locateReason = container.querySelector('[data-j2-locate-reason]');
+      ui.routeGroup = container.querySelector('[data-j2-route-group]');
+      ui.routePlan = container.querySelector('[data-j2-route-plan]');
+      ui.routeChip = container.querySelector('[data-j2-route-chip]');
+      ui.routeChipText = container.querySelector('[data-j2-route-chip-text]');
+      ui.route = container.querySelector('[data-j2-route]');
+      ui.r = {};
+      for (const x of ui.route.querySelectorAll('[data-j2-r]')) ui.r[x.getAttribute('data-j2-r')] = x;
       ui.locateChip = container.querySelector('[data-j2-locate-chip]');
       ui.locate = container.querySelector('[data-j2-locate]');
       ui.l = {};
@@ -788,6 +835,7 @@
       syncInspector();
       if (sanctuaryOpen && !sanctuaryOpenable(sanctuaryOpen)) closeSanctuary({ quiet: true });   // deleted with no Echo left, or undone away
       syncLocate();
+      syncRoute();
       renderAll(false);
     }
 
@@ -1229,7 +1277,7 @@
     function openInspectorFromTile(tileId) {
       const next = Model.inspectTile(inspector, doc, tileId);
       if (next === inspector) return;
-      exitLocate({ quiet: true });
+      exitLocate({ quiet: true }); if (routeSelecting()) exitRoute({ quiet: true });
       closeSanctuary({ quiet: true });
       announceInspector(next);
       inspector = next;
@@ -1244,7 +1292,7 @@
       if (tr && tr.kind === 'armed') cancelTransient();   // inspecting and armed placement never coexist
       const next = Model.inspectBatch(inspector, doc, batchId);
       if (next === inspector) return;
-      exitLocate({ quiet: true });
+      exitLocate({ quiet: true }); if (routeSelecting()) exitRoute({ quiet: true });
       closeSanctuary({ quiet: true });
       announceInspector(next);
       const keepSel = inspector.tileId && sel.tileId === inspector.tileId;
@@ -1697,6 +1745,7 @@
       if (locateSession.isActive()) { exitLocate({ focus: true }); return; }
       const a = locateAvailability();
       if (!a.ok) { hint(t(a.key)); return; }
+      exitRoute({ quiet: true });                              // the two map tools are mutually exclusive
       cancelTransient(); cancelFogStroke(); setFogTool(null, { quiet: true });
       closeMenus(); hideEnvTip(); clearHint();
       if (diagOpen) setDiagnostics(false);
@@ -1874,6 +1923,276 @@
     }
 
     /* ============================================================
+       Route Planner (PD-031): GM-only. "Plan route" -> A -> B -> three strategies (Fastest by default, Shortest, Fewer encounters) computed by the
+       pure js/journey2-route.js (A* over the six-neighbour grid; the cost belongs to the hex entered). Terrain Ratings come only from generated
+       tiles and are never invented: an unknown hex blocks Fastest and Fewer encounters, and Shortest then reports "unknown" instead of a total.
+       Everything here is transient: never in the document, history, autosave, backup or storage, never in Player Preview, the projection or a
+       print. Fog of War is neither read nor changed. The two map layers (line, A/B markers) are pointer-transparent.
+       ============================================================ */
+
+    const ROUTE_LABEL = { fastest: 'journey2_route_fastest', shortest: 'journey2_route_shortest', encounters: 'journey2_route_encounters' };
+    const ROUTE_HELP = { fastest: 'journey2_route_fastest_help', shortest: 'journey2_route_shortest_help', encounters: 'journey2_route_encounters_help' };
+
+    /** Terrain Ratings by cell for the current document (rebuilt only when the document object changes). */
+    function routeIndex() {
+      if (routeTerrain.doc !== doc) routeTerrain = { doc: doc, index: Route.buildTerrainIndex(doc) };
+      return routeTerrain.index;
+    }
+
+    /** All three strategies for one A -> B on the calibrated grid; the canonical routeable test is the editor's `foggable` set (valid, non-decorative). */
+    function planRoutesFor(a, b) {
+      const idx = routeIndex(), grid = data.grid;
+      return Route.planRoutes({
+        startCell: a, goalCell: b,
+        isRouteableCell: id => foggable.has(id),
+        getNeighbors: id => { const c = Geo.parseCellId(id); return grid.neighbors(c.q, c.r).filter(x => x.valid).map(x => x.id); },
+        getTerrainRating: id => idx.get(id) || null,
+      });
+    }
+
+    /** True while the planner is choosing A or B (it then owns the map; in the result the map behaves normally). */
+    function routeSelecting() { const st = routePlanner.state; return !!st && st.status !== 'result' && !previewMode; }
+
+    /** The cell a map point selects: a sanctuary icon selects its own hex, anything else the hex under the point (null when it is not routeable). */
+    function routeCellAt(sx, sy) {
+      const w = Geo.screenToWorld(cam, sx, sy);
+      for (const s of data.ctx.sanctuaries) {
+        const r = s.rect;
+        if (s.cellId && foggable.has(s.cellId) && w[0] >= r[0] && w[0] <= r[0] + r[2] && w[1] >= r[1] && w[1] <= r[1] + r[3]) return s.cellId;
+      }
+      const c = data.grid.worldToCell(w[0], w[1]), id = Geo.cellId(c.q, c.r);
+      return foggable.has(id) ? id : null;
+    }
+
+    /** Enters the transient tool: everything that could compete for the map is cancelled first; pan, zoom, the sidebar and Fog of War are untouched. */
+    function startRoute() {
+      if (inst.disposed || previewMode || editLocked || !doc || !data) return;
+      if (routePlanner.isActive()) { exitRoute({ focus: true }); return; }
+      cancelTransient(); cancelFogStroke(); setFogTool(null, { quiet: true });
+      exitLocate({ quiet: true });
+      closeMenus(); hideEnvTip(); clearHint();
+      if (diagOpen) setDiagnostics(false);
+      closeInspector({ quiet: true }); closeSanctuary({ quiet: true });
+      if (sel.tileId) { sel.tileId = null; renderSelection(); renderInventory(false); }
+      routeHover = null;
+      routePlanner.start();
+      announce(t('journey2_route_plan') + '. ' + t('journey2_route_select_start'));      // the instruction is announced once
+    }
+
+    /** Leaves the planner (Escape, Close, Cancel, another tool, Player Preview, import, teardown). `quiet` skips the announcement. */
+    function exitRoute(o) {
+      if (!routePlanner.isActive()) return false;
+      routeHover = null;
+      routePlanner.close();                                   // onChange('closed') repaints everything
+      if (!(o && o.quiet)) announce(t('journey2_route_off'));
+      if (o && o.focus && ui.routePlan) ui.routePlan.focus({ preventScroll: true });
+      return true;
+    }
+
+    /** Escape: choosing B goes back to choosing A; choosing A or viewing a route closes the planner. Returns true when it consumed the key. */
+    function routeEscape() {
+      const st = routePlanner.state;
+      if (!st) return false;
+      if (st.status === 'select-end') { routePlanner.chooseNewStart(); announce(t('journey2_route_select_start')); return true; }
+      exitRoute({ focus: true });
+      return true;
+    }
+
+    function routeChoose(kind) {
+      if (!routePlanner.isActive()) return;
+      routeHover = null;
+      if (kind === 'swap') { routePlanner.swap(); return; }
+      if (kind === 'dest') routePlanner.chooseNewDestination(); else routePlanner.chooseNewStart();
+      announce(t(kind === 'dest' ? 'journey2_route_select_end' : 'journey2_route_select_start'));
+      if (ui.viewport) ui.viewport.focus({ preventScroll: true });
+    }
+
+    /** After a document change (dispatch, Undo, Redo, import): an open result is recomputed from the current tiles, never kept stale. Never opens the planner. */
+    function syncRoute() { if (routePlanner.state && routePlanner.state.status === 'result') routePlanner.recompute(); }
+
+    function onRouteChange(state, ev) {
+      if (inst.disposed || !ui.route) return;
+      if (ev === 'select-start' || ev === 'select-end' || ev === 'closed') routeHover = null;
+      renderRoute();
+    }
+
+    function updateRouteHover(e) {
+      const [x, y] = localPoint(e);
+      const next = insideViewport(e) ? routeCellAt(x, y) : null;
+      const cur = routeHover ? Geo.cellId(routeHover.q, routeHover.r) : null;
+      if (next === cur) return;
+      routeHover = next ? Geo.parseCellId(next) : null;
+      paintRoute();
+    }
+
+    /** The route being shown: the preferred strategy, or Shortest when that one has no complete route. { st, eff, route } or null outside the result. */
+    function routeView() {
+      const st = routePlanner.state;
+      if (!st || st.status !== 'result' || !st.routes || previewMode) return null;
+      const eff = Route.effectiveStrategy(st.routes, st.strategy);
+      return { st: st, eff: eff, route: st.routes[eff] };
+    }
+
+    /** Toolbar, chip, cursor, map layers and panel from the planner state. */
+    function renderRoute() {
+      if (!ui.route || !doc || !data) return;
+      const st = routePlanner.state, active = !!st && !previewMode, selecting = routeSelecting();
+      if (ui.routePlan) { ui.routePlan.disabled = editLocked; ui.routePlan.setAttribute('aria-pressed', String(active)); }
+      ui.routeChip.hidden = !selecting;
+      if (selecting) ui.routeChipText.textContent = t(st.status === 'select-start' ? 'journey2_route_select_start' : 'journey2_route_select_end');
+      ui.viewport.classList.toggle('is-routing', selecting);
+      ui.root.setAttribute('data-route', active ? st.status : '');
+      paintRoute();
+      renderRoutePanel();
+    }
+
+    const routeCenter = id => { const c = Geo.parseCellId(id), p = data.grid.cellCenter(c.q, c.r); return [p[0], p[1]]; };
+
+    /** A / B pin: a ring with its letter (B has a second ring, so the two differ by shape and text, not only by colour). */
+    function routePin(id, letter, ghost) {
+      const p = routeCenter(id);
+      return '<g transform="translate(' + fmt(p[0], 1) + ' ' + fmt(p[1], 1) + ')"><g class="j2-route-pin-g is-' + letter.toLowerCase() + (ghost ? ' is-ghost' : '') + '">' +
+        (letter === 'B' ? '<circle class="j2-route-pin-ring2" r="15"/>' : '') + '<circle class="j2-route-pin-ring" r="11"/><text class="j2-route-pin-t" text-anchor="middle" dy="0.35em">' + letter + '</text></g></g>';
+    }
+
+    /** The route line (known steps solid, unknown-terrain steps dashed), a dot per traversed hex and a chevron per step, then the A / B pins and the hover hex. */
+    function paintRoute() {
+      const gl = ui.g && ui.g.routeline, gm = ui.g && ui.g.routemark;
+      if (!gl || !gm) return;
+      const st = routePlanner.state;
+      if (!st || previewMode || !data) { if (routeDrawn.line) gl.innerHTML = ''; if (routeDrawn.mark) gm.innerHTML = ''; routeDrawn = { line: '', mark: '' }; return; }
+      let line = '', mark = '';
+      const v = routeView();
+      if (v && v.route.status === 'ok' && v.route.cells.length > 1) {
+        const cells = v.route.cells, known = v.route.segmentKnown;
+        let solid = '', dashed = '', dots = '', chev = '';
+        for (let i = 0; i < cells.length - 1; i++) {
+          const a = routeCenter(cells[i]), b = routeCenter(cells[i + 1]);
+          const seg = 'M' + fmt(a[0], 1) + ' ' + fmt(a[1], 1) + 'L' + fmt(b[0], 1) + ' ' + fmt(b[1], 1);
+          if (known[i]) solid += seg; else dashed += seg;
+          const ang = Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
+          chev += '<g transform="translate(' + fmt((a[0] + b[0]) / 2, 1) + ' ' + fmt((a[1] + b[1]) / 2, 1) + ') rotate(' + fmt(ang, 1) + ')"><path class="j2-route-chev" d="M-3 -3.2 3 0-3 3.2"/></g>';
+          if (i > 0) dots += '<circle class="j2-route-dot' + (known[i - 1] ? '' : ' is-unknown') + '" cx="' + fmt(a[0], 1) + '" cy="' + fmt(a[1], 1) + '"/>';
+        }
+        line = '<g class="j2-route-line" data-strategy="' + v.eff + '"><path class="j2-route-halo" d="' + solid + dashed + '"/>' +
+          (solid ? '<path class="j2-route-solid" d="' + solid + '"/>' : '') + (dashed ? '<path class="j2-route-dashed" d="' + dashed + '"/>' : '') + chev + dots + '</g>';
+      }
+      const hoverId = routeHover ? Geo.cellId(routeHover.q, routeHover.r) : null;
+      if (st.status === 'select-start' && routeHover) mark = '<path class="j2-route-hover" d="' + hexPath(routeHover.q, routeHover.r) + '"/>' + routePin(hoverId, 'A', true);
+      else if (st.status === 'select-end') {
+        mark = routePin(st.startCell, 'A');
+        if (routeHover) mark += '<path class="j2-route-hover" d="' + hexPath(routeHover.q, routeHover.r) + '"/>' + routePin(hoverId, 'B', true);
+      } else if (st.status === 'result') {
+        mark = routePin(st.startCell, 'A') + (st.endCell !== st.startCell ? routePin(st.endCell, 'B') : '');
+      }
+      if (line !== routeDrawn.line) { gl.innerHTML = line; routeDrawn.line = line; }
+      if (mark !== routeDrawn.mark) { gm.innerHTML = mark; routeDrawn.mark = mark; }
+    }
+
+    function hideRoutePanel() {
+      if (!ui.route || ui.route.hidden) return;
+      ui.route.hidden = true;
+      ui.r.ab.innerHTML = ''; ui.r.body.innerHTML = ''; ui.r.cmp.innerHTML = ''; ui.r.cmp.hidden = true; ui.r.help.textContent = '';
+    }
+
+    const dotsHtml = k => '<span class="j2-dots" aria-hidden="true">' + [1, 2, 3, 4].map(i => '<i' + (i <= k ? ' class="on"' : '') + '></i>').join('') + '</span>';
+
+    /** The summary: hex count, travel days, expected encounter triggers (an estimate), the terrain breakdown and any unknown-terrain notice. */
+    function routeStatsHtml(route) {
+      const s = route.stats;
+      let nf2; try { nf2 = new Intl.NumberFormat(lang, { minimumFractionDigits: 1, maximumFractionDigits: 2 }); } catch (err) { nf2 = new Intl.NumberFormat('en', { minimumFractionDigits: 1, maximumFractionDigits: 2 }); }
+      const unknown = '<span class="j2-route-unk">' + esc(t('journey2_route_unknown')) + '</span>';
+      let h = '';
+      if (route.cells.length === 1) h += '<p class="j2-route-note">' + esc(t('journey2_route_same')) + '</p>';
+      h += '<dl class="j2-route-stats">' +
+        '<div><dt>' + esc(t('journey2_route_hexes')) + '</dt><dd>' + n(s.hexes) + '</dd></div>' +
+        '<div><dt>' + esc(t('journey2_route_days')) + '</dt><dd>' + (s.complete ? n(s.travelDays) : unknown) + '</dd></div>' +
+        '<div><dt>' + esc(t('journey2_route_expected')) + '</dt><dd>' + (s.complete ? nf2.format(s.expectedEncounters) : unknown) + '</dd></div></dl>';
+      if (!s.complete) {
+        h += '<p class="j2-route-warn"><strong>' + esc(t('journey2_route_time_unknown')) + '.</strong> ' + esc(t('journey2_route_enc_unknown')) + '. ' +
+          esc(s.unknownHexes === 1 ? t('journey2_route_unknown_one') : fill('journey2_route_unknown_n', { n: n(s.unknownHexes) })) + '</p>' +
+          '<p class="j2-route-note">' + esc(t('journey2_route_known_terrain')) + ': ' + n(s.knownHexes) + ' · ' + esc(t('journey2_route_unknown_terrain')) + ': ' + n(s.unknownHexes) +
+          (s.knownHexes ? '<br>' + esc(fill('journey2_route_known_days', { n: n(s.knownDays) })) : '') + '</p>';
+      }
+      const rows = [1, 2, 3, 4].filter(r => s.terrainCounts[r] > 0);
+      if (rows.length) {
+        h += '<h4 class="j2-route-h">' + esc(t('journey2_route_terrain')) + '</h4><ul class="j2-route-terrain">' + rows.map(r => {
+          const c = s.terrainCounts[r], text = fill(c === 1 ? 'journey2_route_terrain_row_one' : 'journey2_route_terrain_row_n', { t: n(r), n: n(c) });
+          return '<li>' + dotsHtml(r) + '<span class="j2-route-count" aria-hidden="true">' + n(c) + '</span><span class="sr-only">' + esc(text) + '</span></li>';
+        }).join('') + '</ul>';
+      }
+      return h;
+    }
+
+    /** Fastest vs Shortest, shown only when they differ and both are fully known — the main reason to plan a route at all. */
+    function routeCompareHtml(routes) {
+      const f = routes.fastest, s = routes.shortest;
+      if (!f || !s || f.status !== 'ok' || s.status !== 'ok' || !f.stats.complete || !s.stats.complete || Route.sameRoute(f, s)) return '';
+      const line = (key, r) => '<li>' + esc(fill('journey2_route_compare_line', { label: t(key), hexes: n(r.stats.hexes), days: n(r.stats.travelDays) })) + '</li>';
+      const dh = f.stats.hexes - s.stats.hexes, dd = s.stats.travelDays - f.stats.travelDays;
+      return '<ul class="j2-route-cmp-list">' + line('journey2_route_fastest', f) + line('journey2_route_shortest', s) + '</ul>' +
+        (dh > 0 && dd > 0 ? '<p class="j2-route-note">' + esc(fill('journey2_route_compare_hint', { h: n(dh), d: n(dd) })) + '</p>' : '');
+    }
+
+    function renderRoutePanel() {
+      const v = routeView();
+      if (!v) { hideRoutePanel(); return; }
+      const R = ui.r, st = v.st, routes = st.routes;
+      ui.route.hidden = false;
+      R.ab.innerHTML = '<span class="j2-route-pin-chip" role="img" aria-label="' + esc(t('journey2_route_marker_a')) + '">A</span><span class="j2-route-arrow" aria-hidden="true">→</span><span class="j2-route-pin-chip is-b" role="img" aria-label="' + esc(t('journey2_route_marker_b')) + '">B</span>';
+      if (!R.tabs.firstChild) {
+        for (const s of Route.STRATEGIES) {
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'j2-route-tab'; b.setAttribute('data-j2-route-strategy', s);
+          R.tabs.appendChild(b);
+        }
+      }
+      for (const b of R.tabs.children) {
+        const s = b.getAttribute('data-j2-route-strategy'), ok = routes[s] && routes[s].status === 'ok';
+        b.textContent = t(ROUTE_LABEL[s]);
+        b.setAttribute('aria-pressed', String(s === v.eff));
+        b.setAttribute('aria-disabled', String(!ok));
+        b.classList.toggle('is-unavailable', !ok);
+        b.title = ok ? t(ROUTE_HELP[s]) : t(routes[s] && routes[s].reason === 'unknown-terrain' ? 'journey2_route_unavailable' : 'journey2_route_none');
+      }
+      R.help.textContent = t(ROUTE_HELP[v.eff]);
+      R.help.classList.toggle('is-enc', v.eff === 'encounters');
+      let body = '';
+      const wanted = routes[Route.STRATEGIES.includes(st.strategy) ? st.strategy : Route.DEFAULT_STRATEGY];
+      if (v.route.status === 'ok') {
+        if (wanted && wanted.status !== 'ok' && wanted.reason === 'unknown-terrain') body += '<p class="j2-route-warn">' + esc(t('journey2_route_no_terrain')) + ' ' + esc(t('journey2_route_no_terrain_short')) + '</p>';
+        body += routeStatsHtml(v.route);
+      } else {
+        body += '<p class="j2-route-warn">' + esc(t(v.route.reason === 'unknown-terrain' ? 'journey2_route_no_terrain' : 'journey2_route_none')) + '</p>';
+      }
+      R.body.innerHTML = body;
+      const cmp = routeCompareHtml(routes);
+      R.cmp.innerHTML = cmp; R.cmp.hidden = !cmp;
+    }
+
+    function chooseRouteStrategy(s) {
+      const st = routePlanner.state;
+      if (!st || st.status !== 'result') return;
+      const r = st.routes[s];
+      if (!r || r.status !== 'ok') { hint(t(r && r.reason === 'unknown-terrain' ? 'journey2_route_unavailable' : 'journey2_route_none')); return; }
+      routePlanner.setStrategy(s);
+      const v = routeView();
+      if (v) announce(fill('journey2_route_live_result', { strategy: t(ROUTE_LABEL[v.eff]), hexes: n(v.route.stats.hexes) }));
+    }
+
+    /** Read-only snapshot for the browser checks. */
+    function routeDebug() {
+      const st = routePlanner.state, v = routeView();
+      if (!st) return null;
+      const brief = r => (r.status === 'ok' ? { ok: true, cells: r.cells.slice(), stats: Object.assign({}, r.stats) } : { ok: false, reason: r.reason });
+      return {
+        status: st.status, start: st.startCell, end: st.endCell, strategy: st.strategy, shown: v ? v.eff : null, hover: routeHover ? Geo.cellId(routeHover.q, routeHover.r) : null,
+        cells: v && v.route.status === 'ok' ? v.route.cells.slice() : null, stats: v && v.route.status === 'ok' ? Object.assign({}, v.route.stats) : null,
+        routes: st.routes ? { fastest: brief(st.routes.fastest), shortest: brief(st.routes.shortest), encounters: brief(st.routes.encounters) } : null,
+      };
+    }
+
+    /* ============================================================
        Sanctuaries (PD-023): GM-only generated settlements on the printed sanctuary icons. One toolbar button generates
        all of them as ONE undoable command; clicking a generated icon opens a screen-space overlay with its details,
        a Delete and a Reroll action. Like Soul Echoes the ring layer is EMPTIED in Player Preview and the player
@@ -2005,7 +2324,7 @@
       const e = sanctuaryEntry(id);
       if (!sanctuaryOpenable(id)) return false;
       if (sanctuaryOpen === id) { positionSanctuary(); return true; }
-      exitLocate({ quiet: true });
+      exitLocate({ quiet: true }); if (routeSelecting()) exitRoute({ quiet: true });
       closeInspector({ quiet: true });
       if (diagOpen) setDiagnostics(false);
       if (sel.tileId) { sel.tileId = null; renderSelection(); renderInventory(false); }
@@ -2164,6 +2483,7 @@
       renderSanctuaryRings();
       renderSanctuaryPanel();
       renderLocatePanel();
+      renderRoute();
       renderSelection();
       renderInspector();
       positionInspector();
@@ -2323,7 +2643,7 @@
       if (mode && (previewMode || editLocked || !data)) return;
       if (mode && mode === fogTool) mode = null;
       if (mode) {
-        exitLocate({ quiet: true });                       // the two map tools are mutually exclusive
+        exitLocate({ quiet: true }); exitRoute({ quiet: true });   // the map tools are mutually exclusive
         cancelTransient();
         cancelFogStroke();
         hideEnvTip();
@@ -2491,7 +2811,7 @@
     function enterPreview() {
       if (previewMode || !data || !doc) return;
       cancelTransient(); cancelFogStroke(); closeMenus();
-      exitLocate({ quiet: true });
+      exitLocate({ quiet: true }); exitRoute({ quiet: true });
       if (diagOpen) setDiagnostics(false);
       setFogTool(null, { quiet: true });
       closeInspector({ quiet: true });
@@ -2664,7 +2984,7 @@
       listen(vp, 'pointerup', onViewportUp);
       listen(vp, 'pointercancel', onViewportCancel);
       listen(vp, 'lostpointercapture', onViewportCancel);
-      listen(vp, 'pointerleave', () => { pointer.inside = false; hideEnvTip(); hoverCell = null; hoverMarker = null; if (fogHover) { fogHover = null; scheduleFogPaint(); } if (locateHover) { locateHover = null; paintLocate(); } if (diagOpen) renderSelection(); updateReadouts(); if (tr && tr.kind === 'armed') updatePreview(); });
+      listen(vp, 'pointerleave', () => { pointer.inside = false; hideEnvTip(); hoverCell = null; hoverMarker = null; if (fogHover) { fogHover = null; scheduleFogPaint(); } if (locateHover) { locateHover = null; paintLocate(); } if (routeHover) { routeHover = null; paintRoute(); } if (diagOpen) renderSelection(); updateReadouts(); if (tr && tr.kind === 'armed') updatePreview(); });
       listen(vp, 'wheel', onWheel, { passive: false });
       listen(vp, 'keydown', onViewportKey);
       listen(vp, 'keyup', e => { if (e.key === ' ') { spaceDown = false; vp.classList.remove('is-space'); } });
@@ -2766,7 +3086,7 @@
       pointer.x = x; pointer.y = y; pointer.inside = true; pointer.cx = e.clientX; pointer.cy = e.clientY;
       // priority: dialog > preview > an existing drag/pan > Locate location selection (a click, never a tile drag) > armed placement > fog tool > neutral selection. Space (or the middle button) pans instead of painting.
       if (fogTool && !previewMode && e.button === 0 && !spaceDown && !editLocked && !(tr && tr.kind === 'armed')) { startFogStroke(e); e.preventDefault(); return; }
-      const tile = e.button === 0 && !spaceDown && !editLocked && !previewMode && !fogTool && !(tr && tr.kind === 'armed') && !locateSession.isActive() && !sanctuaryAtScreen(x, y) ? tileAtScreen(x, y) : null;
+      const tile = e.button === 0 && !spaceDown && !editLocked && !previewMode && !fogTool && !(tr && tr.kind === 'armed') && !locateSession.isActive() && !routeSelecting() && !sanctuaryAtScreen(x, y) ? tileAtScreen(x, y) : null;
       if (tile) {
         tr = { kind: 'tile', tileId: tile.id, batchId: tile.batchId, from: tile.cell, docRef: doc, pointerId: e.pointerId, moved: false, x0: e.clientX, y0: e.clientY, preview: null };
       } else {
@@ -2790,6 +3110,7 @@
         if (tr.moved) { updatePreview(); return; }
       }
       if (tr && tr.kind === 'armed') { updatePreview(); return; }
+      if (routeSelecting() && !pan) { updateRouteHover(e); return; }
       if (locateSession.state && locateSession.state.status === 'selecting' && !pan) { updateLocateHover(e); return; }
       if (fogTool && !pan && !previewMode) { updateFogHover(e); return; }
       if (!tr) updateHover();
@@ -2803,7 +3124,7 @@
         const [x, y] = localPoint(e);
         endPan();
         if (moved) markDragged();
-        if (wasClick && (!locateSession.isActive() || insideViewport(e))) handleMapClick(x, y);
+        if (wasClick && ((!locateSession.isActive() && !routeSelecting()) || insideViewport(e))) handleMapClick(x, y);
         return;
       }
       if (tr && tr.kind === 'tile' && tr.pointerId === e.pointerId) {
@@ -2831,6 +3152,10 @@
 
     function handleMapClick(sx, sy) {
       if (previewMode || fogTool) return;                    // read-only preview / an active fog tool never selects or inspects
+      if (routeSelecting()) {                                // the Route Planner owns the map while choosing A or B: a sanctuary icon, Environment marker or tile selects its hex
+        if (!spaceDown) { const id = routeCellAt(sx, sy); if (id && routePlanner.pick(id) && routePlanner.state.status === 'result') { const v = routeView(); if (v) announce(v.route.status === 'ok' ? fill('journey2_route_live_result', { strategy: t(ROUTE_LABEL[v.eff]), hexes: n(v.route.stats.hexes) }) : fill('journey2_route_live_none', { strategy: t(ROUTE_LABEL[v.eff]) })); } }
+        return;
+      }
       if (locateSession.state) {                             // Locate owns the map: no inspector, sanctuary overlay, Environment marker or tile selection opens
         if (locateSession.state.status === 'selecting' && !spaceDown) {
           const w = Geo.screenToWorld(cam, sx, sy), c = data.grid.worldToCell(w[0], w[1]), id = Geo.cellId(c.q, c.r);
@@ -2874,7 +3199,7 @@
         case '+': case '=': zoomStep(1); break;
         case '-': case '_': zoomStep(-1); break;
         case '0': fitToView(); break;
-        case 's': case 'S': if (fogTool || locateSession.isActive()) handled = false; else cycleSanctuary(e.shiftKey ? -1 : 1); break;
+        case 's': case 'S': if (fogTool || locateSession.isActive() || routeSelecting()) handled = false; else cycleSanctuary(e.shiftKey ? -1 : 1); break;
         case 'Delete': case 'Backspace':
           if (sel.tileId && !fogTool && !previewMode) returnSelected(); else handled = false;
           break;
@@ -2892,7 +3217,7 @@
       if (!h || h.disabled || e.button !== 0) return;
       if (pan) endPan();
       cancelTransient();
-      exitLocate({ quiet: true });
+      exitLocate({ quiet: true }); exitRoute({ quiet: true });
       if (fogTool) setFogTool(null, { quiet: true });          // placement outranks the fog tools: they are mutually exclusive
       clearHint();
       const card = h.closest('[data-batch]');
@@ -2955,7 +3280,7 @@
     function armStock(mode, batchId, handle) {
       if (tr && tr.kind === 'armed' && tr.mode === mode && tr.batchId === batchId) { cancelTransient(); return; }
       cancelTransient();
-      exitLocate({ quiet: true });
+      exitLocate({ quiet: true }); exitRoute({ quiet: true });
       if (fogTool) setFogTool(null, { quiet: true });
       const remaining = Model.derive(doc).counts.get(batchId).remaining;
       if (remaining < 1) return;
@@ -3183,11 +3508,13 @@
         if (fogStroke) { cancelFogStroke(true); e.preventDefault(); return; }
         if (pan) { setCamera({ scale: pan.scale0, tx: pan.tx0, ty: pan.ty0 }); endPan(); e.preventDefault(); return; }
         if (tr) { cancelTransient(); e.preventDefault(); return; }
+        if (routeSelecting()) { routeEscape(); e.preventDefault(); return; }                         // choosing A or B: step back / leave the Route Planner (no document change)
         if (locateSession.isActive()) { exitLocate({ focus: true }); e.preventDefault(); return; }   // a result or the selection: leave Locate (no document change)
         if (previewMode) { leavePreview(); e.preventDefault(); return; }
         if (fogTool) { setFogTool(null); e.preventDefault(); return; }
         if (sanctuaryOpen) { closeSanctuary({ focus: true }); e.preventDefault(); return; }
         if (inspectorOpen()) { closeInspector({ focus: true }); e.preventDefault(); return; }
+        if (routePlanner.isActive()) { routeEscape(); e.preventDefault(); return; }                   // a shown route closes last, after the panels above it
         if (e.target === ui.viewport) { sel.tileId = null; selCell = null; selMarker = null; placeMode = false; renderSelection(); renderInventory(false); updateReadouts(); }
         return;
       }
@@ -3236,6 +3563,12 @@
       else if (b.hasAttribute('data-j2-fog-tool')) setFogTool(b.getAttribute('data-j2-fog-tool'));
       else if (b.hasAttribute('data-j2-echo-place')) placeSoulEchoes();
       else if (b.hasAttribute('data-j2-echo-clear')) confirmClearSoulEchoes();
+      else if (b.hasAttribute('data-j2-route-plan')) startRoute();
+      else if (b.hasAttribute('data-j2-route-close') || b.hasAttribute('data-j2-route-cancel')) exitRoute({ focus: true });
+      else if (b.hasAttribute('data-j2-route-swap')) routeChoose('swap');
+      else if (b.hasAttribute('data-j2-route-newdest')) routeChoose('dest');
+      else if (b.hasAttribute('data-j2-route-newstart')) routeChoose('start');
+      else if (b.hasAttribute('data-j2-route-strategy')) chooseRouteStrategy(b.getAttribute('data-j2-route-strategy'));
       else if (b.hasAttribute('data-j2-echo-locate')) startLocate();
       else if (b.hasAttribute('data-j2-locate-again')) chooseLocateAgain();
       else if (b.hasAttribute('data-j2-locate-close') || b.hasAttribute('data-j2-locate-cancel')) exitLocate({ focus: true });
@@ -3403,6 +3736,7 @@
       leavePreview({ quiet: true });                     // import / reset: no preview, no fog tool, no stale stroke, no inspector
       setFogTool(null, { quiet: true });
       exitLocate({ quiet: true });                       // import / reset: no compass, no stale origin or target
+      exitRoute({ quiet: true });                        // ... and no stale route
       closeInspector({ quiet: true });
       closeSanctuary({ quiet: true });
       doc = next;
@@ -3889,7 +4223,7 @@
         hoverCell: hoverCell && Geo.cellId(hoverCell.q, hoverCell.r), userPlacements: userPlacements.length,
         ready: data ? data.readiness.ready : null, anchors: data ? data.anchorsDoc.anchors.length : 0,
         validCells: data ? data.grid.validCellCount() : 0, allowedCells: data ? data.ctx.allowedCellCount : 0, placeMode: placeMode,
-        activeBatchId: activeBatchId, inspector: { batchId: inspector.batchId, tileId: inspector.tileId, source: inspector.source, open: inspectorOpen() }, sanctuaryOpen: sanctuaryOpen, locate: locateDebug(), sideCollapsed: sideCollapsed, diagnosticsOpen: diagOpen, saveStatus: saveState.status, saveReason: saveState.reason, editLocked: editLocked,
+        activeBatchId: activeBatchId, inspector: { batchId: inspector.batchId, tileId: inspector.tileId, source: inspector.source, open: inspectorOpen() }, sanctuaryOpen: sanctuaryOpen, locate: locateDebug(), route: routeDebug(), sideCollapsed: sideCollapsed, diagnosticsOpen: diagOpen, saveStatus: saveState.status, saveReason: saveState.reason, editLocked: editLocked,
         selectedTile: sel.tileId, transient: tr ? { kind: tr.kind, mode: tr.mode || null, moved: !!tr.moved, cells: tr.preview ? tr.preview.cells.length : 0, valid: tr.preview ? tr.preview.valid : null, attached: tr.preview ? tr.preview.attached : null, separateEligible: tr.preview ? !!tr.preview.separateEligible : null, anchor: tr.preview ? Geo.cellId(tr.preview.anchor.q, tr.preview.anchor.r) : null, conflicts: tr.preview ? tr.preview.cells.filter(c => !c.ok).map(c => [c.id, c.reason]) : [] } : null,
         history: history ? { undo: history.undo.length, redo: history.redo.length } : null,
         batches: doc ? doc.batches.map(b => Object.assign({ id: b.id, habitat: b.habitat, terrain: b.terrain, quantity: b.quantity, quantitySource: b.quantitySource, rumor: b.rumor, encounter: b.encounter, notes: b.notes }, d.counts.get(b.id))) : [],

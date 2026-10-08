@@ -566,3 +566,13 @@ what changes at each):
 - [ ] Narrow desktop / tablet (~641–1199px)
 - [ ] Mobile (≤640px, and again at ≤480px if the change touches a control
       with a breakpoint there)
+
+### Route Planner (PD-031)
+- [ ] **Plan route** (RU «Проложить маршрут») is a real button in the GM toolbar; absent in Player Preview and Print Preview. Pressing it shows "Select the starting hex." and a crosshair; hovering a hex shows a ghost **A**.
+- [ ] Click A, then B (a wilderness hex, an ungenerated hex, a sanctuary icon — the icon selects its hex and the overlay does not open). A drag pans without selecting. Escape: B-selection -> A-selection -> closed.
+- [ ] With mixed Terrain regions: **Fastest** is the default; its travel days equal the sum of the entered hexes' ratings (start excluded); **Shortest** has fewer or equal hexes; **Fewer encounters** shows the help
+  "Encounters are not necessarily dangerous" — nowhere does the UI say "safest". Switching strategy moves neither A, B nor the camera and adds no Undo entry. When Fastest and Shortest differ the comparison appears.
+- [ ] A route that crosses an ungenerated hex: Fastest and Fewer encounters are unavailable with a reason; Shortest is shown with travel days and expected encounters "Unknown", dashed unknown segments and the known / unknown counts.
+- [ ] **Swap A / B** recomputes (costs may differ); **Choose new destination** keeps A and clears B; **Choose new start** restarts; **Close** returns focus to Plan route. A = B shows "Start and destination are the same hex."
+- [ ] Locate Soul Echoes, Reveal / Hide and armed placement close the planner and vice versa; Undo / Redo recompute an open route and never reopen a closed one; fog and revealed cells are unchanged.
+- [ ] Player Preview, Print Preview and the printed pages contain no route line, A / B pin, statistic or strategy. Verify in English and Russian, and with reduced motion (no fade, same information).
