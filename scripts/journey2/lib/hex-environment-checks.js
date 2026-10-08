@@ -1,12 +1,15 @@
 'use strict';
 /* ============================================================
    Bacchus's Atlas — scripts/journey2/lib/hex-environment-checks.js
-   Browser verification of Journey 2 per-hex Environment assignment (PD-025): the inline picker limited to the region's
-   biome, the reused Environment Overlay, assign / change / detach with Undo / Redo, the GM-only map marker, the tile
-   lifecycle (move, return, Undo), Player Preview leaking nothing, sanctuary / Soul Echo clicks unchanged, and EN / RU.
-   Shared by stage1-verify.js (full run) and browser-verify.js (quick run). Real pointer and keyboard input in a FRESH
-   browser context (the owner's browser storage is never touched); the debug API only reads state, translates cell ids
-   into client pixels and creates the fixture regions.
+   Browser verification of Journey 2 per-hex Environments (PD-025 as amended by PD-033): the inline Change picker limited to the
+   region's biome, the reused Environment Overlay, change with Undo / Redo, the GM-only hover name, the tile lifecycle (move,
+   return, Undo), Player Preview leaking nothing, sanctuary / Soul Echo clicks unchanged, and EN / RU. PD-033 removed Choose and
+   Detach and deals an Environment at placement, so there are two kinds of fixture: (1) tiles placed through the debug API's
+   dispatch({type:'place'}) - that path does NOT deal, so they stay unassigned (the Inspector then offers no button) and get an id
+   through setTileEnvironment where a check needs one; (2) a second, fresh session at the end that places through the real
+   drag-all handle with a seeded dealer (setDealRandom), covering least-used-first dealing, Undo/Redo of the place, and Change.
+   Shared by stage1-verify.js (full run) and browser-verify.js (quick run). Real pointer and keyboard input in FRESH browser
+   contexts (the owner's browser storage is never touched).
 
    runHexEnvironmentChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc })
    ============================================================ */
@@ -36,17 +39,22 @@ async function runHexEnvironmentChecks(env) {
   const at = (dq, dr) => Geo.cellId(open.q + dq, open.r + dr);
   const MV = Geo.cellId(open.q + 1, open.r - 1);   // a free cell that keeps region w0..w3 (and the whole prepared map) connected when w0 moves there
 
-  const context = await browser.newContext({ viewport: { width: 1366, height: 768 }, locale: 'en-US' });
-  await context.addInitScript(() => { try { if (!sessionStorage.getItem('__j2_init')) { sessionStorage.setItem('__j2_init', '1'); localStorage.setItem('dhcodex_lang', JSON.stringify('en')); } } catch (e) { /* none */ } });
-  const page = await context.newPage();
-  attachLogging(page, logs, 'hexenv');
+  let context, page;
+  async function newSession() {
+    context = await browser.newContext({ viewport: { width: 1366, height: 768 }, locale: 'en-US' });
+    await context.addInitScript(() => { try { if (!sessionStorage.getItem('__j2_init')) { sessionStorage.setItem('__j2_init', '1'); localStorage.setItem('dhcodex_lang', JSON.stringify('en')); } } catch (e) { /* none */ } });
+    page = await context.newPage();
+    attachLogging(page, logs, 'hexenv');
+  }
+  await newSession();
 
   const st = () => page.evaluate(() => Journey2View.debugState());
   const docNow = () => page.evaluate(() => Journey2View.debugApi().document());
   const clientOf = cell => page.evaluate(c => Journey2View.debugApi().cellToClient(c), cell);
   const dispatch = cmd => page.evaluate(c => Journey2View.debugApi().dispatch(c), cmd);
   const tileOf = async id => (await docNow()).tiles.find(t => t.id === id);
-  const markCount = () => page.locator('[data-j2-g="envmarks"] .j2-envmark').count();
+  /** The map no longer draws an Environment marker icon (ba3dcfe), so "marks" are the document's tiles that carry an id. */
+const markCount = async () => (await docNow()).tiles.filter(t => t.environmentId).length;
   const storageSnap = () => page.evaluate(() => JSON.stringify(Object.keys(localStorage).filter(k => k.startsWith('dhcodex_journey2_')).sort().map(k => [k, localStorage.getItem(k)])));
   async function boot() {
     await page.waitForSelector('.j2-viewport', { timeout: 60000 });
@@ -74,9 +82,9 @@ async function runHexEnvironmentChecks(env) {
     await page.mouse.up(); await sleep(200);
   }
   const sec = () => page.locator('[data-j2-i="hexEnvSec"]');
-  const names = () => page.locator('.j2-hexenv-list .j2-env-name').allInnerTexts();
   const cam = async () => (await st()).camera;
   const press = key => page.keyboard.press(key);
+  const hexenvKinds = () => page.evaluate(() => [...document.querySelectorAll('[data-j2-hexenv]')].map(b => b.getAttribute('data-j2-hexenv')));
 
   await page.goto(base + '#/journey');
   await boot();
@@ -89,43 +97,48 @@ async function runHexEnvironmentChecks(env) {
   const overPlaced = await place(OVER, [{ id: 'o0', cell: at(0, -1) }]);
   if (!overPlaced.ok) throw new Error('fixture: the overtaken region could not be placed: ' + JSON.stringify(overPlaced.error) + ' batch ' + OVER);
   await page.evaluate(() => document.querySelector('.j2-viewport').focus());
-  const wetlandNames = forBiome('wetland').sort((a, b) => a.tier - b.tier).map(e => e.id);
+  // dispatch({type:'place'}) deals nothing (PD-033): w0..w3, s0, s1 and o0 start without an Environment
+  await check('hexenv.00.dispatch-placed-fixture-tiles-carry-no-environment', async () => {
+    const d = await docNow();
+    return { ok: d.tiles.length === 7 && d.tiles.every(t => !('environmentId' in t)) && (await markCount()) === 0, detail: d.tiles.map(t => [t.id, t.environmentId]) };
+  });
 
   /* ===== inspector sources ===== */
-  await check('hexenv.01.a-map-opened-inspector-shows-hex-environment-and-hides-suggested', async () => {
+  await check('hexenv.01.an-unassigned-hex-shows-the-none-line-and-no-button-and-has-no-suggested-list', async () => {
     await clickCell(at(0, 0));
-    const r = await page.evaluate(() => ({ sec: !document.querySelector('[data-j2-i="hexEnvSec"]').hidden, sug: !document.querySelector('[data-j2-i="envSec"]').hidden, none: document.querySelector('[data-j2-i="hexEnvBody"]').innerText, choose: !!document.querySelector('[data-j2-hexenv="choose"]'), headingBeforeEncounter: document.querySelector('#j2-hexenv-title').compareDocumentPosition(document.querySelector('[data-t="journey_k_encounter"]')) & Node.DOCUMENT_POSITION_FOLLOWING }));
+    const r = await page.evaluate(() => ({ sec: !document.querySelector('[data-j2-i="hexEnvSec"]').hidden, sug: !!document.querySelector('[data-j2-i="envSec"], [data-j2-i="envLabel"]'), none: document.querySelector('[data-j2-i="hexEnvBody"]').innerText, kinds: [...document.querySelectorAll('[data-j2-hexenv]')].map(b => b.getAttribute('data-j2-hexenv')), headingBeforeEncounter: document.querySelector('#j2-hexenv-title').compareDocumentPosition(document.querySelector('[data-t="journey_k_encounter"]')) & Node.DOCUMENT_POSITION_FOLLOWING }));
     await shot(page, 'hexenv-01-unassigned.png');
-    return { ok: r.sec && !r.sug && /No Environment assigned to this hex/.test(r.none) && r.choose && !!r.headingBeforeEncounter, detail: r };
+    return { ok: r.sec && !r.sug && /No Environment assigned to this hex/.test(r.none) && r.kinds.length === 0 && !!r.headingBeforeEncounter, detail: r };
   });
-  await check('hexenv.02.a-card-opened-inspector-has-no-assignment-controls-and-keeps-suggested', async () => {
+  await check('hexenv.02.a-card-opened-inspector-has-no-hex-environment-section-or-controls-and-no-suggested-list', async () => {
     await page.click(`.j2-card[data-batch="${W}"] [data-j2-inspect]`); await sleep(200);
-    const r = await page.evaluate(() => ({ sec: !document.querySelector('[data-j2-i="hexEnvSec"]').hidden, sug: !document.querySelector('[data-j2-i="envSec"]').hidden, label: document.querySelector('[data-j2-i="envLabel"]').innerText, assign: document.querySelectorAll('[data-j2-hexenv]').length, source: Journey2View.debugState().inspector.source }));
-    return { ok: !r.sec && r.sug && /Suggested environments · \d+/i.test(r.label) && r.assign === 0 && r.source === 'card', detail: r };
+    const r = await page.evaluate(() => ({ sec: !document.querySelector('[data-j2-i="hexEnvSec"]').hidden, sug: !!document.querySelector('[data-j2-i="envSec"], [data-j2-i="envLabel"]'), assign: document.querySelectorAll('[data-j2-hexenv]').length, source: Journey2View.debugState().inspector.source }));
+    return { ok: !r.sec && !r.sug && r.assign === 0 && r.source === 'card', detail: r };
   });
 
   /* ===== picker contents ===== */
-  await check('hexenv.03.the-picker-lists-exactly-the-wetland-environments-in-adapter-order', async () => {
+  await check('hexenv.03.change-opens-a-picker-listing-exactly-the-wetland-environments-in-adapter-order', async () => {
+    await dispatch({ type: 'setTileEnvironment', tileId: 'w0', environmentId: 'corrupted-swamp' });   // fixture: an id without the dealer
     await clickCell(at(0, 0));
-    await page.click('[data-j2-hexenv="choose"]'); await sleep(120);
+    const kinds0 = await hexenvKinds();
+    await page.click('[data-j2-hexenv="change"]'); await sleep(120);
     const shown = await page.locator('.j2-hexenv-list .j2-env-link').evaluateAll(a => a.map(x => x.getAttribute('href')));
     const tiers = await page.locator('.j2-hexenv-list .j2-env-tier').allInnerTexts();
-    const suggestedIds = shown.map(h => decodeURIComponent(h));
     const expected = new Set(forBiome('wetland').map(e => e.id));
     const matches = shown.length === expected.size && [...expected].every(id => shown.some(h => h.includes(id)));
     const sorted = tiers.every((t, i) => i === 0 || Number(tiers[i - 1]) <= Number(t));
-    const r = await page.evaluate(() => { const l = document.querySelector('.j2-hexenv-list'); return { overflow: getComputedStyle(l).overflowY, expanded: document.querySelector('[data-j2-hexenv="choose"]').getAttribute('aria-expanded'), assigns: document.querySelectorAll('[data-j2-hexenv="assign"]').length, label: document.querySelector('[data-j2-hexenv="assign"]').getAttribute('aria-label') }; });
+    const r = await page.evaluate(() => { const l = document.querySelector('.j2-hexenv-list'); return { overflow: getComputedStyle(l).overflowY, expanded: document.querySelector('[data-j2-hexenv="change"]').getAttribute('aria-expanded'), assigns: document.querySelectorAll('[data-j2-hexenv="assign"]').length, label: document.querySelector('[data-j2-hexenv="assign"]').getAttribute('aria-label') }; });
     await shot(page, 'hexenv-02-picker.png');
-    return { ok: matches && sorted && r.overflow === 'auto' && r.expanded === 'true' && r.assigns === expected.size && /^Assign .+ to this hex$/.test(r.label), detail: { shown: shown.length, expected: expected.size, sorted, r } };
+    return { ok: JSON.stringify(kinds0) === '["change"]' && matches && sorted && r.overflow === 'auto' && r.expanded === 'true' && r.assigns === expected.size - 1 && /^Assign .+ to this hex$/.test(r.label), detail: { kinds0, shown: shown.length, expected: expected.size, sorted, r } };
   });
   await check('hexenv.04.opening-and-closing-the-picker-creates-no-history-and-writes-nothing', async () => {
     const before = await st(), snap = await storageSnap();
-    await page.click('[data-j2-hexenv="choose"]'); await sleep(100);   // close
+    await page.click('[data-j2-hexenv="change"]'); await sleep(100);   // close
     const closed = await page.locator('.j2-hexenv-list').count();
-    await page.click('[data-j2-hexenv="choose"]'); await sleep(100);   // open again
+    await page.click('[data-j2-hexenv="change"]'); await sleep(100);   // open again
     const after = await st();
     const focus = await page.evaluate(() => document.activeElement.getAttribute('data-j2-hexenv'));
-    return { ok: closed === 0 && after.history.undo === before.history.undo && (await storageSnap()) === snap && focus === 'choose', detail: { closed, before: before.history, after: after.history, focus } };
+    return { ok: closed === 0 && after.history.undo === before.history.undo && (await storageSnap()) === snap && focus === 'change', detail: { closed, before: before.history, after: after.history, focus } };
   });
 
   /* ===== overlay without assigning ===== */
@@ -140,12 +153,12 @@ async function runHexEnvironmentChecks(env) {
     const after = await st(), cam1 = after.camera;
     const r = await page.evaluate(() => ({ picker: !!document.querySelector('.j2-hexenv-list'), insp: !document.querySelector('[data-j2-inspector]').hidden, focus: document.activeElement.className }));
     const t = await tileOf('w0');
-    return { ok: opened > 0 && mid.mounted && !t.environmentId && cam0.scale === cam1.scale && cam0.tx === cam1.tx && cam0.ty === cam1.ty && after.history.undo === before.history.undo && (await storageSnap()) === snap && r.insp && after.inspector.tileId === 'w0' && after.selectedTile === 'w0', detail: { opened, mid, r, cam0, cam1 } };
+    return { ok: opened > 0 && mid.mounted && t.environmentId === 'corrupted-swamp' && cam0.scale === cam1.scale && cam0.tx === cam1.tx && cam0.ty === cam1.ty && after.history.undo === before.history.undo && (await storageSnap()) === snap && r.insp && after.inspector.tileId === 'w0' && after.selectedTile === 'w0', detail: { opened, mid, r, cam0, cam1 } };
   });
 
   /* ===== assign ===== */
   let pickedName = '', pickedId = '';
-  await check('hexenv.06.assign-closes-the-picker-keeps-the-inspector-and-selection-and-adds-one-marker', async () => {
+  await check('hexenv.06.assign-closes-the-picker-keeps-the-inspector-and-selection-and-changes-one-history-entry', async () => {
     const before = await st();
     const row = page.locator('.j2-hexenv-row').filter({ hasText: 'Buzzing Swamp' });
     pickedName = 'Buzzing Swamp'; pickedId = 'buzzing-swamp';
@@ -153,14 +166,11 @@ async function runHexEnvironmentChecks(env) {
     const after = await st(), t = await tileOf('w0');
     const r = await page.evaluate(() => ({ picker: !!document.querySelector('.j2-hexenv-list'), card: document.querySelector('[data-j2-i="hexEnvBody"]').innerText, link: document.querySelector('[data-j2-hexenv-link]') && document.querySelector('[data-j2-hexenv-link]').getAttribute('href'), focus: document.activeElement.hasAttribute('data-j2-hexenv-link'), live: document.querySelector('[data-j2-live]').textContent, insp: !document.querySelector('[data-j2-inspector]').hidden }));
     await shot(page, 'hexenv-04-assigned.png');
-    return { ok: t.environmentId === pickedId && !r.picker && /Tier 1/.test(r.card) && /Buzzing Swamp/.test(r.card) && /^#\/.*buzzing-swamp/.test(r.link) && r.focus && /Environment assigned: Buzzing Swamp/.test(r.live) && r.insp && after.inspector.tileId === 'w0' && after.history.undo === before.history.undo + 1 && (await markCount()) === 1, detail: { r, history: after.history } };
+    return { ok: t.environmentId === pickedId && !r.picker && /Buzzing Swamp/.test(r.card) && /^#\/.*buzzing-swamp/.test(r.link) && r.focus && /Environment changed: Buzzing Swamp/.test(r.live) && r.insp && after.inspector.tileId === 'w0' && after.history.undo === before.history.undo + 1 && (await markCount()) === 1, detail: { r, history: after.history } };
   });
-  await check('hexenv.07.the-marker-is-decorative-non-interactive-and-inside-its-hex', async () => {
-    const r = await page.evaluate(() => {
-      const g = document.querySelector('[data-j2-g="envmarks"]'), m = g.querySelector('.j2-envmark');
-      return { aria: g.getAttribute('aria-hidden'), pe: g.getAttribute('pointer-events'), count: g.querySelectorAll('.j2-envmark').length, tabbable: !!g.querySelector('[tabindex],a,button') };
-    });
-    return { ok: r.aria === 'true' && r.pe === 'none' && r.count === 1 && !r.tabbable, detail: r };
+  await check('hexenv.07.the-map-draws-no-environment-marker-icon-and-exactly-one-tile-carries-an-id', async () => {
+    const r = await page.evaluate(() => ({ dom: document.querySelectorAll('.j2-envmark, [data-j2-g="envmarks"]').length }));
+    return { ok: r.dom === 0 && (await markCount()) === 1, detail: r };
   });
   await check('hexenv.08.hover-shows-the-environment-name-in-neutral-mode-only', async () => {
     await press('Escape'); await sleep(100);   // close the inspector so the hover target is plain map
@@ -178,12 +188,12 @@ async function runHexEnvironmentChecks(env) {
   });
 
   /* ===== move ===== */
-  await check('hexenv.09.moving-the-tile-carries-the-assignment-and-the-marker', async () => {
+  await check('hexenv.09.moving-the-tile-carries-the-assignment', async () => {
     await clickCell(at(0, 0));
+    await press('Escape'); await sleep(100);   // the inspector panel may sit over the destination hex; a GM drags a tile straight from the map
     await dragTile(at(0, 0), MV);
     const t = await tileOf('w0'), r = await page.evaluate(() => document.querySelector('[data-j2-i="hexEnvBody"]').innerText);
-    const markerAt = await page.evaluate(() => { const m = document.querySelector('.j2-envmark'); return m ? m.getAttribute('transform') : null; });
-    return { ok: t.cell === MV && t.environmentId === 'buzzing-swamp' && (await markCount()) === 1 && !!markerAt, detail: { cell: t.cell, env: t.environmentId, r } };
+    return { ok: t.cell === MV && t.environmentId === 'buzzing-swamp' && (await markCount()) === 1, detail: { cell: t.cell, env: t.environmentId, r, n: await markCount() } };
   });
 
   /* ===== change / undo / redo ===== */
@@ -202,29 +212,24 @@ async function runHexEnvironmentChecks(env) {
     return { ok: current.assigned === 'Assigned' && !current.redundantAssign && a.environmentId === 'corrupted-swamp' && h1.undo === before.history.undo + 1 && b.environmentId === 'buzzing-swamp' && c.environmentId === 'corrupted-swamp' && pickerAfterUndo === 0, detail: { current, a: a.environmentId, b: b.environmentId, c: c.environmentId, h1 } };
   });
 
-  /* ===== detach / undo ===== */
-  await check('hexenv.11.detach-clears-without-a-dialog-focuses-choose-and-undo-restores', async () => {
+  /* ===== Choose / Detach are gone (PD-033) ===== */
+  await check('hexenv.11.an-assigned-hex-offers-only-change-never-choose-or-detach', async () => {
     await clickCell(MV);
-    await page.click('[data-j2-hexenv="detach"]'); await sleep(250);
+    const kinds = await hexenvKinds();
     const t = await tileOf('w0');
-    const r = await page.evaluate(() => ({ focus: document.activeElement.getAttribute('data-j2-hexenv'), dialog: document.querySelectorAll('dialog[open]').length, live: document.querySelector('[data-j2-live]').textContent }));
-    const marks = await markCount();
-    await page.keyboard.press('Control+z'); await sleep(200);
-    const back = await tileOf('w0');
-    return { ok: !t.environmentId && !('environmentId' in t) && r.focus === 'choose' && r.dialog === 0 && /detached/.test(r.live) && marks === 0 && back.environmentId === 'corrupted-swamp' && (await markCount()) === 1, detail: { r, marks, back: back.environmentId } };
+    return { ok: JSON.stringify(kinds) === '["change"]' && t.environmentId === 'corrupted-swamp' && (await page.locator('[data-j2-hexenv="choose"], [data-j2-hexenv="detach"]').count()) === 0, detail: { kinds, insp: (await st()).inspector, sel: (await st()).selectedTile, tiles: (await docNow()).tiles.map(t => [t.id, t.cell, t.environmentId]), MV } };
   });
 
   /* ===== the same environment on many tiles; filtering ===== */
   await check('hexenv.12.the-same-environment-can-sit-on-several-hexes', async () => {
-    await clickCell(at(1, 0));
-    await page.click('[data-j2-hexenv="choose"]');
-    await page.locator('.j2-hexenv-row').filter({ hasText: 'Corrupted Swamp' }).locator('[data-j2-hexenv="assign"]').click(); await sleep(250);
+    await dispatch({ type: 'setTileEnvironment', tileId: 'w1', environmentId: 'corrupted-swamp' });   // fixture: w1 was placed without the dealer
     const d = await docNow();
     return { ok: d.tiles.filter(t => t.environmentId === 'corrupted-swamp').length === 2 && (await markCount()) === 2, detail: d.tiles.map(t => [t.id, t.environmentId]) };
   });
   await check('hexenv.13.a-shadowblighted-wetland-hex-offers-the-same-wetland-list', async () => {
+    await dispatch({ type: 'setTileEnvironment', tileId: 's0', environmentId: 'blood-marsh' });
     await clickCell(at(0, 1));
-    await page.click('[data-j2-hexenv="choose"]'); await sleep(100);
+    await page.click('[data-j2-hexenv="change"]'); await sleep(100);
     const n = await page.locator('.j2-hexenv-list .j2-env-link').count();
     const blight = await page.evaluate(() => !document.querySelector('[data-j2-i="blight"]').hidden);
     return { ok: n === forBiome('wetland').length && blight, detail: { n, blight } };
@@ -235,14 +240,16 @@ async function runHexEnvironmentChecks(env) {
     r.tiles = (await docNow()).tiles.map(t => t.id + '@' + t.cell).join(' '); r.insp = (await st()).inspector;
     return { ok: /No habitat-specific environments are available for this region/.test(r.text) && r.buttons === 0 && r.list === 0, detail: r };
   });
-  await check('hexenv.15.an-id-the-habitat-no-longer-offers-renders-unavailable-and-can-be-detached', async () => {
+  await check('hexenv.15.an-id-the-habitat-no-longer-offers-renders-unavailable-and-is-only-replaced-through-change', async () => {
     await clickCell(at(0, 1));
     await dispatch({ type: 'setTileEnvironment', tileId: 's0', environmentId: 'lizardfolk-city-not-here' });
     await clickCell(at(0, 1)); await sleep(100);
-    const r = await page.evaluate(() => { const b = document.querySelector('[data-j2-i="hexEnvBody"]'); return { text: b.innerText, link: !!b.querySelector('a'), detach: !!b.querySelector('[data-j2-hexenv="detach"]'), change: !!b.querySelector('[data-j2-hexenv="change"]') }; });
+    const r = await page.evaluate(() => { const b = document.querySelector('[data-j2-i="hexEnvBody"]'); return { text: b.innerText, link: !!b.querySelector('a'), kinds: [...b.querySelectorAll('[data-j2-hexenv]')].map(x => x.getAttribute('data-j2-hexenv')).join(), change: !!b.querySelector('[data-j2-hexenv="change"]') }; });
     const kept = (await tileOf('s0')).environmentId;
-    await page.click('[data-j2-hexenv="detach"]'); await sleep(200);
-    return { ok: /Environment unavailable/.test(r.text) && /Stored id: lizardfolk-city-not-here/.test(r.text) && /no longer available for this habitat/.test(r.text) && !r.link && r.detach && r.change && kept === 'lizardfolk-city-not-here' && !(await tileOf('s0')).environmentId, detail: r };
+    await page.click('[data-j2-hexenv="change"]'); await sleep(120);
+    await page.locator('.j2-hexenv-row').first().locator('[data-j2-hexenv="assign"]').click(); await sleep(200);
+    const replaced = (await tileOf('s0')).environmentId;
+    return { ok: /Environment unavailable/.test(r.text) && /Stored id: lizardfolk-city-not-here/.test(r.text) && /no longer available for this habitat/.test(r.text) && !r.link && r.kinds === 'change' && r.change && kept === 'lizardfolk-city-not-here' && !!replaced && replaced !== 'lizardfolk-city-not-here', detail: { r, replaced } };
   });
   await check('hexenv.16.a-malformed-or-ineligible-assignment-cannot-be-dispatched-through-the-model', async () => {
     const r = await dispatch({ type: 'setTileEnvironment', tileId: 'w1', environmentId: 'Not A Valid Id' });
@@ -251,7 +258,7 @@ async function runHexEnvironmentChecks(env) {
   });
 
   /* ===== return to stock ===== */
-  await check('hexenv.17.returning-a-tile-removes-its-marker-and-undo-restores-the-assignment', async () => {
+  await check('hexenv.17.returning-a-tile-drops-its-assignment-and-undo-restores-it', async () => {
     await dispatch({ type: 'setTileEnvironment', tileId: 'w3', environmentId: 'blood-marsh' });   // the chain's end tile: returning it never splits the prepared map
     const marks0 = await markCount();
     await clickCell(at(3, 0));
@@ -266,7 +273,7 @@ async function runHexEnvironmentChecks(env) {
   });
 
   /* ===== Player Preview ===== */
-  await check('hexenv.18.player-preview-shows-no-marker-name-id-or-controls-even-on-a-revealed-hex', async () => {
+  await check('hexenv.18.player-preview-shows-no-name-id-or-controls-even-on-a-revealed-hex', async () => {
     await dispatch({ type: 'setCellsRevealed', cellKeys: [MV, at(1, 0)], revealed: true });
     const gm = await markCount();
     await page.click('[data-j2-preview]'); await sleep(300);
@@ -284,8 +291,8 @@ async function runHexEnvironmentChecks(env) {
     return { ok: gm >= 2 && r.marks === 0 && !r.inspector && r.controls === 0 && r.assignedIds === 0 && r.bodyHtml === 0 && !/environment|swamp/i.test(r.proj) && r.tipHidden && tip && !r.hasName && t.environmentId === 'corrupted-swamp' && (await markCount()) >= 2, detail: { gm, r: Object.assign({}, r, { proj: r.proj.length }), tip } };
   });
   await check('hexenv.19.entering-a-fog-tool-closes-the-picker-and-clicking-an-assigned-hex-paints-fog', async () => {
-    await clickCell(at(2, 0));
-    await page.click('[data-j2-hexenv="choose"]'); await sleep(80);
+    await clickCell(MV);
+    await page.click('[data-j2-hexenv="change"]'); await sleep(80);
     const open = await page.locator('.j2-hexenv-list').count();
     await page.click('[data-j2-fog-tool="hide"]'); await sleep(150);
     const closed = (await page.locator('.j2-hexenv-list').count()) === 0 && await page.evaluate(() => document.querySelector('[data-j2-inspector]').hidden);
@@ -343,7 +350,90 @@ async function runHexEnvironmentChecks(env) {
     await shot(page, 'hexenv-06-ru.png');
     const same = JSON.stringify((await docNow()).tiles) === snapDoc;
     const ruName = await page.evaluate(() => document.querySelector('[data-j2-hexenv-link]').innerText);
-    return { ok: r.title.toLowerCase() === 'окружение гекса' && /Ранг \d/.test(r.body) && !/Corrupted Swamp/.test(r.body) && /Назначить/.test(row.assign) && row.assigned === 'Назначено' && same && ruName.length > 0, detail: { r, row, same } };
+    return { ok: r.title.toLowerCase() === 'окружение гекса' && /Изменить/.test(r.body) && !/Corrupted Swamp/.test(r.body) && /Назначить/.test(row.assign) && row.assigned === 'Назначено' && same && ruName.length > 0, detail: { r, row, same } };
+  });
+
+  await page.close(); await context.close();
+
+  /* ===== PD-033: dealt at placement through the real UI (fresh session, empty map) ===== */
+  await newSession();
+  await page.goto(base + '#/journey');
+  await boot();
+  await view(c0[0] + 60, c0[1] + 40, 0.8);
+  const rollingIds = forBiome('rolling').map(e => e.id);
+  const RB = await makeBatch('rolling', 5);
+  const handleOf = async (batchId, mode) => {
+    const head = page.locator('.j2-card[data-batch="' + batchId + '"] [data-j2-card-toggle]');
+    if ((await head.getAttribute('aria-expanded')) !== 'true') await head.click();
+    await sleep(60);
+    const loc = page.locator('.j2-card[data-batch="' + batchId + '"] [data-j2-handle="' + mode + '"]');
+    await loc.scrollIntoViewIfNeeded();
+    const b = await loc.boundingBox();
+    return { x: b.x + b.width / 2, y: b.y + b.height / 2 };
+  };
+  const dragFromStock = async (batchId, mode, cell) => {
+    const h = await handleOf(batchId, mode), t = await clientOf(cell);
+    await page.mouse.move(h.x, h.y); await page.mouse.down();
+    await page.mouse.move(t.x, t.y, { steps: 12 }); await sleep(60);
+    await page.mouse.up(); await sleep(250);
+  };
+  const dealtCounts = d => { const m = {}; for (const t of d.tiles) if (t.environmentId) m[t.environmentId] = (m[t.environmentId] || 0) + 1; return m; };
+  let rollingDeal = null;
+
+  await check('hexenv.23.place-all-deals-least-used-first-two-two-one-over-the-three-rolling-environments', async () => {
+    await page.evaluate(() => Journey2View.debugApi().setDealRandom(() => 0));
+    const before = await st();
+    await dragFromStock(RB, 'all', at(0, 0));
+    const d = await docNow(), s = await st(), counts = dealtCounts(d), sizes = Object.values(counts).sort();
+    rollingDeal = d.tiles.map(t => [t.id, t.environmentId]);
+    return { ok: rollingIds.length === 3 && d.tiles.length === 5 && d.tiles.every(t => rollingIds.includes(t.environmentId)) && Object.keys(counts).length === 3 && sizes.join() === '1,2,2' && s.history.undo === before.history.undo + 1 && (await markCount()) === 5, detail: { rollingIds, counts, undo: [before.history.undo, s.history.undo] } };
+  });
+  await check('hexenv.24.a-dealt-hex-shows-its-environment-with-change-only', async () => {
+    const d = await docNow(), t = d.tiles[0];
+    await clickCell(t.cell);
+    const r = await page.evaluate(() => ({ none: /No Environment assigned/.test(document.querySelector('[data-j2-i="hexEnvBody"]').innerText), link: !!document.querySelector('[data-j2-hexenv-link]'), kinds: [...document.querySelectorAll('[data-j2-hexenv]')].map(b => b.getAttribute('data-j2-hexenv')) }));
+    return { ok: !r.none && r.link && JSON.stringify(r.kinds) === '["change"]', detail: r };
+  });
+  await check('hexenv.25.undo-of-the-place-removes-the-hexes-and-their-ids-together-and-redo-restores-the-same-ids', async () => {
+    await press('Escape'); await sleep(80);
+    await page.evaluate(() => Journey2View.debugApi().setDealRandom(() => 0.99));   // a re-roll on Redo would now differ
+    await page.keyboard.press('Control+z'); await sleep(250);
+    const gone = await docNow(), marksGone = await markCount();
+    await page.keyboard.press('Control+y'); await sleep(250);
+    const back = await docNow();
+    await page.evaluate(() => Journey2View.debugApi().setDealRandom(() => 0));
+    return { ok: gone.tiles.length === 0 && marksGone === 0 && back.tiles.length === 5 && JSON.stringify(back.tiles.map(t => [t.id, t.environmentId])) === JSON.stringify(rollingDeal) && (await markCount()) === 5, detail: { gone: gone.tiles.length, marksGone, before: rollingDeal, after: back.tiles.map(t => [t.id, t.environmentId]) } };
+  });
+  await check('hexenv.26.change-still-works-as-one-history-entry-with-undo-and-redo', async () => {
+    const t = (await docNow()).tiles[0];
+    await clickCell(t.cell);
+    await page.click('[data-j2-hexenv="change"]'); await sleep(120);
+    const pick = await page.locator('.j2-hexenv-row:not(.is-current) [data-j2-hexenv="assign"]').first().getAttribute('data-env-id');
+    const before = await st();
+    await page.locator('.j2-hexenv-row:not(.is-current) [data-j2-hexenv="assign"]').first().click(); await sleep(250);
+    const a = await tileOf(t.id), h1 = (await st()).history;
+    await page.keyboard.press('Control+z'); await sleep(200);
+    const b = await tileOf(t.id);
+    await page.keyboard.press('Control+y'); await sleep(200);
+    const c = await tileOf(t.id);
+    return { ok: !!pick && pick !== t.environmentId && a.environmentId === pick && h1.undo === before.history.undo + 1 && b.environmentId === t.environmentId && c.environmentId === pick, detail: { was: t.environmentId, pick, a: a.environmentId, b: b.environmentId, c: c.environmentId, h1 } };
+  });
+  await check('hexenv.27.one-by-one-placement-counts-what-already-stands-and-never-repeats-before-every-environment-is-used', async () => {
+    const RB3 = await makeBatch('rolling', 3);
+    const mineOf = async () => (await docNow()).tiles.filter(t => t.batchId === RB3);
+    // three single drops through the real drag-one handle, each on a free allowed cell next to what already stands (the cell is picked fresh every time)
+    for (let attempt = 0; attempt < 14 && (await mineOf()).length < 3; attempt++) {
+      const tiles = (await docNow()).tiles, have = new Set(tiles.map(t => t.cell)), free = [];
+      for (const t of tiles) {
+        const c = Geo.parseCellId(t.cell);
+        for (const dl of Geo.NEIGHBOR_DELTAS) { const id = Geo.cellId(c.q + dl.dq, c.r + dl.dr); if (!have.has(id) && !free.includes(id) && ctx0.policy(c.q + dl.dq, c.r + dl.dr).ok) free.push(id); }
+      }
+      await dragFromStock(RB3, 'one', free[attempt % free.length]);
+      const sep = page.locator('dialog[open]:has-text("Start a separate area?")');
+      if (await sep.count()) { await sep.locator('button:has-text("Cancel")').click().catch(() => {}); await sleep(100); }
+    }
+    const mine = await mineOf();
+    return { ok: mine.length === 3 && new Set(mine.map(t => t.environmentId)).size === 3 && mine.every(t => rollingIds.includes(t.environmentId)), detail: mine.map(t => [t.id, t.environmentId]) };
   });
 
   await page.close(); await context.close();
