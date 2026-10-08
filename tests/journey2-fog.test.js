@@ -283,15 +283,15 @@ function fakeStorage() {
   return { data, writes: [], getItem(k) { return data.has(k) ? data.get(k) : null; }, setItem(k, v) { this.writes.push(k); data.set(k, String(v)); }, removeItem(k) { data.delete(k); } };
 }
 
-test('"Show fog state" is a stored UI preference (default on); preview mode, tool and stroke are never stored', () => {
+test('"Show fog state" is a stored UI preference (default on); Player Preview is stored (PD-035); the tool and stroke are never stored', () => {
   const s = fakeStorage(), store = Store.createStore(s, ctx);
   assert.equal(store.loadUi().showFogState, true);
   assert.deepEqual(store.saveUi({ sideCollapsed: false, showFogState: false }), { ok: true });
-  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showFogState: false, showBiomeColors: true, view: null });
-  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['showBiomeColors', 'showFogState', 'sideCollapsed', 'view']);
+  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showFogState: false, showBiomeColors: true, playerPreview: false, view: null });
+  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['playerPreview', 'showBiomeColors', 'showFogState', 'sideCollapsed', 'view']);
   assert.deepEqual(s.writes, [Store.KEYS.ui], 'nothing else is written');
   s.data.set(Store.KEYS.ui, '{"showFogState":"no","sideCollapsed":true}');
-  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showFogState: true, showBiomeColors: true, view: null }, 'a malformed value falls back to its default');
+  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showFogState: true, showBiomeColors: true, playerPreview: false, view: null }, 'a malformed value falls back to its default');
   // it is not part of the document / backup
   assert.ok(!JSON.stringify(M.emptyDocument(ctx, AT)).includes('showFogState'));
   // saving the sidebar state alone never switches the fog preference off
@@ -478,4 +478,12 @@ test('PD-034: the camera is a stored view preference (world centre + zoom, or fi
   assert.match(fn('restoreCamera', 'setCamera'), /MAX_ZOOM[\s\S]*setCamera\(/, 'a stored zoom is clamped before it is applied');
   for (const [name, next] of [['fitToView', 'setCamera'], ['setCamera', 'zoomBy']]) assert.match(fn(name, next), /scheduleCameraSave\(\)/, name + ' reaches the debounced save');
   assert.match(fn('currentView', 'scheduleCameraSave'), /cameraReady/, 'the stored camera is not overwritten before it was restored');
+});
+
+test('playerPreview round-trips through the UI preferences and a non-boolean falls back to false (PD-035)', () => {
+  const s = fakeStorage(), store = Store.createStore(s, ctx);
+  store.saveUi({ playerPreview: true });
+  assert.equal(store.loadUi().playerPreview, true);
+  s.data.set(Store.KEYS.ui, '{"playerPreview":"yes"}');
+  assert.equal(store.loadUi().playerPreview, false);
 });

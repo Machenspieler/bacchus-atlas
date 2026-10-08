@@ -1070,3 +1070,9 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   and diagnostics stay transient. A reload lands in the GM view with nothing armed, so a stray press can never paint fog.
 - **Where:** `js/journey2-view.js` (`setFogTool`, `renderFogGhost`, `applyPreviewChrome`, `restoreCamera` / `currentView` / `flushCameraSave`), `js/journey2-store.js` (`loadUi` / `saveUi`
   `view`), `css/journey2.css` (`.j2-tb-tools`, `.j2-fog-ghost`), `tests/journey2-fog.test.js`.
+
+## PD-035: Journey — a reload reopens Player Preview
+
+- **Decision:** Player Preview on/off is a remembered view preference (`playerPreview` in `dhcodex_journey2_ui`), like the camera. Reloading `#/journey` while in Player Preview reopens it at the restored camera; Back-to-GM clears it. Supersedes the "Player Preview mode stays transient" line of PD-034.
+- **Still transient:** an armed Reveal / Hide tool, strokes, Region Inspector, sanctuary overlay, Locate / Route Planner, expanded card, diagnostics. Entering Player Preview already closes these, so a reload into Preview can never paint fog.
+- **Where:** `js/journey2-view.js` (`enterPreview`, `leavePreview`, `maybeResumePreview`, `saveUiPrefs`), `js/journey2-store.js` (`loadUi` / `saveUi`), `tests/journey2-fog.test.js`.

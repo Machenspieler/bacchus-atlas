@@ -70,10 +70,10 @@
      * View preferences, separate from the map document and its history: { sideCollapsed, showFogState, showBiomeColors, view }, where
      * view = { fit, cx, cy, scale } is the camera (the WORLD point at the viewport centre plus the zoom; fit: true = "fitted to the window", so
      * the numbers are ignored) or null when none was stored. Unreadable or malformed values -> defaults (sidebar open, fog-state overlay shown,
-     * no camera -> Fit). The Player Preview mode, the active Reveal/Hide tool and any in-progress stroke are NEVER stored.
+     * no camera -> Fit). playerPreview = a reload reopens Player Preview (PD-035). The active Reveal/Hide tool and any in-progress stroke are NEVER stored.
      */
     function loadUi() {
-      const out = { sideCollapsed: false, showFogState: true, showBiomeColors: true, view: null };
+      const out = { sideCollapsed: false, showFogState: true, showBiomeColors: true, playerPreview: false, view: null };
       const raw = SafeStorage.readRawFlag(storage, KEYS.ui);
       if (typeof raw !== 'string') return out;
       try {
@@ -82,13 +82,14 @@
           if (typeof v.sideCollapsed === 'boolean') out.sideCollapsed = v.sideCollapsed;
           if (typeof v.showFogState === 'boolean') out.showFogState = v.showFogState;
           if (typeof v.showBiomeColors === 'boolean') out.showBiomeColors = v.showBiomeColors;
+          if (typeof v.playerPreview === 'boolean') out.playerPreview = v.playerPreview;
           out.view = cleanView(v.view);
         }
       } catch (e) { /* defaults */ }
       return out;
     }
     function saveUi(ui) {
-      return SafeStorage.writeJson(storage, KEYS.ui, { sideCollapsed: !!(ui && ui.sideCollapsed), showFogState: !(ui && ui.showFogState === false), showBiomeColors: !(ui && ui.showBiomeColors === false), view: cleanView(ui && ui.view) });
+      return SafeStorage.writeJson(storage, KEYS.ui, { sideCollapsed: !!(ui && ui.sideCollapsed), showFogState: !(ui && ui.showFogState === false), showBiomeColors: !(ui && ui.showBiomeColors === false), playerPreview: !!(ui && ui.playerPreview), view: cleanView(ui && ui.view) });
     }
 
     return { load: load, save: save, savePrevious: savePrevious, loadPrevious: loadPrevious, loadUi: loadUi, saveUi: saveUi, keys: KEYS };

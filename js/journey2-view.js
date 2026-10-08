@@ -228,7 +228,8 @@
     let foggable = null;                                    // Map cellKey -> hex path, every cell the GM can reveal/hide (built once)
     let detachedConfirm = null;                             // transient: the frozen detached candidate whose "Start separate area" dialog is open (never stored, never in history)
     let perimDrawn = { tiles: null, vis: null, mode: null }; // what the perimeter layer currently shows (an unrelated change never rebuilds it)
-    let previewMode = false;                                // Player Preview: a read-only render of the player projection
+    let resumePreview = false;                              // the stored "Player Preview was open" flag, consumed once the camera is restored
+    let previewMode = false;                               // Player Preview: a read-only render of the player projection
     let previewReturn = null;                               // camera / fit state to restore on the Back-to-GM action
     let playerProjection = null;                            // the projection currently drawn in Player Preview
     let echoDrawn = null;                                   // the soulEchoes object the GM echoes layer currently shows (an unrelated change never rebuilds it)
@@ -742,6 +743,7 @@
       showFog = prefs.showFogState !== false;
       showBiome = prefs.showBiomeColors !== false;
       savedView = prefs.view;
+      resumePreview = !!prefs.playerPreview;
       activeBatchId = doc.batches.length ? doc.batches[doc.batches.length - 1].id : null;
       buildStaticLayers();
       buildPanel();
@@ -755,6 +757,7 @@
       updateReadouts();
       renderAll(true);
       applyPreviewChrome();
+      maybeResumePreview();
       inst.debugApi = makeDebugApi();
     }
 
@@ -936,7 +939,7 @@
     }
 
     /** The stored view preferences (sidebar state, "Show fog state") — never the document, never history. */
-    function saveUiPrefs() { if (store) store.saveUi({ sideCollapsed: sideCollapsed, showFogState: showFog, showBiomeColors: showBiome, view: currentView() }); }
+    function saveUiPrefs() { if (store) store.saveUi({ sideCollapsed: sideCollapsed, showFogState: showFog, showBiomeColors: showBiome, playerPreview: previewMode, view: currentView() }); }
 
     /** Explicit toggle only (the user's own click): re-centres the map horizontally in the new free area at the same zoom; never a Fit, and it leaves the selection and active region alone; focus moves to the control that replaces the one used. */
     function toggleSide() {
@@ -2919,10 +2922,18 @@
       clearHint();
       previewReturn = { cam: { scale: cam.scale, tx: cam.tx, ty: cam.ty }, fitMode: fitMode };
       previewMode = true;
+      saveUiPrefs();
       renderTiles(); renderFog(); renderSelection(); paintFogStroke(); renderSanctuaryRings();
       applyPreviewChrome(); applyLayerVisibility(); updateFogUi();
       announce(t('journey2_live_preview_on'));
       ui.previewBack.focus({ preventScroll: true });
+    }
+
+    /** A reload reopens Player Preview if it was open (PD-035); waits for the restored camera so Back-to-GM returns to the right view. */
+    function maybeResumePreview() {
+      if (!resumePreview || !cameraReady) return;
+      resumePreview = false;
+      enterPreview();
     }
 
     /** Back to the GM view: the camera, sidebar state and fog preference are as they were; nothing is reopened or re-selected. */
@@ -2931,6 +2942,7 @@
       closePrintPreview({ quiet: true });
       setFogTool(null, { quiet: true });
       previewMode = false;
+      saveUiPrefs();
       playerProjection = null;
       const back = previewReturn; previewReturn = null;
       cancelTransient();
@@ -3093,7 +3105,7 @@
       listen(vp, 'contextmenu', e => e.preventDefault());
       listen(vp, 'click', e => { if (suppressClick) { e.stopPropagation(); e.preventDefault(); } }, true);
       if (typeof ResizeObserver === 'function') {
-        const ro = new ResizeObserver(() => { if (inst.disposed || !data) return; if (!cameraReady && restoreCamera()) return; if (fitMode) fitToView(); else setCamera(cam, true); });
+        const ro = new ResizeObserver(() => { if (inst.disposed || !data) return; if (!cameraReady && restoreCamera()) { maybeResumePreview(); return; } if (fitMode) fitToView(); else setCamera(cam, true); });
         ro.observe(vp);
         cleanups.push(() => ro.disconnect());
       }
