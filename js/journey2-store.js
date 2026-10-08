@@ -27,7 +27,7 @@
     map: 'dhcodex_journey2_map',
     recovery: 'dhcodex_journey2_map_recovery',     // raw text of a map that failed validation
     previous: 'dhcodex_journey2_map_previous',     // the map that an import replaced
-    ui: 'dhcodex_journey2_ui',                     // view preferences (sidebar state, fog-state overlay, biome colors, camera) — never part of the map or its history
+    ui: 'dhcodex_journey2_ui',                     // view preferences (sidebar state, biome colors, camera) — never part of the map or its history
   });
 
   /** All Journey 2-owned keys; anything else in storage must stay byte-identical across any Journey 2 use. */
@@ -67,20 +67,19 @@
     }
 
     /**
-     * View preferences, separate from the map document and its history: { sideCollapsed, showFogState, showBiomeColors, view }, where
+     * View preferences, separate from the map document and its history: { sideCollapsed, showBiomeColors, playerPreview, view }, where
      * view = { fit, cx, cy, scale } is the camera (the WORLD point at the viewport centre plus the zoom; fit: true = "fitted to the window", so
-     * the numbers are ignored) or null when none was stored. Unreadable or malformed values -> defaults (sidebar open, fog-state overlay shown,
+     * the numbers are ignored) or null when none was stored. Unreadable or malformed values -> defaults (sidebar open,
      * no camera -> Fit). playerPreview = a reload reopens Player Preview (PD-035). The active Reveal/Hide tool and any in-progress stroke are NEVER stored.
      */
     function loadUi() {
-      const out = { sideCollapsed: false, showFogState: true, showBiomeColors: true, playerPreview: false, view: null };
+      const out = { sideCollapsed: false, showBiomeColors: true, playerPreview: false, view: null };
       const raw = SafeStorage.readRawFlag(storage, KEYS.ui);
       if (typeof raw !== 'string') return out;
       try {
         const v = JSON.parse(raw);
         if (v && typeof v === 'object') {
           if (typeof v.sideCollapsed === 'boolean') out.sideCollapsed = v.sideCollapsed;
-          if (typeof v.showFogState === 'boolean') out.showFogState = v.showFogState;
           if (typeof v.showBiomeColors === 'boolean') out.showBiomeColors = v.showBiomeColors;
           if (typeof v.playerPreview === 'boolean') out.playerPreview = v.playerPreview;
           out.view = cleanView(v.view);
@@ -89,7 +88,7 @@
       return out;
     }
     function saveUi(ui) {
-      return SafeStorage.writeJson(storage, KEYS.ui, { sideCollapsed: !!(ui && ui.sideCollapsed), showFogState: !(ui && ui.showFogState === false), showBiomeColors: !(ui && ui.showBiomeColors === false), playerPreview: !!(ui && ui.playerPreview), view: cleanView(ui && ui.view) });
+      return SafeStorage.writeJson(storage, KEYS.ui, { sideCollapsed: !!(ui && ui.sideCollapsed), showBiomeColors: !(ui && ui.showBiomeColors === false), playerPreview: !!(ui && ui.playerPreview), view: cleanView(ui && ui.view) });
     }
 
     return { load: load, save: save, savePrevious: savePrevious, loadPrevious: loadPrevious, loadUi: loadUi, saveUi: saveUi, keys: KEYS };

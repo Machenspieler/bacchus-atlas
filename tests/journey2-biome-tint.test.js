@@ -140,16 +140,16 @@ test('preference: stored in dhcodex_journey2_ui, defaults to ON, survives a UI-s
   const storage = { getItem: k => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => { mem.set(k, String(v)); }, removeItem: k => { mem.delete(k); } };
   const store = Store.createStore(storage, ctx);
   assert.equal(store.loadUi().showBiomeColors, true, 'default ON');
-  assert.equal(store.saveUi({ sideCollapsed: false, showFogState: true, showBiomeColors: false }).ok, true);
+  assert.equal(store.saveUi({ sideCollapsed: false, showBiomeColors: false }).ok, true);
   assert.equal(Store.createStore(storage, ctx).loadUi().showBiomeColors, false, 'a new store (reload) reads it back');
   assert.deepEqual(Array.from(mem.keys()), [Store.KEYS.ui], 'only the UI key was written');
   assert.equal(Store.KEYS.ui, 'dhcodex_journey2_ui');
   mem.set(Store.KEYS.ui, JSON.stringify({ showBiomeColors: 'no' }));
   assert.equal(store.loadUi().showBiomeColors, true, 'a malformed value falls back to the default');
   // legacy UI blobs without the field keep working
-  mem.set(Store.KEYS.ui, JSON.stringify({ sideCollapsed: true, showFogState: false }));
+  mem.set(Store.KEYS.ui, JSON.stringify({ sideCollapsed: true }));
   const ui = store.loadUi();
-  assert.deepEqual([ui.sideCollapsed, ui.showFogState, ui.showBiomeColors], [true, false, true]);
+  assert.deepEqual([ui.sideCollapsed, ui.showBiomeColors], [true, true]);
 });
 
 test('preference: toggling is a pure display change in the view (no command, history, document save or camera change)', () => {

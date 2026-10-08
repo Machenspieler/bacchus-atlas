@@ -216,9 +216,8 @@
     const hexPathCache = new Map();
     let activeBatchId = null;                               // the one card expanded for placement controls (independent of the inspector)
     let sideCollapsed = false;                              // view preference, persisted apart from the document
-    /* Fog of War (Phase C) — all transient except showFog, which is the one stored preference */
+    /* Fog of War (Phase C) — all transient; the veil is drawn only in Player Preview, never in the GM view */
     let showBiome = true;                                   // "Biome colors": GM-view tint inside placed hexes (UI only, never in the document, backup or history; Player Preview ignores it)
-    let showFog = true;                                     // "Show fog state": GM veil over unexplored cells (UI only, never in the document or history)
     let fogTool = null;                                     // null | 'reveal' | 'hide' — the active map tool
     let fogStroke = null;                                   // the in-progress pointer stroke { mode, pointerId, seen:Set, cells:[key], pendD, last, hover }
     let fogHover = null;                                    // { q, r } under the pointer while a tool is active and no stroke runs
@@ -403,7 +402,6 @@
       chevR: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m5.2 3 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       info: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 9.2v4.3M10 6.3v.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
       palette: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 2.8c-4.1 0-7.2 2.9-7.2 6.6 0 3.8 3 7.4 6.6 7.4 1.5 0 1.9-1 1.3-1.9-.7-1 .1-2.1 1.2-2.1h1.7c1.4 0 2.6-1 2.6-2.7C16.2 5.4 13.6 2.8 10 2.8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><g fill="currentColor"><circle cx="6.3" cy="8.6" r="1.1"/><circle cx="9.2" cy="6" r="1.1"/><circle cx="12.6" cy="6.6" r="1.1"/></g></svg>',
-      fog: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 3.5h9l4.5 6.5-4.5 6.5h-9L1 10z" transform="translate(0 0) scale(.9) translate(1.1 .8)" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 8.5 9 5.5M6 12.5 12 6.5M9 14.5l5-5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>',
       mouseLeft: '<svg viewBox="0 0 14 20" aria-hidden="true" focusable="false"><path class="j2-mouse-hit" d="M7 1.2H6.5A5 5 0 0 0 1.5 6.2V7.6H7z"/><rect x="1.5" y="1.2" width="11" height="17.6" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 7.6h11M7 1.2v6.4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>',
       mouseRight: '<svg viewBox="0 0 14 20" aria-hidden="true" focusable="false"><path class="j2-mouse-hit" d="M7 1.2h.5a5 5 0 0 1 5 5V7.6H7z"/><rect x="1.5" y="1.2" width="11" height="17.6" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 7.6h11M7 1.2v6.4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>',
       reveal: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.8 10S5 4.8 10 4.8 18.2 10 18.2 10 15 15.2 10 15.2 1.8 10 1.8 10z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.4" fill="currentColor"/></svg>',
@@ -471,8 +469,7 @@
               <button type="button" class="btn btn-ghost btn-sm" data-j2-fit data-t="journey2_fit"></button>
             </div>
             <div class="j2-tb-group j2-tb-fog" role="group" data-j2-fog-group data-t-aria="journey2_fog_group">
-              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-fog-state aria-pressed="true" data-t-aria="journey2_fog_show"><span class="j2-ico" aria-hidden="true">${ICON.fog}</span><span data-t="journey2_fog_label"></span></button>
-              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-biome-colors aria-pressed="true" data-t-aria="journey2_biome_show"><span class="j2-ico" aria-hidden="true">${ICON.palette}</span><span data-t="journey2_biome_label"></span></button>
+                <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-biome-colors aria-pressed="true" data-t-aria="journey2_biome_show"><span class="j2-ico" aria-hidden="true">${ICON.palette}</span><span data-t="journey2_biome_label"></span></button>
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-preview data-t-title="journey2_preview_title"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><span data-t="journey2_preview"></span></button>
             </div>
             <div class="j2-tb-gm">
@@ -686,7 +683,6 @@
       ui.sideScroll = container.querySelector('[data-j2-side-scroll]');
       ui.historyGroup = container.querySelector('[data-j2-history-group]');
       ui.fogGroup = container.querySelector('[data-j2-fog-group]');
-      ui.fogState = container.querySelector('[data-j2-fog-state]');
       ui.biomeColors = container.querySelector('[data-j2-biome-colors]');
       ui.fogTool = container.querySelector('[data-j2-fog-tool="paint"]');
       ui.echoGroup = container.querySelector('[data-j2-echo-group]');
@@ -740,7 +736,6 @@
       initDocument();
       const prefs = store.loadUi();
       sideCollapsed = !!prefs.sideCollapsed;
-      showFog = prefs.showFogState !== false;
       showBiome = prefs.showBiomeColors !== false;
       savedView = prefs.view;
       resumePreview = !!prefs.playerPreview;
@@ -939,7 +934,7 @@
     }
 
     /** The stored view preferences (sidebar state, "Show fog state") — never the document, never history. */
-    function saveUiPrefs() { if (store) store.saveUi({ sideCollapsed: sideCollapsed, showFogState: showFog, showBiomeColors: showBiome, playerPreview: previewMode, view: currentView() }); }
+    function saveUiPrefs() { if (store) store.saveUi({ sideCollapsed: sideCollapsed, showBiomeColors: showBiome, playerPreview: previewMode, view: currentView() }); }
 
     /** Explicit toggle only (the user's own click): re-centres the map horizontally in the new free area at the same zoom; never a Fit, and it leaves the selection and active region alone; focus moves to the control that replaces the one used. */
     function toggleSide() {
@@ -2696,7 +2691,7 @@
         fogDrawn = { vis: source, mode: mode };
       }
       renderFogGhost();
-      ui.g.fog.style.display = previewMode || showFog ? '' : 'none';
+      ui.g.fog.style.display = previewMode ? '' : 'none';
       ui.g.fog.setAttribute('data-fog-mode', mode);
     }
 
@@ -2718,10 +2713,8 @@
     /** Toolbar toggle states, the tool chip and the cursor class — all derived from the transient state. */
     function updateFogUi() {
       if (!ui.fogGroup || !doc) return;
-      ui.fogState.setAttribute('aria-pressed', String(showFog));
       ui.biomeColors.setAttribute('aria-pressed', String(showBiome));
       ui.biomeColors.title = showBiome ? t('journey2_biome_hide') : t('journey2_biome_show');
-      ui.fogState.title = showFog ? t('journey2_fog_hide_state') : t('journey2_fog_show');
       ui.fogTool.setAttribute('aria-pressed', String(!!fogTool));
       ui.fogTool.disabled = editLocked;
       ui.viewport.classList.toggle('is-fog-tool', !!fogTool);
@@ -2761,13 +2754,6 @@
       if (ui.viewport) ui.viewport.classList.remove('is-over-tile');
       updateFogUi(); renderFog(); scheduleFogPaint();
       if (!opts.quiet) announce(mode ? t('journey2_fog_paint_active') : t('journey2_fog_tool_off'));
-    }
-
-    /** "Show fog state": UI preference only — the persisted reveal state and Player Preview are unaffected. */
-    function toggleFogState() {
-      showFog = !showFog;
-      saveUiPrefs();
-      updateFogUi(); renderFog();
     }
 
     /**
@@ -3687,7 +3673,6 @@
       else if (b.hasAttribute('data-j2-delete')) confirmDelete(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-side-toggle')) toggleSide();
       else if (b.hasAttribute('data-j2-fit')) fitToView();
-      else if (b.hasAttribute('data-j2-fog-state')) toggleFogState();
       else if (b.hasAttribute('data-j2-biome-colors')) toggleBiomeColors();
       else if (b.hasAttribute('data-j2-fog-tool')) setFogTool(b.getAttribute('data-j2-fog-tool'));
       else if (b.hasAttribute('data-j2-echo-place')) placeSoulEchoes();
@@ -4358,7 +4343,7 @@
         glyphlessTiles: ui.g && ui.g.tiles && ui.g.tiles.querySelector('.is-glyphless') ? ui.g.tiles.querySelector('.is-glyphless').getAttribute('d').split('M').length - 1 : 0,
         discoveredState: 'none',
         biome: { show: showBiome, tinted: ui.g && ui.g.tiles ? ui.g.tiles.querySelectorAll('.j2-biome-tint').length : 0, playerTinted: ui.g && ui.g.player ? ui.g.player.querySelectorAll('.j2-biome-tint').length : 0 },
-        fog: { tool: fogTool, showFogState: showFog, previewMode: previewMode, revealed: doc ? Model.getRevealedCellSet(doc).size : 0, strokeCells: fogStroke ? fogStroke.cells.length : 0, strokePointer: fogStroke ? fogStroke.pointerId : null, hover: fogHover ? Geo.cellId(fogHover.q, fogHover.r) : null },
+        fog: { tool: fogTool, previewMode: previewMode, revealed: doc ? Model.getRevealedCellSet(doc).size : 0, strokeCells: fogStroke ? fogStroke.cells.length : 0, strokePointer: fogStroke ? fogStroke.pointerId : null, hover: fogHover ? Geo.cellId(fogHover.q, fogHover.r) : null },
         detachedConfirm: detachedConfirm ? { batchId: detachedConfirm.batchId, cells: detachedConfirm.tiles.map(x => x.cell) } : null,
         perimeter: (() => { const g = ui.g && (previewMode ? ui.g.perimeterPlayer : ui.g.perimeter); return { mode: perimDrawn.mode, segments: g ? Number(g.getAttribute('data-segments') || 0) : 0, hasPath: !!(g && g.querySelector('path')), above: !previewMode }; })(),
         playerGlyphs: ui.g && ui.g.player ? ui.g.player.querySelectorAll('image').length : 0,

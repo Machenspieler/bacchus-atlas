@@ -1097,8 +1097,7 @@ Run all of them with `node --test tests/*.test.js`.
     Generating, placing, moving, returning or deleting regions never reveals or hides a
     cell — fog belongs to map coordinates, so content moved into a revealed cell becomes
     visible and into a hidden cell becomes hidden.
-  - *Tools (PD-034).* The GM toolbar has **Fog** (`Show fog state`, a stored UI preference,
-    default on), Biome colors and **Player Preview**; **Reveal** and **Hide** (`aria-pressed` toggles,
+  - *Tools (PD-034).* The GM toolbar has Biome colors and **Player Preview** (no veil toggle — PD-036); **Reveal** and **Hide** (`aria-pressed` toggles,
     mutually exclusive with each other, with armed/dragged placement and with the inspector) live in the
     Player Preview bar and exist only there. Activating a tool cancels armed placement and drags, closes
     the inspector and clears the tile selection; while one is armed a dashed GM-only outline marks
@@ -1122,7 +1121,7 @@ Run all of them with `node --test tests/*.test.js`.
     preview, plus a very faint outline of the revealed cells; it is rebuilt only when the
     visibility object or the mode changes. The veil is translucent and covers the whole base map
     (printed labels and sanctuary icons included — no mask or cut-out since PD-024), so the base map
-    is never modified. "Show fog state" off hides only the veil.
+    is never modified. The veil is drawn only in Player Preview; the GM view never draws it (PD-036).
   - *Player projection.* `Journey2Projection.buildPlayerProjection(doc)` (pure, DOM-free) returns
     `{ version, revealedCells[], overlays[{ q, r, symbolId, dots, blightMark }] }`: only generated
     tiles in revealed cells, reduced to what is drawn — no region/tile ids, Encounter, Rumor, notes,
@@ -1152,7 +1151,7 @@ Run all of them with `node --test tests/*.test.js`.
 - **Storage:** exactly four keys, all `dhcodex_journey2_*` (`js/journey2-store.js`):
   `map` (the document, fog included), `map_recovery` (raw text of a map that failed
   validation), `map_previous` (the map an import replaced), `ui` (view preferences:
-  sidebar collapsed state and "Show fog state" — never the active tool, Player Preview, hover
+  sidebar collapsed state, Biome colors, the camera and Player Preview — never the active tool, Player Preview, hover
   or a stroke). Nothing else is
   read or written; legacy Journey, Prep and unrelated keys stay byte-identical.
   A document that fails validation is **never** replaced by an empty autosave:

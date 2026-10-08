@@ -428,7 +428,7 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       remount the map (camera, selection, sidebar kept); `#/prep` then Back returns to the same saved campaign; no old generator page,
       V1/V2 switch or "Journey 2" text in EN or RU. Automated: `node scripts/journey2/route-cutover-verify.js` (`J2_BROWSER_CHANNEL=chrome`).
 - [ ] Open `#/journey`: header, one compact toolbar (map name, save status, Undo/Redo,
-      zoom, the Fog group: Fog / Biome colors / Player Preview), a left sidebar (generator + stock), the map fills the rest. No page scroll
+      zoom, the Fog group: Biome colors / Player Preview), a left sidebar (generator + stock), the map fills the rest. No page scroll
       at 1366×768 and 1920×1080; Diagnostics is closed.
 - [ ] PD-034: **Player Preview** shows Reveal / Hide beside Undo/Redo. Arm one: dashed outlines mark hidden placed hexes; painting reveals/hides and Undo reverts; Esc turns the tool off, a second Esc returns to the GM view (no tool left armed). Zoom and pan, reload: the same zoom and spot return (a fitted map stays fitted); a corrupt `dhcodex_journey2_ui` falls back to Fit.
 - [ ] **Generate region** rolls everything at random. A card appears: Placed 0 / N, drag targets
@@ -486,15 +486,15 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       one Undo / Redo; Space + drag pans, the wheel zooms; Esc cancels a stroke, then leaves the tool;
       a click on a region hex paints fog and never opens the inspector or moves the hex; activating a tool
       closes the inspector and cancels an armed Place; arming Place switches the tool off. The GM keeps every
-      generated glyph; the hatch veil marks unexplored hexes, **Fog** toggles it (stored), and the sanctuary
-      icons and MARROGATE / HORIZON labels stay clean under it. Generating, placing, moving or deleting a
+      generated glyph and the GM view never draws the fog veil (no Fog button, PD-036); the veil appears only in Player Preview, with the sanctuary
+      icons and MARROGATE / HORIZON labels staying clean under it. Generating, placing, moving or deleting a
       region never changes the fog. Reload keeps the fog.
 - [ ] Player Preview: the sidebar, rail, cards, Undo/Redo, save status, fog controls and inspector are gone;
       only the Player Preview flag, zoom/Fit and **Back to GM** remain. Unexplored hexes carry the stronger gray
       texture and no generated glyphs; revealed hexes show their glyphs; a region half revealed shows only its
       revealed hexes; the base map, labels and sanctuary icons are unchanged. Pan and zoom work, clicks do
       nothing, Ctrl+Z does nothing. **Back to GM** (or Esc) restores the previous pan/zoom, the sidebar state and
-      the Fog preference without reopening the inspector or adding an Undo entry. Reload leaves the preview.
+      without reopening the inspector or adding an Undo entry. Reload leaves the preview.
 - [ ] Soul Echoes (GM only, PD-022): **Soul Echoes** places nine small animated blue diamonds, each right above its sanctuary icon (the icon stays visible), on nine different sanctuaries
       (never HORIZON/MARROGATE), one in each of nine west-to-east bands, spread over the whole map, and the
       pressing it again asks "Place new Soul Echoes?" (Cancel is focused) and replaces them;

@@ -631,8 +631,8 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   masked around the icon/label protection rectangles; the raster is not modified. Sanctuary
   generation, sanctuary names and their visibility remain a future, independent state.
 - **Decision (GM vs players, one document):** the GM view always shows all generated content; a
-  subtle hatched veil (toggle **Show fog state**, a stored UI preference, default on) only marks
-  unexplored cells. **Player Preview** renders the *same* document through the pure player
+  subtle hatched veil only marks
+  unexplored cells (Player Preview only since PD-036; the GM view never draws it). **Player Preview** renders the *same* document through the pure player
   projection (`js/journey2-projection.js`): content in hidden cells is not produced at all (a data
   rule, not CSS), and Encounter, Rumor, notes, suggested environments, region ids, coordinates,
   warnings, selection and diagnostics are never in it. A region spanning revealed and hidden cells
@@ -641,7 +641,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   one pointer stroke is **one Undo/Redo entry** and one autosave; Space (or the middle button) pans
   while a tool is active; a tool outranks the Region Inspector and tile selection but not armed
   placement, a drag/pan or Player Preview. The active tool, the preview, the hover cell and the stroke
-  are transient (never in the document, history, backup or storage); only "Show fog state" is stored.
+  are transient (never in the document, history, backup or storage); no fog preference is stored.
   Fog edits are campaign data: autosaved, exported/imported, validated and undoable.
 - **Decision (print):** printing is not part of this phase, but Player Preview is the print
   renderer's first customer: the future print phase draws `buildPlayerProjection(doc)` (via the
@@ -1076,3 +1076,9 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Decision:** Player Preview on/off is a remembered view preference (`playerPreview` in `dhcodex_journey2_ui`), like the camera. Reloading `#/journey` while in Player Preview reopens it at the restored camera; Back-to-GM clears it. Supersedes the "Player Preview mode stays transient" line of PD-034.
 - **Still transient:** an armed Reveal / Hide tool, strokes, Region Inspector, sanctuary overlay, Locate / Route Planner, expanded card, diagnostics. Entering Player Preview already closes these, so a reload into Preview can never paint fog.
 - **Where:** `js/journey2-view.js` (`enterPreview`, `leavePreview`, `maybeResumePreview`, `saveUiPrefs`), `js/journey2-store.js` (`loadUi` / `saveUi`), `tests/journey2-fog.test.js`.
+
+## PD-036: Journey — the GM view never draws the fog veil
+
+- **Decision:** the **Fog** toolbar button (a view-only veil toggle) is removed. Since PD-034 Reveal / Hide live in Player Preview, so the button edited nothing and duplicated the preview. The GM view always shows the bare map; the veil (and the dashed hidden-hex outline while a brush is armed) is drawn only in Player Preview. Amends PD-020 / PD-034.
+- **Storage:** `showFogState` is gone from `dhcodex_journey2_ui`; an old stored value is ignored and dropped on the next save. No migration, no new key. i18n keys `journey2_fog_label`, `journey2_fog_show`, `journey2_fog_hide_state` removed.
+- **Where:** `js/journey2-view.js` (`renderFog`, `updateFogUi`), `js/journey2-store.js` (`loadUi` / `saveUi`), `tests/journey2-fog.test.js`.

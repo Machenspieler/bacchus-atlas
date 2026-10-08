@@ -283,20 +283,17 @@ function fakeStorage() {
   return { data, writes: [], getItem(k) { return data.has(k) ? data.get(k) : null; }, setItem(k, v) { this.writes.push(k); data.set(k, String(v)); }, removeItem(k) { data.delete(k); } };
 }
 
-test('"Show fog state" is a stored UI preference (default on); Player Preview is stored (PD-035); the tool and stroke are never stored', () => {
+test('the fog veil is not a preference (PD-036); Player Preview is stored (PD-035); the tool and stroke are never stored', () => {
   const s = fakeStorage(), store = Store.createStore(s, ctx);
-  assert.equal(store.loadUi().showFogState, true);
-  assert.deepEqual(store.saveUi({ sideCollapsed: false, showFogState: false }), { ok: true });
-  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showFogState: false, showBiomeColors: true, playerPreview: false, view: null });
-  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['playerPreview', 'showBiomeColors', 'showFogState', 'sideCollapsed', 'view']);
+  assert.deepEqual(store.saveUi({ sideCollapsed: false }), { ok: true });
+  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showBiomeColors: true, playerPreview: false, view: null });
+  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['playerPreview', 'showBiomeColors', 'sideCollapsed', 'view']);
   assert.deepEqual(s.writes, [Store.KEYS.ui], 'nothing else is written');
-  s.data.set(Store.KEYS.ui, '{"showFogState":"no","sideCollapsed":true}');
-  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showFogState: true, showBiomeColors: true, playerPreview: false, view: null }, 'a malformed value falls back to its default');
+  s.data.set(Store.KEYS.ui, '{"showFogState":false,"sideCollapsed":true}');
+  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showBiomeColors: true, playerPreview: false, view: null }, 'the retired showFogState key is ignored');
+  assert.ok(!('showFogState' in JSON.parse((store.saveUi({ sideCollapsed: true }), s.data.get(Store.KEYS.ui)))), 'and dropped on the next save');
   // it is not part of the document / backup
   assert.ok(!JSON.stringify(M.emptyDocument(ctx, AT)).includes('showFogState'));
-  // saving the sidebar state alone never switches the fog preference off
-  assert.deepEqual(store.saveUi({ sideCollapsed: true }), { ok: true });
-  assert.equal(store.loadUi().showFogState, true);
 });
 
 /* ---------------- localization ---------------- */
@@ -307,7 +304,7 @@ test('localization: every Phase C string exists in English and Russian with the 
   const keys = new Set(Object.keys(i18n.en).filter(k => /^journey2_(fog|preview|live_preview)/.test(k)));
   for (const m of view.matchAll(/['"`](journey2_(?:fog|preview|live_preview)[a-z_]*)['"`]/g)) keys.add(m[1]);
   for (const m of view.matchAll(/data-t(?:-aria|-title|-ph)?="(journey2_(?:fog|preview|live_preview)[a-z_]*)"/g)) keys.add(m[1]);
-  for (const k of ['journey2_fog_group', 'journey2_fog_show', 'journey2_fog_hide_state', 'journey2_fog_reveal', 'journey2_fog_hide', 'journey2_fog_paint_title', 'journey2_preview', 'journey2_preview_back',
+  for (const k of ['journey2_fog_group', 'journey2_fog_reveal', 'journey2_fog_hide', 'journey2_fog_paint_title', 'journey2_preview', 'journey2_preview_back',
     'journey2_fog_unexplored', 'journey2_fog_tool_active', 'journey2_fog_paint_active', 'journey2_fog_revealed_n', 'journey2_fog_hidden_n', 'journey2_fog_pan_hint'])assert.ok(keys.has(k), 'required string: ' + k);
   const ph = s => (String(s).match(/\{[A-Za-z0-9_]+\}/g) || []).sort().join();
   for (const k of keys) {
@@ -335,7 +332,7 @@ const fn = (name, next) => view.slice(view.indexOf('function ' + name), view.ind
 test('toolbar: Reveal and Hide are real toggle buttons with aria-pressed, the fog-state toggle and Player Preview are discoverable', () => {
   assert.match(view, /<button type="button" class="btn btn-ghost btn-sm j2-tool j2-paint-tool" data-j2-fog-tool="paint" aria-pressed="false"/);
   assert.doesNotMatch(view, /data-j2-fog-tool="(reveal|hide)"/, 'one brush button replaces Reveal and Hide');
-  assert.match(view, /data-j2-fog-state aria-pressed="true"/);
+  assert.doesNotMatch(view, /data-j2-fog-state/, 'no Fog overlay toggle (PD-036)');
   assert.match(view, /data-j2-preview data-t-title="journey2_preview_title"/);
   assert.match(view, /<button type="button" class="btn btn-sm" data-j2-preview-back data-t="journey2_preview_back">/);
   assert.match(view, /role="group" data-j2-fog-group/);
@@ -343,7 +340,7 @@ test('toolbar: Reveal and Hide are real toggle buttons with aria-pressed, the fo
 });
 
 test('tools: activating one cancels armed placement, drags and the inspector, works only inside Player Preview, and never touches camera or sidebar', () => {
-  const body = fn('setFogTool', 'toggleFogState');
+  const body = fn('setFogTool', 'toggleBiomeColors');
   for (const part of ['cancelTransient()', 'cancelFogStroke()', 'closeInspector({ quiet: true })', 'sel.tileId = null']) assert.ok(body.includes(part), part);
   assert.doesNotMatch(body, /setCamera|fitToView|sideCollapsed|toggleSide|dispatch\(/, 'pan, zoom, the sidebar and the document are left alone');
   assert.match(body, /mode === fogTool\) mode = null/, 'pressing the active tool returns to neutral');
@@ -397,8 +394,8 @@ test('GM view: every generated tile is drawn whatever the fog says; the veil sit
   assert.ok(at('tiles') < at('fog') && at('fog') < at('fogstroke') && at('fogstroke') < at('select') && at('select') < at('preview'), 'tiles < fog < stroke feedback < selection outlines < placement preview');
   assert.match(svg, /data-j2-g="fog"><path class="j2-fog-veil"/, 'the veil covers the whole base map: no mask around icons and printed labels');
   assert.ok(at('fog') < at('perimeter') && at('perimeter') < at('fogstroke'), 'the full GM boundary stays above the veil');
-  assert.match(fn('renderFog', 'updateFogUi'), /previewMode \|\| showFog/, 'the preference only hides the GM veil; the preview always shows fog');
-  assert.doesNotMatch(fn('toggleFogState', 'fogCellFromEvent'), /dispatch|doc =/, 'toggling the overlay never changes the document');
+  assert.match(fn('renderFog', 'updateFogUi'), /ui\.g\.fog\.style\.display = previewMode \? '' : 'none'/, 'the veil is drawn only in Player Preview, never in the GM view');
+  assert.doesNotMatch(view, /showFog|toggleFogState/);
 });
 
 test('Player Preview: read-only, projection-driven, document and history untouched, camera restored', () => {
@@ -451,7 +448,7 @@ test('PD-034: Reveal / Hide are in the Player Preview bar, not the GM toolbar', 
   const gm = html.slice(html.indexOf('data-j2-fog-group'), html.indexOf('data-j2-preview-bar'));
   const bar = html.slice(html.indexOf('data-j2-preview-bar'));
   assert.doesNotMatch(gm, /data-j2-fog-tool=/, 'the GM toolbar has no Reveal / Hide');
-  assert.match(gm, /data-j2-fog-state/, 'the Fog overlay toggle stays in the GM view');
+  assert.doesNotMatch(gm, /data-j2-fog-state/, 'the GM view has no Fog overlay toggle');
   assert.match(bar, /data-j2-fog-tool="paint"/);
   assert.match(fn('leavePreview', 'printPageMarkup'), /setFogTool\(null/, 'the tool never outlives the preview');
 });
