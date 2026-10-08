@@ -1502,14 +1502,14 @@
     }
 
     /** Anchor hex in map-area px (centre + half width), or null when there is no anchor or it is off screen. */
-    function inspectorAnchor(view) {
+    function inspectorAnchor(view, keepOffscreen) {
       const tile = inspector.tileId ? Model.derive(doc).byId.get(inspector.tileId) : null;
       if (!tile) return null;
       const c = Geo.parseCellId(tile.cell), ctr = data.grid.cellCenter(c.q, c.r);
       const vp = ui.viewport.getBoundingClientRect(), wrap = ui.mapwrap.getBoundingClientRect();
       const s = Geo.worldToScreen(cam, ctr[0], ctr[1]);
       const x = vp.left - wrap.left + s[0], y = vp.top - wrap.top + s[1];
-      if (x < 0 || y < 0 || x > view.w || y > view.h) return null;
+      if (!keepOffscreen && (x < 0 || y < 0 || x > view.w || y > view.h)) return null;
       const pts = data.grid.cellCorners(c.q, c.r), xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
       return { x: x, y: y, r: (Math.max.apply(null, xs) - Math.min.apply(null, xs)) / 2 * cam.scale, ry: (Math.max.apply(null, ys) - Math.min.apply(null, ys)) / 2 * cam.scale };
     }
@@ -1551,6 +1551,31 @@
       if (!view.w || !view.h) return;
       const pan = Geo.panForInspector({ view: view, size: { w: ui.inspector.offsetWidth, h: ui.inspector.offsetHeight }, anchor: inspectorAnchor(view), blocked: inspectorBlocked(wrap), narrow: window.innerWidth <= 900 });
       if (pan && (pan.dx || pan.dy)) animateCameraBy(pan.dx, pan.dy, 220);
+    }
+
+    /**
+     * After an explicit window resize, an open hex inspector whose hex has left the map area gets the least pan that brings it back (zoom kept,
+     * never a Fit), then the usual clearance pan makes room beside it. A hex that is still in view is left exactly where it is. Debounced:
+     * only the settled size is reconciled. Drawer collapse/expand and the other camera flows do not fire window resize and keep their own rules.
+     */
+    let resizeReconcileTimer = 0;
+    function scheduleResizeReconcile() {
+      clearTimeout(resizeReconcileTimer);
+      resizeReconcileTimer = setTimeout(reconcileInspectorAfterResize, 140);
+    }
+    function reconcileInspectorAfterResize() {
+      resizeReconcileTimer = 0;
+      if (inst.disposed || !data || !cameraReady || previewMode) return;
+      if (inspector.batchId == null || !inspector.tileId || !ui.inspector || ui.inspector.hidden) return;
+      const wrap = ui.mapwrap.getBoundingClientRect(), view = { w: wrap.width, h: wrap.height };
+      if (!view.w || !view.h) return;
+      const a = inspectorAnchor(view, true);
+      if (!a || (a.x >= 0 && a.y >= 0 && a.x <= view.w && a.y <= view.h)) return;
+      const m = 12, rx = Math.min(a.r, view.w / 2 - m), ry = Math.min(a.ry, view.h / 2 - m);
+      const nx = Math.min(Math.max(a.x, m + rx), view.w - m - rx), ny = Math.min(Math.max(a.y, m + ry), view.h - m - ry);
+      setCamera({ scale: cam.scale, tx: cam.tx + (nx - a.x), ty: cam.ty + (ny - a.y) }, true);
+      positionInspector();
+      ensureInspectorClear();
     }
 
     function prefersReducedMotion() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (err) { return false; } }
@@ -3400,6 +3425,8 @@
       listen(document, 'keydown', onDocumentKey);
       listen(document, 'keydown', onMenuKey);
       listen(document, 'keyup', onDocumentKeyUp);
+      listen(window, 'resize', scheduleResizeReconcile);
+      cleanups.push(() => clearTimeout(resizeReconcileTimer));
       listen(window, 'blur', () => { spaceDown = false; if (ui.viewport) ui.viewport.classList.remove('is-space'); });
       listen(document, 'pointerdown', e => { if (openMenu && !e.target.closest('.j2-menu-wrap')) closeMenus(); }, true);
       importInput = el('input', { type: 'file', accept: 'application/json,.json', class: 'sr-only', tabindex: '-1', 'aria-hidden': 'true' });

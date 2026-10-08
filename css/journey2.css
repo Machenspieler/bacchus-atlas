@@ -466,13 +466,14 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-insp-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-lg); line-height: var(--lh-lg); color: var(--parchment); overflow-wrap: anywhere; }
 .j2-insp-sub { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-2); font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); }
 .j2-insp-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--s-3); display: grid; gap: var(--s-3); align-content: start; scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
-/* a quiet edge shadow appears on whichever side still has content (the classic CSS-only scroll cue: shadows are fixed, covers scroll with the content) — nothing shows when it all fits, and no gutter is added */
+/* a soft parchment-tinted fade (a lighter edge, not a darker one: a black shadow on this dark panel was ~1.3:1 and invisible) appears on whichever side still has content (the classic CSS-only scroll cue: shadows are fixed, covers scroll with the content) — nothing shows when it all fits, and no gutter is added */
 .j2-insp-scroll {
+  --j2-cue-rgb: 232, 222, 200;
   background:
-    linear-gradient(var(--ink-raised) 35%, transparent) 0 0 / 100% 18px no-repeat local,
-    linear-gradient(transparent, var(--ink-raised) 65%) 0 100% / 100% 18px no-repeat local,
-    radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.55), transparent) 0 0 / 100% 9px no-repeat scroll,
-    radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.55), transparent) 0 100% / 100% 9px no-repeat scroll;
+    linear-gradient(var(--ink-raised) 85%, transparent) 0 0 / 100% 24px no-repeat local,
+    linear-gradient(transparent, var(--ink-raised) 15%) 0 100% / 100% 24px no-repeat local,
+    linear-gradient(rgba(var(--j2-cue-rgb), 0.2), transparent) 0 0 / 100% 22px no-repeat scroll,
+    linear-gradient(transparent, rgba(var(--j2-cue-rgb), 0.2)) 0 100% / 100% 22px no-repeat scroll;
 }
 .j2-insp-terrain-text { margin: var(--s-1) 0 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); }
 .j2-insp-terrain-text[hidden] { display: none; }
@@ -753,7 +754,7 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-hexenv-gone { color: var(--parchment); }
 .j2-hexenv-id { font-size: var(--fs-xs); color: var(--muted); }
 .j2-hexenv-id code { font-family: var(--font-mono); overflow-wrap: anywhere; }
-.j2-hexenv-list { margin-top: var(--s-2); max-height: 14rem; overflow-y: auto; overscroll-behavior: contain; }
+.j2-hexenv-list { margin-top: var(--s-2); max-height: 14rem; overflow-y: auto; /* default chaining: at its top/bottom the wheel hands off to the inspector scroller */ }
 .j2-hexenv-row { display: flex; align-items: center; gap: var(--s-2); padding-right: var(--s-2); }
 .j2-hexenv-row .j2-env-link { flex: 1 1 auto; min-width: 0; }
 .j2-hexenv-row .btn { flex: none; }

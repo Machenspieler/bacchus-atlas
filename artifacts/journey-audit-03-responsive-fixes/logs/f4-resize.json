@@ -1,0 +1,1216 @@
+[
+ {
+  "name": "1920-to-1280x720-right",
+  "from": "1920x1080",
+  "to": "1280x720",
+  "place": [
+   1700,
+   400
+  ],
+  "before": {
+   "hex": {
+    "x": 1700,
+    "y": 400,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -999,
+    "y": -1159,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     1171,
+     177,
+     480,
+     447
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1905,
+    "cw": 1920,
+    "sh": 1080,
+    "ch": 1080,
+    "bodySW": 1905,
+    "bodySH": 1080,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "left",
+    "caret": "right"
+   }
+  },
+  "shotBefore": "F4-1920-to-1280x720-right-before-1920x1080.png",
+  "after": {
+   "hex": {
+    "x": 1206,
+    "y": 400,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1493,
+    "y": -1159,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     722,
+     166,
+     435,
+     468
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1265,
+    "cw": 1280,
+    "sh": 720,
+    "ch": 720,
+    "bodySW": 1265,
+    "bodySH": 720,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "left",
+    "caret": "right"
+   }
+  },
+  "shotAfter": "F4-1920-to-1280x720-right-after-1280x720.png",
+  "zoomUnchanged": true,
+  "cameraMoved": true,
+  "fitCalled": false,
+  "hexVisible": true,
+  "afterGrow": {
+   "hex": {
+    "x": 1206,
+    "y": 400,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1493,
+    "y": -1159,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     1255,
+     177,
+     480,
+     447
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1905,
+    "cw": 1920,
+    "sh": 1080,
+    "ch": 1080,
+    "bodySW": 1905,
+    "bodySH": 1080,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "right",
+    "caret": "left"
+   }
+  },
+  "shotGrow": "F4-1920-to-1280x720-right-after-grow-1920x1080.png",
+  "console": []
+ },
+ {
+  "name": "1920-to-1512x982-right",
+  "from": "1920x1080",
+  "to": "1512x982",
+  "place": [
+   1700,
+   400
+  ],
+  "before": {
+   "hex": {
+    "x": 1700,
+    "y": 400,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -999,
+    "y": -1159,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     1171,
+     177,
+     480,
+     447
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1905,
+    "cw": 1920,
+    "sh": 1080,
+    "ch": 1080,
+    "bodySW": 1905,
+    "bodySH": 1080,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "left",
+    "caret": "right"
+   }
+  },
+  "shotBefore": "F4-1920-to-1512x982-right-before-1920x1080.png",
+  "after": {
+   "hex": {
+    "x": 1438,
+    "y": 400,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1261,
+    "y": -1159,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     909,
+     177,
+     480,
+     447
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1497,
+    "cw": 1512,
+    "sh": 982,
+    "ch": 982,
+    "bodySW": 1497,
+    "bodySH": 982,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "left",
+    "caret": "right"
+   }
+  },
+  "shotAfter": "F4-1920-to-1512x982-right-after-1512x982.png",
+  "zoomUnchanged": true,
+  "cameraMoved": true,
+  "fitCalled": false,
+  "hexVisible": true,
+  "afterGrow": {
+   "hex": {
+    "x": 1438,
+    "y": 400,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1261,
+    "y": -1159,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     909,
+     177,
+     480,
+     447
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1905,
+    "cw": 1920,
+    "sh": 1080,
+    "ch": 1080,
+    "bodySW": 1905,
+    "bodySH": 1080,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "left",
+    "caret": "right"
+   }
+  },
+  "shotGrow": "F4-1920-to-1512x982-right-after-grow-1920x1080.png",
+  "console": []
+ },
+ {
+  "name": "1920-to-1366x768-right",
+  "from": "1920x1080",
+  "to": "1366x768",
+  "place": [
+   1700,
+   400
+  ],
+  "before": {
+   "hex": {
+    "x": 1700,
+    "y": 400,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -999,
+    "y": -1159,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     1171,
+     177,
+     480,
+     447
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1905,
+    "cw": 1920,
+    "sh": 1080,
+    "ch": 1080,
+    "bodySW": 1905,
+    "bodySH": 1080,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "left",
+    "caret": "right"
+   }
+  },
+  "shotBefore": "F4-1920-to-1366x768-right-before-1920x1080.png",
+  "after": {
+   "hex": {
+    "x": 1292,
+    "y": 400,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1407,
+    "y": -1159,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     779,
+     166,
+     464,
+     468
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1351,
+    "cw": 1366,
+    "sh": 768,
+    "ch": 768,
+    "bodySW": 1351,
+    "bodySH": 768,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "left",
+    "caret": "right"
+   }
+  },
+  "shotAfter": "F4-1920-to-1366x768-right-after-1366x768.png",
+  "zoomUnchanged": true,
+  "cameraMoved": true,
+  "fitCalled": false,
+  "hexVisible": true,
+  "afterGrow": {
+   "hex": {
+    "x": 1292,
+    "y": 400,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1407,
+    "y": -1159,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     1341,
+     177,
+     480,
+     447
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1905,
+    "cw": 1920,
+    "sh": 1080,
+    "ch": 1080,
+    "bodySW": 1905,
+    "bodySH": 1080,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "right",
+    "caret": "left"
+   }
+  },
+  "shotGrow": "F4-1920-to-1366x768-right-after-grow-1920x1080.png",
+  "console": []
+ },
+ {
+  "name": "1512-to-1280x720-right",
+  "from": "1512x982",
+  "to": "1280x720",
+  "place": [
+   1330,
+   400
+  ],
+  "before": {
+   "hex": {
+    "x": 1330,
+    "y": 400,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1369,
+    "y": -1159,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     801,
+     177,
+     480,
+     447
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1497,
+    "cw": 1512,
+    "sh": 982,
+    "ch": 982,
+    "bodySW": 1497,
+    "bodySH": 982,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "left",
+    "caret": "right"
+   }
+  },
+  "shotBefore": "F4-1512-to-1280x720-right-before-1512x982.png",
+  "after": {
+   "hex": {
+    "x": 1206,
+    "y": 400,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1493,
+    "y": -1159,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     722,
+     166,
+     435,
+     468
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1265,
+    "cw": 1280,
+    "sh": 720,
+    "ch": 720,
+    "bodySW": 1265,
+    "bodySH": 720,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "left",
+    "caret": "right"
+   }
+  },
+  "shotAfter": "F4-1512-to-1280x720-right-after-1280x720.png",
+  "zoomUnchanged": true,
+  "cameraMoved": true,
+  "fitCalled": false,
+  "hexVisible": true,
+  "afterGrow": {
+   "hex": {
+    "x": 1206,
+    "y": 400,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1493,
+    "y": -1159,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     677,
+     177,
+     480,
+     447
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1497,
+    "cw": 1512,
+    "sh": 982,
+    "ch": 982,
+    "bodySW": 1497,
+    "bodySH": 982,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "left",
+    "caret": "right"
+   }
+  },
+  "shotGrow": "F4-1512-to-1280x720-right-after-grow-1512x982.png",
+  "console": []
+ },
+ {
+  "name": "1920-to-1280x720-bottom",
+  "from": "1920x1080",
+  "to": "1280x720",
+  "place": [
+   900,
+   1000
+  ],
+  "before": {
+   "hex": {
+    "x": 900,
+    "y": 1000,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1799,
+    "y": -559,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     949,
+     609,
+     480,
+     447
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1905,
+    "cw": 1920,
+    "sh": 1080,
+    "ch": 1080,
+    "bodySW": 1905,
+    "bodySH": 1080,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "right",
+    "caret": "left"
+   }
+  },
+  "shotBefore": "F4-1920-to-1280x720-bottom-before-1920x1080.png",
+  "after": {
+   "hex": {
+    "x": 900,
+    "y": 666,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1799,
+    "y": -893,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     416,
+     228,
+     435,
+     468
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1265,
+    "cw": 1280,
+    "sh": 720,
+    "ch": 720,
+    "bodySW": 1265,
+    "bodySH": 720,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "left",
+    "caret": "right"
+   }
+  },
+  "shotAfter": "F4-1920-to-1280x720-bottom-after-1280x720.png",
+  "zoomUnchanged": true,
+  "cameraMoved": true,
+  "fitCalled": false,
+  "hexVisible": true,
+  "afterGrow": {
+   "hex": {
+    "x": 900,
+    "y": 666,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1799,
+    "y": -893,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     949,
+     442,
+     480,
+     447
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1905,
+    "cw": 1920,
+    "sh": 1080,
+    "ch": 1080,
+    "bodySW": 1905,
+    "bodySH": 1080,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "right",
+    "caret": "left"
+   }
+  },
+  "shotGrow": "F4-1920-to-1280x720-bottom-after-grow-1920x1080.png",
+  "console": []
+ },
+ {
+  "name": "1280x720-to-1920-grow",
+  "from": "1280x720",
+  "to": "1920x1080",
+  "place": [
+   900,
+   300
+  ],
+  "before": {
+   "hex": {
+    "x": 900,
+    "y": 300,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1799,
+    "y": -1259,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     416,
+     70,
+     435,
+     468
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1265,
+    "cw": 1280,
+    "sh": 720,
+    "ch": 720,
+    "bodySW": 1265,
+    "bodySH": 720,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "left",
+    "caret": "right"
+   }
+  },
+  "shotBefore": "F4-1280x720-to-1920-grow-before-1280x720.png",
+  "after": {
+   "hex": {
+    "x": 900,
+    "y": 300,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1799,
+    "y": -1259,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     949,
+     77,
+     480,
+     447
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1905,
+    "cw": 1920,
+    "sh": 1080,
+    "ch": 1080,
+    "bodySW": 1905,
+    "bodySH": 1080,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "right",
+    "caret": "left"
+   }
+  },
+  "shotAfter": "F4-1280x720-to-1920-grow-after-1920x1080.png",
+  "zoomUnchanged": true,
+  "cameraMoved": false,
+  "fitCalled": false,
+  "hexVisible": true,
+  "console": []
+ },
+ {
+  "name": "control-center-1920-to-1280x720",
+  "from": "1920x1080",
+  "to": "1280x720",
+  "place": [
+   700,
+   360
+  ],
+  "before": {
+   "hex": {
+    "x": 700,
+    "y": 360,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1999,
+    "y": -1199,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     749,
+     137,
+     480,
+     447
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1905,
+    "cw": 1920,
+    "sh": 1080,
+    "ch": 1080,
+    "bodySW": 1905,
+    "bodySH": 1080,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "right",
+    "caret": "left"
+   }
+  },
+  "shotBefore": "F4-control-center-1920-to-1280x720-before-1920x1080.png",
+  "after": {
+   "hex": {
+    "x": 700,
+    "y": 360,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1999,
+    "y": -1199,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     749,
+     126,
+     435,
+     468
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1265,
+    "cw": 1280,
+    "sh": 720,
+    "ch": 720,
+    "bodySW": 1265,
+    "bodySH": 720,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "right",
+    "caret": "left"
+   }
+  },
+  "shotAfter": "F4-control-center-1920-to-1280x720-after-1280x720.png",
+  "zoomUnchanged": true,
+  "cameraMoved": false,
+  "fitCalled": false,
+  "hexVisible": true,
+  "console": [
+   "requestfailed: https://fonts.googleapis.com/css2?family=Forum&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@500;700&family=Architects+Daughter&display=swap net::ERR_CERT_AUTHORITY_INVALID",
+   "console.error: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID",
+   "requestfailed: https://fonts.googleapis.com/css2?family=Forum&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@500;700&family=Architects+Daughter&display=swap net::ERR_CERT_AUTHORITY_INVALID",
+   "console.error: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+  ]
+ },
+ {
+  "name": "control-center-1920-to-1366x768",
+  "from": "1920x1080",
+  "to": "1366x768",
+  "place": [
+   700,
+   360
+  ],
+  "before": {
+   "hex": {
+    "x": 700,
+    "y": 360,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1999,
+    "y": -1199,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     749,
+     137,
+     480,
+     447
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1905,
+    "cw": 1920,
+    "sh": 1080,
+    "ch": 1080,
+    "bodySW": 1905,
+    "bodySH": 1080,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "right",
+    "caret": "left"
+   }
+  },
+  "shotBefore": "F4-control-center-1920-to-1366x768-before-1920x1080.png",
+  "after": {
+   "hex": {
+    "x": 700,
+    "y": 360,
+    "inVp": true,
+    "coveredBy": null
+   },
+   "cam": {
+    "s": 1,
+    "x": -1999,
+    "y": -1199,
+    "fit": false,
+    "side": false,
+    "insp": {
+     "batchId": "b-muyaoai5kgc8rw",
+     "tileId": "t-muyaoq4nj2atvv",
+     "source": "map",
+     "open": true
+    },
+    "sel": "t-muyaoq4nj2atvv"
+   },
+   "insp": {
+    "rect": [
+     749,
+     126,
+     464,
+     468
+    ],
+    "inVp": true,
+    "footVisible": true
+   },
+   "inspectors": 1,
+   "ret": {
+    "inView": true,
+    "disabled": false
+   },
+   "doc": {
+    "sw": 1351,
+    "cw": 1366,
+    "sh": 768,
+    "ch": 768,
+    "bodySW": 1351,
+    "bodySH": 768,
+    "scrollY": 0,
+    "scrollX": 0
+   },
+   "caret": {
+    "side": "right",
+    "caret": "left"
+   }
+  },
+  "shotAfter": "F4-control-center-1920-to-1366x768-after-1366x768.png",
+  "zoomUnchanged": true,
+  "cameraMoved": false,
+  "fitCalled": false,
+  "hexVisible": true,
+  "console": [
+   "requestfailed: https://fonts.googleapis.com/css2?family=Forum&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@500;700&family=Architects+Daughter&display=swap net::ERR_CERT_AUTHORITY_INVALID",
+   "console.error: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID",
+   "requestfailed: https://fonts.googleapis.com/css2?family=Forum&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@500;700&family=Architects+Daughter&display=swap net::ERR_CERT_AUTHORITY_INVALID",
+   "console.error: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+  ]
+ }
+]

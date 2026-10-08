@@ -1213,6 +1213,12 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 }
 .modal-close { align-self: flex-start; margin-left: var(--s-4); }
 .modal-body { padding: var(--s-5) var(--s-6) var(--s-6); }
+/* Opened over #/journey the card is taller than a laptop window and scrolls inside the overlay, so its × lives in a
+ * zero-height sticky dock: it sits exactly where the header's × sits at the top and stays at the top-right of the visible card
+ * while reading. Only this modifier changes — the catalog card keeps its header-borne ×. */
+.modal--close-dock .modal-close-dock { position: sticky; top: 0; z-index: 3; height: 0; }
+.modal--close-dock .modal-close-dock .modal-close { position: absolute; top: var(--s-5); right: var(--s-6); margin: 0; background: var(--ink-card); }
+.modal--close-dock .modal-header { padding-inline-end: calc(var(--s-6) + var(--s-4) + 44px); }
 
 /* ---------- detail card: flavor text ---------- */
 .env-lore {
