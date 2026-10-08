@@ -1604,13 +1604,14 @@
         const xc = blightMarkCenter(q, r);
         const base = data.glyphProtections;
         const prot = blight ? base.concat([{ rectPx: [xc[0] - BLIGHT_X_HALF - 1, xc[1] - BLIGHT_X_HALF - 1, 2 * BLIGHT_X_HALF + 2, 2 * BLIGHT_X_HALF + 2] }]) : base;
-        let lay = Geo.layoutProofGlyph(data.grid, q, r, { w: boxW, h: gh, dots: dots }, prot, 2);
-        let gwL = gw, ghL = gh, boxWL = boxW;
+        // a tall symbol beside the blight strip or a marker's protected area is shrunk until it fits rather than withheld
+        let lay = Geo.layoutFittedGlyph(data.grid, q, r, { w: boxW, h: gh, dots: dots }, prot, 2);
         // a printed marker (sanctuary) can fill the whole hexagon: rather than losing the habitat glyph, tuck a compact one against the top edge
         if (lay.hidden && !blight) {
           const compact = Geo.layoutCompactGlyph(data.grid, q, r, { w: boxW, h: gh, dots: dots }, COMPACT_GLYPH_MAX_H, 1);
-          if (compact) { lay = compact; gwL = boxWL = compact.glyphRectPx[2]; ghL = compact.glyphRectPx[3]; }
+          if (compact) lay = compact;
         }
+        const gwL = lay.hidden ? gw : Math.round(lay.glyphRectPx[2] * 10) / 10, ghL = lay.hidden ? gh : Math.round(lay.glyphRectPx[3] * 10) / 10, boxWL = gwL;
         L = { lay: lay, sym: sym, gw: gwL, gh: ghL, boxW: boxWL, blight: blight };
         glyphCache.set(key, L);
       }

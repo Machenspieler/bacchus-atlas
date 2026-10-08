@@ -324,6 +324,26 @@
     return { hidden: true, shifted: false, offsetPx: null, glyphRectPx: null, dotsPx: [], boxPx: null, reason: 'no clear space in the cell' };
   }
 
+  /** Glyph scales tried, largest first, by layoutFittedGlyph (1 = the natural size). */
+  const FIT_SCALES = Object.freeze([1, 0.8, 0.7, 0.6]);
+
+  /**
+   * layoutProofGlyph, but when the natural-size glyph finds no clear box the symbol (not the dots) is shrunk step by step along
+   * FIT_SCALES until one does. A tall symbol (tropical, forest, badlands) beside the reserved blight-mark strip or a marker's protected
+   * area needs this: withholding it would leave a blighted hex with no icon at all. Same result shape as layoutProofGlyph, plus
+   * `glyphScale`; hidden only when even the smallest size has no clear space.
+   */
+  function layoutFittedGlyph(grid, q, r, glyph, protections, pad, scales) {
+    const list = scales || FIT_SCALES;
+    let last = null;
+    for (let i = 0; i < list.length; i++) {
+      const k = list[i];
+      last = layoutProofGlyph(grid, q, r, { w: glyph.w * k, h: glyph.h * k, dots: glyph.dots }, protections, pad);
+      if (!last.hidden) { last.glyphScale = k; return last; }
+    }
+    return last;
+  }
+
   /**
    * Last resort for a cell whose printed marker (a sanctuary) fills it, so layoutProofGlyph finds no clear box: a compact glyph (height capped
    * at maxH, aspect kept) is tucked against the top edge of the hexagon, above the marker. It may overlap the marker's padded protection area
@@ -647,6 +667,8 @@
     protectionRects: protectionRects,
     layoutProofGlyph: layoutProofGlyph,
     layoutCompactGlyph: layoutCompactGlyph,
+    layoutFittedGlyph: layoutFittedGlyph,
+    FIT_SCALES: FIT_SCALES,
     PROOF_OFFSETS: PROOF_OFFSETS,
     worldToScreen: worldToScreen,
     screenToWorld: screenToWorld,

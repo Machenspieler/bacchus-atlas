@@ -990,8 +990,12 @@ Run all of them with `node --test tests/*.test.js`.
   are allowed. Markers and labels are protected by the **renderer**:
   `Geo.layoutProofGlyph` keeps every glyph box clear of every protection rect
   and inside its hexagon, otherwise the glyph is withheld (the tile stays,
-  drawn as a dashed outline). `tests/journey2-model.test.js` proves this over
-  every allowed cell and symbol.
+  drawn as a dashed outline). Before withholding, the view tries
+  `Geo.layoutFittedGlyph` (the symbol shrinks along `FIT_SCALES`
+  1 / 0.8 / 0.7 / 0.6 — a blighted tropical, forest or badlands glyph only
+  fits below the reserved blight-X strip at 0.8) and, for a non-blighted hex
+  filled by a sanctuary icon, `Geo.layoutCompactGlyph`.
+  `tests/journey2-model.test.js` proves this over every allowed cell and symbol.
 - **Commands** (`createBatch`, `place`, `move`, `returnTile`, `deleteBatch`, `setNotes`, `setCellsRevealed`)
   carry every generated value (ids, cells, timestamps), so Redo replays the
   same transaction and never re-rolls. `place` is atomic (all N or nothing).

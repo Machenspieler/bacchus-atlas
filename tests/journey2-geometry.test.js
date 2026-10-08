@@ -250,3 +250,29 @@ test('camera maths: round trip, cursor-anchored zoom, clamping, fit, grid agreem
     assert.deepEqual(grid.worldToCell(back[0], back[1]), { q: 46, r: 1 });
   }
 });
+
+test('fitted glyph: a tall symbol beside the blight strip shrinks to fit instead of being withheld, and never leaves its hexagon or covers artwork', () => {
+  const prot = Geo.protectionRects(template, anchorsDoc).filter(p => p.kind !== 'built-in-label');
+  const X = 7;                                                // the view's BLIGHT_X_HALF; the strip is the top of the hexagon
+  const tall = { w: 24.2, h: 28.6, dots: 4 };                 // tropical / forest at the view's glyph scale, worst-case dots
+  const mid = Geo.parseCellId(anchorsDoc.anchors[0].cellId);
+  let shrunk = 0, shown = 0, cells = 0;
+  grid.forEachValidCell((q, r) => {
+    cells++;
+    const c = grid.cellCenter(q, r), top = Math.min.apply(null, grid.cellCorners(q, r).map(p => p[1]));
+    const strip = { rectPx: [c[0] - X - 1, top + 4 - 1, 2 * X + 2, 2 * X + 2] };
+    const withStrip = prot.concat([strip]);
+    const L = Geo.layoutFittedGlyph(grid, q, r, tall, withStrip, 2);
+    if (L.hidden) return;
+    shown++;
+    if (Geo.layoutProofGlyph(grid, q, r, tall, withStrip, 2).hidden) { shrunk++; assert.ok(L.glyphScale < 1 && Geo.FIT_SCALES.includes(L.glyphScale)); }
+    assert.ok(!withStrip.some(p => Geo.rectsIntersect(L.boxPx, p.rectPx)), q + ',' + r);
+    for (const pt of [[L.boxPx[0], L.boxPx[1]], [L.boxPx[0] + L.boxPx[2], L.boxPx[1] + L.boxPx[3]]]) assert.ok(Geo.pointInConvexPolygon(pt, grid.cellCorners(q, r)), q + ',' + r);
+  });
+  assert.ok(shrunk > cells * 0.9, 'a blighted tall glyph needs the shrink on nearly every cell (' + shrunk + '/' + cells + ')');
+  assert.ok(shown > cells * 0.9, 'and then fits on nearly every cell (' + shown + '/' + cells + ')');
+  // a cell that already fits keeps the natural size; the Horizon marker cell still withholds
+  assert.equal(Geo.layoutFittedGlyph(grid, mid.q + 6, mid.r, { w: 20, h: 10, dots: 1 }, [], 2).glyphScale, 1);
+  const hz = Geo.parseCellId(anchorsDoc.anchors.find(a => a.builtInLabel && a.builtInLabel.text === 'HORIZON').cellId);
+  assert.equal(Geo.layoutFittedGlyph(grid, hz.q, hz.r, { w: 34, h: 24, dots: 4 }, Geo.protectionRects(template, anchorsDoc), 2).hidden, true);
+});
