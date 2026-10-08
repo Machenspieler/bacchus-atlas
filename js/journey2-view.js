@@ -1450,11 +1450,11 @@
       announce(fill(res.triggered ? 'journey2_roll_live_hit' : 'journey2_roll_live_miss', { faces: res.faces.map(n).join(', ') }));
     }
 
-    /* PROTOTYPE (Forest only): an illustrated header for the shared Region Inspector — hex-opened and card-opened alike.
+    /* PROTOTYPE (Forest + Drylands): an illustrated header for the shared Region Inspector — hex-opened and card-opened alike.
      * Biome -> artwork lives in css/journey2.css ([data-art] rules); this only flags which biomes have art.
      * Default (no query): image at 25%, header +24px, +0px on phones (<= 600px) — all in CSS.
      * The ?hdr=<A|B><1|2|3> query is a dev-only comparison switch: A centred / B shifted up; 1 original / 2 +24px / 3 +12px. */
-    const HEADER_ART_BIOMES = new Set(['forest']);
+    const HEADER_ART_BIOMES = new Set(['forest', 'drylands']);
     function applyHeaderArt(b) {
       const root = ui.inspector, art = !b.habitat.overtaken && HEADER_ART_BIOMES.has(b.habitat.biome) ? b.habitat.biome : '';
       if (!art) { root.removeAttribute('data-art'); root.removeAttribute('data-art-pos'); root.removeAttribute('data-art-h'); return; }

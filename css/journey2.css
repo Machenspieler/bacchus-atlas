@@ -467,6 +467,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-insp-sub { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-2); font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); }
 /* PROTOTYPE — illustrated Region Inspector header (Forest only; flagged by data-art from applyHeaderArt()). Artwork sits on a ::before layer behind the unchanged header content; a left-to-right ink gradient keeps title/meta readable and lets the right side stay colourful. */
 .j2-region-inspector[data-art="forest"] { --j2-art: url("../img/journey2/headers/forest.webp"); }
+.j2-region-inspector[data-art="drylands"] { --j2-art: url("../img/journey2/headers/drylands.webp"); }
 /* defaults: image shifted up to 25%; header at least 24px taller than the plain header (a MIN height, so a wrapped meta line grows the header naturally instead of stacking on top of the extra); no extra on phones */
 .j2-region-inspector[data-art] { --j2-art-pos: center 25%; --j2-art-extra: 24px; }
 @media (max-width: 600px) { .j2-region-inspector[data-art] { --j2-art-extra: 0px; } }
