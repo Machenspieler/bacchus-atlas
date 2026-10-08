@@ -1009,6 +1009,8 @@ function unlockScroll() {
 function registerOverlay(overlay, closeFn) {
   const previouslyFocused = document.activeElement;
   overlayStack.push(overlay);
+  // On Journey the card's docked × sits where the soundboard popover opens; the popover is non-modal, so it steps aside (audio keeps playing).
+  if (overlay.dataset.overlayKind === 'detail' && state.route.name === 'journey') SoundboardUI.dismissPanel();
   lockScroll();
   syncToTop();
 

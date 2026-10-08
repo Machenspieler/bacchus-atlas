@@ -849,6 +849,14 @@ pauses or ducks music. Product rules: [PD-011](product-decisions.md).
   `SafeStorage.validators.soundboard` and completed against the manifest by
   `SoundboardManifest.normalizePrefs()`. It is not part of any Prep session.
   Playback state is never persisted — a reload restores levels, not sound.
+- **Over a Journey environment card:** the panel is non-modal and sits where the
+  card's docked × is, so `registerOverlay()` calls `SoundboardUI.dismissPanel()`
+  when a `detail` overlay opens on `#/journey` (popover only — playback, levels
+  and prefs are untouched), and `position()` keeps a reopened panel
+  horizontally clear of `.modal--close-dock .modal-close`. The docked card also
+  reserves a right-hand gutter in `.modal-body`, so scrolling text never passes
+  under the ×; while any `.modal-overlay` / `dialog[open]` is up, Journey's
+  Ctrl/Cmd+Z / Y / Shift+Z are ignored (`onDocumentKey`). Audit 04 Z-01..Z-03.
 - **Assets:** `sound/*` is copied by `scripts/build.js` like `img/`. URLs are
   built with `new URL(src, document.baseURI)`, so they resolve under the GitHub
   Pages project base path. They are not content-hashed (only css/js/data are).

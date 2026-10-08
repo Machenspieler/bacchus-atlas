@@ -3958,6 +3958,8 @@
       }
       if (isEditableTarget(e.target) || e.defaultPrevented) return;
       if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+      // a blocking modal (environment card, confirm dialog) owns the keyboard: no history change behind it (audit 04 Z-01)
+      if (document.querySelector('dialog[open]') || document.querySelector('.modal-overlay')) return;
       const k = e.key.toLowerCase();
       if (k === 'z' && !e.shiftKey) { undo(); e.preventDefault(); }
       else if (k === 'y' || (k === 'z' && e.shiftKey)) { redo(); e.preventDefault(); }

@@ -1219,6 +1219,9 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 .modal--close-dock .modal-close-dock { position: sticky; top: 0; z-index: 3; height: 0; }
 .modal--close-dock .modal-close-dock .modal-close { position: absolute; top: var(--s-5); right: var(--s-6); margin: 0; background: var(--ink-card); }
 .modal--close-dock .modal-header { padding-inline-end: calc(var(--s-6) + var(--s-4) + 44px); }
+/* The sticky × floats over the scrolling body, so the body keeps the same right-hand gutter the header has: no text or link
+ * (Open Encounter, the footer actions) can scroll underneath it (audit 04 Z-02). */
+.modal--close-dock .modal-body { padding-inline-end: calc(var(--s-6) + var(--s-4) + 44px); }
 
 /* ---------- detail card: flavor text ---------- */
 .env-lore {

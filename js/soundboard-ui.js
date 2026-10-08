@@ -192,8 +192,14 @@ const SoundboardUI = (function () {
     const vh = window.innerHeight;
     const w = panel.offsetWidth;
     const h = panel.offsetHeight;
-    const left = Math.max(GAP_PX, Math.min(r.right - w, vw - w - GAP_PX));
+    let left = Math.max(GAP_PX, Math.min(r.right - w, vw - w - GAP_PX));
     const top = Math.max(GAP_PX, Math.min(r.bottom + GAP_PX, vh - h - GAP_PX));
+    // A card's docked × (Journey) must stay reachable: keep the panel clear of it horizontally (the × never moves sideways).
+    const closeBtn = document.querySelector('.modal--close-dock .modal-close');
+    if (closeBtn) {
+      const c = closeBtn.getBoundingClientRect();
+      if (c.width && left < c.right + GAP_PX && left + w > c.left - GAP_PX) left = Math.max(GAP_PX, c.left - GAP_PX - w);
+    }
     panel.style.left = `${left}px`;
     panel.style.top = `${top}px`;
   }
@@ -229,6 +235,9 @@ const SoundboardUI = (function () {
     const trg = trigger();
     if (trg && returnFocus) trg.focus({ preventScroll: true });
   }
+
+  /** Dismisses the popover only (app.js, when a blocking card opens): playback, volumes and settings are untouched. */
+  function dismissPanel() { closePanel(false); }
 
   function firstSoundButton() { return panel.querySelector('.sb-sound'); }
 
@@ -359,5 +368,5 @@ const SoundboardUI = (function () {
     if (header && typeof ResizeObserver !== 'undefined') new ResizeObserver(position).observe(header);
   }
 
-  return { init, sync, syncFloat, triggerHtml, openPanelElement };
+  return { init, sync, syncFloat, triggerHtml, openPanelElement, dismissPanel };
 })();
