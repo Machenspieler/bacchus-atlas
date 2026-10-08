@@ -293,3 +293,19 @@ committing: run `git status` and `git log -1` (multiple sessions may
 share this working tree — a dirty tree or a HEAD that moved is another
 session's in-flight work, not yours to commit around; say so and let the
 user sequence it instead).
+
+## Session effort
+
+The user authorizes in advance, without a confirmation round, switching
+the session effort with `set_session_effort` based on the kind of request:
+
+- Discussion, brainstorming, analysis, "think about" questions → `high`.
+- Implementation tasks → `medium`.
+- A mixed request ("discuss and then implement") → `high`.
+- Unclear → do not guess; restore the user's original effort (the value on
+  the UI switch).
+
+Before the first change in a session, read the current effort (e.g. via
+`get_session`) and remember it as the original. Restore it whenever a
+request is unclear. A change likely takes effect from the next message,
+not the current one. Mention a switch in one short line.
