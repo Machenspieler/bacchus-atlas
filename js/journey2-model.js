@@ -1055,6 +1055,65 @@
     return out.slice(0, n);
   }
 
+  /**
+   * A random connected footprint of exactly n relative offsets for "Place all" (PD-032). `(0,0)` is always
+   * the first offset (the cell under the pointer: the member nearest the shape's centroid). Each roll first
+   * draws a raggedness, then grows the shape one frontier cell at a time, weighting a candidate by
+   * (shape neighbours)^p: a low raggedness favours cells that touch several shape cells (a round blob), a high
+   * one favours cells that touch only one (arms and peninsulas). The reach from the seed is capped just beyond
+   * the compact ring radius, so a shape never becomes a worm; a straight line (n >= 3) or a shape with an
+   * enclosed hole is re-rolled, and after bounded attempts the compact footprint is returned instead.
+   * `rng` is any () => [0,1) (injected for tests). The result depends on nothing but n and the rng.
+   */
+  function randomFootprint(n, rng) {
+    if (!isInt(n) || n < 1) return [];
+    if (n === 1) return [{ dq: 0, dr: 0 }];
+    const rand = typeof rng === 'function' ? () => Math.min(0.999999999, Math.max(0, Number(rng()) || 0)) : Math.random;
+    const D = Geo.NEIGHBOR_DELTAS;
+    const dist = (dq, dr) => (Math.abs(dq) + Math.abs(dr) + Math.abs(dq + dr)) / 2;
+    let ring = 0;
+    while (1 + 3 * ring * (ring + 1) < n) ring++;
+    const reach = ring + 2;
+    for (let attempt = 0; attempt < 24; attempt++) {
+      const p = 2.5 - 4 * rand();
+      const cells = [{ dq: 0, dr: 0 }], inShape = new Set(['0,0']), touch = new Map();
+      const addFrontier = (c) => {
+        for (const d of D) {
+          const dq = c.dq + d.dq, dr = c.dr + d.dr, key = dq + ',' + dr;
+          if (inShape.has(key) || dist(dq, dr) > reach) continue;
+          const e = touch.get(key);
+          if (e) e.k++; else touch.set(key, { dq: dq, dr: dr, k: 1 });
+        }
+      };
+      addFrontier(cells[0]);
+      while (cells.length < n && touch.size) {
+        let total = 0;
+        const entries = [];
+        for (const [key, e] of touch) { const w = Math.pow(e.k, p); total += w; entries.push([key, e, w]); }
+        let pick = rand() * total, chosen = entries[entries.length - 1];
+        for (const x of entries) { pick -= x[2]; if (pick < 0) { chosen = x; break; } }
+        touch.delete(chosen[0]);
+        inShape.add(chosen[0]);
+        const c = { dq: chosen[1].dq, dr: chosen[1].dr };
+        cells.push(c);
+        addFrontier(c);
+      }
+      if (cells.length < n) continue;
+      if (n >= 3 && (cells.every(c => c.dq === cells[0].dq) || cells.every(c => c.dr === cells[0].dr) || cells.every(c => c.dq + c.dr === cells[0].dq + cells[0].dr))) continue;
+      if (enclosedHoles(cells.map(c => Geo.cellId(c.dq, c.dr))).length) continue;
+      let mq = 0, mr = 0;
+      for (const c of cells) { mq += c.dq; mr += c.dr; }
+      mq /= n; mr /= n;
+      let best = 0, bestD = Infinity;
+      cells.forEach((c, i) => { const d = dist(c.dq - mq, c.dr - mr); if (d < bestD - 1e-9) { bestD = d; best = i; } });
+      const o = cells[best];
+      const out = [{ dq: 0, dr: 0 }];
+      cells.forEach((c, i) => { if (i !== best) out.push({ dq: c.dq - o.dq, dr: c.dr - o.dr }); });
+      return out;
+    }
+    return compactFootprint(n);
+  }
+
   /* ---------------- region inspection (transient view state — never part of the document, history or storage) ---------------- */
 
   /** The one empty inspection. `source` is where it was opened from: 'map' (a placed hex, the visual anchor) or 'card' (a sidebar card). */
@@ -1099,7 +1158,7 @@
     validateDocument: validateDocument, parseBackupText: parseBackupText, serializeBackup: serializeBackup,
     checkCells: checkCells, checkPlacement: checkPlacement, topologyCheck: topologyCheck, preparedMapComponentCount: preparedMapComponentCount, preparedMapConnectivity: preparedMapConnectivity, deleteTopology: deleteTopology, cellOwners: cellOwners, canonicalEdgeKey: canonicalEdgeKey, neighborIds: neighborIds, regionBoundarySegments: regionBoundarySegments, regionConnectivity: regionConnectivity, isConnected: isConnected, componentCount: componentCount, enclosedHoles: enclosedHoles, holeCounts: holeCounts, apply: apply,
     createHistory: createHistory, historyCommit: historyCommit, historyUndo: historyUndo, historyRedo: historyRedo, historyClear: historyClear,
-    compactFootprint: compactFootprint,
+    compactFootprint: compactFootprint, randomFootprint: randomFootprint,
     MAX_SOUL_ECHOES: MAX_SOUL_ECHOES, planSoulEchoes: planSoulEchoes, getCollectedEchoSet: getCollectedEchoSet, isEchoCollected: isEchoCollected, availableEchoIds: availableEchoIds,
     SANCTUARY_DICE: SANCTUARY_DICE, MAX_SANCTUARY_NAME: MAX_SANCTUARY_NAME, validateSanctuaryEntry: validateSanctuaryEntry, planSanctuaries: planSanctuaries,
     getRevealedSanctuaryNameSet: getRevealedSanctuaryNameSet, isSanctuaryNameRevealed: isSanctuaryNameRevealed,

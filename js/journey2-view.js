@@ -3281,7 +3281,7 @@
       const wasArmed = false;
       tr = {
         kind: 'stock', mode: mode, batchId: batchId, docRef: doc, pointerId: e.pointerId, moved: false, handle: h, x0: e.clientX, y0: e.clientY,
-        footprint: mode === 'all' ? Model.compactFootprint(remaining) : [{ dq: 0, dr: 0 }],     // generated once, frozen for the drag
+        footprint: mode === 'all' ? Model.randomFootprint(remaining) : [{ dq: 0, dr: 0 }],     // rolled once on press (PD-032), frozen for the drag
         preview: null, wasArmed: wasArmed,
       };
       try { h.setPointerCapture(e.pointerId); } catch (err) { /* synthetic events */ }
@@ -3336,7 +3336,7 @@
       if (fogTool) setFogTool(null, { quiet: true });
       const remaining = Model.derive(doc).counts.get(batchId).remaining;
       if (remaining < 1) return;
-      tr = { kind: 'armed', mode: mode, batchId: batchId, docRef: doc, handle: handle, footprint: mode === 'all' ? Model.compactFootprint(remaining) : [{ dq: 0, dr: 0 }], preview: null };
+      tr = { kind: 'armed', mode: mode, batchId: batchId, docRef: doc, handle: handle, footprint: mode === 'all' ? Model.randomFootprint(remaining) : [{ dq: 0, dr: 0 }], preview: null };
       handle.classList.add('is-armed');
       handle.setAttribute('aria-pressed', 'true');
       ui.viewport.classList.add('is-placing');

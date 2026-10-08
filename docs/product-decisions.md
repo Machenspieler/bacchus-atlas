@@ -506,8 +506,8 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   rolls the legacy d12. A chosen habitat/terrain/quantity is recorded as
   `manual`; no die result is fabricated for it.
 - **"All N" means the unplaced stock**, as one atomic, all-or-nothing
-  transaction with one Undo entry. The footprint is a deterministic compact
-  connected ring walk of exactly N cells, frozen for the drag; one occupied,
+  transaction with one Undo entry. The footprint is a random connected
+  shape of exactly N cells (PD-032), frozen for the drag; one occupied,
   outside or decorative cell rejects the whole drop (no truncation, no
   nearest-free fill, no overwrite). Moving an already placed batch as a unit
   is deliberately out of scope.
@@ -1018,3 +1018,11 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   multi-stop routes, keyboard hex selection (the map has none), "Plan route here" from the sanctuary overlay.
 - **Where:** `js/journey2-route.js` (pure engine + planner state machine), `js/journey2-view.js` ("Route Planner" block), `css/journey2.css`, `data/i18n.json` (`journey2_route_*`),
   `tests/journey2-route.test.js`.
+
+## PD-032: Journey — "Place all N" rolls a fresh random footprint on every press
+- **Status:** Active (supersedes the "deterministic compact ring walk" footprint wording of the "All N" decision; every other "All N" rule — all-or-nothing, atomic, one Undo entry, no truncation — is unchanged)
+- **Date:** 2026-10-08
+- **Decision:** pressing **Place all N** (drag or click-to-arm) rolls a random connected footprint of exactly N cells, so two batches of the same size rarely look alike. The shape is rolled **once, at press**, and frozen until drop or cancel: moving the pointer, zooming, a rejected drop or a "Start separate area" confirmation never changes it (the dialog still commits exactly the attempted candidate). There is **no reroll control**; the only way to a different shape is to press Place all again.
+- **Decision (shape):** each roll draws a raggedness and grows the shape one cell at a time, weighting a frontier cell by (touching shape cells)^p — low raggedness gives round blobs, high raggedness gives arms and peninsulas, so some rolls are round and some spiky. The reach from the seed is capped at the compact ring radius + 2 (no worms); a straight line (N >= 3) or an enclosed hole is re-rolled; after bounded attempts the compact footprint is used. The cell under the pointer is the member nearest the shape's centroid.
+- **Decision (persistence):** nothing about the shape is stored; tiles are saved as concrete cells, so Undo/Redo replay the exact placed cells and Redo never re-rolls.
+- **Where:** `Model.randomFootprint(n, rng)` in `js/journey2-model.js` (pure, RNG injectable; `compactFootprint` remains as the fallback), called from `js/journey2-view.js` where the stock drag / armed placement start; `tests/journey2-model.test.js`.

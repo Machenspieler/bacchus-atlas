@@ -374,3 +374,41 @@ test('placement refuses every printed marker cell (sanctuaries, Horizon, Marroga
     if (doc) assert.deepEqual(M.checkCells(doc, ctx, [c]).map(r => r.reason), ['sanctuary'], a.stableId);
   }
 });
+
+/* ---------------- random "Place all" footprint (PD-032) ---------------- */
+
+function seeded(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+
+test('randomFootprint: exactly n unique connected offsets, (0,0) first, no hole, no straight line, reproducible per rng', () => {
+  const shapes = new Set();
+  for (const n of [1, 2, 3, 4, 7, 12, 20, 61, 200]) {
+    for (let seed = 1; seed <= 40; seed++) {
+      const f = M.randomFootprint(n, seeded(seed * 7919 + n));
+      assert.equal(f.length, n, 'length ' + n);
+      assert.deepEqual(f[0], { dq: 0, dr: 0 });
+      const keys = new Set(f.map(o => o.dq + ',' + o.dr));
+      assert.equal(keys.size, n, 'unique ' + n);
+      const ids = f.map(o => Geo.cellId(o.dq, o.dr));
+      assert.ok(M.isConnected(ids), 'connected ' + n);
+      assert.deepEqual(M.enclosedHoles(ids), [], 'no hole ' + n);
+      if (n >= 3) assert.ok(!(f.every(o => o.dq === f[0].dq) || f.every(o => o.dr === f[0].dr) || f.every(o => o.dq + o.dr === f[0].dq + f[0].dr)), 'not a straight line ' + n);
+      assert.deepEqual(M.randomFootprint(n, seeded(seed * 7919 + n)), f, 'same rng, same shape');
+      if (n === 12) shapes.add(ids.slice().sort().join('|'));
+    }
+  }
+  assert.ok(shapes.size > 20, 'twelve hexes form many different shapes (' + shapes.size + ')');
+  assert.deepEqual(M.randomFootprint(0), []);
+  assert.deepEqual(M.randomFootprint(-3), []);
+  assert.equal(M.randomFootprint(12).length, 12, 'default RNG');
+});
+
+test('randomFootprint: stays within reach of the compact ring (no worms) and can grow arms', () => {
+  const dist = (o) => (Math.abs(o.dq) + Math.abs(o.dr) + Math.abs(o.dq + o.dr)) / 2;
+  let widest = 0;
+  for (let seed = 1; seed <= 200; seed++) {
+    const f = M.randomFootprint(12, seeded(seed));
+    for (const a of f) for (const b of f) widest = Math.max(widest, dist({ dq: a.dq - b.dq, dr: a.dr - b.dr }));
+  }
+  assert.ok(widest <= 8, 'span capped: ' + widest);
+  assert.ok(widest >= 5, 'some rolls grow arms: ' + widest);
+});

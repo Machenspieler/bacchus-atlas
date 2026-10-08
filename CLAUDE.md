@@ -232,7 +232,7 @@ deterministic ties). Click a bubble to select a route, click the selected one fo
 ungenerated cells: Fastest enters only known hexes, and Shortest then reports days as Unknown. It reads no Fog, Echoes, Environments or Shadowblight, writes nothing (no history, storage or fog change),
 recomputes on edits, is mutually exclusive with the other map tools, and none of it reaches Player Preview or print.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031, detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032 (Place all rolls a random frozen footprint per press), detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 
