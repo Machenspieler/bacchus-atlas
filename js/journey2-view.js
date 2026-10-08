@@ -533,7 +533,6 @@
                   <p class="j2-insp-examples" data-j2-i="examples" hidden></p>
                   <div class="j2-insp-summary">
                     <p class="j2-insp-line"><span class="j2-dots" data-j2-i="dots" role="img"></span><strong data-j2-i="terrainName"></strong><span data-j2-i="terrainN"></span></p>
-                    <p class="j2-insp-line" data-j2-i="daysSize"></p>
                     <p class="j2-insp-terrain-text" data-j2-i="terrainText" hidden></p>
                   </div>
                   <section class="j2-insp-sec j2-hexenv" data-j2-i="hexEnvSec" aria-labelledby="j2-hexenv-title" hidden>
@@ -1323,14 +1322,12 @@
         I.terrainText.hidden = !(d.terrain && d.terrain.text);
         I.terrainText.textContent = d.terrain ? d.terrain.text : '';
         I.terrainN.textContent = d.terrain ? ' · ' + fill('journey2_days_per_hex', { n: n(d.terrain.days) }) : '';
-        I.daysSize.textContent = fill('journey2_hexes_n', { n: n(b.quantity) });
         I.examples.hidden = !d.examples;
         I.examples.textContent = d.examples || '';
         I.enc.innerHTML = (d.combined ? '<p class="j2-note">' + esc(t('journey_encounter_combined')) + '</p>' : '') + d.encounter.map(x => '<p class="j2-insp-p j2-enc">' + x.html + '</p>').join('');
         I.rumor.textContent = d.rumor;
       } else {
         I.terrainName.textContent = ''; I.terrainText.hidden = true; I.examples.hidden = true; I.enc.innerHTML = ''; I.rumor.textContent = '';
-        I.daysSize.textContent = fill('journey2_hexes_n', { n: n(b.quantity) });
       }
       const hexTile = inspector.source === 'map' && inspector.tileId ? Model.derive(doc).byId.get(inspector.tileId) : null;
       renderHexEnvironment(b, hexTile);

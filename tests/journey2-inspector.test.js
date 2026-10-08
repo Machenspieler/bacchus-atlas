@@ -209,7 +209,7 @@ test('placement: a panel larger than the map is shrunk to fit and never leaves t
 
 test('localization: every Region Inspector string exists in English and Russian with the same placeholders', () => {
   const i18n = JSON.parse(read('data/i18n.json'));
-  const keys = ['journey2_inspect_region', 'journey2_inspect_aria', 'journey2_inspect_open', 'journey2_inspector_close', 'journey2_region_n', 'journey2_hexes_n',
+  const keys = ['journey2_inspect_region', 'journey2_inspect_aria', 'journey2_inspect_open', 'journey2_inspector_close', 'journey2_region_n',
     'journey2_live_inspector_opened', 'journey2_live_inspector_closed',
     'journey2_terrain_n', 'journey2_days_per_hex', 'journey2_return', 'journey2_tile_cell', 'tier_label', 'journey_k_encounter', 'journey_k_rumor', 'journey_shadowblighted', 'journey2_overtaken'];
   const ph = s => (String(s).match(/\{[A-Za-z0-9_]+\}/g) || []).sort().join();
