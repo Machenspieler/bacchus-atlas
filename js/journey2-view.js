@@ -1634,6 +1634,7 @@
       for (const d of L.lay.dotsPx) h += '<circle class="' + cls + '-dot" cx="' + fmt(d[0], 1) + '" cy="' + fmt(d[1], 1) + '" r="1.7"/>';
       if (L.blight) {
         const m = blightMarkCenter(q, r), k = BLIGHT_X_HALF;
+        h += '<circle class="' + cls + '-blight-halo" cx="' + fmt(m[0], 1) + '" cy="' + fmt(m[1], 1) + '" r="' + (k + 3) + '"/>';
         h += '<path class="' + cls + '-blight" d="M' + fmt(m[0] - k, 1) + ' ' + fmt(m[1] - k, 1) + 'l' + fmt(2 * k, 1) + ' ' + fmt(2 * k, 1) + 'm0 ' + fmt(-2 * k, 1) + 'l' + fmt(-2 * k, 1) + ' ' + fmt(2 * k, 1) + '"/>';
       }
       return h;

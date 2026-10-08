@@ -403,6 +403,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-overlay .j2-biome-tint, .j2-overlay .j2-biome-halo { stroke: none; pointer-events: none; }
 .j2-tile-hex { fill: none; stroke: var(--ink); stroke-opacity: 0.55; stroke-width: 1; }
 .j2-overlay .j2-tile-halo { fill: #fff; fill-opacity: 0.7; stroke: none; }
+.j2-overlay .j2-tile-blight-halo, .j2-overlay .j2-pvt-blight-halo { fill: #fff; fill-opacity: 0.85; stroke: none; }
 .j2-tile-sym, .j2-pvt-sym { image-rendering: auto; }
 .j2-tile-dot, .j2-pvt-dot { fill: var(--ink); stroke: none; }
 .j2-overlay .j2-tile-blight, .j2-overlay .j2-pvt-blight { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; vector-effect: none; }
@@ -753,6 +754,7 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-pp-svg .j2-tile-hex { fill: none; stroke: #000; stroke-opacity: 0.55; stroke-width: 1; }
 .j2-pp-svg .j2-tile-hex.is-glyphless { stroke-dasharray: 4 3; stroke-opacity: 0.8; stroke-width: 1.4; }
 .j2-pp-svg .j2-tile-halo { fill: #fff; fill-opacity: 0.7; stroke: none; }
+.j2-pp-svg .j2-tile-blight-halo { fill: #fff; fill-opacity: 0.85; stroke: none; }
 .j2-pp-svg .j2-tile-dot { fill: #000; stroke: none; }
 .j2-pp-svg .j2-tile-blight { fill: none; stroke: #000; stroke-width: 2.2; stroke-linecap: round; }
 .j2-pp-svg .j2-perimeter { fill: none; stroke: #000; stroke-opacity: 1; stroke-width: 2.8; stroke-linejoin: round; stroke-linecap: round; }
