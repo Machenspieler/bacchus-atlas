@@ -412,3 +412,62 @@ test('randomFootprint: stays within reach of the compact ring (no worms) and can
   assert.ok(widest <= 8, 'span capped: ' + widest);
   assert.ok(widest >= 5, 'some rolls grow arms: ' + widest);
 });
+
+/* ---------------- fit-to-border footprint (PD-037) ---------------- */
+
+/** A centre cell whose radius-3 disk is entirely placeable, found deterministically. */
+function openCentre() {
+  for (const [x, y] of [[1500, 1500], [2200, 1800], [1200, 2200], [2600, 1200]]) {
+    const c = Geo.parseCellId(allowedNear(x, y, []));
+    let ok = true;
+    for (let dq = -3; dq <= 3; dq++) for (let dr = -3; dr <= 3; dr++) {
+      if (Math.max(Math.abs(dq), Math.abs(dr), Math.abs(dq + dr)) <= 3 && !ctx.placeable(c.q + dq, c.r + dr)) ok = false;
+    }
+    if (ok) return c;
+  }
+  throw new Error('no open area');
+}
+
+test('fitFootprint: fills a notch in a ring of placed tiles, stays valid, reproducible; null away from tiles', () => {
+  const c = openCentre();
+  const D = Geo.NEIGHBOR_DELTAS;
+  // ring around c with one gap: the notch is c plus the gap cell
+  const ring = D.slice(1).map(d => Geo.cellId(c.q + d.dq, c.r + d.dr));
+  let doc = withBatch('ring', 6);
+  doc = M.apply(doc, { type: 'createBatch', batch: batch('fit', 7), at: AT }, ctx).doc;
+  doc = place(doc, 'ring', ring).doc;
+  const gap = Geo.cellId(c.q + D[0].dq, c.r + D[0].dr), centre = Geo.cellId(c.q, c.r);
+  const run = (seed) => M.fitFootprint(doc, ctx, 'fit', { q: c.q, r: c.r }, 7, seeded(seed));
+  const shape = run(5);
+  assert.ok(shape, 'a fit exists');
+  const ids = shape.map(s => Geo.cellId(s.q, s.r));
+  assert.equal(ids.length, 7);
+  assert.equal(new Set(ids).size, 7);
+  assert.ok(ids.includes(centre) && ids.includes(gap), 'the notch is filled');
+  assert.equal(M.checkPlacement(doc, ctx, 'fit', shape).valid, true);
+  assert.deepEqual(run(5), shape, 'same seed, same shape');
+  // pointer on a placed tile: the nearest free cell seeds the shape
+  const onTile = M.fitFootprint(doc, ctx, 'fit', Geo.parseCellId(ring[2]), 7, seeded(9));
+  assert.ok(onTile && onTile.length === 7 && onTile.every(s => !ring.includes(Geo.cellId(s.q, s.r))));
+  // far from every placed tile, a single hex, or n above the cap: no fit
+  assert.equal(M.fitFootprint(doc, ctx, 'fit', { q: c.q + 9, r: c.r }, 7, seeded(1)), null);
+  assert.equal(M.fitFootprint(doc, ctx, 'fit', { q: c.q, r: c.r }, 1, seeded(1)), null);
+  assert.equal(M.fitFootprint(doc, ctx, 'fit', { q: c.q, r: c.r }, 61, seeded(1)), null);
+  assert.equal(M.fitFootprint(withBatch('x', 3), ctx, 'x', { q: c.q, r: c.r }, 3, seeded(1)), null, 'empty map: no border');
+});
+
+test('fitFootprint: a pocket larger than n is filled inside with n cells and leaves no new hole', () => {
+  const c = openCentre();
+  const D = Geo.NEIGHBOR_DELTAS;
+  // radius-2 ring minus one cell: a 7-cell pocket (c + its 6 neighbours) with a single opening
+  const ring2 = [];
+  for (let dq = -2; dq <= 2; dq++) for (let dr = -2; dr <= 2; dr++) if (Math.max(Math.abs(dq), Math.abs(dr), Math.abs(dq + dr)) === 2) ring2.push({ q: c.q + dq, r: c.r + dr });
+  let doc = withBatch('wall', 12);
+  doc = M.apply(doc, { type: 'createBatch', batch: batch('fit', 5), at: AT }, ctx).doc;
+  doc = place(doc, 'wall', ring2.slice(1).map(x => Geo.cellId(x.q, x.r))).doc;
+  const shape = M.fitFootprint(doc, ctx, 'fit', { q: c.q, r: c.r }, 5, seeded(3));
+  assert.ok(shape && shape.length === 5);
+  const inner = new Set([Geo.cellId(c.q, c.r), ...D.map(d => Geo.cellId(c.q + d.dq, c.r + d.dr))]);
+  assert.ok(shape.every(s => inner.has(Geo.cellId(s.q, s.r))), 'stays inside the pocket');
+  assert.equal(M.checkPlacement(doc, ctx, 'fit', shape).valid, true);
+});

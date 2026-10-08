@@ -3336,6 +3336,7 @@
       tr = {
         kind: 'stock', mode: mode, batchId: batchId, docRef: doc, pointerId: e.pointerId, moved: false, handle: h, x0: e.clientX, y0: e.clientY,
         footprint: mode === 'all' ? Model.randomFootprint(remaining) : [{ dq: 0, dr: 0 }],     // rolled once on press (PD-032), frozen for the drag
+        seed: (Math.random() * 4294967296) >>> 0,                                               // per-drag seed of the border-fit shape (PD-037)
         preview: null, wasArmed: wasArmed,
       };
       try { h.setPointerCapture(e.pointerId); } catch (err) { /* synthetic events */ }
@@ -3390,7 +3391,7 @@
       if (fogTool) setFogTool(null, { quiet: true });
       const remaining = Model.derive(doc).counts.get(batchId).remaining;
       if (remaining < 1) return;
-      tr = { kind: 'armed', mode: mode, batchId: batchId, docRef: doc, handle: handle, footprint: mode === 'all' ? Model.randomFootprint(remaining) : [{ dq: 0, dr: 0 }], preview: null };
+      tr = { kind: 'armed', mode: mode, batchId: batchId, docRef: doc, handle: handle, footprint: mode === 'all' ? Model.randomFootprint(remaining) : [{ dq: 0, dr: 0 }], seed: (Math.random() * 4294967296) >>> 0, preview: null };
       handle.classList.add('is-armed');
       handle.setAttribute('aria-pressed', 'true');
       ui.viewport.classList.add('is-placing');
@@ -3399,17 +3400,33 @@
 
     /* ---- preview ---- */
 
+    /** Small seeded PRNG (mulberry32): the same seed always yields the same sequence. */
+    function seededRandom(seed) {
+      let a = seed >>> 0;
+      return () => { a = (a + 0x6D2B79F5) >>> 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    }
+
     function computePreview(x) {
       if (!pointer.inside || !data) return null;
       const w = Geo.screenToWorld(cam, pointer.x, pointer.y);
       const anchor = data.grid.worldToCell(w[0], w[1]);
       const offsets = x.kind === 'tile' ? [{ dq: 0, dr: 0 }] : x.footprint;
-      const cells = offsets.map(o => ({ q: anchor.q + o.dq, r: anchor.r + o.dr }));
+      let cells = null, fitted = false;
+      if (x.kind !== 'tile' && offsets.length > 1) {
+        // PD-037: near placed tiles the dashed block takes the shape of the notch under the pointer; cached per (document, anchor) so it never flickers
+        const key = anchor.q + ',' + anchor.r;
+        if (!x.fit || x.fit.doc !== doc || x.fit.key !== key) {
+          const rng = seededRandom((x.seed ^ Math.imul(anchor.q, 73856093) ^ Math.imul(anchor.r, 19349663)) >>> 0);
+          x.fit = { doc: doc, key: key, cells: Model.fitFootprint(doc, data.ctx, x.batchId, anchor, offsets.length, rng) };
+        }
+        if (x.fit.cells) { cells = x.fit.cells; fitted = true; }
+      }
+      if (!cells) cells = offsets.map(o => ({ q: anchor.q + o.dq, r: anchor.r + o.dr }));
       // the same cell policy AND region-shape rule the commit applies (Model.apply), so preview and result never disagree
       const chk = Model.checkPlacement(doc, data.ctx, x.batchId, cells, x.kind === 'tile' ? x.tileId : null);
       const checked = chk.cells;
       const origin = x.kind === 'tile' && checked[0].id === x.from;
-      return { anchor: anchor, cells: checked, valid: chk.valid, connected: chk.connected, attached: chk.attached, attachCode: chk.attachCode, separateEligible: chk.separateEligible, isKind: x.kind, isOrigin: origin };
+      return { anchor: anchor, fitted: fitted, cells: checked, valid: chk.valid, connected: chk.connected, attached: chk.attached, attachCode: chk.attachCode, separateEligible: chk.separateEligible, isKind: x.kind, isOrigin: origin };
     }
 
     function updatePreview() {

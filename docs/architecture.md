@@ -1079,7 +1079,7 @@ Run all of them with `node --test tests/*.test.js`.
   `tr` = a stock drag, a tile drag or an armed click-to-place; `pan`;
   selection; the open Region Inspector; the fog tool, an in-progress fog stroke, the fog
   hover cell and Player Preview (see "Fog of War and Player Preview"). The "All N" footprint is rolled once per press
-  (`randomFootprint(N, rng)`: random, connected, hole-free, never a straight line; PD-032) and frozen. A drag remembers
+  (`randomFootprint(N, rng)`: random, connected, hole-free, never a straight line; PD-032) and frozen; near placed tiles the preview instead shows `fitFootprint(...)`, the shape that fills the notch under the pointer (PD-037, cached per document and anchor cell). A drag remembers
   the document it started on; release revalidates and a changed document
   cancels it. Escape, `pointercancel`, lost capture, a drop outside the map,
   route exit and any dispatched command cancel without touching state.

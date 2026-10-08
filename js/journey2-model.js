@@ -1120,6 +1120,72 @@
     return compactFootprint(n);
   }
 
+  /**
+   * "Fit to the border" for "Place all" (PD-037): the shape of n ABSOLUTE cells that best fills the notch, bay or pocket the pointer is
+   * over, or `null` when it does not apply (the view then keeps its rolled random footprint). It applies only when a placed tile lies
+   * within two cells of the anchor (or the anchor itself is on one: the nearest free cell is used) and n <= 60. The shape always
+   * contains its seed cell (the anchor, or the nearest free cell). It grows one cell at a time, always taking the candidate whose
+   * neighbours are most often already in the shape or blocked (a placed tile, an unplaceable cell), so a pocket fills before the shape
+   * spills outwards; a pocket larger than n is simply filled with n cells. Several attempts (the first is pure greedy, later ones noisier)
+   * are ranked: a valid placement (`checkPlacement`) first, then fewest NEW enclosed holes, then least exposed perimeter. Pure function of
+   * the document, the anchor, n and `rng` — the view seeds `rng` per drag and anchor so the shape never flickers.
+   */
+  function fitFootprint(doc, ctx, batchId, anchor, n, rng) {
+    if (!isInt(n) || n < 2 || n > 60 || !anchor || !isInt(anchor.q) || !isInt(anchor.r) || !doc.tiles.length) return null;
+    const rand = typeof rng === 'function' ? () => Math.min(0.999999999, Math.max(0, Number(rng()) || 0)) : Math.random;
+    const occ = derive(doc).occupancy;
+    const D = Geo.NEIGHBOR_DELTAS;
+    const isOcc = (q, r) => occ.has(Geo.cellId(q, r));
+    const free = (q, r) => !isOcc(q, r) && ctx.placeable(q, r);
+    let near = false;
+    for (let dq = -2; dq <= 2 && !near; dq++) for (let dr = -2; dr <= 2; dr++) {
+      if (Math.max(Math.abs(dq), Math.abs(dr), Math.abs(dq + dr)) <= 2 && isOcc(anchor.q + dq, anchor.r + dr)) { near = true; break; }
+    }
+    if (!near) return null;
+    const blockedCount = (q, r) => { let k = 0; for (const d of D) if (!free(q + d.dq, r + d.dr)) k++; return k; };
+    let seed = free(anchor.q, anchor.r) ? { q: anchor.q, r: anchor.r } : null;
+    if (!seed) {
+      let bestK = -1;
+      for (let dq = -2; dq <= 2; dq++) for (let dr = -2; dr <= 2; dr++) {
+        if (Math.max(Math.abs(dq), Math.abs(dr), Math.abs(dq + dr)) > 2 || !free(anchor.q + dq, anchor.r + dr)) continue;
+        const k = blockedCount(anchor.q + dq, anchor.r + dr);
+        if (k > bestK) { bestK = k; seed = { q: anchor.q + dq, r: anchor.r + dr }; }
+      }
+      if (!seed) return null;
+    }
+    const mine = doc.tiles.filter(t => t.batchId === batchId).map(t => t.cell);
+    const placeable = (q, r) => ctx.policy(q, r).ok;
+    const holesBefore = enclosedHoles(mine, placeable).length;
+    let best = null;
+    for (let attempt = 0; attempt < 16; attempt++) {
+      const noise = attempt === 0 ? 0 : attempt < 6 ? 0.9 : 2.2;
+      const cells = [seed], inShape = new Set([Geo.cellId(seed.q, seed.r)]);
+      while (cells.length < n) {
+        let pick = null, pickScore = -Infinity;
+        const seen = new Set();
+        for (const c of cells) for (const d of D) {
+          const q = c.q + d.dq, r = c.r + d.dr, id = Geo.cellId(q, r);
+          if (inShape.has(id) || seen.has(id) || !free(q, r)) continue;
+          seen.add(id);
+          let s = 0;
+          for (const e of D) { const nid = Geo.cellId(q + e.dq, r + e.dr); if (inShape.has(nid) || !free(q + e.dq, r + e.dr)) s++; }
+          s += rand() * (noise || 0.9);                // attempt 0: ties only (< 1 never outranks a whole neighbour)
+          if (s > pickScore) { pickScore = s; pick = { q: q, r: r }; }
+        }
+        if (!pick) break;
+        cells.push(pick); inShape.add(Geo.cellId(pick.q, pick.r));
+      }
+      if (cells.length < n) continue;
+      const chk = checkPlacement(doc, ctx, batchId, cells);
+      if (!chk.valid) continue;
+      const holes = Math.max(0, enclosedHoles(mine.concat(Array.from(inShape)), placeable).length - holesBefore);
+      let exposed = 0;
+      for (const c of cells) for (const d of D) { const q = c.q + d.dq, r = c.r + d.dr; if (!inShape.has(Geo.cellId(q, r)) && free(q, r)) exposed++; }
+      if (!best || holes < best.holes || (holes === best.holes && exposed < best.exposed)) best = { cells: cells, holes: holes, exposed: exposed };
+    }
+    return best ? best.cells : null;
+  }
+
   /* ---------------- region inspection (transient view state — never part of the document, history or storage) ---------------- */
 
   /** The one empty inspection. `source` is where it was opened from: 'map' (a placed hex, the visual anchor) or 'card' (a sidebar card). */
@@ -1164,7 +1230,7 @@
     validateDocument: validateDocument, parseBackupText: parseBackupText, serializeBackup: serializeBackup,
     checkCells: checkCells, checkPlacement: checkPlacement, topologyCheck: topologyCheck, preparedMapComponentCount: preparedMapComponentCount, preparedMapConnectivity: preparedMapConnectivity, deleteTopology: deleteTopology, cellOwners: cellOwners, canonicalEdgeKey: canonicalEdgeKey, neighborIds: neighborIds, regionBoundarySegments: regionBoundarySegments, regionConnectivity: regionConnectivity, isConnected: isConnected, componentCount: componentCount, enclosedHoles: enclosedHoles, holeCounts: holeCounts, apply: apply,
     createHistory: createHistory, historyCommit: historyCommit, historyUndo: historyUndo, historyRedo: historyRedo, historyClear: historyClear,
-    compactFootprint: compactFootprint, randomFootprint: randomFootprint,
+    compactFootprint: compactFootprint, randomFootprint: randomFootprint, fitFootprint: fitFootprint,
     MAX_SOUL_ECHOES: MAX_SOUL_ECHOES, planSoulEchoes: planSoulEchoes, getCollectedEchoSet: getCollectedEchoSet, isEchoCollected: isEchoCollected, availableEchoIds: availableEchoIds,
     SANCTUARY_DICE: SANCTUARY_DICE, MAX_SANCTUARY_NAME: MAX_SANCTUARY_NAME, validateSanctuaryEntry: validateSanctuaryEntry, planSanctuaries: planSanctuaries,
     getRevealedSanctuaryNameSet: getRevealedSanctuaryNameSet, isSanctuaryNameRevealed: isSanctuaryNameRevealed,
