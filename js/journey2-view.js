@@ -1452,15 +1452,17 @@
 
     /* PROTOTYPE (Forest only): an illustrated header for the shared Region Inspector — hex-opened and card-opened alike.
      * Biome -> artwork lives in css/journey2.css ([data-art] rules); this only flags which biomes have art.
-     * The ?hdr=A1|A2|B1|B2 query (A centred / B shifted up, 1 original / 2 taller) is a dev-only comparison switch. */
+     * Default (no query): image at 25%, header +24px, +0px on phones (<= 600px) — all in CSS.
+     * The ?hdr=<A|B><1|2|3> query is a dev-only comparison switch: A centred / B shifted up; 1 original / 2 +24px / 3 +12px. */
     const HEADER_ART_BIOMES = new Set(['forest']);
     function applyHeaderArt(b) {
       const root = ui.inspector, art = !b.habitat.overtaken && HEADER_ART_BIOMES.has(b.habitat.biome) ? b.habitat.biome : '';
       if (!art) { root.removeAttribute('data-art'); root.removeAttribute('data-art-pos'); root.removeAttribute('data-art-h'); return; }
-      const m = /^([AB])([12])$/i.exec(new URLSearchParams(location.search).get('hdr') || 'A1') || ['', 'A', '1'];
       root.setAttribute('data-art', art);
+      const m = /^([AB])([123])$/i.exec(new URLSearchParams(location.search).get('hdr') || '');
+      if (!m) { root.removeAttribute('data-art-pos'); root.removeAttribute('data-art-h'); return; }
       root.setAttribute('data-art-pos', m[1].toUpperCase() === 'B' ? 'up' : 'center');
-      root.setAttribute('data-art-h', m[2] === '2' ? 'tall' : 'orig');
+      root.setAttribute('data-art-h', { 1: 'orig', 2: 'tall', 3: 'mid' }[m[2]]);
     }
 
     /** Paints the open inspector from the committed document. */
