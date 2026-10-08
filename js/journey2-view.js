@@ -264,6 +264,11 @@
 
     function makeNumberFormat() { try { return new Intl.NumberFormat(lang); } catch (e) { return new Intl.NumberFormat('en'); } }
     function n(v) { return nf.format(v); }
+    /** Route length for the bubble: one hex is about 24 miles; Russian shows whole kilometres, everything else whole miles. */
+    function routeDistanceText(hexes) {
+      const miles = hexes * 24;
+      return lang === 'ru' ? fill('journey2_route_dist_km', { n: n(Math.round(miles * 1.609344)) }) : fill('journey2_route_dist_mi', { n: n(Math.round(miles)) });
+    }
     function fill(key, vars) {
       let s = t(key);
       if (vars) for (const k of Object.keys(vars)) s = s.split('{' + k + '}').join(String(vars[k]));
@@ -2081,7 +2086,8 @@
     function routeBubbleText(v, s) {
       const r = v.st.routes[s], merged = s === 'fastest' && !routeShownList(v.st.routes).includes('shortest') && routeShortestRedundant(v.st.routes);
       const label = t(merged ? 'journey2_route_both' : ROUTE_LABEL[s]);
-      const stats = r.stats.complete ? fill('journey2_route_bub_stats', { hexes: n(r.stats.hexes), days: n(r.stats.travelDays) }) : fill('journey2_route_bub_unknown', { hexes: n(r.stats.hexes) });
+      const dist = routeDistanceText(r.stats.hexes);
+      const stats = r.stats.complete ? fill('journey2_route_bub_stats', { hexes: n(r.stats.hexes), dist: dist, days: n(r.stats.travelDays) }) : fill('journey2_route_bub_unknown', { hexes: n(r.stats.hexes), dist: dist });
       return { label: label, stats: stats };
     }
 
@@ -2311,11 +2317,11 @@
           else html += '<div class="j2-sanc-pair is-single">' + cell(r) + '</div>';
         }
         if (ui.s.rows.getAttribute('data-sig') !== html) { ui.s.rows.innerHTML = html; ui.s.rows.setAttribute('data-sig', html); }
+        // the one player-facing control: its label is the action it will take (no pressed state — the label itself changes), the icon follows the state
         const shown = Model.isSanctuaryNameRevealed(doc, e.anchorId);
         ui.s.nameIco.innerHTML = shown ? ICON.eye : ICON.eyeOff;
         ui.s.nameLabel.textContent = t(shown ? 'journey2_sanc_name_hide' : 'journey2_sanc_name_reveal');
         ui.sancName.title = t(shown ? 'journey2_sanc_name_hide_title' : 'journey2_sanc_name_reveal_title');
-        // the one player-facing control: its label is the action it will take (no pressed state — the label itself changes), the icon follows the state
         ui.sancName.disabled = editLocked;
         ui.sancReroll.disabled = editLocked || !sanctuaryReady();
         ui.sancDelete.disabled = editLocked;
