@@ -576,3 +576,10 @@ what changes at each):
 - [ ] A = B opens the details with "Start and destination are the same hex." (no line). Locate Soul Echoes, Reveal / Hide and armed placement close the planner and vice versa; Undo / Redo recompute an open route
   and never reopen a closed one; fog and revealed cells are unchanged.
 - [ ] Player Preview, Print Preview and the printed pages contain no route line, A / B pin, bubble or statistic. Verify in English and Russian.
+
+### Encounter Roll (PD-039)
+- [ ] Open the Region Inspector from a placed hex and from a card's Inspect button: the Terrain line shows a "Nd6" button (N = the dots; "4d6" for Extreme) with a small d6 icon, right-aligned; on a narrow panel it wraps under the terrain name. Hover / long focus shows the rule text.
+- [ ] Click it: the dice appear one by one (no motion with reduced motion on), ones are red, the verdict reads "Encounter!" (any 1) or "No 1s" with the "you may spend a Fear" reminder. The Encounter section is framed in red with a "Triggered" flag only on a hit; a miss leaves it unchanged. Click again: it re-rolls.
+- [ ] Switching to another hex or region, closing and reopening the inspector, clears the roll. Nothing about it is in the saved map, Undo/Redo, Player Preview or the printed pages.
+- [ ] A fully shadowblighted region: no Inspect button on its card; clicking its hex opens a compact inspector with only the title, the badge and "Return to stock" — no Terrain, roll button, Encounter or Rumor.
+- [ ] Verify in English and Russian (the verdicts and the Fear hint must not clip).

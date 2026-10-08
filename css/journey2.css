@@ -760,6 +760,33 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
   .j2-pp-pagelabel { display: none; }
 }
 
+/* ---------- Encounter Roll (PD-039): the "Nd6" button in the Terrain line, the dice of the last roll, and the Encounter frame ---------- */
+.j2-insp-scroll[hidden], .j2-inspect[hidden], .j2-roll-btn[hidden] { display: none; }
+.j2-roll-btn { margin-left: auto; display: inline-flex; align-items: center; gap: var(--s-1); font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.j2-roll-btn .j2-ico { display: inline-flex; }
+.j2-roll-btn .j2-ico svg { width: 16px; height: 16px; }
+.j2-roll-out { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); padding-top: var(--s-1); }
+.j2-roll-out[hidden] { display: none; }
+.j2-roll-dice { display: inline-flex; gap: var(--s-1); }
+.j2-die {
+  display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; box-sizing: border-box;
+  font-style: normal; font-family: var(--font-mono); font-size: var(--fs-sm); font-variant-numeric: tabular-nums;
+  color: var(--parchment); background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-sm);
+  animation: j2-die-tumble var(--t-base) var(--ease-out) both; animation-delay: calc(var(--i, 0) * 60ms);
+}
+.j2-die.is-one { color: var(--fear-soft); border-color: var(--fear); background: var(--fear-tint); font-weight: 600; }
+@keyframes j2-die-tumble { from { opacity: 0; transform: translateY(-6px) rotate(-90deg) scale(0.7); } to { opacity: 1; transform: none; } }
+.j2-roll-verdict { font-size: var(--fs-sm); font-weight: 600; color: var(--parchment-dim); }
+.j2-roll-out.is-triggered .j2-roll-verdict { color: var(--fear-soft); }
+.j2-roll-hint { flex-basis: 100%; font-size: var(--fs-xs); line-height: var(--lh-sm); color: var(--muted); }
+.j2-roll-hint[hidden] { display: none; }
+/* a rolled 1 frames the region's Encounter in Fear red (a dangerous game state); the text flag says it too, so colour is never the only cue */
+.j2-enc-sec.is-triggered { border: 1px solid var(--fear); border-radius: var(--r-sm); padding: var(--s-3); }
+.j2-enc-sec.is-triggered .j2-insp-h { color: var(--fear-soft); }
+.j2-enc-flag { margin-left: var(--s-2); }
+.j2-enc-flag[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) { .j2-die { animation: none; } }
+
 /* ---------- Route Planner (PD-031): GM-only selection chip, A / B pins, two side-by-side route lines with navigator-style bubbles, details popover ---------- */
 .j2-tb-route { padding-left: var(--s-3); border-left: 1px solid var(--line-faint); }
 .j2-toolbar.is-wrapped .j2-tb-route { padding-left: 0; border-left: 0; }

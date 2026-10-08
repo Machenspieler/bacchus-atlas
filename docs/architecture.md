@@ -1360,6 +1360,13 @@ Run all of them with `node --test tests/*.test.js`.
   screen-space `<button>`s in `.j2-route-bubbles` (a sibling of the viewport, so they never start a pan), positioned by `positionRouteBubbles()` (clamped to the map, nudged apart). The details
   popover `.j2-route` is hidden unless `routeDetails` (or there is nothing to draw). Everything is emptied in Player Preview; the print builders never import the route module.
 
+### Journey 2 Encounter Roll (PD-039)
+
+`js/journey2-encounter-roll.js` is pure (UMD, no DOM, storage or strings), loaded before the view: `rollEncounterDice({ count, sides = 6, random })` returns `{ sides, faces, triggered }` (`triggered` = any face is 1). The injected RNG follows the dealer / Locate convention (`() -> [0, 1)`, defaults to `Math.random`; the view's is replaceable through `debugApi().setRollRandom`).
+- **View.** The button `[data-j2-roll]` sits in the inspector's Terrain line (`.j2-insp-line`), the result row `[data-j2-i="rollOut"]` right below the Terrain text, and the red frame is the `is-triggered` class on the Encounter section (`encSec`). `renderEncounterRoll(b)` (called from `renderInspector`) paints all of it from one transient record `encRoll = { batchId, tileId, faces, triggered, n }`; the dice markup is rebuilt only when `n` changes, so an unrelated re-render never replays the tumble animation (also off under `prefers-reduced-motion`). The record is dropped when the inspector closes, the region or hex differs, or the region is fully overtaken.
+- **Overtaken regions.** `renderInspector` hides `.j2-insp-scroll` (Terrain, roll, Encounter, Rumor) and the card's Inspect button; the header and the hex's Return footer remain.
+- **Isolation.** Nothing is stored, nothing enters history, the projection or the print builders; `tests/journey2-encounter-roll.test.js` guards each of these.
+
 ### Journey 2 sanctuary names for players (PD-027)
 
 - *Schema.* `playerVisibility = { revealedCells, revealedSanctuaryNameAnchorIds }`; the second list is sorted anchor ids, optional on load

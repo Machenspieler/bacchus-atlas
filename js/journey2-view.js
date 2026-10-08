@@ -53,6 +53,7 @@
      js/journey2-projection.js the player-facing projection (pure)
      js/journey2-locate.js    Locate Soul Echoes: bearing, sixteen directions, nearest Echo, session state machine (pure)
      js/journey2-env-deal.js  Environment dealer: least-used-first random Environments for freshly placed hexes (pure)
+     js/journey2-encounter-roll.js  Encounter Roll: Terrain-Rating d6s, any 1 triggers (PD-039; pure)
      js/journey2-route.js     Route Planner: A* over the hex grid, three strategies, route statistics, planner state machine (pure)
      js/journey2-store.js     local persistence over safe-storage
      js/journey2-view.js      this file: DOM, pointer state, rendering
@@ -93,6 +94,7 @@
   const Locate = root.Journey2Locate;
   const Route = root.Journey2Route;
   const EnvDeal = root.Journey2EnvDeal;
+  const EncRoll = root.Journey2EncounterRoll;
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const MAX_ZOOM = 8;
   const CLICK_SLOP_PX = 4;
@@ -190,6 +192,7 @@
     let spaceDown = false;
     let sel = { tileId: null };
     let inspector = Model.NO_INSPECTION;                    // { batchId, tileId, source } — the open Region Inspector (transient: never persisted, never in history)
+    let encRoll = null;                                     // transient: { batchId, tileId, faces, triggered, n } — the last Encounter Roll in the open Region Inspector (never persisted, never in history, GM-only)
     let envPicker = null;                                   // transient: { tileId } while the inline Hex Environment picker is open (never persisted, never in history)
     let envTipKey = null;                                   // tileId whose environment tooltip is showing
     let inspectorShown = null;                              // batchId the inspector DOM currently shows (so its scroll position survives re-renders)
@@ -240,6 +243,7 @@
     let locateHover = null;                                 // { q, r } under the pointer while Locate Soul Echoes is selecting (transient: never persisted, never in history)
     let locateNeedleStarted = false;                        // the needle transition of the current result has been started (a re-render must not restart it)
     let locateNote = '';                                    // why an Undo/Redo closed a stale result (appended to the Undo/Redo announcement)
+    let rollRandom = Math.random;                           // the RNG the Encounter Roll draws with (replaceable through the debug API for the browser checks)
     let dealRandom = Math.random;                           // the RNG the Environment dealer draws with (replaceable through the debug API for the browser checks)
     let locateRandom = Math.random;                         // the one RNG a tie is drawn with (replaceable through the debug API for the browser checks)
     let routeHover = null;                                  // { q, r } under the pointer while the Route Planner is selecting A or B (transient: never persisted, never in history)
@@ -414,6 +418,7 @@
       players: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7" r="2.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 16c0-2.9 2.2-4.7 5-4.7s5 1.8 5 4.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="14" cy="8" r="2.1" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M14.4 11.6c2 .2 3.4 1.6 3.4 4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
       close: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m3.5 3.5 7 7m0-7-7 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
       eye: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.5 10C4 5.8 7 4 10 4s6 1.8 8.5 6c-2.5 4.2-5.5 6-8.5 6s-6-1.8-8.5-6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.6" fill="currentColor"/></svg>',
+      d6: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 2 17 6v8l-7 4-7-4V6z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M3 6l7 4 7-4M10 10v8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><g fill="currentColor"><circle cx="10" cy="5.9" r=".9"/><circle cx="6.1" cy="11.6" r=".8"/><circle cx="13.9" cy="11.6" r=".8"/></g></svg>',
       eyeOff: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.5 10C4 5.8 7 4 10 4s6 1.8 8.5 6c-2.5 4.2-5.5 6-8.5 6s-6-1.8-8.5-6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M3.5 16.5 16.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
       sanctuary: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 17h14M5 17V9l5-5.5L15 9v8M8.5 17v-4.5h3V17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       crystal: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 1.8 6.6 6.6 7.6 14 10 17.4 12.4 14 13.4 6.6zM10 1.8v15.6M6.6 6.6h6.8M6.2 13.2 3 15.4l2.6-5.2M13.8 13.2 17 15.4l-2.6-5.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/></svg>',
@@ -542,18 +547,24 @@
                   </div>
                   <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-insp-close data-t-aria="journey2_inspector_close" data-t-title="journey2_inspector_close">${ICON.close}</button>
                 </header>
-                <div class="j2-insp-scroll">
+                <div class="j2-insp-scroll" data-j2-i="scroll">
                   <p class="j2-insp-examples" data-j2-i="examples" hidden></p>
-                  <div class="j2-insp-summary">
-                    <p class="j2-insp-line"><span class="j2-dots" data-j2-i="dots" role="img"></span><strong data-j2-i="terrainName"></strong><span data-j2-i="terrainN"></span></p>
+                  <div class="j2-insp-summary" data-j2-i="summary">
+                    <p class="j2-insp-line"><span class="j2-dots" data-j2-i="dots" role="img"></span><strong data-j2-i="terrainName"></strong><span data-j2-i="terrainN"></span>
+                      <button type="button" class="btn btn-sm j2-roll-btn" data-j2-roll data-j2-i="roll" data-t-title="journey2_roll_tip"><span class="j2-ico" aria-hidden="true">${ICON.d6}</span><span data-j2-i="rollLabel"></span></button></p>
                     <p class="j2-insp-terrain-text" data-j2-i="terrainText" hidden></p>
+                    <div class="j2-roll-out" data-j2-i="rollOut" hidden>
+                      <span class="j2-roll-dice" data-j2-i="rollDice" role="img"></span>
+                      <span class="j2-roll-verdict" data-j2-i="rollVerdict"></span>
+                      <span class="j2-roll-hint" data-j2-i="rollHint" data-t="journey2_roll_fear" hidden></span>
+                    </div>
                   </div>
                   <section class="j2-insp-sec j2-hexenv" data-j2-i="hexEnvSec" aria-labelledby="j2-hexenv-title" hidden>
                     <h4 class="j2-insp-h" id="j2-hexenv-title" data-t="journey2_hexenv_title"></h4>
                     <div data-j2-i="hexEnvBody"></div>
                   </section>
-                  <section class="j2-insp-sec"><h4 class="j2-insp-h" data-t="journey_k_encounter"></h4><div data-j2-i="enc"></div></section>
-                  <section class="j2-insp-sec"><h4 class="j2-insp-h" data-t="journey_k_rumor"></h4><p class="j2-insp-p" data-j2-i="rumor"></p></section>
+                  <section class="j2-insp-sec j2-enc-sec" data-j2-i="encSec"><h4 class="j2-insp-h"><span data-t="journey_k_encounter"></span><span class="j2-enc-flag" data-j2-i="encFlag" data-t="journey2_roll_triggered" hidden></span></h4><div data-j2-i="enc"></div></section>
+                  <section class="j2-insp-sec" data-j2-i="rumorSec"><h4 class="j2-insp-h" data-t="journey_k_rumor"></h4><p class="j2-insp-p" data-j2-i="rumor"></p></section>
                 </div>
                 <footer class="j2-insp-tile" data-j2-insp-tile hidden>
                   <span class="j2-insp-tile-text" data-j2-i="tileText"></span>
@@ -1024,6 +1035,7 @@
       refs.inspect.classList.toggle('is-on', inspected);
       refs.inspect.setAttribute('title', t('journey2_inspect_region'));
       refs.inspect.disabled = false;
+      refs.inspect.hidden = !!b.habitat.overtaken;       // a fully overtaken region has nothing to inspect (PD-039)
       refs.inspectSr.textContent = fill('journey2_inspect_aria', { name: name, n: ord }) + (inspected ? ' (' + t('journey2_inspect_open') + ')' : '');
       if (active) refs.root.setAttribute('aria-current', 'true'); else refs.root.removeAttribute('aria-current');
       refs.toggle.setAttribute('aria-expanded', String(active));
@@ -1271,6 +1283,7 @@
       const o = opts || {};
       const was = inspector;
       inspector = Model.NO_INSPECTION;
+      encRoll = null;
       envPicker = null;
       if (was.tileId && sel.tileId === was.tileId) sel.tileId = null;
       if (ui.inspector) { ui.inspector.hidden = true; ui.inspector.style.transform = ''; }
@@ -1296,6 +1309,42 @@
       inspector = next;
     }
 
+    /** The Encounter Roll in the open inspector: the button ("Nd6", N = the region's Terrain Rating), the dice of the last roll and the Encounter frame.
+     *  The result belongs to one region + hex and is dropped the moment either changes. */
+    function renderEncounterRoll(b) {
+      const I = ui.i, bare = !!b.habitat.overtaken, nDice = b.terrain.value;
+      if (encRoll && (encRoll.batchId !== inspector.batchId || encRoll.tileId !== inspector.tileId || bare)) encRoll = null;
+      I.roll.hidden = bare;
+      I.rollLabel.textContent = n(nDice) + 'd6';
+      I.roll.setAttribute('aria-label', fill('journey2_roll_aria', { n: n(nDice) }));
+      const r = encRoll;
+      I.rollOut.hidden = !r;
+      I.encSec.classList.toggle('is-triggered', !!(r && r.triggered));
+      I.encFlag.hidden = !(r && r.triggered);
+      if (!r) { I.rollDice.textContent = ''; I.rollDice.removeAttribute('data-n'); return; }
+      // rebuilt only for a new roll, so an unrelated re-render never replays the tumble
+      if (I.rollDice.getAttribute('data-n') !== String(r.n)) {
+        I.rollDice.innerHTML = r.faces.map((f, i) => '<i class="j2-die' + (f === 1 ? ' is-one' : '') + '" style="--i:' + i + '">' + n(f) + '</i>').join('');
+        I.rollDice.setAttribute('data-n', String(r.n));
+      }
+      I.rollDice.setAttribute('aria-label', fill('journey2_roll_dice_aria', { faces: r.faces.map(n).join(', ') }));
+      I.rollOut.classList.toggle('is-triggered', r.triggered);
+      I.rollVerdict.textContent = t(r.triggered ? 'journey2_roll_hit' : 'journey2_roll_miss');
+      I.rollHint.hidden = r.triggered;
+    }
+
+    /** Rolls the region's Terrain Rating in d6s; any 1 triggers its Encounter. Re-rolling is always allowed. */
+    function rollEncounter() {
+      const b = inspectorOpen() ? Model.batchById(doc, inspector.batchId) : null;
+      if (!b || b.habitat.overtaken || !EncRoll) return;
+      const res = EncRoll.rollEncounterDice({ count: b.terrain.value, sides: 6, random: rollRandom });
+      encRoll = { batchId: inspector.batchId, tileId: inspector.tileId, faces: res.faces, triggered: res.triggered, n: ((encRoll && encRoll.n) || 0) + 1 };
+      renderInspector();
+      positionInspector();
+      ensureInspectorClear();
+      announce(fill(res.triggered ? 'journey2_roll_live_hit' : 'journey2_roll_live_miss', { faces: res.faces.map(n).join(', ') }));
+    }
+
     /** Paints the open inspector from the committed document. */
     function renderInspector() {
       if (!ui.inspector) return;
@@ -1312,7 +1361,13 @@
       I.dots.innerHTML = [1, 2, 3, 4].map(i => '<i' + (i <= b.terrain.value ? ' class="on"' : '') + '></i>').join('');
       I.dots.setAttribute('aria-label', fill('journey2_terrain_n', { n: b.terrain.value }));
       I.terrainN.textContent = '';
-      if (generator && generator.ready()) {
+      // a fully overtaken region has no Terrain, Encounter or Rumor to read or roll for: the panel keeps only its title and the hex's Return (PD-039)
+      const bare = !!b.habitat.overtaken;
+      I.scroll.hidden = bare;
+      renderEncounterRoll(b);
+      if (bare) {
+        I.examples.hidden = true; I.terrainText.hidden = true; I.terrainName.textContent = ''; I.enc.innerHTML = ''; I.rumor.textContent = '';
+      } else if (generator && generator.ready()) {
         const d = generator.describe(b);
         I.terrainName.textContent = d.terrain ? d.terrain.name : '';
         I.terrainText.hidden = !(d.terrain && d.terrain.text);
@@ -3704,6 +3759,7 @@
         else openInspectorFromCard(id);
       }
       else if (b.hasAttribute('data-j2-insp-close')) closeInspector({ focus: true });
+      else if (b.hasAttribute('data-j2-roll')) rollEncounter();
       else if (b.hasAttribute('data-j2-delete')) confirmDelete(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-side-toggle')) toggleSide();
       else if (b.hasAttribute('data-j2-fit')) fitToView();
@@ -4403,6 +4459,7 @@
         dispatch(cmd) { return dispatch(cmd, cmd.type); },
         decorativeCells() { return Array.from(data.ctx.decorativeCells); },
         setDealRandom(fn) { dealRandom = typeof fn === 'function' ? fn : Math.random; },
+        setRollRandom(fn) { rollRandom = typeof fn === 'function' ? fn : Math.random; },
         setLocateRandom(fn) { locateRandom = typeof fn === 'function' ? fn : Math.random; },
         sanctuaryClient(id) { const a = sanctuaryAnchorMap().get(id); return a ? this.worldToClient(a.worldPixelAnchor[0], a.worldPixelAnchor[1]) : null; },
         markers() { return data.anchorsDoc.anchors.map(a => ({ id: a.stableId, cellId: a.cellId, rect: a.iconProtectionArea.rectPx })); },
