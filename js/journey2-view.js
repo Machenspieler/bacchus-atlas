@@ -1879,6 +1879,8 @@
 
     /** Leaves Locate (Escape, Close, Cancel, another tool, import, teardown): cancels the pending completion and removes the origin, the popover and the chip. `quiet` skips the announcement. */
     function exitLocate(o) {
+      // the user closing the compass (focus: Close, Esc, the toolbar button) keeps the Shadowblight frame and bubble (PD-041); any other exit (another tool, Player Preview, import, a stale result) closes them
+      if (!(o && o.focus)) closeSeekers({ quiet: true });
       if (!locateSession.isActive()) return false;
       locateHover = null;
       locateSession.close();                                   // onChange('closed') repaints everything
@@ -1925,7 +1927,8 @@
     /** Session transitions drive every repaint; nothing here reads a timer, so a late callback can never write into a closed popover. */
     function onLocateChange(state, ev) {
       if (inst.disposed || !ui.locate) return;
-      if (ev === 'selecting' || ev === 'closed') { locateHover = null; closeSeekers({ quiet: true }); }
+      if (ev === 'selecting' || ev === 'closed') locateHover = null;
+      if (ev === 'selecting') closeSeekers({ quiet: true });          // a new location replaces the control
       if (ev === 'animating' && state && state.originCellId) openSeekers(state.originCellId);   // PD-041: the party's hex also gets the Shadowblight control
       paintLocate(); renderLocatePanel(); updateEchoUi();
       if (ev === 'animating' || ev === 'result') positionLocate();
