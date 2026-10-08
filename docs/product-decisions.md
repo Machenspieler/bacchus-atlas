@@ -997,6 +997,8 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   cells with a known rating (the start may lack one); it never assumes 1, an average or a biome default. When no fully known path exists the strategy is shown as unavailable with the reason
   and **Shortest** (which ignores terrain and may cross any valid cell) is shown instead; its statistics then say **Unknown** for travel days and expected encounters rather than a partial
   total (an optional "Known portion: N travel days (partial)" line is clearly labelled partial). Segments entering an unknown hex are drawn dashed.
+- **Decision (settlement hexes):** a hex holding a printed sanctuary, Marrogate or Horizon icon never gets generated terrain, so it is *known*, not unknown: rating 0, i.e. 0 travel days and 0 expected
+  encounter triggers (no Encounter Dice), shown as a "Sanctuary" row in the terrain breakdown. This is a product decision (2026-10-08), not a book rule. With such cells the A* heuristic bound drops to 0 (Dijkstra).
 - **Decision (what it does not read):** Fog of War, revealed cells, sanctuary names, Soul Echoes, generated sanctuary data, per-hex Environments, Shadowblight and region boundaries. A route
   crosses fog freely and never reveals or hides anything. Routeable = the editor's own valid, non-decorative cell set (the same one Reveal / Hide and Locate use); sanctuary hexes are
   ordinary cells and a click on a sanctuary icon selects its hex instead of opening the overlay.

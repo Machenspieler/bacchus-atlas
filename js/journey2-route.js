@@ -27,7 +27,8 @@
   const MIN_ENCOUNTER_COST = 1 / 6;
   const MIN_TERRAIN = 1, MAX_TERRAIN = 4;
 
-  const isRating = v => Number.isInteger(v) && v >= MIN_TERRAIN && v <= MAX_TERRAIN;
+  /** A known hex: Terrain 1-4, or 0 for a settlement hex (a sanctuary / Marrogate / Horizon icon: never generated terrain, entering it costs no days and rolls no Encounter Dice). */
+  const isRating = v => Number.isInteger(v) && v >= 0 && v <= MAX_TERRAIN;
 
   /** Probability that `rating` d6 show at least one 1. The single home of this formula. */
   function encounterProbability(rating) { return 1 - Math.pow(5 / 6, rating); }
@@ -93,7 +94,7 @@
    */
   function calculateRouteStats(cells, getTerrainRating) {
     const entered = (cells || []).slice(1);
-    const terrainCounts = { 1: 0, 2: 0, 3: 0, 4: 0 };
+    const terrainCounts = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
     let days = 0, enc = 0, known = 0, unknown = 0;
     for (const id of entered) {
       const r = getTerrainRating(id);
@@ -130,7 +131,9 @@
 
     const enterable = id => o.isRouteableCell(id) && (!model.terrainAware || isRating(rating(id)));
     const stepCost = id => (model.terrainAware ? model.edgeCost(rating(id)) : 1);
-    const h = id => hexDistance(id, goal) * model.minStep;
+    // a zero-cost settlement hex makes every per-step lower bound 0 (still admissible: it degrades A* to Dijkstra)
+    const minStep = o.hasZeroCostCells && model.terrainAware ? 0 : model.minStep;
+    const h = id => hexDistance(id, goal) * minStep;
 
     if (start === goal) return finish([start], 0);
 

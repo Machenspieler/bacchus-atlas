@@ -1946,7 +1946,8 @@
         startCell: a, goalCell: b,
         isRouteableCell: id => foggable.has(id),
         getNeighbors: id => { const c = Geo.parseCellId(id); return grid.neighbors(c.q, c.r).filter(x => x.valid).map(x => x.id); },
-        getTerrainRating: id => idx.get(id) || null,
+        getTerrainRating: id => (idx.has(id) ? idx.get(id) : (data.ctx.sanctuaryCells.has(id) ? 0 : null)),
+        hasZeroCostCells: data.ctx.sanctuaryCells.size > 0,
       });
     }
 
@@ -2114,10 +2115,11 @@
           '<p class="j2-route-note">' + esc(t('journey2_route_known_terrain')) + ': ' + n(s.knownHexes) + ' · ' + esc(t('journey2_route_unknown_terrain')) + ': ' + n(s.unknownHexes) +
           (s.knownHexes ? '<br>' + esc(fill('journey2_route_known_days', { n: n(s.knownDays) })) : '') + '</p>';
       }
-      const rows = [1, 2, 3, 4].filter(r => s.terrainCounts[r] > 0);
+      const rows = [0, 1, 2, 3, 4].filter(r => s.terrainCounts[r] > 0);
       if (rows.length) {
         h += '<h4 class="j2-route-h">' + esc(t('journey2_route_terrain')) + '</h4><ul class="j2-route-terrain">' + rows.map(r => {
           const c = s.terrainCounts[r], text = fill(c === 1 ? 'journey2_route_terrain_row_one' : 'journey2_route_terrain_row_n', { t: n(r), n: n(c) });
+          if (r === 0) return '<li><span class="j2-route-settle" aria-hidden="true">' + esc(t('journey2_route_settlement')) + '</span><span class="j2-route-count" aria-hidden="true">' + n(c) + '</span><span class="sr-only">' + esc(t('journey2_route_settlement') + ': ' + n(c)) + '</span></li>';
           return '<li>' + dotsHtml(r) + '<span class="j2-route-count" aria-hidden="true">' + n(c) + '</span><span class="sr-only">' + esc(text) + '</span></li>';
         }).join('') + '</ul>';
       }

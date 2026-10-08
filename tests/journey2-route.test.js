@@ -145,6 +145,22 @@ test('unknown terrain: Fastest / Fewer encounters never enter it, Shortest may',
   for (const k of ['fastest', 'encounters']) assert.deepEqual(route(g, '0,0', '3,0', k), { status: 'no-route', strategy: k, reason: 'unknown-terrain' });
 });
 
+test('settlement hexes (rating 0: sanctuaries, Marrogate, Horizon) are known, free, and do not block terrain-aware routes', () => {
+  const g = grid(3, fill(['1,0', '2,0'], 3));
+  const withSettle = Object.assign({}, g, { getTerrainRating: id => (id === '0,0' || id === '3,0' ? 0 : g.getTerrainRating(id)), hasZeroCostCells: true });
+  for (const k of ['fastest', 'encounters']) {
+    const r = route(withSettle, '0,0', '3,0', k);
+    assert.equal(r.status, 'ok', k); assert.equal(r.stats.complete, true);
+    assert.equal(r.stats.terrainCounts[0], 1, 'the settlement destination is counted, not charged');
+  }
+  const f = route(withSettle, '0,0', '3,0', 'fastest');
+  assert.equal(f.stats.travelDays, 6); assert.ok(Math.abs(f.stats.expectedEncounters - 2 * R.encounterExpectation(3)) < 1e-12);
+  // a zero-cost hex can make a longer route cheaper: the heuristic must stay admissible (checked against the reference)
+  const t = Object.assign(fill(['1,0', '2,0'], 4), { '1,-1': 0, '2,-1': 0, '3,-1': 0, '3,0': 1 });
+  const h = Object.assign({}, grid(3, t), { getTerrainRating: id => (t[id] === undefined ? null : t[id]), hasZeroCostCells: true });
+  assert.equal(route(h, '0,0', '3,0', 'fastest').totalCost, 1);
+});
+
 test('an unknown destination is unavailable for terrain-aware strategies but the start may lack terrain', () => {
   const g = grid(3, fill(['1,0', '2,0'], 2));                      // start 0,0 unknown: fine (entering costs nothing); destination 3,0 unknown: not allowed
   assert.equal(route(g, '0,0', '2,0', 'fastest').status, 'ok');
@@ -191,7 +207,7 @@ test('deterministic: same input, same path; equal-cost alternatives break ties c
 
 test('statistics: start excluded, destination included, terrain breakdown, zero-step', () => {
   const st = R.calculateRouteStats(['0,0', '1,0', '2,0', '3,0'], id => ({ '0,0': 4, '1,0': 1, '2,0': 1, '3,0': 3 })[id]);
-  assert.equal(st.hexes, 3); assert.equal(st.travelDays, 5); assert.deepEqual(st.terrainCounts, { 1: 2, 2: 0, 3: 1, 4: 0 });
+  assert.equal(st.hexes, 3); assert.equal(st.travelDays, 5); assert.deepEqual(st.terrainCounts, { 0: 0, 1: 2, 2: 0, 3: 1, 4: 0 });
   assert.ok(Math.abs(st.expectedEncounters - (2 * (1 / 6) + 91 / 216)) < 1e-12);
   const part = R.calculateRouteStats(['0,0', '1,0', '2,0'], id => ({ '1,0': 2 })[id]);
   assert.equal(part.complete, false); assert.equal(part.travelDays, null); assert.equal(part.expectedEncounters, null); assert.equal(part.knownDays, 2);
