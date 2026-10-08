@@ -224,6 +224,7 @@ reroll keeps it, delete removes it atomically, Soul Echoes stay secret.
 Locate Soul Echoes (PD-030): a GM-only toolbar tool — pick the party's hex, an animated sixteen-point compass answers with a DIRECTION toward the nearest uncollected Echo (pure `js/journey2-locate.js`;
 straight-line distance, one frozen RNG draw for ties, "here" on the Echo's own hex) and nothing else (never name, distance, route or target; Fog and names untouched). Its state is transient;
 only `soulEchoes.collectedAnchorIds` (Available / Collected, set from the sanctuary overlay, cleared by generating/removing Echoes) is persisted; none of it reaches Player Preview or print.
+Shadowblight control (PD-041): a Locate result also opens a red dashed frame + bubble [−] N [+] [×] under the party's hex; each + moves the nearest block(s) of Shadowblight X's one hex closer (pure `js/journey2-shadow-marks.js`; deterministic, − is exact; fully overtaken blocks keep their skulls and release one X each; no sanctuary / destination / skull hex, water not yet an obstacle). Unlike the compass this IS map state: `doc.shadowMarks = { added, suppressed }` (a delta over the regions' implied X's), one bubble session = one Undo entry, × leaves the X's where they are, players and print see them only on revealed cells.
 Player map print (PD-028): "Print player map" in Player Preview opens a Print Preview that IS the print — exactly two A4 portrait pages (the west/east halves
 of the original map, SVG over the raster), built by the pure `js/journey2-print.js` from the print projection. Screen Player Preview keeps its fog hatch; the print
 draws NO fog: fog is a data filter, so unrevealed cells are the untouched Old Valloren map and hidden content is absent, not hidden. Black and white: no tint
@@ -237,7 +238,7 @@ Encounter Roll (PD-039): a GM-only "Nd6" button in the Region Inspector's Encoun
 "Encounter!" on any 1 (red frame + "Triggered" flag on the Encounter section) or "No 1s" + a reminder that a Fear may be spent; transient, never stored, never in Player Preview or print.
 A fully overtaken region (PD-038) has no roll: its inspector keeps only the title, badge and Return, and its card has no Inspect button.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040 (Place all rolls a random frozen footprint per press), detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040/PD-041 (Place all rolls a random frozen footprint per press), detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

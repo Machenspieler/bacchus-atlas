@@ -92,6 +92,7 @@
   const Tint = root.Journey2BiomeTint;
   const Print = root.Journey2Print;
   const Locate = root.Journey2Locate;
+  const Seekers = root.Journey2ShadowMarks;
   const Route = root.Journey2Route;
   const EnvDeal = root.Journey2EnvDeal;
   const EncRoll = root.Journey2EncounterRoll;
@@ -241,6 +242,7 @@
     let sancAnchors = null;                                 // Map anchor id -> the printed sanctuary anchor (built once)
     let locateHover = null;                                 // { q, r } under the pointer while Locate Soul Echoes is selecting (transient: never persisted, never in history)
     let locateNeedleStarted = false;                        // the needle transition of the current result has been started (a re-render must not restart it)
+    let seekers = null;                                     // the open Shadowblight control of the current Locate result (PD-041): { origin, plan, step, baseDoc, doc, entry } — transient; the X's it moved are document state
     let locateNote = '';                                    // why an Undo/Redo closed a stale result (appended to the Undo/Redo announcement)
     let rollRandom = Math.random;                           // the RNG the Encounter Roll draws with (replaceable through the debug API for the browser checks)
     let dealRandom = Math.random;                           // the RNG the Environment dealer draws with (replaceable through the debug API for the browser checks)
@@ -288,6 +290,7 @@
       cancelAnimationFrame(rafId);
       clearTimeout(hintTimer); clearTimeout(liveTimer);
       routePlanner.dispose(); routeHover = null;
+      seekers = null;
       locateSession.dispose(); locateHover = null;   // cancels a pending compass completion: nothing may write into the detached DOM
       tr = null; pan = null; fogStroke = null; fogTool = null; previewMode = false; inspector = Model.NO_INSPECTION;
       cancelAnimationFrame(fogPaintRaf);
@@ -479,7 +482,7 @@
                     <defs data-j2-defs></defs><defs>${ECHO_DEFS}</defs>
                     <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/><path class="j2-fog-ghost" data-j2-fog-ghost d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routeline" pointer-events="none" aria-hidden="true"></g>
                     <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
-                    <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g><g data-j2-g="locate" pointer-events="none"></g><g data-j2-g="routemark" pointer-events="none" aria-hidden="true"></g>
+                    <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g><g data-j2-g="locate" pointer-events="none"></g><g data-j2-g="seekers" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routemark" pointer-events="none" aria-hidden="true"></g>
                   </svg>
                 </div>
                 <p class="sr-only" id="j2-keys" data-t="journey2_keys_hint"></p>
@@ -581,6 +584,12 @@
                 <button type="button" class="btn btn-sm" data-j2-route-cancel data-t="journey2_route_cancel"></button>
               </div>
               <div class="j2-route-bubbles" data-j2-route-bubbles></div>
+              <div class="j2-seek" data-j2-seek role="group" data-t-aria="journey2_seek_group" hidden>
+                <button type="button" class="j2-seek-btn" data-j2-seek-less data-t-aria="journey2_seek_less" data-t-title="journey2_seek_less"><span aria-hidden="true">&minus;</span></button>
+                <output class="j2-seek-count" data-j2-seek-count></output>
+                <button type="button" class="j2-seek-btn" data-j2-seek-more data-t-aria="journey2_seek_more" data-t-title="journey2_seek_more"><span aria-hidden="true">+</span></button>
+                <button type="button" class="j2-seek-btn j2-seek-x" data-j2-seek-close data-t-aria="journey2_seek_close" data-t-title="journey2_seek_close">${ICON.close}</button>
+              </div>
               <aside class="j2-route" id="j2-route" role="region" aria-labelledby="j2-route-title" tabindex="-1" data-j2-route hidden>
                 <header class="j2-route-head">
                   <div class="j2-route-titles">
@@ -748,6 +757,10 @@
       ui.routeBubbles = container.querySelector('[data-j2-route-bubbles]');
       ui.r = {};
       for (const x of ui.route.querySelectorAll('[data-j2-r]')) ui.r[x.getAttribute('data-j2-r')] = x;
+      ui.seek = container.querySelector('[data-j2-seek]');
+      ui.seekLess = ui.seek.querySelector('[data-j2-seek-less]');
+      ui.seekMore = ui.seek.querySelector('[data-j2-seek-more]');
+      ui.seekCount = ui.seek.querySelector('[data-j2-seek-count]');
       ui.locateChip = container.querySelector('[data-j2-locate-chip]');
       ui.locate = container.querySelector('[data-j2-locate]');
       ui.l = {};
@@ -885,6 +898,7 @@
       if (sel.tileId && !Model.derive(doc).byId.has(sel.tileId)) sel.tileId = null;
       syncInspector();
       if (sanctuaryOpen && !sanctuaryOpenable(sanctuaryOpen)) closeSanctuary({ quiet: true });   // deleted with no Echo left, or undone away
+      syncSeekers();
       syncLocate();
       syncRoute();
       renderAll(false);
@@ -1560,6 +1574,7 @@
       if (inspector.batchId != null && ui.inspector && !ui.inspector.hidden && data) positionPanel(ui.inspector, inspectorAnchor);
       positionSanctuary();
       positionLocate();
+      positionSeekers();
     }
 
     /** Re-positions every frame for `ms` (the sidebar slides for 250 ms and moves the rectangle the inspector avoids). */
@@ -1637,12 +1652,15 @@
       const gx = g[0] + (L.boxW - L.gw) / 2;
       h += '<image class="' + cls + '-sym" href="' + esc(L.sym.path) + '" x="' + fmt(gx, 1) + '" y="' + fmt(g[1], 1) + '" width="' + L.gw + '" height="' + L.gh + '" preserveAspectRatio="xMidYMid meet"/>';
       for (const d of L.lay.dotsPx) h += '<circle class="' + cls + '-dot" cx="' + fmt(d[0], 1) + '" cy="' + fmt(d[1], 1) + '" r="1.7"/>';
-      if (L.blight) {
-        const m = blightMarkCenter(q, r), k = BLIGHT_X_HALF;
-        h += '<path class="' + cls + '-blight-halo" d="M' + fmt(m[0] - k, 1) + ' ' + fmt(m[1] - k, 1) + 'l' + fmt(2 * k, 1) + ' ' + fmt(2 * k, 1) + 'm0 ' + fmt(-2 * k, 1) + 'l' + fmt(-2 * k, 1) + ' ' + fmt(2 * k, 1) + '"/>';
-        h += '<path class="' + cls + '-blight" d="M' + fmt(m[0] - k, 1) + ' ' + fmt(m[1] - k, 1) + 'l' + fmt(2 * k, 1) + ' ' + fmt(2 * k, 1) + 'm0 ' + fmt(-2 * k, 1) + 'l' + fmt(-2 * k, 1) + ' ' + fmt(2 * k, 1) + '"/>';
-      }
+      if (L.blight) h += blightXMarkup(q, r, cls);
       return h;
+    }
+
+    /** The Shadowblight X at the top of a hexagon (white halo + ink stroke). Drawn on a tile, or alone on open ground (PD-041: an X that walked off its region). */
+    function blightXMarkup(q, r, cls) {
+      const m = blightMarkCenter(q, r), k = BLIGHT_X_HALF;
+      const d = 'M' + fmt(m[0] - k, 1) + ' ' + fmt(m[1] - k, 1) + 'l' + fmt(2 * k, 1) + ' ' + fmt(2 * k, 1) + 'm0 ' + fmt(-2 * k, 1) + 'l' + fmt(-2 * k, 1) + ' ' + fmt(2 * k, 1);
+      return '<path class="' + cls + '-blight-halo" d="' + d + '"/><path class="' + cls + '-blight" d="' + d + '"/>';
     }
 
     /**
@@ -1654,6 +1672,7 @@
       let outlines = '', quiet = '', body = '', cover = '';
       const tints = new Map();                               // tint key -> merged hex paths; only entries the caller decided to tint
       for (const e of entries) {
+        if (e.floating) { body += blightXMarkup(e.q, e.r, 'j2-tile'); continue; }   // a bare X on a hex with no tile
         if (e.tint && Tint.definitionOf(e.tint)) tints.set(e.tint, (tints.get(e.tint) || '') + hexPath(e.q, e.r));
         const L = layoutFor(e.q, e.r, e.spec);
         if (L && L.lay.hidden) quiet += hexPath(e.q, e.r); else outlines += hexPath(e.q, e.r);
@@ -1673,7 +1692,8 @@
         // Player Preview: the GM layer is emptied (not hidden) and only the projection is produced
         ui.g.tiles.innerHTML = '';
         playerProjection = Projection.buildPlayerProjection(doc, data.ctx);
-        ui.g.player.innerHTML = overlayMarkup(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, tint: o.tint })));
+        ui.g.player.innerHTML = overlayMarkup(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, tint: o.tint }))
+          .concat(playerProjection.shadowMarks.map(m => ({ q: m.q, r: m.r, floating: true }))));
         renderEchoes();
         renderPerimeter();
         renderSanctuaryLabels();
@@ -1682,7 +1702,10 @@
       ui.g.player.innerHTML = '';
       renderEchoes();
       const byBatch = new Map(doc.batches.map(b => [b.id, b])), tints = Tint.gmTintByCell(doc, showBiome);
-      ui.g.tiles.innerHTML = overlayMarkup(doc.tiles.map(tile => { const c = Geo.parseCellId(tile.cell); return { q: c.q, r: c.r, spec: specOfBatch(byBatch.get(tile.batchId)), tint: tints.get(tile.cell) || null }; }));
+      const xs = Model.getShadowXSet(doc), onTile = new Set(doc.tiles.map(tile => tile.cell));
+      const entries = doc.tiles.map(tile => { const c = Geo.parseCellId(tile.cell); return { q: c.q, r: c.r, spec: Object.assign(specOfBatch(byBatch.get(tile.batchId)), { blightMark: xs.has(tile.cell) }), tint: tints.get(tile.cell) || null }; });
+      for (const id of xs) if (!onTile.has(id)) { const c = Geo.parseCellId(id); if (c) entries.push({ q: c.q, r: c.r, floating: true }); }   // an X that walked off its region (PD-041)
+      ui.g.tiles.innerHTML = overlayMarkup(entries);
       renderPerimeter();
       renderSanctuaryLabels();
     }
@@ -1902,7 +1925,8 @@
     /** Session transitions drive every repaint; nothing here reads a timer, so a late callback can never write into a closed popover. */
     function onLocateChange(state, ev) {
       if (inst.disposed || !ui.locate) return;
-      if (ev === 'selecting' || ev === 'closed') locateHover = null;
+      if (ev === 'selecting' || ev === 'closed') { locateHover = null; closeSeekers({ quiet: true }); }
+      if (ev === 'animating' && state && state.originCellId) openSeekers(state.originCellId);   // PD-041: the party's hex also gets the Shadowblight control
       paintLocate(); renderLocatePanel(); updateEchoUi();
       if (ev === 'animating' || ev === 'result') positionLocate();
       if (ev === 'result' && !ui.locate.hidden) ui.locate.focus({ preventScroll: true });   // focus enters the popover once its content is ready
@@ -2018,6 +2042,98 @@
     function locateDebug() {
       const st = locateSession.state;
       return st ? { status: st.status, originCellId: st.originCellId, targetAnchorId: st.targetAnchorId, bearing: st.bearing, directionIndex: st.directionIndex, resultType: st.resultType, hover: locateHover ? Geo.cellId(locateHover.q, locateHover.r) : null, needle: ui.l && ui.l.needle ? ui.l.needle.getAttribute('data-final-angle') : null } : null;
+    }
+
+    /* ============================================================
+       Shadowblight control (PD-041): GM-only, opened by a Locate result. The party's hex gets a red dashed frame and a small bubble under it,
+       [-] N [+] [x]: each "+" moves the nearest block(s) of Shadowblight X's one hex closer to that hex (pure js/journey2-shadow-marks.js), "-" takes
+       the step back. The plan is computed once, when the bubble opens, from the document as it is then; N is the step within it. Unlike the
+       compass, what it does is MAP state: every step is the `setShadowMarks` command, one session is ONE Undo entry (Undo returns to step 0
+       and closes the bubble), and closing the bubble (x) leaves the X's where they are. Nothing happens, and nothing shows, when the map holds
+       no X and no unreleased skull. Any other document change, leaving Locate, Player Preview, import or teardown closes it.
+       ============================================================ */
+
+    /** Opens the control for the Locate result's hex; does nothing (no UI) when there is nothing to move. */
+    function openSeekers(originCellId) {
+      closeSeekers({ quiet: true });
+      if (inst.disposed || previewMode || !doc || !data) return;
+      const plan = Seekers.createSeekerPlan({ doc: doc, ctx: data.ctx, origin: originCellId });
+      if (!plan) return;
+      seekers = { origin: originCellId, plan: plan, step: 0, baseDoc: doc, doc: doc, entry: null };
+      renderSeekers();
+    }
+
+    function closeSeekers(o) {
+      if (!seekers) return;
+      const had = ui.seek && ui.seek.contains(document.activeElement);
+      seekers = null;
+      renderSeekers();
+      if (had && locateSession.isActive() && ui.locate && !ui.locate.hidden) ui.locate.focus({ preventScroll: true });
+      if (!(o && o.quiet) && !inst.disposed) announce(t('journey2_seek_close'));
+    }
+
+    /** One press: move to step `target` of the plan (clamped), as one coalesced history entry. */
+    function stepSeekers(delta) {
+      if (inst.disposed || editLocked || previewMode || !seekers || !doc) return;
+      const s = seekers, target = Math.max(0, Math.min(s.plan.maxStep, s.step + delta));
+      if (target === s.step) return;
+      let next;
+      if (target === 0) next = s.baseDoc;
+      else {
+        const f = s.plan.frames[target];
+        const r = Model.apply(s.baseDoc, { type: 'setShadowMarks', added: f.added, suppressed: f.suppressed, at: new Date().toISOString() }, data.ctx);
+        if (!r.ok) { hint(t('journey2_seek_settled')); return; }
+        next = r.doc;
+      }
+      const top = history.undo[history.undo.length - 1];
+      if (target === 0) { if (s.entry && top === s.entry) history.undo.pop(); s.entry = null; }
+      else if (s.entry && top === s.entry) s.entry.after = next;
+      else { Model.historyCommit(history, s.baseDoc, next, 'seekers'); s.entry = history.undo[history.undo.length - 1]; }
+      s.step = target; s.doc = next; doc = next;
+      afterDocChange();
+      renderSeekers();
+      announce(fill('journey2_live_seek', { n: n(target), max: n(s.plan.maxStep) }));
+    }
+
+    /** After a document change from anywhere else (an edit, Undo, Redo, import): the plan belongs to a document that is gone, so the control closes. */
+    function syncSeekers() {
+      if (seekers && (!doc || doc !== seekers.doc)) { seekers = null; renderSeekers(); }
+    }
+
+    /** The red dashed frame on the party's hex and the bubble under it. */
+    function renderSeekers() {
+      const g = ui.g && ui.g.seekers;
+      if (!g || !ui.seek) return;
+      const s = seekers, active = !!s && !previewMode && !!data;
+      ui.seek.hidden = !active;
+      if (!active) { g.innerHTML = ''; return; }
+      const c = Geo.parseCellId(s.origin);
+      g.innerHTML = c ? '<path class="j2-seek-frame" d="' + hexPath(c.q, c.r) + '"/>' : '';
+      ui.seekCount.textContent = n(s.step);
+      ui.seekCount.setAttribute('title', fill('journey2_seek_count', { n: n(s.step), max: n(s.plan.maxStep) }));
+      ui.seekCount.setAttribute('aria-label', fill('journey2_seek_count', { n: n(s.step), max: n(s.plan.maxStep) }));
+      ui.seekLess.disabled = editLocked || s.step <= 0;
+      ui.seekMore.disabled = editLocked || s.step >= s.plan.maxStep;
+      ui.seekMore.title = s.plan.maxStep === 0 || s.step >= s.plan.maxStep ? t('journey2_seek_settled') : t('journey2_seek_more');
+      positionSeekers();
+    }
+
+    /** The bubble sits just under the party's hex, centred on it (screen px inside the map area), kept on screen. */
+    function positionSeekers() {
+      if (!seekers || !ui.seek || ui.seek.hidden || !data) return;
+      const c = Geo.parseCellId(seekers.origin);
+      if (!c) return;
+      const wrap = ui.mapwrap.getBoundingClientRect(), vp = ui.viewport.getBoundingClientRect();
+      const ys = data.grid.cellCorners(c.q, c.r).map(p => p[1]), ctr = data.grid.cellCenter(c.q, c.r);
+      const s = Geo.worldToScreen(cam, ctr[0], Math.max.apply(null, ys)), w = ui.seek.offsetWidth, h = ui.seek.offsetHeight;
+      let x = vp.left - wrap.left + s[0], y = vp.top - wrap.top + s[1] + 8;               // the bubble's top-centre sits 8 px under the hex
+      x = Math.min(wrap.width - w / 2 - 8, Math.max(w / 2 + 8, x)); y = Math.min(wrap.height - h - 8, Math.max(8, y));
+      ui.seek.style.transform = 'translate(' + Math.round(x - w / 2) + 'px,' + Math.round(y) + 'px)';
+    }
+
+    /** Read-only snapshot for the browser checks. */
+    function seekersDebug() {
+      return seekers ? { origin: seekers.origin, step: seekers.step, maxStep: seekers.plan.maxStep, movers: seekers.plan.movers } : null;
     }
 
     /* ============================================================
@@ -3118,7 +3234,7 @@
         '<svg class="j2-pp-svg" xmlns="' + SVG_NS + '" width="' + fmt(vw * mm, 2) + 'mm" height="' + fmt(vh * mm, 2) + 'mm" viewBox="' + vx + ' ' + vy + ' ' + vw + ' ' + vh + '" aria-hidden="true" focusable="false">' +
         '<g transform="translate(' + page.translate[0] + ' ' + page.translate[1] + ')">' +
         '<image class="j2-pp-base" href="' + baseHref + '" x="0" y="0" width="' + W + '" height="' + H + '" preserveAspectRatio="none"/>' +
-        '<g class="j2-pp-gen" data-pp-overlays="' + page.overlays.length + '">' + overlayMarkup(page.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, tint: null }))) + '</g>' +
+        '<g class="j2-pp-gen" data-pp-overlays="' + page.overlays.length + '">' + overlayMarkup(page.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, tint: null })).concat(page.marks.map(m => ({ q: m.q, r: m.r, floating: true })))) + '</g>' +
         '<g class="j2-pp-perimeter" data-pp-segments="' + page.segments.length + '">' + (d ? '<path class="j2-perimeter" d="' + d + '"/>' : '') + '</g>' +
         '<g class="j2-pp-labels" data-pp-labels="' + page.labels.length + '">' + labels + '</g>' +
         '</g></svg>' +
@@ -3845,6 +3961,9 @@
       else if (b.hasAttribute('data-j2-echo-locate')) startLocate();
       else if (b.hasAttribute('data-j2-locate-again')) chooseLocateAgain();
       else if (b.hasAttribute('data-j2-locate-close') || b.hasAttribute('data-j2-locate-cancel')) exitLocate({ focus: true });
+      else if (b.hasAttribute('data-j2-seek-less')) stepSeekers(-1);
+      else if (b.hasAttribute('data-j2-seek-more')) stepSeekers(1);
+      else if (b.hasAttribute('data-j2-seek-close')) closeSeekers();
       else if (b.hasAttribute('data-j2-echo-collect')) toggleEchoCollected();
       else if (b.hasAttribute('data-j2-sanc-generate')) generateSanctuaries();
       else if (b.hasAttribute('data-j2-sanc-close')) closeSanctuary({ focus: true });
@@ -4495,7 +4614,7 @@
         hoverCell: hoverCell && Geo.cellId(hoverCell.q, hoverCell.r), userPlacements: userPlacements.length,
         ready: data ? data.readiness.ready : null, anchors: data ? data.anchorsDoc.anchors.length : 0,
         validCells: data ? data.grid.validCellCount() : 0, allowedCells: data ? data.ctx.allowedCellCount : 0, placeMode: placeMode,
-        activeBatchId: activeBatchId, inspector: { batchId: inspector.batchId, tileId: inspector.tileId, source: inspector.source, open: inspectorOpen() }, sanctuaryOpen: sanctuaryOpen, locate: locateDebug(), route: routeDebug(), sideCollapsed: sideCollapsed, diagnosticsOpen: diagOpen, saveStatus: saveState.status, saveReason: saveState.reason, editLocked: editLocked,
+        activeBatchId: activeBatchId, inspector: { batchId: inspector.batchId, tileId: inspector.tileId, source: inspector.source, open: inspectorOpen() }, sanctuaryOpen: sanctuaryOpen, locate: locateDebug(), seekers: seekersDebug(), route: routeDebug(), sideCollapsed: sideCollapsed, diagnosticsOpen: diagOpen, saveStatus: saveState.status, saveReason: saveState.reason, editLocked: editLocked,
         selectedTile: sel.tileId, transient: tr ? { kind: tr.kind, mode: tr.mode || null, moved: !!tr.moved, cells: tr.preview ? tr.preview.cells.length : 0, valid: tr.preview ? tr.preview.valid : null, attached: tr.preview ? tr.preview.attached : null, separateEligible: tr.preview ? !!tr.preview.separateEligible : null, anchor: tr.preview ? Geo.cellId(tr.preview.anchor.q, tr.preview.anchor.r) : null, conflicts: tr.preview ? tr.preview.cells.filter(c => !c.ok).map(c => [c.id, c.reason]) : [] } : null,
         history: history ? { undo: history.undo.length, redo: history.redo.length } : null,
         batches: doc ? doc.batches.map(b => Object.assign({ id: b.id, habitat: b.habitat, terrain: b.terrain, quantity: b.quantity, quantitySource: b.quantitySource, rumor: b.rumor, encounter: b.encounter, notes: b.notes }, d.counts.get(b.id))) : [],

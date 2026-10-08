@@ -589,6 +589,24 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-locate-note { margin: var(--s-1) 0 0; font-size: var(--fs-xs); line-height: var(--lh-sm); color: var(--muted); }
 .j2-locate-note strong { color: var(--parchment-dim); font-weight: 600; }
 .j2-locate-foot { flex-wrap: wrap; }
+/* Shadowblight control (PD-041): a red dashed frame on the party's hex and a small bubble under it — [-] N [+] [x], in Fear red */
+.j2-overlay .j2-seek-frame { fill: var(--fear-tint); stroke: var(--fear-soft); stroke-width: calc(3px * var(--j2-inv, 1)); stroke-dasharray: calc(7px * var(--j2-inv, 1)) calc(4px * var(--j2-inv, 1)); stroke-linejoin: round; }
+.j2-seek {
+  position: absolute; left: 0; top: 0; z-index: 4; display: flex; align-items: center; gap: 2px; padding: 3px;
+  background: var(--ink-raised); border: 2px solid var(--fear); border-radius: var(--r-md); box-shadow: var(--e-2);
+  font-family: var(--font-ui); font-size: var(--fs-sm); color: var(--parchment);
+}
+.j2-seek[hidden] { display: none; }
+.j2-seek-btn {
+  display: inline-grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: var(--r-sm);
+  background: transparent; color: var(--fear-soft); font: inherit; font-size: 18px; line-height: 1; cursor: pointer;
+}
+.j2-seek-btn:hover:not(:disabled) { background: var(--fear-tint); color: var(--parchment); }
+.j2-seek-btn:focus-visible { outline: var(--focus-ring); outline-offset: 1px; }
+.j2-seek-btn:disabled { opacity: 0.4; cursor: default; }
+.j2-seek-btn svg { width: 14px; height: 14px; }
+.j2-seek-x { margin-left: 2px; border-left: 1px solid var(--line-strong); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+.j2-seek-count { min-width: 2ch; padding: 0 var(--s-1); text-align: center; font-family: var(--font-mono); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--fear-soft); }
 @media (max-width: 900px) {
   .j2-region-inspector.j2-locate { width: calc(100% - 2 * var(--s-3)); }
 }

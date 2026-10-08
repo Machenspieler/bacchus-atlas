@@ -256,7 +256,7 @@ test('projection: GM-only data never appears (region ids, Encounter, Rumor, note
   for (const secret of ['SECRET-GM-NOTE', 'region-secret-id', 'tile-secret', 'batchId', 'encounter', 'rumor', 'notes', 'environment', 'inspector', 'selection', 'diagnostic', 'warning', 'history', 'undo']) {
     assert.ok(!text.toLowerCase().includes(secret.toLowerCase()), 'leaked: ' + secret);
   }
-  assert.deepEqual(Object.keys(P.buildPlayerProjection(doc)).sort(), ['overlays', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'version']);
+  assert.deepEqual(Object.keys(P.buildPlayerProjection(doc)).sort(), ['overlays', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'shadowMarks', 'version']);
   for (const o of P.buildPlayerProjection(doc).overlays) assert.deepEqual(Object.keys(o).sort(), ['blightMark', 'dots', 'q', 'r', 'symbolId', 'tint']);
 });
 

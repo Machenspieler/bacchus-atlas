@@ -188,7 +188,7 @@ test('projection: sanctuaries never reach the player projection (GM-only, PD-023
   const text = JSON.stringify(proj).toLowerCase();
   assert.ok(!text.includes('secretburg') && !text.includes('hiddenford') && !text.includes('mk-'), 'leaked into the projection');
   assert.deepEqual(proj.sanctuaryLabels, [], 'a generated but unrevealed sanctuary emits nothing (PD-027)');
-  assert.deepEqual(Object.keys(proj).sort(), ['overlays', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'version']);
+  assert.deepEqual(Object.keys(proj).sort(), ['overlays', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'shadowMarks', 'version']);
   assert.ok(!/\b(trade|quirk|crisis|drive|politics|population)\b/.test(read('js/journey2-projection.js').replace(/\/\*[\s\S]*?\*\//g, '')), 'the projection code never reads any sanctuary characteristic');
 });
 

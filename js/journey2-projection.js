@@ -8,9 +8,10 @@
 
    What a projection contains
      - `overlays`: one entry per generated tile that sits in a REVEALED cell, reduced to what is drawn
-       ({ q, r, symbolId, dots, blightMark, tint }). `tint` is the Biome Tint key (js/journey2-biome-tint.js) of the tile's Habitat; it exists only on
+       ({ q, r, symbolId, dots, blightMark, tint }); `blightMark` is the Shadowblight X on that cell (PD-041: it may have moved there, or left). `tint` is the Biome Tint key (js/journey2-biome-tint.js) of the tile's Habitat; it exists only on
        overlays of revealed cells, so hidden cells leak no colour, and `buildPrintProjection` omits it for black-and-white print. A region spanning revealed and hidden cells contributes only its
        revealed tiles; revealing one cell never reveals its region.
+     - `shadowMarks`: [{ q, r }] — an X on a REVEALED hex that has no tile (a moved X on open ground); an X on a tile rides on its overlay's `blightMark`.
      - `revealedCells`: the revealed cell ids (sorted), from which a renderer derives the hidden area (every
        placeable cell not listed). Fog is drawn from this set, never from region data.
      - `perimeter`: the thick region outline as deduplicated hex edges [{ cell, dir, kind: 'outer'|'divider' }] — generated New
@@ -58,15 +59,23 @@
     const withTint = !(opts && opts.biomeTint === false);
     const revealed = Model.getRevealedCellSet(doc);
     const byBatch = new Map(doc.batches.map(b => [b.id, b]));
-    const overlays = [];
+    const overlays = [], onTile = new Set(), marks = Model.getShadowXSet(doc);
     for (const tile of doc.tiles) {
       if (!revealed.has(tile.cell)) continue;                    // hidden cell: the overlay is not produced at all
       const b = byBatch.get(tile.batchId);
       const c = Geo.parseCellId(tile.cell);
       if (!b || !c) continue;
-      const o = { q: c.q, r: c.r, symbolId: Model.symbolIdOf(b), dots: b.terrain.value, blightMark: !!(b.habitat.blighted && !b.habitat.overtaken) };
+      onTile.add(tile.cell);
+      const o = { q: c.q, r: c.r, symbolId: Model.symbolIdOf(b), dots: b.terrain.value, blightMark: marks.has(tile.cell) };
       if (withTint) { const key = Tint.tintKeyOf(b.habitat); if (key) o.tint = key; }
       overlays.push(o);
+    }
+    // an X that stands on a revealed hex with no tile of its own (PD-041) has no overlay to ride on: it is listed on its own, as a bare cell
+    const shadowMarks = [];
+    for (const id of Array.from(marks).sort(Model.compareCellKeys)) {
+      if (!revealed.has(id) || onTile.has(id)) continue;
+      const c = Geo.parseCellId(id);
+      if (c) shadowMarks.push({ q: c.q, r: c.r });
     }
     const sanctuaryLabels = sanctuaryLabelsOf(doc);
     // without a context nothing counts as "never fogged", which is the strictest (never leaking) reading
@@ -75,6 +84,7 @@
       version: 3,
       revealedCells: Array.from(revealed).sort(Model.compareCellKeys),
       overlays: overlays,
+      shadowMarks: shadowMarks,
       sanctuaryLabels: sanctuaryLabels,
       perimeter: Model.regionBoundarySegments(doc, ctx || null, key => revealed.has(key), foggable),
     };

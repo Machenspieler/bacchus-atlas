@@ -16,7 +16,13 @@
        tiles:   [ { id, batchId, cell: "q,r", environmentId? } ],
        playerVisibility: { revealedCells: [ "q,r", ... ], revealedSanctuaryNameAnchorIds: [ "mk-012", ... ] },
        soulEchoes: { anchorIds: [ "mk-012", ... ], collectedAnchorIds: [ "mk-012" ] },
-       sanctuaries: { entries: [ { anchorId, name, trade, quirk, crisis, drive, politics: { rolls }, size, population } ] } }
+       sanctuaries: { entries: [ { anchorId, name, trade, quirk, crisis, drive, politics: { rolls }, size, population } ] },
+       shadowMarks: { added: [ "q,r", ... ], suppressed: [ "q,r", ... ] } }
+   Shadow marks (PD-041) are the Shadowblight X's as MAP state, stored as a DELTA over what the regions already imply: a blighted tile implies an X
+   on its cell, a fully overtaken tile implies one pending "virtual" X (drawn as the skull, which never leaves). The X's shown are
+   (blighted-tile cells - suppressed) + added; `suppressed` also lists an overtaken cell whose X has already left. Optional on load (missing = none,
+   schemaVersion stays 1). The lists are normalized (sorted, unique, only cells that still mean something) by every command that touches them
+   or the tiles.
    A tile may carry ONE optional `environmentId` (a stable catalog id, never a name or stat block; missing = none). It belongs to the
    tile object, so it moves with the tile and disappears with it; an id the catalog no longer knows is kept as-is (the view shows it
    as unavailable). GM-only: the player projection never reads it.
@@ -77,7 +83,8 @@
   const HISTORY_LIMIT = 100;
 
   const ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
-  const DOC_KEYS = ['schemaVersion', 'kind', 'templateId', 'templateVersion', 'createdAt', 'updatedAt', 'batches', 'tiles', 'playerVisibility', 'soulEchoes', 'sanctuaries'];
+  const DOC_KEYS = ['schemaVersion', 'kind', 'templateId', 'templateVersion', 'createdAt', 'updatedAt', 'batches', 'tiles', 'playerVisibility', 'soulEchoes', 'sanctuaries', 'shadowMarks'];
+  const SHADOW_KEYS = ['added', 'suppressed'];
   const VISIBILITY_KEYS = ['revealedCells', 'revealedSanctuaryNameAnchorIds'];
   const SOUL_ECHO_KEYS = ['anchorIds', 'collectedAnchorIds'];
   const SANCTUARY_KEYS = ['entries'];
@@ -155,14 +162,15 @@
 
   function emptyDocument(ctx, nowIso) {
     const now = nowIso || new Date().toISOString();
-    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [], revealedSanctuaryNameAnchorIds: [] }, soulEchoes: { anchorIds: [], collectedAnchorIds: [] }, sanctuaries: { entries: [] } };
+    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [], revealedSanctuaryNameAnchorIds: [] }, soulEchoes: { anchorIds: [], collectedAnchorIds: [] }, sanctuaries: { entries: [] }, shadowMarks: { added: [], suppressed: [] } };
   }
 
   function isEmptyDocument(doc) {
     return !doc || (doc.batches.length === 0 && doc.tiles.length === 0
       && !(doc.playerVisibility && (doc.playerVisibility.revealedCells.length || (doc.playerVisibility.revealedSanctuaryNameAnchorIds || []).length))
       && !(doc.soulEchoes && doc.soulEchoes.anchorIds.length)
-      && !(doc.sanctuaries && doc.sanctuaries.entries.length));
+      && !(doc.sanctuaries && doc.sanctuaries.entries.length)
+      && !(doc.shadowMarks && (doc.shadowMarks.added.length || doc.shadowMarks.suppressed.length)));
   }
 
   function symbolIdOf(batch) { return batch.habitat.overtaken ? OVERTAKEN_SYMBOL : batch.habitat.biome; }
@@ -333,8 +341,9 @@
     const echoes = validateSoulEchoes(doc.soulEchoes, ctx, errors);
     const sanctuaries = validateSanctuaries(doc.sanctuaries, ctx, errors);
     vis.revealedSanctuaryNameAnchorIds = validateRevealedSanctuaryNames(doc.playerVisibility, sanctuaries, ctx, errors);
+    const shadow = validateShadowMarks(doc.shadowMarks, ctx, errors);
     if (errors.length) return { ok: false, code: 'invalid', errors: errors.slice(0, 20) };
-    return { ok: true, doc: { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: doc.templateId, templateVersion: doc.templateVersion, createdAt: doc.createdAt, updatedAt: doc.updatedAt, batches: batches, tiles: tiles, playerVisibility: vis, soulEchoes: echoes, sanctuaries: sanctuaries } };
+    return { ok: true, doc: { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: doc.templateId, templateVersion: doc.templateVersion, createdAt: doc.createdAt, updatedAt: doc.updatedAt, batches: batches, tiles: tiles, playerVisibility: vis, soulEchoes: echoes, sanctuaries: sanctuaries, shadowMarks: normalizeShadowMarks({ batches: batches, tiles: tiles }, shadow.added, shadow.suppressed) } };
   }
 
   /** Text -> validated document. Size-limited; never throws. */
@@ -382,6 +391,76 @@
       set.add(key);
     }
     return { revealedCells: Array.from(set).sort(compareCellKeys), revealedSanctuaryNameAnchorIds: [] };
+  }
+
+  /* ---------------- Shadow marks (PD-041) ---------------- */
+
+  const shadowBaseCache = new WeakMap();
+  /** The marks the regions imply: { x: cells of blighted tiles (an X each), skull: cells of fully overtaken tiles (one pending virtual X each) }. Derived, never stored. */
+  function shadowBase(doc) {
+    const hit = shadowBaseCache.get(doc.tiles);
+    if (hit && hit.batches === doc.batches) return hit.base;
+    const byBatch = new Map(doc.batches.map(b => [b.id, b])), x = new Set(), skull = new Set();
+    for (const t of doc.tiles) {
+      const b = byBatch.get(t.batchId);
+      if (!b) continue;
+      if (b.habitat.overtaken) skull.add(t.cell); else if (b.habitat.blighted) x.add(t.cell);
+    }
+    const base = { x: x, skull: skull };
+    shadowBaseCache.set(doc.tiles, { batches: doc.batches, base: base });
+    return base;
+  }
+
+  const shadowList = (doc, key) => (doc.shadowMarks && doc.shadowMarks[key]) || [];
+
+  /** Every cell that shows a Shadowblight X right now: (blighted-tile cells - suppressed) + added. A fully overtaken tile keeps its skull and never shows an X itself. */
+  function getShadowXSet(doc) {
+    const base = shadowBase(doc), gone = new Set(shadowList(doc, 'suppressed')), out = new Set();
+    for (const c of base.x) if (!gone.has(c)) out.add(c);
+    for (const c of shadowList(doc, 'added')) out.add(c);
+    return out;
+  }
+
+  /** Cells of fully overtaken tiles that still hold their one unreleased X. */
+  function getPendingSkullSet(doc) {
+    const gone = new Set(shadowList(doc, 'suppressed')), out = new Set();
+    for (const c of shadowBase(doc).skull) if (!gone.has(c)) out.add(c);
+    return out;
+  }
+
+  /**
+   * The canonical stored form against a document's tiles: both lists sorted and unique; `suppressed` keeps only cells that still imply a mark (a blighted or
+   * overtaken tile is there); `added` loses a cell where a mark is implied anyway (a blighted tile is there: an X moved back onto a home cell restores it) or
+   * where a skull sits (an X never stands on a skull).
+   */
+  function normalizeShadowMarks(doc, added, suppressed) {
+    const base = shadowBase(doc), implied = c => base.x.has(c) || base.skull.has(c);
+    const add = new Set(added.filter(c => !base.skull.has(c))), sup = new Set(suppressed.filter(implied));
+    for (const c of Array.from(add)) if (base.x.has(c)) { add.delete(c); sup.delete(c); }
+    return { added: Array.from(add).sort(compareCellKeys), suppressed: Array.from(sup).sort(compareCellKeys) };
+  }
+
+  /** Validates `shadowMarks` (load + import). MISSING is none; a present one is { added, suppressed } of canonical foggable cell ids (a printed icon's cell is never an X's place). */
+  function validateShadowMarks(v, ctx, errors) {
+    const none = { added: [], suppressed: [] };
+    if (v === undefined || v === null) return none;
+    if (!isObj(v)) { errors.push('shadowMarks: not an object'); return none; }
+    checkKeys(v, SHADOW_KEYS, 'shadowMarks', errors);
+    const out = { added: [], suppressed: [] };
+    for (const key of SHADOW_KEYS) {
+      const list = v[key];
+      if (list === undefined) continue;
+      if (!Array.isArray(list)) { errors.push('shadowMarks.' + key + ': not an array'); continue; }
+      if (list.length > ctx.allowedCellCount) { errors.push('shadowMarks.' + key + ': too many entries'); continue; }
+      for (let i = 0; i < list.length; i++) {
+        const c = list[i];
+        if (typeof c !== 'string' || !Geo.parseCellId(c)) { errors.push('shadowMarks.' + key + '[' + i + ']: malformed cell id'); continue; }
+        if (!isFoggableCell(ctx, c)) { errors.push('shadowMarks.' + key + '[' + i + ']: cell ' + c + ' is not on the map'); continue; }
+        if (key === 'added' && ctx.sanctuaryCells.has(c)) { errors.push('shadowMarks.added[' + i + ']: cell ' + c + ' holds a printed icon'); continue; }
+        out[key].push(c);
+      }
+    }
+    return out;
   }
 
   /* ---------------- Soul Echoes (GM-only, PD-024) ---------------- */
@@ -873,7 +952,17 @@
    *                                                                playerVisibility.revealedSanctuaryNameAnchorIds; already in that state => noop. Reroll (setSanctuary) keeps it;
    *                                                                setSanctuaries keeps it only for anchors that still have an entry and never reveals a new one
    */
+  const TILE_COMMANDS = new Set(['place', 'move', 'returnTile', 'deleteBatch']);
   function apply(doc, cmd, ctx) {
+    const r = applyCommand(doc, cmd, ctx);
+    // a tile edit can leave a stored mark meaningless (the blighted tile it referred to is gone, or one now sits where an X was added): keep the lists canonical
+    if (r.ok && r.doc !== doc && cmd && TILE_COMMANDS.has(cmd.type) && r.doc.shadowMarks && (r.doc.shadowMarks.added.length || r.doc.shadowMarks.suppressed.length)) {
+      const next = normalizeShadowMarks(r.doc, r.doc.shadowMarks.added, r.doc.shadowMarks.suppressed);
+      if (JSON.stringify(next) !== JSON.stringify(r.doc.shadowMarks)) return Object.assign({}, r, { doc: Object.assign({}, r.doc, { shadowMarks: next }) });
+    }
+    return r;
+  }
+  function applyCommand(doc, cmd, ctx) {
     switch (cmd && cmd.type) {
       case 'createBatch': {
         const r = validateBatch(cmd.batch, 'batch');
@@ -1016,6 +1105,14 @@
         if (set.has(cmd.anchorId) === cmd.revealed) return { ok: true, doc: doc, noop: true };
         const ids = cmd.revealed ? sortAnchorIds(revealedNameList(doc).concat([cmd.anchorId])) : revealedNameList(doc).filter(id => id !== cmd.anchorId);
         return { ok: true, doc: touch(doc, cmd.at, { playerVisibility: withRevealedNames(doc, ids) }) };
+      }
+      case 'setShadowMarks': {
+        if (!Array.isArray(cmd.added) || !Array.isArray(cmd.suppressed)) return fail('bad-shadow-marks');
+        const probe = [], v = validateShadowMarks({ added: cmd.added, suppressed: cmd.suppressed }, ctx, probe);
+        if (probe.length) return fail('bad-shadow-marks', { errors: probe.slice(0, 3) });
+        const next = normalizeShadowMarks(doc, v.added, v.suppressed);
+        if (JSON.stringify(next) === JSON.stringify({ added: shadowList(doc, 'added'), suppressed: shadowList(doc, 'suppressed') })) return { ok: true, doc: doc, noop: true };
+        return { ok: true, doc: touch(doc, cmd.at, { shadowMarks: next }) };
       }
       default: return fail('unknown-command');
     }
@@ -1231,6 +1328,7 @@
     checkCells: checkCells, checkPlacement: checkPlacement, topologyCheck: topologyCheck, preparedMapComponentCount: preparedMapComponentCount, preparedMapConnectivity: preparedMapConnectivity, deleteTopology: deleteTopology, cellOwners: cellOwners, canonicalEdgeKey: canonicalEdgeKey, neighborIds: neighborIds, regionBoundarySegments: regionBoundarySegments, regionConnectivity: regionConnectivity, isConnected: isConnected, componentCount: componentCount, enclosedHoles: enclosedHoles, holeCounts: holeCounts, apply: apply,
     createHistory: createHistory, historyCommit: historyCommit, historyUndo: historyUndo, historyRedo: historyRedo, historyClear: historyClear,
     compactFootprint: compactFootprint, randomFootprint: randomFootprint, fitFootprint: fitFootprint,
+    shadowBase: shadowBase, getShadowXSet: getShadowXSet, getPendingSkullSet: getPendingSkullSet, normalizeShadowMarks: normalizeShadowMarks, validateShadowMarks: validateShadowMarks,
     MAX_SOUL_ECHOES: MAX_SOUL_ECHOES, planSoulEchoes: planSoulEchoes, getCollectedEchoSet: getCollectedEchoSet, isEchoCollected: isEchoCollected, availableEchoIds: availableEchoIds,
     SANCTUARY_DICE: SANCTUARY_DICE, MAX_SANCTUARY_NAME: MAX_SANCTUARY_NAME, validateSanctuaryEntry: validateSanctuaryEntry, planSanctuaries: planSanctuaries,
     getRevealedSanctuaryNameSet: getRevealedSanctuaryNameSet, isSanctuaryNameRevealed: isSanctuaryNameRevealed,

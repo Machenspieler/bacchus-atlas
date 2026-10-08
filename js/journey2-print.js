@@ -93,7 +93,7 @@
 
   /**
    * The print model of `doc`: { version, printMode: 'bw', pages: [{ id, panelId, rect, viewBox, translate, scaleMmPerPx, source,
-   * overlays[{ q, r, symbolId, dots, blightMark }], segments[{ cell, dir, kind }], labels[placed label] }], summary }.
+   * overlays[{ q, r, symbolId, dots, blightMark }], marks[{ q, r }] (an X on open ground, PD-041), segments[{ cell, dir, kind }], labels[placed label] }], summary }.
    * Pure and deterministic; JSON-safe; shares nothing mutable with the document. `ctx` is the Journey 2 map context (grid, sanctuaries, icons).
    */
   function buildPrintModel(doc, ctx, template) {
@@ -103,7 +103,7 @@
     const out = pages.map(p => ({
       id: p.id, panelId: p.panelId, rect: p.rect.slice(), viewBox: p.viewBox.slice(), translate: p.translate.slice(), scaleMmPerPx: p.scaleMmPerPx,
       source: { path: p.source.path, worldSizePx: p.source.worldSizePx.slice(), nativeSource: p.source.nativeSource ? { path: p.source.nativeSource.path, sha256: p.source.nativeSource.sha256 } : null },
-      overlays: [], segments: [], labels: [],
+      overlays: [], marks: [], segments: [], labels: [],
     }));
     const SLACK = 4;                                              // a hex or edge just touching a page can still put ink (stroke, glyph) on it
     const fat = r => [r[0] - SLACK, r[1] - SLACK, r[2] + 2 * SLACK, r[3] + 2 * SLACK];
@@ -111,6 +111,10 @@
       const bb = fat(bboxOf(grid.cellCorners(o.q, o.r)));
       const entry = { q: o.q, r: o.r, symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark };
       pages.forEach((p, i) => { if (rectsOverlap(bb, p.rect)) out[i].overlays.push(Object.assign({}, entry)); });
+    }
+    for (const m of proj.shadowMarks) {
+      const bb = fat(bboxOf(grid.cellCorners(m.q, m.r)));
+      pages.forEach((p, i) => { if (rectsOverlap(bb, p.rect)) out[i].marks.push({ q: m.q, r: m.r }); });
     }
     for (const sg of proj.perimeter) {
       const c = Geo.parseCellId(sg.cell);
