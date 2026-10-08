@@ -809,7 +809,7 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-roll-out[hidden] { display: none; }
 .j2-roll-dice { display: inline-flex; gap: var(--s-1); }
 .j2-die {
-  display: inline-flex; width: 44px; height: 44px; box-sizing: border-box; font-style: normal;
+  display: inline-flex; width: 32px; height: 32px; box-sizing: border-box; font-style: normal;
   animation: j2-die-tumble var(--t-base) var(--ease-out) both; animation-delay: calc(var(--i, 0) * 60ms);
 }
 .j2-die img { width: 100%; height: 100%; display: block; object-fit: contain; filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.5)); }
