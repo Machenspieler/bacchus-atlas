@@ -465,6 +465,27 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-insp-titles { flex: 1 1 auto; min-width: 0; }
 .j2-insp-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-lg); line-height: var(--lh-lg); color: var(--parchment); overflow-wrap: anywhere; }
 .j2-insp-sub { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-2); font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); }
+/* PROTOTYPE — illustrated Region Inspector header (Forest only; flagged by data-art from applyHeaderArt()). Artwork sits on a ::before layer behind the unchanged header content; a left-to-right ink gradient keeps title/meta readable and lets the right side stay colourful. */
+.j2-region-inspector[data-art="forest"] { --j2-art: url("../img/journey2/headers/forest.webp"); }
+.j2-region-inspector[data-art] { --j2-art-pos: center center; --j2-art-pad: 0px; }
+.j2-region-inspector[data-art-pos="up"] { --j2-art-pos: center 25%; }
+.j2-region-inspector[data-art-h="tall"] { --j2-art-pad: 12px; }
+.j2-region-inspector[data-art] .j2-insp-head {
+  position: relative; isolation: isolate; overflow: hidden;
+  border-radius: calc(var(--r-lg) - 1px) calc(var(--r-lg) - 1px) 0 0;
+  padding-block: calc(var(--s-3) + var(--j2-art-pad)) calc(var(--s-2) + var(--j2-art-pad));
+}
+.j2-region-inspector[data-art] .j2-insp-head::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-color: var(--ink-raised);
+  background-image:
+    linear-gradient(90deg, var(--ink-raised) 0%, rgb(28 24 21 / 0.94) 30%, rgb(28 24 21 / 0.72) 54%, rgb(28 24 21 / 0.2) 80%, transparent 100%),
+    var(--j2-art);
+  background-size: 100% 100%, cover; background-position: 0 0, var(--j2-art-pos); background-repeat: no-repeat;
+}
+.j2-region-inspector[data-art] .j2-insp-title { text-shadow: 0 1px 6px rgb(20 17 15 / 0.9); }
+.j2-region-inspector[data-art] .j2-insp-sub { text-shadow: 0 0 3px rgb(20 17 15), 0 1px 6px rgb(20 17 15 / 0.9); }
+.j2-region-inspector[data-art] .j2-insp-head > .j2-btn-icon { background: rgb(20 17 15 / 0.55); }
 .j2-insp-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--s-3); display: grid; gap: var(--s-3); align-content: start; scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
 /* a soft parchment-tinted fade (a lighter edge, not a darker one: a black shadow on this dark panel was ~1.3:1 and invisible) appears on whichever side still has content (the classic CSS-only scroll cue: shadows are fixed, covers scroll with the content) — nothing shows when it all fits, and no gutter is added */
 .j2-insp-scroll {
@@ -804,7 +825,7 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-insp-scroll[hidden], .j2-inspect[hidden], .j2-roll-btn[hidden] { display: none; }
 .j2-roll-btn { margin-left: auto; display: inline-flex; align-items: center; gap: var(--s-1); font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 .j2-roll-btn .j2-ico { display: inline-flex; }
-.j2-roll-btn .j2-ico img { width: 38px; height: 38px; margin: -5px -2px; display: block; }
+.j2-roll-btn .j2-ico img { width: 33px; height: 33px; margin: -3px -1px; display: block; }
 .j2-roll-out { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); padding-top: var(--s-1); }
 .j2-roll-out[hidden] { display: none; }
 .j2-roll-dice { display: inline-flex; gap: var(--s-1); }

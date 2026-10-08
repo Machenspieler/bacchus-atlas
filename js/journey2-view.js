@@ -525,7 +525,7 @@
                   <section class="j2-insp-sec j2-enc-sec" data-j2-i="encSec">
                     <div class="j2-insp-sechead">
                       <h4 class="j2-insp-h"><span data-t="journey_k_encounter"></span><span class="j2-enc-flag" data-j2-i="encFlag" data-t="journey2_roll_triggered" hidden></span></h4>
-                      <button type="button" class="btn btn-sm j2-roll-btn" data-j2-roll data-j2-i="roll" data-t-title="journey2_roll_tip"><span class="j2-ico" aria-hidden="true"><img src="img/journey2/dice/d6-3d.png" alt="" width="38" height="38" draggable="false"></span><span data-j2-i="rollLabel"></span></button>
+                      <button type="button" class="btn btn-sm j2-roll-btn" data-j2-roll data-j2-i="roll" data-t-title="journey2_roll_tip"><span class="j2-ico" aria-hidden="true"><img src="img/journey2/dice/d6-3d.png" alt="" width="33" height="33" draggable="false"></span><span data-j2-i="rollLabel"></span></button>
                     </div>
                     <div class="j2-roll-out" data-j2-i="rollOut" hidden>
                       <span class="j2-roll-dice" data-j2-i="rollDice" role="img"></span>
@@ -1450,6 +1450,19 @@
       announce(fill(res.triggered ? 'journey2_roll_live_hit' : 'journey2_roll_live_miss', { faces: res.faces.map(n).join(', ') }));
     }
 
+    /* PROTOTYPE (Forest only): an illustrated header for the shared Region Inspector — hex-opened and card-opened alike.
+     * Biome -> artwork lives in css/journey2.css ([data-art] rules); this only flags which biomes have art.
+     * The ?hdr=A1|A2|B1|B2 query (A centred / B shifted up, 1 original / 2 taller) is a dev-only comparison switch. */
+    const HEADER_ART_BIOMES = new Set(['forest']);
+    function applyHeaderArt(b) {
+      const root = ui.inspector, art = !b.habitat.overtaken && HEADER_ART_BIOMES.has(b.habitat.biome) ? b.habitat.biome : '';
+      if (!art) { root.removeAttribute('data-art'); root.removeAttribute('data-art-pos'); root.removeAttribute('data-art-h'); return; }
+      const m = /^([AB])([12])$/i.exec(new URLSearchParams(location.search).get('hdr') || 'A1') || ['', 'A', '1'];
+      root.setAttribute('data-art', art);
+      root.setAttribute('data-art-pos', m[1].toUpperCase() === 'B' ? 'up' : 'center');
+      root.setAttribute('data-art-h', m[2] === '2' ? 'tall' : 'orig');
+    }
+
     /** Paints the open inspector from the committed document. */
     function renderInspector() {
       if (!ui.inspector) return;
@@ -1457,6 +1470,7 @@
       if (!b) { ui.inspector.hidden = true; inspectorShown = null; clearHexEnvironment(); return; }
       const I = ui.i, idx = doc.batches.indexOf(b), sym = symbolFor(b);
       ui.inspector.hidden = false;
+      applyHeaderArt(b);
       if (sym && I.img.getAttribute('data-sym') !== sym.id) { I.img.src = sym.path; I.img.setAttribute('data-sym', sym.id); }
       I.name.textContent = batchName(b);
       I.ord.textContent = fill('journey2_region_n', { n: n(idx + 1) });
