@@ -100,8 +100,7 @@
   const CLICK_SLOP_PX = 4;
   const MARKER_HIT_SCREEN_PX = 14;
   const GLYPH_SCALE = 0.55;                         // native symbol px -> world px
-  const COMPACT_GLYPH_MAX_H = 14;                    // height cap of the habitat glyph tucked above a sanctuary icon that fills its hexagon
-  const BLIGHT_X_HALF = 7;                          // half-size of the blight X drawn at the top of a blighted tile
+  const BLIGHT_X_HALF = 7;                           // half-size of the blight X drawn at the top of a blighted tile
   const TERRAIN_DEMO = [1, 2, 3, 4, 2, 3, 1];
   const HABITAT_DEMO = ['forest', 'mountain', 'aquatic', 'grassland', 'tropical', 'drylands', 'rolling'];
   // Fixed world rectangles for the print proof (A4 landscape, 0.2 mm per world px).
@@ -1600,19 +1599,12 @@
       if (L === undefined) {
         const gw = Math.round(sym.sizePx[0] * GLYPH_SCALE * 10) / 10, gh = Math.round(sym.sizePx[1] * GLYPH_SCALE * 10) / 10;
         const boxW = gw;
-        // the blight X sits at the top of the hexagon (as in the book's icon), so that strip is reserved like protected artwork
-        const xc = blightMarkCenter(q, r);
-        const base = data.glyphProtections;
-        const prot = blight ? base.concat([{ rectPx: [xc[0] - BLIGHT_X_HALF - 1, xc[1] - BLIGHT_X_HALF - 1, 2 * BLIGHT_X_HALF + 2, 2 * BLIGHT_X_HALF + 2] }]) : base;
-        // a tall symbol beside the blight strip or a marker's protected area is shrunk until it fits rather than withheld
-        let lay = Geo.layoutFittedGlyph(data.grid, q, r, { w: boxW, h: gh, dots: dots }, prot, 2);
-        // a printed marker (sanctuary) can fill the whole hexagon: rather than losing the habitat glyph, tuck a compact one against the top edge
-        if (lay.hidden && !blight) {
-          const compact = Geo.layoutCompactGlyph(data.grid, q, r, { w: boxW, h: gh, dots: dots }, COMPACT_GLYPH_MAX_H, 1);
-          if (compact) lay = compact;
-        }
-        const gwL = lay.hidden ? gw : Math.round(lay.glyphRectPx[2] * 10) / 10, ghL = lay.hidden ? gh : Math.round(lay.glyphRectPx[3] * 10) / 10, boxWL = gwL;
-        L = { lay: lay, sym: sym, gw: gwL, gh: ghL, boxW: boxWL, blight: blight };
+        // the glyph is laid out as for any hex — blight or not — and the blight X is drawn on top of it, at the top of the hexagon;
+        // a hex beside a sanctuary icon (no clear box) keeps the standard position and size instead of shrinking, shifting or vanishing
+        const glyph = { w: boxW, h: gh, dots: dots };
+        let lay = Geo.layoutProofGlyph(data.grid, q, r, glyph, data.glyphProtections, 2);
+        if (lay.hidden) lay = Geo.layoutCenteredGlyph(data.grid, q, r, glyph, 2);
+        L = { lay: lay, sym: sym, gw: gw, gh: gh, boxW: boxW, blight: blight };
         glyphCache.set(key, L);
       }
       return L;

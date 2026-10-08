@@ -324,47 +324,20 @@
     return { hidden: true, shifted: false, offsetPx: null, glyphRectPx: null, dotsPx: [], boxPx: null, reason: 'no clear space in the cell' };
   }
 
-  /** Glyph scales tried, largest first, by layoutFittedGlyph (1 = the natural size). */
-  const FIT_SCALES = Object.freeze([1, 0.8, 0.7, 0.6]);
-
   /**
-   * layoutProofGlyph, but when the natural-size glyph finds no clear box the symbol (not the dots) is shrunk step by step along
-   * FIT_SCALES until one does. A tall symbol (tropical, forest, badlands) beside the reserved blight-mark strip or a marker's protected
-   * area needs this: withholding it would leave a blighted hex with no icon at all. Same result shape as layoutProofGlyph, plus
-   * `glyphScale`; hidden only when even the smallest size has no clear space.
+   * The standard glyph position, ignoring every protection: the box centred in the hexagon at natural size (same shape as layoutProofGlyph,
+   * offset [0, 0]). Used when layoutProofGlyph finds no clear box (a hex beside a sanctuary icon): the glyph is then drawn exactly as in any
+   * other hex, over the printed artwork, and the click priority (not the drawing) keeps the marker selectable.
    */
-  function layoutFittedGlyph(grid, q, r, glyph, protections, pad, scales) {
-    const list = scales || FIT_SCALES;
-    let last = null;
-    for (let i = 0; i < list.length; i++) {
-      const k = list[i];
-      last = layoutProofGlyph(grid, q, r, { w: glyph.w * k, h: glyph.h * k, dots: glyph.dots }, protections, pad);
-      if (!last.hidden) { last.glyphScale = k; return last; }
-    }
-    return last;
-  }
-
-  /**
-   * Last resort for a cell whose printed marker (a sanctuary) fills it, so layoutProofGlyph finds no clear box: a compact glyph (height capped
-   * at maxH, aspect kept) is tucked against the top edge of the hexagon, above the marker. It may overlap the marker's padded protection area
-   * (the white halo behind the glyph keeps both readable) but never leaves the hexagon. Returns the same shape as layoutProofGlyph, with `compact: true`.
-   */
-  function layoutCompactGlyph(grid, q, r, glyph, maxH, pad) {
-    const p = pad == null ? 1 : pad;
-    const k = Math.min(1, maxH / glyph.h);
-    const w = glyph.w * k, h = glyph.h * k, dotsH = glyph.dots > 0 ? 6 : 0;
-    const boxW = w + 2 * p, boxH = h + dotsH + 2 * p;
-    const c = grid.cellCenter(q, r), poly = grid.cellCorners(q, r);
-    const top = Math.min.apply(null, poly.map(pt => pt[1]));
-    for (let down = 1; down <= 12; down++) {
-      const box = [c[0] - boxW / 2, top + down, boxW, boxH];
-      const corners = [[box[0], box[1]], [box[0] + box[2], box[1]], [box[0], box[1] + box[3]], [box[0] + box[2], box[1] + box[3]]];
-      if (!corners.every(pt => pointInConvexPolygon(pt, poly))) continue;
-      const gx = box[0] + p, gy = box[1] + p, dots = [];
-      for (let d = 0; d < glyph.dots; d++) dots.push([gx + w / 2 + (d - (glyph.dots - 1) / 2) * 5, gy + h + 4]);
-      return { hidden: false, shifted: true, compact: true, offsetPx: [0, box[1] + boxH / 2 - c[1]], glyphRectPx: [gx, gy, w, h], glyphScale: k, dotsPx: dots, boxPx: box };
-    }
-    return null;
+  function layoutCenteredGlyph(grid, q, r, glyph, pad) {
+    const p = pad == null ? 2 : pad;
+    const dotsH = glyph.dots > 0 ? 8 : 0;
+    const boxW = glyph.w + 2 * p, boxH = glyph.h + dotsH + 2 * p;
+    const c = grid.cellCenter(q, r);
+    const box = [c[0] - boxW / 2, c[1] - boxH / 2, boxW, boxH];
+    const gx = box[0] + p, gy = box[1] + p, dots = [];
+    for (let d = 0; d < glyph.dots; d++) dots.push([gx + glyph.w / 2 + (d - (glyph.dots - 1) / 2) * 6, gy + glyph.h + 5]);
+    return { hidden: false, shifted: false, offsetPx: [0, 0], glyphRectPx: [gx, gy, glyph.w, glyph.h], dotsPx: dots, boxPx: box };
   }
 
   /* ---------------- region perimeter geometry ---------------- */
@@ -666,9 +639,7 @@
     pointInConvexPolygon: pointInConvexPolygon,
     protectionRects: protectionRects,
     layoutProofGlyph: layoutProofGlyph,
-    layoutCompactGlyph: layoutCompactGlyph,
-    layoutFittedGlyph: layoutFittedGlyph,
-    FIT_SCALES: FIT_SCALES,
+    layoutCenteredGlyph: layoutCenteredGlyph,
     PROOF_OFFSETS: PROOF_OFFSETS,
     worldToScreen: worldToScreen,
     screenToWorld: screenToWorld,

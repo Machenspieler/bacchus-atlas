@@ -989,13 +989,14 @@ Run all of them with `node --test tests/*.test.js`.
   terrain simply cannot be placed there. Water, coast and fixed-marker cells
   are allowed. Markers and labels are protected by the **renderer**:
   `Geo.layoutProofGlyph` keeps every glyph box clear of every protection rect
-  and inside its hexagon, otherwise the glyph is withheld (the tile stays,
-  drawn as a dashed outline). Before withholding, the view tries
-  `Geo.layoutFittedGlyph` (the symbol shrinks along `FIT_SCALES`
-  1 / 0.8 / 0.7 / 0.6 — a blighted tropical, forest or badlands glyph only
-  fits below the reserved blight-X strip at 0.8) and, for a non-blighted hex
-  filled by a sanctuary icon, `Geo.layoutCompactGlyph`.
-  `tests/journey2-model.test.js` proves this over every allowed cell and symbol.
+  and inside its hexagon. The view never withholds or shrinks
+  a glyph: when no clear box exists (a hex beside a sanctuary icon) it falls
+  back to `Geo.layoutCenteredGlyph` — the standard position and natural size,
+  drawn over the printed artwork (marker clicks win by hit-testing, not by
+  drawing). The shadowblight X is never part of the glyph layout: the glyph is
+  placed as in any hex and the X is drawn on top of it at the top of the
+  hexagon. `tests/journey2-model.test.js` proves the clear-box rule over
+  every allowed cell and symbol.
 - **Commands** (`createBatch`, `place`, `move`, `returnTile`, `deleteBatch`, `setNotes`, `setCellsRevealed`)
   carry every generated value (ids, cells, timestamps), so Redo replays the
   same transaction and never re-rolls. `place` is atomic (all N or nothing).

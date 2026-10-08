@@ -251,28 +251,22 @@ test('camera maths: round trip, cursor-anchored zoom, clamping, fit, grid agreem
   }
 });
 
-test('fitted glyph: a tall symbol beside the blight strip shrinks to fit instead of being withheld, and never leaves its hexagon or covers artwork', () => {
+test('centered glyph: the standard position at natural size, even where a sanctuary icon leaves no clear box', () => {
   const prot = Geo.protectionRects(template, anchorsDoc).filter(p => p.kind !== 'built-in-label');
-  const X = 7;                                                // the view's BLIGHT_X_HALF; the strip is the top of the hexagon
-  const tall = { w: 24.2, h: 28.6, dots: 4 };                 // tropical / forest at the view's glyph scale, worst-case dots
-  const mid = Geo.parseCellId(anchorsDoc.anchors[0].cellId);
-  let shrunk = 0, shown = 0, cells = 0;
-  grid.forEachValidCell((q, r) => {
-    cells++;
-    const c = grid.cellCenter(q, r), top = Math.min.apply(null, grid.cellCorners(q, r).map(p => p[1]));
-    const strip = { rectPx: [c[0] - X - 1, top + 4 - 1, 2 * X + 2, 2 * X + 2] };
-    const withStrip = prot.concat([strip]);
-    const L = Geo.layoutFittedGlyph(grid, q, r, tall, withStrip, 2);
-    if (L.hidden) return;
-    shown++;
-    if (Geo.layoutProofGlyph(grid, q, r, tall, withStrip, 2).hidden) { shrunk++; assert.ok(L.glyphScale < 1 && Geo.FIT_SCALES.includes(L.glyphScale)); }
-    assert.ok(!withStrip.some(p => Geo.rectsIntersect(L.boxPx, p.rectPx)), q + ',' + r);
-    for (const pt of [[L.boxPx[0], L.boxPx[1]], [L.boxPx[0] + L.boxPx[2], L.boxPx[1] + L.boxPx[3]]]) assert.ok(Geo.pointInConvexPolygon(pt, grid.cellCorners(q, r)), q + ',' + r);
-  });
-  assert.ok(shrunk > cells * 0.9, 'a blighted tall glyph needs the shrink on nearly every cell (' + shrunk + '/' + cells + ')');
-  assert.ok(shown > cells * 0.9, 'and then fits on nearly every cell (' + shown + '/' + cells + ')');
-  // a cell that already fits keeps the natural size; the Horizon marker cell still withholds
-  assert.equal(Geo.layoutFittedGlyph(grid, mid.q + 6, mid.r, { w: 20, h: 10, dots: 1 }, [], 2).glyphScale, 1);
-  const hz = Geo.parseCellId(anchorsDoc.anchors.find(a => a.builtInLabel && a.builtInLabel.text === 'HORIZON').cellId);
-  assert.equal(Geo.layoutFittedGlyph(grid, hz.q, hz.r, { w: 34, h: 24, dots: 4 }, Geo.protectionRects(template, anchorsDoc), 2).hidden, true);
+  const glyph = { w: 24.2, h: 28.6, dots: 4 };            // tropical / forest at the view's glyph scale, worst-case dots
+  let hidden = 0;
+  for (const a of anchorsDoc.anchors) {
+    const c = Geo.parseCellId(a.cellId);
+    for (const cell of grid.validNeighbors(c.q, c.r)) {
+      const L = Geo.layoutCenteredGlyph(grid, cell.q, cell.r, glyph, 2);
+      const ctr = grid.cellCenter(cell.q, cell.r);
+      assert.equal(L.hidden, false);
+      assert.deepEqual(L.offsetPx, [0, 0]);
+      assert.deepEqual(L.glyphRectPx.slice(2), [glyph.w, glyph.h], 'natural size');
+      assert.ok(Math.abs(L.boxPx[0] + L.boxPx[2] / 2 - ctr[0]) < 1e-9 && Math.abs(L.boxPx[1] + L.boxPx[3] / 2 - ctr[1]) < 1e-9, 'centred');
+      assert.equal(L.dotsPx.length, 4);
+      if (Geo.layoutProofGlyph(grid, cell.q, cell.r, glyph, prot, 2).hidden) hidden++;
+    }
+  }
+  assert.ok(hidden > 0, 'at least one hex beside a sanctuary has no clear box, so the centred fallback is what draws it');
 });
