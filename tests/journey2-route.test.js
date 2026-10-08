@@ -337,9 +337,9 @@ test('documentation: PD-031 and the architecture section exist', () => {
 });
 
 
-test('the Fewer encounters tab is hidden when it is exactly the Fastest route', () => {
-  assert.ok(view.includes("function routeEncountersRedundant(routes) { return Route.sameRoute(routes.fastest, routes.encounters); }"));
-  assert.ok(view.includes("b.hidden = s === 'encounters' && routeEncountersRedundant(routes);"));
-  assert.ok(view.includes("if (eff === 'encounters' && routeEncountersRedundant(st.routes)) eff = 'fastest';"));
-  assert.match(read('css/journey2.css'), /\.j2-route-tab\[hidden\] \{ display: none; \}/);
+test('the Shortest and Fewer encounters tabs are hidden when they are exactly the Fastest route', () => {
+  assert.ok(view.includes("function routeTabRedundant(routes, s) { return s !== 'fastest' && Route.sameRoute(routes.fastest, routes[s]); }"));
+  assert.ok(view.includes('b.hidden = routeTabRedundant(routes, s);'));
+  assert.ok(view.includes("if (eff !== 'fastest' && routeTabRedundant(st.routes, eff)) eff = 'fastest';"));
+  assert.ok(read('css/journey2.css').includes('.j2-route-tab[hidden] { display: none; }'));
 });

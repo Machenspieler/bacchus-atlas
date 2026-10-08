@@ -2026,15 +2026,15 @@
       paintRoute();
     }
 
-    /** Fewer encounters adds nothing when it is exactly the Fastest route: its tab is then hidden. */
-    function routeEncountersRedundant(routes) { return Route.sameRoute(routes.fastest, routes.encounters); }
+    /** Shortest and Fewer encounters add nothing when they are exactly the Fastest route: their tabs are then hidden. */
+    function routeTabRedundant(routes, s) { return s !== 'fastest' && Route.sameRoute(routes.fastest, routes[s]); }
 
     /** The route being shown: the preferred strategy, or Shortest when that one has no complete route. { st, eff, route } or null outside the result. */
     function routeView() {
       const st = routePlanner.state;
       if (!st || st.status !== 'result' || !st.routes || previewMode) return null;
       let eff = Route.effectiveStrategy(st.routes, st.strategy);
-      if (eff === 'encounters' && routeEncountersRedundant(st.routes)) eff = 'fastest';   // the tab is hidden: show the identical Fastest route instead
+      if (eff !== 'fastest' && routeTabRedundant(st.routes, eff)) eff = 'fastest';   // that tab is hidden: show the identical Fastest route instead
       return { st: st, eff: eff, route: st.routes[eff] };
     }
 
@@ -2159,7 +2159,7 @@
         b.setAttribute('aria-pressed', String(s === v.eff));
         b.setAttribute('aria-disabled', String(!ok));
         b.classList.toggle('is-unavailable', !ok);
-        b.hidden = s === 'encounters' && routeEncountersRedundant(routes);
+        b.hidden = routeTabRedundant(routes, s);
         b.title = ok ? t(ROUTE_HELP[s]) : t(routes[s] && routes[s].reason === 'unknown-terrain' ? 'journey2_route_unavailable' : 'journey2_route_none');
       }
       R.help.textContent = t(ROUTE_HELP[v.eff]);
