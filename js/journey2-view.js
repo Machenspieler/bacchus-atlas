@@ -525,7 +525,7 @@
                   <section class="j2-insp-sec j2-enc-sec" data-j2-i="encSec">
                     <div class="j2-insp-sechead">
                       <h4 class="j2-insp-h"><span data-t="journey_k_encounter"></span><span class="j2-enc-flag" data-j2-i="encFlag" data-t="journey2_roll_triggered" hidden></span></h4>
-                      <button type="button" class="btn btn-sm j2-roll-btn" data-j2-roll data-j2-i="roll" data-t-title="journey2_roll_tip"><span class="j2-ico" aria-hidden="true">${ICON.d6}</span><span data-j2-i="rollLabel"></span></button>
+                      <button type="button" class="btn btn-sm j2-roll-btn" data-j2-roll data-j2-i="roll" data-t-title="journey2_roll_tip"><span class="j2-ico" aria-hidden="true"><img src="img/journey2/dice/d6-3d.png" alt="" width="20" height="20" draggable="false"></span><span data-j2-i="rollLabel"></span></button>
                     </div>
                     <div class="j2-roll-out" data-j2-i="rollOut" hidden>
                       <span class="j2-roll-dice" data-j2-i="rollDice" role="img"></span>
@@ -1429,7 +1429,7 @@
       if (!r) { I.rollDice.textContent = ''; I.rollDice.removeAttribute('data-n'); return; }
       // rebuilt only for a new roll, so an unrelated re-render never replays the tumble
       if (I.rollDice.getAttribute('data-n') !== String(r.n)) {
-        I.rollDice.innerHTML = r.faces.map((f, i) => '<i class="j2-die' + (f === 1 ? ' is-one' : '') + '" style="--i:' + i + '">' + n(f) + '</i>').join('');
+        I.rollDice.innerHTML = r.faces.map((f, i) => '<i class="j2-die' + (f === 1 ? ' is-one' : '') + '" style="--i:' + i + '"><img src="img/journey2/dice/d6-' + f + '.png" alt="" width="32" height="32" draggable="false"></i>').join('');
         I.rollDice.setAttribute('data-n', String(r.n));
       }
       I.rollDice.setAttribute('aria-label', fill('journey2_roll_dice_aria', { faces: r.faces.map(n).join(', ') }));

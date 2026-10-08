@@ -1103,6 +1103,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Fully overtaken regions:** a region rolled 1-then-1 (PD-038) has nothing to read or roll for, so its inspector shows only the title, the "Fully shadowblighted" badge and the hex's Return action — no Terrain, no roll button, no Encounter, no Rumor — and its card has no Inspect button.
 - **Not decided here:** no chance (percentage) in the tooltip (not in the book; Route Planner already shows an estimate), no "encounter used" tracking, no d4 / d8 selector.
 - **Where:** `js/journey2-encounter-roll.js` (pure `rollEncounterDice({ count, sides, random })`), `js/journey2-view.js` (`renderEncounterRoll`, `rollEncounter`, the `encRoll` state, `setRollRandom` on the debug API), `css/journey2.css` (`.j2-roll-*`, `.j2-die`, `.j2-enc-sec.is-triggered`), `data/i18n.json` (`journey2_roll_*`), `tests/journey2-encounter-roll.test.js`.
+- **Dice art:** the roll button shows `img/journey2/dice/d6-3d.png`; each rolled die is `d6-<face>.png` (160px derivatives of the originals; the 1 face carries a red pip). The numeric text is gone from the die, so the accessible name stays on the `.j2-roll-dice` container (`journey2_roll_dice_aria`).
 
 ## PD-040: Journey — the toolbar lives in the side panel; Player Preview is the same screen
 
