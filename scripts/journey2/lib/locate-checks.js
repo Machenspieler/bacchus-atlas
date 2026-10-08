@@ -93,40 +93,40 @@ async function runLocateChecks(env) {
   await check('locate.03.overlay-shows-available-and-mark-collected-keeps-the-overlay-camera-and-one-undo', async () => {
     await openOverlay(ECHO);
     const before = { cam: await cam(), undo: (await st()).history.undo };
-    const r0 = { open: await overlayOpen(), visible: await page.locator('[data-j2-s="echo"]').isVisible(), text: await page.locator('[data-j2-s="echoText"]').innerText(), btn: await page.locator('[data-j2-echo-collect]').innerText(), heading: await page.locator('#j2-sanc-echo-h').innerText() };
+    const r0 = { open: await overlayOpen(), visible: await page.locator('[data-j2-s="echo"]').isVisible(), btn: await page.locator('[data-j2-echo-collect]').innerText() };
     await page.locator('[data-j2-echo-collect]').click(); await sleep(250);
-    const r1 = { open: await overlayOpen(), text: await page.locator('[data-j2-s="echoText"]').innerText(), btn: await page.locator('[data-j2-echo-collect]').innerText(), cam: await cam(), undo: (await st()).history.undo, doc: (await docNow()).soulEchoes, crystal: await page.locator('.j2-echo.is-collected').count(), name: await page.locator('[data-j2-s="player"]').isVisible() };
-    return { ok: r0.open && r0.visible && r0.text === 'Available' && r0.btn === 'Mark collected' && r0.heading.toLowerCase() === 'soul echo' && r1.open && r1.text === 'Collected' && r1.btn === 'Restore Echo' && r1.cam === before.cam && r1.undo === before.undo + 1 && r1.doc.collectedAnchorIds.length === 1 && r1.doc.collectedAnchorIds[0] === ECHO && r1.crystal === 1 && r1.name === false, detail: { r0, r1, before } };
+    const r1 = { open: await overlayOpen(), btn: await page.locator('[data-j2-echo-collect]').innerText(), cam: await cam(), undo: (await st()).history.undo, doc: (await docNow()).soulEchoes, crystal: await page.locator('.j2-echo.is-collected').count(), name: await page.locator('[data-j2-sanc-name]').isVisible() };
+    return { ok: r0.open && r0.visible && r0.btn === 'Mark collected' && r1.open && r1.btn === 'Unmark collected' && r1.cam === before.cam && r1.undo === before.undo + 1 && r1.doc.collectedAnchorIds.length === 1 && r1.doc.collectedAnchorIds[0] === ECHO && r1.crystal === 1 && r1.name === false, detail: { r0, r1, before } };
   });
   await check('locate.04.the-collected-state-survives-a-language-switch-and-restore-is-undoable', async () => {
     await page.click('[data-lang="ru"]'); await sleep(300);
-    const ru = { open: await overlayOpen(), text: await page.locator('[data-j2-s="echoText"]').innerText(), btn: await page.locator('[data-j2-echo-collect]').innerText() };
+    const ru = { open: await overlayOpen(), btn: await page.locator('[data-j2-echo-collect]').innerText() };
     await page.click('[data-lang="en"]'); await sleep(300);
-    const en = { open: await overlayOpen(), text: await page.locator('[data-j2-s="echoText"]').innerText() };
+    const en = { open: await overlayOpen(), btn: await page.locator('[data-j2-echo-collect]').innerText() };
     const undo0 = (await st()).history.undo;
     await page.locator('[data-j2-echo-collect]').click(); await sleep(250);
-    const restored = { text: await page.locator('[data-j2-s="echoText"]').innerText(), collected: (await docNow()).soulEchoes.collectedAnchorIds.length, undo: (await st()).history.undo };
+    const restored = { btn: await page.locator('[data-j2-echo-collect]').innerText(), collected: (await docNow()).soulEchoes.collectedAnchorIds.length, undo: (await st()).history.undo };
     await page.locator('[data-j2-echo-collect]').click(); await sleep(250);            // collected again for the Locate checks
-    return { ok: ru.open && ru.text === 'Собрано' && ru.btn === 'Вернуть Эхо' && en.open && en.text === 'Collected' && restored.text === 'Available' && restored.collected === 0 && restored.undo === undo0 + 1 && (await docNow()).soulEchoes.collectedAnchorIds[0] === ECHO, detail: { ru, en, restored } };
+    return { ok: ru.open && ru.btn === 'Снять отметку «собрано»' && en.open && en.btn === 'Unmark collected' && restored.btn === 'Mark collected' && restored.collected === 0 && restored.undo === undo0 + 1 && (await docNow()).soulEchoes.collectedAnchorIds[0] === ECHO, detail: { ru, en, restored } };
   });
   await check('locate.05.a-sanctuary-without-an-echo-has-no-echo-section', async () => {
     await page.click('[data-j2-sanc-generate]'); await sleep(600);
     const other = ctx0.sanctuaries.map(s => s.id).find(id => !NINE.includes(id));
     await openOverlay(other);
-    const r = { open: await overlayOpen(), echoVisible: await page.locator('[data-j2-s="echo"]').isVisible(), nameRow: await page.locator('[data-j2-s="player"]').isVisible() };
+    const r = { open: await overlayOpen(), echoVisible: await page.locator('[data-j2-s="echo"]').isVisible(), nameRow: await page.locator('[data-j2-sanc-name]').isVisible() };
     await page.keyboard.press('Escape'); await sleep(100);
     return { ok: r.open && !r.echoVisible && r.nameRow, detail: r };
   });
   await check('locate.06.deleting-the-generated-characteristics-keeps-the-echo-and-its-state-and-the-overlay-still-opens', async () => {
     await openOverlay(ECHO);
-    const hasNameRow = await page.locator('[data-j2-s="player"]').isVisible();
+    const hasNameRow = await page.locator('[data-j2-sanc-name]').isVisible();
     await page.locator('[data-j2-sanc-delete]').click(); await sleep(250);
     await page.locator('.j2-dialog .btn-danger').click(); await sleep(350);
     const d = await docNow();
     await openOverlay(ECHO);
-    const r = { hasNameRow, entry: d.sanctuaries.entries.some(e => e.anchorId === ECHO), echo: d.soulEchoes.anchorIds.includes(ECHO), collected: d.soulEchoes.collectedAnchorIds.includes(ECHO), reopened: await overlayOpen(), echoRow: await page.locator('[data-j2-s="echo"]').isVisible(), tables: await page.locator('[data-j2-s="rows"]').isVisible(), footer: await page.locator('[data-j2-s="foot"]').isVisible(), text: await page.locator('[data-j2-s="echoText"]').innerText() };
+    const r = { hasNameRow, entry: d.sanctuaries.entries.some(e => e.anchorId === ECHO), echo: d.soulEchoes.anchorIds.includes(ECHO), collected: d.soulEchoes.collectedAnchorIds.includes(ECHO), reopened: await overlayOpen(), echoRow: await page.locator('[data-j2-s="echo"]').isVisible(), tables: await page.locator('[data-j2-s="rows"]').isVisible(), footer: await page.locator('[data-j2-s="foot"]').isVisible(), btn: await page.locator('[data-j2-echo-collect]').innerText() };
     await page.keyboard.press('Escape'); await sleep(100);
-    return { ok: hasNameRow && !r.entry && r.echo && r.collected && r.reopened && r.echoRow && !r.tables && !r.footer && r.text === 'Collected', detail: r };
+    return { ok: hasNameRow && !r.entry && r.echo && r.collected && r.reopened && r.echoRow && !r.tables && !r.footer && r.btn === 'Unmark collected', detail: r };
   });
 
   /* ---- entering the tool ---- */

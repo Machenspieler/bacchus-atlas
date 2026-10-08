@@ -479,15 +479,15 @@ test('view: the compass is transient, screen-space, decorative, and shows text o
   assert.doesNotMatch(store, /locate/i);
 });
 
-test('view: the sanctuary overlay carries the Soul Echo row (explicit text + a real button), one command, overlay stays open', () => {
-  assert.match(view, /<section class="j2-sanc-player j2-sanc-echo"[^>]*data-j2-s="echo" hidden>/);
-  assert.ok(view.indexOf('data-j2-s="echo"') > view.indexOf('data-j2-s="player"') && view.indexOf('data-j2-s="echo"') < view.indexOf('data-j2-s="rows"'), 'before the generated characteristics, after the player-map row');
+test('view: the sanctuary overlay carries the Soul Echo strip (one real button whose label is the next action), one command, overlay stays open', () => {
+  assert.match(view, /<div class="j2-sanc-echo" data-j2-s="echo" hidden>/);
+  assert.ok(view.indexOf('data-j2-s="echo"') > view.indexOf('data-j2-sanc-close') && view.indexOf('data-j2-s="echo"') < view.indexOf('data-j2-s="rows"'), 'between the header and the generated characteristics');
   const body = fn('toggleEchoCollected', 'locateDebug');
   assert.match(body, /type: 'setSoulEchoCollected'/); assert.match(body, /, true\);/, 'keepTransient: the overlay and camera stay');
   assert.match(body, /journey2_live_echo_collected/); assert.match(body, /journey2_live_echo_restored/);
   assert.doesNotMatch(body, /closeSanctuary|setCamera/);
   assert.match(fn('renderSanctuaryPanel', 'sanctuaryAnchorPx'), /ui\.s\.echo\.hidden = !echo/, 'a sanctuary without an Echo shows no empty section');
-  assert.match(fn('renderSanctuaryPanel', 'sanctuaryAnchorPx'), /journey2_echo_state_collected/);
+  assert.match(fn('renderSanctuaryPanel', 'sanctuaryAnchorPx'), /journey2_echo_restore/);
   assert.match(view, /const got = new Set\(doc\.soulEchoes\.collectedAnchorIds\)/, 'a collected Echo is drawn differently on the GM map');
 });
 

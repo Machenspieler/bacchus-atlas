@@ -52,7 +52,7 @@ async function runSanctuaryNameChecks(env) {
     await page.mouse.click(p.x, p.y); await sleepShort();
   }
   const nameBtn = () => page.locator('[data-j2-sanc-name]');
-  const statusText = () => page.locator('[data-j2-s="nameText"]').innerText();
+  const nameIconKind = () => page.locator('[data-j2-s="nameIco"]').evaluate(e => e.querySelectorAll('path').length);   // eye: 1 path, eyeOff: 2 (adds the slash)
   const labelOf = id => page.locator('[data-j2-g="sanctlabels"] .j2-sanc-label[data-anchor="' + id + '"]');
   async function enterPreview() { await page.click('[data-j2-preview]'); await sleep(350); }
   async function leavePreview() { await page.click('[data-j2-preview-back]'); await sleep(300); }
@@ -76,17 +76,17 @@ async function runSanctuaryNameChecks(env) {
     await page.click('[data-j2-sanc-generate]'); await sleep(500);
     const d = await docNow();
     await openOverlay(ID); await shot(page, 'sancname-01-hidden.png');
-    const r = { entries: d.sanctuaries.entries.length, names: d.playerVisibility.revealedSanctuaryNameAnchorIds, open: await overlayOpen(), status: await statusText(), btn: await nameBtn().innerText(), pressed: await nameBtn().getAttribute('aria-pressed'), ringState: await page.locator('[data-j2-g="sanct"] [data-sanc="' + ID + '"]').getAttribute('data-name-visible') };
-    return { ok: r.entries === 56 && r.names.length === 0 && r.open && r.status === 'Name hidden from players' && r.btn === 'Reveal name' && r.pressed === 'false' && r.ringState === 'false', detail: r };
+    const r = { entries: d.sanctuaries.entries.length, names: d.playerVisibility.revealedSanctuaryNameAnchorIds, open: await overlayOpen(), icon: await nameIconKind(), btn: await nameBtn().innerText(), pressed: await nameBtn().getAttribute('aria-pressed'), ringState: await page.locator('[data-j2-g="sanct"] [data-sanc="' + ID + '"]').getAttribute('data-name-visible') };
+    return { ok: r.entries === 56 && r.names.length === 0 && r.open && r.icon === 2 && r.btn === 'Reveal to players' && r.pressed === null && r.ringState === 'false', detail: r };
   });
 
   let camBefore, fogBefore, echoBefore, undoBefore;
   await check('sancname.02.reveal-keeps-the-overlay-open-and-changes-only-the-name-state', async () => {
     camBefore = await cam(); fogBefore = JSON.stringify((await docNow()).playerVisibility.revealedCells); echoBefore = JSON.stringify((await docNow()).soulEchoes); undoBefore = (await st()).history.undo;
     await nameBtn().click(); await sleepShort();
-    const r = { names: await names(), open: await overlayOpen(), status: await statusText(), btn: await nameBtn().innerText(), pressed: await nameBtn().getAttribute('aria-pressed'), cam: (await cam()) === camBefore, fog: JSON.stringify((await docNow()).playerVisibility.revealedCells) === fogBefore, echo: JSON.stringify((await docNow()).soulEchoes) === echoBefore, undo: (await st()).history.undo - undoBefore, focus: await page.evaluate(() => document.activeElement && document.activeElement.hasAttribute('data-j2-sanc-name')), live: await page.locator('[data-j2-live]').innerText() };
+    const r = { names: await names(), open: await overlayOpen(), icon: await nameIconKind(), btn: await nameBtn().innerText(), pressed: await nameBtn().getAttribute('aria-pressed'), cam: (await cam()) === camBefore, fog: JSON.stringify((await docNow()).playerVisibility.revealedCells) === fogBefore, echo: JSON.stringify((await docNow()).soulEchoes) === echoBefore, undo: (await st()).history.undo - undoBefore, focus: await page.evaluate(() => document.activeElement && document.activeElement.hasAttribute('data-j2-sanc-name')), live: await page.locator('[data-j2-live]').innerText() };
     await shot(page, 'sancname-02-visible.png');
-    return { ok: r.names.length === 1 && r.names[0] === ID && r.open && r.status === 'Name visible to players' && r.btn === 'Hide name' && r.pressed === 'true' && r.cam && r.fog && r.echo && r.undo === 1 && r.focus && r.live.includes((await entryOf(ID)).name), detail: r };
+    return { ok: r.names.length === 1 && r.names[0] === ID && r.open && r.icon === 1 && r.btn === 'Hide from players' && r.pressed === null && r.cam && r.fog && r.echo && r.undo === 1 && r.focus && r.live.includes((await entryOf(ID)).name), detail: r };
   });
 
   await check('sancname.03.the-gm-map-letters-the-revealed-name-and-the-ring-shows-a-non-colour-shape-and-stays-pointer-transparent-and-hidden-from-assistive-tech', async () => {
@@ -146,7 +146,7 @@ async function runSanctuaryNameChecks(env) {
   await check('sancname.07.hide-removes-the-label-from-preview-and-undo-brings-it-back', async () => {
     await openOverlay(ID);
     await nameBtn().click(); await sleepShort();
-    const afterHide = { names: await names(), open: await overlayOpen(), status: await statusText(), pressed: await nameBtn().getAttribute('aria-pressed'), live: await page.locator('[data-j2-live]').innerText(), focus: await page.evaluate(() => document.activeElement && document.activeElement.hasAttribute('data-j2-sanc-name')) };
+    const afterHide = { names: await names(), open: await overlayOpen(), btn: await nameBtn().innerText(), pressed: await nameBtn().getAttribute('aria-pressed'), live: await page.locator('[data-j2-live]').innerText(), focus: await page.evaluate(() => document.activeElement && document.activeElement.hasAttribute('data-j2-sanc-name')) };
     await page.keyboard.press('Escape'); await sleep(120);
     await enterPreview();
     const hiddenInPreview = await page.evaluate(() => ({ labels: document.querySelectorAll('[data-j2-g="sanctlabels"] .j2-sanc-label').length, list: document.querySelectorAll('[data-j2-known-sanc] li').length, domHasName: false }));
@@ -158,7 +158,7 @@ async function runSanctuaryNameChecks(env) {
     await page.click('[data-j2-redo]'); await sleepShort();
     const afterRedo = await names();
     await page.click('[data-j2-undo]'); await sleepShort();
-    return { ok: afterHide.names.length === 0 && afterHide.open && afterHide.status === 'Name hidden from players' && afterHide.pressed === 'false' && /hidden/i.test(afterHide.live) && afterHide.focus && hiddenInPreview.labels === 0 && hiddenInPreview.list === 0 && !domLeak && afterUndo.length === 1 && afterRedo.length === 0 && (await names()).length === 1, detail: { afterHide, hiddenInPreview, domLeak, afterUndo, afterRedo } };
+    return { ok: afterHide.names.length === 0 && afterHide.open && afterHide.btn === 'Reveal to players' && afterHide.pressed === null && /hidden/i.test(afterHide.live) && afterHide.focus && hiddenInPreview.labels === 0 && hiddenInPreview.list === 0 && !domLeak && afterUndo.length === 1 && afterRedo.length === 0 && (await names()).length === 1, detail: { afterHide, hiddenInPreview, domLeak, afterUndo, afterRedo } };
   });
 
   await check('sancname.08.rerolling-a-visible-sanctuary-asks-first-cancel-keeps-the-name-confirm-keeps-visibility', async () => {
@@ -262,7 +262,7 @@ async function runSanctuaryNameChecks(env) {
     const nameOf = (await entryOf(ID)).name;
     const stateBefore = { names: JSON.stringify(await names()), undo: (await st()).history.undo, doc: JSON.stringify(await docNow()) };
     await page.evaluate(() => document.querySelector('[data-lang="ru"]').click()); await sleep(500);
-    const ru = { open: await overlayOpen(), title: await page.locator('#j2-sanctuary-title').innerText(), status: await statusText(), btn: await nameBtn().innerText(), pressed: await nameBtn().getAttribute('aria-pressed'), group: await page.locator('#j2-sanc-player-h').innerText() };
+    const ru = { open: await overlayOpen(), title: await page.locator('#j2-sanctuary-title').innerText(), btn: await nameBtn().innerText(), pressed: await nameBtn().getAttribute('aria-pressed') };
     const same = JSON.stringify(await docNow()) === stateBefore.doc && (await st()).history.undo === stateBefore.undo;
     await nameBtn().click(); await sleepShort();
     const revealed = { names: await names(), live: await page.locator('[data-j2-live]').innerText() };
@@ -276,7 +276,7 @@ async function runSanctuaryNameChecks(env) {
     if ((await names()).includes(ID)) { await nameBtn().click(); await sleepShort(); }
     await page.evaluate(() => document.querySelector('[data-lang="en"]').click()); await sleep(400);
     const en = { open: await overlayOpen(), btn: await nameBtn().innerText(), name: (await entryOf(ID)).name === nameOf };
-    return { ok: ru.open && ru.title === nameOf && /скрыто/.test(ru.status) && ru.btn === 'Показать название' && ru.pressed === 'false' && ru.group.toLowerCase() === 'карта игроков' && same && pv.list === 'Известные убежища' && pv.labels >= 1 && /Название убежища/.test(revealed.live) && en.open && en.btn === 'Reveal name' && en.name, detail: { ru, same, pv, revealed, en } };
+    return { ok: ru.open && ru.title === nameOf && ru.btn === 'Показать игрокам' && ru.pressed === null && same && pv.list === 'Известные убежища' && pv.labels >= 1 && /Название убежища/.test(revealed.live) && en.open && en.btn === 'Reveal to players' && en.name, detail: { ru, same, pv, revealed, en } };
   });
 
   await page.close(); await context.close();

@@ -348,16 +348,19 @@ test('view: the Player Preview "Known sanctuaries" list holds revealed names onl
   assert.match(body, /ui\.knownSanc\.hidden = true; ui\.knownSanc\.innerHTML = ''/);
 });
 
-test('view: the overlay has a Player map row with explicit status text and an aria-pressed button; toggling does not close, pan or touch anything else', () => {
-  assert.match(view, /data-j2-sanc-name aria-pressed="false"/);
-  assert.ok(view.indexOf('data-j2-s="player"') > view.indexOf('data-j2-sanc-close') && view.indexOf('data-j2-s="player"') < view.indexOf('data-j2-s="rows"'), 'directly below the header, above the scrolling tables');
+test('view: the overlay has one player-facing action button in the header (label = the next action, no aria-pressed); toggling does not close, pan or touch anything else', () => {
+  assert.match(view, /data-j2-sanc-name><span class="j2-ico"/);
+  assert.doesNotMatch(view, /data-j2-sanc-name aria-pressed|j2-sanc-player|nameState|nameText/);
+  assert.ok(view.indexOf('data-j2-sanc-name') > view.indexOf('j2-sanctuary-title') && view.indexOf('data-j2-sanc-name') < view.indexOf('data-j2-sanc-close'), 'in the header, between the name and the close button');
   const body = fn('toggleSanctuaryName', 'rerollSanctuary');
   assert.match(body, /setSanctuaryNameRevealed/);
   assert.doesNotMatch(body, /closeSanctuary|centerOnWorld|setCamera|setCells|soulEchoes|\.focus\(/);
   assert.match(body, /journey2_live_sanc_name_revealed/); assert.match(body, /journey2_live_sanc_name_hidden/);
   assert.match(view, /data-j2-sanc-name'\)\) toggleSanctuaryName\(\)/);
   const panel = fn('renderSanctuaryPanel', 'sanctuaryAnchorPx');
-  assert.match(panel, /aria-pressed/); assert.match(panel, /journey2_sanc_name_visible/); assert.match(panel, /journey2_sanc_name_hidden/);
+  assert.doesNotMatch(panel, /aria-pressed/, 'the label itself changes, so no pressed state');
+  assert.match(panel, /ICON\.eyeOff/); assert.match(panel, /journey2_sanc_name_reveal/); assert.match(panel, /journey2_sanc_name_hide/);
+  assert.match(panel, /ui\.s\.nameLabel\.textContent/, 'only the label span changes: the button (and its focus) is never recreated');
 });
 
 test('view: a visible sanctuary asks before reroll (rolling only after the confirmation); delete and replace-all say what happens to visible names', () => {
@@ -391,17 +394,16 @@ test('view: the Player Preview path never opens the overlay or draws the ring fo
 /* ---------------- localization and docs ---------------- */
 
 test('every new string exists in English and Russian, uses the interpolation system, and the view hardcodes none of them', () => {
-  const keys = Object.keys(i18n.en).filter(k => /^journey2_(sanc_(player_map|name_|known|reroll_visible|delete_visible|replace_visible|tip_name)|live_sanc_name)/.test(k));
-  assert.ok(keys.length >= 15, String(keys.length));
+  const keys = Object.keys(i18n.en).filter(k => /^journey2_(sanc_(name_|known|reroll_visible|delete_visible|replace_visible|tip_name)|live_sanc_name)/.test(k));
+  assert.ok(keys.length >= 12, String(keys.length));
   for (const k of keys) {
     assert.ok(i18n.ru[k] && i18n.ru[k] !== i18n.en[k], 'ru: ' + k);
     assert.deepEqual((i18n.en[k].match(/\{\w+\}/g) || []).sort(), (i18n.ru[k].match(/\{\w+\}/g) || []).sort(), 'placeholders: ' + k);
   }
-  assert.equal(i18n.en.journey2_sanc_name_reveal, 'Reveal name');
-  assert.equal(i18n.en.journey2_sanc_name_hide, 'Hide name');
-  assert.equal(i18n.en.journey2_sanc_name_hidden, 'Name hidden from players');
-  assert.equal(i18n.en.journey2_sanc_name_visible, 'Name visible to players');
-  assert.doesNotMatch(view, /'(Reveal name|Hide name|Name visible to players|Name hidden from players|Known sanctuaries)'/);
+  assert.equal(i18n.en.journey2_sanc_name_reveal, 'Reveal to players');
+  assert.equal(i18n.en.journey2_sanc_name_hide, 'Hide from players');
+  for (const gone of ['journey2_sanc_player_map', 'journey2_sanc_name_hidden', 'journey2_sanc_name_visible', 'journey2_sanc_name_help']) assert.ok(!(gone in i18n.en) && !(gone in i18n.ru), gone);
+  assert.doesNotMatch(view, /'(Reveal to players|Hide from players|Known sanctuaries)'/);
 });
 
 test('the decision (PD-027) and the architecture are documented', () => {

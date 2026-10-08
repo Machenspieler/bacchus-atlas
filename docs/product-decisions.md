@@ -752,8 +752,8 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   Redo never re-rolls. When sanctuaries already exist the button asks before replacing all of them (Cancel
   focused). There is no per-sanctuary "generate", no manual editing of rolls and no number the GM chooses.
 - **Decision (the overlay):** clicking a generated sanctuary icon opens a screen-space overlay (not the
-  `#/journey` card design) with the name and the seven tables as *label + die → result* rows, and exactly three
-  actions: **×** closes it; **Delete sanctuary** (confirmed, undoable) removes that entry — the printed icon
+  `#/journey` card design) with the name and the seven tables as *label → result* rows (short neighbours share a line: **drive | political system** and **size | population**; the rest are full-width, in the book's order), and these
+  actions: **×** closes it; one player-facing button beside the name (PD-027; plus the Soul Echo strip under the header, PD-030, only for an Echo sanctuary); **Delete sanctuary** (confirmed, undoable) removes that entry — the printed icon
   always stays; **Reroll sanctuary** re-throws the name and all seven tables at once (`setSanctuary`, undoable,
   no confirm). A generated icon is marked by a ring so the GM can see which ones are clickable; it outranks the
   hex under it. The overlay never shares the map with the Region Inspector or the diagnostics drawer. Keyboard:
@@ -886,7 +886,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Date:** 2026-10-07
 - **Decision (what players always see):** the 56 fixed sanctuary icons, the printed MARROGATE and HORIZON labels — they are part of the immutable base map.
 - **Decision (what is hidden):** the generated name of a sanctuary is hidden from players by default. Only an explicit GM action reveals it
-  (**Reveal name** / **Hide name** in the Sanctuary Overlay, "Player map" row). Visibility is never inferred from fog, nearby revealed cells,
+  (one button beside the name in the Sanctuary Overlay's header: **Reveal to players** / **Hide from players** — its label is the next action, the icon is an eye / crossed eye, no `aria-pressed`, no separate status text or heading; the lettered name on the map is the state cue). Visibility is never inferred from fog, nearby revealed cells,
   the party's position, Soul Echoes, generation, clicking or opening the overlay. There is no generic "visited" flag.
 - **Decision (storage):** `playerVisibility.revealedSanctuaryNameAnchorIds` — a sorted, duplicate-free list of stable anchor ids, each of a
   printed sanctuary (never Marrogate/Horizon) that currently has a generated entry (cross-checked on load/import; an orphan or malformed id rejects the
@@ -964,7 +964,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   animation and the text. If the party's hex is the Echo sanctuary's mapped hex the answer is **"The nearest Soul Echo is here."** — no random direction, the centre crystal pulses.
 - **Decision (collected state):** `doc.soulEchoes = { anchorIds, collectedAnchorIds }`. Collected is a sorted subset of the distribution, missing = every Echo Available (`schemaVersion`
   stays 1). It belongs to the **fixed anchor**, not to generated sanctuary data: rerolling or deleting a sanctuary's characteristics changes nothing. The sanctuary overlay shows a GM-only
-  **Soul Echo** row (explicit text *Available / Collected* + a real *Mark collected / Restore Echo* button; one command, one Undo entry, overlay and camera stay) only for a sanctuary that holds
+  **Soul Echo** strip (one real button, *Mark collected* / *Unmark collected*, whose label is the next action — the dimmed crystal on the map is the state cue; no heading or status text; one command, one Undo entry, overlay and camera stay) only for a sanctuary that holds
   an Echo. Because the state lives on the anchor, the overlay also opens for an Echo sanctuary whose characteristics were deleted (it then shows just that row). Generating or removing Echoes
   clears the collected state in the same command; Undo restores both. A collected crystal is drawn smaller, flat and dim on the GM map. Locate only offers **Available** Echoes: the button
   is unavailable (with a reason) with no distribution ("Generate Soul Echoes first.") or when all are collected.

@@ -374,6 +374,16 @@ in place rather than closing and reopening it. The overlay dismisses itself on
 an outside click — a click already carries an unambiguous "went here to leave"
 meaning, so no separate close affordance duplicates that gesture.
 
+### Journey map panels (`.j2-region-inspector` family)
+Panels that float over the Journey map — Region Inspector, sanctuary overlay, Locate, route details — share one
+shell (header, `--ink-raised` surface, `--line-strong` border, `--e-3`) and come in exactly two widths, both tokens on
+`.j2-stage`: `--j2-pop-w` (compact, `clamp(340px, 28vw, 380px)`: sanctuary, Locate, route) and `--j2-pop-w-wide`
+(reading, `clamp(400px, 34vw, 480px)`: the Region Inspector, which carries prose). Never give a new panel its own
+width; at <= 900px every one of them is the map width minus `2 * var(--s-3)`. Caps labels inside a panel
+(`.j2-insp-h`, `.j2-sanc-k`) are `--muted`, like the card's `.dm-k` — gold is for selection and the primary action, not
+for static headings. A control whose label is the action it will take (e.g. *Reveal to players* / *Hide from players*)
+does not also carry `aria-pressed`.
+
 ### Toast & tooltip
 Toasts stack from one screen corner (the same corner the "back to top" button
 claims, so the two never collide). The tooltip is a single reused custom

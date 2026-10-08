@@ -414,6 +414,7 @@
       route: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="4.6" cy="15.4" r="2.2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="15.4" cy="4.6" r="2.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6.6 14.2c3.4-1.4 1.2-4.4 3.8-5.6 1.6-.7 2.6-.8 3-2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2.4 2.2"/></svg>',
       compass: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="7.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m13.2 6.8-1.7 4.7-4.7 1.7 1.7-4.7z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M10 1.6v1.8M10 16.6v1.8M1.6 10h1.8M16.6 10h1.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
     };
+      eyeOff: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.5 10C4 5.8 7 4 10 4s6 1.8 8.5 6c-2.5 4.2-5.5 6-8.5 6s-6-1.8-8.5-6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M3.5 16.5 16.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
 
     /**
      * Soul Echo crystal (PD-024): a small floating diamond with a pale core, drawn right above the sanctuary icon, not tied to any hex. Gradients live in <defs>; the shape is inlined per Echo.
@@ -557,23 +558,15 @@
               <aside class="j2-region-inspector j2-sanctuary" id="j2-sanctuary" role="dialog" aria-modal="false" aria-labelledby="j2-sanctuary-title" data-j2-sanctuary hidden>
                 <span class="j2-insp-caret" aria-hidden="true"></span>
                 <header class="j2-insp-head">
-                  <div class="j2-insp-titles"><h3 class="j2-insp-title" id="j2-sanctuary-title" data-j2-s="name"></h3></div>
+                  <div class="j2-sanc-headmain">
+                    <div class="j2-insp-titles"><h3 class="j2-insp-title" id="j2-sanctuary-title" data-j2-s="name"></h3></div>
+                    <button type="button" class="btn btn-sm j2-sanc-act" data-j2-sanc-name><span class="j2-ico" aria-hidden="true" data-j2-s="nameIco"></span><span data-j2-s="nameLabel"></span></button>
+                  </div>
                   <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-close data-t-aria="journey2_sanc_close" data-t-title="journey2_sanc_close">${ICON.close}</button>
                 </header>
-                <section class="j2-sanc-player" aria-labelledby="j2-sanc-player-h" data-j2-s="player">
-                  <h4 class="j2-sanc-k" id="j2-sanc-player-h"><span data-t="journey2_sanc_player_map"></span></h4>
-                  <div class="j2-sanc-player-row">
-                    <span class="j2-sanc-player-state" data-j2-s="nameState" data-t-title="journey2_sanc_name_help"><span class="j2-sanc-eye" aria-hidden="true">${ICON.eye}</span><span data-j2-s="nameText"></span></span>
-                    <button type="button" class="btn btn-sm" data-j2-sanc-name aria-pressed="false"></button>
-                  </div>
-                </section>
-                <section class="j2-sanc-player j2-sanc-echo" aria-labelledby="j2-sanc-echo-h" data-j2-s="echo" hidden>
-                  <h4 class="j2-sanc-k" id="j2-sanc-echo-h"><span data-t="journey2_echo_section"></span></h4>
-                  <div class="j2-sanc-player-row">
-                    <span class="j2-sanc-player-state is-visible" data-j2-s="echoState"><span class="j2-sanc-eye" aria-hidden="true">${ICON.crystal}</span><span data-j2-s="echoText"></span></span>
-                    <button type="button" class="btn btn-sm" data-j2-echo-collect></button>
-                  </div>
-                </section>
+                <div class="j2-sanc-echo" data-j2-s="echo" hidden>
+                  <button type="button" class="btn btn-sm j2-sanc-act" data-j2-echo-collect><span class="j2-ico" aria-hidden="true">${ICON.crystal}</span><span data-j2-s="echoLabel"></span></button>
+                </div>
                 <div class="j2-insp-scroll j2-sanc-rows" data-j2-s="rows"></div>
                 <footer class="j2-sanc-foot" data-j2-s="foot">
                   <button type="button" class="btn btn-sm btn-danger" data-j2-sanc-delete data-t="journey2_sanc_delete"></button>
@@ -2245,7 +2238,8 @@
        projection has no field for any of it, so nothing here can reach the preview or a print.
        ============================================================ */
 
-    const SANC_RING_R = 34;                                 // world px: the ring drawn round a generated sanctuary icon
+    const SANC_PAIRS = [['drive', 'politics'], ['size', 'population']];   // short neighbouring tables shown side by side in the overlay
+    const SANC_RING_R = 34;                                // world px: the ring drawn round a generated sanctuary icon
 
     function sanctuaryAnchorMap() {
       if (!sancAnchors) sancAnchors = new Map(data.anchorsDoc.anchors.filter(a => a.kind === 'sanctuary').map(a => [a.stableId, a]));
@@ -2301,29 +2295,36 @@
       ui.sanctuary.hidden = false;
       ui.s.name.textContent = e ? sanctuaryTitle(e) : t('journey2_sanc_fallback');
       // an Echo-only sanctuary (its characteristics were deleted) shows just the Soul Echo row: no name toggle, no tables, no Reroll / Delete
-      ui.s.player.hidden = !e; ui.s.rows.hidden = !e; ui.s.foot.hidden = !e;
+      ui.sancName.hidden = !e; ui.s.rows.hidden = !e; ui.s.foot.hidden = !e;
       if (e) {
         const rows = generator && generator.ready() && typeof generator.describeSanctuary === 'function' ? generator.describeSanctuary(e) : [];
-        const html = rows.map(r =>
+        const cell = r =>
           '<section class="j2-sanc-row"><h4 class="j2-sanc-k"><span>' + esc(t(r.label)) + '</span></h4>' +
-          r.results.map(x => '<p class="j2-sanc-v"><span class="j2-sanc-text">' + esc(x.text) + '</span></p>').join('') + '</section>').join('');
+          r.results.map(x => '<p class="j2-sanc-v"><span class="j2-sanc-text">' + esc(x.text) + '</span></p>').join('') + '</section>';
+        // short neighbours in the book's order share one line (two columns); a pair is built by key, so a missing table just leaves a single row
+        const byKey = new Map(rows.map(r => [r.key, r])), paired = new Set();
+        let html = '';
+        for (const r of rows) {
+          if (paired.has(r.key)) continue;
+          const mate = SANC_PAIRS.find(p => p[0] === r.key && byKey.has(p[1]));
+          if (mate) { paired.add(mate[1]); html += '<div class="j2-sanc-pair">' + cell(r) + cell(byKey.get(mate[1])) + '</div>'; }
+          else html += '<div class="j2-sanc-pair is-single">' + cell(r) + '</div>';
+        }
         if (ui.s.rows.getAttribute('data-sig') !== html) { ui.s.rows.innerHTML = html; ui.s.rows.setAttribute('data-sig', html); }
         const shown = Model.isSanctuaryNameRevealed(doc, e.anchorId);
-        ui.s.nameText.textContent = t(shown ? 'journey2_sanc_name_visible' : 'journey2_sanc_name_hidden');
-        ui.s.nameState.classList.toggle('is-visible', shown);
-        ui.sancName.textContent = t(shown ? 'journey2_sanc_name_hide' : 'journey2_sanc_name_reveal');
+        ui.s.nameIco.innerHTML = shown ? ICON.eye : ICON.eyeOff;
+        ui.s.nameLabel.textContent = t(shown ? 'journey2_sanc_name_hide' : 'journey2_sanc_name_reveal');
         ui.sancName.title = t(shown ? 'journey2_sanc_name_hide_title' : 'journey2_sanc_name_reveal_title');
-        ui.sancName.setAttribute('aria-pressed', String(shown));
+        // the one player-facing control: its label is the action it will take (no pressed state — the label itself changes), the icon follows the state
         ui.sancName.disabled = editLocked;
         ui.sancReroll.disabled = editLocked || !sanctuaryReady();
         ui.sancDelete.disabled = editLocked;
       } else if (ui.s.rows.getAttribute('data-sig')) { ui.s.rows.innerHTML = ''; ui.s.rows.removeAttribute('data-sig'); }
-      // GM-only Soul Echo row: explicit text state + a real button (never colour alone); only when this sanctuary holds an Echo
+      // GM-only Soul Echo strip: one real button whose label is the next action (the dimmed crystal on the map shows the state); only when this sanctuary holds an Echo
       ui.s.echo.hidden = !echo;
       if (echo) {
         const got = Model.isEchoCollected(doc, sanctuaryOpen);
-        ui.s.echoText.textContent = t(got ? 'journey2_echo_state_collected' : 'journey2_echo_state_available');
-        ui.echoCollect.textContent = t(got ? 'journey2_echo_restore' : 'journey2_echo_mark');
+        ui.s.echoLabel.textContent = t(got ? 'journey2_echo_restore' : 'journey2_echo_mark');
         ui.echoCollect.disabled = editLocked;
       }
       if (sanctuaryShown !== sanctuaryOpen) ui.s.rows.scrollTop = 0;

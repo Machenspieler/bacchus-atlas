@@ -1329,8 +1329,8 @@ Run all of them with `node --test tests/*.test.js`.
   only after the result settles; `role=status` region; focus enters it on `result`, returns to the button on close). The needle is one CSS transition started by `startNeedle(plan)`.
 - *Undo/Redo and stale results.* `afterDocChange` (dispatch, Undo, Redo) calls `syncLocate`: no Echoes → exit ("No Soul Echoes have been distributed."), no Available Echo while selecting → exit, a result whose
   `sig` (anchor + collected ids) differs from the document → exit as stale. `replaceDocument` (import / reset), `enterPreview`, `dispose` close it; nothing ever restores a result.
-- *Sanctuary overlay.* `sanctuaryOpenable(id)` = has a generated entry **or** an Echo; `sanctuaryAtScreen`, `cycleSanctuary`, `openSanctuary` and `afterDocChange` use it. `renderSanctuaryPanel` shows the Soul Echo row
-  (`[data-j2-s="echo"]`, text + `[data-j2-echo-collect]`) only for an Echo sanctuary; an Echo-only sanctuary hides the player-map row, tables and footer. `toggleEchoCollected` dispatches with `keepTransient`, so the
+- *Sanctuary overlay.* `sanctuaryOpenable(id)` = has a generated entry **or** an Echo; `sanctuaryAtScreen`, `cycleSanctuary`, `openSanctuary` and `afterDocChange` use it. `renderSanctuaryPanel` shows the Soul Echo strip
+  (`[data-j2-s="echo"]`, one `[data-j2-echo-collect]` button, label = next action) only for an Echo sanctuary; an Echo-only sanctuary hides the name button, tables and footer. `toggleEchoCollected` dispatches with `keepTransient`, so the
   overlay, its scroll position and the camera stay.
 - *Projection isolation.* `journey2-projection.js` and `journey2-print.js` never read `soulEchoes`/`collectedAnchorIds`; tests assert it on the projection, print projection and print model.
 - *Tests.* `tests/journey2-locate.test.js` (schema, command, history, bearing, sixteen sectors and boundaries, nearest, ties, here, plan, session lifecycle, isolation, view/i18n/docs guards);
@@ -1376,8 +1376,8 @@ Run all of them with `node --test tests/*.test.js`.
   `sanctuaryLabels`, on the GM map from `Journey2Projection.sanctuaryLabelsOf(doc)` (the same list; same layout, same hand lettering) — and the
   visually-hidden `[data-j2-known-sanc]` list in Player Preview only; the GM view empties that list. The GM ring (`renderSanctuaryRings`) drops its dot entirely
   when the name is visible (the lettered name is the cue) and redraws when the list identity changes.
-- *Overlay.* A "Player map" row between the header and the tables: status text + `aria-pressed` button (`toggleSanctuaryName`, dispatches with
-  `keepTransient`, announces, keeps the overlay, camera and focus). `rerollSanctuary` confirms for a visible name then calls `commitReroll`.
+- *Overlay.* One button in the header beside the name (`[data-j2-sanc-name]`: eye / `ICON.eyeOff` + a label that is the next action, no `aria-pressed`; only the label/icon spans are rewritten, so the button and its focus survive). `toggleSanctuaryName` dispatches with
+  `keepTransient`, announces, keeps the overlay, camera and focus. The tables render in bands (`.j2-sanc-pair`): `SANC_PAIRS` joins `drive|politics` and `size|population` by key into two columns (one column under 300px of container width); every other table is a full-width band. `rerollSanctuary` confirms for a visible name then calls `commitReroll`.
 
 ### Journey 2 Biome Tint (PD-026)
 

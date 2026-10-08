@@ -135,6 +135,8 @@ body[data-route="journey"] #grid-wrap { display: block; }
   --j2-side-w: 340px; --j2-rail-w: 44px; --j2-side-gap: var(--s-2);
   --j2-inset-left: calc(var(--j2-side-w) + 2 * var(--j2-side-gap));
   --j2-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* map panels come in two widths: reading (Region Inspector, prose) and compact (sanctuary, Locate, route details) */
+  --j2-pop-w: clamp(340px, 28vw, 380px); --j2-pop-w-wide: clamp(400px, 34vw, 480px);
   flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden;
 }
 .j2-stage[data-side="collapsed"] { --j2-inset-left: calc(var(--j2-rail-w) + 2 * var(--j2-side-gap)); }
@@ -438,7 +440,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 /* ---------- Region Inspector: a screen-space panel over the map, a sibling of the zoomed world so it never scales ---------- */
 .j2-region-inspector {
   position: absolute; left: 0; top: 0; z-index: 4;
-  width: clamp(400px, 34vw, 480px); max-height: min(72vh, calc(100% - 24px));
+  width: var(--j2-pop-w-wide); max-height: min(72vh, calc(100% - 2 * var(--s-3)));
   display: flex; flex-direction: column;
   background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-lg); box-shadow: var(--e-3);
   font-family: var(--font-ui); color: var(--parchment); overscroll-behavior: contain;
@@ -466,7 +468,8 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-insp-line strong { font-weight: 600; color: var(--parchment); }
 .j2-insp-sec { display: grid; gap: var(--s-1); padding-top: var(--s-3); border-top: 1px solid var(--line-faint); }
 .j2-insp-sec[hidden] { display: none; }
-.j2-insp-h { margin: 0; font-family: var(--font-mono); font-weight: 400; font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--hope-soft); }
+/* caps label: the same muted mono caps in every panel and card (gold is reserved for selected / primary) */
+.j2-insp-h, .j2-sanc-k { margin: 0; font-family: var(--font-mono); font-weight: 400; font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--muted); }
 .j2-insp-p { margin: 0 0 var(--s-2); font-size: var(--fs-md); line-height: var(--lh-md); color: var(--parchment); }
 .j2-insp-p:last-child { margin-bottom: 0; }
 .j2-insp-muted { font-size: var(--fs-sm); color: var(--muted); }
@@ -484,15 +487,27 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-region-inspector[data-caret="top"] .j2-insp-caret { top: -6px; left: calc(var(--j2-caret, 24px) - 5px); border-right: 0; border-bottom: 0; }
 .j2-region-inspector[data-caret="bottom"] .j2-insp-caret { bottom: -6px; left: calc(var(--j2-caret, 24px) - 5px); border-left: 0; border-top: 0; }
 @media (max-width: 900px) {
-  .j2-region-inspector { width: calc(100% - 24px); max-height: min(60vh, calc(100% - 24px)); }
+  .j2-region-inspector { width: calc(100% - 2 * var(--s-3)); max-height: min(60vh, calc(100% - 2 * var(--s-3))); }
 }
 
-/* ---------- Sanctuary overlay (PD-023): the same screen-space panel as the Region Inspector, narrower, with its own footer ---------- */
-.j2-region-inspector.j2-sanctuary { width: clamp(320px, 28vw, 380px); }
-.j2-sanc-rows { gap: 0; padding: var(--s-1) var(--s-3) var(--s-3); }
-.j2-sanc-row { display: grid; gap: var(--s-1); padding: var(--s-3) 0; border-top: 1px solid var(--line-faint); }
-.j2-sanc-row:first-child { border-top: 0; }
-.j2-sanc-k { margin: 0; display: flex; align-items: baseline; gap: var(--s-2); font-family: var(--font-mono); font-weight: 400; font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--muted); }
+/* ---------- Sanctuary overlay (PD-023): the same screen-space panel as the Region Inspector, compact width, with its own footer ---------- */
+.j2-region-inspector.j2-sanctuary { width: var(--j2-pop-w); }
+/* header: the name and its one player-facing button share a line, the button drops under a long name; the close button keeps the corner */
+.j2-sanc-headmain { flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); }
+.j2-sanc-headmain .j2-insp-titles { flex: 1 1 auto; }
+.j2-sanc-act { flex: none; display: inline-flex; align-items: center; gap: var(--s-1); }
+.j2-sanc-act[hidden] { display: none; }
+.j2-sanc-act .j2-ico { display: inline-flex; }
+.j2-sanc-act .j2-ico svg { width: 16px; height: 16px; }
+.j2-sanc-echo { flex: none; padding: var(--s-2) var(--s-3); border-bottom: 1px solid var(--line-faint); }
+.j2-sanc-echo[hidden] { display: none; }
+.j2-sanc-rows { gap: 0; padding: 0 var(--s-3) var(--s-2); container-type: inline-size; }
+/* a pair (or a single row) is one band: one rule above it, never between its two cells */
+.j2-sanc-pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); padding: var(--s-2) 0; border-top: 1px solid var(--line-faint); }
+.j2-sanc-pair:first-child { border-top: 0; }
+.j2-sanc-pair.is-single { grid-template-columns: 1fr; }
+@container (max-width: 300px) { .j2-sanc-pair { grid-template-columns: 1fr; gap: var(--s-2); } }
+.j2-sanc-row { display: grid; gap: var(--s-1); align-content: start; min-width: 0; }
 .j2-sanc-v { margin: 0; display: grid; font-size: var(--fs-md); line-height: var(--lh-md); color: var(--parchment); }
 .j2-sanc-text { overflow-wrap: anywhere; }
 .j2-sanc-foot { flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); padding: var(--s-2) var(--s-3); border-top: 1px solid var(--line-faint); }
@@ -500,29 +515,18 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-sanc-foot .j2-ico svg { width: 16px; height: 16px; }
 .j2-tb-sanc { padding-left: var(--s-3); border-left: 1px solid var(--line-faint); }
 @media (max-width: 900px) {
-  .j2-region-inspector.j2-sanctuary { width: calc(100% - 24px); }
+  .j2-region-inspector.j2-sanctuary { width: calc(100% - 2 * var(--s-3)); }
 }
 /* a small dot at the foot of every generated sanctuary icon (a map object: fixed colours with a white edge read on the parchment in both themes) */
 .j2-viewport.is-over-sanctuary { cursor: pointer; }
 .j2-overlay .j2-sanc-dot { fill: #a9680f; stroke: #fff; stroke-width: 1.5; r: calc(4px * var(--j2-inv, 1)); }
 /* A revealed name is ink on the map, hand-lettered capitals like the printed book's place names (GM map and Player Preview alike): a thin light halo (paint-order), no box, no glow; world-space, so it scales with the map */
 .j2-overlay .j2-sanc-label { font-family: var(--font-map); font-weight: 400; text-transform: uppercase; letter-spacing: 0.02em; fill: #14110d; stroke: rgba(255, 255, 255, 0.9); stroke-width: 3px; stroke-linejoin: round; paint-order: stroke fill; text-anchor: middle; pointer-events: none; user-select: none; }
-/* the overlay's Player map row, directly under its header */
-.j2-sanc-player { flex: none; display: grid; gap: var(--s-1); padding: var(--s-2) var(--s-3); border-bottom: 1px solid var(--line-faint); }
-.j2-sanc-player-row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
-.j2-sanc-player-state { display: inline-flex; align-items: center; gap: var(--s-2); min-width: 0; font-size: var(--fs-sm); color: var(--muted); }
-.j2-sanc-player-state.is-visible { color: var(--parchment); }
-.j2-sanc-eye { display: inline-flex; flex: none; }
-.j2-sanc-eye svg { width: 16px; height: 16px; }
-.j2-sanc-player-state:not(.is-visible) .j2-sanc-eye { opacity: 0.45; }
-.j2-sanc-player .btn[aria-pressed="true"] { border-color: var(--line-strong); }
 
 /* ---------- Soul Echoes: collected state and the overlay row (PD-030) ---------- */
-.j2-sanc-player[hidden], .j2-sanc-foot[hidden], .j2-sanc-rows[hidden], .j2-locate [hidden] { display: none; }
+.j2-sanc-foot[hidden], .j2-sanc-rows[hidden], .j2-locate [hidden] { display: none; }
 .j2-overlay .j2-echo.is-collected { opacity: 0.5; }
 .j2-overlay .j2-echo.is-collected .j2-echo-bob { animation: none; }
-.j2-sanc-echo .j2-sanc-eye svg { width: 16px; height: 16px; }
-.j2-sanc-echo .btn { flex: none; }
 
 /* ---------- Locate Soul Echoes (PD-030): selection chip, hover / origin hex, compass popover ---------- */
 .j2-viewport.is-locating { cursor: crosshair; }
@@ -536,7 +540,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-overlay .j2-loc-star { fill: #f0cf8c; stroke: #5c3a06; stroke-width: calc(1.6px * var(--j2-inv, 1)); stroke-linejoin: round; }
 @keyframes j2-loc-pulse { 0%, 100% { fill-opacity: 0.22; } 50% { fill-opacity: 0.6; } }
 
-.j2-region-inspector.j2-locate { width: clamp(280px, 28vw, 380px); outline: 0; animation: j2-locate-in 220ms var(--j2-ease, ease-out); }
+.j2-region-inspector.j2-locate { width: var(--j2-pop-w); outline: 0; animation: j2-locate-in 220ms var(--j2-ease, ease-out); }
 .j2-region-inspector.j2-locate:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
 @keyframes j2-locate-in { from { opacity: 0; scale: 0.96; } to { opacity: 1; scale: 1; } }
 .j2-locate-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: grid; justify-items: center; gap: var(--s-2); padding: var(--s-3); }
@@ -564,7 +568,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-locate-note strong { color: var(--parchment-dim); font-weight: 600; }
 .j2-locate-foot { flex-wrap: wrap; }
 @media (max-width: 900px) {
-  .j2-region-inspector.j2-locate { width: calc(100% - 24px); }
+  .j2-region-inspector.j2-locate { width: calc(100% - 2 * var(--s-3)); }
 }
 @media (prefers-reduced-motion: reduce) {
   .j2-region-inspector.j2-locate { animation: none; }
@@ -575,7 +579,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 /* ---------- diagnostics drawer (secondary, closed by default) ---------- */
 .j2-panel {
   position: absolute; top: var(--s-3); right: var(--s-3); z-index: 4;
-  width: 316px; max-height: calc(100% - 2 * var(--s-3));
+  width: var(--j2-side-w, 340px); max-height: calc(100% - 2 * var(--s-3));
   display: flex; flex-direction: column;
   background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-lg); box-shadow: var(--e-3);
   font-family: var(--font-ui);
@@ -792,7 +796,7 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-route-bub.is-selected { box-shadow: 0 0 0 2px rgba(240, 207, 140, 0.9), var(--e-2); }
 /* details popover: bottom-right of the visible map, never a modal */
 .j2-route {
-  position: absolute; right: var(--s-3); bottom: var(--s-3); z-index: 4; width: clamp(280px, 26vw, 360px); max-height: calc(100% - var(--s-6));
+  position: absolute; right: var(--s-3); bottom: var(--s-3); z-index: 4; width: var(--j2-pop-w); max-height: calc(100% - var(--s-6));
   display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-3);
   background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-lg); box-shadow: var(--e-3);
   font-family: var(--font-ui); font-size: var(--fs-sm); color: var(--parchment); overflow-y: auto; overscroll-behavior: contain; outline: 0;

@@ -506,7 +506,7 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       clicking any valid hex — also one under a sanctuary icon, a tile or an Environment badge — starts the compass: a popover beside that hex, the needle spins two turns and settles on the true bearing, then
       "The compass points …" + `NNE · North-northeast` + the GM reminder appear (not before). No name, distance, route or target is shown, fog and names are unchanged and Undo gains no entry.
       On an Echo sanctuary's own hex it says "The nearest Soul Echo is here." and the centre pulses. **Choose another location** returns to selecting, **Close** (or Esc) returns focus to the button.
-      Open an Echo sanctuary: the **Soul Echo** row shows Available + **Mark collected** → Collected + **Restore Echo** (overlay and scroll stay, one Undo each; the map crystal dims). Locate skips collected Echoes.
+      Open an Echo sanctuary: the Soul Echo strip shows **Mark collected** → **Unmark collected** (overlay and scroll stay, one Undo each; the map crystal dims). Locate skips collected Echoes.
       Undo/Redo or regenerating Echoes while a result is open closes it. With reduced motion the needle jumps straight to the bearing. Player Preview and Print Preview show none of it; the JSON backup keeps the collected state; EN/RU.
 - [ ] Sanctuaries (GM only, PD-023): the toolbar button reads **Generate 56 sanctuaries** (RU: «Создать убежища: 56») and puts a dashed ring round every printed sanctuary icon
       (never HORIZON/MARROGATE). Clicking an icon (also one with a hex under it) opens the overlay: name, then Trade & Exports d20, Quirk d12, Crisis d10, Drive d10,
@@ -515,7 +515,7 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       keeps the overlay open, and is one Undo entry. Pressing the toolbar button again asks before replacing. Clicking empty map closes the overlay; opening a hex's Region Inspector replaces it.
       `S` / `Shift+S` (map focused) step through the sanctuaries. Reload keeps them; the JSON backup round-trips them. **Player Preview** shows no ring, no overlay and no button.
       Check RU wording against daggerheart.ru/frame/journey-to-horizon, a narrow window (overlay full width) and the overlay beside the sidebar.
-- [ ] Sanctuary names for players (PD-027): in the overlay the **Player map** row reads "Name hidden from players" + **Reveal name**; pressing it flips to "Name visible to players" + **Hide name**
+- [ ] Sanctuary names for players (PD-027): in the overlay header the button beside the name reads **Reveal to players** (crossed eye); pressing it flips to **Hide from players** (eye)
       (overlay stays open, map does not move, focus stays on the button, one Undo entry each way). The ring dot disappears (no eye marker); hovering the icon shows "Name · Name visible to players".
       **Player Preview** shows the name in dark serif with a thin light halo beside that fixed icon (not covering it, inside the map, never over MARROGATE/HORIZON), even under fog;
       hidden names, tables and Soul Echoes are absent. Rerolling a visible sanctuary and deleting it each ask first; replacing all mentions how many names are visible. Check RU and a long name (two lines).
