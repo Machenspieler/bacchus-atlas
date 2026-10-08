@@ -534,8 +534,6 @@
                   <div class="j2-insp-summary">
                     <p class="j2-insp-line"><span class="j2-dots" data-j2-i="dots" role="img"></span><strong data-j2-i="terrainName"></strong><span data-j2-i="terrainN"></span></p>
                     <p class="j2-insp-line" data-j2-i="daysSize"></p>
-                    <p class="j2-insp-line" data-j2-i="counts"></p>
-                    <p class="j2-insp-line j2-insp-empty" data-j2-i="noTiles" hidden></p>
                     <p class="j2-insp-terrain-text" data-j2-i="terrainText" hidden></p>
                   </div>
                   <section class="j2-insp-sec j2-hexenv" data-j2-i="hexEnvSec" aria-labelledby="j2-hexenv-title" hidden>
@@ -1308,7 +1306,7 @@
       if (!ui.inspector) return;
       const b = inspectorOpen() ? Model.batchById(doc, inspector.batchId) : null;
       if (!b) { ui.inspector.hidden = true; inspectorShown = null; clearHexEnvironment(); return; }
-      const I = ui.i, idx = doc.batches.indexOf(b), c = Model.derive(doc).counts.get(b.id), sym = symbolFor(b);
+      const I = ui.i, idx = doc.batches.indexOf(b), sym = symbolFor(b);
       ui.inspector.hidden = false;
       if (sym && I.img.getAttribute('data-sym') !== sym.id) { I.img.src = sym.path; I.img.setAttribute('data-sym', sym.id); }
       I.name.textContent = batchName(b);
@@ -1318,16 +1316,14 @@
       I.blight.textContent = b.habitat.overtaken ? t('journey2_overtaken') : t('journey_shadowblighted');
       I.dots.innerHTML = [1, 2, 3, 4].map(i => '<i' + (i <= b.terrain.value ? ' class="on"' : '') + '></i>').join('');
       I.dots.setAttribute('aria-label', fill('journey2_terrain_n', { n: b.terrain.value }));
-      I.terrainN.textContent = ' · ' + fill('journey2_terrain_n', { n: n(b.terrain.value) });
-      I.counts.textContent = fill('journey2_placed_n', { n: n(c.placed) }) + ' · ' + fill('journey2_remaining_n', { n: n(c.remaining) });
-      I.noTiles.hidden = c.placed > 0;
-      I.noTiles.textContent = t('journey2_inspector_no_tiles');
+      I.terrainN.textContent = '';
       if (generator && generator.ready()) {
         const d = generator.describe(b);
         I.terrainName.textContent = d.terrain ? d.terrain.name : '';
         I.terrainText.hidden = !(d.terrain && d.terrain.text);
         I.terrainText.textContent = d.terrain ? d.terrain.text : '';
-        I.daysSize.textContent = (d.terrain ? fill('journey2_days_per_hex', { n: n(d.terrain.days) }) + ' · ' : '') + fill('journey2_hexes_n', { n: n(b.quantity) });
+        I.terrainN.textContent = d.terrain ? ' · ' + fill('journey2_days_per_hex', { n: n(d.terrain.days) }) : '';
+        I.daysSize.textContent = fill('journey2_hexes_n', { n: n(b.quantity) });
         I.examples.hidden = !d.examples;
         I.examples.textContent = d.examples || '';
         I.enc.innerHTML = (d.combined ? '<p class="j2-note">' + esc(t('journey_encounter_combined')) + '</p>' : '') + d.encounter.map(x => '<p class="j2-insp-p j2-enc">' + x.html + '</p>').join('');

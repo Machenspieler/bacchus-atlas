@@ -443,11 +443,10 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
     radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.55), transparent) 0 100% / 100% 9px no-repeat scroll;
 }
 .j2-insp-examples, .j2-insp-terrain-text { margin: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); }
-.j2-insp-examples[hidden], .j2-insp-terrain-text[hidden], .j2-insp-empty[hidden] { display: none; }
+.j2-insp-examples[hidden], .j2-insp-terrain-text[hidden] { display: none; }
 .j2-insp-summary { display: grid; gap: var(--s-1); }
 .j2-insp-line { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--s-2); font-size: var(--fs-sm); color: var(--parchment-dim); font-variant-numeric: tabular-nums; }
 .j2-insp-line strong { font-weight: 600; color: var(--parchment); }
-.j2-insp-empty { color: var(--fear-soft); }
 .j2-insp-sec { display: grid; gap: var(--s-1); padding-top: var(--s-3); border-top: 1px solid var(--line-faint); }
 .j2-insp-sec[hidden] { display: none; }
 .j2-insp-h { margin: 0; font-family: var(--font-mono); font-weight: 400; font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--hope-soft); }
