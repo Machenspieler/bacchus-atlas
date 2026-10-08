@@ -26,7 +26,7 @@ const fill = (ids, v) => Object.fromEntries(ids.map(i => [i, v]));
 test('encounter cost: 1 - (5/6)^rating for Terrain 1-4, centralized', () => {
   const want = { 1: 1 / 6, 2: 11 / 36, 3: 91 / 216, 4: 671 / 1296 };
   for (const r of [1, 2, 3, 4]) { assert.ok(Math.abs(R.encounterExpectation(r) - want[r]) < 1e-12); assert.equal(R.encounterExpectation(r), R.encounterProbability(r)); }
-  assert.ok(Math.abs(R.MIN_ENCOUNTER_COST - R.encounterExpectation(1)) < 1e-12);
+  assert.ok(R.encounterExpectation(4) < 4 * R.encounterExpectation(1), 'one Terrain 4 hex triggers fewer encounters than four Terrain 1 hexes (same 4 days)');
   assert.equal(R.terrainTravelCost(3), 3);
   assert.match(strip(read('js/journey2-route.js')).replace(/function encounterProbability[^\n]*/, ''), /^(?![\s\S]*Math\.pow\(5 \/ 6)/, 'the formula lives in one function');
 });
@@ -103,30 +103,6 @@ test('Fastest is optimal on random mixed-terrain grids (checked against a refere
   }
 });
 
-test('Fewer encounters is optimal for expected triggers on random grids (checked against a reference)', () => {
-  for (let seed = 1; seed <= 25; seed++) {
-    const { g } = randomGrid(3, seed);
-    const dist = reference(g, '-3,0', R.encounterExpectation);
-    for (const goal of ['3,0', '0,3', '0,-3', '2,1', '-1,-1']) {
-      const r = route(g, '-3,0', goal, 'encounters');
-      assert.ok(Math.abs(r.totalCost - dist.get(goal)) < 1e-9, 'seed ' + seed + ' -> ' + goal);
-      assert.ok(Math.abs(r.stats.expectedEncounters - r.totalCost) < 1e-9, 'the stats agree with the optimized cost');
-    }
-  }
-});
-
-test('Fastest and Fewer encounters are different optimizations: a map exists where each wins its own metric', () => {
-  assert.ok(R.encounterExpectation(4) < 4 * R.encounterExpectation(1), 'one Terrain 4 hex triggers fewer encounters than four Terrain 1 hexes (same 4 days)');
-  let found = null;
-  for (let seed = 1; seed <= 300 && !found; seed++) {
-    const { g } = randomGrid(4, seed);
-    const f = route(g, '-4,0', '4,0', 'fastest'), n = route(g, '-4,0', '4,0', 'encounters');
-    if (f.stats.travelDays < n.stats.travelDays && n.stats.expectedEncounters < f.stats.expectedEncounters - 1e-9) found = { f, n };
-  }
-  assert.ok(found, 'the two objectives disagree on some map');
-  assert.notDeepEqual(found.f.cells, found.n.cells);
-});
-
 test('Shortest ignores terrain entirely', () => {
   const g = grid(4, fill(['1,0', '2,0', '3,0', '4,0'], 4));
   const s = route(g, '0,0', '4,0', 'shortest');
@@ -134,7 +110,7 @@ test('Shortest ignores terrain entirely', () => {
   assert.equal(s.totalCost, 4);
 });
 
-test('unknown terrain: Fastest / Fewer encounters never enter it, Shortest may', () => {
+test('unknown terrain: Fastest never enters it, Shortest may', () => {
   const t = fill(['0,0', '1,0', '3,0'], 1);                       // 2,0 has no generated terrain; the wall of unknowns blocks the corridor
   const blocked = []; for (const id of ['0,-1', '1,-1', '2,-1', '-1,1', '0,1', '1,1', '2,1', '3,-1', '3,1', '2,-2', '1,-2', '1,2', '0,2', '-1,2']) blocked.push(id);
   const g = grid(3, t, blocked);
@@ -142,13 +118,13 @@ test('unknown terrain: Fastest / Fewer encounters never enter it, Shortest may',
   assert.equal(s.status, 'ok'); assert.deepEqual(s.cells, ['0,0', '1,0', '2,0', '3,0']);
   assert.equal(s.stats.complete, false); assert.equal(s.stats.unknownHexes, 1); assert.equal(s.stats.travelDays, null); assert.equal(s.stats.expectedEncounters, null);
   assert.deepEqual(s.segmentKnown, [true, false, true]);
-  for (const k of ['fastest', 'encounters']) assert.deepEqual(route(g, '0,0', '3,0', k), { status: 'no-route', strategy: k, reason: 'unknown-terrain' });
+  for (const k of ['fastest']) assert.deepEqual(route(g, '0,0', '3,0', k), { status: 'no-route', strategy: k, reason: 'unknown-terrain' });
 });
 
 test('settlement hexes (rating 0: sanctuaries, Marrogate, Horizon) are known, free, and do not block terrain-aware routes', () => {
   const g = grid(3, fill(['1,0', '2,0'], 3));
   const withSettle = Object.assign({}, g, { getTerrainRating: id => (id === '0,0' || id === '3,0' ? 0 : g.getTerrainRating(id)), hasZeroCostCells: true });
-  for (const k of ['fastest', 'encounters']) {
+  for (const k of ['fastest']) {
     const r = route(withSettle, '0,0', '3,0', k);
     assert.equal(r.status, 'ok', k); assert.equal(r.stats.complete, true);
     assert.equal(r.stats.terrainCounts[0], 1, 'the settlement destination is counted, not charged');
@@ -184,7 +160,6 @@ test('heuristics never overestimate (admissible)', () => {
     assert.ok(d * 1 <= route(g, a, b, 'fastest').totalCost + 1e-9);
     assert.equal(route(g, a, b, 'shortest').stats.hexes >= d, true);
     assert.equal(route(g, a, b, 'shortest').totalCost, route(g, a, b, 'shortest').stats.hexes);
-    assert.ok(d * R.MIN_ENCOUNTER_COST <= route(g, a, b, 'encounters').totalCost + 1e-9);
   }
 });
 
@@ -202,7 +177,7 @@ test('deterministic: same input, same path; equal-cost alternatives break ties c
   // neighbour enumeration order must not matter
   const rev = Object.assign({}, g, { getNeighbors: id => g.getNeighbors(id).slice().reverse() });
   assert.deepEqual(route(rev, '-3,0', '3,0', 'fastest').cells, first);
-  for (const k of ['shortest', 'encounters']) assert.deepEqual(route(rev, '-3,0', '3,0', k).cells, route(g, '-3,0', '3,0', k).cells);
+  for (const k of ['shortest']) assert.deepEqual(route(rev, '-3,0', '3,0', k).cells, route(g, '-3,0', '3,0', k).cells);
 });
 
 test('statistics: start excluded, destination included, terrain breakdown, zero-step', () => {
@@ -228,10 +203,11 @@ test('planRoutes + effectiveStrategy: Fastest by default, Shortest when a terrai
   const routes = R.planRoutes(Object.assign({ startCell: '0,0', goalCell: '2,0' }, g));
   assert.equal(routes.fastest.status, 'no-route'); assert.equal(routes.shortest.status, 'ok');
   assert.equal(R.effectiveStrategy(routes, 'fastest'), 'shortest');
-  assert.equal(R.effectiveStrategy(routes, 'encounters'), 'shortest');
+  assert.equal(R.effectiveStrategy(routes, 'no-such-strategy'), 'shortest');
   const known = R.planRoutes(Object.assign({ startCell: '0,0', goalCell: '2,0' }, grid(2, fill(['1,0', '2,0'], 1))));
   assert.equal(R.effectiveStrategy(known, undefined), 'fastest');
-  assert.equal(R.effectiveStrategy(known, 'encounters'), 'encounters');
+  assert.equal(R.effectiveStrategy(known, 'shortest'), 'shortest');
+  assert.deepEqual(R.STRATEGIES, ['fastest', 'shortest']);
   assert.equal(R.sameRoute(known.fastest, known.shortest), true);
 });
 
@@ -292,14 +268,12 @@ test('every route string exists in English and Russian with matching placeholder
   for (const base of ['journey2_route_terrain_row', 'journey2_route_unknown']) assert.ok(en[base + '_n'] && en[base + '_one'] && ru[base + '_n'] && ru[base + '_one']);
 });
 
-test('encounter wording: never "safest" / "least dangerous", and the help says encounters are not necessarily dangerous', () => {
+test('wording: never "safest" / "least dangerous"; two strategies only', () => {
   for (const lang of ['en', 'ru']) {
     const all = Object.keys(i18n[lang]).filter(k => k.startsWith('journey2_route_')).map(k => i18n[lang][k]).join('\n');
     assert.doesNotMatch(all, /safest|least dangerous|low-risk|safe route|безопасн/i);
   }
-  assert.match(i18n.en.journey2_route_encounters_help, /not necessarily dangerous/);
-  assert.match(i18n.en.journey2_route_encounters_help, /expected encounter triggers/);
-  assert.match(i18n.en.journey2_route_encounters, /^Fewer encounters$/);
+  assert.ok(!Object.keys(i18n.en).some(k => /^journey2_route_encounters/.test(k)), 'the Fewer encounters mode is gone');
   assert.equal(i18n.en.journey2_route_fastest, 'Fastest'); assert.equal(i18n.en.journey2_route_shortest, 'Shortest');
 });
 
@@ -315,8 +289,8 @@ test('map layers are pointer-transparent, hidden in Player Preview and the print
   assert.match(view, /if \(!st \|\| previewMode \|\| !data\) \{ if \(routeDrawn\.line\)/, 'the layers are emptied in Player Preview');
   assert.match(view, /function routeView\(\) \{[\s\S]{0,200}previewMode/, 'no panel in Player Preview');
   const css = read('css/journey2.css');
-  assert.match(css, /@media print \{ \.j2-route, \.j2-route-chip \{ display: none !important; \} \}/);
-  assert.match(css, /prefers-reduced-motion: reduce\) \{ \.j2-overlay \.j2-route-line \{ animation: none; \}/);
+  assert.ok(css.includes('@media print { .j2-route, .j2-route-chip, .j2-route-bubbles { display: none !important; } }'));
+  assert.ok(!/animation/.test(css.slice(css.indexOf('Route Planner (PD-031)'))), 'no looping or draw-in animation: the routes appear immediately');
 });
 
 test('tool exclusivity and selection priority are wired', () => {
@@ -332,14 +306,20 @@ test('tool exclusivity and selection priority are wired', () => {
 
 test('documentation: PD-031 and the architecture section exist', () => {
   const pd = read('docs/product-decisions.md'), arch = read('docs/architecture.md');
-  assert.match(pd, /PD-031/); assert.match(pd, /Route Planner/); assert.match(pd, /Fewer encounters/);
+  assert.match(pd, /PD-031/); assert.match(pd, /Route Planner/); assert.match(pd, /bubble/);
   assert.match(arch, /Route Planner/); assert.match(arch, /journey2-route\.js/); assert.match(arch, /admissible/);
 });
 
-
-test('the Shortest and Fewer encounters tabs are hidden when they are exactly the Fastest route', () => {
-  assert.ok(view.includes("function routeTabRedundant(routes, s) { return s !== 'fastest' && Route.sameRoute(routes.fastest, routes[s]); }"));
-  assert.ok(view.includes('b.hidden = routeTabRedundant(routes, s);'));
-  assert.ok(view.includes("if (eff !== 'fastest' && routeTabRedundant(st.routes, eff)) eff = 'fastest';"));
-  assert.ok(read('css/journey2.css').includes('.j2-route-tab[hidden] { display: none; }'));
+test('navigator-style bubbles: two parallel lines, a bubble per drawn route, click selects, click again opens details', () => {
+  assert.ok(view.includes("function routeShortestRedundant(routes) { return Route.sameRoute(routes.fastest, routes.shortest); }"));
+  assert.ok(view.includes("if (eff === 'shortest' && routeShortestRedundant(st.routes)) eff = 'fastest';"), 'identical routes collapse into one line and one bubble');
+  assert.match(view, /const ROUTE_GAP_PX = \d+;/);
+  assert.match(view, /function chooseRouteStrategy\(s\) \{[\s\S]{0,260}routeDetails = !routeDetails/, 'the selected bubble toggles the details');
+  assert.match(view, /if \(st\.status === 'result' && routeDetails\) \{ routeDetails = false;/, 'Escape closes the details before the planner');
+  assert.match(view, /if \(routePlanner\.isActive\(\)\) \{ paintRoute\(\); positionRouteBubbles\(\); \}/, 'the offset and the bubbles follow the zoom');
+  assert.ok(!/routeBubbleSpecs[\s\S]{0,40}dispatch/.test(routeSection));
+  const css = read('css/journey2.css');
+  assert.ok(css.includes('.j2-route-bubbles {') && css.includes('.j2-route-bub {'));
+  assert.ok(css.includes('.j2-route-bubbles { position: absolute; inset: 0; z-index: 3; pointer-events: none; }'));
+  for (const k of ['journey2_route_both', 'journey2_route_bub_stats', 'journey2_route_bub_unknown', 'journey2_route_bub_hint']) assert.ok(i18n.en[k] && i18n.ru[k], k);
 });

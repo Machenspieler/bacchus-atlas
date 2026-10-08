@@ -1,16 +1,16 @@
 /* ============================================================
    Bacchus's Atlas — journey2-route.js
-   Pure, DOM-free logic of the GM-only Route Planner (PD-031): A* over the Journey map's six-neighbour hex grid, three strategies, route
+   Pure, DOM-free logic of the GM-only Route Planner (PD-031): A* over the Journey map's six-neighbour hex grid, two strategies, route
    statistics and the transient planner state machine. No window/document/storage and no strings: the view owns every label.
 
      - encounterExpectation / terrainTravelCost   the two per-hex cost functions (the cost belongs to the hex ENTERED; the start is free)
      - hexDistance                                canonical axial distance (the A* heuristic basis)
      - findHexRoute                               one strategy: { status:'ok', cells, totalCost, stats } | { status:'no-route', reason }
-     - planRoutes                                 all three strategies for one A -> B
+     - planRoutes                                 both strategies for one A -> B
      - calculateRouteStats                        hexes, travel days, expected encounter triggers, terrain breakdown (start excluded)
      - buildTerrainIndex                          doc -> Map cellId -> Terrain Rating 1-4 (only where the GM generated terrain)
      - createRoutePlanner                         the transient select-start -> select-end -> result state machine
-   Terrain Ratings are never invented: Fastest and Fewer encounters only enter cells whose rating is known; Shortest ignores terrain and its
+   Terrain Ratings are never invented: Fastest only enters cells whose rating is known; Shortest ignores terrain and its
    statistics then say "unknown" instead of guessing. Nothing here is persisted, recorded in history or part of the player projection.
    ============================================================ */
 (function (root, factory) {
@@ -19,12 +19,10 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (Geo) {
   'use strict';
 
-  const STRATEGIES = Object.freeze(['fastest', 'shortest', 'encounters']);
+  const STRATEGIES = Object.freeze(['fastest', 'shortest']);
   const DEFAULT_STRATEGY = 'fastest';
   /** Floating-point costs are compared with this tolerance, never with ===. */
   const ROUTE_COST_EPSILON = 1e-9;
-  /** The cheapest possible expected-trigger cost of one entered hex (Terrain 1: 1 - 5/6). Keeps the encounter heuristic admissible. */
-  const MIN_ENCOUNTER_COST = 1 / 6;
   const MIN_TERRAIN = 1, MAX_TERRAIN = 4;
 
   /** A known hex: Terrain 1-4, or 0 for a settlement hex (a sanctuary / Marrogate / Horizon icon: never generated terrain, entering it costs no days and rolls no Encounter Dice). */
@@ -48,7 +46,6 @@
   const STRATEGY_MODEL = Object.freeze({
     fastest: Object.freeze({ terrainAware: true, minStep: 1, edgeCost: rating => terrainTravelCost(rating) }),
     shortest: Object.freeze({ terrainAware: false, minStep: 1, edgeCost: () => 1 }),
-    encounters: Object.freeze({ terrainAware: true, minStep: MIN_ENCOUNTER_COST, edgeCost: rating => encounterExpectation(rating) }),
   });
 
   /** "q,r" ids compared numerically (q, then r): the one canonical cell order every tie is broken with. */
@@ -111,7 +108,7 @@
 
   /**
    * A* for one strategy.
-   *   startCell, goalCell   "q,r" ids        strategy 'fastest' | 'shortest' | 'encounters'
+   *   startCell, goalCell   "q,r" ids        strategy 'fastest' | 'shortest'
    *   getNeighbors(id)      -> ids of the six edge neighbours that exist on the grid (corner contact is not adjacency)
    *   getTerrainRating(id)  -> 1-4 or null/undefined when no terrain was generated there
    *   isRouteableCell(id)   -> the canonical valid-cell test
@@ -176,7 +173,7 @@
     }
   }
 
-  /** All three strategies for one A -> B: { fastest, shortest, encounters } (each a findHexRoute result). */
+  /** Both strategies for one A -> B: { fastest, shortest } (each a findHexRoute result). */
   function planRoutes(o) {
     const out = {};
     for (const s of STRATEGIES) out[s] = findHexRoute(Object.assign({}, o, { strategy: s }));
@@ -260,7 +257,7 @@
   }
 
   return {
-    STRATEGIES: STRATEGIES, DEFAULT_STRATEGY: DEFAULT_STRATEGY, ROUTE_COST_EPSILON: ROUTE_COST_EPSILON, MIN_ENCOUNTER_COST: MIN_ENCOUNTER_COST,
+    STRATEGIES: STRATEGIES, DEFAULT_STRATEGY: DEFAULT_STRATEGY, ROUTE_COST_EPSILON: ROUTE_COST_EPSILON,
     encounterProbability: encounterProbability, encounterExpectation: encounterExpectation, terrainTravelCost: terrainTravelCost,
     hexDistance: hexDistance, compareCellIds: compareCellIds, calculateRouteStats: calculateRouteStats,
     findHexRoute: findHexRoute, planRoutes: planRoutes, sameRoute: sameRoute, effectiveStrategy: effectiveStrategy,

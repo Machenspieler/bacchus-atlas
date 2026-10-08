@@ -239,7 +239,9 @@
     let locateRandom = Math.random;                         // the one RNG a tie is drawn with (replaceable through the debug API for the browser checks)
     let routeHover = null;                                  // { q, r } under the pointer while the Route Planner is selecting A or B (transient: never persisted, never in history)
     let routeTerrain = { doc: null, index: null };          // Terrain Ratings by cell for the current document (derived, never stored)
-    let routeDrawn = { line: '', mark: '' };                                    // signature of what the route layers currently show (a re-render with the same state must not restart the draw-in)
+    let routeDrawn = { line: '', mark: '' };
+    let routeDetails = false;                               // the selected route's details popover is open (a click on its bubble; transient)
+    let routeBubbleSpecs = [];                              // [{ s, x, y }] world anchor of each drawn route's bubble (rebuilt by every paint)                                    // signature of what the route layers currently show (a re-render with the same state must not restart the draw-in)
     /* the Route Planner state machine (js/journey2-route.js): select-start -> select-end -> result, GM-only, never persisted */
     const routePlanner = Route.createRoutePlanner({ plan: (a, b) => planRoutesFor(a, b), onChange: (state, ev) => onRouteChange(state, ev) });
     /* the Locate state machine (js/journey2-locate.js): selecting -> animating -> result, one guarded completion timer, never persisted */
@@ -603,22 +605,17 @@
                 <span class="j2-fog-chip-hint" data-t="journey2_route_esc_hint"></span>
                 <button type="button" class="btn btn-sm" data-j2-route-cancel data-t="journey2_route_cancel"></button>
               </div>
+              <div class="j2-route-bubbles" data-j2-route-bubbles></div>
               <aside class="j2-route" id="j2-route" role="region" aria-labelledby="j2-route-title" tabindex="-1" data-j2-route hidden>
                 <header class="j2-route-head">
-                  <h3 class="j2-route-title" id="j2-route-title"><span class="j2-ico" aria-hidden="true">${ICON.route}</span><span data-t="journey2_route_title"></span></h3>
-                  <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-route-close data-t-aria="journey2_route_close" data-t-title="journey2_route_close">${ICON.close}</button>
+                  <div class="j2-route-titles">
+                    <h3 class="j2-route-title" id="j2-route-title"><span class="j2-ico" aria-hidden="true">${ICON.route}</span><span data-t="journey2_route_title"></span></h3>
+                    <p class="j2-route-sub" data-j2-r="sub"></p>
+                  </div>
+                  <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-route-details-close data-t-aria="journey2_route_details_close" data-t-title="journey2_route_details_close">${ICON.close}</button>
                 </header>
-                <p class="j2-route-ab" data-j2-r="ab"></p>
-                <div class="j2-route-tabs" role="group" data-t-aria="journey2_route_strategy_label" data-j2-r="tabs"></div>
-                <p class="j2-route-help" data-j2-r="help"></p>
                 <div class="j2-route-body" data-j2-r="body" role="status" aria-live="polite" aria-atomic="true"></div>
                 <div class="j2-route-cmp" data-j2-r="cmp" hidden></div>
-                <footer class="j2-route-foot">
-                  <button type="button" class="btn btn-sm" data-j2-route-swap data-t="journey2_route_swap"></button>
-                  <button type="button" class="btn btn-sm" data-j2-route-newdest data-t="journey2_route_new_dest"></button>
-                  <button type="button" class="btn btn-sm" data-j2-route-newstart data-t="journey2_route_new_start"></button>
-                  <button type="button" class="btn btn-sm btn-primary" data-j2-route-close data-t="journey2_route_close"></button>
-                </footer>
               </aside>
             </div>
             <div class="j2-sidewrap" data-j2-sidewrap>
@@ -700,6 +697,7 @@
       ui.routeChip = container.querySelector('[data-j2-route-chip]');
       ui.routeChipText = container.querySelector('[data-j2-route-chip-text]');
       ui.route = container.querySelector('[data-j2-route]');
+      ui.routeBubbles = container.querySelector('[data-j2-route-bubbles]');
       ui.r = {};
       for (const x of ui.route.querySelectorAll('[data-j2-r]')) ui.r[x.getAttribute('data-j2-r')] = x;
       ui.locateChip = container.querySelector('[data-j2-locate-chip]');
@@ -1923,15 +1921,16 @@
     }
 
     /* ============================================================
-       Route Planner (PD-031): GM-only. "Plan route" -> A -> B -> three strategies (Fastest by default, Shortest, Fewer encounters) computed by the
-       pure js/journey2-route.js (A* over the six-neighbour grid; the cost belongs to the hex entered). Terrain Ratings come only from generated
-       tiles and are never invented: an unknown hex blocks Fastest and Fewer encounters, and Shortest then reports "unknown" instead of a total.
-       Everything here is transient: never in the document, history, autosave, backup or storage, never in Player Preview, the projection or a
-       print. Fog of War is neither read nor changed. The two map layers (line, A/B markers) are pointer-transparent.
+       Route Planner (PD-031): GM-only. "Plan route" -> A -> B -> two routes drawn side by side on the map, each with a bubble above it showing its hex
+       count and travel days, like a navigator: Fastest (default; minimum Terrain Ratings entered) and Shortest (minimum hexes), computed by the pure
+       js/journey2-route.js (A* over the six-neighbour grid; the cost belongs to the hex entered). Clicking a bubble selects that route; clicking the
+       selected bubble opens its details. Terrain Ratings come only from generated tiles (plus 0 for sanctuary / Marrogate / Horizon hexes) and are never
+       invented: an unknown hex blocks Fastest, and Shortest then reports travel days as unknown. Everything here is transient: never in the document,
+       history, autosave, backup or storage, never in Player Preview, the projection or a print. Fog of War is neither read nor changed.
        ============================================================ */
 
-    const ROUTE_LABEL = { fastest: 'journey2_route_fastest', shortest: 'journey2_route_shortest', encounters: 'journey2_route_encounters' };
-    const ROUTE_HELP = { fastest: 'journey2_route_fastest_help', shortest: 'journey2_route_shortest_help', encounters: 'journey2_route_encounters_help' };
+    const ROUTE_LABEL = { fastest: 'journey2_route_fastest', shortest: 'journey2_route_shortest' };
+    const ROUTE_GAP_PX = 6;                                 // centre-to-centre distance of the two parallel lines, in screen px
 
     /** Terrain Ratings by cell for the current document (rebuilt only when the document object changes). */
     function routeIndex() {
@@ -1939,14 +1938,14 @@
       return routeTerrain.index;
     }
 
-    /** All three strategies for one A -> B on the calibrated grid; the canonical routeable test is the editor's `foggable` set (valid, non-decorative). */
+    /** Both strategies for one A -> B on the calibrated grid; the canonical routeable test is the editor's `foggable` set (valid, non-decorative). */
     function planRoutesFor(a, b) {
       const idx = routeIndex(), grid = data.grid;
       return Route.planRoutes({
         startCell: a, goalCell: b,
         isRouteableCell: id => foggable.has(id),
         getNeighbors: id => { const c = Geo.parseCellId(id); return grid.neighbors(c.q, c.r).filter(x => x.valid).map(x => x.id); },
-        getTerrainRating: id => (idx.has(id) ? idx.get(id) : (data.ctx.sanctuaryCells.has(id) ? 0 : null)),
+        getTerrainRating: id => (idx.has(id) ? idx.get(id) : (data.ctx.sanctuaryCells.has(id) ? 0 : null)),   // a sanctuary / Marrogate / Horizon hex is a known, free settlement
         hasZeroCostCells: data.ctx.sanctuaryCells.size > 0,
       });
     }
@@ -1980,7 +1979,7 @@
       announce(t('journey2_route_plan') + '. ' + t('journey2_route_select_start'));      // the instruction is announced once
     }
 
-    /** Leaves the planner (Escape, Close, Cancel, another tool, Player Preview, import, teardown). `quiet` skips the announcement. */
+    /** Leaves the planner (Escape, the toolbar button, another tool, Player Preview, import, teardown). `quiet` skips the announcement. */
     function exitRoute(o) {
       if (!routePlanner.isActive()) return false;
       routeHover = null;
@@ -1990,22 +1989,14 @@
       return true;
     }
 
-    /** Escape: choosing B goes back to choosing A; choosing A or viewing a route closes the planner. Returns true when it consumed the key. */
+    /** Escape: open details close first; choosing B goes back to choosing A; choosing A or viewing a route closes the planner. Returns true when it consumed the key. */
     function routeEscape() {
       const st = routePlanner.state;
       if (!st) return false;
+      if (st.status === 'result' && routeDetails) { routeDetails = false; renderRoute(); return true; }
       if (st.status === 'select-end') { routePlanner.chooseNewStart(); announce(t('journey2_route_select_start')); return true; }
       exitRoute({ focus: true });
       return true;
-    }
-
-    function routeChoose(kind) {
-      if (!routePlanner.isActive()) return;
-      routeHover = null;
-      if (kind === 'swap') { routePlanner.swap(); return; }
-      if (kind === 'dest') routePlanner.chooseNewDestination(); else routePlanner.chooseNewStart();
-      announce(t(kind === 'dest' ? 'journey2_route_select_end' : 'journey2_route_select_start'));
-      if (ui.viewport) ui.viewport.focus({ preventScroll: true });
     }
 
     /** After a document change (dispatch, Undo, Redo, import): an open result is recomputed from the current tiles, never kept stale. Never opens the planner. */
@@ -2013,7 +2004,7 @@
 
     function onRouteChange(state, ev) {
       if (inst.disposed || !ui.route) return;
-      if (ev === 'select-start' || ev === 'select-end' || ev === 'closed') routeHover = null;
+      if (ev === 'select-start' || ev === 'select-end' || ev === 'closed') { routeHover = null; routeDetails = false; }
       renderRoute();
     }
 
@@ -2026,19 +2017,27 @@
       paintRoute();
     }
 
-    /** Shortest and Fewer encounters add nothing when they are exactly the Fastest route: their tabs are then hidden. */
-    function routeTabRedundant(routes, s) { return s !== 'fastest' && Route.sameRoute(routes.fastest, routes[s]); }
+    /** Shortest adds nothing when it is exactly the Fastest route: one line, one bubble. */
+    function routeShortestRedundant(routes) { return Route.sameRoute(routes.fastest, routes.shortest); }
 
-    /** The route being shown: the preferred strategy, or Shortest when that one has no complete route. { st, eff, route } or null outside the result. */
+    /** The strategies that get a line and a bubble, in drawing order (Fastest first). */
+    function routeShownList(routes) {
+      const out = [];
+      if (routes.fastest.status === 'ok') out.push('fastest');
+      if (routes.shortest.status === 'ok' && !routeShortestRedundant(routes)) out.push('shortest');
+      return out;
+    }
+
+    /** The selected route: the preferred strategy, or Shortest when Fastest has no complete route. { st, eff, route, shown } or null outside the result. */
     function routeView() {
       const st = routePlanner.state;
       if (!st || st.status !== 'result' || !st.routes || previewMode) return null;
       let eff = Route.effectiveStrategy(st.routes, st.strategy);
-      if (eff !== 'fastest' && routeTabRedundant(st.routes, eff)) eff = 'fastest';   // that tab is hidden: show the identical Fastest route instead
-      return { st: st, eff: eff, route: st.routes[eff] };
+      if (eff === 'shortest' && routeShortestRedundant(st.routes)) eff = 'fastest';   // no separate bubble: it is the Fastest route
+      return { st: st, eff: eff, route: st.routes[eff], shown: routeShownList(st.routes) };
     }
 
-    /** Toolbar, chip, cursor, map layers and panel from the planner state. */
+    /** Toolbar, chip, cursor, map layers, bubbles and details from the planner state. */
     function renderRoute() {
       if (!ui.route || !doc || !data) return;
       const st = routePlanner.state, active = !!st && !previewMode, selecting = routeSelecting();
@@ -2048,7 +2047,9 @@
       ui.viewport.classList.toggle('is-routing', selecting);
       ui.root.setAttribute('data-route', active ? st.status : '');
       paintRoute();
+      renderRouteBubbles();
       renderRoutePanel();
+      positionRouteBubbles();
     }
 
     const routeCenter = id => { const c = Geo.parseCellId(id), p = data.grid.cellCenter(c.q, c.r); return [p[0], p[1]]; };
@@ -2060,27 +2061,62 @@
         (letter === 'B' ? '<circle class="j2-route-pin-ring2" r="15"/>' : '') + '<circle class="j2-route-pin-ring" r="11"/><text class="j2-route-pin-t" text-anchor="middle" dy="0.35em">' + letter + '</text></g></g>';
     }
 
-    /** The route line (known steps solid, unknown-terrain steps dashed), a dot per traversed hex and a chevron per step, then the A / B pins and the hover hex. */
+    /**
+     * One route as a line through its hex centres, shifted sideways by `d` world px (so two routes run side by side like lines on a transit map),
+     * mitred at the corners. Known steps are solid, steps entering an unknown-terrain hex dashed; the selected route also gets white chevrons.
+     * Returns { svg, point(f) } where point(f) is the position at fraction f of the (shifted) line, the anchor of its bubble.
+     */
+    function routeLine(r, strategy, d, selected) {
+      const pts = r.cells.map(routeCenter), m = pts.length - 1, nrm = [];
+      for (let i = 0; i < m; i++) { const dx = pts[i + 1][0] - pts[i][0], dy = pts[i + 1][1] - pts[i][1], L = Math.hypot(dx, dy) || 1; nrm.push([-dy / L, dx / L]); }
+      const v = pts.map((p, i) => {
+        if (!d) return p;
+        let nx, ny, k = 1;
+        if (i === 0) { nx = nrm[0][0]; ny = nrm[0][1]; }
+        else if (i === m) { nx = nrm[m - 1][0]; ny = nrm[m - 1][1]; }
+        else {
+          const sx = nrm[i - 1][0] + nrm[i][0], sy = nrm[i - 1][1] + nrm[i][1], L = Math.hypot(sx, sy);
+          if (L < 1e-6) { nx = nrm[i][0]; ny = nrm[i][1]; } else { nx = sx / L; ny = sy / L; k = 1 / Math.max(0.4, nx * nrm[i][0] + ny * nrm[i][1]); }
+        }
+        return [p[0] + nx * d * k, p[1] + ny * d * k];
+      });
+      let solid = '', dashed = '', chev = '';
+      const cum = [0];
+      for (let i = 0; i < m; i++) {
+        const a = v[i], b = v[i + 1], seg = 'M' + fmt(a[0], 1) + ' ' + fmt(a[1], 1) + 'L' + fmt(b[0], 1) + ' ' + fmt(b[1], 1);
+        if (r.segmentKnown[i]) solid += seg; else dashed += seg;
+        cum.push(cum[i] + Math.hypot(b[0] - a[0], b[1] - a[1]));
+        if (selected) chev += '<g transform="translate(' + fmt((a[0] + b[0]) / 2, 1) + ' ' + fmt((a[1] + b[1]) / 2, 1) + ') rotate(' + fmt(Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI, 1) + ')"><path class="j2-route-chev" d="M-2.2 -2.6 2 0-2.2 2.6"/></g>';
+      }
+      const total = cum[m];
+      const point = f => {
+        const at = total * f;
+        let i = 0; while (i < m - 1 && cum[i + 1] < at) i++;
+        const seg = cum[i + 1] - cum[i] || 1, u = Math.min(1, Math.max(0, (at - cum[i]) / seg));
+        return [v[i][0] + (v[i + 1][0] - v[i][0]) * u, v[i][1] + (v[i + 1][1] - v[i][1]) * u];
+      };
+      const svg = '<g class="j2-route-line is-' + strategy + (selected ? ' is-selected' : '') + '" data-strategy="' + strategy + '"><path class="j2-route-halo" d="' + solid + dashed + '"/>' +
+        (solid ? '<path class="j2-route-solid" d="' + solid + '"/>' : '') + (dashed ? '<path class="j2-route-dashed" d="' + dashed + '"/>' : '') + chev + '</g>';
+      return { svg: svg, point: point };
+    }
+
+    /** The route lines (the selected one on top), then the A / B pins and the hover hex. Also records where each route's bubble is anchored. */
     function paintRoute() {
       const gl = ui.g && ui.g.routeline, gm = ui.g && ui.g.routemark;
       if (!gl || !gm) return;
       const st = routePlanner.state;
+      routeBubbleSpecs = [];
       if (!st || previewMode || !data) { if (routeDrawn.line) gl.innerHTML = ''; if (routeDrawn.mark) gm.innerHTML = ''; routeDrawn = { line: '', mark: '' }; return; }
       let line = '', mark = '';
       const v = routeView();
-      if (v && v.route.status === 'ok' && v.route.cells.length > 1) {
-        const cells = v.route.cells, known = v.route.segmentKnown;
-        let solid = '', dashed = '', dots = '', chev = '';
-        for (let i = 0; i < cells.length - 1; i++) {
-          const a = routeCenter(cells[i]), b = routeCenter(cells[i + 1]);
-          const seg = 'M' + fmt(a[0], 1) + ' ' + fmt(a[1], 1) + 'L' + fmt(b[0], 1) + ' ' + fmt(b[1], 1);
-          if (known[i]) solid += seg; else dashed += seg;
-          const ang = Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
-          chev += '<g transform="translate(' + fmt((a[0] + b[0]) / 2, 1) + ' ' + fmt((a[1] + b[1]) / 2, 1) + ') rotate(' + fmt(ang, 1) + ')"><path class="j2-route-chev" d="M-3 -3.2 3 0-3 3.2"/></g>';
-          if (i > 0) dots += '<circle class="j2-route-dot' + (known[i - 1] ? '' : ' is-unknown') + '" cx="' + fmt(a[0], 1) + '" cy="' + fmt(a[1], 1) + '"/>';
+      if (v) {
+        const n = v.shown.length, order = v.shown.filter(s => s !== v.eff).concat(v.shown.indexOf(v.eff) >= 0 ? [v.eff] : []);
+        for (const s of order) {
+          const r = v.st.routes[s], idx = v.shown.indexOf(s);
+          if (r.cells.length < 2) continue;
+          const L = routeLine(r, s, (idx - (n - 1) / 2) * ROUTE_GAP_PX / cam.scale, s === v.eff), p = L.point(0.5 + (idx - (n - 1) / 2) * 0.25);
+          line += L.svg; routeBubbleSpecs.push({ s: s, x: p[0], y: p[1] });
         }
-        line = '<g class="j2-route-line" data-strategy="' + v.eff + '"><path class="j2-route-halo" d="' + solid + dashed + '"/>' +
-          (solid ? '<path class="j2-route-solid" d="' + solid + '"/>' : '') + (dashed ? '<path class="j2-route-dashed" d="' + dashed + '"/>' : '') + chev + dots + '</g>';
       }
       const hoverId = routeHover ? Geo.cellId(routeHover.q, routeHover.r) : null;
       if (st.status === 'select-start' && routeHover) mark = '<path class="j2-route-hover" d="' + hexPath(routeHover.q, routeHover.r) + '"/>' + routePin(hoverId, 'A', true);
@@ -2094,10 +2130,64 @@
       if (mark !== routeDrawn.mark) { gm.innerHTML = mark; routeDrawn.mark = mark; }
     }
 
+    /** The bubble text of one route: label + "12 hexes · 15 days" (or "days unknown" while any entered hex has no terrain). */
+    function routeBubbleText(v, s) {
+      const r = v.st.routes[s], merged = s === 'fastest' && !routeShownList(v.st.routes).includes('shortest') && routeShortestRedundant(v.st.routes);
+      const label = t(merged ? 'journey2_route_both' : ROUTE_LABEL[s]);
+      const stats = r.stats.complete ? fill('journey2_route_bub_stats', { hexes: n(r.stats.hexes), days: n(r.stats.travelDays) }) : fill('journey2_route_bub_unknown', { hexes: n(r.stats.hexes) });
+      return { label: label, stats: stats };
+    }
+
+    /** One persistent button per drawn route (so focus survives a re-render): a click selects the route, a click on the selected one toggles its details. */
+    function renderRouteBubbles() {
+      const host = ui.routeBubbles;
+      if (!host) return;
+      const v = routeView(), keep = new Set();
+      if (v) {
+        for (const spec of routeBubbleSpecs) {
+          keep.add(spec.s);
+          let b = host.querySelector('[data-j2-route-strategy="' + spec.s + '"]');
+          if (!b) {
+            b = document.createElement('button');
+            b.type = 'button'; b.className = 'j2-route-bub'; b.setAttribute('data-j2-route-strategy', spec.s);
+            b.innerHTML = '<span class="j2-route-bub-k"></span><span class="j2-route-bub-v"></span>';
+            host.appendChild(b);
+          }
+          const tx = routeBubbleText(v, spec.s), sel = spec.s === v.eff;
+          b.querySelector('.j2-route-bub-k').textContent = tx.label;
+          b.querySelector('.j2-route-bub-v').textContent = tx.stats;
+          b.classList.toggle('is-selected', sel);
+          b.setAttribute('aria-pressed', String(sel));
+          if (sel) b.setAttribute('aria-expanded', String(routeDetails)); else b.removeAttribute('aria-expanded');
+          b.setAttribute('aria-label', tx.label + ': ' + tx.stats);
+          b.title = t('journey2_route_bub_hint');
+        }
+      }
+      for (const b of Array.from(host.children)) if (!keep.has(b.getAttribute('data-j2-route-strategy'))) b.remove();
+    }
+
+    /** Puts every bubble above its anchor (screen px inside the map area), keeps it on screen like a navigator does, and nudges overlapping ones apart. */
+    function positionRouteBubbles() {
+      const host = ui.routeBubbles;
+      if (!host || !host.firstChild || !data) return;
+      const wrap = ui.mapwrap.getBoundingClientRect(), vp = ui.viewport.getBoundingClientRect();
+      const W = wrap.width, H = wrap.height, placed = [];
+      for (const spec of routeBubbleSpecs) {
+        const b = host.querySelector('[data-j2-route-strategy="' + spec.s + '"]');
+        if (!b) continue;
+        const s = Geo.worldToScreen(cam, spec.x, spec.y), w = b.offsetWidth, h = b.offsetHeight;
+        let x = vp.left - wrap.left + s[0], y = vp.top - wrap.top + s[1] - 12;           // the bubble's bottom-centre sits 12 px above the line
+        x = Math.min(W - w / 2 - 8, Math.max(w / 2 + 8, x)); y = Math.min(H - 12, Math.max(h + 8, y));
+        for (const q of placed) if (Math.abs(x - q.x) < (w + q.w) / 2 + 4 && Math.abs(y - q.y) < (h + q.h) / 2 + 4) y = q.y + h + 6;
+        placed.push({ x: x, y: y, w: w, h: h });
+        b.style.transform = 'translate(' + Math.round(x - w / 2) + 'px,' + Math.round(y - h) + 'px)';
+      }
+    }
+
     function hideRoutePanel() {
       if (!ui.route || ui.route.hidden) return;
       ui.route.hidden = true;
-      ui.r.ab.innerHTML = ''; ui.r.body.innerHTML = ''; ui.r.cmp.innerHTML = ''; ui.r.cmp.hidden = true; ui.r.help.textContent = '';
+      ui.r.sub.textContent = ''; ui.r.body.innerHTML = ''; ui.r.cmp.innerHTML = ''; ui.r.cmp.hidden = true;
     }
 
     const dotsHtml = k => '<span class="j2-dots" aria-hidden="true">' + [1, 2, 3, 4].map(i => '<i' + (i <= k ? ' class="on"' : '') + '></i>').join('') + '</span>';
@@ -2130,7 +2220,7 @@
       return h;
     }
 
-    /** Fastest vs Shortest, shown only when they differ and both are fully known — the main reason to plan a route at all. */
+    /** Fastest vs Shortest, shown only when they differ and both are fully known. */
     function routeCompareHtml(routes) {
       const f = routes.fastest, s = routes.shortest;
       if (!f || !s || f.status !== 'ok' || s.status !== 'ok' || !f.stats.complete || !s.stats.complete || Route.sameRoute(f, s)) return '';
@@ -2140,34 +2230,18 @@
         (dh > 0 && dd > 0 ? '<p class="j2-route-note">' + esc(fill('journey2_route_compare_hint', { h: n(dh), d: n(dd) })) + '</p>' : '');
     }
 
+    /** The details of the selected route. Opened by clicking its bubble; shown on its own when there is nothing to draw (same hex, no route). */
     function renderRoutePanel() {
       const v = routeView();
-      if (!v) { hideRoutePanel(); return; }
-      const R = ui.r, st = v.st, routes = st.routes;
+      const nothing = !!v && !v.shown.some(s => v.st.routes[s].cells.length > 1);
+      if (!v || !(routeDetails || nothing)) { hideRoutePanel(); return; }
+      const R = ui.r, routes = v.st.routes;
       ui.route.hidden = false;
-      R.ab.innerHTML = '<span class="j2-route-pin-chip" role="img" aria-label="' + esc(t('journey2_route_marker_a')) + '">A</span><span class="j2-route-arrow" aria-hidden="true">→</span><span class="j2-route-pin-chip is-b" role="img" aria-label="' + esc(t('journey2_route_marker_b')) + '">B</span>';
-      if (!R.tabs.firstChild) {
-        for (const s of Route.STRATEGIES) {
-          const b = document.createElement('button');
-          b.type = 'button'; b.className = 'j2-route-tab'; b.setAttribute('data-j2-route-strategy', s);
-          R.tabs.appendChild(b);
-        }
-      }
-      for (const b of R.tabs.children) {
-        const s = b.getAttribute('data-j2-route-strategy'), ok = routes[s] && routes[s].status === 'ok';
-        b.textContent = t(ROUTE_LABEL[s]);
-        b.setAttribute('aria-pressed', String(s === v.eff));
-        b.setAttribute('aria-disabled', String(!ok));
-        b.classList.toggle('is-unavailable', !ok);
-        b.hidden = routeTabRedundant(routes, s);
-        b.title = ok ? t(ROUTE_HELP[s]) : t(routes[s] && routes[s].reason === 'unknown-terrain' ? 'journey2_route_unavailable' : 'journey2_route_none');
-      }
-      R.help.textContent = t(ROUTE_HELP[v.eff]);
-      R.help.classList.toggle('is-enc', v.eff === 'encounters');
+      const tx = v.shown.indexOf(v.eff) >= 0 ? routeBubbleText(v, v.eff).label : t(ROUTE_LABEL[v.eff]);
+      R.sub.textContent = tx + ' · A → B';
       let body = '';
-      const wanted = routes[Route.STRATEGIES.includes(st.strategy) ? st.strategy : Route.DEFAULT_STRATEGY];
       if (v.route.status === 'ok') {
-        if (wanted && wanted.status !== 'ok' && wanted.reason === 'unknown-terrain') body += '<p class="j2-route-warn">' + esc(t('journey2_route_no_terrain')) + ' ' + esc(t('journey2_route_no_terrain_short')) + '</p>';
+        if (routes.fastest.status !== 'ok' && routes.fastest.reason === 'unknown-terrain') body += '<p class="j2-route-warn">' + esc(t('journey2_route_no_terrain')) + ' ' + esc(t('journey2_route_no_terrain_short')) + '</p>';
         body += routeStatsHtml(v.route);
       } else {
         body += '<p class="j2-route-warn">' + esc(t(v.route.reason === 'unknown-terrain' ? 'journey2_route_no_terrain' : 'journey2_route_none')) + '</p>';
@@ -2177,14 +2251,25 @@
       R.cmp.innerHTML = cmp; R.cmp.hidden = !cmp;
     }
 
+    /** A bubble was clicked: select that route, or (on the selected one) toggle its details. */
     function chooseRouteStrategy(s) {
-      const st = routePlanner.state;
-      if (!st || st.status !== 'result') return;
-      const r = st.routes[s];
-      if (!r || r.status !== 'ok') { hint(t(r && r.reason === 'unknown-terrain' ? 'journey2_route_unavailable' : 'journey2_route_none')); return; }
-      routePlanner.setStrategy(s);
       const v = routeView();
-      if (v) announce(fill('journey2_route_live_result', { strategy: t(ROUTE_LABEL[v.eff]), hexes: n(v.route.stats.hexes) }));
+      if (!v) return;
+      if (v.eff === s) {
+        routeDetails = !routeDetails; renderRoute();
+        if (!routeDetails && ui.routeBubbles) { const b = ui.routeBubbles.querySelector('[data-j2-route-strategy="' + s + '"]'); if (b) b.focus({ preventScroll: true }); }
+        return;
+      }
+      routePlanner.setStrategy(s);
+      const v2 = routeView();
+      if (v2) announce(fill('journey2_route_live_result', { strategy: t(ROUTE_LABEL[v2.eff]), hexes: n(v2.route.stats.hexes) }));
+    }
+
+    function closeRouteDetails() {
+      if (!routeDetails) return;
+      routeDetails = false; renderRoute();
+      const v = routeView(), b = v && ui.routeBubbles && ui.routeBubbles.querySelector('[data-j2-route-strategy="' + v.eff + '"]');
+      if (b) b.focus({ preventScroll: true });
     }
 
     /** Read-only snapshot for the browser checks. */
@@ -2193,9 +2278,9 @@
       if (!st) return null;
       const brief = r => (r.status === 'ok' ? { ok: true, cells: r.cells.slice(), stats: Object.assign({}, r.stats) } : { ok: false, reason: r.reason });
       return {
-        status: st.status, start: st.startCell, end: st.endCell, strategy: st.strategy, shown: v ? v.eff : null, hover: routeHover ? Geo.cellId(routeHover.q, routeHover.r) : null,
+        status: st.status, start: st.startCell, end: st.endCell, strategy: st.strategy, shown: v ? v.eff : null, drawn: v ? v.shown.slice() : null, details: routeDetails, hover: routeHover ? Geo.cellId(routeHover.q, routeHover.r) : null,
         cells: v && v.route.status === 'ok' ? v.route.cells.slice() : null, stats: v && v.route.status === 'ok' ? Object.assign({}, v.route.stats) : null,
-        routes: st.routes ? { fastest: brief(st.routes.fastest), shortest: brief(st.routes.shortest), encounters: brief(st.routes.encounters) } : null,
+        routes: st.routes ? { fastest: brief(st.routes.fastest), shortest: brief(st.routes.shortest) } : null,
       };
     }
 
@@ -2570,6 +2655,7 @@
         ui.world.style.setProperty('--j2-inv', String(1 / cam.scale));
         ui.world.classList.toggle('is-pixel', cam.scale >= 2);
         positionInspector();
+        if (routePlanner.isActive()) { paintRoute(); positionRouteBubbles(); }   // the side-by-side offset is a constant number of screen px
         updateReadouts();
       });
     }
@@ -3571,10 +3657,8 @@
       else if (b.hasAttribute('data-j2-echo-place')) placeSoulEchoes();
       else if (b.hasAttribute('data-j2-echo-clear')) confirmClearSoulEchoes();
       else if (b.hasAttribute('data-j2-route-plan')) startRoute();
-      else if (b.hasAttribute('data-j2-route-close') || b.hasAttribute('data-j2-route-cancel')) exitRoute({ focus: true });
-      else if (b.hasAttribute('data-j2-route-swap')) routeChoose('swap');
-      else if (b.hasAttribute('data-j2-route-newdest')) routeChoose('dest');
-      else if (b.hasAttribute('data-j2-route-newstart')) routeChoose('start');
+      else if (b.hasAttribute('data-j2-route-cancel')) exitRoute({ focus: true });
+      else if (b.hasAttribute('data-j2-route-details-close')) closeRouteDetails();
       else if (b.hasAttribute('data-j2-route-strategy')) chooseRouteStrategy(b.getAttribute('data-j2-route-strategy'));
       else if (b.hasAttribute('data-j2-echo-locate')) startLocate();
       else if (b.hasAttribute('data-j2-locate-again')) chooseLocateAgain();

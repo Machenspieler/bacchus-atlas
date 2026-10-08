@@ -570,9 +570,12 @@ what changes at each):
 ### Route Planner (PD-031)
 - [ ] **Plan route** (RU «Проложить маршрут») is a real button in the GM toolbar; absent in Player Preview and Print Preview. Pressing it shows "Select the starting hex." and a crosshair; hovering a hex shows a ghost **A**.
 - [ ] Click A, then B (a wilderness hex, an ungenerated hex, a sanctuary icon — the icon selects its hex and the overlay does not open). A drag pans without selecting. Escape: B-selection -> A-selection -> closed.
-- [ ] With mixed Terrain regions: **Fastest** is the default; its travel days equal the sum of the entered hexes' ratings (start excluded); **Shortest** has fewer or equal hexes; **Fewer encounters** shows the help
-  "Encounters are not necessarily dangerous" — nowhere does the UI say "safest". Switching strategy moves neither A, B nor the camera and adds no Undo entry. When Fastest and Shortest differ the comparison appears.
-- [ ] A route that crosses an ungenerated hex: Fastest and Fewer encounters are unavailable with a reason; Shortest is shown with travel days and expected encounters "Unknown", dashed unknown segments and the known / unknown counts.
-- [ ] **Swap A / B** recomputes (costs may differ); **Choose new destination** keeps A and clears B; **Choose new start** restarts; **Close** returns focus to Plan route. A = B shows "Start and destination are the same hex."
-- [ ] Locate Soul Echoes, Reveal / Hide and armed placement close the planner and vice versa; Undo / Redo recompute an open route and never reopen a closed one; fog and revealed cells are unchanged.
-- [ ] Player Preview, Print Preview and the printed pages contain no route line, A / B pin, statistic or strategy. Verify in English and Russian, and with reduced motion (no fade, same information).
+- [ ] With mixed Terrain regions two lines of the same thickness run side by side (golden blue = Fastest, reddish gold = Shortest), each with a bubble above it ("12 hexes · 15 days"). Zoom and pan: the gap stays
+  constant on screen and the bubbles follow and stay on screen. Where both are the same path there is one line and one "Fastest and shortest" bubble. Fastest's days equal the sum of the entered hexes' ratings
+  (start excluded; sanctuary / Marrogate / Horizon hexes count 0).
+- [ ] Click the other bubble: it becomes the selected route (on top, with chevrons). Click the selected bubble: a details popover opens (hexes, travel days, expected encounter triggers as an estimate, terrain
+  breakdown, comparison); Escape closes the details, then the planner. No Undo entry, no camera change.
+- [ ] A route that crosses an ungenerated hex: only Shortest is drawn, its bubble says "days unknown", unknown segments are dashed and the details explain; Fastest is not guessed.
+- [ ] A = B opens the details with "Start and destination are the same hex." (no line). Locate Soul Echoes, Reveal / Hide and armed placement close the planner and vice versa; Undo / Redo recompute an open route
+  and never reopen a closed one; fog and revealed cells are unchanged.
+- [ ] Player Preview, Print Preview and the printed pages contain no route line, A / B pin, bubble or statistic. Verify in English and Russian.
