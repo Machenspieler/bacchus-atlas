@@ -74,8 +74,14 @@ body[data-route="journey"] #grid-wrap { display: block; }
 .j2-preview-note { min-width: 0; font-size: var(--fs-sm); color: var(--parchment-dim); }
 .j2-tb-preview .btn { margin-left: auto; }
 .j2-tb-preview .btn + .btn { margin-left: 0; }
+/* Reveal / Hide live here, in Player Preview, beside the picture they change (PD-034) */
+.j2-tb-tools { display: inline-flex; align-items: center; gap: var(--s-1); padding: 0 var(--s-2); border-left: 1px solid var(--line-faint); border-right: 1px solid var(--line-faint); }
+.j2-tb-preview .j2-tb-tools .btn { margin-left: 0; }
 .j2[data-mode="preview"] .j2-toolbar { border-color: var(--hope-border); }
 .j2[data-mode="preview"] .j2-viewport { box-shadow: inset 0 0 0 2px var(--hope-border); cursor: grab; }
+.j2[data-mode="preview"] .j2-viewport.is-fog-tool { cursor: crosshair; }
+.j2[data-mode="preview"] .j2-viewport.is-fog-tool.is-space { cursor: grab; }
+.j2[data-mode="preview"] .j2-viewport.is-fog-tool.is-panning { cursor: grabbing; }
 .j2-chip {
   display: inline-flex; align-items: center; height: var(--h-xs); padding: 0 var(--s-2);
   border: 1px solid var(--type-chip-border); border-radius: var(--r-xs);
@@ -349,6 +355,8 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-viewport.is-fog-tool .j2-fog-veil { opacity: 1; }
 .j2-overlay .j2-fog-edge { fill: none; stroke: var(--hope); stroke-opacity: 0.22; stroke-width: 1; }
 .j2-viewport.is-fog-tool .j2-fog-edge { stroke-opacity: 0.5; }
+/* GM-only aid while Reveal / Hide is armed in Player Preview: a dashed outline round each still-hidden placed hex (no symbol, no text) */
+.j2-overlay .j2-fog-ghost { fill: none; stroke: var(--hope); stroke-opacity: 1; stroke-width: 2.6; stroke-dasharray: 6 4; pointer-events: none; }
 .j2-overlay .j2-fog-pend.is-reveal { fill: #fff; fill-opacity: 0.35; stroke: var(--hope); stroke-width: 1; }
 .j2-overlay .j2-fog-pend.is-hide { fill: url(#j2-fog-hide-pat); stroke: var(--ink); stroke-width: 1; stroke-dasharray: 3 2; }
 .j2-overlay .j2-fog-brush { fill: none; stroke-width: 2.5; }

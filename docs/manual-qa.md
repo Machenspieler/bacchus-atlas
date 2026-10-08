@@ -428,8 +428,9 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       remount the map (camera, selection, sidebar kept); `#/prep` then Back returns to the same saved campaign; no old generator page,
       V1/V2 switch or "Journey 2" text in EN or RU. Automated: `node scripts/journey2/route-cutover-verify.js` (`J2_BROWSER_CHANNEL=chrome`).
 - [ ] Open `#/journey`: header, one compact toolbar (map name, save status, Undo/Redo,
-      zoom, the Fog group: Fog / Reveal / Hide / Player Preview), a left sidebar (generator + stock), the map fills the rest. No page scroll
+      zoom, the Fog group: Fog / Biome colors / Player Preview), a left sidebar (generator + stock), the map fills the rest. No page scroll
       at 1366×768 and 1920×1080; Diagnostics is closed.
+- [ ] PD-034: **Player Preview** shows Reveal / Hide beside Undo/Redo. Arm one: dashed outlines mark hidden placed hexes; painting reveals/hides and Undo reverts; Esc turns the tool off, a second Esc returns to the GM view (no tool left armed). Zoom and pan, reload: the same zoom and spot return (a fitted map stays fitted); a corrupt `dhcodex_journey2_ui` falls back to Fit.
 - [ ] **Generate region** rolls everything at random. A card appears: Placed 0 / N, drag targets
       **1 hex** and **All N**. Nothing is on the map.
 - [ ] Drag **1 hex** onto the map: gold preview + tooltip while dragging; release places one.

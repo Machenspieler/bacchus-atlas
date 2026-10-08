@@ -287,11 +287,11 @@ test('"Show fog state" is a stored UI preference (default on); preview mode, too
   const s = fakeStorage(), store = Store.createStore(s, ctx);
   assert.equal(store.loadUi().showFogState, true);
   assert.deepEqual(store.saveUi({ sideCollapsed: false, showFogState: false }), { ok: true });
-  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showFogState: false, showBiomeColors: true });
-  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['showBiomeColors', 'showFogState', 'sideCollapsed']);
+  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showFogState: false, showBiomeColors: true, view: null });
+  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['showBiomeColors', 'showFogState', 'sideCollapsed', 'view']);
   assert.deepEqual(s.writes, [Store.KEYS.ui], 'nothing else is written');
   s.data.set(Store.KEYS.ui, '{"showFogState":"no","sideCollapsed":true}');
-  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showFogState: true, showBiomeColors: true }, 'a malformed value falls back to its default');
+  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showFogState: true, showBiomeColors: true, view: null }, 'a malformed value falls back to its default');
   // it is not part of the document / backup
   assert.ok(!JSON.stringify(M.emptyDocument(ctx, AT)).includes('showFogState'));
   // saving the sidebar state alone never switches the fog preference off
@@ -342,12 +342,12 @@ test('toolbar: Reveal and Hide are real toggle buttons with aria-pressed, the fo
   assert.match(fn('updateFogUi', 'setFogTool'), /setAttribute\('aria-pressed', String\(fogTool === k\)\)/);
 });
 
-test('tools: activating one cancels armed placement, drags and the inspector, enables the veil, and never touches camera or sidebar', () => {
+test('tools: activating one cancels armed placement, drags and the inspector, works only inside Player Preview, and never touches camera or sidebar', () => {
   const body = fn('setFogTool', 'toggleFogState');
-  for (const part of ['cancelTransient()', 'cancelFogStroke()', 'closeInspector({ quiet: true })', 'sel.tileId = null', 'showFog = true']) assert.ok(body.includes(part), part);
+  for (const part of ['cancelTransient()', 'cancelFogStroke()', 'closeInspector({ quiet: true })', 'sel.tileId = null']) assert.ok(body.includes(part), part);
   assert.doesNotMatch(body, /setCamera|fitToView|sideCollapsed|toggleSide|dispatch\(/, 'pan, zoom, the sidebar and the document are left alone');
   assert.match(body, /mode === fogTool\) mode = null/, 'pressing the active tool returns to neutral');
-  assert.match(body, /previewMode \|\| editLocked/, 'no tool inside the preview or on a locked map');
+  assert.match(body, /!previewMode \|\| editLocked/, 'the tool exists only inside Player Preview (PD-034), and not on a locked map');
   // placement outranks the tool: arming or dragging a stock handle switches the tool off
   assert.match(fn('armStock', 'computePreview'), /if \(fogTool\) setFogTool\(null/);
   assert.match(fn('onHandleDown', 'onHandleMove'), /if \(fogTool\) setFogTool\(null/);
@@ -356,14 +356,14 @@ test('tools: activating one cancels armed placement, drags and the inspector, en
 test('priority: fog stroke beats neutral tile selection; Space or the middle button pans; Escape order is documented in code', () => {
   const down = fn('onViewportDown', 'onViewportMove');
   assert.ok(down.indexOf('startFogStroke(e)') > 0 && down.indexOf('startFogStroke(e)') < down.indexOf('tileAtScreen(x, y)'), 'the stroke is decided before a tile can be grabbed');
-  assert.match(down, /fogTool && !previewMode && e\.button === 0 && !spaceDown/, 'Space-held and the middle button fall through to the pan');
+  assert.match(down, /fogTool && previewMode && e\.button === 0 && !spaceDown/, 'Space-held and the middle button fall through to the pan');
   assert.match(down, /!previewMode && !fogTool && !\(tr && tr\.kind === 'armed'\)/, 'no tile grab in preview or with a tool');
   assert.match(down, /if \(pan \|\| fogStroke \|\| tr && tr\.kind !== 'armed'\) return;/, 'an existing drag or pan wins');
   assert.match(fn('handleMapClick', 'selectTile'), /if \(previewMode \|\| fogTool\) return;/, 'no inspector from a map click under a tool or in preview');
   const esc = view.slice(view.indexOf('function onDocumentKey'), view.indexOf('if (e.key === \' \' && fogTool'));
-  const order = ['openMenu', 'fogStroke', 'if (pan)', 'if (tr)', 'previewMode', 'fogTool', 'inspectorOpen()'].map(s => esc.indexOf(s));
-  assert.ok(order.every(i => i > 0) && order.every((x, i) => i === 0 || x > order[i - 1]), 'menu, stroke, pan, drag, preview, tool, inspector: ' + order);
-  assert.match(view, /return t0 === document\.body \|\| t0 === ui\.viewport \|\| !!\(t0 && t0\.closest && t0\.closest\('\[data-j2-fog-group\], \[data-j2-echo-group\]'\)\)/, 'Space pans from the map, the page, a fog button or a Soul Echoes button');
+  const order = ['openMenu', 'fogStroke', 'if (pan)', 'if (tr)', 'if (fogTool)', 'if (previewMode)', 'inspectorOpen()'].map(s => esc.indexOf(s));
+  assert.ok(order.every(i => i > 0) && order.every((x, i) => i === 0 || x > order[i - 1]), 'menu, stroke, pan, drag, tool, preview, inspector: ' + order);
+  assert.match(view, /return t0 === document\.body \|\| t0 === ui\.viewport \|\| !!\(t0 && t0\.closest && t0\.closest\('\[data-j2-fog-group\], \[data-j2-echo-group\], \[data-j2-preview-bar\]'\)\)/, 'Space pans from the map, the page, a fog button or a Soul Echoes button');
   assert.match(fn('onViewportKey', 'handleFromEvent').slice(0, 900) + view, /Delete/);
   assert.match(view, /if \(sel\.tileId && !fogTool && !previewMode\) returnSelected\(\)/, 'Return to stock is unavailable while a tool is active');
 });
@@ -411,9 +411,9 @@ test('Player Preview: read-only, projection-driven, document and history untouch
   assert.match(tiles, /Projection\.buildPlayerProjection\(doc, data\.ctx\)/);
   assert.doesNotMatch(tiles, /doc\.tiles|doc\.batches/, 'the preview never reads regions directly');
   const chrome = fn('applyPreviewChrome', 'enterPreview');
-  for (const part of ['ui.sidewrap.hidden = on', 'ui.historyGroup.hidden = on', 'ui.fogGroup.hidden = on', 'ui.previewBar.hidden = !on']) assert.ok(chrome.includes(part), part);
-  assert.match(fn('undo', 'redo'), /previewMode\) return/);
-  assert.match(view, /if \(previewMode\) return;\s+\/\/ the preview is read-only: no Undo\/Redo/);
+  for (const part of ['ui.sidewrap.hidden = on', 'ui.fogGroup.hidden = on', 'ui.previewBar.hidden = !on']) assert.ok(chrome.includes(part), part);
+  assert.doesNotMatch(chrome, /ui\.historyGroup\.hidden = on/, 'Undo / Redo stay available beside Reveal / Hide');
+  assert.doesNotMatch(fn('undo', 'redo'), /previewMode\) return/, 'Undo works in Player Preview (PD-034)');
   assert.match(fn('applyLayerVisibility', 'clearProof'), /layers\[k\] && !previewMode/);
   assert.doesNotMatch(read('js/journey2-store.js'), /previewMode|fogTool|fogStroke/, 'never persisted');
   assert.match(fn('replaceDocument', 'startEmptyMap'), /leavePreview\(\{ quiet: true \}\);[\s\S]*setFogTool\(null/, 'import / reset closes the preview and the tool');
@@ -440,4 +440,41 @@ test('documentation names the projection renderer the future print phase must re
   const arch = read('docs/architecture.md'), pd = read('docs/product-decisions.md');
   assert.match(arch, /Fog of War/); assert.match(arch, /buildPlayerProjection/); assert.match(arch, /overlayMarkup/);
   assert.match(pd, /PD-020/);
+});
+
+/* ---------------- PD-034: Reveal / Hide live in Player Preview; the camera is remembered ---------------- */
+
+test('PD-034: Reveal / Hide are in the Player Preview bar, not the GM toolbar', () => {
+  const html = view.slice(view.indexOf('function buildSurface'), view.indexOf('<div class="j2-stage"'));
+  const gm = html.slice(html.indexOf('data-j2-fog-group'), html.indexOf('data-j2-preview-bar'));
+  const bar = html.slice(html.indexOf('data-j2-preview-bar'));
+  assert.doesNotMatch(gm, /data-j2-fog-tool=/, 'the GM toolbar has no Reveal / Hide');
+  assert.match(gm, /data-j2-fog-state/, 'the Fog overlay toggle stays in the GM view');
+  assert.match(bar, /data-j2-fog-tool="reveal"/);
+  assert.match(bar, /data-j2-fog-tool="hide"/);
+  assert.match(fn('leavePreview', 'printPageMarkup'), /setFogTool\(null/, 'the tool never outlives the preview');
+});
+
+test('PD-034: the hidden-hex outline is a GM aid drawn only while a tool is armed in the preview', () => {
+  const ghost = fn('renderFogGhost', 'updateFogUi');
+  assert.match(ghost, /previewMode && !!fogTool/);
+  assert.doesNotMatch(ghost, /dispatch|persist|store\.|playerProjection/, 'never part of the projection, history or storage');
+  assert.match(fn('renderFog', 'renderFogGhost'), /renderFogGhost\(\)/);
+});
+
+test('PD-034: the camera is a stored view preference (world centre + zoom, or fit), restored clamped and saved debounced', () => {
+  const s = fakeStorage(), store = Store.createStore(s, ctx);
+  assert.equal(store.loadUi().view, null, 'no stored camera -> Fit');
+  assert.deepEqual(store.saveUi({ view: { fit: false, cx: 120.5, cy: 340, scale: 1.5 } }), { ok: true });
+  assert.deepEqual(store.loadUi().view, { fit: false, cx: 120.5, cy: 340, scale: 1.5 });
+  store.saveUi({ view: { fit: true, cx: 9, cy: 9, scale: 9 } });
+  assert.deepEqual(store.loadUi().view, { fit: true, cx: 0, cy: 0, scale: 1 }, 'a fitted map ignores the numbers');
+  for (const bad of [{ fit: false, cx: 'a', cy: 1, scale: 1 }, { fit: false, cx: 1, cy: 1, scale: 0 }, { fit: false, cx: 1, cy: 1, scale: -2 }, { cx: 1, cy: 1, scale: 1 }, { fit: false, cx: null, cy: 1, scale: 1 }, 5, 'x']) {
+    s.data.set(Store.KEYS.ui, JSON.stringify({ view: bad }));
+    assert.equal(store.loadUi().view, null, JSON.stringify(bad));
+  }
+  assert.deepEqual(s.writes.filter(k => k !== Store.KEYS.ui), [], 'only the one view-preference key is written');
+  assert.match(fn('restoreCamera', 'setCamera'), /MAX_ZOOM[\s\S]*setCamera\(/, 'a stored zoom is clamped before it is applied');
+  for (const [name, next] of [['fitToView', 'setCamera'], ['setCamera', 'zoomBy']]) assert.match(fn(name, next), /scheduleCameraSave\(\)/, name + ' reaches the debounced save');
+  assert.match(fn('currentView', 'scheduleCameraSave'), /cameraReady/, 'the stored camera is not overwritten before it was restored');
 });

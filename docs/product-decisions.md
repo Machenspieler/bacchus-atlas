@@ -1048,3 +1048,21 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Out of scope:** a "Fill empty hexes" button for older saved hexes without an Environment (none are expected), a Tier or party-level filter, map-wide balancing, an off switch.
 - **Where:** `js/journey2-env-deal.js` (pure `dealEnvironments({ pool, used, count, random })`), `placeTiles` / `dealEnvironmentsTo` in `js/journey2-view.js`, `Model.apply` `place`,
   `tests/journey2-env-deal.test.js`, `tests/journey2-hex-environment.test.js`.
+
+## PD-034: Journey — Reveal / Hide live in Player Preview, and the map camera is remembered
+- **Status:** Active (amends PD-020: Reveal / Hide are no longer GM-toolbar tools, and Player Preview is no longer read-only; every other PD-020 rule — cell-based visibility, one stroke = one
+  Undo entry, the projection as the only thing players are shown — stands)
+- **Date:** 2026-10-08
+- **Decision (where):** **Reveal** and **Hide** are in the Player Preview bar, beside the picture they change. The GM toolbar keeps **Fog** (the veil overlay toggle), Biome colors and
+  **Player Preview**. A tool is armed only inside the preview; leaving the preview, opening Print Preview or pressing Esc turns it off (Esc: stroke → tool → leave the preview).
+  Undo / Redo stay in the toolbar while previewing and undo whatever the shared history holds. The sanctuary-name reveal stays in the GM sanctuary overlay.
+- **Decision (hidden-hex outline):** while a tool is armed in the preview, every placed hex still hidden from the players is outlined with a dashed line — no symbol, Environment or text — so
+  the GM can find what there is to reveal. It is a GM aid: drawn only while a tool is armed, never part of the projection, Print Preview, print or any stored value. Without it the preview
+  shows nothing under the fog, and painting there would be blind.
+- **Decision (camera):** the camera is a view preference in `dhcodex_journey2_ui` (`view: { fit, cx, cy, scale }`): the WORLD point at the viewport centre plus the zoom, or `fit: true` for a map
+  that was fitted to the window (so a different window size still fits / lands on the same spot). It is restored once the viewport has a real size, with the zoom and position clamped as for any
+  camera change, and written debounced (400 ms) and when the page is hidden or the view is left. A missing or malformed value means Fit. No new storage key.
+- **Decision (what is *not* remembered):** Player Preview mode, an armed Reveal / Hide tool, strokes, the Region Inspector, the sanctuary overlay, Locate and Route Planner state, expanded card
+  and diagnostics stay transient. A reload lands in the GM view with nothing armed, so a stray press can never paint fog.
+- **Where:** `js/journey2-view.js` (`setFogTool`, `renderFogGhost`, `applyPreviewChrome`, `restoreCamera` / `currentView` / `flushCameraSave`), `js/journey2-store.js` (`loadUi` / `saveUi`
+  `view`), `css/journey2.css` (`.j2-tb-tools`, `.j2-fog-ghost`), `tests/journey2-fog.test.js`.

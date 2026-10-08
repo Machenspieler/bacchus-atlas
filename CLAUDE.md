@@ -192,8 +192,8 @@ The `journey2` prefix in modules, `j2-*` classes, `css/journey2.css` and the fou
 keys is a retained internal name — never rename the keys without a migration plan, and never say "Journey 2" in public text.
 It owns exactly those four storage keys; a corrupt saved map is never autosaved over;
 preparation never implies discovery; original markers are immutable. Fog of War is
-cell-based campaign data (`playerVisibility`), hidden by default, edited only by Reveal/Hide strokes
-(one stroke = one Undo entry) and rendered to players solely through the pure projection
+cell-based campaign data (`playerVisibility`), hidden by default, edited only by Reveal/Hide strokes made inside Player Preview (PD-034;
+one stroke = one Undo entry; the camera is a remembered view preference in `dhcodex_journey2_ui`) and rendered to players solely through the pure projection
 `js/journey2-projection.js` (Player Preview now, print later); the fog is translucent over the whole base map with
 no cut-outs, so its labels and sanctuary icons stay readable (PD-020/PD-024). The prepared map stays continuous: a
 later region must share a full edge with ANY placed tile, an ordinary place/move/return may never increase the
@@ -234,7 +234,7 @@ deterministic ties). Click a bubble to select a route, click the selected one fo
 ungenerated cells: Fastest enters only known hexes, and Shortest then reports days as Unknown. It reads no Fog, Echoes, Environments or Shadowblight, writes nothing (no history, storage or fog change),
 recomputes on edits, is mutually exclusive with the other map tools, and none of it reaches Player Preview or print.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033 (Place all rolls a random frozen footprint per press), detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034 (Place all rolls a random frozen footprint per press), detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

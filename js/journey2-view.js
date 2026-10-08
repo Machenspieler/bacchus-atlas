@@ -176,6 +176,7 @@
     let baseImg = null;
     let cam = { scale: 0.25, tx: 0, ty: 0 };
     let fitMode = true;
+    let savedView = null, cameraReady = false, cameraSaveTimer = 0;   // the stored camera ({ fit, cx, cy, scale } | null), whether a stored camera may be overwritten yet, and the debounce timer
     let rafId = 0, pendingApply = false;
 
     /* committed state */
@@ -223,6 +224,7 @@
     let fogHover = null;                                    // { q, r } under the pointer while a tool is active and no stroke runs
     let fogPaintRaf = 0;
     let fogDrawn = { vis: null, mode: null, doc: null };   // what the fog layer currently shows (so an unrelated document change never rebuilds it)
+    let ghostDrawn = { tiles: null, vis: null };            // what the GM-only hidden-hex outline currently shows
     let foggable = null;                                    // Map cellKey -> hex path, every cell the GM can reveal/hide (built once)
     let detachedConfirm = null;                             // transient: the frozen detached candidate whose "Start separate area" dialog is open (never stored, never in history)
     let perimDrawn = { tiles: null, vis: null, mode: null }; // what the perimeter layer currently shows (an unrelated change never rebuilds it)
@@ -272,6 +274,7 @@
 
     function dispose() {
       if (inst.disposed) return;
+      flushCameraSave();                                   // leaving the page keeps the camera (the debounce may still be pending)
       inst.disposed = true;
       abort.abort();
       cancelAnimationFrame(rafId);
@@ -467,8 +470,6 @@
             <div class="j2-tb-group j2-tb-fog" role="group" data-j2-fog-group data-t-aria="journey2_fog_group">
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-fog-state aria-pressed="true" data-t-aria="journey2_fog_show"><span class="j2-ico" aria-hidden="true">${ICON.fog}</span><span data-t="journey2_fog_label"></span></button>
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-biome-colors aria-pressed="true" data-t-aria="journey2_biome_show"><span class="j2-ico" aria-hidden="true">${ICON.palette}</span><span data-t="journey2_biome_label"></span></button>
-              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-fog-tool="reveal" aria-pressed="false" data-t-aria="journey2_fog_reveal_title" data-t-title="journey2_fog_reveal_title"><span class="j2-ico" aria-hidden="true">${ICON.reveal}</span><span data-t="journey2_fog_reveal"></span></button>
-              <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-fog-tool="hide" aria-pressed="false" data-t-aria="journey2_fog_hide_title" data-t-title="journey2_fog_hide_title"><span class="j2-ico" aria-hidden="true">${ICON.conceal}</span><span data-t="journey2_fog_hide"></span></button>
               <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-preview data-t-title="journey2_preview_title"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><span data-t="journey2_preview"></span></button>
             </div>
             <div class="j2-tb-gm">
@@ -488,6 +489,10 @@
             <div class="j2-tb-group j2-tb-preview" data-j2-preview-bar hidden>
               <span class="j2-preview-flag" role="status"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><strong data-t="journey2_preview"></strong></span>
               <span class="j2-preview-note" data-t="journey2_preview_hint"></span>
+              <span class="j2-tb-tools" role="group" data-t-aria="journey2_fog_group">
+                <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-fog-tool="reveal" aria-pressed="false" data-t-aria="journey2_fog_reveal_title" data-t-title="journey2_fog_reveal_title"><span class="j2-ico" aria-hidden="true">${ICON.reveal}</span><span data-t="journey2_fog_reveal"></span></button>
+                <button type="button" class="btn btn-ghost btn-sm j2-tool" data-j2-fog-tool="hide" aria-pressed="false" data-t-aria="journey2_fog_hide_title" data-t-title="journey2_fog_hide_title"><span class="j2-ico" aria-hidden="true">${ICON.conceal}</span><span data-t="journey2_fog_hide"></span></button>
+              </span>
               <button type="button" class="btn btn-ghost btn-sm" data-j2-print-open data-t-title="journey2_pp_open_title" data-t="journey2_pp_open"></button>
               <button type="button" class="btn btn-sm" data-j2-preview-back data-t="journey2_preview_back"></button>
             </div>
@@ -499,7 +504,7 @@
                   <img class="j2-base" alt="" draggable="false" width="${W}" height="${H}">
                   <svg class="j2-overlay" xmlns="${SVG_NS}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">
                     <defs data-j2-defs></defs><defs>${ECHO_DEFS}</defs>
-                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routeline" pointer-events="none" aria-hidden="true"></g>
+                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/><path class="j2-fog-ghost" data-j2-fog-ghost d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routeline" pointer-events="none" aria-hidden="true"></g>
                     <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
                     <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g><g data-j2-g="locate" pointer-events="none"></g><g data-j2-g="routemark" pointer-events="none" aria-hidden="true"></g>
                   </svg>
@@ -711,6 +716,7 @@
       ui.defs = container.querySelector('[data-j2-defs]');
       ui.fogVeil = container.querySelector('[data-j2-fog-veil]');
       ui.fogEdge = container.querySelector('[data-j2-fog-edge]');
+      ui.fogGhost = container.querySelector('[data-j2-fog-ghost]');
       ui.undo = container.querySelector('[data-j2-undo]');
       ui.redo = container.querySelector('[data-j2-redo]');
       ui.banner = container.querySelector('[data-j2-banner]');
@@ -734,6 +740,7 @@
       sideCollapsed = !!prefs.sideCollapsed;
       showFog = prefs.showFogState !== false;
       showBiome = prefs.showBiomeColors !== false;
+      savedView = prefs.view;
       activeBatchId = doc.batches.length ? doc.batches[doc.batches.length - 1].id : null;
       buildStaticLayers();
       buildPanel();
@@ -743,6 +750,7 @@
       updateStatus();
       applyLayerVisibility();
       fitToView();
+      restoreCamera();
       updateReadouts();
       renderAll(true);
       applyPreviewChrome();
@@ -833,7 +841,7 @@
     }
 
     function undo() {
-      if (inst.disposed || editLocked || previewMode) return;
+      if (inst.disposed || editLocked) return;
       cancelTransient();
       const e = Model.historyUndo(history);
       if (!e) return;
@@ -843,7 +851,7 @@
       announce(t('journey2_live_undo') + (locateNote ? '. ' + locateNote : ''));
     }
     function redo() {
-      if (inst.disposed || editLocked || previewMode) return;
+      if (inst.disposed || editLocked) return;
       cancelTransient();
       const e = Model.historyRedo(history);
       if (!e) return;
@@ -927,7 +935,7 @@
     }
 
     /** The stored view preferences (sidebar state, "Show fog state") — never the document, never history. */
-    function saveUiPrefs() { if (store) store.saveUi({ sideCollapsed: sideCollapsed, showFogState: showFog, showBiomeColors: showBiome }); }
+    function saveUiPrefs() { if (store) store.saveUi({ sideCollapsed: sideCollapsed, showFogState: showFog, showBiomeColors: showBiome, view: currentView() }); }
 
     /** Explicit toggle only (the user's own click): re-centres the map horizontally in the new free area at the same zoom; never a Fit, and it leaves the selection and active region alone; focus moves to the control that replaces the one used. */
     function toggleSide() {
@@ -2554,6 +2562,43 @@
       cam.tx += left;                                  // the overlay sidebar covers the left edge: fit into what stays visible
       fitMode = true;
       scheduleApply();
+      scheduleCameraSave();
+    }
+
+    /**
+     * The camera is a view preference (dhcodex_journey2_ui), never part of the map or its history: it is stored as the world point at the viewport centre plus the zoom,
+     * so a different window size still lands on the same spot, or as "fit" so a fitted map stays fitted. Writes are debounced and flushed when the page is hidden.
+     */
+    function currentView() {
+      if (!cameraReady || !data || !ui.viewport) return savedView;
+      if (fitMode) return { fit: true, cx: 0, cy: 0, scale: 1 };
+      const [vw, vh] = viewSize();
+      if (!vw || !vh) return savedView;
+      const w = Geo.screenToWorld(cam, vw / 2, vh / 2);
+      return { fit: false, cx: w[0], cy: w[1], scale: cam.scale };
+    }
+    function scheduleCameraSave() {
+      if (!cameraReady || cameraSaveTimer) return;
+      cameraSaveTimer = setTimeout(flushCameraSave, 400);
+    }
+    function flushCameraSave() {
+      clearTimeout(cameraSaveTimer); cameraSaveTimer = 0;
+      if (inst.disposed || !cameraReady || !store || !data) return;
+      saveUiPrefs();
+    }
+    /** Applies the stored camera (or Fit) once the viewport has a real size — at startup, or from the first resize if the layout was not ready yet. Returns whether it ran. */
+    function restoreCamera() {
+      const [vw, vh] = viewSize();
+      if (cameraReady || !vw || !vh) return cameraReady;
+      const v = savedView;
+      if (v && !v.fit) {
+        const scale = Math.min(MAX_ZOOM, Math.max(Math.min(minScale(), Geo.ZOOM_STEPS[0]), v.scale));
+        setCamera({ scale: scale, tx: vw / 2 - v.cx * scale, ty: vh / 2 - v.cy * scale });
+      } else fitToView();
+      cameraReady = true;
+      listen(window, 'pagehide', flushCameraSave);
+      listen(document, 'visibilitychange', () => { if (document.hidden) flushCameraSave(); });
+      return true;
     }
 
     function setCamera(next, keepFit) {
@@ -2561,6 +2606,7 @@
       cam = Geo.clampCamera(next, vw, vh, data.template.worldSizePx[0], data.template.worldSizePx[1], 120);
       if (!keepFit) fitMode = false;
       scheduleApply();
+      scheduleCameraSave();
       updateReadouts();                               // synchronous: the zoom label and +/- availability never wait for a frame
       if (tr) updatePreview();                        // the CURRENT camera always decides the snap — never a stale transform
     }
@@ -2645,8 +2691,24 @@
         ui.fogEdge.setAttribute('d', previewMode ? '' : edge);
         fogDrawn = { vis: source, mode: mode };
       }
+      renderFogGhost();
       ui.g.fog.style.display = previewMode || showFog ? '' : 'none';
       ui.g.fog.setAttribute('data-fog-mode', mode);
+    }
+
+    /**
+     * GM aid while a fog tool is active in Player Preview: a dashed outline (no symbol, no Environment, no text) around every placed hex that is still
+     * hidden from the players, so the GM can find what there is to reveal. Drawn only while a tool is armed (Esc removes it); never part of the projection, the print or a stored value.
+     */
+    function renderFogGhost() {
+      if (!ui.fogGhost || !doc || !foggable) return;
+      const on = previewMode && !!fogTool;
+      const key = on ? doc.tiles : null, vis = on ? doc.playerVisibility : null;
+      if (ghostDrawn.tiles === key && ghostDrawn.vis === vis) return;
+      let d = '';
+      if (on) { const revealed = Model.getRevealedCellSet(doc); for (const tile of doc.tiles) if (!revealed.has(tile.cell)) d += foggable.get(tile.cell) || ''; }
+      ui.fogGhost.setAttribute('d', d);
+      ghostDrawn = { tiles: key, vis: vis };
     }
 
     /** Toolbar toggle states, the tool chip and the cursor class — all derived from the transient state. */
@@ -2665,23 +2727,23 @@
       ui.viewport.classList.toggle('is-fog-reveal', fogTool === 'reveal');
       ui.viewport.classList.toggle('is-fog-hide', fogTool === 'hide');
       ui.root.setAttribute('data-fog-tool', fogTool || '');
-      ui.fogChip.hidden = !fogTool || previewMode;
+      ui.fogChip.hidden = !fogTool;
       if (fogTool) {
         ui.fogChipIco.innerHTML = fogTool === 'reveal' ? ICON.reveal : ICON.conceal;
         ui.fogChipTitle.textContent = t(fogTool === 'reveal' ? 'journey2_fog_reveal_active' : 'journey2_fog_hide_active');
         ui.fogChipCount.textContent = countText('revealed', Model.getRevealedCellSet(doc).size);
-        ui.fogChipHint.textContent = t('journey2_fog_pan_hint') + ' · ' + t('journey2_fog_esc_hint');
+        ui.fogChipHint.textContent = t('journey2_fog_pan_hint') + ' · ' + t('journey2_fog_ghost_hint') + ' · ' + t('journey2_fog_esc_hint');
       }
     }
 
     /**
      * Activates a fog tool (or, with null / the already-active tool, returns to neutral). Reveal and Hide are mutually exclusive with
      * each other, with armed or dragged placement and with the Region Inspector: activating one cancels those, clears the selection,
-     * and enables the GM veil. Pan, zoom and the sidebar state are untouched.
+     * (Player Preview only). Pan, zoom and the sidebar state are untouched.
      */
     function setFogTool(mode, o) {
       const opts = o || {};
-      if (mode && (previewMode || editLocked || !data)) return;
+      if (mode && (!previewMode || editLocked || !data)) return;
       if (mode && mode === fogTool) mode = null;
       if (mode) {
         exitLocate({ quiet: true }); exitRoute({ quiet: true });   // the map tools are mutually exclusive
@@ -2693,7 +2755,6 @@
         closeInspector({ quiet: true });
         closeSanctuary({ quiet: true });
         if (sel.tileId) { sel.tileId = null; renderSelection(); renderInventory(false); }
-        if (!showFog) { showFog = true; saveUiPrefs(); }
       } else {
         cancelFogStroke();
       }
@@ -2812,7 +2873,7 @@
     function paintFogStroke() {
       const g = ui.g && ui.g.fogstroke;
       if (!g) return;
-      if (!fogTool || previewMode || !data) { g.innerHTML = ''; return; }
+      if (!fogTool || !previewMode || !data) { g.innerHTML = ''; return; }
       const mode = fogTool, s = fogStroke;
       let h = '';
       if (s && s.pendD) h += '<path class="j2-fog-pend is-' + mode + '" d="' + s.pendD + '"/>';
@@ -2835,7 +2896,7 @@
       const on = previewMode;
       ui.root.setAttribute('data-mode', on ? 'preview' : 'gm');
       ui.sidewrap.hidden = on; ui.sidewrap.inert = on;
-      ui.historyGroup.hidden = on; ui.fogGroup.hidden = on; ui.echoGroup.hidden = on; ui.sancGroup.hidden = on; ui.echoGroup.parentNode.hidden = on;
+      ui.fogGroup.hidden = on; ui.echoGroup.hidden = on; ui.sancGroup.hidden = on; ui.echoGroup.parentNode.hidden = on;
       ui.previewBar.hidden = !on;
       ui.hint.hidden = true; ui.tip.hidden = true; ui.tip.innerHTML = ''; envTipKey = null;
       ui.viewport.setAttribute('aria-label', t(on ? 'journey2_preview_map_label' : 'journey2_map_label'));
@@ -2871,6 +2932,7 @@
     function leavePreview(o) {
       if (!previewMode) return;
       closePrintPreview({ quiet: true });
+      setFogTool(null, { quiet: true });
       previewMode = false;
       playerProjection = null;
       const back = previewReturn; previewReturn = null;
@@ -2971,6 +3033,7 @@
     function openPrintPreview() {
       if (!previewMode || printOpen || !data || !doc || !Print) return;
       cancelTransient(); cancelFogStroke(); closeMenus(); closeInspector({ quiet: true }); closeSanctuary({ quiet: true });
+      setFogTool(null, { quiet: true });
       printOpen = true;
       const host = el('div', { class: 'j2-printpreview', 'data-j2-printpreview': '' });
       pp = { el: host, model: null, ready: false, failed: false, token: 0 };
@@ -3033,7 +3096,7 @@
       listen(vp, 'contextmenu', e => e.preventDefault());
       listen(vp, 'click', e => { if (suppressClick) { e.stopPropagation(); e.preventDefault(); } }, true);
       if (typeof ResizeObserver === 'function') {
-        const ro = new ResizeObserver(() => { if (inst.disposed || !data) return; if (fitMode) fitToView(); else setCamera(cam, true); });
+        const ro = new ResizeObserver(() => { if (inst.disposed || !data) return; if (!cameraReady && restoreCamera()) return; if (fitMode) fitToView(); else setCamera(cam, true); });
         ro.observe(vp);
         cleanups.push(() => ro.disconnect());
       }
@@ -3126,7 +3189,7 @@
       const [x, y] = localPoint(e);
       pointer.x = x; pointer.y = y; pointer.inside = true; pointer.cx = e.clientX; pointer.cy = e.clientY;
       // priority: dialog > preview > an existing drag/pan > Locate location selection (a click, never a tile drag) > armed placement > fog tool > neutral selection. Space (or the middle button) pans instead of painting.
-      if (fogTool && !previewMode && e.button === 0 && !spaceDown && !editLocked && !(tr && tr.kind === 'armed')) { startFogStroke(e); e.preventDefault(); return; }
+      if (fogTool && previewMode && e.button === 0 && !spaceDown && !editLocked && !(tr && tr.kind === 'armed')) { startFogStroke(e); e.preventDefault(); return; }
       const tile = e.button === 0 && !spaceDown && !editLocked && !previewMode && !fogTool && !(tr && tr.kind === 'armed') && !locateSession.isActive() && !routeSelecting() && !sanctuaryAtScreen(x, y) ? tileAtScreen(x, y) : null;
       if (tile) {
         tr = { kind: 'tile', tileId: tile.id, batchId: tile.batchId, from: tile.cell, docRef: doc, pointerId: e.pointerId, moved: false, x0: e.clientX, y0: e.clientY, preview: null };
@@ -3153,7 +3216,7 @@
       if (tr && tr.kind === 'armed') { updatePreview(); return; }
       if (routeSelecting() && !pan) { updateRouteHover(e); return; }
       if (locateSession.state && locateSession.state.status === 'selecting' && !pan) { updateLocateHover(e); return; }
-      if (fogTool && !pan && !previewMode) { updateFogHover(e); return; }
+      if (fogTool && !pan) { updateFogHover(e); return; }
       if (!tr) updateHover();
     }
 
@@ -3567,20 +3630,19 @@
         if (tr) { cancelTransient(); e.preventDefault(); return; }
         if (routeSelecting()) { routeEscape(); e.preventDefault(); return; }                         // choosing A or B: step back / leave the Route Planner (no document change)
         if (locateSession.isActive()) { exitLocate({ focus: true }); e.preventDefault(); return; }   // a result or the selection: leave Locate (no document change)
-        if (previewMode) { leavePreview(); e.preventDefault(); return; }
         if (fogTool) { setFogTool(null); e.preventDefault(); return; }
+        if (previewMode) { leavePreview(); e.preventDefault(); return; }
         if (sanctuaryOpen) { closeSanctuary({ focus: true }); e.preventDefault(); return; }
         if (inspectorOpen()) { closeInspector({ focus: true }); e.preventDefault(); return; }
         if (routePlanner.isActive()) { routeEscape(); e.preventDefault(); return; }                   // a shown route closes last, after the panels above it
         if (e.target === ui.viewport) { sel.tileId = null; selCell = null; selMarker = null; placeMode = false; renderSelection(); renderInventory(false); updateReadouts(); }
         return;
       }
-      if (e.key === ' ' && fogTool && !previewMode && !isEditableTarget(e.target) && fogSpaceTarget(e.target)) {
+      if (e.key === ' ' && fogTool && !isEditableTarget(e.target) && fogSpaceTarget(e.target)) {
         // a fog tool takes the primary drag, so Space held = temporary pan (the key must not also press a focused toolbar button)
         spaceDown = true; ui.viewport.classList.add('is-space'); e.preventDefault(); return;
       }
       if (isEditableTarget(e.target) || e.defaultPrevented) return;
-      if (previewMode) return;                                 // the preview is read-only: no Undo/Redo
       if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
       const k = e.key.toLowerCase();
       if (k === 'z' && !e.shiftKey) { undo(); e.preventDefault(); }
@@ -3588,7 +3650,7 @@
     }
 
     /** Space pans (rather than activating something) only when focus is on the map, the page body or one of the fog toolbar buttons. */
-    function fogSpaceTarget(t0) { return t0 === document.body || t0 === ui.viewport || !!(t0 && t0.closest && t0.closest('[data-j2-fog-group], [data-j2-echo-group]')); }
+    function fogSpaceTarget(t0) { return t0 === document.body || t0 === ui.viewport || !!(t0 && t0.closest && t0.closest('[data-j2-fog-group], [data-j2-echo-group], [data-j2-preview-bar]')); }
 
     function onDocumentKeyUp(e) {
       if (inst.disposed || e.key !== ' ' || !spaceDown) return;
@@ -4272,7 +4334,7 @@
     function debugState() {
       const d = doc ? Model.derive(doc) : null;
       return {
-        camera: { scale: cam.scale, tx: cam.tx, ty: cam.ty }, fitMode: fitMode, layers: Object.assign({}, layers),
+        camera: { scale: cam.scale, tx: cam.tx, ty: cam.ty }, fitMode: fitMode, cameraStore: { ready: cameraReady, saved: savedView, pending: !!cameraSaveTimer }, layers: Object.assign({}, layers),
         selectedCell: selCell && Geo.cellId(selCell.q, selCell.r), selectedMarker: selMarker && selMarker.stableId,
         hoverCell: hoverCell && Geo.cellId(hoverCell.q, hoverCell.r), userPlacements: userPlacements.length,
         ready: data ? data.readiness.ready : null, anchors: data ? data.anchorsDoc.anchors.length : 0,

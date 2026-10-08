@@ -27,11 +27,18 @@
     map: 'dhcodex_journey2_map',
     recovery: 'dhcodex_journey2_map_recovery',     // raw text of a map that failed validation
     previous: 'dhcodex_journey2_map_previous',     // the map that an import replaced
-    ui: 'dhcodex_journey2_ui',                     // view preferences (sidebar state, fog-state overlay, biome colors) — never part of the map or its history
+    ui: 'dhcodex_journey2_ui',                     // view preferences (sidebar state, fog-state overlay, biome colors, camera) — never part of the map or its history
   });
 
   /** All Journey 2-owned keys; anything else in storage must stay byte-identical across any Journey 2 use. */
   function ownedKeys() { return Object.keys(KEYS).map(k => KEYS[k]); }
+
+  /** A stored camera, or null: finite numbers only and a positive zoom — anything else falls back to Fit. */
+  function cleanView(v) {
+    if (!v || typeof v !== 'object' || typeof v.fit !== 'boolean') return null;
+    if (v.fit) return { fit: true, cx: 0, cy: 0, scale: 1 };
+    return Number.isFinite(v.cx) && Number.isFinite(v.cy) && Number.isFinite(v.scale) && v.scale > 0 ? { fit: false, cx: v.cx, cy: v.cy, scale: v.scale } : null;
+  }
 
   function createStore(storage, ctx) {
     /** { status: 'empty'|'ok'|'corrupt'|'unavailable', doc?, errors?, code? } */
@@ -60,12 +67,13 @@
     }
 
     /**
-     * View preferences, separate from the map document and its history: { sideCollapsed, showFogState, showBiomeColors }.
-     * Unreadable or malformed values -> defaults (sidebar open, fog-state overlay shown). The Player Preview mode, the active
-     * Reveal/Hide tool and any in-progress stroke are NEVER stored.
+     * View preferences, separate from the map document and its history: { sideCollapsed, showFogState, showBiomeColors, view }, where
+     * view = { fit, cx, cy, scale } is the camera (the WORLD point at the viewport centre plus the zoom; fit: true = "fitted to the window", so
+     * the numbers are ignored) or null when none was stored. Unreadable or malformed values -> defaults (sidebar open, fog-state overlay shown,
+     * no camera -> Fit). The Player Preview mode, the active Reveal/Hide tool and any in-progress stroke are NEVER stored.
      */
     function loadUi() {
-      const out = { sideCollapsed: false, showFogState: true, showBiomeColors: true };
+      const out = { sideCollapsed: false, showFogState: true, showBiomeColors: true, view: null };
       const raw = SafeStorage.readRawFlag(storage, KEYS.ui);
       if (typeof raw !== 'string') return out;
       try {
@@ -74,12 +82,13 @@
           if (typeof v.sideCollapsed === 'boolean') out.sideCollapsed = v.sideCollapsed;
           if (typeof v.showFogState === 'boolean') out.showFogState = v.showFogState;
           if (typeof v.showBiomeColors === 'boolean') out.showBiomeColors = v.showBiomeColors;
+          out.view = cleanView(v.view);
         }
       } catch (e) { /* defaults */ }
       return out;
     }
     function saveUi(ui) {
-      return SafeStorage.writeJson(storage, KEYS.ui, { sideCollapsed: !!(ui && ui.sideCollapsed), showFogState: !(ui && ui.showFogState === false), showBiomeColors: !(ui && ui.showBiomeColors === false) });
+      return SafeStorage.writeJson(storage, KEYS.ui, { sideCollapsed: !!(ui && ui.sideCollapsed), showFogState: !(ui && ui.showFogState === false), showBiomeColors: !(ui && ui.showBiomeColors === false), view: cleanView(ui && ui.view) });
     }
 
     return { load: load, save: save, savePrevious: savePrevious, loadPrevious: loadPrevious, loadUi: loadUi, saveUi: saveUi, keys: KEYS };

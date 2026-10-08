@@ -1097,11 +1097,14 @@ Run all of them with `node --test tests/*.test.js`.
     Generating, placing, moving, returning or deleting regions never reveals or hides a
     cell — fog belongs to map coordinates, so content moved into a revealed cell becomes
     visible and into a hidden cell becomes hidden.
-  - *Tools.* The toolbar has a Fog group: **Fog** (`Show fog state`, a stored UI preference,
-    default on), **Reveal**, **Hide** (`aria-pressed` toggles, mutually exclusive with each other,
-    with armed/dragged placement and with the inspector) and **Player Preview**. Activating a
-    tool cancels armed placement and drags, closes the inspector, clears the tile selection and
-    force-enables the veil; pan, zoom and the sidebar are untouched. Pressing the active tool
+  - *Tools (PD-034).* The GM toolbar has **Fog** (`Show fog state`, a stored UI preference,
+    default on), Biome colors and **Player Preview**; **Reveal** and **Hide** (`aria-pressed` toggles,
+    mutually exclusive with each other, with armed/dragged placement and with the inspector) live in the
+    Player Preview bar and exist only there. Activating a tool cancels armed placement and drags, closes
+    the inspector and clears the tile selection; while one is armed a dashed GM-only outline marks
+    every still-hidden placed hex (`renderFogGhost`, never in the projection or print); Undo/Redo work
+    in the preview; pan, zoom and the sidebar are untouched. Leaving the preview or opening Print
+    Preview turns the tool off. The camera is a stored view preference (`view` in `dhcodex_journey2_ui`). Pressing the active tool
     returns to neutral. A stroke is one pointer press → release: each sampled cell is joined with
     the previous one by `Geo.cellLine` (so a fast drag leaves no gap), a cell joins a stroke once,
     pointer moves only collect cells and schedule one `requestAnimationFrame` repaint of the
