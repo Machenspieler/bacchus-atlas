@@ -282,6 +282,15 @@
       if (vars) for (const k of Object.keys(vars)) s = s.split('{' + k + '}').join(String(vars[k]));
       return s;
     }
+    /** `fill` with singular agreement: `counts` are the raw numbers behind the vars. One count picks `key_one` when that variant exists; two counts pick
+     *  `key_one1` / `key_one2` / `key_one12` (the first, the second, or both equal 1). A key without the variant falls back to the base text (Russian never
+     *  declines the noun, so it has none that differ). */
+    function fillN(key, vars, counts) {
+      const ones = counts.map((c, i) => (c === 1 ? String(i + 1) : '')).join('');
+      let k = key;
+      if (ones) { const v = key + (counts.length === 1 ? '_one' : '_one' + ones); if (t(v) !== v) k = v; }
+      return fill(k, vars);
+    }
 
     /* ---- lifecycle ---- */
 
@@ -319,12 +328,15 @@
 
     function relocalize(o) {
       if (o && o.t) t = o.t;
-      if (o && o.lang && o.lang !== lang) { lang = o.lang; nf = makeNumberFormat(); }
+      let langChanged = false;
+      if (o && o.lang && o.lang !== lang) { lang = o.lang; nf = makeNumberFormat(); langChanged = true; }
       if (o && o.generator) generator = o.generator;
       if (o && o.environmentsForBiome) environmentsFor = o.environmentsForBiome;
       applyStrings();
       if (data && ui.root) {
         updateStatus(); updateReadouts(); renderControlList(); renderAll(true); applyPreviewChrome();
+        renderSeekers();                                   // the step count's title / aria-label and the settled "+" explanation are language-sensitive (L5-22)
+        if (langChanged && ui.live) { clearTimeout(liveTimer); ui.live.textContent = ''; }   // an announcement in the old language is obsolete; nothing new is announced (L5-03)
       }
       if (ui.loading) renderLoading();
     }
@@ -344,13 +356,12 @@
       applyStrings();
     }
 
-    function renderError(detail) {
+    function renderError() {
       ui = {};
       container.innerHTML = '<div class="j2-state j2-state--error" role="alert"><p class="j2-state-title" data-t="journey2_load_error"></p>' +
         '<p class="j2-state-hint" data-t="journey2_load_error_hint"></p>' +
-        '<p class="j2-state-detail"></p>' +
+        '<p class="j2-state-detail" data-t="journey2_load_error_detail"></p>' +
         '<button type="button" class="btn btn-primary" data-j2-retry data-t="journey2_retry"></button></div>';
-      container.querySelector('.j2-state-detail').textContent = detail || '';
       container.querySelector('[data-j2-retry]').addEventListener('click', () => { renderLoading(); load(); });
       applyStrings();
     }
@@ -382,7 +393,8 @@
         buildSurface();
       }).catch(err => {
         if (inst.disposed || (err && err.name === 'AbortError')) return;
-        renderError(err && err.message ? err.message : String(err));
+        try { console.error('Journey: map data failed to load', err); } catch (e) { /* no console */ }   // the raw exception stays technical detail; the UI shows a localized generic line (L5-18)
+        renderError();
       });
     }
 
@@ -635,7 +647,7 @@
                   </div>
                   <div class="j2-ctl-gm" data-j2-gm-controls>
                     <div class="j2-ctl-row j2-tb-fog" role="group" data-j2-fog-group data-t-aria="journey2_fog_group">
-                      <button type="button" class="btn btn-sm j2-tool" data-j2-biome-colors aria-pressed="true" data-t-aria="journey2_biome_show"><span class="j2-ico" aria-hidden="true">${ICON.palette}</span><span data-t="journey2_biome_label"></span></button>
+                      <button type="button" class="btn btn-sm j2-tool" data-j2-biome-colors aria-pressed="true" data-t-aria="journey2_biome_label"><span class="j2-ico" aria-hidden="true">${ICON.palette}</span><span data-t="journey2_biome_label"></span></button>
                       <button type="button" class="btn btn-sm j2-tool" data-j2-preview data-t-title="journey2_preview_title"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><span data-t="journey2_preview"></span></button>
                     </div>
                     <div class="j2-ctl-row j2-tb-route" role="group" data-j2-route-group data-t-aria="journey2_route_group">
@@ -882,13 +894,19 @@
       renderBanner();
     }
 
+    /** Why a saved (browser-stored, not imported) map could not be read; the import-file wording is the fallback for codes without a saved-map variant (L5-19). */
+    function savedCodeText(code) {
+      const id = String(code || 'invalid').replace(/-/g, '_'), own = 'journey2_saved_code_' + id;
+      return t(t(own) !== own ? own : 'journey2_import_code_' + id);
+    }
+
     function renderBanner() {
       if (!ui.banner) return;
       const s = saveState.status;
       let html = '';
       if (editLocked) {
         const code = loadInfo && loadInfo.code;
-        html = '<p>' + esc(fill('journey2_banner_corrupt', { reason: t('journey2_import_code_' + String(code || 'invalid').replace(/-/g, '_')) })) + '</p>' +
+        html = '<p>' + esc(fill('journey2_banner_corrupt', { reason: savedCodeText(code) })) + '</p>' +
           '<div class="j2-banner-actions"><button type="button" class="btn btn-sm" data-j2-act="import">' + esc(t('journey2_backup_import')) + '</button>' +
           '<button type="button" class="btn btn-sm btn-danger" data-j2-act="start-empty">' + esc(t('journey2_corrupt_start_empty')) + '</button></div>';
       } else if (s === 'failed') {
@@ -1010,7 +1028,7 @@
       if (!r.ok) { showGenError(t('journey2_gen_failed')); return; }
       setActiveBatch(batch.id);
       ui.sideScroll.scrollTop = 0;
-      announce(fill('journey2_live_created', { name: batchName(batch), n: n(batch.quantity) }));
+      announce(fillN('journey2_live_created', { name: batchName(batch), n: n(batch.quantity) }, [batch.quantity]));
     }
 
     /* ---- sidebar overlay ---- */
@@ -1149,7 +1167,7 @@
       refs.dots.hidden = !!b.habitat.overtaken;           // a fully overtaken region has no Terrain Rating
       refs.dots.innerHTML = [1, 2, 3, 4].map(i => '<i' + (i <= b.terrain.value ? ' class="on"' : '') + '></i>').join('');
       refs.dots.setAttribute('aria-label', fill('journey2_terrain_n', { n: b.terrain.value }));
-      refs.dots.setAttribute('title', fill('journey2_terrain_tip', { n: b.terrain.value, d: b.terrain.value }));
+      refs.dots.setAttribute('title', fillN('journey2_terrain_tip', { n: b.terrain.value, d: b.terrain.value }, [b.terrain.value]));
       refs.blight.hidden = !(b.habitat.blighted || b.habitat.overtaken);
       refs.blight.textContent = t('journey_shadowblighted');
       // active region: expanded, programmatically identifiable
@@ -1167,7 +1185,7 @@
       refs.root.classList.toggle('is-exhausted', complete);
       refs.sum.hidden = active;
       refs.root.classList.toggle('has-unplaced', !complete);   // unused hexes stand out in the collapsed card
-      refs.sum.textContent = complete ? fill('journey2_all_placed', { n: n(c.quantity) }) : fill('journey2_status_placed', { placed: n(c.placed), total: n(c.quantity) }) + ' · ' + fill('journey2_status_left', { n: n(c.remaining) });
+      refs.sum.textContent = complete ? fillN('journey2_all_placed', { n: n(c.quantity) }, [c.quantity]) : fill('journey2_status_placed', { placed: n(c.placed), total: n(c.quantity) }) + ' · ' + fill('journey2_status_left', { n: n(c.remaining) });
       refs.warn.hidden = !holes;
       if (holes) refs.warnText.textContent = fill('journey2_warn_holes', { n: n(holes) });
       refs.root.classList.toggle('has-holes', !!holes);
@@ -1176,7 +1194,7 @@
       refs.status.hidden = complete;
       refs.actions.hidden = complete;
       refs.done.hidden = !complete;
-      refs.doneText.textContent = fill('journey2_all_placed', { n: n(c.quantity) });
+      refs.doneText.textContent = fillN('journey2_all_placed', { n: n(c.quantity) }, [c.quantity]);
       refs.placedText.textContent = fill('journey2_status_placed', { placed: n(c.placed), total: n(c.quantity) });
       refs.leftText.textContent = fill('journey2_status_left', { n: n(c.remaining) });
       refs.bar.style.width = (c.quantity ? (100 * c.placed / c.quantity) : 0) + '%';
@@ -1187,7 +1205,7 @@
       refs.handleAll.hidden = single;
       for (const h of [refs.handleOne, refs.handleAll]) h.disabled = editLocked;
       refs.handleOne.setAttribute('aria-label', fill('journey2_handle_one_aria', { name: name }));
-      refs.handleAll.setAttribute('aria-label', fill('journey2_handle_all_aria', { name: name, n: n(c.remaining) }));
+      refs.handleAll.setAttribute('aria-label', fillN('journey2_handle_all_aria', { name: name, n: n(c.remaining) }, [c.remaining]));
       refs.del.setAttribute('aria-label', fill('journey2_delete_aria', { name: name, n: ord }));
       refs.del.setAttribute('title', t('journey2_delete_region'));
       refs.del.disabled = editLocked;
@@ -1304,13 +1322,13 @@
       ui.placeHint.hidden = list.length === 0;
       // the number answers "how much is left to place"; the region total lives in the tooltip / accessible name (D1)
       let left = 0; for (const b of list) left += counts.get(b.id).remaining;
-      const countAria = fill('journey2_stock_count_aria', { r: n(list.length), n: n(left) });
+      const countAria = fillN('journey2_stock_count_aria', { r: n(list.length), n: n(left) }, [list.length, left]);
       ui.stockCount.textContent = !list.length ? '' : left ? fill('journey2_stock_left', { n: n(left) }) : t('journey2_stock_all_placed');
       ui.stockCount.classList.toggle('has-left', left > 0);
       ui.stockCount.title = list.length ? countAria : '';
       if (list.length) ui.stockCount.setAttribute('aria-label', countAria); else ui.stockCount.removeAttribute('aria-label');
       ui.railCount.textContent = list.length ? n(left) : '';
-      ui.railCount.setAttribute('aria-label', fill('journey2_rail_count_aria', { r: n(list.length), n: n(left) }));
+      ui.railCount.setAttribute('aria-label', fillN('journey2_rail_count_aria', { r: n(list.length), n: n(left) }, [list.length, left]));
       ui.generate.disabled = editLocked;
     }
 
@@ -1528,7 +1546,7 @@
         I.terrainText.hidden = !(d.terrain && d.terrain.text);
         I.terrainText.textContent = d.terrain ? d.terrain.text : '';
         I.summary.classList.toggle('has-more', !!(d.terrain && d.terrain.text));
-        I.terrainN.textContent = d.terrain ? ' · ' + fill('journey2_days_per_hex', { n: n(d.terrain.days) }) : '';
+        I.terrainN.textContent = d.terrain ? ' · ' + fillN('journey2_days_per_hex', { n: n(d.terrain.days) }, [d.terrain.days]) : '';
         I.examples.hidden = !d.examples;
         I.examples.textContent = d.examples || '';
         I.enc.innerHTML = (d.combined ? '<p class="j2-note">' + esc(t('journey_encounter_combined')) + '</p>' : '') + d.encounter.map(x => '<p class="j2-insp-p j2-enc">' + x.html + '</p>').join('');
@@ -1919,7 +1937,7 @@
         const plan = Model.planSoulEchoes(data.ctx);
         const r = dispatch({ type: 'setSoulEchoes', anchorIds: plan.anchorIds }, 'echoesPlace');
         if (!r.ok) { hint(errorText(r.error)); return; }
-        announce(fill('journey2_live_echoes_placed', { n: n(plan.anchorIds.length) }));
+        announce(fillN('journey2_live_echoes_placed', { n: n(plan.anchorIds.length) }, [plan.anchorIds.length]));
       };
       if (!doc.soulEchoes.anchorIds.length) { commit(); return; }
       openDialog({
@@ -2642,7 +2660,7 @@
       const r = v.st.routes[s], merged = s === 'fastest' && !routeShownList(v.st.routes).includes('shortest') && routeShortestRedundant(v.st.routes);
       const label = t(merged ? 'journey2_route_both' : ROUTE_LABEL[s]);
       const dist = routeDistanceText(r.stats.hexes);
-      const stats = r.stats.complete ? fill('journey2_route_bub_stats', { hexes: n(r.stats.hexes), dist: dist, days: n(r.stats.travelDays) }) : fill('journey2_route_bub_unknown', { hexes: n(r.stats.hexes), dist: dist });
+      const stats = r.stats.complete ? fillN('journey2_route_bub_stats', { hexes: n(r.stats.hexes), dist: dist, days: n(r.stats.travelDays) }, [r.stats.hexes, r.stats.travelDays]) : fillN('journey2_route_bub_unknown', { hexes: n(r.stats.hexes), dist: dist }, [r.stats.hexes]);
       return { label: label, stats: stats };
     }
 
@@ -2715,7 +2733,7 @@
         h += '<p class="j2-route-warn"><strong>' + esc(t('journey2_route_time_unknown')) + '.</strong> ' + esc(t('journey2_route_enc_unknown')) + '. ' +
           esc(s.unknownHexes === 1 ? t('journey2_route_unknown_one') : fill('journey2_route_unknown_n', { n: n(s.unknownHexes) })) + '</p>' +
           '<p class="j2-route-note">' + esc(t('journey2_route_known_terrain')) + ': ' + n(s.knownHexes) + ' · ' + esc(t('journey2_route_unknown_terrain')) + ': ' + n(s.unknownHexes) +
-          (s.knownHexes ? '<br>' + esc(fill('journey2_route_known_days', { n: n(s.knownDays) })) : '') + '</p>';
+          (s.knownHexes ? '<br>' + esc(fillN('journey2_route_known_days', { n: n(s.knownDays) }, [s.knownDays])) : '') + '</p>';
       }
       const rows = [0, 1, 2, 3, 4].filter(r => s.terrainCounts[r] > 0);
       if (rows.length) {
@@ -2732,7 +2750,7 @@
     function routeCompareHtml(routes) {
       const f = routes.fastest, s = routes.shortest;
       if (!f || !s || f.status !== 'ok' || s.status !== 'ok' || !f.stats.complete || !s.stats.complete || Route.sameRoute(f, s)) return '';
-      const line = (key, r) => '<li>' + esc(fill('journey2_route_compare_line', { label: t(key), hexes: n(r.stats.hexes), days: n(r.stats.travelDays) })) + '</li>';
+      const line = (key, r) => '<li>' + esc(fillN('journey2_route_compare_line', { label: t(key), hexes: n(r.stats.hexes), days: n(r.stats.travelDays) }, [r.stats.hexes, r.stats.travelDays])) + '</li>';
       const dh = f.stats.hexes - s.stats.hexes, dd = s.stats.travelDays - f.stats.travelDays;
       return '<ul class="j2-route-cmp-list">' + line('journey2_route_fastest', f) + line('journey2_route_shortest', s) + '</ul>' +
         (dh > 0 && dd > 0 ? '<p class="j2-route-note">' + esc(fill('journey2_route_compare_hint', { h: n(dh), d: n(dd) })) + '</p>' : '');
@@ -2770,7 +2788,7 @@
       }
       routePlanner.setStrategy(s);
       const v2 = routeView();
-      if (v2) announce(fill('journey2_route_live_result', { strategy: t(ROUTE_LABEL[v2.eff]), hexes: n(v2.route.stats.hexes) }));
+      if (v2) announce(fillN('journey2_route_live_result', { strategy: t(ROUTE_LABEL[v2.eff]), hexes: n(v2.route.stats.hexes) }, [v2.route.stats.hexes]));
     }
 
     function closeRouteDetails() {
@@ -2837,7 +2855,7 @@
     /** Toolbar state: the one button carries the sanctuary count of the printed map and is disabled while edits are locked. */
     function updateSanctuaryUi() {
       if (!ui.sancGroup || !doc || !data) return;
-      ui.sancGenerateLabel.textContent = fill('journey2_sanc_generate', { n: n(data.ctx.sanctuaries.length) });
+      ui.sancGenerateLabel.textContent = fillN('journey2_sanc_generate', { n: n(data.ctx.sanctuaries.length) }, [data.ctx.sanctuaries.length]);
       ui.sancGenerate.disabled = editLocked;
     }
 
@@ -2976,13 +2994,13 @@
         const entries = Model.planSanctuaries(data.ctx, () => generator.rollSanctuary());
         const r = entries.length ? dispatch({ type: 'setSanctuaries', entries: entries }, 'sanctuariesGenerate') : { ok: false };
         if (!r.ok) { hint(t('journey2_sanc_failed')); return; }
-        announce(fill('journey2_live_sanc_generated', { n: n(entries.length) }));
+        announce(fillN('journey2_live_sanc_generated', { n: n(entries.length) }, [entries.length]));
       };
       const have = doc.sanctuaries.entries.length, visibleNames = Model.getRevealedSanctuaryNameSet(doc).size;
       if (!have) { commit(); return; }
       openDialog({
         title: t('journey2_sanc_replace_title'),
-        lines: [fill('journey2_sanc_replace_msg', { n: n(have) })].concat(visibleNames ? [fill('journey2_sanc_replace_visible_msg', { n: n(visibleNames) })] : [], [t('journey2_echo_undo_note')]),
+        lines: [fillN('journey2_sanc_replace_msg', { n: n(have) }, [have])].concat(visibleNames ? [fillN('journey2_sanc_replace_visible_msg', { n: n(visibleNames) }, [visibleNames])] : [], [t('journey2_echo_undo_note')]),
         actions: [
           { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
           { label: t('journey2_sanc_replace_go'), kind: 'btn-danger', value: 'replace' },
@@ -3808,7 +3826,7 @@
     function handleMapClick(sx, sy) {
       if (previewMode || fogTool) return;                    // read-only preview / an active fog tool never selects or inspects
       if (routeSelecting()) {                                // the Route Planner owns the map while choosing A or B: a sanctuary icon, Environment marker or tile selects its hex
-        if (!spaceDown) { const id = routeCellAt(sx, sy); if (id && routePlanner.pick(id) && routePlanner.state.status === 'result') { const v = routeView(); if (v) announce(v.route.status === 'ok' ? fill('journey2_route_live_result', { strategy: t(ROUTE_LABEL[v.eff]), hexes: n(v.route.stats.hexes) }) : fill('journey2_route_live_none', { strategy: t(ROUTE_LABEL[v.eff]) })); } }
+        if (!spaceDown) { const id = routeCellAt(sx, sy); if (id && routePlanner.pick(id) && routePlanner.state.status === 'result') { const v = routeView(); if (v) announce(v.route.status === 'ok' ? fillN('journey2_route_live_result', { strategy: t(ROUTE_LABEL[v.eff]), hexes: n(v.route.stats.hexes) }, [v.route.stats.hexes]) : fill('journey2_route_live_none', { strategy: t(ROUTE_LABEL[v.eff]) })); } }
         return;
       }
       if (locateSession.state) {                             // Locate owns the map: no inspector, sanctuary overlay, Environment marker or tile selection opens
@@ -4085,7 +4103,7 @@
       if (allowDetached) cmd.allowDetached = true;
       const r = dispatch(cmd, 'place', true);
       if (!r.ok) { hint(fill('journey2_hint_rejected', { reason: errorText(r.error) })); return false; }
-      announce(fill(allowDetached ? 'journey2_live_separate_started' : 'journey2_live_placed', { n: n(tiles.length) }));
+      announce(fillN(allowDetached ? 'journey2_live_separate_started' : 'journey2_live_placed', { n: n(tiles.length) }, [tiles.length]));
       if (tiles.length === 1 && !inspectorOpen()) sel.tileId = null;
       warnHoles(batchId);
       return true;

@@ -62,3 +62,24 @@ before substantial UI work — this file assumes both.
   change is only done once it's been exercised in the running app (see
   [docs/manual-qa.md](../../docs/manual-qa.md)) — tests catch logic
   regressions, not whether something looks or feels right.
+
+## Journey localization conventions (audit 05)
+
+- **Singular agreement is data, not a framework.** A Journey string that
+  puts a count next to an English noun has a `<key>_one` variant, picked by
+  the view's `fillN(key, vars, counts)` (two counts: `_one1` / `_one2` /
+  `_one12`); a missing variant falls back to the base text. Russian copies
+  the base text into its variants (it never declines the noun) so EN/RU key
+  sets and placeholders stay identical. Add the variant and a case in
+  `tests/journey-localization-fixes.test.js` with any new count-taking key.
+- **`relocalize()` re-renders every language-sensitive attribute** — including
+  the Shadowblight bubble (`renderSeekers()`) — and clears the live region
+  when the language actually changes (never re-announces). A toggle keeps one
+  state-independent `aria-label` (visible name) and carries state in
+  `aria-pressed`; only the tooltip may describe the next action.
+- **Load-error text is localized**; the raw exception goes to
+  `console.error`, never into the UI. A saved (browser-stored) map's
+  corruption reason uses `journey2_saved_code_*`, import-file errors keep
+  `journey2_import_code_*`.
+- Russian terminology: GM = «ведущий», party = «отряд» (UI only), Soul Echo
+  plural = «Эхо Душ» — see [docs/translation-glossary.md](../../docs/translation-glossary.md).
