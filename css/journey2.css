@@ -413,6 +413,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-viewport.is-fog-tool .j2-fog-edge { stroke-opacity: 0.5; }
 /* GM-only aid while Reveal / Hide is armed in Player Preview: a dashed outline round each still-hidden placed hex (no symbol, no text) */
 .j2-overlay .j2-fog-ghost { fill: none; stroke: var(--hope); stroke-opacity: 1; stroke-width: 2.6; stroke-dasharray: 6 4; pointer-events: none; }
+.j2-overlay .j2-fog-ghost.is-soft { stroke-width: 1.4; stroke-opacity: 0.5; }
 .j2-overlay .j2-fog-pend.is-reveal { fill: #fff; fill-opacity: 0.35; stroke: var(--hope); stroke-width: 1; }
 .j2-overlay .j2-fog-pend.is-hide { fill: url(#j2-fog-hide-pat); stroke: var(--ink); stroke-width: 1; stroke-dasharray: 3 2; }
 .j2-overlay .j2-fog-brush { fill: none; stroke-width: 2.5; }

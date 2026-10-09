@@ -1169,3 +1169,11 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Out of scope:** more than one party, a trail of past positions, a permanent reveal along the path, touch / mobile placement, free (non-hex) positioning.
 - **Not done (known):** the marker is a mouse interaction (placing and dragging); there is no keyboard way to move it, only to show / hide it with the button.
 - **Where:** `js/journey2-model.js` (`party`, `validateParty`, `setParty`, `getPartyCell`, `getPartyLightSet`, `getVisibleCellSet`), `js/journey2-projection.js` (`revealedCells` ∪ light, `party`) + `js/journey2-print.js` (per-page `party`), `js/journey2-view.js` (the "party marker" section: `toggleParty`, `startPartyDrag` / `finishPartyDrag` / `cancelPartyDraft`, `partyMarkup`, `projectionDoc`; the hooks in `startLocate` / `startRoute`; `printPageMarkup`), `css/journey2.css` (`.j2-party-*`, `.j2-ctl-party`), `data/i18n.json` (`journey2_party_*`, `journey2_live_party_*`), `tests/journey2-party.test.js`.
+
+## PD-046: Journey — a "Placed hexes" outline toggle in Player Preview
+
+- **Status:** Active (implemented 2026-10-09). Extends PD-034 (the hidden-hex outline was only a Reveal/Hide aid).
+- **Date:** 2026-10-09
+- **Decision:** Player Preview has a "Placed hexes" toggle (panel button + rail icon). On, it draws a faint dashed outline (`.j2-fog-ghost.is-soft`) round every placed hex still hidden from players, so the GM can see where prepared hexes are while using the Party marker. Only hidden placed hexes (same set as the brush aid); revealed hexes need none. While the Reveal/Hide brush is armed the stronger outline is always drawn, whatever the toggle says.
+- **Decision (default / storage):** **off by default** — Player Preview is often shown to players, and the outline betrays prepared-but-undiscovered hexes. The flag is a view preference, `showPlacedOutline` in `dhcodex_journey2_ui` (no new key); never in the document, history, projection or print.
+- **Where:** `js/journey2-view.js` (`renderFogGhost`, `toggleOutline`), `js/journey2-store.js` (`loadUi`/`saveUi`), `css/journey2.css`.

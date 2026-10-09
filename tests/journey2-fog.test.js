@@ -286,11 +286,11 @@ function fakeStorage() {
 test('the fog veil is not a preference (PD-036); Player Preview is stored (PD-035); the tool and stroke are never stored', () => {
   const s = fakeStorage(), store = Store.createStore(s, ctx);
   assert.deepEqual(store.saveUi({ sideCollapsed: false }), { ok: true });
-  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showBiomeColors: true, playerPreview: false, view: null });
-  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['playerPreview', 'showBiomeColors', 'sideCollapsed', 'view']);
+  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showBiomeColors: true, showPlacedOutline: false, playerPreview: false, view: null });
+  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['playerPreview', 'showBiomeColors', 'showPlacedOutline', 'sideCollapsed', 'view']);
   assert.deepEqual(s.writes, [Store.KEYS.ui], 'nothing else is written');
   s.data.set(Store.KEYS.ui, '{"showFogState":false,"sideCollapsed":true}');
-  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showBiomeColors: true, playerPreview: false, view: null }, 'the retired showFogState key is ignored');
+  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showBiomeColors: true, showPlacedOutline: false, playerPreview: false, view: null }, 'the retired showFogState key is ignored');
   assert.ok(!('showFogState' in JSON.parse((store.saveUi({ sideCollapsed: true }), s.data.get(Store.KEYS.ui)))), 'and dropped on the next save');
   // it is not part of the document / backup
   assert.ok(!JSON.stringify(M.emptyDocument(ctx, AT)).includes('showFogState'));
@@ -456,7 +456,7 @@ test('PD-034: Reveal / Hide are in the Player Preview bar, not the GM toolbar', 
 
 test('PD-034: the hidden-hex outline is a GM aid drawn only while a tool is armed in the preview', () => {
   const ghost = fn('renderFogGhost', 'updateFogUi');
-  assert.match(ghost, /previewMode && !!fogTool/);
+  assert.match(ghost, /previewMode && (!!fogTool || showOutline)/, "armed tool OR the remembered passive toggle (PD-046)");
   assert.doesNotMatch(ghost, /dispatch|persist|store\.|playerProjection/, 'never part of the projection, history or storage');
   assert.match(fn('renderFog', 'renderFogGhost'), /renderFogGhost\(\)/);
 });

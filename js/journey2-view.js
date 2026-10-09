@@ -227,7 +227,8 @@
     let fogHover = null;                                    // { q, r } under the pointer while a tool is active and no stroke runs
     let fogPaintRaf = 0;
     let fogDrawn = { vis: null, mode: null, doc: null };   // what the fog layer currently shows (so an unrelated document change never rebuilds it)
-    let ghostDrawn = { tiles: null, vis: null };            // what the GM-only hidden-hex outline currently shows
+    let showOutline = false;                                // Player Preview: passive faint outline round placed-but-hidden hexes (GM aid, UI only; never in the document, projection or print)
+    let ghostDrawn = { tiles: null, vis: null, soft: false };            // what the GM-only hidden-hex outline currently shows
     let foggable = null;                                    // Map cellKey -> hex path, every cell the GM can reveal/hide (built once)
     let detachedConfirm = null;                             // transient: the frozen detached candidate whose "Start separate area" dialog is open (never stored, never in history)
     let perimDrawn = { tiles: null, vis: null, mode: null }; // what the perimeter layer currently shows (an unrelated change never rebuilds it)
@@ -662,6 +663,7 @@
                         <span class="j2-mouse-pair" aria-hidden="true"><span class="j2-mouse-ico">${ICON.mouseLeft}</span><span data-t="journey2_fog_reveal"></span><span class="j2-mouse-ico">${ICON.mouseRight}</span><span data-t="journey2_fog_hide"></span></span>
                       </button>
                     </span>
+                    <button type="button" class="btn btn-sm j2-tool" data-j2-outline aria-pressed="false" data-t-title="journey2_outline_title"><span class="j2-ico" aria-hidden="true">${ICON.hexes}</span><span data-t="journey2_outline"></span></button>
                     <button type="button" class="btn btn-sm j2-tool" data-j2-print-open data-t-title="journey2_pp_open_title"><span class="j2-ico" aria-hidden="true">${ICON.print}</span><span data-t="journey2_pp_open"></span></button>
                   </div>
                 </div>
@@ -710,6 +712,7 @@
                 </div>
                 <div class="j2-rail-grp" data-j2-rail-pv hidden>
                   <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-fog-tool="paint" data-j2-rail-src="paint">${ICON.mouseLeft}</button>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-outline data-j2-rail-src="outline">${ICON.hexes}</button>
                   <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-print-open data-j2-rail-src="print">${ICON.print}</button>
                   <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-preview-back data-j2-rail-src="back">${ICON.back}</button>
                 </div>
@@ -763,6 +766,7 @@
       ui.fogGroup = container.querySelector('[data-j2-fog-group]');
       ui.biomeColors = container.querySelector('[data-j2-biome-colors]');
       ui.fogTool = container.querySelector('[data-j2-fog-tool="paint"]');
+      ui.outlineBtn = container.querySelector('[data-j2-outline]');
       ui.echoGroup = container.querySelector('[data-j2-echo-group]');
       ui.echoPlace = container.querySelector('[data-j2-echo-place]');
       ui.echoClear = container.querySelector('[data-j2-echo-clear]');
@@ -822,6 +826,7 @@
       const prefs = store.loadUi();
       sideCollapsed = !!prefs.sideCollapsed;
       showBiome = prefs.showBiomeColors !== false;
+      showOutline = !!prefs.showPlacedOutline;
       savedView = prefs.view;
       resumePreview = !!prefs.playerPreview;
       activeBatchId = doc.batches.length ? doc.batches[doc.batches.length - 1].id : null;
@@ -1026,7 +1031,7 @@
       undo: () => ui.undo, redo: () => ui.redo, zoomIn: () => ui.controls.querySelector('[data-j2-zoom="in"]'), zoomOut: () => ui.controls.querySelector('[data-j2-zoom="out"]'),
       zoomReset: () => ui.zoomReadout, fit: () => ui.controls.querySelector('[data-j2-fit]'), biome: () => ui.biomeColors, preview: () => ui.previewBtn,
       route: () => ui.routePlan, locate: () => ui.echoLocate, place: () => ui.echoPlace, clear: () => ui.echoClear, sanc: () => ui.sancGenerate,
-      paint: () => ui.fogTool, print: () => ui.printOpen, back: () => ui.previewBack, party: () => ui.partyBtn,
+      paint: () => ui.fogTool, outline: () => ui.outlineBtn, print: () => ui.printOpen, back: () => ui.previewBack, party: () => ui.partyBtn,
     };
     let railProxies = [];
     const railOf = new Map();
@@ -1068,7 +1073,7 @@
     }
 
     /** The stored view preferences (sidebar state, "Show fog state") — never the document, never history. */
-    function saveUiPrefs() { if (store) store.saveUi({ sideCollapsed: sideCollapsed, showBiomeColors: showBiome, playerPreview: previewMode, view: currentView() }); }
+    function saveUiPrefs() { if (store) store.saveUi({ sideCollapsed: sideCollapsed, showBiomeColors: showBiome, showPlacedOutline: showOutline, playerPreview: previewMode, view: currentView() }); }
 
     /** Explicit toggle only (the user's own click): re-centres the map horizontally in the new free area at the same zoom; never a Fit, and it leaves the selection and active region alone; focus moves to the control that replaces the one used. */
     function toggleSide() {
@@ -3248,13 +3253,14 @@
      */
     function renderFogGhost() {
       if (!ui.fogGhost || !doc || !foggable) return;
-      const on = previewMode && !!fogTool;
+      const on = previewMode && (!!fogTool || showOutline), soft = on && !fogTool;
       const key = on ? doc.tiles : null, vis = on ? doc.playerVisibility : null;
-      if (ghostDrawn.tiles === key && ghostDrawn.vis === vis) return;
+      if (ghostDrawn.tiles === key && ghostDrawn.vis === vis && ghostDrawn.soft === soft) return;
       let d = '';
       if (on) { const revealed = Model.getRevealedCellSet(doc); for (const tile of doc.tiles) if (!revealed.has(tile.cell)) d += foggable.get(tile.cell) || ''; }
       ui.fogGhost.setAttribute('d', d);
-      ghostDrawn = { tiles: key, vis: vis };
+      ui.fogGhost.classList.toggle('is-soft', soft);
+      ghostDrawn = { tiles: key, vis: vis, soft: soft };
     }
 
     /** Toolbar toggle states, the tool chip and the cursor class — all derived from the transient state. */
@@ -3263,6 +3269,8 @@
       ui.biomeColors.setAttribute('aria-pressed', String(showBiome));
       ui.biomeColors.title = showBiome ? t('journey2_biome_hide') : t('journey2_biome_show');
       ui.fogTool.setAttribute('aria-pressed', String(!!fogTool));
+      ui.outlineBtn.setAttribute('aria-pressed', String(showOutline));
+      ui.outlineBtn.title = t(showOutline ? 'journey2_outline_hide' : 'journey2_outline_title');
       ui.fogTool.disabled = editLocked;
       ui.viewport.classList.toggle('is-fog-tool', !!fogTool);
       ui.root.setAttribute('data-fog-tool', fogTool || '');
@@ -3307,6 +3315,13 @@
      * "Biome colors": a display preference for the GM view only. No command, no history entry, no autosave of the document, no change to the
      * fog, the player projection or the camera — it stores one flag in dhcodex_journey2_ui and redraws the (derived) tint.
      */
+    function toggleOutline() {
+      showOutline = !showOutline;
+      saveUiPrefs();
+      updateFogUi();
+      renderFogGhost();
+    }
+
     function toggleBiomeColors() {
       showBiome = !showBiome;
       saveUiPrefs();
@@ -4226,6 +4241,7 @@
       else if (b.hasAttribute('data-j2-side-toggle')) toggleSide();
       else if (b.hasAttribute('data-j2-fit')) fitToView();
       else if (b.hasAttribute('data-j2-biome-colors')) toggleBiomeColors();
+      else if (b.hasAttribute('data-j2-outline')) toggleOutline();
       else if (b.hasAttribute('data-j2-fog-tool')) setFogTool(b.getAttribute('data-j2-fog-tool'));
       else if (b.hasAttribute('data-j2-party-cancel')) cancelPartyDraft(true);
       else if (b.hasAttribute('data-j2-party')) toggleParty();
