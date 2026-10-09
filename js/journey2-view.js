@@ -1475,19 +1475,22 @@
       announce(fill(res.triggered ? 'journey2_roll_live_hit' : 'journey2_roll_live_miss', { faces: res.faces.map(n).join(', ') }));
     }
 
-    /* PROTOTYPE (Forest + Drylands): an illustrated header for the shared Region Inspector — hex-opened and card-opened alike.
-     * Biome -> artwork lives in css/journey2.css ([data-art] rules); this only flags which biomes have art.
-     * Default (no query): image at 25%, header +24px, +0px on phones (<= 600px) — all in CSS.
-     * The ?hdr=<A|B><1|2|3> query is a dev-only comparison switch: A centred / B shifted up; 1 original / 2 +24px / 3 +12px. */
-    const HEADER_ART_BIOMES = new Set(['forest', 'drylands']);
+    /* Illustrated header for the shared Region Inspector — hex-opened and card-opened alike. The one biome -> artwork map: a 960x540 WebP per
+     * biome (img/journey2/headers/<biome>.webp) and, only where the default 'center 25%' crops a biome badly, a position override.
+     * A biome missing here (universal: no horizontal artwork yet) and a fully overtaken region keep the plain header. */
+    const HEADER_ART = {
+      forest: {}, drylands: {}, frozen: {}, underground: {}, tropical: {}, mountain: {}, badlands: {}, settlement: {},
+      aquatic: { pos: 'center 40%' },      // keeps the sea stacks and shows more water
+      wetland: { pos: 'center 40%' },      // flooded ground and mist, not only the canopy
+      rolling: { pos: 'center 40%' },      // the layered ridge lines
+      grassland: { pos: 'center 50%' },    // the plain, river and acacias; at 25% it is mostly sky
+    };
     function applyHeaderArt(b) {
-      const root = ui.inspector, art = !b.habitat.overtaken && HEADER_ART_BIOMES.has(b.habitat.biome) ? b.habitat.biome : '';
-      if (!art) { root.removeAttribute('data-art'); root.removeAttribute('data-art-pos'); root.removeAttribute('data-art-h'); return; }
-      root.setAttribute('data-art', art);
-      const m = /^([AB])([123])$/i.exec(new URLSearchParams(location.search).get('hdr') || '');
-      if (!m) { root.removeAttribute('data-art-pos'); root.removeAttribute('data-art-h'); return; }
-      root.setAttribute('data-art-pos', m[1].toUpperCase() === 'B' ? 'up' : 'center');
-      root.setAttribute('data-art-h', { 1: 'orig', 2: 'tall', 3: 'mid' }[m[2]]);
+      const root = ui.inspector, biome = b.habitat.overtaken ? '' : b.habitat.biome, art = HEADER_ART[biome];
+      if (!art) { root.removeAttribute('data-art'); root.style.removeProperty('--j2-art'); root.style.removeProperty('--j2-art-pos'); return; }
+      root.setAttribute('data-art', biome);
+      root.style.setProperty('--j2-art', 'url("' + new URL('img/journey2/headers/' + biome + '.webp', document.baseURI).href + '")');   // absolute: a url() in a custom property otherwise resolves against css/
+      if (art.pos) root.style.setProperty('--j2-art-pos', art.pos); else root.style.removeProperty('--j2-art-pos');
     }
 
     /** Paints the open inspector from the committed document. */

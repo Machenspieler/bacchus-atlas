@@ -498,18 +498,10 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-insp-sym img { width: auto; height: auto; max-width: 30px; max-height: 28px; display: block; }
 .j2-insp-titles { flex: 1 1 auto; min-width: 0; }
 .j2-insp-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-lg); line-height: var(--lh-lg); color: var(--parchment); overflow-wrap: anywhere; }
-.j2-insp-sub { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-2); font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); }
-/* PROTOTYPE — illustrated Region Inspector header (Forest only; flagged by data-art from applyHeaderArt()). Artwork sits on a ::before layer behind the unchanged header content; a left-to-right ink gradient keeps title/meta readable and lets the right side stay colourful. */
-.j2-region-inspector[data-art="forest"] { --j2-art: url("../img/journey2/headers/forest.webp"); }
-.j2-region-inspector[data-art="drylands"] { --j2-art: url("../img/journey2/headers/drylands.webp"); }
-/* defaults: image shifted up to 25%; header at least 24px taller than the plain header (a MIN height, so a wrapped meta line grows the header naturally instead of stacking on top of the extra); no extra on phones */
-.j2-region-inspector[data-art] { --j2-art-pos: center 25%; --j2-art-extra: 24px; }
+.j2-insp-sub { margin: 0; font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); }
+/* Illustrated Region Inspector header (hex-opened and card-opened alike). applyHeaderArt() in journey2-view.js flags the shared inspector with data-art and sets --j2-art (the biome's horizontal artwork) and, where a biome needs one, --j2-art-pos. Artwork sits on a ::before layer behind the unchanged header content; a left-to-right ink gradient keeps title/meta readable and lets the right side stay colourful. With no artwork (or a failed load) the plain ink header shows. */
+.j2-region-inspector[data-art] { --j2-art-pos: center 25%; --j2-art-extra: 24px; }  /* image shifted up to 25%; header a MIN 24px taller than the plain one, so a wrapped meta line grows it naturally instead of stacking on top of the extra */
 @media (max-width: 600px) { .j2-region-inspector[data-art] { --j2-art-extra: 0px; } }
-/* ?hdr= comparison overrides (dev only) */
-.j2-region-inspector[data-art-pos="center"] { --j2-art-pos: center center; }
-.j2-region-inspector[data-art][data-art-h="orig"] { --j2-art-extra: 0px; }
-.j2-region-inspector[data-art][data-art-h="mid"] { --j2-art-extra: 12px; }
-.j2-region-inspector[data-art][data-art-h="tall"] { --j2-art-extra: 24px; }
 .j2-region-inspector[data-art] .j2-insp-head {
   position: relative; isolation: isolate; overflow: hidden;
   border-radius: calc(var(--r-lg) - 1px) calc(var(--r-lg) - 1px) 0 0;
@@ -539,7 +531,8 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-insp-terrain-text { margin: var(--s-1) 0 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); }
 .j2-insp-terrain-text[hidden] { display: none; }
 .j2-insp-ex[hidden] { display: none; }
-.j2-insp-ex::before { content: "\00b7\00a0"; }
+.j2-insp-sub > .j2-blight { display: inline-block; margin-left: var(--s-2); }
+.j2-insp-ex::before { content: "\00a0\00b7\00a0"; }  /* inline flow + no-break spaces around the dot: it stays on the line of the region number and never starts a wrapped line */
 /* the Terrain line is a disclosure: its flavour text stays folded until asked for, and a region without text shows no chevron */
 .j2-insp-summary { display: block; }
 .j2-insp-line { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--s-2); font-size: var(--fs-sm); color: var(--parchment-dim); font-variant-numeric: tabular-nums; list-style: none; }
