@@ -90,3 +90,15 @@ test('route-scoped CSS follows the canonical body[data-route="journey"], never t
   assert.match(j2css, /body\[data-route="journey"\] \.shell/);
   assert.doesNotMatch(j2css + read('css/styles.css'), /data-route="journey2"/);
 });
+
+test('Journey is gated by input capability and never mounts on a touch-only device (PD-048)', () => {
+  const app = fs.readFileSync(path.join(__dirname, '..', 'js', 'app.js'), 'utf8');
+  assert.match(app, /\(pointer: coarse\) and \(hover: none\)/);
+  assert.match(app, /if \(journeyUnsupportedHere\(\)\) \{ renderJourneyUnsupported\(\); return; \}\s*Journey2View\.mount\(/);
+  const i18n = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'i18n.json'), 'utf8'));
+  for (const lang of Object.keys(i18n)) {
+    for (const key of ['journey_unsupported_title', 'journey_unsupported_hint', 'journey_unsupported_back', 'env_not_found']) {
+      assert.ok(i18n[lang][key], `${lang}.${key}`);
+    }
+  }
+});

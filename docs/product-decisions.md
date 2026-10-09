@@ -1195,3 +1195,12 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Decision (Prep popover):** its state is transient (always starts closed, not persisted; the old `dhcodex_session_prep_header_mode` key is no longer read or written and may linger harmlessly in storage), and it closes on Escape, on a press outside, and when Prep is left.
 - **Open:** the four ribbon colours are CSS tokens (`--rb-*`) but their ink and shadow colours are set per ribbon in `css/styles.css`; a measured contrast check of the label on the gold ribbon is still to do.
 - **Where:** `renderHeader()`, `RIBBONS`, `ribbonHtml()` and the Prep chrome functions in `js/app.js`; `.site-header`, `.header-inner`, `.ribbon*`, `.catalog-bar*`, `.prep-bar`, `.site-footer` and the `--hdr-h` / `--rb-*` tokens in `css/styles.css`; `--j2-header-h` fallbacks in `css/journey2.css`; `data/i18n.json` (`nav_catalog`); `tests/prep-session-control.test.js`, `tests/prep-notes.test.js`, `tests/journey-route-cutover.test.js`.
+
+## PD-048: Journey is not offered on touch-only devices
+
+- **Status:** Active (implemented 2026-10-09). Replaces the earlier "mobile / narrow layouts keep the same panel" note in the Journey toolbar decision: the editor is desktop/laptop with a mouse or trackpad (PD-018, PD-040, PD-045), so a phone no longer gets a broken copy of it.
+- **Decision:** when `matchMedia('(pointer: coarse) and (hover: none)')` matches, `#/journey` (and `#/journey/env/<id>`) renders an explanation (title, one sentence, "Back to the catalogue") instead of the editor. Decided by input capability, never by width or user agent, so a narrow desktop window keeps the editor and an iPad without a mouse does not.
+- **Decision:** the editor is never mounted there, so no `dhcodex_journey2_*` key is read, written or recovered; a saved map is untouched. The Journey ribbon stays in the header so the section is discoverable; the explanation lives on the page.
+- **Also (QA round, same date):** an unknown `#/env/<id>` still drops the suffix but now shows a one-line "environment not found" toast; the catalogue empty state no longer suggests adding a stat block and shows one reset control, not two.
+- **Not decided:** a read-only Player Preview for phones (view the revealed map, no editing) — possible later as its own feature.
+- **Where:** `journeyUnsupportedHere()`, `renderJourneyUnsupported()` in `js/app.js`; `journey_unsupported_*`, `env_not_found` in `data/i18n.json`; `tests/journey-route-cutover.test.js`.

@@ -1374,6 +1374,7 @@ function applyDetailRoute() {
     history.replaceState(null, '', baseHash() || location.pathname + location.search);
     state.route = readCurrentRoute();
     document.title = routeTitle();
+    showToast(t('env_not_found'), 'error');
     return;
   }
   openDetailOverlay(wanted, carry);
@@ -1956,7 +1957,7 @@ function renderGrid() {
 
   const countBar = document.getElementById('result-count');
   countBar.innerHTML = `${t('count_showing').replace('{n}', list.length).replace('{total}', total)}` +
-    (hasActiveFilters() ? `<button id="clear-filters-btn">${t('clear_filters')}</button>` : '');
+    (hasActiveFilters() && list.length ? `<button id="clear-filters-btn">${t('clear_filters')}</button>` : '');
   const clearBtn = document.getElementById('clear-filters-btn');
   if (clearBtn) clearBtn.addEventListener('click', clearAllFilters);
 
@@ -2946,6 +2947,23 @@ const SANCTUARY_ROWS = [
   ['population', 'journey_k_population'],
 ];
 
+/** The map editor needs a mouse or trackpad (fog brush, party marker, drag-and-drop) and room for the side panel:
+ * a device whose primary input is a finger and that cannot hover gets an explanation instead (PD-048). Decided by
+ * capability, never by width or user agent, so a narrow desktop window keeps the editor. */
+function journeyUnsupportedHere() {
+  try { return window.matchMedia('(pointer: coarse) and (hover: none)').matches; } catch (err) { return false; }
+}
+
+/** The editor is never mounted here, so no dhcodex_journey2_* key is read or written on such a device. */
+function renderJourneyUnsupported() {
+  document.getElementById('grid-wrap').innerHTML = emptyStateHtml({
+    icon: ICON_COMPASS,
+    title: t('journey_unsupported_title'),
+    hint: t('journey_unsupported_hint'),
+    action: `<a class="btn" href="#/">${escapeHtml(t('journey_unsupported_back'))}</a>`,
+  });
+}
+
 /** #/journey — the Journey map editor (js/journey2-view.js; "journey2" is a retained internal name).
  * Mounted once into #grid-wrap and kept across re-renders (a language switch
  * only re-localizes it), so the camera, selection and unsaved text survive.
@@ -2954,6 +2972,7 @@ const SANCTUARY_ROWS = [
 function renderJourneyPage() {
   document.getElementById('toolbar').innerHTML = '';
   document.getElementById('result-count').innerHTML = '';
+  if (journeyUnsupportedHere()) { renderJourneyUnsupported(); return; }
   Journey2View.mount(document.getElementById('grid-wrap'), {
     t, lang: state.lang, generator: journey2Generator, toast: showToast, storage: lsStorage,
     environmentsForBiome: journey2EnvironmentsForBiome,
