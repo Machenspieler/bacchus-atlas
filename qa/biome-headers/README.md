@@ -1,4 +1,4 @@
-# Journey illustrated headers — all terrains (PD-048)
+# Journey illustrated headers — all terrains (PD-049)
 
 Captured with Chrome against the source tree (`python3 -m http.server`), real `#/journey` page, one placed hex per terrain, EN and RU, at 1280x800, 1366x768, 1440x900, 1920x1080, 2560x1440. Hex overlay (click a placed hex) and Region overlay (card `i` button) both checked for every terrain.
 

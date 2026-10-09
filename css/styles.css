@@ -848,10 +848,15 @@ body[data-route="list"] .catalog-bar-wrap::before {
   .catalog-bar .toolbar-filters > .field, .catalog-bar .search-field { flex-shrink: 0; }
   .catalog-bar .rank-pills { flex-wrap: nowrap; }
   .catalog-bar .result-count { margin: var(--s-2) 0; flex-wrap: nowrap; white-space: nowrap; }
+  /* The current page's ribbon (Catalogue) hangs down past the header into this row. The status keeps its place right after
+   * the controls but starts one ribbon width (plus the gap and some air) further on, so it is never behind that ribbon.
+   * Divided by the bar's zoom, since lengths inside it are scaled. */
+  .catalog-bar .result-count { margin-left: calc((var(--rb-w) + var(--rb-gap) + var(--s-7)) / 0.9); }
 }
 /* Too narrow even for the controls alone: they may wrap as a group. */
 @container (max-width: 980px) {
   .catalog-bar .toolbar, .catalog-bar .toolbar-filters { flex-wrap: wrap; width: auto; }
+  .catalog-bar .result-count { margin-left: 0; }
 }
 
 /* Below the main catalog grid only — never rendered on Lists, Journey, or
@@ -1136,7 +1141,7 @@ body[data-route="list"] .catalog-bar-wrap::before {
 }
 .toast.is-error { border-left-color: var(--fear-soft); }
 .toast svg { width: var(--icon-md); height: var(--icon-md); flex: none; color: var(--hope); }
-.toast span { white-space: pre-line; }
+.toast span { white-space: pre-line; min-width: 0; overflow-wrap: anywhere; }
 .toast.is-error svg { color: var(--fear-soft); }
 @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 /* Toasts stack out of the same corner the back-to-top button claims, and they
@@ -2440,6 +2445,19 @@ body[data-route="prep"][data-sp-header-mode="expanded"] .prep-bar {
 @container sp-session (max-width: 190px) {
   .sp-session-name { max-width: 12ch; }
 }
+/* Phone: the four ribbons, sound and language buttons take 278px of a 375px header, so the Prep session pill gets only what is
+ * left. The brand mark steps aside on this route (the Catalogue ribbon is home) and the pill shrinks to its status icon and
+ * chevron; label and name stay in the accessible name, visually hidden. */
+@media (max-width: 900px) {
+  body[data-route="prep"] .brand { display: none; }
+  .sp-session-slot, .sp-session-control { min-width: 0; }
+}
+@container sp-session (max-width: 110px) {
+  .sp-session-control { padding: 0 var(--s-2); gap: var(--s-1); }
+  .sp-session-label, .sp-session-name {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+}
 
 /* One-time hint: an overlay under the control (absolute, out of flow — no
    layout shift), same surface as .tooltip but able to take a short sentence. */
@@ -3654,6 +3672,8 @@ body[data-route="prep"][data-sp-header-mode="expanded"] .prep-bar {
   .item-toolbar { display: flex; flex-wrap: wrap; row-gap: var(--s-2); }
   .item-toolbar .item-toolbar-search { flex: 1 1 160px; }
   .item-toolbar-group, .item-toolbar-count { border-left: none; padding-left: 0; margin-left: 0; }
+  /* The dice buttons are five across; on a phone they wrap rather than push the page sideways. */
+  .item-toolbar-group { flex-wrap: wrap; max-width: 100%; }
 }
 
 /* ---- phone: no nested scroll areas, 44px touch targets ---- */

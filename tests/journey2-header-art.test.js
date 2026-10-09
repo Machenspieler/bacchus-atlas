@@ -1,5 +1,5 @@
 'use strict';
-/* The illustrated Region Inspector header (PD-048): every Journey terrain has its 960x540 WebP, and the prototype ?hdr= switch is gone. */
+/* The illustrated Region Inspector header (PD-049): every Journey terrain has its 960x540 WebP, and the prototype ?hdr= switch is gone. */
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');

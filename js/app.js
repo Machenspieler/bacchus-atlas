@@ -1376,6 +1376,7 @@ function applyDetailRoute() {
     history.replaceState(null, '', baseHash() || location.pathname + location.search);
     state.route = readCurrentRoute();
     document.title = routeTitle();
+    showToast(t('env_not_found'), 'error');
     return;
   }
   openDetailOverlay(wanted, carry);
@@ -1958,7 +1959,7 @@ function renderGrid() {
 
   const countBar = document.getElementById('result-count');
   countBar.innerHTML = `${t('count_showing').replace('{n}', list.length).replace('{total}', total)}` +
-    (hasActiveFilters() ? `<button id="clear-filters-btn">${t('clear_filters')}</button>` : '');
+    (hasActiveFilters() && list.length ? `<button id="clear-filters-btn">${t('clear_filters')}</button>` : '');
   const clearBtn = document.getElementById('clear-filters-btn');
   if (clearBtn) clearBtn.addEventListener('click', clearAllFilters);
 
@@ -2357,7 +2358,7 @@ function renderListsHome() {
       </div>`}
       <div>
         <div class="new-list-row">
-          <input type="text" id="new-list-input" placeholder="${t('new_list_name')}"
+          <input type="text" id="new-list-input" maxlength="${ListUtils.MAX_NAME_LENGTH}" placeholder="${t('new_list_name')}"
                  aria-label="${t('new_list_name')}" aria-describedby="new-list-error">
           <button type="button" class="btn btn-primary" id="new-list-btn">${t('create')}</button>
         </div>
@@ -2564,7 +2565,7 @@ function listCardHtml(list) {
   return `
     <div class="list-card${cover ? ' has-cover' : ''}" data-list="${list.id}">${cover}
       <div class="list-card-top">
-        <input type="text" value="${escapeAttr(list.name)}" class="list-rename" aria-label="${t('rename_list_label')}" aria-describedby="${errorId}">
+        <input type="text" value="${escapeAttr(list.name)}" maxlength="${ListUtils.MAX_NAME_LENGTH}" class="list-rename" aria-label="${t('rename_list_label')}" aria-describedby="${errorId}">
         <button type="button" class="icon-btn icon-btn--danger icon-btn--reach list-card-del" data-del-list="${list.id}"
                 aria-label="${t('delete')}" data-tip="${t('delete')}">${ICON_TRASH}</button>
       </div>
@@ -2636,7 +2637,7 @@ function openAddToListPopup(envId, { expanded = false } = {}) {
         </section>
         <div style="margin-top:var(--s-4)">
           <div class="new-list-row">
-            <input type="text" id="atl-new-input" placeholder="${t('new_list_name')}"
+            <input type="text" id="atl-new-input" maxlength="${ListUtils.MAX_NAME_LENGTH}" placeholder="${t('new_list_name')}"
                    aria-label="${t('new_list_name')}" aria-describedby="atl-new-error">
             <button type="button" class="btn btn-primary" id="atl-new-btn">${t('create')}</button>
           </div>
@@ -2948,6 +2949,23 @@ const SANCTUARY_ROWS = [
   ['population', 'journey_k_population'],
 ];
 
+/** The map editor needs a mouse or trackpad (fog brush, party marker, drag-and-drop) and room for the side panel:
+ * a device whose primary input is a finger and that cannot hover gets an explanation instead (PD-048). Decided by
+ * capability, never by width or user agent, so a narrow desktop window keeps the editor. */
+function journeyUnsupportedHere() {
+  try { return window.matchMedia('(pointer: coarse) and (hover: none)').matches; } catch (err) { return false; }
+}
+
+/** The editor is never mounted here, so no dhcodex_journey2_* key is read or written on such a device. */
+function renderJourneyUnsupported() {
+  document.getElementById('grid-wrap').innerHTML = emptyStateHtml({
+    icon: ICON_COMPASS,
+    title: t('journey_unsupported_title'),
+    hint: t('journey_unsupported_hint'),
+    action: `<a class="btn" href="#/">${escapeHtml(t('journey_unsupported_back'))}</a>`,
+  });
+}
+
 /** #/journey — the Journey map editor (js/journey2-view.js; "journey2" is a retained internal name).
  * Mounted once into #grid-wrap and kept across re-renders (a language switch
  * only re-localizes it), so the camera, selection and unsaved text survive.
@@ -2956,6 +2974,7 @@ const SANCTUARY_ROWS = [
 function renderJourneyPage() {
   document.getElementById('toolbar').innerHTML = '';
   document.getElementById('result-count').innerHTML = '';
+  if (journeyUnsupportedHere()) { renderJourneyUnsupported(); return; }
   Journey2View.mount(document.getElementById('grid-wrap'), {
     t, lang: state.lang, generator: journey2Generator, toast: showToast, storage: lsStorage,
     environmentsForBiome: journey2EnvironmentsForBiome,
@@ -3342,7 +3361,7 @@ function envPickerRowHtml(env, prep) {
   const biome = artBiome(env);
   return `
     <div class="prep-row prep-env-row" data-env-id="${escapeAttr(env.id)}">
-      ${prepSelectionCellHtml('data-sp-toggle-env', env.id, checked, name, atLimit)}
+      ${prepSelectionCellHtml('data-sp-toggle-env', env.id, checked, name, atLimit, atLimit ? envPrepFullText(prep) : '')}
       <button type="button" class="prep-row-open" data-sp-open-env="${escapeAttr(env.id)}">
         ${prepEnvThumbHtml(env)}
         <span class="prep-row-text">
@@ -3903,8 +3922,8 @@ function prepToggleLabel(name, checked) {
  * lives in the --sel-* tokens in css/styles.css, never per picker. `attr`
  * is our own literal (data-sp-toggle-env/adv/item), matched by the
  * delegated 'change' handler. */
-function prepSelectionCellHtml(attr, id, checked, name, disabled = false) {
-  return `<label class="prep-checkbox-hit">
+function prepSelectionCellHtml(attr, id, checked, name, disabled = false, disabledTip = '') {
+  return `<label class="prep-checkbox-hit"${disabled && disabledTip ? ` data-tip="${escapeAttr(disabledTip)}"` : ''}>
         <input type="checkbox" class="prep-select-checkbox" ${attr}="${escapeAttr(id)}"
                ${checked ? 'checked' : ''} ${disabled ? 'disabled' : ''} aria-label="${escapeAttr(prepToggleLabel(name, checked))}">
       </label>`;
@@ -4488,6 +4507,9 @@ function refreshEnvCheckboxDisabled(prep) {
   const atLimit = prep.environmentIds.length >= PrepUtils.MAX_ENVIRONMENTS;
   document.querySelectorAll('#prep-env-list [data-sp-toggle-env]').forEach(cb => {
     cb.disabled = atLimit && !cb.checked;
+    // The reason a row cannot be ticked goes with it, so it is never a silent dead control.
+    const cell = cb.closest('.prep-checkbox-hit');
+    if (cell) { if (cb.disabled) cell.dataset.tip = envPrepFullText(prep); else delete cell.dataset.tip; }
   });
 }
 

@@ -99,11 +99,10 @@ test('duplicate names are not rejected — resolveListRename has no notion of ot
   assert.equal(r.value, 'Some Other Existing List Name');
 });
 
-test('no maximum length is imposed', () => {
-  const long = 'x'.repeat(5000);
-  const r = resolveListRename('My List', long);
+test('an over-long rename is kept, cut to MAX_NAME_LENGTH (it used to be unlimited; a 300-character name broke the toast)', () => {
+  const r = resolveListRename('My List', 'x'.repeat(5000));
   assert.equal(r.status, 'changed');
-  assert.equal(r.value, long);
+  assert.equal(r.value, 'x'.repeat(ListUtils.MAX_NAME_LENGTH));
 });
 
 /* ---------------- purity ---------------- */
@@ -234,4 +233,13 @@ test('index.html loads js/list-utils.js before js/app.js with the cache-version 
   const tagStart = INDEX_HTML.lastIndexOf('<script', listUtilsIdx);
   const tagEnd = INDEX_HTML.indexOf('</script>', listUtilsIdx);
   assert.match(INDEX_HTML.slice(tagStart, tagEnd), /data-cache-version="ui"/);
+});
+
+test('a list name is capped at MAX_NAME_LENGTH code points and never ends in a stray space', () => {
+  const { normalizeName, MAX_NAME_LENGTH } = ListUtils;
+  assert.equal(normalizeName('x'.repeat(300)).length, MAX_NAME_LENGTH);
+  assert.equal(normalizeName('a'.repeat(MAX_NAME_LENGTH - 1) + ' b'), 'a'.repeat(MAX_NAME_LENGTH - 1));
+  const emoji = normalizeName('😀'.repeat(MAX_NAME_LENGTH + 5));
+  assert.equal(Array.from(emoji).length, MAX_NAME_LENGTH);
+  assert.ok(!/[\ud800-\udbff]$/.test(emoji), 'no cut surrogate pair');
 });

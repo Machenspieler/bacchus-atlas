@@ -16,11 +16,16 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
-  /** Trims a raw input value to a usable list name. Treats a missing or
+  /** Longest list name kept; the name inputs carry the same limit as `maxlength`. */
+  const MAX_NAME_LENGTH = 80;
+
+  /** Trims a raw input value to a usable list name, at most MAX_NAME_LENGTH characters. Treats a missing or
    * non-string value as empty rather than throwing, so a caller never has
    * to guard the type first. */
   function normalizeName(rawValue) {
-    return String(rawValue == null ? '' : rawValue).trim();
+    const trimmed = String(rawValue == null ? '' : rawValue).trim();
+    // By code point, so a surrogate pair is never cut in half.
+    return Array.from(trimmed).slice(0, MAX_NAME_LENGTH).join('').trim();
   }
 
   /** Resolves an attempted list rename against the list's current committed
@@ -44,6 +49,7 @@
   }
 
   return {
+    MAX_NAME_LENGTH: MAX_NAME_LENGTH,
     normalizeName: normalizeName,
     resolveListRename: resolveListRename,
   };
