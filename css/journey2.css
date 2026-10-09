@@ -66,6 +66,9 @@ body[data-route="journey"] #grid-wrap { display: block; }
 .j2-ctl-gm .j2-ctl-row .j2-tool { flex: 1 1 auto; justify-content: center; }
 /* Remove Echoes: neutral at rest (it is confirmed and undoable); the remove/delete treatment appears only on hover / focus (D2) */
 .j2-controls .j2-tool[data-j2-echo-clear]:hover:not(:disabled), .j2-controls .j2-tool[data-j2-echo-clear]:focus-visible { color: var(--fear-soft); border-color: var(--fear); background: var(--fear-tint); }
+/* the party marker toggle (PD-045): one full-width tool in its own zone, in the GM view and in Player Preview */
+.j2-ctl-party { padding-top: var(--s-1); border-top: 1px solid var(--line-faint); }
+.j2-ctl-party .j2-tool { flex: 1 1 auto; justify-content: center; }
 .j2-ctl-gm[hidden], .j2-ctl-preview[hidden], .j2-side-scroll[hidden], .j2-rail-grp[hidden], .j2-rail-btn[hidden] { display: none; }
 .j2-tb-group { display: flex; align-items: center; gap: var(--s-1); min-width: 0; }
 /* every tool is a labelled button (icon + text, so a tool is never identified by colour alone); the groups are rows of the panel */
@@ -607,6 +610,18 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-viewport.is-locating.is-space { cursor: grab; }
 .j2-viewport.is-locating.is-panning { cursor: grabbing; }
 .j2-locate-chip .btn { pointer-events: auto; }
+
+/* ---------- the party marker (PD-045) ----------
+   A map object, not UI chrome: fixed gold with a dark outline and a white halo so it reads on every hex, tint and fog. Stroke widths are screen px (--j2-inv). */
+.j2-party-halo { fill: #fff; stroke: #fff; stroke-width: calc(4.5px * var(--j2-inv, 1)); stroke-linejoin: round; }
+.j2-party-star { fill: #eab53f; stroke: #4a2f05; stroke-width: calc(1.4px * var(--j2-inv, 1)); stroke-linejoin: round; }
+.j2-party-mark.is-bw .j2-party-star { fill: #111; stroke: #111; }
+.j2-pp-party .j2-party-halo { stroke-width: 6px; }
+.j2-pp-party .j2-party-star { stroke-width: 2px; }
+.j2-viewport.is-party-hover { cursor: grab; }
+.j2-viewport.is-party-dragging, .j2-viewport.is-party-dragging.is-party-hover { cursor: grabbing; }
+.j2-viewport.is-party-placing { cursor: crosshair; }
+.j2-party-chip .btn { pointer-events: auto; }
 /* a distinct compass-origin look: dashed outline + a four-point star (never the Reveal / Hide brush) */
 .j2-overlay .j2-loc-hover { fill: rgba(217, 164, 65, 0.16); stroke: #8a5a0c; stroke-width: calc(3px * var(--j2-inv, 1)); stroke-dasharray: calc(7px * var(--j2-inv, 1)) calc(4px * var(--j2-inv, 1)); stroke-linejoin: round; }
 .j2-overlay .j2-loc-origin { fill: rgba(217, 164, 65, 0.22); stroke: #8a5a0c; stroke-width: calc(3.5px * var(--j2-inv, 1)); stroke-linejoin: round; }

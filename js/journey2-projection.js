@@ -7,6 +7,9 @@
    depend on the viewport, scroll position or sidebar state.
 
    What a projection contains
+     - the PARTY (PD-045): while the party marker is shown, its hex and the six neighbours count as revealed — the projection merges that derived light into
+       `revealedCells` (hand-revealed ∪ the party's light, Model.getVisibleCellSet), so overlays, perimeter and X's of those cells reach players like any revealed cell;
+       `party: { q, r } | null` is the marker itself. A hidden or unplaced marker contributes nothing.
      - `overlays`: one entry per generated tile that sits in a REVEALED cell, reduced to what is drawn
        ({ q, r, symbolId, dots, blightMark, tint }); `blightMark` is the Shadowblight X on that cell (PD-041: it may have moved there, or left). `tint` is the Biome Tint key (js/journey2-biome-tint.js) of the tile's Habitat; it exists only on
        overlays of revealed cells, so hidden cells leak no colour, and `buildPrintProjection` omits it for black-and-white print. A region spanning revealed and hidden cells contributes only its
@@ -57,7 +60,7 @@
    */
   function buildPlayerProjection(doc, ctx, opts) {
     const withTint = !(opts && opts.biomeTint === false);
-    const revealed = Model.getRevealedCellSet(doc);
+    const revealed = ctx ? Model.getVisibleCellSet(doc, ctx) : Model.getRevealedCellSet(doc);   // hand-revealed cells plus the party's light (PD-045)
     const byBatch = new Map(doc.batches.map(b => [b.id, b]));
     const overlays = [], onTile = new Set(), marks = Model.getShadowXSet(doc);
     for (const tile of doc.tiles) {
@@ -78,6 +81,7 @@
       if (c) shadowMarks.push({ q: c.q, r: c.r });
     }
     const sanctuaryLabels = sanctuaryLabelsOf(doc);
+    const partyCell = Model.getPartyCell(doc), partyAt = partyCell ? Geo.parseCellId(partyCell) : null;
     // without a context nothing counts as "never fogged", which is the strictest (never leaking) reading
     const foggable = ctx ? (key => Model.isFoggableCell(ctx, key)) : null;
     return {
@@ -86,6 +90,7 @@
       overlays: overlays,
       shadowMarks: shadowMarks,
       sanctuaryLabels: sanctuaryLabels,
+      party: partyAt ? { q: partyAt.q, r: partyAt.r } : null,
       perimeter: Model.regionBoundarySegments(doc, ctx || null, key => revealed.has(key), foggable),
     };
   }

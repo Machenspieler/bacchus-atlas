@@ -171,7 +171,7 @@ test('projection: Soul Echoes never reach the player projection (GM-only, PD-022
   const proj = P.buildPlayerProjection(doc, ctx);
   const text = JSON.stringify(proj).toLowerCase();
   assert.ok(!text.includes('echo') && !text.includes('soul') && !text.includes('mk-'), 'leaked into the projection');
-  assert.deepEqual(Object.keys(proj).sort(), ['overlays', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'shadowMarks', 'version']);
+  assert.deepEqual(Object.keys(proj).sort(), ['overlays', 'party', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'shadowMarks', 'version']);
   assert.ok(!/soulEchoes/.test(read('js/journey2-projection.js').replace(/\/\*[\s\S]*?\*\//g, '')), 'the projection code never reads the field');
 });
 

@@ -17,7 +17,11 @@
        playerVisibility: { revealedCells: [ "q,r", ... ], revealedSanctuaryNameAnchorIds: [ "mk-012", ... ] },
        soulEchoes: { anchorIds: [ "mk-012", ... ], collectedAnchorIds: [ "mk-012" ] },
        sanctuaries: { entries: [ { anchorId, name, trade, quirk, crisis, drive, politics: { rolls }, size, population } ] },
-       shadowMarks: { added: [ "q,r", ... ], suppressed: [ "q,r", ... ] } }
+       shadowMarks: { added: [ "q,r", ... ], suppressed: [ "q,r", ... ] },
+       party: { cell: "q,r" | null, shown: boolean } }
+   The party marker (PD-045) is ONE map object: where the party stands and whether it is shown. It may stand on any foggable cell. While it is shown, its hex and the
+   six neighbours count as revealed to players — DERIVED (getPartyLightSet / getVisibleCellSet), never written into `playerVisibility`; hiding it removes the marker
+   and the light, and the position is remembered. Optional on load (missing = not placed, not shown; schemaVersion stays 1); `shown` needs a `cell`.
    Shadow marks (PD-041) are the Shadowblight X's as MAP state, stored as a DELTA over what the regions already imply: a blighted tile implies an X
    on its cell, a fully overtaken tile implies one pending "virtual" X (drawn as the skull, which never leaves). The X's shown are
    (blighted-tile cells - suppressed) + added; `suppressed` also lists an overtaken cell whose X has already left. Optional on load (missing = none,
@@ -83,7 +87,8 @@
   const HISTORY_LIMIT = 100;
 
   const ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
-  const DOC_KEYS = ['schemaVersion', 'kind', 'templateId', 'templateVersion', 'createdAt', 'updatedAt', 'batches', 'tiles', 'playerVisibility', 'soulEchoes', 'sanctuaries', 'shadowMarks'];
+  const DOC_KEYS = ['schemaVersion', 'kind', 'templateId', 'templateVersion', 'createdAt', 'updatedAt', 'batches', 'tiles', 'playerVisibility', 'soulEchoes', 'sanctuaries', 'shadowMarks', 'party'];
+  const PARTY_KEYS = ['cell', 'shown'];
   const SHADOW_KEYS = ['added', 'suppressed'];
   const VISIBILITY_KEYS = ['revealedCells', 'revealedSanctuaryNameAnchorIds'];
   const SOUL_ECHO_KEYS = ['anchorIds', 'collectedAnchorIds'];
@@ -162,7 +167,7 @@
 
   function emptyDocument(ctx, nowIso) {
     const now = nowIso || new Date().toISOString();
-    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [], revealedSanctuaryNameAnchorIds: [] }, soulEchoes: { anchorIds: [], collectedAnchorIds: [] }, sanctuaries: { entries: [] }, shadowMarks: { added: [], suppressed: [] } };
+    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [], revealedSanctuaryNameAnchorIds: [] }, soulEchoes: { anchorIds: [], collectedAnchorIds: [] }, sanctuaries: { entries: [] }, shadowMarks: { added: [], suppressed: [] }, party: { cell: null, shown: false } };
   }
 
   function isEmptyDocument(doc) {
@@ -170,7 +175,8 @@
       && !(doc.playerVisibility && (doc.playerVisibility.revealedCells.length || (doc.playerVisibility.revealedSanctuaryNameAnchorIds || []).length))
       && !(doc.soulEchoes && doc.soulEchoes.anchorIds.length)
       && !(doc.sanctuaries && doc.sanctuaries.entries.length)
-      && !(doc.shadowMarks && (doc.shadowMarks.added.length || doc.shadowMarks.suppressed.length)));
+      && !(doc.shadowMarks && (doc.shadowMarks.added.length || doc.shadowMarks.suppressed.length))
+      && !(doc.party && doc.party.cell));
   }
 
   function symbolIdOf(batch) { return batch.habitat.overtaken ? OVERTAKEN_SYMBOL : batch.habitat.biome; }
@@ -342,8 +348,9 @@
     const sanctuaries = validateSanctuaries(doc.sanctuaries, ctx, errors);
     vis.revealedSanctuaryNameAnchorIds = validateRevealedSanctuaryNames(doc.playerVisibility, sanctuaries, ctx, errors);
     const shadow = validateShadowMarks(doc.shadowMarks, ctx, errors);
+    const party = validateParty(doc.party, ctx, errors);
     if (errors.length) return { ok: false, code: 'invalid', errors: errors.slice(0, 20) };
-    return { ok: true, doc: { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: doc.templateId, templateVersion: doc.templateVersion, createdAt: doc.createdAt, updatedAt: doc.updatedAt, batches: batches, tiles: tiles, playerVisibility: vis, soulEchoes: echoes, sanctuaries: sanctuaries, shadowMarks: normalizeShadowMarks({ batches: batches, tiles: tiles }, shadow.added, shadow.suppressed) } };
+    return { ok: true, doc: { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: doc.templateId, templateVersion: doc.templateVersion, createdAt: doc.createdAt, updatedAt: doc.updatedAt, batches: batches, tiles: tiles, playerVisibility: vis, soulEchoes: echoes, sanctuaries: sanctuaries, shadowMarks: normalizeShadowMarks({ batches: batches, tiles: tiles }, shadow.added, shadow.suppressed), party: party } };
   }
 
   /** Text -> validated document. Size-limited; never throws. */
@@ -461,6 +468,65 @@
       }
     }
     return out;
+  }
+
+  /* ---------------- The party marker (PD-045) ---------------- */
+
+  const NO_PARTY = Object.freeze({ cell: null, shown: false });
+
+  /** Validates `party` (load + import). MISSING is "not placed"; a present one is { cell: foggable cell id | null, shown: boolean } and `shown` needs a cell. */
+  function validateParty(v, ctx, errors) {
+    if (v === undefined || v === null) return { cell: null, shown: false };
+    if (!isObj(v)) { errors.push('party: not an object'); return { cell: null, shown: false }; }
+    checkKeys(v, PARTY_KEYS, 'party', errors);
+    let cell = null, shown = false, bad = false;
+    if (v.cell !== undefined && v.cell !== null) {
+      if (typeof v.cell !== 'string' || !Geo.parseCellId(v.cell)) { errors.push('party.cell: malformed cell id'); bad = true; }
+      else if (!isFoggableCell(ctx, v.cell)) { errors.push('party.cell: cell ' + v.cell + ' is not on the map'); bad = true; }
+      else cell = v.cell;
+    }
+    if (v.shown !== undefined) {
+      if (typeof v.shown !== 'boolean') errors.push('party.shown: not a boolean');
+      else shown = v.shown;
+    }
+    if (shown && !cell && !bad) errors.push('party.shown: the party is shown without a position');
+    return { cell: cell, shown: shown && !!cell };
+  }
+
+  const partyOf = doc => (doc && doc.party) || NO_PARTY;
+  /** The cell the party marker stands on right now (shown AND placed), or null. */
+  function getPartyCell(doc) { const p = partyOf(doc); return p.shown && p.cell ? p.cell : null; }
+
+  const lightCache = new WeakMap();
+  /** The party's light: its hex and the six neighbours that are on the map, while the marker is shown (empty otherwise). Derived, never stored. */
+  function getPartyLightSet(doc, ctx) {
+    const p = partyOf(doc);
+    if (!ctx || !p.shown || !p.cell) return new Set();
+    const hit = lightCache.get(p);
+    if (hit && hit.ctx === ctx) return hit.set;
+    const c = Geo.parseCellId(p.cell), set = new Set();
+    if (c) {
+      for (const d of [{ dq: 0, dr: 0 }].concat(Geo.NEIGHBOR_DELTAS)) {
+        const id = Geo.cellId(c.q + d.dq, c.r + d.dr);
+        if (isFoggableCell(ctx, id)) set.add(id);
+      }
+    }
+    lightCache.set(p, { ctx: ctx, set: set });
+    return set;
+  }
+
+  const visibleCache = new WeakMap();
+  /** What players may see: the hand-revealed cells plus the party's light. Equal to getRevealedCellSet when the marker is hidden or unplaced. */
+  function getVisibleCellSet(doc, ctx) {
+    const base = getRevealedCellSet(doc), lit = getPartyLightSet(doc, ctx);
+    if (!lit.size) return base;
+    const vis = doc.playerVisibility, p = doc.party;
+    const hit = visibleCache.get(vis);
+    if (hit && hit.party === p && hit.ctx === ctx) return hit.set;
+    const set = new Set(base);
+    for (const id of lit) set.add(id);
+    visibleCache.set(vis, { party: p, ctx: ctx, set: set });
+    return set;
   }
 
   /* ---------------- Soul Echoes (GM-only, PD-024) ---------------- */
@@ -948,6 +1014,8 @@
    *                                                                all); touches ONLY sanctuaries; same set => noop; anything invalid is refused whole
    *   setSanctuary   { entry, at }                                 replaces ONE existing sanctuary (the reroll); an unknown one is refused
    *   deleteSanctuary { anchorId, at }                             removes ONE generated sanctuary (and its revealed name, in the same command); the printed icon is never touched
+   *   setParty { cell?, shown?, at }                               the party marker (PD-045): move it to a foggable cell (cell), show / hide it (shown); an omitted field keeps
+   *                                                                its value; nothing to change => noop; hiding keeps the position; without a cell it is never shown
    *   setSanctuaryNameRevealed { anchorId, revealed, at }          Player map: reveal / hide ONE generated sanctuary's name (needs a generated entry); touches ONLY
    *                                                                playerVisibility.revealedSanctuaryNameAnchorIds; already in that state => noop. Reroll (setSanctuary) keeps it;
    *                                                                setSanctuaries keeps it only for anchors that still have an entry and never reveals a new one
@@ -1113,6 +1181,21 @@
         const next = normalizeShadowMarks(doc, v.added, v.suppressed);
         if (JSON.stringify(next) === JSON.stringify({ added: shadowList(doc, 'added'), suppressed: shadowList(doc, 'suppressed') })) return { ok: true, doc: doc, noop: true };
         return { ok: true, doc: touch(doc, cmd.at, { shadowMarks: next }) };
+      }
+      case 'setParty': {
+        const p = partyOf(doc);
+        let cell = p.cell, shown = p.shown;
+        if (cmd.cell !== undefined) {
+          if (cmd.cell !== null && (typeof cmd.cell !== 'string' || !Geo.parseCellId(cmd.cell) || !isFoggableCell(ctx, cmd.cell))) return fail('bad-cell', { cell: cmd.cell });
+          cell = cmd.cell;
+        }
+        if (cmd.shown !== undefined) {
+          if (typeof cmd.shown !== 'boolean') return fail('bad-party');
+          shown = cmd.shown;
+        }
+        if (cell === null) shown = false;
+        if (cell === p.cell && shown === p.shown) return { ok: true, doc: doc, noop: true };
+        return { ok: true, doc: touch(doc, cmd.at, { party: { cell: cell, shown: shown } }) };
       }
       default: return fail('unknown-command');
     }
@@ -1332,6 +1415,7 @@
     MAX_SOUL_ECHOES: MAX_SOUL_ECHOES, planSoulEchoes: planSoulEchoes, getCollectedEchoSet: getCollectedEchoSet, isEchoCollected: isEchoCollected, availableEchoIds: availableEchoIds,
     SANCTUARY_DICE: SANCTUARY_DICE, MAX_SANCTUARY_NAME: MAX_SANCTUARY_NAME, validateSanctuaryEntry: validateSanctuaryEntry, planSanctuaries: planSanctuaries,
     getRevealedSanctuaryNameSet: getRevealedSanctuaryNameSet, isSanctuaryNameRevealed: isSanctuaryNameRevealed,
+    validateParty: validateParty, getPartyCell: getPartyCell, getPartyLightSet: getPartyLightSet, getVisibleCellSet: getVisibleCellSet,
     isFoggableCell: isFoggableCell, getRevealedCellSet: getRevealedCellSet, isCellRevealed: isCellRevealed, cellsToChange: cellsToChange, compareCellKeys: compareCellKeys,
   };
 });

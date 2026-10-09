@@ -252,6 +252,8 @@
     let routeDrawn = { line: '', mark: '' };
     let routeDetails = false;                               // the selected route's details popover is open (a click on its bubble; transient)
     let routeBubbleSpecs = [];                              // [{ s, x, y }] world anchor of each drawn route's bubble (rebuilt by every paint)                                    // signature of what the route layers currently show (a re-render with the same state must not restart the draw-in)
+    let partyDraft = null;                                  // transient (PD-045): { cell, placing, pointerId, from } — the party marker being placed (following the cursor) or dragged; never stored
+    let partyRaf = 0;
     /* the Route Planner state machine (js/journey2-route.js): select-start -> select-end -> result, GM-only, never persisted */
     const routePlanner = Route.createRoutePlanner({ plan: (a, b) => planRoutesFor(a, b), onChange: (state, ev) => onRouteChange(state, ev) });
     /* the Locate state machine (js/journey2-locate.js): selecting -> animating -> result, one guarded completion timer, never persisted */
@@ -429,6 +431,7 @@
       fit: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 7V3h4M13 3h4v4M17 13v4h-4M7 17H3v-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       print: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 7.5V3h9v4.5M5.5 14.5h-2v-6h13v6h-2M5.5 12h9v5h-9z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>',
       back: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16.5 10h-13M8.5 4.5 3 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      party: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 1.6 12.3 7.7 18.4 10 12.3 12.3 10 18.4 7.7 12.3 1.6 10 7.7 7.7Z" fill="currentColor" fill-opacity=".22" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
       compass: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="7.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m13.2 6.8-1.7 4.7-4.7 1.7 1.7-4.7z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M10 1.6v1.8M10 16.6v1.8M1.6 10h1.8M16.6 10h1.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
     };
 
@@ -483,7 +486,7 @@
                     <defs data-j2-defs></defs><defs>${ECHO_DEFS}</defs>
                     <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/><path class="j2-fog-ghost" data-j2-fog-ghost d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routeline" pointer-events="none" aria-hidden="true"></g>
                     <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
-                    <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g><g data-j2-g="locate" pointer-events="none"></g><g data-j2-g="seekers" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routemark" pointer-events="none" aria-hidden="true"></g>
+                    <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g><g data-j2-g="locate" pointer-events="none"></g><g data-j2-g="seekers" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routemark" pointer-events="none" aria-hidden="true"></g><g data-j2-g="party" pointer-events="none" aria-hidden="true"></g>
                   </svg>
                 </div>
                 <p class="sr-only" id="j2-keys" data-t="journey2_keys_hint"></p>
@@ -584,6 +587,13 @@
                 <span class="j2-fog-chip-hint" data-t="journey2_route_esc_hint"></span>
                 <button type="button" class="btn btn-sm" data-j2-route-cancel data-t="journey2_route_cancel"></button>
               </div>
+              <div class="j2-fog-chip j2-party-chip" data-j2-party-chip hidden>
+                <span class="j2-ico" aria-hidden="true">${ICON.party}</span>
+                <strong data-t="journey2_party_btn"></strong>
+                <span class="j2-fog-chip-hint" data-t="journey2_party_place_hint"></span>
+                <span class="j2-fog-chip-hint" data-t="journey2_party_esc_hint"></span>
+                <button type="button" class="btn btn-sm" data-j2-party-cancel data-t="journey2_party_cancel"></button>
+              </div>
               <div class="j2-route-bubbles" data-j2-route-bubbles></div>
               <div class="j2-seek" data-j2-seek role="group" data-t-aria="journey2_seek_group" hidden>
                 <button type="button" class="j2-seek-btn" data-j2-seek-less data-t-aria="journey2_seek_less" data-t-title="journey2_seek_less"><span aria-hidden="true">&minus;</span></button>
@@ -618,6 +628,9 @@
                       <button type="button" class="btn btn-sm j2-tool" data-j2-fit><span class="j2-ico" aria-hidden="true">${ICON.fit}</span><span data-t="journey2_fit"></span></button>
                     </div>
                     <button type="button" class="btn btn-sm j2-btn-icon j2-ctl-collapse" data-j2-side-toggle aria-controls="j2-side" aria-expanded="true" data-t-aria="journey2_side_collapse" data-t-title="journey2_side_collapse">${ICON.chevL}</button>
+                  </div>
+                  <div class="j2-ctl-row j2-ctl-party" role="group" data-t-aria="journey2_party_group">
+                    <button type="button" class="btn btn-sm j2-tool" data-j2-party aria-pressed="false"><span class="j2-ico" aria-hidden="true">${ICON.party}</span><span data-t="journey2_party_btn"></span></button>
                   </div>
                   <div class="j2-ctl-gm" data-j2-gm-controls>
                     <div class="j2-ctl-row j2-tb-fog" role="group" data-j2-fog-group data-t-aria="journey2_fog_group">
@@ -678,6 +691,9 @@
                   <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn j2-rail-zoom" data-j2-zoom="reset" data-j2-rail-src="zoomReset">100%</button>
                   <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-zoom="out" data-j2-rail-src="zoomOut">−</button>
                   <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-fit data-j2-rail-src="fit">${ICON.fit}</button>
+                </div>
+                <div class="j2-rail-grp">
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-party data-j2-rail-src="party">${ICON.party}</button>
                 </div>
                 <div class="j2-rail-grp" data-j2-rail-gm>
                   <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-biome-colors data-j2-rail-src="biome">${ICON.palette}</button>
@@ -768,6 +784,8 @@
       ui.locate = container.querySelector('[data-j2-locate]');
       ui.l = {};
       for (const x of ui.locate.querySelectorAll('[data-j2-l]')) ui.l[x.getAttribute('data-j2-l')] = x;
+      ui.partyBtn = container.querySelector('[data-j2-party]');
+      ui.partyChip = container.querySelector('[data-j2-party-chip]');
       ui.previewBtn = container.querySelector('[data-j2-preview]');
       ui.previewBar = container.querySelector('[data-j2-preview-bar]');
       ui.previewBack = container.querySelector('[data-j2-preview-back]');
@@ -1008,7 +1026,7 @@
       undo: () => ui.undo, redo: () => ui.redo, zoomIn: () => ui.controls.querySelector('[data-j2-zoom="in"]'), zoomOut: () => ui.controls.querySelector('[data-j2-zoom="out"]'),
       zoomReset: () => ui.zoomReadout, fit: () => ui.controls.querySelector('[data-j2-fit]'), biome: () => ui.biomeColors, preview: () => ui.previewBtn,
       route: () => ui.routePlan, locate: () => ui.echoLocate, place: () => ui.echoPlace, clear: () => ui.echoClear, sanc: () => ui.sancGenerate,
-      paint: () => ui.fogTool, print: () => ui.printOpen, back: () => ui.previewBack,
+      paint: () => ui.fogTool, print: () => ui.printOpen, back: () => ui.previewBack, party: () => ui.partyBtn,
     };
     let railProxies = [];
     const railOf = new Map();
@@ -1766,9 +1784,10 @@
       if (previewMode) {
         // Player Preview: the GM layer is emptied (not hidden) and only the projection is produced
         ui.g.tiles.innerHTML = '';
-        playerProjection = Projection.buildPlayerProjection(doc, data.ctx);
+        playerProjection = Projection.buildPlayerProjection(projectionDoc(), data.ctx);
         ui.g.player.innerHTML = overlayMarkup(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, tint: o.tint }))
           .concat(playerProjection.shadowMarks.map(m => ({ q: m.q, r: m.r, floating: true }))));
+        renderParty();
         renderEchoes();
         renderPerimeter();
         renderSanctuaryLabels();
@@ -1783,6 +1802,7 @@
       ui.g.tiles.innerHTML = overlayMarkup(entries);
       renderPerimeter();
       renderSanctuaryLabels();
+      renderParty();
     }
 
     /**
@@ -1918,6 +1938,173 @@
     }
 
     /* ============================================================
+       The party marker (PD-045): ONE golden four-pointed star, shown in the GM view AND Player Preview (and printed). Its position and shown flag are
+       map data (doc.party, the setParty command); while it is shown its hex and the six around it are lit for the players — derived in the projection
+       (Model.getVisibleCellSet), never stored in the Fog of War. The marker has absolute input priority over every other map interaction.
+       Placing, dragging and the live light preview are transient (`partyDraft`): one completed drop / drag is one Undo entry, Esc or a cancelled
+       pointer changes nothing. A first show with no saved position makes the marker follow the cursor until a click drops it.
+       ============================================================ */
+
+    const PARTY_K = 0.36, PARTY_PINCH = 0.3, PARTY_MIN_SCREEN_R = 8;
+
+    /** The concave four-pointed star centred on (x, y) with outer radius k (the shape of the Locate star). */
+    function partyStarPath(x, y, k) {
+      const m = k * PARTY_PINCH, p = (a, b) => fmt(a, 1) + ' ' + fmt(b, 1);
+      return 'M' + p(x, y - k) + 'L' + p(x + m, y - m) + 'L' + p(x + k, y) + 'L' + p(x + m, y + m) + 'L' + p(x, y + k) + 'L' + p(x - m, y + m) + 'L' + p(x - k, y) + 'L' + p(x - m, y - m) + 'Z';
+    }
+
+    /** The marker on hex (q, r): a white halo under a gold star with a dark outline. `o.minScreen` keeps it readable when zoomed out; `o.bw` is the black print version. */
+    function partyMarkup(q, r, o) {
+      const c = data.grid.cellCenter(q, r);
+      let k = data.grid.shortDimensionPx * PARTY_K;
+      if (o && o.minScreen && cam) k = Math.max(k, o.minScreen / cam.scale);
+      const d = partyStarPath(c[0], c[1], k);
+      return '<g class="j2-party-mark' + (o && o.bw ? ' is-bw' : '') + '"><path class="j2-party-halo" d="' + d + '"/><path class="j2-party-star" d="' + d + '"/></g>';
+    }
+
+    /** The document the player projection is built from: the stored one, or — while a drop / drag is in progress — the same with the party at the draft cell (live light). */
+    function projectionDoc() {
+      if (!partyDraft) return doc;
+      const cell = partyDraft.cell;
+      return Object.assign({}, doc, { party: cell ? { cell: cell, shown: true } : { cell: doc.party.cell, shown: false } });
+    }
+
+    /** The cell the marker is drawn on: the draft while placing / dragging, else what the current view shows (Player Preview: exactly the projection's party). */
+    function partyDrawCell() {
+      if (partyDraft) return partyDraft.cell;
+      if (previewMode) { const p = playerProjection && playerProjection.party; return p ? Geo.cellId(p.q, p.r) : null; }
+      return Model.getPartyCell(doc);
+    }
+
+    function paintPartyMarker() {
+      const g = ui.g && ui.g.party;
+      if (!g || !doc || !data) return;
+      const cell = partyDrawCell(), c = cell ? Geo.parseCellId(cell) : null;
+      g.innerHTML = c ? partyMarkup(c.q, c.r, { minScreen: PARTY_MIN_SCREEN_R }) : '';
+    }
+
+    /** Marker + toolbar state: pressed while shown or being placed, the placing chip, the cursor class. */
+    function renderParty() {
+      if (!ui.g || !ui.g.party || !doc || !data) return;
+      paintPartyMarker();
+      if (!ui.partyBtn) return;
+      const placing = !!(partyDraft && partyDraft.placing), shown = !!Model.getPartyCell(doc);
+      ui.partyBtn.disabled = editLocked;
+      ui.partyBtn.setAttribute('aria-pressed', String(shown || placing));
+      ui.partyBtn.title = t(placing ? 'journey2_party_title_cancel' : shown ? 'journey2_party_title_hide' : 'journey2_party_title');
+      ui.partyChip.hidden = !placing;
+      ui.viewport.classList.toggle('is-party-placing', placing && partyDraft.pointerId == null);
+    }
+
+    /** The light follows a draft: Player Preview rebuilds its projection (and fog) from projectionDoc(); the GM view only needs the marker. Coalesced per frame. */
+    function refreshPartyView() {
+      if (!previewMode) { renderParty(); return; }
+      if (partyRaf) return;
+      partyRaf = requestAnimationFrame(() => { partyRaf = 0; if (!inst.disposed && doc && data) { renderTiles(); renderFog(); } });
+    }
+
+    function partyCellAt(e) {
+      const c = fogCellFromEvent(e), id = c ? Geo.cellId(c.q, c.r) : null;
+      return id && foggable.has(id) ? id : null;
+    }
+
+    /** True when the screen point (viewport-local px) is on the shown, stored marker. */
+    function partyHitAt(x, y) {
+      const cell = Model.getPartyCell(doc), c = cell ? Geo.parseCellId(cell) : null;
+      if (!c || !data) return false;
+      const ctr = data.grid.cellCenter(c.q, c.r), s = Geo.worldToScreen(cam, ctr[0], ctr[1]);
+      const radius = Math.max(data.grid.shortDimensionPx * PARTY_K * cam.scale, PARTY_MIN_SCREEN_R);
+      return Math.hypot(x - s[0], y - s[1]) <= radius * 1.15 + 3;
+    }
+
+    /** The toolbar button: hide (position remembered), show at the remembered position, or — with no position yet — start following the cursor; pressed again while following, it cancels. */
+    function toggleParty() {
+      if (inst.disposed || editLocked || !doc || !data) return;
+      if (partyDraft && partyDraft.placing) { cancelPartyDraft(true); return; }
+      const p = doc.party;
+      if (p.shown) { const r = dispatch({ type: 'setParty', shown: false }, 'partyHide'); if (r.ok) announce(t('journey2_live_party_hidden')); return; }
+      if (p.cell) { const r = dispatch({ type: 'setParty', shown: true }, 'partyShow'); if (r.ok) announce(t('journey2_live_party_shown')); return; }
+      cancelTransient(); cancelFogStroke(); setFogTool(null, { quiet: true });
+      exitLocate({ quiet: true }); exitRoute({ quiet: true });
+      closeMenus(); hideEnvTip(); clearHint();
+      if (diagOpen) setDiagnostics(false);
+      closeInspector({ quiet: true }); closeSanctuary({ quiet: true });
+      if (sel.tileId) { sel.tileId = null; renderSelection(); renderInventory(false); }
+      partyDraft = { cell: null, placing: true, pointerId: null, from: null };
+      if (pointer.inside) {
+        const w = Geo.screenToWorld(cam, pointer.x, pointer.y), c = data.grid.worldToCell(w[0], w[1]), id = Geo.cellId(c.q, c.r);
+        partyDraft.cell = foggable.has(id) ? id : null;
+      }
+      refreshPartyView(); renderParty();
+      announce(t('journey2_live_party_placing'));
+    }
+
+    /** Pointer-down on the marker (a drag) or, while following the cursor, anywhere on a hex (the drop). Returns true when it took the press. */
+    function startPartyDrag(e) {
+      const placing = !!(partyDraft && partyDraft.placing);
+      const cell = placing ? partyCellAt(e) : doc.party.cell;
+      if (!cell) return false;
+      partyDraft = { cell: cell, placing: placing, pointerId: e.pointerId, from: doc.party.cell };
+      try { ui.viewport.setPointerCapture(e.pointerId); } catch (err) { /* synthetic events may lack a capturable pointer */ }
+      ui.viewport.classList.remove('is-party-hover');
+      ui.viewport.classList.add('is-party-dragging');
+      e.preventDefault();
+      refreshPartyView(); renderParty();
+      return true;
+    }
+
+    /** While following the cursor (no press yet): the marker sits on the hex under it, and is gone while the pointer is off the map. */
+    function hoverPartyDraft(e) {
+      const next = partyCellAt(e);
+      if (next === partyDraft.cell) return;
+      partyDraft.cell = next;
+      refreshPartyView();
+    }
+
+    /** While pressed: the marker snaps to the hex under the pointer and keeps the last valid hex when the pointer leaves the map. */
+    function movePartyDraft(e) {
+      const next = partyCellAt(e);
+      if (!next || next === partyDraft.cell) return;
+      partyDraft.cell = next;
+      refreshPartyView();
+    }
+
+    /** Pointer released: one command for the whole drop / drag (one Undo entry, one autosave). Nothing to change records nothing. */
+    function finishPartyDrag(e) {
+      const d = partyDraft;
+      if (!d) return;
+      const last = partyCellAt(e);
+      if (last) d.cell = last;
+      partyDraft = null;
+      releaseFogCapture(d.pointerId);
+      ui.viewport.classList.remove('is-party-dragging');
+      markDragged();
+      const stored = doc.party;
+      if (d.cell && (d.placing || d.cell !== stored.cell || !stored.shown)) {
+        const r = dispatch({ type: 'setParty', cell: d.cell, shown: true }, d.placing ? 'partyPlace' : 'partyMove');
+        if (r.ok) { announce(t(d.placing ? 'journey2_live_party_placed' : 'journey2_live_party_moved')); return; }
+      }
+      if (previewMode) { renderTiles(); renderFog(); } else renderParty();
+    }
+
+    /** Escape, a cancelled pointer, another tool or Undo: the marker returns to where the document has it (or disappears if it was being placed). */
+    function cancelPartyDraft(announceIt) {
+      const d = partyDraft;
+      if (!d) return;
+      partyDraft = null;
+      if (ui.viewport) { ui.viewport.classList.remove('is-party-dragging'); if (d.pointerId != null) releaseFogCapture(d.pointerId); }
+      if (previewMode) { renderTiles(); renderFog(); } else renderParty();
+      if (announceIt) announce(t(d.placing ? 'journey2_live_party_cancelled' : 'journey2_live_party_moved'));
+    }
+
+    /** Grab cursor while the pointer is over the marker. */
+    function updatePartyCursor(x, y) {
+      if (!ui.viewport) return;
+      const on = !partyDraft && !editLocked && !spaceDown && partyHitAt(x, y);
+      if (ui.viewport.classList.contains('is-party-hover') !== !!on) ui.viewport.classList.toggle('is-party-hover', !!on);
+    }
+
+    /* ============================================================
        Locate Soul Echoes (PD-030): GM-only. "Locate Soul Echoes" -> the GM clicks the party's hex -> the nearest UNCOLLECTED Echo (straight-line map
        distance, pure js/journey2-locate.js) is frozen and an animated compass answers with a direction on a sixteen-point rose — and nothing else.
        The state machine (selecting -> animating -> result), the hover hex, the frozen bearing and the popover are all transient: never in the
@@ -1949,6 +2136,8 @@
       if (sel.tileId) { sel.tileId = null; renderSelection(); renderInventory(false); }
       locateHover = null;
       locateSession.start();
+      const party = Model.getPartyCell(doc);                    // PD-045: a placed, shown party marker IS the party's hex — no selection step
+      if (party) { chooseLocateOrigin(party); announce(t('journey2_echo_locate')); return; }
       announce(t('journey2_echo_locate') + '. ' + t('journey2_loc_select_hint'));      // the instruction is announced once
     }
 
@@ -2277,6 +2466,8 @@
       if (sel.tileId) { sel.tileId = null; renderSelection(); renderInventory(false); }
       routeHover = null;
       routePlanner.start();
+      const party = Model.getPartyCell(doc);                    // PD-045: a placed, shown party marker is point A (Esc steps back to choosing A by hand)
+      if (party) { routePlanner.pick(party); announce(t('journey2_route_plan') + '. ' + t('journey2_route_select_end')); return; }
       announce(t('journey2_route_plan') + '. ' + t('journey2_route_select_start'));      // the instruction is announced once
     }
 
@@ -3003,6 +3194,7 @@
         ui.world.style.setProperty('--j2-inv', String(1 / cam.scale));
         ui.world.classList.toggle('is-pixel', cam.scale >= 2);
         positionInspector();
+        paintPartyMarker();                              // its minimum on-screen size follows the zoom
         if (routePlanner.isActive()) { paintRoute(); positionRouteBubbles(); }   // the side-by-side offset is a constant number of screen px
         updateReadouts();
       });
@@ -3315,6 +3507,7 @@
         '<g class="j2-pp-gen" data-pp-overlays="' + page.overlays.length + '">' + overlayMarkup(page.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, tint: null })).concat(page.marks.map(m => ({ q: m.q, r: m.r, floating: true })))) + '</g>' +
         '<g class="j2-pp-perimeter" data-pp-segments="' + page.segments.length + '">' + (d ? '<path class="j2-perimeter" d="' + d + '"/>' : '') + '</g>' +
         '<g class="j2-pp-labels" data-pp-labels="' + page.labels.length + '">' + labels + '</g>' +
+        '<g class="j2-pp-party" data-pp-party="' + (page.party ? 1 : 0) + '">' + (page.party ? partyMarkup(page.party.q, page.party.r, { bw: true }) : '') + '</g>' +
         '</g></svg>' +
         '<p class="j2-pp-pagelabel">' + esc(fill('journey2_pp_page_n', { n: n(index + 1), total: n(count) })) + '</p></section>';
     }
@@ -3435,7 +3628,7 @@
       listen(vp, 'pointerup', onViewportUp);
       listen(vp, 'pointercancel', onViewportCancel);
       listen(vp, 'lostpointercapture', onViewportCancel);
-      listen(vp, 'pointerleave', () => { pointer.inside = false; hideEnvTip(); hoverCell = null; hoverMarker = null; if (fogHover) { fogHover = null; scheduleFogPaint(); } if (locateHover) { locateHover = null; paintLocate(); } if (routeHover) { routeHover = null; paintRoute(); } if (diagOpen) renderSelection(); updateReadouts(); if (tr && tr.kind === 'armed') updatePreview(); });
+      listen(vp, 'pointerleave', () => { pointer.inside = false; if (partyDraft && partyDraft.placing && partyDraft.pointerId == null && partyDraft.cell) { partyDraft.cell = null; refreshPartyView(); } if (ui.viewport) ui.viewport.classList.remove('is-party-hover'); hideEnvTip(); hoverCell = null; hoverMarker = null; if (fogHover) { fogHover = null; scheduleFogPaint(); } if (locateHover) { locateHover = null; paintLocate(); } if (routeHover) { routeHover = null; paintRoute(); } if (diagOpen) renderSelection(); updateReadouts(); if (tr && tr.kind === 'armed') updatePreview(); });
       listen(vp, 'wheel', onWheel, { passive: false });
       listen(vp, 'keydown', onViewportKey);
       listen(vp, 'keyup', e => { if (e.key === ' ') { spaceDown = false; vp.classList.remove('is-space'); } });
@@ -3505,13 +3698,15 @@
     /* ---- viewport: pan / tile move / armed click ---- */
 
     function onViewportDown(e) {
-      if (pan || fogStroke || tr && tr.kind !== 'armed') return;
+      if (pan || fogStroke || tr && tr.kind !== 'armed' || partyDraft && partyDraft.pointerId != null) return;
       const fogPaint = fogTool && previewMode && !spaceDown && !editLocked && !(tr && tr.kind === 'armed');
       if (e.button !== 0 && e.button !== 1 && e.button !== 2) return;   // the right button pans, except as the Hide brush while fog painting
       clearHint();
       ui.viewport.focus({ preventScroll: true });
       const [x, y] = localPoint(e);
       pointer.x = x; pointer.y = y; pointer.inside = true; pointer.cx = e.clientX; pointer.cy = e.clientY;
+      // the party marker (PD-045) outranks everything below: a press on it drags it, and while it follows the cursor a left click drops it
+      if (e.button === 0 && !editLocked && !spaceDown && ((partyDraft && partyDraft.placing) || partyHitAt(x, y)) && startPartyDrag(e)) return;
       // priority: dialog > preview > an existing drag/pan > Locate location selection (a click, never a tile drag) > armed placement > fog tool > neutral selection. Space (or the middle button) pans instead of painting.
       if (fogPaint && (e.button === 0 || e.button === 2)) { startFogStroke(e); e.preventDefault(); return; }
       const tile = e.button === 0 && !spaceDown && !editLocked && !previewMode && !fogTool && !(tr && tr.kind === 'armed') && !locateSession.isActive() && !routeSelecting() && !sanctuaryAtScreen(x, y) ? tileAtScreen(x, y) : null;
@@ -3527,6 +3722,10 @@
     function onViewportMove(e) {
       const [x, y] = localPoint(e);
       pointer.x = x; pointer.y = y; pointer.inside = insideViewport(e); pointer.cx = e.clientX; pointer.cy = e.clientY;
+      if (partyDraft) {
+        if (partyDraft.pointerId === e.pointerId) { movePartyDraft(e); return; }
+        if (partyDraft.pointerId == null && !pan) { hoverPartyDraft(e); return; }
+      } else if (!pan) updatePartyCursor(x, y);
       if (fogStroke && fogStroke.pointerId === e.pointerId) { moveFogStroke(e); return; }
       if (pan && pan.id === e.pointerId) {
         const dx = x - pan.x0, dy = y - pan.y0;
@@ -3545,6 +3744,7 @@
     }
 
     function onViewportUp(e) {
+      if (partyDraft && partyDraft.pointerId === e.pointerId) { finishPartyDrag(e); return; }
       if (fogStroke && fogStroke.pointerId === e.pointerId) { finishFogStroke(e); return; }
       if (pan && pan.id === e.pointerId) {
         const wasClick = !pan.moved && pan.button === 0;
@@ -3565,6 +3765,7 @@
     }
 
     function onViewportCancel(e) {
+      if (partyDraft && partyDraft.pointerId === e.pointerId) { cancelPartyDraft(true); return; }
       if (fogStroke && fogStroke.pointerId === e.pointerId) { cancelFogStroke(true); return; }
       if (pan && pan.id === e.pointerId) endPan();
       else if (tr && tr.kind === 'tile' && tr.pointerId === e.pointerId) cancelTransient();
@@ -3821,7 +4022,7 @@
         if (x.kind === 'tile' && ui.viewport) { try { if (ui.viewport.hasPointerCapture(x.pointerId)) ui.viewport.releasePointerCapture(x.pointerId); } catch (err) { /* released */ } }
       }
     }
-    function cancelTransient() { cancelFogStroke(); if (tr) endTransient(); }
+    function cancelTransient() { cancelFogStroke(); cancelPartyDraft(); if (tr) endTransient(); }
 
     function stale(x) { return x.docRef !== doc; }
 
@@ -3967,6 +4168,7 @@
         if (openMenu) { const b = openMenu.btn; closeMenus(); b.focus(); return; }
         // priority: menu, a fog stroke, a drag / armed placement / pan, Player Preview, the fog tool, the Region Inspector, then the diagnostic selection
         if (fogStroke) { cancelFogStroke(true); e.preventDefault(); return; }
+        if (partyDraft) { cancelPartyDraft(true); e.preventDefault(); return; }                      // the party marker being placed / dragged (PD-045)
         if (pan) { setCamera({ scale: pan.scale0, tx: pan.tx0, ty: pan.ty0 }); endPan(); e.preventDefault(); return; }
         if (tr) { cancelTransient(); e.preventDefault(); return; }
         if (routeSelecting()) { routeEscape(); e.preventDefault(); return; }                         // choosing A or B: step back / leave the Route Planner (no document change)
@@ -4025,6 +4227,8 @@
       else if (b.hasAttribute('data-j2-fit')) fitToView();
       else if (b.hasAttribute('data-j2-biome-colors')) toggleBiomeColors();
       else if (b.hasAttribute('data-j2-fog-tool')) setFogTool(b.getAttribute('data-j2-fog-tool'));
+      else if (b.hasAttribute('data-j2-party-cancel')) cancelPartyDraft(true);
+      else if (b.hasAttribute('data-j2-party')) toggleParty();
       else if (b.hasAttribute('data-j2-echo-place')) placeSoulEchoes();
       else if (b.hasAttribute('data-j2-echo-clear')) confirmClearSoulEchoes();
       else if (b.hasAttribute('data-j2-route-plan')) startRoute();

@@ -256,7 +256,7 @@ test('projection: GM-only data never appears (region ids, Encounter, Rumor, note
   for (const secret of ['SECRET-GM-NOTE', 'region-secret-id', 'tile-secret', 'batchId', 'encounter', 'rumor', 'notes', 'environment', 'inspector', 'selection', 'diagnostic', 'warning', 'history', 'undo']) {
     assert.ok(!text.toLowerCase().includes(secret.toLowerCase()), 'leaked: ' + secret);
   }
-  assert.deepEqual(Object.keys(P.buildPlayerProjection(doc)).sort(), ['overlays', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'shadowMarks', 'version']);
+  assert.deepEqual(Object.keys(P.buildPlayerProjection(doc)).sort(), ['overlays', 'party', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'shadowMarks', 'version']);
   for (const o of P.buildPlayerProjection(doc).overlays) assert.deepEqual(Object.keys(o).sort(), ['blightMark', 'dots', 'q', 'r', 'symbolId', 'tint']);
 });
 
@@ -357,7 +357,7 @@ test('priority: fog stroke beats neutral tile selection; Space or the middle but
   assert.match(down, /fogPaint && \(e\.button === 0 \|\| e\.button === 2\)/, 'left reveals, right hides');
   assert.match(fn('startFogStroke', 'fogStrokeTo'), /e\.button === 2 \? 'hide' : 'reveal'/);
   assert.match(down, /!previewMode && !fogTool && !\(tr && tr\.kind === 'armed'\)/, 'no tile grab in preview or with a tool');
-  assert.match(down, /if \(pan \|\| fogStroke \|\| tr && tr\.kind !== 'armed'\) return;/, 'an existing drag or pan wins');
+  assert.match(down, /if \(pan \|\| fogStroke \|\| tr && tr\.kind !== 'armed' \|\| partyDraft && partyDraft\.pointerId != null\) return;/, 'an existing drag or pan wins');
   assert.match(fn('handleMapClick', 'selectTile'), /if \(previewMode \|\| fogTool\) return;/, 'no inspector from a map click under a tool or in preview');
   const esc = view.slice(view.indexOf('function onDocumentKey'), view.indexOf('if (e.key === \' \' && fogTool'));
   const order = ['openMenu', 'fogStroke', 'if (pan)', 'if (tr)', 'if (fogTool)', 'if (previewMode)', 'inspectorOpen()'].map(s => esc.indexOf(s));
@@ -407,7 +407,7 @@ test('Player Preview: read-only, projection-driven, document and history untouch
   assert.doesNotMatch(view, /previewReturn/, 'GM view and Player Preview are one screen: the camera is never saved or restored per mode (PD-040)');
   const tiles = fn('renderTiles', 'renderSelection').split('ui.g.player.innerHTML = \'\';')[0];
   assert.match(tiles, /ui\.g\.tiles\.innerHTML = '';/, 'GM tiles are removed, not hidden');
-  assert.match(tiles, /Projection\.buildPlayerProjection\(doc, data\.ctx\)/);
+  assert.match(tiles, /Projection\.buildPlayerProjection\(projectionDoc\(\), data\.ctx\)/, 'the stored document, or the same with the party at its draft cell (PD-045)');
   assert.doesNotMatch(tiles, /doc\.tiles|doc\.batches/, 'the preview never reads regions directly');
   const chrome = fn('applyPreviewChrome', 'enterPreview');
   for (const part of ['ui.gmControls.hidden = on', 'ui.sideScroll.hidden = on', 'ui.previewBar.hidden = !on']) assert.ok(chrome.includes(part), part);
