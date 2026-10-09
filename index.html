@@ -40,15 +40,15 @@
 </head>
 <body>
   <!-- Static fallback shown before js/app.js runs. renderHeader() overwrites
-       this on first render. #prep-chrome is display:contents on
-       every other route (a no-op wrapper) and only becomes a manually
-       toggled expanded/compact toolbar on #/prep — see the "Prep
-       Prep chrome" rules in css/styles.css and initPrepChrome() in
-       js/app.js. -->
+       this on first render; it is the same 45px bar (brand only, no ribbons yet)
+       so nothing jumps. #prep-chrome is display:contents on every route (a no-op
+       wrapper) — see the "Prep chrome" rules in css/styles.css and
+       initPrepChrome() in js/app.js. -->
   <div id="prep-chrome">
     <header class="site-header" id="header">
-      <h1>Атлас Бахуса</h1>
-      <p>Окружения, путешествия и опасности · Daggerheart™ Compatible</p>
+      <div class="header-inner">
+        <div class="brand"><span class="brand-text"><h1>Атлас Бахуса</h1></span></div>
+      </div>
     </header>
   </div>
   <main class="shell" id="main" tabindex="-1" aria-busy="true">

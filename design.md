@@ -175,7 +175,7 @@ Small uppercase **mono badges** (status/type/blight) use the tighter
 
 | Role | Face | Size | Weight | Line height | Tracking |
 | --- | --- | --- | --- | --- | --- |
-| Site title `h1` | display | `--fs-lg` (`--fs-md` phone) | 400 | `--lh-lg` | .06em (.04em phone) — deliberate brand value, not `--tracking-caps` |
+| Site title `h1` | display | `--fs-base` (hidden on a phone, where the ribbons keep only icons) | 400 | 1.15 | .06em — deliberate brand value, not `--tracking-caps` |
 | Page / modal title | display | `--fs-xl` | 400 | `--lh-xl` | `--tracking-display` |
 | Card title, feature name | display | `--fs-md` | 400 | `--lh-md` | `--tracking-display` |
 | Body / card copy | body | `--fs-base` / `--fs-card-copy` | 400 | 1.5–`--lh-base` | none |
@@ -446,8 +446,8 @@ the craft chain (teal dotted links). No second typeface or palette.
 
 ### Prep (`#/prep`)
 The one screen that departs from the reading-page idiom on purpose: `--font-ui`
-instead of the serif/display pairing, a collapsible header chrome
-(`#prep-chrome[data-collapsed]`), and a permanently-visible ~20px
+instead of the serif/display pairing, a session popover opened from the pill
+in the header (`body[data-sp-header-mode]`, PD-047), and a permanently-visible ~20px
 checkbox (18px inside a 32px hit area — the shared `--sel-*` tokens) as the *only* control that adds or
 removes a selection anywhere on the page — never a whole row/card silently
 toggling on click. The item catalog's tiles (`.prep-item-card`) are the one
@@ -480,7 +480,19 @@ never wraps) and the ⋯ button sit to its right. The sessions dropdown's
 heading reads "Sessions"; it ends with a divider and a "+ New session"
 shortcut. Delete in the actions menu is the only Fear-coloured item and sits
 below a divider. On phones it becomes two rows (selector + New/actions, then
-notes) with 52px controls. Collapsing the header hides the whole bar.
+notes) with 52px controls. The bar is a popover over the workspace (closed by default).
+
+## Header and bookmark ribbons (PD-047)
+One compact header, `--hdr-h` (45px) tall, on every route — brand (28px logo + title) on the left, the session pill in the middle on Prep only, four bookmark ribbons and the utilities (sound, RU/EN) on the right. The ribbons hang from the header's top edge; the label is pinned to the ribbon's bottom, so it slides down as the ribbon lengthens.
+
+| State | Tail below the header |
+| --- | --- |
+| Inactive | `--rb-t0` (10px) |
+| Hover, inactive | `--rb-t1` (22px) |
+| Current page | `--rb-t2` (28px) |
+| Current page, hovered | `--rb-t3` (42px) |
+
+Colours are tokens: `--rb-catalog` gold `#c9952f`, `--rb-lists` purple `#6c3698` (Core Set), `--rb-prep` green `#2e8062`, `--rb-journey` red `#b70c28` (Hope & Fear), sampled from product photos of the real ribbons. They identify a page and never a state, an intentional exception to "gold is affirmative" and "red is Fear": don't reuse them elsewhere. The current page is marked by length, brightness and `aria-current="page"`, never by colour alone. On a phone (<=640px) the title comes off, the ribbons narrow to 40px with icons only and shorter tails. Motion (length spring, drop-and-swing on activation, hover sway) is off under `prefers-reduced-motion`. On the catalogue and on a list the filter row is sticky under the header and 10% smaller (`zoom: 0.9`); the footer is pinned to the bottom of short pages and holds the "Daggerheart™ Compatible" line (Prep and Journey have no footer, by decision).
 
 ## Responsive breakpoints
 
@@ -503,7 +515,7 @@ are not breakpoints and are not listed.
 | `641–1091` | Catalog | grid capped at two 420px cards (a third 340px column needs a 1092px viewport) |
 | `<=1199` / `>=1200` | Prep | two-column (central on top) vs three-column workspace; page scroll becomes internal panel scroll |
 | `1200–1439` | Prep | laptop range: shell padding and gap drop one step, grid fractions `.8fr / 1.5fr / 1fr` (≈592px central at 1366) |
-| `>=1440` | Prep | full-width shell: the Prep cap is dropped (the global header stays narrower on purpose) |
+| `>=1440` | Prep | full-width shell: the Prep cap is dropped (the global header is full width on every route, PD-047) |
 | `<=1536` | Prep | Environment/Adversary picker counters hide (search field would squeeze under ~90px); the Type panel anchors to its trigger's right edge |
 | `>=1800` **and** height `>=900` | Prep | comfortable central density (`--pc-*` token overrides only); both axes required |
 | `>=1480 / 1836 / 2192 / 2548` | Catalog | geometry-derived shell steps: each adds one 340px card + 16px gap (356px) to the grid. Not round numbers on purpose |

@@ -11,7 +11,6 @@ const LS_KEYS = {
   envLists: 'dhcodex_env_lists',
   storageNoticeDismissed: 'dhcodex_storage_notice_dismissed',
   prep: 'dhcodex_session_prep',
-  prepHeaderMode: 'dhcodex_session_prep_header_mode',
   prepSessionHintSeen: 'dhcodex_session_prep_hint_seen',
   battlePointsPcs: 'dhcodex_battle_points_pcs',
   soundboard: 'dhcodex_soundboard',
@@ -707,6 +706,7 @@ const ICON_CHECK = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><cir
 const ICON_CHEVRON_UP = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 15 6-6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_CHEVRON_DOWN = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_SEARCH_EMPTY = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="m15.5 15.5 4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 10.5h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+const ICON_GRID = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.4" stroke="currentColor" stroke-width="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.4" stroke="currentColor" stroke-width="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.4" stroke="currentColor" stroke-width="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.4" stroke="currentColor" stroke-width="1.6"/></svg>`;
 const ICON_BOOKMARK = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 3.5h11a1 1 0 0 1 1 1v16l-6.5-4-6.5 4v-16a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
 // The one close glyph: dismiss, clear-value and remove-entry controls all use it
 // (the semantic role is carried by the button's class/hover, not by a different glyph).
@@ -1420,13 +1420,38 @@ function routeTitle() {
   return `${t('lists_title')} — ${t('app_title')}`;
 }
 
+/* The four page tabs are bookmark ribbons (PD-047). Their colours are the --rb-*
+ * tokens in css/styles.css (identity of a page, never a state); this is markup only. */
+const RIBBONS = [
+  { id: 'catalog', icon: () => ICON_GRID, label: 'nav_catalog', hash: '' },
+  { id: 'lists', icon: () => ICON_BOOKMARK, label: 'nav_lists', hash: '#/lists' },
+  { id: 'prep', icon: () => ICON_CHECKLIST, label: 'nav_prep', hash: '#/prep' },
+  { id: 'journey', icon: () => ICON_COMPASS, label: 'nav_journey', hash: '#/journey' },
+];
+
+// Set by a click on an inactive ribbon; the next renderHeader() lets the ribbon
+// that has just become current drop in with a swing, then clears it.
+let ribbonDropPending = false;
+
+function ribbonHtml(r, current) {
+  const on = r.id === current;
+  const label = t(r.label);
+  return `<button type="button" class="ribbon${on ? ' on' : ''}" id="btn-${r.id}" data-ribbon="${r.id}"
+            aria-label="${label}" ${on ? 'aria-current="page"' : ''}>
+          <span class="ribbon-fab" aria-hidden="true"></span>
+          <svg class="ribbon-cut" viewBox="0 0 104 11" preserveAspectRatio="none" aria-hidden="true"><polyline class="ribbon-cut-lit" points="0,10.5 52,0.8 104,10.5"/><polyline class="ribbon-cut-shade" points="0,11.5 52,2.6 104,11.5"/></svg>
+          <span class="ribbon-label">${r.icon()}<span>${label}</span></span>
+        </button>`;
+}
+
 function renderHeader() {
   const el = document.getElementById('header');
   /* Named routes, not "anything but the catalog" — with a third section that
    * test marked Lists as the current page while the generators were open. */
-  const onLists = state.route.name === 'lists' || state.route.name === 'list';
-  const onJourney = state.route.name === 'journey';
-  const onPrep = state.route.name === 'prep';
+  const current = state.route.name === 'lists' || state.route.name === 'list' ? 'lists'
+    : state.route.name === 'journey' ? 'journey'
+    : state.route.name === 'prep' ? 'prep'
+    : 'catalog';
   el.innerHTML = `
     <a class="skip-link" href="#grid-wrap">${t('skip_to_content')}</a>
     <div class="header-inner">
@@ -1434,24 +1459,11 @@ function renderHeader() {
         <img class="brand-mark" src="img/brand-logo.png?v=2" alt="" aria-hidden="true">
         <span class="brand-text">
           <h1><button type="button" id="brand-home" aria-label="${t('app_title')}"><span class="brand-title-text">${t('app_title')}</span></button></h1>
-          <span class="brand-meta">
-            <span class="brand-subtitle">${t('app_subtitle_compact')}</span>
-            <span class="brand-separator" aria-hidden="true">·</span>
-            <span class="compat-label">${t('compatibility_label')}</span>
-          </span>
         </span>
       </div>
       <div class="header-actions">
         <nav class="header-nav" aria-label="${t('main_nav')}">
-          <button type="button" class="btn nav-btn ${onLists ? 'active' : ''}" id="btn-lists"
-                  aria-label="${t('nav_lists')}"
-                  ${onLists ? 'aria-current="page"' : ''}>${ICON_BOOKMARK}<span>${t('nav_lists')}</span></button>
-          <button type="button" class="btn nav-btn ${onPrep ? 'active' : ''}" id="btn-prep"
-                  aria-label="${t('nav_prep')}"
-                  ${onPrep ? 'aria-current="page"' : ''}>${ICON_CHECKLIST}<span>${t('nav_prep')}</span></button>
-          <button type="button" class="btn nav-btn ${onJourney ? 'active' : ''}" id="btn-journey"
-                  aria-label="${t('nav_journey')}"
-                  ${onJourney ? 'aria-current="page"' : ''}>${ICON_COMPASS}<span>${t('nav_journey')}</span></button>
+          ${RIBBONS.map(r => ribbonHtml(r, current)).join('')}
         </nav>
         <div class="header-utils">
           ${SoundboardUI.triggerHtml()}
@@ -1461,9 +1473,21 @@ function renderHeader() {
     </div>`;
   bindLangSwitch(el);
   SoundboardUI.sync();
-  document.getElementById('btn-lists').addEventListener('click', () => navigate('#/lists'));
-  document.getElementById('btn-prep').addEventListener('click', () => navigate('#/prep'));
-  document.getElementById('btn-journey').addEventListener('click', () => navigate('#/journey'));
+  RIBBONS.forEach(r => {
+    const btn = document.getElementById(`btn-${r.id}`);
+    btn.addEventListener('click', () => {
+      if (!btn.classList.contains('on')) ribbonDropPending = true;
+      navigate(r.hash);
+    });
+  });
+  if (ribbonDropPending) {
+    ribbonDropPending = false;
+    const active = el.querySelector('.ribbon.on');
+    if (active) {
+      active.classList.add('drop');
+      active.addEventListener('animationend', () => active.classList.remove('drop'), { once: true });
+    }
+  }
   // A real <button> now, so Enter and Space come for free — the old div carried
   // role="button" and tabindex but no key handler, and did nothing when focused.
   document.getElementById('brand-home').addEventListener('click', () => navigate(''));
@@ -2157,7 +2181,7 @@ function renderFooter() {
   // language can put the link wherever its own grammar wants it.
   const [before, after = ''] = t('footer_note').split('{sources}');
   el.innerHTML = `
-    <span>${before}<button type="button" class="link-btn" id="btn-sources">${t('sources_link')}</button>${after}</span>`;
+    <span><span class="compat-label">${t('compatibility_label')}.</span> ${before}<button type="button" class="link-btn" id="btn-sources">${t('sources_link')}</button>${after}</span>`;
   document.getElementById('btn-sources').addEventListener('click', openSourcesPopup);
 }
 
@@ -5807,57 +5831,39 @@ function bindPrepDelegation(el) {
   }, true);
 }
 
-/* ---------------- top chrome (compact workspace mode) ----------------
+/* ---------------- top chrome (session popover) ----------------
  *
- * #prep-chrome (index.html) wraps the shared site header. Only on
- * this route it can be switched, via the session control this controller
- * adds, between two CSS-driven variants of the *same* #header markup
- * renderHeader() always produces (see the "Prep chrome" rules in
- * css/styles.css) — never a second copy of the header. The one control also
- * drives the Prep Bar (title, save status, Session Notes, New/actions —
- * prepBarHtml(), in the workspace, not this chrome) out of layout
- * entirely — both areas read the single
- * `data-sp-header-mode` attribute this controller sets on <body>, so there
- * is exactly one source of truth for the mode, never two independent
- * states to fall out of sync.
- *
- * There is no automatic mode change of any kind: the chrome only ever
- * changes state when the reader deliberately clicks the control. The mode a
- * reader last chose is a global Prep-page preference (never stored on a
- * prep record), persisted as LS_KEYS.prepHeaderMode — a raw flag written
- * through persistRaw() the same way dhcodex_storage_notice_dismissed is, see
- * "Safe browser storage" in CLAUDE.md — and restored on every route entry. A
- * reader with no saved preference yet — or one whose storage is unavailable
- * or holds anything other than the literal string "compact" — starts
- * expanded (PrepUtils.resolveHeaderMode()).
+ * PD-047: the site header is the same compact 45px bar on every route, so there
+ * is nothing left to resize. On this route one control, the session pill in
+ * #header's free middle, opens and closes the Prep Bar (title, save status,
+ * Session Notes, New/actions — prepBarHtml(), first child of .prep-wrap) as a
+ * popover laid over the top of the workspace — it never pushes the columns.
+ * The single `data-sp-header-mode` attribute this controller keeps on <body>
+ * ('compact' = closed, 'expanded' = open) is what the CSS reads. The popover
+ * always starts closed (the state is transient: nothing is persisted) and
+ * closes on Escape, on a press outside it, and when the route is left.
  *
  * The control is a single <button> that sits in #header's .header-inner
  * between the brand and .header-actions (never a second row, never after the
- * language switch): "Session · <active prep title>", a save-status icon and
- * the expand/collapse chevron. Its title and status are painted from the
- * same sources as the Prep Bar (activePrep(), state.prepUI), by
- * paintSessionControl() — nothing about the session is cached on the button.
- * renderHeader() rebuilds #header's entire innerHTML on every render()
- * (including a language switch while still on this route), which would
- * otherwise silently detach the control from the page — initPrepChrome()
- * re-inserts the *same* slot element into the freshly-rendered
+ * language switch): "Session · <active prep title>", a save-status icon and the
+ * open/close chevron. Its title and status are painted from the same sources as
+ * the Prep Bar (activePrep(), state.prepUI), by paintSessionControl() — nothing
+ * about the session is cached on the button. renderHeader() rebuilds #header's
+ * entire innerHTML on every render() (including a language switch while still
+ * on this route), which would otherwise silently detach the control —
+ * initPrepChrome() re-inserts the *same* slot element into the freshly-rendered
  * .header-inner every time it runs (render() always calls it, via
- * renderPrepPage(), after renderHeader() has already replaced #header), so
- * the button and its listener are created once but kept attached across any
- * number of re-renders.
+ * renderPrepPage(), after renderHeader() has already replaced #header), so the
+ * button and its listener are created once but kept attached across any number
+ * of re-renders.
  *
  * A one-time hint (a small absolutely-positioned popover anchored to the
- * control, so it can't shift layout) points compact-mode readers at the
- * control; its own "seen" flag is LS_KEYS.prepSessionHintSeen.
+ * control, so it can't shift layout) points first-time readers at the control;
+ * its own "seen" flag is LS_KEYS.prepSessionHintSeen.
  *
  * One controller instance lives in `prepChromeState`, built by
  * initPrepChrome() and torn down by destroyPrepChrome() — the
  * only two functions that touch that variable. */
-
-/** Reads the last mode the reader chose; see PrepUtils.resolveHeaderMode(). */
-function storedPrepHeaderMode() {
-  return PrepUtils.resolveHeaderMode(SafeStorage.readRawFlag(lsStorage, LS_KEYS.prepHeaderMode));
-}
 
 function storedPrepSessionHintSeen() {
   return SafeStorage.readRawFlag(lsStorage, LS_KEYS.prepSessionHintSeen) === '1';
@@ -5891,7 +5897,7 @@ function paintSessionControl() {
   const c = prepChromeState;
   if (!c || !c.toggleEl) return;
   const btn = c.toggleEl;
-  const compact = c.mode === 'compact';
+  const compact = c.mode === 'compact'; // compact = the popover is closed
   const name = prepDisplayTitle(activePrep());
   const status = sessionControlStatusView();
   const action = t(compact ? 'prep_session_expand' : 'prep_session_collapse');
@@ -5907,11 +5913,11 @@ function paintSessionControl() {
   // hover tooltip (which would land on top of it) is withheld.
   if (c.hintEl) delete btn.dataset.tip;
   else btn.dataset.tip = `${name} · ${status.text}`;
-  // Expanded: the panel below already shows the session name, so the control
-  // carries only the label. Collapsed: the name is the only on-screen cue.
+  // The name stays on the pill whether the popover is open or not: the panel is a
+  // popover now, not a row that already shows it.
   btn.innerHTML =
-    `<span class="sp-session-label" aria-hidden="true">${escapeHtml(t('prep_session_label'))}${compact ? ' ·' : ''}</span>` +
-    (compact ? `<span class="sp-session-name">${escapeHtml(name)}</span>` : '') +
+    `<span class="sp-session-label" aria-hidden="true">${escapeHtml(t('prep_session_label'))} ·</span>` +
+    `<span class="sp-session-name">${escapeHtml(name)}</span>` +
     `<span class="sp-session-status" data-state="${status.kind}" aria-hidden="true">${icon}</span>` +
     `<span class="sp-session-chevron" aria-hidden="true">${compact ? ICON_CHEVRON_DOWN : ICON_CHEVRON_UP}</span>`;
   // The save status is conveyed to assistive tech as a polite live region
@@ -5969,23 +5975,30 @@ function showPrepSessionHint() {
   c.hintTimer = setTimeout(dismissPrepSessionHint, PREP_SESSION_HINT_MS);
 }
 
-/** The only place the mode changes, and so the only place it is persisted —
- * this is always a direct result of the reader clicking the control, never
- * an automatic transition, so writing it here can't accidentally persist a
- * route-entry default. A failed write falls back to the same centralized
- * storage_write_failed_warning toast every other persisted action uses (see
- * persistRaw()); the in-memory mode still applies for the rest of the
- * visit either way. */
+/** The only place the popover opens or closes. Nothing is persisted: it always
+ * starts closed. While it is open an outside press or Escape closes it; a press
+ * on the pill itself is left to the pill's own click handler. */
 function prepChromeSetMode(next) {
   const c = prepChromeState;
   if (!c || c.mode === next) return;
-  // Collapsing hides the textarea (display:none) without a render; drain any
+  // Closing hides the textarea (display:none) without a render; drain any
   // pending note write first.
   flushPrepNotesSave();
   c.mode = next;
+  if (next === 'expanded') {
+    dismissPrepSessionHint();
+    c.popOnPointer = e => {
+      if (e.target.closest('#prep-bar, #sp-chrome-toggle')) return;
+      prepChromeSetMode('compact');
+    };
+    c.popOnKey = e => { if (e.key === 'Escape') { prepChromeSetMode('compact'); c.toggleEl.focus(); } };
+    document.addEventListener('pointerdown', c.popOnPointer, true);
+    document.addEventListener('keydown', c.popOnKey, true);
+  } else {
+    document.removeEventListener('pointerdown', c.popOnPointer, true);
+    document.removeEventListener('keydown', c.popOnKey, true);
+  }
   applyPrepChromeDom();
-  persistRaw(LS_KEYS.prepHeaderMode, next);
-  if (PrepUtils.shouldShowSessionHint(next, storedPrepSessionHintSeen())) showPrepSessionHint();
 }
 
 /** Builds (once) and (re-)attaches the session control's slot into
@@ -5993,8 +6006,7 @@ function prepChromeSetMode(next) {
  * Safe to call any number of times — every call after the first just moves
  * the existing slot into the current header DOM rather than recreating it —
  * but renderPrepPage() is the only call site, since that's the only place the
- * route is (re-)entered or the header is rebuilt. Starts from the reader's
- * saved preference (or the 'expanded' default) rather than a hardcoded mode. */
+ * route is (re-)entered or the header is rebuilt. Always starts closed. */
 function initPrepChrome() {
   const headerInner = document.querySelector('#header .header-inner');
   const headerActions = headerInner && headerInner.querySelector('.header-actions');
@@ -6013,7 +6025,7 @@ function initPrepChrome() {
     statusSrEl.className = 'sr-only';
     statusSrEl.setAttribute('role', 'status');
     slotEl.append(toggleEl, statusSrEl);
-    c = { mode: storedPrepHeaderMode(), toggleEl, slotEl, statusSrEl, hintEl: null, hintDone: false };
+    c = { mode: 'compact', toggleEl, slotEl, statusSrEl, hintEl: null, hintDone: false };
     toggleEl.addEventListener('click', () => {
       prepChromeSetMode(c.mode === 'compact' ? 'expanded' : 'compact');
     });
@@ -6022,7 +6034,6 @@ function initPrepChrome() {
   headerInner.insertBefore(c.slotEl, headerActions);
 
   applyPrepChromeDom();
-  // A compact mode restored from storage is the other first-time case.
   if (fresh && PrepUtils.shouldShowSessionHint(c.mode, storedPrepSessionHintSeen())) showPrepSessionHint();
 }
 
@@ -6035,6 +6046,7 @@ function destroyPrepChrome() {
   if (!c) return;
   flushPrepNotesSave();
   dismissPrepSessionHint();
+  if (c.mode === 'expanded') prepChromeSetMode('compact');
   delete document.body.dataset.spHeaderMode;
   if (c.slotEl) c.slotEl.remove();
   prepChromeState = null;
@@ -6071,10 +6083,9 @@ function renderPrepPage() {
     return;
   }
   const prep = activePrep();
-  // The Prep Bar is part of the workspace, not the site header chrome,
-  // so it's the first child of .prep-wrap — but it is still hidden by the
-  // same `data-sp-header-mode="compact"` switch as the header (see the
-  // compact-mode rules in css/styles.css).
+  // The Prep Bar is part of the workspace, not the site header chrome, so it's
+  // the first child of .prep-wrap — a popover, shown only while
+  // `data-sp-header-mode="expanded"` (see the Prep Bar rules in css/styles.css).
   el.innerHTML = `
     <div class="prep-wrap">
       ${prepBarHtml(prep)}

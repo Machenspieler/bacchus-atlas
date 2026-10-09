@@ -12,18 +12,25 @@ locally") before starting.
 
 ## Header
 
-- [ ] Expanded state (every route except Prep): title, subtitle,
-      compatibility label, nav links all visible and correctly ordered.
-- [ ] Prep's collapsed chrome: toggling it visibly and meaningfully
-      shrinks the header — not just a cosmetic tweak. Toggle back to
-      expanded and confirm it restores exactly.
+- [ ] The header is the same 45px bar on every route (Catalog, Lists, Prep,
+      Journey): measure it, and check nothing jumps when switching routes.
+- [ ] Four bookmark ribbons in the order Catalog, Lists, Prep, Journey; the
+      current page's ribbon is longer and fully bright, and carries
+      `aria-current="page"`; the Catalog ribbon is current on the home page.
+- [ ] Ribbon states: hover on an inactive ribbon lengthens it, the current page
+      lengthens again on hover, the label slides down with the ribbon edge;
+      switching page drops the new ribbon in with one swing. With
+      "reduce motion" on, nothing animates.
+- [ ] The footer holds "Daggerheart™ Compatible" (Catalog, Lists); Prep and
+      Journey show no such line (decision, PD-047).
 
 ## Navigation
 
-- [ ] Desktop: all header nav links (Lists, Prep, Journey, RU/EN)
+- [ ] Desktop: all header nav ribbons (Catalog, Lists, Prep, Journey) and RU/EN
       reachable by mouse and by keyboard (Tab + Enter), visible focus ring
       on each.
-- [ ] Mobile width: nav still reachable, no overlap/clipping.
+- [ ] Mobile width (375px): the ribbons keep their icons, the title is hidden,
+      no horizontal scroll, and the first filter row is not covered.
 
 ## Catalog
 
@@ -176,13 +183,18 @@ locally") before starting.
       Tab order per adversary: image → link → ×; every stop shows a focus
       ring; Enter/Space work on the buttons; tooltips and labels in both RU
       and EN; no layout shift on hover/focus; long names clamp.
-- [ ] Session control in the header (between brand and nav, never after the
-      language switch): fresh storage opens expanded; clicking collapses/
-      expands the Prep Bar and the choice survives a reload; the header stays
-      one row at 1920/1440/1366px in EN and RU, the title truncates with an
-      ellipsis after the "Session ·" prefix drops; the one-time hint shows
-      once in compact mode and dismisses on click, outside click, Escape or
-      timeout; rename/switch/new/duplicate/delete update the title at once.
+- [ ] Session control in the header (between brand and ribbons, never after the
+      language switch): the Prep Bar starts closed; clicking the pill opens it
+      as a popover over the workspace (the columns do not move) and clicking
+      again, pressing Escape or clicking outside closes it; the state is not
+      remembered across a reload; the header stays one row at 1920/1440/1366px
+      in EN and RU, the title truncates with an ellipsis after the "Session ·"
+      prefix drops; the one-time hint shows once on the first visit and
+      dismisses on click, outside click, Escape or timeout;
+      rename/switch/new/duplicate/delete update the title at once.
+- [ ] Catalog filter row: sticky under the header while scrolling, about 10%
+      smaller than before, the result count sits right after the controls (not
+      under the ribbons).
 - [ ] **Prep Bar**: the active prep name appears once (no separate
       title field or select); at 2048/1440/768/390px the bar is one compact
       block (~84px, two rows on phones) aligned with the columns below,

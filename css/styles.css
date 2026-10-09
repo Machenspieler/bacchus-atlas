@@ -140,6 +140,23 @@
   --h-label: 16px;
   --icon-sm: 14px; --icon-md: 16px;
 
+  /* ---- header and bookmark-ribbon navigation (PD-047) ----
+     The four ribbon colours are sampled from the real ribbons of the Daggerheart
+     books (Core: gold, purple; Hope & Fear: green, red). They name a PAGE, never
+     a state: a deliberate exception to the gold-is-affirmative and
+     red-is-Fear rules; don't reuse them for anything else. */
+  --hdr-h: 45px;
+  --rb-w: 104px;
+  --rb-gap: 6px;
+  --rb-t0: 10px;   /* below the header: inactive            */
+  --rb-t1: 22px;   /* hover on an inactive ribbon           */
+  --rb-t2: 28px;   /* the current page                      */
+  --rb-t3: 42px;   /* the current page, hovered             */
+  --rb-catalog: #c9952f;
+  --rb-lists: #6c3698;
+  --rb-prep: #2e8062;
+  --rb-journey: #b70c28;
+
   /* One ring colour and width; only the placement varies:
      external  --focus-offset        standalone controls with room around them
      tight     --focus-offset-tight  small boxes beside a neighbour or an edge
@@ -190,6 +207,7 @@ body {
   font-size: 16px;
   line-height: 1.55;
   min-height: 100vh;
+  display: flex; flex-direction: column;
 }
 
 /* ---------- atlas watermark ---------- */
@@ -277,7 +295,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
  * notch, the rounded corners and the home indicator. env() is 0 everywhere
  * else, so the max()/calc() collapse to the plain token. */
 .shell {
-  max-width: 1180px; margin: 0 auto;
+  width: 100%; max-width: 1180px; margin: 0 auto;
   padding-inline: max(var(--s-5), env(safe-area-inset-left)) max(var(--s-5), env(safe-area-inset-right));
   padding-bottom: calc(var(--s-10) + env(safe-area-inset-bottom));
 }
@@ -288,14 +306,15 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
   border-bottom: 1px solid var(--line);
   backdrop-filter: blur(6px);
 }
+/* One compact header on every route (PD-047), full width with the page's own
+ * side gutter. The ribbons hang from its top edge and may extend below it. */
 .header-inner {
-  max-width: 1180px; margin: 0 auto;
-  padding-block: var(--s-3);
+  height: var(--hdr-h);
   padding-inline: max(var(--s-5), env(safe-area-inset-left)) max(var(--s-5), env(safe-area-inset-right));
-  display: flex; align-items: center; justify-content: space-between; gap: var(--s-6); flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-6);
 }
-/* The logo and both lines of type go home when clicked, but the tab stop and
- * the accessible name sit on one real button inside the h1 — a button may not
+/* The logo and the title go home when clicked, but the tab stop and the
+ * accessible name sit on one real button inside the h1 — a button may not
  * contain a heading, and the heading is the page's only h1. Same arrangement
  * as .card-title / .card-open below. */
 .brand {
@@ -310,7 +329,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
   outline: var(--focus-ring); outline-offset: var(--focus-offset);
 }
 .brand-mark {
-  width: auto; height: 52px; flex: none;
+  width: auto; height: 28px; flex: none;
   display: block; object-fit: contain;
 }
 /* Uppercase inscriptional caps gain presence from tracking, not weight —
@@ -318,34 +337,85 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 .brand-text { min-width: 0; }
 .brand-text h1 {
   font-family: var(--font-display); font-weight: 400;
-  font-size: var(--fs-lg); line-height: var(--lh-lg); letter-spacing: 0.06em;
+  font-size: var(--fs-base); line-height: 1.15; letter-spacing: 0.06em;
   margin: 0; color: var(--parchment); text-transform: uppercase;
-  /* Truncates rather than wraps to a second line on a narrow phone — losing a
-   * few letters off the end reads better than the brand block growing a third
-   * row, and the accessible name on the button inside is untouched. */
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-/* One compact metadata line under the title: shortened subtitle, a muted
- * middle dot, then the compatibility statement — plain secondary text, not a
- * badge. The compatibility statement is never a brand name, so it stays
- * visually subordinate to the title above it. */
-.brand-meta {
-  display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--s-1);
-  margin-top: var(--s-1); font-size: var(--fs-xs); line-height: 1.2;
-  color: var(--muted);
+/* "Daggerheart™ Compatible" lives in the footer (PD-047); it is never part of
+ * the brand name or the h1. */
+.compat-label { color: var(--muted); white-space: nowrap; }
+.header-actions { display: flex; gap: var(--s-4); align-self: stretch; align-items: flex-start; }
+.header-nav { display: flex; gap: var(--rb-gap); align-self: flex-start; }
+.header-utils { align-self: center; }
+.header-utils .btn, .header-utils .lang-switch { height: 28px; }
+
+/* ---------- bookmark ribbons ----------
+ * The button is the wrapper (it carries the cast shadow, the swing and the
+ * length); .ribbon-fab is the clipped satin shape inside it, so the swallow-tail
+ * cut never clips the shadow. The label is pinned to the bottom edge, so it
+ * slides down as the ribbon grows. Light comes from the upper left. */
+.ribbon {
+  --rb: var(--rb-catalog); --rb-ink: var(--hope-ink); --rb-ts: 0 1px 0 rgba(255,255,255,0.35);
+  --rb-dim: 0.16;
+  position: relative; flex: none; box-sizing: border-box;
+  width: var(--rb-w); height: calc(var(--hdr-h) + var(--rb-t0));
+  margin: 0; padding: 0; border: 0; border-radius: 0; background: none;
+  color: var(--rb-ink); font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transform-origin: 50% 0;
+  filter: drop-shadow(1px 2px 1px rgba(0,0,0,0.55)) drop-shadow(3px 6px 5px rgba(0,0,0,0.35));
+  transition: height 0.38s cubic-bezier(0.34, 1.45, 0.64, 1);
 }
-/* Each piece may drop to its own line when space is short, but never breaks
- * mid-phrase — "Daggerheart™ Compatible" wrapping after the trademark sign
- * would turn the one compact row into two. */
-.brand-subtitle, .brand-separator, .compat-label { color: var(--muted); white-space: nowrap; }
-.header-actions { display: flex; gap: var(--s-3); align-items: center; flex-wrap: wrap; }
-.header-nav { display: flex; gap: var(--s-2); align-items: center; }
-/* The header cluster runs one size down from the page controls: a 40px button
- * beside the 32px language switch read as two unrelated control sizes. */
-.header-actions .btn { height: var(--h-sm); }
-/* The icon is what survives on a narrow phone, where the labels come off to keep
- * the header on one row — see the 400px query at the end of the stylesheet. */
-.nav-btn svg { width: var(--icon-md); height: var(--icon-md); flex: none; }
+.ribbon[data-ribbon="catalog"] { --rb: var(--rb-catalog); }
+.ribbon[data-ribbon="lists"]   { --rb: var(--rb-lists);   --rb-ink: var(--parchment); --rb-ts: 0 1px 1px rgba(0,0,0,0.6); }
+.ribbon[data-ribbon="prep"]    { --rb: var(--rb-prep);    --rb-ink: var(--parchment); --rb-ts: 0 1px 1px rgba(0,0,0,0.6); }
+.ribbon[data-ribbon="journey"] { --rb: var(--rb-journey); --rb-ink: var(--parchment); --rb-ts: 0 1px 1px rgba(0,0,0,0.6); }
+.ribbon.on { --rb-dim: 0; height: calc(var(--hdr-h) + var(--rb-t2)); }
+@media (hover: hover) {
+  .ribbon:hover { --rb-dim: 0.05; height: calc(var(--hdr-h) + var(--rb-t1)); animation: ribbon-sway 0.5s ease-out; }
+  .ribbon.on:hover { height: calc(var(--hdr-h) + var(--rb-t3)); }
+}
+.ribbon:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); border-radius: 0; }
+.ribbon-fab {
+  position: absolute; inset: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 11px), 0 100%);
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0) 12px),
+    linear-gradient(90deg, rgba(255,255,255,0.4) 0, rgba(255,255,255,0.4) 1px, transparent 1px, transparent calc(100% - 2px), rgba(0,0,0,0.45) calc(100% - 2px)),
+    linear-gradient(90deg, transparent 4px, rgba(0,0,0,0.3) 4px, rgba(0,0,0,0.3) 5px, transparent 5px, transparent calc(100% - 5px), rgba(0,0,0,0.3) calc(100% - 5px), rgba(0,0,0,0.3) calc(100% - 4px), transparent calc(100% - 4px)),
+    linear-gradient(90deg, rgba(0,0,0,0.3) 0, rgba(255,255,255,0) 14%, rgba(255,255,255,0.3) 30%, rgba(255,255,255,0) 54%, rgba(0,0,0,0.38) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 1px, rgba(0,0,0,0.03) 1px 2px),
+    linear-gradient(0deg, rgba(255,255,255,0.14), rgba(255,255,255,0) 35%),
+    var(--rb);
+}
+/* Inactive ribbons are only lightly dimmed, so the book colour reads at rest. */
+.ribbon-fab::after {
+  content: ""; position: absolute; inset: 0; background: #0d0a08;
+  opacity: var(--rb-dim); transition: opacity 0.25s;
+}
+.ribbon-cut { position: absolute; left: 0; bottom: 0; width: 100%; height: 11px; display: block; pointer-events: none; }
+.ribbon-cut-lit { fill: none; stroke: rgba(255,255,255,0.45); stroke-width: 1.3; }
+.ribbon-cut-shade { fill: none; stroke: rgba(0,0,0,0.35); stroke-width: 1.2; }
+.ribbon-label {
+  position: absolute; left: 0; right: 0; bottom: 19px;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  font-size: var(--fs-xs); font-weight: 500; line-height: 1; white-space: nowrap; text-shadow: var(--rb-ts);
+  pointer-events: none;
+}
+.ribbon-label svg { width: var(--icon-sm); height: var(--icon-sm); flex: none; }
+/* A ribbon that has just become current drops in and swings once. */
+.ribbon.drop { animation: ribbon-drop 0.7s ease-out; }
+@keyframes ribbon-drop {
+  0%   { height: calc(var(--hdr-h) + var(--rb-t0)); transform: rotate(0); }
+  35%  { height: calc(var(--hdr-h) + var(--rb-t2) + 8px); transform: rotate(2.4deg); }
+  65%  { transform: rotate(-1.5deg); }
+  85%  { transform: rotate(0.6deg); }
+  100% { height: calc(var(--hdr-h) + var(--rb-t2)); transform: rotate(0); }
+}
+@keyframes ribbon-sway { 0% { transform: rotate(0); } 40% { transform: rotate(1deg); } 100% { transform: rotate(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .ribbon, .ribbon-fab::after { transition: none; }
+  .ribbon, .ribbon:hover, .ribbon.drop { animation: none; }
+}
 
 .lang-switch {
   display: flex; height: var(--h-sm);
@@ -743,42 +813,45 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: var
 /* #toolbar dissolves so the list bar, the filter toolbar and the status become
  * items of .catalog-bar. Below 901px they are full-width flex rows (the status
  * wraps underneath, as before). */
-.catalog-bar { display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--s-4); }
+.catalog-bar { display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--s-5); zoom: 0.9; }
 /* A container query can't style its own container, so the query target is the
  * wrapper around the grid. */
 .catalog-bar-wrap { container-type: inline-size; }
 #toolbar { display: contents; }
 .catalog-bar .toolbar, .catalog-bar .list-context-bar, .catalog-bar .skeleton-toolbar { flex: 1 1 100%; }
+/* PD-047: on the catalogue and on a list the filter row sticks right under the
+ * header and is ~10% smaller (zoom: 0.9 above), with tighter vertical margins.
+ * The surface runs edge to edge: its side parts are box-shadows, which add no
+ * scrollable overflow. Below the header (z-index 30) so the ribbons stay on top. */
+body[data-route="catalog"] .catalog-bar-wrap,
+body[data-route="list"] .catalog-bar-wrap {
+  position: sticky; top: calc(var(--hdr-h) + 1px); z-index: 25;
+}
+body[data-route="catalog"] .catalog-bar-wrap::before,
+body[data-route="list"] .catalog-bar-wrap::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  --bar-bg: rgba(20,17,15,0.94);
+  background: var(--bar-bg);
+  box-shadow: 0 1px 0 var(--line), -100vmax 0 0 var(--bar-bg), 100vmax 0 0 var(--bar-bg),
+              -100vmax 1px 0 var(--line), 100vmax 1px 0 var(--line);
+  clip-path: inset(0 -100vmax -1px 0);
+}
+.catalog-bar .toolbar { margin: var(--s-2) 0; flex: 0 1 auto; justify-content: flex-start; }
+.catalog-bar .list-context-bar { margin: var(--s-2) 0; }
 @media (min-width: 901px) {
-  /* Three columns (1fr auto 1fr): controls in the middle one, so the status in
-   * the right column never shifts their centre. Controls keep their size. */
-  .catalog-bar { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
-  .catalog-bar .list-context-bar, .catalog-bar .skeleton-toolbar { grid-column: 1 / -1; }
-  .catalog-bar .toolbar {
-    grid-column: 2; width: max-content; max-width: 100%;
-    justify-content: center; flex-wrap: nowrap;
-  }
+  /* Controls on the left, the status right after them: the ribbons hang over the
+   * right-hand end of the header and would cover a status parked there. */
+  .catalog-bar { flex-wrap: wrap; }
+  .catalog-bar .list-context-bar, .catalog-bar .skeleton-toolbar { flex: 1 1 100%; }
+  .catalog-bar .toolbar { flex-wrap: nowrap; width: max-content; max-width: 100%; }
   .catalog-bar .toolbar-filters { flex-wrap: nowrap; }
   .catalog-bar .toolbar-filters > .field, .catalog-bar .search-field { flex-shrink: 0; }
   .catalog-bar .rank-pills { flex-wrap: nowrap; }
-  /* Same vertical margins as .toolbar so the two centre on one line. */
-  .catalog-bar .result-count {
-    grid-column: 3; justify-self: end; margin: var(--s-6) 0 var(--s-5);
-    flex-wrap: nowrap; white-space: nowrap;
-  }
-}
-/* The toolbar (942px) plus a status-wide column (234px, longest RU state, with
- * ~16px clearance) on each side needs 1440px; below that only the status
- * drops below the centred controls. */
-@container (max-width: 1439px) {
-  .catalog-bar { grid-template-columns: 1fr; }
-  .catalog-bar .toolbar { grid-column: 1; justify-self: center; margin-bottom: var(--s-3); }
-  .catalog-bar .result-count { grid-column: 1; margin-top: 0; }
+  .catalog-bar .result-count { margin: var(--s-2) 0; flex-wrap: nowrap; white-space: nowrap; }
 }
 /* Too narrow even for the controls alone: they may wrap as a group. */
 @container (max-width: 980px) {
   .catalog-bar .toolbar, .catalog-bar .toolbar-filters { flex-wrap: wrap; width: auto; }
-  .catalog-bar .toolbar-filters { justify-content: center; }
 }
 
 /* Below the main catalog grid only — never rendered on Lists, Journey, or
@@ -1824,7 +1897,7 @@ ol.feature-bullets { list-style: decimal; }
 
 /* ---------- footer ---------- */
 .site-footer {
-  max-width: 1180px; margin: var(--s-8) auto 0; padding: var(--s-5) var(--s-5) 0;
+  width: 100%; max-width: 1180px; margin: auto auto 0; padding: var(--s-5) var(--s-5) var(--s-5);
   border-top: 1px solid var(--line);
   color: var(--muted); font-size: var(--fs-xs); line-height: var(--lh-xs);
   display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-4); flex-wrap: wrap;
@@ -1911,27 +1984,19 @@ ol.feature-bullets { list-style: decimal; }
   body { font-size: 15px; }
   .shell { padding: 0 var(--s-4) var(--s-9); }
 
-  /* The logo shrinks and the shortened subtitle goes. flex-wrap stays at its
-   * default (wrap): the actions ride the same line as the wordmark whenever
-   * there is room, and only drop to a row of their own on the narrowest
-   * phones — trading a taller header for a title that never truncates. */
-  .header-inner {
-    flex-direction: row; align-items: center;
-    gap: var(--s-3); padding: var(--s-2) var(--s-4);
-  }
+  /* The header stays on one row: the title comes off and the ribbons keep only
+   * their icons (the accessible name stays on each button). */
+  .header-inner { gap: var(--s-3); padding-inline: max(var(--s-4), env(safe-area-inset-left)) max(var(--s-4), env(safe-area-inset-right)); }
   .brand { gap: var(--s-2); min-width: 0; }
-  /* The tap target still needs to clear the 44px a thumb expects even once the
-   * mark itself shrinks. Grow it past the artwork rather than the artwork past
-   * the header. */
   #brand-home::after { inset: -6px -6px; }
-  .brand-mark { height: 42px; }
-  .brand-text h1 { font-size: var(--fs-md); letter-spacing: 0.04em; }
-  /* The shortened subtitle and its separator are the first things to go —
-   * the title and the compatibility statement stay, so the brand never drops
-   * to a single unlabeled row. */
-  .brand-subtitle, .brand-separator { display: none; }
-  .header-actions { gap: var(--s-2); flex-wrap: nowrap; }
-  .header-actions .btn { padding: 0 var(--s-3); }
+  .brand-title-text { display: none; }
+  .header-actions { gap: var(--s-2); }
+  :root { --rb-w: 40px; --rb-gap: 3px; --rb-t0: 6px; --rb-t1: 12px; --rb-t2: 14px; --rb-t3: 20px; }
+  /* Short tails on a phone; the filter row starts below the longest one. */
+  .catalog-bar .toolbar { margin-top: var(--s-4); }
+  .ribbon-label > span { display: none; }
+  .ribbon-label svg { width: var(--icon-md); height: var(--icon-md); }
+  .lang-switch button { padding: 0 var(--s-2); }
 
   /* The disclosure comes in at 900px; a phone additionally gives each revealed
    * filter its own full-width row rather than letting them wrap. */
@@ -2014,15 +2079,6 @@ ol.feature-bullets { list-style: decimal; }
   @keyframes toast-in-top { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
 }
 
-/* Two nav labels plus the language switch no longer fit beside the logo here —
- * the Russian pair alone is ~180px. The labels come off and the icons carry the
- * two sections, which keeps the header on the one row it is built for. The
- * accessible name stays on the button either way. */
-@media (max-width: 400px) {
-  .nav-btn { padding: 0 var(--s-2); }
-  .nav-btn > span { display: none; }
-}
-
 /* ---------- Prep (#/prep) ----------
    Every rule here is prefixed .prep- to stay clear of the rest of the
    stylesheet — see the "Prep" sections in CLAUDE.md. Reuses existing
@@ -2076,9 +2132,8 @@ body[data-route="prep"] #footer {
    explicitly opt back into --font-display, so the brand and the reading
    pages elsewhere in the app are completely unaffected. */
 .prep-wrap {
-  grid-column: 1 / -1; margin-top: var(--s-6); display: flex; flex-direction: column; gap: var(--s-6);
+  grid-column: 1 / -1; margin-top: var(--sp-workspace-gap); display: flex; flex-direction: column; gap: var(--sp-workspace-gap);
   font-family: var(--font-ui);
-  transition: margin-top var(--t-base) var(--ease-out), gap var(--t-base) var(--ease-out);
 }
 
 /* ---- Prep header mode: one source of truth ----
@@ -2306,104 +2361,37 @@ body[data-route="prep"] {
   .prep-notes-input { height: calc(2.8em + var(--s-2) + 2px); }
 }
 
-/* ---- Prep chrome (expanded / compact toggle) ----
-   #prep-chrome (in index.html) wraps the shared site header. It
-   stays display:contents on every route, including this one — the compact
-   look below is a pure CSS variant of the one #header markup renderHeader()
-   always produces, never a second copy of the header, and never automatic:
-   the header only changes state on a deliberate click of .sp-session-control.
-   Expanded mode (the default markup, no rules needed here) keeps the full
-   branded presentation; every rule below only applies once
-   body[data-sp-header-mode="compact"], and both the global header and the
-   prep strip above key off that one attribute. */
+/* ---- Prep chrome (session popover, PD-047) ----
+   #prep-chrome (in index.html) wraps the shared site header and stays
+   display:contents on every route. The header itself is the same compact bar
+   everywhere; the only Prep-specific thing is the session pill in its middle,
+   which opens and closes the Prep Bar as a popover over the top of the
+   workspace. initPrepChrome()/applyPrepChromeDom() (js/app.js) keep one
+   attribute on <body>: data-sp-header-mode="expanded" while the popover is open
+   and "compact" while it is closed (the default, never persisted). */
 #prep-chrome { display: contents; }
 
-body[data-route="prep"][data-sp-header-mode="compact"] .header-inner {
-  padding-block: var(--s-2);
-  min-height: var(--sp-toolbar-h);
-  transition: padding var(--t-base) var(--ease-out);
-}
-/* Branding is decorative chrome once the header goes compact — the nav,
-   language switch and toggle are what a reader needs at a glance, so the
-   title/subtitle/compat-label come out of layout entirely (display:none),
-   not merely dimmed, and stop being redundantly exposed to assistive
-   technology along with them. #brand-home itself (and .brand-text, its
-   ancestor) must stay rendered rather than display:none: #brand-home::after
-   is what extends the "go home" hit area over the whole .brand box,
-   including .brand-mark, which stays visible in compact mode below — hiding
-   an ancestor of the button would remove that hit area (and the button's
-   own focusability) along with the text, leaving the visible logo dead to
-   both click and keyboard. aria-label on the button (see renderHeader() in
-   js/app.js) keeps its accessible name if .brand-title-text is hidden.
-   Compact keeps a reduced single-line lockup — logo + title — so the
-   wordmark isn't lost; only the subtitle/compat line (.brand-meta) comes
-   out. The title sits inside #brand-home's h1, so it stays part of the one
-   brand link. On a phone (≤640px) the title is dropped again, the one place
-   there is real layout pressure against the nav. */
-body[data-route="prep"][data-sp-header-mode="compact"] .brand-meta {
-  display: none;
-}
-body[data-route="prep"][data-sp-header-mode="compact"] .brand-text h1 {
-  font-size: var(--fs-base); line-height: 1.15; letter-spacing: 0.06em;
-}
-@media (max-width: 640px) {
-  body[data-route="prep"][data-sp-header-mode="compact"] .brand-title-text {
-    display: none;
-  }
-}
-body[data-route="prep"][data-sp-header-mode="compact"] .brand-mark {
-  height: 28px;
-  transition: height var(--t-base) var(--ease-out);
-}
-body[data-route="prep"][data-sp-header-mode="compact"] .header-actions .btn,
-body[data-route="prep"][data-sp-header-mode="compact"] .lang-switch {
-  height: 28px;
-  transition: height var(--t-base) var(--ease-out);
-}
-
-/* Journey always uses the same compact header as Prep's compact mode. */
-body[data-route="journey"] .header-inner {
-  padding-block: var(--s-2);
-  min-height: 45px;
-}
-body[data-route="journey"] .brand-meta { display: none; }
-body[data-route="journey"] .brand-text h1 {
-  font-size: var(--fs-base); line-height: 1.15; letter-spacing: 0.06em;
-}
-@media (max-width: 640px) {
-  body[data-route="journey"] .brand-title-text { display: none; }
-}
-body[data-route="journey"] .brand-mark { height: 28px; }
-body[data-route="journey"] .header-actions .btn,
-body[data-route="journey"] .lang-switch { height: 28px; }
-
-/* ---- compact mode: the Prep Bar comes out of layout entirely, not
-   merely shrunk. It is prep *management* — a GM mid-prep wants the
-   workspace, not this chrome. */
-body[data-route="prep"][data-sp-header-mode="compact"] .prep-bar {
-  display: none;
-}
-
-/* The removed rows' space becomes workspace room, not an empty gap — see
-   the ≥1200px "no page-level scroll" block further down, where every
-   ancestor from body to .prep-main already has a definite, shrinkable
-   height, so removing these two rows directly grows .prep-main's share. */
-body[data-route="prep"][data-sp-header-mode="compact"] .prep-wrap {
-  margin-top: var(--sp-workspace-gap); gap: var(--sp-workspace-gap);
+/* The Prep Bar is closed by default and laid over the workspace when open, so
+   it never pushes the columns down. Solid surface: it covers content. */
+.prep-wrap { position: relative; }
+.prep-bar { display: none; }
+body[data-route="prep"][data-sp-header-mode="expanded"] .prep-bar {
+  display: grid; position: absolute; z-index: 29; /* under the header (30): the ribbons stay on top */
+  top: 0; left: 50%; translate: -50% 0; width: min(920px, 100%);
+  background: var(--ink-card); border-color: var(--hope-border); box-shadow: var(--e-3);
 }
 
 /* The session control (see initPrepChrome() in js/app.js): one button in
    .header-inner's free middle space, between the brand and .header-actions —
-   a flex child, never absolutely positioned, so it can't be clipped by a
-   header whose height changes between the two modes and never adds a row.
+   a flex child, never absolutely positioned, so it can't be clipped and never
+   adds a row.
    .sp-session-slot takes the leftover width (flex 1, min-width 0) and is an
    inline-size container, so the label/title shrinking below is driven by the
    room the control actually has, not by the viewport. Order of loss as the
    slot narrows: the "Session ·" prefix, then the title's max width, then the
-   title's own ellipsis. Sized like the header cluster (32px, 28px compact);
+   title's own ellipsis. Sized like the header cluster (28px);
    its hit area is extended past that with ::after, same technique as
    .search-clear-btn. */
-body[data-route="prep"] .header-inner { flex-wrap: nowrap; }
 .sp-session-slot {
   position: relative; flex: 1 1 0; min-width: 7.5rem;
   display: flex; justify-content: center;
@@ -2413,7 +2401,7 @@ body[data-route="prep"] .header-inner { flex-wrap: nowrap; }
   /* Intentional exception to the radius scale: a status/selector capsule that is
    * neither a button (--r-sm) nor a full pill; the same 12px in the compact header. */
   --sp-session-radius: 12px;
-  position: relative; max-width: 100%; min-width: 7.5rem; height: var(--h-sm);
+  position: relative; max-width: 100%; min-width: 7.5rem; height: 28px;
   display: inline-flex; align-items: center; gap: var(--s-2);
   padding: 0 var(--s-3); white-space: nowrap;
   font-family: inherit; font-size: var(--fs-sm); line-height: 1; color: var(--muted);
@@ -2452,7 +2440,6 @@ body[data-route="prep"] .header-inner { flex-wrap: nowrap; }
 @container sp-session (max-width: 190px) {
   .sp-session-name { max-width: 12ch; }
 }
-body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { height: 28px; }
 
 /* One-time hint: an overlay under the control (absolute, out of flow — no
    layout shift), same surface as .tooltip but able to take a short sentence. */
@@ -3706,14 +3693,10 @@ body[data-route="prep"][data-sp-header-mode="compact"] .sp-session-control { hei
 }
 .lang-switch .sb-trigger-float:hover, .lang-switch .sb-trigger-float[aria-expanded="true"] { color: var(--parchment); background: var(--ink-raised); }
 .header-utils { display: flex; align-items: center; gap: var(--s-2); }
-body[data-route="prep"] .header-inner { gap: var(--s-3); }
-.sb-trigger { position: relative; width: var(--h-sm); padding: 0; flex: none; }
+.sb-trigger { position: relative; width: 28px; padding: 0; flex: none; }
 .header-actions .sb-trigger { padding: 0; }
 .sb-trigger svg { width: var(--icon-md); height: var(--icon-md); flex: none; }
 .sb-trigger[aria-expanded="true"] { border-color: var(--line-strong); background: var(--ink-hover); }
-body[data-route="prep"][data-sp-header-mode="compact"] .header-actions .sb-trigger {
-  width: 28px; padding: 0;
-}
 /* A small gold dot while any effect is sounding — visible with the panel closed. */
 .sb-trigger-dot {
   display: none; position: absolute; top: 3px; right: 3px;

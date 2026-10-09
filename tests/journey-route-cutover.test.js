@@ -14,9 +14,10 @@ const app = read('js/app.js');
 const i18n = JSON.parse(read('data/i18n.json'));
 const { parseRouteHash } = require('../js/route-utils.js');
 
-test('the header Journey button targets #/journey and only the journey route marks it current', () => {
-  assert.match(app, /getElementById\('btn-journey'\)\.addEventListener\('click', \(\) => navigate\('#\/journey'\)\)/);
-  assert.match(app, /const onJourney = state\.route\.name === 'journey';/);
+test('the header Journey ribbon targets #/journey and only the journey route marks it current', () => {
+  assert.match(app, /\{ id: 'journey', icon: \(\) => ICON_COMPASS, label: 'nav_journey', hash: '#\/journey' \}/);
+  assert.match(app, /: state\.route\.name === 'journey' \? 'journey'/);
+  assert.match(app, /navigate\(r\.hash\)/);
 });
 
 test('no public route, link or nav entry emits #/journey2 (only the router keeps it as a legacy alias)', () => {

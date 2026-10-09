@@ -724,16 +724,8 @@
     return total;
   }
 
-  /** The Prep header's expanded/compact preference as read from storage.
-   * Only the literal string "compact" selects compact; a missing key,
-   * unavailable storage or any stray value reads as 'expanded', the default
-   * for a reader who has never touched the toggle. */
-  function resolveHeaderMode(raw) {
-    return raw === 'compact' ? 'compact' : 'expanded';
-  }
-
-  /** The one-time "session controls are here" hint is only ever about
-   * compact mode, and only until it has been dismissed once. */
+  /** The one-time "session controls are here" hint is only ever shown with the
+   * session popover closed, and only until it has been dismissed once. */
   function shouldShowSessionHint(mode, hintSeen) {
     return mode === 'compact' && !hintSeen;
   }
@@ -749,7 +741,6 @@
   }
 
   return {
-    resolveHeaderMode: resolveHeaderMode,
     shouldShowSessionHint: shouldShowSessionHint,
     sessionSaveKind: sessionSaveKind,
     MAX_ENVIRONMENTS: MAX_ENVIRONMENTS,

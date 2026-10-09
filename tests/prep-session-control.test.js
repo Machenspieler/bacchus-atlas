@@ -32,29 +32,22 @@ function fnSource(name) {
   return APP_JS.slice(start, next === -1 ? undefined : start + 1 + next);
 }
 
-/* ---------------- mode persistence ---------------- */
+/* ---------------- popover state ---------------- */
 
-test('a genuinely new reader (no stored value) starts expanded', () => {
-  assert.equal(PrepUtils.resolveHeaderMode(null), 'expanded');
-  assert.equal(PrepUtils.resolveHeaderMode(undefined), 'expanded');
-});
-
-test('a stored preference is restored either way', () => {
-  assert.equal(PrepUtils.resolveHeaderMode('compact'), 'compact');
-  assert.equal(PrepUtils.resolveHeaderMode('expanded'), 'expanded');
-});
-
-test('a corrupted stored value falls back to expanded', () => {
-  for (const bad of ['', 'COMPACT', '1', '{"mode":"compact"}', 'true', 42]) {
-    assert.equal(PrepUtils.resolveHeaderMode(bad), 'expanded', String(bad));
-  }
-});
-
-test('the mode is read and written through SafeStorage on the existing key, never on a prep', () => {
-  assert.match(APP_JS, /prepHeaderMode: 'dhcodex_session_prep_header_mode'/);
-  assert.match(fnSource('storedPrepHeaderMode'), /readRawFlag\(lsStorage, LS_KEYS\.prepHeaderMode\)/);
-  assert.match(fnSource('prepChromeSetMode'), /persistRaw\(LS_KEYS\.prepHeaderMode, next\)/);
+test('the session popover always starts closed and its state is never persisted', () => {
+  assert.match(fnSource('initPrepChrome'), /mode: 'compact'/);
+  assert.doesNotMatch(APP_JS, /prepHeaderMode|dhcodex_session_prep_header_mode|storedPrepHeaderMode/);
+  assert.doesNotMatch(fnSource('prepChromeSetMode'), /persistRaw/);
   assert.doesNotMatch(APP_JS, /innerWidth[^;]*(?:setMode|prepChromeSetMode)/, 'no viewport-driven mode change');
+});
+
+test('an open popover closes on Escape and on a press outside it, and when the route is left', () => {
+  const set = fnSource('prepChromeSetMode');
+  assert.match(set, /e\.key === 'Escape'/);
+  assert.match(set, /closest\('#prep-bar, #sp-chrome-toggle'\)/);
+  assert.match(set, /addEventListener\('pointerdown', c\.popOnPointer, true\)/);
+  assert.match(set, /removeEventListener\('pointerdown', c\.popOnPointer, true\)/);
+  assert.match(fnSource('destroyPrepChrome'), /prepChromeSetMode\('compact'\)/);
 });
 
 /* ---------------- toggle ---------------- */
@@ -131,15 +124,15 @@ test('the hint has its own persisted flag, dismisses on click/outside/Escape/tim
   assert.match(show, /e\.key === 'Escape'/);
   assert.match(show, /setTimeout\(dismissPrepSessionHint, PREP_SESSION_HINT_MS\)/);
   assert.match(CSS, /\.sp-session-hint\s*\{[^}]*position:\s*absolute/);
-  // both first-time triggers: first manual collapse, and compact restored from storage
-  assert.match(fnSource('prepChromeSetMode'), /shouldShowSessionHint\(next, storedPrepSessionHintSeen\(\)\)/);
+  // first visit: the popover starts closed, so the hint is shown on creation
   assert.match(fnSource('initPrepChrome'), /shouldShowSessionHint\(c\.mode, storedPrepSessionHintSeen\(\)\)/);
+  // opening the popover makes the hint redundant
+  assert.match(fnSource('prepChromeSetMode'), /dismissPrepSessionHint\(\)/);
 });
 
 /* ---------------- responsive truncation ---------------- */
 
 test('the control never wraps and truncates its title with an ellipsis', () => {
-  assert.match(CSS, /body\[data-route="prep"\] \.header-inner \{ flex-wrap: nowrap; \}/);
   assert.match(CSS, /\.sp-session-slot \{[^}]*min-width: 7\.5rem/);
   assert.match(CSS, /\.sp-session-control \{[^}]*white-space: nowrap/);
   assert.match(CSS, /\.sp-session-name \{[^}]*min-width: 0[^}]*overflow: hidden; text-overflow: ellipsis; white-space: nowrap/);
