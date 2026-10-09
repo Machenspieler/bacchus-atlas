@@ -86,6 +86,7 @@ paths:
   result from `resolveListRename()` updates `list.name` and calls
   `persist()`; an invalid rename restores the previously committed name and
   shows an inline per-card error instead.
+- **A list name is at most `ListUtils.MAX_NAME_LENGTH` (80) code points.** `normalizeName()` cuts to it (so create, rename and the Add-to-list modal all agree) and the three name inputs carry the same `maxlength`; an older, longer stored name is left as saved and is cut only if it is edited.
 - **List IDs and routes never change on rename** — a rename is a name-field
   update only, never a re-keying of the list.
 
