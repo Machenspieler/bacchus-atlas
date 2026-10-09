@@ -148,7 +148,7 @@ blurred backdrop of the environment's own art when one exists
 ## Prep multi-prep model
 
 > **Compatibility artifacts.** This feature was once called "Session Prep".
-> The `dhcodex_session_prep` / `dhcodex_session_prep_header_mode` storage keys
+> The `dhcodex_session_prep` storage key
 > and the persisted `activeSessionId` / `sessions` field names are kept
 > deliberately: renaming them would need a data migration for no user-visible
 > value, and a mistake would lose saved preps. All code and UI say "prep";
@@ -211,19 +211,20 @@ global to keep in sync with it.
   by the placeholder). Both menus share `bindPrepMenu()` (one open at a
   time, outside click/Escape/Tab close, arrow/Home/End navigation, focus
   returned to the trigger, viewport clamping via `positionPrepMenu()`).
-  The bar is hidden by the same `data-sp-header-mode="compact"` switch as
-  the site header chrome.
+  The bar is a popover (PD-047): closed by default, laid over the top of the
+  workspace (`position: absolute` in `.prep-wrap`, solid surface, under the
+  header's z-index) while `data-sp-header-mode="expanded"`; it never pushes
+  the columns.
 - **Session control** (header chrome): one `<button>` in `.header-inner`
   between the brand and `.header-actions` — "Session · <active prep title>",
-  a save-status icon, a chevron — is the only expand/collapse toggle
-  (`initPrepChrome()` / `paintSessionControl()`). It is repainted from
-  `activePrep()` and `state.prepUI`, never caching a title or save state. The
-  expanded/compact mode is a global preference in
-  `dhcodex_session_prep_header_mode`, default **expanded**
-  (`PrepUtils.resolveHeaderMode()`); a separate
-  `dhcodex_session_prep_hint_seen` flag gates the one-time hint shown the
-  first time compact mode is entered or restored. Its `saving` icon is the
-  real pending state of a debounced Session Notes write (`prepNotesDirty`).
+  a save-status icon, a chevron — opens and closes that popover
+  (`initPrepChrome()` / `prepChromeSetMode()` / `paintSessionControl()`). It
+  is repainted from `activePrep()` and `state.prepUI`, never caching a title
+  or save state. The open state is transient: it always starts closed, is not
+  persisted, and closes on Escape, on a press outside the bar and the pill, and
+  when the route is left. A `dhcodex_session_prep_hint_seen` flag gates the
+  one-time hint shown on the first visit. Its `saving` icon is the real
+  pending state of a debounced Session Notes write (`prepNotesDirty`).
 - **Save status** is the second line inside the session selector button
   (`#prep-save-status`, aria-hidden — the header control's live region
   announces it) and reflects only real outcomes (`prepSaveStatusView()`, built

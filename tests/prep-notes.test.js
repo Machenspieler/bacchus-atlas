@@ -55,11 +55,9 @@ test('the textarea is labelled by a connected, visually hidden <label>, is two r
   assert.equal(fnSource('bindPrepBar').includes('notesInput.focus'), false);
 });
 
-test('collapsing hides the whole Prep Bar, which is the only place notes are rendered', () => {
-  assert.match(
-    CSS,
-    /body\[data-route="prep"\]\[data-sp-header-mode="compact"\] \.prep-bar \{\s*display: none;\s*\}/,
-  );
+test('the closed session popover hides the whole Prep Bar, which is the only place notes are rendered', () => {
+  assert.match(CSS, /\n\.prep-bar \{ display: none; \}/);
+  assert.match(CSS, /body\[data-route="prep"\]\[data-sp-header-mode="expanded"\] \.prep-bar \{\s*display: grid;/);
   // No other renderer — not the global header, not the collapse toggle that
   // stands in for the hidden bar — references notes.
   for (const fn of ['renderHeader', 'applyPrepChromeDom', 'initPrepChrome']) {
