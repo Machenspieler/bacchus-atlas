@@ -334,7 +334,7 @@ test('toolbar: Reveal and Hide are real toggle buttons with aria-pressed, the fo
   assert.doesNotMatch(view, /data-j2-fog-tool="(reveal|hide)"/, 'one brush button replaces Reveal and Hide');
   assert.doesNotMatch(view, /data-j2-fog-state/, 'no Fog overlay toggle (PD-036)');
   assert.match(view, /data-j2-preview data-t-title="journey2_preview_title"/);
-  assert.match(view, /<button type="button" class="btn btn-sm j2-tool j2-preview-back" data-j2-preview-back>/);
+  assert.match(view, /<button type="button" class="btn btn-ghost btn-sm j2-tool j2-preview-back" data-j2-preview-back>/);
   assert.match(view, /role="group" data-j2-fog-group/);
   assert.match(fn('updateFogUi', 'setFogTool'), /setAttribute\('aria-pressed', String\(!!fogTool\)\)/);
 });

@@ -411,6 +411,7 @@
       warn: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M7 1.8 12.8 12H1.2zM7 5.6v3M7 10.3v.1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       chevL: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m8.8 3 -4 4 4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       chevR: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m5.2 3 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      inspect: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m12.5 12.5 4.3 4.3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
       info: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 9.2v4.3M10 6.3v.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
       palette: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 2.8c-4.1 0-7.2 2.9-7.2 6.6 0 3.8 3 7.4 6.6 7.4 1.5 0 1.9-1 1.3-1.9-.7-1 .1-2.1 1.2-2.1h1.7c1.4 0 2.6-1 2.6-2.7C16.2 5.4 13.6 2.8 10 2.8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><g fill="currentColor"><circle cx="6.3" cy="8.6" r="1.1"/><circle cx="9.2" cy="6" r="1.1"/><circle cx="12.6" cy="6.6" r="1.1"/></g></svg>',
       mouseLeft: '<svg viewBox="0 0 14 20" aria-hidden="true" focusable="false"><path class="j2-mouse-hit" d="M7 1.2H6.5A5 5 0 0 0 1.5 6.2V7.6H7z"/><rect x="1.5" y="1.2" width="11" height="17.6" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 7.6h11M7 1.2v6.4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>',
@@ -637,28 +638,30 @@
                     </div>
                   </div>
                   <div class="j2-ctl-preview" data-j2-preview-bar hidden>
-                    <span class="j2-preview-flag" role="status"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><strong data-t="journey2_preview"></strong></span>
+                    <div class="j2-preview-head">
+                      <span class="j2-preview-flag" role="status"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><strong data-t="journey2_preview"></strong></span>
+                      <button type="button" class="btn btn-ghost btn-sm j2-tool j2-preview-back" data-j2-preview-back><span class="j2-ico" aria-hidden="true">${ICON.back}</span><span data-t="journey2_preview_back"></span></button>
+                    </div>
                     <p class="j2-preview-note" data-t="journey2_preview_hint"></p>
                     <span class="j2-tb-tools" role="group" data-t-aria="journey2_fog_group">
-                      <button type="button" class="btn btn-sm j2-tool j2-paint-tool" data-j2-fog-tool="paint" aria-pressed="false" data-t-aria="journey2_fog_paint_title" data-t-title="journey2_fog_paint_title"><span class="j2-mouse-pair" aria-hidden="true"><span class="j2-mouse-ico">${ICON.mouseLeft}</span><span data-t="journey2_fog_reveal"></span><span class="j2-mouse-ico">${ICON.mouseRight}</span><span data-t="journey2_fog_hide"></span></span></button>
+                      <button type="button" class="btn btn-sm j2-tool j2-paint-tool" data-j2-fog-tool="paint" aria-pressed="false" data-t-aria="journey2_fog_paint_title" data-t-title="journey2_fog_paint_title">
+                        <span class="j2-paint-top"><strong data-t="journey2_fog_brush"></strong><span class="j2-paint-state" aria-hidden="true"><span class="j2-paint-on" data-t="journey2_fog_brush_on"></span><span class="j2-paint-off" data-t="journey2_fog_brush_off"></span></span></span>
+                        <span class="j2-mouse-pair" aria-hidden="true"><span class="j2-mouse-ico">${ICON.mouseLeft}</span><span data-t="journey2_fog_reveal"></span><span class="j2-mouse-ico">${ICON.mouseRight}</span><span data-t="journey2_fog_hide"></span></span>
+                      </button>
                     </span>
                     <button type="button" class="btn btn-sm j2-tool" data-j2-print-open data-t-title="journey2_pp_open_title"><span class="j2-ico" aria-hidden="true">${ICON.print}</span><span data-t="journey2_pp_open"></span></button>
-                    <button type="button" class="btn btn-sm j2-tool j2-preview-back" data-j2-preview-back><span class="j2-ico" aria-hidden="true">${ICON.back}</span><span data-t="journey2_preview_back"></span></button>
                   </div>
                 </div>
+                <form class="j2-gen" data-j2-gen novalidate>
+                  <button type="submit" class="btn btn-primary j2-gen-go" data-j2-generate data-t-title="journey2_gen_hint" aria-describedby="j2-gen-desc"><span class="j2-ico">${ICON.dice}</span><span data-t="journey2_gen_go"></span></button>
+                  <span class="sr-only" id="j2-gen-desc" data-t="journey2_gen_hint"></span>
+                  <p class="j2-field-error" id="j2-gen-error" data-j2-gen-error role="alert" hidden></p>
+                </form>
                 <div class="j2-side-scroll" data-j2-side-scroll>
                   <div class="j2-banner" data-j2-banner hidden role="alert"></div>
-                  <form class="j2-gen" data-j2-gen novalidate>
-                    <div class="j2-gen-head">
-                      <h3 class="j2-h" data-t="journey2_gen_title"></h3>
-                    </div>
-                    <p class="j2-gen-hint" data-t="journey2_gen_hint"></p>
-                    <p class="j2-field-error" id="j2-gen-error" data-j2-gen-error role="alert" hidden></p>
-                    <button type="submit" class="btn btn-primary j2-gen-go" data-j2-generate><span class="j2-ico">${ICON.dice}</span><span data-t="journey2_gen_go"></span></button>
-                  </form>
                   <section class="j2-stock" aria-labelledby="j2-stock-title">
                     <h3 class="j2-h j2-h--row" id="j2-stock-title"><span data-t="journey2_stock_title"></span><span class="j2-count" data-j2-stock-count></span></h3>
-                    <p class="j2-empty" data-j2-stock-empty data-t="journey2_stock_empty"></p>
+                    <div data-j2-stock-empty><p class="j2-empty" data-t="journey2_stock_empty"></p><p class="j2-gen-hint" data-t="journey2_gen_hint"></p></div>
                     <p class="j2-place-hint" data-j2-place-hint data-t="journey2_place_hint_shared" hidden></p>
                     <div class="j2-cards" data-j2-cards></div>
                   </section>
@@ -1061,15 +1064,6 @@
       if (target) target.focus({ preventScroll: true });
     }
 
-    function snapSideHeader() {
-      const sc = ui.sideScroll, stock = sc && sc.querySelector('.j2-stock');
-      if (inst.disposed || !stock || !sc.clientHeight) return;
-      const st = sc.scrollTop, pad = parseFloat(getComputedStyle(sc).paddingTop) || 0;
-      const end = Math.max(0, Math.round(stock.getBoundingClientRect().top - sc.getBoundingClientRect().top + st - pad));
-      if (st <= 0 || st >= end) return;
-      sc.scrollTop = st < end / 2 ? 0 : end;
-    }
-
     /** Width the overlay sidebar covers on the left of the map (used by Fit only; toggling never refits). */
     function sideInset() {
       if (!ui.sidewrap) return 0;
@@ -1094,12 +1088,11 @@
             <span class="j2-card-sym"><img alt="" data-j2-c="img"></span>
             <span class="j2-card-title">
               <span class="j2-card-name"><span data-j2-c="name"></span><span class="j2-card-ord" data-j2-c="ord"></span></span>
-              <span class="j2-card-meta"><span class="j2-dots" data-j2-c="dots" role="img"></span><span class="j2-blight" data-j2-c="blight" hidden></span></span>
+              <span class="j2-card-meta"><span class="j2-dots" data-j2-c="dots" role="img"></span><span class="j2-blight" data-j2-c="blight" hidden></span><span class="j2-card-sum" data-j2-c="sum"></span></span>
             </span>
           </button>
-          <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-inspect" data-j2-inspect data-j2-c="inspect" aria-controls="j2-region-inspector" aria-haspopup="dialog">${ICON.info}<span class="sr-only" data-j2-c="inspectSr"></span></button>
+          <button type="button" class="icon-btn j2-inspect" data-j2-inspect data-j2-c="inspect" aria-controls="j2-region-inspector" aria-haspopup="dialog">${ICON.inspect}<span class="sr-only" data-j2-c="inspectSr"></span></button>
         </div>
-        <p class="j2-card-sum" data-j2-c="sum"></p>
         <p class="j2-warn" data-j2-c="warn" hidden><span class="j2-warn-ico" aria-hidden="true">${ICON.warn}</span><span data-j2-c="warnText"></span></p>
         <div class="j2-card-body" id="${bodyId}" data-j2-c="body" hidden>
           <div class="j2-status" data-j2-c="status"><span class="j2-num" data-j2-c="placedText"></span><span class="j2-bar" role="presentation"><span data-j2-c="bar"></span></span><span class="j2-num" data-j2-c="leftText"></span></div>
@@ -1107,9 +1100,11 @@
             <button type="button" class="j2-handle" data-j2-handle="one"><span class="j2-handle-label" data-j2-c="oneLabel"></span><span class="j2-grip">${ICON.grip}</span></button>
             <button type="button" class="j2-handle j2-handle--all" data-j2-handle="all"><span class="j2-handle-label" data-j2-c="allLabel"></span><span class="j2-grip">${ICON.grip}</span></button>
           </div>
-          <p class="j2-done" data-j2-c="done" hidden><span class="j2-done-ico" aria-hidden="true">${ICON.check}</span><span data-j2-c="doneText"></span></p>
-          <div class="j2-card-foot">
-            <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-delete" data-j2-delete data-j2-c="del">${ICON.trash}</button>
+          <div class="j2-card-end">
+            <p class="j2-done" data-j2-c="done" hidden><span class="j2-done-ico" aria-hidden="true">${ICON.check}</span><span data-j2-c="doneText"></span></p>
+            <div class="j2-card-foot">
+              <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-delete" data-j2-delete data-j2-c="del">${ICON.trash}</button>
+            </div>
           </div>
         </div>`;
       const refs = { root: root, id: b.id };
@@ -1130,6 +1125,7 @@
       refs.ord.textContent = '#' + ord;
       refs.dots.innerHTML = [1, 2, 3, 4].map(i => '<i' + (i <= b.terrain.value ? ' class="on"' : '') + '></i>').join('');
       refs.dots.setAttribute('aria-label', fill('journey2_terrain_n', { n: b.terrain.value }));
+      refs.dots.setAttribute('title', fill('journey2_terrain_tip', { n: b.terrain.value, d: b.terrain.value }));
       refs.blight.hidden = !(b.habitat.blighted && !b.habitat.overtaken);
       refs.blight.textContent = t('journey_shadowblighted');
       // active region: expanded, programmatically identifiable
@@ -1283,9 +1279,15 @@
       for (const [id, refs] of cardRefs) if (!seen.has(id)) { refs.root.remove(); cardRefs.delete(id); }
       ui.stockEmpty.hidden = list.length > 0;
       ui.placeHint.hidden = list.length === 0;
-      ui.stockCount.textContent = list.length ? n(list.length) : '';
-      ui.railCount.textContent = list.length ? n(list.length) : '';
-      ui.railCount.setAttribute('aria-label', fill('journey2_rail_count_aria', { n: n(list.length) }));
+      // the number answers "how much is left to place"; the region total lives in the tooltip / accessible name (D1)
+      let left = 0; for (const b of list) left += counts.get(b.id).remaining;
+      const countAria = fill('journey2_stock_count_aria', { r: n(list.length), n: n(left) });
+      ui.stockCount.textContent = !list.length ? '' : left ? fill('journey2_stock_left', { n: n(left) }) : t('journey2_stock_all_placed');
+      ui.stockCount.classList.toggle('has-left', left > 0);
+      ui.stockCount.title = list.length ? countAria : '';
+      if (list.length) ui.stockCount.setAttribute('aria-label', countAria); else ui.stockCount.removeAttribute('aria-label');
+      ui.railCount.textContent = list.length ? n(left) : '';
+      ui.railCount.setAttribute('aria-label', fill('journey2_rail_count_aria', { r: n(list.length), n: n(left) }));
       ui.generate.disabled = editLocked;
     }
 
@@ -3201,7 +3203,7 @@
       const on = previewMode;
       ui.root.setAttribute('data-mode', on ? 'preview' : 'gm');
       // the panel stays where it is in both modes (one screen); only its content changes: GM tools, New region and the stock give way to the preview controls
-      ui.gmControls.hidden = on; ui.sideScroll.hidden = on; ui.previewBar.hidden = !on; ui.railStock.hidden = on;
+      ui.gmControls.hidden = on; ui.gen.hidden = on; ui.sideScroll.hidden = on; ui.previewBar.hidden = !on; ui.railStock.hidden = on;
       syncRail();
       ui.hint.hidden = true; ui.tip.hidden = true; ui.tip.innerHTML = ''; envTipKey = null;
       ui.viewport.setAttribute('aria-label', t(on ? 'journey2_preview_map_label' : 'journey2_map_label'));
@@ -3417,13 +3419,6 @@
         cleanups.push(() => ro2.disconnect());
       }
       listen(ui.sidewrap, 'transitionend', () => { positionInspector(); });
-      // the "New region" block never rests half cut off at the top edge: once scrolling settles inside it, snap to fully shown or fully scrolled away
-      let snapTimer = 0;
-      listen(ui.sideScroll, 'scroll', () => {
-        clearTimeout(snapTimer);
-        snapTimer = setTimeout(snapSideHeader, 140);
-      });
-      cleanups.push(() => clearTimeout(snapTimer));
       listen(ui.root, 'click', onRootClick);
       listen(ui.gen, 'submit', onGenerate);
       listen(ui.panel.querySelector('[data-j2-goto]'), 'submit', onGoto);

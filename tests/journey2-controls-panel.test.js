@@ -50,7 +50,7 @@ test('rail: one icon-only proxy per control, each with a source, the same data a
 
 test('Player Preview: the same panel, content swapped, camera shared, Fit inset unchanged', () => {
   const chrome = view.slice(view.indexOf('function applyPreviewChrome'), view.indexOf('function enterPreview'));
-  assert.match(chrome, /ui\.gmControls\.hidden = on; ui\.sideScroll\.hidden = on; ui\.previewBar\.hidden = !on/);
+  assert.match(chrome, /ui\.gmControls\.hidden = on; ui\.gen\.hidden = on; ui\.sideScroll\.hidden = on; ui\.previewBar\.hidden = !on/);
   assert.doesNotMatch(chrome, /sidewrap\.(hidden|inert)/);
   assert.doesNotMatch(view, /previewReturn/);
   assert.match(view.slice(view.indexOf('function sideInset'), view.indexOf('/* ====', view.indexOf('function sideInset'))), /if \(!ui\.sidewrap\) return 0;/, 'the panel covers the same strip in both modes');

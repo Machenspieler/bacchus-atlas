@@ -384,6 +384,17 @@ width; at <= 900px every one of them is the map width minus `2 * var(--s-3)`. Ca
 for static headings. A control whose label is the action it will take (e.g. *Reveal to players* / *Hide from players*)
 does not also carry `aria-pressed`.
 
+### Journey side drawer (`.j2-side`, `.j2-rail`)
+Row 1 (history / zoom / Fit / collapse) is shared by both modes. The GM tools are three zones that mirror the collapsed
+rail's groups — View, Tools, Echoes + sanctuaries — separated by `--line-faint` hairlines; rows fill their width so edges
+align. "Generate region" is the only solid gold element and is pinned under the toolbar; only the sticky Hex stock heading
+and the cards scroll. The heading's number is the hexes left to place (gold-soft while above 0). A finished, collapsed
+region card is a compact two-line row with a dimmed tile; cards with hexes left stay full size with the gold wash. Teal
+in the stock marks informational progress/completion (bar, "all placed" line); gold stays selected/primary; fear-red is
+only the Shadowblighted badge and the hover/focus state of Remove Echoes. The card's inspect control is a quiet
+`.icon-btn` with a magnifier — the info glyph is reserved for help. In Player Preview the fog brush button shows its name
+and an On / Off state beside the gold pressed fill, and "Back to GM" sits with the mode flag.
+
 ### Toast & tooltip
 Toasts stack from one screen corner (the same corner the "back to top" button
 claims, so the two never collide). The tooltip is a single reused custom
