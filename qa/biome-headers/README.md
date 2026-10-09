@@ -18,8 +18,8 @@ Source: `img/biome-artwork-source/*.png` (1672x941, untouched, excluded from `di
 | Rolling | rolling.webp | 960x540 | 140,166 | center 40% | pass (layered ridges) |
 | Mountain | mountain.webp | 960x540 | 113,000 | center 25% | pass |
 | Badlands | badlands.webp | 960x540 | 103,984 | center 25% | pass |
-| Settlement | settlement.webp | 960x540 | 119,984 | center 25% | pass via fixture (Journey never produces it) |
-| Universal | — | — | — | — | **MISSING: no `universal` horizontal source supplied**; falls back to the plain header |
+| Settlement | settlement.webp | 960x540 | 119,984 | center 25% | **Sanctuary overlay artwork** (not a region) — see `final/sanctuary-*.png` |
+| Universal | — | — | — | — | intentionally none: not a Journey region (PD-049) |
 
 ## Files
 - `comparison-1440-en-ru.png`, `comparison-1280-en-ru.png` — all 13 headers, final styling, review only.
@@ -31,3 +31,6 @@ Source: `img/biome-artwork-source/*.png` (1672x941, untouched, excluded from `di
 ## Results
 - Every terrain: correct `data-art`, header 88 px at all 10 viewport/language combinations, no title/meta overlap with the close button, switching between regions updates the art; no 404s except the expected Universal one.
 - Weakest element (as in the Forest/Drylands review): the muted meta line over the brightest right-hand art (Aquatic, Grassland, Drylands). It stays readable via the existing text-shadow halo; no per-biome gradients were needed. Not measured numerically this round — visual review only.
+
+## Final release pass (2026-10-09)
+`final/` — real-UI screenshots (Hex overlay, Region overlay from Hex Stock, Sanctuary overlay; normal + Shadowblighted; EN/RU; 1280/1440/1920) and `measurements.json` (112 cases over 1280x800, 1366x768, 1440x900, 1920x1080, 2560x1440: header 88 px everywhere, close button 32 px and inside the header, no failed requests, Settlement art on the sanctuary overlay, all 11 biome WebPs 200 image/webp). Gradient strengthened slightly; the `·` separator already never starts a wrapped line (no-break spaces).

@@ -1,0 +1,2152 @@
+[
+ {
+  "tag": "forest-normal-en-1280",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-normal-en-1366",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-normal-en-1440",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-normal-en-1920",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-normal-en-2560",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-normal-ru-1280",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-normal-ru-1366",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-normal-ru-1440",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-normal-ru-1920",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-normal-ru-2560",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-blight-en-1280",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-blight-en-1366",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-blight-en-1440",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-blight-en-1920",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-blight-en-2560",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-blight-ru-1280",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-blight-ru-1366",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-blight-ru-1440",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-blight-ru-1920",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "forest-blight-ru-2560",
+  "hex": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "forest",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-normal-en-1280",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-normal-en-1366",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-normal-en-1440",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-normal-en-1920",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-normal-en-2560",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-normal-ru-1280",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-normal-ru-1366",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-normal-ru-1440",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-normal-ru-1920",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-normal-ru-2560",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-blight-en-1280",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-blight-en-1366",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-blight-en-1440",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-blight-en-1920",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-blight-en-2560",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-blight-ru-1280",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-blight-ru-1366",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-blight-ru-1440",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-blight-ru-1920",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "drylands-blight-ru-2560",
+  "hex": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "drylands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-normal-en-1280",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-normal-en-1366",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-normal-en-1440",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-normal-en-1920",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-normal-en-2560",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-normal-ru-1280",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-normal-ru-1366",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-normal-ru-1440",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-normal-ru-1920",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-normal-ru-2560",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-blight-en-1280",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-blight-en-1366",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-blight-en-1440",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-blight-en-1920",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-blight-en-2560",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-blight-ru-1280",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-blight-ru-1366",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-blight-ru-1440",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-blight-ru-1920",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "frozen-blight-ru-2560",
+  "hex": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "frozen",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-normal-en-1280",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-normal-en-1366",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-normal-en-1440",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-normal-en-1920",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-normal-en-2560",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-normal-ru-1280",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-normal-ru-1366",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-normal-ru-1440",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-normal-ru-1920",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-normal-ru-2560",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-blight-en-1280",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-blight-en-1366",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-blight-en-1440",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-blight-en-1920",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-blight-en-2560",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-blight-ru-1280",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-blight-ru-1366",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-blight-ru-1440",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-blight-ru-1920",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "aquatic-blight-ru-2560",
+  "hex": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "aquatic",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-normal-en-1280",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-normal-en-1366",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-normal-en-1440",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-normal-en-1920",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-normal-en-2560",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-normal-ru-1280",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-normal-ru-1366",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-normal-ru-1440",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-normal-ru-1920",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-normal-ru-2560",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-blight-en-1280",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-blight-en-1366",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-blight-en-1440",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-blight-en-1920",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-blight-en-2560",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-blight-ru-1280",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1181,
+   "closeLeft": 1193
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1184,
+   "closeLeft": 1196
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-blight-ru-1366",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1260,
+   "closeLeft": 1272
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1270,
+   "closeLeft": 1282
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-blight-ru-1440",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1344,
+   "closeLeft": 1356
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-blight-ru-1920",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1545,
+   "closeLeft": 1557
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1824,
+   "closeLeft": 1836
+  },
+  "failed": []
+ },
+ {
+  "tag": "grassland-blight-ru-2560",
+  "hex": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1857,
+   "closeLeft": 1869
+  },
+  "region": {
+   "art": "grassland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 2464,
+   "closeLeft": 2476
+  },
+  "failed": []
+ },
+ {
+  "tag": "biome-underground",
+  "hex": {
+   "art": "underground",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "failed": [],
+  "img": "200 image/webp"
+ },
+ {
+  "tag": "biome-wetland",
+  "hex": {
+   "art": "wetland",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "failed": [],
+  "img": "200 image/webp"
+ },
+ {
+  "tag": "biome-tropical",
+  "hex": {
+   "art": "tropical",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "failed": [],
+  "img": "200 image/webp"
+ },
+ {
+  "tag": "biome-rolling",
+  "hex": {
+   "art": "rolling",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "failed": [],
+  "img": "200 image/webp"
+ },
+ {
+  "tag": "biome-mountain",
+  "hex": {
+   "art": "mountain",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "failed": [],
+  "img": "200 image/webp"
+ },
+ {
+  "tag": "biome-badlands",
+  "hex": {
+   "art": "badlands",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": 1312,
+   "closeLeft": 1324
+  },
+  "failed": [],
+  "img": "200 image/webp"
+ },
+ {
+  "tag": "sanctuary-en-1280",
+  "m": {
+   "art": "settlement",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": null,
+   "closeLeft": 839
+  },
+  "failed": []
+ },
+ {
+  "tag": "sanctuary-en-1440",
+  "m": {
+   "art": "settlement",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": null,
+   "closeLeft": 1256
+  },
+  "failed": []
+ },
+ {
+  "tag": "sanctuary-en-1920",
+  "m": {
+   "art": "settlement",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": null,
+   "closeLeft": 1653
+  },
+  "failed": []
+ },
+ {
+  "tag": "sanctuary-ru-1280",
+  "m": {
+   "art": "settlement",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": null,
+   "closeLeft": 839
+  },
+  "failed": []
+ },
+ {
+  "tag": "sanctuary-ru-1440",
+  "m": {
+   "art": "settlement",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": null,
+   "closeLeft": 1256
+  },
+  "failed": []
+ },
+ {
+  "tag": "sanctuary-ru-1920",
+  "m": {
+   "art": "settlement",
+   "head": 88,
+   "close": 32,
+   "closeInside": true,
+   "subRight": null,
+   "closeLeft": 1653
+  },
+  "failed": []
+ }
+]

@@ -21,8 +21,11 @@ test('every Journey terrain (and Settlement) has a header WebP that is 960x540',
   }
 });
 
-test('HEADER_ART lists every terrain and no prototype switch remains', () => {
+test('REGION_ART lists exactly the eleven terrains; Settlement is sanctuary-only; Universal has no entry', () => {
   const view = read('js/journey2-view.js'), css = read('css/journey2.css');
-  for (const id of Model.HABITAT_IDS) assert.match(view, new RegExp('\\b' + id + ': \\{'), id);
+  const block = view.slice(view.indexOf('const REGION_ART = {'), view.indexOf('const SANCTUARY_ART'));
+  for (const id of Model.HABITAT_IDS) assert.match(block, new RegExp('\\b' + id + ': \\{'), id);
+  assert.ok(!/\b(settlement|universal)\b/.test(block), 'neither catalog-only category is a Journey region artwork');
+  assert.match(view, /const SANCTUARY_ART = \{ file: 'settlement'/);
   assert.ok(!/hdr=|data-art-pos|data-art-h/.test(view + css));
 });

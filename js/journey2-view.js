@@ -1475,22 +1475,27 @@
       announce(fill(res.triggered ? 'journey2_roll_live_hit' : 'journey2_roll_live_miss', { faces: res.faces.map(n).join(', ') }));
     }
 
-    /* Illustrated header for the shared Region Inspector — hex-opened and card-opened alike. The one biome -> artwork map: a 960x540 WebP per
-     * biome (img/journey2/headers/<biome>.webp) and, only where the default 'center 25%' crops a biome badly, a position override.
-     * A biome missing here (universal: no horizontal artwork yet) and a fully overtaken region keep the plain header. */
-    const HEADER_ART = {
-      forest: {}, drylands: {}, frozen: {}, underground: {}, tropical: {}, mountain: {}, badlands: {}, settlement: {},
+    /* Illustrated headers for the shared Region Inspector and the sanctuary overlay (both are .j2-region-inspector panels). One 960x540 WebP per
+     * image under img/journey2/headers/<file>.webp; a position override only where the default 'center 25%' crops an image badly.
+     * REGION_ART: the eleven natural Journey biomes. universal / settlement are catalog categories, never Journey regions, so they have no entry:
+     * a fully overtaken region keeps the plain header. SANCTUARY_ART: the Settlement illustration belongs to sanctuaries only (decorative; no data). */
+    const REGION_ART = {
+      forest: {}, drylands: {}, frozen: {}, underground: {}, tropical: {}, mountain: {}, badlands: {},
       aquatic: { pos: 'center 40%' },      // keeps the sea stacks and shows more water
       wetland: { pos: 'center 40%' },      // flooded ground and mist, not only the canopy
       rolling: { pos: 'center 40%' },      // the layered ridge lines
       grassland: { pos: 'center 50%' },    // the plain, river and acacias; at 25% it is mostly sky
     };
+    const SANCTUARY_ART = { file: 'settlement', pos: null };
+    function applyArt(root, file, pos) {
+      if (!file) { root.removeAttribute('data-art'); root.style.removeProperty('--j2-art'); root.style.removeProperty('--j2-art-pos'); return; }
+      root.setAttribute('data-art', file);
+      root.style.setProperty('--j2-art', 'url("' + new URL('img/journey2/headers/' + file + '.webp', document.baseURI).href + '")');   // absolute: a url() in a custom property otherwise resolves against css/
+      if (pos) root.style.setProperty('--j2-art-pos', pos); else root.style.removeProperty('--j2-art-pos');
+    }
     function applyHeaderArt(b) {
-      const root = ui.inspector, biome = b.habitat.overtaken ? '' : b.habitat.biome, art = HEADER_ART[biome];
-      if (!art) { root.removeAttribute('data-art'); root.style.removeProperty('--j2-art'); root.style.removeProperty('--j2-art-pos'); return; }
-      root.setAttribute('data-art', biome);
-      root.style.setProperty('--j2-art', 'url("' + new URL('img/journey2/headers/' + biome + '.webp', document.baseURI).href + '")');   // absolute: a url() in a custom property otherwise resolves against css/
-      if (art.pos) root.style.setProperty('--j2-art-pos', art.pos); else root.style.removeProperty('--j2-art-pos');
+      const biome = b.habitat.overtaken ? '' : b.habitat.biome, art = REGION_ART[biome];
+      applyArt(ui.inspector, art ? biome : '', art && art.pos);
     }
 
     /** Paints the open inspector from the committed document. */
@@ -2839,7 +2844,7 @@
     /** Hides the overlay AND empties it: a closed panel keeps no sanctuary name or table in the DOM (Player Preview must not carry any). */
     function clearSanctuaryPanel() {
       if (!ui.sanctuary) return;
-      ui.sanctuary.hidden = true; sanctuaryShown = null;
+      ui.sanctuary.hidden = true; sanctuaryShown = null; applyArt(ui.sanctuary, '');
       ui.s.name.textContent = ''; ui.s.rows.innerHTML = ''; ui.s.rows.removeAttribute('data-sig');
     }
 
@@ -2849,6 +2854,7 @@
       const e = previewMode ? null : sanctuaryEntry(sanctuaryOpen), echo = !previewMode && sanctuaryHasEcho(sanctuaryOpen);
       if (!e && !echo) { clearSanctuaryPanel(); return; }
       ui.sanctuary.hidden = false;
+      applyArt(ui.sanctuary, SANCTUARY_ART.file, SANCTUARY_ART.pos);
       ui.s.name.textContent = e ? sanctuaryTitle(e) : t('journey2_sanc_fallback');
       // an Echo-only sanctuary (its characteristics were deleted) shows just the Soul Echo row: no name toggle, no tables, no Reroll / Delete
       ui.sancName.hidden = !e; ui.s.rows.hidden = !e; ui.s.foot.hidden = !e;
