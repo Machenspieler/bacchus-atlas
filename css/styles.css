@@ -402,6 +402,22 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
   pointer-events: none;
 }
 .ribbon-label svg { width: var(--icon-sm); height: var(--icon-sm); flex: none; }
+/* ---- Fabric ribbon skin (experimental, opt-in: ?ribbonSkin=fabric sets data-ribbon-skin on <html>) ----
+ * Only the Catalogue ribbon so far. It swaps the PAINT of .ribbon-fab and nothing else: the button's height transition,
+ * sway/drop keyframes, transform origin, drop-shadow, clip-path swallow-tail, label and dim overlay are all the
+ * originals, so the texture moves and grows as part of the same element. Three slices (made by
+ * scripts/generate-ribbon-fabric.js): the sewn hem is pinned to the top, the swallow-tail hem to the bottom, and a
+ * mirrored weave tile repeats between them, so the length changes by revealing more weave, never by scaling the
+ * photograph. Slice heights at 1x: top 10px, tile 48px. Another colour = another set of three images. */
+:root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="catalog"] .ribbon-fab {
+  background:
+    url("../img/ui/ribbon-fabric/catalog-top.webp") 0 0 / 100% auto no-repeat,
+    url("../img/ui/ribbon-fabric/catalog-bottom.webp") 0 100% / 100% auto no-repeat,
+    url("../img/ui/ribbon-fabric/catalog-mid.webp") 0 10px / 100% auto repeat-y,
+    #8a5c14;
+}
+:root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="catalog"] .ribbon-cut { display: none; } /* the photo has its own stitched hem */
+:root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="catalog"] { --rb-ts: 0 1px 0 rgba(255,236,170,0.45), 0 0 3px rgba(255,214,120,0.35); }
 /* A ribbon that has just become current drops in and swings once. */
 .ribbon.drop { animation: ribbon-drop 0.7s ease-out; }
 @keyframes ribbon-drop {

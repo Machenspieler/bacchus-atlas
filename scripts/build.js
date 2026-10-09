@@ -35,6 +35,7 @@ const EXCLUDE_PATHS = [
   /(^|\/)journey2[^/]*\.zip$/i,    // a stray Journey 2 package ZIP anywhere (e.g. journey2-stage0-followup.zip at the root)
   /(^|\/)stage-\d+[a-z]?\.zip$/i,  // review packages named by stage (stage-0.zip, stage-0a.zip, stage-1.zip, ...)
   /^img\/biome-artwork-source(\/|$)/, // 1672x941 PNG masters of the Journey header artwork (~33 MB); the site serves only img/journey2/headers/*.webp
+  /^img\/ribbon-fabric-source(\/|$)/, // 2 MB photographic master of the fabric ribbon; the site serves only the img/ui/ribbon-fabric/*.webp slices
 ];
 /* Host-independent: both separator conventions are folded to '/' before matching, so a Windows-style
  * path gives the same answer on Linux (where path.sep is '/' and a backslash is an ordinary character). */
