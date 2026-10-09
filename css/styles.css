@@ -842,6 +842,10 @@ body[data-route="list"] .catalog-bar-wrap::before {
   /* Controls on the left, the status right after them: the ribbons hang over the
    * right-hand end of the header and would cover a status parked there. */
   .catalog-bar { flex-wrap: wrap; }
+  /* The ribbons hang over the right-hand end of the header, down into this bar. Their strip (four ribbons, the nav gap and
+   * the language / sound buttons, ~120px) is kept free, so a status that does not fit left of it wraps under the controls
+   * instead of sitting behind a ribbon. Divided by the bar's zoom, since lengths inside it are scaled. */
+  .catalog-bar { padding-right: calc((4 * var(--rb-w) + 3 * var(--rb-gap) + var(--s-4) + 120px) / 0.9); }
   .catalog-bar .list-context-bar, .catalog-bar .skeleton-toolbar { flex: 1 1 100%; }
   .catalog-bar .toolbar { flex-wrap: nowrap; width: max-content; max-width: 100%; }
   .catalog-bar .toolbar-filters { flex-wrap: nowrap; }
