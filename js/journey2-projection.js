@@ -66,7 +66,7 @@
       const c = Geo.parseCellId(tile.cell);
       if (!b || !c) continue;
       onTile.add(tile.cell);
-      const o = { q: c.q, r: c.r, symbolId: Model.symbolIdOf(b), dots: b.terrain.value, blightMark: marks.has(tile.cell) };
+      const o = { q: c.q, r: c.r, symbolId: Model.symbolIdOf(b), dots: b.habitat.overtaken ? 0 : b.terrain.value, blightMark: marks.has(tile.cell) };
       if (withTint) { const key = Tint.tintKeyOf(b.habitat); if (key) o.tint = key; }
       overlays.push(o);
     }

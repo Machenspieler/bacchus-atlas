@@ -1145,3 +1145,10 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Decision (D5):** the fog brush is not armed automatically on entering Player Preview. The brush button carries a visible name ("Fog brush") and an On / Off state next to the gold pressed fill; "Back to GM" sits on the same row as the mode flag.
 - **Also:** tool rows are drawn as the rail's three zones (View / Tools / Echoes + sanctuaries) with hairlines; a finished, collapsed card is a compact two-line row with a dimmed tile; the inspect control is a quiet `.icon-btn` with a magnifier (never the info glyph); terrain dots carry a tooltip ("Terrain N - N days per hex"). Desktop and laptop only; no touch or mobile work.
 - **Where:** `js/journey2-view.js` (`buildSurface`, `createCard`, `updateCard`, `renderInventory`, `applyPreviewChrome`), `css/journey2.css` (`.j2-controls`, `.j2-ctl-gm`, `.j2-gen`, `.j2-stock`, `.j2-card*`, `.j2-paint-*`), `data/i18n.json` (`journey2_stock_*`, `journey2_fog_brush*`, `journey2_terrain_tip`), `tests/journey2-drawer.test.js`.
+
+## PD-044: Journey — fully shadowblighted regions: no Terrain dots, red chip and Inspect like any other region; Inspect centres the map
+
+- **Status:** Active (refines PD-038/PD-039: the bare inspector — title, badge, Return — stands).
+- **Date:** 2026-10-09
+- **Decision:** a fully overtaken region shows no Terrain Rating dots (card, inspector, and its hexes on the GM map, Player Preview and print — the projection emits `dots: 0`). Its card carries the same red "Shadowblighted" chip as a partly blighted region and keeps the Inspect button. Opening Inspect from a card eases the camera (600 ms, instant under reduced motion) to the middle of the region's hexes at exactly 100%.
+- **Where:** `js/journey2-view.js` (`updateCard`, `renderInspector`, `specOfBatch`, `focusRegion`, `animateCameraToWorld`), `js/journey2-projection.js`.

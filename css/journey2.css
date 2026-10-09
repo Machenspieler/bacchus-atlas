@@ -245,6 +245,7 @@ body[data-route="journey"] #grid-wrap { display: block; }
 .j2-card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--s-2); font-size: var(--fs-xs); color: var(--parchment-dim); }
 .j2-dots { display: inline-flex; gap: 3px; cursor: help; }
 .j2-card-meta { margin-top: var(--s-1); }
+.j2-dots[hidden] { display: none; }
 .j2-dots i { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--parchment-dim); }
 .j2-dots i.on { background: var(--parchment); border-color: var(--parchment); }
 .j2-blight { padding: 0 var(--s-1); border: 1px solid var(--fear); border-radius: var(--r-xs); color: var(--fear-soft); font-family: var(--font-mono); font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tracking-badge); }

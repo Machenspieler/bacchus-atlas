@@ -1123,10 +1123,11 @@
       if (full || refs.img.getAttribute('data-sym') !== (sym && sym.id)) { if (sym) refs.img.src = sym.path; refs.img.setAttribute('data-sym', sym ? sym.id : ''); }
       refs.name.textContent = name;
       refs.ord.textContent = '#' + ord;
+      refs.dots.hidden = !!b.habitat.overtaken;           // a fully overtaken region has no Terrain Rating
       refs.dots.innerHTML = [1, 2, 3, 4].map(i => '<i' + (i <= b.terrain.value ? ' class="on"' : '') + '></i>').join('');
       refs.dots.setAttribute('aria-label', fill('journey2_terrain_n', { n: b.terrain.value }));
       refs.dots.setAttribute('title', fill('journey2_terrain_tip', { n: b.terrain.value, d: b.terrain.value }));
-      refs.blight.hidden = !(b.habitat.blighted && !b.habitat.overtaken);
+      refs.blight.hidden = !(b.habitat.blighted || b.habitat.overtaken);
       refs.blight.textContent = t('journey_shadowblighted');
       // active region: expanded, programmatically identifiable
       const inspected = b.id === inspector.batchId;
@@ -1135,7 +1136,6 @@
       refs.inspect.classList.toggle('is-on', inspected);
       refs.inspect.setAttribute('title', t('journey2_inspect_region'));
       refs.inspect.disabled = false;
-      refs.inspect.hidden = !!b.habitat.overtaken;       // a fully overtaken region has nothing to inspect (PD-039)
       refs.inspectSr.textContent = fill('journey2_inspect_aria', { name: name, n: ord }) + (inspected ? ' (' + t('journey2_inspect_open') + ')' : '');
       if (active) refs.root.setAttribute('aria-current', 'true'); else refs.root.removeAttribute('aria-current');
       refs.toggle.setAttribute('aria-expanded', String(active));
@@ -1479,6 +1479,7 @@
       const blight = b.habitat.overtaken || b.habitat.blighted;
       I.blight.hidden = !blight;
       I.blight.textContent = b.habitat.overtaken ? t('journey2_overtaken') : t('journey_shadowblighted');
+      I.dots.hidden = !!b.habitat.overtaken;
       I.dots.innerHTML = [1, 2, 3, 4].map(i => '<i' + (i <= b.terrain.value ? ' class="on"' : '') + '></i>').join('');
       I.dots.setAttribute('aria-label', fill('journey2_terrain_n', { n: b.terrain.value }));
       I.terrainN.textContent = '';
@@ -1611,6 +1612,39 @@
       requestAnimationFrame(step);
     }
 
+    /** Eases the camera to a world point at an exact scale (the point lands at the centre of the part of the map the side panel leaves visible); instant under reduced motion. */
+    function animateCameraToWorld(x, y, scale, ms) {
+      const [vw, vh] = viewSize();
+      const left = sideInset(), s = Math.min(MAX_ZOOM, Math.max(Math.min(minScale(), Geo.ZOOM_STEPS[0]), scale));
+      const target = { scale: s, tx: left + (vw - left) / 2 - x * s, ty: vh / 2 - y * s };
+      const from = cam, start = performance.now();
+      if (prefersReducedMotion() || !ms) { setCamera(target); return; }
+      let last = from;
+      const step = now => {
+        if (inst.disposed || cam !== last) return;       // any other camera change cancels the rest
+        const k = Math.min(1, (now - start) / ms), e = 1 - Math.pow(1 - k, 3);
+        // interpolate the world point under the viewport centre and log-scale, so the zoom feels even
+        const sc = k >= 1 ? target.scale : from.scale * Math.pow(target.scale / from.scale, e);
+        const cx0 = (vw / 2 - from.tx) / from.scale, cy0 = (vh / 2 - from.ty) / from.scale;
+        const tcx = (left + (vw - left) / 2 - target.tx) / target.scale;
+        const wx = cx0 + (tcx - cx0) * e, wy = cy0 + (y - cy0) * e;
+        const centreX = k >= 1 ? left + (vw - left) / 2 : vw / 2 + (left / 2) * e;
+        setCamera(k >= 1 ? target : { scale: sc, tx: centreX - wx * sc, ty: vh / 2 - wy * sc });
+        last = cam;
+        if (k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+
+    /** Centres the map on a region (the middle of its hexes) at 100%, smoothly. */
+    function focusRegion(batchId) {
+      if (!data || !doc) return;
+      const pts = doc.tiles.filter(tl => tl.batchId === batchId).map(tl => { const c = Geo.parseCellId(tl.cell); return data.grid.cellCenter(c.q, c.r); });
+      if (!pts.length) return;
+      const x = pts.reduce((a, p) => a + p[0], 0) / pts.length, y = pts.reduce((a, p) => a + p[1], 0) / pts.length;
+      animateCameraToWorld(x, y, 1, 600);
+    }
+
     function positionInspector() {
       if (inspector.batchId != null && ui.inspector && !ui.inspector.hidden && data) positionPanel(ui.inspector, inspectorAnchor);
       positionSanctuary();
@@ -1648,7 +1682,7 @@
      * What a generated tile draws, and nothing else: { symbolId, dots, blightMark }. Both the GM render (from a batch) and the
      * Player Preview (from the player projection) go through the same drawing code, so a revealed hex looks identical in both.
      */
-    function specOfBatch(b) { return { symbolId: Model.symbolIdOf(b), dots: b.terrain.value, blightMark: !!(b.habitat.blighted && !b.habitat.overtaken) }; }
+    function specOfBatch(b) { return { symbolId: Model.symbolIdOf(b), dots: b.habitat.overtaken ? 0 : b.terrain.value, blightMark: !!(b.habitat.blighted && !b.habitat.overtaken) }; }
 
     /** Glyph layout (symbol + terrain dots + optional blight mark) that never covers protected artwork; cached. */
     function layoutFor(q, r, spec) {
@@ -3982,7 +4016,7 @@
       else if (b.hasAttribute('data-j2-inspect')) {
         const id = b.closest('[data-batch]').getAttribute('data-batch');
         if (inspectorOpen() && inspector.batchId === id) closeInspector({ focus: true });
-        else openInspectorFromCard(id);
+        else { openInspectorFromCard(id); focusRegion(id); }
       }
       else if (b.hasAttribute('data-j2-insp-close')) closeInspector({ focus: true });
       else if (b.hasAttribute('data-j2-roll')) rollEncounter();
