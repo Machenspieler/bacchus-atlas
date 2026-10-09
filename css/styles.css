@@ -842,20 +842,21 @@ body[data-route="list"] .catalog-bar-wrap::before {
   /* Controls on the left, the status right after them: the ribbons hang over the
    * right-hand end of the header and would cover a status parked there. */
   .catalog-bar { flex-wrap: wrap; }
-  /* The ribbons hang over the right-hand end of the header, down into this bar. Their strip (four ribbons, the nav gap and
-   * the language / sound buttons, ~120px) is kept free, so a status that does not fit left of it wraps under the controls
-   * instead of sitting behind a ribbon. Divided by the bar's zoom, since lengths inside it are scaled. */
-  .catalog-bar { padding-right: calc((4 * var(--rb-w) + 3 * var(--rb-gap) + var(--s-4) + 120px) / 0.9); }
   .catalog-bar .list-context-bar, .catalog-bar .skeleton-toolbar { flex: 1 1 100%; }
   .catalog-bar .toolbar { flex-wrap: nowrap; width: max-content; max-width: 100%; }
   .catalog-bar .toolbar-filters { flex-wrap: nowrap; }
   .catalog-bar .toolbar-filters > .field, .catalog-bar .search-field { flex-shrink: 0; }
   .catalog-bar .rank-pills { flex-wrap: nowrap; }
   .catalog-bar .result-count { margin: var(--s-2) 0; flex-wrap: nowrap; white-space: nowrap; }
+  /* The current page's ribbon (Catalogue) hangs down past the header into this row. The status keeps its place right after
+   * the controls but starts one ribbon width (plus the gap and some air) further on, so it is never behind that ribbon.
+   * Divided by the bar's zoom, since lengths inside it are scaled. */
+  .catalog-bar .result-count { margin-left: calc((var(--rb-w) + var(--rb-gap) + var(--s-7)) / 0.9); }
 }
 /* Too narrow even for the controls alone: they may wrap as a group. */
 @container (max-width: 980px) {
   .catalog-bar .toolbar, .catalog-bar .toolbar-filters { flex-wrap: wrap; width: auto; }
+  .catalog-bar .result-count { margin-left: 0; }
 }
 
 /* Below the main catalog grid only — never rendered on Lists, Journey, or
