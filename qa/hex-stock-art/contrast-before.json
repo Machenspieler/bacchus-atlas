@@ -1,0 +1,27 @@
+{
+ "forest": {
+  "nameP95Contrast": 3.26,
+  "metaP95Contrast": 7.69,
+  "nameMeanContrast": 7.14
+ },
+ "drylands": {
+  "nameP95Contrast": 4.68,
+  "metaP95Contrast": 6.77,
+  "nameMeanContrast": 8.24
+ },
+ "frozen*": {
+  "nameP95Contrast": 5.88,
+  "metaP95Contrast": 6.75,
+  "nameMeanContrast": 7.98
+ },
+ "aquatic": {
+  "nameP95Contrast": 3.5,
+  "metaP95Contrast": 6.53,
+  "nameMeanContrast": 6.72
+ },
+ "grassland": {
+  "nameP95Contrast": 4.36,
+  "metaP95Contrast": 5.74,
+  "nameMeanContrast": 9.11
+ }
+}

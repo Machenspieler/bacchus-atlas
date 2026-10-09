@@ -1,0 +1,212 @@
+{
+ "pass": 28,
+ "fail": 0,
+ "results": [
+  {
+   "id": "shots.en-1280x800: no page errors / failed requests",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "id": "shots.en-1366x768: no page errors / failed requests",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "id": "shots.en-1440x900: no page errors / failed requests",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "id": "shots.en-1920x1080: no page errors / failed requests",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "id": "shots.en-2560x1440: no page errors / failed requests",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "id": "shots.ru-1280x800: no page errors / failed requests",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "id": "shots.ru-1366x768: no page errors / failed requests",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "id": "shots.ru-1440x900: no page errors / failed requests",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "id": "shots.ru-1920x1080: no page errors / failed requests",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "id": "drag: a real pointer drag of Place 1 onto a valid hex places exactly one tile",
+   "ok": true,
+   "detail": {
+    "c1": {
+     "tiles": 0,
+     "all": 19,
+     "batches": 10
+    },
+    "c2": {
+     "tiles": 1,
+     "all": 20,
+     "batches": 10
+    }
+   }
+  },
+  {
+   "id": "drag: the tile landed on the hex under the cursor",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "id": "drag: the card status updates (placed / left)",
+   "ok": true,
+   "detail": {
+    "s1": "0 / 6 placed",
+    "s2": "1 / 6 placed"
+   }
+  },
+  {
+   "id": "drag: no pan/zoom/refit",
+   "ok": true,
+   "detail": {
+    "cam1": {
+     "scale": 0.8,
+     "tx": -1452.4488,
+     "ty": -585.5492800000001
+    },
+    "cam2": {
+     "scale": 0.8,
+     "tx": -1452.4488,
+     "ty": -585.5492800000001
+    }
+   }
+  },
+  {
+   "id": "drag: card stays selected (is-active)",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "id": "invalid drop: onto an occupied hex places nothing",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "id": "invalid drop: onto a detached hex places nothing (continuity rule)",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "id": "invalid drop: released over the sidebar places nothing",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "id": "invalid drops: camera untouched and no error",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "id": "click: Place 1 arms (aria-pressed)",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "id": "click: clicking a valid hex places one tile and the count updates",
+   "ok": true,
+   "detail": {
+    "cc1": {
+     "tiles": 1,
+     "all": 20,
+     "batches": 10
+    },
+    "cc2": {
+     "tiles": 2,
+     "all": 21,
+     "batches": 10
+    }
+   }
+  },
+  {
+   "id": "inspect: Region Overlay opens from the card with its illustrated header unchanged",
+   "ok": true,
+   "detail": {
+    "open": true,
+    "source": "card",
+    "art": "forest",
+    "bg": "linear-gradient(90deg, rgb(28, 24, 21) 0%, rgba(28, 24, 21, 0.94) 30%, rgba(28, 24, 21, 0.82) 54%, rgba(28, 24, 21, 0.4) 78%, rgba(28, 24, 21, 0.1) 100%), url(\"http://127.0.0.1:63869/img/journey2/headers/forest.webp\")"
+   }
+  },
+  {
+   "id": "select: clicking another card makes it the only active, expanded card",
+   "ok": true,
+   "detail": {
+    "a": false,
+    "b": true,
+    "exp": "true"
+   }
+  },
+  {
+   "id": "scroll: a wheel over the artwork strip scrolls the Hex Stock",
+   "ok": true,
+   "detail": {
+    "top": 512,
+    "max": 512
+   }
+  },
+  {
+   "id": "scroll: the last card and its Inspect button are reachable and hit-testable at the bottom",
+   "ok": true,
+   "detail": {
+    "visible": true,
+    "hit": true
+   }
+  },
+  {
+   "id": "hit areas: art layer pointer-events none; every on-screen control wins its own centre",
+   "ok": true,
+   "detail": {
+    "tot": 10,
+    "ok": 10,
+    "layer": true
+   }
+  },
+  {
+   "id": "delete: Cancel in the confirmation keeps the region",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "id": "delete: confirming removes the region and its tiles, nothing else",
+   "ok": true,
+   "detail": {
+    "n0": {
+     "tiles": 2,
+     "all": 21,
+     "batches": 10
+    },
+    "n1": {
+     "tiles": 0,
+     "all": 19,
+     "batches": 9
+    }
+   }
+  },
+  {
+   "id": "interactions: no page errors / failed requests",
+   "ok": true,
+   "detail": []
+  }
+ ]
+}

@@ -1217,3 +1217,13 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Decision (meta line):** the region meta (`Region N · examples`) flows inline with no-break spaces around the dot, so the separator never starts a wrapped line.
 - **Decision (readability):** the shared gradient was strengthened slightly in the text zone (0.82 at 54 %, 0.4 at 78 %, 0.1 at 100 %) for the bright Aquatic / Grassland / Drylands art; no per-terrain gradients. The prototype's dev-only `?hdr=` switch is gone.
 - **Where:** `REGION_ART` / `SANCTUARY_ART` / `applyArt()` / `applyHeaderArt()` in `js/journey2-view.js`; the `[data-art]` rules in `css/journey2.css`; `img/journey2/headers/`; test `tests/journey2-header-art.test.js`.
+
+## PD-050: Journey — biome artwork accent on Hex Stock region cards
+
+- **Status:** Active (implemented 2026-10-09). Chosen from a current / A / A2 / B comparison (vertical-art left accent won).
+- **Decision:** every Hex Stock region card for one of the eleven natural Journey biomes carries a decorative left accent: the Environment catalogue's vertical `img/biomes/<biome>-200.webp`, fading into the card's ink. A `::before` layer (`pointer-events: none`) behind the unchanged content — no change to card size, padding, gap, panel width, controls or the hand-drawn icon tile. Card geometry is identical to the pre-artwork cards (measured, 0.0 px difference).
+- **Decision (mapping):** `applyStockArt()` in `js/journey2-view.js` only sets `data-art="<biome>"` (membership = `REGION_ART`, so Universal / Settlement and a fully overtaken region keep the plain card); the eleven `url()` rules live in `css/journey2.css`. No JS image URLs, no new assets, no storage.
+- **Decision (readability):** one shared mask for every biome (opaque at the icon, 0.5 at the text column's start, gone by the strip's end) keeps the worst text-over-art contrast at >= 5.5:1 (was 3.3:1 for Forest / Aquatic). The open card also fades the strip vertically so the Place controls stay on plain dark ground.
+- **Decision (completed regions):** unchanged from the prototype — a fully placed collapsed card draws the art at opacity 0.5 (0.85 otherwise) on top of the existing compact row and dimmed icon; the card itself, its text, status and controls are never faded. A further reduction was judged unnecessary: completed cards already read clearly below actionable ones.
+- **Rejected:** horizontal crop (A2) and full-card background (B) — blurry strip / a wall of landscapes and 3x the bytes. The dev-only `?stockArt=` switch is gone.
+- **Where:** `applyStockArt()` in `js/journey2-view.js`; the `.j2-card[data-art]` rules at the end of `css/journey2.css`; verification `scripts/journey2/verify-hex-stock-art.js`, results in `qa/hex-stock-art/`.

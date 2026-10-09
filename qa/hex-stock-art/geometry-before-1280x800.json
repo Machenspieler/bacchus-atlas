@@ -1,0 +1,87 @@
+{
+ "en-1280x800": {
+  "cards": [
+   {
+    "biome": null,
+    "active": true,
+    "exhausted": false,
+    "w": 303,
+    "h": 165.84
+   },
+   {
+    "biome": null,
+    "active": false,
+    "exhausted": true,
+    "w": 303,
+    "h": 51.84
+   },
+   {
+    "biome": null,
+    "active": false,
+    "exhausted": false,
+    "w": 303,
+    "h": 69.84
+   },
+   {
+    "biome": null,
+    "active": false,
+    "exhausted": true,
+    "w": 303,
+    "h": 51.84
+   },
+   {
+    "biome": null,
+    "active": false,
+    "exhausted": false,
+    "w": 303,
+    "h": 80.89
+   },
+   {
+    "biome": null,
+    "active": false,
+    "exhausted": true,
+    "w": 303,
+    "h": 51.84
+   },
+   {
+    "biome": null,
+    "active": false,
+    "exhausted": false,
+    "w": 303,
+    "h": 69.84
+   },
+   {
+    "biome": null,
+    "active": false,
+    "exhausted": false,
+    "w": 303,
+    "h": 69.84
+   },
+   {
+    "biome": null,
+    "active": false,
+    "exhausted": true,
+    "w": 303,
+    "h": 51.84
+   },
+   {
+    "biome": null,
+    "active": false,
+    "exhausted": false,
+    "w": 303,
+    "h": 69.84
+   }
+  ],
+  "list": {
+   "w": 303,
+   "h": 805.48
+  },
+  "side": {
+   "w": 340,
+   "h": 1414
+  },
+  "gaps": [
+   8
+  ]
+ }
+}
