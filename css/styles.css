@@ -407,8 +407,9 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
  * sway/drop keyframes, transform origin, drop-shadow, clip-path swallow-tail, label and dim overlay are all the
  * originals, so the texture moves and grows as part of the same element. Three slices (made by
  * scripts/generate-ribbon-fabric.js): the sewn hem is pinned to the top, the swallow-tail hem to the bottom, and a
- * mirrored weave tile repeats between them, so the length changes by revealing more weave, never by scaling the
- * photograph. Slice heights at 1x: top 10px, tile 48px. Another colour = another set of three images. */
+ * weave tile repeats between them, so the length changes by revealing more weave, never by scaling the photograph.
+ * The slices share one fold profile (see the script header), so no tile or slice boundary can cut a fold at any
+ * height. Slice heights at 1x: top 10px, tile 48px. Another colour = another set of three images. */
 :root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="catalog"] .ribbon-fab {
   background:
     url("../img/ui/ribbon-fabric/catalog-top.webp") 0 0 / 100% auto no-repeat,
