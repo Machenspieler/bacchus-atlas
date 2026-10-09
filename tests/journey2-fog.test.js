@@ -256,7 +256,7 @@ test('projection: GM-only data never appears (region ids, Encounter, Rumor, note
   for (const secret of ['SECRET-GM-NOTE', 'region-secret-id', 'tile-secret', 'batchId', 'encounter', 'rumor', 'notes', 'environment', 'inspector', 'selection', 'diagnostic', 'warning', 'history', 'undo']) {
     assert.ok(!text.toLowerCase().includes(secret.toLowerCase()), 'leaked: ' + secret);
   }
-  assert.deepEqual(Object.keys(P.buildPlayerProjection(doc)).sort(), ['overlays', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'shadowMarks', 'version']);
+  assert.deepEqual(Object.keys(P.buildPlayerProjection(doc)).sort(), ['overlays', 'party', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'shadowMarks', 'version']);
   for (const o of P.buildPlayerProjection(doc).overlays) assert.deepEqual(Object.keys(o).sort(), ['blightMark', 'dots', 'q', 'r', 'symbolId', 'tint']);
 });
 
@@ -286,11 +286,11 @@ function fakeStorage() {
 test('the fog veil is not a preference (PD-036); Player Preview is stored (PD-035); the tool and stroke are never stored', () => {
   const s = fakeStorage(), store = Store.createStore(s, ctx);
   assert.deepEqual(store.saveUi({ sideCollapsed: false }), { ok: true });
-  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showBiomeColors: true, playerPreview: false, view: null });
-  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['playerPreview', 'showBiomeColors', 'sideCollapsed', 'view']);
+  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showBiomeColors: true, showPlacedOutline: false, playerPreview: false, view: null });
+  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['playerPreview', 'showBiomeColors', 'showPlacedOutline', 'sideCollapsed', 'view']);
   assert.deepEqual(s.writes, [Store.KEYS.ui], 'nothing else is written');
   s.data.set(Store.KEYS.ui, '{"showFogState":false,"sideCollapsed":true}');
-  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showBiomeColors: true, playerPreview: false, view: null }, 'the retired showFogState key is ignored');
+  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showBiomeColors: true, showPlacedOutline: false, playerPreview: false, view: null }, 'the retired showFogState key is ignored');
   assert.ok(!('showFogState' in JSON.parse((store.saveUi({ sideCollapsed: true }), s.data.get(Store.KEYS.ui)))), 'and dropped on the next save');
   // it is not part of the document / backup
   assert.ok(!JSON.stringify(M.emptyDocument(ctx, AT)).includes('showFogState'));
@@ -334,7 +334,7 @@ test('toolbar: Reveal and Hide are real toggle buttons with aria-pressed, the fo
   assert.doesNotMatch(view, /data-j2-fog-tool="(reveal|hide)"/, 'one brush button replaces Reveal and Hide');
   assert.doesNotMatch(view, /data-j2-fog-state/, 'no Fog overlay toggle (PD-036)');
   assert.match(view, /data-j2-preview data-t-title="journey2_preview_title"/);
-  assert.match(view, /<button type="button" class="btn btn-sm j2-tool j2-preview-back" data-j2-preview-back>/);
+  assert.match(view, /<button type="button" class="btn btn-ghost btn-sm j2-tool j2-preview-back" data-j2-preview-back>/);
   assert.match(view, /role="group" data-j2-fog-group/);
   assert.match(fn('updateFogUi', 'setFogTool'), /setAttribute\('aria-pressed', String\(!!fogTool\)\)/);
 });
@@ -357,7 +357,7 @@ test('priority: fog stroke beats neutral tile selection; Space or the middle but
   assert.match(down, /fogPaint && \(e\.button === 0 \|\| e\.button === 2\)/, 'left reveals, right hides');
   assert.match(fn('startFogStroke', 'fogStrokeTo'), /e\.button === 2 \? 'hide' : 'reveal'/);
   assert.match(down, /!previewMode && !fogTool && !\(tr && tr\.kind === 'armed'\)/, 'no tile grab in preview or with a tool');
-  assert.match(down, /if \(pan \|\| fogStroke \|\| tr && tr\.kind !== 'armed'\) return;/, 'an existing drag or pan wins');
+  assert.match(down, /if \(pan \|\| fogStroke \|\| tr && tr\.kind !== 'armed' \|\| partyDraft && partyDraft\.pointerId != null\) return;/, 'an existing drag or pan wins');
   assert.match(fn('handleMapClick', 'selectTile'), /if \(previewMode \|\| fogTool\) return;/, 'no inspector from a map click under a tool or in preview');
   const esc = view.slice(view.indexOf('function onDocumentKey'), view.indexOf('if (e.key === \' \' && fogTool'));
   const order = ['openMenu', 'fogStroke', 'if (pan)', 'if (tr)', 'if (fogTool)', 'if (previewMode)', 'inspectorOpen()'].map(s => esc.indexOf(s));
@@ -407,7 +407,7 @@ test('Player Preview: read-only, projection-driven, document and history untouch
   assert.doesNotMatch(view, /previewReturn/, 'GM view and Player Preview are one screen: the camera is never saved or restored per mode (PD-040)');
   const tiles = fn('renderTiles', 'renderSelection').split('ui.g.player.innerHTML = \'\';')[0];
   assert.match(tiles, /ui\.g\.tiles\.innerHTML = '';/, 'GM tiles are removed, not hidden');
-  assert.match(tiles, /Projection\.buildPlayerProjection\(doc, data\.ctx\)/);
+  assert.match(tiles, /Projection\.buildPlayerProjection\(projectionDoc\(\), data\.ctx\)/, 'the stored document, or the same with the party at its draft cell (PD-045)');
   assert.doesNotMatch(tiles, /doc\.tiles|doc\.batches/, 'the preview never reads regions directly');
   const chrome = fn('applyPreviewChrome', 'enterPreview');
   for (const part of ['ui.gmControls.hidden = on', 'ui.sideScroll.hidden = on', 'ui.previewBar.hidden = !on']) assert.ok(chrome.includes(part), part);
@@ -456,7 +456,7 @@ test('PD-034: Reveal / Hide are in the Player Preview bar, not the GM toolbar', 
 
 test('PD-034: the hidden-hex outline is a GM aid drawn only while a tool is armed in the preview', () => {
   const ghost = fn('renderFogGhost', 'updateFogUi');
-  assert.match(ghost, /previewMode && !!fogTool/);
+  assert.match(ghost, /previewMode && (!!fogTool || showOutline)/, "armed tool OR the remembered passive toggle (PD-046)");
   assert.doesNotMatch(ghost, /dispatch|persist|store\.|playerProjection/, 'never part of the projection, history or storage');
   assert.match(fn('renderFog', 'renderFogGhost'), /renderFogGhost\(\)/);
 });

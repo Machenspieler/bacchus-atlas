@@ -156,7 +156,7 @@ test('an empty reveal set prints the plain map: two pages, nothing generated', (
   const empty = PR.buildPrintModel(M.emptyDocument(ctx, AT), ctx, template);
   assert.equal(empty.pages.length, 2);
   for (const p of empty.pages) assert.deepEqual([p.overlays.length, p.segments.length, p.labels.length], [0, 0, 0]);
-  assert.deepEqual(empty.summary, { wildernessHexes: 0, sanctuaryNames: 0 });
+  assert.deepEqual(empty.summary, { wildernessHexes: 0, sanctuaryNames: 0, party: false });
   const none = M.apply(FX.doc, { type: 'setSanctuaryNameRevealed', anchorId: FX.ids[0], revealed: false, at: AT }, ctx);
   assert.equal(PR.buildPrintModel(must(none), ctx, template).summary.sanctuaryNames, 1);
 });

@@ -46,7 +46,7 @@ body[data-route="journey"] #grid-wrap { display: block; }
 
 /* ---------- controls: the toolbar lives at the top of the side panel (PD-040); the collapsed rail repeats the same buttons icon-only ---------- */
 .j2-controls {
-  flex: none; display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-3);
+  flex: none; display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-2) var(--s-3);
   border-bottom: 1px solid var(--line-faint);
 }
 .j2-ctl-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1); min-width: 0; }
@@ -60,7 +60,15 @@ body[data-route="journey"] #grid-wrap { display: block; }
 .j2-controls .j2-zoom-readout { min-width: 5ch; padding-inline: var(--s-1); }
 .j2-ctl-nav .j2-tb-group + .j2-tb-group { padding-left: var(--s-1); }
 .j2-ctl-nav { gap: var(--s-1); }
-.j2-ctl-gm { display: flex; flex-direction: column; gap: var(--s-1); padding-top: var(--s-2); border-top: 1px solid var(--line-faint); }
+.j2-ctl-gm { display: flex; flex-direction: column; gap: var(--s-1); padding-top: var(--s-1); border-top: 1px solid var(--line-faint); }
+/* three zones, the same ones the collapsed rail draws: View / Tools / Echoes + sanctuaries. A hairline separates zones; rows fill their width so edges align. */
+.j2-ctl-gm .j2-tb-route, .j2-ctl-gm .j2-tb-echo { padding-top: var(--s-1); border-top: 1px solid var(--line-faint); }
+.j2-ctl-gm .j2-ctl-row .j2-tool { flex: 1 1 auto; justify-content: center; }
+/* Remove Echoes: neutral at rest (it is confirmed and undoable); the remove/delete treatment appears only on hover / focus (D2) */
+.j2-controls .j2-tool[data-j2-echo-clear]:hover:not(:disabled), .j2-controls .j2-tool[data-j2-echo-clear]:focus-visible { color: var(--fear-soft); border-color: var(--fear); background: var(--fear-tint); }
+/* the party marker toggle (PD-045): one full-width tool in its own zone, in the GM view and in Player Preview */
+.j2-ctl-party { padding-top: var(--s-1); border-top: 1px solid var(--line-faint); }
+.j2-ctl-party .j2-tool { flex: 1 1 auto; justify-content: center; }
 .j2-ctl-gm[hidden], .j2-ctl-preview[hidden], .j2-side-scroll[hidden], .j2-rail-grp[hidden], .j2-rail-btn[hidden] { display: none; }
 .j2-tb-group { display: flex; align-items: center; gap: var(--s-1); min-width: 0; }
 /* every tool is a labelled button (icon + text, so a tool is never identified by colour alone); the groups are rows of the panel */
@@ -68,7 +76,15 @@ body[data-route="journey"] #grid-wrap { display: block; }
 .j2-tool .j2-ico svg { width: 16px; height: 16px; }
 /* Player Preview controls: replace the GM controls (and New region / stock) in the same panel while previewing */
 .j2-ctl-preview { display: flex; flex-direction: column; align-items: stretch; gap: var(--s-2); padding-top: var(--s-2); border-top: 1px solid var(--line-faint); }
-.j2-ctl-preview .j2-preview-flag { align-self: flex-start; }
+.j2-preview-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
+.j2-ctl-preview .j2-preview-head .btn { width: auto; }
+/* the brush: its name and On/Off state on the first line, the two mouse buttons on the second */
+.j2-controls .j2-paint-tool { height: auto; min-height: var(--h-md); flex-direction: column; align-items: stretch; gap: var(--s-1); padding-block: var(--s-2); }
+.j2-paint-top { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
+.j2-paint-state { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: var(--tracking-badge); text-transform: uppercase; color: var(--muted); }
+.j2-paint-on, .j2-paint-tool[aria-pressed="false"] .j2-paint-on { display: none; }
+.j2-paint-tool[aria-pressed="true"] .j2-paint-on { display: inline; color: var(--hope-soft); }
+.j2-paint-tool[aria-pressed="true"] .j2-paint-off { display: none; }
 .j2-ctl-preview .btn, .j2-ctl-preview .j2-tb-tools { width: 100%; justify-content: flex-start; }
 .j2-preview-flag {
   display: inline-flex; align-items: center; gap: var(--s-2); height: var(--h-xs); padding: 0 var(--s-2);
@@ -84,7 +100,7 @@ body[data-route="journey"] #grid-wrap { display: block; }
 .j2-mouse-pair .j2-mouse-ico + span { margin-right: var(--s-2); }
 .j2-mouse-pair .j2-mouse-ico + span:last-child { margin-right: 0; }
 .j2-mouse-ico { display: inline-flex; }
-.j2-mouse-ico svg { width: 14px; height: 20px; }
+.j2-mouse-ico svg { width: 17px; height: 24px; }
 .j2-mouse-hit { fill: var(--hope); stroke: none; }
 .j2[data-mode="preview"] .j2-side, .j2[data-mode="preview"] .j2-rail { border-color: var(--hope-border); }
 /* in the preview the panel is only as tall as its controls (the map stays reachable below it) */
@@ -105,7 +121,7 @@ body[data-route="journey"] #grid-wrap { display: block; }
 .j2-chip--bad { border-color: var(--fear); background: var(--fear-tint); color: var(--fear-soft); }
 .j2-btn-icon { width: var(--h-sm); padding: 0; font-size: var(--fs-md); display: inline-flex; align-items: center; justify-content: center; }
 .j2-btn-icon svg { width: var(--icon-md); height: var(--icon-md); }
-.j2-btn-icon:disabled, .j2-btn-icon[aria-disabled="true"] { opacity: 0.4; cursor: default; }
+.j2-btn-icon:disabled, .j2-btn-icon[aria-disabled="true"] { opacity: 0.55; cursor: default; }
 .j2-zoom-readout {
   min-width: 6ch; justify-content: center; text-align: center; font-family: var(--font-mono); font-size: var(--fs-sm);
   font-variant-numeric: tabular-nums; color: var(--parchment-dim);
@@ -173,18 +189,22 @@ body[data-route="journey"] #grid-wrap { display: block; }
 .j2-rail-ico { display: inline-flex; color: var(--parchment-dim); }
 .j2-rail-ico svg { width: 20px; height: 20px; }
 .j2-rail-count { font-family: var(--font-mono); font-size: var(--fs-sm); font-variant-numeric: tabular-nums; color: var(--parchment); }
-.j2-side-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: var(--s-3); scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; scrollbar-gutter: stable; }
+.j2-side-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: var(--s-3); scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; scrollbar-gutter: stable; padding-top: 0; }
 .j2-h {
   margin: 0 0 var(--s-2); font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md); line-height: var(--lh-md);
   letter-spacing: var(--tracking-display); color: var(--parchment);
 }
 .j2-h--row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2); }
+/* the Hex stock heading stays at the top of the scrolling list */
+.j2-stock > .j2-h--row { position: sticky; top: 0; z-index: 1; margin: 0; padding: var(--s-3) 0 var(--s-2); background: var(--ink-raised); }
 .j2-banner { margin: 0 0 var(--s-3); padding: var(--s-3); border: 1px solid var(--fear); background: var(--fear-tint); border-radius: var(--r-md); font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment); }
 .j2-banner[hidden] { display: none; }
 .j2-banner p { margin: 0 0 var(--s-2); }
 .j2-banner-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 
-.j2-gen { padding-bottom: var(--s-3); margin-bottom: var(--s-3); border-bottom: 1px solid var(--line-faint); display: grid; gap: var(--s-2); }
+/* New region: one pinned primary row between the toolbar and the scrolling stock (D4); the hint is its tooltip + description */
+.j2-gen { flex: none; display: grid; gap: var(--s-2); padding: var(--s-2) var(--s-3); border-bottom: 1px solid var(--line-faint); }
+.j2-gen[hidden] { display: none; }
 .j2-gen-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
 .j2-gen-head .j2-h { margin: 0; }
 .j2-gen-hint { margin: 0; font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--muted); }
@@ -196,7 +216,8 @@ body[data-route="journey"] #grid-wrap { display: block; }
 .j2-ico svg { width: 18px; height: 18px; }
 .j2-gen .j2-field-error { margin: 0; min-height: 0; }
 
-.j2-count { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--parchment-dim); font-variant-numeric: tabular-nums; min-width: 2ch; text-align: right; }
+.j2-count { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); font-variant-numeric: tabular-nums; min-width: 2ch; text-align: right; }
+.j2-count.has-left { color: var(--hope-soft); }
 .j2-empty { margin: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--muted); }
 .j2-empty[hidden], .j2-place-hint[hidden] { display: none; }
 .j2-place-hint { margin: 0 0 var(--s-2); font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--muted); }
@@ -210,29 +231,41 @@ body[data-route="journey"] #grid-wrap { display: block; }
 .j2-card.is-inspected { border-color: var(--line-strong); border-style: dashed; }   /* subtle: this region is open in the inspector; never stronger than the active card */
 .j2-card.is-active.is-inspected { border-style: solid; border-color: var(--hope-border); }
 .j2-card-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-1); align-items: center; }
-.j2-inspect { position: relative; flex: none; color: var(--parchment-dim); }
-.j2-inspect:hover { color: var(--parchment); }
+.j2-inspect { --ib-size: var(--h-sm); --ib-hover-bg: var(--ink-raised); color: var(--parchment-dim); }
+.j2-inspect svg { width: 18px; height: 18px; }
 .j2-inspect.is-on { color: var(--hope-soft); background: var(--hope-selected-bg); border-color: var(--hope-border); }
 .j2-inspect:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
 .j2-card-head {
   display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: var(--s-2); align-items: center; width: 100%;
   margin: 0; padding: 0; background: transparent; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer;
 }
-.j2-card-sym { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--parchment); border-radius: var(--r-sm); }
+.j2-card-sym { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--parchment); border-radius: var(--r-sm); transition: opacity var(--t-base) var(--ease-out); }
 .j2-card-sym img { max-width: 24px; max-height: 22px; display: block; }
 .j2-card-title { min-width: 0; display: grid; }
 .j2-card-name { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2); font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md); line-height: var(--lh-md); color: var(--parchment); }
 .j2-card-name > span:first-child { min-width: 0; overflow-wrap: anywhere; }
 .j2-card-ord { flex: none; font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); font-variant-numeric: tabular-nums; }
 .j2-card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--s-2); font-size: var(--fs-xs); color: var(--parchment-dim); }
-.j2-dots { display: inline-flex; gap: 3px; }
-.j2-dots i { width: 7px; height: 7px; border-radius: 50%; border: 1px solid var(--parchment-dim); }
+.j2-dots { display: inline-flex; gap: 3px; cursor: help; }
+.j2-card-meta { margin-top: var(--s-1); }
+.j2-dots[hidden] { display: none; }
+.j2-dots i { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--parchment-dim); }
 .j2-dots i.on { background: var(--parchment); border-color: var(--parchment); }
 .j2-blight { padding: 0 var(--s-1); border: 1px solid var(--fear); border-radius: var(--r-xs); color: var(--fear-soft); font-family: var(--font-mono); font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tracking-badge); }
 .j2-blight[hidden] { display: none; }
-.j2-card-sum { margin: 0; padding-left: calc(32px + var(--s-2)); font-family: var(--font-mono); font-size: var(--fs-xs); font-variant-numeric: tabular-nums; color: var(--parchment-dim); }
+.j2-card-sum { flex: 1 0 100%; font-family: var(--font-mono); font-size: var(--fs-xs); font-variant-numeric: tabular-nums; color: var(--parchment-dim); }
+/* finished, collapsed region: a compact two-line row (name; rating + status), dimmed tile - cards with hexes left stay the dominant ones */
+.j2-card.is-exhausted:not(.is-active) { padding-block: var(--s-1); }
+.j2-card.is-exhausted:not(.is-active) .j2-card-head { grid-template-columns: 24px minmax(0, 1fr); }
+.j2-card.is-exhausted:not(.is-active) .j2-card-sym { width: 24px; height: 24px; opacity: 0.55; }
+.j2-card.is-exhausted:not(.is-active) .j2-card-sym img { max-width: 18px; max-height: 16px; }
+.j2-card.is-exhausted:not(.is-active) .j2-card-sum { flex: 0 1 auto; }
+.j2-card.is-exhausted:not(.is-active) .j2-card-meta { margin-top: 0; }
+.j2-card.is-exhausted:not(.is-active) .j2-card-name { font-size: var(--fs-base); line-height: var(--lh-base); }
 .j2-card.has-unplaced:not(.is-active) { border-color: var(--hope-border); background: var(--hope-wash); }   /* hexes still to place: stands out among finished cards */
 .j2-card.has-unplaced .j2-card-sum { color: var(--hope-soft); font-weight: 700; }
+.j2-card-end { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
+.j2-card-end .j2-done { flex: 1 1 auto; min-width: 0; }
 .j2-card-sum[hidden],.j2-warn[hidden], .j2-card-body[hidden], .j2-done[hidden], .j2-status[hidden], .j2-actions[hidden], .j2-envs-list[hidden], .j2-insp-tile[hidden], .j2-insp-envs-toggle[hidden], .j2-insp-muted[hidden], .j2-insp-tile-text[hidden],
 .j2-tb-group[hidden], .j2-fog-chip[hidden], .j2-sidewrap[hidden] { display: none; }
 /* enclosed-hole warning: icon + text + a dashed edge, so it never relies on colour alone */
@@ -265,7 +298,7 @@ body[data-route="journey"] #grid-wrap { display: block; }
 .j2-handle.is-dragging, .j2-handle.is-armed { border-style: solid; border-color: var(--hope); background: var(--hope-selected-bg); color: var(--hope-soft); }
 .j2-handle:disabled { cursor: not-allowed; color: var(--muted); border-color: var(--line); opacity: 0.55; }
 
-.j2-card-foot { display: flex; justify-content: flex-end; }
+.j2-card-foot { display: flex; justify-content: flex-end; margin-left: auto; }
 .j2-delete { flex: none; color: var(--muted); }
 .j2-delete:hover:not(:disabled) { color: var(--fear-soft); }
 /* Suggested environments (Region Inspector, read-only disclosure): rows are links to the environment overlay. The inspector body scrolls, so the list never scrolls on its own. */
@@ -380,6 +413,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-viewport.is-fog-tool .j2-fog-edge { stroke-opacity: 0.5; }
 /* GM-only aid while Reveal / Hide is armed in Player Preview: a dashed outline round each still-hidden placed hex (no symbol, no text) */
 .j2-overlay .j2-fog-ghost { fill: none; stroke: var(--hope); stroke-opacity: 1; stroke-width: 2.6; stroke-dasharray: 6 4; pointer-events: none; }
+.j2-overlay .j2-fog-ghost.is-soft { stroke-width: 1.4; stroke-opacity: 0.5; }
 .j2-overlay .j2-fog-pend.is-reveal { fill: #fff; fill-opacity: 0.35; stroke: var(--hope); stroke-width: 1; }
 .j2-overlay .j2-fog-pend.is-hide { fill: url(#j2-fog-hide-pat); stroke: var(--ink); stroke-width: 1; stroke-dasharray: 3 2; }
 .j2-overlay .j2-fog-brush { fill: none; stroke-width: 2.5; }
@@ -583,6 +617,18 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-viewport.is-locating.is-space { cursor: grab; }
 .j2-viewport.is-locating.is-panning { cursor: grabbing; }
 .j2-locate-chip .btn { pointer-events: auto; }
+
+/* ---------- the party marker (PD-045) ----------
+   A map object, not UI chrome: fixed gold with a dark outline and a white halo so it reads on every hex, tint and fog. Stroke widths are screen px (--j2-inv). */
+.j2-party-halo { fill: #fff; stroke: #fff; stroke-width: calc(4.5px * var(--j2-inv, 1)); stroke-linejoin: round; }
+.j2-party-star { fill: #eab53f; stroke: #4a2f05; stroke-width: calc(1.4px * var(--j2-inv, 1)); stroke-linejoin: round; }
+.j2-party-mark.is-bw .j2-party-star { fill: #111; stroke: #111; }
+.j2-pp-party .j2-party-halo { stroke-width: 6px; }
+.j2-pp-party .j2-party-star { stroke-width: 2px; }
+.j2-viewport.is-party-hover { cursor: grab; }
+.j2-viewport.is-party-dragging, .j2-viewport.is-party-dragging.is-party-hover { cursor: grabbing; }
+.j2-viewport.is-party-placing { cursor: crosshair; }
+.j2-party-chip .btn { pointer-events: auto; }
 /* a distinct compass-origin look: dashed outline + a four-point star (never the Reveal / Hide brush) */
 .j2-overlay .j2-loc-hover { fill: rgba(217, 164, 65, 0.16); stroke: #8a5a0c; stroke-width: calc(3px * var(--j2-inv, 1)); stroke-dasharray: calc(7px * var(--j2-inv, 1)) calc(4px * var(--j2-inv, 1)); stroke-linejoin: round; }
 .j2-overlay .j2-loc-origin { fill: rgba(217, 164, 65, 0.22); stroke: #8a5a0c; stroke-width: calc(3.5px * var(--j2-inv, 1)); stroke-linejoin: round; }

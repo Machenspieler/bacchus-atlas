@@ -75,7 +75,7 @@ test('perimeter: it is derived from the tiles alone — never part of the docume
   let doc = withBatches('A');
   doc = must(place(doc, 'A', [at(0, 0)]));
   assert.ok(!/perimeter|boundary/i.test(M.serializeBackup(doc)));
-  assert.deepEqual(Object.keys(doc).sort(), ['batches', 'createdAt', 'kind', 'playerVisibility', 'sanctuaries', 'schemaVersion', 'shadowMarks', 'soulEchoes', 'templateId', 'templateVersion', 'tiles', 'updatedAt']);
+  assert.deepEqual(Object.keys(doc).sort(), ['batches', 'createdAt', 'kind', 'party', 'playerVisibility', 'sanctuaries', 'schemaVersion', 'shadowMarks', 'soulEchoes', 'templateId', 'templateVersion', 'tiles', 'updatedAt']);
 });
 
 test('perimeter: an unplaced batch draws nothing; a document without tiles has no segments', () => {

@@ -7,7 +7,8 @@
    Fog of War is a DATA FILTER here, not a drawing: the print has no fog layer, hatch, wash or grey at all. Generated New Valloren
    content exists in the model only for cells in `playerVisibility.revealedCells` (via `Journey2Projection.buildPrintProjection`); an
    unrevealed cell is simply absent, so it prints as the untouched Old Valloren map. The model also has no biome tint (omitted, not
-   greyed), no Environment, no Soul Echo, no sanctuary data beyond a revealed { anchorId, name }, and no region/tile/batch id.
+   greyed), no Environment, no Soul Echo, no sanctuary data beyond a revealed { anchorId, name }, and no region/tile/batch id. The one exception to "revealed cells only"
+   is the party marker (PD-045): while it is shown its seven cells are present like revealed ones (the projection merges them) and the marker itself is drawn, as a black star.
 
    Pages. `pagesFromTemplate` reads the two panels the world raster was assembled from (`template.composition.panels`; the seam is where
    they meet). A page is a 1:1 crop of that raster: `rect` in world px, the SVG `viewBox` of the page ([0, 0, w, h]) and the `translate`
@@ -103,7 +104,7 @@
     const out = pages.map(p => ({
       id: p.id, panelId: p.panelId, rect: p.rect.slice(), viewBox: p.viewBox.slice(), translate: p.translate.slice(), scaleMmPerPx: p.scaleMmPerPx,
       source: { path: p.source.path, worldSizePx: p.source.worldSizePx.slice(), nativeSource: p.source.nativeSource ? { path: p.source.nativeSource.path, sha256: p.source.nativeSource.sha256 } : null },
-      overlays: [], marks: [], segments: [], labels: [],
+      overlays: [], marks: [], segments: [], labels: [], party: null,
     }));
     const SLACK = 4;                                              // a hex or edge just touching a page can still put ink (stroke, glyph) on it
     const fat = r => [r[0] - SLACK, r[1] - SLACK, r[2] + 2 * SLACK, r[3] + 2 * SLACK];
@@ -115,6 +116,10 @@
     for (const m of proj.shadowMarks) {
       const bb = fat(bboxOf(grid.cellCorners(m.q, m.r)));
       pages.forEach((p, i) => { if (rectsOverlap(bb, p.rect)) out[i].marks.push({ q: m.q, r: m.r }); });
+    }
+    if (proj.party) {
+      const bb = fat(bboxOf(grid.cellCorners(proj.party.q, proj.party.r)));
+      pages.forEach((p, i) => { if (rectsOverlap(bb, p.rect)) out[i].party = { q: proj.party.q, r: proj.party.r }; });
     }
     for (const sg of proj.perimeter) {
       const c = Geo.parseCellId(sg.cell);
@@ -130,7 +135,7 @@
     });
     return {
       version: 1, printMode: 'bw', pages: out,
-      summary: { wildernessHexes: proj.overlays.length, sanctuaryNames: proj.sanctuaryLabels.length },
+      summary: { wildernessHexes: proj.overlays.length, sanctuaryNames: proj.sanctuaryLabels.length, party: !!proj.party },
     };
   }
 

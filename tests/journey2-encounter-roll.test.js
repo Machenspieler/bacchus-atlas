@@ -76,7 +76,7 @@ test('a fully overtaken region has no roll and no Terrain / Encounter / Rumor pa
   const view = read('js/journey2-view.js');
   assert.match(view, /I\.scroll\.hidden = bare/);
   assert.match(view, /I\.roll\.hidden = bare/);
-  assert.match(view, /refs\.inspect\.hidden = !!b\.habitat\.overtaken/);
+  assert.ok(!/refs\.inspect\.hidden = /.test(view), 'Inspect stays available on a fully overtaken region (PD-044)');
   assert.match(view, /if \(!b \|\| b\.habitat\.overtaken \|\| !EncRoll\) return;/);
 });
 

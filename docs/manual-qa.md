@@ -529,6 +529,7 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       reason and changes nothing; an import also ends Player Preview and any fog tool.
 - [ ] Diagnostics (via `debugApi().runAction('diagnostics')`) opens the drawer (grid, markers, protection, print proof)
       and closes again; the inspector's footer then shows "Hex q,r".
+- [ ] Party marker (PD-045): the "Party" button is in the panel and on the collapsed rail, in the GM view AND in Player Preview. With no saved position a press makes the gold star follow the cursor (a chip says so; gone off the map); a click drops it, Esc / the chip's Cancel / the button cancels. Drag the placed star hex to hex: it snaps, and in Player Preview the seven lit hexes move live. One drop or drag is one Undo step. Hide removes the star AND its light for everyone and the next show puts it back where it was. It can stand on a sanctuary, Marrogate, Horizon and a fully overtaken hex, and it stays above hex symbols, X's and Echo crystals with a white outline. With the star shown, "Locate Soul Echoes" starts at once from its hex and "Plan route" starts with point A set (Esc once lets you pick A by hand); hidden, both behave as before. Pressing the star while Route / Locate / the fog brush is active drags the star, not the tool. Check RU and EN and zoomed-out sizing.
 - [ ] RU and EN: no clipped labels in the toolbar, cards or dialogs; `#/journey` still works.
 
 ## Journey 2 player map print
