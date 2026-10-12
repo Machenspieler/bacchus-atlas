@@ -66,6 +66,16 @@ const FABRICS = {
     NOTCH_SRC: 130, HEM_SRC: 34, HEM_TOP_SRC: 1555,
     purgeRadius: 6,
   },
+  // Crimson master (C-banner.png, 838x1877): silhouette x 111..728 at mid-height (flares to 108..733 at the top and bottom
+  // hem), rows 73 (top hem edge) .. 1830; V apex row 1693 (x~412) vs hem corners ~1826 (depth 133); stitch line ~34px above the
+  // silhouette edge. Its cut-out has a bright red/pink alpha haze (mean ~124,6,9 against cloth ~77,3,7), hence purgeRadius. Crop 629 px
+  // wide so the 731..733 flare at the top hem is not clipped (0.96% scale difference to purple, invisible).
+  journey: {
+    src: 'C-banner.png',
+    BOX: { left: 106, top: 73, width: 629, height: 1759 },
+    NOTCH_SRC: 133, HEM_SRC: 34, HEM_TOP_SRC: 1556,
+    purgeRadius: 6,
+  },
 };
 const WEBP = { lossless: true, effort: 6 };
 const smooth = (t) => { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2 * t); };
