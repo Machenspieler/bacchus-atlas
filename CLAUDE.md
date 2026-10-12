@@ -242,7 +242,7 @@ Shareable player link (PD-052): a **Player link** button in Player Preview copie
 player projection so fog is already applied, strict binary format 1 -> deflate -> base64url in the URL fragment; the decoder rebuilds a SYNTHETIC map document that the unchanged projection / route code run on).
 `#/map/<link>` mounts the same `Journey2View` in `playerMode`: NO storage (it never touches a `dhcodex_journey2_*` key), no GM controls, always the preview, touch pan / pinch zoom, the site's RU / EN switch.
 Plan Route also runs in Player Preview and on that page, knowing only revealed tiles (+ printed sanctuary icons) and without the encounter estimate. The projection carries `collectedEchoes` (a Collected Echo on a
-REVEALED sanctuary hex only; Available Echoes stay secret; the print blanks it). Format 1 is frozen — a layout change is a new version.
+REVEALED sanctuary hex only; Available Echoes stay secret; the print blanks it). Formats 1 and 2 are frozen (2 = 1 plus the GM's camera; 2 is written, 1 still read) — a layout change is a new version.
 Decisions:
 [docs/product-decisions.md](docs/product-decisions.md) PD-052/PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040/PD-041/PD-045/PD-051 (Place all rolls a random frozen footprint per press), detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",

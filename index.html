@@ -37,6 +37,8 @@
      route is only known from the hash, so this runs synchronously, pre-paint.
      It only sets a data attribute; routing itself stays in js/route-utils.js. -->
 <script>if(/^#\/journey2?(?:[\/?]|$)/.test(location.hash))document.documentElement.dataset.bootRoute='journey2';</script>
+<!-- The shared player map (#/map/<link>, PD-052) is the same full-bleed map screen, so it boots on the same map skeleton, never the catalogue's cards. -->
+<script>if(/^#\/map\//.test(location.hash))document.documentElement.dataset.bootRoute='journey2';</script>
 </head>
 <body>
   <!-- Static fallback shown before js/app.js runs. renderHeader() overwrites

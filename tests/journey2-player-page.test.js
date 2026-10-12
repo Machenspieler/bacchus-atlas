@@ -132,7 +132,7 @@ test('Copy player link: lives in the Player Preview bar (and its rail proxy), is
   assert.match(view, /share: \(\) => ui\.shareBtn/);
   assert.match(view, /else if \(b\.hasAttribute\('data-j2-share-link'\)\) copyPlayerLink\(\);/);
   assert.match(body, /if \(inst\.disposed \|\| !previewMode \|\| playerMode/, 'only from the GM\'s Player Preview');
-  assert.match(body, /Share\.createLinkText\(projectionDoc\(\), data\.ctx, \{ lang: lang \}\)/, 'the same document Player Preview draws, party light included');
+  assert.match(body, /Share\.createLinkText\(projectionDoc\(\), data\.ctx, \{ lang: lang, view: view \}\)/, 'the same document Player Preview draws, party light included');
   assert.match(body, /location\.href\.split\('#'\)\[0\] \+ '#\/map\/' \+ text/);
   assert.match(body, /navigator\.clipboard\.writeText\(url\); copied = true;/);
   assert.match(body, /if \(copied\) \{ toast\(t\('journey2_share_toast'\)\)/, 'no success toast without a copy');
@@ -165,4 +165,21 @@ test('player copy: no GM vocabulary reaches a player through the route and load 
       assert.doesNotMatch(i18n[lang][k], /generated|GM only|nothing is saved|geometry|console|сгенерирован|только для ведущего|консол/i, lang + ' ' + k);
     }
   }
+});
+/* ---------------- first paint and camera ---------------- */
+
+test('boot: #/map/ boots on the map skeleton, never the catalogue cards', () => {
+  const html = read('index.html');
+  const m = html.match(/<script>if\((\/\^#\\\/map\\\/\/)\.test\(location\.hash\)\)document\.documentElement\.dataset\.bootRoute='journey2';<\/script>/);
+  assert.ok(m, 'boot script for the player map present');
+  const re = eval(m[1]); // eslint-disable-line no-eval -- the literal is this repo's own index.html
+  assert.ok(re.test('#/map/2.abc') && !re.test('#/journey') && !re.test('') && !re.test('#/mapx'));
+});
+
+test('camera: the GM link carries the camera and the player page opens on it at the same world width', () => {
+  const copy = fn('copyPlayerLink', 'maybeResumePreview');
+  assert.match(copy, /const view = cv && !cv\.fit && vw && cv\.scale > 0 \? \{ cx: cv\.cx, cy: cv\.cy, width: vw \/ cv\.scale \} : null;/);
+  const restore = fn('restoreCamera', 'setCamera');
+  assert.match(restore, /pv = playerMode && playerLoad && playerLoad\.snap && playerLoad\.snap\.view/);
+  assert.match(restore, /vw \/ pv\.width/, 'the scale follows THIS screen width, so a tablet shows the same width of world');
 });

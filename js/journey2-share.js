@@ -11,6 +11,7 @@
 
    What a snapshot contains — ONLY what a player may already see (it is built from the player projection, so fog has already been applied):
      lang      the GM's language, a default for a player with no saved choice (or null)
+     view      the GM's camera (world centre + visible world width), so the player first sees the same part of the map at the same zoom (or null = fit); version 2+
      party     the shown party marker's hex, or null
      revealed  the revealed cell ids (hand-revealed ∪ the party's light)
      regions   one { symbol, dots } per region that has a tile in a revealed cell, numbered by first appearance in cell order — an anonymous number, never an id
@@ -20,8 +21,8 @@
      echoes    sanctuary ids of Soul Echoes marked Collected whose hex is revealed
    It never contains hidden tiles, regions, sanctuaries, an Available Echo, Encounters, Rumors, notes, Environments or any id from the GM's document.
 
-   Format (version 1; the version is the prefix of the link text, never reordered — a new layout is a new version):
-     flags byte (bits 0-1 language 0 none / 1 en / 2 ru, bit 2 party present) · varint cell count N (a template check) · [varint party cell index]
+   Format (version 2 is written, 1 is still read; the version is the prefix of the link text, never reordered — a new layout is a new version; 2 = 1 plus the optional camera):
+     flags byte (bits 0-1 language 0 none / 1 en / 2 ru, bit 2 party present, bit 3 camera present [v2]) · varint cell count N (a template check) · [varint party cell index] · [varint cx, cy, width]
      · bitmap of revealed cells (ceil(N/8) bytes, cell order = the grid's valid-cell order) · bitmap over the revealed cells: has a tile (ceil(R/8))
      · varint region count, per region a byte symbol | dots << 4 · per tile (cell order) a varint region << 1 | x
      · varint X count + delta-coded cell indexes · varint name count, per name varint sanctuary index + varint byte length + UTF-8
@@ -34,8 +35,10 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (Geo, Model, Projection) {
   'use strict';
 
-  const FORMAT_VERSION = 1;
-  /** Symbol table of format 1: the eleven Journey biomes, then the fully overtaken region. NEVER reorder or insert — add a new format version instead. */
+  const FORMAT_VERSION = 2;                               // what is written; version 1 (no camera) is still read
+  const SUPPORTED_VERSIONS = Object.freeze([1, 2]);
+  const MAX_VIEW = 1000000;
+  /** Symbol table of formats 1 and 2: the eleven Journey biomes, then the fully overtaken region. NEVER reorder or insert — add a new format version instead. */
   const SYMBOLS = Object.freeze(['underground', 'aquatic', 'wetland', 'grassland', 'tropical', 'forest', 'drylands', 'rolling', 'mountain', 'frozen', 'badlands', 'fully-shadowblighted']);
   const OVERTAKEN_SYMBOL = 'fully-shadowblighted';
   const LANGS = Object.freeze([null, 'en', 'ru']);
@@ -94,6 +97,13 @@
   const bitmapBytes = n => Math.ceil(n / 8);
   const bitGet = (bm, i) => (bm[i >> 3] >> (i & 7)) & 1;
 
+  /** The GM's camera as the player should first see it: { cx, cy } the world point at the centre and `width` the world width on screen (whole px), or null (= fit the map). */
+  function cleanView(v) {
+    if (!v || ![v.cx, v.cy, v.width].every(n => typeof n === 'number' && Number.isFinite(n))) return null;
+    const cx = Math.round(v.cx), cy = Math.round(v.cy), width = Math.round(v.width);
+    return cx >= 0 && cy >= 0 && width >= 1 && cx <= MAX_VIEW && cy <= MAX_VIEW && width <= MAX_VIEW ? { cx: cx, cy: cy, width: width } : null;
+  }
+
   /* ---------------- snapshot (the filter) ---------------- */
 
   /**
@@ -116,6 +126,7 @@
     const lang = opts && (opts.lang === 'en' || opts.lang === 'ru') ? opts.lang : null;
     return {
       lang: lang,
+      view: cleanView(opts && opts.view),
       party: proj.party ? Geo.cellId(proj.party.q, proj.party.r) : null,
       revealed: revealed, regions: regions, tiles: tiles,
       xs: proj.shadowMarks.map(m => Geo.cellId(m.q, m.r)).filter(c => ix.index.has(c)).sort((a, b) => ix.index.get(a) - ix.index.get(b)),
@@ -126,13 +137,15 @@
 
   /* ---------------- binary encode / decode ---------------- */
 
-  /** The uncompressed bytes of a snapshot (format 1). Throws only for a snapshot that could not have come from buildSnapshot (a programming error). */
+  /** The uncompressed bytes of a snapshot (format 2). Throws only for a snapshot that could not have come from buildSnapshot (a programming error). */
   function encodeSnapshot(snap, ctx) {
     const ix = indexesOf(ctx), N = ix.cells.length, w = createWriter();
     const langIdx = LANGS.indexOf(snap.lang || null);
-    w.byte((langIdx < 0 ? 0 : langIdx) | (snap.party ? 4 : 0));
+    const view = cleanView(snap.view);
+    w.byte((langIdx < 0 ? 0 : langIdx) | (snap.party ? 4 : 0) | (view ? 8 : 0));
     w.varint(N);
     if (snap.party) w.varint(ix.index.get(snap.party));
+    if (view) { w.varint(view.cx); w.varint(view.cy); w.varint(view.width); }
     const bm = new Uint8Array(bitmapBytes(N));
     for (const c of snap.revealed) { const i = ix.index.get(c); bm[i >> 3] |= 1 << (i & 7); }
     w.raw(bm);
@@ -160,19 +173,23 @@
   }
 
   /** Strict inverse of encodeSnapshot: { ok: true, snap } or { ok: false, code }. Never throws. */
-  function decodeSnapshot(bytes, ctx) {
-    try { return { ok: true, snap: decodeOrThrow(bytes, ctx) }; }
+  function decodeSnapshot(bytes, ctx, version) {
+    try { return { ok: true, snap: decodeOrThrow(bytes, ctx, version || FORMAT_VERSION) }; }
     catch (e) { return { ok: false, code: e instanceof DecodeError ? e.code : ERR.corrupt }; }
   }
 
-  function decodeOrThrow(bytes, ctx) {
+  function decodeOrThrow(bytes, ctx, version) {
     if (!(bytes instanceof Uint8Array) || !bytes.length) throw new DecodeError(ERR.empty);
     const ix = indexesOf(ctx), N = ix.cells.length, r = createReader(bytes);
     const flags = r.byte();
-    if ((flags & 3) > 2 || (flags & ~7)) throw new DecodeError(ERR.invalid);
+    if ((flags & 3) > 2 || (flags & ~(version >= 2 ? 15 : 7))) throw new DecodeError(ERR.invalid);   // bit 3 (a camera) exists from version 2
     if (r.varint() !== N) throw new DecodeError(ERR.template);
-    let party = null;
+    let party = null, view = null;
     if (flags & 4) { const i = r.varint(); if (i >= N) throw new DecodeError(ERR.invalid); party = ix.cells[i]; }
+    if (flags & 8) {
+      view = cleanView({ cx: r.varint(), cy: r.varint(), width: r.varint() });
+      if (!view) throw new DecodeError(ERR.invalid);
+    }
     const bm = r.take(bitmapBytes(N)), revealed = [];
     for (let i = 0; i < N; i++) if (bitGet(bm, i)) revealed.push(ix.cells[i]);
     if (N % 8 && (bm[bm.length - 1] >> (N % 8)) !== 0) throw new DecodeError(ERR.invalid);   // padding bits are zero
@@ -212,7 +229,7 @@
     const echoes = [], seenEcho = new Set();
     for (let i = 0; i < echoCount; i++) { const si = r.varint(); if (si >= ix.sanctuaryIds.length || seenEcho.has(si)) throw new DecodeError(ERR.invalid); seenEcho.add(si); echoes.push(ix.sanctuaryIds[si]); }
     if (!r.atEnd()) throw new DecodeError(ERR.trailing);
-    return { lang: LANGS[flags & 3], party: party, revealed: revealed, regions: regions, tiles: tiles, xs: xs, names: names, echoes: echoes };
+    return { lang: LANGS[flags & 3], view: view, party: party, revealed: revealed, regions: regions, tiles: tiles, xs: xs, names: names, echoes: echoes };
   }
 
   /* ---------------- the synthetic document ---------------- */
@@ -293,10 +310,11 @@
       if (text.length > MAX_LINK_CHARS) return { ok: false, code: ERR.invalid };
       const m = /^(\d{1,3})\.([A-Za-z0-9_-]*)$/.exec(text);
       if (!m) return { ok: false, code: ERR.invalid };
-      if (Number(m[1]) !== FORMAT_VERSION) return { ok: false, code: ERR.version };
+      const version = Number(m[1]);
+      if (!SUPPORTED_VERSIONS.includes(version)) return { ok: false, code: ERR.version };
       const raw = base64UrlToBytes(m[2]);
       if (!raw || !raw.length) return { ok: false, code: ERR.corrupt };
-      return decodeSnapshot(await inflate(raw), ctx);
+      return decodeSnapshot(await inflate(raw), ctx, version);
     } catch (e) { return { ok: false, code: e instanceof DecodeError ? e.code : ERR.corrupt }; }
   }
 
@@ -310,7 +328,7 @@
   }
 
   return {
-    FORMAT_VERSION: FORMAT_VERSION, SYMBOLS: SYMBOLS, ERR: ERR, MAX_LINK_CHARS: MAX_LINK_CHARS,
+    FORMAT_VERSION: FORMAT_VERSION, SUPPORTED_VERSIONS: SUPPORTED_VERSIONS, SYMBOLS: SYMBOLS, ERR: ERR, MAX_LINK_CHARS: MAX_LINK_CHARS,
     buildSnapshot: buildSnapshot, encodeSnapshot: encodeSnapshot, decodeSnapshot: decodeSnapshot, snapshotToDocument: snapshotToDocument,
     packSnapshot: packSnapshot, unpackSnapshot: unpackSnapshot, createLinkText: createLinkText, openLinkText: openLinkText,
     bytesToBase64Url: bytesToBase64Url, base64UrlToBytes: base64UrlToBytes,

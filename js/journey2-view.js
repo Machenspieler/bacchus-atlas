@@ -3356,8 +3356,11 @@
     function restoreCamera() {
       const [vw, vh] = viewSize();
       if (cameraReady || !vw || !vh) return cameraReady;
-      const v = savedView;
-      if (v && !v.fit) {
+      const v = savedView, pv = playerMode && playerLoad && playerLoad.snap && playerLoad.snap.view;
+      if (pv) {                                              // the player page opens on the GM's camera: the same world centre and the same width of world on THIS screen
+        const scale = Math.min(MAX_ZOOM, Math.max(Math.min(minScale(), Geo.ZOOM_STEPS[0]), vw / pv.width));
+        setCamera({ scale: scale, tx: vw / 2 - pv.cx * scale, ty: vh / 2 - pv.cy * scale });
+      } else if (v && !v.fit) {
         const scale = Math.min(MAX_ZOOM, Math.max(Math.min(minScale(), Geo.ZOOM_STEPS[0]), v.scale));
         setCamera({ scale: scale, tx: vw / 2 - v.cx * scale, ty: vh / 2 - v.cy * scale });
       } else fitToView();
@@ -3713,7 +3716,10 @@
       if (inst.disposed || !previewMode || playerMode || !data || !doc || !Share) return;
       let url;
       try {
-        const text = await Share.createLinkText(projectionDoc(), data.ctx, { lang: lang });
+        // the GM's camera rides along (world centre + how much world is on screen), so the player opens on the same spot at the same zoom; a fitted map stays "fit"
+        const cv = currentView(), vw = viewSize()[0];
+        const view = cv && !cv.fit && vw && cv.scale > 0 ? { cx: cv.cx, cy: cv.cy, width: vw / cv.scale } : null;
+        const text = await Share.createLinkText(projectionDoc(), data.ctx, { lang: lang, view: view });
         if (inst.disposed) return;
         url = location.href.split('#')[0] + '#/map/' + text;
       } catch (err) {
