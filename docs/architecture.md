@@ -1213,12 +1213,11 @@ Run all of them with `node --test tests/*.test.js`.
   `Journey2View.debugApi().runAction('export' | 'diagnostics')`; Import still works through the
   hidden file input and the corrupt-map banner.
 - **Dev pipeline (not shipped):** `scripts/journey2/` — `prepare-map.js`,
-  `measure-grid.js`, `survey-markers.js`, `build-template.js`,
-  `verify-template.js`, `browser-verify.js` (Phase 0 behaviours, via the
+  `browser-verify.js` (Phase 0 behaviours, via the
   diagnostics drawer), `stage1-verify.js` (the editor: real pointer input in
   isolated Playwright contexts), both of which also run `lib/fog-checks.js` (Phase C: Fog of War,
   Player Preview, suggested environments) and `lib/topology-checks.js` (Phase D: prepared-map connectivity,
-  the Start-separate-area dialog, boundaries; run with `J2_BROWSER_CHANNEL=chrome` to use an installed Chrome), `print-proof.js` + `verify-print.js`.
+  the Start-separate-area dialog, boundaries; run with `J2_BROWSER_CHANNEL=chrome` to use an installed Chrome), `print-proof.js`. (The one-off Stage 0/1 template-build, calibration and packaging scripts were removed together with `docs/journey2-implementation/`; `data/journey2/map-template.json` is the shipped result.)
 - **Prepared-map connectivity and region boundaries (PD-021, PD-024):**
   - *Two independent rules.* Region connectivity (`Model.regionConnectivity`: one batch is one edge-connected
     component) and **prepared-map connectivity** (`Model.topologyCheck` / `preparedMapConnectivity` /
