@@ -409,8 +409,9 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
  * scripts/generate-ribbon-fabric.js): ONE continuous cloth surface taller than the longest ribbon, pinned to the top
  * (0 0, never scaled vertically: a longer ribbon simply reveals more of the same cloth, so folds, thread size and
  * stitches never move or change scale), and the sewn swallow-tail band pinned to the bottom, which carries only the
- * hem itself (its top edge fades into the cloth underneath). No tiled middle, no second full-width texture.
- * At 1x the body is 104x100px and the hem 104x16px. Another colour = another pair of images. */
+ * hem itself (its top edge fades into the cloth underneath). No tiled middle, no second full-width texture,
+ * no warping: both layers are straight crops of the full-length master img/ribbon-fabric-source/G-Banner-long.png.
+ * At 1x the body is 104x100px and the hem 104x17px. Another colour = another pair of images. */
 :root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="catalog"] .ribbon-fab {
   background:
     url("../img/ui/ribbon-fabric/catalog-hem.webp") 0 100% / 100% auto no-repeat,
