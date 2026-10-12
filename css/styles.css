@@ -356,7 +356,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
  * slides down as the ribbon grows. Light comes from the upper left. */
 .ribbon {
   --rb: var(--rb-catalog); --rb-ink: var(--hope-ink); --rb-ts: 0 1px 0 rgba(255,255,255,0.35);
-  --rb-dim: 0.16;
+  --rb-dim: 0.16; --rb-end: var(--rb-t2); /* where ribbon-drop settles */
   position: relative; flex: none; box-sizing: border-box;
   width: var(--rb-w); height: calc(var(--hdr-h) + var(--rb-t0));
   margin: 0; padding: 0; border: 0; border-radius: 0; background: none;
@@ -373,6 +373,8 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 @media (hover: hover) {
   .ribbon:hover { --rb-dim: 0.05; height: calc(var(--hdr-h) + var(--rb-t1)); animation: ribbon-sway 0.5s ease-out; }
   .ribbon.on:hover { height: calc(var(--hdr-h) + var(--rb-t3)); }
+  /* A drop that finishes under the cursor must land on the hovered length, or the height snaps when it ends. */
+  .ribbon.drop:hover { --rb-end: var(--rb-t3); }
 }
 .ribbon:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); border-radius: 0; }
 .ribbon-fab {
@@ -446,10 +448,10 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 .ribbon.drop { animation: ribbon-drop 0.7s ease-out; }
 @keyframes ribbon-drop {
   0%   { height: calc(var(--hdr-h) + var(--rb-t0)); transform: rotate(0); }
-  35%  { height: calc(var(--hdr-h) + var(--rb-t2) + 8px); transform: rotate(2.4deg); }
+  35%  { height: calc(var(--hdr-h) + var(--rb-end) + 8px); transform: rotate(2.4deg); }
   65%  { transform: rotate(-1.5deg); }
   85%  { transform: rotate(0.6deg); }
-  100% { height: calc(var(--hdr-h) + var(--rb-t2)); transform: rotate(0); }
+  100% { height: calc(var(--hdr-h) + var(--rb-end)); transform: rotate(0); }
 }
 @keyframes ribbon-sway { 0% { transform: rotate(0); } 40% { transform: rotate(1deg); } 100% { transform: rotate(0); } }
 @media (prefers-reduced-motion: reduce) {
