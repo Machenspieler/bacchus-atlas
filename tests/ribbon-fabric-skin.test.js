@@ -24,8 +24,8 @@ test('every fabric rule is scoped to the flag and the Catalogue ribbon, and neve
 });
 
 test('fabric slices exist and are not referenced outside the skin block', () => {
-  for (const n of ['top', 'mid', 'bottom']) {
+  for (const n of ['body', 'hem']) {
     assert.ok(fs.existsSync(path.join(__dirname, '..', `img/ui/ribbon-fabric/catalog-${n}.webp`)));
   }
-  assert.strictEqual((css.match(/ribbon-fabric\//g) || []).length, 3);
+  assert.strictEqual((css.match(/ribbon-fabric\//g) || []).length, 2);
 });

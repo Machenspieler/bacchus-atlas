@@ -405,18 +405,16 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 /* ---- Fabric ribbon skin (experimental, opt-in: ?ribbonSkin=fabric sets data-ribbon-skin on <html>) ----
  * Only the Catalogue ribbon so far. It swaps the PAINT of .ribbon-fab and nothing else: the button's height transition,
  * sway/drop keyframes, transform origin, drop-shadow, clip-path swallow-tail, label and dim overlay are all the
- * originals, so the texture moves and grows as part of the same element. Three slices (made by
- * scripts/generate-ribbon-fabric.js): the sewn hem is pinned to the top, the swallow-tail hem to the bottom, and a
- * weave tile repeats under the WHOLE ribbon (0 0, not below the hem: the hem/tail slices feather their inner edge, and
- * that feather must blend into weave, never into the fallback colour), so the length changes by revealing more weave,
- * never by scaling the photograph. The slices share one fold profile and the tile is a loop-closed, unmirrored stretch
- * of the real weave (see the script header), so no tile or slice boundary can cut a fold at any height.
- * Slice heights at 1x: top 10px, bottom 17px, tile ~21px. Another colour = another set of three images. */
+ * originals, so the texture moves and grows as part of the same element. Two layers (made by
+ * scripts/generate-ribbon-fabric.js): ONE continuous cloth surface taller than the longest ribbon, pinned to the top
+ * (0 0, never scaled vertically: a longer ribbon simply reveals more of the same cloth, so folds, thread size and
+ * stitches never move or change scale), and the sewn swallow-tail band pinned to the bottom, which carries only the
+ * hem itself (its top edge fades into the cloth underneath). No tiled middle, no second full-width texture.
+ * At 1x the body is 104x100px and the hem 104x16px. Another colour = another pair of images. */
 :root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="catalog"] .ribbon-fab {
   background:
-    url("../img/ui/ribbon-fabric/catalog-top.webp") 0 0 / 100% auto no-repeat,
-    url("../img/ui/ribbon-fabric/catalog-bottom.webp") 0 100% / 100% auto no-repeat,
-    url("../img/ui/ribbon-fabric/catalog-mid.webp") 0 0 / 100% auto repeat-y,
+    url("../img/ui/ribbon-fabric/catalog-hem.webp") 0 100% / 100% auto no-repeat,
+    url("../img/ui/ribbon-fabric/catalog-body.webp") 0 0 / 100% auto no-repeat,
     #8a5c14;
 }
 :root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="catalog"] .ribbon-cut { display: none; } /* the photo has its own stitched hem */
