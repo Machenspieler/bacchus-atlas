@@ -4,8 +4,7 @@
    (data/journey2/*.json): geometry maths, cell ids, validity, seam
    adjacency, anchors, assets and the placement-readiness gate. The
    source-alignment evidence (grid vs raster) is not provable by maths
-   alone; it lives in scripts/journey2/verify-template.js and
-   docs/journey2-implementation/stage-0/CALIBRATION_REPORT.md.
+   alone, so it is not tested here.
    ============================================================ */
 'use strict';
 

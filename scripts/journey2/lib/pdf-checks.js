@@ -1,4 +1,4 @@
-/* Dev-only PDF proof analysis shared by inspect-pdf.js and verify-print.js.
+/* Dev-only PDF proof analysis shared by inspect-pdf.js.
    Needs `pdfjs-dist` (3.x legacy build) and `@napi-rs/canvas`, installed outside the project
    (resolve with NODE_PATH); neither is a project dependency.
 

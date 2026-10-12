@@ -9,7 +9,7 @@
 
    Writes (docs/journey2-implementation/stage-0/):
      tests/browser-results.json     every check with its outcome and detail
-     data/browser-verification.json the "browserBehavior" slot read by build-template.js
+     data/browser-verification.json the "browserBehavior" slot of the (removed) template build
      images/browser-*.png           screenshots (1366x768 and 1920x1080)
      print/journey2-print-proof.pdf the browser print-to-PDF proof
 
