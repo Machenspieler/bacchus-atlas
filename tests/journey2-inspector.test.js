@@ -1,8 +1,7 @@
 'use strict';
 /* Journey 2 Phase B: the Region Inspector. Pure — no browser. Covers the transient inspection state (js/journey2-model.js),
    the screen-space placement helper (js/journey2-geometry.js), localization coverage and the source-level guards that keep the
-   inspector separate from the sidebar, persistence and history. The click/drag/notes/close behaviour in a real browser lives in
-   scripts/journey2/stage1-verify.js (checks `insp.*`). */
+   inspector separate from the sidebar, persistence and history. */
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');

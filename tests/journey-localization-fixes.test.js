@@ -1,7 +1,6 @@
 'use strict';
 /* Audit 05 (L5-xx): Journey localization fixes. Pure data checks run the real `fillN` source from the view against data/i18n.json;
- * the DOM-timing fixes (relocalize, aria) are source guards — behaviour was verified in a real browser
- * (artifacts/journey-audit-05-localization-fixes). */
+ * the DOM-timing fixes (relocalize, aria) are source guards — behaviour was verified in a real browser. */
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');

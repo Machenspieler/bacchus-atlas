@@ -7,7 +7,7 @@
    a hex Environment, Soul Echoes and Biome colors on — then Player Preview (fog visible) and Print Preview (no fog, no tint, no
    Environment, no Echo, only what players may know), camera independence, the single window.print() call, print-media layout and a
    real print-to-PDF page count, then the key flow again in Russian.
-   Shared by stage1-verify.js (full run) and browser-verify.js (quick run); also runnable alone:
+   Runnable alone:
      node scripts/journey2/lib/print-checks.js
 
    runPrintChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc })

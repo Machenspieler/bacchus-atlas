@@ -105,7 +105,7 @@ The editor's public route is `#/journey` (`#/journey2` redirects, PD-029); the `
   (`sanctuaries.entries`, <= one per sanctuary id, PD-023; the open overlay is transient): all are optional with a default, which
   is why `schemaVersion` deliberately stays 1 for them (no existing field is reinterpreted). It never
   reads, writes or clears a legacy Journey, Prep or unrelated key, and
-  `tests/journey2-store.test.js` plus `scripts/journey2/stage1-verify.js` assert
+  `tests/journey2-store.test.js` asserts
   every non-Journey-2 value stays byte-identical.
 - **Never autosave over an unreadable map.** A stored document that fails
   `Journey2Model.validateDocument` is reported (`status: 'corrupt'`), left

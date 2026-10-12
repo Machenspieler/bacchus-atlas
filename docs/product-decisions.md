@@ -951,7 +951,6 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   (title "Journey · map editor — Bacchus's Atlas"); the GM backup file is now `bacchus-atlas-journey-map-<date>.json` (same JSON schema/kind, import unchanged).
 - **Out of scope:** renaming internals, any editor behaviour change, removing the legacy redirect.
 - **Where:** `js/route-utils.js`, `js/app.js` (`render`, `routeTitle`, `renderJourneyPage`), `index.html` boot script, `tests/routing.test.js`, `tests/journey-route-cutover.test.js`,
-  browser check `scripts/journey2/route-cutover-verify.js`.
 
 ## PD-030: Journey — "Locate Soul Echoes" is a GM-only map tool with a magic compass, and Echoes can be collected
 - **Status:** Active. **Amended by PD-052 (planned):** the Collected state is no longer GM-only (see PD-022); the compass and everything else stay GM-only.
@@ -1138,11 +1137,11 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Status:** Active (refinement only; no new feature)
 - **Date:** 2026-10-08
 - **Decision:** (1) The Environment details card opened over `#/journey` carries a zero-height sticky "close dock" (`.modal--close-dock`) holding the same `.modal-close` button, so a × stays at the top-right of the visible card while reading; the catalog card is unchanged. (2) The hex inspector's scroll cue is a faint parchment-tinted fade (not a darker shadow), only on the edge that still has content. (3) The Environment picker list is still a bounded 14rem scroller but no longer traps the wheel: at its top/bottom native scroll chaining continues into the inspector. (4) On an explicit **window resize**, an open hex inspector whose hex left the map area gets the least pan that brings it back (zoom kept, never Fit), then the usual inspector-clearance pan; a hex still in view is not moved. Drawer collapse/expand and other camera flows are untouched (they do not fire window resize).
-- **Where:** `js/app.js` (`openDetailOverlay`), `css/styles.css` (`.modal--close-dock`), `css/journey2.css` (`.j2-insp-scroll`, `.j2-hexenv-list`), `js/journey2-view.js` (`reconcileInspectorAfterResize`). Evidence: `artifacts/journey-audit-03-responsive-fixes/`.
+- **Where:** `js/app.js` (`openDetailOverlay`), `css/styles.css` (`.modal--close-dock`), `css/journey2.css` (`.j2-insp-scroll`, `.j2-hexenv-list`), `js/journey2-view.js` (`reconcileInspectorAfterResize`).
 
 ## PD-043: Journey — side drawer UX pass (zones, pinned Generate, count = hexes left, compact finished cards, brush)
 
-- **Status:** Active (refines PD-040; the toolbar-in-the-panel and Player-Preview-is-the-same-screen rules stand). Specification: `docs/TASK-03-JOURNEY-DRAWER-UX.md`.
+- **Status:** Active (refines PD-040; the toolbar-in-the-panel and Player-Preview-is-the-same-screen rules stand).
 - **Date:** 2026-10-09
 - **Decision (D1):** the Hex stock heading keeps its name; the number beside it is the hexes still to place ("6 to place", muted "all placed" at 0, gold-soft while above 0). The region total lives in that number's tooltip / accessible name, and in the rail count's aria text. The rail count shows the same hexes-left number.
 - **Decision (D2):** Remove Echoes is neutral at rest (it is confirmed and undoable); only hover / focus show the fear-red remove treatment.
@@ -1268,4 +1267,4 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Decision (not a storage failure):** `conflict` is its own state (`saveState.status === 'conflict'`, `debugState().conflict`); quota/unavailable/corrupt behaviour and the recovery / previous-map backups are unchanged. An unreadable store is never a conflict.
 - **Known limit:** a read-then-compare in front of `localStorage.setItem` is **not** atomic. Two tabs writing within the same few milliseconds can both pass the check (Chrome propagates localStorage between renderer processes asynchronously); the later write wins and each tab is warned by the `storage` event right afterwards, so the loser's edit survives in that tab's memory and is exportable, but the persisted map holds only one of them. Closing that window needs a cross-tab lock (Web Locks) around check+write, not done here. This is protection against ordinary stale-tab use, not collaborative editing.
 - **Decision (H-03):** a cancelled import (and an import-validation error) changes nothing — document, storage, history, selection, open Region Inspector, camera and drawer all stay. The "a replaced map never keeps a stale inspector" cleanup lives only in `replaceDocument()` (the confirmed path), which also clears selection and history.
-- **Where:** `js/journey2-store.js` (`isStale`, guarded `save`), `js/journey2-view.js` (`enterConflict`, `conflictBlocks`, `renderBanner`, `handleImportText`), `data/i18n.json`; tests `tests/journey2-conflict-guard.test.js`; evidence `artifacts/journey-audit-06-undo-redo-fixes/`.
+- **Where:** `js/journey2-store.js` (`isStale`, guarded `save`), `js/journey2-view.js` (`enterConflict`, `conflictBlocks`, `renderBanner`, `handleImportText`), `data/i18n.json`; tests `tests/journey2-conflict-guard.test.js`.

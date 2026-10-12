@@ -1084,9 +1084,7 @@ Run all of them with `node --test tests/*.test.js`.
   on a placed hex a footer (`[data-j2-insp-tile]`, outside the scroller) holds
   the one **Return to stock** button (`returnSelected`); the raw "Hex q,r" text is shown only
   while Diagnostics is on (it is a diagnostic detail, PD-020); there is
-  no separate tile bar (PD-019). Browser coverage:
-  `scripts/journey2/stage1-verify.js` checks `insp.*` and `browser-verify.js`
-  `inspector.*`; pure coverage: `tests/journey2-inspector.test.js`.
+  no separate tile bar (PD-019). Pure coverage: `tests/journey2-inspector.test.js`.
 - **Environment adapter (Region Inspector, PD-019/PD-020):** `app.js` passes the view
   `environmentsForBiome` (`journey2EnvironmentsForBiome`): the catalog
   environments whose `biomes` includes the region's biome, sorted tier → name in
@@ -1166,9 +1164,7 @@ Run all of them with `node --test tests/*.test.js`.
     finished stroke ("N hexes revealed/hidden", once) are announced through the live region; the
     preview swaps the keyboard hint so it names no editing keys; the SVG overlay is
     `aria-hidden`, so no generated content of a hidden cell is in the accessibility tree.
-  - *Coverage.* `tests/journey2-fog.test.js` (pure + source guards),
-    `scripts/journey2/lib/fog-checks.js` (real pointer/keyboard, run by both
-    `stage1-verify.js` and `browser-verify.js`).
+  - *Coverage.* `tests/journey2-fog.test.js` (pure + source guards; the old browser fog checks were removed).
 - **Storage:** exactly four keys, all `dhcodex_journey2_*` (`js/journey2-store.js`):
   `map` (the document, fog included), `map_recovery` (raw text of a map that failed
   validation), `map_previous` (the map an import replaced), `ui` (view preferences:
@@ -1212,12 +1208,7 @@ Run all of them with `node --test tests/*.test.js`.
   currently no on-screen entry point: the dev scripts reach Export and Diagnostics through
   `Journey2View.debugApi().runAction('export' | 'diagnostics')`; Import still works through the
   hidden file input and the corrupt-map banner.
-- **Dev pipeline (not shipped):** `scripts/journey2/` — `prepare-map.js`,
-  `browser-verify.js` (Phase 0 behaviours, via the
-  diagnostics drawer), `stage1-verify.js` (the editor: real pointer input in
-  isolated Playwright contexts), both of which also run `lib/fog-checks.js` (Phase C: Fog of War,
-  Player Preview, suggested environments) and `lib/topology-checks.js` (Phase D: prepared-map connectivity,
-  the Start-separate-area dialog, boundaries; run with `J2_BROWSER_CHANNEL=chrome` to use an installed Chrome), `print-proof.js`. (The one-off Stage 0/1 template-build, calibration and packaging scripts were removed together with `docs/journey2-implementation/`; `data/journey2/map-template.json` is the shipped result.)
+- **Dev pipeline (not shipped):** `scripts/journey2/` — `prepare-map.js` / `prepare-symbols.js` (asset preparation), `verify-hex-stock-art.js`, `verify-shadowblight-state.js` and `lib/*-checks.js` (real-browser checks; run with `J2_BROWSER_CHANNEL=chrome` to use an installed Chrome). The Stage 0/1 template-build, calibration, packaging and browser-verify harnesses were removed; `data/journey2/map-template.json` is the shipped result.
 - **Prepared-map connectivity and region boundaries (PD-021, PD-024):**
   - *Two independent rules.* Region connectivity (`Model.regionConnectivity`: one batch is one edge-connected
     component) and **prepared-map connectivity** (`Model.topologyCheck` / `preparedMapConnectivity` /
@@ -1363,7 +1354,7 @@ Run all of them with `node --test tests/*.test.js`.
 - *Party marker (PD-045).* `doc.party = { cell, shown }` (optional on load; `Model.validateParty`; command `setParty`, one Undo entry per drop / drag / toggle). The light is DERIVED, never stored: `Model.getPartyLightSet(doc, ctx)` is the hex plus the neighbours on the map while the marker is shown, `Model.getVisibleCellSet(doc, ctx)` is `playerVisibility` ∪ that light (both cached per document state), and `buildPlayerProjection` builds `revealedCells`, overlays, perimeter and X's from the visible set and adds `party: { q, r } | null`; the print model copies it per page (`page.party`, black star drawn last by `printPageMarkup`). The view keeps one transient `partyDraft = { cell, placing, pointerId, from }` for a first placement (following the cursor) or a drag; `projectionDoc()` feeds Player Preview a document with the party at the draft cell so the light moves live, and `onViewportDown` tests `partyHitAt` / `partyDraft.placing` BEFORE the fog brush, tile drag and Locate / Route picks. `startLocate` / `startRoute` read `Model.getPartyCell(doc)` to skip the origin / point-A selection. The marker is `<g data-j2-g="party">` (topmost, pointer-transparent); its minimum on-screen size is re-applied by `scheduleApply` (`paintPartyMarker`).
 - *Shadowblight control (PD-041).* A Locate result (`onLocateChange('animating')`) calls `openSeekers(originCellId)`: `Journey2ShadowMarks.createSeekerPlan({ doc, ctx, origin })` (pure; null when the map has no X and no unreleased skull, so no UI) returns every frame of the session as the canonical `{ added, suppressed }` pair. `stepSeekers(±1)` applies frame N through the `setShadowMarks` command against the **base document captured when the bubble opened**, so − is exact; the session is one coalesced Undo entry (the first + commits, later steps rewrite `entry.after`, step 0 pops it). `afterDocChange` → `syncSeekers` closes the control when `doc` is not the one the session produced (Undo, Redo, edit, import); leaving Locate / choosing another hex closes it through `onLocateChange`. The X's themselves are document state (`doc.shadowMarks`, a delta over the regions' implied marks: `Model.getShadowXSet` / `getPendingSkullSet`) and are drawn by `blightXMarkup` on a tile (`blightMark` from the displayed set, not from the batch) or alone on open ground (`floating` entries in `overlayMarkup`); the projection adds `shadowMarks` (revealed, tile-less cells only) and the print model per-page `marks`. The frame is `<g data-j2-g="seekers">`, the bubble a screen-space `[data-j2-seek]` positioned under the hex by `positionSeekers`.
 - *Tests.* `tests/journey2-locate.test.js` (schema, command, history, bearing, sixteen sectors and boundaries, nearest, ties, here, plan, session lifecycle, isolation, view/i18n/docs guards);
-  `scripts/journey2/lib/locate-checks.js` (real browser, run from `stage1-verify.js`).
+  `scripts/journey2/lib/locate-checks.js` (real browser, runnable alone).
 
 ### Journey 2 Route Planner (PD-031)
 

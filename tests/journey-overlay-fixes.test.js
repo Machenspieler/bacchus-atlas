@@ -1,6 +1,5 @@
 'use strict';
-/* Audit 04 (Z-01 / Z-02 / Z-03): Journey overlay fixes. Source guards only — behaviour was verified in a real browser
- * (artifacts/journey-audit-04-overlays-zindex-fixes). */
+/* Audit 04 (Z-01 / Z-02 / Z-03): Journey overlay fixes. Source guards only — behaviour was verified in a real browser. */
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');

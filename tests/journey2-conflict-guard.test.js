@@ -1,6 +1,6 @@
 'use strict';
 /* Journey 2 H-04 / H-03: stale-tab write protection in the store (pure, fake Storage) and the source-level wiring that keeps every
-   document-writing path behind it. The real two-tab behaviour is verified in Chrome (artifacts/journey-audit-06-undo-redo-fixes/tools/two-tab.cjs).
+   document-writing path behind it. The real two-tab behaviour was verified in Chrome.
    Limit: a read-then-compare in front of setItem is not an atomic transaction — see docs/architecture.md "Multi-tab write protection". */
 const test = require('node:test');
 const assert = require('node:assert/strict');

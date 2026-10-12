@@ -1,7 +1,7 @@
 'use strict';
 /* Journey 2 Phase D (PD-024): prepared-map connectivity (global component count, non-worsening rule, the explicit
    `allowDetached` override), delete topology, the derived boundary geometry and the player-safe boundary projection.
-   Pure — no browser; the click/drag/dialog behaviour is covered by scripts/journey2/browser-verify.js. */
+   Pure — no browser. */
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');

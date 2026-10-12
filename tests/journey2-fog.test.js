@@ -2,9 +2,7 @@
 /* Journey 2 Phase C: Fog of War and Player Preview. Pure — no browser. Covers the document's `playerVisibility`, the
    `setCellsRevealed` command and its Undo/Redo behaviour, the hex-line helper behind fast strokes, the player projection
    (what players may see, and that GM-only data never reaches it), the UI-only preference storage, localization and the
-   source-level guards that keep tools, preview and the document apart. The real pointer behaviour (strokes, Space-pan,
-   priority, Player Preview DOM, camera restore) is covered in a browser by scripts/journey2/stage1-verify.js (`fog.*`)
-   and scripts/journey2/browser-verify.js (`fog.*`). */
+   source-level guards that keep tools, preview and the document apart. */
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');

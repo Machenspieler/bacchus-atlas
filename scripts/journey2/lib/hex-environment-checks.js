@@ -4,7 +4,7 @@
    Browser verification of Journey 2 per-hex Environment assignment (PD-025): the inline picker limited to the region's
    biome, the reused Environment Overlay, assign / change / detach with Undo / Redo, the GM-only map marker, the tile
    lifecycle (move, return, Undo), Player Preview leaking nothing, sanctuary / Soul Echo clicks unchanged, and EN / RU.
-   Shared by stage1-verify.js (full run) and browser-verify.js (quick run). Real pointer and keyboard input in a FRESH
+   Real pointer and keyboard input in a FRESH
    browser context (the owner's browser storage is never touched); the debug API only reads state, translates cell ids
    into client pixels and creates the fixture regions.
 

@@ -5,7 +5,7 @@
    Player Preview labels (beside the right fixed icon, under no fog cut-out, no tables, no Echoes), hide / Undo, the reroll /
    delete / replace-all confirmations with visibility kept or removed, independence from fog, hex Environments and Biome Tint,
    and EN / RU. Real pointer input in a FRESH browser context (the owner's browser storage is never touched).
-   Shared by stage1-verify.js (full run) and browser-verify.js (quick run); also runnable alone:
+   Runnable alone:
      node scripts/journey2/lib/sanctuary-name-checks.js
 
    runSanctuaryNameChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc })

@@ -429,16 +429,16 @@ Desktop pointer only (mouse or trackpad); also 1366×768, 1440×900, 1536×864,
 
 ## Journey map editor (`#/journey`)
 
-Automated coverage: `scripts/journey2/stage1-verify.js` and `browser-verify.js` (real pointer input, isolated
-contexts; run them with `--out <scratch dir>` so the committed evidence is not rewritten, and
-`J2_BROWSER_CHANNEL=chrome` to use an installed Chrome). Scenario regions are created through the
+Automated coverage: the pure `tests/journey2-*.test.js` suites plus the browser checks in `scripts/journey2/lib/` and
+`verify-hex-stock-art.js` / `verify-shadowblight-state.js` (the older Stage 1 / Phase 0 harnesses were removed; see git history
+before this commit; use `J2_BROWSER_CHANNEL=chrome` to run against an installed Chrome). Scenario regions are created through the
 `createBatch` command because the editor only offers the fully random Generate action. The manual path below is for a quick human pass in your own browser — use a
 private window, or accept that it writes the four `dhcodex_journey2_*` keys.
 
 - [ ] Route cutover: `#/journey2` and `#/journey2/env/<id>` replace themselves with `#/journey` / `#/journey/env/<id>` (Back does not
       bounce); the Journey nav button stays active on the overlay route; opening/closing an Environment overlay, Back and Forward never
       remount the map (camera, selection, sidebar kept); `#/prep` then Back returns to the same saved campaign; no old generator page,
-      V1/V2 switch or "Journey 2" text in EN or RU. Automated: `node scripts/journey2/route-cutover-verify.js` (`J2_BROWSER_CHANNEL=chrome`).
+      V1/V2 switch or "Journey 2" text in EN or RU.
 - [ ] Open `#/journey`: header, one compact toolbar (map name, save status, Undo/Redo,
       zoom, the Fog group: Biome colors / Player Preview), a left sidebar (generator + stock), the map fills the rest. No page scroll
       at 1366×768 and 1920×1080; Diagnostics is closed.
@@ -560,16 +560,13 @@ Run browser scripts with Chrome (`channel: 'chrome'`) when Playwright's bundled 
 
 | Script | Status | Why |
 | --- | --- | --- |
-| `scripts/journey2/route-cutover-verify.js` | **Current gate** | 12/12 |
 | `scripts/journey2/lib/print-checks.js` | **Current gate** | Player Print: two A4 pages, no GM data, native-print safety |
 | `scripts/journey2/verify-shadowblight-state.js` | **Current gate** | 464/464 |
 | `scripts/journey2/verify-hex-stock-art.js` | Current | hex card artwork |
-| `scripts/journey2/stage1-verify.js` | **Not a gate (stale)** | scn.06 expects a deterministic "Place all" footprint; the product rolls a random frozen footprint (PD-033/"Place all"). Aborts, so the fog/topology/hex-environment/sanctuary suites chained after it never run |
-| `scripts/journey2/browser-verify.js` | **Not a gate (stale)** | reads the removed Phase-0 diagnostics drawer and hover readout; asserts "merely viewing writes no journey2 key" although the remembered camera is stored by design (PD-034) |
 | `scripts/journey2/lib/locate-checks.js` | **Not a gate (stale)** | strict-mode selector clash on the duplicated drawer + rail controls (same defect fixed only in `print-checks.js`) |
 | `scripts/journey2/lib/sanctuary-name-checks.js` | **Not a gate (stale, 1 check)** | `sancname.03` asserts the removed eye ring |
 
-None of the four stale scripts indicates a product defect; their failures are obsolete assertions, not regressions. They are not rewritten, and a red run of them must never be reported as passing. Current coverage that replaces them: Place all / atomic placement → `tests/journey2-model.test.js` + Audit 08 INT-05; Locate → `tests/journey2-locate.test.js` + Audit 08 E2E-18; sanctuary names → `tests/journey2-sanctuary-names.test.js` + Audit 08 E2E-16/PRN; camera/layout → Audit 08 responsive suite. `browser-verify.js` writes to a temp directory by default and refuses the submitted Stage 0 evidence folder; the two historical Stage 0 evidence assertions in `tests/journey2-stage0a.test.js` run only with `J2_STAGE0_EVIDENCE=1`.
+None of the stale scripts indicates a product defect; their failures are obsolete assertions, not regressions. They are not rewritten, and a red run of them must never be reported as passing. Current coverage that replaces them: Place all / atomic placement → `tests/journey2-model.test.js` + Audit 08 INT-05; Locate → `tests/journey2-locate.test.js` + Audit 08 E2E-18; sanctuary names → `tests/journey2-sanctuary-names.test.js` + Audit 08 E2E-16/PRN; camera/layout → Audit 08 responsive suite.
 
 ## Language
 

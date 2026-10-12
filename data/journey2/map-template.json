@@ -87,7 +87,7 @@
    "status": "pass",
    "checks": 55,
    "failed": [],
-   "verifiedBy": "scripts/journey2/browser-verify.js (Playwright Chromium 1366x768 + 1920x1080, isolated contexts)",
+   "verifiedBy": "Stage 0 browser verification, script removed (Playwright Chromium 1366x768 + 1920x1080, isolated contexts)",
    "note": "Chromium only; Firefox/WebKit/Safari and touch devices were not exercised."
   },
   "printProof": {
@@ -383,7 +383,7 @@
     }
    ],
    "scope": "browser print-to-PDF (Chromium, Playwright page.pdf, preferCSSPageSize) with background printing ON and OFF; PDF structure, white page margins and map-artwork survival checked on pdf.js renders over an explicit white canvas plus a content-stream fill scan",
-   "verifiedBy": "scripts/journey2/inspect-pdf.js + scripts/journey2/lib/pdf-checks.js + Stage 0a print verification (script removed; see git history before b8b386f)",
+   "verifiedBy": "Stage 0a print verification (script removed; see git history before b8b386f)",
    "note": "Single rasteriser (pdf.js); no MuPDF/Poppler available in this environment, so the content-stream fill scan is the second opinion. No physical printer test was performed (physicalPrintTest: not-tested)."
   },
   "physicalPrintTest": {

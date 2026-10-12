@@ -7,7 +7,7 @@
    with the independently computed bearing), direction-only output, "here", collected Echoes excluded and eligible again after Undo, the frozen
    RNG draw, Undo / Redo staleness, Player Preview and Print Preview isolation, JSON backup, EN / RU names and reduced motion.
    Real pointer / keyboard input in FRESH browser contexts (the owner's browser storage is never touched).
-   Shared by stage1-verify.js (full run); also runnable alone:   node scripts/journey2/lib/locate-checks.js
+   Runnable alone:   node scripts/journey2/lib/locate-checks.js
 
    runLocateChecks({ browser, base, check, record, shot, logs, attachLogging, Geo, Model, template, anchorsDoc })
    ============================================================ */
