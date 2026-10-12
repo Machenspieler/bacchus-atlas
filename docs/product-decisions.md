@@ -485,8 +485,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Gate:** `readyForInteractivePlacement` may be true only when the four
   verification slots (assets, geometry, browser, print proof) all pass; the
   view shows "Unverified" otherwise and never substitutes guessed geometry.
-- **Where:** [architecture.md](architecture.md) "Journey 2 diagnostic view";
-  evidence in `docs/journey2-implementation/stage-0/`.
+- **Where:** [architecture.md](architecture.md) "Journey 2 diagnostic view"; the Stage 0 evidence folder was removed (recoverable from git history before `b8b386f`).
 
 ## PD-016: Journey 2 Phase 1 — a batch/tile map editor with its own storage
 - **Date:** 2026-10-06
@@ -529,8 +528,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   (plus a download offer). A corrupt saved map is never autosaved over.
 - **Click-to-place** (arm a stock handle, click a cell; Esc exits) exists as a
   supplement to, never a replacement for, the two drag targets.
-- **Where:** [architecture.md](architecture.md) "Journey 2 map editor";
-  evidence in `docs/journey2-implementation/stage-1/`.
+- **Where:** [architecture.md](architecture.md) "Journey 2 map editor"; the Stage 1 evidence folder was removed (recoverable from git history before `b8b386f`).
 
 ## PD-017: Journey 2 Phase A — random, immutable, connected regions
 - **Date:** 2026-10-06
@@ -1221,7 +1219,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Decision:** the shared Region Inspector (`#j2-region-inspector`, opened from a placed hex or from a Hex Stock card's `i` button — one element, so one implementation) shows a decorative 960x540 WebP of the region's terrain behind its header: min-height 88 px, `center 25%` crop, dark left-to-right gradient for legibility, the original hand-drawn terrain icon, the unchanged title / meta / close button. Hex Stock cards, the vertical catalogue artwork and the hand-drawn icons are untouched and remain separate assets.
 - **Decision (one map):** `REGION_ART` in `js/journey2-view.js` is the only terrain -> artwork map (exactly the eleven Journey terrains; `img/journey2/headers/<biome>.webp`, optional per-terrain `pos`). `applyArt()` sets `data-art` and the `--j2-art` / `--j2-art-pos` custom properties on a panel (`applyHeaderArt()` for the Region Inspector); the CSS holds one rule set, no per-terrain blocks. A fully overtaken region keeps the plain header; a failed image load leaves the plain ink header under the gradient.
 - **Decision (Universal and Settlement):** Universal and Settlement are Environment-catalogue categories, not Journey regions (never generated, never in Hex Stock). Universal therefore needs **no** Journey artwork — its absence is intentional, not a missing asset. The Settlement illustration belongs to **Sanctuaries**: `SANCTUARY_ART` gives the GM-only sanctuary overlay (`#j2-sanctuary`, same `.j2-region-inspector` panel and `[data-art]` styling) the same illustrated header (`center 25%`). Purely decorative: no marker, position, discovery state, fog, Player Preview or print is touched, and the art is cleared when the overlay closes.
-- **Decision (crops):** `center 25%` is the default; Aquatic, Wetland and Rolling use `center 40%` and Grassland `center 50%` (at 25% the plain is mostly sky). Compared at 25 / 40 / 50 % in `qa/biome-headers/`. Forest and Drylands are unchanged.
+- **Decision (crops):** `center 25%` is the default; Aquatic, Wetland and Rolling use `center 40%` and Grassland `center 50%` (at 25% the plain is mostly sky). Compared at 25 / 40 / 50 % (screenshots in `qa/biome-headers/`, since removed; see git history before `f4d3287`). Forest and Drylands are unchanged.
 - **Decision (meta line):** the region meta (`Region N · examples`) flows inline with no-break spaces around the dot, so the separator never starts a wrapped line.
 - **Decision (readability):** the shared gradient was strengthened slightly in the text zone (0.82 at 54 %, 0.4 at 78 %, 0.1 at 100 %) for the bright Aquatic / Grassland / Drylands art; no per-terrain gradients. The prototype's dev-only `?hdr=` switch is gone.
 - **Where:** `REGION_ART` / `SANCTUARY_ART` / `applyArt()` / `applyHeaderArt()` in `js/journey2-view.js`; the `[data-art]` rules in `css/journey2.css`; `img/journey2/headers/`; test `tests/journey2-header-art.test.js`.
@@ -1234,7 +1232,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Decision (readability):** two shared artwork-intensity profiles, no per-biome CSS. One ink wash (clear to 8 %, ramping to full strength at 16 %, held to 80 %, released by 94 %) sits over the art and one shared mask (opaque at the icon, 0.46 at 44 %, nearly gone from 72 %) lets the art go before the right-hand `#number`. Only the wash strength differs: **Dark** art (forest, wetland, frozen, underground) `--j2-wash-mid/end: 0.4 / 0.4`; **Bright** art (aquatic, rolling, grassland, tropical, drylands, mountain, badlands) `0.6 / 0.5`; aquatic's middle is `0.76` (its Shadowblighted badge sits on the brightest painting). The open card also fades the art vertically so the Place controls stay on plain dark ground.
 - **Decision (completed regions):** a fully placed collapsed card draws the art at opacity 0.6 (0.92 otherwise) on top of the existing compact row and dimmed icon; the card itself, its text, status and controls are never faded.
 - **Rejected:** horizontal crop (A2), full-card background (B), the original 96 px strip (A) and the un-refined A+ (one wash for every biome: dark art lost its colour, bright art lost contrast), and horizontal header art on the card (A+h; blurry, ~3x the bytes). The dev-only `?stockArt=` switch and its comparison scripts are gone; the parameter is ignored.
-- **Where:** `applyStockArt()` in `js/journey2-view.js`; the `.j2-card[data-art]` rules at the end of `css/journey2.css`; verification `scripts/journey2/verify-hex-stock-art.js` (`--part shots|interact|extra|all`: real pointer drags, invalid drops, saved-data checks, keyboard focus, blocked artwork, a 15-card list), results in `qa/hex-stock-art-final/`.
+- **Where:** `applyStockArt()` in `js/journey2-view.js`; the `.j2-card[data-art]` rules at the end of `css/journey2.css`; verification `scripts/journey2/verify-hex-stock-art.js` (`--part shots|interact|extra|all`: real pointer drags, invalid drops, saved-data checks, keyboard focus, blocked artwork, a 15-card list) (results were in `qa/hex-stock-art-final/`, since removed; see git history before `f4d3287`).
 
 ## PD-051: Journey — the Route Planner's A and B pins can be dragged, and outrank the party marker
 
