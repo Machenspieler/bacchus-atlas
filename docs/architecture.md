@@ -1069,7 +1069,10 @@ Run all of them with `node --test tests/*.test.js`.
   (pan, zoom, resize, Fit), a `ResizeObserver` on the panel, the sidebar's
   transition and after every render, never per pointer event. The selected hex is a protected area: when no side has room (small
   laptop windows) `ensureInspectorClear()` pans the camera by the least amount `Geo.panForInspector()` finds — never a Fit, never a zoom
-  change, only when the inspector opens on a hex or changes height (not while the user pans). The drawer's "New region" block snaps to
+  change, only when the inspector opens on a hex or changes height (not while the user pans). An in-place height change (terrain note,
+  Hex Environment picker, Encounter roll output) never re-centres the panel on the hex: `positionPanel()` holds the top edge (relative to
+  the anchor, clamped to the map area) while the height changes, so it grows downward, and `morphInspector()` eases the height
+  (`.is-morphing`, 180 ms, instant under reduced motion); a camera move, another hex or a side change re-centres as before. The drawer's "New region" block snaps to
   fully shown / fully scrolled away after any scroll settles (`snapSideHeader()`), and a manual drawer toggle slides the camera by half the
   inset difference (`toggleSide()` → `animateCameraBy()`; selecting a hex or any automatic change never does). `syncInspection`
   runs after every document change (deleted region → closed; vanished anchor

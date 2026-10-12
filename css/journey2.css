@@ -493,6 +493,9 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
   font-family: var(--font-ui); color: var(--parchment); overscroll-behavior: contain;
 }
 .j2-region-inspector[hidden] { display: none; }
+/* morphInspector() in journey2-view.js: an in-place height change (terrain note, Hex Environment picker) eases instead of snapping; the scroller clips meanwhile so no scrollbar flickers */
+.j2-region-inspector.is-morphing { transition: height var(--t-base) var(--ease-out); }
+.j2-region-inspector.is-morphing .j2-insp-scroll { overflow-y: hidden; }
 .j2-insp-head { flex: none; display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-3) var(--s-2); border-bottom: 1px solid var(--line-faint); }
 .j2-insp-sym { flex: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--parchment); border-radius: var(--r-sm); }
 .j2-insp-sym img { width: auto; height: auto; max-width: 30px; max-height: 28px; display: block; }

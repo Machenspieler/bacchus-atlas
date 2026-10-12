@@ -1285,8 +1285,7 @@
       const tile = inspector.tileId ? Model.derive(doc).byId.get(inspector.tileId) : null;
       if (!tile || previewMode) { envPicker = null; return; }
       envPicker = open ? { tileId: tile.id } : null;
-      renderInspector();
-      positionInspector();
+      morphInspector(() => { renderInspector(); });
       ensureInspectorClear();
       if (o && o.focus) { const b = hexEnvButton('change'); if (b) b.focus({ preventScroll: true }); }
     }
@@ -1302,7 +1301,7 @@
         if (!pick) return;                                    // only what the biome adapter currently offers can be assigned
         const r = dispatch({ type: 'setTileEnvironment', tileId: tile.id, environmentId: pick.id }, 'changeEnvironment', true);
         if (!r.ok) { hint(t('journey2_hexenv_failed')); return; }
-        envPicker = null; renderInspector(); positionInspector(); ensureInspectorClear();
+        envPicker = null; morphInspector(() => { renderInspector(); }); ensureInspectorClear();
         announce(fill('journey2_hexenv_live_changed', { name: pick.name }));
         const l = ui.i.hexEnvBody.querySelector('[data-j2-hexenv-link]'); if (l) l.focus({ preventScroll: true });
       }
@@ -1602,7 +1601,7 @@
     }
 
     /** Places one screen-space panel (the Region Inspector or the sanctuary overlay) beside its anchor, clear of the sidebar and the drawer. */
-    function positionPanel(node, anchorOf) {
+    function positionPanel(node, anchorOf, key) {
       const wrap = ui.mapwrap.getBoundingClientRect();
       const view = { w: wrap.width, h: wrap.height };
       if (!view.w || !view.h) return;
@@ -1610,6 +1609,25 @@
         view: view, size: { w: node.offsetWidth, h: node.offsetHeight }, anchor: anchorOf(view),
         blocked: inspectorBlocked(wrap), narrow: window.innerWidth <= 900,
       });
+      // A panel that grows or shrinks in place (an expanded section, the environment picker) keeps its top edge where it was and grows downward
+      // (clamped to the map area), instead of re-centring on the hex and jumping. A camera move, another hex or another side re-centres as before.
+      const a = anchorOf(view), side = pos.side === 'right' || pos.side === 'left';
+      if (a && side && key != null) {
+        const h = node.offsetHeight, st = node._j2place;
+        let hold = null;
+        if (st && st.side === pos.side && st.key === key) {
+          const grew = st.h !== h, moved = st.ay !== a.y;
+          hold = st.hold;
+          if (grew && !moved && hold == null) hold = st.y - st.ay;
+          else if (moved && !grew) hold = null;
+        }
+        if (hold != null) {
+          const m = 12, hh = Math.min(h, Math.max(0, view.h - 2 * m));
+          pos.y = Math.round(Math.min(Math.max(m, a.y + hold), Math.max(m, view.h - m - hh)));
+          if (pos.caret) pos.caret.offset = Math.round(Math.min(hh - 18, Math.max(18, a.y - pos.y)));
+        }
+        node._j2place = { side: pos.side, key: key, h: h, ay: a.y, y: pos.y, hold: hold };
+      } else node._j2place = null;
       node.style.transform = 'translate(' + pos.x + 'px,' + pos.y + 'px)';
       node.setAttribute('data-side', pos.side);
       if (pos.caret) { node.setAttribute('data-caret', pos.caret.edge); node.style.setProperty('--j2-caret', pos.caret.offset + 'px'); }
@@ -1625,7 +1643,7 @@
       if (inspector.batchId == null || !inspector.tileId || !ui.inspector || ui.inspector.hidden || !data || previewMode) return;
       const wrap = ui.mapwrap.getBoundingClientRect(), view = { w: wrap.width, h: wrap.height };
       if (!view.w || !view.h) return;
-      const pan = Geo.panForInspector({ view: view, size: { w: ui.inspector.offsetWidth, h: ui.inspector.offsetHeight }, anchor: inspectorAnchor(view), blocked: inspectorBlocked(wrap), narrow: window.innerWidth <= 900 });
+      const pan = Geo.panForInspector({ view: view, size: { w: ui.inspector.offsetWidth, h: ui.inspector._j2to || ui.inspector.offsetHeight }, anchor: inspectorAnchor(view), blocked: inspectorBlocked(wrap), narrow: window.innerWidth <= 900 });
       if (pan && (pan.dx || pan.dy)) animateCameraBy(pan.dx, pan.dy, 220);
     }
 
@@ -1704,8 +1722,31 @@
       animateCameraToWorld(x, y, 1, 600);
     }
 
+    /**
+     * Runs a change that resizes the open Region Inspector (an expanded terrain note, the Hex Environment picker) and eases its height from the old to
+     * the new value instead of snapping; the top edge stays put (positionPanel holds it every frame while the height moves). Instant under reduced motion.
+     */
+    function morphInspector(change) {
+      const el = ui.inspector;
+      if (!el || el.hidden || !data) { change(); positionInspector(); return; }
+      const from = el.offsetHeight;
+      clearTimeout(el._j2morphTimer);
+      el.style.height = ''; el.classList.remove('is-morphing'); el._j2to = 0;
+      change();
+      const to = el.offsetHeight;
+      if (prefersReducedMotion() || !from || from === to) { positionInspector(); return; }
+      el._j2to = to;
+      el.classList.add('is-morphing');
+      el.style.height = from + 'px';
+      void el.offsetHeight;                                   // commit the start height before the transition target
+      el.style.height = to + 'px';
+      el._j2morphTimer = setTimeout(() => { el.style.height = ''; el.classList.remove('is-morphing'); el._j2to = 0; positionInspector(); }, 220);
+      positionInspector();
+    }
+
     function positionInspector() {
-      if (inspector.batchId != null && ui.inspector && !ui.inspector.hidden && data) positionPanel(ui.inspector, inspectorAnchor);
+      if (ui.inspector && (ui.inspector.hidden || inspector.batchId == null)) ui.inspector._j2place = null;
+      if (inspector.batchId != null && ui.inspector && !ui.inspector.hidden && data) positionPanel(ui.inspector, inspectorAnchor, inspector.batchId + '|' + inspector.tileId);
       positionSanctuary();
       positionLocate();
       positionSeekers();
@@ -4261,6 +4302,12 @@
        ============================================================ */
 
     function onRootClick(e) {
+      const sum = e.target.closest && e.target.closest('.j2-insp-summary > summary');
+      if (sum && ui.inspector && ui.inspector.contains(sum)) {
+        const det = sum.parentNode;
+        if (det.classList.contains('has-more')) { e.preventDefault(); morphInspector(() => { det.open = !det.open; }); }
+        return;
+      }
       const b = e.target.closest('button');
       if (!b || !ui.root.contains(b)) return;
       if (b.hasAttribute('data-j2-zoom')) {
