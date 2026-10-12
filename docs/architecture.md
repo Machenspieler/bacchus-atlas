@@ -1123,7 +1123,7 @@ Run all of them with `node --test tests/*.test.js`.
     the inspector and clears the tile selection; while one is armed a dashed GM-only outline marks
     every still-hidden placed hex (`renderFogGhost`, never in the projection or print); Undo/Redo work
     in the preview; pan, zoom and the sidebar are untouched. Leaving the preview or opening Print
-    Preview turns the tool off. The camera is a stored view preference (`view` in `dhcodex_journey2_ui`). Pressing the active tool
+    Preview turns the tool off. The camera is a stored view preference (`view` in `dhcodex_journey2_ui`), measured into `liveView` whenever the camera changes — never at save time, because when the page is left the route container is already collapsed and a centre measured then drifted the saved camera on every visit. Pressing the active tool
     returns to neutral. A stroke is one pointer press → release: each sampled cell is joined with
     the previous one by `Geo.cellLine` (so a fast drag leaves no gap), a cell joins a stroke once,
     pointer moves only collect cells and schedule one `requestAnimationFrame` repaint of the

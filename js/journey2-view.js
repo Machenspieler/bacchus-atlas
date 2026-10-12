@@ -188,7 +188,7 @@
     let baseImg = null;
     let cam = { scale: 0.25, tx: 0, ty: 0 };
     let fitMode = true;
-    let savedView = null, cameraReady = false, cameraSaveTimer = 0;   // the stored camera ({ fit, cx, cy, scale } | null), whether a stored camera may be overwritten yet, and the debounce timer
+    let savedView = null, liveView = null, cameraReady = false, cameraSaveTimer = 0;   // the stored camera ({ fit, cx, cy, scale } | null), whether a stored camera may be overwritten yet, and the debounce timer
     let rafId = 0, pendingApply = false;
 
     /* committed state */
@@ -3380,6 +3380,7 @@
       cam = Geo.fitCamera(Math.max(200, vw - panelInset() - left), vh, data.template.worldSizePx[0], data.template.worldSizePx[1], 8);
       cam.tx += left;                                  // the overlay sidebar covers the left edge: fit into what stays visible
       fitMode = true;
+      if (cameraReady) liveView = measureView() || liveView;
       scheduleApply();
       scheduleCameraSave();
     }
@@ -3388,13 +3389,18 @@
      * The camera is a view preference (dhcodex_journey2_ui), never part of the map or its history: it is stored as the world point at the viewport centre plus the zoom,
      * so a different window size still lands on the same spot, or as "fit" so a fitted map stays fitted. Writes are debounced and flushed when the page is hidden.
      */
-    function currentView() {
-      if (!cameraReady || !data || !ui.viewport) return savedView;
+    function measureView() {
       if (fitMode) return { fit: true, cx: 0, cy: 0, scale: 1 };
       const [vw, vh] = viewSize();
-      if (!vw || !vh) return savedView;
+      if (!vw || !vh) return null;
       const w = Geo.screenToWorld(cam, vw / 2, vh / 2);
       return { fit: false, cx: w[0], cy: w[1], scale: cam.scale };
+    }
+    /* Measured at the moment the camera changes, never at save time: when the page is left the route container is already collapsed (a 344px-wide viewport),
+       and a centre measured then drifted the stored camera by hundreds of pixels on every visit. */
+    function currentView() {
+      if (!cameraReady || !data || !ui.viewport) return savedView;
+      return liveView || savedView;
     }
     function scheduleCameraSave() {
       if (!cameraReady || cameraSaveTimer) return;
@@ -3418,6 +3424,7 @@
         setCamera({ scale: scale, tx: vw / 2 - v.cx * scale, ty: vh / 2 - v.cy * scale });
       } else fitToView();
       cameraReady = true;
+      liveView = measureView();
       listen(window, 'pagehide', flushCameraSave);
       listen(document, 'visibilitychange', () => { if (document.hidden) flushCameraSave(); });
       return true;
@@ -3427,6 +3434,7 @@
       const [vw, vh] = viewSize();
       cam = Geo.clampCamera(next, vw, vh, data.template.worldSizePx[0], data.template.worldSizePx[1], 120);
       if (!keepFit) fitMode = false;
+      if (cameraReady) liveView = measureView() || liveView;
       scheduleApply();
       scheduleCameraSave();
       updateReadouts();                               // synchronous: the zoom label and +/- availability never wait for a frame
