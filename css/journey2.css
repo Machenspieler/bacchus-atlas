@@ -972,29 +972,37 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 @media (max-width: 900px) { .j2-route { left: var(--s-3); right: var(--s-3); width: auto; max-height: 55%; } }
 @media print { .j2-route, .j2-route-chip, .j2-route-bubbles { display: none !important; } }
 
-/* Hex Stock card artwork: a decorative left accent (the Environment catalog's vertical biome illustration, applied via data-art in applyStockArt()) fading into the card's ink.
-   A ::before layer behind the unchanged content: no size or padding change, pointer-events none, the hand-drawn icon tile and every control sit above it. An asset that fails to
-   load simply leaves the plain dark card. */
-.j2-card[data-art] { position: relative; isolation: isolate; }
+/* Hex Stock card artwork (PD-050): the Environment catalogue's vertical biome illustration (applied via data-art in applyStockArt()) spans the whole card as a decorative ::before layer,
+   fading into the card's ink. No geometry is touched: the layer sits behind the unchanged content (inset / mask / background only), pointer-events none, so the hand-drawn icon tile and
+   every control stay above it; an asset that fails to load simply leaves the plain dark card.
+   A second background layer, an ink wash that deepens toward the text column, carries readability (the shared gradient, not per-element shadows). Its stops are shared; only its strength
+   differs, in two profiles via --j2-wash-mid / --j2-wash-end:
+   Dark   (forest, wetland, frozen, underground) - light wash, so the painted colour and detail survive;
+   Bright (aquatic, rolling, grassland, tropical, drylands, mountain, badlands) - stronger wash; aquatic, the brightest painting, gets a deeper middle for its Shadowblighted badge.
+   The wash ramps up right after the icon tile and holds behind the #number at the right end of the name row; the art mask lets go earlier there. */
+.j2-card[data-art] { position: relative; isolation: isolate;
+  --j2-card-art-fade: linear-gradient(90deg, #000 0, rgb(0 0 0 / 0.92) 14%, rgb(0 0 0 / 0.68) 28%, rgb(0 0 0 / 0.46) 44%, rgb(0 0 0 / 0.3) 62%, rgb(0 0 0 / 0.07) 72%, rgb(0 0 0 / 0.025) 84%, rgb(0 0 0 / 0.01) 100%); }
 .j2-card[data-art]::before {
-  content: ""; position: absolute; inset: 0 auto 0 0; width: 96px; z-index: -1; border-radius: inherit; pointer-events: none;
-  background: var(--j2-card-art) center 30% / cover no-repeat; opacity: 0.85;
+  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: 0.92;
+  background: linear-gradient(90deg, rgb(20 17 15 / 0) 0, rgb(20 17 15 / 0) 8%, rgb(20 17 15 / var(--j2-wash-mid)) 16%, rgb(20 17 15 / var(--j2-wash-mid)) 80%, rgb(20 17 15 / var(--j2-wash-end)) 94%, rgb(20 17 15 / var(--j2-wash-end)) 100%), var(--j2-card-art) center 30% / cover no-repeat;
   -webkit-mask-image: var(--j2-card-art-fade); mask-image: var(--j2-card-art-fade);
 }
-.j2-card[data-art] { --j2-card-art-fade: linear-gradient(90deg, #000 0, rgb(0 0 0 / 0.85) 24%, rgb(0 0 0 / 0.5) 54%, rgb(0 0 0 / 0.16) 78%, transparent 100%); }
-/* the open card: the strip stays on the head row and fades out before the Place controls, which keep their plain dark ground */
-.j2-card.is-active[data-art] { --j2-card-art-fade: linear-gradient(90deg, #000 0, rgb(0 0 0 / 0.85) 24%, rgb(0 0 0 / 0.5) 54%, rgb(0 0 0 / 0.16) 78%, transparent 100%), linear-gradient(180deg, #000 0, #000 30px, transparent 62px); }
+/* the open card: the art stays on the head row and fades out before the Place controls, which keep their plain dark ground */
+.j2-card.is-active[data-art] { --j2-card-art-fade: linear-gradient(90deg, #000 0, rgb(0 0 0 / 0.92) 14%, rgb(0 0 0 / 0.68) 28%, rgb(0 0 0 / 0.46) 44%, rgb(0 0 0 / 0.3) 62%, rgb(0 0 0 / 0.07) 72%, rgb(0 0 0 / 0.025) 84%, rgb(0 0 0 / 0.01) 100%), linear-gradient(180deg, #000 0, #000 30px, transparent 62px); }
 .j2-card.is-active[data-art]::before { -webkit-mask-composite: source-in; mask-composite: intersect; }
-.j2-card.is-exhausted:not(.is-active)[data-art]::before { opacity: 0.5; }
+.j2-card.is-exhausted:not(.is-active)[data-art]::before { opacity: 0.6; }
 .j2-card[data-art] .j2-card-name > span:first-child, .j2-card[data-art] .j2-card-ord, .j2-card[data-art] .j2-card-sum { text-shadow: 0 0 3px rgb(20 17 15), 0 1px 5px rgb(20 17 15 / 0.9); }
-.j2-card[data-art="forest"] { --j2-card-art: url("../img/biomes/forest-200.webp"); }
-.j2-card[data-art="drylands"] { --j2-card-art: url("../img/biomes/drylands-200.webp"); }
-.j2-card[data-art="frozen"] { --j2-card-art: url("../img/biomes/frozen-200.webp"); }
-.j2-card[data-art="underground"] { --j2-card-art: url("../img/biomes/underground-200.webp"); }
-.j2-card[data-art="aquatic"] { --j2-card-art: url("../img/biomes/aquatic-200.webp"); }
-.j2-card[data-art="wetland"] { --j2-card-art: url("../img/biomes/wetland-200.webp"); }
-.j2-card[data-art="grassland"] { --j2-card-art: url("../img/biomes/grassland-200.webp"); }
-.j2-card[data-art="tropical"] { --j2-card-art: url("../img/biomes/tropical-200.webp"); }
-.j2-card[data-art="rolling"] { --j2-card-art: url("../img/biomes/rolling-200.webp"); }
-.j2-card[data-art="mountain"] { --j2-card-art: url("../img/biomes/mountain-200.webp"); }
-.j2-card[data-art="badlands"] { --j2-card-art: url("../img/biomes/badlands-200.webp"); }
+.j2-card[data-art]:is([data-art="forest"], [data-art="wetland"], [data-art="frozen"], [data-art="underground"]) { --j2-wash-mid: 0.4; --j2-wash-end: 0.4; }
+.j2-card[data-art]:is([data-art="aquatic"], [data-art="rolling"], [data-art="grassland"], [data-art="tropical"], [data-art="drylands"], [data-art="mountain"], [data-art="badlands"]) { --j2-wash-mid: 0.6; --j2-wash-end: 0.5; }
+.j2-card[data-art][data-art="aquatic"] { --j2-wash-mid: 0.76; }   /* same specificity as the profile rule above, later wins */
+.j2-card[data-art="forest"] { --j2-card-art: image-set(url("../img/biomes/forest-300.avif") type("image/avif"), url("../img/biomes/forest-200.webp") type("image/webp")); }
+.j2-card[data-art="drylands"] { --j2-card-art: image-set(url("../img/biomes/drylands-300.avif") type("image/avif"), url("../img/biomes/drylands-200.webp") type("image/webp")); }
+.j2-card[data-art="frozen"] { --j2-card-art: image-set(url("../img/biomes/frozen-300.avif") type("image/avif"), url("../img/biomes/frozen-200.webp") type("image/webp")); }
+.j2-card[data-art="underground"] { --j2-card-art: image-set(url("../img/biomes/underground-300.avif") type("image/avif"), url("../img/biomes/underground-200.webp") type("image/webp")); }
+.j2-card[data-art="aquatic"] { --j2-card-art: image-set(url("../img/biomes/aquatic-300.avif") type("image/avif"), url("../img/biomes/aquatic-200.webp") type("image/webp")); }
+.j2-card[data-art="wetland"] { --j2-card-art: image-set(url("../img/biomes/wetland-300.avif") type("image/avif"), url("../img/biomes/wetland-200.webp") type("image/webp")); }
+.j2-card[data-art="grassland"] { --j2-card-art: image-set(url("../img/biomes/grassland-300.avif") type("image/avif"), url("../img/biomes/grassland-200.webp") type("image/webp")); }
+.j2-card[data-art="tropical"] { --j2-card-art: image-set(url("../img/biomes/tropical-300.avif") type("image/avif"), url("../img/biomes/tropical-200.webp") type("image/webp")); }
+.j2-card[data-art="rolling"] { --j2-card-art: image-set(url("../img/biomes/rolling-300.avif") type("image/avif"), url("../img/biomes/rolling-200.webp") type("image/webp")); }
+.j2-card[data-art="mountain"] { --j2-card-art: image-set(url("../img/biomes/mountain-300.avif") type("image/avif"), url("../img/biomes/mountain-200.webp") type("image/webp")); }
+.j2-card[data-art="badlands"] { --j2-card-art: image-set(url("../img/biomes/badlands-300.avif") type("image/avif"), url("../img/biomes/badlands-200.webp") type("image/webp")); }

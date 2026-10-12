@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-/* Dev-only verification for the Hex Stock biome artwork: one fixture list built through the model, screenshots, geometry, text-contrast sampling and the
-   Hex Stock interactions (click-to-place, REAL pointer drag, invalid drops, Inspect, delete, selection, scrolling).
-   Usage: node scripts/journey2/verify-hex-stock-art.js [--out qa/hex-stock-art] [--part shots|interact|all]   Exit 1 on any failed check. */
+/* Dev-only verification for the Hex Stock biome artwork (A+ Refined, PD-050): one fixture list built through the model, screenshots, geometry, text-contrast sampling,
+   the Hex Stock interactions (click-to-place, REAL pointer drag, invalid drops, Inspect, delete, selection, scrolling) and the extra checks (off-map drop, saved data untouched,
+   Place-all drag, keyboard focus, blocked artwork, a 15-card list, state hierarchy).
+   Usage: node scripts/journey2/verify-hex-stock-art.js [--out qa/hex-stock-art] [--part shots|interact|extra|all]   Exit 1 on any failed check. */
 'use strict';
 const fs = require('fs'), path = require('path'), http = require('http');
 const { chromium } = require('playwright');
@@ -31,10 +32,11 @@ const open = (() => { const c0 = grid.worldToCell(template.composition.seam.worl
 const LIST = [['badlands', 3, 1, false], ['mountain', 4, 4, false], ['tropical', 3, 1, false], ['grassland', 5, 0, false], ['wetland', 4, 4, false],
   ['aquatic', 4, 1, true], ['frozen', 3, 3, false], ['drylands', 5, 2, false], ['forest', 3, 3, false], ['forest', 6, 0, false]];
 
-async function boot(browser, base, lang, w, h) {
-  const ctx = await browser.newContext({ viewport: { width: w, height: h }, locale: lang === 'ru' ? 'ru-RU' : 'en-US' });
+async function boot(browser, base, lang, w, h, setup) {
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, locale: lang === 'ru' ? 'ru-RU' : 'en-US' }); if (setup) await setup(ctx);
   await ctx.addInitScript(l => { try { if (!sessionStorage.getItem('__i')) { sessionStorage.setItem('__i', '1'); localStorage.setItem('dhcodex_lang', JSON.stringify(l)); } } catch (e) { /* none */ } }, lang);
   const page = await ctx.newPage(); const errors = [];
+  page.on('requestfailed', r => { if (!/biomes\//.test(r.url()) || !setup) errors.push('failed ' + r.url()); });
   page.on('pageerror', e => errors.push(e.message)); page.on('response', r => { if (r.status() >= 400) errors.push(r.status() + ' ' + r.url()); });
   await page.goto(base + '#/journey'); await page.waitForSelector('.j2-viewport', { timeout: 60000 });
   await page.waitForFunction(() => Journey2View.isMounted() && Journey2View.debugState() && Journey2View.debugState().anchors > 0, null, { timeout: 60000 }); await sleep(300);
@@ -56,12 +58,10 @@ const activate = async (page, id) => { const a = () => page.evaluate(i => docume
   if (!(await a())) await page.click(`.j2-card[data-batch="${id}"] [data-j2-card-toggle]`); await sleep(250); };
 const qa = (page, css) => page.evaluate(c => { const e = document.createElement('style'); e.setAttribute('data-qa', ''); e.textContent = c; document.head.appendChild(e); }, css);
 const qaClear = page => page.evaluate(() => document.querySelectorAll('style[data-qa]').forEach(e => e.remove()));
-const OLD_FADE = '.j2-card[data-art]{--j2-card-art-fade:linear-gradient(90deg,#000 0,#000 38%,transparent 100%)!important}.j2-card.is-active[data-art]{--j2-card-art-fade:linear-gradient(90deg,#000 0,#000 38%,transparent 100%),linear-gradient(180deg,#000 0,#000 30px,transparent 62px)!important}';
 const sideScroll = page => page.locator('[data-j2-side-scroll]');
 
 /* text-contrast sampling: card screenshots with the text hidden (visibility), measured over the name + meta boxes only */
-async function contrast(page, ids, tag, oldFade) {
-  if (oldFade) await qa(page, OLD_FADE);
+async function contrast(page, ids, tag) {
   const out = {};
   for (const id of ids) {
     const sel = `.j2-card[data-batch="${id}"]`; await page.locator(sel).scrollIntoViewIfNeeded();
@@ -104,15 +104,10 @@ async function shots(browser, base) {
     }
     await page.setViewportSize({ width: w, height: h }); await sleep(200);
     if (w === 1280 && lang === 'en') {
-      const after = await contrast(page, ids.filter((_, i) => [0, 2, 3, 4, 6].includes(i)), 'after', false);
-      const before = await contrast(page, ids.filter((_, i) => [0, 2, 3, 4, 6].includes(i)), 'before', true);
-      console.log('contrast before', JSON.stringify(before)); console.log('contrast after ', JSON.stringify(after));
-      // before/after strips (old fade vs final) for the five review biomes
-      for (const [state] of [['before'], ['after']]) {
-        if (state === 'before') await qa(page, OLD_FADE); await page.setViewportSize({ width: w, height: 1500 }); await sleep(250);
-        for (const [i, nm] of [[4, 'aquatic'], [2, 'drylands'], [3, 'frozen'], [6, 'grassland'], [0, 'forest']]) await page.locator(`.j2-card[data-batch="${ids[i]}"]`).screenshot({ path: path.join(OUT, `polish-${state}-${nm}.png`) }).catch(() => {});
-        await qaClear(page); await page.setViewportSize({ width: w, height: h });
-      }
+      console.log('contrast', JSON.stringify(await contrast(page, ids.filter((_, i) => [0, 2, 3, 4, 6].includes(i)), 'final')));
+      await page.setViewportSize({ width: w, height: 1500 }); await sleep(250);
+      for (const [i, [biome]] of LIST.slice().reverse().entries()) await page.locator(`.j2-card[data-batch="${ids[i]}"]`).screenshot({ path: path.join(OUT, `card-${String(i).padStart(2, '0')}-${biome}-${tag}.png`) });
+      await page.setViewportSize({ width: w, height: h });
     }
     rec(`shots.${tag}: no page errors / failed requests`, errors.length === 0, errors.slice(0, 4));
     await ctx.close();
@@ -189,8 +184,88 @@ async function interact(browser, base) {
   await ctx.close();
 }
 
+/* extra: off-map drop, saved data untouched, Place-all drag, keyboard focus, blocked artwork, a 15-card list, state hierarchy */
+async function extra(browser, base) {
+  const [w, h] = [1366, 768];
+  for (const add of [['rolling', 4, 0, false], ['tropical', 3, 0, false], ['badlands', 5, 0, false], ['mountain', 3, 0, false], ['wetland', 4, 0, false]]) LIST.unshift(add);   // 15 cards, extras at the bottom
+  const rects = page => page.evaluate(() => [...document.querySelectorAll('.j2-card')].map(c => { const r = c.getBoundingClientRect(); return [+r.width.toFixed(2), +(r.height).toFixed(2)]; }));
+  const { ctx, page, errors, ids } = await boot(browser, base, 'en', w, h);
+  const normal = await rects(page);   // before any interaction changes a card's state
+  const counts = id => page.evaluate(i => { const d = Journey2View.debugApi().document(); return { tiles: d.tiles.filter(t => t.batchId === i).length, all: d.tiles.length }; }, id);
+  const clientOf = cell => page.evaluate(c => Journey2View.debugApi().cellToClient(c), cell);
+  const cam = () => page.evaluate(() => Journey2View.debugState().camera);
+  const saved = () => page.evaluate(() => JSON.stringify(Object.keys(localStorage).sort().map(k => [k, localStorage.getItem(k)])));
+  const top = ids[0]; await activate(page, top);
+  const handle = k => `.j2-card[data-batch="${top}"] [data-j2-handle="${k}"]`;
+  const dragFrom = async (sel, pt) => { const hb = await page.locator(sel).boundingBox(); await page.mouse.move(hb.x + hb.width / 2, hb.y + hb.height / 2); await page.mouse.down();
+    await page.mouse.move(hb.x + hb.width / 2 + 24, hb.y + hb.height / 2 + 12, { steps: 4 }); await page.mouse.move(pt.x, pt.y, { steps: 14 }); await sleep(120); await page.mouse.up(); await sleep(350); };
+  rec('fixture: 15 region cards', ids.length === 15 && (await page.locator('.j2-card').count()) === 15, ids.length);
+  // invalid drops leave the saved data byte-identical
+  const s0 = await saved(), c0 = await counts(top), cam0 = await cam(), sb = await page.locator('[data-j2-side-scroll]').boundingBox();
+  await dragFrom(handle('one'), await clientOf(Geo.cellId(open.q - 40, open.r - 40)).then(p => ({ x: Math.min(Math.max(p.x, 1), w - 1), y: Math.min(Math.max(p.y, 1), h - 1) })));
+  await dragFrom(handle('one'), { x: w + 40, y: h + 40 });
+  await dragFrom(handle('one'), { x: sb.x + 60, y: sb.y + 120 });
+  rec('invalid drops (off the map edge, outside the window, over the sidebar): tiles, camera and ALL saved keys unchanged', (await counts(top)).all === c0.all && JSON.stringify(await cam()) === JSON.stringify(cam0) && (await saved()) === s0, { c0, now: await counts(top) });
+  // Place all by real drag
+  const size = LIST[LIST.length - 1][1];   // the top card is the last LIST entry
+  await dragFrom(handle('all'), await clientOf(Geo.cellId(open.q + 1, open.r)));
+  const ca = await counts(top); rec('drag: Place all dropped on a valid hex places the whole region', ca.tiles === size && ca.all === c0.all + size, { size, ca, c0 });
+  rec('drag: Place all leaves the camera alone', JSON.stringify(await cam()) === JSON.stringify(cam0), null);
+  // keyboard focus: sequential order inside a card, visible outline, nothing covering the focused control
+  const k = ids[1]; await page.locator(`.j2-card[data-batch="${k}"] [data-j2-card-toggle]`).focus();
+  const seen = [], bad = [];
+  for (let i = 0; i < 6; i++) { await page.keyboard.press('Tab'); await sleep(60);
+    const f = await page.evaluate(() => { const e = document.activeElement, r = e.getBoundingClientRect(), cs = getComputedStyle(e), top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return { tag: e.tagName, id: e.getAttribute('data-j2-c') || e.getAttribute('aria-label') || e.className.toString().slice(0, 30), card: e.closest('.j2-card') && e.closest('.j2-card').getAttribute('data-batch'), ring: cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0 || cs.boxShadow !== 'none', own: top === e || e.contains(top) }; });
+    seen.push(f); if (f.card === k && (!f.ring || !f.own)) bad.push(f); }
+  await page.screenshot({ path: path.join(OUT, 'keyboard-focus-1366x768.png') });
+  rec('keyboard: Tab moves through the card controls in order, each with a visible focus ring and nothing over it', seen.some(f => f.card === k) && bad.length === 0, { seen, bad });
+  await page.locator(`.j2-card[data-batch="${k}"] [data-j2-inspect]`).focus(); await page.keyboard.press('Enter'); await sleep(300);
+  rec('keyboard: Enter on the focused Inspect button opens the Region Overlay', await page.evaluate(() => !!(Journey2View.debugState().inspector || {}).open), null);
+  await page.keyboard.press('Escape'); await sleep(250);
+  await page.locator(`.j2-card[data-batch="${ids[3]}"] [data-j2-card-toggle]`).focus(); await page.keyboard.press('Enter'); await sleep(250);
+  rec('keyboard: Enter on a card toggle selects it', await page.evaluate(i => document.querySelector(`.j2-card[data-batch="${i}"]`).classList.contains('is-active'), ids[3]), null);
+  // scrolling with 15 cards
+  const sc = page.locator('[data-j2-side-scroll]'); await sc.evaluate(e => { e.scrollTop = 0; });
+  const dims = await sc.evaluate(e => ({ sh: e.scrollHeight, ch: e.clientHeight })); rec('scroll: 15 cards overflow the panel', dims.sh > dims.ch, dims);
+  const bb = await sc.boundingBox(); await page.mouse.move(bb.x + 30, bb.y + bb.height / 2);
+  const frames = await page.evaluate(() => new Promise(res => { const d = []; let last = performance.now(), n = 0; const f = t => { d.push(t - last); last = t; if (++n < 60) requestAnimationFrame(f); else res(d); }; requestAnimationFrame(f); }));
+  for (let i = 0; i < 12; i++) { await page.mouse.wheel(0, 260); await sleep(40); }
+  frames.sort((a, b) => a - b); console.log('info: idle frame time p50/p95 ms', frames[30].toFixed(1), frames[57].toFixed(1));
+  await sc.evaluate(e => { e.scrollTop = e.scrollHeight; }); await sleep(200);
+  const last = ids[ids.length - 1], lb = await page.evaluate(i => { const c = document.querySelector(`.j2-card[data-batch="${i}"]`), out = {}; for (const sel of ['[data-j2-card-toggle]', '[data-j2-inspect]']) { const e = c.querySelector(sel), r = e.getBoundingClientRect(), hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); out[sel] = r.bottom <= innerHeight + 1 && (hit === e || e.contains(hit)); } return out; }, last);
+  rec('scroll: the last card of 15 and its controls are reachable at the bottom', Object.values(lb).every(Boolean), lb);
+  // state hierarchy
+  const st = await page.evaluate(() => { const g = (e, ps) => getComputedStyle(e, ps), act = document.querySelector('.j2-card.is-active'), idle = document.querySelector('.j2-card:not(.is-active):not(.is-exhausted)'), done = document.querySelector('.j2-card.is-exhausted:not(.is-active)');
+    return { activeEdge: g(act).borderLeftWidth + ' ' + g(act).borderLeftColor, idleEdge: g(idle).borderLeftWidth + ' ' + g(idle).borderLeftColor, doneOpacity: g(done).opacity, doneArt: g(done, '::before').opacity, idleArt: g(idle, '::before').opacity, doneStatus: done.querySelector('[data-j2-c="sum"]').textContent.trim() }; });
+  rec('state: selected card has its own gold 3px edge; a completed card is not faded and only its art is reduced', st.activeEdge !== st.idleEdge && /^3px/.test(st.activeEdge) && st.doneOpacity === '1' && parseFloat(st.doneArt) < parseFloat(st.idleArt), st);
+  const bl = await page.evaluate(i => { const c = document.querySelector(`.j2-card[data-batch="${i}"]`); return { card: !c.querySelector('.j2-blight').hidden, text: c.querySelector('.j2-blight').textContent.trim() }; }, ids[ids.length - 1 - 0]);
+  const blId = await page.evaluate(() => { const d = Journey2View.debugApi().document(); const b = d.batches.find(x => x.habitat && x.habitat.blighted); return b && b.id; });
+  await sc.evaluate(e => { e.scrollTop = 0; }); await page.locator(`.j2-card[data-batch="${blId}"] [data-j2-inspect]`).scrollIntoViewIfNeeded(); await page.click(`.j2-card[data-batch="${blId}"] [data-j2-inspect]`); await sleep(300);
+  const both = await page.evaluate(i => ({ card: !document.querySelector(`.j2-card[data-batch="${i}"] .j2-blight`).hidden, overlay: !!document.querySelector('[data-j2-inspector] .j2-insp-sub > .j2-blight:not([hidden])') }), blId);
+  rec('state: a Shadowblighted region shows its badge on the card AND in the Region Overlay', both.card && both.overlay, both);
+  await page.keyboard.press('Escape'); await sleep(200);
+  rec('extra: no page errors / failed requests', errors.length === 0, errors);
+  await ctx.close();
+  // blocked artwork: same fixture, every biome image request aborted
+  const blk = await boot(browser, base, 'en', w, h, c => c.route('**/img/biomes/**', r => r.abort()));
+  const brects = await rects(blk.page);
+  rec('fallback: blocking every biome image changes no card size', JSON.stringify(normal) === JSON.stringify(brects), null);
+  const fb = await blk.page.evaluate(() => { const cs = [...document.querySelectorAll('.j2-card')]; return { icons: cs.every(c => { const i = c.querySelector('[data-j2-c="img"]'); return i && i.complete && i.naturalWidth > 0 && i.getBoundingClientRect().width > 0; }), text: cs.every(c => c.querySelector('[data-j2-c="name"]').textContent.trim().length > 0) }; });
+  rec('fallback: hand-drawn icons and names stay visible on the plain dark card', fb.icons && fb.text, fb);
+  await activate(blk.page, blk.ids[0]); await blk.page.click(`.j2-card[data-batch="${blk.ids[0]}"] [data-j2-inspect]`); await sleep(300);
+  rec('fallback: Inspect still works with the artwork blocked', await blk.page.evaluate(() => !!(Journey2View.debugState().inspector || {}).open), null);
+  await blk.page.keyboard.press('Escape'); await sleep(200);
+  const bc0 = await blk.page.evaluate(i => Journey2View.debugApi().document().tiles.length, blk.ids[0]);
+  await blk.page.click(`.j2-card[data-batch="${blk.ids[0]}"] [data-j2-handle="one"]`); await sleep(150);
+  const bp = await blk.page.evaluate(([q, r]) => Journey2View.debugApi().cellToClient(q + ',' + r), [open.q + 1, open.r]); await blk.page.mouse.click(bp.x, bp.y); await sleep(350);
+  rec('fallback: click-to-place still works with the artwork blocked', (await blk.page.evaluate(() => Journey2View.debugApi().document().tiles.length)) === bc0 + 1, null);
+  await blk.page.screenshot({ path: path.join(OUT, 'fallback-blocked-art-1366x768.png') });
+  rec('fallback: no page errors', blk.errors.length === 0, blk.errors); await blk.ctx.close();
+}
+
 (async () => {
   const { s, port } = await serve(ROOT); const browser = await chromium.launch({ channel: 'chrome' }); const base = `http://127.0.0.1:${port}/`;
-  try { if (PART !== 'interact') await shots(browser, base); if (PART !== 'shots') await interact(browser, base); } finally { await browser.close(); s.close(); }
+  try { if (PART === 'all' || PART === 'shots') await shots(browser, base); if (PART === 'all' || PART === 'interact') await interact(browser, base); if (PART === 'all' || PART === 'extra') await extra(browser, base); } finally { await browser.close(); s.close(); }
   fs.writeFileSync(path.join(OUT, 'results.json'), JSON.stringify({ pass, fail, results }, null, 1)); console.log(`\n${pass} passed, ${fail} failed`); process.exit(fail ? 1 : 0);
 })();

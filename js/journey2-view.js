@@ -1198,7 +1198,7 @@
       return refs;
     }
 
-    /** Hex Stock card artwork: the card carries its biome in data-art and css/journey2.css paints the matching img/biomes/<biome>-200.webp (decorative, CSS only).
+    /** Hex Stock card artwork: the card carries its biome in data-art and css/journey2.css paints the matching img/biomes/<biome>-300.avif / -200.webp (decorative, CSS only).
      *  Only the eleven natural Journey biomes have art (same set as REGION_ART); a fully overtaken region keeps the plain card. */
     function applyStockArt(refs, b) {
       const biome = b.habitat.overtaken ? '' : b.habitat.biome;
