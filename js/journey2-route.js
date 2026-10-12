@@ -242,6 +242,23 @@
         if (!state || state.status !== 'result') return null;
         state = make('result', { startCell: state.endCell, endCell: state.startCell, routes: compute(state.endCell, state.startCell) }); notify('swap'); return state;
       },
+      /**
+       * Moves one placed pin ('start' = A, 'end' = B) to another cell: the routes are recomputed for the new pair. A is movable while choosing the
+       * destination and in the result, B only in the result; moving to the cell the pin already stands on (or an unknown pin / cell) is a no-op (null).
+       */
+      moveEndpoint(which, cellId) {
+        if (!state || !Geo.parseCellId(cellId)) return null;
+        if (which === 'start') {
+          if (state.status === 'select-start' || cellId === state.startCell) return null;
+          if (state.status === 'select-end') { state = make('select-end', { startCell: cellId }); notify('move'); return state; }
+          state = make('result', { startCell: cellId, endCell: state.endCell, routes: compute(cellId, state.endCell) }); notify('move'); return state;
+        }
+        if (which === 'end') {
+          if (state.status !== 'result' || cellId === state.endCell) return null;
+          state = make('result', { startCell: state.startCell, endCell: cellId, routes: compute(state.startCell, cellId) }); notify('move'); return state;
+        }
+        return null;
+      },
       /** Keep A, forget B and the routes; the next pick is the new destination. */
       chooseNewDestination() {
         if (!state || state.status === 'select-start') return state;

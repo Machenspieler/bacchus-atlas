@@ -235,6 +235,30 @@ test('planner state machine: select A, select B, switch strategy, swap, new dest
   assert.ok(Object.isFrozen(p.state));
 });
 
+test('planner: moveEndpoint drags A (while choosing B and in the result) and B (result only), recomputing the routes', () => {
+  const log = []; let plans = 0;
+  const g = grid(4, fill(['0,0', '1,0', '2,0', '3,0'], 1));
+  const p = R.createRoutePlanner({ plan: (a, b) => { plans++; return R.planRoutes(Object.assign({ startCell: a, goalCell: b }, g)); }, onChange: (s, ev) => log.push(ev) });
+  assert.equal(p.moveEndpoint('start', '1,0'), null, 'no planner yet');
+  p.start();
+  assert.equal(p.moveEndpoint('start', '1,0'), null, 'nothing is placed while choosing A');
+  p.pick('0,0');
+  assert.equal(p.moveEndpoint('end', '2,0'), null, 'B does not exist while choosing the destination');
+  p.moveEndpoint('start', '1,0');
+  assert.equal(p.state.status, 'select-end'); assert.equal(p.state.startCell, '1,0'); assert.equal(plans, 0, 'no route is computed without B');
+  p.pick('3,0'); assert.equal(plans, 1);
+  p.moveEndpoint('end', '2,0');
+  assert.deepEqual([p.state.status, p.state.startCell, p.state.endCell], ['result', '1,0', '2,0']); assert.equal(plans, 2);
+  assert.equal(p.state.routes.fastest.stats.hexes, 1);
+  p.moveEndpoint('start', '0,0');
+  assert.deepEqual([p.state.startCell, p.state.endCell], ['0,0', '2,0']); assert.equal(p.state.routes.fastest.stats.hexes, 2); assert.equal(plans, 3);
+  assert.equal(p.moveEndpoint('start', '0,0'), null, 'the same cell is a no-op'); assert.equal(plans, 3);
+  assert.equal(p.moveEndpoint('end', 'nope'), null); assert.equal(p.moveEndpoint('sideways', '1,0'), null);
+  p.setStrategy('shortest'); p.moveEndpoint('end', '3,0');
+  assert.equal(p.state.strategy, 'shortest', 'a drag keeps the chosen strategy');
+  assert.ok(log.includes('move') && Object.isFrozen(p.state));
+});
+
 test('the route engine is pure: no DOM, storage, strings or player data', () => {
   const src = strip(read('js/journey2-route.js'));
   assert.doesNotMatch(src, /localStorage|sessionStorage|SafeStorage|document\.|window\.|innerHTML|revealedCells|playerVisibility|soulEchoes|environmentId|blighted|overtaken/);
@@ -302,6 +326,18 @@ test('tool exclusivity and selection priority are wired', () => {
   assert.match(view, /if \(routeSelecting\(\)\) \{ routeEscape\(\);/, 'Escape while choosing');
   assert.match(view, /function handleMapClick\(sx, sy\) \{[\s\S]{0,200}if \(routeSelecting\(\)\) \{[\s\S]{0,400}routeCellAt\(sx, sy\)/, 'a click selects the underlying hex before any overlay opens');
   assert.match(view, /syncLocate\(\);\n      syncRoute\(\);/, 'an open result is recomputed after Undo / Redo / edits and never reopened');
+});
+
+test('A / B pins outrank the party marker while the planner is open (PD-031 / PD-045) and the drag is transient', () => {
+  const down = view.indexOf('function onViewportDown(e)');
+  const body = view.slice(down, view.indexOf('function onViewportMove(e)', down));
+  const pin = body.indexOf('routePinAt(x, y)'), party = body.indexOf('startPartyDrag(e)');
+  assert.ok(pin > 0 && party > pin, 'the pin check runs before the party marker check');
+  assert.match(view, /if \(routePinDrag\) \{ cancelRoutePinDrag\(\); e\.preventDefault\(\); return; \}/, 'Escape cancels a pin drag first');
+  assert.match(view, /partyHitAt\(x, y\) && !routePinAt\(x, y\)/, 'a pin over the marker takes the grab cursor');
+  assert.match(view, /function routePinAt\(x, y\) \{[\s\S]{0,200}st\.status === 'select-start'\) return null/, 'nothing to grab while choosing A');
+  assert.match(view, /if \(cell === other\) return;/, 'a pin never lands on the other pin');
+  assert.ok(i18n.en.journey2_route_live_pin_moved && i18n.ru.journey2_route_live_pin_moved);
 });
 
 test('documentation: PD-031 and the architecture section exist', () => {

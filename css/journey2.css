@@ -898,6 +898,9 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-viewport.is-routing { cursor: crosshair; }
 .j2-viewport.is-routing.is-space { cursor: grab; }
 .j2-viewport.is-routing.is-panning { cursor: grabbing; }
+/* the A / B pins can be dragged (PD-031): grab over a pin, grabbing while it moves — both beat the crosshair and the party marker's own cursor */
+.j2-viewport.is-route-pin-hover, .j2-viewport.is-routing.is-route-pin-hover, .j2-viewport.is-route-pin-hover.is-party-hover { cursor: grab; }
+.j2-viewport.is-route-pin-dragging, .j2-viewport.is-routing.is-route-pin-dragging { cursor: grabbing; }
 .j2-route-chip .btn { pointer-events: auto; }
 /* map layers: pointer-transparent, constant on-screen size (--j2-inv = 1 / zoom). Fastest = a golden blue, Shortest = a reddish gold. */
 .j2-overlay .j2-route-hover { fill: rgba(217, 164, 65, 0.16); stroke: #8a5a0c; stroke-width: calc(3px * var(--j2-inv, 1)); stroke-dasharray: calc(7px * var(--j2-inv, 1)) calc(4px * var(--j2-inv, 1)); stroke-linejoin: round; }

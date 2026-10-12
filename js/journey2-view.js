@@ -253,6 +253,7 @@
     let routeDrawn = { line: '', mark: '' };
     let routeDetails = false;                               // the selected route's details popover is open (a click on its bubble; transient)
     let routeBubbleSpecs = [];                              // [{ s, x, y }] world anchor of each drawn route's bubble (rebuilt by every paint)                                    // signature of what the route layers currently show (a re-render with the same state must not restart the draw-in)
+    let routePinDrag = null;                                // transient (PD-031 / PD-045): { which: 'start'|'end', pointerId, from } — the A or B pin being dragged; never stored
     let partyDraft = null;                                  // transient (PD-045): { cell, placing, pointerId, from } — the party marker being placed (following the cursor) or dragged; never stored
     let partyRaf = 0;
     /* the Route Planner state machine (js/journey2-route.js): select-start -> select-end -> result, GM-only, never persisted */
@@ -301,7 +302,7 @@
       abort.abort();
       cancelAnimationFrame(rafId);
       clearTimeout(hintTimer); clearTimeout(liveTimer);
-      routePlanner.dispose(); routeHover = null;
+      routePlanner.dispose(); routeHover = null; routePinDrag = null;
       seekers = null;
       locateSession.dispose(); locateHover = null;   // cancels a pending compass completion: nothing may write into the detached DOM
       tr = null; pan = null; fogStroke = null; fogTool = null; previewMode = false; inspector = Model.NO_INSPECTION;
@@ -2182,7 +2183,7 @@
     /** Grab cursor while the pointer is over the marker. */
     function updatePartyCursor(x, y) {
       if (!ui.viewport) return;
-      const on = !partyDraft && !editLocked && !spaceDown && partyHitAt(x, y);
+      const on = !partyDraft && !editLocked && !spaceDown && partyHitAt(x, y) && !routePinAt(x, y);   // a pin over the marker wins while the Route Planner is open
       if (ui.viewport.classList.contains('is-party-hover') !== !!on) ui.viewport.classList.toggle('is-party-hover', !!on);
     }
 
@@ -2536,6 +2537,72 @@
       return foggable.has(id) ? id : null;
     }
 
+    /* ---- dragging the A / B pins (PD-031 amended): while the planner is open a press on a pin outranks the party marker (PD-045) ---- */
+
+    const ROUTE_PIN_HIT_PX = 18;                            // screen radius of a pin's grab area (the ring is 11-15 px; a little generous for a thumb or a trackpad)
+
+    /** 'start' | 'end' when the viewport-local point is on a placed pin, else null. B is only a pin in the result, and only when it is not on A's hex. */
+    function routePinAt(x, y) {
+      const st = routePlanner.state;
+      if (!st || previewMode || editLocked || !data || st.status === 'select-start') return null;
+      const pins = [['start', st.startCell]];
+      if (st.status === 'result' && st.endCell !== st.startCell) pins.push(['end', st.endCell]);
+      let best = null, bestD = ROUTE_PIN_HIT_PX;
+      for (const [which, cell] of pins) {
+        const p = routeCenter(cell), s = Geo.worldToScreen(cam, p[0], p[1]), d = Math.hypot(x - s[0], y - s[1]);
+        if (d <= bestD) { best = which; bestD = d; }
+      }
+      return best;
+    }
+
+    function startRoutePinDrag(e, which) {
+      const st = routePlanner.state;
+      routePinDrag = { which: which, pointerId: e.pointerId, from: which === 'start' ? st.startCell : st.endCell };
+      try { ui.viewport.setPointerCapture(e.pointerId); } catch (err) { /* synthetic events may lack a capturable pointer */ }
+      ui.viewport.classList.remove('is-route-pin-hover');
+      ui.viewport.classList.add('is-route-pin-dragging');
+      routeHover = null;
+      e.preventDefault();
+    }
+
+    /** The pin snaps to the hex under the pointer and keeps the last valid hex off the map or on the other pin; the routes follow it live. */
+    function moveRoutePinDrag(e) {
+      const [x, y] = localPoint(e), cell = routeCellAt(x, y), st = routePlanner.state;
+      if (!cell || !st) return;
+      const other = routePinDrag.which === 'start' ? st.endCell : st.startCell;
+      if (cell === other) return;
+      routePlanner.moveEndpoint(routePinDrag.which, cell);
+    }
+
+    function endRoutePinDrag() {
+      const d = routePinDrag;
+      if (!d) return null;
+      routePinDrag = null;
+      if (ui.viewport) { ui.viewport.classList.remove('is-route-pin-dragging'); releaseFogCapture(d.pointerId); }
+      return d;
+    }
+
+    function finishRoutePinDrag(e) {
+      const d = endRoutePinDrag();
+      if (!d) return;
+      markDragged();
+      const st = routePlanner.state, now = st && (d.which === 'start' ? st.startCell : st.endCell);
+      if (now && now !== d.from) announce(fill('journey2_route_live_pin_moved', { letter: d.which === 'start' ? 'A' : 'B' }));
+    }
+
+    /** Escape or a cancelled pointer: the pin goes back to where the drag began. */
+    function cancelRoutePinDrag() {
+      const d = endRoutePinDrag();
+      if (d && routePlanner.state) routePlanner.moveEndpoint(d.which, d.from);
+    }
+
+    /** Grab cursor while the pointer is over a pin. */
+    function updateRoutePinCursor(x, y) {
+      if (!ui.viewport || routePinDrag) return;
+      const on = !spaceDown && !!routePinAt(x, y);
+      if (ui.viewport.classList.contains('is-route-pin-hover') !== on) ui.viewport.classList.toggle('is-route-pin-hover', on);
+    }
+
     /** Enters the transient tool: everything that could compete for the map is cancelled first; pan, zoom, the sidebar and Fog of War are untouched. */
     function startRoute() {
       if (inst.disposed || previewMode || editLocked || !doc || !data) return;
@@ -2556,6 +2623,7 @@
     /** Leaves the planner (Escape, the toolbar button, another tool, Player Preview, import, teardown). `quiet` skips the announcement. */
     function exitRoute(o) {
       if (!routePlanner.isActive()) return false;
+      endRoutePinDrag();
       routeHover = null;
       routePlanner.close();                                   // onChange('closed') repaints everything
       if (!(o && o.quiet)) announce(t('journey2_route_off'));
@@ -2578,7 +2646,7 @@
 
     function onRouteChange(state, ev) {
       if (inst.disposed || !ui.route) return;
-      if (ev === 'select-start' || ev === 'select-end' || ev === 'closed') { routeHover = null; routeDetails = false; }
+      if (ev === 'select-start' || ev === 'select-end' || ev === 'closed' || ev === 'move') { routeHover = null; routeDetails = false; }
       renderRoute();
     }
 
@@ -3798,6 +3866,8 @@
       ui.viewport.focus({ preventScroll: true });
       const [x, y] = localPoint(e);
       pointer.x = x; pointer.y = y; pointer.inside = true; pointer.cx = e.clientX; pointer.cy = e.clientY;
+      // while the Route Planner is open its A / B pins outrank even the party marker (PD-031): a press on a pin drags that pin, and the party stays where it is
+      if (e.button === 0 && !editLocked && !spaceDown && !partyDraft) { const pin = routePinAt(x, y); if (pin) { startRoutePinDrag(e, pin); return; } }
       // the party marker (PD-045) outranks everything below: a press on it drags it, and while it follows the cursor a left click drops it
       if (e.button === 0 && !editLocked && !spaceDown && ((partyDraft && partyDraft.placing) || partyHitAt(x, y)) && startPartyDrag(e)) return;
       // priority: dialog > preview > an existing drag/pan > Locate location selection (a click, never a tile drag) > armed placement > fog tool > neutral selection. Space (or the middle button) pans instead of painting.
@@ -3815,10 +3885,11 @@
     function onViewportMove(e) {
       const [x, y] = localPoint(e);
       pointer.x = x; pointer.y = y; pointer.inside = insideViewport(e); pointer.cx = e.clientX; pointer.cy = e.clientY;
+      if (routePinDrag && routePinDrag.pointerId === e.pointerId) { moveRoutePinDrag(e); return; }
       if (partyDraft) {
         if (partyDraft.pointerId === e.pointerId) { movePartyDraft(e); return; }
         if (partyDraft.pointerId == null && !pan) { hoverPartyDraft(e); return; }
-      } else if (!pan) updatePartyCursor(x, y);
+      } else if (!pan) { updateRoutePinCursor(x, y); updatePartyCursor(x, y); }
       if (fogStroke && fogStroke.pointerId === e.pointerId) { moveFogStroke(e); return; }
       if (pan && pan.id === e.pointerId) {
         const dx = x - pan.x0, dy = y - pan.y0;
@@ -3837,6 +3908,7 @@
     }
 
     function onViewportUp(e) {
+      if (routePinDrag && routePinDrag.pointerId === e.pointerId) { finishRoutePinDrag(e); return; }
       if (partyDraft && partyDraft.pointerId === e.pointerId) { finishPartyDrag(e); return; }
       if (fogStroke && fogStroke.pointerId === e.pointerId) { finishFogStroke(e); return; }
       if (pan && pan.id === e.pointerId) {
@@ -3858,6 +3930,7 @@
     }
 
     function onViewportCancel(e) {
+      if (routePinDrag && routePinDrag.pointerId === e.pointerId) { cancelRoutePinDrag(); return; }
       if (partyDraft && partyDraft.pointerId === e.pointerId) { cancelPartyDraft(true); return; }
       if (fogStroke && fogStroke.pointerId === e.pointerId) { cancelFogStroke(true); return; }
       if (pan && pan.id === e.pointerId) endPan();
@@ -4261,6 +4334,7 @@
         if (openMenu) { const b = openMenu.btn; closeMenus(); b.focus(); return; }
         // priority: menu, a fog stroke, a drag / armed placement / pan, Player Preview, the fog tool, the Region Inspector, then the diagnostic selection
         if (fogStroke) { cancelFogStroke(true); e.preventDefault(); return; }
+        if (routePinDrag) { cancelRoutePinDrag(); e.preventDefault(); return; }                      // an A / B pin being dragged: back to where it was
         if (partyDraft) { cancelPartyDraft(true); e.preventDefault(); return; }                      // the party marker being placed / dragged (PD-045)
         if (pan) { setCamera({ scale: pan.scale0, tx: pan.tx0, ty: pan.ty0 }); endPan(); e.preventDefault(); return; }
         if (tr) { cancelTransient(); e.preventDefault(); return; }
