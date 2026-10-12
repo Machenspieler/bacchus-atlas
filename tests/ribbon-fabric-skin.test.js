@@ -13,19 +13,19 @@ test('fabric skin is opt-in via ?ribbonSkin=fabric only', () => {
   assert.match(js, /document\.documentElement\.dataset\.ribbonSkin = 'fabric'/);
 });
 
-test('every fabric rule is scoped to the flag and the Catalogue ribbon, and never touches motion', () => {
+test('every fabric rule is scoped to the flag and a fabric ribbon (Catalogue, Lists), and never touches motion', () => {
   const start = css.indexOf('/* ---- Fabric ribbon skin');
   const end = css.indexOf('A ribbon that has just become current drops in');
   const block = css.slice(start, end).replace(/\/\*[\s\S]*?\*\//g, '');
   const selectors = block.match(/^:root[^{]+\{/gm) || [];
-  assert.ok(selectors.length >= 3);
-  for (const s of selectors) assert.match(s, /^:root\[data-ribbon-skin="fabric"\] \.ribbon\[data-ribbon="catalog"\]/);
+  assert.ok(selectors.length >= 5);
+  for (const s of selectors) assert.match(s, /^:root\[data-ribbon-skin="fabric"\] \.ribbon\[data-ribbon="(catalog|lists)"\]/);
   assert.doesNotMatch(block, /animation|transition|transform|height:|clip-path/);
 });
 
 test('fabric slices exist and are not referenced outside the skin block', () => {
-  for (const n of ['body', 'hem']) {
-    assert.ok(fs.existsSync(path.join(__dirname, '..', `img/ui/ribbon-fabric/catalog-${n}.webp`)));
+  for (const id of ['catalog', 'lists']) for (const n of ['body', 'hem']) {
+    assert.ok(fs.existsSync(path.join(__dirname, '..', `img/ui/ribbon-fabric/${id}-${n}.webp`)));
   }
-  assert.strictEqual((css.match(/ribbon-fabric\//g) || []).length, 2);
+  assert.strictEqual((css.match(/ribbon-fabric\//g) || []).length, 4);
 });

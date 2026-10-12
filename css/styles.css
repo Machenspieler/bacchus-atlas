@@ -411,7 +411,8 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
  * stitches never move or change scale), and the sewn swallow-tail band pinned to the bottom, which carries only the
  * hem itself (its top edge fades into the cloth underneath). No tiled middle, no second full-width texture,
  * no warping: both layers are straight crops of the full-length master img/ribbon-fabric-source/G-Banner-long.png.
- * At 1x the body is 104x100px and the hem 104x17px. Another colour = another pair of images. */
+ * At 1x the body is 104x100px and the hem 104x17px. Another colour = another pair of images and one more rule pair below
+ * (Catalogue = gold master G-Banner-long.png, Lists = purple master p-Banner.png; Prep and Journey stay CSS). */
 :root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="catalog"] .ribbon-fab {
   background:
     url("../img/ui/ribbon-fabric/catalog-hem.webp") 0 100% / 100% auto no-repeat,
@@ -420,6 +421,13 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 }
 :root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="catalog"] .ribbon-cut { display: none; } /* the photo has its own stitched hem */
 :root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="catalog"] { --rb-ts: 0 1px 0 rgba(255,236,170,0.45), 0 0 3px rgba(255,214,120,0.35); }
+:root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="lists"] .ribbon-fab {
+  background:
+    url("../img/ui/ribbon-fabric/lists-hem.webp") 0 100% / 100% auto no-repeat,
+    url("../img/ui/ribbon-fabric/lists-body.webp") 0 0 / 100% auto no-repeat,
+    #4d2470;
+}
+:root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="lists"] .ribbon-cut { display: none; }
 /* A ribbon that has just become current drops in and swings once. */
 .ribbon.drop { animation: ribbon-drop 0.7s ease-out; }
 @keyframes ribbon-drop {

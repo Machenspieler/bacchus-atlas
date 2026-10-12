@@ -1441,7 +1441,7 @@ const RIBBONS = [
   { id: 'journey', icon: () => ICON_COMPASS, label: 'nav_journey', hash: '#/journey' },
 ];
 
-// Experimental opt-in skin for the Catalogue ribbon (css/styles.css "Fabric ribbon skin"): ?ribbonSkin=fabric.
+// Experimental opt-in skin for the Catalogue and Lists ribbons (css/styles.css "Fabric ribbon skin"): ?ribbonSkin=fabric.
 // A query parameter, not part of the hash, so it survives every route change; absent = the original CSS ribbons.
 if (new URLSearchParams(location.search).get('ribbonSkin') === 'fabric') document.documentElement.dataset.ribbonSkin = 'fabric';
 
