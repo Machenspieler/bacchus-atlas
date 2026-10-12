@@ -401,12 +401,14 @@ test('isolation: collected / Locate state never reaches the player projection, t
   let doc = withEchoes(SANCT.slice(0, 9));
   doc = must(collect(doc, SANCT[0], true));
   for (const proj of [P.buildPlayerProjection(doc, ctx), P.buildPrintProjection(doc, ctx)]) {
-    const text = JSON.stringify(proj).toLowerCase();
+    assert.deepEqual(proj.collectedEchoes, [], 'a collected Echo under fog is never emitted (PD-052: fog wins)');
+    const text = JSON.stringify(Object.assign({}, proj, { collectedEchoes: undefined })).toLowerCase();   // the (empty) PD-052 field itself is the one allowed mention
     assert.ok(!/echo|collected|locate|compass|bearing|mk-/.test(text), 'leaked: ' + text.slice(0, 80));
   }
   const model = PR.buildPrintModel(doc, ctx, template);
   assert.ok(!/echo|collected|locate|compass|bearing/.test(JSON.stringify(model).toLowerCase()), 'the print model carries no Echo data');
-  for (const f of ['js/journey2-projection.js', 'js/journey2-print.js']) assert.doesNotMatch(strip(read(f)), /soulEcho|collected|Locate/, f);
+  assert.doesNotMatch(strip(read('js/journey2-print.js')), /soulEcho|collected|Locate/, 'journey2-print.js');
+  assert.doesNotMatch(strip(read('js/journey2-projection.js')), /soulEcho|Locate/, 'journey2-projection.js');   // it reads only Model.getCollectedEchoSet (PD-052), never the Echo list or Locate
 });
 
 test('isolation: Locate keeps no storage keys and the document has no Locate fields', () => {

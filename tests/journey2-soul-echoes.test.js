@@ -165,14 +165,27 @@ test('planner: a context without anchors plans nothing instead of throwing', () 
 
 /* ---------------- players never see it ---------------- */
 
-test('projection: Soul Echoes never reach the player projection (GM-only, PD-022)', () => {
+test('projection: an Available Soul Echo never reaches the player projection (GM-only, PD-022)', () => {
   let doc = M.emptyDocument(ctx, AT);
   doc = must(M.apply(doc, { type: 'setSoulEchoes', anchorIds: SANCT.slice(0, 9), at: AT }, ctx));
   const proj = P.buildPlayerProjection(doc, ctx);
-  const text = JSON.stringify(proj).toLowerCase();
+  const text = JSON.stringify(Object.assign({}, proj, { collectedEchoes: undefined })).toLowerCase();
   assert.ok(!text.includes('echo') && !text.includes('soul') && !text.includes('mk-'), 'leaked into the projection');
-  assert.deepEqual(Object.keys(proj).sort(), ['overlays', 'party', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'shadowMarks', 'version']);
+  assert.deepEqual(proj.collectedEchoes, []);
+  assert.deepEqual(Object.keys(proj).sort(), ['collectedEchoes', 'overlays', 'party', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'shadowMarks', 'version']);
   assert.ok(!/soulEchoes/.test(read('js/journey2-projection.js').replace(/\/\*[\s\S]*?\*\//g, '')), 'the projection code never reads the field');
+});
+
+test('projection (PD-052): a COLLECTED Echo is emitted only while its sanctuary hex is revealed; Available ones and fogged ones never are', () => {
+  const ids = SANCT.slice(0, 9), cellOf = id => anchorsDoc.anchors.find(a => a.stableId === id).cellId;
+  let doc = must(M.apply(M.emptyDocument(ctx, AT), { type: 'setSoulEchoes', anchorIds: ids, at: AT }, ctx));
+  doc = must(M.apply(doc, { type: 'setSoulEchoCollected', anchorId: ids[0], collected: true, at: AT }, ctx));
+  doc = must(M.apply(doc, { type: 'setSoulEchoCollected', anchorId: ids[1], collected: true, at: AT }, ctx));
+  assert.deepEqual(P.buildPlayerProjection(doc, ctx).collectedEchoes, [], 'both collected, both under fog: nothing');
+  doc = must(M.apply(doc, { type: 'setCellsRevealed', cellKeys: [cellOf(ids[0]), cellOf(ids[2])], revealed: true, at: AT }, ctx));
+  assert.deepEqual(P.buildPlayerProjection(doc, ctx).collectedEchoes, [ids[0]], 'only the collected one on a revealed hex (ids[2] is Available, ids[1] is fogged)');
+  assert.deepEqual(P.buildPlayerProjection(doc, null).collectedEchoes, [], 'without a context nothing counts as revealed');
+  assert.deepEqual(P.buildPrintProjection(doc, ctx).collectedEchoes, [], 'the print carries no Echo');
 });
 
 /* ---------------- view source guards ---------------- */

@@ -1383,6 +1383,18 @@ Run all of them with `node --test tests/*.test.js`.
   screen-space `<button>`s in `.j2-route-bubbles` (a sibling of the viewport, so they never start a pan), positioned by `positionRouteBubbles()` (clamped to the map, nudged apart). The details
   popover `.j2-route` is hidden unless `routeDetails` (or there is nothing to draw). Everything is emptied in Player Preview; the print builders never import the route module.
 
+### Journey 2 shareable player link (PD-052) — codec stage
+
+`js/journey2-share.js` (`Journey2Share`, pure; loads after the projection, before the view) turns what Player Preview shows into a short link and back:
+`buildSnapshot(doc, ctx, { lang })` -> `encodeSnapshot` -> deflate-raw + base64url -> `"1.<payload>"` (`createLinkText`), and
+`openLinkText(text, ctx)` -> `unpackSnapshot` -> `decodeSnapshot` -> `snapshotToDocument` -> a **synthetic map document**. The snapshot is built from
+`Journey2Projection.buildPlayerProjection`, so Fog of War, the party's light, revealed names and the collected-Echo rule are applied once, there; the
+snapshot holds only revealed cells, one anonymous region number per revealed tile, X marks, revealed sanctuary names and collected Echoes on revealed hexes.
+The synthetic document is fed to the unchanged projection / route code, so the player page draws what Player Preview draws and a route over it can
+only know revealed tiles. Format 1 is frozen (the symbol table, field order and the "cell order = the grid's valid-cell order" rule); a layout change is a new
+version, and an unknown version is refused. Decoding is strict (bounds, counts, padding bits, trailing bytes, an inflate size cap) and never throws.
+The projection gained `collectedEchoes` (version 4): sorted sanctuary ids of Collected Echoes whose own hex is revealed; the print blanks it.
+Not built yet: the `#/…` route, the read-only `player` mode of `Journey2View`, touch, the language switch and the GM's copy button (stages 3-6).
 ### Journey 2 Encounter Roll (PD-039)
 
 `js/journey2-encounter-roll.js` is pure (UMD, no DOM, storage or strings), loaded before the view: `rollEncounterDice({ count, sides = 6, random })` returns `{ sides, faces, triggered }` (`triggered` = any face is 1). The injected RNG follows the dealer / Locate convention (`() -> [0, 1)`, defaults to `Math.random`; the view's is replaceable through `debugApi().setRollRandom`).

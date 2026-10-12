@@ -23,8 +23,9 @@
        area and the shape of a hidden region is never leaked. Cells only: no region ids.
      - `sanctuaryLabels`: [{ anchorId, name }] sorted by anchor id — ONLY the names the GM revealed by hand (PD-027), independent of fog. Nothing else
        about a sanctuary (tables, rolls, Soul Echo, notes) is ever emitted, and an unrevealed sanctuary is absent altogether. `Geo.layoutSanctuaryLabels` places them.
+     - `collectedEchoes`: sorted sanctuary ids of Soul Echoes the GM marked Collected whose sanctuary hex is REVEALED (PD-052; fog wins). Nothing else about Echoes is ever emitted; the print blanks it.
    What it never contains (GM-only): batch/tile/region ids, Encounter, Rumor, notes, the suggested-environment
-   list, placement state, selection, warnings, diagnostics, history.
+   list, placement state, selection, warnings, diagnostics, history, an Available Echo.
 
    Always present regardless of the projection (it is not filtered at all): the original base-map image, the
    Old Valloren geography and hex grid printed in it, the printed MARROGATE / HORIZON labels and every sanctuary
@@ -55,6 +56,17 @@
   }
 
   /**
+   * Soul Echoes players know about (PD-052): ONLY an Echo the GM marked Collected, and only while its sanctuary's own hex is revealed — Fog of War beats it.
+   * An Available Echo is never emitted (the secret stays GM-only) and neither is how many exist. Sorted sanctuary ids; without a context nothing counts as revealed.
+   */
+  function collectedEchoesOf(doc, ctx, revealed) {
+    if (!ctx) return [];
+    const got = Model.getCollectedEchoSet(doc), out = [];
+    for (const s of ctx.sanctuaries) if (got.has(s.id) && s.cellId && revealed.has(s.cellId)) out.push(s.id);
+    return out.sort();
+  }
+
+  /**
    * Builds the player-facing projection of `doc`. Pure; the result is a plain JSON-safe object that shares nothing
    * mutable with the document.
    */
@@ -81,15 +93,17 @@
       if (c) shadowMarks.push({ q: c.q, r: c.r });
     }
     const sanctuaryLabels = sanctuaryLabelsOf(doc);
+    const collectedEchoes = collectedEchoesOf(doc, ctx, revealed);
     const partyCell = Model.getPartyCell(doc), partyAt = partyCell ? Geo.parseCellId(partyCell) : null;
     // without a context nothing counts as "never fogged", which is the strictest (never leaking) reading
     const foggable = ctx ? (key => Model.isFoggableCell(ctx, key)) : null;
     return {
-      version: 3,
+      version: 4,
       revealedCells: Array.from(revealed).sort(Model.compareCellKeys),
       overlays: overlays,
       shadowMarks: shadowMarks,
       sanctuaryLabels: sanctuaryLabels,
+      collectedEchoes: collectedEchoes,
       party: partyAt ? { q: partyAt.q, r: partyAt.r } : null,
       perimeter: Model.regionBoundarySegments(doc, ctx || null, key => revealed.has(key), foggable),
     };
@@ -105,6 +119,7 @@
     const color = !!(opts && opts.color === true);
     const p = buildPlayerProjection(doc, ctx, { biomeTint: color });
     p.printMode = color ? 'color' : 'bw';
+    p.collectedEchoes = [];                                    // the print carries no Soul Echo, collected or not (PD-028)
     return p;
   }
 

@@ -217,7 +217,7 @@ test('projection: a revealed sanctuary emits exactly { anchorId, name } — noth
   assert.deepEqual(p.sanctuaryLabels, [{ anchorId: SANCT[1], name: 'Name1' }, { anchorId: SANCT[4], name: 'Name4' }]);
   for (const l of p.sanctuaryLabels) assert.deepEqual(Object.keys(l).sort(), ['anchorId', 'name']);
   assert.deepEqual(p.revealedCells, [], 'the surrounding cell fog is irrelevant');
-  const text = JSON.stringify(p).toLowerCase();
+  const text = JSON.stringify(Object.assign({}, p, { collectedEchoes: undefined })).toLowerCase();   // the PD-052 field (empty here: nothing is collected) is the one allowed mention
   for (const leak of ['trade', 'quirk', 'crisis', 'drive', 'politic', 'population', 'echo', 'soul', 'environment', 'size"']) assert.ok(!text.includes(leak), 'leaked ' + leak);
   assert.ok(!text.includes('name0') && !text.includes('name2'), 'only the revealed names');
 });
