@@ -426,7 +426,7 @@ const fn = (from, to) => view.slice(view.indexOf('function ' + from), view.index
 
 test('view: Locate is a real, GM-only toolbar button inside the Echo group (hidden in Player Preview), unavailable with a reason', () => {
   assert.match(view, /<button type="button" class="btn btn-sm j2-tool" data-j2-echo-locate aria-pressed="false" aria-describedby="j2-locate-reason">/);
-  assert.match(fn('applyPreviewChrome', 'enterPreview'), /ui\.gmControls\.hidden = on/);
+  assert.match(fn('applyPreviewChrome', 'enterPreview'), /ui\.echoLocate\.hidden = on/);
   const ui = fn('updateEchoUi', 'placeSoulEchoes');
   assert.match(ui, /aria-disabled/); assert.match(ui, /locateReason\.textContent/); assert.match(ui, /ui\.echoLocate\.title/);
   const av = fn('locateAvailability', 'startLocate');

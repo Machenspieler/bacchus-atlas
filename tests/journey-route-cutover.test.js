@@ -27,7 +27,7 @@ test('no public route, link or nav entry emits #/journey2 (only the router keeps
 });
 
 test('render() mounts the map editor on "journey" and releases it on every other route', () => {
-  assert.match(app, /if \(state\.route\.name !== 'journey'\) Journey2View\.unmount\(\);/);
+  assert.match(app, /if \(state\.route\.name !== 'journey' && state\.route\.name !== 'playermap'\) Journey2View\.unmount\(\);/);
   assert.match(app, /else if \(state\.route\.name === 'journey'\) \{\s*renderJourneyPage\(\);/);
   assert.equal((app.match(/function renderJourneyPage\(/g) || []).length, 1);
   assert.match(app, /function renderJourneyPage\(\) \{[\s\S]{0,400}Journey2View\.mount\(/);

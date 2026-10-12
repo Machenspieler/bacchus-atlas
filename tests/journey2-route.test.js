@@ -310,8 +310,8 @@ test('the planner is GM-only and transient: no document write, history, storage,
 test('map layers are pointer-transparent, hidden in Player Preview and the print is not touched', () => {
   assert.match(view, /<g data-j2-g="routeline" pointer-events="none" aria-hidden="true"><\/g>/);
   assert.match(view, /<g data-j2-g="routemark" pointer-events="none" aria-hidden="true"><\/g>/);
-  assert.match(view, /if \(!st \|\| previewMode \|\| !data\) \{ if \(routeDrawn\.line\)/, 'the layers are emptied in Player Preview');
-  assert.match(view, /function routeView\(\) \{[\s\S]{0,200}previewMode/, 'no panel in Player Preview');
+  assert.match(view, /if \(!st \|\| !data\) \{ if \(routeDrawn\.line\)/, 'the layers are emptied when no planner is open');
+  assert.doesNotMatch(view, /function routeView\(\) \{[\s\S]{0,200}previewMode/, 'the planner works in Player Preview and on the player page (PD-052)');
   const css = read('css/journey2.css');
   assert.ok(css.includes('@media print { .j2-route, .j2-route-chip, .j2-route-bubbles { display: none !important; } }'));
   assert.ok(!/animation/.test(css.slice(css.indexOf('Route Planner (PD-031)'))), 'no looping or draw-in animation: the routes appear immediately');
@@ -331,11 +331,11 @@ test('tool exclusivity and selection priority are wired', () => {
 test('A / B pins outrank the party marker while the planner is open (PD-031 / PD-045) and the drag is transient', () => {
   const down = view.indexOf('function onViewportDown(e)');
   const body = view.slice(down, view.indexOf('function onViewportMove(e)', down));
-  const pin = body.indexOf('routePinAt(x, y)'), party = body.indexOf('startPartyDrag(e)');
+  const pin = body.indexOf('routePinAt(x, y, '), party = body.indexOf('startPartyDrag(e)');
   assert.ok(pin > 0 && party > pin, 'the pin check runs before the party marker check');
   assert.match(view, /if \(routePinDrag\) \{ cancelRoutePinDrag\(\); e\.preventDefault\(\); return; \}/, 'Escape cancels a pin drag first');
   assert.match(view, /partyHitAt\(x, y\) && !routePinAt\(x, y\)/, 'a pin over the marker takes the grab cursor');
-  assert.match(view, /function routePinAt\(x, y\) \{[\s\S]{0,200}st\.status === 'select-start'\) return null/, 'nothing to grab while choosing A');
+  assert.match(view, /function routePinAt\(x, y, touch\) \{[\s\S]{0,200}st\.status === 'select-start'\) return null/, 'nothing to grab while choosing A');
   assert.match(view, /if \(cell === other\) return;/, 'a pin never lands on the other pin');
   assert.ok(i18n.en.journey2_route_live_pin_moved && i18n.ru.journey2_route_live_pin_moved);
 });

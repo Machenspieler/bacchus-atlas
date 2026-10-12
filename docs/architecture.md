@@ -1394,7 +1394,16 @@ The synthetic document is fed to the unchanged projection / route code, so the p
 only know revealed tiles. Format 1 is frozen (the symbol table, field order and the "cell order = the grid's valid-cell order" rule); a layout change is a new
 version, and an unknown version is refused. Decoding is strict (bounds, counts, padding bits, trailing bytes, an inflate size cap) and never throws.
 The projection gained `collectedEchoes` (version 4): sorted sanctuary ids of Collected Echoes whose own hex is revealed; the print blanks it.
-Not built yet: the `#/…` route, the read-only `player` mode of `Journey2View`, touch, the language switch and the GM's copy button (stages 3-6).
+**The player page** is the route `#/map/<link>` (`RouteUtils`: `{ name: 'playermap', id: <link text>, env: null }`; a malformed escape gives `id: ''` and the page's own error).
+`renderPlayerMapPage()` mounts the same `Journey2View` with `{ storage: null, generator: null, player: { link, onOpened } }`. In that `playerMode` the view decodes the link
+after the template and raster have loaded (`Share.openLinkText(link, data.ctx)`; a failure is `renderPlayerLinkError(code)`, a localized sentence), builds its store with **no
+storage** (so no `dhcodex_journey2_*` key is read or written), uses the synthetic document with `editLocked = true`, and opens straight into the preview (`resumePreview`).
+Everything GM-only is hidden one by one in `applyPreviewChrome` (history, party toggle, the fog / Echo / sanctuary rows, Locate, the preview bar); the Route Planner row stays
+(`routeLocked()` is `editLocked && !playerMode`). In the preview — the GM's and the player's alike — `routeIndex()` is built from the player projection's overlays (the dots of a
+revealed tile are its Terrain Rating; a fully overtaken symbol is blocked), so a fogged hex is unknown, never used and never routed around, and the route details omit the
+expected-encounter estimate. Touch: `touchDown` / `touchMove` / `touchEnd` track fingers (two = pinch zoom holding the world point between them; `lostpointercapture` never ends a
+finger), `TOUCH_SLOP_PX` and `ROUTE_PIN_HIT_TOUCH_PX` widen the tap and the pin. The GM's **Player link** button (`copyPlayerLink`, Player Preview bar + rail) calls
+`Share.createLinkText(projectionDoc(), data.ctx, { lang })`; `app.js` hides the site navigation on this route and applies the link's language only to a reader with no stored choice.
 ### Journey 2 Encounter Roll (PD-039)
 
 `js/journey2-encounter-roll.js` is pure (UMD, no DOM, storage or strings), loaded before the view: `rollEncounterDice({ count, sides = 6, random })` returns `{ sides, faces, triggered }` (`triggered` = any face is 1). The injected RNG follows the dealer / Locate convention (`() -> [0, 1)`, defaults to `Math.random`; the view's is replaceable through `debugApi().setRollRandom`).

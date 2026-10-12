@@ -205,7 +205,7 @@ read in one transient, GM-only Region Inspector over the map (opened from a hex
 or a card's Inspect button, independent of the expanded card, never persisted,
 never in history); the sidebar only generates, places and deletes. Soul Echoes are GM-only
 campaign data (`soulEchoes`, at most nine sanctuaries): one toolbar button places all nine by the
-book's west-to-east rule, one removes them, and they never reach Player Preview or print (PD-022).
+book's west-to-east rule, one removes them, and they never reach print; players see only a Collected Echo on a revealed sanctuary hex (PD-022, PD-052).
 Generated sanctuaries are GM-only too (`sanctuaries.entries`, one per printed sanctuary icon, numbers not
 sentences): one toolbar button rolls all 56 through the book's sanctuary tables (`journey2Generator`), clicking an icon opens an
 overlay with Delete / Reroll / close, and none of it reaches Player Preview or print (PD-023).
@@ -233,13 +233,18 @@ Route Planner (PD-031): a GM-only, navigator-style toolbar tool — pick A then 
 Ratings of the hexes entered; sanctuary / Marrogate / Horizon hexes are known and cost 0) and Shortest (hex count), computed by the pure `js/journey2-route.js` (A*, six-neighbour grid, admissible heuristics,
 deterministic ties). Click a bubble to select a route, click the selected one for details; no permanent panel. "Fewer encounters", Swap and the strategy tabs were dropped. Terrain is never invented for
 ungenerated cells: Fastest enters only known hexes, and Shortest then reports days as Unknown. It reads no Fog, Echoes, Environments or Shadowblight, writes nothing (no history, storage or fog change),
-recomputes on edits, is mutually exclusive with the other map tools, and none of it reaches Player Preview or print.
+recomputes on edits, is mutually exclusive with the other map tools, and never reaches the print (it also runs in Player Preview and on the player page over what players know, PD-052).
 Encounter Roll (PD-039): a GM-only "Nd6" button in the Region Inspector's Encounter header (N = the region's Terrain Rating; pure `js/journey2-encounter-roll.js`, fixed d6): the dice stay visible, ones red,
 "Encounter!" on any 1 (red frame + "Triggered" flag on the Encounter section) or "No 1s" + a reminder that a Fear may be spent; transient, never stored, never in Player Preview or print.
 A fully overtaken region (PD-038) has no roll: its inspector keeps only the title, badge and Return, and its card has no Inspect button.
 Party marker (PD-045): ONE gold concave-star marker, a toolbar button in the GM view AND Player Preview (panel + rail); `doc.party = { cell, shown }` (`setParty`, one Undo entry per drop / drag / toggle); first show follows the cursor until a click, then it is dragged hex to hex and ALWAYS outranks every other map interaction (fog brush, tile drag, Locate / Route picks) — except the Route Planner's own A / B pins, which can be dragged and win while the planner is open (PD-051). While shown, its hex and the six neighbours are lit for players — DERIVED in the projection (`Model.getVisibleCellSet`), never written to `playerVisibility`; hiding removes marker and light and remembers the position. It is in the player print (black star, its seven cells present). A placed, shown marker is the origin of Locate and point A of the Route Planner (A can still be re-picked with Esc); the tools never move it. Mouse only; no touch.
+Shareable player link (PD-052): a **Player link** button in Player Preview copies `…#/map/<link>` — a read-only snapshot of exactly what Player Preview shows (pure `js/journey2-share.js`: snapshot built from the
+player projection so fog is already applied, strict binary format 1 -> deflate -> base64url in the URL fragment; the decoder rebuilds a SYNTHETIC map document that the unchanged projection / route code run on).
+`#/map/<link>` mounts the same `Journey2View` in `playerMode`: NO storage (it never touches a `dhcodex_journey2_*` key), no GM controls, always the preview, touch pan / pinch zoom, the site's RU / EN switch.
+Plan Route also runs in Player Preview and on that page, knowing only revealed tiles (+ printed sanctuary icons) and without the encounter estimate. The projection carries `collectedEchoes` (a Collected Echo on a
+REVEALED sanctuary hex only; Available Echoes stay secret; the print blanks it). Format 1 is frozen — a layout change is a new version.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040/PD-041/PD-045/PD-051 (Place all rolls a random frozen footprint per press), detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-052/PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040/PD-041/PD-045/PD-051 (Place all rolls a random frozen footprint per press), detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

@@ -94,11 +94,13 @@
   const Locate = root.Journey2Locate;
   const Seekers = root.Journey2ShadowMarks;
   const Route = root.Journey2Route;
+  const Share = root.Journey2Share;                 // the player link codec (PD-052); only the read-only player page decodes with it
   const EnvDeal = root.Journey2EnvDeal;
   const EncRoll = root.Journey2EncounterRoll;
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const MAX_ZOOM = 8;
   const CLICK_SLOP_PX = 4;
+  const TOUCH_SLOP_PX = 10;                         // a fingertip jitters: a tap moves less than this (PD-052)
   const MARKER_HIT_SCREEN_PX = 14;
   const GLYPH_SCALE = 0.55;                         // native symbol px -> world px
   const BLIGHT_X_HALF = 7;                           // half-size of the blight X drawn at the top of a blighted tile
@@ -116,7 +118,8 @@
   let current = null;
 
   function mount(container, opts) {
-    if (current && current.container === container && !current.disposed) { current.relocalize(opts); return current; }
+    const link = opts && opts.player ? String(opts.player.link) : null;   // the GM editor and each player link are different instances: a language switch re-localizes, anything else remounts
+    if (current && current.container === container && !current.disposed && current.playerLink === link) { current.relocalize(opts); return current; }
     unmount();
     current = createInstance(container, opts);
     return current;
@@ -170,7 +173,7 @@
     let nf = makeNumberFormat();
 
     const inst = {
-      container: container, disposed: false, relocalize: relocalize, dispose: dispose,
+      container: container, disposed: false, playerLink: opts && opts.player ? String(opts.player.link) : null, relocalize: relocalize, dispose: dispose,
       preparePrintProof: preparePrintProof, cleanupPrintProof: cleanupPrintProof, debugState: debugState, debugApi: null,
     };
     const abort = new AbortController();
@@ -233,6 +236,8 @@
     let detachedConfirm = null;                             // transient: the frozen detached candidate whose "Start separate area" dialog is open (never stored, never in history)
     let perimDrawn = { tiles: null, vis: null, mode: null }; // what the perimeter layer currently shows (an unrelated change never rebuilds it)
     let resumePreview = false;                              // the stored "Player Preview was open" flag, consumed once the camera is restored
+    const playerMode = !!(opts && opts.player);             // the read-only player page (PD-052): Player Preview of a decoded link — no storage, no GM controls, never leaves the preview
+    let playerLoad = null;                                  // its decoded link: { ok: true, doc, snap } | { ok: false, code }
     let previewMode = false;                               // Player Preview: a read-only render of the player projection
     let playerProjection = null;                            // the projection currently drawn in Player Preview
     let echoDrawn = null;                                   // the soulEchoes object the GM echoes layer currently shows (an unrelated change never rebuilds it)
@@ -389,14 +394,28 @@
         };
         return loadImage(versioned(template.assembledAsset.path, template.assembledAsset.cacheKey));
       }).then(img => {
-        if (inst.disposed || !img) return;
+        if (inst.disposed || !img) return null;
         baseImg = img;
+        return playerMode ? Share.openLinkText(opts.player.link, data.ctx) : null;   // the link is decoded against the loaded template (cell count check)
+      }).then(decoded => {
+        if (inst.disposed || !baseImg) return;
+        if (playerMode) { playerLoad = decoded; if (!decoded || !decoded.ok) { renderPlayerLinkError(decoded && decoded.code); return; } }
         buildSurface();
+        if (playerMode && typeof opts.player.onOpened === 'function') { try { opts.player.onOpened(decoded.snap); } catch (err) { /* a host callback must never break the page */ } }
       }).catch(err => {
         if (inst.disposed || (err && err.name === 'AbortError')) return;
         try { console.error('Journey: map data failed to load', err); } catch (e) { /* no console */ }   // the raw exception stays technical detail; the UI shows a localized generic line (L5-18)
         renderError();
       });
+    }
+
+    /** A link that cannot be opened: a localized reason (never the raw exception) and the way out. The page holds nothing else. */
+    function renderPlayerLinkError(code) {
+      ui = {};
+      const key = 'journey2_pl_error_' + String(code || 'invalid').replace(/-/g, '_');
+      container.innerHTML = '<div class="j2-state j2-state--error" role="alert"><p class="j2-state-title" data-t="journey2_pl_error"></p>' +
+        '<p class="j2-state-hint" data-t="' + (t(key) !== key ? key : 'journey2_pl_error_invalid') + '"></p></div>';
+      applyStrings();
     }
 
     function loadImage(src) {
@@ -446,6 +465,7 @@
       print: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 7.5V3h9v4.5M5.5 14.5h-2v-6h13v6h-2M5.5 12h9v5h-9z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>',
       back: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16.5 10h-13M8.5 4.5 3 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       party: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 1.6 12.3 7.7 18.4 10 12.3 12.3 10 18.4 7.7 12.3 1.6 10 7.7 7.7Z" fill="currentColor" fill-opacity=".22" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+      link: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M8.6 11.4a3.2 3.2 0 0 0 4.5 0l2.6-2.6a3.2 3.2 0 0 0-4.5-4.5l-1 1M11.4 8.6a3.2 3.2 0 0 0-4.5 0l-2.6 2.6a3.2 3.2 0 0 0 4.5 4.5l1-1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       compass: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="7.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m13.2 6.8-1.7 4.7-4.7 1.7 1.7-4.7z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M10 1.6v1.8M10 16.6v1.8M1.6 10h1.8M16.6 10h1.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
     };
 
@@ -647,7 +667,7 @@
                     <button type="button" class="btn btn-sm j2-tool" data-j2-party aria-pressed="false"><span class="j2-ico" aria-hidden="true">${ICON.party}</span><span data-t="journey2_party_btn"></span></button>
                   </div>
                   <div class="j2-ctl-gm" data-j2-gm-controls>
-                    <div class="j2-ctl-row j2-tb-fog" role="group" data-j2-fog-group data-t-aria="journey2_fog_group">
+                    <div class="j2-ctl-row j2-tb-fog" role="group" data-j2-gm-row data-j2-fog-group data-t-aria="journey2_fog_group">
                       <button type="button" class="btn btn-sm j2-tool" data-j2-biome-colors aria-pressed="true" data-t-aria="journey2_biome_label"><span class="j2-ico" aria-hidden="true">${ICON.palette}</span><span data-t="journey2_biome_label"></span></button>
                       <button type="button" class="btn btn-sm j2-tool" data-j2-preview data-t-title="journey2_preview_title"><span class="j2-ico" aria-hidden="true">${ICON.players}</span><span data-t="journey2_preview"></span></button>
                     </div>
@@ -656,11 +676,11 @@
                       <button type="button" class="btn btn-sm j2-tool" data-j2-echo-locate aria-pressed="false" aria-describedby="j2-locate-reason"><span class="j2-ico" aria-hidden="true">${ICON.compass}</span><span data-t="journey2_echo_locate"></span></button>
                       <span class="sr-only" id="j2-locate-reason" data-j2-locate-reason></span>
                     </div>
-                    <div class="j2-ctl-row j2-tb-echo" role="group" data-j2-echo-group data-t-aria="journey2_echo_group">
+                    <div class="j2-ctl-row j2-tb-echo" role="group" data-j2-gm-row data-j2-echo-group data-t-aria="journey2_echo_group">
                       <button type="button" class="btn btn-sm j2-tool" data-j2-echo-place data-t-title="journey2_echo_place_title"><span class="j2-ico" aria-hidden="true">${ICON.crystal}</span><span data-t="journey2_echo_place"></span></button>
                       <button type="button" class="btn btn-sm j2-tool" data-j2-echo-clear data-t-title="journey2_echo_clear_title"><span class="j2-ico" aria-hidden="true">${ICON.trash}</span><span data-t="journey2_echo_clear"></span></button>
                     </div>
-                    <div class="j2-ctl-row j2-tb-sanc" role="group" data-j2-sanc-group data-t-aria="journey2_sanc_group">
+                    <div class="j2-ctl-row j2-tb-sanc" role="group" data-j2-gm-row data-j2-sanc-group data-t-aria="journey2_sanc_group">
                       <button type="button" class="btn btn-sm j2-tool" data-j2-sanc-generate data-t-title="journey2_sanc_generate_title"><span class="j2-ico" aria-hidden="true">${ICON.sanctuary}</span><span data-j2-sanc-generate-label></span></button>
                     </div>
                   </div>
@@ -678,6 +698,11 @@
                     </span>
                     <button type="button" class="btn btn-sm j2-tool" data-j2-outline aria-pressed="false" data-t-title="journey2_outline_title"><span class="j2-ico" aria-hidden="true">${ICON.hexes}</span><span data-t="journey2_outline"></span></button>
                     <button type="button" class="btn btn-sm j2-tool" data-j2-print-open data-t-title="journey2_pp_open_title"><span class="j2-ico" aria-hidden="true">${ICON.print}</span><span data-t="journey2_pp_open"></span></button>
+                    <button type="button" class="btn btn-sm j2-tool" data-j2-share-link data-t-title="journey2_share_title"><span class="j2-ico" aria-hidden="true">${ICON.link}</span><span data-t="journey2_share"></span></button>
+                    <div class="j2-share-out" data-j2-share-out hidden>
+                      <p class="j2-share-note" data-j2-share-note role="status"></p>
+                      <input type="text" class="j2-input j2-share-url" data-j2-share-url readonly data-t-aria="journey2_share_url_label">
+                    </div>
                   </div>
                 </div>
                 <form class="j2-gen" data-j2-gen novalidate>
@@ -727,6 +752,7 @@
                   <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-fog-tool="paint" data-j2-rail-src="paint">${ICON.mouseLeft}</button>
                   <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-outline data-j2-rail-src="outline">${ICON.hexes}</button>
                   <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-print-open data-j2-rail-src="print">${ICON.print}</button>
+                  <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-share-link data-j2-rail-src="share">${ICON.link}</button>
                   <button type="button" class="btn btn-sm j2-btn-icon j2-rail-btn" data-j2-preview-back data-j2-rail-src="back">${ICON.back}</button>
                 </div>
                 <div class="j2-rail-grp j2-rail-stock" data-j2-rail-stock>
@@ -807,6 +833,10 @@
       ui.previewBar = container.querySelector('[data-j2-preview-bar]');
       ui.previewBack = container.querySelector('[data-j2-preview-back]');
       ui.printOpen = container.querySelector('[data-j2-print-open]');
+      ui.shareBtn = container.querySelector('[data-j2-share-link]');
+      ui.shareOut = container.querySelector('[data-j2-share-out]');
+      ui.shareNote = container.querySelector('[data-j2-share-note]');
+      ui.shareUrl = container.querySelector('[data-j2-share-url]');
       ui.fogChip = container.querySelector('[data-j2-fog-chip]');
       ui.fogChipIco = container.querySelector('[data-j2-fog-chip-ico]');
       ui.fogChipTitle = container.querySelector('[data-j2-fog-chip-title]');
@@ -841,7 +871,7 @@
       showBiome = prefs.showBiomeColors !== false;
       showOutline = !!prefs.showPlacedOutline;
       savedView = prefs.view;
-      resumePreview = !!prefs.playerPreview;
+      resumePreview = !!prefs.playerPreview || playerMode;
       activeBatchId = doc.batches.length ? doc.batches[doc.batches.length - 1].id : null;
       buildStaticLayers();
       buildPanel();
@@ -876,6 +906,12 @@
 
     function initDocument() {
       history = Model.createHistory();
+      if (playerMode) {                                      // PD-052: the decoded snapshot as a synthetic document; a store with NO storage, so no dhcodex_journey2_* key is ever read or written
+        store = Store.createStore(null, data.ctx);
+        loadInfo = { status: 'ok', doc: playerLoad.doc };
+        doc = playerLoad.doc; editLocked = true; saveState = { status: 'saved', reason: null };
+        return;
+      }
       store = Store.createStore(storage, data.ctx);
       loadInfo = store.load();
       if (loadInfo.status === 'ok') { doc = loadInfo.doc; saveState = { status: 'saved', reason: null }; }
@@ -1050,7 +1086,7 @@
       undo: () => ui.undo, redo: () => ui.redo, zoomIn: () => ui.controls.querySelector('[data-j2-zoom="in"]'), zoomOut: () => ui.controls.querySelector('[data-j2-zoom="out"]'),
       zoomReset: () => ui.zoomReadout, fit: () => ui.controls.querySelector('[data-j2-fit]'), biome: () => ui.biomeColors, preview: () => ui.previewBtn,
       route: () => ui.routePlan, locate: () => ui.echoLocate, place: () => ui.echoPlace, clear: () => ui.echoClear, sanc: () => ui.sancGenerate,
-      paint: () => ui.fogTool, outline: () => ui.outlineBtn, print: () => ui.printOpen, back: () => ui.previewBack, party: () => ui.partyBtn,
+      paint: () => ui.fogTool, outline: () => ui.outlineBtn, print: () => ui.printOpen, share: () => ui.shareBtn, back: () => ui.previewBack, party: () => ui.partyBtn,
     };
     let railProxies = [];
     const railOf = new Map();
@@ -1092,7 +1128,7 @@
     }
 
     /** The stored view preferences (sidebar state, "Show fog state") — never the document, never history. */
-    function saveUiPrefs() { if (store) store.saveUi({ sideCollapsed: sideCollapsed, showBiomeColors: showBiome, showPlacedOutline: showOutline, playerPreview: previewMode, view: currentView() }); }
+    function saveUiPrefs() { if (store && !playerMode) store.saveUi({ sideCollapsed: sideCollapsed, showBiomeColors: showBiome, showPlacedOutline: showOutline, playerPreview: previewMode, view: currentView() }); }
 
     /** Explicit toggle only (the user's own click): re-centres the map horizontally in the new free area at the same zoom; never a Fit, and it leaves the selection and active region alone; focus moves to the control that replaces the one used. */
     function toggleSide() {
@@ -1874,6 +1910,7 @@
         renderEchoes();
         renderPerimeter();
         renderSanctuaryLabels();
+        syncRoute();                                         // an open route follows what the players now know (a lit party, a revealed hex)
         return;
       }
       ui.g.player.innerHTML = '';
@@ -1941,12 +1978,23 @@
     }
 
     /**
-     * Soul Echoes (PD-024): GM-only crystals on the chosen sanctuaries. Like the tiles, the layer is EMPTIED (not hidden) in Player Preview, and
-     * the player projection has no field for it, so the secret cannot reach the preview or a future print. Redrawn only when the set changed.
+     * Soul Echoes (PD-024): the GM sees a crystal on each chosen sanctuary. Like the tiles, the layer is rebuilt (not hidden) in Player Preview: players get
+     * ONLY the projection's `collectedEchoes` (PD-052 — a Collected Echo on a revealed hex, drawn dim and flat), never an Available one, and the print gets none.
+     * The GM view is redrawn only when the set changed.
      */
     function renderEchoes() {
       if (!ui.g || !ui.g.echoes || !doc) return;
-      if (previewMode) { ui.g.echoes.innerHTML = ''; echoDrawn = null; return; }
+      if (previewMode) {
+        // players see ONLY a Collected Echo on a revealed sanctuary hex, as the dim, flat crystal (PD-052); an Available one is never drawn
+        const at = new Map(data.ctx.sanctuaries.map(s => [s.id, s]));
+        let h = '';
+        for (const id of (playerProjection && playerProjection.collectedEchoes) || []) {
+          const s = at.get(id);
+          if (s) h += '<g class="j2-echo is-collected" data-echo="' + esc(id) + '" data-collected="true"><g transform="translate(' + fmt(s.x, 1) + ' ' + fmt(s.top - ECHO_LIFT, 1) + ') scale(.8)">' + ECHO_CRYSTAL + '</g></g>';
+        }
+        ui.g.echoes.innerHTML = h; echoDrawn = null;
+        return;
+      }
       if (echoDrawn === doc.soulEchoes) return;
       const at = new Map(data.ctx.sanctuaries.map(s => [s.id, s]));
       const got = new Set(doc.soulEchoes.collectedAnchorIds);
@@ -2492,7 +2540,8 @@
        js/journey2-route.js (A* over the six-neighbour grid; the cost belongs to the hex entered). Clicking a bubble selects that route; clicking the
        selected bubble opens its details. Terrain Ratings come only from generated tiles (plus 0 for sanctuary / Marrogate / Horizon hexes) and are never
        invented: an unknown hex blocks Fastest, and Shortest then reports travel days as unknown. Everything here is transient: never in the document,
-       history, autosave, backup or storage, never in Player Preview, the projection or a print. Fog of War is neither read nor changed.
+       history, autosave, backup or storage, never in the projection or a print. Fog of War is neither read nor changed. It also runs in Player Preview and on the read-only
+       player page (PD-052), where it knows only the cells players see (revealed tiles + printed sanctuary icons) and shows no encounter estimate.
        ============================================================ */
 
     const ROUTE_LABEL = { fastest: 'journey2_route_fastest', shortest: 'journey2_route_shortest' };
@@ -2504,9 +2553,20 @@
       return new Set(d.tiles.filter(tl => over.has(tl.batchId)).map(tl => tl.cell));
     }
 
-    /** Terrain Ratings by cell for the current document (rebuilt only when the document object changes). */
+    /**
+     * Terrain Ratings by cell (rebuilt only when its source object changes). The GM view reads the whole document; Player Preview and the player page read ONLY the
+     * player projection — a hex is known to the planner only if players see its tile (its dots are the rating), so fogged terrain is neither used nor routed around (PD-052).
+     */
     function routeIndex() {
-      if (routeTerrain.doc !== doc) routeTerrain = { doc: doc, index: Route.buildTerrainIndex(doc), blocked: blockedCells(doc) };
+      const key = previewMode && playerProjection ? playerProjection : doc;
+      if (routeTerrain.doc !== key) {
+        if (key === doc) routeTerrain = { doc: doc, index: Route.buildTerrainIndex(doc), blocked: blockedCells(doc) };
+        else {
+          const index = new Map(), blocked = new Set();
+          for (const o of key.overlays) { const cell = Geo.cellId(o.q, o.r); if (o.symbolId === Model.OVERTAKEN_SYMBOL) blocked.add(cell); else index.set(cell, o.dots); }
+          routeTerrain = { doc: key, index: index, blocked: blocked };
+        }
+      }
       return routeTerrain.index;
     }
 
@@ -2524,7 +2584,9 @@
     }
 
     /** True while the planner is choosing A or B (it then owns the map; in the result the map behaves normally). */
-    function routeSelecting() { const st = routePlanner.state; return !!st && st.status !== 'result' && !previewMode; }
+    function routeSelecting() { const st = routePlanner.state; return !!st && st.status !== 'result'; }
+    /** The planner is usable unless a saved map is unreadable; the read-only player page has no editable map, yet plans routes (PD-052). */
+    function routeLocked() { return editLocked && !playerMode; }
 
     /** The cell a map point selects: a sanctuary icon selects its own hex, anything else the hex under the point (null when it is not routeable). */
     function routeCellAt(sx, sy) {
@@ -2539,15 +2601,16 @@
 
     /* ---- dragging the A / B pins (PD-031 amended): while the planner is open a press on a pin outranks the party marker (PD-045) ---- */
 
-    const ROUTE_PIN_HIT_PX = 18;                            // screen radius of a pin's grab area (the ring is 11-15 px; a little generous for a thumb or a trackpad)
+    const ROUTE_PIN_HIT_PX = 18;                            // screen radius of a pin's grab area (the ring is 11-15 px; a little generous for a trackpad)
+    const ROUTE_PIN_HIT_TOUCH_PX = 28;                      // a fingertip is wider: a 56 px grab area for a touch (PD-052)
 
     /** 'start' | 'end' when the viewport-local point is on a placed pin, else null. B is only a pin in the result, and only when it is not on A's hex. */
-    function routePinAt(x, y) {
+    function routePinAt(x, y, touch) {
       const st = routePlanner.state;
-      if (!st || previewMode || editLocked || !data || st.status === 'select-start') return null;
+      if (!st || routeLocked() || !data || st.status === 'select-start') return null;
       const pins = [['start', st.startCell]];
       if (st.status === 'result' && st.endCell !== st.startCell) pins.push(['end', st.endCell]);
-      let best = null, bestD = ROUTE_PIN_HIT_PX;
+      let best = null, bestD = touch ? ROUTE_PIN_HIT_TOUCH_PX : ROUTE_PIN_HIT_PX;
       for (const [which, cell] of pins) {
         const p = routeCenter(cell), s = Geo.worldToScreen(cam, p[0], p[1]), d = Math.hypot(x - s[0], y - s[1]);
         if (d <= bestD) { best = which; bestD = d; }
@@ -2605,7 +2668,7 @@
 
     /** Enters the transient tool: everything that could compete for the map is cancelled first; pan, zoom, the sidebar and Fog of War are untouched. */
     function startRoute() {
-      if (inst.disposed || previewMode || editLocked || !doc || !data) return;
+      if (inst.disposed || routeLocked() || !doc || !data) return;
       if (routePlanner.isActive()) { exitRoute({ focus: true }); return; }
       cancelTransient(); cancelFogStroke(); setFogTool(null, { quiet: true });
       exitLocate({ quiet: true });
@@ -2673,7 +2736,7 @@
     /** The selected route: the preferred strategy, or Shortest when Fastest has no complete route. { st, eff, route, shown } or null outside the result. */
     function routeView() {
       const st = routePlanner.state;
-      if (!st || st.status !== 'result' || !st.routes || previewMode) return null;
+      if (!st || st.status !== 'result' || !st.routes) return null;
       let eff = Route.effectiveStrategy(st.routes, st.strategy);
       if (eff === 'shortest' && routeShortestRedundant(st.routes)) eff = 'fastest';   // no separate bubble: it is the Fastest route
       return { st: st, eff: eff, route: st.routes[eff], shown: routeShownList(st.routes) };
@@ -2682,8 +2745,8 @@
     /** Toolbar, chip, cursor, map layers, bubbles and details from the planner state. */
     function renderRoute() {
       if (!ui.route || !doc || !data) return;
-      const st = routePlanner.state, active = !!st && !previewMode, selecting = routeSelecting();
-      if (ui.routePlan) { ui.routePlan.disabled = editLocked; ui.routePlan.setAttribute('aria-pressed', String(active)); }
+      const st = routePlanner.state, active = !!st, selecting = routeSelecting();
+      if (ui.routePlan) { ui.routePlan.disabled = routeLocked(); ui.routePlan.setAttribute('aria-pressed', String(active)); }
       ui.routeChip.hidden = !selecting;
       if (selecting) ui.routeChipText.textContent = t(st.status === 'select-start' ? 'journey2_route_select_start' : 'journey2_route_select_end');
       ui.viewport.classList.toggle('is-routing', selecting);
@@ -2748,7 +2811,7 @@
       if (!gl || !gm) return;
       const st = routePlanner.state;
       routeBubbleSpecs = [];
-      if (!st || previewMode || !data) { if (routeDrawn.line) gl.innerHTML = ''; if (routeDrawn.mark) gm.innerHTML = ''; routeDrawn = { line: '', mark: '' }; return; }
+      if (!st || !data) { if (routeDrawn.line) gl.innerHTML = ''; if (routeDrawn.mark) gm.innerHTML = ''; routeDrawn = { line: '', mark: '' }; return; }
       let line = '', mark = '';
       const v = routeView();
       if (v) {
@@ -2845,9 +2908,10 @@
       h += '<dl class="j2-route-stats">' +
         '<div><dt>' + esc(t('journey2_route_hexes')) + '</dt><dd>' + n(s.hexes) + '</dd></div>' +
         '<div><dt>' + esc(t('journey2_route_days')) + '</dt><dd>' + (s.complete ? n(s.travelDays) : unknown) + '</dd></div>' +
-        '<div><dt>' + esc(t('journey2_route_expected')) + '</dt><dd>' + (s.complete ? nf2.format(s.expectedEncounters) : unknown) + '</dd></div></dl>';
+        // the expected-encounter estimate is the GM's: players (Player Preview, the player page) never get it (PD-052)
+        (previewMode ? '' : '<div><dt>' + esc(t('journey2_route_expected')) + '</dt><dd>' + (s.complete ? nf2.format(s.expectedEncounters) : unknown) + '</dd></div>') + '</dl>';
       if (!s.complete) {
-        h += '<p class="j2-route-warn"><strong>' + esc(t('journey2_route_time_unknown')) + '.</strong> ' + esc(t('journey2_route_enc_unknown')) + '. ' +
+        h += '<p class="j2-route-warn"><strong>' + esc(t('journey2_route_time_unknown')) + '.</strong> ' + (previewMode ? '' : esc(t('journey2_route_enc_unknown')) + '. ') +
           esc(s.unknownHexes === 1 ? t('journey2_route_unknown_one') : fill('journey2_route_unknown_n', { n: n(s.unknownHexes) })) + '</p>' +
           '<p class="j2-route-note">' + esc(t('journey2_route_known_terrain')) + ': ' + n(s.knownHexes) + ' · ' + esc(t('journey2_route_unknown_terrain')) + ': ' + n(s.unknownHexes) +
           (s.knownHexes ? '<br>' + esc(fillN('journey2_route_known_days', { n: n(s.knownDays) }, [s.knownDays])) : '') + '</p>';
@@ -3590,7 +3654,15 @@
       const on = previewMode;
       ui.root.setAttribute('data-mode', on ? 'preview' : 'gm');
       // the panel stays where it is in both modes (one screen); only its content changes: GM tools, New region and the stock give way to the preview controls
-      ui.gmControls.hidden = on; ui.gen.hidden = on; ui.sideScroll.hidden = on; ui.previewBar.hidden = !on; ui.railStock.hidden = on;
+      // The Route Planner row stays in BOTH modes (PD-052: players plan routes over what they know); the fog / Echo / sanctuary rows and Locate are the GM's.
+      ui.gmControls.hidden = false; ui.gen.hidden = on; ui.sideScroll.hidden = on; ui.previewBar.hidden = !on || playerMode; ui.railStock.hidden = on;
+      for (const row of container.querySelectorAll('[data-j2-gm-row]')) row.hidden = on;
+      if (ui.shareOut && !on) ui.shareOut.hidden = true;       // the last link's note belongs to the preview that made it
+      if (ui.echoLocate) ui.echoLocate.hidden = on;
+      if (playerMode) {                                        // the player page is read-only: no history, no party toggle, no way back to a GM view
+        ui.root.setAttribute('data-player', '');
+        for (const el of container.querySelectorAll('[data-j2-history-group], .j2-ctl-party')) el.hidden = true;
+      }
       syncRail();
       ui.hint.hidden = true; ui.tip.hidden = true; ui.tip.innerHTML = ''; envTipKey = null;
       ui.viewport.setAttribute('aria-label', t(on ? 'journey2_preview_map_label' : 'journey2_map_label'));
@@ -3618,8 +3690,40 @@
       saveUiPrefs();
       renderTiles(); renderFog(); renderSelection(); paintFogStroke(); renderSanctuaryRings();
       applyPreviewChrome(); applyLayerVisibility(); updateFogUi();
+      if (playerMode) return;                                  // the player page simply opens on the map: nothing to announce or focus
       announce(t('journey2_live_preview_on'));
       focusTool(ui.previewBack);
+    }
+
+    /**
+     * "Copy player link" (PD-052): the player link of what Player Preview shows right now — a snapshot, so a later change needs a new link. Built from the same player
+     * projection the preview draws (the party's light included, even mid-drag). The address is this page's own, plus `#/map/<link>`. The clipboard is tried first; when it is
+     * unavailable the link is shown selected in a read-only field to copy by hand, and a success message appears only after a real copy. The length is always shown, with a
+     * warning above 2000 characters (the limit of a chat message in some apps).
+     */
+    const SHARE_WARN_CHARS = 2000;
+    async function copyPlayerLink() {
+      if (inst.disposed || !previewMode || playerMode || !data || !doc || !Share) return;
+      let url;
+      try {
+        const text = await Share.createLinkText(projectionDoc(), data.ctx, { lang: lang });
+        if (inst.disposed) return;
+        url = location.href.split('#')[0] + '#/map/' + text;
+      } catch (err) {
+        try { console.error('Journey: the player link could not be created', err); } catch (e) { /* no console */ }
+        announce(t('journey2_share_failed')); if (ui.shareNote) { ui.shareOut.hidden = false; ui.shareNote.textContent = t('journey2_share_failed'); ui.shareUrl.hidden = true; }
+        return;
+      }
+      let copied = false;
+      try { if (navigator.clipboard && navigator.clipboard.writeText) { await navigator.clipboard.writeText(url); copied = true; } } catch (err) { copied = false; }
+      if (inst.disposed || !ui.shareOut) return;
+      const n0 = url.length, long = n0 > SHARE_WARN_CHARS;
+      ui.shareOut.hidden = false;
+      ui.shareUrl.hidden = copied && !long; ui.shareUrl.value = url;
+      ui.shareNote.textContent = fill(copied ? 'journey2_share_copied' : 'journey2_share_manual', { n: n(n0) }) + (long ? ' ' + fill('journey2_share_long', { n: n(SHARE_WARN_CHARS) }) : '');
+      ui.shareNote.classList.toggle('is-warn', long);
+      if (!copied) { ui.shareUrl.focus({ preventScroll: true }); ui.shareUrl.select(); }
+      if (copied) { toast(t('journey2_share_toast')); announce(fill('journey2_share_copied', { n: n(n0) })); }
     }
 
     /** A reload reopens Player Preview if it was open (PD-035); waits for the restored camera so it opens on the same view. */
@@ -3631,7 +3735,8 @@
 
     /** Back to the GM view: the camera (including any pan or zoom made in the preview), sidebar state and fog preference carry over; nothing is reopened or re-selected. */
     function leavePreview(o) {
-      if (!previewMode) return;
+      if (!previewMode || playerMode) return;                  // the player page has no GM view to go back to
+      exitRoute({ quiet: true });                              // the planner knows different things in the two views (PD-052)
       closePrintPreview({ quiet: true });
       setFogTool(null, { quiet: true });
       previewMode = false;
@@ -3859,6 +3964,7 @@
     /* ---- viewport: pan / tile move / armed click ---- */
 
     function onViewportDown(e) {
+      if (touchDown(e)) return;                                  // a second finger starts a pinch (a third is ignored)
       if (pan || fogStroke || tr && tr.kind !== 'armed' || partyDraft && partyDraft.pointerId != null) return;
       const fogPaint = fogTool && previewMode && !spaceDown && !editLocked && !(tr && tr.kind === 'armed');
       if (e.button !== 0 && e.button !== 1 && e.button !== 2) return;   // the right button pans, except as the Hide brush while fog painting
@@ -3867,7 +3973,7 @@
       const [x, y] = localPoint(e);
       pointer.x = x; pointer.y = y; pointer.inside = true; pointer.cx = e.clientX; pointer.cy = e.clientY;
       // while the Route Planner is open its A / B pins outrank even the party marker (PD-031): a press on a pin drags that pin, and the party stays where it is
-      if (e.button === 0 && !editLocked && !spaceDown && !partyDraft) { const pin = routePinAt(x, y); if (pin) { startRoutePinDrag(e, pin); return; } }
+      if (e.button === 0 && !spaceDown && !partyDraft) { const pin = routePinAt(x, y, e.pointerType === 'touch'); if (pin) { startRoutePinDrag(e, pin); return; } }
       // the party marker (PD-045) outranks everything below: a press on it drags it, and while it follows the cursor a left click drops it
       if (e.button === 0 && !editLocked && !spaceDown && ((partyDraft && partyDraft.placing) || partyHitAt(x, y)) && startPartyDrag(e)) return;
       // priority: dialog > preview > an existing drag/pan > Locate location selection (a click, never a tile drag) > armed placement > fog tool > neutral selection. Space (or the middle button) pans instead of painting.
@@ -3876,7 +3982,7 @@
       if (tile) {
         tr = { kind: 'tile', tileId: tile.id, batchId: tile.batchId, from: tile.cell, docRef: doc, pointerId: e.pointerId, moved: false, x0: e.clientX, y0: e.clientY, preview: null };
       } else {
-        pan = { id: e.pointerId, x0: x, y0: y, tx0: cam.tx, ty0: cam.ty, scale0: cam.scale, moved: false, button: e.button };
+        pan = { id: e.pointerId, x0: x, y0: y, tx0: cam.tx, ty0: cam.ty, scale0: cam.scale, moved: false, button: e.button, slop: e.pointerType === 'touch' ? TOUCH_SLOP_PX : CLICK_SLOP_PX };
       }
       try { ui.viewport.setPointerCapture(e.pointerId); } catch (err) { /* synthetic events may lack a capturable pointer */ }
       if (e.button === 1 || e.button === 2) e.preventDefault();
@@ -3885,6 +3991,7 @@
     function onViewportMove(e) {
       const [x, y] = localPoint(e);
       pointer.x = x; pointer.y = y; pointer.inside = insideViewport(e); pointer.cx = e.clientX; pointer.cy = e.clientY;
+      if (touchMove(e)) return;
       if (routePinDrag && routePinDrag.pointerId === e.pointerId) { moveRoutePinDrag(e); return; }
       if (partyDraft) {
         if (partyDraft.pointerId === e.pointerId) { movePartyDraft(e); return; }
@@ -3893,7 +4000,7 @@
       if (fogStroke && fogStroke.pointerId === e.pointerId) { moveFogStroke(e); return; }
       if (pan && pan.id === e.pointerId) {
         const dx = x - pan.x0, dy = y - pan.y0;
-        if (!pan.moved && Math.hypot(dx, dy) > CLICK_SLOP_PX) { pan.moved = true; ui.viewport.classList.add('is-panning'); }
+        if (!pan.moved && Math.hypot(dx, dy) > pan.slop) { pan.moved = true; ui.viewport.classList.add('is-panning'); }
         if (pan.moved) { setCamera({ scale: pan.scale0, tx: pan.tx0 + dx, ty: pan.ty0 + dy }); return; }
       }
       if (tr && tr.kind === 'tile' && tr.pointerId === e.pointerId) {
@@ -3908,6 +4015,7 @@
     }
 
     function onViewportUp(e) {
+      if (touchEnd(e)) return;
       if (routePinDrag && routePinDrag.pointerId === e.pointerId) { finishRoutePinDrag(e); return; }
       if (partyDraft && partyDraft.pointerId === e.pointerId) { finishPartyDrag(e); return; }
       if (fogStroke && fogStroke.pointerId === e.pointerId) { finishFogStroke(e); return; }
@@ -3929,7 +4037,55 @@
       }
     }
 
+    /* ---- two-finger pinch zoom + pan (touch only; PD-052 — the editor itself stays mouse-only, PD-048) ---- */
+
+    const touches = new Map();                              // pointerId -> { x, y } (viewport-local) of every finger down
+    let pinch = null;                                       // { dist0, scale0, wx, wy } while two fingers are down: the zoom and the world point held between them
+
+    function pinchGeometry() {
+      const pts = Array.from(touches.values()).slice(0, 2);
+      return { cx: (pts[0].x + pts[1].x) / 2, cy: (pts[0].y + pts[1].y) / 2, dist: Math.max(1, Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y)) };
+    }
+
+    function startPinch() {
+      if (pan) endPan();
+      cancelRoutePinDrag();
+      const g = pinchGeometry();
+      pinch = { dist0: g.dist, scale0: cam.scale, wx: (g.cx - cam.tx) / cam.scale, wy: (g.cy - cam.ty) / cam.scale };
+      ui.viewport.classList.add('is-panning');
+    }
+
+    function movePinch() {
+      const g = pinchGeometry(), [vw, vh] = viewSize();
+      const scale = Math.min(MAX_ZOOM, Math.max(Math.min(minScale(), Geo.ZOOM_STEPS[0]), pinch.scale0 * g.dist / pinch.dist0));
+      setCamera({ scale: scale, tx: g.cx - pinch.wx * scale, ty: g.cy - pinch.wy * scale });
+    }
+
+    /** True when the touch event belongs to the pinch (down of a second finger, a move while two are down, or the release of one of them). */
+    function touchDown(e) {
+      if (e.pointerType !== 'touch') return false;
+      const [x, y] = localPoint(e);
+      touches.set(e.pointerId, { x: x, y: y });
+      if (touches.size === 2) { startPinch(); return true; }
+      return touches.size > 2;
+    }
+    function touchMove(e) {
+      if (e.pointerType !== 'touch' || !touches.has(e.pointerId)) return false;
+      const [x, y] = localPoint(e);
+      touches.set(e.pointerId, { x: x, y: y });
+      if (pinch && touches.size >= 2) { movePinch(); return true; }
+      return false;
+    }
+    function touchEnd(e) {
+      if (e.pointerType !== 'touch' || e.type === 'lostpointercapture' || !touches.delete(e.pointerId)) return false;
+      if (!pinch) return false;
+      const wasPinch = pinch;
+      if (touches.size < 2) { pinch = null; ui.viewport.classList.remove('is-panning'); markDragged(); }   // the finger left behind must not tap
+      return !!wasPinch;
+    }
+
     function onViewportCancel(e) {
+      if (touchEnd(e)) return;
       if (routePinDrag && routePinDrag.pointerId === e.pointerId) { cancelRoutePinDrag(); return; }
       if (partyDraft && partyDraft.pointerId === e.pointerId) { cancelPartyDraft(true); return; }
       if (fogStroke && fogStroke.pointerId === e.pointerId) { cancelFogStroke(true); return; }
@@ -3946,7 +4102,7 @@
     }
 
     function handleMapClick(sx, sy) {
-      if (previewMode || fogTool) return;                    // read-only preview / an active fog tool never selects or inspects
+      if (fogTool || (previewMode && !routeSelecting())) return;   // read-only preview / an active fog tool never selects or inspects (only the Route Planner picks hexes there, PD-052)
       if (routeSelecting()) {                                // the Route Planner owns the map while choosing A or B: a sanctuary icon, Environment marker or tile selects its hex
         if (!spaceDown) { const id = routeCellAt(sx, sy); if (id && routePlanner.pick(id) && routePlanner.state.status === 'result') { const v = routeView(); if (v) announce(v.route.status === 'ok' ? fillN('journey2_route_live_result', { strategy: t(ROUTE_LABEL[v.eff]), hexes: n(v.route.stats.hexes) }, [v.route.stats.hexes]) : fill('journey2_route_live_none', { strategy: t(ROUTE_LABEL[v.eff]) })); } }
         return;
@@ -4341,6 +4497,7 @@
         if (routeSelecting()) { routeEscape(); e.preventDefault(); return; }                         // choosing A or B: step back / leave the Route Planner (no document change)
         if (locateSession.isActive()) { exitLocate({ focus: true }); e.preventDefault(); return; }   // a result or the selection: leave Locate (no document change)
         if (fogTool) { setFogTool(null); e.preventDefault(); return; }
+        if (previewMode && routePlanner.isActive()) { routeEscape(); e.preventDefault(); return; }    // a route shown in the preview closes before the preview does (PD-052)
         if (previewMode) { leavePreview(); e.preventDefault(); return; }
         if (sanctuaryOpen) { closeSanctuary({ focus: true }); e.preventDefault(); return; }
         if (inspectorOpen()) { closeInspector({ focus: true }); e.preventDefault(); return; }
@@ -4425,6 +4582,7 @@
       else if (b.hasAttribute('data-j2-sanc-delete')) confirmDeleteSanctuary();
       else if (b.hasAttribute('data-j2-preview-back')) leavePreview();
       else if (b.hasAttribute('data-j2-print-open')) openPrintPreview();
+      else if (b.hasAttribute('data-j2-share-link')) copyPlayerLink();
       else if (b.hasAttribute('data-j2-preview')) enterPreview();
       else if (b.hasAttribute('data-j2-undo')) undo();
       else if (b.hasAttribute('data-j2-redo')) redo();

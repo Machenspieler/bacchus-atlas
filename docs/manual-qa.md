@@ -596,6 +596,21 @@ what changes at each):
 - [ ] Player Preview, Print Preview and the printed pages contain no route line, A / B pin, bubble or statistic. Verify in English and Russian. (Planned, PD-052: Player Preview and the player page will gain the planner; update this line then.)
 - [ ] **Dragging the pins (PD-051).** Show the party marker and press Plan route (A lands on the marker). Hovering A shows a grab cursor; dragging it moves **A, not the party**: the pin snaps hex to hex, the routes and bubbles follow live, the party stays (Undo list unchanged). Drag B the same way. Esc during a drag puts the pin back. A pin dropped on the other pin, or off the map, stays on its last valid hex. In the destination-selection step A is draggable too. Dragging the party marker where no pin is still moves the marker (one Undo entry). Leave the planner (Esc), and the marker under the old A is draggable again.
 
+### Shareable player link (PD-052)
+- [ ] In Player Preview (with some hexes revealed, the party shown, a sanctuary name revealed, one Echo Collected on a revealed sanctuary and one Collected under fog) the **Player link** button
+  (panel and, collapsed, the rail) copies a link and shows "Link copied · N characters" and a toast; with the clipboard blocked the link appears in a selected read-only field and no success
+  toast is shown. A link over 2000 characters adds the warning. The button is absent in the GM view and on the player page. A new link is needed after any later change (it is a snapshot).
+- [ ] Open the link in a **fresh browser profile / private window**: only the site's brand and the RU / EN switch are in the header (no ribbons, no soundboard); the map is the preview — fog, the
+  revealed tiles and region outlines, the party star with its six lit hexes, only the revealed sanctuary name, the dim flat crystal on the revealed Echo sanctuary and **none** on the fogged or Available one.
+  There are no GM controls: no Undo / Redo, no Party, no fog brush, no "Back", no Print, no Locate / Echo / sanctuary buttons. Escape does nothing destructive.
+- [ ] DevTools -> Application -> Local Storage: the player page created **no** `dhcodex_journey2_*` key (a GM who opens their own link keeps their map untouched). Reload and change language: still the same map.
+- [ ] Language: a reader who never chose one sees the GM's language; one who chose keeps theirs; the RU / EN switch changes the interface (sanctuary names stay as written).
+- [ ] **Plan route** on the player page: A is the party star; click B under fog -> only Shortest, "Days unknown"; revealed tiles' dots count as known days; the details show hexes, days and the terrain
+  breakdown but **no** expected-encounter row. Drag A and B (a pin over the star moves, the star never does). The same tool works in the GM's Player Preview, and Escape closes the route before the preview.
+- [ ] Tablet (or touch emulation): one finger pans, two fingers pinch-zoom around the point between them, a tap picks a hex in Plan route, a finger on a pin drags it; after a pinch the remaining finger does
+  not tap. Phones: the page fits (no sideways scroll). Verify in English and Russian.
+- [ ] Bad links: `#/map/`, a truncated link, `#/map/2.xx` and a link for another template each show one localized sentence (and nothing else); the console, not the page, has the detail.
+
 ### Encounter Roll (PD-039)
 - [ ] Open the Region Inspector from a placed hex and from a card's Inspect button: the Encounter section header shows a "Nd6" button (N = the dots; "4d6" for Extreme) with a small d6 icon, right-aligned. Hover / long focus shows the rule text. The Terrain line folds its flavour text behind a chevron (closed by default); the examples sit in the header subtitle after "Region #N"; in Hex Environment, Change sits at the right of the name card and the name has no ↗ arrow.
 - [ ] Click it: the dice appear one by one (no motion with reduced motion on), ones are red, the verdict reads "Encounter!" (any 1) or "No 1s" with the "you may spend a Fear" reminder. The Encounter section is framed in red with a "Triggered" flag only on a hit; a miss leaves it unchanged. Click again: it re-rolls.

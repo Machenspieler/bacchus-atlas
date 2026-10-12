@@ -335,7 +335,7 @@ test('toolbar: Reveal and Hide are real toggle buttons with aria-pressed, the fo
   assert.doesNotMatch(view, /data-j2-fog-state/, 'no Fog overlay toggle (PD-036)');
   assert.match(view, /data-j2-preview data-t-title="journey2_preview_title"/);
   assert.match(view, /<button type="button" class="btn btn-ghost btn-sm j2-tool j2-preview-back" data-j2-preview-back>/);
-  assert.match(view, /role="group" data-j2-fog-group/);
+  assert.match(view, /role="group" data-j2-gm-row data-j2-fog-group/);
   assert.match(fn('updateFogUi', 'setFogTool'), /setAttribute\('aria-pressed', String\(!!fogTool\)\)/);
 });
 
@@ -358,7 +358,7 @@ test('priority: fog stroke beats neutral tile selection; Space or the middle but
   assert.match(fn('startFogStroke', 'fogStrokeTo'), /e\.button === 2 \? 'hide' : 'reveal'/);
   assert.match(down, /!previewMode && !fogTool && !\(tr && tr\.kind === 'armed'\)/, 'no tile grab in preview or with a tool');
   assert.match(down, /if \(pan \|\| fogStroke \|\| tr && tr\.kind !== 'armed' \|\| partyDraft && partyDraft\.pointerId != null\) return;/, 'an existing drag or pan wins');
-  assert.match(fn('handleMapClick', 'selectTile'), /if \(previewMode \|\| fogTool\) return;/, 'no inspector from a map click under a tool or in preview');
+  assert.match(fn('handleMapClick', 'selectTile'), /if \(fogTool \|\| \(previewMode && !routeSelecting\(\)\)\) return;/, 'no inspector from a map click under a tool or in preview');
   const esc = view.slice(view.indexOf('function onDocumentKey'), view.indexOf('if (e.key === \' \' && fogTool'));
   const order = ['openMenu', 'fogStroke', 'if (pan)', 'if (tr)', 'if (fogTool)', 'if (previewMode)', 'inspectorOpen()'].map(s => esc.indexOf(s));
   assert.ok(order.every(i => i > 0) && order.every((x, i) => i === 0 || x > order[i - 1]), 'menu, stroke, pan, drag, tool, preview, inspector: ' + order);
@@ -410,7 +410,7 @@ test('Player Preview: read-only, projection-driven, document and history untouch
   assert.match(tiles, /Projection\.buildPlayerProjection\(projectionDoc\(\), data\.ctx\)/, 'the stored document, or the same with the party at its draft cell (PD-045)');
   assert.doesNotMatch(tiles, /doc\.tiles|doc\.batches/, 'the preview never reads regions directly');
   const chrome = fn('applyPreviewChrome', 'enterPreview');
-  for (const part of ['ui.gmControls.hidden = on', 'ui.sideScroll.hidden = on', 'ui.previewBar.hidden = !on']) assert.ok(chrome.includes(part), part);
+  for (const part of ['ui.gmControls.hidden = false', 'ui.sideScroll.hidden = on', 'ui.previewBar.hidden = !on', "row.hidden = on"]) assert.ok(chrome.includes(part), part);
   assert.doesNotMatch(chrome, /ui\.sidewrap\.(hidden|inert) = on/, 'the panel stays in place: only its content is swapped (PD-040)');
   assert.doesNotMatch(chrome, /ui\.historyGroup\.hidden = on/, 'Undo / Redo stay available beside Reveal / Hide');
   assert.doesNotMatch(fn('undo', 'redo'), /previewMode\) return/, 'Undo works in Player Preview (PD-034)');

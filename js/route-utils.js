@@ -22,6 +22,8 @@
   const LEGACY_PREP_HASH = '#/session-prep';
   const LEGACY_JOURNEY2_HASH = '#/journey2';
   const LIST_ID_PATTERN = /^#\/lists\/(.+)$/;
+  // The shareable player map (PD-052): the whole snapshot rides in the fragment, `#/map/<payload>`. No environment overlay can sit on it.
+  const PLAYER_MAP_PATTERN = /^#\/map\/(.*)$/;
 
   /**
    * Decodes one untrusted, percent-encoded route segment.
@@ -52,7 +54,8 @@
    * Lists overview while a valid environment suffix on it is preserved.
    *
    * Returns { route, malformed, canonicalHash }:
-   *   route: { name: 'catalog'|'lists'|'list'|'journey'|'prep', id?, env }
+   *   route: { name: 'catalog'|'lists'|'list'|'journey'|'prep'|'playermap', id?, env }
+   *     (playermap: id = the link text, '' when it is missing or malformed; env is always null)
    *   malformed: whether any segment failed to decode
    *   canonicalHash: the safe hash the address should be repaired to, or
    *     null when nothing was malformed
@@ -73,7 +76,12 @@
 
     let route;
     const listMatch = working.match(LIST_ID_PATTERN);
-    if (listMatch) {
+    const mapMatch = working.match(PLAYER_MAP_PATTERN);
+    if (mapMatch) {
+      const decodedMap = safeDecodeRouteSegment(mapMatch[1]);
+      if (decodedMap.ok) route = { name: 'playermap', id: decodedMap.value, env: null };
+      else { malformed = true; route = { name: 'playermap', id: '', env: null }; }
+    } else if (listMatch) {
       const decodedId = safeDecodeRouteSegment(listMatch[1]);
       if (decodedId.ok) route = { name: 'list', id: decodedId.value, env: env };
       else { malformed = true; route = { name: 'lists', env: env }; }
@@ -113,6 +121,7 @@
     if (route.name === 'lists') return '#/lists';
     if (route.name === 'journey') return '#/journey';
     if (route.name === 'prep') return '#/prep';
+    if (route.name === 'playermap') return '#/map/' + encodeURIComponent(route.id || '');
     return '';
   }
 
@@ -128,6 +137,7 @@
    * environment overlay, if it has one. Used to repair a malformed hash and
    * to round-trip a parsed route back through parseRouteHash(). */
   function routeToHash(route) {
+    if (route.name === 'playermap') return baseHash(route);                // no environment overlay on the player map
     return route.env ? envHash(route.env, route) : baseHash(route);
   }
 

@@ -46,6 +46,14 @@ function storedLang() {
   });
 }
 
+/* Whether the reader has ever chosen a language here. Only the shared player map cares (PD-052): a link carries the GM's language as a DEFAULT for a reader who has
+ * not chosen one, and never overrides a choice. */
+function hasStoredLang() {
+  return SafeStorage.loadStoredJson(lsStorage, LS_KEYS.lang, { fallback: () => null, parse: raw => { try { return normalizeLang(JSON.parse(raw)); } catch { return normalizeLang(raw); } } }) !== null;
+}
+const langWasStored = hasStoredLang();
+let linkLangOffered = false;
+
 const state = {
   lang: storedLang(),
   i18n: null,
@@ -1308,7 +1316,7 @@ function render() {
   document.title = routeTitle();
   // The Journey map editor owns listeners, observers and a large raster;
   // this is the one place it is released when any other route renders.
-  if (state.route.name !== 'journey') Journey2View.unmount();
+  if (state.route.name !== 'journey' && state.route.name !== 'playermap') Journey2View.unmount();
   renderHeader();
   // renderPrepPage() owns creating/destroying the item strip and the
   // top-chrome controller for its own re-renders; this is the one place
@@ -1330,6 +1338,8 @@ function render() {
     renderListsHome();
   } else if (state.route.name === 'journey') {
     renderJourneyPage();
+  } else if (state.route.name === 'playermap') {
+    renderPlayerMapPage();
   } else if (state.route.name === 'prep') {
     renderPrepPage();
   } else {
@@ -1413,6 +1423,7 @@ function routeTitle() {
   if (env) return `${envName(env)} — ${t('app_title')}`;
   if (state.route.name === 'catalog') return t('browser_title');
   if (state.route.name === 'journey') return `${t('journey_title')} — ${t('app_title')}`;
+  if (state.route.name === 'playermap') return `${t('journey_player_title')} — ${t('app_title')}`;
   if (state.route.name === 'prep') return `${t('prep_title')} — ${t('app_title')}`;
   if (state.route.name === 'list') {
     const list = state.lists.find(l => l.id === state.route.id);
@@ -1457,6 +1468,9 @@ function renderHeader() {
     : state.route.name === 'journey' ? 'journey'
     : state.route.name === 'prep' ? 'prep'
     : 'catalog';
+  // The shared player map (PD-052) is a read-only page for people who only have a link: the brand and the language switch stay, the site's own
+  // navigation and the soundboard do not.
+  const playerPage = state.route.name === 'playermap';
   el.innerHTML = `
     <a class="skip-link" href="#grid-wrap">${t('skip_to_content')}</a>
     <div class="header-inner">
@@ -1467,18 +1481,18 @@ function renderHeader() {
         </span>
       </div>
       <div class="header-actions">
-        <nav class="header-nav" aria-label="${t('main_nav')}">
+        ${playerPage ? '' : `<nav class="header-nav" aria-label="${t('main_nav')}">
           ${RIBBONS.map(r => ribbonHtml(r, current)).join('')}
-        </nav>
+        </nav>`}
         <div class="header-utils">
-          ${SoundboardUI.triggerHtml()}
+          ${playerPage ? '' : SoundboardUI.triggerHtml()}
           <div class="lang-switch">${langButtonsHtml()}</div>
         </div>
       </div>
     </div>`;
   bindLangSwitch(el);
-  SoundboardUI.sync();
-  RIBBONS.forEach(r => {
+  if (!playerPage) SoundboardUI.sync();
+  (playerPage ? [] : RIBBONS).forEach(r => {
     const btn = document.getElementById(`btn-${r.id}`);
     btn.addEventListener('click', () => {
       if (!btn.classList.contains('on')) ribbonDropPending = true;
@@ -2982,6 +2996,26 @@ function renderJourneyPage() {
   Journey2View.mount(document.getElementById('grid-wrap'), {
     t, lang: state.lang, generator: journey2Generator, toast: showToast, storage: lsStorage,
     environmentsForBiome: journey2EnvironmentsForBiome,
+  });
+}
+
+/** #/map/<link> — the read-only player map (PD-052): the GM's Player Preview, decoded from the address. The view is mounted with NO storage and no
+ * generator, so no dhcodex_journey2_* key is read or written and nothing here can edit a map. A touch device is welcome (unlike the editor, PD-048). */
+function renderPlayerMapPage() {
+  document.getElementById('toolbar').innerHTML = '';
+  document.getElementById('result-count').innerHTML = '';
+  Journey2View.mount(document.getElementById('grid-wrap'), {
+    t, lang: state.lang, generator: null, toast: showToast, storage: null,
+    environmentsForBiome: () => [],
+    player: {
+      link: state.route.id || '',
+      // the GM's language is the default for a reader who has never chosen one; it is shown, not saved, so their first own choice is still theirs
+      onOpened: snap => {
+        if (linkLangOffered || langWasStored || !snap || (snap.lang !== 'en' && snap.lang !== 'ru')) return;
+        linkLangOffered = true;
+        if (snap.lang !== state.lang) { state.lang = snap.lang; render(); }
+      },
+    },
   });
 }
 

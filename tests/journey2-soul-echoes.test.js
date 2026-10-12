@@ -201,9 +201,9 @@ test('view: the echoes layer sits above the fog (the veil never hides a crystal)
 
 test('view: Player Preview empties the echoes layer (data, not CSS) and hides the toolbar group', () => {
   const body = fn('renderEchoes', 'updateEchoUi');
-  assert.match(body, /if \(previewMode\) \{ ui\.g\.echoes\.innerHTML = ''/);
-  assert.doesNotMatch(body, /Projection|playerProjection/, 'the layer is never fed from the projection');
-  assert.match(fn('applyPreviewChrome', 'enterPreview'), /ui\.gmControls\.hidden = on/);
+  assert.match(body, /if \(previewMode\) \{[\s\S]{0,700}playerProjection\.collectedEchoes[\s\S]{0,500}return;/, 'players get only the Collected crystals (PD-052)');
+  assert.doesNotMatch(body.slice(0, body.indexOf('if (echoDrawn === doc.soulEchoes)')), /soulEchoes|anchorIds|\bProjection\./, 'the preview branch never reads the Echo list: only the projection collectedEchoes');
+  assert.match(fn('applyPreviewChrome', 'enterPreview'), /data-j2-gm-row\]'\)\) row\.hidden = on/);
   assert.match(fn('placeSoulEchoes', 'confirmClearSoulEchoes'), /previewMode/, 'no placing from the preview');
 });
 
