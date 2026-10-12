@@ -865,15 +865,16 @@ body[data-route="list"] .catalog-bar-wrap::before {
   .catalog-bar .toolbar-filters > .field, .catalog-bar .search-field { flex-shrink: 0; }
   .catalog-bar .rank-pills { flex-wrap: nowrap; }
   .catalog-bar .result-count { margin: var(--s-2) 0; flex-wrap: nowrap; white-space: nowrap; }
-  /* The current page's ribbon (Catalogue) hangs down past the header into this row. The status keeps its place right after
-   * the controls but starts one ribbon width (plus the gap and some air) further on, so it is never behind that ribbon.
-   * Divided by the bar's zoom, since lengths inside it are scaled. */
-  .catalog-bar .result-count { margin-left: calc((var(--rb-w) + var(--rb-gap) + var(--s-7)) / 0.9); }
 }
 /* Too narrow even for the controls alone: they may wrap as a group. */
 @container (max-width: 980px) {
   .catalog-bar .toolbar, .catalog-bar .toolbar-filters { flex-wrap: wrap; width: auto; }
-  .catalog-bar .result-count { margin-left: 0; }
+}
+/* The current page's ribbon (Catalogue) hangs down past the header into this row. On a wide bar the status has room right
+ * after the controls and needs no offset; once the bar is narrower than ~1700px it would reach that ribbon, so it starts one
+ * ribbon width (plus the gap and some air) further on. Divided by the bar's zoom, since lengths inside it are scaled. */
+@container (min-width: 981px) and (max-width: 1700px) {
+  .catalog-bar .result-count { margin-left: calc((var(--rb-w) + var(--rb-gap) + var(--s-7)) / 0.9); }
 }
 
 /* Below the main catalog grid only — never rendered on Lists, Journey, or
