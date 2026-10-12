@@ -1318,6 +1318,14 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 /* The sticky × floats over the scrolling body, so the body keeps the same right-hand gutter the header has: no text or link
  * (Open Encounter, the footer actions) can scroll underneath it (audit 04 Z-02). */
 .modal--close-dock .modal-body { padding-inline-end: calc(var(--s-6) + var(--s-4) + 44px); }
+/* Wide enough to leave a margin beside the card (720px + a 44px × and its gap on each side), the × rides just outside the
+ * card's right edge instead, so the text column keeps the same padding on both sides rather than sitting off-centre. */
+@media (min-width: 880px) {
+  .modal--close-dock .modal-close-dock .modal-close {
+    right: calc(-1 * (44px + var(--s-3))); border: 1px solid var(--line); border-radius: var(--r-md);
+  }
+  .modal--close-dock .modal-header, .modal--close-dock .modal-body { padding-inline-end: var(--s-6); }
+}
 
 /* ---------- detail card: flavor text ---------- */
 .env-lore {
