@@ -57,6 +57,15 @@ const FABRICS = {
     NOTCH_SRC: 128, HEM_SRC: 34, HEM_TOP_SRC: 1534,
     purgeRadius: 6,
   },
+  // Emerald master (E-Banner.png, 838x1877): silhouette x 110..727 at mid-height (729 at the bottom flare), rows 71 (top hem
+  // edge) .. 1822; V apex row 1691 vs hem corners ~1821 (depth 130); stitch line ~34px above the silhouette edge. Like the
+  // purple cut-out it has a faint alpha haze around the silhouette, hence purgeRadius.
+  prep: {
+    src: 'E-Banner.png',
+    BOX: { left: 107, top: 71, width: 624, height: 1753 },
+    NOTCH_SRC: 130, HEM_SRC: 34, HEM_TOP_SRC: 1555,
+    purgeRadius: 6,
+  },
 };
 const WEBP = { lossless: true, effort: 6 };
 const smooth = (t) => { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2 * t); };

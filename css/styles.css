@@ -403,7 +403,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 }
 .ribbon-label svg { width: var(--icon-sm); height: var(--icon-sm); flex: none; }
 /* ---- Fabric ribbon skin (experimental, opt-in: ?ribbonSkin=fabric sets data-ribbon-skin on <html>) ----
- * Only the Catalogue ribbon so far. It swaps the PAINT of .ribbon-fab and nothing else: the button's height transition,
+ * Catalogue, Lists and Prep so far (Journey stays CSS). It swaps the PAINT of .ribbon-fab and nothing else: the button's height transition,
  * sway/drop keyframes, transform origin, drop-shadow, clip-path swallow-tail, label and dim overlay are all the
  * originals, so the texture moves and grows as part of the same element. Two layers (made by
  * scripts/generate-ribbon-fabric.js): ONE continuous cloth surface taller than the longest ribbon, pinned to the top
@@ -412,7 +412,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
  * hem itself (its top edge fades into the cloth underneath). No tiled middle, no second full-width texture,
  * no warping: both layers are straight crops of the full-length master img/ribbon-fabric-source/G-Banner-long.png.
  * At 1x the body is 104x100px and the hem 104x17px. Another colour = another pair of images and one more rule pair below
- * (Catalogue = gold master G-Banner-long.png, Lists = purple master p-Banner.png; Prep and Journey stay CSS). */
+ * (Catalogue = gold master G-Banner-long.png, Lists = purple master p-Banner.png, Prep = emerald master E-Banner.png; Journey stays CSS). */
 :root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="catalog"] .ribbon-fab {
   background:
     url("../img/ui/ribbon-fabric/catalog-hem.webp") 0 100% / 100% auto no-repeat,
@@ -428,6 +428,13 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
     #4d2470;
 }
 :root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="lists"] .ribbon-cut { display: none; }
+:root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="prep"] .ribbon-fab {
+  background:
+    url("../img/ui/ribbon-fabric/prep-hem.webp") 0 100% / 100% auto no-repeat,
+    url("../img/ui/ribbon-fabric/prep-body.webp") 0 0 / 100% auto no-repeat,
+    #2e8062;
+}
+:root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="prep"] .ribbon-cut { display: none; }
 /* A ribbon that has just become current drops in and swings once. */
 .ribbon.drop { animation: ribbon-drop 0.7s ease-out; }
 @keyframes ribbon-drop {
