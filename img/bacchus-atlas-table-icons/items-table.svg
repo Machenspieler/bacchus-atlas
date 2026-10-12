@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" color="#D8AD55" role="img" aria-labelledby="title desc">
+  <title id="title">Items</title>
+  <desc id="desc">Fantasy potion bottle icon</desc>
+  <g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9.2 3h5.6v2.1l-.95 1.08v2.16c2.63.78 4.55 3.22 4.55 6.11A6.4 6.4 0 0 1 12 20.85a6.4 6.4 0 0 1-6.4-6.4c0-2.89 1.92-5.33 4.55-6.11V6.18L9.2 5.1V3Z" fill="currentColor" fill-opacity="0.1" stroke-width="1.5"/>
+    <path d="M9.2 5.1h5.6M10.15 8.34h3.7" stroke-width="1.15" opacity="0.7"/>
+    <path d="M6.38 14.75c1.15-.93 2.4-.98 3.75-.24 1.52.83 2.87 1.03 4.25.25 1.07-.61 2.13-.7 3.18-.28" stroke-width="1.35"/>
+    <path d="M7.15 15.95c.56 2.18 2.52 3.78 4.85 3.78 2.27 0 4.2-1.52 4.81-3.6-1.02-.3-1.97-.14-2.92.39-1.31.74-2.74.62-4.26-.19-.9-.48-1.72-.61-2.48-.38Z" fill="currentColor" fill-opacity="0.28" stroke="none"/>
+    <circle cx="9.1" cy="13.2" r="0.62" fill="currentColor" stroke="none" opacity="0.88"/>
+    <circle cx="14.85" cy="17.55" r="0.48" fill="currentColor" stroke="none" opacity="0.78"/>
+    <path d="M10.2 2h3.6" stroke-width="1.35"/>
+  </g>
+</svg>

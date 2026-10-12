@@ -1179,7 +1179,14 @@ Run all of them with `node --test tests/*.test.js`.
   `load()` reports `corrupt`, the raw text stays under its own key and is
   copied to `map_recovery`, edits are locked until the user imports a backup or
   explicitly starts an empty map. `save()` reports the real outcome; "Saved"
-  is shown only after a successful write. Committed edits are written
+  is shown only after a successful write.
+  **Multi-tab write protection** (PD-053): the store remembers the raw text of
+  the map key it last read or wrote and `save()` returns `reason: 'conflict'`
+  (nothing written) if the key differs; the view re-checks before every edit,
+  Undo/Redo, import and Start-empty, and on `storage` (map key only) / `focus`
+  events, then pauses editing with a sticky banner (Export + Reload). This is a
+  read-then-compare, not an atomic transaction: two tabs writing in the same few
+  milliseconds can still race, after which both tabs are warned. Committed edits are written
   immediately. Undo history lives in memory only: it survives
   re-renders and language switches but **not** a route change or reload; the
   map itself always does. Import validates the whole document first, requires
@@ -1466,6 +1473,12 @@ renderer-facing entry for print: black-and-white mode never carries a tint.
 - *Lifecycle.* `openPrintPreview()` only from Player Preview; it cancels transients, closes the inspector/sanctuary overlay, keeps the camera. Escape / Back →
   `closePrintPreview({ focus })` → Player Preview, focus on "Print player map". `leavePreview`, `dispose` and `renderAll` (language switch, a replaced document)
   close or rebuild it (`paintPrintPreview(true)` keeps the ready state and focus). It lives in no storage key.
-- *Tests.* `tests/journey2-print.test.js` (pure model, pages, seam, boundaries, names, source guards for DOM/CSS/i18n/wiring); `scripts/journey2/lib/print-checks.js`
+- *Native print safety (O-01).* `mountPrintSafety()` (view) appends one `p.j2-print-safety` to `body` while the page is mounted (removed in `dispose`, text refreshed in `relocalize`); it is
+  `display: none` on screen. In `@media print`, `body[data-j2]:not(.j2-printpreview-mode):not(.j2-print-mode) > *:not(.j2-print-safety)` is hidden and the line is shown, so the ordinary
+  page never prints GM content, while the official print root and the legacy proof (both excluded) and every other route (no `data-j2`) print as before.
+- *Label ink (F-01).* print labels are laid out with `{ ink: { strokePx } }` so the clamp box is the rendered ink (`Journey2Geometry.inkLineWidth`: per-glyph advances of the uppercase map font +
+  letter-spacing, ×1.06, + halo + 1 px); the output `w`/`cx` describe that box, the drawn text (anchor, font, halo) is unchanged.
+- *Tests.* `tests/journey2-print-safety.test.js` (label ink bounds incl. seam / edges / wide glyphs / all 56 icons, native-print CSS scope and exclusions, i18n, print-checks selector rules);
+  `tests/journey2-print.test.js` (pure model, pages, seam, boundaries, names, source guards for DOM/CSS/i18n/wiring); `scripts/journey2/lib/print-checks.js`
   (real browser: fog visible on screen, none in print, two A4 pages incl. a print-to-PDF page count and MediaBox, camera independence, one `window.print()`, no document /
   storage / history change, Back + focus, EN/RU, empty reveal set).

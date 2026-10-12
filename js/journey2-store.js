@@ -41,11 +41,29 @@
   }
 
   function createStore(storage, ctx) {
+    /* Conflict guard (H-04). `observed` is the raw text of the map key as this store last READ it (load) or WROTE it (save); null = the key was absent.
+       Before every write the stored raw text is compared with it: a difference means another tab changed the map, and nothing is written.
+       This is a read-then-compare in front of a plain setItem, NOT an atomic transaction: two tabs writing within the same few microseconds can
+       still race (documented in docs/architecture.md). */
+    let observed = null;
+
+    function readMapRaw() {
+      try { const raw = storage.getItem(KEYS.map); return raw === undefined ? null : raw; } catch (e) { return undefined; }
+    }
+
+    /** True only when the stored map differs from what this store last observed. An unreadable store is never a conflict (that is a storage failure, a different state). */
+    function isStale() {
+      if (!storage) return false;
+      const raw = readMapRaw();
+      return raw !== undefined && raw !== observed;
+    }
+
     /** { status: 'empty'|'ok'|'corrupt'|'unavailable', doc?, errors?, code? } */
     function load() {
       if (!storage) return { status: 'unavailable' };
       let raw;
       try { raw = storage.getItem(KEYS.map); } catch (e) { return { status: 'unavailable' }; }
+      observed = raw === undefined ? null : raw;
       if (raw === null || raw === undefined) return { status: 'empty' };
       const parsed = Model.parseBackupText(raw, ctx);
       if (parsed.ok) return { status: 'ok', doc: parsed.doc };
@@ -53,8 +71,13 @@
       return { status: 'corrupt', code: parsed.code, errors: parsed.errors, recoveryCopySaved: copy.ok };
     }
 
-    /** { ok:true } | { ok:false, reason: 'unavailable'|'serialization-failed'|'write-failed' } — never throws. */
-    function save(doc) { return SafeStorage.writeJson(storage, KEYS.map, doc); }
+    /** { ok:true } | { ok:false, reason: 'unavailable'|'serialization-failed'|'write-failed'|'conflict' } — never throws. 'conflict' = another tab changed the map; nothing was written. */
+    function save(doc) {
+      if (isStale()) return { ok: false, reason: 'conflict' };
+      const r = SafeStorage.writeJson(storage, KEYS.map, doc);
+      if (r.ok) { const raw = readMapRaw(); if (raw !== undefined) observed = raw; }
+      return r;
+    }
 
     /** Keeps the map an import is about to replace. Best effort; the caller also offers a download. */
     function savePrevious(doc) { return SafeStorage.writeJson(storage, KEYS.previous, doc); }
@@ -92,7 +115,7 @@
       return SafeStorage.writeJson(storage, KEYS.ui, { sideCollapsed: !!(ui && ui.sideCollapsed), showBiomeColors: !(ui && ui.showBiomeColors === false), showPlacedOutline: !!(ui && ui.showPlacedOutline), playerPreview: !!(ui && ui.playerPreview), view: cleanView(ui && ui.view) });
     }
 
-    return { load: load, save: save, savePrevious: savePrevious, loadPrevious: loadPrevious, loadUi: loadUi, saveUi: saveUi, keys: KEYS };
+    return { load: load, save: save, isStale: isStale, savePrevious: savePrevious, loadPrevious: loadPrevious, loadUi: loadUi, saveUi: saveUi, keys: KEYS };
   }
 
   return { KEYS: KEYS, ownedKeys: ownedKeys, createStore: createStore };

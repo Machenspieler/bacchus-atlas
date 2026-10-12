@@ -554,6 +554,23 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
 - [ ] The browser print dialog (Save as PDF, A4 portrait, default and no margins): two pages, no third blank page, no controls or labels, compass / MARROGATE / HORIZON unclipped.
 - [ ] RU and EN: heading, status, buttons and page labels are translated and do not clip.
 
+## Journey browser harnesses: release gates vs retired
+
+Run browser scripts with Chrome (`channel: 'chrome'`) when Playwright's bundled chromium is not installed. Dated status (release cleanup, source `HEAD 7e95872` + working tree):
+
+| Script | Status | Why |
+| --- | --- | --- |
+| `scripts/journey2/route-cutover-verify.js` | **Current gate** | 12/12 |
+| `scripts/journey2/lib/print-checks.js` | **Current gate** | Player Print: two A4 pages, no GM data, native-print safety |
+| `scripts/journey2/verify-shadowblight-state.js` | **Current gate** | 464/464 |
+| `scripts/journey2/verify-hex-stock-art.js` | Current | hex card artwork |
+| `scripts/journey2/stage1-verify.js` | **Not a gate (stale)** | scn.06 expects a deterministic "Place all" footprint; the product rolls a random frozen footprint (PD-033/"Place all"). Aborts, so the fog/topology/hex-environment/sanctuary suites chained after it never run |
+| `scripts/journey2/browser-verify.js` | **Not a gate (stale)** | reads the removed Phase-0 diagnostics drawer and hover readout; asserts "merely viewing writes no journey2 key" although the remembered camera is stored by design (PD-034) |
+| `scripts/journey2/lib/locate-checks.js` | **Not a gate (stale)** | strict-mode selector clash on the duplicated drawer + rail controls (same defect fixed only in `print-checks.js`) |
+| `scripts/journey2/lib/sanctuary-name-checks.js` | **Not a gate (stale, 1 check)** | `sancname.03` asserts the removed eye ring |
+
+None of the four stale scripts indicates a product defect; their failures are obsolete assertions, not regressions. They are not rewritten, and a red run of them must never be reported as passing. Current coverage that replaces them: Place all / atomic placement → `tests/journey2-model.test.js` + Audit 08 INT-05; Locate → `tests/journey2-locate.test.js` + Audit 08 E2E-18; sanctuary names → `tests/journey2-sanctuary-names.test.js` + Audit 08 E2E-16/PRN; camera/layout → Audit 08 responsive suite. `browser-verify.js` writes to a temp directory by default and refuses the submitted Stage 0 evidence folder; the two historical Stage 0 evidence assertions in `tests/journey2-stage0a.test.js` run only with `J2_STAGE0_EVIDENCE=1`.
+
 ## Language
 
 - [ ] English: full pass over whatever changed.

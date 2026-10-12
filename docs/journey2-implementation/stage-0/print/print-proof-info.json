@@ -1,0 +1,40 @@
+{
+ "pages": [
+  {
+   "id": "marrogate",
+   "rectPx": [
+    0,
+    2325,
+    1385,
+    860
+   ]
+  },
+  {
+   "id": "seam",
+   "rectPx": [
+    1732,
+    1170,
+    1385,
+    860
+   ]
+  }
+ ],
+ "scaleMmPerWorldPx": 0.2,
+ "page": {
+  "paper": "A4 landscape",
+  "widthMm": 297,
+  "heightMm": 210,
+  "marginMm": 10,
+  "contentMm": [
+   277,
+   190
+  ],
+  "proofMm": [
+   277,
+   172
+  ]
+ },
+ "physicalPrintTested": false,
+ "pdfBytes": 2317999,
+ "pdfPages": 2
+}

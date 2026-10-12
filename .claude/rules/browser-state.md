@@ -126,3 +126,10 @@ The editor's public route is `#/journey` (`#/journey2` redirects, PD-029); the `
 - Use actual helper names from `js/safe-storage.js`/`js/route-utils.js`/
   `js/list-utils.js`/`js/prep-utils.js` when documenting or
   discussing this layer — don't invent an abstraction that isn't there.
+
+## Journey map: multi-tab write protection (PD-053)
+
+`Journey2Store.save()` refuses (`reason: 'conflict'`) when `dhcodex_journey2_map` no longer holds the text this tab last read or wrote; the view then
+enters a sticky, read-only conflict state (banner with Export + Reload) until the tab is reloaded. Every path that writes the map goes through
+`persist()` (and checks `conflictBlocks()` first) — never call `store.save()` from anywhere else, never clear `conflict` in code, never add an
+"overwrite anyway". View preferences use their own key and never count. A read-then-compare is not atomic; see PD-053 for the documented race.

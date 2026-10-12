@@ -24,6 +24,7 @@
 
   const A4_MM = { widthMm: 210, heightMm: 297, marginMm: 10 };
   const PAGE_IDS = ['v1', 'v2'];
+  const LABEL_STROKE_PX = 3;                                     // the halo of `.j2-pp-svg .j2-sanc-label` in journey2.css — keep in step
 
   /**
    * The two printed pages of a map template, west first. Validates the geometry and THROWS on anything unexpected (no silent fallback to
@@ -131,7 +132,7 @@
     const bySanctuary = new Map(ctx.sanctuaries.map(s => [s.id, s]));
     pages.forEach((p, i) => {
       const mine = proj.sanctuaryLabels.filter(l => { const s = bySanctuary.get(l.anchorId); const pg = s ? pageOfPoint([s.rect[0] + s.rect[2] / 2, s.rect[1] + s.rect[3] / 2], pages) : null; return pg && pg.id === p.id; });
-      out[i].labels = Geo.layoutSanctuaryLabels(mine, ctx.sanctuaries.map(s => ({ id: s.id, rect: s.rect })), { icons: ctx.iconRects, bounds: [p.rect[0], p.rect[1], p.rect[0] + p.rect[2], p.rect[1] + p.rect[3]] });
+      out[i].labels = Geo.layoutSanctuaryLabels(mine, ctx.sanctuaries.map(s => ({ id: s.id, rect: s.rect })), { icons: ctx.iconRects, ink: { strokePx: LABEL_STROKE_PX }, bounds: [p.rect[0], p.rect[1], p.rect[0] + p.rect[2], p.rect[1] + p.rect[3]] });
     });
     return {
       version: 1, printMode: 'bw', pages: out,

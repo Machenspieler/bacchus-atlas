@@ -568,13 +568,29 @@
     return out.map(l => (l.length > hard ? l.slice(0, hard - 1).replace(/\s+$/, '') + '…' : l));
   }
 
+  /* Advance widths (em) of the UPPERCASE map lettering ("Architects Daughter", measured in Chrome at 17px) — the print clamp uses them instead of the flat
+   * LABEL_CHAR_EM, because a wide capital ("W" = 0.94em) is far wider than the 0.6em average. Anything not listed gets the conservative LABEL_UNKNOWN_EM. */
+  const LABEL_GLYPH_EM = { A: 0.641, B: 0.711, C: 0.708, D: 0.648, E: 0.592, F: 0.692, G: 0.692, H: 0.605, I: 0.151, J: 0.529, K: 0.605, L: 0.692, M: 0.827, N: 0.627, O: 0.670, P: 0.638, Q: 0.713, R: 0.713, S: 0.643, T: 0.623, U: 0.562, V: 0.627, W: 0.940, X: 0.600, Y: 0.534, Z: 0.784,
+    '0': 0.631, '1': 0.128, '2': 0.572, '3': 0.509, '4': 0.681, '5': 0.708, '6': 0.627, '7': 0.615, '8': 0.648, '9': 0.569, ' ': 0.400, '-': 0.311, '\'': 0.162, '.': 0.141, '…': 0.423 };
+  const LABEL_UNKNOWN_EM = 0.95, LABEL_LETTER_SPACING_EM = 0.02, LABEL_INK_SAFETY = 1.06, LABEL_INK_ROUND_PX = 1;
+
+  /**
+   * Width in px of one label line as it is RENDERED (uppercase, letter-spaced, with its outline): the sum of the glyph advances, the letter-spacing, a 6 % safety factor
+   * for font fallback / PDF rounding, the full stroke (half outside each side) and 1 px of rounding. `strokePx` is the CSS `stroke-width` of the halo.
+   */
+  function inkLineWidth(line, fontPx, strokePx) {
+    let em = 0;
+    for (const ch of String(line).toUpperCase()) em += (LABEL_GLYPH_EM[ch] != null ? LABEL_GLYPH_EM[ch] : LABEL_UNKNOWN_EM) + LABEL_LETTER_SPACING_EM;
+    return em * fontPx * LABEL_INK_SAFETY + (strokePx || 0) + LABEL_INK_ROUND_PX;
+  }
+
   const overlapArea = (a, b) => Math.max(0, Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x)) * Math.max(0, Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y));
 
   /**
    * Deterministic world-space placement of the revealed sanctuary names — the one helper Player Preview and the future print renderer share.
    * It reads no viewport, camera, pan, zoom or DOM. `labels` = [{ anchorId, name }]; `anchors` = [{ id, rect: [x,y,w,h] }] (the printed icon's protection rectangle);
    * `opts.icons` = every printed icon rectangle (sanctuaries and the MARROGATE / HORIZON destinations) a label must stay clear of;
-   * `opts.world` = [width, height] of the map. Candidates are tried in a fixed order — below, right, left, above — each clamped inside the map; the first
+   * `opts.world` = [width, height] of the map. `opts.ink` = { strokePx } (print): the box is the RENDERED ink (glyph metrics + halo, see inkLineWidth) instead of the flat estimate, so the clamp keeps the whole label inside `bounds`. Candidates are tried in a fixed order — below, right, left, above — each clamped inside the map; the first
    * with no overlap (own icon, any other icon, an already placed label) wins, otherwise the one with the smallest overlap. Labels are placed in anchor-id order.
    * Returns [{ anchorId, name, lines, x, y, w, h, cx, fontSize, lineHeight, placement }] where (x, y, w, h) is the text box and cx its horizontal centre.
    */
@@ -589,7 +605,8 @@
     for (const l of ordered) {
       const lines = wrapLabelName(l.name, o.maxChars, 2);
       if (!lines.length) continue;
-      const w = Math.max.apply(null, lines.map(x => x.length)) * LABEL_FONT_PX * LABEL_CHAR_EM, h = lines.length * LABEL_LINE_PX;
+      const stroke = o.ink ? (o.ink.strokePx || 0) : 0;
+      const w = o.ink ? Math.max.apply(null, lines.map(x => inkLineWidth(x, LABEL_FONT_PX, stroke))) : Math.max.apply(null, lines.map(x => x.length)) * LABEL_FONT_PX * LABEL_CHAR_EM, h = lines.length * LABEL_LINE_PX;
       const r = rectOf.get(l.anchorId), cx0 = r[0] + r[2] / 2, cy0 = r[1] + r[3] / 2;
       const raw = [
         ['below', cx0 - w / 2, r[1] + r[3] + LABEL_GAP_PX],
@@ -619,6 +636,7 @@
 
   return {
     layoutSanctuaryLabels: layoutSanctuaryLabels,
+    inkLineWidth: inkLineWidth,
     wrapLabelName: wrapLabelName,
     LABEL_FONT_PX: LABEL_FONT_PX,
     LABEL_LINE_PX: LABEL_LINE_PX,

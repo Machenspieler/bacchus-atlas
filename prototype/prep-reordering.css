@@ -1,0 +1,87 @@
+/* Prototype-only styles. The cards themselves come from ../css/styles.css. */
+body { padding: var(--s-4); }
+.proto-wrap { margin-inline: auto; width: var(--proto-w, 1280px); max-width: 100%; margin-top: var(--s-4); }
+.proto-devbar {
+  display: flex; gap: var(--s-4); align-items: center; flex-wrap: wrap; justify-content: center;
+  font: 12px/1.4 var(--font-mono); color: var(--muted);
+}
+.proto-devbar button, .proto-devbar select { font: inherit; }
+.proto-debug {
+  margin: var(--s-4) 0 0; padding: var(--s-3); white-space: pre-wrap; word-break: break-all;
+  font: 11px/1.5 var(--font-mono); color: var(--muted);
+  border: 1px dashed var(--line); border-radius: var(--r-sm); background: rgba(0,0,0,0.25);
+}
+.proto-touch-note { display: none; text-align: center; color: var(--parchment-dim); font-family: var(--font-ui); }
+.proto-empty { margin: 0; padding: var(--s-3) 0; color: var(--muted); font-size: var(--fs-sm); }
+
+/* ---- reorder handle ---- */
+.prep-sel-handle { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .prep-sel-handle {
+    flex: none; align-self: stretch; width: 18px; padding: 0; margin: 0 0 0 2px;
+    display: flex; align-items: center; justify-content: center;
+    border: 0; border-radius: var(--r-sm); background: transparent;
+    color: var(--muted); opacity: 0.45; cursor: grab;
+    transition: color var(--t-fast) var(--ease-out), opacity var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+  }
+  .prep-sel-handle svg { width: 12px; height: 16px; display: block; pointer-events: none; }
+  .prep-sel--row .prep-sel-handle { margin-left: -4px; margin-right: -2px; }
+  .prep-sel--card .prep-sel-handle { margin-right: -2px; }
+  .prep-sel:hover .prep-sel-handle { opacity: 0.8; }
+  .prep-sel-handle:hover, .prep-sel-handle:focus-visible { opacity: 1; color: var(--hope); background: rgba(217,164,65,0.10); }
+  .prep-sel-handle:focus-visible { outline: var(--focus-ring); outline-offset: 1px; }
+  .prep-sel-handle:active, .is-dragging .prep-sel-handle { cursor: grabbing; color: var(--hope-soft); opacity: 1; }
+  .prep-sel.is-dragging { opacity: 0.5; border-color: var(--hope); box-shadow: 0 0 0 1px rgba(217,164,65,0.35); }
+  body.is-reordering, body.is-reordering * { cursor: grabbing !important; }
+}
+@media not all and (hover: hover) and (pointer: fine) {
+  .proto-touch-note { display: block; }
+}
+@media (max-width: 700px) {
+  .proto-touch-note { display: block; }
+}
+
+/* ---- insertion indicator: one absolutely positioned line per list, no layout impact ---- */
+.proto-list { position: relative; }
+.proto-insert {
+  position: absolute; z-index: 3; pointer-events: none; display: none;
+  background: var(--hope); border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(20,17,15,0.7), 0 0 6px rgba(217,164,65,0.55);
+}
+.proto-insert.is-visible { display: block; }
+.proto-list.is-drop-target .prep-sel:not(.is-dragging) { background: var(--ink-card); }
+.proto-sr-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@media (prefers-reduced-motion: reduce) {
+  .prep-sel-handle, .prep-sel { transition: none; }
+}
+
+/* ---- "Whole card" mode: no handle, the card itself is the drag source ---- */
+@media (hover: hover) and (pointer: fine) {
+  body.mode-card .prep-sel-handle { display: none; }
+  body.mode-card .prep-sel { cursor: grab; }
+  body.mode-card .prep-sel-main, body.mode-card .prep-sel-thumb-btn { cursor: inherit; }
+  body.mode-card .prep-sel-remove { cursor: pointer; }
+  body.mode-card .prep-sel:focus-within:has(.prep-sel-main:focus-visible) { border-color: var(--hope); }
+}
+
+/* ---- catalog cards/rows are draggable sources (add to the central section) ---- */
+@media (hover: hover) and (pointer: fine) {
+  [data-cat] { cursor: grab; }
+  [data-cat] .prep-row-open, [data-cat] .prep-item-icon-btn, [data-cat] .prep-adv-thumb-btn, [data-cat] .prep-adv-link { cursor: inherit; }
+  [data-cat] .prep-checkbox-hit { cursor: pointer; }
+  [data-cat].is-dragging { opacity: 0.5; }
+  .is-drop-section { outline: 1px dashed rgba(217,164,65,0.6); outline-offset: -2px; border-radius: var(--r-sm); background: rgba(217,164,65,0.04); }
+}
+.prep-col-head { margin-bottom: var(--s-2); }
+
+/* ---- "+" drop slot shown while a catalog card is dragged ---- */
+.proto-slot {
+  display: flex; align-items: center; justify-content: center; box-sizing: border-box;
+  border: 2px dashed rgba(217,164,65,0.7); border-radius: var(--r-md); color: var(--hope);
+  background: transparent; pointer-events: auto;
+  transition: background var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+.proto-slot--card { height: var(--pc-card-h); }
+.proto-slot--row { height: var(--pc-row-h); }
+.proto-slot.is-over { background: rgba(217,164,65,0.12); border-color: var(--hope-soft); color: var(--hope-soft); }
+@media (prefers-reduced-motion: reduce) { .proto-slot { transition: none; } }

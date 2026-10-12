@@ -300,3 +300,11 @@ test('panForInspector: no pan when a side already has room; a hex crowded by the
   const moved = Object.assign({}, crowded, { anchor: { x: 800 + pan.dx, y: 350, r: 30, ry: 35 } });
   assert.notEqual(Geo.placeInspector(moved).side, 'clamped');
 });
+
+/* ---------------- the Shadowblighted badge in the overlay header (final-state validation) ---------------- */
+
+test('overlay header badge: a display rule on .j2-insp-sub > .j2-blight must be paired with a [hidden] override', () => {
+  const css = read('css/journey2.css');
+  assert.match(css, /\.j2-insp-sub > \.j2-blight\s*\{[^}]*display:\s*inline-block/, 'the header badge keeps its inline-block layout');
+  assert.match(css, /\.j2-insp-sub > \.j2-blight\[hidden\]\s*\{\s*display:\s*none;?\s*\}/, 'without this, equal specificity lets the later display rule override [hidden] and a normal region shows the badge');
+});

@@ -1,0 +1,861 @@
+{
+ "_items": {
+  "dom": 480,
+  "sample": "[\"ci1\",\"ci2\",\"ci3\",\"ci4\",\"ci5\",\"ci6\",\"ci7\",\"ci8\",\"ci9\",\"ci10\",\"ci11\",\"ci12\",\"ci13\",\"ci14\",\"ci15\",\"ci16\",\"ci17\",\"ci18\",\"ci19\",\"ci20\",\"ci21\",\"ci22\",\"ci23\",\"ci24\",\"ci25\",\"ci26\",\"ci27\",\"ci28\",\"ci29\",\"ci30"
+ },
+ "before-A-ru": {
+  "vw": 1536,
+  "vh": 760,
+  "panelW": 631,
+  "panelH": 484,
+  "scrollH": 702,
+  "clientH": 481,
+  "scrolls": true,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 666,
+  "sections": [
+   146,
+   293,
+   227
+  ],
+  "nested": 0,
+  "env": [
+   100,
+   100,
+   100
+  ],
+  "adv": [
+   77,
+   77,
+   76
+  ],
+  "item": [
+   79,
+   79,
+   78,
+   78
+  ],
+  "nameFont": "15px",
+  "metaFont": "13px",
+  "clampTips": []
+ },
+ "before-E-en": {
+  "vw": 1536,
+  "vh": 760,
+  "panelW": 631,
+  "panelH": 484,
+  "scrollH": 701,
+  "clientH": 481,
+  "scrolls": true,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 665,
+  "sections": [
+   146,
+   293,
+   226
+  ],
+  "nested": 0,
+  "env": [
+   100,
+   100,
+   100
+  ],
+  "adv": [
+   77,
+   77,
+   76
+  ],
+  "item": [
+   78,
+   78,
+   78,
+   78
+  ],
+  "nameFont": "15px",
+  "metaFont": "13px",
+  "clampTips": []
+ },
+ "before-B-many": {
+  "vw": 1536,
+  "vh": 760,
+  "panelW": 631,
+  "panelH": 484,
+  "scrollH": 1918,
+  "clientH": 481,
+  "scrolls": true,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 1882,
+  "sections": [
+   146,
+   293,
+   1443
+  ],
+  "nested": 0,
+  "env": [
+   100,
+   100,
+   100
+  ],
+  "adv": [
+   77,
+   77,
+   76
+  ],
+  "item": [
+   79,
+   79,
+   78,
+   78,
+   79,
+   79,
+   78,
+   78,
+   79,
+   79,
+   78,
+   78,
+   78,
+   78,
+   79,
+   79,
+   79,
+   79,
+   97,
+   97,
+   78,
+   78,
+   79,
+   79,
+   78,
+   78,
+   97,
+   97,
+   79,
+   79
+  ],
+  "nameFont": "15px",
+  "metaFont": "13px",
+  "clampTips": []
+ },
+ "before-C-long-ru": {
+  "vw": 1536,
+  "vh": 760,
+  "panelW": 631,
+  "panelH": 484,
+  "scrollH": 723,
+  "clientH": 481,
+  "scrolls": true,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 687,
+  "sections": [
+   167,
+   293,
+   227
+  ],
+  "nested": 0,
+  "env": [
+   121,
+   121,
+   121
+  ],
+  "adv": [
+   77,
+   77,
+   76
+  ],
+  "item": [
+   79,
+   79,
+   78,
+   78
+  ],
+  "nameFont": "15px",
+  "metaFont": "13px",
+  "clampTips": []
+ },
+ "before-C-long-en": {
+  "vw": 1536,
+  "vh": 760,
+  "panelW": 631,
+  "panelH": 484,
+  "scrollH": 701,
+  "clientH": 481,
+  "scrolls": true,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 665,
+  "sections": [
+   146,
+   293,
+   226
+  ],
+  "nested": 0,
+  "env": [
+   100,
+   100,
+   100
+  ],
+  "adv": [
+   77,
+   77,
+   76
+  ],
+  "item": [
+   78,
+   78,
+   78,
+   78
+  ],
+  "nameFont": "15px",
+  "metaFont": "13px",
+  "clampTips": []
+ },
+ "before-D-empty": {
+  "vw": 1536,
+  "vh": 760,
+  "panelW": 631,
+  "panelH": 484,
+  "scrollH": 481,
+  "clientH": 481,
+  "scrolls": false,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 226,
+  "sections": [
+   66,
+   83,
+   78
+  ],
+  "nested": 0,
+  "env": [],
+  "adv": [],
+  "item": [],
+  "nameFont": null,
+  "metaFont": null,
+  "clampTips": []
+ },
+ "before-W1280": {
+  "vw": 1280,
+  "vh": 760,
+  "panelW": 520,
+  "panelH": 484,
+  "scrollH": 755,
+  "clientH": 481,
+  "scrolls": true,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 719,
+  "sections": [
+   146,
+   307,
+   266
+  ],
+  "nested": 0,
+  "env": [
+   100,
+   100,
+   100
+  ],
+  "adv": [
+   77,
+   77,
+   76
+  ],
+  "item": [
+   118,
+   118,
+   78,
+   78
+  ],
+  "nameFont": "15px",
+  "metaFont": "13px",
+  "clampTips": []
+ },
+ "before-W1100": {
+  "vw": 1100,
+  "vh": 760,
+  "panelW": 1060,
+  "panelH": 613,
+  "scrollH": 610,
+  "clientH": 610,
+  "scrolls": false,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 574,
+  "sections": [
+   125,
+   293,
+   155
+  ],
+  "nested": 0,
+  "env": [
+   79,
+   79,
+   79
+  ],
+  "adv": [
+   77,
+   77,
+   76
+  ],
+  "item": [
+   97,
+   97,
+   97,
+   97
+  ],
+  "nameFont": "15px",
+  "metaFont": "13px",
+  "clampTips": []
+ },
+ "before-W900": {
+  "vw": 900,
+  "vh": 760,
+  "panelW": 856,
+  "panelH": 684,
+  "scrollH": 681,
+  "clientH": 681,
+  "scrolls": false,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 645,
+  "sections": [
+   125,
+   293,
+   227
+  ],
+  "nested": 0,
+  "env": [
+   79,
+   79,
+   79
+  ],
+  "adv": [
+   77,
+   77,
+   76
+  ],
+  "item": [
+   79,
+   79,
+   79,
+   78
+  ],
+  "nameFont": "15px",
+  "metaFont": "13px",
+  "clampTips": []
+ },
+ "before-W700": {
+  "vw": 700,
+  "vh": 900,
+  "panelW": 660,
+  "panelH": 705,
+  "scrollH": 702,
+  "clientH": 702,
+  "scrolls": false,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 666,
+  "sections": [
+   146,
+   293,
+   227
+  ],
+  "nested": 0,
+  "env": [
+   100,
+   100,
+   100
+  ],
+  "adv": [
+   77,
+   77,
+   76
+  ],
+  "item": [
+   79,
+   79,
+   78,
+   78
+  ],
+  "nameFont": "15px",
+  "metaFont": "13px",
+  "clampTips": []
+ },
+ "before-W400": {
+  "vw": 400,
+  "vh": 900,
+  "panelW": 368,
+  "panelH": 931,
+  "scrollH": 928,
+  "clientH": 928,
+  "scrolls": false,
+  "hOverflow": true,
+  "pageHOverflow": true,
+  "sectionsSum": 892,
+  "sections": [
+   178,
+   307,
+   407
+  ],
+  "nested": 0,
+  "env": [
+   118,
+   118,
+   118
+  ],
+  "adv": [
+   77,
+   77,
+   76
+  ],
+  "item": [
+   79,
+   78,
+   78,
+   78
+  ],
+  "nameFont": "15px",
+  "metaFont": "13px",
+  "clampTips": []
+ },
+ "after-A-ru": {
+  "vw": 1536,
+  "vh": 760,
+  "panelW": 631,
+  "panelH": 484,
+  "scrollH": 482,
+  "clientH": 482,
+  "scrolls": false,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 462,
+  "sections": [
+   104,
+   189,
+   169
+  ],
+  "nested": 0,
+  "env": [
+   56,
+   56,
+   56
+  ],
+  "adv": [
+   46,
+   46,
+   46
+  ],
+  "item": [
+   56,
+   56,
+   56,
+   56
+  ],
+  "nameFont": "14px",
+  "metaFont": "12px",
+  "clampTips": [
+   "Бездонные купальни — поверхность"
+  ]
+ },
+ "after-E-en": {
+  "vw": 1536,
+  "vh": 760,
+  "panelW": 631,
+  "panelH": 484,
+  "scrollH": 482,
+  "clientH": 482,
+  "scrolls": false,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 462,
+  "sections": [
+   104,
+   189,
+   169
+  ],
+  "nested": 0,
+  "env": [
+   56,
+   56,
+   56
+  ],
+  "adv": [
+   46,
+   46,
+   46
+  ],
+  "item": [
+   56,
+   56,
+   56,
+   56
+  ],
+  "nameFont": "14px",
+  "metaFont": "12px",
+  "clampTips": []
+ },
+ "after-B-many": {
+  "vw": 1536,
+  "vh": 760,
+  "panelW": 631,
+  "panelH": 484,
+  "scrollH": 1294,
+  "clientH": 482,
+  "scrolls": true,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 1294,
+  "sections": [
+   104,
+   189,
+   1001
+  ],
+  "nested": 0,
+  "env": [
+   56,
+   56,
+   56
+  ],
+  "adv": [
+   46,
+   46,
+   46
+  ],
+  "item": [
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56,
+   56
+  ],
+  "nameFont": "14px",
+  "metaFont": "12px",
+  "clampTips": [
+   "Бездонные купальни — поверхность"
+  ]
+ },
+ "after-C-long-ru": {
+  "vw": 1536,
+  "vh": 760,
+  "panelW": 631,
+  "panelH": 484,
+  "scrollH": 482,
+  "clientH": 482,
+  "scrolls": false,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 462,
+  "sections": [
+   104,
+   189,
+   169
+  ],
+  "nested": 0,
+  "env": [
+   56,
+   56,
+   56
+  ],
+  "adv": [
+   46,
+   46,
+   46
+  ],
+  "item": [
+   56,
+   56,
+   56,
+   56
+  ],
+  "nameFont": "14px",
+  "metaFont": "12px",
+  "clampTips": [
+   "Бездонные купальни — поверхность",
+   "Заброшенная мастерская алхимика",
+   "Небесный Корабль «Внезапная Удача»"
+  ]
+ },
+ "after-C-long-en": {
+  "vw": 1536,
+  "vh": 760,
+  "panelW": 631,
+  "panelH": 484,
+  "scrollH": 482,
+  "clientH": 482,
+  "scrolls": false,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 462,
+  "sections": [
+   104,
+   189,
+   169
+  ],
+  "nested": 0,
+  "env": [
+   56,
+   56,
+   56
+  ],
+  "adv": [
+   46,
+   46,
+   46
+  ],
+  "item": [
+   56,
+   56,
+   56,
+   56
+  ],
+  "nameFont": "14px",
+  "metaFont": "12px",
+  "clampTips": [
+   "Alchemist's Abandoned Workshop"
+  ]
+ },
+ "after-D-empty": {
+  "vw": 1536,
+  "vh": 760,
+  "panelW": 631,
+  "panelH": 484,
+  "scrollH": 482,
+  "clientH": 482,
+  "scrolls": false,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 217,
+  "sections": [
+   72,
+   73,
+   73
+  ],
+  "nested": 0,
+  "env": [],
+  "adv": [],
+  "item": [],
+  "nameFont": null,
+  "metaFont": null,
+  "clampTips": []
+ },
+ "after-W1280": {
+  "vw": 1280,
+  "vh": 760,
+  "panelW": 520,
+  "panelH": 484,
+  "scrollH": 526,
+  "clientH": 482,
+  "scrolls": true,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 526,
+  "sections": [
+   168,
+   189,
+   169
+  ],
+  "nested": 0,
+  "env": [
+   56,
+   56,
+   56
+  ],
+  "adv": [
+   46,
+   46,
+   46
+  ],
+  "item": [
+   56,
+   56,
+   56,
+   56
+  ],
+  "nameFont": "14px",
+  "metaFont": "12px",
+  "clampTips": [
+   "Hope & Fear · Расходник · #1",
+   "Hope & Fear · Предмет · #2"
+  ]
+ },
+ "after-W1100": {
+  "vw": 1100,
+  "vh": 760,
+  "panelW": 1060,
+  "panelH": 464,
+  "scrollH": 462,
+  "clientH": 462,
+  "scrolls": false,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 462,
+  "sections": [
+   104,
+   189,
+   169
+  ],
+  "nested": 0,
+  "env": [
+   56,
+   56,
+   56
+  ],
+  "adv": [
+   46,
+   46,
+   46
+  ],
+  "item": [
+   56,
+   56,
+   56,
+   56
+  ],
+  "nameFont": "14px",
+  "metaFont": "12px",
+  "clampTips": []
+ },
+ "after-W900": {
+  "vw": 900,
+  "vh": 760,
+  "panelW": 856,
+  "panelH": 464,
+  "scrollH": 462,
+  "clientH": 462,
+  "scrolls": false,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 462,
+  "sections": [
+   104,
+   189,
+   169
+  ],
+  "nested": 0,
+  "env": [
+   56,
+   56,
+   56
+  ],
+  "adv": [
+   46,
+   46,
+   46
+  ],
+  "item": [
+   56,
+   56,
+   56,
+   56
+  ],
+  "nameFont": "14px",
+  "metaFont": "12px",
+  "clampTips": []
+ },
+ "after-W700": {
+  "vw": 700,
+  "vh": 900,
+  "panelW": 660,
+  "panelH": 476,
+  "scrollH": 474,
+  "clientH": 474,
+  "scrolls": false,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 474,
+  "sections": [
+   108,
+   189,
+   177
+  ],
+  "nested": 0,
+  "env": [
+   60,
+   60,
+   60
+  ],
+  "adv": [
+   46,
+   46,
+   46
+  ],
+  "item": [
+   60,
+   60,
+   60,
+   60
+  ],
+  "nameFont": "14px",
+  "metaFont": "12px",
+  "clampTips": [
+   "Бездонные купальни — поверхность"
+  ]
+ },
+ "after-W400": {
+  "vw": 400,
+  "vh": 900,
+  "panelW": 368,
+  "panelH": 748,
+  "scrollH": 746,
+  "clientH": 746,
+  "scrolls": false,
+  "hOverflow": false,
+  "pageHOverflow": false,
+  "sectionsSum": 746,
+  "sections": [
+   244,
+   189,
+   313
+  ],
+  "nested": 0,
+  "env": [
+   60,
+   60,
+   60
+  ],
+  "adv": [
+   46,
+   46,
+   46
+  ],
+  "item": [
+   60,
+   60,
+   60,
+   60
+  ],
+  "nameFont": "14px",
+  "metaFont": "12px",
+  "clampTips": []
+ }
+}

@@ -1,0 +1,281 @@
+{
+ "A": {
+  "0:rolling": {
+   "name": 7.3,
+   "ord": 4.87,
+   "sum": 7.31,
+   "dots": 4.69
+  },
+  "1:forest(done)": {
+   "name": 8.72,
+   "ord": 5.91,
+   "sum": 8.46,
+   "dots": 5.56
+  },
+  "2:aquatic+blight": {
+   "name": 5.32,
+   "ord": 4.87,
+   "sum": 7.07,
+   "dots": 4.11,
+   "blight": 4.84
+  },
+  "3:drylands(done)": {
+   "name": 9.22,
+   "ord": 5.91,
+   "sum": 8.46,
+   "dots": 5.31
+  },
+  "4:frozen(done)": {
+   "name": 8.38,
+   "ord": 5.91,
+   "sum": 8.46,
+   "dots": 3.98
+  },
+  "5:rolling(done)": {
+   "name": 8.71,
+   "ord": 5.91,
+   "sum": 8.46,
+   "dots": 6.33
+  },
+  "6:grassland": {
+   "name": 6.65,
+   "ord": 4.87,
+   "sum": 6.68,
+   "dots": 3.73
+  },
+  "7:mountain": {
+   "name": 8.28,
+   "ord": 4.87,
+   "sum": 7.55,
+   "dots": 3.88
+  },
+  "8:wetland": {
+   "name": 5.42,
+   "ord": 4.87,
+   "sum": 6.58,
+   "dots": 3.92
+  },
+  "9:tropical": {
+   "name": 6.64,
+   "ord": 4.87,
+   "sum": 8.59,
+   "dots": 4.37
+  },
+  "10:badlands": {
+   "name": 7.92,
+   "ord": 4.87,
+   "sum": 8.3,
+   "dots": 3.74
+  },
+  "11:forest": {
+   "name": 5.99,
+   "ord": 4.87,
+   "sum": 6.81,
+   "dots": 3.39
+  },
+  "12:drylands": {
+   "name": 6.63,
+   "ord": 4.87,
+   "sum": 7.26,
+   "dots": 3.72
+  },
+  "13:frozen": {
+   "name": 4.55,
+   "ord": 4.87,
+   "sum": 6.58,
+   "dots": 2.84
+  },
+  "14:underground": {
+   "name": 9.03,
+   "ord": 4.87,
+   "sum": 7.15,
+   "dots": 3.96
+  }
+ },
+ "A+": {
+  "0:rolling": {
+   "name": 6,
+   "ord": 4.41,
+   "sum": 6.5,
+   "dots": 3.72
+  },
+  "1:forest(done)": {
+   "name": 11.21,
+   "ord": 5.53,
+   "sum": 7.5,
+   "dots": 6.48
+  },
+  "2:aquatic+blight": {
+   "name": 7.82,
+   "ord": 4.1,
+   "sum": 5.37,
+   "dots": 4.83,
+   "blight": 4.31
+  },
+  "3:drylands(done)": {
+   "name": 8.09,
+   "ord": 5.56,
+   "sum": 7.4,
+   "dots": 6.03
+  },
+  "4:frozen(done)": {
+   "name": 7.73,
+   "ord": 5.36,
+   "sum": 7.3,
+   "dots": 4.23
+  },
+  "5:rolling(done)": {
+   "name": 6.67,
+   "ord": 5.54,
+   "sum": 7.53,
+   "dots": 4.57
+  },
+  "6:grassland": {
+   "name": 10.03,
+   "ord": 4.49,
+   "sum": 6.18,
+   "dots": 5.87
+  },
+  "7:mountain": {
+   "name": 4.25,
+   "ord": 4.63,
+   "sum": 5.39,
+   "dots": 3.32
+  },
+  "8:wetland": {
+   "name": 9.33,
+   "ord": 4.06,
+   "sum": 9.1,
+   "dots": 5.96
+  },
+  "9:tropical": {
+   "name": 8.27,
+   "ord": 4.4,
+   "sum": 6.69,
+   "dots": 4.03
+  },
+  "10:badlands": {
+   "name": 4.51,
+   "ord": 4.61,
+   "sum": 4.58,
+   "dots": 2.43
+  },
+  "11:forest": {
+   "name": 10.01,
+   "ord": 4.43,
+   "sum": 8.63,
+   "dots": 4.49
+  },
+  "12:drylands": {
+   "name": 5.37,
+   "ord": 4.43,
+   "sum": 7.68,
+   "dots": 4.75
+  },
+  "13:frozen": {
+   "name": 5.89,
+   "ord": 4.1,
+   "sum": 5.64,
+   "dots": 3.64
+  },
+  "14:underground": {
+   "name": 10.27,
+   "ord": 4.31,
+   "sum": 9.17,
+   "dots": 6.98
+  }
+ },
+ "A+R": {
+  "0:rolling": {
+   "name": 8.57,
+   "ord": 4.79,
+   "sum": 8.09,
+   "dots": 5.4
+  },
+  "1:forest(done)": {
+   "name": 11.28,
+   "ord": 5.8,
+   "sum": 6.78,
+   "dots": 6.14
+  },
+  "2:aquatic+blight": {
+   "name": 10.5,
+   "ord": 4.79,
+   "sum": 9.1,
+   "dots": 6.79,
+   "blight": 4.65
+  },
+  "3:drylands(done)": {
+   "name": 10.02,
+   "ord": 5.85,
+   "sum": 7.27,
+   "dots": 7.21
+  },
+  "4:frozen(done)": {
+   "name": 9.19,
+   "ord": 5.73,
+   "sum": 6.42,
+   "dots": 5.19
+  },
+  "5:rolling(done)": {
+   "name": 10.02,
+   "ord": 5.85,
+   "sum": 7.42,
+   "dots": 6.41
+  },
+  "6:grassland": {
+   "name": 10.85,
+   "ord": 4.76,
+   "sum": 7.27,
+   "dots": 6.54
+  },
+  "7:mountain": {
+   "name": 6.3,
+   "ord": 4.82,
+   "sum": 6.91,
+   "dots": 4.63
+  },
+  "8:wetland": {
+   "name": 8.01,
+   "ord": 4.61,
+   "sum": 8.42,
+   "dots": 5.28
+  },
+  "9:tropical": {
+   "name": 8.22,
+   "ord": 4.76,
+   "sum": 7.63,
+   "dots": 5.28
+  },
+  "10:badlands": {
+   "name": 7.45,
+   "ord": 4.82,
+   "sum": 6.9,
+   "dots": 4.4
+  },
+  "11:forest": {
+   "name": 9,
+   "ord": 4.73,
+   "sum": 7.28,
+   "dots": 4.05
+  },
+  "12:drylands": {
+   "name": 7.31,
+   "ord": 4.82,
+   "sum": 8.27,
+   "dots": 6.14
+  },
+  "13:frozen": {
+   "name": 6.88,
+   "ord": 4.64,
+   "sum": 5.85,
+   "dots": 4.2
+  },
+  "14:underground": {
+   "name": 8.71,
+   "ord": 4.73,
+   "sum": 7.8,
+   "dots": 6.39
+  }
+ }
+}

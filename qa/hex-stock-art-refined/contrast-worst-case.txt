@@ -1,0 +1,55 @@
+
+name
+rolling      A   7.3  A+     6  A+R  8.57
+forest       A  5.99  A+ 10.01  A+R     9
+aquatic      A  5.32  A+  7.82  A+R  10.5
+drylands     A  6.63  A+  5.37  A+R  7.31
+frozen       A  4.55  A+  5.89  A+R  6.88
+grassland    A  6.65  A+ 10.03  A+R 10.85
+mountain     A  8.28  A+  4.25  A+R   6.3
+wetland      A  5.42  A+  9.33  A+R  8.01
+tropical     A  6.64  A+  8.27  A+R  8.22
+badlands     A  7.92  A+  4.51  A+R  7.45
+underground  A  9.03  A+ 10.27  A+R  8.71
+
+ord
+rolling      A  4.87  A+  4.41  A+R  4.79
+forest       A  4.87  A+  4.43  A+R  4.73
+aquatic      A  4.87  A+   4.1  A+R  4.79
+drylands     A  4.87  A+  4.43  A+R  4.82
+frozen       A  4.87  A+   4.1  A+R  4.64
+grassland    A  4.87  A+  4.49  A+R  4.76
+mountain     A  4.87  A+  4.63  A+R  4.82
+wetland      A  4.87  A+  4.06  A+R  4.61
+tropical     A  4.87  A+   4.4  A+R  4.76
+badlands     A  4.87  A+  4.61  A+R  4.82
+underground  A  4.87  A+  4.31  A+R  4.73
+
+sum
+rolling      A  7.31  A+   6.5  A+R  7.42
+forest       A  6.81  A+   7.5  A+R  6.78
+aquatic      A  7.07  A+  5.37  A+R   9.1
+drylands     A  7.26  A+   7.4  A+R  7.27
+frozen       A  6.58  A+  5.64  A+R  5.85
+grassland    A  6.68  A+  6.18  A+R  7.27
+mountain     A  7.55  A+  5.39  A+R  6.91
+wetland      A  6.58  A+   9.1  A+R  8.42
+tropical     A  8.59  A+  6.69  A+R  7.63
+badlands     A   8.3  A+  4.58  A+R   6.9
+underground  A  7.15  A+  9.17  A+R   7.8
+
+dots
+rolling      A  4.69  A+  3.72  A+R   5.4
+forest       A  3.39  A+  4.49  A+R  4.05
+aquatic      A  4.11  A+  4.83  A+R  6.79
+drylands     A  3.72  A+  4.75  A+R  6.14
+frozen       A  2.84  A+  3.64  A+R   4.2
+grassland    A  3.73  A+  5.87  A+R  6.54
+mountain     A  3.88  A+  3.32  A+R  4.63
+wetland      A  3.92  A+  5.96  A+R  5.28
+tropical     A  4.37  A+  4.03  A+R  5.28
+badlands     A  3.74  A+  2.43  A+R   4.4
+underground  A  3.96  A+  6.98  A+R  6.39
+
+blight
+aquatic      A  4.84  A+  4.31  A+R  4.65

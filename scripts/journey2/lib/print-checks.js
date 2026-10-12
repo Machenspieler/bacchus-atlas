@@ -79,21 +79,48 @@ async function runPrintChecks(env) {
   const biomeOn = await page.getAttribute('[data-j2-biome-colors]', 'aria-pressed');
 
   const enterPreview = async () => { await page.click('[data-j2-preview]'); await sleep(350); };
-  const openPrint = async () => { await page.click('[data-j2-print-open]'); await page.waitForSelector('[data-pp-print]:not([disabled])', { timeout: 30000 }); await sleep(250); };
+  /* `[data-j2-print-open]` matches TWO controls (the main side panel's button and the always-present rail's icon), so a bare selector is ambiguous in Playwright's strict
+   * mode — and the first DOM match is the panel one, which is off-screen once the panel is collapsed. Choose by structure and panel state, never by DOM order or
+   * cosmetic CSS: `kind` is 'panel' (inside #j2-side) or 'rail' (inside [data-j2-rail]); the control must be displayed AND enabled, and exactly one must match. */
+  const sideState = async () => ((await page.locator('.j2-stage').getAttribute('data-side')) === 'collapsed' ? 'collapsed' : 'expanded');
+  const printScope = kind => (kind === 'rail' ? '[data-j2-rail] [data-j2-print-open]' : '#j2-side [data-j2-print-open]');
+  const printBtns = kind => page.locator(printScope(kind || 'panel') + ':visible:not([disabled])');
+  const printBtn = async kind => {
+    const k = kind || ((await sideState()) === 'collapsed' ? 'rail' : 'panel'), n = await printBtns(k).count();
+    if (n !== 1) throw new Error('expected exactly one displayed, enabled ' + k + ' print control, found ' + n);
+    return printBtns(k).first();
+  };
+  /* The side panel and the rail overlap: expanded -> the panel's controls receive the pointer (the rail lies underneath); collapsed -> the panel is off-screen and only the
+   * rail's controls do. So any duplicated control (side toggle, fit, print) is chosen by that state, never by DOM order. */
+  const sideCtl = async sel => page.locator(((await sideState()) === 'collapsed' ? '[data-j2-rail] ' : '#j2-side ') + sel);
+  const setSide = async collapsed => { if (((await sideState()) === 'collapsed') === collapsed) return; await (await sideCtl('[data-j2-side-toggle]')).click(); await sleep(450); };
+  const openPrint = async kind => { await (await printBtn(kind)).click(); await page.waitForSelector('[data-pp-print]:not([disabled])', { timeout: 30000 }); await sleep(250); };
   const closePrint = async () => { await page.click('[data-pp-back]'); await sleep(250); };
 
   await check('print.01.button-only-in-player-preview', async () => {
-    const gm = await page.locator('[data-j2-print-open]').isVisible();
+    const both = async () => (await printBtns('panel').count()) + (await printBtns('rail').count());
+    const gm = await both();
     await enterPreview();
-    const pv = await page.locator('[data-j2-print-open]').isVisible();
-    const label = await page.locator('[data-j2-print-open]').innerText();
-    return { ok: !gm && pv && label === 'Print player map', detail: { gm, pv, label, biomeOn } };
+    const panel = await printBtns('panel').count(), rail = await printBtns('rail').count();
+    const label = panel === 1 ? await (await printBtn('panel')).innerText() : null;
+    const total = await page.locator('[data-j2-print-open]').count();
+    return { ok: gm === 0 && panel === 1 && rail === 1 && total === 2 && label === 'Print player map', detail: { gm, panel, rail, total, label, biomeOn } };
   });
 
   await check('print.02.screen-preview-still-shows-fog', async () => {
     const r = await page.evaluate(() => ({ veil: (document.querySelector('[data-j2-fog-veil]') || { getAttribute: () => '' }).getAttribute('d').length, tinted: document.querySelectorAll('[data-j2-g="player"] .j2-biome-tint').length }));
     await shot(page, 'print-01-screen-preview.png');
     return { ok: r.veil > 100, detail: r };
+  });
+
+  await check('print.02b.rail-print-control-opens-the-same-official-print', async () => {
+    await setSide(true);
+    const state = await sideState(), n = await printBtns('rail').count(), panelShown = await page.evaluate(() => { const e = document.querySelector('#j2-side [data-j2-print-open]'), r = e.getBoundingClientRect(), t = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!t && e.contains(t); })
+    await openPrint('rail');
+    const pages = await page.locator('.j2-print-page').count(), ready = await page.locator('[data-pp-print]:not([disabled])').count();
+    await closePrint(); await setSide(false);
+    const back = await printBtns('panel').count();
+    return { ok: state === 'collapsed' && n === 1 && !panelShown && pages === 2 && ready === 1 && back === 1, detail: { state, n, panelShown, pages, ready, back } };
   });
 
   const stateBefore = { doc: JSON.stringify(await docNow()), storage: await storage(), hist: JSON.stringify((await st()).history), cam: JSON.stringify((await st()).camera) };
@@ -207,7 +234,7 @@ async function runPrintChecks(env) {
     await closePrint();
     await page.evaluate(() => Journey2View.debugApi().setCamera({ scale: 2, tx: -900, ty: -400 })); await sleep(200);
     await page.click('[data-j2-zoom="in"]').catch(() => {});
-    await page.click('[data-j2-fit]'); await sleep(300);
+    await (await sideCtl('[data-j2-fit]')).click(); await sleep(300);
     await openPrint();
     const html1 = await rootHtml();
     return { ok: html0 === html1 && html0 !== null, detail: { equal: html0 === html1 } };
@@ -225,7 +252,7 @@ async function runPrintChecks(env) {
 
   await check('print.14.russian', async () => {
     await page.evaluate(() => document.querySelector('[data-lang="ru"]').click()); await sleep(500);
-    const btn = await page.locator('[data-j2-print-open]').innerText();
+    const btn = await (await printBtn('panel')).innerText();
     await openPrint();
     await shot(page, 'print-03-ru-preview.png');
     const r = await page.evaluate(() => ({
@@ -243,7 +270,7 @@ async function runPrintChecks(env) {
   });
 
   await check('print.15.empty-reveal-set-prints-the-plain-old-map', async () => {
-    await page.click('[data-j2-preview-back]'); await sleep(300);
+    await page.locator('[data-j2-preview-back]:visible').first().click(); await sleep(300);
     await dispatch({ type: 'setCellsRevealed', cellKeys: REVEAL_CELLS, revealed: false });
     await dispatch({ type: 'setSanctuaryNameRevealed', anchorId: ID_W, revealed: false });
     await dispatch({ type: 'setSanctuaryNameRevealed', anchorId: ID_E, revealed: false });

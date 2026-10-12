@@ -2,7 +2,12 @@
 /* Task 01A regression checks: the calibration CSV, the deploy-exclusion rules and the print-proof PDF
    paint. Each is written to FAIL on the originally submitted Stage 0 output and PASS on the corrected
    one. Tests that need a local evidence file or the dev-only PDF tooling skip (with a reason) when it is
-   absent, so a fresh clone / CI without the review packages stays green. */
+   absent, so a fresh clone / CI without the review packages stays green.
+
+   The two assertions about the ORIGINALLY SUBMITTED Stage 0 output (hold-out CSV, dark PDF fill) are
+   historical-evidence checks, not product regressions: they run only with J2_STAGE0_EVIDENCE=1, and then
+   they REQUIRE the original fixture (a missing or regenerated file fails, it is never skipped or
+   re-interpreted). The current print CSS / corrected-proof checks below stay active in every run. */
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
@@ -17,6 +22,8 @@ const { scanFirstFill } = require('../scripts/journey2/lib/pdf-checks');
 const { isExcluded } = require('../scripts/build.js');
 const template = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'journey2', 'map-template.json'), 'utf8'));
 const exists = p => fs.existsSync(p);
+const STAGE0_EVIDENCE = process.env.J2_STAGE0_EVIDENCE === '1';
+const STAGE0_SKIP = !STAGE0_EVIDENCE && 'historical Stage 0 evidence check - opt in with J2_STAGE0_EVIDENCE=1';
 
 /* ---------------- CSV serializer / parser ---------------- */
 
@@ -42,7 +49,7 @@ test('csv: parser rejects unterminated quotes and stray quotes; parseObjects rej
 
 const geometryJson = () => JSON.parse(fs.readFileSync(path.join(exists(path.join(S0A, 'data', 'geometry-verification.json')) ? S0A : S0, 'data', 'geometry-verification.json'), 'utf8'));
 
-test('hold-out CSV: the submitted Stage 0 file is rejected (9 fields under an 8-field header)', { skip: !exists(path.join(S0, 'data', 'hold-out-verification.csv')) && 'Stage 0 evidence not present' }, () => {
+test('hold-out CSV: the submitted Stage 0 file is rejected (9 fields under an 8-field header)', { skip: STAGE0_SKIP }, () => {
   const r = validateHoldoutCsv(fs.readFileSync(path.join(S0, 'data', 'hold-out-verification.csv'), 'utf8'), geometryJson(), template);
   assert.equal(r.ok, false);
   assert.match(String(r.checks[0].value), /has 9 fields, header has 8/);
@@ -84,7 +91,7 @@ test('build: runtime Journey 2 resources and unrelated public docs are kept', ()
 
 /* ---------------- print PDF paint (content-stream scan: no external tooling) ---------------- */
 
-test('print PDF: the submitted Stage 0 proof starts with a dark full-page fill', { skip: !exists(path.join(S0, 'print', 'journey2-print-proof.pdf')) && 'Stage 0 evidence not present' }, () => {
+test('print PDF: the submitted Stage 0 proof starts with a dark full-page fill', { skip: STAGE0_SKIP }, () => {
   const f = scanFirstFill(fs.readFileSync(path.join(S0, 'print', 'journey2-print-proof.pdf')));
   assert.ok(f, 'a first fill is found');
   assert.ok(f.fillRgb.every(v => Math.abs(v - 0.0706) < 0.001), JSON.stringify(f));

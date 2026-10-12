@@ -195,7 +195,8 @@
     let doc = null, history = null, store = null;
     let saveState = { status: 'loading', reason: null };    // loading | saved | unsaved | failed | blocked | unavailable
     let loadInfo = null;                                    // result of store.load()
-    let editLocked = false;                                 // saved map unreadable and unresolved: edits would be lost/overwrite
+    let editLocked = false;                                 // edits paused: the saved map is unreadable (corrupt) or another tab saved a newer one (conflict)
+    let conflict = false;                                   // H-04: another tab changed the saved map; sticky until this tab is reloaded (never cleared by an edit, a pref write or an import)
     /* transient state (never persisted, never in history) */
     let tr = null;                                          // active drag / armed click
     let pan = null;
@@ -262,6 +263,7 @@
     let routeHover = null;                                  // { q, r } under the pointer while the Route Planner is selecting A or B (transient: never persisted, never in history)
     let routeTerrain = { doc: null, index: null };          // Terrain Ratings by cell for the current document (derived, never stored)
     let routeDrawn = { line: '', mark: '' };
+    let printSafety = null;                                 // O-01: the one print-only instruction line (see mountPrintSafety)
     let routeDetails = false;                               // the selected route's details popover is open (a click on its bubble; transient)
     let routeBubbleSpecs = [];                              // [{ s, x, y }] world anchor of each drawn route's bubble (rebuilt by every paint)                                    // signature of what the route layers currently show (a re-render with the same state must not restart the draw-in)
     let routePinDrag = null;                                // transient (PD-031 / PD-045): { which: 'start'|'end', pointerId, from } — the A or B pin being dragged; never stored
@@ -279,6 +281,7 @@
     container.innerHTML = '';
     container.classList.add('j2-host');
     document.body.dataset.j2 = 'on';
+    mountPrintSafety();
     renderLoading();
     load();
 
@@ -306,6 +309,16 @@
 
     /* ---- lifecycle ---- */
 
+    /* O-01: native browser printing (Cmd/Ctrl+P, the Print menu) of the ordinary Journey page must never carry GM-only content. `body[data-j2]` is the
+     * Journey-only scope; in print media css/journey2.css hides every body child except this one line, which points to the official flow. The official
+     * Player Print (`body.j2-printpreview-mode`) is exempt and renders its two pages exactly as before. Nothing here is stored or listens to print events. */
+    function mountPrintSafety() {
+      if (printSafety) return;
+      printSafety = el('p', { class: 'j2-print-safety', 'data-j2-print-safety': '' });
+      printSafety.textContent = t('journey2_pp_native_safe');
+      document.body.appendChild(printSafety);
+    }
+
     function dispose() {
       if (inst.disposed) return;
       flushCameraSave();                                   // leaving the page keeps the camera (the debounce may still be pending)
@@ -328,6 +341,7 @@
       if (baseImg) { baseImg.onload = baseImg.onerror = null; baseImg.src = ''; baseImg = null; }
       container.classList.remove('j2-host');
       container.innerHTML = '';
+      if (printSafety) { printSafety.remove(); printSafety = null; }
       delete document.body.dataset.j2;
       userPlacements = [];
       data = null; ui = {}; doc = null; history = null; store = null; foggable = null; playerProjection = null; cardRefs.clear(); glyphCache.clear(); hexPathCache.clear();
@@ -345,6 +359,7 @@
       if (o && o.generator) generator = o.generator;
       if (o && o.environmentsForBiome) environmentsFor = o.environmentsForBiome;
       applyStrings();
+      if (printSafety) printSafety.textContent = t('journey2_pp_native_safe');
       if (data && ui.root) {
         updateStatus(); updateReadouts(); renderControlList(); renderAll(true); applyPreviewChrome();
         renderSeekers();                                   // the step count's title / aria-label and the settled "+" explanation are language-sensitive (L5-22)
@@ -872,6 +887,15 @@
       syncHeaderHeight();
       setupRail();
       initDocument();
+      // H-04: another tab saving the map. `storage` events only cover tabs that are open and awake, so every edit path also re-checks the stored map (conflictBlocks).
+      // View-preference writes (dhcodex_journey2_ui) are a different key and never count.
+      const mapKey = store.keys.map;
+      listen(window, 'storage', e => {
+        if (inst.disposed || conflict) return;
+        if (e.storageArea && storage && e.storageArea !== storage) return;
+        if (e.key === null || e.key === mapKey) conflictBlocks();
+      });
+      listen(window, 'focus', () => { if (!inst.disposed && !conflict) conflictBlocks(); });
       const prefs = store.loadUi();
       sideCollapsed = !!prefs.sideCollapsed;
       showBiome = prefs.showBiomeColors !== false;
@@ -931,10 +955,33 @@
 
     function persist() {
       if (inst.disposed || !store) return;
+      if (conflict) return;
       if (editLocked) { saveState = { status: 'blocked', reason: loadInfo && loadInfo.code }; return; }
       const r = store.save(doc);
+      if (!r.ok && r.reason === 'conflict') { enterConflict(); return; }
       saveState = r.ok ? { status: 'saved', reason: null } : { status: r.reason === 'unavailable' ? 'unavailable' : 'failed', reason: r.reason };
       renderBanner();
+    }
+
+    /**
+     * H-04: another tab saved a different map than the one this tab last read or wrote. Editing, Undo/Redo, import and Start-empty stop here (nothing is
+     * written, nothing is merged, nothing is reloaded silently); the map stays visible and exportable. Only a reload of the tab resolves it. A storage
+     * FAILURE (quota, unavailable) is a different state and never lands here.
+     */
+    function enterConflict() {
+      if (conflict || inst.disposed) return;
+      conflict = true; editLocked = true;
+      saveState = { status: 'conflict', reason: 'conflict' };
+      cancelTransient(); cancelFogStroke();
+      renderBanner();
+      if (ui.root) renderAll(false);
+    }
+
+    /** True when an edit must not proceed: already in conflict, or the stored map has changed since this tab last saw it (checked fresh, not only on `storage` events). */
+    function conflictBlocks() {
+      if (conflict) return true;
+      if (store && !inst.disposed && store.isStale()) { enterConflict(); return true; }
+      return false;
     }
 
     /** Why a saved (browser-stored, not imported) map could not be read; the import-file wording is the fallback for codes without a saved-map variant (L5-19). */
@@ -947,7 +994,11 @@
       if (!ui.banner) return;
       const s = saveState.status;
       let html = '';
-      if (editLocked) {
+      if (conflict) {
+        html = '<p>' + esc(t('journey2_banner_conflict')) + '</p>' +
+          '<div class="j2-banner-actions"><button type="button" class="btn btn-sm" data-j2-act="export">' + esc(t('journey2_backup_export')) + '</button>' +
+          '<button type="button" class="btn btn-sm btn-primary" data-j2-act="reload">' + esc(t('journey2_conflict_reload')) + '</button></div>';
+      } else if (editLocked) {
         const code = loadInfo && loadInfo.code;
         html = '<p>' + esc(fill('journey2_banner_corrupt', { reason: savedCodeText(code) })) + '</p>' +
           '<div class="j2-banner-actions"><button type="button" class="btn btn-sm" data-j2-act="import">' + esc(t('journey2_backup_import')) + '</button>' +
@@ -967,6 +1018,7 @@
      */
     function dispatch(cmd, label, keepTransient) {
       if (inst.disposed || !doc) return { ok: false, error: { code: 'disposed' } };
+      if (conflictBlocks()) return { ok: false, error: { code: 'conflict' } };
       if (editLocked) return { ok: false, error: { code: 'locked' } };
       if (!keepTransient) cancelTransient();
       const at = new Date().toISOString();
@@ -992,7 +1044,7 @@
     }
 
     function undo() {
-      if (inst.disposed || editLocked) return;
+      if (inst.disposed || editLocked || conflictBlocks()) return;
       cancelTransient();
       const e = Model.historyUndo(history);
       if (!e) return;
@@ -1002,7 +1054,7 @@
       announce(t('journey2_live_undo') + (locateNote ? '. ' + locateNote : ''));
     }
     function redo() {
-      if (inst.disposed || editLocked) return;
+      if (inst.disposed || editLocked || conflictBlocks()) return;
       cancelTransient();
       const e = Model.historyRedo(history);
       if (!e) return;
@@ -1208,6 +1260,7 @@
     /** Updates a card's text and state in place (the handle elements are never recreated mid-drag). */
     function updateCard(refs, b, index, counts, full, holes) {
       const c = counts.get(b.id);
+      applyStockArt(refs, b);
       const sym = symbolFor(b);
       const active = b.id === activeBatchId;
       const name = batchName(b), ord = n(index + 1);
@@ -2940,7 +2993,7 @@
       const line = (key, r) => '<li>' + esc(fillN('journey2_route_compare_line', { label: t(key), hexes: n(r.stats.hexes), days: n(r.stats.travelDays) }, [r.stats.hexes, r.stats.travelDays])) + '</li>';
       const dh = f.stats.hexes - s.stats.hexes, dd = s.stats.travelDays - f.stats.travelDays;
       return '<ul class="j2-route-cmp-list">' + line('journey2_route_fastest', f) + line('journey2_route_shortest', s) + '</ul>' +
-        (dh > 0 && dd > 0 ? '<p class="j2-route-note">' + esc(fill('journey2_route_compare_hint', { h: n(dh), d: n(dd) })) + '</p>' : '');
+        (dh > 0 && dd > 0 ? '<p class="j2-route-note">' + esc(fillN('journey2_route_compare_hint', { h: n(dh), d: n(dd) }, [dh, dd])) + '</p>' : '');
     }
 
     /** The details of the selected route. Opened by clicking its bubble; shown on its own when there is nothing to draw (same hex, no route). */
@@ -4637,7 +4690,8 @@
 
     function runAction(act) {
       if (act === 'export') exportBackup();
-      else if (act === 'import') { cancelTransient(); importInput.value = ''; importInput.click(); }
+      else if (act === 'reload') location.reload();
+      else if (act === 'import') { if (conflictBlocks()) return; cancelTransient(); importInput.value = ''; importInput.click(); }
       else if (act === 'diagnostics') setDiagnostics(!diagOpen);
       else if (act === 'start-empty') startEmptyMap();
     }
@@ -4720,12 +4774,11 @@
     async function handleImportText(text) {
       const r = Model.parseBackupText(text, data.ctx);
       if (!r.ok) { await showImportError(r); return; }
-      if (inst.disposed) return;
-      closeInspector({ quiet: true });                   // a replaced map never keeps a stale inspector
+      if (inst.disposed || conflictBlocks()) return;
       const hasData = !Model.isEmptyDocument(doc);
       if (hasData) {
         // Nothing is written until the user confirms: a cancelled or failed import changes nothing at all.
-        const lines = [fill('journey2_import_replace_msg', { batches: n(doc.batches.length), tiles: n(doc.tiles.length) })];
+        const lines = [fillN('journey2_import_replace_msg', { batches: n(doc.batches.length), tiles: n(doc.tiles.length) }, [doc.batches.length, doc.tiles.length])];
         if (saveState.status !== 'unavailable') lines.push(t('journey2_import_recovery_kept'));
         const choice = await openDialog({
           title: t('journey2_import_title'), lines: lines,
@@ -4735,7 +4788,8 @@
             { label: t('journey2_import_replace'), kind: 'btn-danger', value: 'replace' },
           ],
         });
-        if (choice !== 'replace' || inst.disposed) return;     // cancelled: nothing changed
+        if (choice !== 'replace' || inst.disposed) return;     // cancelled: nothing changed — the selection, the inspector and the camera stay as they were
+        if (conflictBlocks()) return;                          // another tab saved while the dialog was open: replace nothing
         if (saveState.status !== 'unavailable') {
           const prev = store.savePrevious(doc);
           if (!prev.ok) { await showImportError({ code: 'invalid', errors: [t('journey2_import_recovery_failed')] }); return; }   // no recovery copy: replace nothing
@@ -4747,6 +4801,7 @@
 
     /** Replaces the whole document (import / start-empty). Clears Undo so history can never combine two different maps. */
     function replaceDocument(next) {
+      if (conflictBlocks()) return;
       cancelTransient();
       leavePreview({ quiet: true });                     // import / reset: no preview, no fog tool, no stale stroke, no inspector
       setFogTool(null, { quiet: true });
@@ -4763,6 +4818,7 @@
     }
 
     function startEmptyMap() {
+      if (conflictBlocks()) return;
       openDialog({
         title: t('journey2_corrupt_start_empty'), lines: [t('journey2_corrupt_confirm')],
         actions: [
@@ -5238,7 +5294,7 @@
         hoverCell: hoverCell && Geo.cellId(hoverCell.q, hoverCell.r), userPlacements: userPlacements.length,
         ready: data ? data.readiness.ready : null, anchors: data ? data.anchorsDoc.anchors.length : 0,
         validCells: data ? data.grid.validCellCount() : 0, allowedCells: data ? data.ctx.allowedCellCount : 0, placeMode: placeMode,
-        activeBatchId: activeBatchId, inspector: { batchId: inspector.batchId, tileId: inspector.tileId, source: inspector.source, open: inspectorOpen() }, sanctuaryOpen: sanctuaryOpen, locate: locateDebug(), seekers: seekersDebug(), route: routeDebug(), sideCollapsed: sideCollapsed, diagnosticsOpen: diagOpen, saveStatus: saveState.status, saveReason: saveState.reason, editLocked: editLocked,
+        activeBatchId: activeBatchId, inspector: { batchId: inspector.batchId, tileId: inspector.tileId, source: inspector.source, open: inspectorOpen() }, sanctuaryOpen: sanctuaryOpen, locate: locateDebug(), seekers: seekersDebug(), route: routeDebug(), sideCollapsed: sideCollapsed, diagnosticsOpen: diagOpen, saveStatus: saveState.status, saveReason: saveState.reason, editLocked: editLocked, conflict: conflict,
         selectedTile: sel.tileId, transient: tr ? { kind: tr.kind, mode: tr.mode || null, moved: !!tr.moved, cells: tr.preview ? tr.preview.cells.length : 0, valid: tr.preview ? tr.preview.valid : null, attached: tr.preview ? tr.preview.attached : null, separateEligible: tr.preview ? !!tr.preview.separateEligible : null, anchor: tr.preview ? Geo.cellId(tr.preview.anchor.q, tr.preview.anchor.r) : null, conflicts: tr.preview ? tr.preview.cells.filter(c => !c.ok).map(c => [c.id, c.reason]) : [] } : null,
         history: history ? { undo: history.undo.length, redo: history.redo.length } : null,
         batches: doc ? doc.batches.map(b => Object.assign({ id: b.id, habitat: b.habitat, terrain: b.terrain, quantity: b.quantity, quantitySource: b.quantitySource, rumor: b.rumor, encounter: b.encounter, notes: b.notes }, d.counts.get(b.id))) : [],

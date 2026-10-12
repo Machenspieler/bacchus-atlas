@@ -545,6 +545,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-insp-terrain-text[hidden] { display: none; }
 .j2-insp-ex[hidden] { display: none; }
 .j2-insp-sub > .j2-blight { display: inline-block; margin-left: var(--s-2); }
+.j2-insp-sub > .j2-blight[hidden] { display: none; }   /* same specificity as the rule above: without this a normal region's overlay always showed the badge */
 .j2-insp-ex::before { content: "\00a0\00b7\00a0"; }  /* inline flow + no-break spaces around the dot: it stays on the line of the region number and never starts a wrapped line */
 /* the Terrain line is a disclosure: its flavour text stays folded until asked for, and a region without text shows no chevron */
 .j2-insp-summary { display: block; }
@@ -877,6 +878,19 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
   .j2-print-page { width: 210mm; height: 296mm; margin: 0; box-shadow: none; break-after: page; page-break-after: always; break-inside: avoid; }
   .j2-print-page:last-child { break-after: auto; page-break-after: auto; }
   .j2-pp-pagelabel { display: none; }
+}
+
+/* ---------- native print safety (O-01) ----------
+ * Scoped to the Journey page (`body[data-j2]`, set only while it is mounted — the Catalog, Prep and Lists never match). Printing the ordinary page
+ * (GM view or screen Player Preview) through the browser's own Print command shows ONE instruction line instead of the editor, so GM-only content
+ * (drawer, region cards, Environments, Soul Echoes, Shadowblight, tools) cannot reach paper. The official Player Print (`.j2-printpreview-mode`) and the
+ * legacy proof (`.j2-print-mode`) are excluded and keep their own rules above. */
+.j2-print-safety { display: none; }
+@media print {
+  body[data-j2]:not(.j2-printpreview-mode):not(.j2-print-mode) > *:not(.j2-print-safety) { display: none !important; }
+  :root:has(body[data-j2]:not(.j2-printpreview-mode):not(.j2-print-mode)) { color-scheme: light; background: #fff !important; }
+  body[data-j2]:not(.j2-printpreview-mode):not(.j2-print-mode) { background: #fff !important; background-image: none !important; color: #000; min-height: 0; margin: 0; padding: 12mm; }
+  body[data-j2]:not(.j2-printpreview-mode):not(.j2-print-mode) > .j2-print-safety { display: block; margin: 0; font: 14pt/1.4 Arial, Helvetica, sans-serif; color: #000; }
 }
 
 /* ---------- Encounter Roll (PD-039): the "Nd6" button in the Encounter header, the dice of the last roll, and the Encounter frame ---------- */
