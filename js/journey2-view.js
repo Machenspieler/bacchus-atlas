@@ -1198,6 +1198,13 @@
       return refs;
     }
 
+    /** Hex Stock card artwork: the card carries its biome in data-art and css/journey2.css paints the matching img/biomes/<biome>-200.webp (decorative, CSS only).
+     *  Only the eleven natural Journey biomes have art (same set as REGION_ART); a fully overtaken region keeps the plain card. */
+    function applyStockArt(refs, b) {
+      const biome = b.habitat.overtaken ? '' : b.habitat.biome;
+      if (REGION_ART[biome]) refs.root.setAttribute('data-art', biome); else refs.root.removeAttribute('data-art');
+    }
+
     /** Updates a card's text and state in place (the handle elements are never recreated mid-drag). */
     function updateCard(refs, b, index, counts, full, holes) {
       const c = counts.get(b.id);
@@ -1237,13 +1244,6 @@
       // placement: one status row, or — when nothing is left — a single confirmation and no controls at all
       refs.status.hidden = complete;
       refs.actions.hidden = complete;
-    /** Hex Stock card artwork: the card carries its biome in data-art and css/journey2.css paints the matching img/biomes/<biome>-200.webp (decorative, CSS only).
-     *  Only the eleven natural Journey biomes have art (same set as REGION_ART); a fully overtaken region keeps the plain card. */
-    function applyStockArt(refs, b) {
-      const biome = b.habitat.overtaken ? '' : b.habitat.biome;
-      if (REGION_ART[biome]) refs.root.setAttribute('data-art', biome); else refs.root.removeAttribute('data-art');
-    }
-
       refs.done.hidden = !complete;
       refs.doneText.textContent = fillN('journey2_all_placed', { n: n(c.quantity) }, [c.quantity]);
       refs.placedText.textContent = fill('journey2_status_placed', { placed: n(c.placed), total: n(c.quantity) });
