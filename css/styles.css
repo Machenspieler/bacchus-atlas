@@ -404,7 +404,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
   pointer-events: none;
 }
 .ribbon-label svg { width: var(--icon-sm); height: var(--icon-sm); flex: none; }
-/* ---- Fabric ribbon skin (experimental, opt-in: ?ribbonSkin=fabric sets data-ribbon-skin on <html>) ----
+/* ---- Fabric ribbon skin (the default; js/app.js sets data-ribbon-skin="fabric" on <html> unless ?ribbonSkin=css) ----
  * All four ribbons. It swaps the PAINT of .ribbon-fab and nothing else: the button's height transition,
  * sway/drop keyframes, transform origin, drop-shadow, clip-path swallow-tail, label and dim overlay are all the
  * originals, so the texture moves and grows as part of the same element. Two layers (made by

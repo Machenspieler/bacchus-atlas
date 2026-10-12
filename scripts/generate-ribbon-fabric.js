@@ -2,7 +2,7 @@
 /* ============================================================
    Bacchus's Atlas — generate-ribbon-fabric.js
    DEV-ONLY, offline. Builds the two texture layers of the experimental fabric
-   ribbon skin (?ribbonSkin=fabric, css/styles.css "Fabric ribbon skin") from the
+   ribbon skin (default; ?ribbonSkin=css opts out, css/styles.css "Fabric ribbon skin") from the
    full-length photographic bookmark masters in img/ribbon-fabric-source/ (see FABRICS below).
    Needs `sharp` (devDependency); nothing here runs in the browser or in CI.
 

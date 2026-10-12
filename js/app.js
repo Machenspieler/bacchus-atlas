@@ -1441,9 +1441,9 @@ const RIBBONS = [
   { id: 'journey', icon: () => ICON_COMPASS, label: 'nav_journey', hash: '#/journey' },
 ];
 
-// Experimental opt-in skin for all four ribbons (css/styles.css "Fabric ribbon skin"): ?ribbonSkin=fabric.
-// A query parameter, not part of the hash, so it survives every route change; absent = the original CSS ribbons.
-if (new URLSearchParams(location.search).get('ribbonSkin') === 'fabric') document.documentElement.dataset.ribbonSkin = 'fabric';
+// Fabric ribbons are the default skin (css/styles.css "Fabric ribbon skin"); ?ribbonSkin=css selects the original CSS ribbons.
+// A query parameter, not part of the hash, so it survives every route change.
+if (new URLSearchParams(location.search).get('ribbonSkin') !== 'css') document.documentElement.dataset.ribbonSkin = 'fabric';
 
 // Set by a click on an inactive ribbon; the next renderHeader() lets the ribbon
 // that has just become current drop in with a swing, then clears it.

@@ -8,8 +8,8 @@ const read = p => fs.readFileSync(path.join(__dirname, '..', p), 'utf8');
 const css = read('css/styles.css');
 const js = read('js/app.js');
 
-test('fabric skin is opt-in via ?ribbonSkin=fabric only', () => {
-  assert.match(js, /URLSearchParams\(location\.search\)\.get\('ribbonSkin'\) === 'fabric'/);
+test('fabric skin is the default; ?ribbonSkin=css opts out to the CSS ribbons', () => {
+  assert.match(js, /URLSearchParams\(location\.search\)\.get\('ribbonSkin'\) !== 'css'/);
   assert.match(js, /document\.documentElement\.dataset\.ribbonSkin = 'fabric'/);
 });
 
