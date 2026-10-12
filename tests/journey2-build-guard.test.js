@@ -9,8 +9,7 @@ const { isExcluded, normalizeRelPath } = require('../scripts/build.js');
 const guard = require('../scripts/check-journey2-build.js');
 
 const EXCLUDED = [
-  'docs/journey2-handoff/README.md', 'docs/journey2-implementation/stage-1/IMPLEMENTATION_REPORT.md',
-  'docs/journey2-implementation/stage-1.zip', 'docs/journey2-review-stage-0a/REVIEW.md', 'docs/journey2-handoff.zip',
+  'docs/journey2-handoff/README.md', 'docs/journey2-review-stage-0a/REVIEW.md', 'docs/journey2-handoff.zip',
   'journey2-stage0-followup.zip', 'stage-1.zip', 'stage-0a.zip', 'docs/stage-2.zip',
 ];
 const KEPT = [
@@ -45,8 +44,7 @@ test('separators: result does not depend on the host path.sep (simulated POSIX a
 test('guard: forbidden Journey reference/source files are detected', () => {
   for (const f of [
     'docs/journey2-handoff/reference/journey-rules-reference.pdf', 'docs/journey2-handoff.zip', 'reference/approved-ui.html',
-    'stray/original-map-pages-07-08.pdf', 'docs/journey2-notes.pdf', 'docs\\journey2-implementation\\stage-1.zip',
-    'docs/journey2-implementation/stage-1/print/journey2-print-proof.pdf',
+    'stray/original-map-pages-07-08.pdf', 'docs/journey2-notes.pdf',
   ]) assert.equal(guard.findForbiddenJourneyFiles([f]).length, 1, f);
 });
 

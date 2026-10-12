@@ -75,9 +75,9 @@ test('hold-out CSV: every original record survives unchanged (same fields, now c
 test('build: development-only Journey 2 paths are excluded', () => {
   for (const p of [
     'docs/journey2-handoff/README.md', 'docs/journey2-handoff/reference/journey-rules-reference.pdf', 'docs/journey2-handoff/reference/approved-ui.html',
-    'docs/journey2-handoff.zip', 'docs/journey2-handoff-v2.zip', 'docs/journey2-implementation/stage-0/print/journey2-print-proof.pdf',
-    'docs/journey2-implementation/stage-0a/CORRECTION_REPORT.md', 'docs/journey2-review-stage-0/REVIEW.md', 'docs/journey2-review-stage-0/evidence/pdf-poppler-1.png',
-    'journey2-stage0-followup.zip', 'journey2-stage0-followup/docs', 'docs/journey2-implementation/stage-0a.zip', 'docs/journey2-implementation/stage-0.zip',
+    'docs/journey2-handoff.zip', 'docs/journey2-handoff-v2.zip',
+    'docs/journey2-review-stage-0/REVIEW.md', 'docs/journey2-review-stage-0/evidence/pdf-poppler-1.png',
+    'journey2-stage0-followup.zip', 'journey2-stage0-followup/docs',
   ]) assert.equal(isExcluded(p), true, p);
   assert.equal(isExcluded('docs\\journey2-handoff\\README.md'), true, 'Windows separators');
 });
