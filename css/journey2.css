@@ -531,7 +531,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-region-inspector[data-art] .j2-insp-title { text-shadow: 0 1px 6px rgb(20 17 15 / 0.9); }
 .j2-region-inspector[data-art] .j2-insp-sub { text-shadow: 0 0 3px rgb(20 17 15), 0 1px 6px rgb(20 17 15 / 0.9); }
 .j2-region-inspector[data-art] .j2-insp-head > .j2-btn-icon { flex: none; background: rgb(20 17 15 / 0.55); } /* flex:none — a wrapping meta line otherwise squeezes the close button to ~22px wide */
-.j2-insp-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--s-3); display: grid; gap: var(--s-3); align-content: start; scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
+.j2-insp-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: var(--s-3); display: grid; gap: var(--s-3); align-content: start; scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
 /* a soft parchment-tinted fade (a lighter edge, not a darker one: a black shadow on this dark panel was ~1.3:1 and invisible) appears on whichever side still has content (the classic CSS-only scroll cue: shadows are fixed, covers scroll with the content) — nothing shows when it all fits, and no gutter is added */
 .j2-insp-scroll {
   --j2-cue-rgb: 232, 222, 200;
