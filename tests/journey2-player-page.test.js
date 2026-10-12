@@ -142,3 +142,27 @@ test('Copy player link: lives in the Player Preview bar (and its rail proxy), is
   for (const k of ['journey2_share', 'journey2_share_title', 'journey2_share_copied', 'journey2_share_manual', 'journey2_share_long', 'journey2_share_failed', 'journey2_share_toast', 'journey2_share_url_label']) assert.ok(i18n.en[k] && i18n.ru[k], k);
   assert.match(i18n.en.journey2_share_long, /\{n\}/); assert.match(i18n.ru.journey2_share_long, /\{n\}/);
 });
+/* ---------------- player copy ---------------- */
+
+test('player copy: every <key>_pl variant has a base key, both languages and the same placeholders; the view prefers it only for players', () => {
+  const ph = s => (s.match(/\{[a-z]+\}/g) || []).sort().join(',');
+  const variants = Object.keys(i18n.en).filter(k => k.endsWith('_pl'));
+  assert.ok(variants.length >= 15, 'found ' + variants.length);
+  for (const k of variants) {
+    const base = k.slice(0, -3);
+    assert.ok(i18n.en[base] && i18n.ru[base], 'base key of ' + k);
+    assert.ok(i18n.ru[k] && i18n.ru[k].length, 'missing RU ' + k);
+    assert.equal(ph(i18n.en[k]), ph(i18n.en[base]), 'EN placeholders of ' + k);
+    assert.equal(ph(i18n.ru[k]), ph(i18n.ru[base]), 'RU placeholders of ' + k);
+  }
+  assert.match(view, /if \(playerMode \|\| \(previewMode && key\.startsWith\('journey2_route_'\)\)\) \{ const v = baseT\(key \+ '_pl'\);/);
+  assert.match(view, /if \(o && o\.t\) baseT = o\.t;/, 'a language switch replaces the base lookup, not the wrapper');
+});
+
+test('player copy: no GM vocabulary reaches a player through the route and load strings', () => {
+  for (const lang of ['en', 'ru']) {
+    for (const k of Object.keys(i18n[lang]).filter(k => k.endsWith('_pl'))) {
+      assert.doesNotMatch(i18n[lang][k], /generated|GM only|nothing is saved|geometry|console|сгенерирован|только для ведущего|консол/i, lang + ' ' + k);
+    }
+  }
+});

@@ -164,7 +164,13 @@
   /* ---------------- instance ---------------- */
 
   function createInstance(container, opts) {
-    let t = (opts && opts.t) || (k => k);
+    let baseT = (opts && opts.t) || (k => k);
+    /* Player-friendly copy (PD-052): a string may have a `<key>_pl` variant written for people, without the GM's vocabulary ("generated Terrain", "diagnostic"...).
+     * It is used on the player page for every string, and in the GM's Player Preview for the route strings players also read. A key without one is unchanged. */
+    let t = key => {
+      if (playerMode || (previewMode && key.startsWith('journey2_route_'))) { const v = baseT(key + '_pl'); if (v && v !== key + '_pl') return v; }
+      return baseT(key);
+    };
     let lang = (opts && opts.lang) || 'en';
     let generator = (opts && opts.generator) || null;
     let environmentsFor = (opts && opts.environmentsForBiome) || (() => []);   // biome id -> [{ id, name, tier, href }], supplied by app.js from the catalog
@@ -333,7 +339,7 @@
     }
 
     function relocalize(o) {
-      if (o && o.t) t = o.t;
+      if (o && o.t) baseT = o.t;
       let langChanged = false;
       if (o && o.lang && o.lang !== lang) { lang = o.lang; nf = makeNumberFormat(); langChanged = true; }
       if (o && o.generator) generator = o.generator;
@@ -3653,6 +3659,7 @@
       if (!ui.root) return;
       const on = previewMode;
       ui.root.setAttribute('data-mode', on ? 'preview' : 'gm');
+      applyStrings();                                          // titles pick the player copy (or the GM copy again) with the mode
       // the panel stays where it is in both modes (one screen); only its content changes: GM tools, New region and the stock give way to the preview controls
       // The Route Planner row stays in BOTH modes (PD-052: players plan routes over what they know); the fog / Echo / sanctuary rows and Locate are the GM's.
       ui.gmControls.hidden = false; ui.gen.hidden = on; ui.sideScroll.hidden = on; ui.previewBar.hidden = !on || playerMode; ui.railStock.hidden = on;
