@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "reviewedBy": "visual review of docs/journey2-implementation/stage-0/images/markers-candidates-sheet-{1,2,3}.png and markers-candidates-overview.png against the native artwork",
+ "reviewedBy": "visual review of the Stage 0 marker candidate sheets (removed; see git history before b8b386f) against the native artwork",
  "candidateCount": 104,
  "decisions": [
   {

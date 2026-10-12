@@ -8,7 +8,7 @@
    import use real pointer / keyboard input and the real UI (the debug API is only used to read state and to
    translate a cell id into client pixels).
 
-   Writes (default docs/journey2-implementation/stage-1/):
+   Writes (default: a temp directory, or --out):
      tests/stage1-browser-results.json   every check with its outcome and detail
      fixtures/*.json                     the 20 -> 7 -> All 13 -> Undo -> reload scenario: real cells + state snapshots
      images/*.png                        screenshots at 1366x768 and 1920x1080
@@ -25,7 +25,7 @@ const { serve } = require('./lib/static-server.js');
 const ROOT = path.join(__dirname, '..', '..');
 const argv = process.argv;
 const outArg = argv.indexOf('--out');
-const STAGE = outArg > -1 ? path.resolve(argv[outArg + 1]) : path.join(ROOT, 'docs', 'journey2-implementation', 'stage-1');
+const STAGE = outArg > -1 ? path.resolve(argv[outArg + 1]) : path.join(require('os').tmpdir(), 'journey2-stage1-verify');
 const rootArg = argv.indexOf('--root');
 const SITE_ROOT = rootArg > -1 ? path.resolve(argv[rootArg + 1]) : ROOT;
 const IMG = path.join(STAGE, 'images'), TESTS = path.join(STAGE, 'tests'), FIX = path.join(STAGE, 'fixtures'), TMP = path.join(STAGE, 'tmp');

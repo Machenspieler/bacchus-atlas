@@ -8,7 +8,7 @@
   "sanctuary": 56,
   "destination": 2
  },
- "surveyMethod": "Assisted detection (black connected components, scripts/journey2/survey-markers.js) with every accepted and rejected candidate reviewed by eye against docs/journey2-implementation/stage-0/images/markers-candidates-*.png; decisions in scripts/journey2/marker-review.json.",
+ "surveyMethod": "Assisted detection (black connected components, the removed Stage 0 survey script) with every accepted and rejected candidate reviewed by eye against the Stage 0 candidate sheets (removed; see git history before b8b386f); decisions in scripts/journey2/marker-review.json.",
  "glyphClasses": [
   {
    "glyphClass": "G1",

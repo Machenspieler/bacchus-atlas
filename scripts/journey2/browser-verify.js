@@ -7,7 +7,7 @@
    static server. Every run uses fresh, isolated browser contexts, so the
    owner's real browser storage is never read or written.
 
-   Writes (docs/journey2-implementation/stage-0/):
+   Writes (default: a temp directory, or --out):
      tests/browser-results.json     every check with its outcome and detail
      data/browser-verification.json the "browserBehavior" slot of the (removed) template build
      images/browser-*.png           screenshots (1366x768 and 1920x1080)
@@ -25,15 +25,8 @@ const Geo = require('../../js/journey2-geometry.js');
 const Model = require('../../js/journey2-model.js');
 
 const ROOT = path.join(__dirname, '..', '..');
-const outArg = process.argv.indexOf('--out');   /* Task 01A: --out <stage dir> keeps the submitted Stage 0 evidence untouched */
-/* The default output is a throw-away temp directory: the submitted Stage 0 evidence under docs/journey2-implementation/stage-0
-   is historical proof and is never a default target (a run once regenerated its PDF and broke the original-evidence test). */
-const STAGE0_EVIDENCE_DIR = path.join(ROOT, 'docs', 'journey2-implementation', 'stage-0');
+const outArg = process.argv.indexOf('--out');   /* --out <dir> overrides the default temp directory */
 const STAGE = outArg > -1 ? path.resolve(process.argv[outArg + 1]) : path.join(require('os').tmpdir(), 'journey2-browser-verify');
-if (STAGE === STAGE0_EVIDENCE_DIR || STAGE.startsWith(STAGE0_EVIDENCE_DIR + path.sep)) {
-  console.error('Refusing to write into the submitted Stage 0 evidence directory (' + STAGE0_EVIDENCE_DIR + '). Pass a different --out.');
-  process.exit(2);
-}
 const IMG = path.join(STAGE, 'images'), TESTS = path.join(STAGE, 'tests'), PRINT = path.join(STAGE, 'print'), DATA = path.join(STAGE, 'data');
 for (const d of [IMG, TESTS, PRINT, DATA]) fs.mkdirSync(d, { recursive: true });
 const rootArg = process.argv.indexOf('--root');

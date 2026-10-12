@@ -11,7 +11,7 @@ const { serve } = require('./lib/static-server.js');
 
 const ROOT = path.join(__dirname, '..', '..');
 const oi = process.argv.indexOf('--out');
-const OUT = oi > -1 ? path.resolve(process.argv[oi + 1]) : path.join(ROOT, 'docs', 'journey2-implementation', 'stage-1', 'media');
+const OUT = oi > -1 ? path.resolve(process.argv[oi + 1]) : path.join(require('os').tmpdir(), 'journey2-demo');
 fs.mkdirSync(OUT, { recursive: true });
 const template = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'journey2', 'map-template.json'), 'utf8'));
 const anchors = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'journey2', 'map-anchors.json'), 'utf8'));

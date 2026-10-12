@@ -13,7 +13,7 @@ const { chromium } = require('playwright');
 
 const ROOT = path.join(__dirname, '..', '..');
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > -1 ? path.resolve(process.argv[i + 1]) : d; };
-const OUT = arg('--out', path.join(ROOT, 'docs', 'journey2-implementation', 'stage-0a', 'print'));
+const OUT = arg('--out', path.join(require('os').tmpdir(), 'journey2-print-proof'));
 const SITE = arg('--root', ROOT);
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.ico': 'image/x-icon' };
 
