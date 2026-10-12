@@ -1189,6 +1189,7 @@
       refs.warn.hidden = !holes;
       if (holes) refs.warnText.textContent = fill('journey2_warn_holes', { n: n(holes) });
       refs.root.classList.toggle('has-holes', !!holes);
+      applyStockArt(refs, b);                            // every card, collapsed or open — before the collapsed early return
       if (!active) return;
       // placement: one status row, or — when nothing is left — a single confirmation and no controls at all
       refs.status.hidden = complete;
@@ -1203,7 +1204,6 @@
       refs.done.hidden = !complete;
       refs.doneText.textContent = fillN('journey2_all_placed', { n: n(c.quantity) }, [c.quantity]);
       refs.placedText.textContent = fill('journey2_status_placed', { placed: n(c.placed), total: n(c.quantity) });
-      applyStockArt(refs, b);
       refs.leftText.textContent = fill('journey2_status_left', { n: n(c.remaining) });
       refs.bar.style.width = (c.quantity ? (100 * c.placed / c.quantity) : 0) + '%';
       refs.oneLabel.textContent = t('journey2_place_one');
