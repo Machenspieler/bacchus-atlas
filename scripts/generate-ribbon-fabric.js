@@ -8,7 +8,9 @@
    the browser or in CI.
 
      top     sewn upper hem + seam           anchored to the ribbon's top edge
-     mid     plain weave, tileable           repeat-y between the two ends
+     mid     plain weave, seamlessly tileable  repeat-y under the WHOLE ribbon (0 0), so the feathered
+                                             edges of top/bottom always blend into weave, never into the
+                                             fallback colour
      bottom  lower hem and swallow-tail      anchored to the ribbon's bottom edge
 
    Continuity. The ribbon's height changes at runtime, so the weave tile meets the
@@ -16,8 +18,9 @@
    lighting (low frequency), not grain, so the three slices share ONE fold profile:
      - profile(x) = column mean of the blurred weave: the ribbon's fold structure,
        constant down its length, so a tile or slice boundary can never cut a fold;
-     - mid    = profile + the real weave grain (mirrored once: grain has no visible
-                symmetry, folds - which did - are no longer in the tile);
+     - mid    = profile + the real weave grain. The tile is a REAL stretch of the artwork's
+                weave whose start and end were searched to match (thread and edge-stitch phase),
+                then wrapped with a short cross-fade - no mirroring, so no symmetric chevrons;
      - top / bottom keep their real pixels (stitching, hem, grain) but their low
        frequencies are eased onto the profile where they meet the weave (bottom:
        only above the hem's inner stitch line, found from the alpha channel).
@@ -36,9 +39,14 @@ const OUT = path.join(ROOT, 'img/ui/ribbon-fabric');
 
 const OUT_W = 208;                       // 2 x --rb-w (104px)
 const BOX = { left: 258, top: 148, width: 1203, height: 663 }; // opaque bounds of the artwork
-const TOP_H = 117, MID_H = 280;          // source rows: top slice, then the tileable middle
+const TOP_H = 117, MID_H = 280;          // source rows: top slice, then the weave used for the fold profile
+const LOOP_FROM = 100, LOOP_TO = 440;    // source rows the tile may be cut from (below the hem, above the tail)
+const LOOP_T = [220, 335];               // candidate tile periods, source rows
+const LOOP_WIN = 16;                     // rows compared before the cut and before the wrap point
+const LOOP_FADE = 8;                     // source rows of wrap cross-fade at the tile end
 const NOTCH_SRC = 172, NOTCH_OUT = 22;   // artwork tail depth -> 2 x 11px CSS notch
 const FEATHER = 4;                       // output px of alpha ramp where a slice meets the weave
+const GRAIN_SIGMA = 1.8;                 // output px: the tile keeps only thread-scale detail; folds taper too slowly to loop
 const SIGMA = 4;                         // output px: what counts as "fold" (low) vs "grain" (detail)
 const TOP_BLEND_FROM = 8;                // top slice row where easing onto the profile starts
 const HEM_SRC = 55;                      // source px between the silhouette edge and the hem's inner stitch line
@@ -115,7 +123,7 @@ const save = (raw, w, h, file) => sharp(raw, { raw: { width: w, height: h, chann
     .resize(OUT_W, outH, { fit: 'fill', kernel: 'lanczos3' });
 
   const topH = Math.round(TOP_H * scale);
-  const midH = Math.round(MID_H * scale);
+  const profH = Math.round(MID_H * scale);
   const botSrcH = BOX.height - TOP_H - MID_H;
   const k = NOTCH_OUT / (NOTCH_SRC * scale);
   const botH = Math.round(botSrcH * scale * k);
@@ -126,8 +134,8 @@ const save = (raw, w, h, file) => sharp(raw, { raw: { width: w, height: h, chann
   const profile = new Float32Array(OUT_W * 3);
   for (let x = 0; x < OUT_W; x++) for (let c = 0; c < 3; c++) {
     let s = 0;
-    for (let y = topH; y < topH + midH; y++) s += low[(y * OUT_W + x) * 3 + c];
-    profile[x * 3 + c] = s / midH;
+    for (let y = topH; y < topH + profH; y++) s += low[(y * OUT_W + x) * 3 + c];
+    profile[x * 3 + c] = s / profH;
   }
   const sliceLow = (y0, rows) => low.slice(y0 * OUT_W * 3, (y0 + rows) * OUT_W * 3);
 
@@ -144,21 +152,48 @@ const save = (raw, w, h, file) => sharp(raw, { raw: { width: w, height: h, chann
   fadeEdge(top, OUT_W, topH, 'bottom');
   await save(top, OUT_W, topH, 'catalog-top.webp');
 
-  // mid: profile + the real grain, mirrored once so the tile closes on itself
-  const mid = await rawOf(slice(TOP_H, MID_H, midH).flatten({ background: '#8a5c14' }));
-  const midLow = sliceLow(topH, midH);
-  const tile = Buffer.alloc(OUT_W * midH * 2 * 4, 255);
-  for (let y = 0; y < midH; y++) for (let x = 0; x < OUT_W; x++) for (let c = 0; c < 3; c++) {
-    const v = clamp8(profile[x * 3 + c] + (mid[(y * OUT_W + x) * 4 + c] - midLow[(y * OUT_W + x) * 3 + c]));
-    tile[(y * OUT_W + x) * 4 + c] = v;
-    tile[((2 * midH - 1 - y) * OUT_W + x) * 4 + c] = v;
+  // mid: profile + the real grain of a loop-closed stretch of weave (no mirroring)
+  const srcFull = await sharp(await base.clone().flatten({ background: '#8a5c14' }).png().toBuffer()).ensureAlpha().raw().toBuffer();
+  const SW = BOX.width;
+  const gray = Buffer.alloc(SW * BOX.height);
+  for (let i = 0; i < gray.length; i++) gray[i] = 0.299 * srcFull[i * 4] + 0.587 * srcFull[i * 4 + 1] + 0.114 * srcFull[i * 4 + 2];
+  const blurG = await sharp(gray, { raw: { width: SW, height: BOX.height, channels: 1 } }).blur(GRAIN_SIGMA / scale).raw().toBuffer();
+  const G = (y, x) => gray[y * SW + x] - blurG[y * SW + x];
+  // The tile ends where the weave looks like it did just before the tile's first row, so the wrap is seamless.
+  let best = { cost: Infinity };
+  for (let T = LOOP_T[0]; T <= LOOP_T[1]; T++) for (let y0 = LOOP_FROM + LOOP_WIN; y0 + T <= LOOP_TO; y0++) {
+    let c = 0;
+    for (let kk = 1; kk <= LOOP_WIN; kk++) for (let x = 0; x < SW; x += 2) c += Math.abs(G(y0 + T - kk, x) - G(y0 - kk, x));
+    c = c / (LOOP_WIN * SW / 2) * (1 - 0.12 * (T - LOOP_T[0]) / (LOOP_T[1] - LOOP_T[0])); // mild preference for a longer, less repetitive tile
+    if (c < best.cost) best = { cost: c, T, y0 };
   }
-  await save(tile, OUT_W, midH * 2, 'catalog-mid.webp');
-
+  const { T: loopT, y0: loopY0 } = best;
+  // Grain = the real artwork minus its own folds, taken from the CONTINUOUS source (high-pass before the cut), so
+  // the wrap only has to match texture; a brightness step at the wrap would otherwise turn into a dark/bright band.
+  const rgb3 = Buffer.alloc(SW * BOX.height * 3);
+  for (let i = 0; i < SW * BOX.height; i++) for (let c = 0; c < 3; c++) rgb3[i * 3 + c] = srcFull[i * 4 + c];
+  const rgbLow = await sharp(rgb3, { raw: { width: SW, height: BOX.height, channels: 3 } }).blur(GRAIN_SIGMA / scale).raw().toBuffer();
+  const grain = (y, x, c) => rgb3[(y * SW + x) * 3 + c] - rgbLow[(y * SW + x) * 3 + c];
+  const seg = Buffer.alloc(SW * loopT * 3);
+  for (let y = 0; y < loopT; y++) for (let x = 0; x < SW; x++) for (let c = 0; c < 3; c++) {
+    let v = grain(loopY0 + y, x, c);
+    const d = y - (loopT - LOOP_FADE);                     // wrap: the last rows ease to the rows that precede the cut
+    if (d >= 0) { const f = smooth((d + 1) / (LOOP_FADE + 1)); v = v * (1 - f) + grain(loopY0 - LOOP_FADE + d, x, c) * f; }
+    seg[(y * SW + x) * 3 + c] = clamp8(v + 128);
+  }
+  const midH = Math.round(loopT * scale);                  // tile height, output px
+  const tri = Buffer.concat([seg, seg, seg]);              // three copies: the resize never sees an edge inside the middle one
+  const triRaw = await sharp(tri, { raw: { width: SW, height: loopT * 3, channels: 3 } })
+    .resize(OUT_W, midH * 3, { fit: 'fill', kernel: 'lanczos3' }).ensureAlpha().raw().toBuffer();
+  const tile = Buffer.alloc(OUT_W * midH * 4, 255);
+  for (let y = 0; y < midH; y++) for (let x = 0; x < OUT_W; x++) for (let c = 0; c < 3; c++) {
+    tile[(y * OUT_W + x) * 4 + c] = clamp8(profile[x * 3 + c] + triRaw[((y + midH) * OUT_W + x) * 4 + c] - 128);
+  }
+  await save(tile, OUT_W, midH, 'catalog-mid.webp');
   // bottom: real pixels; folds eased onto the profile only above the hem's inner stitch line
   const bot = await rawOf(slice(TOP_H + MID_H, botSrcH, botH));
-  const botLowRows = baseH - topH - midH;
-  const botLow = resampleRows(sliceLow(topH + midH, botLowRows), OUT_W, botLowRows, botH);
+  const botLowRows = baseH - topH - profH;
+  const botLow = resampleRows(sliceLow(topH + profH, botLowRows), OUT_W, botLowRows, botH);
   for (let x = 0; x < OUT_W; x++) {
     let edge = botH;                                        // first opaque row from the bottom = silhouette edge
     while (edge > 0 && bot[((edge - 1) * OUT_W + x) * 4 + 3] < 128) edge--;
@@ -173,5 +208,5 @@ const save = (raw, w, h, file) => sharp(raw, { raw: { width: w, height: h, chann
   }
   fadeEdge(bot, OUT_W, botH, 'top');
   await save(bot, OUT_W, botH, 'catalog-bottom.webp');
-  console.log({ topH, midTile: midH * 2, botH, verticalSquashOfTail: +k.toFixed(3) });
+  console.log({ topH, midTile: midH, loopSrcRows: [loopY0, loopY0 + loopT], loopCost: +best.cost.toFixed(2), botH, verticalSquashOfTail: +k.toFixed(3) });
 })();
