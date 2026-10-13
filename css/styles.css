@@ -2047,6 +2047,12 @@ ol.feature-bullets { list-style: decimal; }
   /* Short tails on a phone; the filter row starts below the longest one. */
   .catalog-bar .toolbar { margin-top: var(--s-4); }
   .ribbon-label > span { display: none; }
+  /* The fabric body is a 104px-wide cut of one cloth: squeezed into a 40px ribbon it shrank to 38px tall and the rest of the
+     ribbon showed the flat fallback colour. Keep the cloth at its true scale and crop its centre; the hem stays full width. */
+  :root[data-ribbon-skin="fabric"] .ribbon[data-ribbon] .ribbon-fab {
+    background-size: 100% auto, 104px auto, auto;
+    background-position: 0 100%, 50% 0, 0 0;
+  }
   .ribbon-label svg { width: var(--icon-md); height: var(--icon-md); }
   .lang-switch button { padding: 0 var(--s-2); }
 
