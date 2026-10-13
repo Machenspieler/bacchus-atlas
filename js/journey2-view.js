@@ -249,7 +249,8 @@
     let playerProjection = null;                            // the projection currently drawn in Player Preview
     let echoDrawn = null;                                   // the soulEchoes object the GM echoes layer currently shows (an unrelated change never rebuilds it)
     let sanctuaryOpen = null;                               // anchor id of the sanctuary whose overlay is open (transient: never persisted, never in history)
-    let sanctuaryShown = null;                              // anchor id the overlay DOM currently shows (so its scroll position survives re-renders)
+    let sanctuaryRenaming = false;                          // the open overlay's name is being edited (transient: ends on save, cancel, close or another sanctuary)
+    let sanctuaryShown = null;                             // anchor id the overlay DOM currently shows (so its scroll position survives re-renders)
     let sancDrawn = { sanctuaries: null, open: null, names: null };   // what the sanctuary ring layer currently shows
     let sancLabelsDrawn = null;                             // the sanctuaryLabels currently drawn (GM map and Player Preview share them)
     let sancAnchors = null;                                 // Map anchor id -> the printed sanctuary anchor (built once)
@@ -462,6 +463,7 @@
       dice: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="3" y="3" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><g fill="currentColor"><circle cx="7.2" cy="7.2" r="1.2"/><circle cx="12.8" cy="12.8" r="1.2"/><circle cx="10" cy="10" r="1.2"/></g></svg>',
       more: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><g fill="currentColor"><circle cx="4.5" cy="10" r="1.5"/><circle cx="10" cy="10" r="1.5"/><circle cx="15.5" cy="10" r="1.5"/></g></svg>',
       caret: '<svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      pencil: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m12.8 3.7 3.5 3.5L7 16.5l-4.2.7.7-4.2zM11.2 5.3l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>',
       check: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m3 7.5 2.7 2.7L11 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       trash: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4.5 6h11M8 6V4h4v2M6 6l.6 9.5h6.8L14 6M8.5 9v4M11.5 9v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       warn: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M7 1.8 12.8 12H1.2zM7 5.6v3M7 10.3v.1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -604,7 +606,15 @@
                 <span class="j2-insp-caret" aria-hidden="true"></span>
                 <header class="j2-insp-head">
                   <div class="j2-sanc-headmain">
-                    <div class="j2-insp-titles"><h3 class="j2-insp-title" id="j2-sanctuary-title" data-j2-s="name"></h3></div>
+                    <div class="j2-insp-titles j2-sanc-titles">
+                      <h3 class="j2-insp-title" id="j2-sanctuary-title" data-j2-s="name"></h3>
+                      <input type="text" class="j2-sanc-name-input" data-j2-sanc-name-input maxlength="${Model.MAX_SANCTUARY_NAME}" autocomplete="off" spellcheck="false" data-t-aria="journey2_sanc_rename" hidden>
+                      <span class="j2-sanc-rename">
+                        <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-rename data-t-aria="journey2_sanc_rename" data-t-title="journey2_sanc_rename">${ICON.pencil}</button>
+                        <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-rename-save data-t-aria="journey2_sanc_rename_save" data-t-title="journey2_sanc_rename_save" hidden>${ICON.check}</button>
+                        <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-rename-cancel data-t-aria="journey2_sanc_rename_cancel" data-t-title="journey2_sanc_rename_cancel" hidden>${ICON.close}</button>
+                      </span>
+                    </div>
                     <button type="button" class="btn btn-sm j2-sanc-act" data-j2-sanc-name><span class="j2-ico" aria-hidden="true" data-j2-s="nameIco"></span><span data-j2-s="nameLabel"></span></button>
                   </div>
                   <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-close data-t-aria="journey2_sanc_close" data-t-title="journey2_sanc_close">${ICON.close}</button>
@@ -807,6 +817,10 @@
       ui.sancReroll = ui.sanctuary.querySelector('[data-j2-sanc-reroll]');
       ui.sancDelete = ui.sanctuary.querySelector('[data-j2-sanc-delete]');
       ui.sancName = ui.sanctuary.querySelector('[data-j2-sanc-name]');
+      ui.sancNameInput = ui.sanctuary.querySelector('[data-j2-sanc-name-input]');
+      ui.sancRename = ui.sanctuary.querySelector('[data-j2-sanc-rename]');
+      ui.sancRenameSave = ui.sanctuary.querySelector('[data-j2-sanc-rename-save]');
+      ui.sancRenameCancel = ui.sanctuary.querySelector('[data-j2-sanc-rename-cancel]');
       ui.echoCollect = ui.sanctuary.querySelector('[data-j2-echo-collect]');
       ui.knownSanc = container.querySelector('[data-j2-known-sanc]');
       ui.zoomReadout = container.querySelector('[data-j2-zoom-readout]');
@@ -3103,6 +3117,7 @@
     function clearSanctuaryPanel() {
       if (!ui.sanctuary) return;
       ui.sanctuary.hidden = true; sanctuaryShown = null; applyArt(ui.sanctuary, '');
+      sanctuaryRenaming = false; ui.sancNameInput.value = '';
       ui.s.name.textContent = ''; ui.s.rows.innerHTML = ''; ui.s.rows.removeAttribute('data-sig');
     }
 
@@ -3113,7 +3128,13 @@
       if (!e && !echo) { clearSanctuaryPanel(); return; }
       ui.sanctuary.hidden = false;
       applyArt(ui.sanctuary, SANCTUARY_ART.file, SANCTUARY_ART.pos);
-      ui.s.name.textContent = e ? sanctuaryTitle(e) : t('journey2_sanc_fallback');
+      if (sanctuaryShown !== sanctuaryOpen) sanctuaryRenaming = false;   // another sanctuary: an unfinished edit is dropped
+      if (!e) sanctuaryRenaming = false;
+      ui.s.name.textContent = e ? e.name : t('journey2_sanc_fallback');   // an empty name shows nothing (the pencil still offers the edit)
+      ui.s.name.hidden = sanctuaryRenaming;
+      ui.sancNameInput.hidden = !sanctuaryRenaming;                      // the input keeps what is typed across re-renders
+      ui.sancRename.hidden = !e || sanctuaryRenaming; ui.sancRenameSave.hidden = ui.sancRenameCancel.hidden = !sanctuaryRenaming;
+      ui.sancRename.disabled = editLocked;
       // an Echo-only sanctuary (its characteristics were deleted) shows just the Soul Echo row: no name toggle, no tables, no Reroll / Delete
       ui.sancName.hidden = !e; ui.s.rows.hidden = !e; ui.s.foot.hidden = !e;
       if (e) {
@@ -3291,6 +3312,36 @@
       const r = dispatch({ type: 'setSanctuary', entry: next }, 'sanctuaryReroll');
       if (!r.ok) { hint(t('journey2_sanc_failed')); return; }
       announce(fill('journey2_live_sanc_rerolled', { name: sanctuaryTitle(next) }));
+    }
+
+    /** Pencil: the name becomes a text field holding the old name, fully selected. */
+    function startSanctuaryRename() {
+      if (inst.disposed || editLocked || previewMode || !doc || !sanctuaryOpen) return;
+      const e = sanctuaryEntry(sanctuaryOpen);
+      if (!e) return;
+      sanctuaryRenaming = true;
+      ui.sancNameInput.value = e.name;
+      renderSanctuaryPanel();
+      ui.sancNameInput.focus({ preventScroll: true }); ui.sancNameInput.select();
+    }
+
+    /** Tick (or Enter): saves the field as the name — empty is valid — as one Undo entry, then back to the pencil. Cancel (X or Esc): back to the old name. */
+    function endSanctuaryRename(save) {
+      if (!sanctuaryRenaming) return;
+      const e = sanctuaryEntry(sanctuaryOpen), text = ui.sancNameInput.value.trim();
+      sanctuaryRenaming = false;
+      if (save && e && !editLocked && !inst.disposed && text !== e.name) {
+        const r = dispatch({ type: 'setSanctuary', entry: Object.assign({}, e, { name: text }) }, 'sanctuaryRename');
+        if (!r.ok) hint(t('journey2_sanc_failed'));
+      }
+      renderSanctuaryPanel();
+      if (ui.sancRename && !ui.sancRename.hidden) ui.sancRename.focus({ preventScroll: true });
+    }
+
+    function onSanctuaryNameKey(ev) {
+      ev.stopPropagation();                                            // typing never reaches the map's shortcuts; Esc ends the edit, not the overlay
+      if (ev.key === 'Enter') { ev.preventDefault(); endSanctuaryRename(true); }
+      else if (ev.key === 'Escape') { ev.preventDefault(); endSanctuaryRename(false); }
     }
 
     function confirmDeleteSanctuary() {
@@ -3987,6 +4038,7 @@
       }
       listen(ui.sidewrap, 'transitionend', () => { positionInspector(); });
       listen(ui.root, 'click', onRootClick);
+      listen(ui.sancNameInput, 'keydown', onSanctuaryNameKey);
       listen(ui.gen, 'submit', onGenerate);
       listen(ui.panel.querySelector('[data-j2-goto]'), 'submit', onGoto);
       listen(ui.p.proofSymbol, 'change', () => { proofSymbolId = ui.p.proofSymbol.value; });
@@ -4652,6 +4704,9 @@
       else if (b.hasAttribute('data-j2-sanc-generate')) generateSanctuaries();
       else if (b.hasAttribute('data-j2-sanc-close')) closeSanctuary({ focus: true });
       else if (b.hasAttribute('data-j2-sanc-name')) toggleSanctuaryName();
+      else if (b.hasAttribute('data-j2-sanc-rename-save')) endSanctuaryRename(true);
+      else if (b.hasAttribute('data-j2-sanc-rename-cancel')) endSanctuaryRename(false);
+      else if (b.hasAttribute('data-j2-sanc-rename')) startSanctuaryRename();
       else if (b.hasAttribute('data-j2-sanc-reroll')) rerollSanctuary();
       else if (b.hasAttribute('data-j2-sanc-delete')) confirmDeleteSanctuary();
       else if (b.hasAttribute('data-j2-preview-back')) leavePreview();

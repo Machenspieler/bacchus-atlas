@@ -1281,3 +1281,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Decision (build):** the masters are excluded from `dist/` (`scripts/build.js`); the site serves only the `.webp` layers.
 - **Not done / known gaps:** a measured label-contrast check on purple; the skin has been checked in the browser at 1440 and 1280 wide, not on touch or phone widths (out of scope for the experiment).
 - **Where:** `js/app.js` (the flag, next to `ribbonHtml()`), "Fabric ribbon skin" block in `css/styles.css`, `scripts/generate-ribbon-fabric.js`, `img/ui/ribbon-fabric/`, `tests/ribbon-fabric-skin.test.js`.
+
+## PD-055: Journey — the GM can rename a generated sanctuary from its overlay
+
+A pencil beside the sanctuary name in the overlay ("Change sanctuary name") turns the name into a text field holding the old name, fully selected; the pencil is replaced by a tick (save) and an X (discard), and either returns the view to the pencil (Enter / Esc do the same, and Esc never closes the overlay while editing). Saving is one Undo entry through the existing `setSanctuary` command (name up to `MAX_SANCTUARY_NAME`). An **empty name is valid**: the overlay title and the revealed map label show nothing (the projection already skips blank names). The edit state is transient — it ends on save, cancel, close or opening another sanctuary. Reroll still replaces the name; reveal/hide state is untouched.
