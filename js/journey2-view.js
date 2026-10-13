@@ -3133,7 +3133,7 @@
       ui.s.name.textContent = e ? e.name : t('journey2_sanc_fallback');   // an empty name shows nothing (the pencil still offers the edit)
       ui.s.name.hidden = sanctuaryRenaming;
       ui.sancField.hidden = !sanctuaryRenaming;                          // the input keeps what is typed across re-renders
-      ui.sancRename.hidden = !e || sanctuaryRenaming;
+      ui.sancRename.hidden = ui.sancRename.parentNode.hidden = !e || sanctuaryRenaming;   // the wrapper goes too, or it keeps an empty box
       ui.sancClose.disabled = sanctuaryRenaming;                        // no second X next to the discard X while editing
       ui.sancRename.disabled = editLocked;
       // an Echo-only sanctuary (its characteristics were deleted) shows just the Soul Echo row: no name toggle, no tables, no Reroll / Delete
