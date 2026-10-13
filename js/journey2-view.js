@@ -680,6 +680,10 @@
             </div>
             <div class="j2-sidewrap" data-j2-sidewrap>
               <aside class="j2-side" id="j2-side" data-t-aria="journey2_side_label">
+                <header class="j2-about">
+                  <h2 class="j2-about-title" data-t="journey2_about_title"></h2>
+                  <p class="j2-about-sub" data-t="journey2_about_sub"></p>
+                </header>
                 <div class="j2-controls" role="toolbar" data-t-aria="journey2_toolbar_label">
                   <div class="j2-ctl-row j2-ctl-nav">
                     <div class="j2-tb-group" role="group" data-j2-history-group data-t-aria="journey2_history_label">

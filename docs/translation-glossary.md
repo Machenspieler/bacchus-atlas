@@ -160,3 +160,7 @@ new source book. Check `data/adversaries.json` and existing environments'
 `potential_adversaries` text for a name before translating one fresh, and
 verify against daggerheart.su's `/adversary` pages when the creature is
 core-book (not homebrew).
+
+Campaign frame: *Journey to Horizon* = «Путешествие к Горизонту» (per
+daggerheart.ru/frame/journey-to-horizon). Used as the Journey page's visible
+title (PD-056); the nav tab stays «Путешествие».

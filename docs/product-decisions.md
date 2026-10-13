@@ -1285,3 +1285,11 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 ## PD-055: Journey — the GM can rename a generated sanctuary from its overlay
 
 A pencil beside the sanctuary name in the overlay ("Change sanctuary name") turns the name into a text field holding the old name, fully selected; the pencil is replaced by a tick (save) and an X (discard), and either returns the view to the pencil (Enter / Esc do the same, and Esc never closes the overlay while editing). Saving is one Undo entry through the existing `setSanctuary` command (name up to `MAX_SANCTUARY_NAME`). An **empty name is valid**: the overlay title and the revealed map label show nothing (the projection already skips blank names). The edit state is transient — it ends on save, cancel, close or opening another sanctuary. Reroll still replaces the name; reveal/hide state is untouched.
+
+## PD-056: Journey — the page names its campaign ("Journey to Horizon" / «Путешествие к Горизонту»)
+
+A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an unlabelled hex map: the campaign was never named in visible text. The top of the side panel now carries a permanent two-line header (`.j2-about`): the campaign title (`journey2_about_title`) and a one-line purpose (`journey2_about_sub`, "Interactive campaign map"). On the player page the second line is the player-friendly `journey2_about_sub_pl` ("What your party knows of the map so far"), via the existing `_pl` mechanism (PD-052). The document title (`journey_title`) became "Journey to Horizon · campaign map". The nav tab stays the short "Journey" / «Путешествие».
+
+- **Russian name:** «Путешествие к Горизонту», as on daggerheart.ru/frame/journey-to-horizon (see [docs/translation-glossary.md](translation-glossary.md)).
+- **Not a brand:** the campaign name is a descriptive label of the map's subject, never part of the project's brand (see CLAUDE.md "Branding"); "Daggerheart" is not added to it.
+- **Where:** `js/journey2-view.js` (`buildSurface`), `css/journey2.css` (`.j2-about*`), `data/i18n.json`; the title string is pinned in `tests/journey-route-cutover.test.js`. No author or publisher attribution was added (the source page names designers but no publisher; an attribution line is a separate decision).

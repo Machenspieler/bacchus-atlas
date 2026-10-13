@@ -54,6 +54,9 @@ body[data-route="playermap"] #grid-wrap { display: block; }
   flex: none; display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-2) var(--s-3);
   border-bottom: 1px solid var(--line-faint);
 }
+.j2-about { flex: none; padding: var(--s-2) var(--s-3) 0; min-width: 0; }
+.j2-about-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md); line-height: var(--lh-md); color: var(--parchment); }
+.j2-about-sub { margin: 0; font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--parchment-dim); }
 .j2-ctl-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1); min-width: 0; }
 .j2-ctl-nav { gap: var(--s-2); }
 .j2-ctl-nav .j2-tb-group + .j2-tb-group { padding-left: var(--s-2); border-left: 1px solid var(--line-faint); }

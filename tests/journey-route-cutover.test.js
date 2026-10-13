@@ -63,8 +63,8 @@ test('public strings say Journey, never Journey 2', () => {
     }
     assert.ok(i18n[lang].journey_title && !('journey2_title' in i18n[lang]));
   }
-  assert.equal(i18n.en.journey_title, 'Journey · map editor');
-  assert.equal(i18n.ru.journey_title, 'Путешествие · редактор карты');
+  assert.equal(i18n.en.journey_title, 'Journey to Horizon · campaign map');
+  assert.equal(i18n.ru.journey_title, 'Путешествие к Горизонту · карта кампании');
   assert.match(app, /state\.route\.name === 'journey'\) return `\$\{t\('journey_title'\)\} — \$\{t\('app_title'\)\}`/);
   assert.doesNotMatch(read('js/journey2-view.js'), /aria-label="Journey 2"/);
 });
