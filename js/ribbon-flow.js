@@ -9,7 +9,6 @@
 (function () {
   'use strict';
 
-  const GAP = 1; /* screen px kept between the ribbon and a neighbouring item */
   let scheduled = false;
   /* A font arriving or a status text changing resizes an item without any window
    * event; margins never change an item's own size, so this can't loop. */
@@ -42,7 +41,9 @@
     const header = document.querySelector('.site-header').getBoundingClientRect();
     const rest = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--rb-t2')) || 28;
     const bottom = header.bottom + rest; /* the ribbon's resting length */
-    const left = r.left - GAP, right = r.right + GAP;
+    /* The ribbon is spaced from its neighbours like any two filters: the bar's column gap. */
+    const gap = (parseFloat(getComputedStyle(bar).columnGap) || 0) * zoom;
+    const left = r.left - gap, right = r.right + gap;
 
     for (const el of items(bar)) {
       if (!el.offsetParent) continue;
