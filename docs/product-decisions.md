@@ -106,7 +106,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   - The static `og:type`/`og:site_name`/`og:title`/`og:description` tags in
     `index.html` exist only so a link pasted into a messenger (Telegram) shows
     "Атлас Бахуса" instead of the bare host. They carry no catalog content and
-    no `og:image`/`og:url`; they are a link-preview card, not discovery output.
+    a single static `og:image` (`img/og-card.jpg`, 1200×630, forest artwork + title; the same card for every route, since the hash never reaches a crawler) and no `og:url`; they are a link-preview card, not discovery output.
 - **Explicitly excluded:** `llms.txt`, `sitemap.xml`, a project-level
   `robots.txt`, JSON-LD environment listings, or any other crawler-discovery
   file or server-side prerendering — none of these belong in this repo
