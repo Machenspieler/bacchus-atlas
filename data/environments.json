@@ -33290,6 +33290,138 @@
         "universal"
       ],
       "source": "Atlas of Adventure"
+    },
+    {
+      "id": "valley-of-automata",
+      "tier": 1,
+      "type": "exploration",
+      "difficulty": 11,
+      "name": {
+        "en": "Valley of Automata",
+        "ru": "Долина Автоматов"
+      },
+      "lore": {
+        "en": "Colossal metal bodies and their inner gearwork strewn left and right, metal mountains pressed together.",
+        "ru": "Колоссальные металлические тела и их внутренние шестерни разбросаны повсюду, а металлические горы стиснуты вплотную друг к другу."
+      },
+      "impulses": {
+        "en": [
+          "Honor the dead machine",
+          "let the rust spread"
+        ],
+        "ru": [
+          "Чтить мёртвую машину",
+          "позволять ржавчине распространяться"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Construct",
+          "Acid Burrower",
+          "Cave Ogre"
+        ],
+        "ru": [
+          "Конструкт",
+          "Кислотный Землекоп",
+          "Пещерный Огр"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Unsure Ground",
+            "ru": "Ненадёжная земля"
+          },
+          "description": {
+            "en": "All Agility Rolls are at Disadvantage in the Valley of Automata, as the curved ground is totally strewn with metal scrap.",
+            "ru": "Все Броски Проворности в Долине Автоматов совершаются с Помехой, так как изогнутая земля сплошь усыпана металлоломом."
+          },
+          "prompt": {
+            "en": "What can be found here that’s of use?",
+            "ru": "Что здесь можно найти полезного?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Lost Lore",
+            "ru": "Утраченное знание"
+          },
+          "description": {
+            "en": "A PC can seek lost secrets of the automatons’ creation here with a Knowledge Roll. On a success, they can pick two of the below to learn—three on a critical. On a failure, they can pick one and mark a Stress as the innards crackle.\n- A revelation relating to the PC’s background and ancient tech.\n- Strong clue about the machines’ locomotion mechanism.\n- A lead on the metal alloys used to create the automata.\n- Curious glyphs related to constructs.",
+            "ru": "Персонаж может искать здесь утраченные тайны создания автоматов, совершив Бросок Знания. При успехе он может выбрать два пункта из списка ниже, чтобы узнать их, — три при критическом успехе. При неудаче он может выбрать один пункт и отметить Стресс, пока внутренности механизмов потрескивают.\n- Откровение, связанное с прошлым персонажа и древними технологиями.\n- Веский намёк на механизм передвижения машин.\n- Зацепка о металлических сплавах, из которых созданы автоматы.\n- Любопытные символы, связанные с конструктами."
+          },
+          "prompt": {
+            "en": "Can the party eventually gain the knowledge to create these colossi once more, or has the world changed too much? Who would pay for such information, or kill to keep it secret forever?",
+            "ru": "Сможет ли отряд со временем обрести знания, чтобы вновь создавать этих колоссов, или мир изменился слишком сильно? Кто заплатил бы за такие сведения или убил бы, чтобы навсегда сохранить их в тайне?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Treacherous Gears",
+            "ru": "Коварные шестерни"
+          },
+          "description": {
+            "en": "Spend a Fear to have previously sound ground shift and give way: the PCs make Agility Reaction Rolls or get shifted out to Close of their current position and mark a Stress.",
+            "ru": "Потратьте Страх, чтобы ранее надёжная земля сдвинулась и просела: персонажи совершают Броски Реакции на Проворность, иначе их сдвигает на Среднюю дистанцию от текущего положения, и они отмечают Стресс."
+          },
+          "prompt": {
+            "en": "What’s stirring below the gear pile?",
+            "ru": "Что шевелится под грудой шестерён?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Defense Protocols",
+            "ru": "Защитные протоколы"
+          },
+          "description": {
+            "en": "Spend a Fear when the party disturbs an inert Construct—it powers on and attacks anything that moves.",
+            "ru": "Потратьте Страх, когда отряд тревожит инертного Конструкта, — он включается и атакует всё, что движется."
+          },
+          "prompt": {
+            "en": "Can the PCs stay very, very still?",
+            "ru": "Смогут ли персонажи оставаться совершенно неподвижными?"
+          }
+        }
+      ],
+      "story_seeds": [
+        {
+          "title": {
+            "en": "Stranger’s Map",
+            "ru": "Карта незнакомца"
+          },
+          "body": {
+            "en": "A stranger at the tavern offered the PCs a treasure map promising “the secrets of the soul” in exchange for a drink. It led them here, a treasure trove of once-animate automatons.",
+            "ru": "Незнакомец в таверне предложил персонажам карту сокровищ, обещающую «тайны души», в обмен на выпивку. Она привела их сюда — в сокровищницу некогда одушевлённых автоматов."
+          },
+          "prompt": {
+            "en": "Do the PCs believe the secrets lie here? Or was the old man just after a drink? How’d he know this was here?",
+            "ru": "Верят ли персонажи, что тайны скрыты здесь? Или старику просто хотелось выпить? Откуда он знал, что это место здесь?"
+          }
+        },
+        {
+          "title": {
+            "en": "Society Inquiry",
+            "ru": "Запрос общества"
+          },
+          "body": {
+            "en": "The PCs have a connection to a scientific society looking into Constructs; they’re contracted to find and return with the “most whole specimen” plausible from the Valley of Automata.",
+            "ru": "У персонажей есть связь с научным обществом, изучающим Конструктов; их нанимают найти и доставить «наиболее целый образец» из возможных в Долине Автоматов."
+          },
+          "prompt": {
+            "en": "How much are they being paid? Does the contact brief them on the risks?",
+            "ru": "Сколько им платят? Предупреждает ли контакт о рисках?"
+          }
+        }
+      ],
+      "biomes": [
+        "badlands"
+      ],
+      "source": "Wondrous Environments"
     }
   ]
 }
