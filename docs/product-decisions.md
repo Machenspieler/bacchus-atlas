@@ -103,6 +103,10 @@ what it explicitly rules out, and — when identifiable — what it replaced.
     prerenderer that bakes catalog content into `dist/index.html`.
   - `scripts/check-unlisted-build.js` runs in CI on every build and fails it
     if any of the above regresses.
+  - The static `og:type`/`og:site_name`/`og:title`/`og:description` tags in
+    `index.html` exist only so a link pasted into a messenger (Telegram) shows
+    "Атлас Бахуса" instead of the bare host. They carry no catalog content and
+    no `og:image`/`og:url`; they are a link-preview card, not discovery output.
 - **Explicitly excluded:** `llms.txt`, `sitemap.xml`, a project-level
   `robots.txt`, JSON-LD environment listings, or any other crawler-discovery
   file or server-side prerendering — none of these belong in this repo
