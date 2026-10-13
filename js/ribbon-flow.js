@@ -16,12 +16,12 @@
 
   function items(bar) {
     return Array.from(bar.querySelectorAll(
-      '.search-field, .toolbar-filters > .field, .result-count'
+      '.search-field, .filter-toggle, .toolbar-filters > .field, .result-count'
     ));
   }
 
   function clear(bar) {
-    items(bar).forEach(el => { el.style.marginLeft = ''; });
+    items(bar).forEach(el => { el.style.marginLeft = ''; el.style.maxWidth = ''; });
   }
 
   function apply() {
@@ -31,7 +31,7 @@
     clear(bar);
     if (sizeWatch) items(bar).forEach(el => sizeWatch.observe(el));
     const route = document.body.dataset.route;
-    if ((route !== 'catalog' && route !== 'list') || window.innerWidth < 901) return;
+    if ((route !== 'catalog' && route !== 'list') || window.innerWidth < 641) return; /* a phone's ribbons are short */
     const ribbon = document.querySelector('.header-nav .ribbon.on');
     if (!ribbon) return;
 
@@ -49,6 +49,12 @@
       if (!el.offsetParent) continue;
       let b = el.getBoundingClientRect();
       if (b.top >= bottom || b.right <= left || b.left >= right) continue;
+      /* The narrow-layout search field grows to fill the row: stop it at the ribbon
+       * rather than pushing it past (unless that would leave it too small). */
+      if (window.innerWidth < 901 && el.classList.contains('search-field') && b.left + 140 * zoom <= left) {
+        el.style.maxWidth = 'min(420px, ' + ((left - b.left) / zoom) + 'px)';
+        continue;
+      }
       el.style.marginLeft = ((right - b.left) / zoom) + 'px';
       b = el.getBoundingClientRect();
       if (b.top >= bottom) el.style.marginLeft = ''; /* wrapped below the ribbon */

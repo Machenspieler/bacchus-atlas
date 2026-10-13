@@ -898,6 +898,20 @@ body[data-route="list"] .catalog-bar-wrap::before {
   .catalog-bar .result-count { margin: var(--s-2) 0; flex-wrap: nowrap; white-space: nowrap; }
 }
 
+/* Tablet widths (a phone's short ribbons clear the row on their own): the same
+ * flat arrangement, so js/ribbon-flow.js can step the search field, the Filters
+ * toggle and the status around the ribbon. The revealed filter groups stay one
+ * full-width row of their own. */
+@media (min-width: 641px) and (max-width: 900px) {
+  body[data-route="catalog"] .catalog-bar,
+  body[data-route="list"] .catalog-bar { column-gap: var(--s-3); }
+  body[data-route="catalog"] .catalog-bar .toolbar,
+  body[data-route="list"] .catalog-bar .toolbar { display: contents; }
+  .catalog-bar .search-field, .catalog-bar .filter-toggle { margin-block: var(--s-2); }
+  .catalog-bar .toolbar-filters { margin-block: var(--s-2); }
+  .catalog-bar .result-count { margin: var(--s-2) 0; }
+}
+
 /* Below the main catalog grid only — never rendered on Lists, Journey, or
  * Prep. Empty whenever the whole result set already fits, so
  * :empty collapses it to nothing rather than leaving a stray gap. */
