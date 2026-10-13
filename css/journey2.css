@@ -1074,6 +1074,11 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-card[data-art][data-art="aquatic"] { --j2-wash-mid: 0.76; }   /* same specificity as the profile rule above, later wins */
 .j2-card[data-art="fully-shadowblighted"] { --j2-card-art: image-set(url("../img/biomes/fully-shadowblighted-300.avif") type("image/avif"), url("../img/biomes/fully-shadowblighted-200.webp") type("image/webp")); }
 .j2-card[data-art="fully-shadowblighted"]::before { background-position: 0 0, center 55%; }   /* the galaxy sits a little below the middle */
+/* the shared mask lets the art go to ~1% by the right edge, which is where this painting's galaxy sits; here the right side keeps ~25% so the rupture reads (the ink wash on the text column is unchanged) */
+.j2-card[data-art="fully-shadowblighted"] { --j2-card-art-fade: linear-gradient(90deg, #000 0, rgb(0 0 0 / 0.94) 14%, rgb(0 0 0 / 0.74) 28%, rgb(0 0 0 / 0.54) 44%, rgb(0 0 0 / 0.4) 62%, rgb(0 0 0 / 0.3) 72%, rgb(0 0 0 / 0.26) 84%, rgb(0 0 0 / 0.24) 100%); }
+/* the open card shows only its head row, which on the uncropped painting is dark upper sky: zoom in a little so the galaxy lands in that strip */
+.j2-card.is-active[data-art="fully-shadowblighted"]::before { background-size: 100% 100%, 150% auto; background-position: 0 0, 72% 56%; }
+.j2-card.is-active[data-art="fully-shadowblighted"] { --j2-card-art-fade: linear-gradient(90deg, #000 0, rgb(0 0 0 / 0.94) 14%, rgb(0 0 0 / 0.74) 28%, rgb(0 0 0 / 0.54) 44%, rgb(0 0 0 / 0.4) 62%, rgb(0 0 0 / 0.3) 72%, rgb(0 0 0 / 0.26) 84%, rgb(0 0 0 / 0.24) 100%), linear-gradient(180deg, #000 0, #000 30px, transparent 62px); }
 .j2-card[data-art="forest"] { --j2-card-art: image-set(url("../img/biomes/forest-300.avif") type("image/avif"), url("../img/biomes/forest-200.webp") type("image/webp")); }
 .j2-card[data-art="drylands"] { --j2-card-art: image-set(url("../img/biomes/drylands-300.avif") type("image/avif"), url("../img/biomes/drylands-200.webp") type("image/webp")); }
 .j2-card[data-art="frozen"] { --j2-card-art: image-set(url("../img/biomes/frozen-300.avif") type("image/avif"), url("../img/biomes/frozen-200.webp") type("image/webp")); }
