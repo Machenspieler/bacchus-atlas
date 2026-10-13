@@ -81,7 +81,8 @@
    * 1000 is about a fifth of the map, leaves room for several such batches, and comfortably allows 20.
    * An entered value above the limit is REJECTED with an error; it is never clamped. */
   const MAX_BATCH_QUANTITY = 1000;
-  const MAX_BATCHES = 300;
+  const MAX_BATCHES = 150;           // regions a GM can create (createBatch refuses the 151st)
+  const MAX_LOADED_BATCHES = 300;    // load/import ceiling: a save made under the old 300 limit must never become "corrupt"
   const MAX_NOTES_LENGTH = 4000;
   const MAX_IMPORT_BYTES = 8 * 1024 * 1024;
   const HISTORY_LIMIT = 100;
@@ -307,7 +308,7 @@
     checkKeys(doc, DOC_KEYS, 'document', errors);
     if (!isIso(doc.createdAt) || !isIso(doc.updatedAt)) errors.push('document: invalid createdAt/updatedAt');
     if (!Array.isArray(doc.batches) || !Array.isArray(doc.tiles)) return { ok: false, code: 'invalid', errors: errors.concat('document: batches and tiles must be arrays') };
-    if (doc.batches.length > MAX_BATCHES) errors.push('document: more than ' + MAX_BATCHES + ' batches');
+    if (doc.batches.length > MAX_LOADED_BATCHES) errors.push('document: more than ' + MAX_LOADED_BATCHES + ' batches');
     const batches = [], batchIds = new Set();
     doc.batches.forEach((b, i) => {
       const r = validateBatch(b, 'batches[' + i + ']');
@@ -1411,7 +1412,7 @@
     isEnvironmentId: isEnvironmentId, MAX_ENVIRONMENT_ID_LENGTH: MAX_ENVIRONMENT_ID_LENGTH,
     NO_INSPECTION: NO_INSPECTION, inspectTile: inspectTile, inspectBatch: inspectBatch, syncInspection: syncInspection, inspectedTileIds: inspectedTileIds,
     SCHEMA_VERSION: SCHEMA_VERSION, KIND: KIND, HABITAT_IDS: HABITAT_IDS, OVERTAKEN_SYMBOL: OVERTAKEN_SYMBOL,
-    MAX_BATCH_QUANTITY: MAX_BATCH_QUANTITY, MAX_BATCHES: MAX_BATCHES, MAX_NOTES_LENGTH: MAX_NOTES_LENGTH, MAX_IMPORT_BYTES: MAX_IMPORT_BYTES, HISTORY_LIMIT: HISTORY_LIMIT,
+    MAX_BATCH_QUANTITY: MAX_BATCH_QUANTITY, MAX_BATCHES: MAX_BATCHES, MAX_LOADED_BATCHES: MAX_LOADED_BATCHES, MAX_NOTES_LENGTH: MAX_NOTES_LENGTH, MAX_IMPORT_BYTES: MAX_IMPORT_BYTES, HISTORY_LIMIT: HISTORY_LIMIT,
     createContext: createContext, newId: newId, emptyDocument: emptyDocument, isEmptyDocument: isEmptyDocument, symbolIdOf: symbolIdOf,
     derive: derive, batchById: batchById, parseQuantity: parseQuantity, batchFromRegion: batchFromRegion, validateBatch: validateBatch,
     validateDocument: validateDocument, parseBackupText: parseBackupText, serializeBackup: serializeBackup,

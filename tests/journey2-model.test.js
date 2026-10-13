@@ -471,3 +471,12 @@ test('fitFootprint: a pocket larger than n is filled inside with n cells and lea
   assert.ok(shape.every(s => inner.has(Geo.cellId(s.q, s.r))), 'stays inside the pocket');
   assert.equal(M.checkPlacement(doc, ctx, 'fit', shape).valid, true);
 });
+
+test('region limit: the 151st createBatch is refused, yet a document with up to 300 batches still loads', () => {
+  assert.equal(M.MAX_BATCHES, 150);
+  let doc = M.emptyDocument(ctx, AT);
+  for (let i = 0; i < M.MAX_BATCHES; i++) doc = M.apply(doc, { type: 'createBatch', batch: batch('r' + i, 1), at: AT }, ctx).doc;
+  assert.equal(M.apply(doc, { type: 'createBatch', batch: batch('over', 1), at: AT }, ctx).error.code, 'too-many-batches');
+  const big = Object.assign({}, doc, { batches: Array.from({ length: M.MAX_LOADED_BATCHES }, (_, i) => batch('l' + i, 1)) });
+  assert.equal(M.validateDocument(big, ctx).ok, true);
+});
