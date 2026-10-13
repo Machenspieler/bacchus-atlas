@@ -397,8 +397,9 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-viewport.is-fog-tool.is-panning { cursor: grabbing; }
 .j2-viewport:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select: none !important; -webkit-user-select: none !important; }
-.j2-world { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; --j2-inv: 4; }
-.j2-base { display: block; position: absolute; left: 0; top: 0; max-width: none; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+.j2-world { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; --j2-inv: 4; --j2-paper: #e4d3ab; background: var(--j2-paper); }
+/* Sepia screen map: the raster is black line art on white, so multiplying it over a parchment ground turns the white into paper and keeps the ink. Screen only — the print path draws the untouched raster. */
+.j2-base { display: block; position: absolute; left: 0; top: 0; max-width: none; mix-blend-mode: multiply; pointer-events: none; user-select: none; -webkit-user-drag: none; }
 .j2-world.is-pixel .j2-base { image-rendering: pixelated; }
 .j2-overlay { position: absolute; left: 0; top: 0; pointer-events: none; overflow: hidden; }
 
