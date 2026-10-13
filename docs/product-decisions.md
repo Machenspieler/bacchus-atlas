@@ -1309,3 +1309,11 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Decision (player page):** `#/map/<link>` has no panel: a title chip over the map, the rail holds the one tool (Route), the bar holds zoom and Fit. On a phone (≤640px) the rail becomes a bottom bar with 52px targets and the keycaps are hidden on touch.
 - **Not decided here:** no drag-to-reorder of the rail, no user-configurable shortcuts, no tool palette for the editor on touch devices (PD-048 stands).
 - **Where:** `js/journey2-view.js` (`buildSurface`, `LI`, `railBtn`, `applyPreviewChrome`, `syncSideToggle`, `focusTool`, `onToolHotkey`), `css/journey2.css` (`.j2-rail`, `.j2-rb*`, `.j2-seg*`, `.j2-camp*`, `.j2-mapbar`, `.j2-title-chip`, `.j2-li`), `data/i18n.json` (`journey2_rail_*`, `journey2_mode_*`, `journey2_menu_*`, `journey2_campaign_aria`), `tests/journey2-controls-panel.test.js`.
+
+## PD-058: Journey — one button deletes every unplaced region
+
+- **Status:** Active
+- **Date:** 2026-10-13
+- **Why:** generating regions in bulk leaves a long stock of untouched cards; deleting them one by one (each with its own dialog) was tedious.
+- **Decision:** a small trash button sits in the Hex stock header beside the count; it is hidden while no region is fully unplaced. "Unplaced" means a region with **no** placed hex — a partly placed region stays. A confirmation dialog states the count; Cancel is the default focus. The deletion is one atomic model command (`deleteUnplacedBatches`), so one Undo restores all of them. It never touches tiles, Fog, Echoes or sanctuaries.
+- **Where:** `js/journey2-model.js` (`deleteUnplacedBatches`), `js/journey2-view.js` (`confirmClearUnplaced`), `data/i18n.json` (`journey2_clear_unplaced*`), `tests/journey2-inspector.test.js`.

@@ -760,7 +760,7 @@
                 <div class="j2-side-scroll" data-j2-side-scroll>
                   <div class="j2-banner" data-j2-banner hidden role="alert"></div>
                   <section class="j2-stock" aria-labelledby="j2-stock-title">
-                    <h3 class="j2-h j2-h--row" id="j2-stock-title"><span data-t="journey2_stock_title"></span><span class="j2-count" data-j2-stock-count></span></h3>
+                    <h3 class="j2-h j2-h--row" id="j2-stock-title"><span data-t="journey2_stock_title"></span><span class="j2-h-end"><span class="j2-count" data-j2-stock-count></span><button type="button" class="icon-btn j2-clear-unplaced" data-j2-clear-unplaced data-t-title="journey2_clear_unplaced" data-t-aria="journey2_clear_unplaced" hidden>${LI.trash}</button></span></h3>
                     <div data-j2-stock-empty><p class="j2-empty" data-t="journey2_stock_empty"></p><p class="j2-gen-hint" data-t="journey2_gen_hint"></p></div>
                     <p class="j2-place-hint" data-j2-place-hint data-t="journey2_place_hint_shared" hidden></p>
                     <div class="j2-cards" data-j2-cards></div>
@@ -865,6 +865,7 @@
       ui.cards = container.querySelector('[data-j2-cards]');
       ui.stockEmpty = container.querySelector('[data-j2-stock-empty]');
       ui.stockCount = container.querySelector('[data-j2-stock-count]');
+      ui.clearUnplaced = container.querySelector('[data-j2-clear-unplaced]');
       ui.hint = container.querySelector('[data-j2-hint]');
       ui.tip = container.querySelector('[data-j2-tip]');
       ui.live = container.querySelector('[data-j2-live]');
@@ -1402,6 +1403,33 @@
       ui.railCount.textContent = list.length ? n(left) : '';
       ui.railCount.setAttribute('aria-label', fillN('journey2_rail_count_aria', { r: n(list.length), n: n(left) }, [list.length, left]));
       ui.generate.disabled = editLocked;
+      ui.clearUnplaced.hidden = !unplacedBatchIds().length;
+      ui.clearUnplaced.disabled = editLocked;
+    }
+
+    function unplacedBatchIds() {
+      const counts = Model.derive(doc).counts;
+      return doc.batches.filter(b => !counts.get(b.id).placed).map(b => b.id);
+    }
+
+    function confirmClearUnplaced() {
+      const ids = unplacedBatchIds();
+      if (!ids.length || editLocked || inst.disposed) return;
+      openDialog({
+        title: t('journey2_clear_unplaced_title'),
+        lines: [fill('journey2_clear_unplaced_msg', { n: n(ids.length) }), t('journey2_clear_unplaced_note')],
+        actions: [
+          { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
+          { label: t('journey2_clear_unplaced_go'), kind: 'btn-danger', value: 'delete' },
+        ],
+      }).then(v => {
+        if (inst.disposed || v !== 'delete') { if (!inst.disposed && ui.clearUnplaced && !ui.clearUnplaced.hidden) ui.clearUnplaced.focus({ preventScroll: true }); return; }
+        const r = dispatch({ type: 'deleteUnplacedBatches' }, 'deleteUnplacedBatches');
+        if (!r.ok) { hint(errorText(r.error)); return; }
+        if (activeBatchId && !Model.batchById(doc, activeBatchId)) activeBatchId = null;
+        announce(t('journey2_live_unplaced_deleted'));
+        ui.generate.focus({ preventScroll: true });
+      });
     }
 
     /** Makes one card the single expanded one (or none). Touches only the placement controls — never the inspector. */
@@ -4662,6 +4690,7 @@
       }
       else if (b.hasAttribute('data-j2-insp-close')) closeInspector({ focus: true });
       else if (b.hasAttribute('data-j2-roll')) rollEncounter();
+      else if (b.hasAttribute('data-j2-clear-unplaced')) confirmClearUnplaced();
       else if (b.hasAttribute('data-j2-delete')) confirmDelete(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-side-toggle')) toggleSide();
       else if (b.hasAttribute('data-j2-fit')) fitToView();

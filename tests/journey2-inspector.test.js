@@ -307,3 +307,12 @@ test('overlay header badge: a display rule on .j2-insp-sub > .j2-blight must be 
   assert.match(css, /\.j2-insp-sub > \.j2-blight\s*\{[^}]*display:\s*inline-block/, 'the header badge keeps its inline-block layout');
   assert.match(css, /\.j2-insp-sub > \.j2-blight\[hidden\]\s*\{\s*display:\s*none;?\s*\}/, 'without this, equal specificity lets the later display rule override [hidden] and a normal region shows the badge');
 });
+
+test('deleteUnplacedBatches removes only regions with no placed hex; none left to remove is a no-op', () => {
+  const doc = fixture();
+  const r = M.apply(doc, { type: 'deleteUnplacedBatches', at: AT }, ctx);
+  assert.equal(r.ok, true);
+  assert.deepEqual(r.doc.batches.map(b => b.id), ['b1']);
+  assert.equal(r.doc.tiles.length, doc.tiles.length);
+  assert.equal(M.apply(r.doc, { type: 'deleteUnplacedBatches', at: AT }, ctx).doc, r.doc);
+});

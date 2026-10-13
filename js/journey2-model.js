@@ -1002,6 +1002,7 @@
    *   setTileEnvironment { tileId, environmentId|null, at }       assign / replace (one command) / detach (null) the tile's catalog environment;
    *                                                                the same id => noop; catalog/biome eligibility is the view's check, not the model's
    *   deleteBatch { batchId, at }                                  removes the batch AND all its tiles, atomically; reports { topology: {before, after} }
+   *   deleteUnplacedBatches { at }                                 removes every batch that has no placed tile (partly placed ones stay); none => noop; one history entry
    *   setNotes    { batchId, notes, at }                       unchanged => noop
    *   setCellsRevealed { cellKeys:["q,r"...], revealed:boolean, at }   Fog of War: reveal (true) or hide (false) cells;
    *                                                                   touches ONLY playerVisibility, never batches or tiles;
@@ -1020,7 +1021,7 @@
    *                                                                playerVisibility.revealedSanctuaryNameAnchorIds; already in that state => noop. Reroll (setSanctuary) keeps it;
    *                                                                setSanctuaries keeps it only for anchors that still have an entry and never reveals a new one
    */
-  const TILE_COMMANDS = new Set(['place', 'move', 'returnTile', 'deleteBatch']);
+  const TILE_COMMANDS = new Set(['place', 'move', 'returnTile', 'deleteBatch', 'deleteUnplacedBatches']);
   function apply(doc, cmd, ctx) {
     const r = applyCommand(doc, cmd, ctx);
     // a tile edit can leave a stored mark meaningless (the blighted tile it referred to is gone, or one now sits where an X was added): keep the lists canonical
@@ -1089,6 +1090,12 @@
       case 'deleteBatch': {
         if (!batchById(doc, cmd.batchId)) return fail('no-batch');
         return { ok: true, doc: touch(doc, cmd.at, { batches: doc.batches.filter(b => b.id !== cmd.batchId), tiles: doc.tiles.filter(t => t.batchId !== cmd.batchId) }), topology: deleteTopology(doc, cmd.batchId) };
+      }
+      case 'deleteUnplacedBatches': {
+        const placed = new Set(doc.tiles.map(t => t.batchId));
+        const keep = doc.batches.filter(b => placed.has(b.id));
+        if (keep.length === doc.batches.length) return { ok: true, doc: doc, noop: true };
+        return { ok: true, doc: touch(doc, cmd.at, { batches: keep }), removed: doc.batches.length - keep.length };
       }
       case 'setTileEnvironment': {
         const tile = derive(doc).byId.get(cmd.tileId);
