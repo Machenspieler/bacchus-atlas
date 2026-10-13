@@ -2046,6 +2046,12 @@ ol.feature-bullets { list-style: decimal; }
   .shell { max-width: 2548px; }
 }
 
+/* The title needs ~830px beside the four ribbons and the utilities; narrower, it was squeezed into a sliver and the
+ * first ribbon cut its last letters, so the brand mark stands alone. */
+@media (max-width: 900px) {
+  .brand-title-text { display: none; }
+}
+
 @media (max-width: 640px) {
   body { font-size: 15px; }
   .shell { padding: 0 var(--s-4) var(--s-9); }
@@ -2055,7 +2061,6 @@ ol.feature-bullets { list-style: decimal; }
   .header-inner { gap: var(--s-3); padding-inline: max(var(--s-4), env(safe-area-inset-left)) max(var(--s-4), env(safe-area-inset-right)); }
   .brand { gap: var(--s-2); min-width: 0; }
   #brand-home::after { inset: -6px -6px; }
-  .brand-title-text { display: none; }
   .header-actions { gap: var(--s-2); }
   :root { --rb-w: 40px; --rb-gap: 3px; --rb-t0: 6px; --rb-t1: 12px; --rb-t2: 14px; --rb-t3: 20px; }
   /* Short tails on a phone; the filter row starts below the longest one. */
