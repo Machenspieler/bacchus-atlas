@@ -284,11 +284,11 @@ function fakeStorage() {
 test('the fog veil is not a preference (PD-036); Player Preview is stored (PD-035); the tool and stroke are never stored', () => {
   const s = fakeStorage(), store = Store.createStore(s, ctx);
   assert.deepEqual(store.saveUi({ sideCollapsed: false }), { ok: true });
-  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showBiomeColors: true, showPlacedOutline: false, playerPreview: false, view: null });
-  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['playerPreview', 'showBiomeColors', 'showPlacedOutline', 'sideCollapsed', 'view']);
+  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showBiomeColors: true, sepiaMap: true, showPlacedOutline: false, playerPreview: false, view: null });
+  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['playerPreview', 'sepiaMap', 'showBiomeColors', 'showPlacedOutline', 'sideCollapsed', 'view']);
   assert.deepEqual(s.writes, [Store.KEYS.ui], 'nothing else is written');
   s.data.set(Store.KEYS.ui, '{"showFogState":false,"sideCollapsed":true}');
-  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showBiomeColors: true, showPlacedOutline: false, playerPreview: false, view: null }, 'the retired showFogState key is ignored');
+  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showBiomeColors: true, sepiaMap: true, showPlacedOutline: false, playerPreview: false, view: null }, 'the retired showFogState key is ignored');
   assert.ok(!('showFogState' in JSON.parse((store.saveUi({ sideCollapsed: true }), s.data.get(Store.KEYS.ui)))), 'and dropped on the next save');
   // it is not part of the document / backup
   assert.ok(!JSON.stringify(M.emptyDocument(ctx, AT)).includes('showFogState'));

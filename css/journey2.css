@@ -397,10 +397,18 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-viewport.is-fog-tool.is-panning { cursor: grabbing; }
 .j2-viewport:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select: none !important; -webkit-user-select: none !important; }
-.j2-world { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; --j2-inv: 4; --j2-paper: #e4d3ab; background: var(--j2-paper); }
-/* Sepia screen map: the raster is black line art on white, so multiplying it over a parchment ground turns the white into paper and keeps the ink. Screen only — the print path draws the untouched raster. */
-.j2-base { display: block; position: absolute; left: 0; top: 0; max-width: none; mix-blend-mode: multiply; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+.j2-world { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; --j2-inv: 4; }
+.j2-base { display: block; position: absolute; left: 0; top: 0; max-width: none; pointer-events: none; user-select: none; -webkit-user-drag: none; }
 .j2-world.is-pixel .j2-base { image-rendering: pixelated; }
+/* Sepia screen map (PD-060, the "Sepia map" switch; on by default): the raster is black line art on white, so multiplying it over a parchment ground turns the
+   white into paper and keeps the ink. Everything the overlay paints in white to hide or lift the raster (tile cover, glyph halo, Shadowblight halo) takes
+   the paper colour too, or it would read as bright patches. Screen only — the print path (.j2-pp-svg, js/journey2-print.js) draws the untouched raster. */
+.j2[data-sepia] { --j2-paper: #e4d3ab; }
+.j2[data-sepia] .j2-world { background: var(--j2-paper); }
+.j2[data-sepia] .j2-base { mix-blend-mode: multiply; }
+.j2[data-sepia] .j2-overlay .j2-tile-cover, .j2[data-sepia] .j2-overlay .j2-tile-halo, .j2[data-sepia] .j2-overlay .j2-party-halo { fill: var(--j2-paper); }
+.j2[data-sepia] .j2-overlay .j2-party-halo, .j2[data-sepia] .j2-overlay .j2-sanc-label { stroke: var(--j2-paper); }
+.j2[data-sepia] .j2-overlay .j2-tile-blight-halo, .j2[data-sepia] .j2-overlay .j2-pvt-blight-halo { stroke: var(--j2-paper); }
 .j2-overlay { position: absolute; left: 0; top: 0; pointer-events: none; overflow: hidden; }
 
 .j2-badge {

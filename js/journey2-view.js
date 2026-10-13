@@ -231,6 +231,7 @@
     let activeBatchId = null;                               // the one card expanded for placement controls (independent of the inspector)
     let sideCollapsed = false;                              // view preference, persisted apart from the document
     /* Fog of War (Phase C) — all transient; the veil is drawn only in Player Preview, never in the GM view */
+    let showSepia = true;                                   // "Sepia map" (PD-060): parchment ground + multiplied raster on screen (UI only; the print path never uses it)
     let showBiome = true;                                   // "Biome colors": GM-view tint inside placed hexes (UI only, never in the document, backup or history; Player Preview ignores it)
     let fogTool = null;                                     // null | 'reveal' | 'hide' — the active map tool
     let fogStroke = null;                                   // the in-progress pointer stroke { mode, pointerId, seen:Set, cells:[key], pendD, last, hover }
@@ -727,6 +728,7 @@
                   <div class="j2-menu j2-camp-menu" role="menu" data-j2-menu="campaign" data-t-aria="journey2_campaign_aria" hidden>
                     <p class="j2-menu-h" role="presentation" data-t="journey2_menu_display"></p>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-biome-colors><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_biome_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
+                    <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-sepia><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_sepia_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <p class="j2-menu-h" role="presentation" data-t="journey2_echo_group"></p>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitem" data-j2-echo-place data-t-title="journey2_echo_place_title"><span class="j2-mi-ico" aria-hidden="true">${LI.echo}</span><span data-t="journey2_menu_echo_place"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitem" data-j2-echo-clear data-t-title="journey2_echo_clear_title"><span class="j2-mi-ico" aria-hidden="true">${LI.eraser}</span><span data-t="journey2_echo_clear"></span></button>
@@ -816,6 +818,7 @@
       ui.sideScroll = container.querySelector('[data-j2-side-scroll]');
       ui.railStock = container.querySelector('[data-j2-rail-stock]');
       ui.biomeColors = container.querySelector('[data-j2-biome-colors]');
+      ui.sepia = container.querySelector('[data-j2-sepia]');
       ui.fogTool = container.querySelector('[data-j2-fog-tool="paint"]');
       ui.outlineBtn = container.querySelector('[data-j2-outline]');
       ui.echoPlace = container.querySelector('[data-j2-echo-place]');
@@ -888,6 +891,8 @@
       const prefs = store.loadUi();
       sideCollapsed = !!prefs.sideCollapsed;
       showBiome = prefs.showBiomeColors !== false;
+      showSepia = prefs.sepiaMap !== false;
+      ui.root.toggleAttribute('data-sepia', showSepia);
       showOutline = !!prefs.showPlacedOutline;
       savedView = prefs.view;
       resumePreview = !!prefs.playerPreview || playerMode;
@@ -1156,7 +1161,7 @@
     }
 
     /** The stored view preferences (sidebar state, "Show fog state") — never the document, never history. */
-    function saveUiPrefs() { if (store && !playerMode) store.saveUi({ sideCollapsed: sideCollapsed, showBiomeColors: showBiome, showPlacedOutline: showOutline, playerPreview: previewMode, view: currentView() }); }
+    function saveUiPrefs() { if (store && !playerMode) store.saveUi({ sideCollapsed: sideCollapsed, showBiomeColors: showBiome, sepiaMap: showSepia, showPlacedOutline: showOutline, playerPreview: previewMode, view: currentView() }); }
 
     /** Explicit toggle only (the user's own click): re-centres the map horizontally in the new free area at the same zoom; never a Fit, and it leaves the selection and active region alone; focus moves to the control that replaces the one used. */
     function toggleSide() {
@@ -3586,6 +3591,8 @@
       if (!ui.fogTool || !doc) return;
       ui.biomeColors.setAttribute('aria-checked', String(showBiome));
       ui.biomeColors.title = showBiome ? t('journey2_biome_hide') : t('journey2_biome_show');
+      ui.sepia.setAttribute('aria-checked', String(showSepia));
+      ui.sepia.title = showSepia ? t('journey2_sepia_hide') : t('journey2_sepia_show');
       ui.fogTool.setAttribute('aria-pressed', String(!!fogTool));
       ui.outlineBtn.setAttribute('aria-pressed', String(showOutline));
       ui.outlineBtn.title = t(showOutline ? 'journey2_outline_hide' : 'journey2_outline_title');
@@ -3638,6 +3645,13 @@
       saveUiPrefs();
       updateFogUi();
       renderFogGhost();
+    }
+
+    function toggleSepia() {
+      showSepia = !showSepia;
+      ui.root.toggleAttribute('data-sepia', showSepia);
+      saveUiPrefs();
+      updateFogUi();
     }
 
     function toggleBiomeColors() {
@@ -4679,7 +4693,7 @@
       }
       const b = e.target.closest('button');
       if (!b || !ui.root.contains(b)) return;
-      if (b.closest('[data-j2-menu="campaign"]') && !b.hasAttribute('data-j2-biome-colors')) closeMenus();   // a Campaign action closes the menu; the biome switch keeps it open
+      if (b.closest('[data-j2-menu="campaign"]') && !b.hasAttribute('data-j2-biome-colors') && !b.hasAttribute('data-j2-sepia')) closeMenus();   // a Campaign action closes the menu; the biome switch keeps it open
       if (b.hasAttribute('data-j2-zoom')) {
         const z = b.getAttribute('data-j2-zoom');
         if (z === 'reset') zoomToScale(1);
@@ -4698,6 +4712,7 @@
       else if (b.hasAttribute('data-j2-side-toggle')) toggleSide();
       else if (b.hasAttribute('data-j2-fit')) fitToView();
       else if (b.hasAttribute('data-j2-biome-colors')) toggleBiomeColors();
+      else if (b.hasAttribute('data-j2-sepia')) toggleSepia();
       else if (b.hasAttribute('data-j2-outline')) toggleOutline();
       else if (b.hasAttribute('data-j2-fog-tool')) setFogTool(b.getAttribute('data-j2-fog-tool'));
       else if (b.hasAttribute('data-j2-party-cancel')) cancelPartyDraft(true);

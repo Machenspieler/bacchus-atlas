@@ -90,13 +90,13 @@
     }
 
     /**
-     * View preferences, separate from the map document and its history: { sideCollapsed, showBiomeColors, showPlacedOutline, playerPreview, view }, where
+     * View preferences, separate from the map document and its history: { sideCollapsed, showBiomeColors, sepiaMap, showPlacedOutline, playerPreview, view }, where
      * view = { fit, cx, cy, scale } is the camera (the WORLD point at the viewport centre plus the zoom; fit: true = "fitted to the window", so
      * the numbers are ignored) or null when none was stored. Unreadable or malformed values -> defaults (sidebar open,
      * no camera -> Fit). playerPreview = a reload reopens Player Preview (PD-035). The active Reveal/Hide tool and any in-progress stroke are NEVER stored.
      */
     function loadUi() {
-      const out = { sideCollapsed: false, showBiomeColors: true, showPlacedOutline: false, playerPreview: false, view: null };
+      const out = { sideCollapsed: false, showBiomeColors: true, sepiaMap: true, showPlacedOutline: false, playerPreview: false, view: null };
       const raw = SafeStorage.readRawFlag(storage, KEYS.ui);
       if (typeof raw !== 'string') return out;
       try {
@@ -104,6 +104,7 @@
         if (v && typeof v === 'object') {
           if (typeof v.sideCollapsed === 'boolean') out.sideCollapsed = v.sideCollapsed;
           if (typeof v.showBiomeColors === 'boolean') out.showBiomeColors = v.showBiomeColors;
+          if (typeof v.sepiaMap === 'boolean') out.sepiaMap = v.sepiaMap;
           if (typeof v.showPlacedOutline === 'boolean') out.showPlacedOutline = v.showPlacedOutline;
           if (typeof v.playerPreview === 'boolean') out.playerPreview = v.playerPreview;
           out.view = cleanView(v.view);
@@ -112,7 +113,7 @@
       return out;
     }
     function saveUi(ui) {
-      return SafeStorage.writeJson(storage, KEYS.ui, { sideCollapsed: !!(ui && ui.sideCollapsed), showBiomeColors: !(ui && ui.showBiomeColors === false), showPlacedOutline: !!(ui && ui.showPlacedOutline), playerPreview: !!(ui && ui.playerPreview), view: cleanView(ui && ui.view) });
+      return SafeStorage.writeJson(storage, KEYS.ui, { sideCollapsed: !!(ui && ui.sideCollapsed), showBiomeColors: !(ui && ui.showBiomeColors === false), sepiaMap: !(ui && ui.sepiaMap === false), showPlacedOutline: !!(ui && ui.showPlacedOutline), playerPreview: !!(ui && ui.playerPreview), view: cleanView(ui && ui.view) });
     }
 
     return { load: load, save: save, isStale: isStale, savePrevious: savePrevious, loadPrevious: loadPrevious, loadUi: loadUi, saveUi: saveUi, keys: KEYS };

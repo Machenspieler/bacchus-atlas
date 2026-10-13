@@ -152,6 +152,21 @@ test('preference: stored in dhcodex_journey2_ui, defaults to ON, survives a UI-s
   assert.deepEqual([ui.sideCollapsed, ui.showBiomeColors], [true, true]);
 });
 
+test('sepia preference (PD-060): stored in dhcodex_journey2_ui, defaults to ON, a non-boolean falls back, the CSS is scoped to the screen overlay', () => {
+  const mem = new Map();
+  const storage = { getItem: k => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => { mem.set(k, String(v)); }, removeItem: k => { mem.delete(k); } };
+  const store = Store.createStore(storage, ctx);
+  assert.equal(store.loadUi().sepiaMap, true, 'default ON');
+  assert.equal(store.saveUi({ sepiaMap: false }).ok, true);
+  assert.equal(Store.createStore(storage, ctx).loadUi().sepiaMap, false, 'reload reads it back');
+  mem.set(Store.KEYS.ui, JSON.stringify({ sepiaMap: 'no' }));
+  assert.equal(store.loadUi().sepiaMap, true, 'malformed -> default');
+  const css = require('fs').readFileSync(require('path').join(__dirname, '..', 'css', 'journey2.css'), 'utf8');
+  const rules = css.split('\n').filter(l => /^\.j2\[data-sepia\]/.test(l));
+  assert.ok(rules.length >= 4, 'sepia rules exist');
+  assert.ok(rules.every(l => !/\.j2-pp-svg/.test(l)), 'the print SVG is never sepia');
+});
+
 test('preference: toggling is a pure display change in the view (no command, history, document save or camera change)', () => {
   const view = read('js/journey2-view.js').replace(/\/\*[\s\S]*?\*\//g, '');
   const fn = view.match(/function toggleBiomeColors\(\) \{([\s\S]*?)\n    \}/);

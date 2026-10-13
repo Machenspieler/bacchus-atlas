@@ -1331,10 +1331,11 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Decision:** per axis, inside the area the left sidebar/rail and the open diagnostics drawer leave free: a map smaller than the area is **centred**; a larger one may never leave more than **24 px** of empty space beside its edges. Minimum zoom is exactly **Fit**. Cursor-anchored wheel/pinch zoom is unchanged; the bounds correction is applied on top.
 - **Where:** `js/journey2-geometry.js` (`clampCamera`), `js/journey2-view.js` (`minScale`, `setCamera`), `tests/journey2-geometry.test.js`.
 
-## PD-060: Journey — the screen map is sepia (parchment ground, multiplied line art)
+## PD-060: Journey — the screen map is sepia by default, with a "Sepia map" switch
 
 - **Status:** Active
 - **Date:** 2026-10-13
-- **Why:** the Old Valloren raster is black line art on pure white, which glared against the dark UI and clashed with the atlas look.
-- **Decision:** on screen only, `.j2-world` gets a parchment ground (`--j2-paper`) and `.j2-base` is drawn with `mix-blend-mode: multiply`, so white becomes paper and the ink stays. It is pure CSS: the raster file, its hash, the template, the print path (`js/journey2-print.js` draws the untouched raster, black and white) and every stored/shared datum are unchanged. It applies identically in the GM view, Player Preview and the shared `#/map/<link>` page. Overlays (fog, Biome Tint, markers) sit above the blend and are unaffected; Player Preview fog stays readable (checked at 100 %).
-- **Where:** `css/journey2.css` (`.j2-world`, `.j2-base`).
+- **Why:** the Old Valloren raster is black line art on pure white, which glared against the dark UI and clashed with the atlas look. A first version (parchment ground only) left the overlay's white tile covers and glyph halos as bright patches on the paper and could not be turned off; both were fixed the same day.
+- **Decision:** on screen only, `.j2[data-sepia]` gives `.j2-world` a parchment ground (`--j2-paper`) and draws `.j2-base` with `mix-blend-mode: multiply`, so white becomes paper and the ink stays. Everything the overlay paints white to hide or lift the raster (tile cover, glyph halo, Shadowblight halo, party halo, sanctuary-label stroke) takes the paper colour too. The look is pure CSS: the raster file, its hash, the template, the print path (`js/journey2-print.js` / `.j2-pp-svg` draw the untouched raster, black and white; the sepia rules are scoped to `.j2-overlay` and never match it) and every stored/shared datum are unchanged.
+- **Switch:** a "Sepia map / Сепия" item in the GM's Campaign menu beside "Biome colors", default ON, stored as `sepiaMap` in `dhcodex_journey2_ui` (a view preference like `showBiomeColors`; a non-boolean falls back to ON). The preference also governs Player Preview; the shared `#/map/<link>` page has no storage and is always sepia.
+- **Where:** `css/journey2.css` (`.j2[data-sepia]`), `js/journey2-view.js` (`toggleSepia`), `js/journey2-store.js`, `data/i18n.json` (`journey2_sepia_*`), `tests/journey2-biome-tint.test.js`.
