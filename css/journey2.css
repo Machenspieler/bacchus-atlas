@@ -588,9 +588,17 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-sanc-headmain { flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); }
 .j2-sanc-headmain .j2-insp-titles { flex: 1 1 auto; }
 .j2-sanc-titles { display: flex; align-items: center; gap: var(--s-1); }
-.j2-sanc-titles .j2-insp-title[hidden], .j2-sanc-name-input[hidden], .j2-sanc-rename [hidden] { display: none; }
-.j2-sanc-name-input { flex: 1 1 auto; min-width: 0; font: inherit; font-size: var(--fs-md, 1rem); padding: var(--s-1) var(--s-2); color: var(--parchment); background: rgb(20 17 15 / 0.7); border: 1px solid currentColor; border-radius: 4px; }
+.j2-sanc-titles .j2-insp-title[hidden], .j2-sanc-field[hidden], .j2-sanc-rename[hidden] { display: none; }
 .j2-sanc-rename { flex: none; display: inline-flex; }
+.j2-sanc-field { position: relative; flex: 1 1 auto; min-width: 0; display: flex; align-items: center; }
+.j2-sanc-name-input { width: 100%; min-width: 0; font: inherit; font-family: var(--font-display); font-size: var(--fs-lg); line-height: var(--lh-lg); padding: 0 calc(var(--s-2) + 3.6rem) 0 var(--s-2); color: var(--parchment); background: rgb(20 17 15 / 0.75); border: 1px solid var(--border, currentColor); border-radius: 4px; }
+.j2-sanc-name-input:focus-visible { outline: 2px solid var(--hope, currentColor); outline-offset: 1px; }
+.j2-sanc-fbtn { position: absolute; top: 50%; width: 1.7rem; height: 1.7rem; margin-top: -0.85rem; display: inline-flex; align-items: center; justify-content: center; padding: 0; background: transparent; border: 0; border-radius: 4px; color: var(--parchment); cursor: pointer; }
+.j2-sanc-fbtn svg { width: 14px; height: 14px; }
+.j2-sanc-fbtn:hover { background: rgb(255 255 255 / 0.12); }
+.j2-sanc-fbtn:focus-visible { outline: 2px solid var(--hope, currentColor); }
+.j2-sanc-fbtn.is-save { right: 1.9rem; color: var(--hope, currentColor); }
+.j2-sanc-fbtn:not(.is-save) { right: 0.2rem; }
 .j2-sanc-act { flex: none; display: inline-flex; align-items: center; gap: var(--s-1); }
 .j2-sanc-act[hidden] { display: none; }
 .j2-sanc-act .j2-ico { display: inline-flex; }

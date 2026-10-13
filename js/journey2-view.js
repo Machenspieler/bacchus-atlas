@@ -608,11 +608,11 @@
                   <div class="j2-sanc-headmain">
                     <div class="j2-insp-titles j2-sanc-titles">
                       <h3 class="j2-insp-title" id="j2-sanctuary-title" data-j2-s="name"></h3>
-                      <input type="text" class="j2-sanc-name-input" data-j2-sanc-name-input maxlength="${Model.MAX_SANCTUARY_NAME}" autocomplete="off" spellcheck="false" data-t-aria="journey2_sanc_rename" hidden>
-                      <span class="j2-sanc-rename">
-                        <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-rename data-t-aria="journey2_sanc_rename" data-t-title="journey2_sanc_rename">${ICON.pencil}</button>
-                        <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-rename-save data-t-aria="journey2_sanc_rename_save" data-t-title="journey2_sanc_rename_save" hidden>${ICON.check}</button>
-                        <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-rename-cancel data-t-aria="journey2_sanc_rename_cancel" data-t-title="journey2_sanc_rename_cancel" hidden>${ICON.close}</button>
+                      <span class="j2-sanc-rename"><button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-rename data-t-aria="journey2_sanc_rename" data-t-title="journey2_sanc_rename">${ICON.pencil}</button></span>
+                      <span class="j2-sanc-field" data-j2-sanc-field hidden>
+                        <input type="text" class="j2-sanc-name-input" data-j2-sanc-name-input maxlength="${Model.MAX_SANCTUARY_NAME}" autocomplete="off" spellcheck="false" data-t-aria="journey2_sanc_rename">
+                        <button type="button" class="j2-sanc-fbtn is-save" data-j2-sanc-rename-save data-t-aria="journey2_sanc_rename_save" data-t-title="journey2_sanc_rename_save">${ICON.check}</button>
+                        <button type="button" class="j2-sanc-fbtn" data-j2-sanc-rename-cancel data-t-aria="journey2_sanc_rename_cancel" data-t-title="journey2_sanc_rename_cancel">${ICON.close}</button>
                       </span>
                     </div>
                     <button type="button" class="btn btn-sm j2-sanc-act" data-j2-sanc-name><span class="j2-ico" aria-hidden="true" data-j2-s="nameIco"></span><span data-j2-s="nameLabel"></span></button>
@@ -817,10 +817,10 @@
       ui.sancReroll = ui.sanctuary.querySelector('[data-j2-sanc-reroll]');
       ui.sancDelete = ui.sanctuary.querySelector('[data-j2-sanc-delete]');
       ui.sancName = ui.sanctuary.querySelector('[data-j2-sanc-name]');
+      ui.sancField = ui.sanctuary.querySelector('[data-j2-sanc-field]');
+      ui.sancClose = ui.sanctuary.querySelector('[data-j2-sanc-close]');
       ui.sancNameInput = ui.sanctuary.querySelector('[data-j2-sanc-name-input]');
       ui.sancRename = ui.sanctuary.querySelector('[data-j2-sanc-rename]');
-      ui.sancRenameSave = ui.sanctuary.querySelector('[data-j2-sanc-rename-save]');
-      ui.sancRenameCancel = ui.sanctuary.querySelector('[data-j2-sanc-rename-cancel]');
       ui.echoCollect = ui.sanctuary.querySelector('[data-j2-echo-collect]');
       ui.knownSanc = container.querySelector('[data-j2-known-sanc]');
       ui.zoomReadout = container.querySelector('[data-j2-zoom-readout]');
@@ -3132,8 +3132,9 @@
       if (!e) sanctuaryRenaming = false;
       ui.s.name.textContent = e ? e.name : t('journey2_sanc_fallback');   // an empty name shows nothing (the pencil still offers the edit)
       ui.s.name.hidden = sanctuaryRenaming;
-      ui.sancNameInput.hidden = !sanctuaryRenaming;                      // the input keeps what is typed across re-renders
-      ui.sancRename.hidden = !e || sanctuaryRenaming; ui.sancRenameSave.hidden = ui.sancRenameCancel.hidden = !sanctuaryRenaming;
+      ui.sancField.hidden = !sanctuaryRenaming;                          // the input keeps what is typed across re-renders
+      ui.sancRename.hidden = !e || sanctuaryRenaming;
+      ui.sancClose.disabled = sanctuaryRenaming;                        // no second X next to the discard X while editing
       ui.sancRename.disabled = editLocked;
       // an Echo-only sanctuary (its characteristics were deleted) shows just the Soul Echo row: no name toggle, no tables, no Reroll / Delete
       ui.sancName.hidden = !e; ui.s.rows.hidden = !e; ui.s.foot.hidden = !e;
