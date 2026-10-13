@@ -9,7 +9,7 @@
 (function () {
   'use strict';
 
-  const GAP = 16;
+  const GAP = 1; /* screen px kept between the ribbon and a neighbouring item */
   let scheduled = false;
   /* A font arriving or a status text changing resizes an item without any window
    * event; margins never change an item's own size, so this can't loop. */
