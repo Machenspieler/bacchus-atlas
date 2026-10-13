@@ -405,6 +405,14 @@
     return { ok: true, value: value, changed: changed };
   }
 
+  /* Prep item browser view (dhcodex_prep_item_view): a bare JSON string,
+   * 'gallery' or 'compact'. Anything else is unusable (caller falls back to
+   * 'gallery'). */
+  function sanitizePrepItemView(parsed) {
+    if (parsed !== 'gallery' && parsed !== 'compact') return { ok: false };
+    return { ok: true, value: parsed, changed: false };
+  }
+
   function sanitizeEnvLists(parsed) {
     if (!isPlainObject(parsed)) return { ok: false };
     var out = {};
@@ -689,6 +697,7 @@
       journeySanctuaries: sanitizeJourneySanctuaries,
       prep: sanitizePrep,
       soundboard: sanitizeSoundboard,
+      prepItemView: sanitizePrepItemView,
     },
   };
 });

@@ -14,6 +14,7 @@ const LS_KEYS = {
   prepSessionHintSeen: 'dhcodex_session_prep_hint_seen',
   battlePointsPcs: 'dhcodex_battle_points_pcs',
   soundboard: 'dhcodex_soundboard',
+  prepItemView: 'dhcodex_prep_item_view',
 };
 
 const BIOMES = ['underground', 'aquatic', 'wetland', 'grassland', 'tropical', 'forest', 'drylands', 'rolling', 'mountain', 'frozen', 'badlands', 'settlement', 'universal'];
@@ -125,11 +126,14 @@ const state = {
     // kept as a separate field on purpose (see js/prep-utils.js
     // and docs/architecture.md) so clearing the transient display after
     // its timeout never accidentally clears the still-active filter.
-    // itemViewMode is Gallery/Compact — transient, never persisted, same
-    // as every other field here.
+    // itemViewMode is Gallery/Compact — the one field here that IS persisted
+    // (a view preference, global, own key; PD-061).
     itemTypes: new Set(), itemSources: new Set(),
     itemRollFilter: null, itemTransientRoll: null,
-    itemViewMode: 'gallery',
+    itemViewMode: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.prepItemView, {
+      fallback: () => 'gallery',
+      validate: SafeStorage.validators.prepItemView,
+    }),
     lastSavedAt: null, saveFailed: false,
   },
   journey: JOURNEY_EMPTY,
@@ -4160,6 +4164,7 @@ function updateItemClearButtonVisibility() {
 function setItemViewMode(mode) {
   if (state.prepUI.itemViewMode === mode) return;
   state.prepUI.itemViewMode = mode;
+  persist(LS_KEYS.prepItemView, mode);
   const galleryWrap = document.getElementById('sp-item-gallery-wrap');
   const compactWrap = document.getElementById('sp-item-compact-wrap');
   if (galleryWrap) galleryWrap.hidden = mode !== 'gallery';

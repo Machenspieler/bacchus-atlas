@@ -897,3 +897,10 @@ test('the old unguarded persist() implementation is absent from js/app.js', () =
     'persist() must go through SafeStorage.writeJson(), not call localStorage.setItem() directly',
   );
 });
+
+test('prepItemView validator accepts only gallery/compact', () => {
+  const v = SafeStorage.validators.prepItemView;
+  assert.deepStrictEqual(v('compact'), { ok: true, value: 'compact', changed: false });
+  assert.deepStrictEqual(v('gallery'), { ok: true, value: 'gallery', changed: false });
+  for (const bad of ['grid', '', null, 3, {}, ['compact']]) assert.strictEqual(v(bad).ok, false);
+});

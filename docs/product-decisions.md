@@ -1339,3 +1339,11 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Decision:** on screen only, `.j2[data-sepia]` gives `.j2-world` a parchment ground (`--j2-paper`) and draws `.j2-base` with `mix-blend-mode: multiply`, so white becomes paper and the ink stays. Everything the overlay paints white to hide or lift the raster (tile cover, glyph halo, Shadowblight halo, party halo, sanctuary-label stroke) takes the paper colour too. The look is pure CSS: the raster file, its hash, the template, the print path (`js/journey2-print.js` / `.j2-pp-svg` draw the untouched raster, black and white; the sepia rules are scoped to `.j2-overlay` and never match it) and every stored/shared datum are unchanged.
 - **Switch:** a "Sepia map / Сепия" item in the GM's Campaign menu beside "Biome colors", default ON, stored as `sepiaMap` in `dhcodex_journey2_ui` (a view preference like `showBiomeColors`; a non-boolean falls back to ON). The preference also governs Player Preview; the shared `#/map/<link>` page has no storage and is always sepia.
 - **Where:** `css/journey2.css` (`.j2[data-sepia]`), `js/journey2-view.js` (`toggleSepia`), `js/journey2-store.js`, `data/i18n.json` (`journey2_sepia_*`), `tests/journey2-biome-tint.test.js`.
+
+## PD-061: Prep — the item browser's Gallery / Compact view is remembered
+
+- **Status:** Active
+- **Date:** 2026-10-13
+- **Why:** the toggle only changes density, not what is shown, and a GM who prefers Compact had to re-pick it on every visit. It was "transient" by default, not by a product decision.
+- **Decision:** `prepUI.itemViewMode` is stored globally (not per Prep session) in its own key `dhcodex_prep_item_view` as the bare JSON string `"gallery"` or `"compact"`, via `SafeStorage` (`validators.prepItemView`; anything else falls back to Gallery). Written on every toggle. Filters, search and dice rolls stay transient.
+- **Where:** `js/app.js` (`LS_KEYS.prepItemView`, `setItemViewMode`), `js/safe-storage.js`, `tests/storage.test.js`.
