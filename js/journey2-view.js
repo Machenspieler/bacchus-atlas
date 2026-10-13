@@ -455,20 +455,9 @@
        ============================================================ */
 
     const ICON = {
-      hexes: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6 2.5h5l2.5 3.7L11 10H6L3.5 6.2zM11 10h5l2.5 3.7L16 17.5h-5l-2.5-3.8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>',
       grip: '<svg viewBox="0 0 12 16" aria-hidden="true" focusable="false"><g fill="currentColor"><circle cx="3.5" cy="3" r="1.1"/><circle cx="8.5" cy="3" r="1.1"/><circle cx="3.5" cy="8" r="1.1"/><circle cx="8.5" cy="8" r="1.1"/><circle cx="3.5" cy="13" r="1.1"/><circle cx="8.5" cy="13" r="1.1"/></g></svg>',
-      dice: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="3" y="3" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><g fill="currentColor"><circle cx="7.2" cy="7.2" r="1.2"/><circle cx="12.8" cy="12.8" r="1.2"/><circle cx="10" cy="10" r="1.2"/></g></svg>',
-      pencil: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m12.8 3.7 3.5 3.5L7 16.5l-4.2.7.7-4.2zM11.2 5.3l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>',
-      check: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m3 7.5 2.7 2.7L11 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      trash: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4.5 6h11M8 6V4h4v2M6 6l.6 9.5h6.8L14 6M8.5 9v4M11.5 9v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      warn: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M7 1.8 12.8 12H1.2zM7 5.6v3M7 10.3v.1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      inspect: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m12.5 12.5 4.3 4.3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
       mouseLeft: '<svg viewBox="0 0 14 20" aria-hidden="true" focusable="false"><path class="j2-mouse-hit" d="M7 1.2H6.5A5 5 0 0 0 1.5 6.2V7.6H7z"/><rect x="1.5" y="1.2" width="11" height="17.6" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 7.6h11M7 1.2v6.4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>',
       mouseRight: '<svg viewBox="0 0 14 20" aria-hidden="true" focusable="false"><path class="j2-mouse-hit" d="M7 1.2h.5a5 5 0 0 1 5 5V7.6H7z"/><rect x="1.5" y="1.2" width="11" height="17.6" rx="5.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 7.6h11M7 1.2v6.4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>',
-      reveal: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.8 10S5 4.8 10 4.8 18.2 10 18.2 10 15 15.2 10 15.2 1.8 10 1.8 10z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.4" fill="currentColor"/></svg>',
-      close: '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="m3.5 3.5 7 7m0-7-7 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
-      eye: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.5 10C4 5.8 7 4 10 4s6 1.8 8.5 6c-2.5 4.2-5.5 6-8.5 6s-6-1.8-8.5-6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.6" fill="currentColor"/></svg>',
-      eyeOff: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M1.5 10C4 5.8 7 4 10 4s6 1.8 8.5 6c-2.5 4.2-5.5 6-8.5 6s-6-1.8-8.5-6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M3.5 16.5 16.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
     };
 
     /** Lucide icons (ISC, lucide-static 0.468) for the rail, map bar, segment and menu: one 24px grid and one stroke, set by `.j2-li` in journey2.css. */
@@ -492,6 +481,15 @@
       hexes: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /></svg>',
       panelClose: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 3v18" /><path d="m16 15-3-3 3-3" /></svg>',
       panelOpen: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 3v18" /><path d="m14 9 3 3-3 3" /></svg>',
+      close: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>',
+      check: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>',
+      pencil: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /><path d="m15 5 4 4" /></svg>',
+      warn: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>',
+      inspect: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>',
+      trash: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>',
+      dice: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><path d="M16 8h.01" /><path d="M12 12h.01" /><path d="M8 16h.01" /></svg>',
+      eyeOff: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" /><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" /><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" /><path d="m2 2 20 20" /></svg>',
+      stock: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" /><path d="M12 22V12" /><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7" /><path d="m7.5 4.27 9 5.15" /></svg>',
     };
 
     /** One rail button: icon, one-word label and the shortcut key (shown as a keycap and exposed through aria-keyshortcuts). */
@@ -579,7 +577,7 @@
                     <h3 class="j2-insp-title" id="j2-region-inspector-title" data-j2-i="name"></h3>
                     <p class="j2-insp-sub"><span data-j2-i="ord"></span><span class="j2-insp-ex" data-j2-i="examples" hidden></span><span class="j2-blight" data-j2-i="blight" hidden></span></p>
                   </div>
-                  <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-insp-close data-t-aria="journey2_inspector_close" data-t-title="journey2_inspector_close">${ICON.close}</button>
+                  <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-insp-close data-t-aria="journey2_inspector_close" data-t-title="journey2_inspector_close">${LI.close}</button>
                 </header>
                 <div class="j2-insp-scroll" data-j2-i="scroll">
                   <details class="j2-insp-summary" data-j2-i="summary">
@@ -615,16 +613,16 @@
                   <div class="j2-sanc-headmain">
                     <div class="j2-insp-titles j2-sanc-titles">
                       <h3 class="j2-insp-title" id="j2-sanctuary-title" data-j2-s="name"></h3>
-                      <span class="j2-sanc-rename"><button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-rename data-t-aria="journey2_sanc_rename" data-t-title="journey2_sanc_rename">${ICON.pencil}</button></span>
+                      <span class="j2-sanc-rename"><button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-rename data-t-aria="journey2_sanc_rename" data-t-title="journey2_sanc_rename">${LI.pencil}</button></span>
                       <span class="j2-sanc-field" data-j2-sanc-field hidden>
                         <input type="text" class="j2-sanc-name-input" data-j2-sanc-name-input maxlength="${Model.MAX_SANCTUARY_NAME}" autocomplete="off" spellcheck="false" data-t-aria="journey2_sanc_rename">
-                        <button type="button" class="j2-sanc-fbtn is-save" data-j2-sanc-rename-save data-t-aria="journey2_sanc_rename_save" data-t-title="journey2_sanc_rename_save">${ICON.check}</button>
-                        <button type="button" class="j2-sanc-fbtn" data-j2-sanc-rename-cancel data-t-aria="journey2_sanc_rename_cancel" data-t-title="journey2_sanc_rename_cancel">${ICON.close}</button>
+                        <button type="button" class="j2-sanc-fbtn is-save" data-j2-sanc-rename-save data-t-aria="journey2_sanc_rename_save" data-t-title="journey2_sanc_rename_save">${LI.check}</button>
+                        <button type="button" class="j2-sanc-fbtn" data-j2-sanc-rename-cancel data-t-aria="journey2_sanc_rename_cancel" data-t-title="journey2_sanc_rename_cancel">${LI.close}</button>
                       </span>
                     </div>
                     <button type="button" class="btn btn-sm j2-sanc-act" data-j2-sanc-name><span class="j2-ico" aria-hidden="true" data-j2-s="nameIco"></span><span data-j2-s="nameLabel"></span></button>
                   </div>
-                  <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-close data-t-aria="journey2_sanc_close" data-t-title="journey2_sanc_close">${ICON.close}</button>
+                  <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-close data-t-aria="journey2_sanc_close" data-t-title="journey2_sanc_close">${LI.close}</button>
                 </header>
                 <div class="j2-sanc-echo" data-j2-s="echo" hidden>
                   <button type="button" class="btn btn-sm j2-sanc-act" data-j2-echo-collect><span class="j2-ico" aria-hidden="true">${LI.echo}</span><span data-j2-s="echoLabel"></span></button>
@@ -632,7 +630,7 @@
                 <div class="j2-insp-scroll j2-sanc-rows" data-j2-s="rows"></div>
                 <footer class="j2-sanc-foot" data-j2-s="foot">
                   <button type="button" class="btn btn-sm btn-danger" data-j2-sanc-delete data-t="journey2_sanc_delete"></button>
-                  <button type="button" class="btn btn-sm btn-primary" data-j2-sanc-reroll><span class="j2-ico" aria-hidden="true">${ICON.dice}</span><span data-t="journey2_sanc_reroll"></span></button>
+                  <button type="button" class="btn btn-sm btn-primary" data-j2-sanc-reroll><span class="j2-ico" aria-hidden="true">${LI.dice}</span><span data-t="journey2_sanc_reroll"></span></button>
                 </footer>
               </aside>
               <aside class="j2-region-inspector j2-locate" id="j2-locate" role="dialog" aria-modal="false" aria-labelledby="j2-locate-title" tabindex="-1" data-j2-locate hidden>
@@ -671,7 +669,7 @@
                 <button type="button" class="j2-seek-btn" data-j2-seek-less data-t-aria="journey2_seek_less" data-t-title="journey2_seek_less"><span aria-hidden="true">&minus;</span></button>
                 <output class="j2-seek-count" data-j2-seek-count></output>
                 <button type="button" class="j2-seek-btn" data-j2-seek-more data-t-aria="journey2_seek_more" data-t-title="journey2_seek_more"><span aria-hidden="true">+</span></button>
-                <button type="button" class="j2-seek-btn j2-seek-x" data-j2-seek-close data-t-aria="journey2_seek_close" data-t-title="journey2_seek_close">${ICON.close}</button>
+                <button type="button" class="j2-seek-btn j2-seek-x" data-j2-seek-close data-t-aria="journey2_seek_close" data-t-title="journey2_seek_close">${LI.close}</button>
               </div>
               <aside class="j2-route" id="j2-route" role="region" aria-labelledby="j2-route-title" tabindex="-1" data-j2-route hidden>
                 <header class="j2-route-head">
@@ -679,7 +677,7 @@
                     <h3 class="j2-route-title" id="j2-route-title"><span class="j2-ico" aria-hidden="true">${LI.route}</span><span data-t="journey2_route_title"></span></h3>
                     <p class="j2-route-sub" data-j2-r="sub"></p>
                   </div>
-                  <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-route-details-close data-t-aria="journey2_route_details_close" data-t-title="journey2_route_details_close">${ICON.close}</button>
+                  <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-route-details-close data-t-aria="journey2_route_details_close" data-t-title="journey2_route_details_close">${LI.close}</button>
                 </header>
                 <div class="j2-route-body" data-j2-r="body" role="status" aria-live="polite" aria-atomic="true"></div>
                 <div class="j2-route-cmp" data-j2-r="cmp" hidden></div>
@@ -721,7 +719,7 @@
                 </div>
                 <span class="j2-rail-grow"></span>
                 <div class="j2-rail-grp j2-rail-stock" data-j2-rail-stock>
-                  <span class="j2-rail-ico" aria-hidden="true">${ICON.hexes}</span>
+                  <span class="j2-rail-ico" aria-hidden="true">${LI.stock}</span>
                   <span class="j2-rail-count" data-j2-rail-count></span>
                 </div>
                 <div class="j2-menu-wrap j2-camp" data-j2-gm-row>
@@ -755,7 +753,7 @@
                   </div>
                 </div>
                 <form class="j2-gen" data-j2-gen novalidate>
-                  <button type="submit" class="btn btn-primary j2-gen-go" data-j2-generate data-t-title="journey2_gen_hint" aria-describedby="j2-gen-desc"><span class="j2-ico">${ICON.dice}</span><span data-t="journey2_gen_go"></span></button>
+                  <button type="submit" class="btn btn-primary j2-gen-go" data-j2-generate data-t-title="journey2_gen_hint" aria-describedby="j2-gen-desc"><span class="j2-ico">${LI.dice}</span><span data-t="journey2_gen_go"></span></button>
                   <span class="sr-only" id="j2-gen-desc" data-t="journey2_gen_hint"></span>
                   <p class="j2-field-error" id="j2-gen-error" data-j2-gen-error role="alert" hidden></p>
                 </form>
@@ -1198,9 +1196,9 @@
               <span class="j2-card-meta"><span class="j2-dots" data-j2-c="dots" role="img"></span><span class="j2-blight" data-j2-c="blight" hidden></span><span class="j2-card-sum" data-j2-c="sum"></span></span>
             </span>
           </button>
-          <button type="button" class="icon-btn j2-inspect" data-j2-inspect data-j2-c="inspect" aria-controls="j2-region-inspector" aria-haspopup="dialog">${ICON.inspect}<span class="sr-only" data-j2-c="inspectSr"></span></button>
+          <button type="button" class="icon-btn j2-inspect" data-j2-inspect data-j2-c="inspect" aria-controls="j2-region-inspector" aria-haspopup="dialog">${LI.inspect}<span class="sr-only" data-j2-c="inspectSr"></span></button>
         </div>
-        <p class="j2-warn" data-j2-c="warn" hidden><span class="j2-warn-ico" aria-hidden="true">${ICON.warn}</span><span data-j2-c="warnText"></span></p>
+        <p class="j2-warn" data-j2-c="warn" hidden><span class="j2-warn-ico" aria-hidden="true">${LI.warn}</span><span data-j2-c="warnText"></span></p>
         <div class="j2-card-body" id="${bodyId}" data-j2-c="body" hidden>
           <div class="j2-status" data-j2-c="status"><span class="j2-num" data-j2-c="placedText"></span><span class="j2-bar" role="presentation"><span data-j2-c="bar"></span></span><span class="j2-num" data-j2-c="leftText"></span></div>
           <div class="j2-actions" data-j2-c="actions">
@@ -1208,9 +1206,9 @@
             <button type="button" class="j2-handle j2-handle--all" data-j2-handle="all"><span class="j2-handle-label" data-j2-c="allLabel"></span><span class="j2-grip">${ICON.grip}</span></button>
           </div>
           <div class="j2-card-end">
-            <p class="j2-done" data-j2-c="done" hidden><span class="j2-done-ico" aria-hidden="true">${ICON.check}</span><span data-j2-c="doneText"></span></p>
+            <p class="j2-done" data-j2-c="done" hidden><span class="j2-done-ico" aria-hidden="true">${LI.check}</span><span data-j2-c="doneText"></span></p>
             <div class="j2-card-foot">
-              <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-delete" data-j2-delete data-j2-c="del">${ICON.trash}</button>
+              <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-delete" data-j2-delete data-j2-c="del">${LI.trash}</button>
             </div>
           </div>
         </div>`;
@@ -3112,7 +3110,7 @@
         if (ui.s.rows.getAttribute('data-sig') !== html) { ui.s.rows.innerHTML = html; ui.s.rows.setAttribute('data-sig', html); }
         // the one player-facing control: its label is the action it will take (no pressed state — the label itself changes), the icon follows the state
         const shown = Model.isSanctuaryNameRevealed(doc, e.anchorId);
-        ui.s.nameIco.innerHTML = shown ? ICON.eye : ICON.eyeOff;
+        ui.s.nameIco.innerHTML = shown ? LI.eye : LI.eyeOff;
         ui.s.nameLabel.textContent = t(shown ? 'journey2_sanc_name_hide' : 'journey2_sanc_name_reveal');
         ui.sancName.title = t(shown ? 'journey2_sanc_name_hide_title' : 'journey2_sanc_name_reveal_title');
         ui.sancName.disabled = editLocked;
@@ -3565,7 +3563,7 @@
       ui.root.setAttribute('data-fog-tool', fogTool || '');
       ui.fogChip.hidden = !fogTool;
       if (fogTool) {
-        ui.fogChipIco.innerHTML = ICON.reveal;
+        ui.fogChipIco.innerHTML = LI.eye;
         ui.fogChipTitle.textContent = t('journey2_fog_paint_active');
         ui.fogChipCount.textContent = countText('revealed', Model.getRevealedCellSet(doc).size);
         ui.fogChipHint.textContent = t('journey2_fog_pan_hint') + ' · ' + t('journey2_fog_ghost_hint') + ' · ' + t('journey2_fog_esc_hint');
@@ -4895,7 +4893,7 @@
       const sym = data.symbols.map(s => '<option value="' + esc(s.id) + '">' + esc(s.sourceLabel) + '</option>').join('');
       ui.panel.innerHTML = `
         <header class="j2-panel-head"><h3 class="j2-panel-title" data-t="journey2_diagnostics"></h3>
-          <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-panel-close data-t-aria="journey2_close" data-t-title="journey2_close">${ICON.close}</button></header>
+          <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-panel-close data-t-aria="journey2_close" data-t-title="journey2_close">${LI.close}</button></header>
         <div class="j2-panel-scroll">
           <section class="j2-sec">
             <h3 class="j2-sec-title" data-t="journey2_layers_label"></h3>

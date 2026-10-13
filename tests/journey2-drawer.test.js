@@ -27,8 +27,8 @@ test('Hex stock count is the hexes left to place, the region total is its access
 });
 
 test('inspect control is a quiet icon button with a magnifier, not the info glyph', () => {
-  assert.match(view, /class="icon-btn j2-inspect"[^>]*>\$\{ICON\.inspect\}/);
-  assert.doesNotMatch(view, /j2-inspect[^\n]*ICON\.info/);
+  assert.match(view, /class="icon-btn j2-inspect"[^>]*>\$\{LI\.inspect\}/);
+  assert.doesNotMatch(view, /j2-inspect[^\n]*(ICON|LI)\.info/);
 });
 
 test('Remove Echoes gets the danger treatment only on hover / focus (D2)', () => {

@@ -359,7 +359,7 @@ test('view: the overlay has one player-facing action button in the header (label
   assert.match(view, /data-j2-sanc-name'\)\) toggleSanctuaryName\(\)/);
   const panel = fn('renderSanctuaryPanel', 'sanctuaryAnchorPx');
   assert.doesNotMatch(panel, /aria-pressed/, 'the label itself changes, so no pressed state');
-  assert.match(panel, /ICON\.eyeOff/); assert.match(panel, /journey2_sanc_name_reveal/); assert.match(panel, /journey2_sanc_name_hide/);
+  assert.match(panel, /LI\.eyeOff/); assert.match(panel, /journey2_sanc_name_reveal/); assert.match(panel, /journey2_sanc_name_hide/);
   assert.match(panel, /ui\.s\.nameLabel\.textContent/, 'only the label span changes: the button (and its focus) is never recreated');
 });
 
