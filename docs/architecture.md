@@ -350,6 +350,10 @@ button that opens a breakdown popover.
 - **Advisory only**: over budget shows an amber tint and dotted underline — it never
   blocks, disables, or confirms anything.
 
+## Filter row and the current ribbon
+
+On `#/` and `#/lists/<id>`, at 901px and wider, `.toolbar` and `.toolbar-filters` are `display: contents`, so the search field, the tier / type / biome / source fields and `#result-count` are flat, wrapping items of `.catalog-bar` in reading order. The current page's ribbon hangs about 28px into the first row, so `js/ribbon-flow.js` (`RibbonFlow.update()`, a DOM-only layout helper, no state, no storage) measures the `.ribbon.on` rect and gives any first-row item that would sit under it a `margin-left` that starts it just past the ribbon (margins converted by the bar's `zoom: 0.9`); an item that then no longer fits wraps to the next row, which the ribbon doesn't reach, and its margin is dropped. Order never changes. Re-run on resize, hashchange, load, header render, status-text change (`renderGrid()`), ribbon `animationend` and item resize. Below 901px the existing filter disclosure is untouched.
+
 ## Environment search index
 
 `js/search-index.js` (`SearchIndex`) builds a `Map<environmentId, { aliasText,
@@ -936,6 +940,7 @@ stays copy-only.
 | Hash routing | `js/route-utils.js` | `tests/routing.test.js` |
 | List rename resolution | `js/list-utils.js` | `tests/list-rename.test.js` |
 | Environment search index | `js/search-index.js` | `tests/search-index.test.js` |
+| Filter row steps around the current ribbon | `js/ribbon-flow.js` | manual QA only (layout) |
 | Prep selection/search/filter logic | `js/prep-utils.js` | `tests/prep-utils.test.js` |
 | Prep manual ordering (geometry, id moves, keyboard targets, autoscroll) | `js/prep-reorder-utils.js` | `tests/prep-reorder-utils.test.js`, `tests/prep-manual-order.test.js` |
 | FreshCutGrass URL encoding | `js/freshcutgrass-utils.js` | `tests/freshcutgrass-utils.test.js` |

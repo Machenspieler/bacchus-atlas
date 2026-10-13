@@ -1520,6 +1520,7 @@ function renderHeader() {
     target.focus();
     target.scrollIntoView({ block: 'start' });
   });
+  if (window.RibbonFlow) RibbonFlow.update(); // the ribbons moved; the filter row steps around them
 }
 
 // Long enough to swallow a burst of typing, short enough that the grid still
@@ -1980,6 +1981,7 @@ function renderGrid() {
     (hasActiveFilters() && list.length ? `<button id="clear-filters-btn">${t('clear_filters')}</button>` : '');
   const clearBtn = document.getElementById('clear-filters-btn');
   if (clearBtn) clearBtn.addEventListener('click', clearAllFilters);
+  if (window.RibbonFlow) RibbonFlow.update(); // the status text changed width
 
   if (!list.length) {
     el.innerHTML = (state.route.name === 'list' && total === 0)

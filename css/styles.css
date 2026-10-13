@@ -881,25 +881,21 @@ body[data-route="list"] .catalog-bar-wrap::before {
 .catalog-bar .toolbar { margin: var(--s-2) 0; flex: 0 1 auto; justify-content: flex-start; }
 .catalog-bar .list-context-bar { margin: var(--s-2) 0; }
 @media (min-width: 901px) {
-  /* Controls on the left, the status right after them: the ribbons hang over the
-   * right-hand end of the header and would cover a status parked there. */
-  .catalog-bar { flex-wrap: wrap; }
+  /* Catalogue and lists: the filter controls and the status are flat items of
+   * .catalog-bar, one wrapping row in reading order. The current page's ribbon
+   * hangs into this row, so js/ribbon-flow.js nudges whatever would sit under it
+   * past its right edge (a margin-left on that item); what no longer fits wraps to
+   * the next row, which the ribbon doesn't reach. */
+  body[data-route="catalog"] .catalog-bar,
+  body[data-route="list"] .catalog-bar { column-gap: var(--s-4); }
+  body[data-route="catalog"] .catalog-bar .toolbar,
+  body[data-route="catalog"] .catalog-bar .toolbar-filters,
+  body[data-route="list"] .catalog-bar .toolbar,
+  body[data-route="list"] .catalog-bar .toolbar-filters { display: contents; }
   .catalog-bar .list-context-bar, .catalog-bar .skeleton-toolbar { flex: 1 1 100%; }
-  .catalog-bar .toolbar { flex-wrap: nowrap; width: max-content; max-width: 100%; }
-  .catalog-bar .toolbar-filters { flex-wrap: nowrap; }
-  .catalog-bar .toolbar-filters > .field, .catalog-bar .search-field { flex-shrink: 0; }
+  .catalog-bar .toolbar-filters > .field, .catalog-bar .search-field { flex-shrink: 0; margin-block: var(--s-2); }
   .catalog-bar .rank-pills { flex-wrap: nowrap; }
   .catalog-bar .result-count { margin: var(--s-2) 0; flex-wrap: nowrap; white-space: nowrap; }
-}
-/* Too narrow even for the controls alone: they may wrap as a group. */
-@container (max-width: 980px) {
-  .catalog-bar .toolbar, .catalog-bar .toolbar-filters { flex-wrap: wrap; width: auto; }
-}
-/* The current page's ribbon (Catalogue) hangs down past the header into this row. On a wide bar the status has room right
- * after the controls and needs no offset; once the bar is narrower than ~1700px it would reach that ribbon, so it starts one
- * ribbon width (plus the gap and some air) further on. Divided by the bar's zoom, since lengths inside it are scaled. */
-@container (min-width: 981px) and (max-width: 1700px) {
-  .catalog-bar .result-count { margin-left: calc((var(--rb-w) + var(--rb-gap) + var(--s-7)) / 0.9); }
 }
 
 /* Below the main catalog grid only — never rendered on Lists, Journey, or
@@ -3041,6 +3037,17 @@ body[data-route="prep"][data-sp-header-mode="expanded"] .prep-bar {
   .prep-freshcutgrass-link .encounter-label-short { display: none; }
   .prep-freshcutgrass-link { padding-inline: var(--s-2); }
 }
+/* Phone-width central panel (~340px): title + the BP stepper + the BP summary +
+   the encounter action cannot share one row (the summary ran under the action
+   button). The header wraps: title and action stay on the first line, Battle
+   Points drops to its own full-width line below. */
+@container prep-central (max-width: 420px) {
+  .prep-central-head--mid { flex-wrap: wrap; row-gap: var(--s-1); padding-block: var(--s-1); }
+  .prep-central-head--mid .prep-central-lead { flex: 1 1 auto; }
+  .prep-central-head--mid .prep-central-actions { margin-left: auto; }
+  .prep-central-head--mid .bp-slot { order: 3; flex: 1 1 100%; margin-left: 0; }
+  .prep-central-head--mid .bp { justify-content: space-between; }
+}
 
 /* ---- popover (position: fixed, so opening never shifts layout) ---- */
 .bp-popover {
@@ -3727,9 +3734,13 @@ body[data-route="prep"][data-sp-header-mode="expanded"] .prep-bar {
   .item-toolbar-group { flex-wrap: wrap; max-width: 100%; }
 }
 
-/* ---- phone: no nested scroll areas, 44px touch targets ---- */
+/* ---- phone: bounded picker lists, 44px touch targets ---- */
 @media (max-width: 760px) {
-  #prep-env-list, #prep-adv-list { max-height: none; overflow: visible; }
+  /* The pickers list the whole catalogue (300+ environments, 200+ adversaries):
+     unbounded they made the page ~36,000px tall. Keep a bounded, tall-enough
+     window with its own scroll; overscroll-behavior stops the list from
+     dragging the page once it hits an end. */
+  #prep-env-list, #prep-adv-list { max-height: min(60vh, 28rem); overscroll-behavior: contain; }
   .prep-env-toolbar, .prep-adv-toolbar { display: flex; flex-wrap: wrap; row-gap: var(--s-2); }
   .prep-env-toolbar .prep-search, .prep-adv-toolbar .prep-search { flex: 1 1 160px; }
   .prep-sel-remove { --pc-remove: 44px; }
