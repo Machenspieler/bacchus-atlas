@@ -1221,10 +1221,10 @@
     }
 
     /** Hex Stock card artwork: the card carries its biome in data-art and css/journey2.css paints the matching img/biomes/<biome>-300.avif / -200.webp (decorative, CSS only).
-     *  Only the eleven natural Journey biomes have art (same set as REGION_ART); a fully overtaken region keeps the plain card. */
+     *  The eleven natural Journey biomes have art (same set as REGION_ART); a fully overtaken region (habitat.overtaken) has its own 'fully-shadowblighted' art. A merely blighted region keeps its biome's art. */
     function applyStockArt(refs, b) {
-      const biome = b.habitat.overtaken ? '' : b.habitat.biome;
-      if (REGION_ART[biome]) refs.root.setAttribute('data-art', biome); else refs.root.removeAttribute('data-art');
+      const biome = b.habitat.overtaken ? OVERTAKEN_ART : b.habitat.biome;
+      if (biome === OVERTAKEN_ART || REGION_ART[biome]) refs.root.setAttribute('data-art', biome); else refs.root.removeAttribute('data-art');
     }
 
     /** Updates a card's text and state in place (the handle elements are never recreated mid-drag). */
@@ -1596,7 +1596,7 @@
     /* Illustrated headers for the shared Region Inspector and the sanctuary overlay (both are .j2-region-inspector panels). One 960x540 WebP per
      * image under img/journey2/headers/<file>.webp; a position override only where the default 'center 25%' crops an image badly.
      * REGION_ART: the eleven natural Journey biomes. universal / settlement are catalog categories, never Journey regions, so they have no entry:
-     * a fully overtaken region keeps the plain header. SANCTUARY_ART: the Settlement illustration belongs to sanctuaries only (decorative; no data). */
+     * a fully overtaken region has its own OVERTAKEN_ART illustration (1280x480, the source's aspect). SANCTUARY_ART: the Settlement illustration belongs to sanctuaries only (decorative; no data). */
     const REGION_ART = {
       forest: {}, drylands: {}, frozen: {}, underground: {}, tropical: {}, mountain: {}, badlands: {},
       aquatic: { pos: 'center 40%' },      // keeps the sea stacks and shows more water
@@ -1604,6 +1604,7 @@
       rolling: { pos: 'center 40%' },      // the layered ridge lines
       grassland: { pos: 'center 50%' },    // the plain, river and acacias; at 25% it is mostly sky
     };
+    const OVERTAKEN_ART = 'fully-shadowblighted';
     const SANCTUARY_ART = { file: 'settlement', pos: null };
     function applyArt(root, file, pos) {
       if (!file) { root.removeAttribute('data-art'); root.style.removeProperty('--j2-art'); root.style.removeProperty('--j2-art-pos'); return; }
@@ -1612,7 +1613,8 @@
       if (pos) root.style.setProperty('--j2-art-pos', pos); else root.style.removeProperty('--j2-art-pos');
     }
     function applyHeaderArt(b) {
-      const biome = b.habitat.overtaken ? '' : b.habitat.biome, art = REGION_ART[biome];
+      if (b.habitat.overtaken) { applyArt(ui.inspector, OVERTAKEN_ART, 'center 55%'); return; }   // the galaxy sits a little below the middle
+      const biome = b.habitat.biome, art = REGION_ART[biome];
       applyArt(ui.inspector, art ? biome : '', art && art.pos);
     }
 
