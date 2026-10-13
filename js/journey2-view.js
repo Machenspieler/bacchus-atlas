@@ -3402,7 +3402,8 @@
        ============================================================ */
 
     function viewSize() { return [ui.viewport.clientWidth, ui.viewport.clientHeight]; }
-    function minScale() { const [vw, vh] = viewSize(); return Geo.fitCamera(Math.max(200, vw - panelInset()), vh, data.template.worldSizePx[0], data.template.worldSizePx[1], 8).scale * 0.8; }
+    /** Zooming out stops at Fit (the whole map in the area the overlays leave free): further out is only empty space. */
+    function minScale() { const [vw, vh] = viewSize(); return Geo.fitCamera(Math.max(200, vw - panelInset() - sideInset()), vh, data.template.worldSizePx[0], data.template.worldSizePx[1], 8).scale; }
 
     /** Width the open diagnostics drawer takes from the right edge of the viewport (0 when closed or on a narrow screen). */
     function panelInset() {
@@ -3469,7 +3470,7 @@
 
     function setCamera(next, keepFit) {
       const [vw, vh] = viewSize();
-      cam = Geo.clampCamera(next, vw, vh, data.template.worldSizePx[0], data.template.worldSizePx[1], 120);
+      cam = Geo.clampCamera(next, vw, vh, data.template.worldSizePx[0], data.template.worldSizePx[1], 24, { left: sideInset(), right: panelInset() });
       if (!keepFit) fitMode = false;
       if (cameraReady) liveView = measureView() || liveView;
       scheduleApply();

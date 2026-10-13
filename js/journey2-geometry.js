@@ -421,14 +421,22 @@
     return scale;
   }
 
-  /** Keeps at least `keep` screen px of the world visible on every side while panning. */
-  function clampCamera(cam, viewW, viewH, worldW, worldH, keep) {
-    const k = keep == null ? 80 : keep;
-    const w = worldW * cam.scale, h = worldH * cam.scale;
+  /**
+   * Bounds the camera to the map. Per axis, inside the free area (the viewport minus `inset.left` / `inset.right` px that overlays cover):
+   * a map smaller than the area (plus `margin` px of slack on each side) is centred, a larger one may not leave more than `margin` px of
+   * empty space beside its edges — so zooming out never strands the map in a corner of an empty viewport.
+   */
+  function clampCamera(cam, viewW, viewH, worldW, worldH, margin, inset) {
+    const m = margin == null ? 24 : margin, l = (inset && inset.left) || 0, r = (inset && inset.right) || 0;
+    const axis = (t, size, lo, hi, world) => {
+      const len = world * cam.scale;
+      if (len + 2 * m <= hi - lo) return lo + (hi - lo - len) / 2;
+      return Math.min(lo + m, Math.max(hi - m - len, t));
+    };
     return {
       scale: cam.scale,
-      tx: Math.min(viewW - k, Math.max(k - w, cam.tx)),
-      ty: Math.min(viewH - k, Math.max(k - h, cam.ty)),
+      tx: axis(cam.tx, viewW, l, viewW - r, worldW),
+      ty: axis(cam.ty, viewH, 0, viewH, worldH),
     };
   }
 

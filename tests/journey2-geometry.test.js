@@ -241,8 +241,12 @@ test('camera maths: round trip, cursor-anchored zoom, clamping, fit, grid agreem
   assert.equal(Geo.zoomAt(cam, 0, 0, 0.0001, 0.1, 8).scale, 0.1);
   const f = Geo.fitCamera(1000, 600, 4848, 3185, 10);
   assert.ok(f.scale * 4848 <= 980.001 && f.scale * 3185 <= 580.001);
-  const cl = Geo.clampCamera({ scale: 1, tx: 99999, ty: -99999 }, 1000, 600, 4848, 3185, 80);
-  assert.equal(cl.tx, 920); assert.equal(cl.ty, 80 - 3185);
+  const cl = Geo.clampCamera({ scale: 1, tx: 99999, ty: -99999 }, 1000, 600, 4848, 3185, 24);
+  assert.equal(cl.tx, 24); assert.equal(cl.ty, 600 - 24 - 3185);
+  const small = Geo.clampCamera({ scale: 0.1, tx: 700, ty: 400 }, 1000, 600, 4848, 3185, 24);        // a map smaller than the view is centred
+  assert.ok(Math.abs(small.tx - (1000 - 484.8) / 2) < 1e-9 && Math.abs(small.ty - (600 - 318.5) / 2) < 1e-9);
+  const inset = Geo.clampCamera({ scale: 0.1, tx: 0, ty: 0 }, 1000, 600, 4848, 3185, 24, { left: 400 });   // ...inside the area an overlay leaves free
+  assert.ok(Math.abs(inset.tx - (400 + (600 - 484.8) / 2)) < 1e-9);
   for (const sc of [0.2, 1, 4, 8]) {
     const c2 = { scale: sc, tx: 33, ty: 77 }, p = grid.cellCenter(46, 1);
     const scr = Geo.worldToScreen(c2, p[0], p[1]), back = Geo.screenToWorld(c2, scr[0], scr[1]);

@@ -1322,3 +1322,11 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Why:** generating regions in bulk leaves a long stock of untouched cards; deleting them one by one (each with its own dialog) was tedious.
 - **Decision:** a small trash button sits in the Hex stock header beside the count; it is hidden while no region is fully unplaced. "Unplaced" means a region with **no** placed hex — a partly placed region stays. A confirmation dialog states the count; Cancel is the default focus. The deletion is one atomic model command (`deleteUnplacedBatches`), so one Undo restores all of them. It never touches tiles, Fog, Echoes or sanctuaries.
 - **Where:** `js/journey2-model.js` (`deleteUnplacedBatches`), `js/journey2-view.js` (`confirmClearUnplaced`), `data/i18n.json` (`journey2_clear_unplaced*`), `tests/journey2-inspector.test.js`.
+
+## PD-059: Journey — the camera is bounded to the map (24 px slack) and zooms out no further than Fit
+
+- **Status:** Active (amends the "clamped to keep 120 px of the map on screen" note in PD-047's amendment)
+- **Date:** 2026-10-13
+- **Why:** zooming out around a corner hex left the whole map in one corner of an empty brown viewport — the old clamp only kept 120 px of the map visible, and minimum zoom was 0.8 × Fit.
+- **Decision:** per axis, inside the area the left sidebar/rail and the open diagnostics drawer leave free: a map smaller than the area is **centred**; a larger one may never leave more than **24 px** of empty space beside its edges. Minimum zoom is exactly **Fit**. Cursor-anchored wheel/pinch zoom is unchanged; the bounds correction is applied on top.
+- **Where:** `js/journey2-geometry.js` (`clampCamera`), `js/journey2-view.js` (`minScale`, `setCamera`), `tests/journey2-geometry.test.js`.
