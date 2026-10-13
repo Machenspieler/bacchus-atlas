@@ -439,9 +439,8 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       bounce); the Journey nav button stays active on the overlay route; opening/closing an Environment overlay, Back and Forward never
       remount the map (camera, selection, sidebar kept); `#/prep` then Back returns to the same saved campaign; no old generator page,
       V1/V2 switch or "Journey 2" text in EN or RU.
-- [ ] Open `#/journey`: header, one compact toolbar (map name, save status, Undo/Redo,
-      zoom, the Fog group: Biome colors / Player Preview), a left sidebar (generator + stock), the map fills the rest. No page scroll
-      at 1366×768 and 1920×1080; Diagnostics is closed.
+- [ ] Open `#/journey`: header, a left rail (Party, Route, Find Echo, Campaign) and panel (title, GM | Players segment, Generate region, stock), a floating bar with Undo/Redo, zoom and Fit at the map's bottom, the map fills the rest. No page scroll
+      at 1366×768 and 1920×1080; Diagnostics is closed. Shortcuts P / R / E / V / [ work on a Russian layout too; the Campaign menu opens, Esc closes it and focus returns to its button; Remove Echoes and Create sanctuaries still ask first.
 - [ ] PD-034: **Player Preview** shows Reveal / Hide beside Undo/Redo. Arm one: dashed outlines mark hidden placed hexes; painting reveals/hides and Undo reverts; Esc turns the tool off, a second Esc returns to the GM view (no tool left armed). Zoom and pan, reload: the same zoom and spot return (a fitted map stays fitted); a corrupt `dhcodex_journey2_ui` falls back to Fit.
 - [ ] **Generate region** rolls everything at random. A card appears: Placed 0 / N, drag targets
       **1 hex** and **All N**. Nothing is on the map.
@@ -501,8 +500,8 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       generated glyph and the GM view never draws the fog veil (no Fog button, PD-036); the veil appears only in Player Preview, with the sanctuary
       icons and MARROGATE / HORIZON labels staying clean under it. Generating, placing, moving or deleting a
       region never changes the fog. Reload keeps the fog.
-- [ ] Player Preview: the sidebar, rail, cards, Undo/Redo, save status, fog controls and inspector are gone;
-      only the Player Preview flag, zoom/Fit and **Back to GM** remain. Unexplored hexes carry the stronger gray
+- [ ] Player Preview: the cards, Campaign menu, Find Echo, save status and inspector are gone;
+      the Players side of the segment is selected, the rail gains Brush, Outline, Print and Link, and zoom/Fit and the **GM** side of the segment remain. Unexplored hexes carry the stronger gray
       texture and no generated glyphs; revealed hexes show their glyphs; a region half revealed shows only its
       revealed hexes; the base map, labels and sanctuary icons are unchanged. Pan and zoom work, clicks do
       nothing, Ctrl+Z does nothing. **Back to GM** (or Esc) restores the previous pan/zoom, the sidebar state and
@@ -541,7 +540,7 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       reason and changes nothing; an import also ends Player Preview and any fog tool.
 - [ ] Diagnostics (via `debugApi().runAction('diagnostics')`) opens the drawer (grid, markers, protection, print proof)
       and closes again; the inspector's footer then shows "Hex q,r".
-- [ ] Party marker (PD-045): the "Party" button is in the panel and on the collapsed rail, in the GM view AND in Player Preview. With no saved position a press makes the gold star follow the cursor (a chip says so; gone off the map); a click drops it, Esc / the chip's Cancel / the button cancels. Drag the placed star hex to hex: it snaps, and in Player Preview the seven lit hexes move live. One drop or drag is one Undo step. Hide removes the star AND its light for everyone and the next show puts it back where it was. It can stand on a sanctuary, Marrogate, Horizon and a fully overtaken hex, and it stays above hex symbols, X's and Echo crystals with a white outline. With the star shown, "Locate Soul Echoes" starts at once from its hex and "Plan route" starts with point A set (Esc once lets you pick A by hand); hidden, both behave as before. Pressing the star while Route / Locate / the fog brush is active drags the star, not the tool. Check RU and EN and zoomed-out sizing.
+- [ ] Party marker (PD-045): the "Party" button is the first rail tool (shortcut P), in the GM view AND in Player Preview. With no saved position a press makes the gold star follow the cursor (a chip says so; gone off the map); a click drops it, Esc / the chip's Cancel / the button cancels. Drag the placed star hex to hex: it snaps, and in Player Preview the seven lit hexes move live. One drop or drag is one Undo step. Hide removes the star AND its light for everyone and the next show puts it back where it was. It can stand on a sanctuary, Marrogate, Horizon and a fully overtaken hex, and it stays above hex symbols, X's and Echo crystals with a white outline. With the star shown, "Locate Soul Echoes" starts at once from its hex and "Plan route" starts with point A set (Esc once lets you pick A by hand); hidden, both behave as before. Pressing the star while Route / Locate / the fog brush is active drags the star, not the tool. Check RU and EN and zoomed-out sizing.
 - [ ] RU and EN: no clipped labels in the toolbar, cards or dialogs; `#/journey` still works.
 
 ## Journey 2 player map print
@@ -612,7 +611,7 @@ what changes at each):
 
 ### Shareable player link (PD-052)
 - [ ] In Player Preview (with some hexes revealed, the party shown, a sanctuary name revealed, one Echo Collected on a revealed sanctuary and one Collected under fog) the **Player link** button
-  (panel and, collapsed, the rail) copies a link and shows "Link copied · N characters" and a toast; with the clipboard blocked the link appears in a selected read-only field and no success
+  (in the rail while Player Preview is on) copies a link and shows "Link copied · N characters" and a toast; with the clipboard blocked the link appears in a selected read-only field and no success
   toast is shown. A link over 2000 characters adds the warning. The button is absent in the GM view and on the player page. A new link is needed after any later change (it is a snapshot).
 - [ ] Open the link in a **fresh browser profile / private window**: only the site's brand and the RU / EN switch are in the header (no ribbons, no soundboard); the map is the preview — fog, the
   revealed tiles and region outlines, the party star with its six lit hexes, only the revealed sanctuary name, the dim flat crystal on the revealed Echo sanctuary and **none** on the fogged or Available one.

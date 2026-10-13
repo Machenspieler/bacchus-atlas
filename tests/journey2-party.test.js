@@ -229,10 +229,9 @@ test('Player Preview draws the marker from the projection and the print draws it
   assert.match(css, /\.j2-party-mark\.is-bw \.j2-party-star \{ fill: #111; stroke: #111; \}/);
 });
 
-test('the button exists in the panel (both views) and on the collapsed rail, and every string has English and Russian', () => {
-  assert.match(view, /<div class="j2-ctl-row j2-ctl-party"[^]*?data-j2-party aria-pressed="false"/);
-  assert.match(view, /data-j2-party data-j2-rail-src="party"/);
-  assert.match(view, /party: \(\) => ui\.partyBtn/);
+test('the button is a rail tool in both views (first slot, shortcut P), and every string has English and Russian', () => {
+  assert.match(view, /railBtn\('data-j2-party aria-pressed="false"', LI\.party, 'journey2_party_btn', 'P'\)/);
+  assert.match(view, /ui\.partyBtn = container\.querySelector\('\[data-j2-party\]'\)/);
   const keys = Object.keys(i18n.en).filter(k => k.startsWith('journey2_party_') || k.startsWith('journey2_live_party_'));
   assert.ok(keys.length >= 12, 'found ' + keys.length);
   for (const k of keys) { assert.ok(i18n.ru[k], 'ru ' + k); assert.equal(i18n.en[k] === i18n.ru[k], false, 'translated ' + k); }

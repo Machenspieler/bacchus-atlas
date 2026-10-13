@@ -424,8 +424,8 @@ test('isolation: Locate keeps no storage keys and the document has no Locate fie
 
 const fn = (from, to) => view.slice(view.indexOf('function ' + from), view.indexOf('function ' + to, view.indexOf('function ' + from) + 1));
 
-test('view: Locate is a real, GM-only toolbar button inside the Echo group (hidden in Player Preview), unavailable with a reason', () => {
-  assert.match(view, /<button type="button" class="btn btn-sm j2-tool" data-j2-echo-locate aria-pressed="false" aria-describedby="j2-locate-reason">/);
+test('view: Locate is a real, GM-only rail button (hidden in Player Preview), unavailable with a reason', () => {
+  assert.match(view, /railBtn\('data-j2-echo-locate aria-pressed="false" aria-describedby="j2-locate-reason"', LI\.locate, 'journey2_rail_locate', 'E'\)/);
   assert.match(fn('applyPreviewChrome', 'enterPreview'), /ui\.echoLocate\.hidden = on/);
   const ui = fn('updateEchoUi', 'placeSoulEchoes');
   assert.match(ui, /aria-disabled/); assert.match(ui, /locateReason\.textContent/); assert.match(ui, /ui\.echoLocate\.title/);

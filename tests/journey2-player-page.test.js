@@ -53,12 +53,16 @@ test('isolation: the player page is mounted with NO storage and NO generator, an
 test('the player page hides every GM control and shows no way into the editor', () => {
   const chrome = fn('applyPreviewChrome', 'enterPreview');
   assert.match(chrome, /ui\.previewBar\.hidden = !on \|\| playerMode/, 'no fog brush, outline, print or "back" on the player page');
-  assert.match(chrome, /if \(playerMode\) \{[\s\S]{0,300}data-j2-history-group\], \.j2-ctl-party/, 'no history and no party toggle');
+  assert.match(chrome, /if \(playerMode\) \{[\s\S]{0,500}ui\.partyBtn\.hidden = true[\s\S]{0,300}data-j2-history-group\]/, 'no history and no party toggle');
+  assert.match(chrome, /ui\.fogTool\.hidden = !on \|\| playerMode/, 'no fog brush');
+  assert.match(chrome, /ui\.railPv\.hidden = !on \|\| playerMode/, 'no outline, print or link');
+  assert.match(chrome, /ui\.sideToggle\.hidden = true/, 'no panel to fold');
   assert.match(chrome, /data-j2-gm-row\]'\)\) row\.hidden = on/);
   assert.match(chrome, /ui\.echoLocate\.hidden = on/);
   assert.match(view, /function routeLocked\(\) \{ return editLocked && !playerMode; \}/, 'the planner works on the read-only page');
   const css = read('css/journey2.css');
-  assert.match(css, /\.j2-ctl-row\[hidden\], \.j2-tool\[hidden\] \{ display: none; \}/, 'hidden rows really hide');
+  assert.match(css, /\.j2-ctl-preview\[hidden\], \.j2-side-scroll\[hidden\], \.j2-rail-grp\[hidden\], \.j2-rb\[hidden\], \.j2-title-chip\[hidden\] \{ display: none; \}/, 'hidden tools really hide');
+  assert.match(css, /\.j2\[data-player\] \.j2-side \{ display: none; \}/, 'the player page has no panel; its title is a chip over the map');
   assert.match(css, /body\[data-route="playermap"\] \.shell/);
 });
 
@@ -125,11 +129,9 @@ test('every player-page string exists in both languages with matching placeholde
 });
 /* ---------------- the GM's "Player link" button ---------------- */
 
-test('Copy player link: lives in the Player Preview bar (and its rail proxy), is built from the projection document, and reports success only after a real copy', () => {
+test('Copy player link: lives in the rail while Player Preview is on, is built from the projection document, and reports success only after a real copy', () => {
   const body = fn('copyPlayerLink', 'maybeResumePreview');
-  assert.match(view, /data-j2-share-link data-t-title="journey2_share_title"/);
-  assert.match(view, /data-j2-share-link data-j2-rail-src="share"/);
-  assert.match(view, /share: \(\) => ui\.shareBtn/);
+  assert.match(view, /railBtn\('data-j2-share-link data-t-title="journey2_share_title"'/);
   assert.match(view, /else if \(b\.hasAttribute\('data-j2-share-link'\)\) copyPlayerLink\(\);/);
   assert.match(body, /if \(inst\.disposed \|\| !previewMode \|\| playerMode/, 'only from the GM\'s Player Preview');
   assert.match(body, /Share\.createLinkText\(projectionDoc\(\), data\.ctx, \{ lang: lang, view: view \}\)/, 'the same document Player Preview draws, party light included');

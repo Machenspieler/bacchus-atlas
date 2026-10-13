@@ -384,16 +384,17 @@ width; at <= 900px every one of them is the map width minus `2 * var(--s-3)`. Ca
 for static headings. A control whose label is the action it will take (e.g. *Reveal to players* / *Hide from players*)
 does not also carry `aria-pressed`.
 
-### Journey side drawer (`.j2-side`, `.j2-rail`)
-Row 1 (history / zoom / Fit / collapse) is shared by both modes. The GM tools are three zones that mirror the collapsed
-rail's groups — View, Tools, Echoes + sanctuaries — separated by `--line-faint` hairlines; rows fill their width so edges
-align. "Generate region" is the only solid gold element and is pinned under the toolbar; only the sticky Hex stock heading
+### Journey rail and side drawer (`.j2-rail`, `.j2-side`, `.j2-mapbar`)
+The rail is always visible and is the toolbar: icon + one-word label + a corner keycap per tool (Lucide icons on one 24px grid and stroke,
+`.j2-li`); a pressed tool or the open Campaign menu button takes the gold selected fill. The panel is title, a GM | Players segment (the
+selected side is gold), New region and the stock; history / zoom / Fit float over the map in `.j2-mapbar`. The rare, whole-campaign actions
+open from the rail's Campaign menu (switch row for Biome colors, red only for Remove Echoes on hover / focus). "Generate region" is the only solid gold element and is pinned under the toolbar; only the sticky Hex stock heading
 and the cards scroll. The heading's number is the hexes left to place (gold-soft while above 0). A finished, collapsed
 region card is a compact two-line row with a dimmed tile; cards with hexes left stay full size with the gold wash. Teal
 in the stock marks informational progress/completion (bar, "all placed" line); gold stays selected/primary; fear-red is
 only the Shadowblighted badge and the hover/focus state of Remove Echoes. The card's inspect control is a quiet
-`.icon-btn` with a magnifier — the info glyph is reserved for help. In Player Preview the fog brush button shows its name
-and an On / Off state beside the gold pressed fill, and "Back to GM" sits with the mode flag.
+`.icon-btn` with a magnifier — the info glyph is reserved for help. In Player Preview the fog brush is a rail tool
+that shows the gold pressed fill (its on-map chip names the active tool), and the way back is the GM side of the segment.
 
 ### Toast & tooltip
 Toasts stack from one screen corner (the same corner the "back to top" button

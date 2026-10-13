@@ -328,12 +328,12 @@ const view = read('js/journey2-view.js');
 const fn = (name, next) => view.slice(view.indexOf('function ' + name), view.indexOf('function ' + next));
 
 test('toolbar: Reveal and Hide are real toggle buttons with aria-pressed, the fog-state toggle and Player Preview are discoverable', () => {
-  assert.match(view, /<button type="button" class="btn btn-sm j2-tool j2-paint-tool" data-j2-fog-tool="paint" aria-pressed="false"/);
+  assert.match(view, /railBtn\('data-j2-fog-tool="paint" aria-pressed="false"/);
   assert.doesNotMatch(view, /data-j2-fog-tool="(reveal|hide)"/, 'one brush button replaces Reveal and Hide');
   assert.doesNotMatch(view, /data-j2-fog-state/, 'no Fog overlay toggle (PD-036)');
-  assert.match(view, /data-j2-preview data-t-title="journey2_preview_title"/);
-  assert.match(view, /<button type="button" class="btn btn-ghost btn-sm j2-tool j2-preview-back" data-j2-preview-back>/);
-  assert.match(view, /role="group" data-j2-gm-row data-j2-fog-group/);
+  assert.match(view, /data-j2-preview aria-pressed="false" data-t-title="journey2_preview_title"/);
+  assert.match(view, /data-j2-preview-back aria-pressed="true" data-t-title="journey2_preview_back"/);
+  assert.match(view, /class="j2-menu-wrap j2-camp" data-j2-gm-row/);
   assert.match(fn('updateFogUi', 'setFogTool'), /setAttribute\('aria-pressed', String\(!!fogTool\)\)/);
 });
 
@@ -360,7 +360,7 @@ test('priority: fog stroke beats neutral tile selection; Space or the middle but
   const esc = view.slice(view.indexOf('function onDocumentKey'), view.indexOf('if (e.key === \' \' && fogTool'));
   const order = ['openMenu', 'fogStroke', 'if (pan)', 'if (tr)', 'if (fogTool)', 'if (previewMode)', 'inspectorOpen()'].map(s => esc.indexOf(s));
   assert.ok(order.every(i => i > 0) && order.every((x, i) => i === 0 || x > order[i - 1]), 'menu, stroke, pan, drag, tool, preview, inspector: ' + order);
-  assert.match(view, /return t0 === document\.body \|\| t0 === ui\.viewport \|\| !!\(t0 && t0\.closest && t0\.closest\('\[data-j2-fog-group\], \[data-j2-echo-group\], \[data-j2-preview-bar\], \[data-j2-rail\]'\)\)/, 'Space pans from the map, the page, a fog button, a Soul Echoes button or the collapsed rail');
+  assert.match(view, /return t0 === document\.body \|\| t0 === ui\.viewport \|\| !!\(t0 && t0\.closest && t0\.closest\('\[data-j2-preview-bar\], \[data-j2-rail\]'\)\)/, 'Space pans from the map, the page, the preview note or the rail');
   assert.match(fn('onViewportKey', 'handleFromEvent').slice(0, 900) + view, /Delete/);
   assert.match(view, /if \(sel\.tileId && !fogTool && !previewMode\) returnSelected\(\)/, 'Return to stock is unavailable while a tool is active');
 });
@@ -408,7 +408,7 @@ test('Player Preview: read-only, projection-driven, document and history untouch
   assert.match(tiles, /Projection\.buildPlayerProjection\(projectionDoc\(\), data\.ctx\)/, 'the stored document, or the same with the party at its draft cell (PD-045)');
   assert.doesNotMatch(tiles, /doc\.tiles|doc\.batches/, 'the preview never reads regions directly');
   const chrome = fn('applyPreviewChrome', 'enterPreview');
-  for (const part of ['ui.gmControls.hidden = false', 'ui.sideScroll.hidden = on', 'ui.previewBar.hidden = !on', "row.hidden = on"]) assert.ok(chrome.includes(part), part);
+  for (const part of ['ui.gen.hidden = on', 'ui.sideScroll.hidden = on', 'ui.previewBar.hidden = !on', "row.hidden = on"]) assert.ok(chrome.includes(part), part);
   assert.doesNotMatch(chrome, /ui\.sidewrap\.(hidden|inert) = on/, 'the panel stays in place: only its content is swapped (PD-040)');
   assert.doesNotMatch(chrome, /ui\.historyGroup\.hidden = on/, 'Undo / Redo stay available beside Reveal / Hide');
   assert.doesNotMatch(fn('undo', 'redo'), /previewMode\) return/, 'Undo works in Player Preview (PD-034)');
@@ -442,13 +442,13 @@ test('documentation names the projection renderer the future print phase must re
 
 /* ---------------- PD-034: Reveal / Hide live in Player Preview; the camera is remembered ---------------- */
 
-test('PD-034: Reveal / Hide are in the Player Preview bar, not the GM toolbar', () => {
+test('PD-034 / PD-057: the brush is a rail tool shown only in Player Preview, never in the GM\'s Campaign menu', () => {
   const html = view.slice(view.indexOf('function buildSurface'), view.indexOf('<div class="j2-tip"'));
-  const gm = html.slice(html.indexOf('data-j2-fog-group'), html.indexOf('data-j2-preview-bar'));
-  const bar = html.slice(html.indexOf('data-j2-preview-bar'));
-  assert.doesNotMatch(gm, /data-j2-fog-tool=/, 'the GM toolbar has no Reveal / Hide');
-  assert.doesNotMatch(gm, /data-j2-fog-state/, 'the GM view has no Fog overlay toggle');
-  assert.match(bar, /data-j2-fog-tool="paint"/);
+  const menu = html.slice(html.indexOf('data-j2-menu="campaign"'), html.indexOf('<aside class="j2-side"'));
+  const rail = html.slice(html.indexOf('<nav class="j2-rail"'), html.indexOf('<aside class="j2-side"'));
+  assert.doesNotMatch(menu, /data-j2-fog-tool=|data-j2-fog-state/, 'the Campaign menu has no Reveal / Hide and no Fog overlay toggle');
+  assert.match(rail, /data-j2-fog-tool="paint"[^']*hidden'/, 'hidden until the preview shows it');
+  assert.match(fn('applyPreviewChrome', 'enterPreview'), /ui\.fogTool\.hidden = !on \|\| playerMode/);
   assert.match(fn('leavePreview', 'printPageMarkup'), /setFogTool\(null/, 'the tool never outlives the preview');
 });
 

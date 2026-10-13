@@ -139,10 +139,10 @@ test('L5-03: a language change clears the obsolete live announcement and announc
   assert.doesNotMatch(reloc, /announce\(|hint\(/);
 });
 
-test('L5-15: the Biome colors toggle has one state-independent accessible name; aria-pressed carries the state', () => {
-  assert.match(view, /data-j2-biome-colors aria-pressed="true" data-t-aria="journey2_biome_label"/);
+test('L5-15: the Biome colors switch (a Campaign menu checkbox) has one state-independent name; aria-checked carries the state', () => {
+  assert.match(view, /role="menuitemcheckbox" aria-checked="true" data-j2-biome-colors><span class="j2-mi-ico" aria-hidden="true">\$\{LI\.palette\}<\/span><span data-t="journey2_biome_label"><\/span>/);
   const fog = view.slice(view.indexOf('function updateFogUi()'), view.indexOf('ui.fogTool.setAttribute'));
-  assert.match(fog, /ui\.biomeColors\.setAttribute\('aria-pressed', String\(showBiome\)\)/);
+  assert.match(fog, /ui\.biomeColors\.setAttribute\('aria-checked', String\(showBiome\)\)/);
   assert.doesNotMatch(fog, /biomeColors\.setAttribute\('aria-label'/);
   assert.match(fog, /ui\.biomeColors\.title = showBiome \? t\('journey2_biome_hide'\) : t\('journey2_biome_show'\)/);
   assert.equal(i18n.en.journey2_biome_label, 'Biome colors');

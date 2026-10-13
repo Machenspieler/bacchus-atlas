@@ -1036,14 +1036,16 @@ Run all of them with `node --test tests/*.test.js`.
   (`journey2Generator.roll()`, no arguments); the only commands that touch a
   batch after creation are `setNotes` and `deleteBatch`. No raw dice are shown
   (the stored `rolls`/entry pairs are provenance only).
-- **Sidebar / cards / zoom (Phase A, view):** the map fills the stage and the
-  sidebar is a `transform`-animated overlay (340px / 44px rail,
-  `inert` on the hidden half, `aria-expanded` on both toggles). The toolbar lives at the top of that panel (PD-040): `.j2-controls`
-  (Undo / Redo, zoom, Fit, collapse; then Biome colors + Player Preview; Plan route + Locate Soul Echoes; Soul Echoes + Remove Echoes;
-  Generate sanctuaries) above the scrolling New region + Hex stock. The collapsed rail repeats the same buttons icon-only: each rail
-  button is a *proxy* carrying the same `data-j2-*` attribute as its source (the one delegated click handler serves both) and only its
-  state is mirrored by `syncRail()` (a `MutationObserver` on `.j2-controls`: disabled, aria-pressed, aria-disabled, accessible name,
-  hidden). `focusTool()` focuses the proxy when the panel is collapsed. No code that updates a toolbar button needs to know the rail exists; its state is
+- **Rail / panel / map bar / cards (view, PD-057):** the map fills the stage. An always-visible **rail** (`.j2-rail`, 72px) and the **panel** (`.j2-side`, 340px) float over its
+  left edge inside `.j2-sidewrap` (a flex row with `pointer-events: none` on the wrapper); collapsing fades the panel out (`inert`, taken out of flow) and leaves the rail.
+  `--j2-inset-left` (CSS) and `sideInset()` (JS) are the strip they cover. The rail's buttons are the real tools — `data-j2-party`, `-route-plan`, `-echo-locate`, `-fog-tool`,
+  `-outline`, `-print-open`, `-share-link`, `-mode-toggle`, the side toggle and the Campaign menu button — built by `railBtn()`; the one delegated click handler (`onRootClick`) serves
+  them and the state code writes to them directly (there are no mirrored proxies and no `syncRail`). `applyPreviewChrome()` shows / hides them per mode and `syncSideToggle()` keeps the
+  toggle's icon, name and `aria-expanded` in step with the language and the panel state. The panel is title, the **GM | Players** segment (`data-j2-preview-back` / `data-j2-preview`,
+  `aria-pressed` = the mode), the preview note, New region and the Hex stock; the GM-only whole-campaign actions are the rail's Campaign menu (`data-j2-menu="campaign"`, the shared
+  `openMenu` machinery; an action closes it, the biome switch does not). Undo / Redo / zoom / Fit are the floating `.j2-mapbar`. `onToolHotkey()` (called from `onDocumentKey`) maps
+  P / R / E / V / [ by `event.code` to a click on the rail button. `focusTool()` focuses the Players switch when the panel is collapsed and the Campaign button for a closed menu's item.
+  Player page (`playerMode`): the panel is `display: none`, a `.j2-title-chip` carries the title, and ≤640px the rail is a bottom bar. The collapsed state is
   stored via `store.loadUi/saveUi`, never in the document, and toggling never
   touches camera, selection or the active card. Cards are compact; exactly one
   (`activeBatchId`) is expanded (placement controls and, for a region with a biome, the Environments
@@ -1399,7 +1401,7 @@ Everything GM-only is hidden one by one in `applyPreviewChrome` (history, party 
 (`routeLocked()` is `editLocked && !playerMode`). In the preview — the GM's and the player's alike — `routeIndex()` is built from the player projection's overlays (the dots of a
 revealed tile are its Terrain Rating; a fully overtaken symbol is blocked), so a fogged hex is unknown, never used and never routed around, and the route details omit the
 expected-encounter estimate. Touch: `touchDown` / `touchMove` / `touchEnd` track fingers (two = pinch zoom holding the world point between them; `lostpointercapture` never ends a
-finger), `TOUCH_SLOP_PX` and `ROUTE_PIN_HIT_TOUCH_PX` widen the tap and the pin. The GM's **Player link** button (`copyPlayerLink`, Player Preview bar + rail) calls
+finger), `TOUCH_SLOP_PX` and `ROUTE_PIN_HIT_TOUCH_PX` widen the tap and the pin. The GM's **Player link** button (`copyPlayerLink`, the rail while Player Preview is on) calls
 `Share.createLinkText(projectionDoc(), data.ctx, { lang })`; `app.js` hides the site navigation on this route and applies the link's language only to a reader with no stored choice.
 ### Journey 2 Encounter Roll (PD-039)
 

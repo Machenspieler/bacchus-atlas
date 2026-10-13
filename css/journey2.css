@@ -49,84 +49,35 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 @keyframes j2-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .j2-spinner { animation: none; } }
 
-/* ---------- controls: the toolbar lives at the top of the side panel (PD-040); the collapsed rail repeats the same buttons icon-only ---------- */
-.j2-controls {
-  flex: none; display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-2) var(--s-3);
-  border-bottom: 1px solid var(--line-faint);
-}
-.j2-about { flex: none; padding: var(--s-2) var(--s-3) 0; min-width: 0; }
+/* ---------- panel header + mode segment (PD-057): the map tools live in the rail, the panel holds content ---------- */
+.j2-about { flex: none; padding: var(--s-3) var(--s-3) 0; min-width: 0; }
 .j2-about-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md); line-height: var(--lh-md); color: var(--parchment); }
 .j2-about-sub { margin: 0; font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--parchment-dim); }
-.j2-ctl-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1); min-width: 0; }
-.j2-ctl-nav { gap: var(--s-2); }
-.j2-ctl-nav .j2-tb-group + .j2-tb-group { padding-left: var(--s-2); border-left: 1px solid var(--line-faint); }
-.j2-ctl-collapse { margin-left: auto; }
-/* dense: 28px controls, tight padding, so the longest Russian rows (Fit; Plan route + Locate) still fit the 340px panel */
-.j2-controls .btn { height: 28px; min-height: 0; }
-.j2-controls .j2-btn-icon { width: 28px; }
-.j2-controls .j2-tool, .j2-controls .j2-zoom-readout { padding-inline: var(--s-2); }
-.j2-controls .j2-zoom-readout { min-width: 5ch; padding-inline: var(--s-1); }
-.j2-ctl-nav .j2-tb-group + .j2-tb-group { padding-left: var(--s-1); }
-.j2-ctl-nav { gap: var(--s-1); }
-.j2-ctl-gm { display: flex; flex-direction: column; gap: var(--s-1); padding-top: var(--s-1); border-top: 1px solid var(--line-faint); }
-/* three zones, the same ones the collapsed rail draws: View / Tools / Echoes + sanctuaries. A hairline separates zones; rows fill their width so edges align. */
-.j2-ctl-gm .j2-tb-route, .j2-ctl-gm .j2-tb-echo { padding-top: var(--s-1); border-top: 1px solid var(--line-faint); }
-.j2-ctl-gm .j2-ctl-row .j2-tool { flex: 1 1 auto; justify-content: center; }
-/* Remove Echoes: neutral at rest (it is confirmed and undoable); the remove/delete treatment appears only on hover / focus (D2) */
-.j2-controls .j2-tool[data-j2-echo-clear]:hover:not(:disabled), .j2-controls .j2-tool[data-j2-echo-clear]:focus-visible { color: var(--fear-soft); border-color: var(--fear); background: var(--fear-tint); }
-/* the party marker toggle (PD-045): one full-width tool in its own zone, in the GM view and in Player Preview */
-.j2-ctl-party { padding-top: var(--s-1); border-top: 1px solid var(--line-faint); }
-.j2-ctl-party .j2-tool { flex: 1 1 auto; justify-content: center; }
-.j2-ctl-gm[hidden], .j2-ctl-preview[hidden], .j2-side-scroll[hidden], .j2-rail-grp[hidden], .j2-rail-btn[hidden] { display: none; }
 .j2-tb-group { display: flex; align-items: center; gap: var(--s-1); min-width: 0; }
-/* every tool is a labelled button (icon + text, so a tool is never identified by colour alone); the groups are rows of the panel */
-.j2-tool { display: inline-flex; align-items: center; gap: var(--s-1); }
-.j2-tool .j2-ico svg { width: 16px; height: 16px; }
-/* Player Preview controls: replace the GM controls (and New region / stock) in the same panel while previewing */
-.j2-ctl-preview { display: flex; flex-direction: column; align-items: stretch; gap: var(--s-2); padding-top: var(--s-2); border-top: 1px solid var(--line-faint); }
-.j2-preview-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
-.j2-ctl-preview .j2-preview-head .btn { width: auto; }
-/* the brush: its name and On/Off state on the first line, the two mouse buttons on the second */
-.j2-controls .j2-paint-tool { height: auto; min-height: var(--h-md); flex-direction: column; align-items: stretch; gap: var(--s-1); padding-block: var(--s-2); }
-.j2-paint-top { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
-.j2-paint-state { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: var(--tracking-badge); text-transform: uppercase; color: var(--muted); }
-.j2-paint-on, .j2-paint-tool[aria-pressed="false"] .j2-paint-on { display: none; }
-.j2-paint-tool[aria-pressed="true"] .j2-paint-on { display: inline; color: var(--hope-soft); }
-.j2-paint-tool[aria-pressed="true"] .j2-paint-off { display: none; }
-.j2-ctl-preview .btn, .j2-ctl-preview .j2-tb-tools { width: 100%; justify-content: flex-start; }
-.j2-preview-flag {
-  display: inline-flex; align-items: center; gap: var(--s-2); height: var(--h-xs); padding: 0 var(--s-2);
-  border: 1px solid var(--hope-border); border-radius: var(--r-xs); background: var(--hope-wash); color: var(--hope-soft);
-  font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: var(--tracking-badge); text-transform: uppercase; white-space: nowrap;
+.j2-ico { display: inline-flex; flex: none; }
+/* Lucide icons: one 24px grid and one stroke for the rail, map bar, segment, menu and map chips */
+.j2-li { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.j2-li .fill { fill: currentColor; fill-opacity: 0.22; }
+/* the mode: GM | Players, a two-state segment under the title; the preview is one screen with the same panel and camera (PD-040) */
+.j2-seg {
+  flex: none; display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-1); margin: var(--s-3) var(--s-3) 0; padding: var(--s-1);
+  background: var(--ink); border: 1px solid var(--line); border-radius: var(--r-md);
 }
-.j2-preview-flag .j2-ico svg { width: 14px; height: 14px; }
+.j2-seg-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2); height: var(--h-sm); padding: 0 var(--s-2);
+  border: 1px solid transparent; border-radius: var(--r-sm); background: transparent; color: var(--parchment-dim);
+  font: inherit; font-size: var(--fs-sm); font-weight: 600; cursor: pointer;
+}
+.j2-seg-btn .j2-li { width: 18px; height: 18px; }
+.j2-seg-btn:hover { background: var(--neutral-hover-bg); color: var(--parchment); }
+.j2-seg-btn[aria-pressed="true"] { background: var(--hope-selected-bg); border-color: var(--hope-border); color: var(--hope-soft); }
+.j2-seg-btn[aria-pressed="true"]:hover { background: var(--hope-selected-hover-bg); }
+.j2-seg-btn:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
+/* Player Preview content in the panel: the note, the two mouse buttons and the copy-by-hand link field */
+.j2-ctl-preview { flex: none; display: flex; flex-direction: column; align-items: stretch; gap: var(--s-2); padding: var(--s-3); }
 .j2-preview-note { margin: 0; min-width: 0; font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--parchment-dim); }
-/* Reveal / Hide live here, in Player Preview, beside the picture they change (PD-034) */
-.j2-tb-tools { display: flex; align-items: center; gap: var(--s-1); }
-/* One fog brush button: two schematic mice, the pressed button in gold — left = Reveal, right = Hide */
-.j2-mouse-pair { display: inline-flex; align-items: center; gap: var(--s-1); }
-.j2-mouse-pair .j2-mouse-ico + span { margin-right: var(--s-2); }
-.j2-mouse-pair .j2-mouse-ico + span:last-child { margin-right: 0; }
-.j2-mouse-ico { display: inline-flex; }
-.j2-mouse-ico svg { width: 17px; height: 24px; }
-.j2-mouse-hit { fill: var(--hope); stroke: none; }
-.j2[data-mode="preview"] .j2-side, .j2[data-mode="preview"] .j2-rail { border-color: var(--hope-border); }
-/* in the preview the panel is only as tall as its controls (the map stays reachable below it) */
-.j2[data-mode="preview"] .j2-sidewrap { bottom: auto; }
-.j2[data-mode="preview"] .j2-side { position: relative; inset: auto; }
-.j2[data-mode="preview"] .j2-rail { max-height: none; }
-.j2[data-mode="preview"] .j2-viewport { box-shadow: inset 0 0 0 2px var(--hope-border); cursor: grab; }
-.j2[data-mode="preview"] .j2-viewport.is-fog-tool { cursor: crosshair; }
-.j2[data-mode="preview"] .j2-viewport.is-fog-tool.is-space { cursor: grab; }
-.j2[data-mode="preview"] .j2-viewport.is-fog-tool.is-panning { cursor: grabbing; }
-.j2-chip {
-  display: inline-flex; align-items: center; height: var(--h-xs); padding: 0 var(--s-2);
-  border: 1px solid var(--type-chip-border); border-radius: var(--r-xs);
-  font-family: var(--font-mono); font-size: var(--fs-micro); line-height: 1; color: var(--parchment-dim); white-space: nowrap;
-}
-.j2-chip--ok { border-color: var(--hope-border); background: var(--hope-wash); color: var(--hope-soft); }
-.j2-chip--warn { border-color: var(--type-chip-border); color: var(--parchment-dim); }
-.j2-chip--bad { border-color: var(--fear); background: var(--fear-tint); color: var(--fear-soft); }
+.j2-ctl-preview .j2-mouse-pair { margin: 0; }
+.j2-ctl-preview[hidden], .j2-side-scroll[hidden], .j2-rail-grp[hidden], .j2-rb[hidden], .j2-title-chip[hidden] { display: none; }
 .j2-btn-icon { width: var(--h-sm); padding: 0; font-size: var(--fs-md); display: inline-flex; align-items: center; justify-content: center; }
 .j2-btn-icon svg { width: var(--icon-md); height: var(--icon-md); }
 .j2-btn-icon:disabled, .j2-btn-icon[aria-disabled="true"] { opacity: 0.55; cursor: default; }
@@ -137,7 +88,28 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 /* Toggle buttons: pressed = the shared gold "active" fill, never border-only. */
 .j2 .btn[aria-pressed="true"] { background: var(--hope-selected-bg); border-color: var(--hope); color: var(--hope-soft); }
 .j2 .btn[aria-pressed="true"]:hover { background: var(--hope-selected-hover-bg); }
-
+.j2-chip {
+  display: inline-flex; align-items: center; height: var(--h-xs); padding: 0 var(--s-2);
+  border: 1px solid var(--type-chip-border); border-radius: var(--r-xs);
+  font-family: var(--font-mono); font-size: var(--fs-micro); line-height: 1; color: var(--parchment-dim); white-space: nowrap;
+}
+.j2-chip--ok { border-color: var(--hope-border); background: var(--hope-wash); color: var(--hope-soft); }
+.j2-chip--warn { border-color: var(--type-chip-border); color: var(--parchment-dim); }
+.j2-chip--bad { border-color: var(--fear); background: var(--fear-tint); color: var(--fear-soft); }
+/* One fog brush button: two schematic mice, the pressed button in gold — left = Reveal, right = Hide */
+.j2-mouse-pair { display: inline-flex; align-items: center; gap: var(--s-1); margin: 0; }
+.j2-mouse-pair .j2-mouse-ico + span { margin-right: var(--s-2); }
+.j2-mouse-pair .j2-mouse-ico + span:last-child { margin-right: 0; }
+.j2-mouse-ico { display: inline-flex; }
+.j2-mouse-ico svg { width: 17px; height: 24px; }
+.j2-mouse-hit { fill: var(--hope); stroke: none; }
+.j2[data-mode="preview"] .j2-side, .j2[data-mode="preview"] .j2-rail { border-color: var(--hope-border); }
+/* in the preview the panel is only as tall as its content (the map stays reachable below it) */
+.j2[data-mode="preview"] .j2-side { align-self: flex-start; }
+.j2[data-mode="preview"] .j2-viewport { box-shadow: inset 0 0 0 2px var(--hope-border); cursor: grab; }
+.j2[data-mode="preview"] .j2-viewport.is-fog-tool { cursor: crosshair; }
+.j2[data-mode="preview"] .j2-viewport.is-fog-tool.is-space { cursor: grab; }
+.j2[data-mode="preview"] .j2-viewport.is-fog-tool.is-panning { cursor: grabbing; }
 
 /* menus */
 .j2-menu-wrap { position: relative; }
@@ -157,13 +129,12 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-menu-item:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 .j2-menu-item[aria-checked="true"] { background: var(--hope-selected-bg); color: var(--hope-soft); }
 
-/* ---------- stage: map + overlay sidebar ---------- */
-/* The map fills the whole stage; the sidebar floats above its left edge and never reserves a column.
- * Expanded and collapsed are one box translated by transform (cheap, no map relayout); the 44px rail
- * is the part of that box that stays on screen. */
+/* ---------- stage: map + overlay rail and panel ---------- */
+/* The map fills the whole stage. The rail (map tools, always visible) and the panel (content) float above its left edge and never reserve a column;
+ * collapsing the panel leaves the rail alone. --j2-inset-left is the strip they cover, used by every map chip and by Fit. */
 .j2-stage {
-  --j2-side-w: 340px; --j2-rail-w: 44px; --j2-side-gap: var(--s-2);
-  --j2-inset-left: calc(var(--j2-side-w) + 2 * var(--j2-side-gap));
+  --j2-side-w: 340px; --j2-rail-w: 72px; --j2-side-gap: var(--s-2); --j2-bar-h: 0px;
+  --j2-inset-left: calc(var(--j2-rail-w) + var(--j2-side-w) + 3 * var(--j2-side-gap));
   --j2-ease: cubic-bezier(0.22, 1, 0.36, 1);
   /* map panels come in two widths: reading (Region Inspector, prose) and compact (sanctuary, Locate, route details) */
   --j2-pop-w: clamp(340px, 28vw, 380px); --j2-pop-w-wide: clamp(400px, 34vw, 480px);
@@ -172,31 +143,106 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-stage[data-side="collapsed"] { --j2-inset-left: calc(var(--j2-rail-w) + 2 * var(--j2-side-gap)); }
 .j2-sidewrap {
   position: absolute; z-index: 5; left: var(--j2-side-gap); top: var(--j2-side-gap); bottom: var(--j2-side-gap);
-  width: min(var(--j2-side-w), calc(100% - 2 * var(--j2-side-gap)));
-  transition: transform 250ms var(--j2-ease);
-  will-change: transform;
+  display: flex; align-items: flex-start; gap: var(--j2-side-gap); pointer-events: none;
 }
-.j2-stage[data-side="collapsed"] .j2-sidewrap { transform: translateX(calc(var(--j2-rail-w) - 100%)); }
+.j2-sidewrap > * { pointer-events: auto; }
 .j2-side {
-  position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden;
+  position: relative; align-self: stretch; flex: 0 0 var(--j2-side-w); width: var(--j2-side-w); max-width: calc(100vw - var(--j2-rail-w) - 3 * var(--j2-side-gap));
+  display: flex; flex-direction: column; overflow: hidden;
   background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-md); box-shadow: var(--e-3);
-  transition: opacity 140ms ease;
+  transition: opacity 140ms ease, transform 250ms var(--j2-ease);
 }
-.j2-stage[data-side="collapsed"] .j2-side { opacity: 0; pointer-events: none; }
+.j2-stage[data-side="collapsed"] .j2-side {
+  position: absolute; left: calc(var(--j2-rail-w) + var(--j2-side-gap)); top: 0; bottom: 0;
+  opacity: 0; pointer-events: none; transform: translateX(calc(-1 * var(--s-4)));
+}
 .j2-rail {
-  position: absolute; top: 0; right: 0; max-height: 100%; width: var(--j2-rail-w); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none;
-  display: flex; flex-direction: column; align-items: center; gap: var(--s-1); padding: var(--s-1) 0;
+  position: relative; flex: none; width: var(--j2-rail-w); max-height: 100%;
+  display: flex; flex-direction: column; align-items: stretch; gap: var(--s-1); padding: var(--s-1);
   background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-md); box-shadow: var(--e-3);
-  opacity: 0; pointer-events: none; transition: opacity 140ms ease;
 }
-.j2-stage[data-side="collapsed"] .j2-rail { opacity: 1; pointer-events: auto; transition-delay: 110ms; }
-.j2-rail::-webkit-scrollbar { display: none; }
-.j2-rail-grp { display: flex; flex-direction: column; align-items: center; gap: var(--s-1); width: 28px; padding-top: var(--s-1); border-top: 1px solid var(--line-faint); }
-.j2-rail-btn { width: 28px; height: 28px; min-height: 0; padding: 0; flex: none; }
-.j2-rail-zoom { font-family: var(--font-mono); font-size: 10px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.j2-rail-grp { display: flex; flex-direction: column; align-items: stretch; gap: var(--s-1); padding-top: var(--s-1); border-top: 1px solid var(--line-faint); }
+.j2-rail-grow { flex: 1 1 auto; }
+/* a tool: the icon, a one-word label and the shortcut as a keycap in the corner — a tool is never identified by its icon alone */
+.j2-rb {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  width: 100%; min-height: 56px; padding: var(--s-2) 2px var(--s-1); border: 1px solid transparent; border-radius: var(--r-sm);
+  background: transparent; color: var(--parchment-dim); font: inherit; font-size: var(--fs-micro); line-height: 1.15; text-align: center; cursor: pointer;
+}
+.j2-rb:hover:not(:disabled) { background: var(--neutral-hover-bg); border-color: var(--line); color: var(--parchment); }
+.j2-rb[aria-pressed="true"], .j2-rb[data-j2-menu-btn][aria-expanded="true"] { background: var(--hope-selected-bg); border-color: var(--hope-border); color: var(--hope-soft); }
+.j2-rb[aria-pressed="true"]:hover:not(:disabled) { background: var(--hope-selected-hover-bg); }
+.j2-rb:disabled, .j2-rb[aria-disabled="true"] { opacity: 0.55; cursor: default; }
+.j2-rb:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
+.j2-rb-ico { display: inline-flex; }
+.j2-rb-lbl { max-width: 100%; overflow-wrap: anywhere; }
+.j2-rb-key { position: absolute; top: 3px; right: 4px; font-family: var(--font-mono); font-size: 9px; line-height: 1; color: var(--muted); }
+.j2-rb--toggle { min-height: var(--h-md); padding: var(--s-1); }
+/* the stock count and the Players switch only matter while the panel that shows them is collapsed */
+.j2-rail-stock, .j2-rail-mode { display: none; }
+.j2-stage[data-side="collapsed"] .j2-rail-stock:not([hidden]), .j2-stage[data-side="collapsed"] .j2-rail-mode:not([hidden]) { display: flex; }
+.j2-rail-stock { align-items: center; gap: var(--s-1); }
 .j2-rail-ico { display: inline-flex; color: var(--parchment-dim); }
 .j2-rail-ico svg { width: 20px; height: 20px; }
 .j2-rail-count { font-family: var(--font-mono); font-size: var(--fs-sm); font-variant-numeric: tabular-nums; color: var(--parchment); }
+/* Campaign menu: the rare, whole-campaign actions (display switch, Soul Echoes, sanctuaries) open to the right of the rail */
+.j2-camp { position: relative; border-top: 1px solid var(--line-faint); padding-top: var(--s-1); }
+.j2-camp .j2-menu { top: auto; bottom: 0; left: calc(100% + var(--s-2)); min-width: 288px; }
+.j2-menu-h { margin: var(--s-2) var(--s-3) var(--s-1); font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--muted); }
+.j2-menu-h:first-child { margin-top: var(--s-1); }
+.j2-mi { display: flex; align-items: center; gap: var(--s-3); }
+.j2-mi-ico { display: inline-flex; color: var(--parchment-dim); }
+.j2-mi-ico .j2-li { width: 18px; height: 18px; }
+.j2-mi:disabled { opacity: 0.55; cursor: default; }
+/* the biome switch is a checkbox row, not a gold "selected" row */
+.j2-mi[role="menuitemcheckbox"][aria-checked="true"] { background: transparent; color: var(--parchment); }
+.j2-mi-sw { margin-left: auto; position: relative; flex: none; width: 28px; height: 16px; border-radius: 8px; background: var(--line); transition: background 140ms ease; }
+.j2-mi-sw::after { content: ""; position: absolute; left: 2px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--parchment-dim); transition: left 140ms ease, background 140ms ease; }
+.j2-mi[aria-checked="true"] .j2-mi-sw { background: var(--hope-border); }
+.j2-mi[aria-checked="true"] .j2-mi-sw::after { left: 14px; background: var(--hope-soft); }
+/* Remove Echoes: neutral at rest (it is confirmed and undoable); the remove treatment appears only on hover / focus (D2) */
+.j2-menu-item[data-j2-echo-clear]:hover:not(:disabled), .j2-menu-item[data-j2-echo-clear]:focus-visible { color: var(--fear-soft); background: var(--fear-tint); }
+.j2-menu-item[data-j2-echo-clear]:hover:not(:disabled) .j2-mi-ico, .j2-menu-item[data-j2-echo-clear]:focus-visible .j2-mi-ico { color: var(--fear-soft); }
+/* Map bar: history, zoom and Fit float over the map's bottom edge, clear of the rail and the panel */
+.j2-mapbar {
+  position: absolute; z-index: 3; left: var(--j2-inset-left); bottom: var(--j2-side-gap); display: flex; align-items: center; gap: var(--s-2); padding: var(--s-1);
+  background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-md); box-shadow: var(--e-2);
+  transition: left 250ms var(--j2-ease);
+}
+.j2-mapbar .j2-tb-group + .j2-tb-group { padding-left: var(--s-2); border-left: 1px solid var(--line-faint); }
+.j2-mapbar .j2-tb-group[hidden] + .j2-tb-group { padding-left: 0; border-left: 0; }   /* the player page has no history group: no orphan divider */
+.j2-mapbar .btn { height: var(--h-sm); min-height: 0; }
+.j2-mapbar .j2-zoom-readout { min-width: 5ch; padding-inline: var(--s-1); }
+/* the player page has no panel: the title lives on a chip over the map */
+.j2-title-chip {
+  position: absolute; z-index: 3; left: var(--j2-inset-left); top: var(--j2-side-gap); display: grid; gap: 2px; max-width: min(380px, calc(100% - var(--j2-inset-left) - var(--s-4)));
+  padding: var(--s-2) var(--s-3); background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-md); box-shadow: var(--e-2);
+}
+.j2-title-chip b { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md); line-height: var(--lh-md); color: var(--parchment); }
+.j2-title-chip span { font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--parchment-dim); }
+.j2[data-player] .j2-side { display: none; }
+.j2[data-player] .j2-stage { --j2-inset-left: calc(var(--j2-rail-w) + 2 * var(--j2-side-gap)); }
+/* a touch phone on the player page: the rail becomes a bottom bar with full-size targets (PD-052) */
+@media (max-width: 640px) {
+  .j2[data-player] .j2-stage { --j2-bar-h: 64px; --j2-inset-left: var(--j2-side-gap); }
+  .j2[data-player] .j2-sidewrap { left: 0; right: 0; top: auto; bottom: 0; }
+  .j2[data-player] .j2-rail {
+    flex-direction: row; justify-content: center; width: 100%; max-height: none; border-width: 1px 0 0; border-radius: 0;
+    padding: var(--s-1) var(--s-3) calc(var(--s-1) + env(safe-area-inset-bottom));
+  }
+  .j2[data-player] .j2-rail-grp { flex-direction: row; border-top: 0; padding-top: 0; }
+  .j2[data-player] .j2-rail-grow { display: none; }
+  .j2[data-player] .j2-rb { min-width: 72px; min-height: 52px; }
+  .j2[data-player] .j2-mapbar { bottom: calc(var(--j2-bar-h) + var(--j2-side-gap)); }
+  .j2[data-player] .j2-route { bottom: calc(var(--j2-bar-h) + var(--s-3)); }
+}
+/* a touch screen has no keyboard: no shortcut keycaps */
+@media (hover: none) { .j2-rb-key { display: none; } }
+/* short windows: the rail keeps every tool by dropping the labels */
+@media (max-height: 560px) {
+  .j2-rb-lbl { display: none; }
+  .j2-rb { min-height: 40px; padding-block: var(--s-1); }
+}
 .j2-side-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: var(--s-3); scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; scrollbar-gutter: stable; padding-top: 0; }
 .j2-h {
   margin: 0 0 var(--s-2); font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md); line-height: var(--lh-md);
@@ -275,7 +321,7 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-card-end { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
 .j2-card-end .j2-done { flex: 1 1 auto; min-width: 0; }
 .j2-card-sum[hidden],.j2-warn[hidden], .j2-card-body[hidden], .j2-done[hidden], .j2-status[hidden], .j2-actions[hidden], .j2-envs-list[hidden], .j2-insp-tile[hidden], .j2-insp-envs-toggle[hidden], .j2-insp-muted[hidden], .j2-insp-tile-text[hidden],
-.j2-tb-group[hidden], .j2-fog-chip[hidden], .j2-sidewrap[hidden], .j2-ctl-row[hidden], .j2-tool[hidden] { display: none; }   /* PD-052: Player Preview and the player page hide the GM's rows and buttons one by one */
+.j2-tb-group[hidden], .j2-fog-chip[hidden], .j2-sidewrap[hidden] { display: none; }   /* PD-052: Player Preview and the player page hide the GM's tools one by one */
 .j2-share-out { display: flex; flex-direction: column; gap: var(--s-1); }
 .j2-share-out[hidden], .j2-share-url[hidden] { display: none; }
 .j2-share-note { margin: 0; font-size: var(--fs-micro); color: var(--parchment-dim); }
@@ -331,7 +377,7 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-env-tier { flex: none; min-width: 1.2em; font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); text-align: center; }
 .j2-env-name { min-width: 0; overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: reduce) {
-  .j2-sidewrap, .j2-side, .j2-rail, .j2-hint-chip, .j2-fog-chip, .j2-envs-chev { transition: none !important; }
+  .j2-sidewrap, .j2-side, .j2-rail, .j2-mapbar, .j2-mi-sw, .j2-mi-sw::after, .j2-hint-chip, .j2-fog-chip, .j2-envs-chev { transition: none !important; }
 }
 
 /* ---------- map viewport ---------- */

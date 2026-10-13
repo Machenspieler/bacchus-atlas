@@ -1,61 +1,87 @@
 'use strict';
-/* Journey: the toolbar lives at the top of the left side panel, the collapsed rail repeats it icon-only, and Player Preview is the same
- * screen with the same panel and camera (PD-040). Source guards only — the behaviour was verified in a real browser. */
+/* Journey: the map tools live in an always-visible rail, the panel holds the title, the GM | Players segment, New region and the stock, history / zoom / Fit
+ * float over the map, and the rare whole-campaign actions sit in the rail's Campaign menu (PD-057, which replaces the PD-040 toolbar). Player Preview is the same
+ * screen with the same panel and camera. Source guards only — the behaviour was verified in a real browser. */
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
 const path = require('path');
 
-const read = f => fs.readFileSync(path.join(__dirname, '..', f), 'utf8');
+const read = f => fs.readFileSync(path.join(__dirname, '..', f), 'utf8').replace(/\r\n/g, '\n');
 const view = read('js/journey2-view.js');
 const css = read('css/journey2.css');
 const html = read('index.html');
+const i18n = JSON.parse(read('data/i18n.json'));
 const surface = view.slice(view.indexOf('function buildSurface'), view.indexOf('<div class="j2-tip"'));
-const side = surface.slice(surface.indexOf('<div class="j2-sidewrap"'), surface.indexOf('<div class="j2-rail"'));
-const rail = surface.slice(surface.indexOf('<div class="j2-rail"'));
+const mapbar = surface.slice(surface.indexOf('<div class="j2-mapbar"'), surface.indexOf('<div class="j2-title-chip"'));
+const rail = surface.slice(surface.indexOf('<nav class="j2-rail"'), surface.indexOf('<aside class="j2-side"'));
+const side = surface.slice(surface.indexOf('<aside class="j2-side"'));
+const menu = rail.slice(rail.indexOf('data-j2-menu="campaign"'));
+const fn = (from, to) => view.slice(view.indexOf('function ' + from), view.indexOf('function ' + to, view.indexOf('function ' + from) + 1));
 
-test('the toolbar strip above the map is gone; the controls are the first thing inside the side panel', () => {
-  assert.doesNotMatch(surface, /class="j2-toolbar"/);
-  assert.doesNotMatch(css, /\.j2-toolbar|is-wrapped|\.j2-tb-gm/);
-  assert.ok(side.indexOf('class="j2-controls"') > 0 && side.indexOf('class="j2-controls"') < side.indexOf('class="j2-side-scroll"'));
-  assert.ok(side.indexOf('data-j2-gen') > side.indexOf('class="j2-controls"') && side.indexOf('data-j2-stock-count') > side.indexOf('data-j2-gen'), 'toolbar, then New region, then Hex stock');
+test('the toolbar strip and the old row toolbar are gone; the panel is title, mode segment, preview note, New region, stock', () => {
+  assert.doesNotMatch(surface, /class="j2-toolbar"|class="j2-controls"|j2-ctl-row/);
+  assert.doesNotMatch(css, /\.j2-toolbar|is-wrapped|\.j2-tb-gm|\.j2-controls|\.j2-ctl-row|\.j2-ctl-gm|\.j2-ctl-party/);
+  const order = ['class="j2-about"', 'class="j2-seg"', 'data-j2-preview-bar', 'data-j2-gen', 'class="j2-side-scroll"', 'data-j2-stock-count'].map(k => side.indexOf(k));
+  assert.ok(order.every(i => i > 0) && order.every((x, i) => i === 0 || x > order[i - 1]), 'about, segment, preview note, New region, stock: ' + order);
   assert.doesNotMatch(html, /sk-j2-bar/, 'the loading skeleton no longer draws a toolbar strip');
   assert.doesNotMatch(css, /sk-j2-bar/);
 });
 
-test('rows: Undo / Redo are icon-only; every other tool keeps its label', () => {
-  for (const attr of ['data-j2-undo', 'data-j2-redo']) {
-    const btn = side.match(new RegExp('<button[^>]*' + attr + '[^>]*>[^<]*(?:<svg|\\$\\{ICON)'));
-    assert.ok(btn, attr + ' is an icon button');
-    assert.doesNotMatch(btn[0], /data-t="/);
-  }
-  for (const key of ['journey2_fit', 'journey2_biome_label', 'journey2_preview"', 'journey2_route_plan', 'journey2_echo_locate', 'journey2_echo_place', 'journey2_echo_clear']) {
-    assert.ok(side.includes('data-t="' + key.replace(/"$/, '') + '"'), key + ' keeps a visible label');
-  }
-  assert.match(side, /data-j2-sanc-generate-label/);
+test('rail: always visible, its buttons ARE the tools (no proxies), each with a one-word label and a shortcut key', () => {
+  const tools = [['data-j2-party', 'journey2_party_btn', 'P'], ['data-j2-route-plan', 'journey2_rail_route', 'R'], ['data-j2-echo-locate', 'journey2_rail_locate', 'E'], ['data-j2-fog-tool="paint"', 'journey2_rail_brush', 'E']];
+  for (const [attr, label, key] of tools) assert.match(rail, new RegExp("railBtn\\('" + attr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + "[^']*', LI\\.\\w+, '" + label + "', '" + key + "'\\)"), attr);
+  for (const attr of ['data-j2-outline', 'data-j2-print-open', 'data-j2-share-link', 'data-j2-mode-toggle', 'data-j2-menu-btn="campaign"', 'data-j2-side-toggle']) assert.ok(rail.includes(attr), attr + ' is in the rail');
+  assert.doesNotMatch(view, /data-j2-rail-src|RAIL_SOURCES|railProxies|railOf|function syncRail|new MutationObserver\(syncRail\)|ui\.rail\.inert/, 'no mirrored proxies: the state code writes to the real buttons');
+  assert.doesNotMatch(css, /\.j2-rail-btn|\.j2-rail-zoom/);
+  assert.match(css, /\.j2-rb-key \{ position: absolute;/, 'the shortcut is a keycap in the corner');
+  assert.match(view, /aria-keyshortcuts/, 'and is exposed to assistive technology');
+  assert.match(view, /function focusTool\(src\)[\s\S]*ui\.modeToggle[\s\S]*ui\.campBtn/, 'focus goes to the rail while the panel is collapsed or a menu item is gone');
+  assert.doesNotMatch(view, /ui\.(echoPlace|echoLocate|routePlan|sancGenerate|previewBack|previewBtn|printOpen)\.focus\(/, 'toolbar focus always goes through focusTool()');
+  assert.match(css, /\.j2-stage\[data-side="collapsed"\] \.j2-rail-stock:not\(\[hidden\]\)/, 'the stock count and the Players switch appear when the panel that shows them is collapsed');
+  const sync = fn('syncSideToggle', 'ensureSideOpen');
+  for (const part of ["'aria-expanded'", "'aria-label'", 'LI.panelOpen', 'LI.panelClose']) assert.ok(sync.includes(part), part);
 });
 
-test('rail: one icon-only proxy per control, each with a source, the same data attribute and no visible label', () => {
-  const keys = Array.from(rail.matchAll(/data-j2-rail-src="(\w+)"/g)).map(m => m[1]);
-  assert.ok(keys.length >= 16);
-  const table = view.slice(view.indexOf('const RAIL_SOURCES'), view.indexOf('let railProxies'));
-  for (const k of keys) assert.ok(new RegExp('\\b' + k + ': \\(\\) =>').test(table), 'RAIL_SOURCES has ' + k);
-  assert.doesNotMatch(rail, /data-t="journey2_(fit|biome_label|preview|route_plan|echo_locate|echo_place|echo_clear)/, 'no text in the rail');
-  assert.match(view, /new MutationObserver\(syncRail\)/);
-  const sync = view.slice(view.indexOf('function syncRail'), view.indexOf('function focusTool'));
-  for (const part of ['el.hidden', 'el.disabled', 'aria-pressed', 'aria-disabled', "setAttribute('aria-label'", 'closest(\'[hidden]\')']) assert.ok(sync.includes(part), part);
-  assert.match(view, /function focusTool\(src\)[\s\S]*sideCollapsed && railOf\.get\(src\)/, 'focus goes to the proxy while the panel is collapsed');
-  assert.doesNotMatch(view, /ui\.(echoPlace|echoLocate|routePlan|sancGenerate|previewBack|previewBtn|printOpen)\.focus\(/, 'toolbar focus always goes through focusTool()');
+test('map bar: Undo / Redo / zoom / Fit are icon-only buttons floating over the map, named by aria-label', () => {
+  for (const attr of ['data-j2-undo', 'data-j2-redo', 'data-j2-zoom="out"', 'data-j2-zoom="reset"', 'data-j2-zoom="in"', 'data-j2-fit']) assert.ok(mapbar.includes(attr), attr);
+  assert.doesNotMatch(mapbar, /<span data-t=/, 'no visible text labels');
+  assert.match(mapbar, /data-j2-fit data-t-aria="journey2_fit"/);
+  assert.match(css, /\.j2-mapbar \{\s*position: absolute;[^}]*left: var\(--j2-inset-left\)/, 'clear of the rail and the panel');
+});
+
+test('Campaign menu: the rare whole-campaign actions, shared menu machinery, hidden in Player Preview', () => {
+  for (const attr of ['role="menuitemcheckbox" aria-checked="true" data-j2-biome-colors', 'data-j2-echo-place', 'data-j2-echo-clear', 'data-j2-sanc-generate', 'data-j2-sanc-generate-label']) assert.ok(menu.includes(attr), attr);
+  assert.match(rail, /class="j2-menu-wrap j2-camp" data-j2-gm-row/);
+  assert.match(fn('onRootClick', 'toggleMenu'), /data-j2-menu="campaign"[^\n]*closeMenus\(\)/, 'an action closes the menu; the biome switch keeps it open');
+  assert.match(fn('onRootClick', 'toggleMenu'), /!b\.hasAttribute\('data-j2-biome-colors'\)/);
 });
 
 test('Player Preview: the same panel, content swapped, camera shared, Fit inset unchanged', () => {
-  const chrome = view.slice(view.indexOf('function applyPreviewChrome'), view.indexOf('function enterPreview'));
-  assert.match(chrome, /ui\.gmControls\.hidden = false; ui\.gen\.hidden = on; ui\.sideScroll\.hidden = on; ui\.previewBar\.hidden = !on \|\| playerMode/);   // the Route Planner row stays in both modes (PD-052); the GM-only rows are hidden one by one
+  const chrome = fn('applyPreviewChrome', 'enterPreview');
+  assert.match(chrome, /ui\.gen\.hidden = on; ui\.sideScroll\.hidden = on; ui\.previewBar\.hidden = !on \|\| playerMode/);   // the Route Planner and the party marker stay in both modes (PD-052); the GM-only rows are hidden one by one
+  assert.match(chrome, /ui\.previewBack\.setAttribute\('aria-pressed', String\(!on\)\)/);
+  assert.match(chrome, /ui\.previewBtn\.setAttribute\('aria-pressed', String\(on\)\)/);
   assert.doesNotMatch(chrome, /sidewrap\.(hidden|inert)/);
   assert.doesNotMatch(view, /previewReturn/);
   assert.match(view.slice(view.indexOf('function sideInset'), view.indexOf('/* ====', view.indexOf('function sideInset'))), /if \(!ui\.sidewrap\) return 0;/, 'the panel covers the same strip in both modes');
-  assert.match(css, /\.j2\[data-mode="preview"\] \.j2-sidewrap \{ bottom: auto; \}/, 'in the preview the panel is only as tall as its content');
-  const prev = side.slice(side.indexOf('data-j2-preview-bar'), side.indexOf('class="j2-side-scroll"'));
-  for (const part of ['journey2_preview_hint', 'data-j2-fog-tool="paint"', 'data-j2-print-open', 'data-j2-preview-back']) assert.ok(prev.includes(part), part);
-  assert.ok(side.indexOf('data-j2-history-group') < side.indexOf('data-j2-gm-controls') && side.indexOf('data-j2-gm-controls') < side.indexOf('data-j2-preview-bar'), 'row 1 is outside both mode blocks');
+  assert.match(css, /\.j2\[data-mode="preview"\] \.j2-side \{ align-self: flex-start; \}/, 'in the preview the panel is only as tall as its content');
+  const prev = side.slice(side.indexOf('data-j2-preview-bar'), side.indexOf('<form class="j2-gen"'));
+  for (const part of ['journey2_preview_hint', 'j2-mouse-pair', 'data-j2-share-out']) assert.ok(prev.includes(part), part);
+  assert.doesNotMatch(prev, /data-j2-fog-tool|data-j2-print-open|data-j2-preview-back/, 'the brush, Outline / Print / Link and the way back are rail / segment controls');
+  assert.ok(side.indexOf('data-j2-preview-back') < side.indexOf('data-j2-preview aria-pressed'), 'GM first, Players second');
+});
+
+test('shortcuts: by physical key (they work on a Russian layout), never Tab, and only through the rail buttons', () => {
+  const hk = fn('onToolHotkey', 'fogSpaceTarget');
+  for (const code of ['KeyP', 'KeyR', 'KeyE', 'KeyV', 'BracketLeft']) assert.ok(hk.includes("'" + code + "'"), code);
+  assert.doesNotMatch(hk, /e\.key|Tab/);
+  assert.match(hk, /b\.click\(\)/, 'one path: the same guards as a click');
+  assert.match(view, /isEditableTarget\(e\.target\) \|\| e\.defaultPrevented\) return;\n\s*if \(!\(e\.ctrlKey \|\| e\.metaKey \|\| e\.altKey \|\| e\.shiftKey \|\| e\.repeat\) && onToolHotkey\(e\)\) return;/, 'not while typing, not with a modifier');
+});
+
+test('every new rail / segment / menu string exists in English and Russian', () => {
+  const keys = ['journey2_mapbar_label', 'journey2_rail_tools', 'journey2_rail_share', 'journey2_rail_route', 'journey2_rail_locate', 'journey2_rail_brush', 'journey2_rail_outline', 'journey2_rail_print', 'journey2_rail_link',
+    'journey2_rail_campaign', 'journey2_campaign_aria', 'journey2_menu_display', 'journey2_menu_echo_place', 'journey2_mode_label', 'journey2_mode_gm', 'journey2_mode_players'];
+  for (const k of keys) { assert.ok(i18n.en[k], 'en ' + k); assert.ok(i18n.ru[k], 'ru ' + k); assert.ok(view.includes("'" + k + "'") || view.includes('"' + k + '"'), 'used ' + k); }
 });

@@ -12,8 +12,8 @@ const i18n = JSON.parse(read('data/i18n.json'));
 const dicts = [i18n.en || {}, i18n.ru || {}].filter(d => Object.keys(d).length);
 
 test('New region is one pinned row outside the scrolling stock (D4)', () => {
-  const side = view.slice(view.indexOf('<aside class="j2-side"'), view.indexOf('<div class="j2-rail"'));
-  assert.ok(side.indexOf('data-j2-gen') > side.indexOf('class="j2-controls"') && side.indexOf('data-j2-gen') < side.indexOf('class="j2-side-scroll"'));
+  const side = view.slice(view.indexOf('<aside class="j2-side"'), view.indexOf('<div class="j2-tip"'));
+  assert.ok(side.indexOf('data-j2-gen') > side.indexOf('class="j2-seg"') && side.indexOf('data-j2-gen') < side.indexOf('class="j2-side-scroll"'));
   assert.doesNotMatch(side, /data-t="journey2_gen_title"/, 'no separate heading');
   assert.match(side, /data-j2-generate data-t-title="journey2_gen_hint" aria-describedby="j2-gen-desc"/);
   assert.doesNotMatch(view, /snapSideHeader/);
@@ -32,14 +32,14 @@ test('inspect control is a quiet icon button with a magnifier, not the info glyp
 });
 
 test('Remove Echoes gets the danger treatment only on hover / focus (D2)', () => {
-  assert.match(css, /\[data-j2-echo-clear\]:hover:not\(:disabled\)[^{]*\{ color: var\(--fear-soft\); border-color: var\(--fear\)/);
+  assert.match(css, /\[data-j2-echo-clear\]:hover:not\(:disabled\)[^{]*\{ color: var\(--fear-soft\); background: var\(--fear-tint\)/);
 });
 
-test('Player Preview: brush has a visible name and On/Off state, Back to GM sits with the mode flag, brush is not auto-armed (D5)', () => {
-  const prev = view.slice(view.indexOf('data-j2-preview-bar'), view.indexOf('<form class="j2-gen"'));
-  assert.ok(prev.indexOf('j2-preview-flag') < prev.indexOf('data-j2-preview-back') && prev.indexOf('data-j2-preview-back') < prev.indexOf('data-j2-fog-tool="paint"'));
-  assert.match(prev, /journey2_fog_brush"/);
-  assert.match(css, /\.j2-paint-tool\[aria-pressed="true"\] \.j2-paint-on/);
+test('Player Preview: the brush is a labelled rail tool that shows its pressed state, the way back is the GM segment, the brush is not auto-armed (D5, PD-057)', () => {
+  const rail = view.slice(view.indexOf('<nav class="j2-rail"'), view.indexOf('<aside class="j2-side"'));
+  assert.match(rail, /railBtn\('data-j2-fog-tool="paint" aria-pressed="false"[^']*', LI\.brush, 'journey2_rail_brush', 'E'\)/);
+  assert.match(view, /data-j2-preview-back aria-pressed="true"/);
+  assert.match(css, /\.j2-rb\[aria-pressed="true"\]/);
   assert.match(view.slice(view.indexOf('function enterPreview'), view.indexOf('function exitPreview')), /setFogTool\(null/);
 });
 
@@ -49,7 +49,7 @@ test('finished collapsed cards are compact; done line and delete share one row',
 });
 
 test('every new string exists in both languages', () => {
-  const keys = ['journey2_stock_left', 'journey2_stock_all_placed', 'journey2_stock_count_aria', 'journey2_terrain_tip', 'journey2_fog_brush', 'journey2_fog_brush_on', 'journey2_fog_brush_off'];
+  const keys = ['journey2_stock_left', 'journey2_stock_all_placed', 'journey2_stock_count_aria', 'journey2_terrain_tip'];
   const flat = [i18n.en, i18n.ru].every(Boolean) ? [i18n.en, i18n.ru] : null;
   if (flat) { for (const d of flat) for (const k of keys) assert.ok(d[k], k); }
   else { for (const k of keys) assert.ok(JSON.stringify(i18n).split('"' + k + '"').length === 3, k + ' in en and ru'); }
