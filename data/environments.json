@@ -12442,7 +12442,7 @@
       "difficulty": 20,
       "name": {
         "en": "Unbound Arcanostorm",
-        "ru": "Освобождённый Аркашторм"
+        "ru": "Освобождённый Арканашторм"
       },
       "lore": {
         "en": "A storm made of chaotic magic, formed from a failed grand ritual of arcane power, it roams the world by its own untethered whim.",
@@ -12483,7 +12483,7 @@
           },
           "description": {
             "en": "The Arcanostorm starts with 1d6 tokens on it. A PC can choose to siphon a portion of the energy of the storm to empower their combat spells, by spending a Hope when they make a Spellcasting Roll. They add one of the following effects to the spell:\n- **Critical Success:** The PC removes any number of tokens from the Arcanostorm, deals the same number of dice of additional damage, and then marks the same number of Stress.\n- **Success with Hope:** The PC removes a token from the Arcano- storm, deals a die of additional damage, then marks a Stress.\n- **Success with Fear:** The PC deals additional damage equal to the number of tokens on the Arcanostorm, then marks 2 HP.\n- **Any Failure:** The spell is cast as normal, but targets a random creature within range.",
-            "ru": "Аркашторм начинает с 1d6 жетонами на себе. Персонаж может забрать часть энергии шторма, чтобы усилить свои боевые заклинания, потратив Надежду при совершении Броска Заклинания. Он добавляет к заклинанию один из следующих эффектов:\n- **Критический успех:** персонаж убирает с Аркашторма любое количество жетонов, наносит столько же дополнительных костей урона, а затем отмечает столько же Стресса.\n- **Успех с Надеждой:** персонаж убирает с Аркашторма один жетон, наносит одну дополнительную кость урона, затем отмечает Стресс.\n- **Успех со Страхом:** персонаж наносит дополнительный урон, равный числу жетонов на Аркашторме, затем отмечает 2 Раны.\n- **Любая неудача:** заклинание срабатывает как обычно, но нацеливается на случайное существо в пределах дистанции."
+            "ru": "Арканашторм начинает с 1d6 жетонами на себе. Персонаж может забрать часть энергии шторма, чтобы усилить свои боевые заклинания, потратив Надежду при совершении Броска Заклинания. Он добавляет к заклинанию один из следующих эффектов:\n- **Критический успех:** персонаж убирает с Арканашторма любое количество жетонов, наносит столько же дополнительных костей урона, а затем отмечает столько же Стресса.\n- **Успех с Надеждой:** персонаж убирает с Арканашторма один жетон, наносит одну дополнительную кость урона, затем отмечает Стресс.\n- **Успех со Страхом:** персонаж наносит дополнительный урон, равный числу жетонов на Арканашторме, затем отмечает 2 Раны.\n- **Любая неудача:** заклинание срабатывает как обычно, но нацеливается на случайное существо в пределах дистанции."
           },
           "prompt": {
             "en": "How does the storm respond to you reaching out to its power? How does the power of magic conduct through you?",
@@ -12528,7 +12528,7 @@
           },
           "description": {
             "en": "Countdown (Loop 4). Start the countdown when the environment is first spotlighted. When it triggers, add 1d4 tokens to the Arcanostorm, then roll 1d12. If the result is equal to or below the number of tokens on the Arcanostorm, remove that many tokens to strike a point in the scene with a bolt of prismatic lightning. All PCs within Close range must make an Agility Reaction Roll. Targets who fail take Xd10+10 magic damage where X is the value on the d12. Targets who succeed take half damage instead.",
-            "ru": "Отсчёт (Цикл 4). Запустите отсчёт, когда окружение впервые получает Активацию. Когда он срабатывает, добавьте 1d4 жетона на Аркашторм, затем бросьте 1d12. Если результат равен числу жетонов на Аркашторме или меньше него, уберите столько же жетонов, чтобы ударить по точке сцены разрядом призматической молнии. Все персонажи на Средней дистанции должны совершить Бросок Реакции на Проворность. Цели, потерпевшие неудачу, получают Xd10+10 магического урона, где X — значение, выпавшее на d12. Цели, добившиеся успеха, получают вместо этого половину урона."
+            "ru": "Отсчёт (Цикл 4). Запустите отсчёт, когда окружение впервые получает Активацию. Когда он срабатывает, добавьте 1d4 жетона на Арканашторм, затем бросьте 1d12. Если результат равен числу жетонов на Арканашторме или меньше него, уберите столько же жетонов, чтобы ударить по точке сцены разрядом призматической молнии. Все персонажи на Средней дистанции должны совершить Бросок Реакции на Проворность. Цели, потерпевшие неудачу, получают Xd10+10 магического урона, где X — значение, выпавшее на d12. Цели, добившиеся успеха, получают вместо этого половину урона."
           },
           "prompt": {
             "en": "What magical effect does the lightning induce? What effect does the lightning have on the land it strikes?",
