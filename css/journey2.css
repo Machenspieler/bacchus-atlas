@@ -229,7 +229,7 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-legend-x { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; }
 .j2-legend-sym .j2-echo-body { stroke: #0b3b8c; stroke-width: 1.5; stroke-linejoin: round; }
 .j2-legend-sym .j2-echo-core { fill: #d6f1ff; }
-.j2-legend-fog { width: 22px; height: 18px; border-radius: 3px; background: #707070; opacity: 0.68; }   /* the Player Preview veil's own grey (PD-063) */
+.j2-legend-fog { fill: #707070; fill-opacity: 0.68; stroke: var(--line-strong); stroke-width: 0.8; stroke-linejoin: round; }   /* a hex of the Player Preview veil's own grey (PD-063) */
 .j2-legend-p { margin: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); }
 .j2-legend-p--touch { display: none; }
 @media (hover: none) { .j2-legend-p--mouse { display: none; } .j2-legend-p--touch { display: block; } }

@@ -749,7 +749,7 @@
                     <li><span class="j2-legend-sym"><img src="img/journey2/legend-sanctuary.webp" alt="" width="44" height="39" draggable="false"></span><span data-t="journey2_legend_sanctuary"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><path class="j2-legend-x-halo" d="M-7-7l14 14m0-14l-14 14"/><path class="j2-legend-x" d="M-7-7l14 14m0-14l-14 14"/></svg></span><span data-t="journey2_legend_shadow"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g transform="scale(.7)">${ECHO_CRYSTAL}</g></svg></span><span data-t="journey2_legend_echo"></span></li>
-                    <li><span class="j2-legend-sym"><span class="j2-legend-fog"></span></span><span data-t="journey2_legend_unknown"></span></li>
+                    <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><polygon class="j2-legend-fog" points="9.5,-5.5 9.5,5.5 0.0,11.0 -9.5,5.5 -9.5,-5.5 -0.0,-11.0"/></svg></span><span data-t="journey2_legend_unknown"></span></li>
                   </ul>
                   <h3 class="j2-legend-h" data-t="journey2_legend_controls_h"></h3>
                   <p class="j2-legend-p j2-legend-p--mouse" data-t="journey2_legend_controls_mouse"></p>
