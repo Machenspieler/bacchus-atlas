@@ -1348,3 +1348,19 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Why:** the toggle only changes density, not what is shown, and a GM who prefers Compact had to re-pick it on every visit. It was "transient" by default, not by a product decision.
 - **Decision:** `prepUI.itemViewMode` is stored globally (not per Prep session) in its own key `dhcodex_prep_item_view` as the bare JSON string `"gallery"` or `"compact"`, via `SafeStorage` (`validators.prepItemView`; anything else falls back to Gallery). Written on every toggle. Filters, search and dice rolls stay transient.
 - **Where:** `js/app.js` (`LS_KEYS.prepItemView`, `setItemViewMode`), `js/safe-storage.js`, `tests/storage.test.js`.
+
+## PD-062: Journey — a "Regions" display switch draws one icon per region, as in the book
+- **Status:** Active (experimental; default OFF)
+- **Date:** 2026-10-14
+- **Why:** the printed book marks a region with ONE symbol (plus its terrain dots), not one per hex; the map reads far cleaner that way.
+- **Decision:** a "Regions / Регионы" item in the GM's Campaign menu beside "Biome colors" (a display preference `regionIcons` in `dhcodex_journey2_ui`, default OFF; no command, no history, no document write). When ON, every region (per edge-connected piece of its DRAWN hexes) gets one symbol on the hex nearest the piece's centre of mass that has room for the glyph (pure `Geo.pickRegionIconCells`); the other hexes keep their Biome tint and Shadowblight X but carry no symbol and no per-hex outline — the thick region outline is the only line. The same rule serves every view: the GM draws all of a region's hexes, Player Preview and the player page draw only the revealed ones, so a region with one revealed hex shows its own icon (with its dots) there, and from two connected revealed hexes on they share one icon (its position follows the revealed part as more is revealed). Two revealed patches that do not touch never share an icon.
+- **Players:** the projection's overlays carry an anonymous `region` number (first appearance in cell order, never an id) so the renderer can group them. Player Preview follows the GM's switch; the player link carries it as flag bit 4 of format version 3 (3 = 2 plus this flag; 1 and 2 are still read and mean "off"), so the page draws exactly what Preview showed.
+- **Not changed:** the player map print (PD-028) still draws one symbol per hex.
+- **Where:** `js/journey2-geometry.js` (`pickRegionIconCells`), `js/journey2-view.js` (`overlayMarkup`, `toggleRegions`), `js/journey2-projection.js`, `js/journey2-share.js`, `js/journey2-store.js`, `data/i18n.json` (`journey2_regions_*`), `tests/journey2-region-icons.test.js`.
+
+## PD-063: Journey — Player Preview fog looks like the book's: flat grey, fine grain, feathered edge
+- **Status:** Active (refines the look from PD-020/PD-024; the "translucent, nothing cut out, no animation" rules stand)
+- **Date:** 2026-10-14
+- **Why:** the printed book draws unexplored ground as a flat mid-grey with a faint grain, the base map still faintly legible through it, and the lit area ends in a soft, bleeding edge — not a diagonal hatch with hard hex borders.
+- **Decision:** the Player Preview veil (`#j2-fog-player`) is a flat grey wash (`#707070` at 0.68) with a 4 px hairline grain, blurred by one SVG filter (`#j2-fog-soft`, σ = 6 world px) so the revealed area glows softly into the fog. The blur is the only filter allowed in fog CSS (`tests/journey2-fog.test.js`). The GM view's subtle hatch, the print (no fog at all, PD-028) and the projection are unchanged.
+- **Where:** `js/journey2-view.js` (`buildFogLayer`), `css/journey2.css` (`.j2-fogp-*.is-player`, `.j2-fog-veil`).

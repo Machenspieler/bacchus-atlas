@@ -642,7 +642,48 @@
     return out;
   }
 
+  /**
+   * Region icons (the printed book draws ONE symbol per region, PD-062). `items` is [{ cell, region }] — the cells to draw and an opaque region key
+   * (GM: the batch id; players: the projection's anonymous region number). Each region is split into its edge-connected pieces (so two separate
+   * revealed patches never share one icon) and every piece gets one anchor cell: the cell nearest the piece's centre of mass (ties: lowest q, then r),
+   * preferring a cell `usable(q, r)` accepts (room for the glyph). Returns the Set of anchor cell ids. Pure; depends only on the cells.
+   */
+  function pickRegionIconCells(grid, items, usable) {
+    const byRegion = new Map();
+    for (const it of items) {
+      if (!parseCellId(it.cell)) continue;
+      if (!byRegion.has(it.region)) byRegion.set(it.region, new Set());
+      byRegion.get(it.region).add(it.cell);
+    }
+    const anchors = new Set();
+    for (const cells of byRegion.values()) {
+      const seen = new Set();
+      for (const start of Array.from(cells).sort(compareIds)) {
+        if (seen.has(start)) continue;
+        const piece = [], queue = [start];
+        seen.add(start);
+        while (queue.length) {
+          const id = queue.pop(), c = parseCellId(id);
+          piece.push(id);
+          for (const d of NEIGHBOR_DELTAS) {
+            const nid = cellId(c.q + d.dq, c.r + d.dr);
+            if (cells.has(nid) && !seen.has(nid)) { seen.add(nid); queue.push(nid); }
+          }
+        }
+        const pts = piece.map(id => { const c = parseCellId(id); return { id: id, q: c.q, r: c.r, p: grid.cellCenter(c.q, c.r) }; });
+        const mx = pts.reduce((a, p) => a + p.p[0], 0) / pts.length, my = pts.reduce((a, p) => a + p.p[1], 0) / pts.length;
+        pts.sort((a, b) => (Math.hypot(a.p[0] - mx, a.p[1] - my) - Math.hypot(b.p[0] - mx, b.p[1] - my)) || (a.q - b.q) || (a.r - b.r));
+        const pick = (usable && pts.find(p => usable(p.q, p.r))) || pts[0];
+        anchors.add(pick.id);
+      }
+    }
+    return anchors;
+  }
+
+  function compareIds(a, b) { const x = parseCellId(a), y = parseCellId(b); return (x.q - y.q) || (x.r - y.r); }
+
   return {
+    pickRegionIconCells: pickRegionIconCells,
     layoutSanctuaryLabels: layoutSanctuaryLabels,
     inkLineWidth: inkLineWidth,
     wrapLabelName: wrapLabelName,

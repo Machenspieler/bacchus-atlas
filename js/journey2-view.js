@@ -231,6 +231,7 @@
     let activeBatchId = null;                               // the one card expanded for placement controls (independent of the inspector)
     let sideCollapsed = false;                              // view preference, persisted apart from the document
     /* Fog of War (Phase C) — all transient; the veil is drawn only in Player Preview, never in the GM view */
+    let showRegions = false;                                // "Regions" (PD-062): one icon per region, as in the book (UI only; the player link carries it as a flag)
     let showSepia = true;                                   // "Sepia map" (PD-060): parchment ground + multiplied raster on screen (UI only; the print path never uses it)
     let showBiome = true;                                   // "Biome colors": GM-view tint inside placed hexes (UI only, never in the document, backup or history; Player Preview ignores it)
     let fogTool = null;                                     // null | 'reveal' | 'hide' — the active map tool
@@ -729,6 +730,7 @@
                     <p class="j2-menu-h" role="presentation" data-t="journey2_menu_display"></p>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-biome-colors><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_biome_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-sepia><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_sepia_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
+                    <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="false" data-j2-regions><span class="j2-mi-ico" aria-hidden="true">${LI.hexes}</span><span data-t="journey2_regions_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <p class="j2-menu-h" role="presentation" data-t="journey2_echo_group"></p>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitem" data-j2-echo-place data-t-title="journey2_echo_place_title"><span class="j2-mi-ico" aria-hidden="true">${LI.echo}</span><span data-t="journey2_menu_echo_place"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitem" data-j2-echo-clear data-t-title="journey2_echo_clear_title"><span class="j2-mi-ico" aria-hidden="true">${LI.eraser}</span><span data-t="journey2_echo_clear"></span></button>
@@ -819,6 +821,7 @@
       ui.railStock = container.querySelector('[data-j2-rail-stock]');
       ui.biomeColors = container.querySelector('[data-j2-biome-colors]');
       ui.sepia = container.querySelector('[data-j2-sepia]');
+      ui.regions = container.querySelector('[data-j2-regions]');
       ui.fogTool = container.querySelector('[data-j2-fog-tool="paint"]');
       ui.outlineBtn = container.querySelector('[data-j2-outline]');
       ui.echoPlace = container.querySelector('[data-j2-echo-place]');
@@ -892,6 +895,7 @@
       sideCollapsed = !!prefs.sideCollapsed;
       showBiome = prefs.showBiomeColors !== false;
       showSepia = prefs.sepiaMap !== false;
+      showRegions = playerMode ? !!(playerLoad && playerLoad.snap && playerLoad.snap.regionIcons) : !!prefs.regionIcons;
       ui.root.toggleAttribute('data-sepia', showSepia);
       showOutline = !!prefs.showPlacedOutline;
       savedView = prefs.view;
@@ -1161,7 +1165,7 @@
     }
 
     /** The stored view preferences (sidebar state, "Show fog state") — never the document, never history. */
-    function saveUiPrefs() { if (store && !playerMode) store.saveUi({ sideCollapsed: sideCollapsed, showBiomeColors: showBiome, sepiaMap: showSepia, showPlacedOutline: showOutline, playerPreview: previewMode, view: currentView() }); }
+    function saveUiPrefs() { if (store && !playerMode) store.saveUi({ sideCollapsed: sideCollapsed, showBiomeColors: showBiome, sepiaMap: showSepia, regionIcons: showRegions, showPlacedOutline: showOutline, playerPreview: previewMode, view: currentView() }); }
 
     /** Explicit toggle only (the user's own click): re-centres the map horizontally in the new free area at the same zoom; never a Fit, and it leaves the selection and active region alone; focus moves to the control that replaces the one used. */
     function toggleSide() {
@@ -1946,12 +1950,22 @@
     function overlayMarkup(entries) {
       let outlines = '', quiet = '', body = '', cover = '';
       const tints = new Map();                               // tint key -> merged hex paths; only entries the caller decided to tint
+      // "Regions" (PD-062): one symbol per region (per connected piece of it that is drawn), on the hex nearest its middle with room for the glyph; the other
+      // hexes keep their tint and Shadowblight X but carry no symbol and no hex outline — the thick region outline is the only line, as in the book
+      let iconAt = null;
+      if (showRegions) {
+        const specAt = new Map(entries.filter(e => !e.floating).map(e => [Geo.cellId(e.q, e.r), e.spec]));
+        iconAt = Geo.pickRegionIconCells(data.grid, entries.filter(e => !e.floating).map(e => ({ cell: Geo.cellId(e.q, e.r), region: e.region })),
+          (q, r) => { const L = layoutFor(q, r, specAt.get(Geo.cellId(q, r))); return !!L && !L.lay.hidden; });
+      }
       for (const e of entries) {
         if (e.floating) { body += blightXMarkup(e.q, e.r, 'j2-tile'); continue; }   // a bare X on a hex with no tile
         if (e.tint && Tint.definitionOf(e.tint)) tints.set(e.tint, (tints.get(e.tint) || '') + hexPath(e.q, e.r));
-        const L = layoutFor(e.q, e.r, e.spec);
-        if (L && L.lay.hidden) quiet += hexPath(e.q, e.r); else outlines += hexPath(e.q, e.r);
         if (overlapsBuiltInLabel(e.q, e.r)) cover += hexPath(e.q, e.r);
+        if (iconAt && !iconAt.has(Geo.cellId(e.q, e.r))) { if (e.spec.blightMark) body += blightXMarkup(e.q, e.r, 'j2-tile'); continue; }
+        const L = layoutFor(e.q, e.r, e.spec);
+        if (iconAt) { /* no per-hex outline in Regions mode */ }
+        else if (L && L.lay.hidden) quiet += hexPath(e.q, e.r); else outlines += hexPath(e.q, e.r);
         body += tileMarkup(e.q, e.r, e.spec, 'j2-tile', false, e.tint);
       }
       // order inside the layer: label cover, biome tint (aria-hidden, no events), hex outlines, then the black symbols / dots / blight marks
@@ -1967,7 +1981,7 @@
         // Player Preview: the GM layer is emptied (not hidden) and only the projection is produced
         ui.g.tiles.innerHTML = '';
         playerProjection = Projection.buildPlayerProjection(projectionDoc(), data.ctx);
-        ui.g.player.innerHTML = overlayMarkup(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, tint: o.tint }))
+        ui.g.player.innerHTML = overlayMarkup(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, region: o.region, tint: o.tint }))
           .concat(playerProjection.shadowMarks.map(m => ({ q: m.q, r: m.r, floating: true }))));
         renderParty();
         renderEchoes();
@@ -1980,7 +1994,7 @@
       renderEchoes();
       const byBatch = new Map(doc.batches.map(b => [b.id, b])), tints = Tint.gmTintByCell(doc, showBiome);
       const xs = Model.getShadowXSet(doc), onTile = new Set(doc.tiles.map(tile => tile.cell));
-      const entries = doc.tiles.map(tile => { const c = Geo.parseCellId(tile.cell); return { q: c.q, r: c.r, spec: Object.assign(specOfBatch(byBatch.get(tile.batchId)), { blightMark: xs.has(tile.cell) }), tint: tints.get(tile.cell) || null }; });
+      const entries = doc.tiles.map(tile => { const c = Geo.parseCellId(tile.cell); return { q: c.q, r: c.r, spec: Object.assign(specOfBatch(byBatch.get(tile.batchId)), { blightMark: xs.has(tile.cell) }), tint: tints.get(tile.cell) || null, region: tile.batchId }; });
       for (const id of xs) if (!onTile.has(id)) { const c = Geo.parseCellId(id); if (c) entries.push({ q: c.q, r: c.r, floating: true }); }   // an X that walked off its region (PD-041)
       ui.g.tiles.innerHTML = overlayMarkup(entries);
       renderPerimeter();
@@ -3544,7 +3558,8 @@
       data.grid.forEachValidCell((q, r) => { if (data.ctx.policy(q, r).ok) foggable.set(Geo.cellId(q, r), hexPath(q, r)); });
       ui.defs.innerHTML =
         '<pattern id="j2-fog-gm" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect class="j2-fogp-wash" width="9" height="9"/><line class="j2-fogp-line" x1="0" y1="0" x2="0" y2="9"/></pattern>' +
-        '<pattern id="j2-fog-player" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect class="j2-fogp-wash is-player" width="7" height="7"/><line class="j2-fogp-line is-player" x1="0" y1="0" x2="0" y2="7"/><line class="j2-fogp-line is-player-x" x1="0" y1="3.5" x2="7" y2="3.5"/></pattern>' +
+        '<pattern id="j2-fog-player" width="4" height="4" patternUnits="userSpaceOnUse"><rect class="j2-fogp-wash is-player" width="4" height="4"/><line class="j2-fogp-line is-player" x1="0" y1="0.5" x2="4" y2="0.5"/></pattern>' +
+        '<filter id="j2-fog-soft" x="-2%" y="-2%" width="104%" height="104%"><feGaussianBlur stdDeviation="6"/></filter>' +
         '<pattern id="j2-fog-hide-pat" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line class="j2-fogp-hide" x1="0" y1="0" x2="0" y2="6"/></pattern>';
     }
 
@@ -3593,6 +3608,8 @@
       ui.biomeColors.title = showBiome ? t('journey2_biome_hide') : t('journey2_biome_show');
       ui.sepia.setAttribute('aria-checked', String(showSepia));
       ui.sepia.title = showSepia ? t('journey2_sepia_hide') : t('journey2_sepia_show');
+      ui.regions.setAttribute('aria-checked', String(showRegions));
+      ui.regions.title = showRegions ? t('journey2_regions_hide') : t('journey2_regions_show');
       ui.fogTool.setAttribute('aria-pressed', String(!!fogTool));
       ui.outlineBtn.setAttribute('aria-pressed', String(showOutline));
       ui.outlineBtn.title = t(showOutline ? 'journey2_outline_hide' : 'journey2_outline_title');
@@ -3652,6 +3669,14 @@
       ui.root.toggleAttribute('data-sepia', showSepia);
       saveUiPrefs();
       updateFogUi();
+    }
+
+    /** "Regions": one icon per region instead of one per hex. A display preference like Biome colors — no command, no history, no change to the document or fog. */
+    function toggleRegions() {
+      showRegions = !showRegions;
+      saveUiPrefs();
+      updateFogUi();
+      renderTiles();
     }
 
     function toggleBiomeColors() {
@@ -3838,7 +3863,7 @@
         // the GM's camera rides along (world centre + how much world is on screen), so the player opens on the same spot at the same zoom; a fitted map stays "fit"
         const cv = currentView(), vw = viewSize()[0];
         const view = cv && !cv.fit && vw && cv.scale > 0 ? { cx: cv.cx, cy: cv.cy, width: vw / cv.scale } : null;
-        const text = await Share.createLinkText(projectionDoc(), data.ctx, { lang: lang, view: view });
+        const text = await Share.createLinkText(projectionDoc(), data.ctx, { lang: lang, view: view, regionIcons: showRegions });
         if (inst.disposed) return;
         url = location.href.split('#')[0] + '#/map/' + text;
       } catch (err) {
@@ -4693,7 +4718,7 @@
       }
       const b = e.target.closest('button');
       if (!b || !ui.root.contains(b)) return;
-      if (b.closest('[data-j2-menu="campaign"]') && !b.hasAttribute('data-j2-biome-colors') && !b.hasAttribute('data-j2-sepia')) closeMenus();   // a Campaign action closes the menu; the biome switch keeps it open
+      if (b.closest('[data-j2-menu="campaign"]') && !b.hasAttribute('data-j2-biome-colors') && !b.hasAttribute('data-j2-sepia') && !b.hasAttribute('data-j2-regions')) closeMenus();   // a Campaign action closes the menu; the display switches keep it open
       if (b.hasAttribute('data-j2-zoom')) {
         const z = b.getAttribute('data-j2-zoom');
         if (z === 'reset') zoomToScale(1);
@@ -4713,6 +4738,7 @@
       else if (b.hasAttribute('data-j2-fit')) fitToView();
       else if (b.hasAttribute('data-j2-biome-colors')) toggleBiomeColors();
       else if (b.hasAttribute('data-j2-sepia')) toggleSepia();
+      else if (b.hasAttribute('data-j2-regions')) toggleRegions();
       else if (b.hasAttribute('data-j2-outline')) toggleOutline();
       else if (b.hasAttribute('data-j2-fog-tool')) setFogTool(b.getAttribute('data-j2-fog-tool'));
       else if (b.hasAttribute('data-j2-party-cancel')) cancelPartyDraft(true);

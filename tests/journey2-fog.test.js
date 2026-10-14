@@ -217,7 +217,7 @@ test('projection: a tile in a revealed cell is included, a hidden one is not pro
   const d1 = must(M.apply(d0, { type: 'setCellsRevealed', cellKeys: [AREA[0], AREA[2]], revealed: true, at: AT2 }, ctx));
   const p = P.buildPlayerProjection(d1);
   assert.deepEqual(p.overlays.map(o => cid(o.q, o.r)), [AREA[0], AREA[2]], 'a region spanning revealed and hidden cells contributes only its revealed tiles');
-  assert.deepEqual(p.overlays[0], { q: Geo.parseCellId(AREA[0]).q, r: Geo.parseCellId(AREA[0]).r, symbolId: 'forest', dots: 3, blightMark: true, tint: 'forest' });
+  assert.deepEqual(p.overlays[0], { q: Geo.parseCellId(AREA[0]).q, r: Geo.parseCellId(AREA[0]).r, symbolId: 'forest', dots: 3, blightMark: true, region: 0, tint: 'forest' });
   assert.equal(P.isCellVisibleToPlayers(d1, AREA[0]), true);
   assert.equal(P.isCellVisibleToPlayers(d1, AREA[1]), false);
   assert.deepEqual(p.revealedCells, [AREA[0], AREA[2]].sort(M.compareCellKeys));
@@ -255,7 +255,7 @@ test('projection: GM-only data never appears (region ids, Encounter, Rumor, note
     assert.ok(!text.toLowerCase().includes(secret.toLowerCase()), 'leaked: ' + secret);
   }
   assert.deepEqual(Object.keys(P.buildPlayerProjection(doc)).sort(), ['collectedEchoes', 'overlays', 'party', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'shadowMarks', 'version']);
-  for (const o of P.buildPlayerProjection(doc).overlays) assert.deepEqual(Object.keys(o).sort(), ['blightMark', 'dots', 'q', 'r', 'symbolId', 'tint']);
+  for (const o of P.buildPlayerProjection(doc).overlays) assert.deepEqual(Object.keys(o).sort(), ['blightMark', 'dots', 'q', 'r', 'region', 'symbolId', 'tint']);
 });
 
 test('projection: it is a pure function — the document is untouched and the result shares nothing mutable with it', () => {
@@ -284,11 +284,11 @@ function fakeStorage() {
 test('the fog veil is not a preference (PD-036); Player Preview is stored (PD-035); the tool and stroke are never stored', () => {
   const s = fakeStorage(), store = Store.createStore(s, ctx);
   assert.deepEqual(store.saveUi({ sideCollapsed: false }), { ok: true });
-  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showBiomeColors: true, sepiaMap: true, showPlacedOutline: false, playerPreview: false, view: null });
-  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['playerPreview', 'sepiaMap', 'showBiomeColors', 'showPlacedOutline', 'sideCollapsed', 'view']);
+  assert.deepEqual(store.loadUi(), { sideCollapsed: false, showBiomeColors: true, sepiaMap: true, regionIcons: false, showPlacedOutline: false, playerPreview: false, view: null });
+  assert.deepEqual(Object.keys(JSON.parse(s.data.get(Store.KEYS.ui))).sort(), ['playerPreview', 'regionIcons', 'sepiaMap', 'showBiomeColors', 'showPlacedOutline', 'sideCollapsed', 'view']);
   assert.deepEqual(s.writes, [Store.KEYS.ui], 'nothing else is written');
   s.data.set(Store.KEYS.ui, '{"showFogState":false,"sideCollapsed":true}');
-  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showBiomeColors: true, sepiaMap: true, showPlacedOutline: false, playerPreview: false, view: null }, 'the retired showFogState key is ignored');
+  assert.deepEqual(store.loadUi(), { sideCollapsed: true, showBiomeColors: true, sepiaMap: true, regionIcons: false, showPlacedOutline: false, playerPreview: false, view: null }, 'the retired showFogState key is ignored');
   assert.ok(!('showFogState' in JSON.parse((store.saveUi({ sideCollapsed: true }), s.data.get(Store.KEYS.ui)))), 'and dropped on the next save');
   // it is not part of the document / backup
   assert.ok(!JSON.stringify(M.emptyDocument(ctx, AT)).includes('showFogState'));
@@ -426,11 +426,11 @@ test('print readiness: the projection and the overlay drawing routine do not dep
   assert.match(proj, /player map print \(js\/journey2-print\.js/);
 });
 
-test('CSS: the fog is a restrained translucent texture — no black fill, no blur, no animation', () => {
+test('CSS: the fog is a restrained translucent texture — no black fill, no animation; the only blur is the veil\'s feathered edge (PD-063)', () => {
   const css = read('css/journey2.css');
   const rules = css.replace(/\/\*[\s\S]*?\*\//g, '').split('}').filter(r => /j2-fogp|j2-fog-(veil|edge|pend|brush|glyph)/.test(r.split('{')[0]));
   assert.ok(rules.length >= 10);
-  for (const r of rules) assert.doesNotMatch(r, /animation|transition(?!-)|filter|blur|#000\b|black/, r.trim().slice(0, 80));
+  for (const r of rules) assert.doesNotMatch(r.replace(/filter: url\(#j2-fog-soft\);/, ''), /animation|transition(?!-)|filter|blur|#000\b|black/, r.trim().slice(0, 80));
   assert.match(css, /\.j2\[data-mode="preview"\] \.j2-overlay \.j2-fog-veil \{ fill: url\(#j2-fog-player\)/);
 });
 

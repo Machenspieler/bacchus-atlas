@@ -134,7 +134,7 @@ test('Copy player link: lives in the rail while Player Preview is on, is built f
   assert.match(view, /railBtn\('data-j2-share-link data-t-title="journey2_share_title"'/);
   assert.match(view, /else if \(b\.hasAttribute\('data-j2-share-link'\)\) copyPlayerLink\(\);/);
   assert.match(body, /if \(inst\.disposed \|\| !previewMode \|\| playerMode/, 'only from the GM\'s Player Preview');
-  assert.match(body, /Share\.createLinkText\(projectionDoc\(\), data\.ctx, \{ lang: lang, view: view \}\)/, 'the same document Player Preview draws, party light included');
+  assert.match(body, /Share\.createLinkText\(projectionDoc\(\), data\.ctx, \{ lang: lang, view: view, regionIcons: showRegions \}\)/, 'the same document Player Preview draws, party light included');
   assert.match(body, /location\.href\.split\('#'\)\[0\] \+ '#\/map\/' \+ text/);
   assert.match(body, /navigator\.clipboard\.writeText\(url\); copied = true;/);
   assert.match(body, /if \(copied\) \{ toast\(t\('journey2_share_toast'\)\)/, 'no success toast without a copy');

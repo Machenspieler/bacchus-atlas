@@ -11,7 +11,7 @@
        `revealedCells` (hand-revealed ∪ the party's light, Model.getVisibleCellSet), so overlays, perimeter and X's of those cells reach players like any revealed cell;
        `party: { q, r } | null` is the marker itself. A hidden or unplaced marker contributes nothing.
      - `overlays`: one entry per generated tile that sits in a REVEALED cell, reduced to what is drawn
-       ({ q, r, symbolId, dots, blightMark, tint }); `blightMark` is the Shadowblight X on that cell (PD-041: it may have moved there, or left). `tint` is the Biome Tint key (js/journey2-biome-tint.js) of the tile's Habitat; it exists only on
+       ({ q, r, symbolId, dots, blightMark, region, tint }); `region` is an anonymous number (first appearance in cell order) so a renderer can draw one icon per region (PD-062); `blightMark` is the Shadowblight X on that cell (PD-041: it may have moved there, or left). `tint` is the Biome Tint key (js/journey2-biome-tint.js) of the tile's Habitat; it exists only on
        overlays of revealed cells, so hidden cells leak no colour, and `buildPrintProjection` omits it for black-and-white print. A region spanning revealed and hidden cells contributes only its
        revealed tiles; revealing one cell never reveals its region.
      - `shadowMarks`: [{ q, r }] — an X on a REVEALED hex that has no tile (a moved X on open ground); an X on a tile rides on its overlay's `blightMark`.
@@ -74,14 +74,17 @@
     const withTint = !(opts && opts.biomeTint === false);
     const revealed = ctx ? Model.getVisibleCellSet(doc, ctx) : Model.getRevealedCellSet(doc);   // hand-revealed cells plus the party's light (PD-045)
     const byBatch = new Map(doc.batches.map(b => [b.id, b]));
-    const overlays = [], onTile = new Set(), marks = Model.getShadowXSet(doc);
+    const overlays = [], onTile = new Set(), marks = Model.getShadowXSet(doc), regionNo = new Map();
+    // overlays are numbered in cell order by first appearance — the same anonymous region number the share link carries (PD-052), never an id
+    const ordered = doc.tiles.filter(tile => revealed.has(tile.cell)).sort((a, b) => Model.compareCellKeys(a.cell, b.cell));
+    for (const tile of ordered) if (!regionNo.has(tile.batchId)) regionNo.set(tile.batchId, regionNo.size);
     for (const tile of doc.tiles) {
       if (!revealed.has(tile.cell)) continue;                    // hidden cell: the overlay is not produced at all
       const b = byBatch.get(tile.batchId);
       const c = Geo.parseCellId(tile.cell);
       if (!b || !c) continue;
       onTile.add(tile.cell);
-      const o = { q: c.q, r: c.r, symbolId: Model.symbolIdOf(b), dots: b.habitat.overtaken ? 0 : b.terrain.value, blightMark: marks.has(tile.cell) };
+      const o = { q: c.q, r: c.r, symbolId: Model.symbolIdOf(b), dots: b.habitat.overtaken ? 0 : b.terrain.value, blightMark: marks.has(tile.cell), region: regionNo.get(tile.batchId) };
       if (withTint) { const key = Tint.tintKeyOf(b.habitat); if (key) o.tint = key; }
       overlays.push(o);
     }

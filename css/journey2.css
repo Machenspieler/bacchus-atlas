@@ -474,12 +474,11 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
  * translucent gray texture; nothing animates, so the same look can be printed. */
 .j2-fogp-wash { fill: #3b3d4a; fill-opacity: 0.1; stroke: none; }
 .j2-fogp-line { stroke: #2c2e3a; stroke-opacity: 0.3; stroke-width: 1.1; fill: none; vector-effect: none; }
-.j2-fogp-wash.is-player { fill: #8a8c96; fill-opacity: 0.42; }
-.j2-fogp-line.is-player { stroke: #3a3c48; stroke-opacity: 0.5; stroke-width: 1.2; }
-.j2-fogp-line.is-player-x { stroke: #3a3c48; stroke-opacity: 0.28; stroke-width: 0.8; }
+.j2-fogp-wash.is-player { fill: #707070; fill-opacity: 0.68; }
+.j2-fogp-line.is-player { stroke: #3c3c3c; stroke-opacity: 0.14; stroke-width: 0.9; }
 .j2-fogp-hide { stroke: var(--ink); stroke-opacity: 0.75; stroke-width: 1.4; vector-effect: none; }
 .j2-overlay .j2-fog-veil { fill: url(#j2-fog-gm); stroke: none; opacity: 0.85; }
-.j2[data-mode="preview"] .j2-overlay .j2-fog-veil { fill: url(#j2-fog-player); opacity: 1; }
+.j2[data-mode="preview"] .j2-overlay .j2-fog-veil { fill: url(#j2-fog-player); opacity: 1; filter: url(#j2-fog-soft); }   /* the book's fog: flat grey with a fine grain and a soft, feathered edge */
 .j2-viewport.is-fog-tool .j2-fog-veil { opacity: 1; }
 .j2-overlay .j2-fog-edge { fill: none; stroke: var(--hope); stroke-opacity: 0.22; stroke-width: 1; }
 .j2-viewport.is-fog-tool .j2-fog-edge { stroke-opacity: 0.5; }

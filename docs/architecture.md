@@ -1395,7 +1395,7 @@ Run all of them with `node --test tests/*.test.js`.
 `Journey2Projection.buildPlayerProjection`, so Fog of War, the party's light, revealed names and the collected-Echo rule are applied once, there; the
 snapshot holds only revealed cells, one anonymous region number per revealed tile, X marks, revealed sanctuary names and collected Echoes on revealed hexes.
 The synthetic document is fed to the unchanged projection / route code, so the player page draws what Player Preview draws and a route over it can
-only know revealed tiles. Formats 1 and 2 are frozen (the symbol table, field order and the "cell order = the grid's valid-cell order" rule); a layout change is a new
+only know revealed tiles. Formats 1, 2 and 3 are frozen (3 = 2 plus the region-icons flag, PD-062) (the symbol table, field order and the "cell order = the grid's valid-cell order" rule); a layout change is a new
 version, and an unknown version is refused. Decoding is strict (bounds, counts, padding bits, trailing bytes, an inflate size cap) and never throws.
 The projection gained `collectedEchoes` (version 4): sorted sanctuary ids of Collected Echoes whose own hex is revealed; the print blanks it.
 **The player page** is the route `#/map/<link>` (`RouteUtils`: `{ name: 'playermap', id: <link text>, env: null }`; a malformed escape gives `id: ''` and the page's own error).

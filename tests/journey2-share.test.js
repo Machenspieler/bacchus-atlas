@@ -89,7 +89,7 @@ test('encode -> decode returns the snapshot unchanged (language, party, tiles, r
 
 test('an empty map, no party and no language round-trip too', () => {
   const snap = S.buildSnapshot(M.emptyDocument(ctx, AT), ctx);
-  assert.deepEqual(snap, { lang: null, view: null, party: null, revealed: [], regions: [], tiles: [], xs: [], names: [], echoes: [] });
+  assert.deepEqual(snap, { lang: null, view: null, regionIcons: false, party: null, revealed: [], regions: [], tiles: [], xs: [], names: [], echoes: [] });
   const bytes = S.encodeSnapshot(snap, ctx);
   assert.deepEqual(S.decodeSnapshot(bytes, ctx).snap, snap);
   assert.ok(bytes.length < 700, 'an empty snapshot is one bitmap');
@@ -143,7 +143,7 @@ test('a route over the rebuilt document can only know revealed tiles (fogged ter
 test('link text: "<version>.<base64url>", round-trips through openLinkText into a ready document', async () => {
   const { doc } = campaign();
   const text = await S.createLinkText(doc, ctx, { lang: 'ru' });
-  assert.match(text, /^2\.[A-Za-z0-9_-]+$/);
+  assert.match(text, /^3\.[A-Za-z0-9_-]+$/);
   const opened = await S.openLinkText(text, ctx);
   assert.equal(opened.ok, true);
   assert.equal(opened.snap.lang, 'ru');
@@ -193,7 +193,7 @@ test('decoding refuses bad input with a code and never throws', async () => {
   assert.equal(code(S.decodeSnapshot(Uint8Array.from([...good, 0]), ctx)), 'trailing-bytes');
   const other = Uint8Array.from(good); other[1] ^= 1;                                   // the cell count differs: another map template
   assert.equal(code(S.decodeSnapshot(other, ctx)), 'template-mismatch');
-  assert.equal(code(S.decodeSnapshot(Uint8Array.from([16]), ctx)), 'invalid', 'unknown flag bits');
+  assert.equal(code(S.decodeSnapshot(Uint8Array.from([32]), ctx)), 'invalid', 'unknown flag bits');
   for (const t of ['', 'x', '2.AAAA', '1.', '1.!!!!', '1.' + 'A'.repeat(30000), '0.AAAA', null, 42]) {
     const r = await S.unpackSnapshot(t, ctx);
     assert.equal(r.ok, false, String(t).slice(0, 20));
@@ -235,7 +235,7 @@ test('the codec is pure and format 1 is frozen: no DOM or storage; the symbol ta
   assert.doesNotMatch(src, /localStorage|sessionStorage|SafeStorage|document\.|window\.|innerHTML|location\b/);
   assert.doesNotMatch(src, /environmentId|\.rumor\b|\.encounter\b|\.notes\b|\.sanctuaries\.entries/, 'no GM-only field is read');
   assert.deepEqual(Array.from(S.SYMBOLS), ['underground', 'aquatic', 'wetland', 'grassland', 'tropical', 'forest', 'drylands', 'rolling', 'mountain', 'frozen', 'badlands', 'fully-shadowblighted']);
-  assert.equal(S.FORMAT_VERSION, 2); assert.deepEqual(Array.from(S.SUPPORTED_VERSIONS), [1, 2]);
+  assert.equal(S.FORMAT_VERSION, 3); assert.deepEqual(Array.from(S.SUPPORTED_VERSIONS), [1, 2, 3]);
 });
 
 test('wiring: the module loads after the projection and before the view, and ships in the build list', () => {
@@ -265,4 +265,20 @@ test('camera: a version 1 link (no camera) still opens, and a version 1 payload 
   const withView = S.encodeSnapshot(Object.assign({}, snap, { view: { cx: 5, cy: 5, width: 5 } }), ctx);
   assert.equal(S.decodeSnapshot(withView, ctx, 1).ok, false, 'bit 3 does not exist in version 1');
   assert.equal(S.decodeSnapshot(withView, ctx, 2).ok, true);
+});
+
+/* ---------------- the "Regions" display flag (version 3, PD-062) ---------------- */
+
+test('region icons: the flag rides in bit 4 of a version 3 link, older links read as off, and bit 4 does not exist before version 3', async () => {
+  const { doc } = campaign();
+  const on = S.buildSnapshot(doc, ctx, { regionIcons: true }), off = S.buildSnapshot(doc, ctx);
+  assert.equal(on.regionIcons, true); assert.equal(off.regionIcons, false);
+  assert.equal(S.decodeSnapshot(S.encodeSnapshot(on, ctx), ctx).snap.regionIcons, true);
+  assert.equal(S.decodeSnapshot(S.encodeSnapshot(off, ctx), ctx).snap.regionIcons, false);
+  assert.equal((await S.openLinkText(await S.createLinkText(doc, ctx, { regionIcons: true }), ctx)).snap.regionIcons, true);
+  const bytes = S.encodeSnapshot(on, ctx);
+  assert.equal(S.decodeSnapshot(bytes, ctx, 2).ok, false, 'bit 4 does not exist in version 2');
+  assert.equal(S.decodeSnapshot(bytes, ctx, 3).ok, true);
+  const v2 = '2.' + S.bytesToBase64Url(zlib.deflateRawSync(Buffer.from(S.encodeSnapshot(off, ctx))));
+  assert.equal((await S.openLinkText(v2, ctx)).snap.regionIcons, false, 'a version 2 link still opens, with the plain per-hex icons');
 });
