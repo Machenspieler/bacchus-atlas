@@ -57,7 +57,7 @@ test('palette: every supported Habitat and the overtaken fallback resolve to a t
     const def = Tint.definitionOf(id);
     assert.ok(def, id);
     assert.match(def.color, /^#[0-9a-f]{6}$/i, id);
-    assert.ok(def.opacity >= 0.06 && def.opacity <= 0.10, id + ' stays in the restrained 0.06-0.10 range');
+    assert.ok(def.opacity >= 0.24 && def.opacity <= 0.32, id + ' stays in the translucent 0.24-0.32 range');
   }
   assert.ok(Tint.definitionOf(Tint.OVERTAKEN_KEY));
   assert.deepEqual(Object.keys(Tint.PALETTE).sort(), M.HABITAT_IDS.concat([Tint.OVERTAKEN_KEY]).sort(), 'no stray or missing palette entry');

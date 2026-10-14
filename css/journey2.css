@@ -403,7 +403,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 /* Sepia screen map (PD-060, the "Sepia map" switch; on by default): the raster is black line art on white, so multiplying it over a parchment ground turns the
    white into paper and keeps the ink. Everything the overlay paints in white to hide or lift the raster (tile cover, glyph halo, Shadowblight halo) takes
    the paper colour too, or it would read as bright patches. Screen only — the print path (.j2-pp-svg, js/journey2-print.js) draws the untouched raster. */
-.j2[data-sepia] { --j2-paper: #e4d3ab; }
+.j2[data-sepia] { --j2-paper: #f1e8d2; }
 .j2[data-sepia] .j2-world { background: var(--j2-paper); }
 .j2[data-sepia] .j2-base { mix-blend-mode: multiply; }
 .j2[data-sepia] .j2-overlay .j2-tile-cover, .j2[data-sepia] .j2-overlay .j2-tile-halo, .j2[data-sepia] .j2-overlay .j2-party-halo { fill: var(--j2-paper); }

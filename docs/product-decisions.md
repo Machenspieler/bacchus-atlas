@@ -862,7 +862,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 ## PD-026: Journey 2 — Biome Tint (derived, GM display preference, revealed-only for players)
 - **Status:** Active
 - **Date:** 2026-10-07
-- **Decision (what it is):** a very faint, watercolour-like fill (`fill-opacity` about 0.06–0.10, tuned per hue) inside every placed generated
+- **Decision (what it is):** a translucent, saturated watercolour-like fill (`fill-opacity` about 0.26–0.30, tuned per hue; raised from 0.06–0.10 on 2026-10-14 for richer colour while the map terrain still shows through) inside every placed generated
   hex, taken from the region's Habitat. It is presentation of existing data, never campaign data: nothing is stored in the document, backup,
   history or geometry, and it is recomputed on every render, so place / move / return / delete / Undo / Redo / import need no extra code.
 - **Decision (palette):** one table, `js/journey2-biome-tint.js` (`PALETTE`): the eleven Habitats plus `overtaken`. The four greens (Grassland,
@@ -880,6 +880,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Decision (print):** black-and-white print omits the tint entirely — not grayscale, not desaturated, not gray fills, not hatch density.
   `Journey2Projection.buildPrintProjection(doc, ctx)` returns overlays without `tint` and takes no UI state; `{ color: true }` is reserved for a
   future colour print that may reuse the same keys. Colour printing is **not** implemented; the tint is never baked into the base map raster.
+- **Decision (paper tone, 2026-10-14):** the "sepia" map paper (`--j2-paper` in `css/journey2.css`) was lightened from `#e4d3ab` to `#f1e8d2` so the stronger tint reads true on it, mostly the greens.
 - **Where:** `js/journey2-biome-tint.js`, `js/journey2-projection.js`, `js/journey2-view.js` (`overlayMarkup`, `toggleBiomeColors`),
   tests in `tests/journey2-biome-tint.test.js`.
 

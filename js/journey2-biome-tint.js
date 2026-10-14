@@ -1,14 +1,14 @@
 /* ============================================================
    Bacchus's Atlas — journey2-biome-tint.js
    The ONE place the Journey 2 Biome Tint palette lives (PD-026). A pure, DOM-free table that maps a placed generated tile's Habitat to a
-   faint, watercolour-like wash painted inside its hexagon. The tint is DERIVED presentation: it is read from the region's Habitat every
+   translucent, watercolour-like wash painted inside its hexagon. The tint is DERIVED presentation: it is read from the region's Habitat every
    render, never stored in the document, the backup, history or geometry, and it never depends on the Environment assigned to a hex, its
    Tier, Encounter, Rumor, Soul Echoes, sanctuaries or Terrain.
 
    Rules the rest of the code relies on
      - Shadowblight never replaces the Habitat colour: a blighted Wetland is the Wetland tint (the blight X mark says "corrupt").
      - Only a FULLY overtaken region (no base Habitat left) uses the dedicated neutral violet-grey fallback.
-     - Opacities are deliberately low (about 0.06–0.10) and tuned per hue, because the same alpha does not read equally strong in every colour.
+     - Opacities are translucent but saturated (about 0.26–0.30, so the base map's terrain still reads through) and tuned per hue, because the same alpha does not read equally strong in every colour.
      - Black-and-white print never receives tint at all (not grayscale, not a hatch) — see journey2-projection.js `buildPrintProjection`.
    ============================================================ */
 (function (root, factory) {
@@ -21,18 +21,18 @@
 
   /** key -> { color, opacity }. Keys are the eleven Habitat ids plus OVERTAKEN_KEY. */
   const PALETTE = Object.freeze({
-    underground: Object.freeze({ color: '#5d4a82', opacity: 0.09 }),   // muted violet / charcoal-purple
-    aquatic:     Object.freeze({ color: '#2c6db5', opacity: 0.08 }),   // cool blue
-    wetland:     Object.freeze({ color: '#2a8a7c', opacity: 0.09 }),   // muted teal / marsh green
-    grassland:   Object.freeze({ color: '#a2b82a', opacity: 0.09 }),   // soft yellow-green
-    tropical:    Object.freeze({ color: '#12a46c', opacity: 0.08 }),   // subdued emerald
-    forest:      Object.freeze({ color: '#23703c', opacity: 0.09 }),   // natural deep green
-    drylands:    Object.freeze({ color: '#c9a050', opacity: 0.10 }),   // sand / muted terracotta
-    rolling:     Object.freeze({ color: '#7f8734', opacity: 0.08 }),   // soft olive
-    mountain:    Object.freeze({ color: '#5f7596', opacity: 0.09 }),   // cool slate-blue / stone
-    frozen:      Object.freeze({ color: '#62c6e2', opacity: 0.09 }),   // pale cyan / ice blue
-    badlands:    Object.freeze({ color: '#b2552a', opacity: 0.08 }),   // muted rust / burnt sienna
-    overtaken:   Object.freeze({ color: '#6f6679', opacity: 0.08 }),   // fully overtaken: neutral violet-grey
+    underground: Object.freeze({ color: '#6a3fb5', opacity: 0.28 }),   // muted violet / charcoal-purple
+    aquatic:     Object.freeze({ color: '#1f6fd6', opacity: 0.26 }),   // cool blue
+    wetland:     Object.freeze({ color: '#16917e', opacity: 0.28 }),   // muted teal / marsh green
+    grassland:   Object.freeze({ color: '#9ec41a', opacity: 0.28 }),   // soft yellow-green
+    tropical:    Object.freeze({ color: '#06b36b', opacity: 0.26 }),   // subdued emerald
+    forest:      Object.freeze({ color: '#17803a', opacity: 0.3 }),   // natural deep green
+    drylands:    Object.freeze({ color: '#dba03a', opacity: 0.3 }),   // sand / muted terracotta
+    rolling:     Object.freeze({ color: '#7f8f1c', opacity: 0.28 }),   // soft olive
+    mountain:    Object.freeze({ color: '#4f78b0', opacity: 0.28 }),   // cool slate-blue / stone
+    frozen:      Object.freeze({ color: '#3cc4ee', opacity: 0.28 }),   // pale cyan / ice blue
+    badlands:    Object.freeze({ color: '#c9481a', opacity: 0.28 }),   // muted rust / burnt sienna
+    overtaken:   Object.freeze({ color: '#7a5f94', opacity: 0.26 }),   // fully overtaken: neutral violet-grey
   });
 
   /** The tint key of a region's habitat: its base biome (blighted or not), or the fallback when fully overtaken. */
