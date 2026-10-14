@@ -213,10 +213,18 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-mapbar .j2-tb-group[hidden] + .j2-tb-group { padding-left: 0; border-left: 0; }   /* the player page has no history group: no orphan divider */
 .j2-mapbar .btn { height: var(--h-sm); min-height: 0; }
 .j2-mapbar .j2-zoom-readout { min-width: 5ch; padding-inline: var(--s-1); }
-/* the player page keeps the panel as a title card only — the same rail + card pair as the GM's Player Preview (PD-040), no floating chip */
-.j2[data-player] .j2-stage { --j2-side-w: 232px; }
-.j2[data-player] .j2-side > :not(.j2-about) { display: none; }
-.j2[data-player] .j2-about { padding-bottom: var(--s-3); }
+/* the player page keeps the panel as title + legend — the same rail + panel pair as the GM's Player Preview (PD-040); Legend is a rail tool that folds it (open on a desktop, folded on a phone) */
+.j2-legend { display: none; }
+.j2[data-player] .j2-side > :not(.j2-about):not(.j2-legend) { display: none; }
+.j2[data-player] .j2-about { padding-bottom: var(--s-1); }
+.j2[data-player] .j2-legend { display: block; flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 0 var(--s-3) var(--s-3); scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
+.j2-legend-h { margin: var(--s-3) 0 var(--s-2); font-family: var(--font-mono); font-weight: 500; font-size: var(--fs-micro); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--muted); }
+.j2-legend-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+.j2-legend-list li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: var(--s-3); align-items: center; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment); }
+.j2-legend-list svg { width: 26px; height: 22px; }
+.j2-legend-p { margin: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); }
+.j2-legend-p--touch { display: none; }
+@media (hover: none) { .j2-legend-p--mouse { display: none; } .j2-legend-p--touch { display: block; } }
 /* zoom is a column under the rail: same left edge, same width — one tool strip, nothing floating beside it */
 @media (min-width: 641px) {
   .j2[data-player] .j2-mapbar { left: var(--j2-side-gap); width: var(--j2-rail-w); flex-direction: column; align-items: stretch; transition: none; }
@@ -230,7 +238,9 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 /* a touch phone on the player page: the rail becomes a bottom bar with full-size targets (PD-052) */
 @media (max-width: 640px) {
   .j2[data-player] .j2-stage { --j2-bar-h: 64px; --j2-inset-left: var(--j2-side-gap); }
-  .j2[data-player] .j2-side { display: none; }   /* a phone has no room for the title card: the map prints its own title */
+  /* the legend opens above the bar at the map's width (design.md: a map panel is the map width minus 2 * gap below 900px) */
+  .j2[data-player] .j2-side { position: absolute; left: var(--j2-side-gap); right: var(--j2-side-gap); top: auto; bottom: calc(var(--j2-bar-h) + var(--j2-side-gap)); width: auto; max-width: none; flex: none; align-self: auto; max-height: 62dvh; }
+  .j2[data-player] .j2-mapbar [data-j2-zoom] { display: none; }   /* a touch screen zooms with a pinch: only Fit stays */
   .j2[data-player] .j2-sidewrap { left: 0; right: 0; top: auto; bottom: 0; }
   .j2[data-player] .j2-rail {
     flex-direction: row; justify-content: center; width: 100%; max-height: none; border-width: 1px 0 0; border-radius: 0;
@@ -239,7 +249,7 @@ body[data-route="playermap"] #grid-wrap { display: block; }
   .j2[data-player] .j2-rail-grp { flex-direction: row; border-top: 0; padding-top: 0; }
   .j2[data-player] .j2-rail-grow { display: none; }
   .j2[data-player] .j2-rb { min-width: 72px; min-height: 52px; }
-  .j2[data-player] .j2-mapbar { bottom: calc(var(--j2-bar-h) + var(--j2-side-gap)); }
+  .j2[data-player] .j2-mapbar { left: auto; right: var(--j2-side-gap); bottom: calc(var(--j2-bar-h) + var(--j2-side-gap)); }
   .j2[data-player] .j2-route { bottom: calc(var(--j2-bar-h) + var(--s-3)); }
 }
 /* a touch screen has no keyboard: no shortcut keycaps */

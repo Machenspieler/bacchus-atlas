@@ -1373,3 +1373,12 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Decision:** Every `.modal-header` (title, tier pills, actions and the close ×) is `position: sticky; top: 0` inside the scrolling overlay, on all routes and widths, instead of a Journey-only floating "close dock" outside the card. The same card no longer behaves differently per route; the × never scrolls out of reach and never hangs outside the card. Backdrop click and Escape still close it as a complement.
 - **Where:** `css/styles.css` (`.modal-header`), `js/app.js` (`openDetailOverlay`), `js/soundboard-ui.js` (`position()`).
 - **Addendum (2026-10-14):** the detail card's bottom "Add to…" button and the expanded destination dialog (Current Prep row + Lists) are removed: the sticky header always carries the same `[Prep][bookmark]` pair as every catalogue card, with state visible on the icons. The footer is now biome at the start, source at the end (wrapping, left-aligned ≤480px). The bookmark popup stays list-only.
+
+## PD-065: Player page — title and legend live in the panel; Legend is a rail tool
+
+- **Status:** Active
+- **Date:** 2026-10-14
+- **Why:** the player page's title floated over the map as a chip and its zoom bar hung off the rail with a gap; players (mostly on a phone) also had no key to the map's marks. The page reuses the GM view's own components (design.md: no new panel widths or patterns) and spends no vertical space on a header.
+- **Decision:** `.j2-side` stays on `#/map/<link>` as title + one-line purpose (`journey2_about_*_pl`) + a **legend** (party, sanctuary, Shadowblight, collected Echo, unknown ground) + controls hint. A labelled **Legend** tool in the rail (icon `info` — the system's help glyph, key I) folds it; Escape closes it. Desktop: open at load, zoom as a column under the rail. Phone (≤640px): the bottom bar of labelled tools (Route, Legend), the legend opens above it at map width and starts folded, the map bar keeps only Fit (a pinch zooms). The state is never stored (the page touches no storage).
+- **Where:** `js/journey2-view.js` (`buildSurface`, `isPhoneWidth`, `syncSideToggle`, `onToolHotkey`), `css/journey2.css` (`.j2-legend*`, `.j2[data-player]`), `data/i18n.json` (`journey2_rail_legend`, `journey2_legend_*`), `tests/journey2-player-page.test.js`.
+

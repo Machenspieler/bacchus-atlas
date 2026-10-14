@@ -482,6 +482,7 @@
       link: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>',
       hexes: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /></svg>',
       panelClose: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 3v18" /><path d="m16 15-3-3 3-3" /></svg>',
+      info: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>',
       panelOpen: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 3v18" /><path d="m14 9 3 3-3 3" /></svg>',
       close: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>',
       check: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>',
@@ -705,6 +706,7 @@
                   ${railBtn('data-j2-route-plan aria-pressed="false" data-t-title="journey2_route_plan_title"', LI.route, 'journey2_rail_route', 'R')}
                   ${railBtn('data-j2-echo-locate aria-pressed="false" aria-describedby="j2-locate-reason"', LI.locate, 'journey2_rail_locate', 'E')}
                   ${railBtn('data-j2-fog-tool="paint" aria-pressed="false" data-t-title="journey2_fog_paint_title" hidden', LI.brush, 'journey2_rail_brush', 'E')}
+                  ${railBtn('data-j2-legend-btn aria-pressed="false" aria-controls="j2-side" data-t-title="journey2_legend_title" hidden', LI.info, 'journey2_rail_legend', 'I')}
                   <span class="sr-only" id="j2-locate-reason" data-j2-locate-reason></span>
                 </div>
                 <div class="j2-rail-grp" data-j2-rail-pv role="group" data-t-aria="journey2_rail_share" hidden>
@@ -740,6 +742,19 @@
                   <h2 class="j2-about-title" data-t="journey2_about_title"></h2>
                   <p class="j2-about-sub" data-t="journey2_about_sub"></p>
                 </header>
+                <div class="j2-legend" data-j2-legend>
+                  <h3 class="j2-legend-h" data-t="journey2_legend_h"></h3>
+                  <ul class="j2-legend-list">
+                    <li><svg viewBox="0 0 26 22" aria-hidden="true"><path d="M13 1l3 7.5 7.5 3-7.5 3L13 21l-3-6.5-7.5-3 7.5-3z" fill="var(--hope)" stroke="var(--ink)" stroke-width="1.2" stroke-linejoin="round"/></svg><span data-t="journey2_legend_party"></span></li>
+                    <li><svg viewBox="0 0 26 22" aria-hidden="true"><circle cx="13" cy="11" r="7" fill="var(--ink)" stroke="var(--parchment)" stroke-width="1"/><circle cx="13" cy="11" r="3" fill="var(--parchment)"/></svg><span data-t="journey2_legend_sanctuary"></span></li>
+                    <li><svg viewBox="0 0 26 22" aria-hidden="true"><path d="M7 4l12 14M19 4L7 18" fill="none" stroke="var(--fear-soft)" stroke-width="2.6" stroke-linecap="round"/></svg><span data-t="journey2_legend_shadow"></span></li>
+                    <li><svg viewBox="0 0 26 22" aria-hidden="true"><path d="M13 2l7 9-7 9-7-9z" fill="#4db4ff" stroke="var(--ink)" stroke-width="1"/></svg><span data-t="journey2_legend_echo"></span></li>
+                    <li><svg viewBox="0 0 26 22" aria-hidden="true"><rect x="3" y="3" width="20" height="16" rx="3" fill="var(--muted)" fill-opacity=".55" stroke="var(--line-strong)"/></svg><span data-t="journey2_legend_unknown"></span></li>
+                  </ul>
+                  <h3 class="j2-legend-h" data-t="journey2_legend_controls_h"></h3>
+                  <p class="j2-legend-p j2-legend-p--mouse" data-t="journey2_legend_controls_mouse"></p>
+                  <p class="j2-legend-p j2-legend-p--touch" data-t="journey2_legend_controls_touch"></p>
+                </div>
                 <div class="j2-seg" role="group" data-j2-mode-seg data-t-aria="journey2_mode_label">
                   <button type="button" class="j2-seg-btn" data-j2-preview-back aria-pressed="true" data-t-title="journey2_preview_back"><span class="j2-ico" aria-hidden="true">${LI.gm}</span><span data-t="journey2_mode_gm"></span></button>
                   <button type="button" class="j2-seg-btn" data-j2-preview aria-pressed="false" data-t-title="journey2_preview_title"><span class="j2-ico" aria-hidden="true">${LI.eye}</span><span data-t="journey2_mode_players"></span></button>
@@ -803,10 +818,12 @@
       ui.side = container.querySelector('.j2-side');
       ui.sidewrap = container.querySelector('[data-j2-sidewrap]');
       ui.stage = container.querySelector('[data-j2-stage]');
+      if (playerMode && isPhoneWidth()) ui.stage.setAttribute('data-side', 'collapsed');   // a phone's legend starts folded from the first paint (no fade-out on load)
       ui.rail = container.querySelector('[data-j2-rail]');
       ui.railCount = container.querySelector('[data-j2-rail-count]');
       ui.placeHint = container.querySelector('[data-j2-place-hint]');
       ui.sideToggle = container.querySelector('[data-j2-side-toggle]');
+      ui.legendBtn = container.querySelector('[data-j2-legend-btn]');
       ui.mapbar = container.querySelector('[data-j2-mapbar]');
       ui.railPv = container.querySelector('[data-j2-rail-pv]');
       ui.railMode = container.querySelector('[data-j2-rail-mode]');
@@ -887,7 +904,7 @@
       });
       listen(window, 'focus', () => { if (!inst.disposed && !conflict) conflictBlocks(); });
       const prefs = store.loadUi();
-      sideCollapsed = !playerMode && !!prefs.sideCollapsed;   // the player page's panel is its title card and never folds
+      sideCollapsed = playerMode ? isPhoneWidth() : !!prefs.sideCollapsed;   // the player page's panel is its legend: open on a desktop, folded on a phone; never stored
       showBiome = prefs.showBiomeColors !== false;
       showSepia = prefs.sepiaMap !== false;
       showRegions = playerMode ? !!(playerLoad && playerLoad.snap && playerLoad.snap.regionIcons) : !!prefs.regionIcons;
@@ -1121,6 +1138,9 @@
 
     /* ---- sidebar overlay ---- */
 
+    /** The player page's phone composition (css/journey2.css, <= 640px): a bottom bar and a legend that opens above it. */
+    function isPhoneWidth() { return !!(window.matchMedia && window.matchMedia('(max-width: 640px)').matches); }
+
     function applySideState(persistIt) {
       ui.stage.setAttribute('data-side', sideCollapsed ? 'collapsed' : 'expanded');
       // the hidden half is taken out of the tab order and the accessibility tree; the transition itself is CSS-only. The rail is always there (PD-057).
@@ -1133,6 +1153,7 @@
 
     /** One collapse / expand button whose icon, name and aria-expanded follow the panel state (and the language). */
     function syncSideToggle() {
+      if (ui.legendBtn) ui.legendBtn.setAttribute('aria-pressed', String(!sideCollapsed));   // the player page's Legend tool IS the panel toggle
       const b = ui.sideToggle;
       if (!b) return;
       const label = t(sideCollapsed ? 'journey2_side_expand' : 'journey2_side_collapse');
@@ -1170,7 +1191,8 @@
       // the free map area grows/shrinks by the inset difference: keep the zoom and slide the map by half of it, so what was centred stays centred (no Fit)
       if (data && ui.viewport) { const dx = (sideInset() - before) / 2; if (Math.abs(dx) >= 1) animateCameraBy(dx, 0, 250); }
       followInspector(320);
-      if (ui.sideToggle) ui.sideToggle.focus({ preventScroll: true });
+      const back = playerMode ? ui.legendBtn : ui.sideToggle;
+      if (back) back.focus({ preventScroll: true });
     }
 
     /** Width the overlay sidebar covers on the left of the map (used by Fit only; toggling never refits). */
@@ -3820,7 +3842,7 @@
       if (ui.shareOut && !on) ui.shareOut.hidden = true;       // the last link's note belongs to the preview that made it
       if (playerMode) {                                        // the player page is read-only: no history, no party toggle, no panel, no way back to a GM view
         ui.root.setAttribute('data-player', '');
-        ui.partyBtn.hidden = true; ui.railMode.hidden = true; ui.sideToggle.hidden = true;
+        ui.partyBtn.hidden = true; ui.railMode.hidden = true; ui.sideToggle.hidden = true; ui.legendBtn.hidden = false;
         for (const el of ui.mapbar.querySelectorAll('[data-j2-history-group]')) el.hidden = true;
       }
       syncSideToggle();
@@ -4661,6 +4683,7 @@
         if (locateSession.isActive()) { exitLocate({ focus: true }); e.preventDefault(); return; }   // a result or the selection: leave Locate (no document change)
         if (fogTool) { setFogTool(null); e.preventDefault(); return; }
         if (previewMode && routePlanner.isActive()) { routeEscape(); e.preventDefault(); return; }    // a route shown in the preview closes before the preview does (PD-052)
+        if (playerMode && !sideCollapsed) { toggleSide(); e.preventDefault(); return; }                // the player page's legend closes before anything else is left
         if (previewMode) { leavePreview(); e.preventDefault(); return; }
         if (sanctuaryOpen) { closeSanctuary({ focus: true }); e.preventDefault(); return; }
         if (inspectorOpen()) { closeInspector({ focus: true }); e.preventDefault(); return; }
@@ -4695,6 +4718,7 @@
       else if (e.code === 'KeyE') b = previewMode ? ui.fogTool : ui.echoLocate;
       else if (e.code === 'KeyV') b = playerMode ? null : ui.modeToggle;
       else if (e.code === 'BracketLeft') b = playerMode ? null : ui.sideToggle;
+      else if (e.code === 'KeyI') b = playerMode ? ui.legendBtn : null;
       if (!b || b.hidden || b.disabled || b.closest('[hidden]')) return false;
       b.click();
       e.preventDefault();
@@ -4740,7 +4764,7 @@
       else if (b.hasAttribute('data-j2-roll')) rollEncounter();
       else if (b.hasAttribute('data-j2-clear-unplaced')) confirmClearUnplaced();
       else if (b.hasAttribute('data-j2-delete')) confirmDelete(b.closest('[data-batch]').getAttribute('data-batch'));
-      else if (b.hasAttribute('data-j2-side-toggle')) toggleSide();
+      else if (b.hasAttribute('data-j2-side-toggle') || b.hasAttribute('data-j2-legend-btn')) toggleSide();
       else if (b.hasAttribute('data-j2-fit')) fitToView();
       else if (b.hasAttribute('data-j2-biome-colors')) toggleBiomeColors();
       else if (b.hasAttribute('data-j2-sepia')) toggleSepia();
