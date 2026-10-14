@@ -596,10 +596,10 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-insp-scroll {
   --j2-cue-rgb: 232, 222, 200;
   background:
-    linear-gradient(var(--ink-raised) 85%, transparent) 0 0 / 100% 24px no-repeat local,
-    linear-gradient(transparent, var(--ink-raised) 15%) 0 100% / 100% 24px no-repeat local,
-    linear-gradient(rgba(var(--j2-cue-rgb), 0.2), transparent) 0 0 / 100% 22px no-repeat scroll,
-    linear-gradient(transparent, rgba(var(--j2-cue-rgb), 0.2)) 0 100% / 100% 22px no-repeat scroll;
+    linear-gradient(var(--ink-raised), var(--ink-raised)) 0 0 / 100% 20px no-repeat local,
+    linear-gradient(var(--ink-raised), var(--ink-raised)) 0 100% / 100% 20px no-repeat local,
+    linear-gradient(rgba(var(--j2-cue-rgb), 0.16), rgba(var(--j2-cue-rgb), 0.06) 40%, rgba(var(--j2-cue-rgb), 0.015) 75%, transparent) 0 0 / 100% 20px no-repeat scroll,
+    linear-gradient(transparent, rgba(var(--j2-cue-rgb), 0.015) 25%, rgba(var(--j2-cue-rgb), 0.06) 60%, rgba(var(--j2-cue-rgb), 0.16)) 0 100% / 100% 20px no-repeat scroll;
 }
 .j2-insp-terrain-text { margin: var(--s-1) 0 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); }
 .j2-insp-terrain-text[hidden] { display: none; }
