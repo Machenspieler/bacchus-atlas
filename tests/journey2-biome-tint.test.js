@@ -235,10 +235,11 @@ test('Soul Echoes and sanctuaries neither add nor remove tint, and the tint modu
 test('view: the tint layer is aria-hidden, no events, under the symbols, with no stroke and nothing around fixed markers', () => {
   const view = read('js/journey2-view.js').replace(/\/\*[\s\S]*?\*\//g, ''), css = read('css/journey2.css');
   assert.match(view, /<g class="j2-biome-layer" pointer-events="none" aria-hidden="true">/);
-  const order = view.match(/return \(cover \? [^\n]+/)[0];
-  assert.ok(order.indexOf('wash') > order.indexOf('cover') && order.indexOf('wash') < order.indexOf('outlines') && order.indexOf('outlines') < order.indexOf('body'), 'cover, tint, outlines, then symbols');
+  const order = view.match(/return under \+ wash[^\n]+/)[0];
+  assert.ok(order.indexOf('wash') < order.indexOf('outlines') && order.indexOf('outlines') < order.indexOf('body'), 'tint, outlines, then symbols');
+  assert.ok(view.indexOf("under += '<clipPath") < view.indexOf('return under + wash') && view.indexOf("class=\"j2-tile-halo\"") < view.indexOf('return under + wash'), 'label cover and glyph lift are built to sit below the tint');
+  assert.doesNotMatch(view, /j2-biome-halo/, 'no second tinted box over the glyph lift: the wash is one even layer above it');
   const rule = css.match(/\.j2-biome-tint[^{]*\{[^}]*\}/)[0];
-  assert.match(rule, /\.j2-biome-halo/, 'the symbol halo is washed with the same tint');
   assert.match(rule, /stroke:\s*none[^}]*pointer-events:\s*none/);
   assert.doesNotMatch(rule, /gradient|filter|animation|drop-shadow/);
   assert.doesNotMatch(view, /markers[^\n]*tint|sanct[^\n]*Tint\./i);
