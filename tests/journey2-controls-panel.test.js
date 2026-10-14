@@ -13,7 +13,7 @@ const css = read('css/journey2.css');
 const html = read('index.html');
 const i18n = JSON.parse(read('data/i18n.json'));
 const surface = view.slice(view.indexOf('function buildSurface'), view.indexOf('<div class="j2-tip"'));
-const mapbar = surface.slice(surface.indexOf('<div class="j2-mapbar"'), surface.indexOf('<div class="j2-title-chip"'));
+const mapbar = surface.slice(surface.indexOf('<div class="j2-mapbar"'), surface.indexOf('<div class="j2-sidewrap"'));
 const rail = surface.slice(surface.indexOf('<nav class="j2-rail"'), surface.indexOf('<aside class="j2-side"'));
 const side = surface.slice(surface.indexOf('<aside class="j2-side"'));
 const menu = rail.slice(rail.indexOf('data-j2-menu="campaign"'));

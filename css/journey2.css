@@ -213,15 +213,25 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-mapbar .j2-tb-group[hidden] + .j2-tb-group { padding-left: 0; border-left: 0; }   /* the player page has no history group: no orphan divider */
 .j2-mapbar .btn { height: var(--h-sm); min-height: 0; }
 .j2-mapbar .j2-zoom-readout { min-width: 5ch; padding-inline: var(--s-1); }
-/* the player page has no panel: the title lives on a chip over the map */
+/* the player page has no panel: the title is a header bar of the map frame — a row above the stage, never a chip floating over the map */
 .j2-title-chip {
-  position: absolute; z-index: 3; left: var(--j2-inset-left); top: var(--j2-side-gap); display: grid; gap: 2px; max-width: min(380px, calc(100% - var(--j2-inset-left) - var(--s-4)));
-  padding: var(--s-2) var(--s-3); background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-md); box-shadow: var(--e-2);
+  flex: none; display: flex; align-items: baseline; flex-wrap: wrap; column-gap: var(--s-3); row-gap: 0; min-width: 0;
+  padding: var(--s-2) var(--s-3); background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-md);
 }
-.j2-title-chip b { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md); line-height: var(--lh-md); color: var(--parchment); }
-.j2-title-chip span { font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--parchment-dim); }
+.j2-title-chip h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md); line-height: var(--lh-md); color: var(--parchment); }
+.j2-title-chip p { margin: 0; font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--parchment-dim); }
 .j2[data-player] .j2-side { display: none; }
 .j2[data-player] .j2-stage { --j2-inset-left: calc(var(--j2-rail-w) + 2 * var(--j2-side-gap)); }
+/* zoom is a column under the rail: same left edge, same width — one tool strip, nothing floating beside it */
+@media (min-width: 641px) {
+  .j2[data-player] .j2-mapbar { left: var(--j2-side-gap); width: var(--j2-rail-w); flex-direction: column; align-items: stretch; }
+  .j2[data-player] .j2-mapbar .j2-tb-group { flex-direction: column; align-items: stretch; }
+  .j2[data-player] .j2-mapbar .btn, .j2[data-player] .j2-mapbar .j2-zoom-readout { width: 100%; min-width: 0; }
+  .j2[data-player] .j2-mapbar [data-j2-zoom="in"] { order: -1; }
+  .j2[data-player] .j2-mapbar [data-j2-zoom="reset"] { order: 0; }
+  .j2[data-player] .j2-mapbar [data-j2-zoom="out"] { order: 1; }
+  .j2[data-player] .j2-mapbar [data-j2-fit] { order: 2; }
+}
 /* a touch phone on the player page: the rail becomes a bottom bar with full-size targets (PD-052) */
 @media (max-width: 640px) {
   .j2[data-player] .j2-stage { --j2-bar-h: 64px; --j2-inset-left: var(--j2-side-gap); }

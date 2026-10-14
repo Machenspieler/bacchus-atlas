@@ -541,6 +541,10 @@
       ui = {};
       container.innerHTML = `
         <section class="j2" data-t-aria="journey_title">
+          <header class="j2-title-chip" data-j2-title-chip hidden>
+            <h2 data-t="journey2_about_title"></h2>
+            <p data-t="journey2_about_sub"></p>
+          </header>
           <div class="j2-stage" data-j2-stage>
             <div class="j2-mapwrap">
               <div class="j2-viewport" tabindex="0" role="application" data-t-aria="journey2_map_label" aria-describedby="j2-keys">
@@ -696,10 +700,6 @@
                 <button type="button" class="btn btn-sm j2-btn-icon" data-j2-zoom="in" data-t-aria="journey2_zoom_in" data-t-title="journey2_zoom_in">+</button>
                 <button type="button" class="btn btn-sm j2-btn-icon" data-j2-fit data-t-aria="journey2_fit" data-t-title="journey2_fit">${LI.fit}</button>
               </div>
-            </div>
-            <div class="j2-title-chip" data-j2-title-chip hidden>
-              <b data-t="journey2_about_title"></b>
-              <span data-t="journey2_about_sub"></span>
             </div>
             <div class="j2-sidewrap" data-j2-sidewrap>
               <nav class="j2-rail" data-j2-rail role="toolbar" aria-orientation="vertical" data-t-aria="journey2_toolbar_label">

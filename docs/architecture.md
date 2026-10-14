@@ -1042,7 +1042,7 @@ Run all of them with `node --test tests/*.test.js`.
   `aria-pressed` = the mode), the preview note, New region and the Hex stock; the GM-only whole-campaign actions are the rail's Campaign menu (`data-j2-menu="campaign"`, the shared
   `openMenu` machinery; an action closes it, the biome switch does not). Undo / Redo / zoom / Fit are the floating `.j2-mapbar`. `onToolHotkey()` (called from `onDocumentKey`) maps
   P / R / E / V / [ by `event.code` to a click on the rail button. `focusTool()` focuses the Players switch when the panel is collapsed and the Campaign button for a closed menu's item.
-  Player page (`playerMode`): the panel is `display: none`, a `.j2-title-chip` carries the title, and ≤640px the rail is a bottom bar. The collapsed state is
+  Player page (`playerMode`): the panel is `display: none`; `.j2-title-chip` is a header bar in flow above the stage (a sibling of `.j2-stage`, never an overlay on the map); above 640px the zoom `.j2-mapbar` is a column under the rail with the same left edge and width; ≤640px the rail is a bottom bar. The collapsed state is
   stored via `store.loadUi/saveUi`, never in the document, and toggling never
   touches camera, selection or the active card. Cards are compact; exactly one
   (`activeBatchId`) is expanded (placement controls and, for a region with a biome, the Environments

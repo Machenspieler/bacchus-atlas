@@ -62,7 +62,9 @@ test('the player page hides every GM control and shows no way into the editor', 
   assert.match(view, /function routeLocked\(\) \{ return editLocked && !playerMode; \}/, 'the planner works on the read-only page');
   const css = read('css/journey2.css');
   assert.match(css, /\.j2-ctl-preview\[hidden\], \.j2-side-scroll\[hidden\], \.j2-rail-grp\[hidden\], \.j2-rb\[hidden\], \.j2-title-chip\[hidden\] \{ display: none; \}/, 'hidden tools really hide');
-  assert.match(css, /\.j2\[data-player\] \.j2-side \{ display: none; \}/, 'the player page has no panel; its title is a chip over the map');
+  assert.match(css, /\.j2\[data-player\] \.j2-side \{ display: none; \}/, 'the player page has no panel');
+  assert.ok(view.indexOf('data-j2-title-chip') < view.indexOf('data-j2-stage'), 'the title is a header row above the stage, not an overlay inside it');
+  assert.match(css, /\.j2\[data-player\] \.j2-mapbar \{ left: var\(--j2-side-gap\); width: var\(--j2-rail-w\)/, 'zoom is a column aligned with the rail');
   assert.match(css, /body\[data-route="playermap"\] \.shell/);
 });
 
