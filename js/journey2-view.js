@@ -241,6 +241,7 @@
     let fogDrawn = { vis: null, mode: null, doc: null };   // what the fog layer currently shows (so an unrelated document change never rebuilds it)
     let showOutline = false;                                // Player Preview: passive faint outline round placed-but-hidden hexes (GM aid, UI only; never in the document, projection or print)
     let ghostDrawn = { tiles: null, vis: null, soft: false };            // what the GM-only hidden-hex outline currently shows
+    let fogUnfoggable = '';                                 // path data of valid cells the fog never covers (holes in the veil)
     let foggable = null;                                    // Map cellKey -> hex path, every cell the GM can reveal/hide (built once)
     let detachedConfirm = null;                             // transient: the frozen detached candidate whose "Start separate area" dialog is open (never stored, never in history)
     let perimDrawn = { tiles: null, vis: null, mode: null }; // what the perimeter layer currently shows (an unrelated change never rebuilds it)
@@ -547,7 +548,7 @@
                   <img class="j2-base" alt="" draggable="false" width="${W}" height="${H}">
                   <svg class="j2-overlay" xmlns="${SVG_NS}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">
                     <defs data-j2-defs></defs><defs>${ECHO_DEFS}</defs>
-                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/><path class="j2-fog-ghost" data-j2-fog-ghost d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routeline" pointer-events="none" aria-hidden="true"></g>
+                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil fill-rule="evenodd" d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/><path class="j2-fog-ghost" data-j2-fog-ghost d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routeline" pointer-events="none" aria-hidden="true"></g>
                     <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
                     <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g><g data-j2-g="locate" pointer-events="none"></g><g data-j2-g="seekers" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routemark" pointer-events="none" aria-hidden="true"></g><g data-j2-g="party" pointer-events="none" aria-hidden="true"></g>
                   </svg>
@@ -3561,7 +3562,8 @@
     /** One shared set of SVG patterns for the fog veil and the fog tools. */
     function buildFogLayer() {
       foggable = new Map();
-      data.grid.forEachValidCell((q, r) => { if (data.ctx.policy(q, r).ok) foggable.set(Geo.cellId(q, r), hexPath(q, r)); });
+      fogUnfoggable = '';
+      data.grid.forEachValidCell((q, r) => { if (data.ctx.policy(q, r).ok) foggable.set(Geo.cellId(q, r), hexPath(q, r)); else fogUnfoggable += hexPath(q, r); });
       ui.defs.innerHTML =
         '<pattern id="j2-fog-gm" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect class="j2-fogp-wash" width="9" height="9"/><line class="j2-fogp-line" x1="0" y1="0" x2="0" y2="9"/></pattern>' +
         '<pattern id="j2-fog-player" width="4" height="4" patternUnits="userSpaceOnUse"><rect class="j2-fogp-wash is-player" width="4" height="4"/><line class="j2-fogp-line is-player" x1="0" y1="0.5" x2="4" y2="0.5"/></pattern>' +
@@ -3580,8 +3582,11 @@
       if (!source) return;
       if (fogDrawn.vis !== source || fogDrawn.mode !== mode) {
         const revealed = previewMode ? new Set(playerProjection.revealedCells) : Model.getRevealedCellSet(doc);
-        let hidden = '', edge = '';
-        for (const [key, d] of foggable) { if (revealed.has(key)) edge += d; else hidden += d; }
+        // The veil is the whole map (plus a margin, so the feathering blur never fades at the border) minus the revealed hexes and the
+        // cells the fog never covers (even-odd): the slivers between the hex grid's zigzag and the map edge are fogged too, not left as light islands.
+        const M = 64, W = data.template.worldSizePx[0], H = data.template.worldSizePx[1];
+        let hidden = 'M' + (-M) + ' ' + (-M) + 'H' + (W + M) + 'V' + (H + M) + 'H' + (-M) + 'Z' + fogUnfoggable, edge = '';
+        for (const [key, d] of foggable) { if (revealed.has(key)) { edge += d; hidden += d; } }
         ui.fogVeil.setAttribute('d', hidden);
         ui.fogEdge.setAttribute('d', previewMode ? '' : edge);
         fogDrawn = { vis: source, mode: mode };
