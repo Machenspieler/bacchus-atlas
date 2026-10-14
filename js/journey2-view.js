@@ -745,11 +745,11 @@
                 <div class="j2-legend" data-j2-legend>
                   <h3 class="j2-legend-h" data-t="journey2_legend_h"></h3>
                   <ul class="j2-legend-list">
-                    <li><svg viewBox="0 0 26 22" aria-hidden="true"><path d="M13 1l3 7.5 7.5 3-7.5 3L13 21l-3-6.5-7.5-3 7.5-3z" fill="var(--hope)" stroke="var(--ink)" stroke-width="1.2" stroke-linejoin="round"/></svg><span data-t="journey2_legend_party"></span></li>
-                    <li><svg viewBox="0 0 26 22" aria-hidden="true"><circle cx="13" cy="11" r="7" fill="var(--ink)" stroke="var(--parchment)" stroke-width="1"/><circle cx="13" cy="11" r="3" fill="var(--parchment)"/></svg><span data-t="journey2_legend_sanctuary"></span></li>
-                    <li><svg viewBox="0 0 26 22" aria-hidden="true"><path d="M7 4l12 14M19 4L7 18" fill="none" stroke="var(--fear-soft)" stroke-width="2.6" stroke-linecap="round"/></svg><span data-t="journey2_legend_shadow"></span></li>
-                    <li><svg viewBox="0 0 26 22" aria-hidden="true"><path d="M13 2l7 9-7 9-7-9z" fill="#4db4ff" stroke="var(--ink)" stroke-width="1"/></svg><span data-t="journey2_legend_echo"></span></li>
-                    <li><svg viewBox="0 0 26 22" aria-hidden="true"><rect x="3" y="3" width="20" height="16" rx="3" fill="var(--muted)" fill-opacity=".55" stroke="var(--line-strong)"/></svg><span data-t="journey2_legend_unknown"></span></li>
+                    <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g class="j2-party-mark"><path class="j2-party-halo" d="${partyStarPath(0, 0, 9)}"/><path class="j2-party-star" d="${partyStarPath(0, 0, 9)}"/></g></svg></span><span data-t="journey2_legend_party"></span></li>
+                    <li><span class="j2-legend-sym"><img src="img/journey2/legend-sanctuary.webp" alt="" width="44" height="39" draggable="false"></span><span data-t="journey2_legend_sanctuary"></span></li>
+                    <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><path class="j2-legend-x-halo" d="M-7-7l14 14m0-14l-14 14"/><path class="j2-legend-x" d="M-7-7l14 14m0-14l-14 14"/></svg></span><span data-t="journey2_legend_shadow"></span></li>
+                    <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g transform="scale(.7)">${ECHO_CRYSTAL}</g></svg></span><span data-t="journey2_legend_echo"></span></li>
+                    <li><span class="j2-legend-sym"><span class="j2-legend-fog"></span></span><span data-t="journey2_legend_unknown"></span></li>
                   </ul>
                   <h3 class="j2-legend-h" data-t="journey2_legend_controls_h"></h3>
                   <p class="j2-legend-p j2-legend-p--mouse" data-t="journey2_legend_controls_mouse"></p>

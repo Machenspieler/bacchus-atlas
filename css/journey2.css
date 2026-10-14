@@ -220,8 +220,16 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2[data-player] .j2-legend { display: block; flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 0 var(--s-3) var(--s-3); scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
 .j2-legend-h { margin: var(--s-3) 0 var(--s-2); font-family: var(--font-mono); font-weight: 500; font-size: var(--fs-micro); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--muted); }
 .j2-legend-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
-.j2-legend-list li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: var(--s-3); align-items: center; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment); }
-.j2-legend-list svg { width: 26px; height: 22px; }
+.j2-legend-list li { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: var(--s-3); align-items: center; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment); }
+/* the same parchment tile as a region card's symbol: the map's glyphs are black ink with a white halo on paper, copied from the map's own drawing code */
+.j2-legend-sym { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--parchment); border-radius: var(--r-sm); overflow: hidden; }
+.j2-legend-sym svg { width: 24px; height: 24px; overflow: visible; }
+.j2-legend-sym img { max-width: 26px; max-height: 24px; display: block; }
+.j2-legend-x-halo { fill: none; stroke: rgba(255, 255, 255, 0.9); stroke-width: 5.6; stroke-linecap: round; }
+.j2-legend-x { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; }
+.j2-legend-sym .j2-echo-body { stroke: #0b3b8c; stroke-width: 1.5; stroke-linejoin: round; }
+.j2-legend-sym .j2-echo-core { fill: #d6f1ff; }
+.j2-legend-fog { width: 22px; height: 18px; border-radius: 3px; background: #707070; opacity: 0.68; }   /* the Player Preview veil's own grey (PD-063) */
 .j2-legend-p { margin: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); }
 .j2-legend-p--touch { display: none; }
 @media (hover: none) { .j2-legend-p--mouse { display: none; } .j2-legend-p--touch { display: block; } }
