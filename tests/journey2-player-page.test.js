@@ -65,7 +65,7 @@ test('the player page hides every GM control and shows no way into the editor', 
   assert.match(css, /\.j2\[data-player\] \.j2-side > :not\(\.j2-about\):not\(\.j2-legend\) \{ display: none; \}/, 'the player page panel is the title and the legend only');
   assert.match(view, /ui\.legendBtn\.hidden = false/, 'the Legend tool exists on the player page only');
   assert.match(view, /sideCollapsed = playerMode \? isPhoneWidth\(\)/, 'the legend is open on a desktop and folded on a phone');
-  for (const k of ['journey2_rail_legend', 'journey2_legend_title', 'journey2_legend_party', 'journey2_legend_sanctuary', 'journey2_legend_shadow', 'journey2_legend_echo', 'journey2_legend_unknown', 'journey2_legend_controls_mouse', 'journey2_legend_controls_touch']) assert.ok(i18n.en[k] && i18n.ru[k], k);
+  for (const k of ['journey2_rail_legend', 'journey2_legend_title', 'journey2_legend_party', 'journey2_legend_sanctuary', 'journey2_legend_shadow', 'journey2_legend_echo', 'journey2_legend_unknown', 'journey2_legend_controls_touch']) assert.ok(i18n.en[k] && i18n.ru[k], k);
   assert.match(css, /\.j2\[data-player\] \.j2-mapbar \{ left: var\(--j2-side-gap\); width: var\(--j2-rail-w\)/, 'zoom is a column aligned with the rail');
   assert.match(css, /body\[data-route="playermap"\] \.shell/);
 });

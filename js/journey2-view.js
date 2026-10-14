@@ -754,11 +754,12 @@
                   </ul>
                   <div class="j2-legend-biomes" data-j2-legend-biomes hidden>
                     <h3 class="j2-legend-h" data-t="journey2_legend_biomes_h"></h3>
-                    <ul class="j2-legend-list" data-j2-legend-biome-list></ul>
+                    <ul class="j2-legend-list j2-legend-list--biomes" data-j2-legend-biome-list></ul>
                   </div>
-                  <h3 class="j2-legend-h" data-t="journey2_legend_controls_h"></h3>
-                  <p class="j2-legend-p j2-legend-p--mouse" data-t="journey2_legend_controls_mouse"></p>
-                  <p class="j2-legend-p j2-legend-p--touch" data-t="journey2_legend_controls_touch"></p>
+                  <div class="j2-legend-touch">
+                    <h3 class="j2-legend-h" data-t="journey2_legend_controls_h"></h3>
+                    <p class="j2-legend-p" data-t="journey2_legend_controls_touch"></p>
+                  </div>
                 </div>
                 <div class="j2-seg" role="group" data-j2-mode-seg data-t-aria="journey2_mode_label">
                   <button type="button" class="j2-seg-btn" data-j2-preview-back aria-pressed="true" data-t-title="journey2_preview_back"><span class="j2-ico" aria-hidden="true">${LI.gm}</span><span data-t="journey2_mode_gm"></span></button>
