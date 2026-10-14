@@ -747,7 +747,7 @@
                   <ul class="j2-legend-list">
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g class="j2-party-mark"><path class="j2-party-halo" d="${partyStarPath(0, 0, 9)}"/><path class="j2-party-star" d="${partyStarPath(0, 0, 9)}"/></g></svg></span><span data-t="journey2_legend_party"></span></li>
                     <li><span class="j2-legend-sym"><img src="img/journey2/legend-sanctuary.webp" alt="" width="44" height="39" draggable="false"></span><span data-t="journey2_legend_sanctuary"></span></li>
-                    <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><path class="j2-legend-x-halo" d="M-7-7l14 14m0-14l-14 14"/><path class="j2-legend-x" d="M-7-7l14 14m0-14l-14 14"/></svg></span><span data-t="journey2_legend_shadow"></span></li>
+                    <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><path class="j2-legend-x-halo" d="M-7-7l14 14m0-14l-14 14"/><path class="j2-legend-x" d="M-7-7l14 14m0-14l-14 14"/></svg></span><span><span data-t="journey2_legend_shadow"></span><span class="j2-legend-desc" data-t="journey2_legend_shadow_desc"></span></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g transform="scale(.7)">${ECHO_CRYSTAL}</g></svg></span><span data-t="journey2_legend_echo"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><circle class="j2-legend-dot" cx="-5" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="0" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="5" cy="0" r="1.7"/></svg></span><span data-t="journey2_legend_terrain"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><polygon class="j2-legend-fog" points="9.5,-5.5 9.5,5.5 0.0,11.0 -9.5,5.5 -9.5,-5.5 -0.0,-11.0"/></svg></span><span data-t="journey2_legend_unknown"></span></li>
@@ -1969,7 +1969,12 @@
         const li = document.createElement('li'), tile = document.createElement('span'), img = document.createElement('img'), name = document.createElement('span');
         tile.className = 'j2-legend-sym'; img.alt = ''; img.src = sym.path; img.draggable = false;
         name.textContent = sym.id === Model.symbolIdOf({ habitat: { overtaken: true } }) ? t('journey2_overtaken') : t('biome_' + sym.id);
-        tile.appendChild(img); li.append(tile, name);
+        tile.appendChild(img);
+        if (sym.id === Model.symbolIdOf({ habitat: { overtaken: true } })) {   // the one biome a player cannot read off its picture: a full-width entry with what it means
+          const text = document.createElement('span'), desc = document.createElement('span');
+          desc.className = 'j2-legend-desc'; desc.textContent = t('journey2_legend_overtaken_desc');
+          text.append(name, desc); li.className = 'is-wide'; li.append(tile, text);
+        } else li.append(tile, name);
         return li;
       }));
     }

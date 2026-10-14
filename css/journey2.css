@@ -232,6 +232,8 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-legend-sym .j2-echo-body { stroke: #0b3b8c; stroke-width: 1.5; stroke-linejoin: round; }
 .j2-legend-sym .j2-echo-core { fill: #d6f1ff; }
 .j2-legend-fog { fill: #707070; fill-opacity: 0.68; stroke: var(--line-strong); stroke-width: 0.8; stroke-linejoin: round; }   /* a hex of the Player Preview veil's own grey (PD-063) */
+.j2-legend-desc { display: block; margin-top: 2px; font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--parchment-dim); }
+.j2-legend-list--biomes li.is-wide { grid-column: 1 / -1; align-items: start; }
 .j2-legend-p { margin: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); }
 /* a mouse needs no controls hint (the rail's keycaps and the wheel say it); a touch screen gets the pinch / Fit line */
 .j2-legend-touch { display: none; }
