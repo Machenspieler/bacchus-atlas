@@ -749,8 +749,13 @@
                     <li><span class="j2-legend-sym"><img src="img/journey2/legend-sanctuary.webp" alt="" width="44" height="39" draggable="false"></span><span data-t="journey2_legend_sanctuary"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><path class="j2-legend-x-halo" d="M-7-7l14 14m0-14l-14 14"/><path class="j2-legend-x" d="M-7-7l14 14m0-14l-14 14"/></svg></span><span data-t="journey2_legend_shadow"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g transform="scale(.7)">${ECHO_CRYSTAL}</g></svg></span><span data-t="journey2_legend_echo"></span></li>
+                    <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><circle class="j2-legend-dot" cx="-5" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="0" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="5" cy="0" r="1.7"/></svg></span><span data-t="journey2_legend_terrain"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><polygon class="j2-legend-fog" points="9.5,-5.5 9.5,5.5 0.0,11.0 -9.5,5.5 -9.5,-5.5 -0.0,-11.0"/></svg></span><span data-t="journey2_legend_unknown"></span></li>
                   </ul>
+                  <div class="j2-legend-biomes" data-j2-legend-biomes hidden>
+                    <h3 class="j2-legend-h" data-t="journey2_legend_biomes_h"></h3>
+                    <ul class="j2-legend-list" data-j2-legend-biome-list></ul>
+                  </div>
                   <h3 class="j2-legend-h" data-t="journey2_legend_controls_h"></h3>
                   <p class="j2-legend-p j2-legend-p--mouse" data-t="journey2_legend_controls_mouse"></p>
                   <p class="j2-legend-p j2-legend-p--touch" data-t="journey2_legend_controls_touch"></p>
@@ -824,6 +829,8 @@
       ui.placeHint = container.querySelector('[data-j2-place-hint]');
       ui.sideToggle = container.querySelector('[data-j2-side-toggle]');
       ui.legendBtn = container.querySelector('[data-j2-legend-btn]');
+      ui.legendBiomes = container.querySelector('[data-j2-legend-biomes]');
+      ui.legendBiomeList = container.querySelector('[data-j2-legend-biome-list]');
       ui.mapbar = container.querySelector('[data-j2-mapbar]');
       ui.railPv = container.querySelector('[data-j2-rail-pv]');
       ui.railMode = container.querySelector('[data-j2-rail-mode]');
@@ -1951,6 +1958,21 @@
       return h;
     }
 
+    /** The player page's legend lists only the biomes already on the revealed map (what the GM has just announced), named in the current language. */
+    function renderLegendBiomes() {
+      if (!ui.legendBiomes || !playerProjection) return;
+      const seen = new Set(playerProjection.overlays.map(o => o.symbolId));
+      const items = data.symbols.filter(sym => seen.has(sym.id));
+      ui.legendBiomes.hidden = !items.length;
+      ui.legendBiomeList.replaceChildren(...items.map(sym => {
+        const li = document.createElement('li'), tile = document.createElement('span'), img = document.createElement('img'), name = document.createElement('span');
+        tile.className = 'j2-legend-sym'; img.alt = ''; img.src = sym.path; img.draggable = false;
+        name.textContent = sym.id === Model.symbolIdOf({ habitat: { overtaken: true } }) ? t('journey2_overtaken') : t('biome_' + sym.id);
+        tile.appendChild(img); li.append(tile, name);
+        return li;
+      }));
+    }
+
     /** The Shadowblight X at the top of a hexagon (white halo + ink stroke). Drawn on a tile, or alone on open ground (PD-041: an X that walked off its region). */
     function blightXMarkup(q, r, cls) {
       const m = blightMarkCenter(q, r), k = BLIGHT_X_HALF;
@@ -2007,6 +2029,7 @@
         playerProjection = Projection.buildPlayerProjection(projectionDoc(), data.ctx);
         ui.g.player.innerHTML = overlayMarkup(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, region: o.region, tint: o.tint }))
           .concat(playerProjection.shadowMarks.map(m => ({ q: m.q, r: m.r, floating: true }))));
+        if (playerMode) renderLegendBiomes();
         renderParty();
         renderEchoes();
         renderPerimeter();

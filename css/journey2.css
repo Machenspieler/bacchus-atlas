@@ -225,6 +225,8 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-legend-sym { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--parchment); border-radius: var(--r-sm); overflow: hidden; }
 .j2-legend-sym svg { width: 24px; height: 24px; overflow: visible; }
 .j2-legend-sym img { max-width: 26px; max-height: 24px; display: block; }
+.j2-legend-dot { fill: var(--ink); }
+.j2-legend-biomes[hidden] { display: none; }
 .j2-legend-x-halo { fill: none; stroke: rgba(255, 255, 255, 0.9); stroke-width: 5.6; stroke-linecap: round; }
 .j2-legend-x { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; }
 .j2-legend-sym .j2-echo-body { stroke: #0b3b8c; stroke-width: 1.5; stroke-linejoin: round; }
