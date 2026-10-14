@@ -237,7 +237,8 @@ test('view: the tint layer is aria-hidden, no events, under the symbols, with no
   assert.match(view, /<g class="j2-biome-layer" pointer-events="none" aria-hidden="true">/);
   const order = view.match(/return under \+ wash[^\n]+/)[0];
   assert.ok(order.indexOf('wash') < order.indexOf('outlines') && order.indexOf('outlines') < order.indexOf('body'), 'tint, outlines, then symbols');
-  assert.ok(view.indexOf("under += '<clipPath") < view.indexOf('return under + wash') && view.indexOf("class=\"j2-tile-halo\"") < view.indexOf('return under + wash'), 'label cover and glyph lift are built to sit below the tint');
+  assert.ok(view.indexOf("class=\"j2-tile-halo\"") < view.indexOf('return under + wash'), 'the glyph lift is built to sit below the tint');
+  assert.doesNotMatch(view, /j2-tile-cover|overlapsBuiltInLabel/, 'printed labels show through the wash: nothing covers them');
   assert.doesNotMatch(view, /j2-biome-halo/, 'no second tinted box over the glyph lift: the wash is one even layer above it');
   const rule = css.match(/\.j2-biome-tint[^{]*\{[^}]*\}/)[0];
   assert.match(rule, /stroke:\s*none[^}]*pointer-events:\s*none/);

@@ -414,7 +414,6 @@
           readiness: Geo.assessPlacementReadiness(template, anchorsDoc),
           protections: ctx.protections,
           glyphProtections: ctx.protections.filter(p => p.kind !== 'built-in-label'),
-          labelRects: ctx.protections.filter(p => p.kind === 'built-in-label').map(p => p.rectPx),
         };
         return loadImage(versioned(template.assembledAsset.path, template.assembledAsset.cacheKey));
       }).then(img => {
@@ -1909,14 +1908,6 @@
       return L;
     }
 
-    /** A placed hex sits above the artwork's printed labels (MARROGATE, HORIZON): true when the cell overlaps one, so it is painted over them. */
-    function overlapsBuiltInLabel(q, r) {
-      const poly = data.grid.cellCorners(q, r);
-      const xs = poly.map(p => p[0]), ys = poly.map(p => p[1]);
-      const bx = Math.min.apply(null, xs), by = Math.min.apply(null, ys), bw = Math.max.apply(null, xs) - bx, bh = Math.max.apply(null, ys) - by;
-      return data.labelRects.some(([x, y, w, h]) => bx < x + w && x < bx + bw && by < y + h && y < by + bh);
-    }
-
     /**
      * The soft lift behind one tile's glyph: a feathered (blurred) paper patch, drawn BELOW the biome wash so the wash lies evenly over it and
      * over the hexes around it — a hard-edged opaque box here read as a lighter rectangle inside the tinted hex.
@@ -1956,7 +1947,7 @@
      */
     let overlayUid = 0;                                       // unique ids for the per-render <clipPath>/<filter> definitions
     function overlayMarkup(entries) {
-      let outlines = '', quiet = '', body = '', cover = '', halos = '';
+      let outlines = '', quiet = '', body = '', halos = '';
       const tints = new Map();                               // tint key -> merged hex paths; only entries the caller decided to tint
       // "Regions" (PD-062): one symbol per region (per connected piece of it that is drawn), on the hex nearest its middle with room for the glyph; the other
       // hexes keep their tint and Shadowblight X but carry no symbol and no hex outline — the thick region outline is the only line, as in the book
@@ -1969,7 +1960,6 @@
       for (const e of entries) {
         if (e.floating) { body += blightXMarkup(e.q, e.r, 'j2-tile'); continue; }   // a bare X on a hex with no tile
         if (e.tint && Tint.definitionOf(e.tint)) tints.set(e.tint, (tints.get(e.tint) || '') + hexPath(e.q, e.r));
-        if (overlapsBuiltInLabel(e.q, e.r)) cover += hexPath(e.q, e.r);
         if (iconAt && !iconAt.has(Geo.cellId(e.q, e.r))) { if (e.spec.blightMark) body += blightXMarkup(e.q, e.r, 'j2-tile'); continue; }
         const L = layoutFor(e.q, e.r, e.spec);
         if (iconAt) { /* no per-hex outline in Regions mode */ }
@@ -1977,19 +1967,13 @@
         halos += tileHaloMarkup(e.q, e.r, e.spec);
         body += tileMarkup(e.q, e.r, e.spec, 'j2-tile', false);
       }
-      // order inside the layer: label cover and glyph lift (both BELOW the wash, so the wash is one even colour over them and the hexes around them),
+      // order inside the layer: glyph lift (BELOW the wash, so the wash is one even colour over it and the hexes around it),
       // biome tint (aria-hidden, no events), hex outlines, then the black symbols / dots / blight marks
       let wash = '';
       for (const [key, d] of tints) { const def = Tint.definitionOf(key); wash += '<path class="j2-biome-tint" data-biome="' + key + '" fill="' + def.color + '" fill-opacity="' + def.opacity + '" d="' + d + '"/>'; }
       if (wash) wash = '<g class="j2-biome-layer" pointer-events="none" aria-hidden="true">' + wash + '</g>';
-      // the printed label sits on a knocked-out (blank) patch of the artwork: hide only the lettering — the label's own rectangle, clipped to the placed
-      // hexes — so the hatching of the rest of each hex is left alone; filling the whole hex flattened it and made hexes of one region look different
+      // the artwork's printed labels (MARROGATE, HORIZON) are NOT hidden: a placed hex is a translucent wash over the finished map, so the lettering shows through
       let under = '';
-      if (cover) {
-        const id = 'j2-cover-clip-' + (++overlayUid);
-        const rects = data.labelRects.map(([x, y, w, h]) => 'M' + x + ' ' + y + 'h' + w + 'v' + h + 'h' + (-w) + 'z').join('');
-        under += '<clipPath id="' + id + '"><path d="' + cover + '"/></clipPath><path class="j2-tile-cover" clip-path="url(#' + id + ')" d="' + rects + '"/>';
-      }
       if (halos) {
         const id = 'j2-halo-blur-' + (++overlayUid);
         under += '<filter id="' + id + '" x="-60%" y="-40%" width="220%" height="180%"><feGaussianBlur stdDeviation="3.2"/></filter><g class="j2-tile-halo" filter="url(#' + id + ')">' + halos + '</g>';

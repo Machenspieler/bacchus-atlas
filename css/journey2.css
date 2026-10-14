@@ -401,14 +401,13 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-base { display: block; position: absolute; left: 0; top: 0; max-width: none; pointer-events: none; user-select: none; -webkit-user-drag: none; }
 .j2-world.is-pixel .j2-base { image-rendering: pixelated; }
 /* Sepia screen map (PD-060, the "Sepia map" switch; on by default): the raster is black line art on white, so multiplying it over a parchment ground turns the
-   white into paper and keeps the ink. Everything the overlay paints in white to hide or lift the raster (tile cover, glyph halo, Shadowblight halo) takes
+   white into paper and keeps the ink. Everything the overlay paints in white to hide or lift the raster (glyph lift, Shadowblight halo) takes
    the paper colour too, or it would read as bright patches. Screen only — the print path (.j2-pp-svg, js/journey2-print.js) draws the untouched raster. */
 .j2[data-sepia] { --j2-paper: #f1e8d2; }
 .j2[data-sepia] .j2-world { background: var(--j2-paper); }
 .j2[data-sepia] .j2-base { mix-blend-mode: multiply; }
 .j2[data-sepia] .j2-overlay .j2-party-halo { fill: var(--j2-paper); }
-/* the map itself is a ~93% grey multiplied onto the paper, so the icon box and label cover are the paper at that depth — plain paper reads as a lighter rectangle inside the tinted hex */
-.j2[data-sepia] .j2-overlay .j2-tile-cover { fill: var(--j2-paper); }
+/* the glyph lift is the paper at the map's own depth (~93% grey) and feathered, so it never reads as a lighter rectangle inside the tinted hex */
 .j2[data-sepia] .j2-overlay .j2-tile-halo { fill: color-mix(in srgb, var(--j2-paper) 93%, #000); }
 .j2[data-sepia] .j2-overlay .j2-party-halo, .j2[data-sepia] .j2-overlay .j2-sanc-label { stroke: var(--j2-paper); }
 .j2[data-sepia] .j2-overlay .j2-tile-blight-halo, .j2[data-sepia] .j2-overlay .j2-pvt-blight-halo { stroke: var(--j2-paper); }
@@ -504,7 +503,6 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 @keyframes j2-echo-bob { 0%, 100% { transform: translateY(1.5px); } 50% { transform: translateY(-1.5px); } }
 @media (prefers-reduced-motion: reduce) { .j2-overlay .j2-echo-glow, .j2-overlay .j2-echo-bob { animation: none; } }
 /* committed terrain: monochrome — the base geography stays visible; gold is only selection/valid preview, red an invalid preview */
-.j2-tile-cover { fill: #fff; stroke: none; }
 /* Biome Tint (PD-026): a faint wash inside the hex — fill and fill-opacity come from js/journey2-biome-tint.js; no stroke, no glow, no events */
 .j2-overlay .j2-biome-tint { stroke: none; pointer-events: none; }
 .j2-tile-hex { fill: none; stroke: var(--ink); stroke-opacity: 0.55; stroke-width: 1; }
@@ -933,8 +931,7 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-pp-svg { display: block; width: 190mm; max-width: 100%; height: auto; margin: 0 auto; background: #fff; }
 .j2-pp-pagelabel { position: absolute; left: 0; right: 0; bottom: 3mm; margin: 0; text-align: center; font: 10pt/1.2 Arial, Helvetica, sans-serif; color: #555; }
 /* black ink only: the same classes the screen map uses, restated without any screen-state colour */
-.j2-pp-svg .j2-tile-cover { fill: #fff; stroke: none; }
-.j2-pp-svg .j2-tile-hex { fill: none; stroke: #000; stroke-opacity: 0.55; stroke-width: 1; }
+.j2-pp-svg .j2-pp-svg .j2-tile-hex { fill: none; stroke: #000; stroke-opacity: 0.55; stroke-width: 1; }
 .j2-pp-svg .j2-tile-hex.is-glyphless { stroke-dasharray: 4 3; stroke-opacity: 0.8; stroke-width: 1.4; }
 .j2-pp-svg .j2-tile-halo { fill: #fff; fill-opacity: 0.85; stroke: none; }
 .j2-pp-svg .j2-tile-blight-halo { fill: none; stroke: #fff; stroke-width: 5.6; stroke-linecap: round; }
