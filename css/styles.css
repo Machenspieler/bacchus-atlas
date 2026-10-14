@@ -1280,8 +1280,8 @@ body[data-route="list"] .catalog-bar-wrap::before {
   padding-inline: max(var(--s-4), env(safe-area-inset-left)) max(var(--s-4), env(safe-area-inset-right));
   overflow-y: auto; overscroll-behavior: contain;
 }
-/* The card grows to its content and the whole thing scrolls inside the overlay,
- * header included — nothing is pinned to the top of the screen. `margin:auto`
+/* The card grows to its content and scrolls inside the overlay; its header is sticky (see .modal-header).
+ * `margin:auto`
  * centres a card shorter than the viewport and collapses to the top padding
  * once it is taller, so tall cards still scroll from their own top. */
 .modal {
@@ -1319,6 +1319,10 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 .modal-header {
   display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-4);
   padding: var(--s-5) var(--s-6) var(--s-4); border-bottom: 1px solid var(--line);
+  /* A tall card scrolls inside the overlay, so the header (title + close ×) is pinned to the top of the visible
+   * area on every page and the × never scrolls out of reach. */
+  position: sticky; top: calc(-1 * (var(--s-8) + env(safe-area-inset-top))); z-index: 2;
+  background: var(--ink-card); border-radius: var(--r-lg) var(--r-lg) 0 0;
 }
 .modal-title-row { display: flex; align-items: flex-start; gap: var(--s-3); margin: 0; flex: 0 1 auto; min-width: 0; }
 .modal-header h2 {
@@ -1344,24 +1348,6 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 }
 .modal-close { align-self: flex-start; margin-left: var(--s-4); }
 .modal-body { padding: var(--s-5) var(--s-6) var(--s-6); }
-/* Opened over #/journey the card is taller than a laptop window and scrolls inside the overlay, so its × lives in a
- * zero-height sticky dock: it sits exactly where the header's × sits at the top and stays at the top-right of the visible card
- * while reading. Only this modifier changes — the catalog card keeps its header-borne ×. */
-.modal--close-dock .modal-close-dock { position: sticky; top: 0; z-index: 3; height: 0; }
-.modal--close-dock .modal-close-dock .modal-close { position: absolute; top: var(--s-5); right: var(--s-6); margin: 0; background: var(--ink-card); }
-.modal--close-dock .modal-header { padding-inline-end: calc(var(--s-6) + var(--s-4) + 44px); }
-/* The sticky × floats over the scrolling body, so the body keeps the same right-hand gutter the header has: no text or link
- * (Open Encounter, the footer actions) can scroll underneath it (audit 04 Z-02). */
-.modal--close-dock .modal-body { padding-inline-end: calc(var(--s-6) + var(--s-4) + 44px); }
-/* Wide enough to leave a margin beside the card (720px + a 44px × and its gap on each side), the × rides just outside the
- * card's right edge instead, so the text column keeps the same padding on both sides rather than sitting off-centre. */
-@media (min-width: 880px) {
-  .modal--close-dock .modal-close-dock .modal-close {
-    right: calc(-1 * (44px + var(--s-3))); border: 1px solid var(--line); border-radius: var(--r-md);
-  }
-  .modal--close-dock .modal-header, .modal--close-dock .modal-body { padding-inline-end: var(--s-6); }
-}
-
 /* ---------- detail card: flavor text ---------- */
 .env-lore {
   font-style: italic; color: var(--parchment-dim);
@@ -2118,8 +2104,7 @@ ol.feature-bullets { list-style: decimal; }
    * deliberate departure from the desktop card, where the header scrolls away
    * with the rest and there is always a backdrop to click. */
   .modal-header {
-    position: sticky; top: 0; z-index: 2;
-    background: var(--ink-card);
+    top: 0; border-radius: 0;
     padding-block: calc(var(--s-4) + env(safe-area-inset-top)) var(--s-3);
   }
   .modal-header, .modal-body {

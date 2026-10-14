@@ -858,10 +858,9 @@ pauses or ducks music. Product rules: [PD-011](product-decisions.md).
   card's docked × is, so `registerOverlay()` calls `SoundboardUI.dismissPanel()`
   when a `detail` overlay opens on `#/journey` (popover only — playback, levels
   and prefs are untouched), and `position()` keeps a reopened panel
-  horizontally clear of `.modal--close-dock .modal-close`. Below 880px the docked card also
-  reserves a right-hand gutter in `.modal-body`, so scrolling text never passes
-  under the ×; from 880px up the × rides just outside the card's right edge and
-  the card keeps symmetric padding; while any `.modal-overlay` / `dialog[open]` is up, Journey's
+  horizontally clear of the open card's `.modal-overlay .modal-close`. Every `.modal-header`
+  (title and ×) is sticky inside the scrolling overlay (PD-064), so the × is always on screen;
+  while any `.modal-overlay` / `dialog[open]` is up, Journey's
   Ctrl/Cmd+Z / Y / Shift+Z are ignored (`onDocumentKey`). Audit 04 Z-01..Z-03.
 - **Assets:** `sound/*` is copied by `scripts/build.js` like `img/`. URLs are
   built with `new URL(src, document.baseURI)`, so they resolve under the GitHub

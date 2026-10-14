@@ -194,8 +194,8 @@ const SoundboardUI = (function () {
     const h = panel.offsetHeight;
     let left = Math.max(GAP_PX, Math.min(r.right - w, vw - w - GAP_PX));
     const top = Math.max(GAP_PX, Math.min(r.bottom + GAP_PX, vh - h - GAP_PX));
-    // A card's docked × (Journey) must stay reachable: keep the panel clear of it horizontally (the × never moves sideways).
-    const closeBtn = document.querySelector('.modal--close-dock .modal-close');
+    // An open card's × must stay reachable: keep the panel clear of it horizontally (the × never moves sideways).
+    const closeBtn = document.querySelector('.modal-overlay .modal-close');
     if (closeBtn) {
       const c = closeBtn.getBoundingClientRect();
       if (c.width && left < c.right + GAP_PX && left + w > c.left - GAP_PX) left = Math.max(GAP_PX, c.left - GAP_PX - w);

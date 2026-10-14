@@ -19,9 +19,9 @@ test('Z-01: Undo/Redo shortcuts are ignored while a modal overlay or confirm dia
   assert.ok(guard < key.indexOf('redo();'), 'the guard comes before redo()');
 });
 
-test('Z-02: the docked × reserves a right-hand gutter in the body as well as the header', () => {
-  assert.match(css, /\.modal--close-dock \.modal-body \{ padding-inline-end: calc\(var\(--s-6\) \+ var\(--s-4\) \+ 44px\); \}/);
-  assert.match(css, /\.modal--close-dock \.modal-header \{ padding-inline-end: calc\(var\(--s-6\) \+ var\(--s-4\) \+ 44px\); \}/);
+test('every modal header is sticky so the × stays reachable', () => {
+  assert.match(css, /\.modal-header \{[^}]*position: sticky; top: calc\(-1/);
+  assert.doesNotMatch(css, /modal--close-dock/);
 });
 
 test('Z-03: opening a Journey environment card dismisses only the soundboard popover', () => {
@@ -33,7 +33,7 @@ test('Z-03: opening a Journey environment card dismisses only the soundboard pop
   assert.doesNotMatch(dismiss, /engine\.|stop|savePrefs/, 'playback, volume and prefs are untouched');
 });
 
-test('Z-03: a reopened soundboard panel keeps clear of the docked ×', () => {
-  assert.match(sb, /\.modal--close-dock \.modal-close/);
+test('Z-03: a reopened soundboard panel keeps clear of the card close button', () => {
+  assert.match(sb, /\.modal-overlay \.modal-close/);
   assert.match(sb, /let left = /);
 });

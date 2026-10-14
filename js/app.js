@@ -6596,11 +6596,7 @@ function openDetailOverlay(envId, carry = null) {
 
   const sourceHtml = `<span class="detail-footer-source">${env.source ? `${t('source_label')} ${escapeHtml(env.source)}` : ''}</span>`;
 
-  /* Opened over #/journey the card is read from its middle and end, far below its header, so its close button
-   * rides in a sticky dock and stays on screen; the catalog card keeps its header-borne button (its backdrop and
-   * header behaviour are unchanged). */
   const closeBtnHtml = `<button type="button" class="icon-btn icon-btn--reach modal-close" aria-label="${t('close')}">${ICON_CLOSE}</button>`;
-  const closeDock = state.route.name === 'journey';
   const overlay = document.createElement('div');
   /* A card rebuilt in the other language is the same card with different words
    * on it, so it skips the entrance animation: replaying the fade would read as
@@ -6609,9 +6605,8 @@ function openDetailOverlay(envId, carry = null) {
   overlay.className = carry ? 'modal-overlay is-rebuild' : 'modal-overlay';
   overlay.dataset.overlayKind = 'detail';
   overlay.innerHTML = `
-    <div class="modal${closeDock ? ' modal--close-dock' : ''}" id="detail-modal" data-overlay-card
+    <div class="modal" id="detail-modal" data-overlay-card
          role="dialog" aria-modal="true" aria-labelledby="detail-title">
-      ${closeDock ? `<div class="modal-close-dock">${closeBtnHtml}</div>` : ''}
       <div class="modal-header">
         <div class="modal-title-row">
           <h2 id="detail-title">${escapeHtml(envName(env))}</h2>
@@ -6621,7 +6616,7 @@ function openDetailOverlay(envId, carry = null) {
           </div>
         </div>
         <div class="rank-pills detail-tier-pills" id="detail-tier-pills" role="group" aria-label="${t('view_as_tier')}">${tierPillsHtml}</div>
-        ${closeDock ? '' : closeBtnHtml}
+        ${closeBtnHtml}
       </div>
       <div class="modal-body">
         ${loreHtml}

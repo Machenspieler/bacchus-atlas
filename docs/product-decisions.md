@@ -1142,8 +1142,8 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 
 - **Status:** Active (refinement only; no new feature)
 - **Date:** 2026-10-08
-- **Decision:** (1) The Environment details card opened over `#/journey` carries a zero-height sticky "close dock" (`.modal--close-dock`) holding the same `.modal-close` button, so a × stays at the top-right of the visible card while reading; the catalog card is unchanged. (2) The hex inspector's scroll cue is a faint parchment-tinted fade (not a darker shadow), only on the edge that still has content. (3) The Environment picker list is still a bounded 14rem scroller but no longer traps the wheel: at its top/bottom native scroll chaining continues into the inspector. (4) On an explicit **window resize**, an open hex inspector whose hex left the map area gets the least pan that brings it back (zoom kept, never Fit), then the usual inspector-clearance pan; a hex still in view is not moved. Drawer collapse/expand and other camera flows are untouched (they do not fire window resize).
-- **Where:** `js/app.js` (`openDetailOverlay`), `css/styles.css` (`.modal--close-dock`), `css/journey2.css` (`.j2-insp-scroll`, `.j2-hexenv-list`), `js/journey2-view.js` (`reconcileInspectorAfterResize`).
+- **Decision:** (1) *(Superseded by PD-064: the Journey-only close dock is gone.)* The Environment details card opened over `#/journey` carried a zero-height sticky close dock. (2) The hex inspector's scroll cue is a faint parchment-tinted fade (not a darker shadow), only on the edge that still has content. (3) The Environment picker list is still a bounded 14rem scroller but no longer traps the wheel: at its top/bottom native scroll chaining continues into the inspector. (4) On an explicit **window resize**, an open hex inspector whose hex left the map area gets the least pan that brings it back (zoom kept, never Fit), then the usual inspector-clearance pan; a hex still in view is not moved. Drawer collapse/expand and other camera flows are untouched (they do not fire window resize).
+- **Where:** `js/app.js` (`openDetailOverlay`), `css/styles.css` (`.modal-header`), `css/journey2.css` (`.j2-insp-scroll`, `.j2-hexenv-list`), `js/journey2-view.js` (`reconcileInspectorAfterResize`).
 
 ## PD-043: Journey — side drawer UX pass (zones, pinned Generate, count = hexes left, compact finished cards, brush)
 
@@ -1365,3 +1365,10 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Why:** the printed book draws unexplored ground as a flat mid-grey with a faint grain, the base map still faintly legible through it, and the lit area ends in a soft, bleeding edge — not a diagonal hatch with hard hex borders.
 - **Decision:** the Player Preview veil (`#j2-fog-player`) is a flat grey wash (`#707070` at 0.68) with a 4 px hairline grain, blurred by one SVG filter (`#j2-fog-soft`, σ = 6 world px) so the revealed area glows softly into the fog. The blur is the only filter allowed in fog CSS (`tests/journey2-fog.test.js`). The GM view's subtle hatch, the print (no fog at all, PD-028) and the projection are unchanged.
 - **Where:** `js/journey2-view.js` (`buildFogLayer`), `css/journey2.css` (`.j2-fogp-*.is-player`, `.j2-fog-veil`).
+
+## PD-064: One overlay behaviour — sticky modal header on every page
+
+- **Status:** Active
+- **Date:** 2026-10-14
+- **Decision:** Every `.modal-header` (title, tier pills, actions and the close ×) is `position: sticky; top: 0` inside the scrolling overlay, on all routes and widths, instead of a Journey-only floating "close dock" outside the card. The same card no longer behaves differently per route; the × never scrolls out of reach and never hangs outside the card. Backdrop click and Escape still close it as a complement.
+- **Where:** `css/styles.css` (`.modal-header`), `js/app.js` (`openDetailOverlay`), `js/soundboard-ui.js` (`position()`).
