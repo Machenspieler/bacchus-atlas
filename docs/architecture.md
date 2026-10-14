@@ -605,13 +605,6 @@ new persisted key and no second copy of the limit.
 - **The unavailable state is `aria-disabled`, not `disabled`:** the button
   stays focusable so the reason is reachable from the keyboard;
   `handleEnvPrepToggleClick()` is the explicit activation guard.
-- **Expanded dialog:** `openAddToListPopup(envId, { expanded: true })` shares
-  the renderer with the list-only popup. It adds a "Current Prep" row
-  (checkbox, `prepDisplayTitle()`, `n/max`) and a "Lists" section, applies every
-  change immediately, and never self-closes (the list-only popup still closes
-  itself shortly after a list add). `repaintAtlPrepRow` is the module-level hook
-  `syncEnvPrepControls()` uses to reach it while open. A full Prep leaves the
-  row visible but disabled with the reason as text.
 - **The Environment symbol** (`ENV_SYMBOL_BODY`) is a single hand-drawn
   24×24 `currentColor` SVG body used twice: the neutral Prep section icon
   (`ICON_TABLE_ENVIRONMENTS`, no badge, ring closed) and the action icon

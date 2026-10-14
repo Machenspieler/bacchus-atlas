@@ -2278,11 +2278,6 @@ function envPrepButtonHtml(env) {
             aria-label="${escapeAttr(view.label)}" data-tip="${escapeAttr(view.tip)}">${ICON_ENV_ACTION}</button>`;
 }
 
-/** The dialog's Prep row repaints itself through this while it is open, so a
- * toggle from anywhere reaches it without the dialog knowing about the
- * others. Null whenever no expanded dialog is up. */
-let repaintAtlPrepRow = null;
-
 /** Re-evaluates every rendered quick-action control from the active Prep.
  * Deliberately global rather than per-environment: adding the last free slot
  * (or freeing one) changes the availability of every *other* unselected
@@ -2307,7 +2302,6 @@ function syncEnvPrepControls() {
       if (tipTarget === btn) showTip(btn);
     });
   }
-  if (repaintAtlPrepRow) repaintAtlPrepRow();
 }
 
 /** A button's activation guard: an aria-disabled button is still focusable and
@@ -2604,15 +2598,8 @@ function listCardHtml(list) {
  * card leaving still feels like a consequence of the click. */
 const ATL_CLOSE_DELAY_MS = 450;
 
-/* Two modes, one renderer. The compact bookmark buttons open the list-only
- * popup, which still gets out of the way once the environment lands in a list.
- * The detail card's bottom "Add to…" button opens the expanded destination
- * dialog — a "Current Prep" row above the lists — which never closes itself:
- * the point is to let one visit put the environment in the Prep *and* in
- * several lists. It closes only by its × button, Escape or the backdrop. */
-function openAddToListPopup(envId, { expanded = false } = {}) {
-  const env = allEnvs().find(e => e.id === envId);
-  const prep = expanded ? activePrep() : null;
+/* The list-only popup behind every bookmark button: it gets out of the way once the environment lands in a list. */
+function openAddToListPopup(envId) {
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   // Named so syncLangFloat() knows to stand the floating switch down while this
@@ -2628,35 +2615,15 @@ function openAddToListPopup(envId, { expanded = false } = {}) {
       </label>`).join('') || `<p class="hint">${t('no_lists_yet')}</p>`;
   }
 
-  const title = expanded && env
-    ? t('add_env_dialog_title').replace('{name}', () => envName(env))
-    : t('add_to_list');
-
-  /* The "Current Prep" row: the same three-slot Prep the picker edits, shown
-   * as one checkbox row with the active Prep's title and its n/max count. */
-  const prepSectionHtml = prep ? `
-        <section class="atl-section" aria-labelledby="atl-prep-heading">
-          <h3 class="atl-section-label" id="atl-prep-heading">${t('atl_section_prep')}</h3>
-          <label class="atl-row atl-prep-row" id="atl-prep-row">
-            <input type="checkbox" id="atl-prep-toggle">
-            <span class="atl-prep-title" id="atl-prep-title"></span>
-            <span class="atl-prep-count" id="atl-prep-count"></span>
-          </label>
-          <p class="atl-hint" id="atl-prep-hint" hidden></p>
-        </section>
-        <hr class="atl-sep">` : '';
-
   overlay.innerHTML = `
     <div class="modal modal-sm" data-overlay-card
          role="dialog" aria-modal="true" aria-labelledby="atl-title">
       <div class="modal-header">
-        <h2 id="atl-title">${escapeHtml(title)}</h2>
+        <h2 id="atl-title">${t('add_to_list')}</h2>
         <button type="button" class="icon-btn icon-btn--reach modal-close" aria-label="${t('close')}">${ICON_CLOSE}</button>
       </div>
       <div class="modal-body">
-        ${prepSectionHtml}
-        <section class="atl-section"${expanded ? ' aria-labelledby="atl-lists-heading"' : ''}>
-          ${expanded ? `<h3 class="atl-section-label" id="atl-lists-heading">${t('atl_section_lists')}</h3>` : ''}
+        <section class="atl-section">
           <div id="atl-list">${listRowsHtml()}</div>
         </section>
         <div style="margin-top:var(--s-4)">
@@ -2683,46 +2650,8 @@ function openAddToListPopup(envId, { expanded = false } = {}) {
    * so it gets out of the way rather than waiting to be dismissed. The pause is
    * for the checkbox to be seen ticking and the toast to arrive under it. */
   function closeAfterAdd() {
-    if (expanded) return;
     clearTimeout(closeTimer);
     closeTimer = setTimeout(() => closeOverlayAnimated(overlay, close), ATL_CLOSE_DELAY_MS);
-  }
-
-  /* Expanded mode only: keeps the Prep row a mirror of the active Prep. Reached
-   * through syncEnvPrepControls() after any toggle from anywhere, and once here
-   * to paint the initial state. A full Prep leaves the row visible but
-   * unavailable, with the reason as text (and a tooltip); a selected
-   * environment stays removable even at the cap. */
-  function paintPrepRow() {
-    const current = activePrep();
-    const cb = overlay.querySelector('#atl-prep-toggle');
-    if (!current || !cb) return;
-    const status = PrepUtils.environmentActionState(current, envId);
-    const full = status === 'full';
-    const max = PrepUtils.MAX_ENVIRONMENTS;
-    const count = current.environmentIds.length;
-    cb.checked = status === 'selected';
-    cb.disabled = full;
-    if (full) cb.setAttribute('aria-describedby', 'atl-prep-hint'); else cb.removeAttribute('aria-describedby');
-    const row = overlay.querySelector('#atl-prep-row');
-    row.classList.toggle('is-unavailable', full);
-    if (full) row.dataset.tip = envPrepFullText(current); else delete row.dataset.tip;
-    overlay.querySelector('#atl-prep-title').textContent = prepDisplayTitle(current);
-    overlay.querySelector('#atl-prep-count').innerHTML =
-      `<span aria-hidden="true">${count}/${max}</span><span class="sr-only">${escapeHtml(t('prep_env_count_label').replace('{n}', count).replace('{max}', max))}</span>`;
-    const hint = overlay.querySelector('#atl-prep-hint');
-    hint.hidden = !full;
-    hint.textContent = full ? envPrepFullText(current) : '';
-  }
-  if (prep) {
-    paintPrepRow();
-    repaintAtlPrepRow = paintPrepRow;
-    overlay.querySelector('#atl-prep-toggle').addEventListener('change', () => {
-      toggleEnvironmentInActivePrep(envId);
-      // A refused or failed toggle leaves state unchanged; repaint so the
-      // checkbox can never show something the Prep does not hold.
-      paintPrepRow();
-    });
   }
 
   function bindToggle(cb) {
@@ -2750,7 +2679,6 @@ function openAddToListPopup(envId, { expanded = false } = {}) {
     if (closed) return;
     closed = true;
     clearTimeout(closeTimer);
-    if (repaintAtlPrepRow === paintPrepRow) repaintAtlPrepRow = null;
     overlay.remove();
     teardown();
     // Only the list routes show anything that membership changes; re-rendering
@@ -6592,9 +6520,11 @@ function openDetailOverlay(envId, carry = null) {
     <div class="detail-footer-biomes">
       <span class="dm-k">${t('filter_biome')}</span><span class="dm-dash">—</span>
       ${env.biomes.map(b => `<span class="biome-chip">${t('biome_' + b)}</span>`).join('')}
-    </div>` : '<span></span>';
+    </div>` : '';
 
-  const sourceHtml = `<span class="detail-footer-source">${env.source ? `${t('source_label')} ${escapeHtml(env.source)}` : ''}</span>`;
+  const sourceHtml = env.source
+    ? `<div class="detail-footer-source"><span class="dm-k">${escapeHtml(t('source_label').replace(/:\s*$/, ''))}</span><span class="dm-dash">—</span><span class="detail-footer-source-name">${escapeHtml(env.source)}</span></div>`
+    : '';
 
   const closeBtnHtml = `<button type="button" class="icon-btn icon-btn--reach modal-close" aria-label="${t('close')}">${ICON_CLOSE}</button>`;
   const overlay = document.createElement('div');
@@ -6659,7 +6589,6 @@ function openDetailOverlay(envId, carry = null) {
         <div class="detail-footer">
           ${biomesHtml}
           ${sourceHtml}
-          <button type="button" class="btn" id="detail-add-to-list-bottom" aria-haspopup="dialog">${t('add_to_ellipsis')}</button>
         </div>
       </div>
     </div>`;
@@ -6784,7 +6713,6 @@ function openDetailOverlay(envId, carry = null) {
   }));
 
   overlay.querySelector('#detail-add-to-list').addEventListener('click', () => openAddToListPopup(env.id));
-  overlay.querySelector('#detail-add-to-list-bottom').addEventListener('click', () => openAddToListPopup(env.id, { expanded: true }));
   overlay.querySelectorAll('[data-env-prep-toggle]').forEach(btn => btn.addEventListener('click', () => handleEnvPrepToggleClick(btn)));
 }
 

@@ -1372,18 +1372,20 @@ body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
 
 /* ---------- detail card footer ---------- */
 .detail-footer {
-  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--s-4);
-  margin-top: var(--s-7); padding-top: var(--s-4); border-top: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--s-3) var(--s-4);
+  margin-top: var(--s-6); padding-top: var(--s-4); border-top: 1px solid var(--line);
 }
+/* Biome (the classification) sits at the start, source (an attribution) at the end; both grow only as far as their
+ * content needs, and the source wraps under the biome — still at the end — when a row is too narrow for both. */
 .detail-footer-biomes { display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; }
 .detail-footer-source {
-  grid-column: 2; justify-self: center; text-align: center;
-  font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted);
+  display: inline-flex; align-items: baseline; gap: var(--s-2); margin-left: auto; text-align: right;
+  font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted); min-width: 0;
 }
-.detail-footer #detail-add-to-list-bottom { grid-column: 3; justify-self: end; }
+.detail-footer-source-name { overflow-wrap: anywhere; }
 @media (max-width: 480px) {
-  .detail-footer { grid-template-columns: 1fr; justify-items: center; text-align: center; }
-  .detail-footer #detail-add-to-list-bottom { grid-column: 1; }
+  .detail-footer { justify-content: flex-start; }
+  .detail-footer-source { margin-left: 0; text-align: left; }
 }
 
 /* No rule under the label: the teal uppercase and the space above it already
@@ -1917,20 +1919,6 @@ ol.feature-bullets { list-style: decimal; }
   border-radius: var(--r-sm);
 }
 .atl-row:hover { color: var(--hope-soft); }
-/* Expanded "Add to…" dialog: a Current Prep section, a rule, then the lists. */
-.atl-section-label {
-  font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 400;
-  letter-spacing: var(--tracking-caps); text-transform: uppercase;
-  color: var(--teal-soft); margin: 0 0 var(--s-1);
-}
-.atl-sep { border: 0; border-top: 1px solid var(--line-faint); margin: var(--s-3) 0; }
-.atl-prep-title { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-.atl-prep-count { flex: none; font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); }
-.atl-hint { margin: 0 0 var(--s-2); padding-left: calc(18px + var(--s-3)); font-size: var(--fs-xs); color: var(--muted); }
-.atl-row.is-unavailable, .atl-row.is-unavailable:hover { color: var(--muted); cursor: not-allowed; }
-.atl-row.is-unavailable input[type="checkbox"], .atl-row.is-unavailable:hover input[type="checkbox"] {
-  opacity: var(--opacity-disabled); cursor: not-allowed; border-color: var(--line-strong);
-}
 /* The OS checkbox rendered light-on-light against the card; this is the same
  * control with the theme's own box drawn on it. */
 .atl-row input[type="checkbox"] {

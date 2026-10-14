@@ -90,21 +90,13 @@ locally") before starting.
       failure shows the storage warning and **no** success toast.
 - [ ] Reload keeps the Prep membership.
 
-## Add to… dialog (detail overlay's bottom button)
+## Environment card footer
 
-- [ ] Title "Add “Name”" / "Добавить «Name»"; sections "Current Prep" and
-      "Lists" with a rule between them.
-- [ ] Prep row: checkbox mirrors membership, shows the active Prep's title and
-      `n/3`; toggling adds/removes immediately (matching buttons behind it
-      change too).
-- [ ] At 3/3 with the environment not selected the row stays visible, is
-      disabled, and states why; when selected it stays enabled.
-- [ ] List checkboxes and "create list" still work, the new list is ticked;
-      the dialog stays open after **every** change and closes only by ×,
-      Escape or a backdrop click, with focus back where it started. Focus is
-      trapped while open.
-- [ ] The compact bookmark popup is unchanged (list-only, closes itself after
-      adding).
+- [ ] Biome chips at the start, source at the end of one row; a long source or
+      several biomes wrap without squeezing each other; ≤480px both are
+      left-aligned, the source under the biome. No "Add to…" button — the
+      Prep and bookmark icons in the sticky header are the only entry points.
+- [ ] The bookmark popup is list-only and closes itself after adding.
 
 ## Lists
 
