@@ -541,10 +541,6 @@
       ui = {};
       container.innerHTML = `
         <section class="j2" data-t-aria="journey_title">
-          <header class="j2-title-chip" data-j2-title-chip hidden>
-            <h2 data-t="journey2_about_title"></h2>
-            <p data-t="journey2_about_sub"></p>
-          </header>
           <div class="j2-stage" data-j2-stage>
             <div class="j2-mapwrap">
               <div class="j2-viewport" tabindex="0" role="application" data-t-aria="journey2_map_label" aria-describedby="j2-keys">
@@ -812,7 +808,6 @@
       ui.placeHint = container.querySelector('[data-j2-place-hint]');
       ui.sideToggle = container.querySelector('[data-j2-side-toggle]');
       ui.mapbar = container.querySelector('[data-j2-mapbar]');
-      ui.titleChip = container.querySelector('[data-j2-title-chip]');
       ui.railPv = container.querySelector('[data-j2-rail-pv]');
       ui.railMode = container.querySelector('[data-j2-rail-mode]');
       ui.modeToggle = container.querySelector('[data-j2-mode-toggle]');
@@ -892,7 +887,7 @@
       });
       listen(window, 'focus', () => { if (!inst.disposed && !conflict) conflictBlocks(); });
       const prefs = store.loadUi();
-      sideCollapsed = !!prefs.sideCollapsed;
+      sideCollapsed = !playerMode && !!prefs.sideCollapsed;   // the player page's panel is its title card and never folds
       showBiome = prefs.showBiomeColors !== false;
       showSepia = prefs.sepiaMap !== false;
       showRegions = playerMode ? !!(playerLoad && playerLoad.snap && playerLoad.snap.regionIcons) : !!prefs.regionIcons;
@@ -1182,7 +1177,7 @@
     function sideInset() {
       if (!ui.sidewrap) return 0;
       if (playerMode && getComputedStyle(ui.rail).flexDirection === 'row') return 0;   // the phone's bottom bar covers no side strip
-      const w = (sideCollapsed || playerMode) ? ui.rail.offsetWidth : ui.side.offsetLeft + ui.side.offsetWidth;
+      const w = sideCollapsed ? ui.rail.offsetWidth : ui.side.offsetLeft + ui.side.offsetWidth;
       return Math.min(w + 2 * 8, viewSize()[0] * 0.5);
     }
 
@@ -3825,7 +3820,7 @@
       if (ui.shareOut && !on) ui.shareOut.hidden = true;       // the last link's note belongs to the preview that made it
       if (playerMode) {                                        // the player page is read-only: no history, no party toggle, no panel, no way back to a GM view
         ui.root.setAttribute('data-player', '');
-        ui.partyBtn.hidden = true; ui.railMode.hidden = true; ui.sideToggle.hidden = true; ui.titleChip.hidden = false;
+        ui.partyBtn.hidden = true; ui.railMode.hidden = true; ui.sideToggle.hidden = true;
         for (const el of ui.mapbar.querySelectorAll('[data-j2-history-group]')) el.hidden = true;
       }
       syncSideToggle();

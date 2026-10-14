@@ -77,7 +77,7 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-ctl-preview { flex: none; display: flex; flex-direction: column; align-items: stretch; gap: var(--s-2); padding: var(--s-3); }
 .j2-preview-note { margin: 0; min-width: 0; font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--parchment-dim); }
 .j2-ctl-preview .j2-mouse-pair { margin: 0; }
-.j2-ctl-preview[hidden], .j2-side-scroll[hidden], .j2-rail-grp[hidden], .j2-rb[hidden], .j2-title-chip[hidden] { display: none; }
+.j2-ctl-preview[hidden], .j2-side-scroll[hidden], .j2-rail-grp[hidden], .j2-rb[hidden] { display: none; }
 .j2-btn-icon { width: var(--h-sm); padding: 0; font-size: var(--fs-md); display: inline-flex; align-items: center; justify-content: center; }
 .j2-btn-icon svg { width: var(--icon-md); height: var(--icon-md); }
 .j2-btn-icon:disabled, .j2-btn-icon[aria-disabled="true"] { opacity: 0.55; cursor: default; }
@@ -213,18 +213,13 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-mapbar .j2-tb-group[hidden] + .j2-tb-group { padding-left: 0; border-left: 0; }   /* the player page has no history group: no orphan divider */
 .j2-mapbar .btn { height: var(--h-sm); min-height: 0; }
 .j2-mapbar .j2-zoom-readout { min-width: 5ch; padding-inline: var(--s-1); }
-/* the player page has no panel: the title is a header bar of the map frame — a row above the stage, never a chip floating over the map */
-.j2-title-chip {
-  flex: none; display: flex; align-items: baseline; flex-wrap: wrap; column-gap: var(--s-3); row-gap: 0; min-width: 0;
-  padding: var(--s-2) var(--s-3); background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-md);
-}
-.j2-title-chip h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md); line-height: var(--lh-md); color: var(--parchment); }
-.j2-title-chip p { margin: 0; font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--parchment-dim); }
-.j2[data-player] .j2-side { display: none; }
-.j2[data-player] .j2-stage { --j2-inset-left: calc(var(--j2-rail-w) + 2 * var(--j2-side-gap)); }
+/* the player page keeps the panel as a title card only — the same rail + card pair as the GM's Player Preview (PD-040), no floating chip */
+.j2[data-player] .j2-stage { --j2-side-w: 232px; }
+.j2[data-player] .j2-side > :not(.j2-about) { display: none; }
+.j2[data-player] .j2-about { padding-bottom: var(--s-3); }
 /* zoom is a column under the rail: same left edge, same width — one tool strip, nothing floating beside it */
 @media (min-width: 641px) {
-  .j2[data-player] .j2-mapbar { left: var(--j2-side-gap); width: var(--j2-rail-w); flex-direction: column; align-items: stretch; }
+  .j2[data-player] .j2-mapbar { left: var(--j2-side-gap); width: var(--j2-rail-w); flex-direction: column; align-items: stretch; transition: none; }
   .j2[data-player] .j2-mapbar .j2-tb-group { flex-direction: column; align-items: stretch; }
   .j2[data-player] .j2-mapbar .btn, .j2[data-player] .j2-mapbar .j2-zoom-readout { width: 100%; min-width: 0; }
   .j2[data-player] .j2-mapbar [data-j2-zoom="in"] { order: -1; }
@@ -235,6 +230,7 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 /* a touch phone on the player page: the rail becomes a bottom bar with full-size targets (PD-052) */
 @media (max-width: 640px) {
   .j2[data-player] .j2-stage { --j2-bar-h: 64px; --j2-inset-left: var(--j2-side-gap); }
+  .j2[data-player] .j2-side { display: none; }   /* a phone has no room for the title card: the map prints its own title */
   .j2[data-player] .j2-sidewrap { left: 0; right: 0; top: auto; bottom: 0; }
   .j2[data-player] .j2-rail {
     flex-direction: row; justify-content: center; width: 100%; max-height: none; border-width: 1px 0 0; border-radius: 0;

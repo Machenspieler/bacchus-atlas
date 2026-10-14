@@ -1314,7 +1314,7 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Decision (icons):** one set — Lucide (ISC, lucide-static 0.468) inlined in `LI` in `js/journey2-view.js`, one 24px grid and one stroke (`.j2-li`) — for the rail, bar, segment, menu and the party / route / locate map chips. The party icon is the `sparkle` star that matches the marker on the map; Find Echo is `radar`, Remove Echoes `eraser` (not a trash can), sanctuaries `castle`, Campaign `scroll-text`.
 - **Decision (player page):** `#/map/<link>` has no panel: a title chip over the map, the rail holds the one tool (Route), the bar holds zoom and Fit. On a phone (≤640px) the rail becomes a bottom bar with 52px targets and the keycaps are hidden on touch.
 - **Not decided here:** no drag-to-reorder of the rail, no user-configurable shortcuts, no tool palette for the editor on touch devices (PD-048 stands).
-- **Where:** `js/journey2-view.js` (`buildSurface`, `LI`, `railBtn`, `applyPreviewChrome`, `syncSideToggle`, `focusTool`, `onToolHotkey`), `css/journey2.css` (`.j2-rail`, `.j2-rb*`, `.j2-seg*`, `.j2-camp*`, `.j2-mapbar`, `.j2-title-chip`, `.j2-li`), `data/i18n.json` (`journey2_rail_*`, `journey2_mode_*`, `journey2_menu_*`, `journey2_campaign_aria`), `tests/journey2-controls-panel.test.js`.
+- **Where:** `js/journey2-view.js` (`buildSurface`, `LI`, `railBtn`, `applyPreviewChrome`, `syncSideToggle`, `focusTool`, `onToolHotkey`), `css/journey2.css` (`.j2-rail`, `.j2-rb*`, `.j2-seg*`, `.j2-camp*`, `.j2-mapbar`, `.j2-li`), `data/i18n.json` (`journey2_rail_*`, `journey2_mode_*`, `journey2_menu_*`, `journey2_campaign_aria`), `tests/journey2-controls-panel.test.js`.
 
 ## PD-058: Journey — one button deletes every unplaced region
 
