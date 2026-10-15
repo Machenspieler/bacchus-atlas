@@ -3616,7 +3616,21 @@
     function buildFogLayer() {
       foggable = new Map();
       fogUnfoggable = '';
-      data.grid.forEachValidCell((q, r) => { if (data.ctx.policy(q, r).ok) foggable.set(Geo.cellId(q, r), hexPath(q, r)); else fogUnfoggable += hexPath(q, r); });
+      data.grid.forEachValidCell((q, r) => { if (data.ctx.policy(q, r).ok) foggable.set(Geo.cellId(q, r), hexPath(q, r)); });
+      // The printed title, compass and scale lettering stay clear of the veil as plain rectangles (a hex-shaped hole read as a ragged glow around them).
+      const pad = data.grid.shortDimensionPx * 0.5;
+      // The veil is even-odd, so overlapping rectangles (compass + scale line) are first merged into disjoint slabs.
+      const rects = (data.template.decorativeAreas || []).map(d => [d.rectPx[0] - pad, d.rectPx[1] - pad, d.rectPx[0] + d.rectPx[2] + pad, d.rectPx[1] + d.rectPx[3] + pad]);
+      const xs = [...new Set(rects.flatMap(r => [r[0], r[2]]))].toSorted((a, b) => a - b);
+      for (let i = 0; i + 1 < xs.length; i++) {
+        const ivs = rects.filter(r => r[0] <= xs[i] && r[2] >= xs[i + 1]).map(r => [r[1], r[3]]).toSorted((a, b) => a[0] - b[0]);
+        for (let j = 0; j < ivs.length; j++) {
+          const y0 = ivs[j][0];
+          let y1 = ivs[j][1];
+          while (j + 1 < ivs.length && ivs[j + 1][0] <= y1) y1 = Math.max(y1, ivs[++j][1]);
+          fogUnfoggable += 'M' + xs[i] + ' ' + y0 + 'H' + xs[i + 1] + 'V' + y1 + 'H' + xs[i] + 'Z';
+        }
+      }
       ui.defs.innerHTML =
         '<pattern id="j2-fog-gm" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect class="j2-fogp-wash" width="9" height="9"/><line class="j2-fogp-line" x1="0" y1="0" x2="0" y2="9"/></pattern>' +
         '<pattern id="j2-fog-player" width="4" height="4" patternUnits="userSpaceOnUse"><rect class="j2-fogp-wash is-player" width="4" height="4"/><line class="j2-fogp-line is-player" x1="0" y1="0.5" x2="4" y2="0.5"/></pattern>' +

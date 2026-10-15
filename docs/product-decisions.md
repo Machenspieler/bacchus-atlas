@@ -1365,6 +1365,7 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Why:** the printed book draws unexplored ground as a flat mid-grey with a faint grain, the base map still faintly legible through it, and the lit area ends in a soft, bleeding edge — not a diagonal hatch with hard hex borders.
 - **Decision:** the Player Preview veil (`#j2-fog-player`) is a flat grey wash (`#707070` at 0.68) with a 4 px hairline grain, blurred by one SVG filter (`#j2-fog-soft`, σ = 6 world px) so the revealed area glows softly into the fog. The blur is the only filter allowed in fog CSS (`tests/journey2-fog.test.js`). The GM view's subtle hatch, the print (no fog at all, PD-028) and the projection are unchanged.
 - **Where:** `js/journey2-view.js` (`buildFogLayer`), `css/journey2.css` (`.j2-fogp-*.is-player`, `.j2-fog-veil`).
+- **Addendum (2026-10-15):** the printed title, compass and scale lettering are the one exception to "nothing cut out": the veil leaves them clear as plain rectangles (the template's `decorativeAreas` padded by half a hex, overlaps merged into disjoint slabs because the veil is even-odd) instead of the old hex-shaped holes, whose zigzag glow looked ragged around the lettering. The lettering stays unfogged, not re-drawn above the veil.
 
 ## PD-064: One overlay behaviour — sticky modal header on every page
 

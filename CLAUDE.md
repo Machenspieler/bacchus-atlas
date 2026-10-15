@@ -195,7 +195,7 @@ preparation never implies discovery; original markers are immutable. Fog of War 
 cell-based campaign data (`playerVisibility`), hidden by default, edited only by Reveal/Hide strokes made inside Player Preview (PD-034;
 one stroke = one Undo entry; the camera is a remembered view preference in `dhcodex_journey2_ui`) and rendered to players solely through the pure projection
 `js/journey2-projection.js` (Player Preview now, print later); the fog is translucent over the whole base map with
-no cut-outs, so its labels and sanctuary icons stay readable (PD-020/PD-024). The prepared map stays continuous: a
+no cut-outs except the printed title, compass and scale lettering (plain padded rectangles, PD-063), so its labels and sanctuary icons stay readable (PD-020/PD-024). The prepared map stays continuous: a
 later region must share a full edge with ANY placed tile, an ordinary place/move/return may never increase the
 number of prepared areas (non-worsening, so an already split map stays editable), and the only override is the
 confirmed "Start separate area" dialog on the exact attempted candidate (transient `allowDetached`, never stored;
