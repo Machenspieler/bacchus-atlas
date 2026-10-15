@@ -3543,9 +3543,22 @@
       return true;
     }
 
+    /** On a phone the player page has a bottom bar, a Fit button and (when open) the legend panel over the lower map: the camera limit stops above the highest of them, so the very bottom of the map can be dragged into view. */
+    function bottomInset() {
+      if (!playerMode || !ui.rail || !ui.viewport || getComputedStyle(ui.rail).flexDirection !== 'row') return 0;
+      const bottom = ui.viewport.getBoundingClientRect().bottom;
+      let top = Infinity;
+      for (const node of [ui.rail, sideCollapsed ? null : ui.side, ui.mapbar]) {
+        if (!node || node.hidden) continue;
+        const r = node.getBoundingClientRect();
+        if (r.width > 0 && r.height > 0) top = Math.min(top, r.top);
+      }
+      return top === Infinity ? 0 : Math.max(0, Math.round(bottom - top));
+    }
+
     function setCamera(next, keepFit) {
       const [vw, vh] = viewSize();
-      cam = Geo.clampCamera(next, vw, vh, data.template.worldSizePx[0], data.template.worldSizePx[1], 24, { left: sideInset(), right: panelInset() });
+      cam = Geo.clampCamera(next, vw, vh, data.template.worldSizePx[0], data.template.worldSizePx[1], 24, { left: sideInset(), right: panelInset(), bottom: bottomInset() });
       if (!keepFit) fitMode = false;
       if (cameraReady) liveView = measureView() || liveView;
       scheduleApply();

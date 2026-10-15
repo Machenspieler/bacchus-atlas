@@ -427,7 +427,7 @@
    * empty space beside its edges — so zooming out never strands the map in a corner of an empty viewport.
    */
   function clampCamera(cam, viewW, viewH, worldW, worldH, margin, inset) {
-    const m = margin == null ? 24 : margin, l = (inset && inset.left) || 0, r = (inset && inset.right) || 0;
+    const m = margin == null ? 24 : margin, l = (inset && inset.left) || 0, r = (inset && inset.right) || 0, b = (inset && inset.bottom) || 0;
     const axis = (t, size, lo, hi, world) => {
       const len = world * cam.scale;
       if (len + 2 * m <= hi - lo) return lo + (hi - lo - len) / 2;
@@ -436,7 +436,7 @@
     return {
       scale: cam.scale,
       tx: axis(cam.tx, viewW, l, viewW - r, worldW),
-      ty: axis(cam.ty, viewH, 0, viewH, worldH),
+      ty: axis(cam.ty, viewH, 0, Math.max(1, viewH - b), worldH),
     };
   }
 
