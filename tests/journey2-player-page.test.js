@@ -66,7 +66,8 @@ test('the player page hides every GM control and shows no way into the editor', 
   assert.match(view, /ui\.legendBtn\.hidden = false/, 'the Legend tool exists on the player page only');
   assert.match(view, /sideCollapsed = playerMode \? isPhoneWidth\(\)/, 'the legend is open on a desktop and folded on a phone');
   for (const k of ['journey2_rail_legend', 'journey2_legend_title', 'journey2_legend_party', 'journey2_legend_sanctuary', 'journey2_legend_shadow', 'journey2_legend_echo', 'journey2_legend_unknown', 'journey2_legend_controls_touch']) assert.ok(i18n.en[k] && i18n.ru[k], k);
-  assert.match(css, /\.j2\[data-player\] \.j2-mapbar \{ left: var\(--j2-side-gap\); width: var\(--j2-rail-w\)/, 'zoom is a column aligned with the rail');
+  assert.doesNotMatch(css, /\.j2\[data-player\] \.j2-mapbar \{[^}]*flex-direction: column/, 'a desktop player page shares the GM view\'s horizontal camera bar (no player-only column)');
+  assert.match(css, /\.j2\[data-player\] \.j2-mapbar \[data-j2-zoom\] \{ display: none; \}/, 'a phone keeps only Fit');
   assert.match(css, /body\[data-route="playermap"\] \.shell/);
 });
 
