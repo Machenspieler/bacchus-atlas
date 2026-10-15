@@ -190,13 +190,14 @@
   }
 
   /**
-   * Whether two ok routes are interchangeable: the same path, or two complete routes with the same hexes and the same travel days
-   * (Shortest breaks hex ties by days, so equal hexes against Fastest means equal days — a second line would only repeat the first).
+   * Whether two ok routes are interchangeable: the same path, or the same hex count where the terrain-aware one (a) is complete — it then has the
+   * same length and known days, so Shortest (b) adds nothing, even when b's own days are unknown (it crosses ungenerated hexes). Two complete routes
+   * with equal hexes also have equal days (Shortest breaks hex ties by days, and Fastest minimises days).
    */
   function sameRoute(a, b) {
     if (!a || !b || a.status !== 'ok' || b.status !== 'ok') return false;
     if (a.cells.length === b.cells.length && a.cells.every((c, i) => c === b.cells[i])) return true;
-    return a.stats.complete && b.stats.complete && a.stats.hexes === b.stats.hexes && Math.abs(a.stats.travelDays - b.stats.travelDays) < ROUTE_COST_EPSILON;
+    return a.stats.complete && a.stats.hexes === b.stats.hexes;
   }
 
   /**

@@ -393,3 +393,11 @@ test('Shortest breaks hex-count ties by travel days, and is then interchangeable
   const s2 = route(h, '0,0', '2,0', 'shortest'), f2 = route(h, '0,0', '2,0', 'fastest');
   assert.equal(R.sameRoute(f2, s2), s2.stats.hexes === f2.stats.hexes);
 });
+
+test('a complete Fastest of the same length makes an incomplete Shortest redundant', () => {
+  const fast = { status: 'ok', cells: ['0,0', '1,0', '2,0'], stats: { complete: true, hexes: 2, travelDays: 5 } };
+  const shortSame = { status: 'ok', cells: ['0,0', '0,1', '1,1'], stats: { complete: false, hexes: 2, travelDays: null } };
+  const shortLess = { status: 'ok', cells: ['0,0', '1,1'], stats: { complete: false, hexes: 1, travelDays: null } };
+  assert.equal(R.sameRoute(fast, shortSame), true);
+  assert.equal(R.sameRoute(fast, shortLess), false, 'a genuinely shorter Shortest stays');
+});

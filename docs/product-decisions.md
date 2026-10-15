@@ -1029,6 +1029,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Where:** `js/journey2-route.js` (pure engine + planner state machine), `js/journey2-view.js` ("Route Planner" block), `css/journey2.css`, `data/i18n.json` (`journey2_route_*`),
   `tests/journey2-route.test.js`.
 
+- **Addendum (2026-10-15):** a Shortest route is dropped as redundant whenever Fastest is complete (every hex rated) and has the same hex count, even if Shortest's own days are unknown (it crosses ungenerated hexes): same length plus known days dominates it (`sameRoute`).
 ## PD-032: Journey — "Place all N" rolls a fresh random footprint on every press
 - **Status:** Active (supersedes the "deterministic compact ring walk" footprint wording of the "All N" decision; every other "All N" rule — all-or-nothing, atomic, one Undo entry, no truncation — is unchanged)
 - **Date:** 2026-10-08
