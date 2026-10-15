@@ -1003,6 +1003,16 @@ document.addEventListener('scroll', () => {
   else hideTip();
 }, true);
 
+/* The sticky filter bar's bottom rule only separates it from content that has
+ * scrolled under it, so it shows once the page has moved (css: data-stuck). */
+function syncCatalogBarStuck() {
+  const wrap = document.querySelector('.catalog-bar-wrap');
+  if (wrap) wrap.dataset.stuck = window.scrollY > 0 ? 'true' : 'false';
+}
+window.addEventListener('scroll', syncCatalogBarStuck, { passive: true });
+window.addEventListener('hashchange', syncCatalogBarStuck);
+syncCatalogBarStuck();
+
 /* ---------------- overlay plumbing ---------------- */
 
 /* Every overlay in the app — the environment card, the add-to-list popup and
