@@ -234,7 +234,7 @@
     /* Fog of War (Phase C) — all transient; the veil is drawn only in Player Preview, never in the GM view */
     let showRegions = false;                                // "Regions" (PD-062): one icon per region, as in the book (UI only; the player link carries it as a flag)
     let showSepia = true;                                   // "Sepia map" (PD-060): parchment ground + multiplied raster on screen (UI only; the print path never uses it)
-    let showBiome = true;                                   // "Biome colors": GM-view tint inside placed hexes (UI only, never in the document, backup or history; Player Preview ignores it)
+    let showBiome = true;                                   // "Biome colors": the tint inside placed hexes — GM view, Player Preview and the player page (UI only, never in the document, backup or history)
     let fogTool = null;                                     // null | 'reveal' | 'hide' — the active map tool
     let fogStroke = null;                                   // the in-progress pointer stroke { mode, pointerId, seen:Set, cells:[key], pendD, last, hover }
     let fogHover = null;                                    // { q, r } under the pointer while a tool is active and no stroke runs
@@ -467,6 +467,7 @@
 
     /** Lucide icons (ISC, lucide-static 0.468) for the rail, map bar, segment and menu: one 24px grid and one stroke, set by `.j2-li` in journey2.css. */
     const LI = {
+      display: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><line x1="21" x2="14" y1="4" y2="4" /><line x1="10" x2="3" y1="4" y2="4" /><line x1="21" x2="12" y1="12" y2="12" /><line x1="8" x2="3" y1="12" y2="12" /><line x1="21" x2="16" y1="20" y2="20" /><line x1="12" x2="3" y1="20" y2="20" /><line x1="14" x2="14" y1="2" y2="6" /><line x1="8" x2="8" y1="10" y2="14" /><line x1="16" x2="16" y1="18" y2="22" /></svg>',
       party: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="fill" d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /></svg>',
       route: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="6" cy="19" r="3" /><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" /><circle cx="18" cy="5" r="3" /></svg>',
       locate: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19.07 4.93A10 10 0 0 0 6.99 3.34" /><path d="M4 6h.01" /><path d="M2.29 9.62A10 10 0 1 0 21.31 8.35" /><path d="M16.24 7.76A6 6 0 1 0 8.23 16.67" /><path d="M12 18h.01" /><path d="M17.99 11.66A6 6 0 0 1 15.77 16.67" /><circle cx="12" cy="12" r="2" /><path d="m13.41 10.59 5.66-5.66" /></svg>',
@@ -725,13 +726,17 @@
                   <span class="j2-rail-ico" aria-hidden="true">${LI.stock}</span>
                   <span class="j2-rail-count" data-j2-rail-count></span>
                 </div>
-                <div class="j2-menu-wrap j2-camp" data-j2-gm-row>
-                  ${railBtn('data-j2-menu-btn="campaign" aria-haspopup="menu" aria-expanded="false" data-t-aria="journey2_campaign_aria"', LI.campaign, 'journey2_rail_campaign')}
-                  <div class="j2-menu j2-camp-menu" role="menu" data-j2-menu="campaign" data-t-aria="journey2_campaign_aria" hidden>
-                    <p class="j2-menu-h" role="presentation" data-t="journey2_menu_display"></p>
+                <div class="j2-menu-wrap j2-camp j2-disp">
+                  ${railBtn('data-j2-menu-btn="display" aria-haspopup="menu" aria-expanded="false" data-t-aria="journey2_display_aria"', LI.display, 'journey2_rail_display')}
+                  <div class="j2-menu j2-camp-menu" role="menu" data-j2-menu="display" data-t-aria="journey2_display_aria" hidden>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-biome-colors><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_biome_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-sepia><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_sepia_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="false" data-j2-regions><span class="j2-mi-ico" aria-hidden="true">${LI.hexes}</span><span data-t="journey2_regions_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
+                  </div>
+                </div>
+                <div class="j2-menu-wrap j2-camp" data-j2-gm-row>
+                  ${railBtn('data-j2-menu-btn="campaign" aria-haspopup="menu" aria-expanded="false" data-t-aria="journey2_campaign_aria"', LI.campaign, 'journey2_rail_campaign')}
+                  <div class="j2-menu j2-camp-menu" role="menu" data-j2-menu="campaign" data-t-aria="journey2_campaign_aria" hidden>
                     <p class="j2-menu-h" role="presentation" data-t="journey2_echo_group"></p>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitem" data-j2-echo-place data-t-title="journey2_echo_place_title"><span class="j2-mi-ico" aria-hidden="true">${LI.echo}</span><span data-t="journey2_menu_echo_place"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitem" data-j2-echo-clear data-t-title="journey2_echo_clear_title"><span class="j2-mi-ico" aria-hidden="true">${LI.eraser}</span><span data-t="journey2_echo_clear"></span></button>
@@ -840,6 +845,7 @@
       ui.railMode = container.querySelector('[data-j2-rail-mode]');
       ui.modeToggle = container.querySelector('[data-j2-mode-toggle]');
       ui.campBtn = container.querySelector('[data-j2-menu-btn="campaign"]');
+      ui.dispBtn = container.querySelector('[data-j2-menu-btn="display"]');
       ui.sideScroll = container.querySelector('[data-j2-side-scroll]');
       ui.railStock = container.querySelector('[data-j2-rail-stock]');
       ui.biomeColors = container.querySelector('[data-j2-biome-colors]');
@@ -916,9 +922,11 @@
       listen(window, 'focus', () => { if (!inst.disposed && !conflict) conflictBlocks(); });
       const prefs = store.loadUi();
       sideCollapsed = playerMode ? isPhoneWidth() : !!prefs.sideCollapsed;   // the player page's panel is its legend: open on a desktop, folded on a phone; never stored
-      showBiome = prefs.showBiomeColors !== false;
-      showSepia = prefs.sepiaMap !== false;
-      showRegions = playerMode ? !!(playerLoad && playerLoad.snap && playerLoad.snap.regionIcons) : !!prefs.regionIcons;
+      // the player page starts from the GM's link (its defaults) and keeps any change for this session only; the GM's view and preview use the stored preferences (PD-065)
+      const linked = playerMode && playerLoad && playerLoad.snap ? playerLoad.snap : null;
+      showBiome = linked ? linked.biomeColors !== false : prefs.showBiomeColors !== false;
+      showSepia = linked ? linked.sepiaMap !== false : prefs.sepiaMap !== false;
+      showRegions = playerMode ? !!(linked && linked.regionIcons) : !!prefs.regionIcons;
       ui.root.toggleAttribute('data-sepia', showSepia);
       showOutline = !!prefs.showPlacedOutline;
       savedView = prefs.view;
@@ -1182,12 +1190,12 @@
       applySideState(true);
     }
 
-    /** Focuses a toolbar control. The panel's half is inert while collapsed (its mode segment is then the rail's Players button), and an item of the closed Campaign menu returns focus to the menu's button. */
+    /** Focuses a toolbar control. The panel's half is inert while collapsed (its mode segment is then the rail's Players button), and an item of a closed rail menu (Campaign or Display) returns focus to the menu's button. */
     function focusTool(src) {
       let el = src;
       if (sideCollapsed && (src === ui.previewBack || src === ui.previewBtn)) el = ui.modeToggle;
       const menu = el && el.closest && el.closest('.j2-menu');
-      if (menu && menu.hidden) el = ui.campBtn;
+      if (menu && menu.hidden) el = menu.parentNode.querySelector('[data-j2-menu-btn]') || ui.campBtn;
       if (el && !el.hidden && !el.closest('[inert]')) el.focus({ preventScroll: true });
     }
 
@@ -2035,7 +2043,7 @@
       if (previewMode) {
         // Player Preview: the GM layer is emptied (not hidden) and only the projection is produced
         ui.g.tiles.innerHTML = '';
-        playerProjection = Projection.buildPlayerProjection(projectionDoc(), data.ctx);
+        playerProjection = Projection.buildPlayerProjection(projectionDoc(), data.ctx, { biomeTint: showBiome });
         ui.g.player.innerHTML = overlayMarkup(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, region: o.region, tint: o.tint }))
           .concat(playerProjection.shadowMarks.map(m => ({ q: m.q, r: m.r, floating: true }))));
         if (playerMode) renderLegendBiomes();
@@ -3964,7 +3972,7 @@
         // the GM's camera rides along (world centre + how much world is on screen), so the player opens on the same spot at the same zoom; a fitted map stays "fit"
         const cv = currentView(), vw = viewSize()[0];
         const view = cv && !cv.fit && vw && cv.scale > 0 ? { cx: cv.cx, cy: cv.cy, width: vw / cv.scale } : null;
-        const text = await Share.createLinkText(projectionDoc(), data.ctx, { lang: lang, view: view, regionIcons: showRegions });
+        const text = await Share.createLinkText(projectionDoc(), data.ctx, { lang: lang, view: view, regionIcons: showRegions, sepiaMap: showSepia, biomeColors: showBiome });
         if (inst.disposed) return;
         url = location.href.split('#')[0] + '#/map/' + text;
       } catch (err) {
@@ -4832,7 +4840,7 @@
       }
       const b = e.target.closest('button');
       if (!b || !ui.root.contains(b)) return;
-      if (b.closest('[data-j2-menu="campaign"]') && !b.hasAttribute('data-j2-biome-colors') && !b.hasAttribute('data-j2-sepia') && !b.hasAttribute('data-j2-regions')) closeMenus();   // a Campaign action closes the menu; the display switches keep it open
+      if (b.closest('[data-j2-menu="campaign"]')) closeMenus();   // a Campaign action closes the menu; the Display switches (their own menu) keep it open
       if (b.hasAttribute('data-j2-zoom')) {
         const z = b.getAttribute('data-j2-zoom');
         if (z === 'reset') zoomToScale(1);

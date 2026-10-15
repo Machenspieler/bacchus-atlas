@@ -246,12 +246,13 @@ test('view: the tint layer is aria-hidden, no events, under the symbols, with no
   assert.doesNotMatch(view, /markers[^\n]*tint|sanct[^\n]*Tint\./i);
 });
 
-test('view: Player Preview tints from projection keys only and the GM preference is not read there', () => {
+test('view: Player Preview tints from projection keys only; the Biome colors switch reaches it through the projection option, never gmTintByCell (PD-066)', () => {
   const view = read('js/journey2-view.js').replace(/\/\*[\s\S]*?\*\//g, '');
   const pv = view.match(/if \(previewMode\) \{\s*\/\/ Player Preview[\s\S]*?return;\s*\}/);
   assert.ok(pv, 'preview branch found');
   assert.match(pv[0], /tint: o\.tint/);
-  assert.doesNotMatch(pv[0], /showBiome|gmTintByCell/);
+  assert.match(pv[0], /buildPlayerProjection\(projectionDoc\(\), data\.ctx, \{ biomeTint: showBiome \}\)/);
+  assert.doesNotMatch(pv[0], /gmTintByCell/);
 });
 
 /* ---------------- print contract ---------------- */

@@ -17,6 +17,7 @@ const mapbar = surface.slice(surface.indexOf('<div class="j2-mapbar"'), surface.
 const rail = surface.slice(surface.indexOf('<nav class="j2-rail"'), surface.indexOf('<aside class="j2-side"'));
 const side = surface.slice(surface.indexOf('<aside class="j2-side"'));
 const menu = rail.slice(rail.indexOf('data-j2-menu="campaign"'));
+const displayMenu = rail.slice(rail.indexOf('data-j2-menu="display"'), rail.indexOf('data-j2-menu="campaign"'));
 const fn = (from, to) => view.slice(view.indexOf('function ' + from), view.indexOf('function ' + to, view.indexOf('function ' + from) + 1));
 
 test('the toolbar strip and the old row toolbar are gone; the panel is title, mode segment, preview note, New region, stock', () => {
@@ -51,10 +52,18 @@ test('map bar: Undo / Redo / zoom / Fit are icon-only buttons floating over the 
 });
 
 test('Campaign menu: the rare whole-campaign actions, shared menu machinery, hidden in Player Preview', () => {
-  for (const attr of ['role="menuitemcheckbox" aria-checked="true" data-j2-biome-colors', 'data-j2-echo-place', 'data-j2-echo-clear', 'data-j2-sanc-generate', 'data-j2-sanc-generate-label']) assert.ok(menu.includes(attr), attr);
+  for (const attr of ['data-j2-echo-place', 'data-j2-echo-clear', 'data-j2-sanc-generate', 'data-j2-sanc-generate-label']) assert.ok(menu.includes(attr), attr);
   assert.match(rail, /class="j2-menu-wrap j2-camp" data-j2-gm-row/);
-  assert.match(fn('onRootClick', 'toggleMenu'), /data-j2-menu="campaign"[^\n]*closeMenus\(\)/, 'an action closes the menu; the biome switch keeps it open');
-  assert.match(fn('onRootClick', 'toggleMenu'), /!b\.hasAttribute\('data-j2-biome-colors'\)/);
+  assert.match(fn('onRootClick', 'toggleMenu'), /data-j2-menu="campaign"[^\n]*closeMenus\(\)/, 'a Campaign action closes the menu; the Display switches live in their own menu and keep it open');
+  for (const attr of ['data-j2-biome-colors', 'data-j2-sepia', 'data-j2-regions']) assert.ok(!menu.includes(attr), attr + ' is not a Campaign item any more');
+});
+
+test('Display menu (PD-066): Biome colors, Sepia map and Regions in their own rail menu, visible in the GM view, Player Preview and on the player page', () => {
+  for (const attr of ['role="menuitemcheckbox" aria-checked="true" data-j2-biome-colors', 'role="menuitemcheckbox" aria-checked="true" data-j2-sepia', 'role="menuitemcheckbox" aria-checked="false" data-j2-regions']) assert.ok(displayMenu.includes(attr), attr);
+  assert.match(rail, /class="j2-menu-wrap j2-camp j2-disp">\s*\$\{railBtn\('data-j2-menu-btn="display"/, 'a rail button of its own, with no GM-row marker: nothing hides it in a mode');
+  assert.doesNotMatch(rail.slice(rail.indexOf('j2-disp'), rail.indexOf('data-j2-gm-row')), /data-j2-gm-row/);
+  for (const key of ['journey2_rail_display', 'journey2_display_aria']) for (const lang of Object.keys(i18n)) if (i18n[lang] && i18n[lang].journey2_rail_campaign) assert.ok(i18n[lang][key], lang + ' ' + key);
+  assert.match(css, /\.j2\[data-player\] \.j2-camp \.j2-menu \{[^}]*bottom: calc\(100% \+ var\(--s-2\)\)/, 'on the phone bar the menu opens upward');
 });
 
 test('Player Preview: the same panel, content swapped, camera shared, Fit inset unchanged', () => {
@@ -82,6 +91,6 @@ test('shortcuts: by physical key (they work on a Russian layout), never Tab, and
 
 test('every new rail / segment / menu string exists in English and Russian', () => {
   const keys = ['journey2_mapbar_label', 'journey2_rail_tools', 'journey2_rail_share', 'journey2_rail_route', 'journey2_rail_locate', 'journey2_rail_brush', 'journey2_rail_outline', 'journey2_rail_print', 'journey2_rail_link',
-    'journey2_rail_campaign', 'journey2_campaign_aria', 'journey2_menu_display', 'journey2_menu_echo_place', 'journey2_mode_label', 'journey2_mode_gm', 'journey2_mode_players'];
+    'journey2_rail_campaign', 'journey2_campaign_aria', 'journey2_rail_display', 'journey2_display_aria', 'journey2_menu_echo_place', 'journey2_mode_label', 'journey2_mode_gm', 'journey2_mode_players'];
   for (const k of keys) { assert.ok(i18n.en[k], 'en ' + k); assert.ok(i18n.ru[k], 'ru ' + k); assert.ok(view.includes("'" + k + "'") || view.includes('"' + k + '"'), 'used ' + k); }
 });

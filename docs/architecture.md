@@ -1040,8 +1040,8 @@ Run all of them with `node --test tests/*.test.js`.
   them and the state code writes to them directly (there are no mirrored proxies and no `syncRail`). `applyPreviewChrome()` shows / hides them per mode and `syncSideToggle()` keeps the
   toggle's icon, name and `aria-expanded` in step with the language and the panel state. The panel is title, the **GM | Players** segment (`data-j2-preview-back` / `data-j2-preview`,
   `aria-pressed` = the mode), the preview note, New region and the Hex stock; the GM-only whole-campaign actions are the rail's Campaign menu (`data-j2-menu="campaign"`, the shared
-  `openMenu` machinery; an action closes it, the biome switch does not). Undo / Redo / zoom / Fit are the floating `.j2-mapbar`. `onToolHotkey()` (called from `onDocumentKey`) maps
-  P / R / E / V / [ by `event.code` to a click on the rail button. `focusTool()` focuses the Players switch when the panel is collapsed and the Campaign button for a closed menu's item.
+  `openMenu` machinery; an action closes it) and the **Display** menu (`data-j2-menu="display"`: Biome colors, Sepia map, Regions — visible in every mode, PD-066). Undo / Redo / zoom / Fit are the floating `.j2-mapbar`. `onToolHotkey()` (called from `onDocumentKey`) maps
+  P / R / E / V / [ by `event.code` to a click on the rail button. `focusTool()` focuses the Players switch when the panel is collapsed and the owning rail button (Campaign or Display) for a closed menu's item.
   Player page (`playerMode`): the panel is the same `.j2-side` showing only the title (`.j2-about`) and the legend (`.j2-legend`; the rest is `display: none`) beside the rail, folded by a **Legend** rail tool (`data-j2-legend-btn`, key I, `aria-pressed` follows the panel; the GM's `[` toggle stays hidden). Open on a desktop, folded on a phone (`isPhoneWidth()`, never stored). The zoom `.j2-mapbar` is a column under the rail with the same left edge and width. There is no header row and no floating chip (vertical space is for the map). ≤640px the rail is a bottom bar of labelled tools, the legend opens above it at the map's width, and only Fit stays in the map bar (a pinch zooms). The collapsed state is
   stored via `store.loadUi/saveUi`, never in the document, and toggling never
   touches camera, selection or the active card. Cards are compact; exactly one
@@ -1391,7 +1391,7 @@ A 4848x3185 world raster (about 62 MB decoded) is dropped by phone GPUs, which s
 `Journey2Projection.buildPlayerProjection`, so Fog of War, the party's light, revealed names and the collected-Echo rule are applied once, there; the
 snapshot holds only revealed cells, one anonymous region number per revealed tile, X marks, revealed sanctuary names and collected Echoes on revealed hexes.
 The synthetic document is fed to the unchanged projection / route code, so the player page draws what Player Preview draws and a route over it can
-only know revealed tiles. Formats 1, 2 and 3 are frozen (3 = 2 plus the region-icons flag, PD-062) (the symbol table, field order and the "cell order = the grid's valid-cell order" rule); a layout change is a new
+only know revealed tiles. Formats 1–4 are frozen (3 = 2 plus the region-icons flag, PD-062; 4 = 3 plus the sepia / biome-colors flags in bits 5–6, PD-066; the player page reads them as its defaults and keeps a viewer's change for the session only) (the symbol table, field order and the "cell order = the grid's valid-cell order" rule); a layout change is a new
 version, and an unknown version is refused. Decoding is strict (bounds, counts, padding bits, trailing bytes, an inflate size cap) and never throws.
 The projection gained `collectedEchoes` (version 4): sorted sanctuary ids of Collected Echoes whose own hex is revealed; the print blanks it.
 **The player page** is the route `#/map/<link>` (`RouteUtils`: `{ name: 'playermap', id: <link text>, env: null }`; a malformed escape gives `id: ''` and the page's own error).

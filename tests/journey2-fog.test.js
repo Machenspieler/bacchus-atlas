@@ -405,7 +405,7 @@ test('Player Preview: read-only, projection-driven, document and history untouch
   assert.doesNotMatch(view, /previewReturn/, 'GM view and Player Preview are one screen: the camera is never saved or restored per mode (PD-040)');
   const tiles = fn('renderTiles', 'renderSelection').split('ui.g.player.innerHTML = \'\';')[0];
   assert.match(tiles, /ui\.g\.tiles\.innerHTML = '';/, 'GM tiles are removed, not hidden');
-  assert.match(tiles, /Projection\.buildPlayerProjection\(projectionDoc\(\), data\.ctx\)/, 'the stored document, or the same with the party at its draft cell (PD-045)');
+  assert.match(tiles, /Projection\.buildPlayerProjection\(projectionDoc\(\), data\.ctx, \{ biomeTint: showBiome \}\)/, 'the stored document, or the same with the party at its draft cell (PD-045)');
   assert.doesNotMatch(tiles, /doc\.tiles|doc\.batches/, 'the preview never reads regions directly');
   const chrome = fn('applyPreviewChrome', 'enterPreview');
   for (const part of ['ui.gen.hidden = on', 'ui.sideScroll.hidden = on', 'ui.previewBar.hidden = !on', "row.hidden = on"]) assert.ok(chrome.includes(part), part);

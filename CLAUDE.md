@@ -182,7 +182,7 @@ undo, drag-to-delete or `+` grid cell. Pointer/geometry logic lives in
 
 ### Journey map editor (internally "Journey 2")
 
-`#/journey` is the one canonical Journey page and a GM tile editor on the original Valloren map (its tools are an always-visible labelled rail — Party, Route, Find Echo, Campaign menu — beside a panel with a GM | Players segment, New region and the stock, plus a floating Undo / zoom / Fit bar; Player Preview is the same screen, panel and camera — PD-040, PD-057; generate a
+`#/journey` is the one canonical Journey page and a GM tile editor on the original Valloren map (its tools are an always-visible labelled rail — Party, Route, Find Echo, Display menu, Campaign menu — beside a panel with a GM | Players segment, New region and the stock, plus a floating Undo / zoom / Fit bar; Player Preview is the same screen, panel and camera — PD-040, PD-057; generate a
 batch → drag one / drag all remaining → move, return, Undo/Redo → local save
 and full JSON backup). The rules live in the pure `js/journey2-model.js`
 (document, placement policy, atomic commands, history); the view only builds
@@ -215,7 +215,7 @@ list via the existing adapter, least-used-in-the-region first and random among e
 inside the atomic `place` command; none for an overtaken region. The Region Inspector (opened from a hex, never from a card)
 offers only Change — no Choose, no Detach.
 Biome Tint (PD-026): a faint derived wash inside each placed hex from its Habitat (palette only in `js/journey2-biome-tint.js`;
-Shadowblight keeps the Habitat colour, a fully overtaken region uses a violet-grey fallback); never stored; GM toggle "Biome colors" lives
+Shadowblight keeps the Habitat colour, a fully overtaken region uses a violet-grey fallback); never stored; the "Biome colors" switch (Display menu, PD-066) lives
 in `dhcodex_journey2_ui`; Player Preview tints revealed cells only (the projection omits it for hidden cells); black-and-white print
 (`buildPrintProjection`) carries no tint at all — never grayscale.
 Sanctuary names (PD-027): the only sanctuary datum players ever get is a name the GM revealed by hand
@@ -242,10 +242,11 @@ Shareable player link (PD-052): a **Player link** button in Player Preview copie
 player projection so fog is already applied, strict binary format 1 -> deflate -> base64url in the URL fragment; the decoder rebuilds a SYNTHETIC map document that the unchanged projection / route code run on).
 `#/map/<link>` mounts the same `Journey2View` in `playerMode`: NO storage (it never touches a `dhcodex_journey2_*` key), no GM controls, always the preview, touch pan / pinch zoom, the site's RU / EN switch.
 Plan Route also runs in Player Preview and on that page, knowing only revealed tiles (+ printed sanctuary icons) and without the encounter estimate. The projection carries `collectedEchoes` (a Collected Echo on a
-REVEALED sanctuary hex only; Available Echoes stay secret; the print blanks it). Formats 1, 2 and 3 are frozen (2 = 1 plus the GM's camera; 3 = 2 plus the "Regions" flag, PD-062; 3 is written, 1 and 2 still read) — a layout change is a new version.
-"Regions" (PD-062): a Campaign display switch (default off, `regionIcons` in `dhcodex_journey2_ui`) that draws ONE icon per region instead of one per hex, as in the book — GM: all of a region's hexes; Player Preview / player page: only its revealed hexes (a one-hex region shows its own icon, connected revealed hexes share one); picked by the pure `Geo.pickRegionIconCells`; the print is unchanged.
+REVEALED sanctuary hex only; Available Echoes stay secret; the print blanks it). Formats 1–4 are frozen (2 = 1 plus the GM's camera; 3 = 2 plus the "Regions" flag, PD-062; 4 = 3 plus the "Sepia map" and "Biome colors" flags, PD-066; 4 is written, 1–3 still read, a link older than 4 reads as sepia and biome colors on) — a layout change is a new version.
+Display menu (PD-066): "Biome colors", "Sepia map" and "Regions" live in one rail menu, **Display**, visible in the GM view, Player Preview AND the player page (Campaign keeps only Echoes and sanctuaries, GM-only); the link carries the GM's three values as the player page's defaults, a viewer's change lasts for that page load only (no storage there), and Biome colors now also governs Player Preview.
+"Regions" (PD-062): a display switch (default off, `regionIcons` in `dhcodex_journey2_ui`) that draws ONE icon per region instead of one per hex, as in the book — GM: all of a region's hexes; Player Preview / player page: only its revealed hexes (a one-hex region shows its own icon, connected revealed hexes share one); picked by the pure `Geo.pickRegionIconCells`; the print is unchanged.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-057/PD-052/PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040/PD-041/PD-045/PD-051 (Place all rolls a random frozen footprint per press), detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-066/PD-057/PD-052/PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040/PD-041/PD-045/PD-051 (Place all rolls a random frozen footprint per press), detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

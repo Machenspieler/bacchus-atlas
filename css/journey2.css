@@ -188,6 +188,8 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 /* Campaign menu: the rare, whole-campaign actions (display switch, Soul Echoes, sanctuaries) open to the right of the rail */
 .j2-camp { position: relative; border-top: 1px solid var(--line-faint); padding-top: var(--s-1); }
 .j2-camp .j2-menu { top: auto; bottom: 0; left: calc(100% + var(--s-2)); min-width: 288px; }
+/* Display (PD-066) sits right above Campaign in the GM's rail and alone in the preview and on the player page: one divider, not two */
+.j2-disp + .j2-camp { border-top: 0; padding-top: 0; }
 .j2-menu-h { margin: var(--s-2) var(--s-3) var(--s-1); font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--muted); }
 .j2-menu-h:first-child { margin-top: var(--s-1); }
 .j2-mi { display: flex; align-items: center; gap: var(--s-3); }
@@ -276,6 +278,8 @@ body[data-route="playermap"] #grid-wrap { display: block; }
   .j2[data-player] .j2-rail-grp { flex-direction: row; border-top: 0; padding-top: 0; }
   .j2[data-player] .j2-rail-grow { display: none; }
   .j2[data-player] .j2-rb { min-width: 72px; min-height: 52px; }
+  .j2[data-player] .j2-camp { border-top: 0; padding-top: 0; }
+  .j2[data-player] .j2-camp .j2-menu { left: auto; right: 0; bottom: calc(100% + var(--s-2)); min-width: min(288px, calc(100vw - 2 * var(--j2-side-gap))); }   /* the rail is a bottom bar here: the menu opens upward */
   .j2[data-player] .j2-mapbar { left: auto; right: var(--j2-side-gap); bottom: calc(var(--j2-bar-h) + var(--j2-side-gap)); }
   .j2[data-player] .j2-route { bottom: calc(var(--j2-bar-h) + var(--s-3)); }
 }

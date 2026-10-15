@@ -12,6 +12,7 @@
    What a snapshot contains — ONLY what a player may already see (it is built from the player projection, so fog has already been applied):
      lang      the GM's language, a default for a player with no saved choice (or null)
      regionIcons  true when the GM draws one icon per region (the "Regions" display switch, PD-062), so the player page draws the same; version 3+
+     sepiaMap, biomeColors  the GM's "Sepia map" and "Biome colors" display switches (PD-066): the player page's DEFAULTS, which the viewer may flip for their session; version 4+ (older links read as both on, as the page always drew them)
      view      the GM's camera (world centre + visible world width), so the player first sees the same part of the map at the same zoom (or null = fit); version 2+
      party     the shown party marker's hex, or null
      revealed  the revealed cell ids (hand-revealed ∪ the party's light)
@@ -22,8 +23,8 @@
      echoes    sanctuary ids of Soul Echoes marked Collected whose hex is revealed
    It never contains hidden tiles, regions, sanctuaries, an Available Echo, Encounters, Rumors, notes, Environments or any id from the GM's document.
 
-   Format (version 3 is written, 1 and 2 are still read; the version is the prefix of the link text, never reordered — a new layout is a new version; 2 = 1 plus the optional camera; 3 = 2 plus the region-icons flag):
-     flags byte (bits 0-1 language 0 none / 1 en / 2 ru, bit 2 party present, bit 3 camera present [v2], bit 4 region icons [v3]) · varint cell count N (a template check) · [varint party cell index] · [varint cx, cy, width]
+   Format (version 4 is written, 1-3 are still read; the version is the prefix of the link text, never reordered — a new layout is a new version; 2 = 1 plus the optional camera; 3 = 2 plus the region-icons flag; 4 = 3 plus the sepia and biome-colors flags):
+     flags byte (bits 0-1 language 0 none / 1 en / 2 ru, bit 2 party present, bit 3 camera present [v2], bit 4 region icons [v3], bit 5 sepia map on, bit 6 biome colors on [v4]) · varint cell count N (a template check) · [varint party cell index] · [varint cx, cy, width]
      · bitmap of revealed cells (ceil(N/8) bytes, cell order = the grid's valid-cell order) · bitmap over the revealed cells: has a tile (ceil(R/8))
      · varint region count, per region a byte symbol | dots << 4 · per tile (cell order) a varint region << 1 | x
      · varint X count + delta-coded cell indexes · varint name count, per name varint sanctuary index + varint byte length + UTF-8
@@ -36,8 +37,8 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (Geo, Model, Projection) {
   'use strict';
 
-  const FORMAT_VERSION = 3;                               // what is written; versions 1 (no camera) and 2 (no region-icon flag) are still read
-  const SUPPORTED_VERSIONS = Object.freeze([1, 2, 3]);
+  const FORMAT_VERSION = 4;                               // what is written; versions 1 (no camera), 2 (no region-icon flag) and 3 (no sepia / biome flags) are still read
+  const SUPPORTED_VERSIONS = Object.freeze([1, 2, 3, 4]);
   const MAX_VIEW = 1000000;
   /** Symbol table of formats 1 and 2: the eleven Journey biomes, then the fully overtaken region. NEVER reorder or insert — add a new format version instead. */
   const SYMBOLS = Object.freeze(['underground', 'aquatic', 'wetland', 'grassland', 'tropical', 'forest', 'drylands', 'rolling', 'mountain', 'frozen', 'badlands', 'fully-shadowblighted']);
@@ -129,6 +130,8 @@
       lang: lang,
       view: cleanView(opts && opts.view),
       regionIcons: !!(opts && opts.regionIcons),
+      sepiaMap: !(opts && opts.sepiaMap === false),
+      biomeColors: !(opts && opts.biomeColors === false),
       party: proj.party ? Geo.cellId(proj.party.q, proj.party.r) : null,
       revealed: revealed, regions: regions, tiles: tiles,
       xs: proj.shadowMarks.map(m => Geo.cellId(m.q, m.r)).filter(c => ix.index.has(c)).sort((a, b) => ix.index.get(a) - ix.index.get(b)),
@@ -139,12 +142,12 @@
 
   /* ---------------- binary encode / decode ---------------- */
 
-  /** The uncompressed bytes of a snapshot (format 3). Throws only for a snapshot that could not have come from buildSnapshot (a programming error). */
+  /** The uncompressed bytes of a snapshot (format 4). Throws only for a snapshot that could not have come from buildSnapshot (a programming error). */
   function encodeSnapshot(snap, ctx) {
     const ix = indexesOf(ctx), N = ix.cells.length, w = createWriter();
     const langIdx = LANGS.indexOf(snap.lang || null);
     const view = cleanView(snap.view);
-    w.byte((langIdx < 0 ? 0 : langIdx) | (snap.party ? 4 : 0) | (view ? 8 : 0) | (snap.regionIcons ? 16 : 0));
+    w.byte((langIdx < 0 ? 0 : langIdx) | (snap.party ? 4 : 0) | (view ? 8 : 0) | (snap.regionIcons ? 16 : 0) | (snap.sepiaMap !== false ? 32 : 0) | (snap.biomeColors !== false ? 64 : 0));
     w.varint(N);
     if (snap.party) w.varint(ix.index.get(snap.party));
     if (view) { w.varint(view.cx); w.varint(view.cy); w.varint(view.width); }
@@ -184,7 +187,7 @@
     if (!(bytes instanceof Uint8Array) || !bytes.length) throw new DecodeError(ERR.empty);
     const ix = indexesOf(ctx), N = ix.cells.length, r = createReader(bytes);
     const flags = r.byte();
-    if ((flags & 3) > 2 || (flags & ~(version >= 3 ? 31 : version >= 2 ? 15 : 7))) throw new DecodeError(ERR.invalid);   // bit 3 (a camera) exists from version 2, bit 4 (region icons) from version 3
+    if ((flags & 3) > 2 || (flags & ~(version >= 4 ? 127 : version >= 3 ? 31 : version >= 2 ? 15 : 7))) throw new DecodeError(ERR.invalid);   // bit 3 (a camera) exists from version 2, bit 4 (region icons) from version 3, bits 5-6 (sepia, biome colors) from version 4
     if (r.varint() !== N) throw new DecodeError(ERR.template);
     let party = null, view = null;
     if (flags & 4) { const i = r.varint(); if (i >= N) throw new DecodeError(ERR.invalid); party = ix.cells[i]; }
@@ -231,7 +234,7 @@
     const echoes = [], seenEcho = new Set();
     for (let i = 0; i < echoCount; i++) { const si = r.varint(); if (si >= ix.sanctuaryIds.length || seenEcho.has(si)) throw new DecodeError(ERR.invalid); seenEcho.add(si); echoes.push(ix.sanctuaryIds[si]); }
     if (!r.atEnd()) throw new DecodeError(ERR.trailing);
-    return { lang: LANGS[flags & 3], regionIcons: (flags & 16) !== 0, view: view, party: party, revealed: revealed, regions: regions, tiles: tiles, xs: xs, names: names, echoes: echoes };
+    return { lang: LANGS[flags & 3], regionIcons: (flags & 16) !== 0, sepiaMap: version < 4 || (flags & 32) !== 0, biomeColors: version < 4 || (flags & 64) !== 0, view: view, party: party, revealed: revealed, regions: regions, tiles: tiles, xs: xs, names: names, echoes: echoes };
   }
 
   /* ---------------- the synthetic document ---------------- */

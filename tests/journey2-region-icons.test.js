@@ -82,7 +82,7 @@ test('view wiring: a Campaign display switch, stored as a UI preference, no comm
   assert.match(view, /data-j2-regions/);
   assert.match(view, /function toggleRegions\(\) \{\s*showRegions = !showRegions;\s*saveUiPrefs\(\);\s*updateFogUi\(\);\s*renderTiles\(\);\s*\}/);
   assert.match(view, /Geo\.pickRegionIconCells\(/);
-  assert.match(view, /regionIcons: showRegions/);
+  assert.match(view, /regionIcons: showRegions, sepiaMap: showSepia, biomeColors: showBiome/);
   const i18n = JSON.parse(read('data/i18n.json'));
   for (const lang of Object.keys(i18n)) {
     const tbl = i18n[lang];
