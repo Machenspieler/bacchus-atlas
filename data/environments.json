@@ -33422,6 +33422,114 @@
         "badlands"
       ],
       "source": "Resting Dagger"
+    },
+    {
+      "id": "hydrothermal-caverns",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 15,
+      "name": {
+        "en": "Hydrothermal Caverns",
+        "ru": "Гидротермальные пещеры"
+      },
+      "lore": {
+        "en": "A large network of winding caverns, filled with stalactites and stalagmites - formed by ages old magma flows and cast in complete darkness. Signs of hydrothermal activity can be found throughout. Cavern size: 3 chambers (1h) | 5 chambers (2h) | 7 chambers (3h). Goal: Find the hot springs and confront the Mud Guardian.",
+        "ru": "Обширная сеть извилистых пещер, полных сталактитов и сталагмитов, образованных древними потоками магмы и погружённых в полную тьму. Следы гидротермальной активности встречаются повсюду. Размер пещер: 3 камеры (1 ч) | 5 камер (2 ч) | 7 камер (3 ч). Цель: найти горячие источники и сразиться с Грязевым Стражем."
+      },
+      "impulses": {
+        "en": [
+          "Defend its environment and treasures",
+          "wear out and misdirect interlopers"
+        ],
+        "ru": [
+          "Защищать своё окружение и сокровища",
+          "изматывать и сбивать с пути чужаков"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Minor Fire Elemental",
+          "Acid Burrower",
+          "Skeleton Warrior",
+          "Red Ooze",
+          "Minor Treant",
+          "Mimic"
+        ],
+        "ru": [
+          "Малый Огненный Элементаль",
+          "Кислотный Землекоп",
+          "Скелет Воин",
+          "Красная Слизь",
+          "Малый Древень",
+          "Мимик"
+        ]
+      },
+      "features": [
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Treacherous Paths",
+            "ru": "Коварные тропы"
+          },
+          "description": {
+            "en": "When the PCs enter the caverns, start a Countdown equal to the number of players. Each time a PC rolls with Fear, the Countdown ticks down 1. When it triggers, choose one of the following options:\n- **Spend 0 Fear:** 1d4 Minions (e.g. Minor Treant) appear and attack.\n- **Spend 0 Fear:** Everyone makes a Reaction Roll to prevent their light sources from turning dark or to avoid a minor hazard.\n- **Spend 1 Fear:** 1d4 Standard adversaries (e.g. Skeleton Warrior) appear and attack.\n- **Spend 1 Fear:** Something in the dungeon becomes a Mimic. Add 1 Mimic token to the table. At any time, the GM as well as the players can spend 1 Mimic token to turn one object into a Mimic.\n- **Spend 2 Fear:** Increase the Difficulty of this environment by 1d2.\n- **Spend 3 Fear:** 1 Solo adversary (e.g. Acid Burrower / Minor Fire Elemental) appears and attacks.\n- **Spend 4 Fear:** Create a serious hazard with a Consequence Countdown (6) and life-threatening consequences.",
+            "ru": "Когда персонажи входят в пещеры, запустите Отсчёт, равный числу игроков. Каждый раз, когда персонаж совершает бросок со Страхом, Отсчёт сдвигается на 1. Когда он срабатывает, выберите один из вариантов:\n- **Потратьте 0 Страха:** появляются 1d4 Миньонов (например, Малый Древень) и нападают.\n- **Потратьте 0 Страха:** все совершают Бросок Реакции, чтобы их источники света не погасли, либо чтобы избежать незначительной опасности.\n- **Потратьте 1 Страх:** появляются 1d4 Стандартных противников (например, Скелет Воин) и нападают.\n- **Потратьте 1 Страх:** что-то в подземелье превращается в Мимика. Добавьте на стол 1 жетон Мимика. В любой момент и ведущий, и игроки могут потратить 1 жетон Мимика, чтобы превратить один предмет в Мимика.\n- **Потратьте 2 Страха:** повысьте Сложность этого окружения на 1d2.\n- **Потратьте 3 Страха:** появляется 1 противник-Одиночка (например, Кислотный Землекоп / Малый Огненный Элементаль) и нападает.\n- **Потратьте 4 Страха:** создайте серьёзную опасность со Счётчиком Последствий (6) и смертельными последствиями."
+          },
+          "prompt": {
+            "en": "How do you react to the sudden appearance of adversaries? What kind of hazard is threatening you?",
+            "ru": "Как вы реагируете на внезапное появление противников? Какая опасность вам угрожает?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Secluded Cavities",
+            "ru": "Укромные полости"
+          },
+          "description": {
+            "en": "Every new chamber, cavity or tunnel has an obstacle to overcome before entering. Roll a d6 or choose one of the following:\n- **1. Strength:** Giant boulders or other obstacles block the way.\n- **2. Agility:** The next chamber can only be climbed or swum to.\n- **3. Finesse:** Explosive / toxic mushrooms or mineral deposits block the way.\n- **4. Instinct:** There is the chance of a cave-in or another immediate hazard.\n- **5. Presence:** A non-violent but still unfriendly creature bars the way.\n- **6. Knowledge:** A puzzle or magical effect prevents any further travel.\nMake the accompanying Action Roll. On a success, the PCs clear the obstacle and proceed. On a failure, the PCs clear the obstacle, but it takes longer than expected: tick down the Countdown of the Treacherous Paths feature by 1 and proceed. With Hope, the chamber contains something useful like information, history, items or a boon. With Fear, the chamber contains something harmful or unpleasant.",
+            "ru": "Перед каждой новой камерой, полостью или туннелем есть препятствие, которое нужно преодолеть, прежде чем войти. Бросьте d6 или выберите один из вариантов:\n- **1. Сила:** гигантские валуны или другие преграды загораживают путь.\n- **2. Проворность:** в следующую камеру можно только взобраться или доплыть.\n- **3. Искусность:** путь преграждают взрывоопасные / ядовитые грибы или минеральные отложения.\n- **4. Инстинкт:** есть риск обвала или другой непосредственной опасности.\n- **5. Влияние:** путь преграждает неагрессивное, но недружелюбное существо.\n- **6. Знание:** головоломка или магический эффект не даёт идти дальше.\nСовершите соответствующий бросок действия. При успехе персонажи преодолевают препятствие и идут дальше. При неудаче персонажи преодолевают препятствие, но это занимает больше времени, чем ожидалось: сдвиньте Отсчёт умения «Коварные тропы» на 1 и идите дальше. С Надеждой в камере находится что-то полезное: сведения, история, предметы или благо. Со Страхом в камере находится что-то вредное или неприятное."
+          },
+          "prompt": {
+            "en": "How does the obstacle prevent you from proceeding? What marvel does the chamber reveal to you?",
+            "ru": "Как препятствие мешает вам продвигаться дальше? Какое чудо открывает вам камера?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Fearful Darkness",
+            "ru": "Пугающая тьма"
+          },
+          "description": {
+            "en": "All rolls are made with Disadvantage unless the PCs are in light.",
+            "ru": "Все броски совершаются с помехой, если персонажи не находятся на свету."
+          },
+          "prompt": {
+            "en": "How does your character react to the darkness? What means are you using to light the way?",
+            "ru": "Как ваш персонаж реагирует на темноту? Чем вы освещаете себе путь?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Labyrinthine Tunnels",
+            "ru": "Лабиринтные туннели"
+          },
+          "description": {
+            "en": "Once per session, when the PCs reach the end of a tunnel, reveal that it loops around to a previous part of the caverns they did not explore yet or could not reach.",
+            "ru": "Один раз за сессию, когда персонажи доходят до конца туннеля, выясните, что он петлёй возвращается к ранее не исследованной или недоступной части пещер."
+          },
+          "prompt": {
+            "en": "What new opportunity does this connection present? What do you see that you could not see before?",
+            "ru": "Какую новую возможность открывает это соединение? Что вы видите теперь, чего не могли увидеть раньше?"
+          }
+        }
+      ],
+      "biomes": [
+        "underground"
+      ],
+      "source": "Tales From Jinglewood"
     }
   ]
 }
