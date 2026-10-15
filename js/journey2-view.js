@@ -3835,7 +3835,7 @@
       scheduleFogPaint();
     }
 
-    function releaseFogCapture(id) { try { if (ui.viewport.hasPointerCapture(id)) ui.viewport.releasePointerCapture(id); } catch (err) { /* already released */ } }
+    function releaseFogCapture(id) { try { if (!touches.has(id) && ui.viewport.hasPointerCapture(id)) ui.viewport.releasePointerCapture(id); } catch (err) { /* already released */ } }
 
     /** Pointer released: the whole stroke is ONE command (one Undo entry, one autosave). Nothing to change records nothing. */
     function finishFogStroke(e) {
@@ -4315,8 +4315,11 @@
     /** True when the touch event belongs to the pinch (down of a second finger, a move while two are down, or the release of one of them). */
     function touchDown(e) {
       if (e.pointerType !== 'touch') return false;
+      // the first finger of a gesture is always the primary pointer: nothing else can be down, so any entry still in the map is a stale one (its up/cancel never reached us) and would turn this drag into a pinch
+      if (e.isPrimary) { touches.clear(); pinch = null; if (pan) endPan(); ui.viewport.classList.remove('is-panning'); }
       const [x, y] = localPoint(e);
       touches.set(e.pointerId, { x: x, y: y });
+      try { ui.viewport.setPointerCapture(e.pointerId); } catch (err) { /* synthetic events may lack a capturable pointer */ }   // every finger's up/cancel comes back here, even when it is lifted over a control
       if (touches.size === 2) { startPinch(); return true; }
       return touches.size > 2;
     }
