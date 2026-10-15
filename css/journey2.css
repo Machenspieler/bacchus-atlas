@@ -442,7 +442,7 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select: none !important; -webkit-user-select: none !important; }
 .j2-world { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; --j2-inv: 4; }
 /* A phone cannot keep a 4848x3185 layer promoted: Chrome Android drops its tiles (black blocks) and does not re-raster them after Fit or a pinch. Without will-change the browser rasters at the current scale. */
-@media (pointer: coarse) { .j2-world { will-change: auto; } }
+@media (pointer: coarse) { .j2-world { will-change: auto; } .j2-world.is-cam-active { will-change: transform; } }   /* promoted only while the camera moves (journey2-view.js scheduleApply) */
 .j2-base { display: block; position: absolute; left: 0; top: 0; max-width: none; pointer-events: none; user-select: none; -webkit-user-drag: none; }
 .j2-world.is-pixel .j2-base { image-rendering: pixelated; }
 /* Sepia screen map (PD-060, the "Sepia map" switch; on by default): the raster is black line art on white, so multiplying it over a parchment ground turns the

@@ -3579,12 +3579,19 @@
       setCamera({ scale: s, tx: vw / 2 - x * s, ty: vh / 2 - y * s });
     }
 
+    /* On touch screens the world is promoted to its own layer (will-change: transform) only WHILE the camera moves, so a drag is composited and smooth; at rest the
+       promotion is dropped, which makes the browser re-raster the map crisply at the final zoom and never keep a stale or oversized layer (black blocks on phones). */
+    let camIdleTimer = 0;
+    cleanups.push(() => clearTimeout(camIdleTimer));
     function scheduleApply() {
       if (pendingApply) return;
       pendingApply = true;
       rafId = requestAnimationFrame(() => {
         pendingApply = false;
         if (inst.disposed || !ui.world) return;
+        ui.world.classList.add('is-cam-active');
+        clearTimeout(camIdleTimer);
+        camIdleTimer = setTimeout(() => { if (ui.world) ui.world.classList.remove('is-cam-active'); }, 200);
         ui.world.style.transform = 'translate(' + cam.tx + 'px,' + cam.ty + 'px) scale(' + cam.scale + ')';
         ui.world.style.setProperty('--j2-inv', String(1 / cam.scale));
         ui.world.classList.toggle('is-pixel', cam.scale >= 2);
