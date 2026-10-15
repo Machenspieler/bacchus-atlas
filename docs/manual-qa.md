@@ -492,7 +492,7 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       generated glyph and the GM view never draws the fog veil (no Fog button, PD-036); the veil appears only in Player Preview, with the sanctuary
       icons and MARROGATE / HORIZON labels staying clean under it. Generating, placing, moving or deleting a
       region never changes the fog. Reload keeps the fog.
-- [ ] Display menu (PD-066): the rail's **Display / Вид** button is present in the GM view, in Player Preview and on a `#/map/<link>` page (on a phone ≤640px it is in the bottom bar and the menu opens upward). Biome colors, Sepia map and Regions each toggle live in all three; in Player Preview Biome colors hides/shows the tint on revealed hexes; a copied link opens with the GM's three values, a change on the player page lasts until reload and writes no `dhcodex_journey2_*` key; an old (`3.`) link still opens sepia + tinted.
+- [ ] Display menu (PD-067): the rail's **Display / Вид** button is present in the GM view, in Player Preview and on a `#/map/<link>` page (on a phone ≤640px it is in the bottom bar and the menu opens upward). Biome colors, Sepia map and Regions each toggle live in all three; in Player Preview Biome colors hides/shows the tint on revealed hexes; a copied link opens with the GM's three values, a change on the player page lasts until reload and writes no `dhcodex_journey2_*` key; an old (`3.`) link still opens sepia + tinted.
 - [ ] Player Preview: the cards, Campaign menu, Find Echo, save status and inspector are gone;
       the Players side of the segment is selected, the rail gains Brush, Outline, Print and Link, and zoom/Fit and the **GM** side of the segment remain. Unexplored hexes carry the stronger gray
       texture and no generated glyphs; revealed hexes show their glyphs; a region half revealed shows only its
@@ -615,6 +615,7 @@ what changes at each):
   breakdown but **no** expected-encounter row. Drag A and B (a pin over the star moves, the star never does). The same tool works in the GM's Player Preview, and Escape closes the route before the preview.
 - [ ] Tablet (or touch emulation): one finger pans, two fingers pinch-zoom around the point between them, a tap picks a hex in Plan route, a finger on a pin drags it; after a pinch the remaining finger does
   not tap. Phones: the page fits (no sideways scroll). Verify in English and Russian.
+- [ ] **Phone-first (PD-067)** — the primary platform for this page. At 375x667 and 360x640 portrait (mobile emulation, touch), and a short landscape phone: no sideways page scroll; the map fills the screen; the bottom tool bar clears the home indicator (safe area) and the browser toolbar showing/hiding does not resize the map jarringly; tool targets are >= 44px; the legend opens above the bar, scrolls, and starts folded; nothing needs hover, a hotkey or a tooltip; the page does not scroll or pull-to-refresh while panning the map; no text is under 12px. Repeat in Russian (longest labels: Route / Legend, the biome names, the legend sentences).
 - [ ] Bad links: `#/map/`, a truncated link, `#/map/2.xx` and a link for another template each show one localized sentence (and nothing else); the console, not the page, has the detail.
 
 ### Encounter Roll (PD-039)

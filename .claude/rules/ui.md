@@ -46,6 +46,12 @@ before substantial UI work — this file assumes both.
 - **Check the real viewport range**: desktop, narrow desktop, and mobile —
   see design.md's "Responsive breakpoints" table for the actual breakpoints
   this app uses, not a generic assumption.
+- **The Journey player page (`#/map/<link>`) is phone-first.** Phones are
+  its primary platform: design and verify at 375px/360px portrait before
+  desktop, touch is a full input (no hover/hotkey/tooltip dependence),
+  respect safe areas and the dynamic browser toolbar. Contract and
+  checklist: [docs/product-decisions.md](../../docs/product-decisions.md)
+  PD-067, [docs/manual-qa.md](../../docs/manual-qa.md) "Phone-first".
 - **Check the state the feature can actually be in**: empty, loading,
   populated, error, and — where the feature has them — expanded/collapsed.
   A collapsed header/section must meaningfully reduce occupied space, not
