@@ -379,3 +379,17 @@ test('impassable: a blocked start or destination, or a wall of blocked hexes, is
   assert.equal(route(end, '0,0', '3,0', 'fastest').reason, 'impassable');
 });
 
+
+test('Shortest breaks hex-count ties by travel days, and is then interchangeable with Fastest', () => {
+  // two 2-hex ways from 0,0 to 1,1: via 1,0 (Terrain 4) or via 0,1 (Terrain 1)
+  const g = grid(2, Object.assign(fill(['1,0'], 4), fill(['0,1', '1,1'], 1)));
+  const short = route(g, '0,0', '1,1', 'shortest'), fast = route(g, '0,0', '1,1', 'fastest');
+  assert.deepEqual(short.cells, ['0,0', '0,1', '1,1']);
+  assert.equal(short.stats.travelDays, 2);
+  assert.equal(short.totalCost, short.stats.hexes, 'the tie-break weight never leaks into the reported cost');
+  assert.equal(R.sameRoute(fast, short), true);
+  // a genuinely shorter-but-heavier route stays distinct
+  const h = grid(2, Object.assign(fill(['1,0', '2,0'], 4), fill(['0,1', '0,2', '1,2', '2,1', '1,1'], 1)));
+  const s2 = route(h, '0,0', '2,0', 'shortest'), f2 = route(h, '0,0', '2,0', 'fastest');
+  assert.equal(R.sameRoute(f2, s2), s2.stats.hexes === f2.stats.hexes);
+});

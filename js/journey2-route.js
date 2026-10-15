@@ -24,6 +24,7 @@
   /** Floating-point costs are compared with this tolerance, never with ===. */
   const ROUTE_COST_EPSILON = 1e-9;
   const MIN_TERRAIN = 1, MAX_TERRAIN = 4;
+  const SHORTEST_DAY_TIEBREAK = 1e-4;
 
   /** A known hex: Terrain 1-4, or 0 for a settlement hex (a sanctuary / Marrogate / Horizon icon: never generated terrain, entering it costs no days and rolls no Encounter Dice). */
   const isRating = v => Number.isInteger(v) && v >= 0 && v <= MAX_TERRAIN;
@@ -131,7 +132,8 @@
     const blocked = typeof o.isBlockedCell === 'function' ? o.isBlockedCell : () => false;
     if (blocked(start) || blocked(goal)) return fail('impassable');
     const enterable = id => o.isRouteableCell(id) && !blocked(id) && (!model.terrainAware || isRating(rating(id)));
-    const stepCost = id => (model.terrainAware ? model.edgeCost(rating(id)) : 1);
+    // Shortest minimises hexes first; among equal-hex paths a tiny per-day weight prefers the lighter one (the weight times any realistic path stays below 1)
+    const stepCost = id => (model.terrainAware ? model.edgeCost(rating(id)) : 1 + (isRating(rating(id)) ? SHORTEST_DAY_TIEBREAK * terrainTravelCost(rating(id)) : 0));
     // a zero-cost settlement hex makes every per-step lower bound 0 (still admissible: it degrades A* to Dijkstra)
     const minStep = o.hasZeroCostCells && model.terrainAware ? 0 : model.minStep;
     const h = id => hexDistance(id, goal) * minStep;
@@ -175,6 +177,7 @@
 
     function finish(cells, totalCost) {
       const stats = calculateRouteStats(cells, rating);
+      if (!model.terrainAware) totalCost = stats.hexes;   // the day tie-break weight is not part of Shortest's cost
       return { status: 'ok', strategy: strategy, cells: cells, totalCost: totalCost, stats: stats, segmentKnown: cells.slice(1).map(id => isRating(rating(id))) };
     }
   }
@@ -186,9 +189,14 @@
     return out;
   }
 
-  /** Whether two ok routes are the same path (used to skip a pointless comparison). */
+  /**
+   * Whether two ok routes are interchangeable: the same path, or two complete routes with the same hexes and the same travel days
+   * (Shortest breaks hex ties by days, so equal hexes against Fastest means equal days — a second line would only repeat the first).
+   */
   function sameRoute(a, b) {
-    return !!a && !!b && a.status === 'ok' && b.status === 'ok' && a.cells.length === b.cells.length && a.cells.every((c, i) => c === b.cells[i]);
+    if (!a || !b || a.status !== 'ok' || b.status !== 'ok') return false;
+    if (a.cells.length === b.cells.length && a.cells.every((c, i) => c === b.cells[i])) return true;
+    return a.stats.complete && b.stats.complete && a.stats.hexes === b.stats.hexes && Math.abs(a.stats.travelDays - b.stats.travelDays) < ROUTE_COST_EPSILON;
   }
 
   /**
