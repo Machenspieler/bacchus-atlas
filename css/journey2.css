@@ -757,6 +757,10 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-viewport.is-party-hover { cursor: grab; }
 .j2-viewport.is-party-dragging, .j2-viewport.is-party-dragging.is-party-hover { cursor: grabbing; }
 .j2-viewport.is-party-placing { cursor: crosshair; }
+/* Player Preview's fog brush sets crosshair with a longer selector; the marker (which outranks the brush, PD-045) and the route pins keep their grab cursor over it */
+.j2[data-mode="preview"] .j2-viewport.is-fog-tool.is-party-hover, .j2[data-mode="preview"] .j2-viewport.is-fog-tool.is-route-pin-hover { cursor: grab; }
+.j2[data-mode="preview"] .j2-viewport.is-fog-tool.is-party-dragging, .j2[data-mode="preview"] .j2-viewport.is-fog-tool.is-route-pin-dragging { cursor: grabbing; }
+.j2[data-mode="preview"] .j2-viewport.is-fog-tool.is-party-placing { cursor: crosshair; }
 .j2-party-chip .btn { pointer-events: auto; }
 /* a distinct compass-origin look: dashed outline + a four-point star (never the Reveal / Hide brush) */
 .j2-overlay .j2-loc-hover { fill: rgba(217, 164, 65, 0.16); stroke: #8a5a0c; stroke-width: calc(3px * var(--j2-inv, 1)); stroke-dasharray: calc(7px * var(--j2-inv, 1)) calc(4px * var(--j2-inv, 1)); stroke-linejoin: round; }
