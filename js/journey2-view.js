@@ -190,7 +190,7 @@
     let cam = { scale: 0.25, tx: 0, ty: 0 };
     let fitMode = true;
     let savedView = null, liveView = null, cameraReady = false, cameraSaveTimer = 0;   // the stored camera ({ fit, cx, cy, scale } | null), whether a stored camera may be overwritten yet, and the debounce timer
-    let rafId = 0, pendingApply = false;
+    let rafId = 0, pendingApply = false, appliedScale = 0;
 
     /* committed state */
     let doc = null, history = null, store = null;
@@ -3620,7 +3620,12 @@
       rafId = requestAnimationFrame(() => {
         pendingApply = false;
         if (inst.disposed || !ui.world) return;
-        ui.world.classList.add('is-cam-active');
+        /* A promoted layer keeps the raster scale it was promoted at: promote while zoomed in, pinch out, and the whole map is held at the old high resolution
+           (hundreds of MB) — the phone's GPU gives up and the whole page, UI included, goes black until the next tap. So the layer is promoted only for a pure pan
+           (the scale unchanged since the last frame); any frame that changes the scale demotes it and the browser re-rasters at the new scale. */
+        const scaling = appliedScale !== 0 && appliedScale !== cam.scale;
+        appliedScale = cam.scale;
+        ui.world.classList.toggle('is-cam-active', !scaling);
         clearTimeout(camIdleTimer);
         camIdleTimer = setTimeout(dropCamPromotion, 600);
         ui.world.style.transform = 'translate(' + cam.tx + 'px,' + cam.ty + 'px) scale(' + cam.scale + ')';
