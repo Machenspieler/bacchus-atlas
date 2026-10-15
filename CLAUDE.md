@@ -135,7 +135,9 @@ contract: [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 `location.hash` is decoded in exactly one place, `js/route-utils.js`
 (`RouteUtils`) — never a direct `decodeURIComponent()` on untrusted route
 input elsewhere. A malformed component falls back independently without
-discarding a valid sibling (base route vs. environment overlay). Full
+discarding a valid sibling (base route vs. environment overlay). The
+catalogue's filters ride in the same hash as a query (`#/?tier=1&biome=forest`,
+PD-068), so a filtered view is shareable. Full
 contract: [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 
 ### Environment search index
@@ -246,7 +248,7 @@ REVEALED sanctuary hex only; Available Echoes stay secret; the print blanks it).
 Display menu (PD-066): "Biome colors", "Sepia map" and "Regions" live in one rail menu, **Display**, visible in the GM view, Player Preview AND the player page (Campaign keeps only Echoes and sanctuaries, GM-only); the link carries the GM's three values as the player page's defaults, a viewer's change lasts for that page load only (no storage there), and Biome colors now also governs Player Preview.
 "Regions" (PD-062): a display switch (default off, `regionIcons` in `dhcodex_journey2_ui`) that draws ONE icon per region instead of one per hex, as in the book — GM: all of a region's hexes; Player Preview / player page: only its revealed hexes (a one-hex region shows its own icon, connected revealed hexes share one); picked by the pure `Geo.pickRegionIconCells`; the print is unchanged.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-066/PD-067/PD-057/PD-052/PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040/PD-041/PD-045/PD-051 (Place all rolls a random frozen footprint per press), detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-066/PD-067/PD-068/PD-057/PD-052/PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040/PD-041/PD-045/PD-051 (Place all rolls a random frozen footprint per press), detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

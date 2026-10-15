@@ -107,6 +107,15 @@ behind it (catalog, Lists overview, a single list, Journey, Prep),
 not a route of its own — `applyDetailRoute()` opens/closes the overlay
 without touching the base route's own state.
 
+The catalogue route also carries its filters (PD-068): `#/?tier=1&biome=forest`
+(`route.query`, parsed/built only by `RouteUtils.parseCatalogQuery()` /
+`buildCatalogQuery()`). `renderGrid()` calls `syncFiltersToUrl()`, which
+rewrites the address with `replaceState()` when `state.filters` changed;
+`adoptRouteFilters()` takes a query that arrives with the address (initial
+load, `hashchange`) into `state.filters`, and `sameBase()` compares the query
+so a different filter address re-renders instead of being read as "only the
+card changed".
+
 ## Rendering boundaries
 
 `render()` dispatches on `state.route.name` to one of the page renderers —

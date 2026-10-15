@@ -167,6 +167,7 @@ const state = {
   catalogLastColumnCount: null,
   route: readCurrentRoute(),
 };
+adoptRouteFilters(state.route);   // a link that arrives carrying catalogue filters (PD-068)
 
 /* An open environment card is a "/env/<id>" suffix on whichever route is
  * behind it, rather than a route of its own: the card is an overlay, and the
@@ -185,7 +186,42 @@ function baseHash(route = state.route) { return RouteUtils.baseHash(route); }
 
 function envHash(envId, route = state.route) { return RouteUtils.envHash(envId, route); }
 
-function sameBase(a, b) { return a.name === b.name && a.id === b.id; }
+function sameBase(a, b) { return a.name === b.name && a.id === b.id && (a.query || '') === (b.query || ''); }
+
+/* The catalogue's filters live in the address (PD-068): `#/?tier=1&biome=forest`.
+ * The address follows the state, never the other way round after load — a
+ * filter change rewrites it with replaceState (no history entry, no
+ * hashchange), and an address that arrives carrying filters (a shared link,
+ * Back/Forward, an edit) is adopted into state.filters. An address WITHOUT a
+ * query leaves the filters as they are, exactly as before, so the brand and
+ * the ribbons keep them; syncFiltersToUrl() then writes them back. */
+function adoptRouteFilters(route) {
+  if (route.name !== 'catalog' || !route.query) return;
+  const q = RouteUtils.parseCatalogQuery(route.query);
+  state.filters = {
+    search: q.search,
+    tiers: new Set(q.tiers),
+    types: new Set(q.types.filter(v => TYPES.includes(v))),
+    sources: new Set(q.sources),   // names are checked against the catalogue in renderToolbar()
+    biomes: new Set(q.biomes.filter(v => BIOMES.includes(v))),
+    regionOnly: q.regionOnly,
+  };
+  resetCatalogVisibility();
+}
+
+function syncFiltersToUrl() {
+  if (state.route.name !== 'catalog') return;
+  const query = RouteUtils.buildCatalogQuery(state.filters);
+  if (query === (state.route.query || '')) return;
+  const next = { name: 'catalog', env: state.route.env };
+  if (query) next.query = query;
+  try {
+    history.replaceState(history.state, '', RouteUtils.routeToHash(next) || location.pathname + location.search);
+    state.route = next;
+  } catch (err) {
+    // Best-effort, like repairHash(): the filters still work, only the address is not shareable.
+  }
+}
 
 /** Parses location.hash through the safe pure parser and, when it carries a
  * malformed segment, repairs the address in place before returning the safe
@@ -227,7 +263,7 @@ window.addEventListener('hashchange', () => {
   state.route = next;
   if (!next.env) cardEntryPushed = false;
   if (onlyCardChanged) { syncDetail(); document.title = routeTitle(); }
-  else render();
+  else { adoptRouteFilters(next); render(); }
 });
 
 function t(key) {
@@ -1979,6 +2015,7 @@ function renderGrid() {
   const total = currentEnvs().length;
   const list = sortedFilteredEnvs();
   const onCatalog = state.route.name === 'catalog';
+  syncFiltersToUrl();
 
   const countBar = document.getElementById('result-count');
   countBar.innerHTML = `${t('count_showing').replace('{n}', list.length).replace('{total}', total)}` +

@@ -481,3 +481,92 @@ test('the journey route keeps an environment overlay and survives a malformed on
     assert.equal(bad.canonicalHash, '#/journey');
   }
 });
+
+/* ---------------- catalogue filters in the address (PD-068) ---------------- */
+
+const { parseCatalogQuery, buildCatalogQuery } = RouteUtils;
+
+test('"#/?..." is the catalogue route carrying its raw query; no query leaves the route shape untouched', () => {
+  assert.deepEqual(parseRouteHash('#/?tier=1&tier=2').route, { name: 'catalog', env: null, query: 'tier=1&tier=2' });
+  assert.deepEqual(parseRouteHash('#/?').route, { name: 'catalog', env: null });
+  assert.deepEqual(parseRouteHash('#?tier=3').route, { name: 'catalog', env: null, query: 'tier=3' });
+  assert.equal(parseRouteHash('#/?tier=1').canonicalHash, null);
+});
+
+test('a catalogue query and an environment overlay coexist, in both directions', () => {
+  const r = parseRouteHash('#/?tier=1&biome=forest/env/bastion');
+  assert.deepEqual(r.route, { name: 'catalog', env: 'bastion', query: 'tier=1&biome=forest' });
+  assert.equal(routeToHash(r.route), '#/?tier=1&biome=forest/env/bastion');
+  assert.equal(baseHash(r.route), '#/?tier=1&biome=forest');
+  assert.equal(envHash('x', { name: 'catalog', env: null, query: 'tier=2' }), '#/?tier=2/env/x');
+  assert.equal(envHash('x', { name: 'catalog', env: null }), '#/env/x');
+  assert.equal(baseHash({ name: 'catalog', env: null }), '');
+});
+
+test('an encoded "/" inside a filter value cannot be mistaken for an overlay suffix', () => {
+  const q = buildCatalogQuery({ search: 'a/env/b' });
+  assert.equal(q, 'q=a%2Fenv%2Fb');
+  const r = parseRouteHash('#/?' + q);
+  assert.equal(r.route.env, null);
+  assert.equal(parseCatalogQuery(r.route.query).search, 'a/env/b');
+});
+
+test('other routes never grow a query: "#/prep?x" stays the existing fallback', () => {
+  assert.equal(parseRouteHash('#/lists?tier=1').route.query, undefined);
+  assert.equal(parseRouteHash('#/prep/env/a').route.name, 'prep');
+});
+
+test('buildCatalogQuery is canonical: fixed key order, sorted groups, "" when nothing is active', () => {
+  assert.equal(buildCatalogQuery({ search: '', tiers: new Set(), types: new Set(), sources: new Set(), biomes: new Set(), regionOnly: false }), '');
+  assert.equal(buildCatalogQuery(null), '');
+  const q = buildCatalogQuery({
+    search: '  wolf pack ', tiers: new Set([3, 1]), types: new Set(['social', 'event']),
+    sources: new Set(['Court & Shadow', 'Fractus, the Broken World: Free Preview']), biomes: new Set(['forest', 'aquatic']), regionOnly: true,
+  });
+  assert.equal(q, 'q=wolf%20pack&tier=1&tier=3&type=event&type=social&type=region&biome=aquatic&biome=forest'
+    + '&src=Court%20%26%20Shadow&src=Fractus%2C%20the%20Broken%20World%3A%20Free%20Preview');
+  assert.equal(buildCatalogQuery({ tiers: [2, 1] }), 'tier=1&tier=2');
+});
+
+test('parseCatalogQuery round-trips everything buildCatalogQuery writes (commas, ampersands, Cyrillic, emoji)', () => {
+  const filters = {
+    search: 'лес & «тени» 🙂', tiers: [1, 4], types: ['exploration'], regionOnly: true,
+    biomes: ['underground'], sources: ['Court & Shadow', 'Fractus, the Broken World: Free Preview', 'Daggerheart: Hope & Fear'],
+  };
+  const back = parseCatalogQuery(buildCatalogQuery(filters));
+  assert.equal(back.search, filters.search);
+  assert.deepEqual(back.tiers, [1, 4]);
+  assert.deepEqual(back.types, ['exploration']);
+  assert.equal(back.regionOnly, true);
+  assert.deepEqual(back.biomes, ['underground']);
+  assert.deepEqual(back.sources.slice().sort(), filters.sources.slice().sort());
+  assert.equal(buildCatalogQuery(back), buildCatalogQuery(filters));
+});
+
+test('parseCatalogQuery drops bad pieces one by one and never throws', () => {
+  const q = parseCatalogQuery('tier=0&tier=5&tier=x&tier=1.5&tier=2&tier=2&type=%E0%A4%A&type=social&biome=&=1&zzz=1&noequals&q=%E0%A4%A&biome=forest');
+  assert.deepEqual(q.tiers, [2]);
+  assert.deepEqual(q.types, ['social']);
+  assert.deepEqual(q.biomes, ['forest']);
+  assert.equal(q.search, '');
+  for (const junk of [undefined, null, 42, '', '&&&', '=', '?', 'tier', '%', 'tier=%', 'q=' + '%'.repeat(10)]) {
+    assert.doesNotThrow(() => parseCatalogQuery(junk));
+  }
+});
+
+test('parseCatalogQuery caps the search, each group, and the whole query', () => {
+  assert.equal(Array.from(parseCatalogQuery('q=' + 'a'.repeat(500)).search).length, 200);
+  const many = Array.from({ length: 100 }, (_, i) => 'biome=b' + i).join('&');
+  assert.ok(many.length < 1000);
+  assert.equal(parseCatalogQuery(many).biomes.length, 40);
+  const huge = parseCatalogQuery('q=hello&' + 'tier=1&'.repeat(300));
+  assert.deepEqual(huge, { search: '', tiers: [], types: [], sources: [], biomes: [], regionOnly: false });
+  assert.deepEqual(parseCatalogQuery('q=a+b').search, 'a b');
+});
+
+test('PD-068: the catalogue query is parsed and built only in RouteUtils', () => {
+  const app = fs.readFileSync(path.join(__dirname, '..', 'js', 'app.js'), 'utf8');
+  assert.match(app, /RouteUtils\.parseCatalogQuery/);
+  assert.match(app, /RouteUtils\.buildCatalogQuery/);
+  assert.doesNotMatch(app, /new URLSearchParams\(\s*(location\.hash|state\.route)/);
+});

@@ -65,6 +65,12 @@ paths:
   goes through `RouteUtils.baseHash()`/`envHash()`/`routeToHash()`, which
   each run `encodeURIComponent()` once per dynamic segment — don't
   double-encode or hand-roll a URL elsewhere.
+- **Catalogue filters are address state (PD-068).** The `#/?q=…&tier=…` query
+  is parsed and built only through `RouteUtils.parseCatalogQuery()` /
+  `buildCatalogQuery()` (never `URLSearchParams` or a hand-rolled split on
+  `location.hash`), written with `replaceState()` from `syncFiltersToUrl()`,
+  and adopted with `adoptRouteFilters()`. A group repeats its key — never a
+  comma list (source names contain commas). Lists and Prep write nothing.
 - **A malformed route component falls back independently.** A bad `/env/<id>`
   suffix must not discard a valid base route underneath it, and a bad list
   ID must not discard a valid environment overlay on top of it.

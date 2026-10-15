@@ -624,3 +624,12 @@ what changes at each):
 - [ ] Switching to another hex or region, closing and reopening the inspector, clears the roll. Nothing about it is in the saved map, Undo/Redo, Player Preview or the printed pages.
 - [ ] A fully shadowblighted region: no Inspect button on its card; clicking its hex opens a compact inspector with only the title, the badge and "Return to stock" — no Terrain, roll button, Encounter or Rumor.
 - [ ] Verify in English and Russian (the verdicts and the Fear hint must not clip).
+
+## Catalogue filters in the address (PD-068)
+
+- [ ] On `#/`, press Rank 2, pick a Biome and a Source, type a search: the address becomes `#/?q=…&tier=2&biome=…&src=…` after each change, with no new history entry (Back leaves the catalogue, it does not undo a filter).
+- [ ] Reload, and open the same address in a new tab: the same toolbar state (pressed rank, ticked biome/source, search text) and the same result count; switch RU/EN and the filters and address stay.
+- [ ] Open a card from the filtered grid: the address is `#/?…/env/<id>`; × / Escape returns to the same filtered grid; opening that address cold shows the grid filtered, the card open.
+- [ ] Paste a different filter address into the same tab: the toolbar and grid follow it. Open Lists, then Back: the filters are back.
+- [ ] "Clear filters" returns the address to `#/`. Hand-edit a rank to `tier=9`, a biome to `biome=nope`, a source to a name that does not exist, or a malformed `%E0%A4%A`: nothing breaks, the bad pieces are ignored and the address is repaired.
+- [ ] `#/lists/<id>` filters do not touch the address.

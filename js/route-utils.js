@@ -24,6 +24,11 @@
   const LIST_ID_PATTERN = /^#\/lists\/(.+)$/;
   // The shareable player map (PD-052): the whole snapshot rides in the fragment, `#/map/<payload>`. No environment overlay can sit on it.
   const PLAYER_MAP_PATTERN = /^#\/map\/(.*)$/;
+  // The catalogue's filters (PD-068): `#/?q=…&tier=1&tier=2&type=social&biome=forest&src=…`. Repeated keys, not a comma list, because source names contain commas.
+  const CATALOG_QUERY_PATTERN = /^#\/?\?(.*)$/;
+  const CATALOG_QUERY_MAX_LENGTH = 1000;   // a longer query is ignored whole, so a hostile link cannot make the parser (or the address bar) do unbounded work
+  const SEARCH_MAX_LENGTH = 200;
+  const MAX_VALUES_PER_GROUP = 40;
 
   /**
    * Decodes one untrusted, percent-encoded route segment.
@@ -85,6 +90,10 @@
       const decodedId = safeDecodeRouteSegment(listMatch[1]);
       if (decodedId.ok) route = { name: 'list', id: decodedId.value, env: env };
       else { malformed = true; route = { name: 'lists', env: env }; }
+    } else if (CATALOG_QUERY_PATTERN.test(working)) {
+      const query = working.match(CATALOG_QUERY_PATTERN)[1];
+      route = { name: 'catalog', env: env };
+      if (query) route.query = query;
     } else if (working === '#/lists') {
       route = { name: 'lists', env: env };
     } else if (working === '#/journey') {
@@ -122,7 +131,7 @@
     if (route.name === 'journey') return '#/journey';
     if (route.name === 'prep') return '#/prep';
     if (route.name === 'playermap') return '#/map/' + encodeURIComponent(route.id || '');
-    return '';
+    return route.query ? '#/?' + route.query : '';
   }
 
   /** `route`'s base address with an environment overlay for `envId` — not
@@ -141,7 +150,60 @@
     return route.env ? envHash(route.env, route) : baseHash(route);
   }
 
+  /**
+   * Reads a catalogue query string (no leading "?") into plain filter values,
+   * never throwing. Unknown keys, out-of-range ranks and undecodable values
+   * are dropped one by one — a bad `tier` never costs a good `biome`. Type,
+   * biome and source names are NOT validated here (the caller owns those
+   * vocabularies); `type=region` is the Region pill and sets `regionOnly`.
+   */
+  function parseCatalogQuery(query) {
+    const out = { search: '', tiers: [], types: [], sources: [], biomes: [], regionOnly: false };
+    if (typeof query !== 'string' || !query || query.length > CATALOG_QUERY_MAX_LENGTH) return out;
+    const push = (list, value) => { if (list.length < MAX_VALUES_PER_GROUP && !list.includes(value)) list.push(value); };
+    for (const part of query.split('&')) {
+      const eq = part.indexOf('=');
+      if (eq < 1) continue;
+      const decoded = safeDecodeRouteSegment(part.slice(eq + 1).replace(/\+/g, ' '));
+      if (!decoded.ok || !decoded.value) continue;
+      const value = decoded.value;
+      switch (part.slice(0, eq)) {
+        case 'q': out.search = Array.from(value).slice(0, SEARCH_MAX_LENGTH).join(''); break;
+        case 'tier': { const n = Number(value); if (Number.isInteger(n) && n >= 1 && n <= 4) push(out.tiers, n); break; }
+        case 'type': if (value === 'region') out.regionOnly = true; else push(out.types, value); break;
+        case 'biome': push(out.biomes, value); break;
+        case 'src': push(out.sources, value); break;
+        default: break;
+      }
+    }
+    return out;
+  }
+
+  /**
+   * The canonical query string for a filter state (the inverse of
+   * parseCatalogQuery): fixed key order, each group sorted, every value
+   * encoded exactly once, '' when nothing is active. `filters` may hold Sets
+   * or arrays. Canonical on purpose, so the same filters always give the same
+   * address and an unchanged state never rewrites the URL.
+   */
+  function buildCatalogQuery(filters) {
+    const f = filters || {};
+    const list = v => Array.from(v || []);
+    const enc = encodeURIComponent;
+    const parts = [];
+    const search = typeof f.search === 'string' ? f.search.trim() : '';
+    if (search) parts.push('q=' + enc(Array.from(search).slice(0, SEARCH_MAX_LENGTH).join('')));
+    list(f.tiers).sort((a, b) => a - b).forEach(v => parts.push('tier=' + enc(v)));
+    list(f.types).sort().forEach(v => parts.push('type=' + enc(v)));
+    if (f.regionOnly) parts.push('type=region');
+    list(f.biomes).sort().forEach(v => parts.push('biome=' + enc(v)));
+    list(f.sources).sort().forEach(v => parts.push('src=' + enc(v)));
+    return parts.join('&');
+  }
+
   return {
+    parseCatalogQuery: parseCatalogQuery,
+    buildCatalogQuery: buildCatalogQuery,
     safeDecodeRouteSegment: safeDecodeRouteSegment,
     parseRouteHash: parseRouteHash,
     baseHash: baseHash,
