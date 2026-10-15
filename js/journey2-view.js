@@ -148,6 +148,7 @@
   function versioned(path, key) {
     return typeof root.appendVersionParam === 'function' && key && /^[a-f0-9]{16}$/.test(key) ? root.appendVersionParam(path, key) : path;
   }
+  function fullRasterHref(template) { return versioned(template.assembledAsset.path, template.assembledAsset.cacheKey); }
   function fetchJson(path, signal) {
     const url = typeof root.versionedDataUrl === 'function' ? root.versionedDataUrl(path) : path;
     return fetch(url, { signal: signal }).then(r => {
@@ -416,7 +417,9 @@
           protections: ctx.protections,
           glyphProtections: ctx.protections.filter(p => p.kind !== 'built-in-label'),
         };
-        return loadImage(versioned(template.assembledAsset.path, template.assembledAsset.cacheKey));
+        // a phone gets the half-resolution copy (same world size once drawn): the full raster is too big for its GPU; print always uses the full one (fullRasterHref)
+        const light = template.lightAsset && typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
+        return loadImage(light ? versioned(template.lightAsset.path, template.lightAsset.cacheKey) : fullRasterHref(template));
       }).then(img => {
         if (inst.disposed || !img) return null;
         baseImg = img;
@@ -3992,7 +3995,7 @@
        ============================================================ */
 
     function printPageMarkup(page, index, count) {
-      const [vx, vy, vw, vh] = page.viewBox, baseHref = esc(baseImg ? baseImg.src : versioned(data.template.assembledAsset.path, data.template.assembledAsset.cacheKey));
+      const [vx, vy, vw, vh] = page.viewBox, baseHref = esc(fullRasterHref(data.template));
       const W = data.template.worldSizePx[0], H = data.template.worldSizePx[1];
       const polylines = Geo.chainEdgeSegments(data.grid, page.segments);
       const d = Geo.polylinesPath(polylines);
@@ -4047,7 +4050,7 @@
     /** Fonts, the world raster and every symbol decoded, and the SVG painted, before Print can be pressed. Resolves false (never throws) on failure. */
     function printAssetsReady() {
       const decode = src => new Promise(resolve => { const i = new Image(); i.onload = () => resolve(i.decode ? i.decode().then(() => true, () => true) : true); i.onerror = () => resolve(false); i.src = src; });
-      const raster = baseImg ? baseImg.src : versioned(data.template.assembledAsset.path, data.template.assembledAsset.cacheKey);
+      const raster = fullRasterHref(data.template);
       const used = new Set();
       if (pp && pp.model) for (const pg of pp.model.pages) for (const o of pg.overlays) used.add(o.symbolId);
       const syms = Array.from(used).map(id => data.symbolById.get(id)).filter(Boolean);
