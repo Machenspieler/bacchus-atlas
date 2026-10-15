@@ -3835,7 +3835,7 @@
       scheduleFogPaint();
     }
 
-    function releaseFogCapture(id) { try { if (!touches.has(id) && ui.viewport.hasPointerCapture(id)) ui.viewport.releasePointerCapture(id); } catch (err) { /* already released */ } }
+    function releaseFogCapture(id) { try { if (ui.viewport.hasPointerCapture(id)) ui.viewport.releasePointerCapture(id); } catch (err) { /* already released */ } }
 
     /** Pointer released: the whole stroke is ONE command (one Undo entry, one autosave). Nothing to change records nothing. */
     function finishFogStroke(e) {
@@ -4360,7 +4360,7 @@
       const id = pan.id;
       pan = null;
       ui.viewport.classList.remove('is-panning');
-      try { if (ui.viewport.hasPointerCapture(id)) ui.viewport.releasePointerCapture(id); } catch (err) { /* already released */ }
+      try { if (!touches.has(id) && ui.viewport.hasPointerCapture(id)) ui.viewport.releasePointerCapture(id); } catch (err) { /* already released */ }
     }
 
     function handleMapClick(sx, sy) {
