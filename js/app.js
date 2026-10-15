@@ -1609,16 +1609,21 @@ function renderToolbar() {
    * none of, and an empty list drops the groups altogether. Canonical order is
    * kept by filtering the reference arrays rather than collecting a Set. */
   const has = { tiers: new Set(), types: new Set(), sources: new Set(), biomes: new Set() };
+  const sourceCounts = new Map();
   envs.forEach(e => {
     has.tiers.add(e.tier);
     has.types.add(e.type);
-    if (e.source) has.sources.add(e.source);
+    if (e.source) {
+      has.sources.add(e.source);
+      sourceCounts.set(e.source, (sourceCounts.get(e.source) || 0) + 1);
+    }
     (e.biomes || []).forEach(b => has.biomes.add(b));
   });
   const usedTiers = [1, 2, 3, 4].filter(tier => has.tiers.has(tier));
   const types = TYPES.filter(type => has.types.has(type));
   const collator = new Intl.Collator(state.lang, { sensitivity: 'base', numeric: true });
-  const usedSources = [...has.sources].sort(collator.compare);
+  // Most environments first; ties fall back to alphabetical order.
+  const usedSources = [...has.sources].sort((a, b) => sourceCounts.get(b) - sourceCounts.get(a) || collator.compare(a, b));
   const usedBiomes = BIOMES.filter(biome => has.biomes.has(biome));
   /* A filter left pointing at something the current route cannot show would
    * empty the grid with no control still on screen to undo it. */
@@ -1712,7 +1717,7 @@ function renderToolbar() {
             ${usedSources.map(source => `
             <label class="ms-row">
               <input type="checkbox" class="ms-checkbox sr-only" data-source="${escapeAttr(source)}" ${state.filters.sources.has(source) ? 'checked' : ''}>
-              <span class="ms-row-label">${escapeHtml(source)}</span>
+              <span class="ms-row-label">${escapeHtml(source)} (${sourceCounts.get(source)})</span>
             </label>`).join('')}
           </div>
         </div>` : ''}
