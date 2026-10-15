@@ -1323,6 +1323,10 @@ Run all of them with `node --test tests/*.test.js`.
   — or a known Journey source file — appears in `dist/`. It no longer bans
   PDFs/ZIPs as a class.
 
+### Journey 2 on phones: light raster and camera layer
+
+A 4848x3185 world raster (about 62 MB decoded) is dropped by phone GPUs, which shows as black blocks while panning or after Fit. So on a touch screen (`(pointer: coarse)`) the view loads `template.lightAsset` (`img/journey2/valloren-world-light.webp`, half resolution, lossy) instead of `assembledAsset`; CSS still draws it at the full world size. Print Preview, the print pages and the proof tools always use `assembledAsset` (`fullRasterHref()`). On touch screens `.j2-world` carries `will-change: transform` only while the camera moves (`.is-cam-active`, dropped 200 ms after the last move in `scheduleApply`): a permanent hint repaints nothing but keeps a stale oversized layer, and no hint at all makes every drag frame repaint. A finger left after a pinch continues as a pan (`touchEnd`).
+
 ### Journey 2 Locate Soul Echoes (PD-030)
 
 - *Document.* `doc.soulEchoes = { anchorIds, collectedAnchorIds }`; `validateSoulEchoes` canonicalizes (dedupe + sort) `collectedAnchorIds`, treats a missing field as `[]`, and rejects a collected id that is not
