@@ -661,7 +661,8 @@
                 <span class="j2-ico" aria-hidden="true">${LI.route}</span>
                 <strong data-t="journey2_route_plan"></strong>
                 <span class="j2-fog-chip-hint" data-j2-route-chip-text></span>
-                <span class="j2-fog-chip-hint" data-t="journey2_route_esc_hint"></span>
+                <span class="j2-fog-chip-hint j2-hint-key" data-t="journey2_route_esc_hint"></span>
+                <span class="j2-fog-chip-hint j2-hint-touch" data-t="journey2_route_touch_hint"></span>
                 <button type="button" class="btn btn-sm" data-j2-route-cancel data-t="journey2_route_cancel"></button>
               </div>
               <div class="j2-fog-chip j2-party-chip" data-j2-party-chip hidden>

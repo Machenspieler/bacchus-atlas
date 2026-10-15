@@ -80,7 +80,7 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-ctl-preview[hidden], .j2-side-scroll[hidden], .j2-rail-grp[hidden], .j2-rb[hidden] { display: none; }
 .j2-btn-icon { width: var(--h-sm); padding: 0; font-size: var(--fs-md); display: inline-flex; align-items: center; justify-content: center; }
 .j2-btn-icon svg { width: var(--icon-md); height: var(--icon-md); }
-.j2-btn-icon:disabled, .j2-btn-icon[aria-disabled="true"] { opacity: 0.55; cursor: default; }
+.j2-btn-icon:disabled, .j2-btn-icon[aria-disabled="true"] { opacity: var(--opacity-disabled); cursor: default; }
 .j2-zoom-readout {
   min-width: 6ch; justify-content: center; text-align: center; font-family: var(--font-mono); font-size: var(--fs-sm);
   font-variant-numeric: tabular-nums; color: var(--parchment-dim);
@@ -172,7 +172,7 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-rb:hover:not(:disabled) { background: var(--neutral-hover-bg); border-color: var(--line); color: var(--parchment); }
 .j2-rb[aria-pressed="true"], .j2-rb[data-j2-menu-btn][aria-expanded="true"] { background: var(--hope-selected-bg); border-color: var(--hope-border); color: var(--hope-soft); }
 .j2-rb[aria-pressed="true"]:hover:not(:disabled) { background: var(--hope-selected-hover-bg); }
-.j2-rb:disabled, .j2-rb[aria-disabled="true"] { opacity: 0.55; cursor: default; }
+.j2-rb:disabled, .j2-rb[aria-disabled="true"] { opacity: var(--opacity-disabled); cursor: default; }
 .j2-rb:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-inset); }
 .j2-rb-ico { display: inline-flex; }
 .j2-rb-lbl { max-width: 100%; overflow-wrap: anywhere; }
@@ -195,7 +195,7 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-mi { display: flex; align-items: center; gap: var(--s-3); }
 .j2-mi-ico { display: inline-flex; color: var(--parchment-dim); }
 .j2-mi-ico .j2-li { width: 18px; height: 18px; }
-.j2-mi:disabled { opacity: 0.55; cursor: default; }
+.j2-mi:disabled { opacity: var(--opacity-disabled); cursor: default; }
 /* the biome switch is a checkbox row, not a gold "selected" row */
 .j2-mi[role="menuitemcheckbox"][aria-checked="true"] { background: transparent; color: var(--parchment); }
 .j2-mi-sw { margin-left: auto; position: relative; flex: none; width: 28px; height: 16px; border-radius: 8px; background: var(--line); transition: background 140ms ease; }
@@ -266,9 +266,9 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 }
 /* a touch phone on the player page: the rail becomes a bottom bar with full-size targets (PD-052) */
 @media (max-width: 640px) {
-  .j2[data-player] .j2-stage { --j2-bar-h: 64px; --j2-inset-left: var(--j2-side-gap); }
+  .j2[data-player] .j2-stage { --j2-bar-h: calc(64px + env(safe-area-inset-bottom, 0px)); --j2-inset-left: var(--j2-side-gap); }
   /* the legend opens above the bar at the map's width (design.md: a map panel is the map width minus 2 * gap below 900px) */
-  .j2[data-player] .j2-side { position: absolute; left: var(--j2-side-gap); right: var(--j2-side-gap); top: auto; bottom: calc(var(--j2-bar-h) + var(--j2-side-gap)); width: auto; max-width: none; flex: none; align-self: auto; max-height: 62dvh; }
+  .j2[data-player] .j2-side { position: absolute; left: var(--j2-side-gap); right: var(--j2-side-gap); top: auto; bottom: calc(var(--j2-bar-h) + var(--j2-side-gap)); width: auto; max-width: none; flex: none; align-self: auto; max-height: min(52dvh, 440px); }   /* the map stays visible above the sheet; the legend scrolls inside */
   .j2[data-player] .j2-mapbar [data-j2-zoom] { display: none; }   /* a touch screen zooms with a pinch: only Fit stays */
   .j2[data-player] .j2-sidewrap { left: 0; right: 0; top: auto; bottom: 0; }
   .j2[data-player] .j2-rail {
@@ -281,7 +281,18 @@ body[data-route="playermap"] #grid-wrap { display: block; }
   .j2[data-player] .j2-camp { border-top: 0; padding-top: 0; }
   .j2[data-player] .j2-camp .j2-menu { left: auto; right: 0; bottom: calc(100% + var(--s-2)); min-width: min(288px, calc(100vw - 2 * var(--j2-side-gap))); }   /* the rail is a bottom bar here: the menu opens upward */
   .j2[data-player] .j2-mapbar { left: auto; right: var(--j2-side-gap); bottom: calc(var(--j2-bar-h) + var(--j2-side-gap)); }
-  .j2[data-player] .j2-route { bottom: calc(var(--j2-bar-h) + var(--s-3)); }
+  /* route details: map-wide like the legend sheet, lifted above Fit so neither Fit nor the bottom bar is covered, and short enough to leave the map in view (its body scrolls) */
+  .j2[data-player] .j2-route { left: var(--j2-side-gap); right: var(--j2-side-gap); bottom: calc(var(--j2-bar-h) + 2 * var(--j2-side-gap) + 44px); max-height: min(40dvh, 360px); padding: var(--s-2) var(--s-3) var(--s-3); }
+  /* the route-planning chip: a compact map-wide card under the top edge — title and prompt, then the full-width Cancel */
+  .j2[data-player] .j2-route-chip { left: var(--j2-side-gap); right: var(--j2-side-gap); top: var(--s-2); transform: none; width: auto; max-width: none; flex-direction: column; flex-wrap: nowrap; gap: var(--s-1); padding: var(--s-2) var(--s-3); transition: none; text-align: center; }
+  .j2[data-player] .j2-route-chip .j2-fog-chip-hint { white-space: normal; }
+  .j2[data-player] .j2-route-chip .j2-ico { display: none; }
+  .j2[data-player] .j2-route-chip .btn { width: 100%; min-height: 44px; }
+}
+/* touch controls on the player page: primary targets are at least 44 x 44 */
+@media (max-width: 640px), (pointer: coarse) {
+  .j2[data-player] .j2-mapbar .btn { height: 44px; min-width: 44px; }
+  .j2[data-player] .j2-route .j2-btn-icon { width: 44px; height: 44px; }
 }
 /* a touch screen has no keyboard: no shortcut keycaps */
 @media (hover: none) { .j2-rb-key { display: none; } }
@@ -404,7 +415,7 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-grip svg { width: 10px; height: 14px; }
 .j2-handle:hover:not(:disabled) { border-color: var(--hope-border); background: var(--hope-hover-bg); }
 .j2-handle.is-dragging, .j2-handle.is-armed { border-style: solid; border-color: var(--hope); background: var(--hope-selected-bg); color: var(--hope-soft); }
-.j2-handle:disabled { cursor: not-allowed; color: var(--muted); border-color: var(--line); opacity: 0.55; }
+.j2-handle:disabled { cursor: not-allowed; color: var(--muted); border-color: var(--line); opacity: var(--opacity-disabled); }
 
 .j2-card-foot { display: flex; justify-content: flex-end; margin-left: auto; }
 .j2-delete { flex: none; color: var(--muted); }
@@ -489,6 +500,11 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-fog-chip strong { font-weight: 600; }
 .j2-fog-chip-count { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--parchment-dim); font-variant-numeric: tabular-nums; }
 .j2-fog-chip-hint { font-size: var(--fs-xs); color: var(--muted); }
+@media (min-width: 1100px) { .j2-route-chip .j2-fog-chip-hint { white-space: nowrap; } }   /* room for one line, with the legend open or folded; narrower maps wrap the text inside the chip's own width */
+.j2-route-chip { width: max-content; text-align: center; }   /* shrink-to-fit would be squeezed by the percentage `left`: size to the text, capped by max-width */
+.j2-route-chip .j2-fog-chip-hint { text-wrap: balance; }
+.j2-route-chip .j2-hint-touch { display: none; }
+@media (hover: none), (max-width: 640px) { .j2-route-chip .j2-hint-key { display: none; } .j2-route-chip .j2-hint-touch { display: inline; } }
 /* drag tooltip: follows the pointer, never takes it */
 .j2-tip {
   position: fixed; left: 0; top: 0; z-index: 60; display: grid; gap: 2px; max-width: 280px; padding: var(--s-2) var(--s-3);
@@ -702,11 +718,11 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-sanc-rename { flex: none; display: inline-flex; }
 .j2-sanc-field { position: relative; flex: 1 1 auto; min-width: 0; display: flex; align-items: center; }
 .j2-sanc-name-input { width: 100%; min-width: 0; font: inherit; font-family: var(--font-display); font-size: var(--fs-lg); line-height: var(--lh-lg); padding: 0 calc(var(--s-2) + 3.6rem) 0 var(--s-2); color: var(--parchment); background: rgb(20 17 15 / 0.75); border: 1px solid var(--border, currentColor); border-radius: 4px; }
-.j2-sanc-name-input:focus-visible { outline: 2px solid var(--hope, currentColor); outline-offset: 1px; }
+.j2-sanc-name-input:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset-tight); }
 .j2-sanc-fbtn { position: absolute; top: 50%; width: 1.7rem; height: 1.7rem; margin-top: -0.85rem; display: inline-flex; align-items: center; justify-content: center; padding: 0; background: transparent; border: 0; border-radius: 4px; color: var(--parchment); cursor: pointer; }
 .j2-sanc-fbtn svg { width: 14px; height: 14px; }
 .j2-sanc-fbtn:hover { background: rgb(255 255 255 / 0.12); }
-.j2-sanc-fbtn:focus-visible { outline: 2px solid var(--hope, currentColor); }
+.j2-sanc-fbtn:focus-visible { outline: var(--focus-ring); }
 .j2-sanc-fbtn.is-save { right: 1.9rem; color: var(--hope, currentColor); }
 .j2-sanc-fbtn:not(.is-save) { right: 0.2rem; }
 .j2-sanc-act { flex: none; display: inline-flex; align-items: center; gap: var(--s-1); }
@@ -975,7 +991,7 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-printpreview { position: fixed; inset: 0; z-index: 3000; overflow: auto; background: var(--ink); color: var(--parchment); padding: 0 var(--s-4) var(--s-6); }
 .j2-pp-bar { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); margin: 0 calc(-1 * var(--s-4)) var(--s-4); padding: var(--s-3) var(--s-4); background: var(--ink-raised); border-bottom: 1px solid var(--line); }
 .j2-pp-title { margin: 0; font-size: var(--fs-lg); font-weight: 600; }
-.j2-pp-title:focus-visible { outline: 2px solid var(--focus-ring, var(--hope)); outline-offset: 3px; }
+.j2-pp-title:focus-visible { outline: var(--focus-ring); outline-offset: 3px; }
 .j2-pp-note { flex: 1 1 18rem; min-width: 0; margin: 0; font-size: var(--fs-sm); color: var(--parchment-dim); }
 .j2-pp-status { margin: 0; font-size: var(--fs-sm); color: var(--parchment-dim); }
 .j2-pp-status[data-failed] { color: var(--fear-soft); }
@@ -1083,13 +1099,13 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
   position: absolute; right: var(--s-3); bottom: var(--s-3); z-index: 4; width: var(--j2-pop-w); max-height: calc(100% - var(--s-6));
   display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-3);
   background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-lg); box-shadow: var(--e-3);
-  font-family: var(--font-ui); font-size: var(--fs-sm); color: var(--parchment); overflow-y: auto; overscroll-behavior: contain; outline: 0;
+  font-family: var(--font-body); font-size: var(--fs-sm); color: var(--parchment); overflow-y: auto; overscroll-behavior: contain; outline: 0;
 }
 .j2-route[hidden] { display: none; }
 .j2-route:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
 .j2-route-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-2); }
 .j2-route-titles { display: grid; gap: 2px; }
-.j2-route-title { display: inline-flex; align-items: center; gap: var(--s-1); margin: 0; font-family: var(--font-mono); font-size: var(--fs-xs); font-weight: 600; letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--hope-soft); }
+.j2-route-title { display: inline-flex; align-items: center; gap: var(--s-1); margin: 0; font-family: var(--font-mono); font-size: var(--fs-xs); font-weight: 600; letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--parchment-dim); }
 .j2-route-title .j2-ico svg { width: 16px; height: 16px; }
 .j2-route-sub { margin: 0; color: var(--parchment); font-weight: 600; }
 .j2-route-body { display: grid; gap: var(--s-2); }
@@ -1103,7 +1119,7 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-route-terrain li { display: flex; align-items: center; gap: var(--s-3); }
 .j2-route-settle { color: var(--parchment-dim); font-size: var(--fs-xs); }
 .j2-route-count { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--parchment); }
-.j2-route-warn { margin: 0; padding: var(--s-2); border-left: 3px solid var(--hope-border-strong); background: rgba(217, 164, 65, 0.08); font-size: var(--fs-xs); line-height: var(--lh-sm); color: var(--parchment); }
+.j2-route-warn { margin: 0; padding: var(--s-2); border-left: 3px solid var(--hope-border-strong); background: var(--hope-wash); font-size: var(--fs-xs); line-height: var(--lh-sm); color: var(--parchment); }
 .j2-route-note { margin: 0; font-size: var(--fs-xs); line-height: var(--lh-sm); color: var(--muted); }
 .j2-route-cmp { display: grid; gap: var(--s-1); padding-top: var(--s-2); border-top: 1px solid var(--line-faint); }
 .j2-route-cmp[hidden] { display: none; }
