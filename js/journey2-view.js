@@ -4294,7 +4294,15 @@
       if (e.pointerType !== 'touch' || e.type === 'lostpointercapture' || !touches.delete(e.pointerId)) return false;
       if (!pinch) return false;
       const wasPinch = pinch;
-      if (touches.size < 2) { pinch = null; ui.viewport.classList.remove('is-panning'); markDragged(); }   // the finger left behind must not tap
+      if (touches.size < 2) {
+        pinch = null; ui.viewport.classList.remove('is-panning'); markDragged();   // the finger left behind must not tap
+        // ...but it keeps dragging: hand it over as a pan from where it is now, so a pinch flows into a drag without lifting
+        const rest = touches.entries().next().value;
+        if (rest && !pan) {
+          pan = { id: rest[0], x0: rest[1].x, y0: rest[1].y, tx0: cam.tx, ty0: cam.ty, scale0: cam.scale, moved: true, button: 0, slop: TOUCH_SLOP_PX };
+          ui.viewport.classList.add('is-panning');
+        }
+      }
       return !!wasPinch;
     }
 
