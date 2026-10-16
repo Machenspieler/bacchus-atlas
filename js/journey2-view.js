@@ -548,72 +548,16 @@
     const RUIN_SCALE_PRINT = 1.6;
 
     /**
-     * Destroyed sanctuary VFX, second look (PROTOTYPE, visual-only): a smouldering ruin instead of a bonfire — smoke dominates, a few small irregular fires burn inside the castle's
-     * silhouette, embers and ash are rare. Still pure SVG + CSS keyframes (no filter, no script per frame), drawn in the same icon-centred units as `ruinMarkup`, screen only.
+     * Destroyed sanctuary VFX, second technique (PROTOTYPE, visual-only): the smoke plume and fire are procedurally rendered onto two small canvases by
+     * `Journey2RuinFx` (js/journey2-ruin-fx.js) and laid over the unchanged map inside this icon-centred, pointer-transparent group. Screen only.
      * `RUIN_V2_COUNT` limits it to the first N ruins of the layer so the old look stays beside it for comparison; the print and the legend never use it.
+     * Without canvas support the old SVG look is drawn instead.
      */
     const RUIN_V2_COUNT = 1;
-    const RUIN2_DEFS =
-      '<radialGradient id="j2-r2-smoke-a" r=".78"><stop offset="0" stop-color="#1d1a18" stop-opacity=".85"/><stop offset=".6" stop-color="#2a2623" stop-opacity=".6"/><stop offset="1" stop-color="#3a3532" stop-opacity=".08"/></radialGradient>' +
-      '<radialGradient id="j2-r2-smoke-b" cx=".42" cy=".4" r=".78"><stop offset="0" stop-color="#4b4540" stop-opacity=".7"/><stop offset=".6" stop-color="#5e5750" stop-opacity=".45"/><stop offset="1" stop-color="#6b645c" stop-opacity=".05"/></radialGradient>' +
-      '<radialGradient id="j2-r2-scorch"><stop offset="0" stop-color="#140d0a" stop-opacity=".45"/><stop offset=".6" stop-color="#1f1612" stop-opacity=".18"/><stop offset="1" stop-color="#1f1612" stop-opacity="0"/></radialGradient>' +
-      '<radialGradient id="j2-r2-glow"><stop offset="0" stop-color="#ff7a24" stop-opacity=".42"/><stop offset=".5" stop-color="#d9400f" stop-opacity=".16"/><stop offset="1" stop-color="#b42a08" stop-opacity="0"/></radialGradient>' +
-      '<linearGradient id="j2-r2-fire" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#3d0b04"/><stop offset=".45" stop-color="#8f240a"/><stop offset=".8" stop-color="#c8561a"/><stop offset="1" stop-color="#e29a3c" stop-opacity=".8"/></linearGradient>';
-    /** Irregular lobed smoke masses (never circles), about 20 units across, centred on (0,0). */
-    const RUIN2_BLOBS = [
-      'M-8-3C-10-8-4-11 0-9C4-12 10-9 10-4C13 0 10 6 5 7C3 11-3 11-5 8C-10 8-12 2-8-3Z',
-      'M-9 1C-11-4-6-9-1-8C3-11 9-8 9-3C12 1 9 6 4 8C0 11-5 10-6 6C-9 6-10 4-9 1Z',
-      'M-7-6C-3-10 3-9 6-7C11-6 12 0 9 4C8 9 1 10-3 9C-8 9-11 4-9-1C-11-3-9-5-7-6Z',
-      'M-10 0C-9-5-4-6-2-9C2-10 6-8 7-4C11-3 12 3 8 6C6 10 0 9-3 10C-7 9-8 5-11 4C-12 2-11 1-10 0Z'
-    ];
-    /** Plumes: source [x, y] inside the castle, wind drift [dx, dy], puffs per plume, base duration (s). Different periods so the sum never visibly repeats. */
-    const RUIN2_PLUMES = [
-      { x: -12, y: -8, dx: 12, dy: -46, n: 8, d: 11, sway: 5.3, size: 0.55, tone: 'a' },
-      { x: 3, y: -12, dx: 22, dy: -54, n: 9, d: 15, sway: 7.1, size: 0.7, tone: 'b' },
-      { x: 12, y: -4, dx: 26, dy: -40, n: 7, d: 9.5, sway: 4.4, size: 0.5, tone: 'a' },
-      { x: -2, y: 2, dx: 10, dy: -32, n: 6, d: 8.5, sway: 6.2, size: 0.45, tone: 'b' }
-    ];
-
-
-    /** Flames: [x, y base, scale, flicker period s, delay s, shape]. Different heights; never a row. */
-    const RUIN2_FIRES = [
-      [-13, 12, 0.62, 1.1, -0.2, 0], [3, 15, 0.85, 1.45, -0.7, 1], [13, 7, 0.5, 0.95, -0.4, 2], [-4, 5, 0.4, 0.8, -0.1, 1]
-    ];
-    const RUIN2_FLAMES = [
-      'M-3.2 0C-4.8-3-2.4-5-2-8C-.6-6-.2-6.6.6-10C2-7 4.8-4.4 3.8-1.6C3.5-.6 3.2 0 3.2 0Z',
-      'M-4 0C-5.5-4-3-6-3.2-9.5C-1.4-7.5-1-8.5-.5-12.5C1.2-9 2-9.4 3-6.5C5-4 5-2 4-0.4Z',
-      'M-2.8 0C-4-2.6-2.6-4.2-1.6-6C-1.2-4.6-.4-4.6 0-7C1.4-4.4 3.6-3 2.8 0Z'
-    ];
-    const RUIN2_CORES = ['M-1.2 0C-1.8-1.6-.6-2.6-.2-4C.6-2.8 1.6-2 1.2 0Z', 'M-1.4 0C-2-2.2-.8-3.4-.4-5.4C.6-3.6 1.8-2.4 1.4 0Z', 'M-1 0C-1.4-1.2-.4-2 0-3C.6-2 1.2-1.2 1 0Z'];
-    /** Embers [x, y, rise, drift, period s, delay s] and ash [x, y, rise, drift, period s, delay s]; mostly invisible at any moment. */
-    const RUIN2_EMBERS = [[-10, 2, -34, 9, 6.8, -1.2], [6, -6, -42, 16, 9.1, -5.5], [13, 6, -30, 5, 7.7, -3.1], [-2, 8, -38, -7, 11.3, -8.4]];
-    const RUIN2_ASH = [[-14, -8, -44, 22, 12.5, -2], [4, -14, -50, 30, 15.3, -9], [10, -4, -36, 26, 10.4, -6]];
     function ruin2Markup(s) {
-      const f = v => fmt(v, 2);
-      let h = '<g class="j2-ruin j2-ruin2" data-ruin="' + esc(s.id) + '" transform="translate(' + fmt(s.x, 1) + ' ' + fmt(s.y, 1) + ') scale(' + RUIN_SCALE + ')">';
-      h += '<ellipse class="j2-r2-scorch" cx="-1" cy="9" rx="22" ry="13"/>';
-      h += '<g class="j2-r2-glows">' + RUIN2_FIRES.map((p, i) => '<circle class="j2-r2-glow" cx="' + p[0] + '" cy="' + (p[1] - 4 * p[2]) + '" r="' + f(8 + 4 * p[2]) + '" style="animation-duration:' + f(p[3] * 2.3) + 's;animation-delay:' + f(p[4]) + 's"/>').join('') + '</g>';
-      h += '<g class="j2-r2-smoke">';
-      RUIN2_PLUMES.forEach((pl, pi) => {
-        h += '<g class="j2-r2-sway" style="animation-duration:' + f(pl.sway) + 's;animation-delay:' + f(-pi * 1.7) + 's">';
-        for (let i = 0; i < pl.n; i++) {
-          const t = i / pl.n, jit = ((pi * 7 + i * 5) % 9) / 9 - 0.5;
-          const st = ['--x:' + f(pl.x + jit * 8) + 'px', '--y:' + f(pl.y) + 'px', '--dx:' + f(pl.dx * (0.75 + 0.5 * ((i * 3 + pi) % 4) / 3)) + 'px', '--dy:' + f(pl.dy * (0.85 + 0.3 * jit + 0.15)) + 'px',
-            '--s:' + f(pl.size * (1.6 + 0.5 * ((i + pi) % 3))), '--r:' + (((i + pi) % 2 ? 1 : -1) * (14 + 9 * i)) + 'deg', '--o:' + f(pl.tone === 'a' ? 0.55 : 0.4),
-            'animation-duration:' + f(pl.d * (0.9 + 0.2 * jit + 0.1)) + 's', 'animation-delay:' + f(-t * pl.d) + 's'].join(';');
-          h += '<path class="j2-r2-puff" d="' + RUIN2_BLOBS[(pi + i) % 4] + '" fill="url(#j2-r2-smoke-' + pl.tone + ')" style="' + st + '"/>';
-        }
-        h += '</g>';
-      });
-      h += '</g><g class="j2-r2-fires">';
-      RUIN2_FIRES.forEach(p => {
-        h += '<g transform="translate(' + p[0] + ' ' + p[1] + ') scale(' + p[2] + ')"><path class="j2-r2-flame" d="' + RUIN2_FLAMES[p[5]] + '" style="animation-duration:' + f(p[3]) + 's;animation-delay:' + f(p[4]) + 's"/>' +
-          '<path class="j2-r2-core" d="' + RUIN2_CORES[p[5]] + '" style="animation-duration:' + f(p[3] * 0.7) + 's;animation-delay:' + f(p[4]) + 's"/></g>';
-      });
-      h += '</g><g class="j2-r2-sparks">';
-      RUIN2_EMBERS.forEach(p => { h += '<circle class="j2-r2-ember" cx="' + p[0] + '" cy="' + p[1] + '" r="0.6" style="--rise:' + p[2] + 'px;--drift:' + p[3] + 'px;animation-duration:' + p[4] + 's;animation-delay:' + p[5] + 's"/>'; });
-      RUIN2_ASH.forEach(p => { h += '<path class="j2-r2-ash" d="M-.9-.3L.2-.9L.9.2L-.3.8Z" transform="translate(' + p[0] + ' ' + p[1] + ')" style="--rise:' + p[2] + 'px;--drift:' + p[3] + 'px;animation-duration:' + p[4] + 's;animation-delay:' + p[5] + 's"/>'; });
-      return h + '</g></g>';
+      const Fx = root.Journey2RuinFx;
+      if (!Fx || !root.document.createElement('canvas').getContext) return ruinMarkup(s, false);
+      return '<g class="j2-ruin j2-ruin2" data-ruin="' + esc(s.id) + '" transform="translate(' + fmt(s.x, 1) + ' ' + fmt(s.y, 1) + ') scale(' + RUIN_SCALE + ')">' + Fx.markup(s.id) + '</g>';
     }
 
     /** One destroyed sanctuary at the icon centre of `s` ({ id, x, y }); `print` = still, flat, black and white (no gradient, no animation, no CSS variables). */
@@ -670,7 +614,7 @@
                 <div class="j2-world" style="width:${W}px;height:${H}px">
                   <img class="j2-base" alt="" draggable="false" width="${W}" height="${H}">
                   <svg class="j2-overlay" xmlns="${SVG_NS}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">
-                    <defs data-j2-defs></defs><defs>${ECHO_DEFS}${RUIN_DEFS}${RUIN2_DEFS}</defs>
+                    <defs data-j2-defs></defs><defs>${ECHO_DEFS}${RUIN_DEFS}</defs>
                     <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil fill-rule="evenodd" d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/><path class="j2-fog-ghost" data-j2-fog-ghost d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="ruins" pointer-events="none" aria-hidden="true"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routeline" pointer-events="none" aria-hidden="true"></g>
                     <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
                     <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g><g data-j2-g="locate" pointer-events="none"></g><g data-j2-g="seekers" pointer-events="none" aria-hidden="true"></g><g data-j2-g="party" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routemark" pointer-events="none" aria-hidden="true"></g>
@@ -2301,6 +2245,7 @@
       let drawn = 0;
       for (const id of ids) { const s = at.get(id); if (s) h += drawn++ < RUIN_V2_COUNT ? ruin2Markup(s) : ruinMarkup(s, false); }
       ui.g.ruins.innerHTML = h;
+      if (root.Journey2RuinFx) root.Journey2RuinFx.attach(ui.g.ruins);
       ruinDrawn = previewMode ? null : doc.destroyedSanctuaries;
     }
 

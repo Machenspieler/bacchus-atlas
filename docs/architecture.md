@@ -1489,3 +1489,7 @@ renderer-facing entry for print: black-and-white mode never carries a tint.
   `tests/journey2-print.test.js` (pure model, pages, seam, boundaries, names, source guards for DOM/CSS/i18n/wiring); `scripts/journey2/lib/print-checks.js`
   (real browser: fog visible on screen, none in print, two A4 pages incl. a print-to-PDF page count and MediaBox, camera independence, one `window.print()`, no document /
   storage / history change, Back + focus, EN/RU, empty reveal set).
+
+### Destroyed sanctuary VFX V2 (prototype, PD-070)
+
+`js/journey2-ruin-fx.js` (UMD, loaded before `journey2-view.js`, no dependencies) draws the smoke plume and fire of a destroyed sanctuary. Pure core: `bakeNoise` (one shared 256² tileable fractal-noise texture), `renderSmoke` / `renderFire` (fill an RGBA buffer for a time and a per-ruin seed; deterministic), `fireLevel`. DOM part: `markup(id)` returns two `foreignObject` canvases (fire below, smoke above) for the icon-centred ruin group, `attach(scope)` starts every `.j2-ruin2` under it on one shared ~30 fps rAF loop (instances off-screen are skipped, disconnected canvases are dropped, the loop stops when none is left, reduced motion draws one still frame). Cost is roughly 5 ms per visible ruin per frame (smoke 200×224 px at 2 px/unit, fire 208×184 px at 4 px/unit). The view only calls `ruin2Markup` for the first `RUIN_V2_COUNT` ruins and `attach` after replacing the layer's HTML. Tests: `tests/journey2-ruin-fx.test.js`.
