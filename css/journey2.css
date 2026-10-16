@@ -608,36 +608,41 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 @keyframes j2-echo-pulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
 @keyframes j2-echo-bob { 0%, 100% { transform: translateY(1.5px); } 50% { transform: translateY(-1.5px); } }
 @media (prefers-reduced-motion: reduce) { .j2-overlay .j2-echo-glow, .j2-overlay .j2-echo-bob { animation: none; } }
-/* Destroyed sanctuary (PD-070): a flame on the icon, a smoke column the wind drags up and to the right. Fixed map colours (a map object, not UI chrome), like the Echo crystal.
+/* Destroyed sanctuary (PD-070): a low fire on the lower half of the icon, a thin smoke the wind drags up and to the right. Fixed map colours (a map object, not UI chrome), like the Echo crystal.
    Animated by CSS only; under prefers-reduced-motion the still smoke replaces the moving one. `.is-print` (the A4 page) and `.is-legend` (the legend swatch) never animate. */
-.j2-ruin-glow { fill: url(#j2-ruin-glow); animation: j2-ruin-glow 2.4s ease-in-out infinite; }
-.j2-ruin-flame { transform-box: fill-box; transform-origin: 50% 100%; animation: j2-ruin-flicker 1.1s ease-in-out infinite; }
-.j2-ruin-flame-out { fill: url(#j2-ruin-flame); stroke: #7a2410; stroke-width: 1.3; stroke-linejoin: round; }
-.j2-ruin-flame-in { fill: #ffe36b; stroke: none; transform-box: fill-box; transform-origin: 50% 100%; animation: j2-ruin-flicker-in 0.8s ease-in-out infinite; }
-.j2-ruin-puff { fill: url(#j2-ruin-smoke); opacity: 0; transform: translate(6px, -28px) scale(0.4); animation: j2-ruin-smoke 5.5s linear infinite; }
+.j2-ruin-glow { fill: url(#j2-ruin-glow); animation: j2-ruin-glow 3s ease-in-out infinite; }
+.j2-ruin-bed { fill: #1f0d07; opacity: 0.55; }
+.j2-ruin-flame-out { fill: url(#j2-ruin-flame); stroke: none; transform-box: fill-box; transform-origin: 50% 100%; animation: j2-ruin-flicker 1.5s ease-in-out infinite; }
+.j2-ruin-flame-in { fill: #ffd98a; opacity: 0.55; stroke: none; transform-box: fill-box; transform-origin: 50% 100%; animation: j2-ruin-core 1.1s ease-in-out infinite; }
+.j2-ruin-ember { fill: #ffb55a; opacity: 0; animation: j2-ruin-ember 2.7s ease-out infinite; }
+.j2-ruin-puff { fill: url(#j2-ruin-smoke); opacity: 0; transform: translate(6px, -20px) scale(0.6); animation: j2-ruin-smoke 6.9s linear infinite; }
 .j2-ruin-still { display: none; }
 .j2-ruin-still-puff { fill: url(#j2-ruin-smoke); }
-@keyframes j2-ruin-glow { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
-@keyframes j2-ruin-flicker { 0%, 100% { transform: scale(1, 1) skewX(0deg); } 25% { transform: scale(0.96, 1.07) skewX(-2.5deg); } 55% { transform: scale(1.03, 0.94) skewX(2deg); } 80% { transform: scale(0.98, 1.04) skewX(-1deg); } }
-@keyframes j2-ruin-flicker-in { 0%, 100% { transform: scale(1, 1); } 40% { transform: scale(0.9, 1.12); } 70% { transform: scale(1.06, 0.92); } }
+@keyframes j2-ruin-glow { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+@keyframes j2-ruin-flicker { 0%, 100% { transform: scale(1, 1) skewX(0deg); } 20% { transform: scale(0.94, 1.1) skewX(-3deg); } 45% { transform: scale(1.04, 0.9) skewX(2.5deg); } 70% { transform: scale(0.97, 1.06) skewX(-1.5deg); } }
+@keyframes j2-ruin-core { 0%, 100% { transform: scale(1, 1); opacity: 0.55; } 40% { transform: scale(0.85, 1.15); opacity: 0.7; } 75% { transform: scale(1.05, 0.9); opacity: 0.45; } }
+@keyframes j2-ruin-ember { 0% { transform: translate(0, 0); opacity: 0; } 15% { opacity: 0.9; } 100% { transform: translate(7px, -26px); opacity: 0; } }
 @keyframes j2-ruin-smoke {
-  0% { transform: translate(6px, -28px) scale(0.4); opacity: 0; }
-  12% { opacity: 0.9; }
-  30% { transform: translate(16px, -48px) scale(0.9); }
-  60% { transform: translate(42px, -66px) scale(1.3); opacity: 0.6; }
-  100% { transform: translate(100px, -86px) scale(1.9); opacity: 0; }
+  0% { transform: translate(6px, -20px) rotate(0deg) scale(0.6, 0.5); opacity: 0; }
+  14% { opacity: 0.8; }
+  35% { transform: translate(18px, -38px) rotate(-10deg) scale(1.1, 0.95); }
+  65% { transform: translate(46px, -60px) rotate(8deg) scale(1.8, 1.4); opacity: 0.45; }
+  100% { transform: translate(100px, -84px) rotate(-6deg) scale(2.8, 1.9); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .j2-ruin-glow, .j2-ruin-flame, .j2-ruin-flame-in { animation: none; }
+  .j2-ruin-glow, .j2-ruin-flame-out, .j2-ruin-flame-in, .j2-ruin-ember { animation: none; }
+  .j2-ruin-ember { display: none; }
   .j2-ruin-smoke { display: none; }
   .j2-ruin-still { display: inline; }
 }
-.j2-ruin.is-legend .j2-ruin-flame, .j2-ruin.is-legend .j2-ruin-flame-in, .j2-ruin.is-print .j2-ruin-flame, .j2-ruin.is-print .j2-ruin-flame-in { animation: none; }
-/* printed: black ink only, no gradient — a white flame with a black outline and a black core, and outlined smoke rings */
+.j2-ruin.is-legend .j2-ruin-flame-out, .j2-ruin.is-legend .j2-ruin-flame-in, .j2-ruin.is-print .j2-ruin-flame-out, .j2-ruin.is-print .j2-ruin-flame-in { animation: none; }
+/* printed: black ink only, no gradient — white tongues with a fine black outline and a black core, a wavy smoke strand with a white halo */
 .j2-ruin.is-print .j2-ruin-still { display: inline; }
-.j2-ruin.is-print .j2-ruin-flame-out { fill: #fff; stroke: #000; stroke-width: 2.2; }
-.j2-ruin.is-print .j2-ruin-flame-in { fill: #000; }
-.j2-ruin.is-print .j2-ruin-still-puff { fill: #fff; fill-opacity: 0.9; stroke: #000; stroke-width: 1.6; }
+.j2-ruin.is-print .j2-ruin-bed { fill: #000; opacity: 0.8; }
+.j2-ruin.is-print .j2-ruin-flame-out { fill: #fff; stroke: #000; stroke-width: 1.5; stroke-linejoin: round; }
+.j2-ruin.is-print .j2-ruin-flame-in { fill: #000; opacity: 1; }
+.j2-ruin.is-print .j2-ruin-strand-halo { fill: none; stroke: #fff; stroke-width: 5; stroke-linecap: round; }
+.j2-ruin.is-print .j2-ruin-strand { fill: none; stroke: #000; stroke-width: 1.8; stroke-linecap: round; stroke-dasharray: 9 4; }
 /* committed terrain: monochrome — the base geography stays visible; gold is only selection/valid preview, red an invalid preview */
 /* Biome Tint (PD-026): a faint wash inside the hex — fill and fill-opacity come from js/journey2-biome-tint.js; no stroke, no glow, no events */
 .j2-overlay .j2-biome-tint { stroke: none; pointer-events: none; }

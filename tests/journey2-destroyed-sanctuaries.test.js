@@ -285,7 +285,7 @@ function PR_BOX() { const m = read('js/journey2-print.js').match(/const RUIN_BOX
 test('css: the animation is CSS only and stops under prefers-reduced-motion (a still smoke replaces the moving one); print and legend never animate', () => {
   assert.match(css, /\.j2-ruin-puff \{[^}]*animation: j2-ruin-smoke/);
   const reduce = css.slice(css.indexOf('@media (prefers-reduced-motion: reduce) {\r\n  .j2-ruin-glow') >= 0 ? css.indexOf('@media (prefers-reduced-motion: reduce) {\r\n  .j2-ruin-glow') : css.indexOf('@media (prefers-reduced-motion: reduce) {\n  .j2-ruin-glow'));
-  assert.match(reduce, /\.j2-ruin-glow, \.j2-ruin-flame, \.j2-ruin-flame-in \{ animation: none; \}/);
+  assert.match(reduce, /\.j2-ruin-glow, \.j2-ruin-flame-out, \.j2-ruin-flame-in, \.j2-ruin-ember \{ animation: none; \}/);
   assert.match(reduce, /\.j2-ruin-smoke \{ display: none; \}/);
   assert.match(reduce, /\.j2-ruin-still \{ display: inline; \}/);
   assert.match(css, /\.j2-ruin\.is-legend \.j2-ruin-flame[^{]*\{ animation: none; \}/);

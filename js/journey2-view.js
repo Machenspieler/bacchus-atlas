@@ -522,19 +522,28 @@
       '<g class="j2-echo-bob"><path class="j2-echo-body" d="M0-15 8.5 0 0 15-8.5 0z" fill="url(#j2-echo-body)"/><path class="j2-echo-core" d="M0-8 3.8 0 0 8-3.8 0z"/></g>';
 
     /**
-     * Destroyed sanctuary (PD-070): a small flame standing ON the printed icon (the icon itself is never touched) and smoke that the wind carries up and to the right,
-     * over the two neighbouring hexes. Everything is drawn in icon-centred local units: the flame spans about x -17..17, y -24..16, the smoke ends near (98,-82) with radius 14
-     * — print's RUIN_BOX (journey2-print.js) is cut from these numbers. The screen version is animated by CSS only (flicker, a smoke column; static under prefers-reduced-motion:
-     * a second, still smoke is shown instead); the printed one (`print`) is the still drawing with flat black-and-white styling and no gradient.
+     * Destroyed sanctuary (PD-070): a low fire burning on the lower half of the printed icon (the icon itself is never touched) and a thin smoke the wind carries up and to the right,
+     * over the two neighbouring hexes. Everything is drawn in icon-centred local units: the fire spans about x -16..15, y -9..18 (the icon is ~50 units), the smoke ends near (98,-82)
+     * — print's RUIN_BOX (journey2-print.js) is cut from these numbers. The screen version is animated by CSS only (three tongues that flicker out of step, a few embers, smoke that
+     * rises, stretches, turns and thins; static under prefers-reduced-motion: a still smoke is shown instead); the printed one (`print`) is the still drawing, flat black and white, no gradient.
      */
     const RUIN_DEFS =
-      '<radialGradient id="j2-ruin-glow"><stop offset="0" stop-color="#ff9a3c" stop-opacity=".55"/><stop offset="1" stop-color="#ff5a1f" stop-opacity="0"/></radialGradient>' +
-      '<linearGradient id="j2-ruin-flame" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff4a12"/><stop offset=".6" stop-color="#ff8a1f"/><stop offset="1" stop-color="#ffc02e"/></linearGradient>' +
-      '<radialGradient id="j2-ruin-smoke"><stop offset="0" stop-color="#3b332d" stop-opacity=".95"/><stop offset=".6" stop-color="#3b332d" stop-opacity=".75"/><stop offset="1" stop-color="#3b332d" stop-opacity=".12"/></radialGradient>';
-    const RUIN_FLAME_OUT = 'M0 16C-12 16-16 6-12-3C-10-8-6-10-6-18C-2-14-1-10 0-7C2-12 5-16 4-24C12-16 17-6 14 5C12 12 7 16 0 16Z';
-    const RUIN_FLAME_IN = 'M0 15C-6 15-8 9-5 3C-3-1 0-3 1-9C5-4 8 3 6 9C5 13 3 15 0 15Z';
-    /** The still smoke column: [x, y, radius, opacity] from the flame's tip, growing and thinning as the wind drags it right. */
-    const RUIN_SMOKE = [[8, -32, 5, 0.7], [22, -48, 7, 0.6], [42, -62, 9, 0.5], [68, -74, 11.5, 0.38], [98, -82, 14, 0.26]];
+      '<radialGradient id="j2-ruin-glow"><stop offset="0" stop-color="#ff8a2a" stop-opacity=".4"/><stop offset="1" stop-color="#ff5a1f" stop-opacity="0"/></radialGradient>' +
+      '<linearGradient id="j2-ruin-flame" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7a1608"/><stop offset=".35" stop-color="#c8360f"/><stop offset=".75" stop-color="#ef7a1c"/><stop offset="1" stop-color="#ffbf5a" stop-opacity=".9"/></linearGradient>' +
+      '<radialGradient id="j2-ruin-smoke"><stop offset="0" stop-color="#4a423c" stop-opacity=".85"/><stop offset=".55" stop-color="#4a423c" stop-opacity=".5"/><stop offset="1" stop-color="#4a423c" stop-opacity="0"/></radialGradient>';
+    /** Three tongues of one fire, back to front: left, right, centre (tallest). Base line y = 18. */
+    const RUIN_TONGUES = [
+      'M-16 18C-18 11-14 6-12 0C-10 3-8 5-7 9C-6 12-7 16-6 18Z',
+      'M5 18C6 13 8 9 11 4C12 8 15 12 14 18Z',
+      'M-8 18C-12 10-7 3-4-2C-2-5-3-8-1-9C0-5 3-3 5 1C8 6 9 12 6 18Z',
+    ];
+    const RUIN_CORE = 'M-3 18C-5 13-2 8 0 4C2 8 4 13 3 18Z';
+    /** A soft, uneven wisp (never a circle), centred on (0,0), about 16 units across. */
+    const RUIN_WISP = ['M0-8C5-9 9-4 8 1C9 6 4 9-1 8C-6 9-9 4-8-1C-9-6-5-8 0-8Z', 'M-1-7C4-9 9-5 8 0C7 5 5 8 0 8C-5 7-9 5-8 0C-9-4-5-6-1-7Z'];
+    /** The still smoke: [x, y, size, opacity, turn°] from the fire's tip, growing and thinning as the wind drags it right. */
+    const RUIN_SMOKE = [[8, -20, 0.7, 0.55, 5], [22, -36, 0.95, 0.5, -10], [42, -52, 1.25, 0.42, 8], [68, -66, 1.6, 0.3, -6], [98, -78, 2, 0.18, 4]];
+    /** The printed smoke: two wavy strands (white halo under black ink) in the same drift. */
+    const RUIN_STRANDS = ['M2-10C6-26 22-30 30-44C38-58 56-58 66-70C74-80 86-80 96-88', 'M-2-12C0-22 12-28 20-38C28-48 42-52 52-62'];
     const RUIN_SCALE = 1.2;                                  // on the screen map; the print passes its own (the A4 page shrinks the map to about a fifth)
     const RUIN_SCALE_PRINT = 1.6;
 
@@ -543,13 +552,18 @@
       const k = print ? RUIN_SCALE_PRINT : RUIN_SCALE;
       let h = '<g class="j2-ruin' + (print ? ' is-print' : '') + '" data-ruin="' + esc(s.id) + '" transform="translate(' + fmt(s.x, 1) + ' ' + fmt(s.y, 1) + ') scale(' + k + ')">';
       if (!print) {
-        h += '<circle class="j2-ruin-glow" r="32"/><g class="j2-ruin-smoke">';
-        for (let i = 0; i < RUIN_SMOKE.length; i++) h += '<circle class="j2-ruin-puff" r="8" style="animation-delay:' + fmt(-i * 1.1, 1) + 's"/>';
+        h += '<circle class="j2-ruin-glow" cy="8" r="26"/><g class="j2-ruin-smoke">';
+        for (let i = 0; i < 6; i++) h += '<path class="j2-ruin-puff" d="' + RUIN_WISP[i % 2] + '" style="animation-delay:' + fmt(-i * 1.15, 2) + 's"/>';
         h += '</g>';
       }
       h += '<g class="j2-ruin-still">';
-      for (const p of RUIN_SMOKE) h += '<circle class="j2-ruin-still-puff" cx="' + p[0] + '" cy="' + p[1] + '" r="' + p[2] + '"' + (print ? '' : ' style="opacity:' + p[3] + '"') + '/>';
-      h += '</g><g class="j2-ruin-flame"><path class="j2-ruin-flame-out" d="' + RUIN_FLAME_OUT + '"/><path class="j2-ruin-flame-in" d="' + RUIN_FLAME_IN + '"/></g></g>';
+      if (print) for (const d of RUIN_STRANDS) h += '<path class="j2-ruin-strand-halo" d="' + d + '"/><path class="j2-ruin-strand" d="' + d + '"/>';
+      else RUIN_SMOKE.forEach((p, i) => { h += '<path class="j2-ruin-still-puff" d="' + RUIN_WISP[i % 2] + '" transform="translate(' + p[0] + ' ' + p[1] + ') rotate(' + p[4] + ') scale(' + fmt(p[2] * 1.5, 2) + ' ' + p[2] + ')" style="opacity:' + p[3] + '"/>'; });
+      h += '</g><ellipse class="j2-ruin-bed" cy="18" rx="17" ry="3.2"/><g class="j2-ruin-flame">';
+      RUIN_TONGUES.forEach((d, i) => { h += '<path class="j2-ruin-flame-out" d="' + d + '" style="animation-delay:' + fmt(-i * 0.37, 2) + 's"/>'; });
+      h += '<path class="j2-ruin-flame-in" d="' + RUIN_CORE + '"/>';
+      if (!print) for (let i = 0; i < 3; i++) h += '<circle class="j2-ruin-ember" cx="' + (-4 + i * 4) + '" cy="-4" r="0.9" style="animation-delay:' + fmt(-i * 0.9, 2) + 's"/>';
+      h += '</g></g>';
       return h;
     }
 
@@ -798,7 +812,7 @@
                     <li><span class="j2-legend-sym"><img src="img/journey2/legend-sanctuary.webp" alt="" width="44" height="39" draggable="false"></span><span data-t="journey2_legend_sanctuary"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><path class="j2-legend-x-halo" d="M-7-7l14 14m0-14l-14 14"/><path class="j2-legend-x" d="M-7-7l14 14m0-14l-14 14"/></svg></span><span><span data-t="journey2_legend_shadow"></span><span class="j2-legend-desc" data-t="journey2_legend_shadow_desc"></span></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g transform="scale(.7)">${ECHO_CRYSTAL}</g></svg></span><span data-t="journey2_legend_echo"></span></li>
-                    <li data-j2-legend-ruin hidden><span class="j2-legend-sym"><svg viewBox="-14 -14 28 28" aria-hidden="true"><g class="j2-ruin is-legend" transform="translate(0 2) scale(.5)"><g class="j2-ruin-flame"><path class="j2-ruin-flame-out" d="${RUIN_FLAME_OUT}"/><path class="j2-ruin-flame-in" d="${RUIN_FLAME_IN}"/></g></g></svg></span><span data-t="journey2_legend_ruin"></span></li>
+                    <li data-j2-legend-ruin hidden><span class="j2-legend-sym"><svg viewBox="-14 -14 28 28" aria-hidden="true"><g class="j2-ruin is-legend" transform="translate(0 -1) scale(.62)"><g class="j2-ruin-flame">${RUIN_TONGUES.map(d => `<path class="j2-ruin-flame-out" d="${d}"/>`).join("")}<path class="j2-ruin-flame-in" d="${RUIN_CORE}"/></g></g></svg></span><span data-t="journey2_legend_ruin"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><circle class="j2-legend-dot" cx="-5" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="0" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="5" cy="0" r="1.7"/></svg></span><span data-t="journey2_legend_terrain"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><polygon class="j2-legend-fog" points="9.5,-5.5 9.5,5.5 0.0,11.0 -9.5,5.5 -9.5,-5.5 -0.0,-11.0"/></svg></span><span data-t="journey2_legend_unknown"></span></li>
                   </ul>
