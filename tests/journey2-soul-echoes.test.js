@@ -220,7 +220,18 @@ test('view: placing is one planned command (ids chosen before dispatch); replaci
 
 test('view: the echoes are never drawn from the diagnostics layer toggles and the crystal is inlined (CSS cannot reach a <use> clone)', () => {
   assert.doesNotMatch(view, /<use href="#j2-echo/);
-  assert.match(read('css/journey2.css'), /@media \(prefers-reduced-motion: reduce\) \{ \.j2-overlay \.j2-echo-glow/);
+  assert.match(read('css/journey2.css'), /@media \(prefers-reduced-motion: reduce\) \{ \.j2-overlay \.j2-echo-halo, \.j2-overlay \.j2-echo-wave, \.j2-overlay \.j2-echo-orb \{ animation: none; \} \}/);
+});
+
+test('view: a Collected Echo is its own static drawing (PD-071), never the live marker dimmed, and the legend swatch is that drawing', () => {
+  const css = read('css/journey2.css');
+  const spent = view.slice(view.indexOf('const ECHO_SPENT'), view.indexOf(';', view.indexOf('const ECHO_SPENT')));
+  assert.ok(spent.length > 0);
+  assert.doesNotMatch(spent, /j2-echo-(wave|orb|halo)/, 'no animated class in the collected marker');
+  for (const cls of ['j2-echo-hollow', 'j2-echo-rest']) assert.doesNotMatch(css, new RegExp('\\.' + cls + '[^{]*\\{[^}]*animation'), cls + ' never animates');
+  assert.doesNotMatch(css, /\.j2-echo\.is-collected \{ opacity/, 'not a dimmed copy');
+  assert.match(fn('renderEchoes', 'updateEchoUi'), /got\.has\(id\)\s*\? '<g class="j2-echo is-collected"[^\n]*ECHO_SPENT[^\n]*\n\s*: '<g class="j2-echo"[^\n]*ECHO_LIVE/);
+  assert.match(view, /<g class="j2-echo is-collected">\$\{ECHO_SPENT\}<\/g><\/svg><\/span><span data-t="journey2_legend_echo">/);
 });
 
 /* ---------------- localization ---------------- */

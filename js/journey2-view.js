@@ -509,18 +509,46 @@
     }
 
     /**
-     * Soul Echo crystal (PD-024): a small floating diamond with a pale core, drawn right above the sanctuary icon, not tied to any hex. Gradients live in <defs>; the shape is inlined per Echo.
-     * Fixed blues (a map object, not UI chrome) with a dark outline so it reads on the parchment in both themes; the shimmer is CSS only.
+     * Soul Echo "Resonance" marker (PD-022 placement, PD-071 look): drawn right above the sanctuary icon, not tied to any hex. Gradients live in <defs>; the shape is inlined per Echo.
+     * Available: a small luminous core and three broken ripple rings of tapered, hand-wobbled brush arcs (each ring turned so its gaps never line up — water rings, not radar)
+     * that bloom outward in sequence and fade; the motion is CSS only (transform / opacity), off under prefers-reduced-motion, which leaves a still frame with all three rings.
+     * Collected: its own static drawing, not the live one dimmed — a hollow ring where the core was, the first ripple frozen with one arc gone, one faint arc of the second.
+     * Fixed blues and blue-greys (a map object, not UI chrome) so it reads on the parchment in both themes. Designed in .claude/mockups/soul-echo-fx-lab.html (Concept C).
      */
     const ECHO_DEFS =
-      '<radialGradient id="j2-echo-glow"><stop offset="0" stop-color="#9fe0ff" stop-opacity=".85"/><stop offset=".55" stop-color="#4a90ff" stop-opacity=".35"/><stop offset="1" stop-color="#2a5fd6" stop-opacity="0"/></radialGradient>' +
-      '<linearGradient id="j2-echo-body" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4db4ff"/><stop offset="1" stop-color="#1b5fd0"/></linearGradient>';
+      '<radialGradient id="j2-echo-halo"><stop offset="0" stop-color="#7cc4f4" stop-opacity=".37"/><stop offset=".45" stop-color="#3f86de" stop-opacity=".13"/><stop offset="1" stop-color="#2a5fd6" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="j2-echo-orb"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#bfeaff"/><stop offset="1" stop-color="#2f74d0"/></radialGradient>';
 
-    const ECHO_LIFT = 26;                                   // world px from the icon's top edge to the diamond's centre (it is ~19 px tall at scale, so it clears the icon)
+    const ECHO_LIFT = 26;                                   // world px from the icon's top edge to the marker's centre (the outer ring reaches ~23 px at full bloom, so it clears the icon)
+    const ECHO_SCALE = 1.3;                                 // the shapes below are authored at 1; this brings them to about the old crystal's footprint at 100%
 
-    /** The crystal shape, centred on (0,0): inlined once per Echo (CSS does not reach a <use> clone). */
-    const ECHO_CRYSTAL =
-      '<g class="j2-echo-bob"><path class="j2-echo-body" d="M0-15 8.5 0 0 15-8.5 0z" fill="url(#j2-echo-body)"/><path class="j2-echo-core" d="M0-8 3.8 0 0 8-3.8 0z"/></g>';
+    /** A tapered, slightly wobbled brush arc of radius r centred on angle phi (deg) over ±span°, thickest in the middle, as one closed path. */
+    function echoArc(r, phi, span, w, seed) {
+      const n = 12, out = [], inn = [];
+      for (let k = 0; k <= n; k++) {
+        const u = k / n * 2 - 1, th = (phi + u * span) * Math.PI / 180;
+        const half = w / 2 * Math.pow(Math.cos(u * Math.PI / 2), 0.85), wob = 0.2 * Math.sin(seed + u * 5.3);
+        out.push([Math.cos(th) * (r + half + wob), Math.sin(th) * (r + half + wob)]);
+        inn.push([Math.cos(th) * (r - half + wob), Math.sin(th) * (r - half + wob)]);
+      }
+      return 'M' + out.concat(inn.reverse()).map(p => fmt(p[0], 2) + ' ' + fmt(p[1], 2)).join(' ') + 'Z';
+    }
+    /** A broken ring: three arcs with uneven gaps, turned by `rot`; `skip` drops arcs (the collected remnant). */
+    const echoRing = (r, rot, w, seed, skip) => [0, 128, 236].map((p, k) => skip && skip.includes(k) ? '' : echoArc(r, rot + p, k === 1 ? 40 : 46, w, seed + k * 1.9)).join('');
+
+    /**
+     * The two markers, centred on (0,0), inlined once per Echo (CSS does not reach a <use> clone). Each animated group carries an invisible circle on the
+     * marker's centre so its fill-box (the transform origin) is the centre, not the middle of its uneven arcs.
+     */
+    const ECHO_LIVE =
+      '<circle class="j2-echo-halo" r="15" fill="url(#j2-echo-halo)"/>' +
+      [[6.6, -60, 1.7], [11, 5, 1.45], [15.4, -25, 1.2]].map((w, i) =>
+        '<g class="j2-echo-wave j2-echo-w' + (i + 1) + '"><circle r="' + w[0] + '" fill="none"/><path d="' + echoRing(w[0], w[1], w[2], i * 1.7) + '"/></g>').join('') +
+      '<g class="j2-echo-orb"><circle r="3.2" fill="url(#j2-echo-orb)" stroke="#123d8a" stroke-width=".75"/><circle r="1.1" fill="#fff"/></g>';
+    const ECHO_SPENT =
+      '<circle class="j2-echo-hollow" r="3"/>' +
+      '<path class="j2-echo-rest" d="' + echoRing(6.6, -60, 1.6, 0, [2]) + '"/>' +
+      '<path class="j2-echo-rest is-faint" d="' + echoRing(11, 5, 1.25, 1.7, [0, 2]) + '"/>';
 
     /**
      * Destroyed sanctuary (PD-070). On the screen map (GM view, Player Preview, player page) every ruin is the procedural smoke plume and fire of
@@ -808,7 +836,7 @@
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g class="j2-party-mark"><path class="j2-party-halo" d="${partyStarPath(0, 0, 9)}"/><path class="j2-party-star" d="${partyStarPath(0, 0, 9)}"/></g></svg></span><span data-t="journey2_legend_party"></span></li>
                     <li><span class="j2-legend-sym"><img src="img/journey2/legend-sanctuary.webp" alt="" width="44" height="39" draggable="false"></span><span data-t="journey2_legend_sanctuary"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><path class="j2-legend-x-halo" d="M-7-7l14 14m0-14l-14 14"/><path class="j2-legend-x" d="M-7-7l14 14m0-14l-14 14"/></svg></span><span><span data-t="journey2_legend_shadow"></span><span class="j2-legend-desc" data-t="journey2_legend_shadow_desc"></span></span></li>
-                    <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g transform="scale(.7)">${ECHO_CRYSTAL}</g></svg></span><span data-t="journey2_legend_echo"></span></li>
+                    <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g class="j2-echo is-collected">${ECHO_SPENT}</g></svg></span><span data-t="journey2_legend_echo"></span></li>
                     <li data-j2-legend-ruin hidden><span class="j2-legend-sym"><svg viewBox="-14 -14 28 28" aria-hidden="true"><g class="j2-ruin is-legend" transform="translate(0 -1) scale(.62)"><g class="j2-ruin-flame">${RUIN_TONGUES.map(d => `<path class="j2-ruin-flame-out" d="${d}"/>`).join("")}<path class="j2-ruin-flame-in" d="${RUIN_CORE}"/></g></g></svg></span><span data-t="journey2_legend_ruin"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><circle class="j2-legend-dot" cx="-5" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="0" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="5" cy="0" r="1.7"/></svg></span><span data-t="journey2_legend_terrain"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><polygon class="j2-legend-fog" points="9.5,-5.5 9.5,5.5 0.0,11.0 -9.5,5.5 -9.5,-5.5 -0.0,-11.0"/></svg></span><span data-t="journey2_legend_unknown"></span></li>
@@ -2179,19 +2207,19 @@
     }
 
     /**
-     * Soul Echoes (PD-024): the GM sees a crystal on each chosen sanctuary. Like the tiles, the layer is rebuilt (not hidden) in Player Preview: players get
-     * ONLY the projection's `collectedEchoes` (PD-052 — a Collected Echo on a revealed hex, drawn dim and flat), never an Available one, and the print gets none.
+     * Soul Echoes (PD-022, look PD-071): the GM sees a marker on each chosen sanctuary. Like the tiles, the layer is rebuilt (not hidden) in Player Preview: players get
+     * ONLY the projection's `collectedEchoes` (PD-052 — a Collected Echo on a revealed hex, drawn as the static spent marker), never an Available one, and the print gets none.
      * The GM view is redrawn only when the set changed.
      */
     function renderEchoes() {
       if (!ui.g || !ui.g.echoes || !doc) return;
       if (previewMode) {
-        // players see ONLY a Collected Echo on a revealed sanctuary hex, as the dim, flat crystal (PD-052); an Available one is never drawn
+        // players see ONLY a Collected Echo on a revealed sanctuary hex, as the static spent marker (PD-052); an Available one is never drawn
         const at = new Map(data.ctx.sanctuaries.map(s => [s.id, s]));
         let h = '';
         for (const id of (playerProjection && playerProjection.collectedEchoes) || []) {
           const s = at.get(id);
-          if (s) h += '<g class="j2-echo is-collected" data-echo="' + esc(id) + '" data-collected="true"><g transform="translate(' + fmt(s.x, 1) + ' ' + fmt(s.top - ECHO_LIFT, 1) + ') scale(.8)">' + ECHO_CRYSTAL + '</g></g>';
+          if (s) h += '<g class="j2-echo is-collected" data-echo="' + esc(id) + '" data-collected="true"><g transform="translate(' + fmt(s.x, 1) + ' ' + fmt(s.top - ECHO_LIFT, 1) + ') scale(' + ECHO_SCALE + ')">' + ECHO_SPENT + '</g></g>';
         }
         ui.g.echoes.innerHTML = h; echoDrawn = null;
         return;
@@ -2205,10 +2233,10 @@
         if (!s) continue;
         // right above the printed icon (its centre line, just over its top edge), independent of the hex grid, so the icon itself stays clear
         const x = fmt(s.x, 1), y = fmt(s.top - ECHO_LIFT, 1);
-        // a collected Echo is drawn smaller, flat and dim (no glow, no shimmer): shape and brightness, not only colour, tell it from an Available one
+        // a collected Echo is its own static drawing (hollow core, a frozen broken ripple, no glow, no motion): shape, not only brightness or motion, tells it from an Available one
         h += got.has(id)
-          ? '<g class="j2-echo is-collected" data-echo="' + esc(id) + '" data-collected="true"><g transform="translate(' + x + ' ' + y + ') scale(.8)">' + ECHO_CRYSTAL + '</g></g>'
-          : '<g class="j2-echo" data-echo="' + esc(id) + '" style="--j2-echo-i:' + (i++) + '"><circle class="j2-echo-glow" cx="' + x + '" cy="' + y + '" r="34"/><g transform="translate(' + x + ' ' + y + ') scale(1.25)">' + ECHO_CRYSTAL + '</g></g>';
+          ? '<g class="j2-echo is-collected" data-echo="' + esc(id) + '" data-collected="true"><g transform="translate(' + x + ' ' + y + ') scale(' + ECHO_SCALE + ')">' + ECHO_SPENT + '</g></g>'
+          : '<g class="j2-echo" data-echo="' + esc(id) + '" style="--j2-echo-i:' + (i++) + '"><g transform="translate(' + x + ' ' + y + ') scale(' + ECHO_SCALE + ')">' + ECHO_LIVE + '</g></g>';
       }
       ui.g.echoes.innerHTML = h;
       echoDrawn = doc.soulEchoes;
@@ -3358,7 +3386,7 @@
         ui.sancReroll.disabled = editLocked || !sanctuaryReady();
         ui.sancDelete.disabled = editLocked;
       } else if (ui.s.rows.getAttribute('data-sig')) { ui.s.rows.innerHTML = ''; ui.s.rows.removeAttribute('data-sig'); }
-      // GM-only Soul Echo strip: one real button whose label is the next action (the dimmed crystal on the map shows the state); only when this sanctuary holds an Echo
+      // GM-only Soul Echo strip: one real button whose label is the next action (the spent marker on the map shows the state); only when this sanctuary holds an Echo
       ui.s.echo.hidden = !echo;
       ui.s.ruin.hidden = !(e && Model.isSanctuaryDestroyed(doc, sanctuaryOpen));   // GM note only: the flame on the map says the same; nothing to click (the name button above still works)
       if (echo) {

@@ -241,8 +241,6 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-legend-biomes[hidden] { display: none; }
 .j2-legend-x-halo { fill: none; stroke: rgba(255, 255, 255, 0.9); stroke-width: 5.6; stroke-linecap: round; }
 .j2-legend-x { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; }
-.j2-legend-sym .j2-echo-body { stroke: #0b3b8c; stroke-width: 1.5; stroke-linejoin: round; }
-.j2-legend-sym .j2-echo-core { fill: #d6f1ff; }
 .j2-legend-fog { fill: #707070; fill-opacity: 0.68; stroke: var(--line-strong); stroke-width: 0.8; stroke-linejoin: round; }   /* a hex of the Player Preview veil's own grey (PD-063) */
 .j2-legend-desc { display: block; margin-top: 2px; font-size: var(--fs-xs); line-height: var(--lh-xs); color: var(--parchment-dim); }
 .j2-legend-list--biomes li.is-wide { grid-column: 1 / -1; align-items: start; }
@@ -599,15 +597,29 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-overlay .j2-fog-glyph { fill: none; stroke-width: 2.2; stroke-linecap: round; }
 .j2-overlay .j2-fog-glyph.is-reveal { stroke: var(--hope); }
 .j2-overlay .j2-fog-glyph.is-hide { stroke: var(--ink); }
-/* Soul Echo (GM only): a small floating blue diamond with a pale core, right above the sanctuary icon.
-   Fixed blues on a dark outline read on the map in both themes; the motion is decoration only. */
-.j2-overlay .j2-echo-glow { fill: url(#j2-echo-glow); animation: j2-echo-pulse 3.2s ease-in-out infinite; animation-delay: calc(var(--j2-echo-i, 0) * -0.4s); }
-.j2-overlay .j2-echo-body { stroke: #0b3b8c; stroke-width: 1.5; stroke-linejoin: round; }
-.j2-overlay .j2-echo-core { fill: #d6f1ff; }
-.j2-overlay .j2-echo-bob { animation: j2-echo-bob 3.2s ease-in-out infinite; animation-delay: calc(var(--j2-echo-i, 0) * -0.4s); }
-@keyframes j2-echo-pulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
-@keyframes j2-echo-bob { 0%, 100% { transform: translateY(1.5px); } 50% { transform: translateY(-1.5px); } }
-@media (prefers-reduced-motion: reduce) { .j2-overlay .j2-echo-glow, .j2-overlay .j2-echo-bob { animation: none; } }
+/* Soul Echo "Resonance" (PD-071; GM only, players see a Collected one on a revealed hex): a small luminous core and three broken ripple rings of brush arcs that
+   bloom outward in sequence (transform + opacity only, each group's fill-box centred on the core by an invisible circle) and fade, right above the sanctuary icon.
+   Each ring's strength sits on its path, so the group's animated opacity multiplies it and the reduced-motion still frame keeps the falloff.
+   Fixed blues read on the map in both themes; the motion is decoration only. Neighbouring Echoes are phase-shifted by --j2-echo-i. */
+.j2-overlay .j2-echo { --j2-echo-d: calc(var(--j2-echo-i, 0) * -0.9s); }
+.j2-overlay .j2-echo-halo { animation: j2-echo-halo 3.6s ease-in-out infinite; animation-delay: var(--j2-echo-d); }
+.j2-overlay .j2-echo-wave, .j2-overlay .j2-echo-orb { transform-box: fill-box; transform-origin: 50% 50%; }
+.j2-overlay .j2-echo-wave { animation: j2-echo-wave 3.6s cubic-bezier(.25, .55, .4, 1) infinite; animation-delay: var(--j2-echo-d); }
+.j2-overlay .j2-echo-w2 { animation-delay: calc(var(--j2-echo-d) + .45s); }
+.j2-overlay .j2-echo-w3 { animation-delay: calc(var(--j2-echo-d) + .9s); }
+.j2-overlay .j2-echo-w1 path { fill: #2f78cc; opacity: .95; }
+.j2-overlay .j2-echo-w2 path { fill: #2f6fc4; opacity: .7; }
+.j2-overlay .j2-echo-w3 path { fill: #2a63b8; opacity: .45; }
+.j2-overlay .j2-echo-orb { animation: j2-echo-orb 3.6s ease-in-out infinite; animation-delay: var(--j2-echo-d); }
+@keyframes j2-echo-halo { 0%, 100% { opacity: .5; } 20% { opacity: 1; } }
+@keyframes j2-echo-wave { 0% { transform: scale(.8) rotate(-6deg); opacity: 0; } 14% { opacity: 1; } 55% { transform: scale(1.14) rotate(5deg); opacity: 0; } 100% { transform: scale(1.14) rotate(5deg); opacity: 0; } }
+@keyframes j2-echo-orb { 0%, 100% { transform: scale(.94); } 10% { transform: scale(1.1); } 30% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .j2-overlay .j2-echo-halo, .j2-overlay .j2-echo-wave, .j2-overlay .j2-echo-orb { animation: none; } }
+/* Collected: its own static drawing (never the live one dimmed) — a hollow ring where the core was, the first ripple frozen with one arc gone, one faint arc of the
+   second; no glow, nothing animated. Unscoped so the legend swatch ("Soul Echo collected") is the same drawing. */
+.j2-echo-hollow { fill: #f2ead7; fill-opacity: .5; stroke: #4c6584; stroke-width: 1; }
+.j2-echo-rest { fill: #4f6684; opacity: .9; }
+.j2-echo-rest.is-faint { opacity: .55; }
 /* Destroyed sanctuary (PD-070). On the screen map: two canvases drawn by js/journey2-ruin-fx.js (smoke plume and fire, animated there, one still frame under
    prefers-reduced-motion); the foreignObjects are pointer-transparent and sized by the map units, the bitmap fills them. The legend swatch is a static symbol
    (flame gradient tongues); the print and the no-canvas fallback are the still black-and-white drawing below (`.is-print`). */
@@ -812,8 +824,6 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 
 /* ---------- Soul Echoes: collected state and the overlay row (PD-030) ---------- */
 .j2-sanc-foot[hidden], .j2-sanc-rows[hidden], .j2-locate [hidden] { display: none; }
-.j2-overlay .j2-echo.is-collected { opacity: 0.5; }
-.j2-overlay .j2-echo.is-collected .j2-echo-bob { animation: none; }
 
 /* ---------- Locate Soul Echoes (PD-030): selection chip, hover / origin hex, compass popover ---------- */
 .j2-viewport.is-locating { cursor: crosshair; }

@@ -207,7 +207,7 @@ read in one transient, GM-only Region Inspector over the map (opened from a hex
 or a card's Inspect button, independent of the expanded card, never persisted,
 never in history); the sidebar only generates, places and deletes. Soul Echoes are GM-only
 campaign data (`soulEchoes`, at most nine sanctuaries): one toolbar button places all nine by the
-book's west-to-east rule, one removes them, and they never reach print; players see only a Collected Echo on a revealed sanctuary hex (PD-022, PD-052).
+book's west-to-east rule, one removes them, and they never reach print; drawn as the "Echo Resonance" marker — broken ripple rings round a core, and a separate static spent drawing once collected, never the live one dimmed (PD-071); players see only a Collected Echo on a revealed sanctuary hex (PD-022, PD-052).
 Generated sanctuaries are GM-only too (`sanctuaries.entries`, one per printed sanctuary icon, numbers not
 sentences): one toolbar button rolls all 56 through the book's sanctuary tables (`journey2Generator`), clicking an icon opens an
 overlay with Delete / Reroll / close, and none of it reaches Player Preview or print (PD-023).
@@ -249,7 +249,7 @@ Destroyed sanctuaries (PD-070): five of the 56 printed sanctuaries the GM marks 
 Display menu (PD-066): "Biome colors", "Sepia map" and "Regions" live in one rail menu, **Display**, visible in the GM view, Player Preview AND the player page (Campaign keeps only Echoes and sanctuaries, GM-only); the link carries the GM's three values as the player page's defaults, a viewer's change lasts for that page load only (no storage there), and Biome colors now also governs Player Preview.
 "Regions" (PD-062): a display switch (default off, `regionIcons` in `dhcodex_journey2_ui`) that draws ONE icon per region instead of one per hex, as in the book — GM: all of a region's hexes; Player Preview / player page: only its revealed hexes (a one-hex region shows its own icon, connected revealed hexes share one); picked by the pure `Geo.pickRegionIconCells`; the print is unchanged.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-070/PD-066/PD-067/PD-068/PD-057/PD-052/PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040/PD-041/PD-045/PD-051 (Place all rolls a random frozen footprint per press), detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-071/PD-070/PD-066/PD-067/PD-068/PD-057/PD-052/PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040/PD-041/PD-045/PD-051 (Place all rolls a random frozen footprint per press), detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

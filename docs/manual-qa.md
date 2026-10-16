@@ -499,12 +499,12 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       revealed hexes; the base map, labels and sanctuary icons are unchanged. Pan and zoom work, clicks do
       nothing, Ctrl+Z does nothing. **Back to GM** (or Esc) restores the previous pan/zoom, the sidebar state and
       without reopening the inspector or adding an Undo entry. Reload leaves the preview.
-- [ ] Soul Echoes (GM only, PD-022): **Soul Echoes** places nine small animated blue diamonds, each right above its sanctuary icon (the icon stays visible), on nine different sanctuaries
+- [ ] Soul Echoes (GM only, PD-022): **Soul Echoes** places nine small animated Echo markers (PD-071: a luminous core with three broken ripple rings blooming outward in turn), each right above its sanctuary icon (the icon stays visible), on nine different sanctuaries
       (never HORIZON/MARROGATE), one in each of nine west-to-east bands, spread over the whole map, and the
       pressing it again asks "Place new Soul Echoes?" (Cancel is focused) and replaces them;
       **Remove Echoes** is disabled when there are none, otherwise asks first and removes all. Each action is one Undo entry
-      and Redo restores the same sanctuaries. Reload keeps them; the shimmer stops with reduced motion; crystals stay
-      visible over the fog veil. **Player Preview** shows no crystal and no Echo button. The JSON backup round-trips them.
+      and Redo restores the same sanctuaries. Reload keeps them; with reduced motion the rings stop on a still frame (all three rings and the core still shown); markers stay
+      visible over the fog veil and at 100 % none of them covers its sanctuary icon. **Player Preview** shows no Available marker and no Echo button. The JSON backup round-trips them.
 - [ ] Destroyed sanctuaries (PD-070): Campaign → **Generate 5 destroyed sanctuaries** (RU «Создать 5 уничтоженных убежищ») puts a small animated flame ON five sanctuary icons and a smoke column drifting up and to the right over the next two hexes;
       none of the five holds a Soul Echo (press it with and without Echoes placed; re-place the Echoes afterwards: no Echo ever lands on a flame, and the flames stay). Pressing it again asks "Destroy other sanctuaries?" (Cancel focused);
       **Remove destroyed** is disabled when there are none, otherwise asks first. Each action is one Undo entry and Redo never re-rolls. The legend shows "Destroyed sanctuary" while any exists.
@@ -516,7 +516,7 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       clicking any valid hex — also one under a sanctuary icon, a tile or an Environment badge — starts the compass: a popover beside that hex, the needle spins two turns and settles on the true bearing, then
       "The compass points …" + `NNE · North-northeast` + the GM reminder appear (not before). No name, distance, route or target is shown, fog and names are unchanged and Undo gains no entry.
       On an Echo sanctuary's own hex it says "The nearest Soul Echo is here." and the centre pulses. **Choose another location** returns to selecting, **Close** (or Esc) returns focus to the button.
-      Open an Echo sanctuary: the Soul Echo strip shows **Mark collected** → **Unmark collected** (overlay and scroll stay, one Undo each; the map crystal dims). Locate skips collected Echoes.
+      Open an Echo sanctuary: the Soul Echo strip shows **Mark collected** → **Unmark collected** (overlay and scroll stay, one Undo each; the map marker turns into the static spent drawing — a hollow core and a frozen broken ripple, no motion, still easy to find at 100 %; the legend's "Soul Echo collected" swatch is the same drawing). Locate skips collected Echoes.
       Undo/Redo or regenerating Echoes while a result is open closes it. With reduced motion the needle jumps straight to the bearing. Player Preview and Print Preview show none of it; the JSON backup keeps the collected state; EN/RU.
 - [ ] Shadowblight control (GM only, PD-041): with no Shadowblighted or fully overtaken region on the map, Locate shows only the compass (no red frame, no bubble). With at least one: after the needle starts, the party's hex has a
       red dashed frame and a bubble under it: − (disabled at 0), the step number, +, ×. Each + moves the nearest block of X's (and every block tied at the same distance) one hex toward the frame; the nearest X finally stands on the party's hex and
@@ -613,7 +613,7 @@ what changes at each):
   (in the rail while Player Preview is on) copies a link and shows "Link copied · N characters" and a toast; with the clipboard blocked the link appears in a selected read-only field and no success
   toast is shown. A link over 2000 characters adds the warning. The button is absent in the GM view and on the player page. A new link is needed after any later change (it is a snapshot).
 - [ ] Open the link in a **fresh browser profile / private window**: only the site's brand and the RU / EN switch are in the header (no ribbons, no soundboard); the map is the preview — fog, the
-  revealed tiles and region outlines, the party star with its six lit hexes, only the revealed sanctuary name, the dim flat crystal on the revealed Echo sanctuary and **none** on the fogged or Available one.
+  revealed tiles and region outlines, the party star with its six lit hexes, only the revealed sanctuary name, the static spent Echo marker (hollow core, frozen broken ripple) on the revealed collected Echo sanctuary and **none** on the fogged or Available one.
   There are no GM controls: no Undo / Redo, no Party, no fog brush, no "Back", no Print, no Locate / Echo / sanctuary buttons. Escape does nothing destructive.
 - [ ] DevTools -> Application -> Local Storage: the player page created **no** `dhcodex_journey2_*` key (a GM who opens their own link keeps their map untouched). Reload and change language: still the same map.
 - [ ] Language: a reader who never chose one sees the GM's language; one who chose keeps theirs; the RU / EN switch changes the interface (sanctuary names stay as written).

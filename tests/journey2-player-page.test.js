@@ -105,10 +105,12 @@ test('an open route follows what players now know, and Escape closes it before t
   assert.match(fn('leavePreview', 'printPageMarkup'), /exitRoute\(\{ quiet: true \}\)/);
 });
 
-test('a Collected Echo is drawn from the projection only, as the dim flat crystal', () => {
+test('a Collected Echo is drawn from the projection only, as the static spent marker', () => {
   const body = fn('renderEchoes', 'updateEchoUi');
   assert.match(body, /playerProjection\.collectedEchoes/);
   assert.match(body, /j2-echo is-collected/);
+  assert.match(body.slice(0, body.indexOf('if (echoDrawn === doc.soulEchoes)')), /ECHO_SPENT/);
+  assert.doesNotMatch(body.slice(0, body.indexOf('if (echoDrawn === doc.soulEchoes)')), /ECHO_LIVE/, 'players never get the live marker');
 });
 
 /* ---------------- touch ---------------- */

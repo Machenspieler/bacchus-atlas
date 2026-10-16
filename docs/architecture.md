@@ -1282,9 +1282,9 @@ Run all of them with `node --test tests/*.test.js`.
   - *View.* A toolbar group `[data-j2-echo-group]` (Place / Remove) — one-shot buttons, not a tool, so
     no transient state. `placeSoulEchoes()` plans once and dispatches one command (confirming first when
     Echoes exist); `confirmClearSoulEchoes()` confirms, then dispatches `[]`. `renderEchoes()` draws
-    `<g data-j2-g="echoes" pointer-events="none">` (above `fogstroke`, below `select`; the crystal is inlined
+    `<g data-j2-g="echoes" pointer-events="none">` (above `fogstroke`, below `select`; the marker — `ECHO_LIVE`, or the static `ECHO_SPENT` once collected, PD-071 — is inlined
     per Echo because CSS does not reach a `<use>` clone) and redraws only when `doc.soulEchoes` changed. Each
-    crystal is positioned from `ctx.sanctuaries[i]` — the icon's `x` and `top` edge minus `ECHO_LIFT` — never from
+    marker is positioned from `ctx.sanctuaries[i]` — the icon's `x` and `top` edge minus `ECHO_LIFT` — never from
     a hex, so it sits right above the icon wherever the icon is.
   - *GM-only.* In Player Preview `renderEchoes()` empties the layer and `applyPreviewChrome` hides the group (with the rest of `[data-j2-gm-controls]`).
     `buildPlayerProjection` is a field whitelist with no Echo field, so Player Preview and the future print
