@@ -884,6 +884,10 @@ body[data-route="list"] .catalog-bar-wrap[data-stuck="true"]::before {
   box-shadow: 0 1px 0 var(--line), -100vmax 0 0 var(--bar-bg), 100vmax 0 0 var(--bar-bg),
               -100vmax 1px 0 var(--line), 100vmax 1px 0 var(--line);
 }
+/* The first card row sits flush under the sticky bar, which paints over it:
+ * a hovered card's 2px lift (and its shadow) would be cut off at the top. */
+body[data-route="catalog"] #grid-wrap,
+body[data-route="list"] #grid-wrap { padding-top: var(--s-2); }
 .catalog-bar .toolbar { margin: var(--s-2) 0; flex: 0 1 auto; justify-content: flex-start; }
 .catalog-bar .list-context-bar { margin: var(--s-2) 0; }
 @media (min-width: 901px) {
