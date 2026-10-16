@@ -16,9 +16,10 @@
   'use strict';
   const G = typeof globalThis !== 'undefined' ? globalThis : {};
 
-  /** Texture regions in icon units: the plume rises up and to the right (wind); the fire is a small bed inside the castle. `ppu` = canvas pixels per unit. */
+  /** Texture regions in icon units: the plume rises up and to the right (wind); the fire wraps the castle. `ppu` = canvas pixels per unit (the fire's is only the
+   *  initial size: `attach` re-sizes its canvas to the device pixels it actually covers, see `firePpu`). */
   const SMOKE = Object.freeze({ x0: -38, y0: -86, w: 100, h: 112, ppu: 2 });
-  const FIRE = Object.freeze({ x0: -30, y0: -20, w: 60, h: 46, ppu: 4 });
+  const FIRE = Object.freeze({ x0: -30, y0: -26, w: 60, h: 46, ppu: 3 });
   const SRC_Y = 0;            // the line where smoke leaves the roofs
   const PLUME_H = 66;          // height over which the plume thins out completely
   const DRIFT = 24;            // wind: how far right the plume centre has moved at the top
@@ -27,19 +28,24 @@
 
   /** Smoke sources [x, width, strength]; they start apart (separate chimneys of the ruin) and the widening envelope merges them. */
   const SOURCES = [[-10, 6, 0.9], [3, 7, 1], [12, 5.5, 0.9]];
-  /** Fire pockets [x, base y, height, half-width, phase, tongues]; each tongue is [x offset (of half-width), height fraction, width fraction]. They sit where the castle is open (the gap between its legs, the arch under the
-   *  right tower, the tower window, a crack in the dome), never in a row. */
-  const FIRES = [
-    [11, 13.8, 9, 2.1, 0.3, [[-0.45, 0.7, 0.55], [0.05, 1, 0.75], [0.55, 0.52, 0.5]]],
-    [-8, 13.6, 7, 1.8, 1.7, [[-0.35, 0.58, 0.6], [0.3, 1, 0.72]]],
-    [1.6, 13.8, 4.6, 2.1, 3.1, [[-0.4, 0.55, 0.5], [0.35, 1, 0.65]]],
-    [9.2, 3.8, 3.4, 0.9, 4.6, [[0, 1, 1], [0.5, 0.5, 0.6]]],
-    [-8.5, 3.4, 2.6, 1.1, 2.2, [[0, 1, 1]]],
-    [17.2, 14.4, 4.4, 1.5, 5.4, [[-0.2, 0.6, 0.6], [0.3, 1, 0.7]]],
-    [-15.6, 14.4, 3.4, 1.4, 0.9, [[0, 1, 1]]]
+  /**
+   * Flames, sized for the map at 100 % (1 unit = 1.2 CSS px), never for a zoomed-in close-up: a few LARGE connected masses, each a cluster of tongues that merge into one
+   * body. The castle in the raster: the left domed hall spans x -17..-1 (dome y -5..3, legs to 15), the low wall between the buildings x -1..4 (top y 6), the right tower
+   * x 3.5..15.5 (top -12, a window at x 9.5 y -4..1, an arch x 7..11 under it).
+   * [x, base y, height, half-width, lean (x per unit of height, the wind), phase, rank, tongues]; a tongue is [x offset (of half-width), height fraction, width fraction].
+   * rank 0 = the silhouette, drawn at every size; rank 1 = detail, faded in only once the icon is large enough on screen (see `lodOf`).
+   */
+  const FLAMES = [
+    [1.4, 13, 27, 3.9, 0.15, 0.3, 0, [[0.05, 1, 1], [-0.62, 0.68, 0.62], [0.68, 0.78, 0.58]]],        // the hero blaze, rising out of the gap between the buildings above both roofs
+    [-9, 15, 13, 6.6, 0.16, 1.7, 0, [[-0.62, 0.86, 0.42], [-0.05, 1, 0.5], [0.58, 0.74, 0.4]]],       // the domed hall burning from inside, licking up between its legs to the dome
+    [17.6, 15, 17, 2.7, 0.08, 3.1, 0, [[0, 1, 1], [-0.62, 0.62, 0.6]]],                             // climbing the right side of the tower
+    [-18.3, 15, 11, 2.4, 0.22, 4.6, 0, [[0, 1, 1], [0.6, 0.6, 0.55]]],                              // at the left wall of the hall, leaning into it with the wind
+    [9.1, 15, 11, 2.2, 0.06, 2.2, 0, [[0, 1, 1]]],                                                   // filling the arch under the tower
+    [-8.4, -2.6, 8.5, 2.3, 0.12, 5.4, 1, [[0, 1, 1], [0.7, 0.62, 0.55]]],                            // breaking through the dome
+    [13.6, -8.5, 6, 1.5, 0.1, 0.9, 1, [[0, 1, 1]]]                                                   // a lick off the tower's roof
   ];
-  /** Smouldering points inside the structure [x, y, radius]. */
-  const HOT = [[-9.5, 1, 1.5], [0.5, -3.5, 1.2], [8.5, -1, 1.1], [-12, 9, 1.2], [14.5, 8, 1.3], [-3.5, 7, 1.2]];
+  /** Fire seen through openings of the dark structure [x, y, rx, ry, rank]: a small very hot patch on black ink reads at any size. */
+  const HOT = [[9.6, -1.6, 0.95, 2.1, 0], [-12.2, 9, 0.9, 2, 1], [-5.6, 9.5, 0.9, 1.8, 1], [5.4, 9, 0.8, 1.5, 1]];
   const EMBERS = [[-9, 2, 36, 9, 6.8, 0.1], [6, -4, 44, 16, 9.1, 0.55], [13, 5, 32, 6, 7.7, 0.3], [-3, 6, 40, -6, 11.3, 0.8], [1, -2, 38, 12, 8.3, 0.0]];
 
   const TS = 256;
@@ -154,8 +160,9 @@
     }
   }
 
-  // deep burnt red -> dark orange -> amber -> a very small yellow-orange hot area
-  const RAMP = [[0, 78, 10, 4], [0.28, 140, 26, 7], [0.55, 200, 66, 14], [0.8, 232, 118, 30], [1, 250, 172, 70]];
+  // colour by temperature: a dark saturated red rim -> red-orange -> orange -> amber -> a hot yellow core. The rim is darker than the parchment, so the silhouette
+  // separates from the paper; the core is lighter than anything around it, so the fire reads as light rather than as a stain.
+  const RAMP = [[0, 120, 18, 6], [0.25, 184, 36, 8], [0.5, 228, 80, 14], [0.7, 246, 132, 26], [0.86, 254, 182, 58], [1, 255, 226, 134]];
   function heatColor(h, out) {
     h = clamp01(h);
     let i = 1;
@@ -163,62 +170,101 @@
     const a = RAMP[i - 1], b = RAMP[i], f = (h - a[0]) / (b[0] - a[0]);
     out[0] = a[1] + (b[1] - a[1]) * f; out[1] = a[2] + (b[2] - a[2]) * f; out[2] = a[3] + (b[3] - a[3]) * f;
   }
+  const GLOW = 0.2;            // peak opacity of the warm light the flames cast on the paper right around them
+
+  /** Visual level of detail from the on-screen size, `scale` = CSS px per icon unit (1.2 at 100 % zoom): 0 up to about 110 %, 1 from about 225 %. */
+  function lodOf(scale) { return smooth(1.35, 2.7, scale > 0 ? scale : 1.2); }
+
+  /** Fire canvas pixels per unit for an on-screen scale and device pixel ratio: the device pixels it really covers (no 3x downsampling that aliases into
+   *  shimmer, no upscaled blur when zoomed in), in steps of 0.5, between 2 and 6 (above that the cost grows with the square and the flames are large enough for a soft edge). */
+  function firePpu(scale, dpr) {
+    const p = Math.round((scale > 0 ? scale : 1.2) * (dpr > 0 ? dpr : 1) * 2) / 2;
+    return p < 2 ? 2 : p > 6 ? 6 : p;
+  }
 
   /**
-   * Fills `img` (the FIRE region) with the fire at `time`: every pocket is a few tapering tongues whose centre line is bent by advected noise and whose body is eaten away by a fast, fine noise that grows toward
-   * the tip — so the silhouette is ragged, licks detach and re-form, and nothing is a fixed triangle. Every term is clamped to 0..1 before it is multiplied (an unbounded product once drew thin lines).
-   * Near each pocket a small, bounded warm glow; smouldering points flicker in the openings.
+   * Fills `img` (the FIRE region at any pixels-per-unit: `img.width / FIRE.w`) with the fire at `time`, drawn for an on-screen `scale` (CSS px per unit, default 1.2 = 100 %).
+   * Each flame is a cluster of tongues; a tongue has a broad foot (neighbours merge there) and narrows to a sharp tip, its axis bent by noise rising with the gas, its contour pushed in and out by
+   * noise whose features are never smaller than about two screen pixels, and its upper part eroded so licks tear off. The tongues are UNITED (1 - Π(1 - a)) so a
+   * cluster reads as one connected mass, never as dots. Shape (opacity) and temperature (colour) are separate: hottest on the axis low in the body, cooling to a
+   * dark red at the rim and the tips. Level of detail: at small sizes the tongues are wider and barely eroded (a bold silhouette), the detail flames are absent;
+   * zoomed in, the contours get finer, the tips tear and the detail flames fade in. Every term is clamped to 0..1 before it is multiplied (an unbounded product once drew thin lines).
    */
-  function renderFire(img, time, seed) {
-    const S = sampler(noise()), W = img.width, H = img.height, d = img.data, ppu = FIRE.ppu;
+  function renderFire(img, time, seed, scale) {
+    const S = sampler(noise()), W = img.width, H = img.height, d = img.data, ppu = W / FIRE.w;
+    const sc = scale > 0 ? scale : 1.2, D = lodOf(sc), minU = 2.2 / sc;
     const so = (seed || 0) * 29.3;
     const level = fireLevel(time, seed || 0);
     const col = [0, 0, 0];
     d.fill(0);
-    // per-pocket brightness and height this frame: independent, never in step
-    const hs = FIRES.map((f, i) => 0.72 + 0.62 * smooth(0.2, 0.8, S(time * 0.7 + f[4] * 40 + so, i * 53 + 11)) + 0.1 * Math.sin(time * 5.7 + f[4] * 3));
-    const br = FIRES.map((f, i) => 0.78 + 0.5 * S(time * 0.9 + i * 29 + so, f[4] * 19 + 3));
-    const hot = HOT.map((h, i) => smooth(0.4, 0.75, S(time * 0.5 + i * 31 + so, i * 17 + 5)) * (0.7 + 0.3 * Math.sin(time * 8 + i * 2)));
+    // this frame's tongues with their bounds; heights flicker per flame (slow) and per tongue (faster), never in step
+    const T = [];
+    for (let i = 0; i < FLAMES.length; i++) {
+      const f = FLAMES[i], vis = f[6] === 0 ? 1 : D;
+      if (vis <= 0.02) continue;
+      const fl = 0.86 + 0.28 * smooth(0.15, 0.85, S(time * 0.8 + f[5] * 40 + so, i * 53 + 11));
+      // j = -1 is the cluster's burning bed: a low, wide body under all its tongues, so they rise out of one connected mass
+      for (let j = -1; j < f[7].length; j++) {
+        const tg = j < 0 ? [0, 0.34, 1.05] : f[7][j], ph = f[5] * 7 + j * 3.7;
+        const h = f[2] * tg[1] * fl * (0.86 + 0.28 * S(time * 1.9 + ph * 19 + so, j * 37 + i * 13 + 40)) * (1 + 0.04 * Math.sin(time * 9.3 + ph));
+        const w0 = f[3] * tg[2] * (1 + 0.22 * (1 - D)), lean = f[4] * h, bx = f[0] + tg[0] * f[3], reach = w0 * 3.4;
+        T.push({
+          bx, base: f[1], h, w0, lean, ph, vis, rise: 1.3 * h, bed: j < 0,
+          kB: 64 / h, kE: 16 / Math.max(minU, f[3] * (0.8 - 0.4 * D)), kR: 16 / Math.max(minU, f[3] * (0.6 - 0.3 * D)), kT: 16 / Math.max(minU, f[3] * 0.7),
+          x0: bx - reach + Math.min(0, lean), x1: bx + reach + Math.max(0, lean), y0: f[1] - h * 1.02 - 1.2, y1: f[1] + 3.4
+        });
+      }
+    }
+    const hot = HOT.map((p, i) => (p[4] === 0 ? 1 : D) * (0.78 + 0.32 * S(time * 1.3 + i * 31 + so, i * 17 + 5)) * (0.93 + 0.07 * Math.sin(time * 8 + i * 2)));
     for (let py = 0; py < H; py++) {
       const y = FIRE.y0 + (py + 0.5) / ppu;
       for (let px = 0; px < W; px++) {
         const x = FIRE.x0 + (px + 0.5) / ppu;
-        let heat = 0, glow = 0;
-        for (let i = 0; i < FIRES.length; i++) {
-          const f = FIRES[i], hw = f[3], base = f[1];
-          const gx = x - f[0], gy = y - (base - f[2] * hs[i] * 0.3), gr = hw * 2 + 2.2;
-          if (gx * gx + gy * gy < gr * gr * 9) glow += Math.exp(-(gx * gx + gy * gy * 2.4) / (gr * gr)) * br[i];
-          if (gx > hw * 4 || gx < -hw * 4 || y > base + 2.2 || y < base - f[2] * hs[i] * 1.2) continue;
-          for (let j = 0; j < f[5].length; j++) {
-            const tg = f[5][j], h = f[2] * tg[1] * hs[i], w0 = hw * tg[2], ph = f[4] * 7 + j * 3.7;
-            const v = (base - y) / h;
-            if (v < -0.1 || v >= 1) continue;
-            const vv = v > 0 ? v : 0;
-            const nz = (S(x * 0.6 + ph * 5 + so, y * 0.5 + time * 4.4 + ph * 11) - 0.5) * 3.4;
-            const disp = (nz + 0.5 * Math.sin(time * 2.7 + ph + vv * 4.5)) * w0 * 1.5 * Math.pow(vv, 1.2);
-            const w = w0 * Math.pow(1 - vv, 0.75) + 0.001;
-            const u = Math.abs(x - f[0] - tg[0] * hw - disp) / w;
-            if (u >= 1) continue;
-            let body = 1 - Math.pow(u, 1.7);
-            body *= smooth(-0.08, 0.2, v) * (1 - 0.35 * Math.pow(vv, 1.5));
-            const n = 0.6 * S(x * 3.4 + ph * 3 + so, y * 3.4 + time * 12 + ph) + 0.4 * S(x * 7.3 + ph * 9, y * 7.3 + time * 21);
-            const ht = body * 1.15 - clamp01(n - 0.28) * (0.2 + 0.95 * vv) * 2.1;
-            if (ht > heat) heat = ht;
-          }
+        let A = 0, shMax = 0, temp = 0, halo = 0;
+        for (let i = 0; i < T.length; i++) {
+          const t = T[i];
+          if (x < t.x0 || x > t.x1 || y < t.y0 || y > t.y1) continue;
+          const bl = t.base + (S(x * 1.4 + t.ph * 9 + so, time * 1.6 + t.ph * 21) - 0.5) * 2.4;   // a ragged, slowly shifting foot line, never a ruler-straight cut
+          const v = (bl - y) / t.h, vv = v < 0 ? 0 : v > 1 ? 1 : v;
+          if (v >= 1) continue;
+          const ry = y + time * t.rise;                                  // the pattern climbs with the gas
+          // the axis snakes: a wave a little shorter than half the tongue, rising with the gas, swinging wider toward the tip, plus the wind's lean
+          const bend = (S(t.ph * 23 + so + time * 0.7, ry * t.kB + t.ph * 11) - 0.5) * 2 * t.w0 * 1.5 * Math.pow(vv, 1.1);
+          // a broad foot (neighbours overlap there and merge), a body that narrows faster than a cone, a sharp tip — never a candle's rounded drop
+          const prof = (1 + 0.35 * (1 - smooth(0, 0.45, vv))) * Math.pow(1 - vv, 0.95);
+          const dx = (x - t.bx - t.lean * vv - bend) / (t.w0 * prof + 0.02);
+          const e = (S(x * t.kE + t.ph * 31 + so, ry * t.kE + t.ph * 7) - 0.5) * (0.4 + 0.2 * D) * (0.45 + vv);
+          const u = y > bl ? (y - bl) / 1.4 : 0;
+          const dd = (dx < 0 ? -dx : dx) + e + u * u;
+          if (t.vis === 1) { const g = clamp01(1 - dd / 1.9); if (g > halo) halo = g; }
+          let sh = clamp01(1 - dd);
+          if (sh <= 0) continue;
+          // the upper part tears: licks pinch off and re-form (a little even at small sizes, freely when zoomed in)
+          const er = clamp01((S(x * t.kR + t.ph * 17, ry * 1.15 * t.kR + t.ph * 3) - (0.7 - 0.36 * vv)) * 2.6) * vv * (0.55 + 0.75 * D);
+          sh = clamp01(sh - er) * t.vis;
+          if (sh <= 0) continue;
+          A = 1 - (1 - A) * (1 - sh);
+          if (sh > shMax) shMax = sh;
+          // temperature: hottest on the axis in the lower half, cooling fast toward the rim and the tip, with a turbulent streakiness of its own
+          const tn = (S(x * t.kT + t.ph * 5, ry * 0.7 * t.kT + t.ph * 13) - 0.5) * 0.5;
+          const tp = clamp01(1 - dx * dx * 1.25 + tn) * (t.bed ? 0.92 : 1 - 0.72 * Math.pow(vv, 1.1)) * clamp01(sh * 2.5);
+          if (tp > temp) temp = tp;
         }
         for (let i = 0; i < HOT.length; i++) {
-          const p = HOT[i], dx = x - p[0], dy = y - p[1], q = (dx * dx + dy * dy) / (p[2] * p[2]);
-          if (q >= 4) continue;
-          const e = Math.exp(-q * 1.8) * hot[i] * (0.65 + 0.7 * S(x * 4 + i * 13, y * 4 + time * 5)) * 0.7;
-          if (e > heat) heat = e;
+          const p = HOT[i], qx = (x - p[0]) / p[2], qy = (y - p[1]) / p[3], q = qx * qx + qy * qy;
+          if (q >= 2 || hot[i] <= 0.02) continue;
+          const sh = clamp01(1.3 - q) * clamp01(hot[i]);
+          A = 1 - (1 - A) * (1 - sh);
+          const tp = clamp01(0.3 + 0.75 * Math.exp(-q * 1.3) * hot[i]);
+          if (tp > temp) temp = tp;
         }
-        heat = clamp01(heat * level * 0.95);
-        const fa = smooth(0.04, 0.46, heat) * 0.9;
-        const ga = clamp01(glow * 0.085 * level);
+        temp = clamp01(clamp01(temp + 0.2 * (A - shMax)) * (0.84 + 0.16 * level) + 0.06 * (1 - D));
+        const fa = smooth(0.02, 0.26, A) * 0.97;
+        const ga = halo * halo * GLOW * (0.85 + 0.15 * level);
         if (fa <= 0.002 && ga <= 0.004) continue;
-        heatColor(heat, col);
+        heatColor(temp, col);
         const oa = fa + ga * (1 - fa), k = (py * W + px) * 4;
-        d[k] = (col[0] * fa + 170 * ga * (1 - fa)) / oa; d[k + 1] = (col[1] * fa + 34 * ga * (1 - fa)) / oa; d[k + 2] = (col[2] * fa + 8 * ga * (1 - fa)) / oa;
+        d[k] = (col[0] * fa + 238 * ga * (1 - fa)) / oa; d[k + 1] = (col[1] * fa + 112 * ga * (1 - fa)) / oa; d[k + 2] = (col[2] * fa + 26 * ga * (1 - fa)) / oa;
         d[k + 3] = oa * 255;
       }
     }
@@ -251,17 +297,32 @@
     return { cv, ctx, img: ctx.createImageData(cv.width, cv.height) };
   }
 
-  function drawInstance(inst, time) {
+  function drawInstance(inst, time, fire) {
     renderSmoke(inst.smoke.img, time, inst.seed);
     inst.smoke.ctx.putImageData(inst.smoke.img, 0, 0);
     drawEmbers(inst.smoke.ctx, time, inst.seed);
-    renderFire(inst.fire.img, time, inst.seed);
+    if (fire === false) return;
+    renderFire(inst.fire.img, time, inst.seed, inst.scale);
     inst.fire.ctx.putImageData(inst.fire.img, 0, 0);
   }
 
-  function onScreen(inst) {
-    const r = inst.smoke.cv.getBoundingClientRect(), vw = G.innerWidth || 1e5, vh = G.innerHeight || 1e5;
-    return r.width > 0 && r.right > 0 && r.bottom > 0 && r.left < vw && r.top < vh;
+  /**
+   * Reads where the instance is: on screen at all (the smoke's box), and the fire's on-screen scale (CSS px per unit — the camera zoom times the ruin's own scale).
+   * Both come from the ruin group's `getScreenCTM()`: `getBoundingClientRect()` of an element inside the camera-scaled map SVG (and of HTML inside its
+   * foreignObject) ignores the camera's CSS scale in Chromium, which once culled a ruin that was on screen and froze it.
+   * Re-sizes the fire canvas to the device pixels it covers. Returns true when the fire's look changed (a new resolution or level of detail).
+   */
+  function measure(inst) {
+    const m = inst.el.getScreenCTM ? inst.el.getScreenCTM() : null, vw = G.innerWidth || 1e5, vh = G.innerHeight || 1e5;
+    const scale = m ? Math.hypot(m.a, m.b) : 0;
+    inst.visible = scale > 0 && m.e + scale * (SMOKE.x0 + SMOKE.w) > 0 && m.f + scale * (SMOKE.y0 + SMOKE.h) > 0 && m.e + scale * SMOKE.x0 < vw && m.f + scale * SMOKE.y0 < vh;
+    if (!(scale > 0)) return false;
+    const changed = Math.abs(scale - inst.scale) > 0.03 * inst.scale, ppu = firePpu(scale, G.devicePixelRatio || 1), cv = inst.fire.cv;
+    inst.scale = scale;
+    if (cv.width === FIRE.w * ppu) return changed;
+    cv.width = FIRE.w * ppu; cv.height = FIRE.h * ppu;
+    inst.fire.img = inst.fire.ctx.createImageData(cv.width, cv.height);
+    return true;
   }
 
   function tick(now) {
@@ -273,8 +334,9 @@
     lastDraw = now; frame++;
     const time = now / 1000;
     for (const inst of instances) {
-      if (frame % 8 === 1) inst.visible = onScreen(inst);
-      if (inst.visible !== false) drawInstance(inst, time);
+      const changed = frame % 8 === 1 && measure(inst);
+      if (inst.still) { if (changed) drawInstance(inst, inst.still); }   // reduced motion: the one still frame, redrawn only when a zoom changes its detail
+      else if (inst.visible !== false) drawInstance(inst, time, inst.fire.cv.width <= FIRE.w * 4 || frame % 2 === 0);   // a large (zoomed-in) fire at 15 fps
     }
   }
 
@@ -288,10 +350,11 @@
       if (!sc || !fc) return;
       const smoke = makeLayer(sc), fire = makeLayer(fc);
       if (!smoke || !fire) return;
-      const inst = { smoke, fire, seed: seedOf(el.getAttribute('data-ruin')), visible: true };
+      const seed = seedOf(el.getAttribute('data-ruin'));
+      const inst = { el, smoke, fire, seed, visible: true, scale: 1.2, still: reduce ? 23 + seed : 0 };
       n++;
-      if (reduce) { drawInstance(inst, 23 + inst.seed); return; }
-      drawInstance(inst, G.performance.now() / 1000);
+      measure(inst);
+      drawInstance(inst, reduce ? inst.still : G.performance.now() / 1000);
       instances.add(inst);
     });
     if (instances.size && !rafId) rafId = G.requestAnimationFrame(tick);
@@ -301,8 +364,8 @@
   function markup(id) {
     const px = (r) => ' width="' + r.w * r.ppu + '" height="' + r.h * r.ppu + '"';
     const fo = (r, fx) => '<foreignObject x="' + r.x0 + '" y="' + r.y0 + '" width="' + r.w + '" height="' + r.h + '" class="j2-r2-fo"><canvas xmlns="http://www.w3.org/1999/xhtml" data-fx="' + fx + '"' + px(r) + ' class="j2-r2-cv"></canvas></foreignObject>';
-    return fo(FIRE, 'fire') + fo(SMOKE, 'smoke');           // the smoke passes over the flames
+    return fo(SMOKE, 'smoke') + fo(FIRE, 'fire');           // the flames burn in front of their own smoke: its dark base is what makes them glow
   }
 
-  return Object.freeze({ SMOKE, FIRE, bakeNoise, renderSmoke, renderFire, fireLevel, attach, markup, seedOf });
+  return Object.freeze({ SMOKE, FIRE, FLAMES, bakeNoise, renderSmoke, renderFire, fireLevel, lodOf, firePpu, attach, markup, seedOf });
 });
