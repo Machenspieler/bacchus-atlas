@@ -29,20 +29,22 @@
   /** Smoke sources [x, width, strength]; they start apart (separate chimneys of the ruin) and the widening envelope merges them. */
   const SOURCES = [[-10, 6, 0.9], [3, 7, 1], [12, 5.5, 0.9]];
   /**
-   * Flames, sized for the map at 100 % (1 unit = 1.2 CSS px), never for a zoomed-in close-up: a few LARGE connected masses, each a cluster of tongues that merge into one
-   * body. The castle in the raster: the left domed hall spans x -17..-1 (dome y -5..3, legs to 15), the low wall between the buildings x -1..4 (top y 6), the right tower
-   * x 3.5..15.5 (top -12, a window at x 9.5 y -4..1, an arch x 7..11 under it).
-   * [x, base y, height, half-width, lean (x per unit of height, the wind), phase, rank, tongues]; a tongue is [x offset (of half-width), height fraction, width fraction].
+   * Flames, sized for the map at 100 % (1 unit = 1.2 CSS px), never for a zoomed-in close-up. One tall blaze by the central tower; lower, uneven pockets to its left and
+   * right with dark gaps of the castle between them — a fire spreading unevenly, never a continuous wall. The castle in the raster: the left domed hall spans x -17..-1
+   * (dome y -5..3, legs to 15), the low wall between the buildings x -1..4 (top y 6), the right tower x 3.5..15.5 (top -12, a window at x 9.5 y -4..1, an arch x 7..11 under it).
+   * [x, base y, height, half-width, lean (x per unit of height, the wind), phase, rank, tongues, bed, breathe]; a tongue is [x offset (of half-width), height fraction,
+   * width fraction]; bed = [height fraction, width fraction] of the low body the tongues rise from; breathe = how far the pocket now and then dies down
+   * (0 = never, the blaze; 0.8 = to a small ember for a few seconds, then it flares up again — every pocket on its own slow clock).
    * rank 0 = the silhouette, drawn at every size; rank 1 = detail, faded in only once the icon is large enough on screen (see `lodOf`).
    */
   const FLAMES = [
-    [1.4, 13, 27, 3.9, 0.15, 0.3, 0, [[0.05, 1, 1], [-0.62, 0.68, 0.62], [0.68, 0.78, 0.58]]],        // the hero blaze, rising out of the gap between the buildings above both roofs
-    [-9, 15, 13, 6.6, 0.16, 1.7, 0, [[-0.62, 0.86, 0.42], [-0.05, 1, 0.5], [0.58, 0.74, 0.4]]],       // the domed hall burning from inside, licking up between its legs to the dome
-    [17.6, 15, 17, 2.7, 0.08, 3.1, 0, [[0, 1, 1], [-0.62, 0.62, 0.6]]],                             // climbing the right side of the tower
-    [-18.3, 15, 11, 2.4, 0.22, 4.6, 0, [[0, 1, 1], [0.6, 0.6, 0.55]]],                              // at the left wall of the hall, leaning into it with the wind
-    [9.1, 15, 11, 2.2, 0.06, 2.2, 0, [[0, 1, 1]]],                                                   // filling the arch under the tower
-    [-8.4, -2.6, 8.5, 2.3, 0.12, 5.4, 1, [[0, 1, 1], [0.7, 0.62, 0.55]]],                            // breaking through the dome
-    [13.6, -8.5, 6, 1.5, 0.1, 0.9, 1, [[0, 1, 1]]]                                                   // a lick off the tower's roof
+    [1.4, 13, 27, 3.9, 0.15, 0.3, 0, [[0.05, 1, 1], [-0.62, 0.68, 0.62], [0.68, 0.78, 0.58]], [0.34, 1.05], 0],   // the blaze, rising out of the gap between the buildings above both roofs
+    [-11, 15, 13, 3.9, 0.16, 1.7, 0, [[-0.3, 1, 0.6], [0.55, 0.6, 0.45]], [0.24, 0.8], 0.75],                   // inside the domed hall, between its legs
+    [17.8, 15, 15, 2.8, 0.08, 3.1, 0, [[0, 1, 1], [-0.6, 0.55, 0.55]], [0.26, 0.8], 0.7],                       // up the right side of the tower
+    [-19, 15, 9, 2.3, 0.22, 4.6, 0, [[0, 1, 1]], [0.3, 0.9], 0.8],                                               // at the left wall of the hall, leaning into it with the wind
+    [10.3, 15, 10, 2, 0.06, 2.2, 0, [[0, 1, 1]], [0.3, 0.9], 0.7],                                            // in the arch under the tower
+    [-8.4, -2.6, 8.5, 2.3, 0.12, 5.4, 1, [[0, 1, 1], [0.7, 0.62, 0.55]], [0.3, 0.9], 0.6],                       // breaking through the dome
+    [13.6, -8.5, 6, 1.5, 0.1, 0.9, 1, [[0, 1, 1]], [0.3, 0.9], 0.6]                                              // a lick off the tower's roof
   ];
   /** Fire seen through openings of the dark structure [x, y, rx, ry, rank]: a small very hot patch on black ink reads at any size. */
   const HOT = [[9.6, -1.6, 0.95, 2.1, 0], [-12.2, 9, 0.9, 2, 1], [-5.6, 9.5, 0.9, 1.8, 1], [5.4, 9, 0.8, 1.5, 1]];
@@ -203,11 +205,14 @@
       const f = FLAMES[i], vis = f[6] === 0 ? 1 : D;
       if (vis <= 0.02) continue;
       const fl = 0.86 + 0.28 * smooth(0.15, 0.85, S(time * 0.8 + f[5] * 40 + so, i * 53 + 11));
+      // a pocket's own slow clock: now and then it dies down to an ember (lower and narrower, same heat) and flares up again
+      const br = f[9] > 0 ? 1 - f[9] * smooth(0.56, 0.64, S(time * 1.3 + f[5] * 31 + so, i * 41 + 31)) : 1;
+      const bh = 0.15 + 0.85 * br, bw = 0.6 + 0.4 * br;
       // j = -1 is the cluster's burning bed: a low, wide body under all its tongues, so they rise out of one connected mass
       for (let j = -1; j < f[7].length; j++) {
-        const tg = j < 0 ? [0, 0.34, 1.05] : f[7][j], ph = f[5] * 7 + j * 3.7;
-        const h = f[2] * tg[1] * fl * (0.86 + 0.28 * S(time * 1.9 + ph * 19 + so, j * 37 + i * 13 + 40)) * (1 + 0.04 * Math.sin(time * 9.3 + ph));
-        const w0 = f[3] * tg[2] * (1 + 0.22 * (1 - D)), lean = f[4] * h, bx = f[0] + tg[0] * f[3], reach = w0 * 3.4;
+        const tg = j < 0 ? [0, f[8][0], f[8][1]] : f[7][j], ph = f[5] * 7 + j * 3.7;
+        const h = f[2] * tg[1] * fl * bh * (0.86 + 0.28 * S(time * 1.9 + ph * 19 + so, j * 37 + i * 13 + 40)) * (1 + 0.04 * Math.sin(time * 9.3 + ph));
+        const w0 = f[3] * tg[2] * bw * (1 + 0.22 * (1 - D)), lean = f[4] * h, bx = f[0] + tg[0] * f[3], reach = w0 * 3.4;
         T.push({
           bx, base: f[1], h, w0, lean, ph, vis, rise: 1.3 * h, bed: j < 0,
           kB: 64 / h, kE: 16 / Math.max(minU, f[3] * (0.8 - 0.4 * D)), kR: 16 / Math.max(minU, f[3] * (0.6 - 0.3 * D)), kT: 16 / Math.max(minU, f[3] * 0.7),

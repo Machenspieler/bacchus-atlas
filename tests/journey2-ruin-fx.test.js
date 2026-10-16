@@ -176,3 +176,25 @@ test('fire: no thin horizontal strokes (regression: unbounded tongue product dre
     for (let py = 0; py < b.height; py++) for (const px of [0, b.width - 1]) assert.ok(A(px, py) < 3, 'fire touches the canvas edge');
   }
 });
+
+test('fire distribution: one tall blaze that never dies down, secondary pockets that do, and gaps between them (never a continuous wall)', () => {
+  const blaze = Fx.FLAMES[0];
+  assert.strictEqual(blaze[9], 0, 'the central blaze never breathes');
+  for (const f of Fx.FLAMES.slice(1)) { assert.ok(f[9] > 0, 'every secondary pocket dies down now and then'); assert.ok(f[2] < blaze[2], 'and is lower than the blaze'); }
+  let area = 0, masses = 0;
+  const N = 12;
+  for (let k = 0; k < N; k++) {
+    const b = fireAt(3 + k * 2.3, 1.2), W = b.width, on = new Uint8Array(W * b.height);
+    for (let i = 0; i < on.length; i++) if (b.data[i * 4 + 3] >= 128) { on[i] = 1; area++; }
+    const seen = new Uint8Array(on.length);
+    for (let i = 0; i < on.length; i++) {
+      if (!on[i] || seen[i]) continue;
+      let c = 0; const st = [i]; seen[i] = 1;
+      while (st.length) { const j = st.pop(); c++; const x = j % W; for (const q of [x > 0 ? j - 1 : -1, x < W - 1 ? j + 1 : -1, j - W, j + W]) if (q >= 0 && q < on.length && on[q] && !seen[q]) { seen[q] = 1; st.push(q); } }
+      if (c / (b.ppu * b.ppu) * 1.44 >= 6) masses++;
+    }
+  }
+  const ppu = Fx.firePpu(1.2, 2), css = area / N / (ppu * ppu) * 1.44;
+  assert.ok(css > 400 && css < 540, 'about 470 CSS px² of solid flame at 100 % (V4 before the correction: ~606), got ' + css.toFixed(0));
+  assert.ok(masses / N >= 4, 'at least four separate masses on average: ' + (masses / N).toFixed(1));
+});
