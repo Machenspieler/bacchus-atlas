@@ -21,14 +21,15 @@
      xs        X's on revealed hexes that hold no tile
      names     { anchorId, name } of sanctuaries whose name the GM revealed by hand
      echoes    sanctuary ids of Soul Echoes marked Collected whose hex is revealed
+     destroyed sanctuary ids marked destroyed (PD-070) whose hex is revealed; version 5+
    It never contains hidden tiles, regions, sanctuaries, an Available Echo, Encounters, Rumors, notes, Environments or any id from the GM's document.
 
-   Format (version 4 is written, 1-3 are still read; the version is the prefix of the link text, never reordered — a new layout is a new version; 2 = 1 plus the optional camera; 3 = 2 plus the region-icons flag; 4 = 3 plus the sepia and biome-colors flags):
+   Format (version 5 is written, 1-4 are still read; the version is the prefix of the link text, never reordered — a new layout is a new version; 2 = 1 plus the optional camera; 3 = 2 plus the region-icons flag; 4 = 3 plus the sepia and biome-colors flags; 5 = 4 plus the destroyed sanctuaries):
      flags byte (bits 0-1 language 0 none / 1 en / 2 ru, bit 2 party present, bit 3 camera present [v2], bit 4 region icons [v3], bit 5 sepia map on, bit 6 biome colors on [v4]) · varint cell count N (a template check) · [varint party cell index] · [varint cx, cy, width]
      · bitmap of revealed cells (ceil(N/8) bytes, cell order = the grid's valid-cell order) · bitmap over the revealed cells: has a tile (ceil(R/8))
      · varint region count, per region a byte symbol | dots << 4 · per tile (cell order) a varint region << 1 | x
      · varint X count + delta-coded cell indexes · varint name count, per name varint sanctuary index + varint byte length + UTF-8
-     · varint Echo count + sanctuary indexes. (Sanctuary index = position in the sorted sanctuary ids.)
+     · varint Echo count + sanctuary indexes · [varint destroyed-sanctuary count + sanctuary indexes, version 5+]. (Sanctuary index = position in the sorted sanctuary ids.)
    Everything is deflate-raw compressed and base64url-encoded; decoding is strict (bounds, counts, trailing bytes) and never throws.
    ============================================================ */
 (function (root, factory) {
@@ -37,8 +38,8 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (Geo, Model, Projection) {
   'use strict';
 
-  const FORMAT_VERSION = 4;                               // what is written; versions 1 (no camera), 2 (no region-icon flag) and 3 (no sepia / biome flags) are still read
-  const SUPPORTED_VERSIONS = Object.freeze([1, 2, 3, 4]);
+  const FORMAT_VERSION = 5;                               // what is written; versions 1 (no camera), 2 (no region-icon flag), 3 (no sepia / biome flags) and 4 (no destroyed sanctuaries) are still read
+  const SUPPORTED_VERSIONS = Object.freeze([1, 2, 3, 4, 5]);
   const MAX_VIEW = 1000000;
   /** Symbol table of formats 1 and 2: the eleven Journey biomes, then the fully overtaken region. NEVER reorder or insert — add a new format version instead. */
   const SYMBOLS = Object.freeze(['underground', 'aquatic', 'wetland', 'grassland', 'tropical', 'forest', 'drylands', 'rolling', 'mountain', 'frozen', 'badlands', 'fully-shadowblighted']);
@@ -48,6 +49,7 @@
   const MAX_NAME_CHARS = 80;
   const MAX_NAME_BYTES = MAX_NAME_CHARS * 4;
   const MAX_ECHOES = 9;
+  const MAX_DESTROYED = 5;
   const MAX_INFLATED_BYTES = 256 * 1024;                  // a snapshot is a few KB; anything larger is refused before it is parsed
   const MAX_LINK_CHARS = 20000;
 
@@ -137,13 +139,17 @@
       xs: proj.shadowMarks.map(m => Geo.cellId(m.q, m.r)).filter(c => ix.index.has(c)).sort((a, b) => ix.index.get(a) - ix.index.get(b)),
       names: proj.sanctuaryLabels.map(l => ({ anchorId: l.anchorId, name: l.name })).filter(n => ix.sanctuaryIndex.has(n.anchorId)),
       echoes: proj.collectedEchoes.filter(id => ix.sanctuaryIndex.has(id)),
+      destroyed: proj.destroyedSanctuaries.filter(id => ix.sanctuaryIndex.has(id)),
     };
   }
 
   /* ---------------- binary encode / decode ---------------- */
 
-  /** The uncompressed bytes of a snapshot (format 4). Throws only for a snapshot that could not have come from buildSnapshot (a programming error). */
-  function encodeSnapshot(snap, ctx) {
+  /**
+   * The uncompressed bytes of a snapshot (format 5). Throws only for a snapshot that could not have come from buildSnapshot (a programming error).
+   * `version` (default: the current format) exists so tests can build a legacy payload: below 5 the destroyed-sanctuary list is simply not written.
+   */
+  function encodeSnapshot(snap, ctx, version) {
     const ix = indexesOf(ctx), N = ix.cells.length, w = createWriter();
     const langIdx = LANGS.indexOf(snap.lang || null);
     const view = cleanView(snap.view);
@@ -174,6 +180,11 @@
     for (const n of snap.names) { const b = enc.encode(n.name); w.varint(ix.sanctuaryIndex.get(n.anchorId)); w.varint(b.length); w.raw(b); }
     w.varint(snap.echoes.length);
     for (const id of snap.echoes) w.varint(ix.sanctuaryIndex.get(id));
+    if ((version || FORMAT_VERSION) >= 5) {
+      const ruined = snap.destroyed || [];
+      w.varint(ruined.length);
+      for (const id of ruined) w.varint(ix.sanctuaryIndex.get(id));
+    }
     return w.done();
   }
 
@@ -233,8 +244,15 @@
     if (echoCount > MAX_ECHOES) throw new DecodeError(ERR.invalid);
     const echoes = [], seenEcho = new Set();
     for (let i = 0; i < echoCount; i++) { const si = r.varint(); if (si >= ix.sanctuaryIds.length || seenEcho.has(si)) throw new DecodeError(ERR.invalid); seenEcho.add(si); echoes.push(ix.sanctuaryIds[si]); }
+    const destroyed = [];
+    if (version >= 5) {
+      const ruinCount = r.varint();
+      if (ruinCount > MAX_DESTROYED) throw new DecodeError(ERR.invalid);
+      const seenRuin = new Set();
+      for (let i = 0; i < ruinCount; i++) { const si = r.varint(); if (si >= ix.sanctuaryIds.length || seenRuin.has(si) || seenEcho.has(si)) throw new DecodeError(ERR.invalid); seenRuin.add(si); destroyed.push(ix.sanctuaryIds[si]); }
+    }
     if (!r.atEnd()) throw new DecodeError(ERR.trailing);
-    return { lang: LANGS[flags & 3], regionIcons: (flags & 16) !== 0, sepiaMap: version < 4 || (flags & 32) !== 0, biomeColors: version < 4 || (flags & 64) !== 0, view: view, party: party, revealed: revealed, regions: regions, tiles: tiles, xs: xs, names: names, echoes: echoes };
+    return { lang: LANGS[flags & 3], regionIcons: (flags & 16) !== 0, sepiaMap: version < 4 || (flags & 32) !== 0, biomeColors: version < 4 || (flags & 64) !== 0, view: view, party: party, revealed: revealed, regions: regions, tiles: tiles, xs: xs, names: names, echoes: echoes, destroyed: destroyed };
   }
 
   /* ---------------- the synthetic document ---------------- */
@@ -255,6 +273,7 @@
     doc.playerVisibility = { revealedCells: snap.revealed.slice(), revealedSanctuaryNameAnchorIds: snap.names.map(n => n.anchorId).sort() };
     doc.sanctuaries = { entries: snap.names.map(n => ({ anchorId: n.anchorId, name: n.name, trade: 1, quirk: 1, crisis: 1, drive: 1, politics: { rolls: [1] }, size: 1, population: 1 })) };
     doc.soulEchoes = { anchorIds: snap.echoes.slice(), collectedAnchorIds: snap.echoes.slice() };
+    doc.destroyedSanctuaries = { anchorIds: (snap.destroyed || []).slice() };
     const ix = indexesOf(ctx), marks = new Set(snap.tiles.filter(t => t.x).map(t => t.cell));
     for (const c of snap.xs) marks.add(c);
     doc.shadowMarks = { added: Array.from(marks).sort((a, b) => ix.index.get(a) - ix.index.get(b)), suppressed: [] };

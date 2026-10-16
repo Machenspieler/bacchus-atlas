@@ -7,7 +7,7 @@
    Fog of War is a DATA FILTER here, not a drawing: the print has no fog layer, hatch, wash or grey at all. Generated New Valloren
    content exists in the model only for cells in `playerVisibility.revealedCells` (via `Journey2Projection.buildPrintProjection`); an
    unrevealed cell is simply absent, so it prints as the untouched Old Valloren map. The model also has no biome tint (omitted, not
-   greyed), no Environment, no Soul Echo, no sanctuary data beyond a revealed { anchorId, name }, and no region/tile/batch id. The one exception to "revealed cells only"
+   greyed), no Environment, no Soul Echo, no sanctuary data beyond a revealed { anchorId, name } and the revealed destroyed sanctuaries (PD-070: a static flame and smoke), and no region/tile/batch id. The one exception to "revealed cells only"
    is the party marker (PD-045): while it is shown its seven cells are present like revealed ones (the projection merges them) and the marker itself is drawn, as a black star.
 
    Pages. `pagesFromTemplate` reads the two panels the world raster was assembled from (`template.composition.panels`; the seam is where
@@ -24,7 +24,8 @@
 
   const A4_MM = { widthMm: 210, heightMm: 297, marginMm: 10 };
   const PAGE_IDS = ['v1', 'v2'];
-  const LABEL_STROKE_PX = 3;                                     // the halo of `.j2-pp-svg .j2-sanc-label` in journey2.css — keep in step
+  const RUIN_BOX = [45, 160, 240, 200];                          // the destroyed-sanctuary glyph's world box relative to the icon centre: [left, up, width, height] — keep in step with ruinMarkup in journey2-view.js
+  const LABEL_STROKE_PX = 3;                                    // the halo of `.j2-pp-svg .j2-sanc-label` in journey2.css — keep in step
 
   /**
    * The two printed pages of a map template, west first. Validates the geometry and THROWS on anything unexpected (no silent fallback to
@@ -105,7 +106,7 @@
     const out = pages.map(p => ({
       id: p.id, panelId: p.panelId, rect: p.rect.slice(), viewBox: p.viewBox.slice(), translate: p.translate.slice(), scaleMmPerPx: p.scaleMmPerPx,
       source: { path: p.source.path, worldSizePx: p.source.worldSizePx.slice(), nativeSource: p.source.nativeSource ? { path: p.source.nativeSource.path, sha256: p.source.nativeSource.sha256 } : null },
-      overlays: [], marks: [], segments: [], labels: [], party: null,
+      overlays: [], marks: [], segments: [], labels: [], ruins: [], party: null,
     }));
     const SLACK = 4;                                              // a hex or edge just touching a page can still put ink (stroke, glyph) on it
     const fat = r => [r[0] - SLACK, r[1] - SLACK, r[2] + 2 * SLACK, r[3] + 2 * SLACK];
@@ -128,6 +129,15 @@
       const e = grid.cellEdge(c.q, c.r, sg.dir);
       pages.forEach((p, i) => { if (clipSegment(e[0], e[1], { rect: fat(p.rect) })) out[i].segments.push({ cell: sg.cell, dir: sg.dir, kind: sg.kind }); });
     }
+    // a destroyed sanctuary (PD-070, revealed ones only — the projection already filtered): the flame stands on the icon, the smoke drifts up and to the right,
+    // so a ruin is on every page its glyph box touches (a page clips it); the entry is the icon's centre and nothing else
+    const ruined = new Map(ctx.sanctuaries.map(s => [s.id, s]));
+    for (const id of proj.destroyedSanctuaries) {
+      const s = ruined.get(id);
+      if (!s) continue;
+      const box = [s.x - RUIN_BOX[0], s.y - RUIN_BOX[1], RUIN_BOX[2], RUIN_BOX[3]];
+      pages.forEach((p, i) => { if (rectsOverlap(box, p.rect)) out[i].ruins.push({ id: s.id, x: s.x, y: s.y }); });
+    }
     // a name belongs to the page holding its icon; it is laid out inside that page only, so it is never split across the seam
     const bySanctuary = new Map(ctx.sanctuaries.map(s => [s.id, s]));
     pages.forEach((p, i) => {
@@ -136,7 +146,7 @@
     });
     return {
       version: 1, printMode: 'bw', pages: out,
-      summary: { wildernessHexes: proj.overlays.length, sanctuaryNames: proj.sanctuaryLabels.length, party: !!proj.party },
+      summary: { wildernessHexes: proj.overlays.length, sanctuaryNames: proj.sanctuaryLabels.length, destroyedSanctuaries: proj.destroyedSanctuaries.length, party: !!proj.party },
     };
   }
 

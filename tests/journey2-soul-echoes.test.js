@@ -172,7 +172,7 @@ test('projection: an Available Soul Echo never reaches the player projection (GM
   const text = JSON.stringify(Object.assign({}, proj, { collectedEchoes: undefined })).toLowerCase();
   assert.ok(!text.includes('echo') && !text.includes('soul') && !text.includes('mk-'), 'leaked into the projection');
   assert.deepEqual(proj.collectedEchoes, []);
-  assert.deepEqual(Object.keys(proj).sort(), ['collectedEchoes', 'overlays', 'party', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'shadowMarks', 'version']);
+  assert.deepEqual(Object.keys(proj).sort(), ['collectedEchoes', 'destroyedSanctuaries', 'overlays', 'party', 'perimeter', 'revealedCells', 'sanctuaryLabels', 'shadowMarks', 'version']);
   assert.ok(!/soulEchoes/.test(read('js/journey2-projection.js').replace(/\/\*[\s\S]*?\*\//g, '')), 'the projection code never reads the field');
 });
 
@@ -209,7 +209,7 @@ test('view: Player Preview empties the echoes layer (data, not CSS) and hides th
 
 test('view: placing is one planned command (ids chosen before dispatch); replacing and removing ask first, with Cancel focused', () => {
   const place = fn('placeSoulEchoes', 'confirmClearSoulEchoes');
-  assert.match(place, /Model\.planSoulEchoes\(data\.ctx\)/);
+  assert.match(place, /Model\.planSoulEchoes\(data\.ctx, undefined, Model\.getDestroyedSanctuarySet\(doc\)\)/, 'never on a destroyed sanctuary (PD-070)');
   assert.match(place, /type: 'setSoulEchoes', anchorIds: plan\.anchorIds/);
   assert.match(place, /openDialog/);
   const clear = fn('confirmClearSoulEchoes', 'renderSelection');

@@ -89,7 +89,7 @@ test('encode -> decode returns the snapshot unchanged (language, party, tiles, r
 
 test('an empty map, no party and no language round-trip too', () => {
   const snap = S.buildSnapshot(M.emptyDocument(ctx, AT), ctx);
-  assert.deepEqual(snap, { lang: null, view: null, regionIcons: false, sepiaMap: true, biomeColors: true, party: null, revealed: [], regions: [], tiles: [], xs: [], names: [], echoes: [] });
+  assert.deepEqual(snap, { lang: null, view: null, regionIcons: false, sepiaMap: true, biomeColors: true, party: null, revealed: [], regions: [], tiles: [], xs: [], names: [], echoes: [], destroyed: [] });
   const bytes = S.encodeSnapshot(snap, ctx);
   assert.deepEqual(S.decodeSnapshot(bytes, ctx).snap, snap);
   assert.ok(bytes.length < 700, 'an empty snapshot is one bitmap');
@@ -143,7 +143,7 @@ test('a route over the rebuilt document can only know revealed tiles (fogged ter
 test('link text: "<version>.<base64url>", round-trips through openLinkText into a ready document', async () => {
   const { doc } = campaign();
   const text = await S.createLinkText(doc, ctx, { lang: 'ru' });
-  assert.match(text, /^4\.[A-Za-z0-9_-]+$/);
+  assert.match(text, /^5\.[A-Za-z0-9_-]+$/);
   const opened = await S.openLinkText(text, ctx);
   assert.equal(opened.ok, true);
   assert.equal(opened.snap.lang, 'ru');
@@ -236,7 +236,7 @@ test('the codec is pure and format 1 is frozen: no DOM or storage; the symbol ta
   assert.doesNotMatch(src, /localStorage|sessionStorage|SafeStorage|document\.|window\.|innerHTML|location\b/);
   assert.doesNotMatch(src, /environmentId|\.rumor\b|\.encounter\b|\.notes\b|\.sanctuaries\.entries/, 'no GM-only field is read');
   assert.deepEqual(Array.from(S.SYMBOLS), ['underground', 'aquatic', 'wetland', 'grassland', 'tropical', 'forest', 'drylands', 'rolling', 'mountain', 'frozen', 'badlands', 'fully-shadowblighted']);
-  assert.equal(S.FORMAT_VERSION, 4); assert.deepEqual(Array.from(S.SUPPORTED_VERSIONS), [1, 2, 3, 4]);
+  assert.equal(S.FORMAT_VERSION, 5); assert.deepEqual(Array.from(S.SUPPORTED_VERSIONS), [1, 2, 3, 4, 5]);
 });
 
 test('wiring: the module loads after the projection and before the view, and ships in the build list', () => {
@@ -260,10 +260,10 @@ test('camera: the GM view (world centre + visible world width) round-trips, is c
 test('camera: a version 1 link (no camera) still opens, and a version 1 payload cannot carry the camera flag', async () => {
   const { doc } = campaign();
   const snap = S.buildSnapshot(doc, ctx, { sepiaMap: false, biomeColors: false }); snap.view = null;   // a legacy payload has no version-4 bits
-  const v1 = '1.' + S.bytesToBase64Url(zlib.deflateRawSync(Buffer.from(S.encodeSnapshot(snap, ctx))));
+  const v1 = '1.' + S.bytesToBase64Url(zlib.deflateRawSync(Buffer.from(S.encodeSnapshot(snap, ctx, 4))));
   const opened = await S.openLinkText(v1, ctx);
   assert.equal(opened.ok, true); assert.equal(opened.snap.view, null);
-  const withView = S.encodeSnapshot(Object.assign({}, snap, { view: { cx: 5, cy: 5, width: 5 } }), ctx);
+  const withView = S.encodeSnapshot(Object.assign({}, snap, { view: { cx: 5, cy: 5, width: 5 } }), ctx, 4);
   assert.equal(S.decodeSnapshot(withView, ctx, 1).ok, false, 'bit 3 does not exist in version 1');
   assert.equal(S.decodeSnapshot(withView, ctx, 2).ok, true);
 });
@@ -277,10 +277,10 @@ test('region icons: the flag rides in bit 4 of a version 3 link, older links rea
   assert.equal(S.decodeSnapshot(S.encodeSnapshot(on, ctx), ctx).snap.regionIcons, true);
   assert.equal(S.decodeSnapshot(S.encodeSnapshot(off, ctx), ctx).snap.regionIcons, false);
   assert.equal((await S.openLinkText(await S.createLinkText(doc, ctx, { regionIcons: true }), ctx)).snap.regionIcons, true);
-  const bytes = S.encodeSnapshot(on, ctx);
+  const bytes = S.encodeSnapshot(on, ctx, 4);
   assert.equal(S.decodeSnapshot(bytes, ctx, 2).ok, false, 'bit 4 does not exist in version 2');
   assert.equal(S.decodeSnapshot(bytes, ctx, 3).ok, true);
-  const v2 = '2.' + S.bytesToBase64Url(zlib.deflateRawSync(Buffer.from(S.encodeSnapshot(off, ctx))));
+  const v2 = '2.' + S.bytesToBase64Url(zlib.deflateRawSync(Buffer.from(S.encodeSnapshot(off, ctx, 4))));
   assert.equal((await S.openLinkText(v2, ctx)).snap.regionIcons, false, 'a version 2 link still opens, with the plain per-hex icons');
 });
 
@@ -298,8 +298,8 @@ test('display flags: sepia and biome colors ride in bits 5 and 6 of a version 4 
   assert.equal(S.encodeSnapshot(both, ctx).length, S.encodeSnapshot(dflt, ctx).length, 'the two flags live in the existing flags byte: no extra byte');
   const opened = await S.openLinkText(await S.createLinkText(doc, ctx, { sepiaMap: false, biomeColors: true }), ctx);
   assert.equal(opened.snap.sepiaMap, false); assert.equal(opened.snap.biomeColors, true);
-  assert.equal(S.decodeSnapshot(S.encodeSnapshot(dflt, ctx), ctx, 3).ok, false, 'bits 5-6 do not exist in version 3');
-  const v3 = '3.' + S.bytesToBase64Url(zlib.deflateRawSync(Buffer.from(S.encodeSnapshot(both, ctx))));
+  assert.equal(S.decodeSnapshot(S.encodeSnapshot(dflt, ctx, 4), ctx, 3).ok, false, 'bits 5-6 do not exist in version 3');
+  const v3 = '3.' + S.bytesToBase64Url(zlib.deflateRawSync(Buffer.from(S.encodeSnapshot(both, ctx, 4))));
   const old = (await S.openLinkText(v3, ctx)).snap;
   assert.equal(old.sepiaMap, true, 'a version 3 link keeps the look the player page always had: sepia'); assert.equal(old.biomeColors, true, '... and the biome tint');
 });

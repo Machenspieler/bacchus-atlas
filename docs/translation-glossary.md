@@ -31,6 +31,7 @@ silently breaks the roll button.
 | Impulses | Импульсы |
 | Potential Adversaries | Потенциальные Противники |
 | Soul Echo (Journey 2 map, PD-022) | Эхо Души (daggerheart.ru/frame/journey-to-horizon; plural «Эхо Душ» — used wherever several are meant («Убрать все Эхо Душ?»); singular contexts keep «Эхо Души» / «Эха Души» («Поиск Эха Души»); short form «Эхо») |
+| Destroyed sanctuary (Journey 2 map, PD-070) | уничтоженное убежище — menu group «Уничтоженные убежища», button «Создать 5 уничтоженных убежищ», legend «Уничтоженное убежище» |
 | GM / Game Master (Journey UI, audit 05 L5-04) | ведущий — always, in the proper case («только для ведущего», «К виду ведущего», «Напоминание ведущему»); never «мастер», «ГМ» or Latin «GM» in Russian UI text. Official lore and third-party source text is not rewritten (existing glossary entries such as «Страх» are unaffected) |
 | Party (Journey UI controls and hints, audit 05 L5-05) | отряд («где сейчас находится отряд», «Маркер отряда»). «Группа» may remain in official encounter / rumor narrative in `data/journey.json` |
 | Compass points, 16-point rose (audit 05 L5-08) | Запад-юго-запад, Запад-северо-запад, Восток-северо-восток, Восток-юго-восток (not «западо-/востоко-…»); abbreviations ЗЮЗ / ЗСЗ / ВСВ / ВЮВ unchanged |

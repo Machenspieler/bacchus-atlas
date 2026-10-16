@@ -252,7 +252,8 @@
     let playerLoad = null;                                  // its decoded link: { ok: true, doc, snap } | { ok: false, code }
     let previewMode = false;                               // Player Preview: a read-only render of the player projection
     let playerProjection = null;                            // the projection currently drawn in Player Preview
-    let echoDrawn = null;                                   // the soulEchoes object the GM echoes layer currently shows (an unrelated change never rebuilds it)
+    let ruinDrawn = null;                                   // the destroyedSanctuaries object the GM ruins layer currently shows (an unrelated change never rebuilds it)
+    let echoDrawn = null;                                 // the soulEchoes object the GM echoes layer currently shows (an unrelated change never rebuilds it)
     let sanctuaryOpen = null;                               // anchor id of the sanctuary whose overlay is open (transient: never persisted, never in history)
     let sanctuaryRenaming = false;                          // the open overlay's name is being edited (transient: ends on save, cancel, close or another sanctuary)
     let sanctuaryShown = null;                             // anchor id the overlay DOM currently shows (so its scroll position survives re-renders)
@@ -497,6 +498,7 @@
       trash: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>',
       dice: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><path d="M16 8h.01" /><path d="M12 12h.01" /><path d="M8 16h.01" /></svg>',
       eyeOff: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" /><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" /><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" /><path d="m2 2 20 20" /></svg>',
+      flame: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" /></svg>',
       stock: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 3.5 15.5 7.25v7.5L9 18.5 2.5 14.75v-7.5z" /><path d="m12.5 18.75 3 1.75 6-3.5v-7l-3-1.75" /></svg>',
     };
 
@@ -518,6 +520,38 @@
     /** The crystal shape, centred on (0,0): inlined once per Echo (CSS does not reach a <use> clone). */
     const ECHO_CRYSTAL =
       '<g class="j2-echo-bob"><path class="j2-echo-body" d="M0-15 8.5 0 0 15-8.5 0z" fill="url(#j2-echo-body)"/><path class="j2-echo-core" d="M0-8 3.8 0 0 8-3.8 0z"/></g>';
+
+    /**
+     * Destroyed sanctuary (PD-070): a small flame standing ON the printed icon (the icon itself is never touched) and smoke that the wind carries up and to the right,
+     * over the two neighbouring hexes. Everything is drawn in icon-centred local units: the flame spans about x -17..17, y -24..16, the smoke ends near (98,-82) with radius 14
+     * — print's RUIN_BOX (journey2-print.js) is cut from these numbers. The screen version is animated by CSS only (flicker, a smoke column; static under prefers-reduced-motion:
+     * a second, still smoke is shown instead); the printed one (`print`) is the still drawing with flat black-and-white styling and no gradient.
+     */
+    const RUIN_DEFS =
+      '<radialGradient id="j2-ruin-glow"><stop offset="0" stop-color="#ff9a3c" stop-opacity=".55"/><stop offset="1" stop-color="#ff5a1f" stop-opacity="0"/></radialGradient>' +
+      '<linearGradient id="j2-ruin-flame" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff4a12"/><stop offset=".6" stop-color="#ff8a1f"/><stop offset="1" stop-color="#ffc02e"/></linearGradient>' +
+      '<radialGradient id="j2-ruin-smoke"><stop offset="0" stop-color="#3b332d" stop-opacity=".95"/><stop offset=".6" stop-color="#3b332d" stop-opacity=".75"/><stop offset="1" stop-color="#3b332d" stop-opacity=".12"/></radialGradient>';
+    const RUIN_FLAME_OUT = 'M0 16C-12 16-16 6-12-3C-10-8-6-10-6-18C-2-14-1-10 0-7C2-12 5-16 4-24C12-16 17-6 14 5C12 12 7 16 0 16Z';
+    const RUIN_FLAME_IN = 'M0 15C-6 15-8 9-5 3C-3-1 0-3 1-9C5-4 8 3 6 9C5 13 3 15 0 15Z';
+    /** The still smoke column: [x, y, radius, opacity] from the flame's tip, growing and thinning as the wind drags it right. */
+    const RUIN_SMOKE = [[8, -32, 5, 0.7], [22, -48, 7, 0.6], [42, -62, 9, 0.5], [68, -74, 11.5, 0.38], [98, -82, 14, 0.26]];
+    const RUIN_SCALE = 1.2;                                  // on the screen map; the print passes its own (the A4 page shrinks the map to about a fifth)
+    const RUIN_SCALE_PRINT = 1.6;
+
+    /** One destroyed sanctuary at the icon centre of `s` ({ id, x, y }); `print` = still, flat, black and white (no gradient, no animation, no CSS variables). */
+    function ruinMarkup(s, print) {
+      const k = print ? RUIN_SCALE_PRINT : RUIN_SCALE;
+      let h = '<g class="j2-ruin' + (print ? ' is-print' : '') + '" data-ruin="' + esc(s.id) + '" transform="translate(' + fmt(s.x, 1) + ' ' + fmt(s.y, 1) + ') scale(' + k + ')">';
+      if (!print) {
+        h += '<circle class="j2-ruin-glow" r="32"/><g class="j2-ruin-smoke">';
+        for (let i = 0; i < RUIN_SMOKE.length; i++) h += '<circle class="j2-ruin-puff" r="8" style="animation-delay:' + fmt(-i * 1.1, 1) + 's"/>';
+        h += '</g>';
+      }
+      h += '<g class="j2-ruin-still">';
+      for (const p of RUIN_SMOKE) h += '<circle class="j2-ruin-still-puff" cx="' + p[0] + '" cy="' + p[1] + '" r="' + p[2] + '"' + (print ? '' : ' style="opacity:' + p[3] + '"') + '/>';
+      h += '</g><g class="j2-ruin-flame"><path class="j2-ruin-flame-out" d="' + RUIN_FLAME_OUT + '"/><path class="j2-ruin-flame-in" d="' + RUIN_FLAME_IN + '"/></g></g>';
+      return h;
+    }
 
 
     /**
@@ -553,8 +587,8 @@
                 <div class="j2-world" style="width:${W}px;height:${H}px">
                   <img class="j2-base" alt="" draggable="false" width="${W}" height="${H}">
                   <svg class="j2-overlay" xmlns="${SVG_NS}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">
-                    <defs data-j2-defs></defs><defs>${ECHO_DEFS}</defs>
-                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil fill-rule="evenodd" d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/><path class="j2-fog-ghost" data-j2-fog-ghost d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routeline" pointer-events="none" aria-hidden="true"></g>
+                    <defs data-j2-defs></defs><defs>${ECHO_DEFS}${RUIN_DEFS}</defs>
+                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil fill-rule="evenodd" d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/><path class="j2-fog-ghost" data-j2-fog-ghost d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="ruins" pointer-events="none" aria-hidden="true"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routeline" pointer-events="none" aria-hidden="true"></g>
                     <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
                     <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g><g data-j2-g="locate" pointer-events="none"></g><g data-j2-g="seekers" pointer-events="none" aria-hidden="true"></g><g data-j2-g="party" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routemark" pointer-events="none" aria-hidden="true"></g>
                   </svg>
@@ -635,6 +669,7 @@
                 <div class="j2-sanc-echo" data-j2-s="echo" hidden>
                   <button type="button" class="btn btn-sm j2-sanc-act" data-j2-echo-collect><span class="j2-ico" aria-hidden="true">${LI.echo}</span><span data-j2-s="echoLabel"></span></button>
                 </div>
+                <p class="j2-sanc-ruin" data-j2-s="ruin" hidden><span class="j2-ico" aria-hidden="true">${LI.flame}</span><span data-t="journey2_sanc_ruin_note"></span></p>
                 <div class="j2-insp-scroll j2-sanc-rows" data-j2-s="rows"></div>
                 <footer class="j2-sanc-foot" data-j2-s="foot">
                   <button type="button" class="btn btn-sm btn-danger" data-j2-sanc-delete data-t="journey2_sanc_delete"></button>
@@ -745,6 +780,9 @@
                     <button type="button" class="j2-menu-item j2-mi" role="menuitem" data-j2-echo-clear data-t-title="journey2_echo_clear_title"><span class="j2-mi-ico" aria-hidden="true">${LI.eraser}</span><span data-t="journey2_echo_clear"></span></button>
                     <p class="j2-menu-h" role="presentation" data-t="journey2_sanc_group"></p>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitem" data-j2-sanc-generate data-t-title="journey2_sanc_generate_title"><span class="j2-mi-ico" aria-hidden="true">${LI.sanctuary}</span><span data-j2-sanc-generate-label></span></button>
+                    <p class="j2-menu-h" role="presentation" data-t="journey2_ruin_group"></p>
+                    <button type="button" class="j2-menu-item j2-mi" role="menuitem" data-j2-ruin-place data-t-title="journey2_ruin_place_title"><span class="j2-mi-ico" aria-hidden="true">${LI.flame}</span><span data-t="journey2_menu_ruin_place"></span></button>
+                    <button type="button" class="j2-menu-item j2-mi" role="menuitem" data-j2-ruin-clear data-t-title="journey2_ruin_clear_title"><span class="j2-mi-ico" aria-hidden="true">${LI.eraser}</span><span data-t="journey2_ruin_clear"></span></button>
                   </div>
                 </div>
               </nav>
@@ -760,6 +798,7 @@
                     <li><span class="j2-legend-sym"><img src="img/journey2/legend-sanctuary.webp" alt="" width="44" height="39" draggable="false"></span><span data-t="journey2_legend_sanctuary"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><path class="j2-legend-x-halo" d="M-7-7l14 14m0-14l-14 14"/><path class="j2-legend-x" d="M-7-7l14 14m0-14l-14 14"/></svg></span><span><span data-t="journey2_legend_shadow"></span><span class="j2-legend-desc" data-t="journey2_legend_shadow_desc"></span></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g transform="scale(.7)">${ECHO_CRYSTAL}</g></svg></span><span data-t="journey2_legend_echo"></span></li>
+                    <li data-j2-legend-ruin hidden><span class="j2-legend-sym"><svg viewBox="-14 -14 28 28" aria-hidden="true"><g class="j2-ruin is-legend" transform="translate(0 2) scale(.5)"><g class="j2-ruin-flame"><path class="j2-ruin-flame-out" d="${RUIN_FLAME_OUT}"/><path class="j2-ruin-flame-in" d="${RUIN_FLAME_IN}"/></g></g></svg></span><span data-t="journey2_legend_ruin"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><circle class="j2-legend-dot" cx="-5" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="0" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="5" cy="0" r="1.7"/></svg></span><span data-t="journey2_legend_terrain"></span></li>
                     <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><polygon class="j2-legend-fog" points="9.5,-5.5 9.5,5.5 0.0,11.0 -9.5,5.5 -9.5,-5.5 -0.0,-11.0"/></svg></span><span data-t="journey2_legend_unknown"></span></li>
                   </ul>
@@ -859,6 +898,9 @@
       ui.outlineBtn = container.querySelector('[data-j2-outline]');
       ui.echoPlace = container.querySelector('[data-j2-echo-place]');
       ui.echoClear = container.querySelector('[data-j2-echo-clear]');
+      ui.ruinPlace = container.querySelector('[data-j2-ruin-place]');
+      ui.ruinClear = container.querySelector('[data-j2-ruin-clear]');
+      ui.legendRuin = container.querySelector('[data-j2-legend-ruin]');
       ui.echoLocate = container.querySelector('[data-j2-echo-locate]');
       ui.locateReason = container.querySelector('[data-j2-locate-reason]');
       ui.routePlan = container.querySelector('[data-j2-route-plan]');
@@ -2054,6 +2096,7 @@
         if (playerMode) renderLegendBiomes();
         renderParty();
         renderEchoes();
+        renderRuins();
         renderPerimeter();
         renderSanctuaryLabels();
         syncRoute();                                         // an open route follows what the players now know (a lit party, a revealed hex)
@@ -2061,6 +2104,7 @@
       }
       ui.g.player.innerHTML = '';
       renderEchoes();
+      renderRuins();
       const byBatch = new Map(doc.batches.map(b => [b.id, b])), tints = Tint.gmTintByCell(doc, showBiome);
       const xs = Model.getShadowXSet(doc), onTile = new Set(doc.tiles.map(tile => tile.cell));
       const entries = doc.tiles.map(tile => { const c = Geo.parseCellId(tile.cell); return { q: c.q, r: c.r, spec: Object.assign(specOfBatch(byBatch.get(tile.batchId)), { blightMark: xs.has(tile.cell) }), tint: tints.get(tile.cell) || null, region: tile.batchId }; });
@@ -2159,6 +2203,70 @@
       echoDrawn = doc.soulEchoes;
     }
 
+    /**
+     * Destroyed sanctuaries (PD-070): the GM sees a flame and smoke on each of the five; players (Player Preview, the player page) get ONLY the projection's
+     * `destroyedSanctuaries` — those whose hex is revealed. Like the Echoes the layer is rebuilt, never CSS-hidden, and the GM view is redrawn only when the set changed.
+     * The legend's "Destroyed sanctuary" line follows the same rule: it exists only while one can be seen, so it never says that such places exist.
+     */
+    function renderRuins() {
+      if (!ui.g || !ui.g.ruins || !doc) return;
+      const at = new Map(data.ctx.sanctuaries.map(s => [s.id, s]));
+      const ids = previewMode ? ((playerProjection && playerProjection.destroyedSanctuaries) || []) : doc.destroyedSanctuaries.anchorIds;
+      if (ui.legendRuin) ui.legendRuin.hidden = !ids.length;
+      if (!previewMode && ruinDrawn === doc.destroyedSanctuaries) return;
+      let h = '';
+      for (const id of ids) { const s = at.get(id); if (s) h += ruinMarkup(s, false); }
+      ui.g.ruins.innerHTML = h;
+      ruinDrawn = previewMode ? null : doc.destroyedSanctuaries;
+    }
+
+    /** Toolbar state of the destroyed-sanctuaries group: Remove is disabled when there is nothing to remove, both while edits are locked. */
+    function updateRuinUi() {
+      if (!ui.ruinPlace || !doc) return;
+      ui.ruinPlace.disabled = editLocked;
+      ui.ruinClear.disabled = editLocked || !doc.destroyedSanctuaries.anchorIds.length;
+    }
+
+    /** One button, five ruins: draws five of the sanctuaries WITHOUT a Soul Echo at random, then commits those exact ids as ONE undoable command. */
+    function placeDestroyedSanctuaries() {
+      if (inst.disposed || editLocked || previewMode || !doc) return;
+      const commit = () => {
+        const plan = Model.planDestroyedSanctuaries(data.ctx, undefined, new Set(doc.soulEchoes.anchorIds));
+        const r = dispatch({ type: 'setDestroyedSanctuaries', anchorIds: plan.anchorIds }, 'ruinsPlace');
+        if (!r.ok) { hint(errorText(r.error)); return; }
+        announce(fillN('journey2_live_ruins_placed', { n: n(plan.anchorIds.length) }, [plan.anchorIds.length]));
+      };
+      if (!doc.destroyedSanctuaries.anchorIds.length) { commit(); return; }
+      openDialog({
+        title: t('journey2_ruin_replace_title'),
+        lines: [t('journey2_ruin_replace_msg'), t('journey2_echo_undo_note')],
+        actions: [
+          { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
+          { label: t('journey2_echo_replace_go'), kind: 'btn-danger', value: 'replace' },
+        ],
+      }).then(v => { if (inst.disposed) return; if (v === 'replace') commit(); if (ui.ruinPlace) focusTool(ui.ruinPlace); });
+    }
+
+    function confirmClearDestroyedSanctuaries() {
+      if (inst.disposed || editLocked || previewMode || !doc || !doc.destroyedSanctuaries.anchorIds.length) return;
+      openDialog({
+        title: t('journey2_ruin_clear_title_dlg'),
+        lines: [fill('journey2_ruin_clear_msg', { n: n(doc.destroyedSanctuaries.anchorIds.length) }), t('journey2_echo_undo_note')],
+        actions: [
+          { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
+          { label: t('journey2_echo_clear_go'), kind: 'btn-danger', value: 'clear' },
+        ],
+      }).then(v => {
+        if (inst.disposed) return;
+        if (v === 'clear') {
+          const r = dispatch({ type: 'setDestroyedSanctuaries', anchorIds: [] }, 'ruinsClear');
+          if (!r.ok) { hint(errorText(r.error)); return; }
+          announce(t('journey2_live_ruins_cleared'));
+        }
+        if (ui.ruinPlace) focusTool(ui.ruinPlace);
+      });
+    }
+
     /** Toolbar state of the Soul Echoes group: Remove disabled when there is nothing to remove, both disabled while edits are locked. */
     function updateEchoUi() {
       if (!ui.echoPlace || !doc) return;
@@ -2178,7 +2286,7 @@
     function placeSoulEchoes() {
       if (inst.disposed || editLocked || previewMode || !doc) return;
       const commit = () => {
-        const plan = Model.planSoulEchoes(data.ctx);
+        const plan = Model.planSoulEchoes(data.ctx, undefined, Model.getDestroyedSanctuarySet(doc));   // never on a destroyed sanctuary (PD-070)
         const r = dispatch({ type: 'setSoulEchoes', anchorIds: plan.anchorIds }, 'echoesPlace');
         if (!r.ok) { hint(errorText(r.error)); return; }
         announce(fillN('journey2_live_echoes_placed', { n: n(plan.anchorIds.length) }, [plan.anchorIds.length]));
@@ -3237,6 +3345,7 @@
       } else if (ui.s.rows.getAttribute('data-sig')) { ui.s.rows.innerHTML = ''; ui.s.rows.removeAttribute('data-sig'); }
       // GM-only Soul Echo strip: one real button whose label is the next action (the dimmed crystal on the map shows the state); only when this sanctuary holds an Echo
       ui.s.echo.hidden = !echo;
+      ui.s.ruin.hidden = !(e && Model.isSanctuaryDestroyed(doc, sanctuaryOpen));   // GM note only: the flame on the map says the same; nothing to click (the name button above still works)
       if (echo) {
         const got = Model.isEchoCollected(doc, sanctuaryOpen);
         ui.s.echoLabel.textContent = t(got ? 'journey2_echo_restore' : 'journey2_echo_mark');
@@ -3471,6 +3580,7 @@
       renderFog();
       updateFogUi();
       updateEchoUi();
+      updateRuinUi();
       updateSanctuaryUi();
       renderSanctuaryRings();
       renderSanctuaryPanel();
@@ -4059,6 +4169,7 @@
         '<image class="j2-pp-base" href="' + baseHref + '" x="0" y="0" width="' + W + '" height="' + H + '" preserveAspectRatio="none"/>' +
         '<g class="j2-pp-gen" data-pp-overlays="' + page.overlays.length + '">' + overlayMarkup(page.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, region: o.region, tint: null })).concat(page.marks.map(m => ({ q: m.q, r: m.r, floating: true })))) + '</g>' +
         '<g class="j2-pp-perimeter" data-pp-segments="' + page.segments.length + '">' + (d ? '<path class="j2-perimeter" d="' + d + '"/>' : '') + '</g>' +
+        '<g class="j2-pp-ruins" data-pp-ruins="' + page.ruins.length + '">' + page.ruins.map(r => ruinMarkup(r, true)).join('') + '</g>' +
         '<g class="j2-pp-labels" data-pp-labels="' + page.labels.length + '">' + labels + '</g>' +
         '<g class="j2-pp-party" data-pp-party="' + (page.party ? 1 : 0) + '">' + (page.party ? partyMarkup(page.party.q, page.party.r, { bw: true }) : '') + '</g>' +
         '</g></svg>' +
@@ -4888,6 +4999,8 @@
       else if (b.hasAttribute('data-j2-party')) toggleParty();
       else if (b.hasAttribute('data-j2-echo-place')) placeSoulEchoes();
       else if (b.hasAttribute('data-j2-echo-clear')) confirmClearSoulEchoes();
+      else if (b.hasAttribute('data-j2-ruin-place')) placeDestroyedSanctuaries();
+      else if (b.hasAttribute('data-j2-ruin-clear')) confirmClearDestroyedSanctuaries();
       else if (b.hasAttribute('data-j2-route-plan')) startRoute();
       else if (b.hasAttribute('data-j2-route-cancel')) exitRoute({ focus: true });
       else if (b.hasAttribute('data-j2-route-details-close')) closeRouteDetails();

@@ -24,6 +24,7 @@
      - `sanctuaryLabels`: [{ anchorId, name }] sorted by anchor id — ONLY the names the GM revealed by hand (PD-027), independent of fog. Nothing else
        about a sanctuary (tables, rolls, Soul Echo, notes) is ever emitted, and an unrevealed sanctuary is absent altogether. `Geo.layoutSanctuaryLabels` places them.
      - `collectedEchoes`: sorted sanctuary ids of Soul Echoes the GM marked Collected whose sanctuary hex is REVEALED (PD-052; fog wins). Nothing else about Echoes is ever emitted; the print blanks it.
+     - `destroyedSanctuaries`: sorted sanctuary ids the GM marked destroyed (PD-070) whose sanctuary hex is REVEALED (fog wins, the party's light counts). Nothing else — never how many exist. The print KEEPS it.
    What it never contains (GM-only): batch/tile/region ids, Encounter, Rumor, notes, the suggested-environment
    list, placement state, selection, warnings, diagnostics, history, an Available Echo.
 
@@ -67,6 +68,17 @@
   }
 
   /**
+   * Destroyed sanctuaries players know about (PD-070): a sanctuary the GM's Campaign menu marked destroyed, and only while its own hex is revealed — Fog of War
+   * beats it, the party's light counts, and how many exist is never emitted. Sorted sanctuary ids. Unlike an Echo this one also reaches the print.
+   */
+  function destroyedSanctuariesOf(doc, ctx, revealed) {
+    if (!ctx) return [];
+    const ruined = Model.getDestroyedSanctuarySet(doc), out = [];
+    for (const s of ctx.sanctuaries) if (ruined.has(s.id) && s.cellId && revealed.has(s.cellId)) out.push(s.id);
+    return out.sort();
+  }
+
+  /**
    * Builds the player-facing projection of `doc`. Pure; the result is a plain JSON-safe object that shares nothing
    * mutable with the document.
    */
@@ -97,6 +109,7 @@
     }
     const sanctuaryLabels = sanctuaryLabelsOf(doc);
     const collectedEchoes = collectedEchoesOf(doc, ctx, revealed);
+    const destroyedSanctuaries = destroyedSanctuariesOf(doc, ctx, revealed);
     const partyCell = Model.getPartyCell(doc), partyAt = partyCell ? Geo.parseCellId(partyCell) : null;
     // without a context nothing counts as "never fogged", which is the strictest (never leaking) reading
     const foggable = ctx ? (key => Model.isFoggableCell(ctx, key)) : null;
@@ -107,6 +120,7 @@
       shadowMarks: shadowMarks,
       sanctuaryLabels: sanctuaryLabels,
       collectedEchoes: collectedEchoes,
+      destroyedSanctuaries: destroyedSanctuaries,
       party: partyAt ? { q: partyAt.q, r: partyAt.r } : null,
       perimeter: Model.regionBoundarySegments(doc, ctx || null, key => revealed.has(key), foggable),
     };
@@ -124,7 +138,7 @@
     p.printMode = color ? 'color' : 'bw';
     p.shadowMarks = [];                                        // no Shadowblight X in the print, on open ground or on a tile
     for (const o of p.overlays) o.blightMark = false;
-    p.collectedEchoes = [];                                  // the print carries no Soul Echo, collected or not (PD-028)
+    p.collectedEchoes = [];                                  // the print carries no Soul Echo, collected or not (PD-028); destroyedSanctuaries stays (PD-070), already limited to revealed hexes
     return p;
   }
 

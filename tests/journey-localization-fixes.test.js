@@ -21,7 +21,7 @@ function helpers(lang) {
 const ONE_COUNT = {
   journey2_days_per_hex: n => ({ n }), journey2_terrain_tip: n => ({ n, d: n }), journey2_all_placed: n => ({ n }), journey2_live_separate_started: n => ({ n }),
   journey2_live_placed: n => ({ n }), journey2_live_created: n => ({ name: 'X', n }), journey2_handle_all_aria: n => ({ name: 'X', n }),
-  journey2_live_echoes_placed: n => ({ n }), journey2_route_known_days: n => ({ n }), journey2_route_live_result: n => ({ strategy: 'S', hexes: n }),
+  journey2_live_echoes_placed: n => ({ n }), journey2_live_ruins_placed: n => ({ n }), journey2_route_known_days: n => ({ n }), journey2_route_live_result: n => ({ strategy: 'S', hexes: n }),
   journey2_route_bub_unknown: n => ({ hexes: n, dist: 'D' }), journey2_sanc_generate: n => ({ n }), journey2_sanc_replace_msg: n => ({ n }),
   journey2_live_sanc_generated: n => ({ n }), journey2_sanc_replace_visible_msg: n => ({ n }),
 };

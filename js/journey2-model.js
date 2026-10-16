@@ -16,6 +16,7 @@
        tiles:   [ { id, batchId, cell: "q,r", environmentId? } ],
        playerVisibility: { revealedCells: [ "q,r", ... ], revealedSanctuaryNameAnchorIds: [ "mk-012", ... ] },
        soulEchoes: { anchorIds: [ "mk-012", ... ], collectedAnchorIds: [ "mk-012" ] },
+       destroyedSanctuaries: { anchorIds: [ "mk-007", ... ] },
        sanctuaries: { entries: [ { anchorId, name, trade, quirk, crisis, drive, politics: { rolls }, size, population } ] },
        shadowMarks: { added: [ "q,r", ... ], suppressed: [ "q,r", ... ] },
        party: { cell: "q,r" | null, shown: boolean } }
@@ -36,6 +37,8 @@
    Soul Echoes (PD-024) are GM-only secrets: at most nine sanctuary stable ids (never a destination), optional on
    load (missing = none, so schemaVersion stays 1), and never part of the player projection. `collectedAnchorIds` (PD-030) is the sorted
    subset the GM has collected; missing = every Echo Available, and a new or removed distribution always resets it.
+   Destroyed sanctuaries (PD-070) are five printed sanctuaries the GM has marked burnt out: optional on load (missing = none, schemaVersion stays 1), disjoint from
+   the Soul Echo sanctuaries (the model refuses an overlap both ways), independent of generated settlements. Unlike an Echo, players DO see one — on a revealed hex only.
    Sanctuaries (PD-023) are GM-only generated settlements: one entry per printed sanctuary icon (keyed by its stable anchor id),
    holding the NUMBERS that came up — never the table sentences — so a saved map reads back in either language. Optional on load
    (missing = none, schemaVersion stays 1), never part of the player projection or a print.
@@ -88,7 +91,8 @@
   const HISTORY_LIMIT = 100;
 
   const ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
-  const DOC_KEYS = ['schemaVersion', 'kind', 'templateId', 'templateVersion', 'createdAt', 'updatedAt', 'batches', 'tiles', 'playerVisibility', 'soulEchoes', 'sanctuaries', 'shadowMarks', 'party'];
+  const DOC_KEYS = ['schemaVersion', 'kind', 'templateId', 'templateVersion', 'createdAt', 'updatedAt', 'batches', 'tiles', 'playerVisibility', 'soulEchoes', 'destroyedSanctuaries', 'sanctuaries', 'shadowMarks', 'party'];
+  const DESTROYED_KEYS = ['anchorIds'];
   const PARTY_KEYS = ['cell', 'shown'];
   const SHADOW_KEYS = ['added', 'suppressed'];
   const VISIBILITY_KEYS = ['revealedCells', 'revealedSanctuaryNameAnchorIds'];
@@ -102,6 +106,8 @@
   const MAX_SANCTUARY_NAME = 80;
   /** The campaign frame hides exactly nine Soul Echoes in nine different sanctuaries (PD-024). A hard limit. */
   const MAX_SOUL_ECHOES = 9;
+  /** Exactly five printed sanctuaries can be marked destroyed (PD-070). A hard limit, like the nine Echoes. */
+  const MAX_DESTROYED_SANCTUARIES = 5;
   const BATCH_KEYS = ['id', 'createdAt', 'habitat', 'terrain', 'quantity', 'quantitySource', 'encounter', 'rumor', 'notes'];
   const HABITAT_KEYS = ['biome', 'blighted', 'overtaken', 'source', 'rolls'];
   const TILE_KEYS = ['id', 'batchId', 'cell', 'environmentId'];
@@ -168,13 +174,14 @@
 
   function emptyDocument(ctx, nowIso) {
     const now = nowIso || new Date().toISOString();
-    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [], revealedSanctuaryNameAnchorIds: [] }, soulEchoes: { anchorIds: [], collectedAnchorIds: [] }, sanctuaries: { entries: [] }, shadowMarks: { added: [], suppressed: [] }, party: { cell: null, shown: false } };
+    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [], revealedSanctuaryNameAnchorIds: [] }, soulEchoes: { anchorIds: [], collectedAnchorIds: [] }, destroyedSanctuaries: { anchorIds: [] }, sanctuaries: { entries: [] }, shadowMarks: { added: [], suppressed: [] }, party: { cell: null, shown: false } };
   }
 
   function isEmptyDocument(doc) {
     return !doc || (doc.batches.length === 0 && doc.tiles.length === 0
       && !(doc.playerVisibility && (doc.playerVisibility.revealedCells.length || (doc.playerVisibility.revealedSanctuaryNameAnchorIds || []).length))
       && !(doc.soulEchoes && doc.soulEchoes.anchorIds.length)
+      && !(doc.destroyedSanctuaries && doc.destroyedSanctuaries.anchorIds.length)
       && !(doc.sanctuaries && doc.sanctuaries.entries.length)
       && !(doc.shadowMarks && (doc.shadowMarks.added.length || doc.shadowMarks.suppressed.length))
       && !(doc.party && doc.party.cell));
@@ -346,12 +353,13 @@
     for (const [id, n] of placed) if (n > quantity.get(id)) errors.push('batch "' + id + '": ' + n + ' tiles placed but quantity is ' + quantity.get(id));
     const vis = validateVisibility(doc.playerVisibility, ctx, errors);
     const echoes = validateSoulEchoes(doc.soulEchoes, ctx, errors);
+    const destroyed = validateDestroyedSanctuaries(doc.destroyedSanctuaries, ctx, errors, echoes);
     const sanctuaries = validateSanctuaries(doc.sanctuaries, ctx, errors);
     vis.revealedSanctuaryNameAnchorIds = validateRevealedSanctuaryNames(doc.playerVisibility, sanctuaries, ctx, errors);
     const shadow = validateShadowMarks(doc.shadowMarks, ctx, errors);
     const party = validateParty(doc.party, ctx, errors);
     if (errors.length) return { ok: false, code: 'invalid', errors: errors.slice(0, 20) };
-    return { ok: true, doc: { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: doc.templateId, templateVersion: doc.templateVersion, createdAt: doc.createdAt, updatedAt: doc.updatedAt, batches: batches, tiles: tiles, playerVisibility: vis, soulEchoes: echoes, sanctuaries: sanctuaries, shadowMarks: normalizeShadowMarks({ batches: batches, tiles: tiles }, shadow.added, shadow.suppressed), party: party } };
+    return { ok: true, doc: { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: doc.templateId, templateVersion: doc.templateVersion, createdAt: doc.createdAt, updatedAt: doc.updatedAt, batches: batches, tiles: tiles, playerVisibility: vis, soulEchoes: echoes, destroyedSanctuaries: destroyed, sanctuaries: sanctuaries, shadowMarks: normalizeShadowMarks({ batches: batches, tiles: tiles }, shadow.added, shadow.suppressed), party: party } };
   }
 
   /** Text -> validated document. Size-limited; never throws. */
@@ -581,6 +589,64 @@
     return ((doc.soulEchoes && doc.soulEchoes.anchorIds) || []).filter(id => !got.has(id));
   }
 
+  /* ---------------- Destroyed sanctuaries (PD-070) ---------------- */
+
+  /**
+   * Validates `destroyedSanctuaries` (load + import). MISSING is not an error (an old document simply has none); a present one must be
+   * { anchorIds: [<= 5 distinct sanctuary stable ids] }. A sanctuary that holds a Soul Echo can never also be destroyed: such a document is
+   * rejected whole, never repaired. `echoes` is the already-validated soulEchoes object.
+   */
+  function validateDestroyedSanctuaries(v, ctx, errors, echoes) {
+    const none = { anchorIds: [] };
+    if (v === undefined || v === null) return none;
+    if (!isObj(v)) { errors.push('destroyedSanctuaries: not an object'); return none; }
+    checkKeys(v, DESTROYED_KEYS, 'destroyedSanctuaries', errors);
+    if (v.anchorIds === undefined) return none;
+    if (!Array.isArray(v.anchorIds)) { errors.push('destroyedSanctuaries.anchorIds: not an array'); return none; }
+    if (v.anchorIds.length > MAX_DESTROYED_SANCTUARIES) { errors.push('destroyedSanctuaries.anchorIds: more than ' + MAX_DESTROYED_SANCTUARIES + ' destroyed sanctuaries'); return none; }
+    const withEcho = new Set((echoes && echoes.anchorIds) || []), ids = [];
+    for (let i = 0; i < v.anchorIds.length; i++) {
+      const id = v.anchorIds[i];
+      if (typeof id !== 'string' || !ctx.sanctuaryIds.has(id)) { errors.push('destroyedSanctuaries.anchorIds[' + i + ']: not a sanctuary'); continue; }
+      if (withEcho.has(id)) { errors.push('destroyedSanctuaries.anchorIds[' + i + ']: also holds a Soul Echo'); continue; }
+      ids.push(id);
+    }
+    if (new Set(ids).size !== ids.length) errors.push('destroyedSanctuaries.anchorIds: duplicate sanctuary');
+    return { anchorIds: sortEchoIds(ids) };
+  }
+
+  /** The destroyed sanctuaries as a Set (a document without the field reads as none). */
+  function getDestroyedSanctuarySet(doc) { return new Set((doc && doc.destroyedSanctuaries && doc.destroyedSanctuaries.anchorIds) || []); }
+  function isSanctuaryDestroyed(doc, anchorId) { return getDestroyedSanctuarySet(doc).has(anchorId); }
+
+  /* Spread thresholds, as a fraction of the sanctuaries' bounding-box diagonal: no two ruins nearly on top of each other. */
+  const DESTROYED_MIN_SEPARATION = 0.16;
+  const DESTROYED_ATTEMPTS = 200;
+
+  /**
+   * Chooses five sanctuaries to be destroyed: a plain random draw from the sanctuaries NOT in `exclude` (a Set of ids — the Soul Echo sanctuaries), retried until
+   * no two are close (bounded; the best attempt wins). Ruin is not "even": there are no west-to-east bands. `rng` is any () => [0,1) (injected for tests).
+   */
+  function planDestroyedSanctuaries(ctx, rng, exclude) {
+    const rand = typeof rng === 'function' ? rng : Math.random;
+    const skip = exclude instanceof Set ? exclude : new Set(exclude || []);
+    const pool = ctx.sanctuaries.filter(s => !skip.has(s.id));
+    const n = Math.min(MAX_DESTROYED_SANCTUARIES, pool.length);
+    if (!n) return { anchorIds: [], satisfied: false };
+    const xs = ctx.sanctuaries.map(s => s.x), ys = ctx.sanctuaries.map(s => s.y);
+    const minSep = DESTROYED_MIN_SEPARATION * Math.hypot(Math.max.apply(null, xs) - Math.min.apply(null, xs), Math.max.apply(null, ys) - Math.min.apply(null, ys));
+    let best = null;
+    for (let k = 0; k < DESTROYED_ATTEMPTS; k++) {
+      const left = pool.slice(), picks = [];
+      for (let i = 0; i < n; i++) picks.push(left.splice(Math.min(left.length - 1, Math.floor(rand() * left.length)), 1)[0]);
+      let sep = Infinity;
+      for (let i = 0; i < picks.length; i++) for (let j = i + 1; j < picks.length; j++) sep = Math.min(sep, Math.hypot(picks[i].x - picks[j].x, picks[i].y - picks[j].y));
+      if (!best || sep > best.sep) best = { picks: picks, sep: sep };
+      if (sep >= minSep) break;
+    }
+    return { anchorIds: sortEchoIds(best.picks.map(p => p.id)), satisfied: best.sep >= minSep };
+  }
+
   /* ---------------- Sanctuaries (GM-only generated settlements, PD-023) ---------------- */
 
   /**
@@ -704,16 +770,18 @@
    * and neither collinear nor confined to one latitude. Randomness is inspiration, not edict: the result is only a
    * proposal — the caller turns it into a setSoulEchoes command with these exact ids, so Redo never re-rolls.
    * `rng` is any () => [0,1) (injected for tests). Bounded retries; the best attempt is returned if none satisfies every rule.
+   * `exclude` (optional Set of ids — the destroyed sanctuaries, PD-070) are never picked: the bands are cut from the remaining sanctuaries.
    */
-  function planSoulEchoes(ctx, rng) {
+  function planSoulEchoes(ctx, rng, exclude) {
     const rand = typeof rng === 'function' ? rng : Math.random;
-    const all = ctx.sanctuaries;
+    const skip = exclude instanceof Set ? exclude : new Set(exclude || []);
+    const every = ctx.sanctuaries, all = every.filter(s => !skip.has(s.id));
     if (!all.length) return { anchorIds: [], satisfied: false };
     const n = Math.min(MAX_SOUL_ECHOES, all.length);
     const bands = [];
     for (let i = 0; i < n; i++) bands.push(all.slice(Math.floor(i * all.length / n), Math.floor((i + 1) * all.length / n)));
 
-    const xs = all.map(s => s.x), ys = all.map(s => s.y);
+    const xs = every.map(s => s.x), ys = every.map(s => s.y);
     const w = Math.max.apply(null, xs) - Math.min.apply(null, xs), h = Math.max.apply(null, ys) - Math.min.apply(null, ys);
     const minSep = ECHO_MIN_SEPARATION * Math.hypot(w, h), minNS = ECHO_MIN_NORTH_SOUTH * h, minScatter = ECHO_MIN_SCATTER * h;
 
@@ -1010,6 +1078,9 @@
    *                                                                   invalid/duplicate keys are ignored; nothing to change => noop
    *   setSoulEchoes { anchorIds:["mk-012"...], at }                GM-only: REPLACES the whole set (<= 9 distinct sanctuary ids; [] removes all) and CLEARS
    *                                                                the collected state; touches ONLY soulEchoes; same set with nothing collected => noop; anything else is refused whole
+   *   setDestroyedSanctuaries { anchorIds:["mk-012"...], at }      REPLACES the whole set of destroyed sanctuaries (PD-070; <= 5 distinct sanctuary ids; [] removes all); touches ONLY
+   *                                                                destroyedSanctuaries; an id that holds a Soul Echo is refused ('destroyed-with-echo'), and setSoulEchoes refuses a destroyed id
+   *                                                                ('echo-on-destroyed'); same set => noop
    *   setSoulEchoCollected { anchorId, collected:boolean, at }     GM-only: mark one distributed Echo Collected / Available again; unknown anchor, a destination
    *                                                                (Marrogate / Horizon) or an anchor without an Echo is refused; already in that state => noop
    *   setSanctuaries { entries:[{anchorId,name,trade,...}], at }   GM-only: REPLACES every generated sanctuary (one entry per sanctuary id; [] removes
@@ -1126,10 +1197,22 @@
         if (!Array.isArray(cmd.anchorIds)) return fail('bad-echoes');
         if (cmd.anchorIds.length > MAX_SOUL_ECHOES) return fail('too-many-echoes');
         if (!cmd.anchorIds.every(id => typeof id === 'string' && ctx.sanctuaryIds.has(id))) return fail('bad-echoes');
+        const ruined = getDestroyedSanctuarySet(doc);
+        if (cmd.anchorIds.some(id => ruined.has(id))) return fail('echo-on-destroyed');   // a destroyed sanctuary never holds an Echo (PD-070)
         const next = sortEchoIds(cmd.anchorIds), have = doc.soulEchoes ? doc.soulEchoes.anchorIds : [], got = doc.soulEchoes ? (doc.soulEchoes.collectedAnchorIds || []) : [];
         if (next.length === have.length && next.every((id, i) => id === have[i]) && !got.length) return { ok: true, doc: doc, noop: true };
         // a new (or removed) distribution always starts with every Echo Available: collected state never outlives the set it belonged to
         return { ok: true, doc: touch(doc, cmd.at, { soulEchoes: { anchorIds: next, collectedAnchorIds: [] } }), changed: next.length };
+      }
+      case 'setDestroyedSanctuaries': {
+        if (!Array.isArray(cmd.anchorIds)) return fail('bad-destroyed');
+        if (cmd.anchorIds.length > MAX_DESTROYED_SANCTUARIES) return fail('too-many-destroyed');
+        if (!cmd.anchorIds.every(id => typeof id === 'string' && ctx.sanctuaryIds.has(id)) || new Set(cmd.anchorIds).size !== cmd.anchorIds.length) return fail('bad-destroyed');
+        const withEcho = new Set(doc.soulEchoes ? doc.soulEchoes.anchorIds : []);
+        if (cmd.anchorIds.some(id => withEcho.has(id))) return fail('destroyed-with-echo');   // a sanctuary with a Soul Echo can never be destroyed (PD-070)
+        const next = sortEchoIds(cmd.anchorIds), have = doc.destroyedSanctuaries ? doc.destroyedSanctuaries.anchorIds : [];
+        if (next.length === have.length && next.every((id, i) => id === have[i])) return { ok: true, doc: doc, noop: true };
+        return { ok: true, doc: touch(doc, cmd.at, { destroyedSanctuaries: { anchorIds: next } }), changed: next.length };
       }
       case 'setSoulEchoCollected': {
         if (typeof cmd.collected !== 'boolean') return fail('bad-collected');
@@ -1420,6 +1503,7 @@
     createHistory: createHistory, historyCommit: historyCommit, historyUndo: historyUndo, historyRedo: historyRedo, historyClear: historyClear,
     compactFootprint: compactFootprint, randomFootprint: randomFootprint, fitFootprint: fitFootprint,
     shadowBase: shadowBase, getShadowXSet: getShadowXSet, getPendingSkullSet: getPendingSkullSet, normalizeShadowMarks: normalizeShadowMarks, validateShadowMarks: validateShadowMarks,
+    MAX_DESTROYED_SANCTUARIES: MAX_DESTROYED_SANCTUARIES, planDestroyedSanctuaries: planDestroyedSanctuaries, getDestroyedSanctuarySet: getDestroyedSanctuarySet, isSanctuaryDestroyed: isSanctuaryDestroyed,
     MAX_SOUL_ECHOES: MAX_SOUL_ECHOES, planSoulEchoes: planSoulEchoes, getCollectedEchoSet: getCollectedEchoSet, isEchoCollected: isEchoCollected, availableEchoIds: availableEchoIds,
     SANCTUARY_DICE: SANCTUARY_DICE, MAX_SANCTUARY_NAME: MAX_SANCTUARY_NAME, validateSanctuaryEntry: validateSanctuaryEntry, planSanctuaries: planSanctuaries,
     getRevealedSanctuaryNameSet: getRevealedSanctuaryNameSet, isSanctuaryNameRevealed: isSanctuaryNameRevealed,
