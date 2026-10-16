@@ -193,6 +193,7 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-menu-h { margin: var(--s-2) var(--s-3) var(--s-1); font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--muted); }
 .j2-menu-h:first-child { margin-top: var(--s-1); }
 .j2-mi { display: flex; align-items: center; gap: var(--s-3); }
+.j2-mi[hidden] { display: none; }   /* `.j2-mi` sets display: flex, which would otherwise override `hidden` (the Party marker item is player-page only) */
 .j2-mi-ico { display: inline-flex; color: var(--parchment-dim); }
 .j2-mi-ico .j2-li { width: 18px; height: 18px; }
 .j2-mi:disabled { opacity: var(--opacity-disabled); cursor: default; }
