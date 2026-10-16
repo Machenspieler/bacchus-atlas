@@ -32,7 +32,7 @@ test('the toolbar strip and the old row toolbar are gone; the panel is title, mo
 test('rail: always visible, its buttons ARE the tools (no proxies), each with a one-word label and a shortcut key', () => {
   const tools = [['data-j2-party', 'journey2_party_btn', 'P'], ['data-j2-route-plan', 'journey2_rail_route', 'R'], ['data-j2-echo-locate', 'journey2_rail_locate', 'E'], ['data-j2-fog-tool="paint"', 'journey2_rail_brush', 'E']];
   for (const [attr, label, key] of tools) assert.match(rail, new RegExp("railBtn\\('" + attr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + "[^']*', LI\\.\\w+, '" + label + "', '" + key + "'\\)"), attr);
-  for (const attr of ['data-j2-outline', 'data-j2-print-open', 'data-j2-share-link', 'data-j2-mode-toggle', 'data-j2-menu-btn="campaign"', 'data-j2-side-toggle']) assert.ok(rail.includes(attr), attr + ' is in the rail');
+  for (const attr of ['data-j2-print-open', 'data-j2-share-link', 'data-j2-mode-toggle', 'data-j2-menu-btn="campaign"', 'data-j2-side-toggle']) assert.ok(rail.includes(attr), attr + ' is in the rail');
   assert.doesNotMatch(view, /data-j2-rail-src|RAIL_SOURCES|railProxies|railOf|function syncRail|new MutationObserver\(syncRail\)|ui\.rail\.inert/, 'no mirrored proxies: the state code writes to the real buttons');
   assert.doesNotMatch(css, /\.j2-rail-btn|\.j2-rail-zoom/);
   assert.match(css, /\.j2-rb-key \{ position: absolute;/, 'the shortcut is a keycap in the corner');

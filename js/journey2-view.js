@@ -716,7 +716,6 @@
                   <span class="sr-only" id="j2-locate-reason" data-j2-locate-reason></span>
                 </div>
                 <div class="j2-rail-grp" data-j2-rail-pv role="group" data-t-aria="journey2_rail_share" hidden>
-                  ${railBtn('data-j2-outline aria-pressed="false" data-t-title="journey2_outline_title"', LI.hexes, 'journey2_rail_outline')}
                   ${railBtn('data-j2-print-open data-t-title="journey2_pp_open_title"', LI.print, 'journey2_rail_print')}
                   ${railBtn('data-j2-share-link data-t-title="journey2_share_title"', LI.link, 'journey2_rail_link')}
                 </div>
@@ -734,6 +733,7 @@
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-biome-colors><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_biome_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-sepia><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_sepia_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="false" data-j2-regions><span class="j2-mi-ico" aria-hidden="true">${LI.hexes}</span><span data-t="journey2_regions_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
+                    <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="false" data-j2-outline data-t-title="journey2_outline_title" hidden><span class="j2-mi-ico" aria-hidden="true">${LI.hexes}</span><span data-t="journey2_rail_outline"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-party-mark hidden><span class="j2-mi-ico" aria-hidden="true">${LI.party}</span><span data-t="journey2_party_mark_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                   </div>
                 </div>
@@ -3732,7 +3732,7 @@
       ui.partyMark.setAttribute('aria-checked', String(showPartyMark));
       ui.partyMark.title = showPartyMark ? t('journey2_party_mark_hide') : t('journey2_party_mark_show');
       ui.fogTool.setAttribute('aria-pressed', String(!!fogTool));
-      ui.outlineBtn.setAttribute('aria-pressed', String(showOutline));
+      ui.outlineBtn.setAttribute('aria-checked', String(showOutline));
       ui.outlineBtn.title = t(showOutline ? 'journey2_outline_hide' : 'journey2_outline_title');
       ui.fogTool.disabled = editLocked;
       ui.viewport.classList.toggle('is-fog-tool', !!fogTool);
@@ -3934,6 +3934,7 @@
       ui.gen.hidden = on; ui.sideScroll.hidden = on; ui.previewBar.hidden = !on || playerMode; ui.railStock.hidden = on;
       for (const row of container.querySelectorAll('[data-j2-gm-row]')) row.hidden = on;
       ui.railPv.hidden = !on || playerMode;
+      ui.outlineBtn.hidden = !on || playerMode;                // the placed-hex outline is a GM aid: a Display item of Player Preview only
       ui.fogTool.hidden = !on || playerMode;
       ui.echoLocate.hidden = on;
       ui.previewBack.setAttribute('aria-pressed', String(!on));
