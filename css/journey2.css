@@ -608,37 +608,13 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 @keyframes j2-echo-pulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
 @keyframes j2-echo-bob { 0%, 100% { transform: translateY(1.5px); } 50% { transform: translateY(-1.5px); } }
 @media (prefers-reduced-motion: reduce) { .j2-overlay .j2-echo-glow, .j2-overlay .j2-echo-bob { animation: none; } }
-/* Destroyed sanctuary (PD-070): a low fire on the lower half of the icon, a thin smoke the wind drags up and to the right. Fixed map colours (a map object, not UI chrome), like the Echo crystal.
-   Animated by CSS only; under prefers-reduced-motion the still smoke replaces the moving one. `.is-print` (the A4 page) and `.is-legend` (the legend swatch) never animate. */
-.j2-ruin-glow { fill: url(#j2-ruin-glow); animation: j2-ruin-glow 3s ease-in-out infinite; }
-.j2-ruin-bed { fill: #1f0d07; opacity: 0.55; }
-.j2-ruin-flame-out { fill: url(#j2-ruin-flame); stroke: none; transform-box: fill-box; transform-origin: 50% 100%; animation: j2-ruin-flicker 1.5s ease-in-out infinite; }
-.j2-ruin-flame-in { fill: #ffd98a; opacity: 0.55; stroke: none; transform-box: fill-box; transform-origin: 50% 100%; animation: j2-ruin-core 1.1s ease-in-out infinite; }
-.j2-ruin-ember { fill: #ffb55a; opacity: 0; animation: j2-ruin-ember 2.7s ease-out infinite; }
-.j2-ruin-puff { fill: url(#j2-ruin-smoke); opacity: 0; transform: translate(6px, -20px) scale(0.6); animation: j2-ruin-smoke 6.9s linear infinite; }
-.j2-ruin-still { display: none; }
-.j2-ruin-still-puff { fill: url(#j2-ruin-smoke); }
-@keyframes j2-ruin-glow { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
-@keyframes j2-ruin-flicker { 0%, 100% { transform: scale(1, 1) skewX(0deg); } 20% { transform: scale(0.94, 1.1) skewX(-3deg); } 45% { transform: scale(1.04, 0.9) skewX(2.5deg); } 70% { transform: scale(0.97, 1.06) skewX(-1.5deg); } }
-@keyframes j2-ruin-core { 0%, 100% { transform: scale(1, 1); opacity: 0.55; } 40% { transform: scale(0.85, 1.15); opacity: 0.7; } 75% { transform: scale(1.05, 0.9); opacity: 0.45; } }
-@keyframes j2-ruin-ember { 0% { transform: translate(0, 0); opacity: 0; } 15% { opacity: 0.9; } 100% { transform: translate(7px, -26px); opacity: 0; } }
-@keyframes j2-ruin-smoke {
-  0% { transform: translate(6px, -20px) rotate(0deg) scale(0.6, 0.5); opacity: 0; }
-  14% { opacity: 0.8; }
-  35% { transform: translate(18px, -38px) rotate(-10deg) scale(1.1, 0.95); }
-  65% { transform: translate(46px, -60px) rotate(8deg) scale(1.8, 1.4); opacity: 0.45; }
-  100% { transform: translate(100px, -84px) rotate(-6deg) scale(2.8, 1.9); opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .j2-ruin-glow, .j2-ruin-flame-out, .j2-ruin-flame-in, .j2-ruin-ember { animation: none; }
-  .j2-ruin-ember { display: none; }
-  .j2-ruin-smoke { display: none; }
-  .j2-ruin-still { display: inline; }
-}
-/* Destroyed sanctuary, second technique (prototype, screen only): two canvases drawn by js/journey2-ruin-fx.js; the foreignObjects are pointer-transparent and sized by the map units, the bitmap fills them. */
+/* Destroyed sanctuary (PD-070). On the screen map: two canvases drawn by js/journey2-ruin-fx.js (smoke plume and fire, animated there, one still frame under
+   prefers-reduced-motion); the foreignObjects are pointer-transparent and sized by the map units, the bitmap fills them. The legend swatch is a static symbol
+   (flame gradient tongues); the print and the no-canvas fallback are the still black-and-white drawing below (`.is-print`). */
 .j2-r2-fo { pointer-events: none; overflow: hidden; }
 .j2-r2-cv { display: block; width: 100%; height: 100%; pointer-events: none; }
-.j2-ruin.is-legend .j2-ruin-flame-out, .j2-ruin.is-legend .j2-ruin-flame-in, .j2-ruin.is-print .j2-ruin-flame-out, .j2-ruin.is-print .j2-ruin-flame-in { animation: none; }
+.j2-ruin-flame-out { fill: url(#j2-ruin-flame); stroke: none; }
+.j2-ruin-flame-in { fill: #ffd98a; opacity: 0.55; stroke: none; }
 /* printed: black ink only, no gradient — white tongues with a fine black outline and a black core, a wavy smoke strand with a white halo */
 .j2-ruin.is-print .j2-ruin-still { display: inline; }
 .j2-ruin.is-print .j2-ruin-bed { fill: #000; opacity: 0.8; }

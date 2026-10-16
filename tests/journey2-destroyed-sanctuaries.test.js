@@ -268,28 +268,35 @@ test('view: the Campaign menu has a destroyed-sanctuaries group (place + remove)
   assert.match(view, /b\.hasAttribute\('data-j2-ruin-clear'\)\) confirmClearDestroyedSanctuaries\(\)/);
 });
 
-test('view: the glyph is a flame ON the icon and smoke up and to the right; the printed one is flat black and white with no gradient', () => {
+test('view: every screen ruin is the canvas FX; the still black-and-white drawing is the print (and only the no-canvas fallback on screen)', () => {
+  const body = strip(fn('renderRuins', 'updateRuinUi'));
+  assert.match(body, /h \+= ruinFxMarkup\(s\)/, 'all destroyed sanctuaries the viewer may see, not a prototype subset');
+  assert.doesNotMatch(view, /RUIN_V2_COUNT|ruin2Markup/);
+  assert.match(body, /Journey2RuinFx\.attach\(ui\.g\.ruins\)/);
+  assert.match(body, /previewMode && key === ruinShownKey\) return/, 'Player Preview does not rebuild the canvases while the visible set is unchanged');
+  const fx = strip(fn('ruinFxMarkup', 'ruinMarkup'));
+  assert.match(fx, /scale\(' \+ RUIN_SCALE \+ '\)">' \+ Fx\.markup\(s\.id\)/);
+  assert.match(fx, /getContext\) return ruinMarkup\(s, false\)/);
   const m = strip(fn('ruinMarkup', 'renderTiles'));
   assert.match(m, /print \? RUIN_SCALE_PRINT : RUIN_SCALE/);
-  assert.match(m, /if \(!print\) \{[\s\S]*j2-ruin-glow[\s\S]*j2-ruin-puff/, 'the animated parts exist only on screen');
-  const smoke = view.match(/const RUIN_SMOKE = (\[\[[^;]*\]\]);/);
-  const pts = JSON.parse(smoke[1]);
-  for (let i = 1; i < pts.length; i++) { assert.ok(pts[i][0] > pts[i - 1][0], 'each puff is further right'); assert.ok(pts[i][1] < pts[i - 1][1], 'and higher up'); assert.ok(pts[i][2] > pts[i - 1][2], 'and larger'); }
-  const farX = pts[pts.length - 1][0] + pts[pts.length - 1][2], farY = -pts[pts.length - 1][1] + pts[pts.length - 1][2];
+  assert.match(m, /class="j2-ruin is-print"/);
+  assert.doesNotMatch(m, /j2-ruin-glow|j2-ruin-puff|j2-ruin-ember|animation-delay/, 'no animated SVG parts are left');
+  // the printed strands drift up and to the right and fit the print box
+  const strands = view.match(/const RUIN_STRANDS = \[([^\]]*)\]/)[1].match(/'[^']*'/g).map(x => x.slice(1, -1));
+  const nums = strands[0].match(/-?\d+(\.\d+)?/g).map(Number), end = [nums[nums.length - 2], nums[nums.length - 1]];
+  assert.ok(end[0] > 60 && end[1] < -60, 'the long strand ends up and to the right');
   const k = Number(view.match(/const RUIN_SCALE_PRINT = ([\d.]+);/)[1]);
-  assert.ok(farX * k <= PR_BOX()[2] - PR_BOX()[0] && farY * k <= PR_BOX()[1] && 16 * k <= PR_BOX()[3] - PR_BOX()[1], 'the print box contains the printed glyph');
+  assert.ok(end[0] * k <= PR_BOX()[2] - PR_BOX()[0] && -end[1] * k <= PR_BOX()[1] && 16 * k <= PR_BOX()[3] - PR_BOX()[1], 'the print box contains the printed glyph');
   assert.doesNotMatch(css.slice(css.indexOf('.j2-ruin.is-print .j2-ruin-still {')), /url\(#/, 'no gradient in the print rules');
 });
 function PR_BOX() { const m = read('js/journey2-print.js').match(/const RUIN_BOX = \[(\d+), (\d+), (\d+), (\d+)\]/); return [Number(m[1]), Number(m[2]), Number(m[3]), Number(m[4])]; }
 
-test('css: the animation is CSS only and stops under prefers-reduced-motion (a still smoke replaces the moving one); print and legend never animate', () => {
-  assert.match(css, /\.j2-ruin-puff \{[^}]*animation: j2-ruin-smoke/);
-  const reduce = css.slice(css.indexOf('@media (prefers-reduced-motion: reduce) {\r\n  .j2-ruin-glow') >= 0 ? css.indexOf('@media (prefers-reduced-motion: reduce) {\r\n  .j2-ruin-glow') : css.indexOf('@media (prefers-reduced-motion: reduce) {\n  .j2-ruin-glow'));
-  assert.match(reduce, /\.j2-ruin-glow, \.j2-ruin-flame-out, \.j2-ruin-flame-in, \.j2-ruin-ember \{ animation: none; \}/);
-  assert.match(reduce, /\.j2-ruin-smoke \{ display: none; \}/);
-  assert.match(reduce, /\.j2-ruin-still \{ display: inline; \}/);
-  assert.match(css, /\.j2-ruin\.is-legend \.j2-ruin-flame[^{]*\{ animation: none; \}/);
-  assert.doesNotMatch(strip(view), /requestAnimationFrame\([^)]*ruin|setInterval\([^)]*ruin/i, 'no JS timer drives it');
+test('css: no CSS animation is left on the ruin glyph; the canvases are pointer-transparent; the print rules are black and white', () => {
+  assert.doesNotMatch(css, /j2-ruin-(glow|puff|ember|still-puff|smoke)|@keyframes j2-ruin/, 'the old animated SVG look is gone');
+  assert.doesNotMatch(css.slice(css.indexOf('/* Destroyed sanctuary (PD-070)'), css.indexOf('/* committed terrain')), /animation/);
+  assert.match(css, /\.j2-r2-fo \{[^}]*pointer-events: none/);
+  assert.match(css, /\.j2-ruin\.is-print \.j2-ruin-flame-out \{ fill: #fff; stroke: #000;/);
+  assert.match(view, /RUIN_DEFS =\s*'<linearGradient id="j2-ruin-flame"/, 'the legend swatch keeps its flame gradient');
 });
 
 /* ---------------- localization ---------------- */

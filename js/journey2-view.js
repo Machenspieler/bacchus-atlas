@@ -253,6 +253,7 @@
     let previewMode = false;                               // Player Preview: a read-only render of the player projection
     let playerProjection = null;                            // the projection currently drawn in Player Preview
     let ruinDrawn = null;                                   // the destroyedSanctuaries object the GM ruins layer currently shows (an unrelated change never rebuilds it)
+    let ruinShownKey = null;                                // Player Preview / player page: the ids the ruins layer currently shows (a fog stroke that reveals no ruin never rebuilds its canvases)
     let echoDrawn = null;                                 // the soulEchoes object the GM echoes layer currently shows (an unrelated change never rebuilds it)
     let sanctuaryOpen = null;                               // anchor id of the sanctuary whose overlay is open (transient: never persisted, never in history)
     let sanctuaryRenaming = false;                          // the open overlay's name is being edited (transient: ends on save, cancel, close or another sanctuary)
@@ -522,15 +523,14 @@
       '<g class="j2-echo-bob"><path class="j2-echo-body" d="M0-15 8.5 0 0 15-8.5 0z" fill="url(#j2-echo-body)"/><path class="j2-echo-core" d="M0-8 3.8 0 0 8-3.8 0z"/></g>';
 
     /**
-     * Destroyed sanctuary (PD-070): a low fire burning on the lower half of the printed icon (the icon itself is never touched) and a thin smoke the wind carries up and to the right,
-     * over the two neighbouring hexes. Everything is drawn in icon-centred local units: the fire spans about x -16..15, y -9..18 (the icon is ~50 units), the smoke ends near (98,-82)
-     * — print's RUIN_BOX (journey2-print.js) is cut from these numbers. The screen version is animated by CSS only (three tongues that flicker out of step, a few embers, smoke that
-     * rises, stretches, turns and thins; static under prefers-reduced-motion: a still smoke is shown instead); the printed one (`print`) is the still drawing, flat black and white, no gradient.
+     * Destroyed sanctuary (PD-070). On the screen map (GM view, Player Preview, player page) every ruin is the procedural smoke plume and fire of
+     * `Journey2RuinFx` (js/journey2-ruin-fx.js) on two small canvases inside an icon-centred, pointer-transparent group (`ruinFxMarkup`); the printed icon is never touched.
+     * The print keeps the still drawing (`ruinMarkup`): white tongues with a black outline and core low on the icon, two wavy dashed smoke strands up and to the right,
+     * flat black and white, no gradient — in icon-centred units the fire spans about x -16..15, y -9..18 (the icon is ~50 units), the strands end near (96,-88);
+     * print's RUIN_BOX (journey2-print.js) is cut from these numbers. The legend swatch reuses the tongues with the flame gradient (a static symbol).
      */
     const RUIN_DEFS =
-      '<radialGradient id="j2-ruin-glow"><stop offset="0" stop-color="#ff8a2a" stop-opacity=".4"/><stop offset="1" stop-color="#ff5a1f" stop-opacity="0"/></radialGradient>' +
-      '<linearGradient id="j2-ruin-flame" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7a1608"/><stop offset=".35" stop-color="#c8360f"/><stop offset=".75" stop-color="#ef7a1c"/><stop offset="1" stop-color="#ffbf5a" stop-opacity=".9"/></linearGradient>' +
-      '<radialGradient id="j2-ruin-smoke"><stop offset="0" stop-color="#4a423c" stop-opacity=".85"/><stop offset=".55" stop-color="#4a423c" stop-opacity=".5"/><stop offset="1" stop-color="#4a423c" stop-opacity="0"/></radialGradient>';
+      '<linearGradient id="j2-ruin-flame" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7a1608"/><stop offset=".35" stop-color="#c8360f"/><stop offset=".75" stop-color="#ef7a1c"/><stop offset="1" stop-color="#ffbf5a" stop-opacity=".9"/></linearGradient>';
     /** Three tongues of one fire, back to front: left, right, centre (tallest). Base line y = 18. */
     const RUIN_TONGUES = [
       'M-16 18C-18 11-14 6-12 0C-10 3-8 5-7 9C-6 12-7 16-6 18Z',
@@ -538,44 +538,28 @@
       'M-8 18C-12 10-7 3-4-2C-2-5-3-8-1-9C0-5 3-3 5 1C8 6 9 12 6 18Z',
     ];
     const RUIN_CORE = 'M-3 18C-5 13-2 8 0 4C2 8 4 13 3 18Z';
-    /** A soft, uneven wisp (never a circle), centred on (0,0), about 16 units across. */
-    const RUIN_WISP = ['M0-8C5-9 9-4 8 1C9 6 4 9-1 8C-6 9-9 4-8-1C-9-6-5-8 0-8Z', 'M-1-7C4-9 9-5 8 0C7 5 5 8 0 8C-5 7-9 5-8 0C-9-4-5-6-1-7Z'];
-    /** The still smoke: [x, y, size, opacity, turn°] from the fire's tip, growing and thinning as the wind drags it right. */
-    const RUIN_SMOKE = [[8, -20, 0.7, 0.55, 5], [22, -36, 0.95, 0.5, -10], [42, -52, 1.25, 0.42, 8], [68, -66, 1.6, 0.3, -6], [98, -78, 2, 0.18, 4]];
-    /** The printed smoke: two wavy strands (white halo under black ink) in the same drift. */
+    /** The printed smoke: two wavy strands (white halo under black ink) drifting up and to the right with the wind. */
     const RUIN_STRANDS = ['M2-10C6-26 22-30 30-44C38-58 56-58 66-70C74-80 86-80 96-88', 'M-2-12C0-22 12-28 20-38C28-48 42-52 52-62'];
     const RUIN_SCALE = 1.2;                                  // on the screen map; the print passes its own (the A4 page shrinks the map to about a fifth)
     const RUIN_SCALE_PRINT = 1.6;
 
-    /**
-     * Destroyed sanctuary VFX, second technique (PROTOTYPE, visual-only): the smoke plume and fire are procedurally rendered onto two small canvases by
-     * `Journey2RuinFx` (js/journey2-ruin-fx.js) and laid over the unchanged map inside this icon-centred, pointer-transparent group. Screen only.
-     * `RUIN_V2_COUNT` limits it to the first N ruins of the layer so the old look stays beside it for comparison; the print and the legend never use it.
-     * Without canvas support the old SVG look is drawn instead.
-     */
-    const RUIN_V2_COUNT = 1;
-    function ruin2Markup(s) {
+    /** One destroyed sanctuary on the screen map: the animated canvas plume and fire (one still frame under prefers-reduced-motion). Where canvas is missing, the still drawing at screen scale. */
+    function ruinFxMarkup(s) {
       const Fx = root.Journey2RuinFx;
       if (!Fx || !root.document.createElement('canvas').getContext) return ruinMarkup(s, false);
       return '<g class="j2-ruin j2-ruin2" data-ruin="' + esc(s.id) + '" transform="translate(' + fmt(s.x, 1) + ' ' + fmt(s.y, 1) + ') scale(' + RUIN_SCALE + ')">' + Fx.markup(s.id) + '</g>';
     }
 
-    /** One destroyed sanctuary at the icon centre of `s` ({ id, x, y }); `print` = still, flat, black and white (no gradient, no animation, no CSS variables). */
+    /** The still drawing of one destroyed sanctuary at the icon centre of `s` ({ id, x, y }): flat black and white, no gradient, no animation, no CSS variables.
+     *  `print` = at the A4 page's scale; without it, at the screen scale (only the fallback of `ruinFxMarkup`). */
     function ruinMarkup(s, print) {
       const k = print ? RUIN_SCALE_PRINT : RUIN_SCALE;
-      let h = '<g class="j2-ruin' + (print ? ' is-print' : '') + '" data-ruin="' + esc(s.id) + '" transform="translate(' + fmt(s.x, 1) + ' ' + fmt(s.y, 1) + ') scale(' + k + ')">';
-      if (!print) {
-        h += '<circle class="j2-ruin-glow" cy="8" r="26"/><g class="j2-ruin-smoke">';
-        for (let i = 0; i < 6; i++) h += '<path class="j2-ruin-puff" d="' + RUIN_WISP[i % 2] + '" style="animation-delay:' + fmt(-i * 1.15, 2) + 's"/>';
-        h += '</g>';
-      }
+      let h = '<g class="j2-ruin is-print" data-ruin="' + esc(s.id) + '" transform="translate(' + fmt(s.x, 1) + ' ' + fmt(s.y, 1) + ') scale(' + k + ')">';
       h += '<g class="j2-ruin-still">';
-      if (print) for (const d of RUIN_STRANDS) h += '<path class="j2-ruin-strand-halo" d="' + d + '"/><path class="j2-ruin-strand" d="' + d + '"/>';
-      else RUIN_SMOKE.forEach((p, i) => { h += '<path class="j2-ruin-still-puff" d="' + RUIN_WISP[i % 2] + '" transform="translate(' + p[0] + ' ' + p[1] + ') rotate(' + p[4] + ') scale(' + fmt(p[2] * 1.5, 2) + ' ' + p[2] + ')" style="opacity:' + p[3] + '"/>'; });
+      for (const d of RUIN_STRANDS) h += '<path class="j2-ruin-strand-halo" d="' + d + '"/><path class="j2-ruin-strand" d="' + d + '"/>';
       h += '</g><ellipse class="j2-ruin-bed" cy="18" rx="17" ry="3.2"/><g class="j2-ruin-flame">';
-      RUIN_TONGUES.forEach((d, i) => { h += '<path class="j2-ruin-flame-out" d="' + d + '" style="animation-delay:' + fmt(-i * 0.37, 2) + 's"/>'; });
+      for (const d of RUIN_TONGUES) h += '<path class="j2-ruin-flame-out" d="' + d + '"/>';
       h += '<path class="j2-ruin-flame-in" d="' + RUIN_CORE + '"/>';
-      if (!print) for (let i = 0; i < 3; i++) h += '<circle class="j2-ruin-ember" cx="' + (-4 + i * 4) + '" cy="-4" r="0.9" style="animation-delay:' + fmt(-i * 0.9, 2) + 's"/>';
       h += '</g></g>';
       return h;
     }
@@ -2241,12 +2225,14 @@
       const ids = previewMode ? ((playerProjection && playerProjection.destroyedSanctuaries) || []) : doc.destroyedSanctuaries.anchorIds;
       if (ui.legendRuin) ui.legendRuin.hidden = !ids.length;
       if (!previewMode && ruinDrawn === doc.destroyedSanctuaries) return;
+      const key = previewMode ? ids.join(',') : null;
+      if (previewMode && key === ruinShownKey) return;
       let h = '';
-      let drawn = 0;
-      for (const id of ids) { const s = at.get(id); if (s) h += drawn++ < RUIN_V2_COUNT ? ruin2Markup(s) : ruinMarkup(s, false); }
+      for (const id of ids) { const s = at.get(id); if (s) h += ruinFxMarkup(s); }
       ui.g.ruins.innerHTML = h;
       if (root.Journey2RuinFx) root.Journey2RuinFx.attach(ui.g.ruins);
       ruinDrawn = previewMode ? null : doc.destroyedSanctuaries;
+      ruinShownKey = key;
     }
 
     /** Toolbar state of the destroyed-sanctuaries group: Remove is disabled when there is nothing to remove, both while edits are locked. */

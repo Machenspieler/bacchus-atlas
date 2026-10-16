@@ -1,13 +1,14 @@
 /* ============================================================
    Bacchus's Atlas — journey2-ruin-fx.js
-   Destroyed-sanctuary VFX, second technique (PROTOTYPE, PD-070): a procedurally rendered smoke plume and fire on two small Canvas 2D
-   textures laid over the unchanged map. V1 stacked animated SVG blobs, which can only ever read as separate translucent shapes; this renders a
-   DENSITY FIELD per pixel instead — domain-warped fractal noise, advected upward and sideways with time, shaped by a widening, drifting plume
-   envelope — so the structure continuously merges, tears and curls and there is no particle boundary to see.
+   Destroyed-sanctuary VFX on the screen map (PD-070): a procedurally rendered smoke plume and fire on two small Canvas 2D textures laid over the
+   unchanged map, on every destroyed sanctuary the viewer may see (the print keeps its own still black-and-white drawing). V1 stacked animated SVG
+   blobs, which can only ever read as separate translucent shapes; this renders a DENSITY FIELD per pixel instead — domain-warped fractal noise,
+   advected upward and sideways with time, shaped by a widening, drifting plume envelope — so the structure continuously merges, tears and curls
+   and there is no particle boundary to see. The fire is a few large flame clusters drawn for the map at 100 %, with a level of detail by on-screen size.
 
    Pure core (no DOM): `bakeNoise`, `renderSmoke`, `renderFire` fill an RGBA buffer for a given time. `attach` is the only DOM part: one shared
    throttled rAF loop for every instance, culled off-screen, stopped when no canvas is left, a single still frame under reduced motion.
-   Coordinates are icon-centred map units (the same as `ruinMarkup`), y grows downward, the castle sits around (0,0).
+   Coordinates are icon-centred map units (the same as the view's `ruinMarkup`), y grows downward, the castle sits around (0,0).
    ============================================================ */
 (function (root, factory) {
   if (typeof module !== 'undefined' && module.exports) module.exports = factory();
@@ -106,7 +107,7 @@
    * Fills `img` ({ data: Uint8ClampedArray, width, height }, RGBA, the SMOKE region) with the plume at `time` seconds. `seed` shifts the noise so two ruins never match.
    */
   function renderSmoke(img, time, seed) {
-    const S = sampler(noise()), W = img.width, H = img.height, d = img.data, ppu = SMOKE.ppu;
+    const S = sampler(noise()), W = img.width, H = img.height, d = img.data, ppu = W / SMOKE.w;
     const so = (seed || 0) * 37.7;
     const level = fireLevel(time, seed || 0);
     d.fill(0);
@@ -177,11 +178,18 @@
   /** Visual level of detail from the on-screen size, `scale` = CSS px per icon unit (1.2 at 100 % zoom): 0 up to about 110 %, 1 from about 225 %. */
   function lodOf(scale) { return smooth(1.35, 2.7, scale > 0 ? scale : 1.2); }
 
-  /** Fire canvas pixels per unit for an on-screen scale and device pixel ratio: the device pixels it really covers (no 3x downsampling that aliases into
-   *  shimmer, no upscaled blur when zoomed in), in steps of 0.5, between 2 and 6 (above that the cost grows with the square and the flames are large enough for a soft edge). */
+  /** Fire canvas pixels per unit for an on-screen scale and device pixel ratio: the device pixels it really covers, rounded UP to a step of 0.5 (never an upscaled
+   *  blur, no 3x downsampling that aliases into shimmer), between 0.5 (a zoomed-out map) and 6 (above that the cost grows with the square and the flames are large enough for a soft edge). */
   function firePpu(scale, dpr) {
-    const p = Math.round((scale > 0 ? scale : 1.2) * (dpr > 0 ? dpr : 1) * 2) / 2;
-    return p < 2 ? 2 : p > 6 ? 6 : p;
+    const p = Math.ceil((scale > 0 ? scale : 1.2) * (dpr > 0 ? dpr : 1) * 2 - 1e-6) / 2;
+    return p < 0.5 ? 0.5 : p > 6 ? 6 : p;
+  }
+
+  /** Smoke canvas pixels per unit: its designed 2 wherever the plume covers 1 device px per unit or more (from about 85 % on any screen — the look is exactly the
+   *  approved one), 1 or 0.5 only on a zoomed-out map where 2 would be thrown away by a 2-4x downsample (five ruins at once stay cheap). */
+  function smokePpu(scale, dpr) {
+    const p = (scale > 0 ? scale : 1.2) * (dpr > 0 ? dpr : 1);
+    return p >= 1 ? 2 : p >= 0.5 ? 1 : 0.5;
   }
 
   /**
@@ -276,8 +284,7 @@
   }
 
   /** Embers: a few sparks that occasionally lift off, drawn straight onto the smoke canvas (analytic paths, no state). */
-  function drawEmbers(ctx, time, seed) {
-    const ppu = SMOKE.ppu;
+  function drawEmbers(ctx, time, seed, ppu) {
     for (let i = 0; i < EMBERS.length; i++) {
       const e = EMBERS[i], cyc = time / e[4] + e[5] + (seed || 0) * 0.13, n = Math.floor(cyc), p = cyc - n;
       if (mulberry32(n * 131 + i * 7 + ((seed || 0) | 0))() > 0.55) continue;     // most cycles carry no ember at all
@@ -285,7 +292,7 @@
       const a = Math.sin(Math.PI * Math.min(1, p * 1.25)) * (0.55 + 0.45 * Math.sin(time * 14 + i * 3)) * (1 - p * 0.6);
       if (a <= 0.02) continue;
       ctx.fillStyle = 'rgba(255,' + Math.round(150 + 60 * (1 - p)) + ',60,' + a.toFixed(2) + ')';
-      ctx.fillRect((x - SMOKE.x0) * ppu - 0.6, (y - SMOKE.y0) * ppu - 0.6, 1.4, 1.4);
+      ctx.fillRect((x - SMOKE.x0) * ppu - 0.3 * ppu, (y - SMOKE.y0) * ppu - 0.3 * ppu, 0.7 * ppu, 0.7 * ppu);
     }
   }
 
@@ -305,7 +312,7 @@
   function drawInstance(inst, time, fire) {
     renderSmoke(inst.smoke.img, time, inst.seed);
     inst.smoke.ctx.putImageData(inst.smoke.img, 0, 0);
-    drawEmbers(inst.smoke.ctx, time, inst.seed);
+    drawEmbers(inst.smoke.ctx, time, inst.seed, inst.smoke.cv.width / SMOKE.w);
     if (fire === false) return;
     renderFire(inst.fire.img, time, inst.seed, inst.scale);
     inst.fire.ctx.putImageData(inst.fire.img, 0, 0);
@@ -315,19 +322,23 @@
    * Reads where the instance is: on screen at all (the smoke's box), and the fire's on-screen scale (CSS px per unit — the camera zoom times the ruin's own scale).
    * Both come from the ruin group's `getScreenCTM()`: `getBoundingClientRect()` of an element inside the camera-scaled map SVG (and of HTML inside its
    * foreignObject) ignores the camera's CSS scale in Chromium, which once culled a ruin that was on screen and froze it.
-   * Re-sizes the fire canvas to the device pixels it covers. Returns true when the fire's look changed (a new resolution or level of detail).
+   * Re-sizes both canvases to the device pixels they cover (`firePpu`, `smokePpu`). Returns true when the look changed (a new resolution or level of detail).
    */
   function measure(inst) {
     const m = inst.el.getScreenCTM ? inst.el.getScreenCTM() : null, vw = G.innerWidth || 1e5, vh = G.innerHeight || 1e5;
     const scale = m ? Math.hypot(m.a, m.b) : 0;
     inst.visible = scale > 0 && m.e + scale * (SMOKE.x0 + SMOKE.w) > 0 && m.f + scale * (SMOKE.y0 + SMOKE.h) > 0 && m.e + scale * SMOKE.x0 < vw && m.f + scale * SMOKE.y0 < vh;
     if (!(scale > 0)) return false;
-    const changed = Math.abs(scale - inst.scale) > 0.03 * inst.scale, ppu = firePpu(scale, G.devicePixelRatio || 1), cv = inst.fire.cv;
+    const dpr = G.devicePixelRatio || 1;
+    let changed = Math.abs(scale - inst.scale) > 0.03 * inst.scale;
     inst.scale = scale;
-    if (cv.width === FIRE.w * ppu) return changed;
-    cv.width = FIRE.w * ppu; cv.height = FIRE.h * ppu;
-    inst.fire.img = inst.fire.ctx.createImageData(cv.width, cv.height);
-    return true;
+    for (const [layer, R, ppu] of [[inst.fire, FIRE, firePpu(scale, dpr)], [inst.smoke, SMOKE, smokePpu(scale, dpr)]]) {
+      if (layer.cv.width === R.w * ppu) continue;
+      layer.cv.width = R.w * ppu; layer.cv.height = R.h * ppu;
+      layer.img = layer.ctx.createImageData(layer.cv.width, layer.cv.height);
+      changed = true;
+    }
+    return changed;
   }
 
   function tick(now) {
@@ -372,5 +383,5 @@
     return fo(SMOKE, 'smoke') + fo(FIRE, 'fire');           // the flames burn in front of their own smoke: its dark base is what makes them glow
   }
 
-  return Object.freeze({ SMOKE, FIRE, FLAMES, bakeNoise, renderSmoke, renderFire, fireLevel, lodOf, firePpu, attach, markup, seedOf });
+  return Object.freeze({ SMOKE, FIRE, FLAMES, bakeNoise, renderSmoke, renderFire, fireLevel, lodOf, firePpu, smokePpu, attach, markup, seedOf });
 });

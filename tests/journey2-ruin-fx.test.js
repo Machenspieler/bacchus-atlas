@@ -135,7 +135,12 @@ test('fire level of detail: bold silhouette at small sizes, detail flames only w
   assert.strictEqual(Fx.lodOf(1.08), 0); assert.strictEqual(Fx.lodOf(1.2), 0); assert.strictEqual(Fx.lodOf(4), 1);
   assert.ok(Fx.lodOf(1.8) > 0 && Fx.lodOf(1.8) < 1);
   for (let s = 0.5; s < 6; s += 0.1) assert.ok(Fx.lodOf(s + 0.1) >= Fx.lodOf(s));
-  assert.strictEqual(Fx.firePpu(1.2, 2), 2.5); assert.strictEqual(Fx.firePpu(1.2, 1), 2); assert.strictEqual(Fx.firePpu(4.8, 2), 6); assert.strictEqual(Fx.firePpu(1.8, 2), 3.5);
+  assert.strictEqual(Fx.firePpu(1.2, 2), 2.5); assert.strictEqual(Fx.firePpu(1.2, 1), 1.5); assert.strictEqual(Fx.firePpu(4.8, 2), 6); assert.strictEqual(Fx.firePpu(1.8, 2), 4);
+  assert.strictEqual(Fx.firePpu(0.2, 1), 0.5, 'a zoomed-out map gets a small, cheap canvas');
+  for (let s = 0.1; s < 6; s += 0.07) for (const dpr of [1, 2, 3]) assert.ok(Fx.firePpu(s, dpr) >= Math.min(6, s * dpr - 1e-9), 'never fewer canvas pixels than device pixels (no upscaled blur) below the cap');
+  // the smoke keeps its designed 2 px/unit at 100 % on every screen; only a zoomed-out map lowers it
+  assert.strictEqual(Fx.smokePpu(1.2, 1), 2); assert.strictEqual(Fx.smokePpu(1.2, 2), 2); assert.strictEqual(Fx.smokePpu(1.08, 2), 2);
+  assert.strictEqual(Fx.smokePpu(0.6, 1), 1); assert.strictEqual(Fx.smokePpu(0.6, 2), 2); assert.strictEqual(Fx.smokePpu(0.3, 1), 0.5); assert.strictEqual(Fx.smokePpu(0.3, 2), 1);
   // the dome flame (rank 1, around x -8, y -6..-12) is absent at 100 % and present at 300 %
   const domeAlpha = (scale) => { const b = fireAt(6, scale); let a = 0; for (let py = 0; py < b.height; py++) { const y = Fx.FIRE.y0 + (py + 0.5) / b.ppu; if (y < -12 || y > -6) continue; for (let px = 0; px < b.width; px++) { const x = Fx.FIRE.x0 + (px + 0.5) / b.ppu; if (x > -11 && x < -5) a += b.data[(py * b.width + px) * 4 + 3]; } } return a / (b.ppu * b.ppu); };
   assert.strictEqual(domeAlpha(1.2), 0);
@@ -150,12 +155,12 @@ test('fire level stays in a restrained band', () => {
   for (let t = 0; t < 120; t += 0.37) { const v = Fx.fireLevel(t, 3); assert.ok(v > 0.5 && v < 1.35); }
 });
 
-test('markup is two non-interactive canvases and the view wires it for the prototype only', () => {
+test('markup is two non-interactive canvases and the view wires it for every screen ruin', () => {
   const m = Fx.markup('x');
   assert.match(m, /data-fx="fire"/); assert.match(m, /data-fx="smoke"/);
   assert.ok(m.indexOf('data-fx="smoke"') < m.indexOf('data-fx="fire"'), 'the flames burn in front of their smoke');
   const view = fs.readFileSync(path.join(__dirname, '..', 'js', 'journey2-view.js'), 'utf8');
-  assert.match(view, /RUIN_V2_COUNT = 1/);
+  assert.doesNotMatch(view, /RUIN_V2_COUNT/);
   assert.match(view, /Journey2RuinFx\.attach\(ui\.g\.ruins\)/);
   const css = fs.readFileSync(path.join(__dirname, '..', 'css', 'journey2.css'), 'utf8');
   assert.match(css, /\.j2-r2-fo \{[^}]*pointer-events: none/);
