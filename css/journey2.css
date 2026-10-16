@@ -635,6 +635,39 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
   .j2-ruin-smoke { display: none; }
   .j2-ruin-still { display: inline; }
 }
+/* Destroyed sanctuary, second look (prototype, screen only): smoke-led, small irregular fires, rare embers and ash. Transform + opacity keyframes only (compositor-friendly, no filters).
+   Each puff carries its own --x/--y/--dx/--dy/--s/--r/--o and duration, a sway wrapper adds a slower, out-of-phase lateral drift, so the loops never line up. */
+.j2-r2-scorch { fill: url(#j2-r2-scorch); }
+.j2-r2-glow { fill: url(#j2-r2-glow); animation: j2-r2-glow 2.6s ease-in-out infinite; }
+.j2-r2-puff { opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; transform: translate(var(--x), var(--y)) scale(0.5); animation: j2-r2-rise 13s cubic-bezier(.3,.25,.65,.85) infinite; }
+.j2-r2-sway { animation: j2-r2-sway 6s ease-in-out infinite alternate; }
+.j2-r2-flame { fill: url(#j2-r2-fire); transform-box: fill-box; transform-origin: 50% 100%; animation: j2-r2-flicker 1.2s ease-in-out infinite; }
+.j2-r2-core { fill: #e8a03c; opacity: 0.45; transform-box: fill-box; transform-origin: 50% 100%; animation: j2-r2-core 0.8s ease-in-out infinite; }
+.j2-r2-ember { fill: #ffa43a; opacity: 0; animation: j2-r2-ember 7s ease-out infinite; }
+.j2-r2-ash { fill: #2a2522; opacity: 0; animation: j2-r2-ash 12s ease-in-out infinite; }
+@keyframes j2-r2-rise {
+  0% { opacity: 0; transform: translate(var(--x), var(--y)) rotate(0deg) scale(0.5, 0.4); }
+  9% { opacity: var(--o); }
+  50% { opacity: calc(var(--o) * 0.75); }
+  100% { opacity: 0; transform: translate(calc(var(--x) + var(--dx)), calc(var(--y) + var(--dy))) rotate(var(--r)) scale(var(--s), calc(var(--s) * 0.8)); }
+}
+@keyframes j2-r2-sway { 0% { transform: translateX(-3px); } 100% { transform: translateX(5px); } }
+@keyframes j2-r2-glow { 0%, 100% { opacity: 0.55; } 18% { opacity: 0.9; } 37% { opacity: 0.5; } 61% { opacity: 1; } 80% { opacity: 0.65; } }
+@keyframes j2-r2-flicker {
+  0%, 100% { transform: scale(1, 1) skewX(0deg); opacity: 0.92; }
+  13% { transform: scale(0.88, 1.14) skewX(-5deg); opacity: 1; }
+  31% { transform: scale(1.08, 0.78) skewX(3deg); opacity: 0.75; }
+  52% { transform: scale(0.94, 1.2) skewX(6deg); opacity: 1; }
+  74% { transform: scale(1.04, 0.9) skewX(-3deg); opacity: 0.82; }
+}
+@keyframes j2-r2-core { 0%, 100% { transform: scale(1); opacity: 0.4; } 35% { transform: scale(0.8, 1.25); opacity: 0.6; } 70% { transform: scale(1.1, 0.8); opacity: 0.28; } }
+@keyframes j2-r2-ember { 0% { opacity: 0; transform: translate(0, 0); } 4% { opacity: 1; } 22% { opacity: 0.8; } 34% { opacity: 0; transform: translate(calc(var(--drift) * 0.5), calc(var(--rise) * 0.7)); } 100% { opacity: 0; transform: translate(var(--drift), var(--rise)); } }
+@keyframes j2-r2-ash { 0% { opacity: 0; transform: translate(0, 0) rotate(0deg); } 12% { opacity: 0.7; } 70% { opacity: 0.45; } 100% { opacity: 0; transform: translate(var(--drift), var(--rise)) rotate(220deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .j2-r2-glow, .j2-r2-sway, .j2-r2-flame, .j2-r2-core { animation: none; }
+  .j2-r2-ember, .j2-r2-ash { display: none; }
+  .j2-r2-puff { animation: none; opacity: calc(var(--o) * 0.55); transform: translate(calc(var(--x) + var(--dx) * 0.35), calc(var(--y) + var(--dy) * 0.35)) rotate(var(--r)) scale(calc(var(--s) * 0.6)); }
+}
 .j2-ruin.is-legend .j2-ruin-flame-out, .j2-ruin.is-legend .j2-ruin-flame-in, .j2-ruin.is-print .j2-ruin-flame-out, .j2-ruin.is-print .j2-ruin-flame-in { animation: none; }
 /* printed: black ink only, no gradient — white tongues with a fine black outline and a black core, a wavy smoke strand with a white halo */
 .j2-ruin.is-print .j2-ruin-still { display: inline; }
