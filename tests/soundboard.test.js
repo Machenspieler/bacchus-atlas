@@ -29,11 +29,12 @@ const EXPECTED_ORDER = [
   'hawk-call-squawk',
   'knocking-on-a-thick-wooden-door',
   'rock-golem-walking',
+  'flock-of-crows',
 ];
 
 /* ---------------- manifest ---------------- */
 
-test('manifest lists the eight sounds in the specified order', () => {
+test('manifest lists the nine sounds in the specified order', () => {
   assert.deepEqual(Manifest.SOUNDS.map(s => s.id), EXPECTED_ORDER);
 });
 
@@ -217,13 +218,13 @@ test('load fetches every sound once; a retry refetches only the failures', async
   const { engine, events, failing } = makeEngine({ failing: [bad] });
   await engine.load();
   let s = engine.getState().sounds;
-  assert.equal(events.fetched.length, 8);
+  assert.equal(events.fetched.length, 9);
   assert.equal(s['hawk-call-squawk'].status, 'failed');
-  assert.equal(Object.values(s).filter(x => x.status === 'ready').length, 7, 'one failure does not block the rest');
+  assert.equal(Object.values(s).filter(x => x.status === 'ready').length, 8, 'one failure does not block the rest');
   failing.delete(bad);
   await engine.load();
   s = engine.getState().sounds;
-  assert.equal(events.fetched.length, 9, 'only the failed file is requested again');
+  assert.equal(events.fetched.length, 10, 'only the failed file is requested again');
   assert.equal(s['hawk-call-squawk'].status, 'ready');
 });
 

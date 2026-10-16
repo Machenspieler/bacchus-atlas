@@ -381,7 +381,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 ## PD-011: The soundboard is a global, icon-only, one-shot effects panel
 
 - **Decision:** one soundboard, reachable from the header on every route,
-  with eight bundled effects. It plays *effects only*, over whatever music
+  with nine bundled effects. It plays *effects only*, over whatever music
   the GM runs elsewhere — no music, uploads, playlists, looping, ordering,
   per-session sound sets, hotkeys or output-device handling.
 - **Icon-only:** a sound button shows an icon and nothing else — no caption,

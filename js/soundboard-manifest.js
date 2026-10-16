@@ -32,6 +32,7 @@
     { id: 'hawk-call-squawk', src: 'sound/hawk-call-squawk.wav', icon: 'hawk', nameKey: 'sb_sound_hawk_call_squawk', defaultVolume: 1 },
     { id: 'knocking-on-a-thick-wooden-door', src: 'sound/knocking-on-a-thick-wooden-door.wav', icon: 'door', nameKey: 'sb_sound_knocking_on_a_thick_wooden_door', defaultVolume: 1 },
     { id: 'rock-golem-walking', src: 'sound/rock-golem-walking.mp3', icon: 'golem', nameKey: 'sb_sound_rock_golem_walking', defaultVolume: 1 },
+    { id: 'flock-of-crows', src: 'sound/flock-of-crows.ogg', icon: 'crows', nameKey: 'sb_sound_flock_of_crows', defaultVolume: 1 },
   ];
 
   var DEFAULT_MASTER_VOLUME = 0.35;

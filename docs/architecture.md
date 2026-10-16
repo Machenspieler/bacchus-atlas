@@ -28,7 +28,7 @@ js/potential-adversary-utils.js — Potential Adversaries parser + Prep recommen
 js/freshcutgrass-utils.js — FreshCutGrass encounter-URL encoder + supported-adversary gate (shared by env detail + Prep); loads after potential-adversary-utils.js, which it requires
 js/battle-points.js     — Battle Points arithmetic (pure)
 js/battle-points-ui.js  — Battle Points summary + popover in the Prep Adversaries header
-js/soundboard-manifest.js — the eight bundled sound effects + stored-level normalization (pure)
+js/soundboard-manifest.js — the nine bundled sound effects + stored-level normalization (pure)
 js/soundboard-icons.js  — the soundboard's inline SVG icons (pure)
 js/soundboard-engine.js — shared Web Audio engine (context injected, so testable)
 js/soundboard-ui.js     — global soundboard panel + header trigger
@@ -818,7 +818,7 @@ rule stays in one place.
 
 ## Global soundboard
 
-A compact, non-modal panel of eight one-shot sound effects, available on every
+A compact, non-modal panel of nine one-shot sound effects, available on every
 route. A GM plays them over music they run elsewhere; the app never plays,
 pauses or ducks music. Product rules: [PD-011](product-decisions.md).
 
@@ -877,7 +877,7 @@ pauses or ducks music. Product rules: [PD-011](product-decisions.md).
 3. Add its drawing to `ICONS` in `js/soundboard-icons.js` under that `icon` key.
 4. Add the `nameKey` string to `data/i18n.json` in both `en` and `ru`.
 5. The panel grid is four columns wide and fills from the manifest order; a
-   ninth sound starts a third row with no other change. Run
+   ninth sound starts a third row, and each further one fills it, with no other change. Run
    `node --test tests/soundboard.test.js`, which checks the file exists, the
    icon is unique, and both strings are present.
 

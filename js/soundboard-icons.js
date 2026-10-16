@@ -1,6 +1,6 @@
 /* ============================================================
    Bacchus's Atlas — soundboard-icons.js
-   Inline SVGs for the global soundboard: the eight sound icons (keyed by the
+   Inline SVGs for the global soundboard: the nine sound icons (keyed by the
    `icon` field of js/soundboard-manifest.js) and the panel's own controls.
    Same house style as the ICON_* constants in js/app.js — 24px grid,
    currentColor strokes, round caps and joins, `aria-hidden` — with a
@@ -94,6 +94,15 @@
       path('M20.6 8.8l-3.5-1.2-2 2.4.5 3.2 3.6.5 2-2.2z', SOFT) +
       path('M2.6 14.4l3.2-.6 1.2 2.6-1 3-3.4.2-1.2-2.8zM21.4 14.4l-3.2-.6-1.2 2.6 1 3 3.4.2 1.2-2.8z', SOFT) +
       path('M11 12.4l1.2 1.7-1.2 1.5 1 1.6')),
+
+    /* Flock of crows: one crow in flight, wings swept up and down, with two
+     * more far off as small chevrons. */
+    crows: svg(
+      path('M8.6 13.2c1.6-1.5 4-2 6.2-1.3l3.6-1.8-.9 2.5c.7.6 1.1 1.4 1.1 2.3l-3.4.2c-1.3 1.2-2.8 2.1-4.7 2.1-1.8 0-3-1.4-2.4-3.2z', SOFT) +
+      path('M10.2 12.4C9.3 9.2 7 6.6 3.4 5.4c.2 3.2 1.4 5.8 3.8 7.8z', SOFT) +
+      path('M10.6 15.4c-1 2.4-3.2 4.2-6.6 4.8 1.2-3 3.4-4.8 6.2-5.2z', SOFT) +
+      path('M17.2 5.2c.8-.7 1.7-.7 2.4 0 .8-.7 1.7-.6 2.4.1', 'stroke-width="1.3"') +
+      path('M13.2 3.2c.6-.5 1.3-.5 1.8 0 .6-.5 1.3-.4 1.8.1', 'stroke-width="1.3"')),
 
     /* ---- panel chrome ---- */
     waveform: svg(path('M3.5 10v4M7.5 6.5v11M11.5 3.5v17M15.5 7.5v9M19.5 10.5v3')),
