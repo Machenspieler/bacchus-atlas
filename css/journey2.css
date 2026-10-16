@@ -207,9 +207,18 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-menu-item[data-j2-echo-clear]:hover:not(:disabled) .j2-mi-ico, .j2-menu-item[data-j2-echo-clear]:focus-visible .j2-mi-ico { color: var(--fear-soft); }
 /* Map bar: history, zoom and Fit float over the map's bottom edge, clear of the rail and the panel */
 .j2-mapbar {
-  position: absolute; z-index: 3; left: var(--j2-inset-left); bottom: var(--j2-side-gap); display: flex; align-items: center; gap: var(--s-2); padding: var(--s-1);
+  position: absolute; z-index: 3; left: var(--j2-bar-left, var(--j2-inset-left)); bottom: var(--j2-side-gap); display: flex; align-items: center; gap: var(--s-2); padding: var(--s-1);
   background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-md); box-shadow: var(--e-2);
   transition: left 250ms var(--j2-ease);
+}
+/* The rail only fills the top of the left strip, so with the panel folded the bar sits flush on the rail's own left margin; it keeps clear of the
+ * panel (full height) when that is open, and of the rail itself when the window is too short for both (a tall GM rail is ~560px). */
+.j2-stage[data-side="collapsed"] { --j2-bar-left: var(--j2-side-gap); }
+@media (max-height: 700px) { .j2-stage[data-side="collapsed"] { --j2-bar-left: var(--j2-inset-left); } }
+/* an open panel leaves no room beside it for the bar below ~710px: stack them instead — the panel column stops above the bar */
+@media (min-width: 641px) and (max-width: 710px) {
+  .j2-stage:not([data-side="collapsed"]) { --j2-bar-left: var(--j2-side-gap); }
+  .j2-stage:not([data-side="collapsed"]) .j2-sidewrap { bottom: calc(2 * var(--j2-side-gap) + 52px); }
 }
 .j2-mapbar .j2-tb-group + .j2-tb-group { padding-left: var(--s-2); border-left: 1px solid var(--line-faint); }
 .j2-mapbar .j2-tb-group[hidden] + .j2-tb-group { padding-left: 0; border-left: 0; }   /* the player page has no history group: no orphan divider */

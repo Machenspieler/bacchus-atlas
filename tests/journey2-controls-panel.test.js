@@ -48,7 +48,8 @@ test('map bar: Undo / Redo / zoom / Fit are icon-only buttons floating over the 
   for (const attr of ['data-j2-undo', 'data-j2-redo', 'data-j2-zoom="out"', 'data-j2-zoom="reset"', 'data-j2-zoom="in"', 'data-j2-fit']) assert.ok(mapbar.includes(attr), attr);
   assert.doesNotMatch(mapbar, /<span data-t=/, 'no visible text labels');
   assert.match(mapbar, /data-j2-fit data-t-aria="journey2_fit"/);
-  assert.match(css, /\.j2-mapbar \{\s*position: absolute;[^}]*left: var\(--j2-inset-left\)/, 'clear of the rail and the panel');
+  assert.match(css, /\.j2-mapbar \{\s*position: absolute;[^}]*left: var\(--j2-bar-left, var\(--j2-inset-left\)\)/, 'clear of the rail and the panel');
+  assert.match(css, /\.j2-stage\[data-side="collapsed"\] \{ --j2-bar-left: var\(--j2-side-gap\); \}/, 'flush on the rail margin while the panel is folded');
 });
 
 test('Campaign menu: the rare whole-campaign actions, shared menu machinery, hidden in Player Preview', () => {
