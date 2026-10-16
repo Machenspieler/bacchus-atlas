@@ -9896,7 +9896,7 @@
           },
           "description": {
             "en": "Consequence Countdown (Loop 20). When the party enters the Maw, activate the countdown and place a token on its stat block. While exploring the pit they can delve deeper or escape to the surface by making Group Instinct Rolls. On a success, they add or remove a token, or two tokens on a critical success. When they remove the last token, they leave the Maw. When the countdown triggers, water pours into the Maw, hitting lava and turning into a superhot geyser. All creatures inside take 5d12 direct physical damage and are Scalded until they clear a HP. While Scalded, when the PC rolls with Fear they mark a HP.",
-            "ru": "Отсчёт Последствий (Цикл 20). Когда партия входит в Пасть, активируйте отсчёт и поместите жетон на её статблок. Исследуя яму, персонажи могут углубляться дальше или пытаться выбраться на поверхность, совершая Групповые Броски на Инстинкт. При успехе они добавляют или убирают жетон, а при критическом успехе — два жетона. Когда убран последний жетон, они покидают Пасть. Когда отсчёт срабатывает, в Пасть хлынет вода, соприкоснётся с лавой и превратится в раскалённый гейзер. Все существа внутри получают 5d12 прямого физического урона и получают состояние Обваренный, пока не снимут Рану. Пока персонаж Обварен, при броске со Страхом он отмечает Рану."
+            "ru": "Отсчёт Последствий (Цикл 20). Когда отряд входит в Пасть, активируйте отсчёт и поместите жетон на её статблок. Исследуя яму, персонажи могут углубляться дальше или пытаться выбраться на поверхность, совершая Групповые Броски на Инстинкт. При успехе они добавляют или убирают жетон, а при критическом успехе — два жетона. Когда убран последний жетон, они покидают Пасть. Когда отсчёт срабатывает, в Пасть хлынет вода, соприкоснётся с лавой и превратится в раскалённый гейзер. Все существа внутри получают 5d12 прямого физического урона и получают состояние Обваренный, пока не снимут Рану. Пока персонаж Обварен, при броске со Страхом он отмечает Рану."
           },
           "prompt": {
             "en": "What noises do you hear as the waters rise? How can you boost your chances in the final race to the surface?",
@@ -10145,7 +10145,7 @@
           },
           "description": {
             "en": "Spend a Fear to summon 1d6 Astral Termites who appear at Far range, drawn to the actions of the party. Immediately spotlight one of these adversaries, and you can spend an additional Fear to automatically succeed on that adversary's standard attack against a Marked creature.",
-            "ru": "Потратьте Страх, чтобы призвать 1d6 Астральных Термитов, появляющихся на Дальней дистанции, привлечённых действиями партии. Немедленно дайте Активацию одному из этих противников, и вы можете потратить дополнительный Страх, чтобы автоматически преуспеть в его стандартной атаке против Отмеченного существа."
+            "ru": "Потратьте Страх, чтобы призвать 1d6 Астральных Термитов, появляющихся на Дальней дистанции, привлечённых действиями отряда. Немедленно дайте Активацию одному из этих противников, и вы можете потратить дополнительный Страх, чтобы автоматически преуспеть в его стандартной атаке против Отмеченного существа."
           },
           "prompt": {
             "en": "Why are the termites angry? Where do they take slain prey?",
@@ -10479,7 +10479,7 @@
           },
           "description": {
             "en": "Countdown (4). Spend a Fear to activate the countdown and announce it with a whisper of “Bubbly bubbly bubbly”. The countdown ticks down when a PC rolls with Fear. When it triggers, summon Mr Bubbly within Far range of the party. If there is a child present, he appears in Benign form, otherwise in Enraged form.",
-            "ru": "Отсчёт (4). Потратьте Страх, чтобы активировать отсчёт, объявив об этом шёпотом «Пузырик, пузырик, пузырик». Отсчёт уменьшается, когда персонаж выпадает бросок со Страхом. Когда он срабатывает, призовите Мистера Пузырика на Дальней дистанции от партии. Если рядом присутствует ребёнок, он появляется в Безобидной форме, в противном случае — в Разъярённой форме."
+            "ru": "Отсчёт (4). Потратьте Страх, чтобы активировать отсчёт, объявив об этом шёпотом «Пузырик, пузырик, пузырик». Отсчёт уменьшается, когда персонаж выпадает бросок со Страхом. Когда он срабатывает, призовите Мистера Пузырика на Дальней дистанции от отряда. Если рядом присутствует ребёнок, он появляется в Безобидной форме, в противном случае — в Разъярённой форме."
           },
           "prompt": {
             "en": "Why is Mr Bubbly so furious to see adults in his home? What might they do to appease him?",
@@ -16862,7 +16862,7 @@
           "type": "passive",
           "name": {
             "en": "Rival Party",
-            "ru": "Соперничающая партия"
+            "ru": "Соперничающая группа"
           },
           "description": {
             "en": "Another adventuring party is here, seeking the same treasure or leads as the PCs.",
