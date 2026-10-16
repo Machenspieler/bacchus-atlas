@@ -243,15 +243,15 @@ test('projection: the home tile of an X that left no longer carries the mark', (
   assert.equal(P.buildPlayerProjection(doc, ctx).overlays[0].blightMark, false);
 });
 
-test('print: moved X\'s reach the page that holds them and nothing else changes in the model', () => {
+test('print: no Shadowblight X reaches any page and nothing else changes in the model', () => {
   const doc0 = world([{ habitat: BLIGHT, cells: [at(0)] }]);
   const plan = S.createSeekerPlan({ doc: doc0, ctx, origin: at(5) });
   let doc = docAt(doc0, plan, 3);
   doc = must(M.apply(doc, { type: 'setCellsRevealed', cellKeys: [at(3)], revealed: true, at: AT2 }, ctx));
   const model = PR.buildPrintModel(doc, ctx, template);
   const marks = model.pages.reduce((n, pg) => n + (pg.marks || []).length, 0);
-  assert.ok(marks >= 1, 'the floating X is on at least one page');
-  for (const pg of model.pages) for (const m of pg.marks || []) assert.deepEqual(Object.keys(m).sort(), ['q', 'r']);
+  assert.equal(marks, 0, 'the print never carries a Shadowblight X');
+  for (const pg of model.pages) for (const o of pg.overlays) assert.equal(o.blightMark, false);
   assert.equal(model.printMode, 'bw');
 });
 

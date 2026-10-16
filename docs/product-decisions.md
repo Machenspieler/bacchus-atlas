@@ -927,7 +927,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Decision (black and white):** Biome Tint is **omitted**, not converted to grey (the print model has no tint field, and takes no UI preference).
   Soul Echoes, generated-sanctuary data, per-hex Environments, Encounter/Rumor, ids, selection and every GM marker are omitted. A sanctuary name
   prints only when the GM revealed it by hand (PD-027), as `{ anchorId, name }`, laid out on the page holding its icon (clamped inside that page, never split).
-  Generated symbols, Terrain dots and Shadowblight marks print in black; region boundaries are black and use the same player-safe edge rule as Player
+  Generated symbols and Terrain dots print in black; Shadowblight X's never print (amended 2026-10-16: neither on a tile nor on open ground), and the print overlays carry the anonymous `region` number so the "Regions" switch draws one icon per region there too; region boundaries are black and use the same player-safe edge rule as Player
   Preview (no edge toward an unrevealed neighbour, so no false ending line leaks the hidden shape).
 - **Decision (one renderer):** the on-screen Print Preview and the physical print are the same DOM (`.j2-print-root` → two `.j2-print-page`, each a vector SVG over the map raster);
   `@media print` only hides everything else. Entry is the "Print player map" button in Player Preview; Back returns to Player Preview (never to the GM view). The

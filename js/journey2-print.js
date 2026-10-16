@@ -111,7 +111,7 @@
     const fat = r => [r[0] - SLACK, r[1] - SLACK, r[2] + 2 * SLACK, r[3] + 2 * SLACK];
     for (const o of proj.overlays) {
       const bb = fat(bboxOf(grid.cellCorners(o.q, o.r)));
-      const entry = { q: o.q, r: o.r, symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark };
+      const entry = { q: o.q, r: o.r, symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark, region: o.region };
       pages.forEach((p, i) => { if (rectsOverlap(bb, p.rect)) out[i].overlays.push(Object.assign({}, entry)); });
     }
     for (const m of proj.shadowMarks) {

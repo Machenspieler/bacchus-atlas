@@ -122,7 +122,9 @@
     const color = !!(opts && opts.color === true);
     const p = buildPlayerProjection(doc, ctx, { biomeTint: color });
     p.printMode = color ? 'color' : 'bw';
-    p.collectedEchoes = [];                                    // the print carries no Soul Echo, collected or not (PD-028)
+    p.shadowMarks = [];                                        // no Shadowblight X in the print, on open ground or on a tile
+    for (const o of p.overlays) o.blightMark = false;
+    p.collectedEchoes = [];                                  // the print carries no Soul Echo, collected or not (PD-028)
     return p;
   }
 

@@ -134,15 +134,15 @@ test('hidden cells leave no trace: only revealed tiles are in the model', () => 
 test('the model carries no tint, fog, colour, Environment, Soul Echo, region id or revealed-cell list', () => {
   const json = JSON.stringify(model);
   assert.ok(!/tint|fog|hatch|pattern|color|colour|fill|opacity|#[0-9a-f]{3,6}\b/i.test(json), 'no colour or fog vocabulary');
-  assert.ok(!/environment|time-loop|echo|soul|encounter|rumor|trade|quirk|crisis|drive|politic|population|batch|region|revealedCells/i.test(json));
+  assert.ok(!/environment|time-loop|echo|soul|encounter|rumor|trade|quirk|crisis|drive|politic|population|batch|revealedCells/i.test(json));
   assert.equal(model.printMode, 'bw');
-  for (const o of both(p => p.overlays)) assert.deepEqual(Object.keys(o).sort(), ['blightMark', 'dots', 'q', 'r', 'symbolId']);
+  for (const o of both(p => p.overlays)) assert.deepEqual(Object.keys(o).sort(), ['blightMark', 'dots', 'q', 'r', 'region', 'symbolId']);
 });
 
-test('revealed Habitat, Terrain and Shadowblight are included; the blight mark stays a monochrome flag', () => {
+test('revealed Habitat and Terrain are included; the Shadowblight X is never printed', () => {
   const ov = both(p => p.overlays);
   assert.ok(ov.every(o => typeof o.symbolId === 'string' && o.dots === 3));
-  assert.ok(ov.some(o => o.symbolId === 'forest') && ov.some(o => o.blightMark === true) && ov.some(o => o.blightMark === false));
+  assert.ok(ov.some(o => o.symbolId === 'forest') && ov.every(o => o.blightMark === false));
 });
 
 test('Biome colors and the screen fog preference cannot change the model', () => {
