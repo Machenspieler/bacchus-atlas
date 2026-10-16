@@ -402,7 +402,7 @@ body[data-route="playermap"] .j2-host { min-height: 240px; }
 .j2-card-end { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
 .j2-card-end .j2-done { flex: 1 1 auto; min-width: 0; }
 .j2-card-sum[hidden],.j2-warn[hidden], .j2-card-body[hidden], .j2-done[hidden], .j2-status[hidden], .j2-actions[hidden], .j2-envs-list[hidden], .j2-insp-tile[hidden], .j2-insp-envs-toggle[hidden], .j2-insp-muted[hidden], .j2-insp-tile-text[hidden],
-.j2-tb-group[hidden], .j2-fog-chip[hidden], .j2-sidewrap[hidden] { display: none; }   /* PD-052: Player Preview and the player page hide the GM's tools one by one */
+.j2-tb-group[hidden], .j2-fog-chip[hidden], .j2[data-player] .j2-fog-chip[hidden], .j2-sidewrap[hidden] { display: none; }   /* the player-page chip rules set `display: grid` at higher specificity, so `hidden` needs the matching selector */   /* PD-052: Player Preview and the player page hide the GM's tools one by one */
 .j2-share-out { display: flex; flex-direction: column; gap: var(--s-1); }
 .j2-share-out[hidden], .j2-share-url[hidden] { display: none; }
 .j2-share-note { margin: 0; font-size: var(--fs-micro); color: var(--parchment-dim); }
