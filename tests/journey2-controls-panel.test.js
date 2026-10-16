@@ -94,3 +94,11 @@ test('every new rail / segment / menu string exists in English and Russian', () 
     'journey2_rail_campaign', 'journey2_campaign_aria', 'journey2_rail_display', 'journey2_display_aria', 'journey2_menu_echo_place', 'journey2_mode_label', 'journey2_mode_gm', 'journey2_mode_players'];
   for (const k of keys) { assert.ok(i18n.en[k], 'en ' + k); assert.ok(i18n.ru[k], 'ru ' + k); assert.ok(view.includes("'" + k + "'") || view.includes('"' + k + '"'), 'used ' + k); }
 });
+
+test('Party marker display switch (PD-069): a Display item on the player page only; hides the drawn star, nothing else', () => {
+  assert.match(displayMenu, /role="menuitemcheckbox" aria-checked="true" data-j2-party-mark hidden/, 'hidden until the player page un-hides it');
+  assert.match(view, /ui\.partyMark\.hidden = !playerMode/);
+  assert.match(fn('paintPartyMarker', 'renderParty'), /showPartyMark \|\| !playerMode/, 'the GM view and Player Preview always draw the star');
+  assert.doesNotMatch(fn('togglePartyMark', 'toggleBiomeColors'), /saveUiPrefs|dispatch|store/, 'no storage, no command, no history');
+  for (const key of ['journey2_party_mark_label', 'journey2_party_mark_show', 'journey2_party_mark_hide']) for (const lang of Object.keys(i18n)) if (i18n[lang] && i18n[lang].journey2_rail_campaign) assert.ok(i18n[lang][key], lang + ' ' + key);
+});

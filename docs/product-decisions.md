@@ -1425,3 +1425,12 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Decision (untrusted input):** parsed and built only in `RouteUtils.parseCatalogQuery()` / `buildCatalogQuery()` (the one decoder, PD-spirit of "Hash routing"). Each bad piece (a rank outside 1–4, an undecodable value, an unknown key) is dropped alone; a query over 1000 characters is ignored whole; at most 40 values per group. The app keeps only types and biomes it knows, and the existing `renderToolbar()` pruning drops a source the catalogue does not have — the address is then repaired to match.
 - **Not decided here:** Lists (`#/lists/<id>`) keep their transient filters and write nothing to the address; the Prep pickers, the "Show more" count, scroll position and the open filter disclosure are not part of the address; no new setting or UI.
 - **Where:** `js/route-utils.js` (`parseCatalogQuery`, `buildCatalogQuery`, `baseHash`, `parseRouteHash`), `js/app.js` (`adoptRouteFilters`, `syncFiltersToUrl`, `sameBase`, the `hashchange` handler, `renderGrid`), `tests/routing.test.js`.
+
+## PD-069: Player page — a viewer can hide the party marker from the Display menu
+
+- **Status:** Active (implemented 2026-10-16). Extends PD-066 (Display menu) and PD-052 (shareable player link); touches PD-045 only in what the player page draws.
+- **Why:** the star is drawn above every other symbol (PD-045), so on a phone it can cover a sanctuary icon, an X or an Echo crystal that the player wants to read.
+- **Decision:** a fourth Display item, **Party marker / Маркер партии**, exists **on the player page only** (hidden in the GM view and Player Preview, where the rail's own Party tool does this job). It hides or shows the drawn star. It is on by default, so a link looks exactly as before.
+- **Decision (what it does not do):** the seven lit cells stay revealed — they are already in the snapshot and hiding the star never closes the map. Route Planner point A still follows the projection's party, not the star's visibility.
+- **Decision (persistence):** a display switch for this page load only: no storage, no link flag (format 4 stays frozen), a reload returns to shown. The GM chooses whether the party is in the link by hiding the marker in Player Preview before copying it.
+- **Where:** `js/journey2-view.js` (`showPartyMark`, `togglePartyMark`, `paintPartyMarker`, `updateFogUi`), `data/i18n.json` (`journey2_party_mark_*`), `tests/journey2-controls-panel.test.js`.

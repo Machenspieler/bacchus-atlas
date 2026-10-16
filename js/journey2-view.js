@@ -232,6 +232,7 @@
     let activeBatchId = null;                               // the one card expanded for placement controls (independent of the inspector)
     let sideCollapsed = false;                              // view preference, persisted apart from the document
     /* Fog of War (Phase C) — all transient; the veil is drawn only in Player Preview, never in the GM view */
+    let showPartyMark = true;                               // player page only (PD-069): a viewer may hide the drawn star; the lit cells stay (display only, never stored)
     let showRegions = false;                                // "Regions" (PD-062): one icon per region, as in the book (UI only; the player link carries it as a flag)
     let showSepia = true;                                   // "Sepia map" (PD-060): parchment ground + multiplied raster on screen (UI only; the print path never uses it)
     let showBiome = true;                                   // "Biome colors": the tint inside placed hexes — GM view, Player Preview and the player page (UI only, never in the document, backup or history)
@@ -733,6 +734,7 @@
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-biome-colors><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_biome_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-sepia><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_sepia_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="false" data-j2-regions><span class="j2-mi-ico" aria-hidden="true">${LI.hexes}</span><span data-t="journey2_regions_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
+                    <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-party-mark hidden><span class="j2-mi-ico" aria-hidden="true">${LI.party}</span><span data-t="journey2_party_mark_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                   </div>
                 </div>
                 <div class="j2-menu-wrap j2-camp" data-j2-gm-row>
@@ -852,6 +854,7 @@
       ui.biomeColors = container.querySelector('[data-j2-biome-colors]');
       ui.sepia = container.querySelector('[data-j2-sepia]');
       ui.regions = container.querySelector('[data-j2-regions]');
+      ui.partyMark = container.querySelector('[data-j2-party-mark]');
       ui.fogTool = container.querySelector('[data-j2-fog-tool="paint"]');
       ui.outlineBtn = container.querySelector('[data-j2-outline]');
       ui.echoPlace = container.querySelector('[data-j2-echo-place]');
@@ -929,6 +932,7 @@
       showSepia = linked ? linked.sepiaMap !== false : prefs.sepiaMap !== false;
       showRegions = playerMode ? !!(linked && linked.regionIcons) : !!prefs.regionIcons;
       ui.root.toggleAttribute('data-sepia', showSepia);
+      ui.partyMark.hidden = !playerMode;
       showOutline = !!prefs.showPlacedOutline;
       savedView = prefs.view;
       resumePreview = !!prefs.playerPreview || playerMode;
@@ -2253,7 +2257,7 @@
       const g = ui.g && ui.g.party;
       if (!g || !doc || !data) return;
       const cell = partyDrawCell(), c = cell ? Geo.parseCellId(cell) : null;
-      g.innerHTML = c ? partyMarkup(c.q, c.r, { minScreen: PARTY_MIN_SCREEN_R }) : '';
+      g.innerHTML = c && (showPartyMark || !playerMode) ? partyMarkup(c.q, c.r, { minScreen: PARTY_MIN_SCREEN_R }) : '';
     }
 
     /** Marker + toolbar state: pressed while shown or being placed, the placing chip, the cursor class. */
@@ -3725,6 +3729,8 @@
       ui.sepia.title = showSepia ? t('journey2_sepia_hide') : t('journey2_sepia_show');
       ui.regions.setAttribute('aria-checked', String(showRegions));
       ui.regions.title = showRegions ? t('journey2_regions_hide') : t('journey2_regions_show');
+      ui.partyMark.setAttribute('aria-checked', String(showPartyMark));
+      ui.partyMark.title = showPartyMark ? t('journey2_party_mark_hide') : t('journey2_party_mark_show');
       ui.fogTool.setAttribute('aria-pressed', String(!!fogTool));
       ui.outlineBtn.setAttribute('aria-pressed', String(showOutline));
       ui.outlineBtn.title = t(showOutline ? 'journey2_outline_hide' : 'journey2_outline_title');
@@ -3792,6 +3798,13 @@
       saveUiPrefs();
       updateFogUi();
       renderTiles();
+    }
+
+    /** "Party marker" (player page only, PD-069): hides or shows the drawn star. The seven lit cells stay — they are already in the snapshot. No storage, no link flag. */
+    function togglePartyMark() {
+      showPartyMark = !showPartyMark;
+      updateFogUi();
+      paintPartyMarker();
     }
 
     function toggleBiomeColors() {
@@ -4867,6 +4880,7 @@
       else if (b.hasAttribute('data-j2-biome-colors')) toggleBiomeColors();
       else if (b.hasAttribute('data-j2-sepia')) toggleSepia();
       else if (b.hasAttribute('data-j2-regions')) toggleRegions();
+      else if (b.hasAttribute('data-j2-party-mark')) togglePartyMark();
       else if (b.hasAttribute('data-j2-outline')) toggleOutline();
       else if (b.hasAttribute('data-j2-fog-tool')) setFogTool(b.getAttribute('data-j2-fog-tool'));
       else if (b.hasAttribute('data-j2-party-cancel')) cancelPartyDraft(true);
