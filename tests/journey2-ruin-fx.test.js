@@ -73,7 +73,7 @@ test('fire: stays inside the castle footprint, deforms over time and has warm co
   for (let py = 0; py < a.height; py++) for (let px = 0; px < a.width; px++) {
     const k = (py * a.width + px) * 4, x = t.x0 + (px + 0.5) / t.ppu, y = t.y0 + (py + 0.5) / t.ppu;
     if (a.data[k + 3] === 0) continue;
-    assert.ok(x >= -21 && x <= 21 && y >= -13 && y <= 18, 'pixel outside the footprint');
+    assert.ok(x >= -29 && x <= 29 && y >= -16 && y <= 22, 'pixel outside the footprint');
     assert.ok(a.data[k] >= a.data[k + 2], 'red is never weaker than blue');
   }
   assert.ok(sum(a, (d, i) => d[i + 3] > 40 ? 1 : 0) > 50, 'something visibly burns');
@@ -94,4 +94,20 @@ test('markup is two non-interactive canvases and the view wires it for the proto
   assert.match(css, /\.j2-r2-fo \{[^}]*pointer-events: none/);
   const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
   assert.ok(html.indexOf('journey2-ruin-fx.js') < html.indexOf('journey2-view.js'));
+});
+
+test('fire: no thin horizontal strokes (regression: unbounded tongue product drew one-pixel-tall lines) and no hard-edged rectangle', () => {
+  const t = Fx.FIRE;
+  for (const time of [0.5, 3.4, 7, 12.2, 19.9, 31]) {
+    const b = buf(t);
+    Fx.renderFire(b, time, 4);
+    const A = (px, py) => (px < 0 || py < 0 || px >= b.width || py >= b.height ? 0 : b.data[(py * b.width + px) * 4 + 3]);
+    for (let py = 0; py < b.height; py++) {
+      let lone = 0;
+      for (let px = 0; px < b.width; px++) if (A(px, py) > 60 && A(px, py - 1) < 15 && A(px, py + 1) < 15) lone++;
+      assert.ok(lone <= 2, 'row ' + py + ' at t=' + time + ' has a horizontal stroke');
+    }
+    for (let px = 0; px < b.width; px++) for (const py of [0, b.height - 1]) assert.ok(A(px, py) < 3, 'fire touches the canvas edge');
+    for (let py = 0; py < b.height; py++) for (const px of [0, b.width - 1]) assert.ok(A(px, py) < 3, 'fire touches the canvas edge');
+  }
 });

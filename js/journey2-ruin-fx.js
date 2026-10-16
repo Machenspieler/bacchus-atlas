@@ -18,7 +18,7 @@
 
   /** Texture regions in icon units: the plume rises up and to the right (wind); the fire is a small bed inside the castle. `ppu` = canvas pixels per unit. */
   const SMOKE = Object.freeze({ x0: -38, y0: -86, w: 100, h: 112, ppu: 2 });
-  const FIRE = Object.freeze({ x0: -26, y0: -20, w: 52, h: 46, ppu: 4 });
+  const FIRE = Object.freeze({ x0: -30, y0: -20, w: 60, h: 46, ppu: 4 });
   const SRC_Y = 0;            // the line where smoke leaves the roofs
   const PLUME_H = 66;          // height over which the plume thins out completely
   const DRIFT = 24;            // wind: how far right the plume centre has moved at the top
@@ -27,10 +27,19 @@
 
   /** Smoke sources [x, width, strength]; they start apart (separate chimneys of the ruin) and the widening envelope merges them. */
   const SOURCES = [[-10, 6, 0.9], [3, 7, 1], [12, 5.5, 0.9]];
-  /** Fire beds [x, base y, height, half-width, phase]; irregular heights, never a row. */
-  const FIRES = [[-12.5, 11.5, 6.5, 3.6, 0.3], [3, 13.5, 8.5, 4.6, 1.7], [13, 10, 5.5, 3, 3.1], [-4, 4, 4.2, 2.6, 4.6], [8, -2, 3.6, 2.2, 2.2]];
-  /** Small localized combustion points (windows) [x, y, radius]. */
-  const HOT = [[-9, 1, 1.9], [0, -4, 1.6], [9, 2, 1.8], [-14, 8, 1.5], [14, 4, 1.4], [4, 9, 1.7]];
+  /** Fire pockets [x, base y, height, half-width, phase, tongues]; each tongue is [x offset (of half-width), height fraction, width fraction]. They sit where the castle is open (the gap between its legs, the arch under the
+   *  right tower, the tower window, a crack in the dome), never in a row. */
+  const FIRES = [
+    [11, 13.8, 9, 2.1, 0.3, [[-0.45, 0.7, 0.55], [0.05, 1, 0.75], [0.55, 0.52, 0.5]]],
+    [-8, 13.6, 7, 1.8, 1.7, [[-0.35, 0.58, 0.6], [0.3, 1, 0.72]]],
+    [1.6, 13.8, 4.6, 2.1, 3.1, [[-0.4, 0.55, 0.5], [0.35, 1, 0.65]]],
+    [9.2, 3.8, 3.4, 0.9, 4.6, [[0, 1, 1], [0.5, 0.5, 0.6]]],
+    [-8.5, 3.4, 2.6, 1.1, 2.2, [[0, 1, 1]]],
+    [17.2, 14.4, 4.4, 1.5, 5.4, [[-0.2, 0.6, 0.6], [0.3, 1, 0.7]]],
+    [-15.6, 14.4, 3.4, 1.4, 0.9, [[0, 1, 1]]]
+  ];
+  /** Smouldering points inside the structure [x, y, radius]. */
+  const HOT = [[-9.5, 1, 1.5], [0.5, -3.5, 1.2], [8.5, -1, 1.1], [-12, 9, 1.2], [14.5, 8, 1.3], [-3.5, 7, 1.2]];
   const EMBERS = [[-9, 2, 36, 9, 6.8, 0.1], [6, -4, 44, 16, 9.1, 0.55], [13, 5, 32, 6, 7.7, 0.3], [-3, 6, 40, -6, 11.3, 0.8], [1, -2, 38, 12, 8.3, 0.0]];
 
   const TS = 256;
@@ -145,7 +154,8 @@
     }
   }
 
-  const RAMP = [[0, 62, 8, 4], [0.25, 120, 20, 6], [0.5, 190, 52, 12], [0.78, 230, 105, 28], [1, 255, 190, 100]];
+  // deep burnt red -> dark orange -> amber -> a very small yellow-orange hot area
+  const RAMP = [[0, 78, 10, 4], [0.28, 140, 26, 7], [0.55, 200, 66, 14], [0.8, 232, 118, 30], [1, 250, 172, 70]];
   function heatColor(h, out) {
     h = clamp01(h);
     let i = 1;
@@ -154,50 +164,61 @@
     out[0] = a[1] + (b[1] - a[1]) * f; out[1] = a[2] + (b[2] - a[2]) * f; out[2] = a[3] + (b[3] - a[3]) * f;
   }
 
-  /** Fills `img` (the FIRE region) with deforming flame tongues, a deep red glow and flickering combustion points at `time`. */
+  /**
+   * Fills `img` (the FIRE region) with the fire at `time`: every pocket is a few tapering tongues whose centre line is bent by advected noise and whose body is eaten away by a fast, fine noise that grows toward
+   * the tip — so the silhouette is ragged, licks detach and re-form, and nothing is a fixed triangle. Every term is clamped to 0..1 before it is multiplied (an unbounded product once drew thin lines).
+   * Near each pocket a small, bounded warm glow; smouldering points flicker in the openings.
+   */
   function renderFire(img, time, seed) {
     const S = sampler(noise()), W = img.width, H = img.height, d = img.data, ppu = FIRE.ppu;
     const so = (seed || 0) * 29.3;
     const level = fireLevel(time, seed || 0);
     const col = [0, 0, 0];
     d.fill(0);
-    // per-source flicker height this frame (cheap, once per frame)
-    const hs = FIRES.map((f, i) => 0.78 + 0.5 * S(time * 0.9 + f[4] * 40 + so, i * 53 + 11) + 0.12 * Math.sin(time * 6.3 + f[4]));
-    const hot = HOT.map((h, i) => smooth(0.42, 0.78, S(time * 0.55 + i * 31 + so, i * 17 + 5)) * (0.7 + 0.3 * Math.sin(time * 9 + i)));
+    // per-pocket brightness and height this frame: independent, never in step
+    const hs = FIRES.map((f, i) => 0.72 + 0.62 * smooth(0.2, 0.8, S(time * 0.7 + f[4] * 40 + so, i * 53 + 11)) + 0.1 * Math.sin(time * 5.7 + f[4] * 3));
+    const br = FIRES.map((f, i) => 0.78 + 0.5 * S(time * 0.9 + i * 29 + so, f[4] * 19 + 3));
+    const hot = HOT.map((h, i) => smooth(0.4, 0.75, S(time * 0.5 + i * 31 + so, i * 17 + 5)) * (0.7 + 0.3 * Math.sin(time * 8 + i * 2)));
     for (let py = 0; py < H; py++) {
       const y = FIRE.y0 + (py + 0.5) / ppu;
-      if (y < -13 || y > 18) continue;                 // outside the castle's footprint nothing burns or glows
       for (let px = 0; px < W; px++) {
         const x = FIRE.x0 + (px + 0.5) / ppu;
-        if (x < -21 || x > 21) continue;
         let heat = 0, glow = 0;
         for (let i = 0; i < FIRES.length; i++) {
-          const f = FIRES[i], dx = x - f[0], dy = y - (f[1] - f[2] * 0.35);
-          glow += Math.exp(-(dx * dx + dy * dy * 1.7) / (f[3] * f[3] * 7)) * hs[i];
-          const h = f[2] * hs[i], v = (f[1] - y) / h;
-          if (v < -0.12 || v > 1.05 || dx > f[3] * 2.6 || dx < -f[3] * 2.6) continue;
-          const vv = v > 0 ? v : 0;
-          const disp = ((S(x * 0.9 + f[4] * 31 + so, y * 0.9 + time * 6.5) - 0.5) * 6.5 + Math.sin(time * 3.1 + f[4] * 5 + vv * 5) * 1.1) * vv;
-          const hw = f[3] * (1 - 0.7 * Math.pow(vv, 1.0)) + 0.001;
-          const u = (dx + disp) / hw;
-          let ht = (1 - u * u) * (1 - Math.pow(v > 0 ? v : 0, 1.35));
-          ht -= (S(x * 2.8 + f[4] * 17 + so, y * 2.8 + time * 17) - 0.36) * 0.95 * (vv > 0.05 ? vv : 0.05);
-          if (v < 0) ht *= 1 + v * 6;
-          if (ht > heat) heat = ht;
+          const f = FIRES[i], hw = f[3], base = f[1];
+          const gx = x - f[0], gy = y - (base - f[2] * hs[i] * 0.3), gr = hw * 2 + 2.2;
+          if (gx * gx + gy * gy < gr * gr * 9) glow += Math.exp(-(gx * gx + gy * gy * 2.4) / (gr * gr)) * br[i];
+          if (gx > hw * 4 || gx < -hw * 4 || y > base + 2.2 || y < base - f[2] * hs[i] * 1.2) continue;
+          for (let j = 0; j < f[5].length; j++) {
+            const tg = f[5][j], h = f[2] * tg[1] * hs[i], w0 = hw * tg[2], ph = f[4] * 7 + j * 3.7;
+            const v = (base - y) / h;
+            if (v < -0.1 || v >= 1) continue;
+            const vv = v > 0 ? v : 0;
+            const nz = (S(x * 0.6 + ph * 5 + so, y * 0.5 + time * 4.4 + ph * 11) - 0.5) * 3.4;
+            const disp = (nz + 0.5 * Math.sin(time * 2.7 + ph + vv * 4.5)) * w0 * 1.5 * Math.pow(vv, 1.2);
+            const w = w0 * Math.pow(1 - vv, 0.75) + 0.001;
+            const u = Math.abs(x - f[0] - tg[0] * hw - disp) / w;
+            if (u >= 1) continue;
+            let body = 1 - Math.pow(u, 1.7);
+            body *= smooth(-0.08, 0.2, v) * (1 - 0.35 * Math.pow(vv, 1.5));
+            const n = 0.6 * S(x * 3.4 + ph * 3 + so, y * 3.4 + time * 12 + ph) + 0.4 * S(x * 7.3 + ph * 9, y * 7.3 + time * 21);
+            const ht = body * 1.15 - clamp01(n - 0.28) * (0.2 + 0.95 * vv) * 2.1;
+            if (ht > heat) heat = ht;
+          }
         }
         for (let i = 0; i < HOT.length; i++) {
           const p = HOT[i], dx = x - p[0], dy = y - p[1], q = (dx * dx + dy * dy) / (p[2] * p[2]);
-          if (q < 4) { const e = Math.exp(-q * 1.6) * hot[i]; if (e > heat * 0.9) heat = Math.max(heat, e * 0.95); }
+          if (q >= 4) continue;
+          const e = Math.exp(-q * 1.8) * hot[i] * (0.65 + 0.7 * S(x * 4 + i * 13, y * 4 + time * 5)) * 0.7;
+          if (e > heat) heat = e;
         }
-        heat *= level;
-        const fa = smooth(0.1, 0.42, heat) * 0.82;
-        const ga = clamp01(glow * 0.17 * level);
-        const k = (py * W + px) * 4;
+        heat = clamp01(heat * level * 0.95);
+        const fa = smooth(0.04, 0.46, heat) * 0.9;
+        const ga = clamp01(glow * 0.085 * level);
         if (fa <= 0.002 && ga <= 0.004) continue;
         heatColor(heat, col);
-        const oa = fa + ga * (1 - fa);
-        const gr = 176, gg = 36, gb = 8;
-        d[k] = (col[0] * fa + gr * ga * (1 - fa)) / oa; d[k + 1] = (col[1] * fa + gg * ga * (1 - fa)) / oa; d[k + 2] = (col[2] * fa + gb * ga * (1 - fa)) / oa;
+        const oa = fa + ga * (1 - fa), k = (py * W + px) * 4;
+        d[k] = (col[0] * fa + 170 * ga * (1 - fa)) / oa; d[k + 1] = (col[1] * fa + 34 * ga * (1 - fa)) / oa; d[k + 2] = (col[2] * fa + 8 * ga * (1 - fa)) / oa;
         d[k + 3] = oa * 255;
       }
     }
