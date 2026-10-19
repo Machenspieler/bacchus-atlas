@@ -243,15 +243,19 @@ test('projection: the home tile of an X that left no longer carries the mark', (
   assert.equal(P.buildPlayerProjection(doc, ctx).overlays[0].blightMark, false);
 });
 
-test('print: no Shadowblight X reaches any page and nothing else changes in the model', () => {
+test('print: a walked Shadowblight X prints where it stands now, only on a revealed hex (PD-072), and nothing else changes in the model', () => {
   const doc0 = world([{ habitat: BLIGHT, cells: [at(0)] }]);
   const plan = S.createSeekerPlan({ doc: doc0, ctx, origin: at(5) });
   let doc = docAt(doc0, plan, 3);
-  doc = must(M.apply(doc, { type: 'setCellsRevealed', cellKeys: [at(3)], revealed: true, at: AT2 }, ctx));
+  const xs = [...M.getShadowXSet(doc)];
+  assert.equal(xs.length, 1);
+  const hidden = PR.buildPrintModel(doc, ctx, template);
+  assert.equal(hidden.pages.reduce((n, pg) => n + (pg.marks || []).length, 0), 0, 'an X on a hidden hex never prints');
+  doc = must(M.apply(doc, { type: 'setCellsRevealed', cellKeys: xs, revealed: true, at: AT2 }, ctx));
   const model = PR.buildPrintModel(doc, ctx, template);
-  const marks = model.pages.reduce((n, pg) => n + (pg.marks || []).length, 0);
-  assert.equal(marks, 0, 'the print never carries a Shadowblight X');
-  for (const pg of model.pages) for (const o of pg.overlays) assert.equal(o.blightMark, false);
+  const printed = new Set(model.pages.flatMap(pg => (pg.marks || []).map(m => m.q + ',' + m.r)));
+  assert.deepEqual([...printed], xs, 'the revealed X prints on its current hex (open ground), on every page it touches');
+  for (const pg of model.pages) for (const o of pg.overlays) assert.equal(o.blightMark, false, 'its home tile is hidden: nothing there');
   assert.equal(model.printMode, 'bw');
 });
 

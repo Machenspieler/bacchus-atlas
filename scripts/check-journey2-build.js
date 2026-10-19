@@ -21,9 +21,9 @@ const ROOT = path.join(__dirname, '..');
 const DIST = path.join(ROOT, 'dist');
 
 const RUNTIME = [
-  'js/journey2-geometry.js', 'js/journey2-model.js', 'js/journey2-store.js', 'js/journey2-biome-tint.js', 'js/journey2-projection.js', 'js/journey2-print.js', 'js/journey2-share.js', 'js/journey2-locate.js', 'js/journey2-shadow-marks.js', 'js/journey2-route.js', 'js/journey2-env-deal.js', 'js/journey2-encounter-roll.js', 'js/journey2-ruin-fx.js', 'js/journey2-view.js', 'css/journey2.css',
+  'js/journey2-geometry.js', 'js/journey2-model.js', 'js/journey2-store.js', 'js/journey2-biome-tint.js', 'js/journey2-projection.js', 'js/journey2-print.js', 'js/journey2-share.js', 'js/journey2-locate.js', 'js/journey2-shadow-marks.js', 'js/journey2-route.js', 'js/journey2-env-deal.js', 'js/journey2-encounter-roll.js', 'js/journey2-ruin-fx.js', 'js/journey2-shadowblight-fx.js', 'js/journey2-view.js', 'css/journey2.css',
   'data/journey2/map-template.json', 'data/journey2/map-anchors.json', 'data/journey2/symbols.json',
-  'img/journey2/valloren-world.webp', 'img/journey2/valloren-world-light.webp',
+  'img/journey2/valloren-world.webp', 'img/journey2/valloren-world-light.webp', 'img/journey2/void-nebula.webp', 'img/journey2/legend-shadowblight.webp',
 ];
 
 /* Known Journey 2 source / reference / mockup files, matched by basename wherever they appear in dist/

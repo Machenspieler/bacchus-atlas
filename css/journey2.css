@@ -238,7 +238,12 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-legend-sym { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--parchment); border-radius: var(--r-sm); overflow: hidden; }
 .j2-legend-sym svg { width: 24px; height: 24px; overflow: visible; }
 .j2-legend-sym img { max-width: 26px; max-height: 24px; display: block; }
-.j2-legend-sym--ruin img { max-width: 30px; max-height: 32px; }   /* the burning castle baked from the map's own fire renderer (scripts/generate-ruin-legend.js) */
+.j2-legend-sym--ruin img { max-width: 30px; max-height: 32px; }
+/* Shadowblight legend (PD-072): the FX swatches while the FX draw, the map's X / skull glyphs otherwise — never both */
+.j2-legend-sym .j2-legend-fx { display: none; }
+.j2[data-sbfx] .j2-legend-sym .j2-legend-fx { display: block; }
+.j2[data-sbfx] .j2-legend-sym .j2-legend-glyph { display: none; }
+.j2-legend-sym img.j2-legend-fx { max-width: 28px; max-height: 28px; }   /* the burning castle baked from the map's own fire renderer (scripts/generate-ruin-legend.js) */
 .j2-legend-dot { fill: var(--ink); }
 .j2-legend-biomes[hidden] { display: none; }
 .j2-legend-x-halo { fill: none; stroke: rgba(255, 255, 255, 0.9); stroke-width: 5.6; stroke-linecap: round; }
@@ -491,12 +496,19 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-world { will-change: auto; }
 .j2-world.is-cam-active { will-change: transform; }
 .j2-base { display: block; position: absolute; left: 0; top: 0; max-width: none; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+/* The ground (PD-072): paper + raster in one isolated box — the only element the Fully Shadowblighted tears mask (journey2-shadowblight-fx.js); the overlay
+   SVG above it (glyphs, selection, party, routes) is never masked. While a tear exists the world itself is transparent so the void shows through it. */
+.j2-ground { position: absolute; left: 0; top: 0; background: #f1e8d2; isolation: isolate; pointer-events: none; }
+.j2-world.has-tears { background: transparent; }
+/* The screen-locked cosmos: an element behind the world, OUTSIDE the camera transform (the approved Nebula artwork, laid out by the FX to cover the viewport;
+   only its box moves, to where a tear can be). Never interactive; hidden while no tear is on screen. */
+.j2-cosmos { position: absolute; left: 0; top: 0; width: 0; height: 0; display: none; pointer-events: none; background-color: #04030a; background-repeat: no-repeat; }
 .j2-world.is-pixel .j2-base { image-rendering: pixelated; }
 /* Sepia screen map (PD-060, the "Sepia map" switch; on by default): the raster is black line art on white, so multiplying it over a parchment ground turns the
    white into paper and keeps the ink. Everything the overlay paints in white to hide or lift the raster (glyph lift, Shadowblight halo) takes
    the paper colour too, or it would read as bright patches. Screen only — the print path (.j2-pp-svg, js/journey2-print.js) draws the untouched raster. */
 .j2[data-sepia] { --j2-paper: #f1e8d2; }
-.j2[data-sepia] .j2-world { background: var(--j2-paper); }
+.j2[data-sepia] .j2-world:not(.has-tears), .j2[data-sepia] .j2-ground { background: var(--j2-paper); }
 .j2[data-sepia] .j2-base { mix-blend-mode: multiply; }
 .j2[data-sepia] .j2-overlay .j2-party-halo { fill: var(--j2-paper); }
 /* the glyph lift is the paper at the map's own depth (~93% grey) and feathered, so it never reads as a lighter rectangle inside the tinted hex */
@@ -627,6 +639,18 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
    prefers-reduced-motion); the foreignObjects are pointer-transparent and sized by the map units, the bitmap fills them. The legend swatch is a static symbol
    (flame gradient tongues); the print and the no-canvas fallback are the still black-and-white drawing below (`.is-print`). */
 .j2-r2-fo { pointer-events: none; overflow: hidden; }
+/* Shadowblight FX (PD-072). The living shadow: one canvas per connected area in a pointer-transparent foreignObject (like the ruin FX). The tear rim: a worn
+   band of darker parchment, a thin tear line; a printed icon over a tear is redrawn from the raster inside a torn patch. Fixed map colours (a map object,
+   not UI chrome). Screen only: the print (.j2-pp-svg) never draws any of it and keeps the X / skull glyphs. */
+.j2-sbfx-fo { pointer-events: none; overflow: hidden; }
+.j2-sbfx-cv { display: block; width: 100%; height: 100%; pointer-events: none; }
+.j2-overlay .j2-sbfx-worn { fill: #86704d; fill-opacity: .42; stroke: none; }
+.j2-overlay .j2-sbfx-line { fill: none; stroke: #2a1f16; stroke-opacity: .72; stroke-width: .8; stroke-linejoin: round; }
+.j2-overlay .j2-sbfx-patch { isolation: isolate; }
+.j2-overlay .j2-sbfx-paper { fill: #f1e8d2; }
+.j2[data-sepia] .j2-overlay .j2-sbfx-paper { fill: var(--j2-paper); }
+.j2[data-sepia] .j2-overlay .j2-sbfx-raster { mix-blend-mode: multiply; }
+.j2-world.is-pixel .j2-sbfx-raster { image-rendering: pixelated; }
 .j2-r2-cv { display: block; width: 100%; height: 100%; pointer-events: none; }
 .j2-ruin-flame-out { fill: url(#j2-ruin-flame); stroke: none; }
 .j2-ruin-flame-in { fill: #ffd98a; opacity: 0.55; stroke: none; }

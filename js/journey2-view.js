@@ -251,6 +251,9 @@
     const playerMode = !!(opts && opts.player);             // the read-only player page (PD-052): Player Preview of a decoded link — no storage, no GM controls, never leaves the preview
     let playerLoad = null;                                  // its decoded link: { ok: true, doc, snap } | { ok: false, code }
     let previewMode = false;                               // Player Preview: a read-only render of the player projection
+    let sbfx = null;                                       // the Shadowblight FX controller (PD-072, js/journey2-shadowblight-fx.js); null = unavailable, the glyphs stay
+    let sbfxCells = { blighted: [], overtaken: [] };       // what it was last given (derived each render, never stored)
+    const OVERTAKEN_SYMBOL = Model.symbolIdOf({ habitat: { overtaken: true } });
     let playerProjection = null;                            // the projection currently drawn in Player Preview
     let ruinDrawn = null;                                   // the destroyedSanctuaries object the GM ruins layer currently shows (an unrelated change never rebuilds it)
     let ruinShownKey = null;                                // Player Preview / player page: the ids the ruins layer currently shows (a fog stroke that reveals no ruin never rebuilds its canvases)
@@ -571,6 +574,23 @@
     const RUIN_CORE = 'M-3 18C-5 13-2 8 0 4C2 8 4 13 3 18Z';
     /** The printed smoke: two wavy strands (white halo under black ink) drifting up and to the right with the wind. */
     const RUIN_STRANDS = ['M2-10C6-26 22-30 30-44C38-58 56-58 66-70C74-80 86-80 96-88', 'M-2-12C0-22 12-28 20-38C28-48 42-52 52-62'];
+    /** The approved Nebula artwork behind every tear (PD-072): one shared, screen-locked image (WebP of the approved master, uncropped). */
+    const SB_NEBULA = Object.freeze({ path: 'img/journey2/void-nebula.webp', width: 1672, height: 941 });
+    /**
+     * Interactive-legend swatches for the two Shadowblight states (PD-072), static and lightweight — no WebGL, no animation: a still frame of the living
+     * shadow baked by scripts/generate-shadowblight-legend.js from the map's own renderer, and a softly torn hex showing the same Nebula artwork. Both
+     * legends exist in the markup; CSS shows the FX pair only while the FX draw (`.j2[data-sbfx]`), the X / skull pair otherwise.
+     */
+    const LEGEND_SHADOW_FX = '<img class="j2-legend-fx" src="img/journey2/legend-shadowblight.webp" alt="" width="28" height="28" draggable="false">';
+    function legendVoidSvg() {
+      const Fx = root.Journey2ShadowblightFx, hex = [[11, 0], [5.5, -9.5], [-5.5, -9.5], [-11, 0], [-5.5, 9.5], [5.5, 9.5]];
+      let pts = hex;
+      if (Fx) pts = Fx.tear(hex, (x, y) => Geo.pointInConvexPolygon([x, y], hex), 0.9, (x, y) => 0.25 + 1.1 * Fx.vnoise(x * 1.1 + 40, y * 1.1 + 40, 7)).torn;
+      const d = 'M' + pts.map(p => fmt(p[0], 2) + ' ' + fmt(p[1], 2)).join('L') + 'Z';
+      return '<svg class="j2-legend-fx" viewBox="-12 -12 24 24" aria-hidden="true"><defs><clipPath id="j2-legend-void-clip"><path d="' + d + '"/></clipPath></defs>' +
+        '<image href="' + SB_NEBULA.path + '" x="-58" y="-6" width="82" height="46" preserveAspectRatio="none" clip-path="url(#j2-legend-void-clip)"/>' +
+        '<path d="' + d + '" fill="none" stroke="#2a1f16" stroke-opacity=".75" stroke-width=".7"/></svg>';
+    }
     const RUIN_SCALE = 1.2;                                  // on the screen map; the print passes its own (the A4 page shrinks the map to about a fifth)
     const RUIN_SCALE_PRINT = 1.6;
 
@@ -627,11 +647,12 @@
           <div class="j2-stage" data-j2-stage>
             <div class="j2-mapwrap">
               <div class="j2-viewport" tabindex="0" role="application" data-t-aria="journey2_map_label" aria-describedby="j2-keys">
+                <div class="j2-cosmos" data-j2-cosmos aria-hidden="true"></div>
                 <div class="j2-world" style="width:${W}px;height:${H}px">
-                  <img class="j2-base" alt="" draggable="false" width="${W}" height="${H}">
+                  <div class="j2-ground" data-j2-ground style="width:${W}px;height:${H}px"><img class="j2-base" alt="" draggable="false" width="${W}" height="${H}"></div>
                   <svg class="j2-overlay" xmlns="${SVG_NS}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">
-                    <defs data-j2-defs></defs><defs>${ECHO_DEFS}${RUIN_DEFS}</defs>
-                    <g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil fill-rule="evenodd" d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/><path class="j2-fog-ghost" data-j2-fog-ghost d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="ruins" pointer-events="none" aria-hidden="true"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routeline" pointer-events="none" aria-hidden="true"></g>
+                    <defs data-j2-defs></defs><defs>${ECHO_DEFS}${RUIN_DEFS}</defs><defs data-j2-sbfx-defs></defs>
+                    <g data-j2-g="tint"></g><g data-j2-g="blight" pointer-events="none" aria-hidden="true"></g><g data-j2-g="tear" pointer-events="none" aria-hidden="true"></g><g data-j2-g="tiles"></g><g data-j2-g="player"></g><g data-j2-g="perimeterPlayer" pointer-events="none"></g><g data-j2-g="fog"><path class="j2-fog-veil" data-j2-fog-veil fill-rule="evenodd" d=""/><path class="j2-fog-edge" data-j2-fog-edge d=""/><path class="j2-fog-ghost" data-j2-fog-ghost d=""/></g><g data-j2-g="perimeter" pointer-events="none"></g><g data-j2-g="fogstroke"></g><g data-j2-g="sanct" pointer-events="none"></g><g data-j2-g="echoes" pointer-events="none"></g><g data-j2-g="ruins" pointer-events="none" aria-hidden="true"></g><g data-j2-g="sanctlabels" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routeline" pointer-events="none" aria-hidden="true"></g>
                     <g data-j2-g="grid"></g><g data-j2-g="protection"></g><g data-j2-g="markers"></g><g data-j2-g="control"></g>
                     <g data-j2-g="proof"></g><g data-j2-g="select"></g><g data-j2-g="preview"></g><g data-j2-g="locate" pointer-events="none"></g><g data-j2-g="seekers" pointer-events="none" aria-hidden="true"></g><g data-j2-g="party" pointer-events="none" aria-hidden="true"></g><g data-j2-g="routemark" pointer-events="none" aria-hidden="true"></g>
                   </svg>
@@ -839,7 +860,7 @@
                   <ul class="j2-legend-list">
                     <li data-j2-legend-item="party"><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g class="j2-party-mark"><path class="j2-party-halo" d="${partyStarPath(0, 0, 9)}"/><path class="j2-party-star" d="${partyStarPath(0, 0, 9)}"/></g></svg></span><span data-t="journey2_legend_party"></span></li>
                     <li data-j2-legend-item="sanctuary"><span class="j2-legend-sym"><img src="img/journey2/legend-sanctuary.webp" alt="" width="44" height="39" draggable="false"></span><span data-t="journey2_legend_sanctuary"></span></li>
-                    <li data-j2-legend-item="shadow"><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><path class="j2-legend-x-halo" d="M-7-7l14 14m0-14l-14 14"/><path class="j2-legend-x" d="M-7-7l14 14m0-14l-14 14"/></svg></span><span><span data-t="journey2_legend_shadow"></span><span class="j2-legend-desc" data-t="journey2_legend_shadow_desc"></span></span></li>
+                    <li data-j2-legend-item="shadow"><span class="j2-legend-sym">${LEGEND_SHADOW_FX}<svg class="j2-legend-glyph" viewBox="-12 -12 24 24" aria-hidden="true"><path class="j2-legend-x-halo" d="M-7-7l14 14m0-14l-14 14"/><path class="j2-legend-x" d="M-7-7l14 14m0-14l-14 14"/></svg></span><span><span data-t="journey2_legend_shadow"></span><span class="j2-legend-desc" data-t="journey2_legend_shadow_desc"></span></span></li>
                     <li data-j2-legend-item="echo"><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g class="j2-echo is-collected">${ECHO_SPENT}</g></svg></span><span data-t="journey2_legend_echo"></span></li>
                     <li data-j2-legend-ruin hidden><span class="j2-legend-sym j2-legend-sym--ruin"><img src="img/journey2/legend-ruin.webp" alt="" width="44" height="48" draggable="false"></span><span data-t="journey2_legend_ruin"></span></li>
                     <li data-j2-legend-item="terrain"><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><circle class="j2-legend-dot" cx="-5" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="0" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="5" cy="0" r="1.7"/></svg></span><span data-t="journey2_legend_terrain"></span></li>
@@ -999,6 +1020,7 @@
       baseImg.className = 'j2-base'; baseImg.alt = ''; baseImg.draggable = false; baseImg.width = W; baseImg.height = H;
       ui.base.replaceWith(baseImg);
       ui.base = baseImg;
+      createShadowFx();
       syncHeaderHeight();
       initDocument();
       // H-04: another tab saving the map. `storage` events only cover tabs that are open and awake, so every edit path also re-checks the stored map (conflictBlocks).
@@ -2089,8 +2111,9 @@
       ui.legendBiomeList.replaceChildren(...items.map(sym => {
         const li = document.createElement('li'), tile = document.createElement('span'), img = document.createElement('img'), name = document.createElement('span');
         tile.className = 'j2-legend-sym'; img.alt = ''; img.src = sym.path; img.draggable = false;
-        name.textContent = sym.id === Model.symbolIdOf({ habitat: { overtaken: true } }) ? t('journey2_overtaken') : t('biome_' + sym.id);
+        name.textContent = sym.id === OVERTAKEN_SYMBOL ? t('journey2_overtaken') : t('biome_' + sym.id);
         tile.appendChild(img);
+        if (sym.id === OVERTAKEN_SYMBOL) { img.classList.add('j2-legend-glyph'); tile.insertAdjacentHTML('afterbegin', legendVoidSvg()); }   // the tear (FX) or the skull (no FX)
         if (sym.id === Model.symbolIdOf({ habitat: { overtaken: true } })) {   // the one biome a player cannot read off its picture: a full-width entry with what it means
           const text = document.createElement('span'), desc = document.createElement('span');
           desc.className = 'j2-legend-desc'; desc.textContent = t('journey2_legend_overtaken_desc');
@@ -2100,6 +2123,38 @@
       }));
     }
 
+    /**
+     * The Shadowblight FX (PD-072): living shadows and tears on the SCREEN map. Created once per mount; unavailable (no 2D canvas / CSS masks, or a
+     * missing module) leaves `sbfx` null and every glyph exactly as before. Pointer-transparent; the camera is pushed to it from scheduleApply.
+     */
+    function createShadowFx() {
+      const Fx = root.Journey2ShadowblightFx;
+      if (!Fx || !ui.viewport) return;
+      try {
+        const reduce = typeof window.matchMedia === 'function' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+        const fx = Fx.create({
+          grid: data.grid, worldSize: data.template.worldSizePx, shadowGroup: ui.g.blight, rimGroup: ui.g.tear, defs: container.querySelector('[data-j2-sbfx-defs]'),   // its own <defs>: ui.defs is rebuilt by the fog layers
+          ground: container.querySelector('[data-j2-ground]'), world: ui.world, cosmos: container.querySelector('[data-j2-cosmos]'),
+          cosmosImage: { url: SB_NEBULA.path, width: SB_NEBULA.width, height: SB_NEBULA.height },
+          protections: data.ctx.protections, baseHref: ui.base.currentSrc || ui.base.src, reducedMotion: !!(reduce && reduce.matches),
+        });
+        if (!fx.available) { fx.destroy(); return; }
+        sbfx = fx;
+        cleanups.push(() => { if (sbfx) { sbfx.destroy(); sbfx = null; } });
+        if (reduce && typeof reduce.addEventListener === 'function') listen(reduce, 'change', e => { if (sbfx) sbfx.setReducedMotion(e.matches); });
+      } catch (err) {
+        sbfx = null;                                           // a failing effect never breaks the map: the glyphs stay
+      }
+      if (ui.root) ui.root.toggleAttribute('data-sbfx', !!sbfx);
+    }
+    /** Hands the FX the cells it may draw: the document (GM) or the player projection (Player Preview, player page) — never both, never hidden cells to players. */
+    function syncShadowFx() {
+      if (!sbfx) return;
+      const next = previewMode ? Sbfx().cellsFromProjection(playerProjection) : Sbfx().cellsFromDocument(doc, Model);
+      if (sbfx.setCells(next)) sbfxCells = next;                // unchanged cells keep the same object (and the cached perimeter)
+    }
+    const Sbfx = () => root.Journey2ShadowblightFx;
+
     /** The Shadowblight X at the top of a hexagon (white halo + ink stroke). Drawn on a tile, or alone on open ground (PD-041: an X that walked off its region). */
     function blightXMarkup(q, r, cls) {
       const m = blightMarkCenter(q, r), k = BLIGHT_X_HALF;
@@ -2108,12 +2163,18 @@
     }
 
     /**
-     * The generated-tile layer as SVG markup for a list of { q, r, spec } entries — the ONE drawing routine behind the GM map and
-     * Player Preview (and the future print renderer). It knows nothing about regions, selection or visibility: what to draw has
-     * already been decided (GM: every placed tile; players: the projection's overlays).
+     * The generated-tile layer as SVG markup for a list of { q, r, spec } entries — the ONE drawing routine behind the GM map,
+     * Player Preview and the print. It knows nothing about regions, selection or visibility: what to draw has already been decided
+     * (GM: every placed tile; players / print: the projection's overlays).
+     * `screenFx` (PD-072): the screen map while the Shadowblight FX draw — the living shadow and the tear ARE the marks there, so no
+     * Shadowblight X (on a tile or on open ground) and nothing at all for a fully overtaken tile (no skull, no tint, no hex outline: its
+     * hexes are one tear). The print (and a browser without the FX) keeps every glyph. Returns { under, rest }: glyph lift + biome wash
+     * (drawn below the living shadow) and outlines + glyphs (above it).
      */
     let overlayUid = 0;                                       // unique ids for the per-render <clipPath>/<filter> definitions
-    function overlayMarkup(entries) {
+    function overlayMarkup(entries) { const o = overlayParts(entries, false); return o.under + o.rest; }
+    function overlayParts(entries, screenFx) {
+      if (screenFx) entries = entries.filter(e => e.floating || e.spec.symbolId !== OVERTAKEN_SYMBOL).map(e => (e.floating || !e.spec.blightMark ? e : Object.assign({}, e, { spec: Object.assign({}, e.spec, { blightMark: false }) })));
       let outlines = '', quiet = '', body = '', halos = '';
       const tints = new Map();                               // tint key -> merged hex paths; only entries the caller decided to tint
       // "Regions" (PD-062): one symbol per region (per connected piece of it that is drawn), on the hex nearest its middle with room for the glyph; the other
@@ -2125,7 +2186,7 @@
           (q, r) => { const L = layoutFor(q, r, specAt.get(Geo.cellId(q, r))); return !!L && !L.lay.hidden; });
       }
       for (const e of entries) {
-        if (e.floating) { body += blightXMarkup(e.q, e.r, 'j2-tile'); continue; }   // a bare X on a hex with no tile
+        if (e.floating) { if (!screenFx) body += blightXMarkup(e.q, e.r, 'j2-tile'); continue; }   // a bare X on a hex with no tile (on screen: its living shadow)
         if (e.tint && Tint.definitionOf(e.tint)) tints.set(e.tint, (tints.get(e.tint) || '') + hexPath(e.q, e.r));
         if (iconAt && !iconAt.has(Geo.cellId(e.q, e.r))) { if (e.spec.blightMark) body += blightXMarkup(e.q, e.r, 'j2-tile'); continue; }
         const L = layoutFor(e.q, e.r, e.spec);
@@ -2145,7 +2206,7 @@
         const id = 'j2-halo-blur-' + (++overlayUid);
         under += '<filter id="' + id + '" x="-60%" y="-40%" width="220%" height="180%"><feGaussianBlur stdDeviation="3.2"/></filter><g class="j2-tile-halo" filter="url(#' + id + ')">' + halos + '</g>';
       }
-      return under + wash + (outlines ? '<path class="j2-tile-hex" d="' + outlines + '"/>' : '') + (quiet ? '<path class="j2-tile-hex is-glyphless" d="' + quiet + '"/>' : '') + body;
+      return { under: under + wash, rest: (outlines ? '<path class="j2-tile-hex" d="' + outlines + '"/>' : '') + (quiet ? '<path class="j2-tile-hex is-glyphless" d="' + quiet + '"/>' : '') + body };
     }
 
     function renderTiles() {
@@ -2154,8 +2215,11 @@
         // Player Preview: the GM layer is emptied (not hidden) and only the projection is produced
         ui.g.tiles.innerHTML = '';
         playerProjection = Projection.buildPlayerProjection(projectionDoc(), data.ctx, { biomeTint: showBiome });
-        ui.g.player.innerHTML = overlayMarkup(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, region: o.region, tint: o.tint }))
-          .concat(playerProjection.shadowMarks.map(m => ({ q: m.q, r: m.r, floating: true }))));
+        const pl = overlayParts(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, region: o.region, tint: o.tint }))
+          .concat(playerProjection.shadowMarks.map(m => ({ q: m.q, r: m.r, floating: true }))), !!sbfx);
+        ui.g.tint.innerHTML = pl.under;
+        ui.g.player.innerHTML = pl.rest;
+        syncShadowFx();
         if (playerMode) { renderLegendBiomes(); renderLegendItems(); }
         renderParty();
         renderEchoes();
@@ -2172,7 +2236,10 @@
       const xs = Model.getShadowXSet(doc), onTile = new Set(doc.tiles.map(tile => tile.cell));
       const entries = doc.tiles.map(tile => { const c = Geo.parseCellId(tile.cell); return { q: c.q, r: c.r, spec: Object.assign(specOfBatch(byBatch.get(tile.batchId)), { blightMark: xs.has(tile.cell) }), tint: tints.get(tile.cell) || null, region: tile.batchId }; });
       for (const id of xs) if (!onTile.has(id)) { const c = Geo.parseCellId(id); if (c) entries.push({ q: c.q, r: c.r, floating: true }); }   // an X that walked off its region (PD-041)
-      ui.g.tiles.innerHTML = overlayMarkup(entries);
+      const gm = overlayParts(entries, !!sbfx);
+      ui.g.tint.innerHTML = gm.under;
+      ui.g.tiles.innerHTML = gm.rest;
+      syncShadowFx();
       renderPerimeter();
       renderSanctuaryLabels();
       renderParty();
@@ -2218,16 +2285,20 @@
       if (!ui.g || !ui.g.perimeter || !ui.g.perimeterPlayer || !doc) return;
       const mode = previewMode ? 'player' : 'gm';
       const vis = previewMode ? playerProjection : doc.playerVisibility;
-      if (perimDrawn.tiles === doc.tiles && perimDrawn.vis === vis && perimDrawn.mode === mode) return;
+      if (perimDrawn.tiles === doc.tiles && perimDrawn.vis === vis && perimDrawn.mode === mode && perimDrawn.torn === sbfxCells.overtaken) return;
       // GM: the complete outline above the (subtle) fog state. Player Preview: only the projection's safe edges, beneath the veil.
-      const segs = previewMode ? playerProjection.perimeter : Model.regionBoundarySegments(doc, data.ctx);
+      let segs = previewMode ? playerProjection.perimeter : Model.regionBoundarySegments(doc, data.ctx);
+      if (sbfx && sbfxCells.overtaken.length) {                // PD-072: on screen the torn rim IS a tear's boundary — a straight hex outline round it read as a window frame
+        const torn = new Set(sbfxCells.overtaken);
+        segs = segs.filter(sg => { if (torn.has(sg.cell)) return false; const c = Geo.parseCellId(sg.cell), d = Geo.NEIGHBOR_DELTAS[sg.dir]; return !torn.has(Geo.cellId(c.q + d.dq, c.r + d.dr)); });
+      }
       const d = Geo.polylinesPath(Geo.chainEdgeSegments(data.grid, segs));
       const live = previewMode ? ui.g.perimeterPlayer : ui.g.perimeter, idle = previewMode ? ui.g.perimeter : ui.g.perimeterPlayer;
       live.innerHTML = d ? '<path class="j2-perimeter" d="' + d + '"/>' : '';
       live.setAttribute('data-segments', String(segs.length));
       idle.innerHTML = '';
       idle.setAttribute('data-segments', '0');
-      perimDrawn = { tiles: doc.tiles, vis: vis, mode: mode };
+      perimDrawn = { tiles: doc.tiles, vis: vis, mode: mode, torn: sbfxCells.overtaken };
     }
 
     /**
@@ -3812,6 +3883,7 @@
         clearTimeout(camIdleTimer);
         camIdleTimer = setTimeout(dropCamPromotion, 600);
         ui.world.style.transform = 'translate(' + cam.tx + 'px,' + cam.ty + 'px) scale(' + cam.scale + ')';
+        if (sbfx) { const [vw, vh] = viewSize(); sbfx.setCamera(cam, vw, vh); }   // the same frame: the cosmos box and culling never lag the map; nothing is read back
         ui.world.style.setProperty('--j2-inv', String(1 / cam.scale));
         ui.world.classList.toggle('is-pixel', cam.scale >= 2);
         positionInspector();
@@ -4307,6 +4379,7 @@
       cancelTransient(); cancelFogStroke(); closeMenus(); closeInspector({ quiet: true }); closeSanctuary({ quiet: true });
       setFogTool(null, { quiet: true });
       printOpen = true;
+      if (sbfx) sbfx.setPaused(true);                         // the pages cover the map: no shadow updates behind them
       const host = el('div', { class: 'j2-printpreview', 'data-j2-printpreview': '' });
       pp = { el: host, model: null, ready: false, failed: false, token: 0 };
       host.addEventListener('click', e => {
@@ -4329,6 +4402,7 @@
     function closePrintPreview(o) {
       if (!printOpen) return;
       printOpen = false;
+      if (sbfx) sbfx.setPaused(false);
       if (pp) { pp.token++; pp.el.remove(); }
       pp = null;
       document.body.classList.remove('j2-printpreview-mode');
@@ -5757,6 +5831,7 @@
         detachedConfirm: detachedConfirm ? { batchId: detachedConfirm.batchId, cells: detachedConfirm.tiles.map(x => x.cell) } : null,
         perimeter: (() => { const g = ui.g && (previewMode ? ui.g.perimeterPlayer : ui.g.perimeter); return { mode: perimDrawn.mode, segments: g ? Number(g.getAttribute('data-segments') || 0) : 0, hasPath: !!(g && g.querySelector('path')), above: !previewMode }; })(),
         playerGlyphs: ui.g && ui.g.player ? ui.g.player.querySelectorAll('image').length : 0,
+        shadowFx: sbfx ? Object.assign(sbfx.stats(), { cells: { blighted: sbfxCells.blighted.length, overtaken: sbfxCells.overtaken.length } }) : null,
       };
     }
 

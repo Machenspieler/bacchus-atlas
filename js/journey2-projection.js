@@ -136,8 +136,8 @@
     const color = !!(opts && opts.color === true);
     const p = buildPlayerProjection(doc, ctx, { biomeTint: color });
     p.printMode = color ? 'color' : 'bw';
-    p.shadowMarks = [];                                        // no Shadowblight X in the print, on open ground or on a tile
-    for (const o of p.overlays) o.blightMark = false;
+    // the Shadowblight X's print (PD-072, reversing the 2026-10-16 amendment): on paper they are the only mark of the corruption — the screen's living
+    // shadow never prints — so a revealed X prints where it is now, on a tile (`blightMark`) or on open ground (`shadowMarks`), fog-filtered like the rest
     p.collectedEchoes = [];                                  // the print carries no Soul Echo, collected or not (PD-028); destroyedSanctuaries stays (PD-070), already limited to revealed hexes
     return p;
   }

@@ -139,10 +139,13 @@ test('the model carries no tint, fog, colour, Environment, Soul Echo, region id 
   for (const o of both(p => p.overlays)) assert.deepEqual(Object.keys(o).sort(), ['blightMark', 'dots', 'q', 'r', 'region', 'symbolId']);
 });
 
-test('revealed Habitat and Terrain are included; the Shadowblight X is never printed', () => {
+test('revealed Habitat and Terrain are included; a Shadowblight X prints exactly where the projection has one (PD-072)', () => {
   const ov = both(p => p.overlays);
   assert.ok(ov.every(o => typeof o.symbolId === 'string' && o.dots === 3));
-  assert.ok(ov.some(o => o.symbolId === 'forest') && ov.every(o => o.blightMark === false));
+  assert.ok(ov.some(o => o.symbolId === 'forest'));
+  // the print shows the X of every revealed tile that holds one — the same flag Player Preview reads (on paper it is the only mark of the corruption)
+  const screen = new Map(P.buildPlayerProjection(FX.doc, ctx).overlays.map(o => [o.q + ',' + o.r, o.blightMark]));
+  assert.ok(ov.every(o => o.blightMark === screen.get(o.q + ',' + o.r)));
 });
 
 test('Biome colors and the screen fog preference cannot change the model', () => {

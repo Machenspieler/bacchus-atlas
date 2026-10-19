@@ -235,9 +235,11 @@ test('Soul Echoes and sanctuaries neither add nor remove tint, and the tint modu
 test('view: the tint layer is aria-hidden, no events, under the symbols, with no stroke and nothing around fixed markers', () => {
   const view = read('js/journey2-view.js').replace(/\/\*[\s\S]*?\*\//g, ''), css = read('css/journey2.css');
   assert.match(view, /<g class="j2-biome-layer" pointer-events="none" aria-hidden="true">/);
-  const order = view.match(/return under \+ wash[^\n]+/)[0];
+  // overlayParts returns { under: lift + wash, rest: outlines + symbols }: the screen puts the living shadow (PD-072) between the two, the print joins them
+  const order = view.match(/return \{ under: under \+ wash, rest: [^\n]+/)[0];
   assert.ok(order.indexOf('wash') < order.indexOf('outlines') && order.indexOf('outlines') < order.indexOf('body'), 'tint, outlines, then symbols');
-  assert.ok(view.indexOf("class=\"j2-tile-halo\"") < view.indexOf('return under + wash'), 'the glyph lift is built to sit below the tint');
+  assert.ok(view.indexOf("class=\"j2-tile-halo\"") < view.indexOf('return { under: under + wash'), 'the glyph lift is built to sit below the tint');
+  assert.match(view, /function overlayMarkup\(entries\) \{ const o = overlayParts\(entries, false\); return o\.under \+ o\.rest; \}/, 'the print draws the same layer in the same order');
   assert.doesNotMatch(view, /j2-tile-cover|overlapsBuiltInLabel/, 'printed labels show through the wash: nothing covers them');
   assert.doesNotMatch(view, /j2-biome-halo/, 'no second tinted box over the glyph lift: the wash is one even layer above it');
   const rule = css.match(/\.j2-biome-tint[^{]*\{[^}]*\}/)[0];
