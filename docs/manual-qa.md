@@ -100,6 +100,7 @@ locally") before starting.
 
 ## Lists
 
+- [ ] The "Add to list" popup closes on Back/Forward or any route change; it never stays over another route.
 - [ ] Empty state (no lists yet).
 - [ ] Populated: cover art, environment counts, open/delete controls work.
 - [ ] Rename: valid rename persists; empty/whitespace-only input restores
@@ -498,7 +499,7 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       texture and no generated glyphs; revealed hexes show their glyphs; a region half revealed shows only its
       revealed hexes; the base map, labels and sanctuary icons are unchanged. Pan and zoom work, clicks do
       nothing, Ctrl+Z does nothing. **Back to GM** (or Esc) restores the previous pan/zoom, the sidebar state and
-      without reopening the inspector or adding an Undo entry. Reload leaves the preview.
+      without reopening the inspector or adding an Undo entry. A reload reopens the preview at the restored camera (PD-035).
 - [ ] Soul Echoes (GM only, PD-022): **Soul Echoes** places nine small animated Echo markers (PD-071: a luminous core with three broken ripple rings blooming outward in turn), each right above its sanctuary icon (the icon stays visible), on nine different sanctuaries
       (never HORIZON/MARROGATE), one in each of nine west-to-east bands, spread over the whole map, and the
       pressing it again asks "Place new Soul Echoes?" (Cancel is focused) and replaces them;
@@ -525,7 +526,7 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       Player Preview and the printed player map show a moved X only on revealed hexes (also on open ground with no tile); neither shows the frame or the bubble. The JSON backup round-trips the moved X's. Check English and Russian.
 - [ ] Sanctuaries (GM only, PD-023): the toolbar button reads **Generate 56 sanctuaries** (RU: «Создать убежища: 56») and puts a dashed ring round every printed sanctuary icon
       (never HORIZON/MARROGATE). Clicking an icon (also one with a hex under it) opens the overlay: name, then Trade & Exports d20, Quirk d12, Crisis d10, Drive d10,
-      Political System d8, Size d6, Population d4, each with its die and result; a combined political system shows the note and one line per system.
+      Political System d8, Size d6, Population d4, each with its die and result; a combined political system shows one line per system (no separate note).
       **×** and Esc close it; **Delete sanctuary** asks first (Cancel focused), removes the entry and leaves the printed icon; **Reroll sanctuary** changes the name and all rows,
       keeps the overlay open, and is one Undo entry. Pressing the toolbar button again asks before replacing. Clicking empty map closes the overlay; opening a hex's Region Inspector replaces it.
       `S` / `Shift+S` (map focused) step through the sanctuaries. Reload keeps them; the JSON backup round-trips them. **Player Preview** shows no ring, no overlay and no button.

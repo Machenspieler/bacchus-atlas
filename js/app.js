@@ -2731,6 +2731,7 @@ function openAddToListPopup(envId) {
     if (closed) return;
     closed = true;
     clearTimeout(closeTimer);
+    window.removeEventListener('hashchange', close);
     overlay.remove();
     teardown();
     // Only the list routes show anything that membership changes; re-rendering
@@ -2741,6 +2742,8 @@ function openAddToListPopup(envId) {
 
   overlay.querySelector('.modal-close').addEventListener('click', close);
   overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+  // Back/Forward or a typed address must not leave the popup over another route.
+  window.addEventListener('hashchange', close);
 
   const newInput = overlay.querySelector('#atl-new-input');
   const newError = overlay.querySelector('#atl-new-error');

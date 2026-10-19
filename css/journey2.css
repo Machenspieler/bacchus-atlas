@@ -555,7 +555,8 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-tip.is-warn { border-color: #e0a324; }
 .j2-tip.is-warn span { color: #e0a324; }
 .j2-tip strong { font-weight: 600; color: var(--parchment); }
-.j2-tip span { color: var(--fear-soft); }
+.j2-tip span { color: var(--hope-soft); }
+.j2-tip.is-bad span { color: var(--fear-soft); }
 .j2-tip span:empty { display: none; }
 .j2-tip em { font-style: normal; color: var(--muted); }
 
