@@ -103,6 +103,7 @@ locally") before starting.
 - [ ] The "Add to list" popup closes on Back/Forward or any route change; it never stays over another route.
 - [ ] Empty state (no lists yet).
 - [ ] Populated: cover art, environment counts, open/delete controls work.
+- [ ] Delete opens an in-site alertdialog naming the list (Cancel focused, Esc/backdrop cancel, no native confirm); confirming removes the list and its memberships.
 - [ ] Rename: valid rename persists; empty/whitespace-only input restores
       the previous name and shows the inline error; Escape cancels without
       persisting.

@@ -2480,21 +2480,56 @@ function renderListsHome() {
   el.querySelectorAll('[data-del-list]').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.delList;
-      if (!confirm(t('delete_list_confirm'))) return;
-      state.lists = state.lists.filter(l => l.id !== id);
-      Object.keys(state.envLists).forEach(envId => {
-        setEnvLists(envId, (state.envLists[envId] || []).filter(lid => lid !== id));
-      });
-      persistBatch([
-        { key: LS_KEYS.lists, value: state.lists },
-        { key: LS_KEYS.envLists, value: state.envLists },
-      ]);
-      renderListsHome();
+      const list = state.lists.find(l => l.id === id);
+      if (list) openListDeleteConfirm(list, () => deleteList(id));
     });
   });
   el.querySelectorAll('[data-open-list]').forEach(btn => {
     btn.addEventListener('click', () => navigate('#/lists/' + encodeURIComponent(btn.dataset.openList)));
   });
+}
+
+function deleteList(id) {
+  state.lists = state.lists.filter(l => l.id !== id);
+  Object.keys(state.envLists).forEach(envId => {
+    setEnvLists(envId, (state.envLists[envId] || []).filter(lid => lid !== id));
+  });
+  persistBatch([
+    { key: LS_KEYS.lists, value: state.lists },
+    { key: LS_KEYS.envLists, value: state.envLists },
+  ]);
+  renderListsHome();
+}
+
+/** Confirmation dialog for Delete list, same shape as openPrepDeleteConfirm():
+ * registerOverlay() supplies the focus trap, Escape, scroll lock and focus
+ * restore; Cancel gets initial focus (the safe action). */
+function openListDeleteConfirm(list, onConfirm) {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.dataset.overlayKind = 'popup';
+  overlay.innerHTML = `
+    <div class="modal modal-sm" data-overlay-card role="alertdialog" aria-modal="true"
+         aria-labelledby="list-delete-title" aria-describedby="list-delete-body">
+      <div class="modal-header">
+        <h2 id="list-delete-title">${escapeHtml(t('list_delete_confirm_title').replace('{name}', list.name))}</h2>
+      </div>
+      <div class="modal-body">
+        <p class="prep-confirm-body" id="list-delete-body">${escapeHtml(t('list_delete_confirm_body'))}</p>
+        <div class="prep-confirm-actions">
+          <button type="button" class="btn btn-ghost" data-list-confirm-cancel>${escapeHtml(t('cancel'))}</button>
+          <button type="button" class="btn btn-danger" data-list-confirm-delete>${escapeHtml(t('delete'))}</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  const teardown = registerOverlay(overlay, close);
+  function close() { overlay.remove(); teardown(); }
+
+  overlay.querySelector('[data-list-confirm-cancel]').addEventListener('click', close);
+  overlay.querySelector('[data-list-confirm-delete]').addEventListener('click', () => { close(); onConfirm(); });
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+  overlay.querySelector('[data-list-confirm-cancel]').focus();
 }
 
 /* The one place a list-rename input's edit is resolved, for both a
