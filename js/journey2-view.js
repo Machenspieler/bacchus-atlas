@@ -4395,6 +4395,12 @@
       cleanups.push(() => clearTimeout(resizeReconcileTimer));
       listen(window, 'blur', () => { spaceDown = false; if (ui.viewport) ui.viewport.classList.remove('is-space'); });
       listen(document, 'pointerdown', e => { if (openMenu && !e.target.closest('.j2-menu-wrap')) closeMenus(); }, true);
+      // the phone's legend is a sheet over the map: a press anywhere outside it (and outside the bottom bar that toggles it) closes it
+      listen(document, 'pointerdown', e => {
+        if (!playerMode || sideCollapsed || !isPhoneWidth() || !ui.side || !ui.rail) return;
+        if (ui.side.contains(e.target) || ui.rail.contains(e.target)) return;
+        sideCollapsed = true; applySideState(false);
+      }, true);
       importInput = el('input', { type: 'file', accept: 'application/json,.json', class: 'sr-only', tabindex: '-1', 'aria-hidden': 'true' });
       ui.root.appendChild(importInput);
       listen(importInput, 'change', onImportFile);
