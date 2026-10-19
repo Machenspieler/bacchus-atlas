@@ -5123,7 +5123,7 @@
       const menu = ui.root.querySelector('[data-j2-menu="' + name + '"]');
       if (openMenu && openMenu.menu === menu) { closeMenus(); return; }
       closeMenus();
-      if (playerMode && !sideCollapsed && isPhoneWidth()) { sideCollapsed = true; applySideState(false); }   // the phone's legend and a rail menu never stack
+      if (playerMode && !sideCollapsed) { sideCollapsed = true; applySideState(false); }   // the legend and a rail menu never stack (the menu opens over the panel)
       menu.hidden = false;
       btn.setAttribute('aria-expanded', 'true');
       openMenu = { btn: btn, menu: menu };

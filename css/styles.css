@@ -2630,6 +2630,7 @@ body[data-route="prep"][data-sp-header-mode="expanded"] .prep-bar {
    flex-basis is read as a height, stretching the field to 260px tall. */
 .prep-search { margin: 0; flex: none; position: relative; }
 .prep-search input[type="text"], .prep-search input[type="search"] { height: 35px; font-size: var(--fs-base); }
+.prep-search input { text-overflow: ellipsis; }   /* a narrow field (laptop width) ends its hint with an ellipsis instead of cutting a word */
 /* Reuses the main catalog's .search-clear-btn (css rule elsewhere in this
    file) — visible only while that picker's search text is non-empty. */
 .prep-search .search-clear-btn { right: var(--s-1); }
