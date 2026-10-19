@@ -836,13 +836,13 @@
                 <div class="j2-legend" data-j2-legend>
                   <h3 class="j2-legend-h" data-t="journey2_legend_h"></h3>
                   <ul class="j2-legend-list">
-                    <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g class="j2-party-mark"><path class="j2-party-halo" d="${partyStarPath(0, 0, 9)}"/><path class="j2-party-star" d="${partyStarPath(0, 0, 9)}"/></g></svg></span><span data-t="journey2_legend_party"></span></li>
-                    <li><span class="j2-legend-sym"><img src="img/journey2/legend-sanctuary.webp" alt="" width="44" height="39" draggable="false"></span><span data-t="journey2_legend_sanctuary"></span></li>
-                    <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><path class="j2-legend-x-halo" d="M-7-7l14 14m0-14l-14 14"/><path class="j2-legend-x" d="M-7-7l14 14m0-14l-14 14"/></svg></span><span><span data-t="journey2_legend_shadow"></span><span class="j2-legend-desc" data-t="journey2_legend_shadow_desc"></span></span></li>
-                    <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g class="j2-echo is-collected">${ECHO_SPENT}</g></svg></span><span data-t="journey2_legend_echo"></span></li>
+                    <li data-j2-legend-item="party"><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g class="j2-party-mark"><path class="j2-party-halo" d="${partyStarPath(0, 0, 9)}"/><path class="j2-party-star" d="${partyStarPath(0, 0, 9)}"/></g></svg></span><span data-t="journey2_legend_party"></span></li>
+                    <li data-j2-legend-item="sanctuary"><span class="j2-legend-sym"><img src="img/journey2/legend-sanctuary.webp" alt="" width="44" height="39" draggable="false"></span><span data-t="journey2_legend_sanctuary"></span></li>
+                    <li data-j2-legend-item="shadow"><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><path class="j2-legend-x-halo" d="M-7-7l14 14m0-14l-14 14"/><path class="j2-legend-x" d="M-7-7l14 14m0-14l-14 14"/></svg></span><span><span data-t="journey2_legend_shadow"></span><span class="j2-legend-desc" data-t="journey2_legend_shadow_desc"></span></span></li>
+                    <li data-j2-legend-item="echo"><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><g class="j2-echo is-collected">${ECHO_SPENT}</g></svg></span><span data-t="journey2_legend_echo"></span></li>
                     <li data-j2-legend-ruin hidden><span class="j2-legend-sym"><svg viewBox="-14 -14 28 28" aria-hidden="true"><g class="j2-ruin is-legend" transform="translate(0 -1) scale(.62)"><g class="j2-ruin-flame">${RUIN_TONGUES.map(d => `<path class="j2-ruin-flame-out" d="${d}"/>`).join("")}<path class="j2-ruin-flame-in" d="${RUIN_CORE}"/></g></g></svg></span><span data-t="journey2_legend_ruin"></span></li>
-                    <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><circle class="j2-legend-dot" cx="-5" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="0" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="5" cy="0" r="1.7"/></svg></span><span data-t="journey2_legend_terrain"></span></li>
-                    <li><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><polygon class="j2-legend-fog" points="9.5,-5.5 9.5,5.5 0.0,11.0 -9.5,5.5 -9.5,-5.5 -0.0,-11.0"/></svg></span><span data-t="journey2_legend_unknown"></span></li>
+                    <li data-j2-legend-item="terrain"><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><circle class="j2-legend-dot" cx="-5" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="0" cy="0" r="1.7"/><circle class="j2-legend-dot" cx="5" cy="0" r="1.7"/></svg></span><span data-t="journey2_legend_terrain"></span></li>
+                    <li data-j2-legend-item="unknown"><span class="j2-legend-sym"><svg viewBox="-12 -12 24 24" aria-hidden="true"><polygon class="j2-legend-fog" points="9.5,-5.5 9.5,5.5 0.0,11.0 -9.5,5.5 -9.5,-5.5 -0.0,-11.0"/></svg></span><span data-t="journey2_legend_unknown"></span></li>
                   </ul>
                   <div class="j2-legend-biomes" data-j2-legend-biomes hidden>
                     <h3 class="j2-legend-h" data-t="journey2_legend_biomes_h"></h3>
@@ -943,6 +943,7 @@
       ui.ruinPlace = container.querySelector('[data-j2-ruin-place]');
       ui.ruinClear = container.querySelector('[data-j2-ruin-clear]');
       ui.legendRuin = container.querySelector('[data-j2-legend-ruin]');
+      ui.legendItems = Array.from(container.querySelectorAll('[data-j2-legend-item]'));
       ui.echoLocate = container.querySelector('[data-j2-echo-locate]');
       ui.locateReason = container.querySelector('[data-j2-locate-reason]');
       ui.routePlan = container.querySelector('[data-j2-route-plan]');
@@ -2059,6 +2060,24 @@
       return h;
     }
 
+    /**
+     * The player page's legend names only what players can currently see on the map (like the biomes and the destroyed-sanctuary line): a symbol whose
+     * subject is hidden by Fog of War, or not shown at all, would tell players it exists. Everything comes from the projection plus the printed sanctuary hexes.
+     */
+    function renderLegendItems() {
+      if (!ui.legendItems || !playerProjection) return;
+      const p = playerProjection, revealed = new Set(p.revealedCells);
+      const show = {
+        party: !!p.party,
+        sanctuary: data.ctx.sanctuaries.some(s => s.cellId && revealed.has(s.cellId)),
+        shadow: p.shadowMarks.length > 0 || p.overlays.some(o => o.blightMark),
+        echo: p.collectedEchoes.length > 0,
+        terrain: p.overlays.some(o => o.dots > 0),
+        unknown: true,
+      };
+      for (const li of ui.legendItems) li.hidden = !show[li.getAttribute('data-j2-legend-item')];
+    }
+
     /** The player page's legend lists only the biomes already on the revealed map (what the GM has just announced), named in the current language. */
     function renderLegendBiomes() {
       if (!ui.legendBiomes || !playerProjection) return;
@@ -2135,7 +2154,7 @@
         playerProjection = Projection.buildPlayerProjection(projectionDoc(), data.ctx, { biomeTint: showBiome });
         ui.g.player.innerHTML = overlayMarkup(playerProjection.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, region: o.region, tint: o.tint }))
           .concat(playerProjection.shadowMarks.map(m => ({ q: m.q, r: m.r, floating: true }))));
-        if (playerMode) renderLegendBiomes();
+        if (playerMode) { renderLegendBiomes(); renderLegendItems(); }
         renderParty();
         renderEchoes();
         renderRuins();
