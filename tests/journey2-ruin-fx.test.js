@@ -203,3 +203,39 @@ test('fire distribution: one tall blaze that never dies down, secondary pockets 
   assert.ok(css > 400 && css < 540, 'about 470 CSS px² of solid flame at 100 % (V4 before the correction: ~606), got ' + css.toFixed(0));
   assert.ok(masses / N >= 4, 'at least four separate masses on average: ' + (masses / N).toFixed(1));
 });
+
+test('every printed glyph class has its own fire layout; the model carries the class; an unknown class falls back to G1', () => {
+  const anchors = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'journey2', 'map-anchors.json'), 'utf8')).anchors.filter(a => a.kind === 'sanctuary');
+  const classes = new Set(anchors.map(a => a.glyphClass));
+  assert.ok(classes.size >= 6);
+  for (const c of classes) assert.ok(Fx.LAYOUTS[c], 'a fire layout for ' + c);
+  assert.strictEqual(Fx.layoutOf('nope'), Fx.LAYOUTS.G1);
+  assert.strictEqual(Fx.LAYOUTS.G1.flames, Fx.FLAMES);
+  assert.strictEqual(Fx.stillOf('G1'), null, "G1's still print drawing is the view's hand-drawn one");
+  for (const c of Object.keys(Fx.LAYOUTS).filter(k => k !== 'G1')) {
+    const st = Fx.stillOf(c);
+    assert.ok(st.tongues.length >= 3 && /^M/.test(st.core), c + ' has a derived still drawing');
+    const L = Fx.LAYOUTS[c];
+    assert.ok(L.flames[0][9] === 0 && L.flames.slice(1).every(f => f[9] > 0 && f[2] < L.flames[0][2]), c + ': one blaze that never dies down, lower pockets that do');
+  }
+});
+
+test('fire of every class stays inside its canvas and burns well above the ink (no clipping), smoke starts at its own roofs', () => {
+  for (const c of Object.keys(Fx.LAYOUTS)) for (const time of [1.1, 6.3, 14.7]) {
+    const ppu = 3, r = Fx.FIRE, b = { width: r.w * ppu, height: r.h * ppu, ppu };
+    b.data = new Uint8ClampedArray(b.width * b.height * 4);
+    Fx.renderFire(b, time, 4, 1.2, c);
+    let n = 0;
+    for (let py = 0; py < b.height; py++) for (let px = 0; px < b.width; px++) {
+      const a = b.data[(py * b.width + px) * 4 + 3];
+      if (a >= 128) n++;
+      if (px === 0 || py === 0 || px === b.width - 1 || py === b.height - 1) assert.ok(a < 3, c + ' fire touches the canvas edge');
+    }
+    assert.ok(n / (ppu * ppu) * 1.44 > 250, c + ' has a real fire: ' + (n / 9 * 1.44).toFixed(0) + ' CSS px²');
+    const sm = { width: Fx.SMOKE.w * 2, height: Fx.SMOKE.h * 2 };
+    sm.data = new Uint8ClampedArray(sm.width * sm.height * 4);
+    Fx.renderSmoke(sm, time, 4, c);
+    let any = 0; for (let i = 3; i < sm.data.length; i += 4) if (sm.data[i] > 20) any++;
+    assert.ok(any > 400, c + ' smoke is drawn');
+  }
+});

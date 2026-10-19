@@ -149,7 +149,7 @@
     /* The 56 real sanctuaries (never the HORIZON / MARROGATE destinations), west to east: the only places a Soul Echo can be. */
     const sanctuaries = ((anchorsDoc && anchorsDoc.anchors) || [])
       .filter(a => a && a.kind === 'sanctuary' && typeof a.stableId === 'string' && Array.isArray(a.worldPixelAnchor))
-      .map(a => ({ id: a.stableId, x: a.worldPixelAnchor[0], y: a.worldPixelAnchor[1], cellId: typeof a.cellId === 'string' ? a.cellId : null, top: a.iconProtectionArea.rectPx[1], rect: a.iconProtectionArea.rectPx.slice(), labelPoint: a.labelAnchor && Array.isArray(a.labelAnchor.pointPx) ? a.labelAnchor.pointPx.slice() : null }))
+      .map(a => ({ id: a.stableId, x: a.worldPixelAnchor[0], y: a.worldPixelAnchor[1], cellId: typeof a.cellId === 'string' ? a.cellId : null, top: a.iconProtectionArea.rectPx[1], rect: a.iconProtectionArea.rectPx.slice(), glyph: typeof a.glyphClass === 'string' ? a.glyphClass : null, labelPoint: a.labelAnchor && Array.isArray(a.labelAnchor.pointPx) ? a.labelAnchor.pointPx.slice() : null }))
       .sort((a, b) => a.x - b.x || a.y - b.y || (a.id < b.id ? -1 : 1));
     const sanctuaryCells = new Set(((anchorsDoc && anchorsDoc.anchors) || []).filter(a => a && typeof a.cellId === 'string').map(a => a.cellId));
     return {

@@ -20,7 +20,7 @@
   /** Texture regions in icon units: the plume rises up and to the right (wind); the fire wraps the castle. `ppu` = canvas pixels per unit (the fire's is only the
    *  initial size: `attach` re-sizes its canvas to the device pixels it actually covers, see `firePpu`). */
   const SMOKE = Object.freeze({ x0: -38, y0: -86, w: 100, h: 112, ppu: 2 });
-  const FIRE = Object.freeze({ x0: -30, y0: -26, w: 60, h: 46, ppu: 3 });
+  const FIRE = Object.freeze({ x0: -30, y0: -28, w: 60, h: 56, ppu: 3 });
   const SRC_Y = 0;            // the line where smoke leaves the roofs
   const PLUME_H = 66;          // height over which the plume thins out completely
   const DRIFT = 24;            // wind: how far right the plume centre has moved at the top
@@ -50,6 +50,106 @@
   /** Fire seen through openings of the dark structure [x, y, rx, ry, rank]: a small very hot patch on black ink reads at any size. */
   const HOT = [[9.6, -1.6, 0.95, 2.1, 0], [-12.2, 9, 0.9, 2, 1], [-5.6, 9.5, 0.9, 1.8, 1], [5.4, 9, 0.8, 1.5, 1]];
   const EMBERS = [[-9, 2, 36, 9, 6.8, 0.1], [6, -4, 44, 16, 9.1, 0.55], [13, 5, 32, 6, 7.7, 0.3], [-3, 6, 40, -6, 11.3, 0.8], [1, -2, 38, 12, 8.3, 0.0]];
+
+  /**
+   * One fire layout per printed sanctuary glyph class (map-anchors.json `glyphClass`), all in icon-centred units like G1's above: the flames, the hot windows, the smoke
+   * sources, the line where the smoke leaves the roofs (`srcY`), the centre of the fire's underlight on the smoke (`glow`) and the embers. G1 is the original, hand-tuned one
+   * (the constants above); the others are drawn the same way for their own silhouettes (measured on the raster: ink box, roofs, openings), so a ruin burns from ITS roofs
+   * and windows whichever icon the draw landed on. An unknown class falls back to G1. `still` is the print's static drawing for the class (G1's lives in the view).
+   */
+  const shiftEmbers = (dx, dy) => EMBERS.map(e => [e[0] + dx, e[1] + dy, e[2], e[3], e[4], e[5]]);
+  const BLAZE_T = [[0.05, 1, 1], [-0.62, 0.68, 0.62], [0.68, 0.78, 0.58]];
+  const POCKET_T = [[-0.3, 1, 0.6], [0.55, 0.6, 0.45]];
+  const SIDE_T = [[0, 1, 1], [-0.6, 0.55, 0.55]];
+  const LAYOUTS = {
+    G1: { flames: FLAMES, hot: HOT, embers: EMBERS, sources: SOURCES, srcY: SRC_Y, glow: [1, 8] },
+    // two crenellated towers, the left one tall (top y -18, x -10..1), the right one low (top -8, x 1..10), low wings either side
+    G2: {
+      flames: [
+        [-4.5, 15, 34, 3.9, 0.12, 0.3, 0, BLAZE_T, [0.34, 1.05], 0],
+        [8, 16, 25, 3.2, 0.08, 1.9, 0, [[0, 1, 1], [-0.5, 0.55, 0.5]], [0.28, 0.85], 0.7],
+        [-12.5, 16, 16, 2.4, 0.2, 3.4, 0, [[0, 1, 1]], [0.3, 0.9], 0.75],
+        [13, 16, 15, 2.2, 0.1, 4.8, 0, [[0, 1, 1]], [0.3, 0.9], 0.8],
+        [-8.5, -12, 7, 2, 0.12, 5.4, 1, [[0, 1, 1], [0.7, 0.62, 0.55]], [0.3, 0.9], 0.6],
+        [8, -6, 6, 1.5, 0.1, 0.9, 1, [[0, 1, 1]], [0.3, 0.9], 0.6]
+      ],
+      hot: [[-4.8, -6, 0.9, 2, 0], [-3, 8, 0.9, 1.8, 1], [7, 8, 0.8, 1.5, 1]],
+      embers: shiftEmbers(-4, -4), sources: [[-6, 6, 0.9], [3, 7, 1], [11, 5.5, 0.85]], srcY: -8, glow: [-3, 4]
+    },
+    // a small ruined group: a thin tall tower between a low building (left) and a big block (right); ink box x -12..13, y -13..12
+    G3: {
+      flames: [
+        [1, 10, 25, 3.5, 0.15, 0.3, 0, BLAZE_T, [0.34, 1.05], 0],
+        [-8, 12, 15, 2.8, 0.16, 1.7, 0, POCKET_T, [0.24, 0.8], 0.75],
+        [9, 10, 16, 2.9, 0.1, 3.1, 0, SIDE_T, [0.26, 0.8], 0.7],
+        [-2.2, -11, 6, 1.4, 0.1, 5.4, 1, [[0, 1, 1]], [0.3, 0.9], 0.6],
+        [11, -4, 6, 1.6, 0.1, 0.9, 1, [[0, 1, 1]], [0.3, 0.9], 0.6]
+      ],
+      hot: [[7, 7, 1, 1.8, 0], [-8, 6, 0.8, 1.6, 1]],
+      embers: shiftEmbers(1, -4), sources: [[-6, 5, 0.8], [0, 6, 1], [8, 6, 0.9]], srcY: -3, glow: [3, 5]
+    },
+    // a tall thin spire (top y -22) over a body that widens into low buildings (left top +6, right top +11), feet at +22
+    G4: {
+      flames: [
+        [0.5, 18, 36, 3.6, 0.12, 0.3, 0, BLAZE_T, [0.34, 1.05], 0],
+        [-7, 21, 17, 3.6, 0.2, 1.7, 0, POCKET_T, [0.24, 0.8], 0.75],
+        [9.5, 21, 13, 3, 0.1, 3.1, 0, SIDE_T, [0.26, 0.8], 0.7],
+        [-12, 21, 9, 2.3, 0.22, 4.6, 0, [[0, 1, 1]], [0.3, 0.9], 0.8],
+        [3, 14, 10, 2, 0.06, 2.2, 0, [[0, 1, 1]], [0.3, 0.9], 0.7],
+        [0.8, -19, 6, 1.3, 0.1, 0.9, 1, [[0, 1, 1]], [0.3, 0.9], 0.6],
+        [-3, -6, 8, 2, 0.12, 5.4, 1, [[0, 1, 1], [0.7, 0.62, 0.55]], [0.3, 0.9], 0.6]
+      ],
+      hot: [[1.5, 2, 0.9, 2, 0], [-8, 14, 0.9, 1.8, 1], [9, 16, 0.8, 1.5, 1]],
+      embers: shiftEmbers(0, 2), sources: [[-6, 5.5, 0.85], [1, 6, 1], [9, 5.5, 0.85]], srcY: -6, glow: [1, 10]
+    },
+    // like G4 but slimmer: spire top y -24, lower buildings top +4 (left) and +5 (right), feet at +19
+    G6: {
+      flames: [
+        [1, 16, 35, 3.5, 0.12, 0.3, 0, BLAZE_T, [0.34, 1.05], 0],
+        [-7, 18, 16, 3.5, 0.2, 1.7, 0, POCKET_T, [0.24, 0.8], 0.75],
+        [10, 18, 14, 2.8, 0.1, 3.1, 0, SIDE_T, [0.26, 0.8], 0.7],
+        [-12, 18, 9, 2.3, 0.22, 4.6, 0, [[0, 1, 1]], [0.3, 0.9], 0.8],
+        [3.5, 12, 10, 2, 0.06, 2.2, 0, [[0, 1, 1]], [0.3, 0.9], 0.7],
+        [1.6, -21, 6, 1.3, 0.1, 0.9, 1, [[0, 1, 1]], [0.3, 0.9], 0.6],
+        [-3, -6, 8, 2, 0.12, 5.4, 1, [[0, 1, 1], [0.7, 0.62, 0.55]], [0.3, 0.9], 0.6]
+      ],
+      hot: [[1, 0, 0.9, 2, 0], [-7, 12, 0.9, 1.8, 1], [10, 13, 0.8, 1.5, 1]],
+      embers: shiftEmbers(1, 0), sources: [[-6, 5.5, 0.85], [1.5, 6, 1], [9, 5.5, 0.85]], srcY: -6, glow: [1, 9]
+    },
+    // two crenellated towers: left tall and slim (x -14..-2, top y -20), right low (x 1..14, top -9), a gap between; feet at +17
+    G7: {
+      flames: [
+        [-8, 15, 36, 3.8, 0.12, 0.3, 0, BLAZE_T, [0.34, 1.05], 0],
+        [8, 17, 25, 3.6, 0.08, 1.9, 0, [[0, 1, 1], [-0.5, 0.55, 0.5]], [0.28, 0.85], 0.7],
+        [-0.5, 17, 11, 1.9, 0.06, 3.4, 0, [[0, 1, 1]], [0.3, 0.9], 0.8],
+        [-14.5, 17, 11, 2.2, 0.22, 4.6, 0, [[0, 1, 1]], [0.3, 0.9], 0.8],
+        [15, 17, 10, 2, 0.08, 2.6, 0, [[0, 1, 1]], [0.3, 0.9], 0.8],
+        [-10, -18, 7, 1.8, 0.12, 5.4, 1, [[0, 1, 1], [0.7, 0.62, 0.55]], [0.3, 0.9], 0.6],
+        [8, -8, 6, 1.5, 0.1, 0.9, 1, [[0, 1, 1]], [0.3, 0.9], 0.6]
+      ],
+      hot: [[-8, -8, 0.9, 2, 0], [8, 0, 0.9, 1.8, 1], [-8, 8, 0.8, 1.6, 1]],
+      embers: shiftEmbers(-4, -4), sources: [[-9, 6, 0.9], [-0.5, 5, 0.8], [8, 6, 0.9]], srcY: -10, glow: [-3, 6]
+    }
+  };
+  const layoutOf = (cls) => (typeof cls === 'object' && cls) ? cls : (LAYOUTS[cls] || LAYOUTS.G1);
+
+  /** The print's static fire for a class other than G1, drawn from its layout: one tongue per rank-0 flame (back to front, the blaze last and tallest), a core inside the
+   *  blaze, a bed under it, the smoke strands starting at the line where the smoke leaves the roofs. null for G1 (its hand-drawn drawing lives in the view). */
+  function stillOf(cls) {
+    const key = LAYOUTS[cls] ? cls : 'G1';
+    if (key === 'G1') return null;
+    const L = LAYOUTS[key], r1 = v => Math.round(v * 10) / 10, P = (x, y) => r1(x) + ' ' + r1(y);
+    const fl = L.flames.filter(f => f[6] === 0).sort((a, b) => a[2] - b[2]);
+    const tongue = (f, k) => {
+      const x = f[0], y = f[1], h = f[2] * k, hw = f[3] * 1.15, tx = x + f[4] * h * 0.9, ty = y - h;
+      return 'M' + P(x - hw, y) + 'C' + P(x - hw * 1.15, y - h * 0.4) + ' ' + P(tx - hw * 0.45, ty + h * 0.35) + ' ' + P(tx, ty) +
+        'C' + P(tx + hw * 0.5, ty + h * 0.4) + ' ' + P(x + hw * 1.15, y - h * 0.35) + ' ' + P(x + hw, y) + 'Z';
+    };
+    const blaze = fl[fl.length - 1];
+    const core = (() => { const x = blaze[0], y = blaze[1], h = blaze[2] * 0.36, w = blaze[3] * 0.55; return 'M' + P(x - w, y) + 'C' + P(x - w * 1.3, y - h * 0.6) + ' ' + P(x - w * 0.3, y - h * 0.8) + ' ' + P(x, y - h) + 'C' + P(x + w * 0.4, y - h * 0.7) + ' ' + P(x + w * 1.3, y - h * 0.5) + ' ' + P(x + w, y) + 'Z'; })();
+    const dy = L.srcY - SRC_Y;
+    return { tongues: fl.map(f => tongue(f, 0.8)), core: core, bedY: blaze[1] + 1, bedRx: 17, dy: dy, glowX: blaze[0] };
+  }
 
   const TS = 256;
   const TMASK = TS - 1;
@@ -106,16 +206,17 @@
   /**
    * Fills `img` ({ data: Uint8ClampedArray, width, height }, RGBA, the SMOKE region) with the plume at `time` seconds. `seed` shifts the noise so two ruins never match.
    */
-  function renderSmoke(img, time, seed) {
+  function renderSmoke(img, time, seed, cls) {
+    const Ly = layoutOf(cls), SRC = Ly.sources, SY = Ly.srcY, GL = Ly.glow;
     const S = sampler(noise()), W = img.width, H = img.height, d = img.data, ppu = W / SMOKE.w;
     const so = (seed || 0) * 37.7;
     const level = fireLevel(time, seed || 0);
     d.fill(0);
     const sway1 = 0.42 * time + so * 0.01, sway2 = 0.27 * time + so * 0.02;
     for (let py = 0; py < H; py++) {
-      const y = SMOKE.y0 + (py + 0.5) / ppu, t = (SRC_Y - y) / PLUME_H;
+      const y = SMOKE.y0 + (py + 0.5) / ppu, t = (SY - y) / PLUME_H;
       if (t < -0.28 || t > 1.08) continue;
-      const below = t < 0 ? smooth(-0.28, 0, t) * 0.7 : 1;
+      const below = t < 0 ? smooth(-0.28, 0, t) * 0.7 : 0.7 + 0.3 * smooth(0, 0.12, t);   // continuous at the roof line (a step there showed as a hard edge above low roofs)
       const tp = t < 0 ? 0 : t;
       const cxT = DRIFT * Math.pow(tp, 1.35) + 3.2 * Math.sin(sway1 + tp * 3.3) * tp + 1.8 * Math.sin(sway2 + tp * 6.1) * tp;
       const grow = 12 * Math.pow(tp, 0.9);
@@ -130,7 +231,7 @@
         const xl = x + wx - cxT;
         let env = 0;
         for (let i = 0; i < 3; i++) {
-          const s = SOURCES[i], q = (xl - s[0]) / (s[1] + grow);
+          const s = SRC[i], q = (xl - s[0]) / (s[1] + grow);
           env += s[2] * Math.exp(-q * q);
         }
         if (env < 0.03) continue;
@@ -154,7 +255,7 @@
         if (tone < 0.06) tone = 0.06;
         let r = tone * 255 * 1.03, g = tone * 255 * 0.96, b = tone * 255 * 0.9;
         // underlight: the fire reddens the smoke just above it, strongest where it is thin
-        const lx = x - 1, ly = y - 8, glow = Math.exp(-(lx * lx + ly * ly * 1.3) / 520) * level * (0.5 + 0.5 * (1 - a));
+        const lx = x - GL[0], ly = y - GL[1], glow = Math.exp(-(lx * lx + ly * ly * 1.3) / 520) * level * (0.5 + 0.5 * (1 - a));
         if (glow > 0.01) { r += 150 * glow; g += 52 * glow; b += 10 * glow; }
         const k = (py * W + px) * 4;
         d[k] = r > 255 ? 255 : r; d[k + 1] = g > 255 ? 255 : g; d[k + 2] = b > 255 ? 255 : b;
@@ -200,7 +301,8 @@
    * dark red at the rim and the tips. Level of detail: at small sizes the tongues are wider and barely eroded (a bold silhouette), the detail flames are absent;
    * zoomed in, the contours get finer, the tips tear and the detail flames fade in. Every term is clamped to 0..1 before it is multiplied (an unbounded product once drew thin lines).
    */
-  function renderFire(img, time, seed, scale) {
+  function renderFire(img, time, seed, scale, cls) {
+    const Ly = layoutOf(cls), FLAMES = Ly.flames, HOT = Ly.hot;
     const S = sampler(noise()), W = img.width, H = img.height, d = img.data, ppu = W / FIRE.w;
     const sc = scale > 0 ? scale : 1.2, D = lodOf(sc), minU = 2.2 / sc;
     const so = (seed || 0) * 29.3;
@@ -284,9 +386,10 @@
   }
 
   /** Embers: a few sparks that occasionally lift off, drawn straight onto the smoke canvas (analytic paths, no state). */
-  function drawEmbers(ctx, time, seed, ppu) {
-    for (let i = 0; i < EMBERS.length; i++) {
-      const e = EMBERS[i], cyc = time / e[4] + e[5] + (seed || 0) * 0.13, n = Math.floor(cyc), p = cyc - n;
+  function drawEmbers(ctx, time, seed, ppu, cls) {
+    const EMB = layoutOf(cls).embers;
+    for (let i = 0; i < EMB.length; i++) {
+      const e = EMB[i], cyc = time / e[4] + e[5] + (seed || 0) * 0.13, n = Math.floor(cyc), p = cyc - n;
       if (mulberry32(n * 131 + i * 7 + ((seed || 0) | 0))() > 0.55) continue;     // most cycles carry no ember at all
       const x = e[0] + e[3] * p + 2.2 * Math.sin(p * 9 + i * 2), y = e[1] - e[2] * p;
       const a = Math.sin(Math.PI * Math.min(1, p * 1.25)) * (0.55 + 0.45 * Math.sin(time * 14 + i * 3)) * (1 - p * 0.6);
@@ -310,11 +413,11 @@
   }
 
   function drawInstance(inst, time, fire) {
-    renderSmoke(inst.smoke.img, time, inst.seed);
+    renderSmoke(inst.smoke.img, time, inst.seed, inst.glyph);
     inst.smoke.ctx.putImageData(inst.smoke.img, 0, 0);
-    drawEmbers(inst.smoke.ctx, time, inst.seed, inst.smoke.cv.width / SMOKE.w);
+    drawEmbers(inst.smoke.ctx, time, inst.seed, inst.smoke.cv.width / SMOKE.w, inst.glyph);
     if (fire === false) return;
-    renderFire(inst.fire.img, time, inst.seed, inst.scale);
+    renderFire(inst.fire.img, time, inst.seed, inst.scale, inst.glyph);
     inst.fire.ctx.putImageData(inst.fire.img, 0, 0);
   }
 
@@ -367,7 +470,7 @@
       const smoke = makeLayer(sc), fire = makeLayer(fc);
       if (!smoke || !fire) return;
       const seed = seedOf(el.getAttribute('data-ruin'));
-      const inst = { el, smoke, fire, seed, visible: true, scale: 1.2, still: reduce ? 23 + seed : 0 };
+      const inst = { el, smoke, fire, seed, glyph: el.getAttribute('data-glyph') || 'G1', visible: true, scale: 1.2, still: reduce ? 23 + seed : 0 };
       n++;
       measure(inst);
       drawInstance(inst, reduce ? inst.still : G.performance.now() / 1000);
@@ -383,5 +486,5 @@
     return fo(SMOKE, 'smoke') + fo(FIRE, 'fire');           // the flames burn in front of their own smoke: its dark base is what makes them glow
   }
 
-  return Object.freeze({ SMOKE, FIRE, FLAMES, bakeNoise, renderSmoke, renderFire, fireLevel, lodOf, firePpu, smokePpu, attach, markup, seedOf });
+  return Object.freeze({ SMOKE, FIRE, FLAMES, LAYOUTS, layoutOf, stillOf, bakeNoise, renderSmoke, renderFire, fireLevel, lodOf, firePpu, smokePpu, attach, markup, seedOf });
 });

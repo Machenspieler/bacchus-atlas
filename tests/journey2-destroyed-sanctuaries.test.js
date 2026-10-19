@@ -186,7 +186,7 @@ test('print model: a revealed ruin is on the page(s) its glyph touches, an unrev
   const model = PR.buildPrintModel(doc, ctx, template);
   assert.equal(model.summary.destroyedSanctuaries, 5);
   const onPages = new Map();
-  for (const p of model.pages) for (const r of p.ruins) { assert.deepEqual(Object.keys(r).sort(), ['id', 'x', 'y']); onPages.set(r.id, (onPages.get(r.id) || 0) + 1); }
+  for (const p of model.pages) for (const r of p.ruins) { assert.deepEqual(Object.keys(r).sort(), ['glyph', 'id', 'x', 'y']); onPages.set(r.id, (onPages.get(r.id) || 0) + 1); }
   assert.deepEqual(Array.from(onPages.keys()).sort(), ids.slice().sort(), 'every revealed ruin is printed');
   for (const id of ids) {
     const s = ctx.sanctuaries.find(x => x.id === id), home = PR.pageOfPoint([s.rect[0] + s.rect[2] / 2, s.rect[1] + s.rect[3] / 2], PR.pagesFromTemplate(template));

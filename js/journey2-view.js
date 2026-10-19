@@ -578,19 +578,20 @@
     function ruinFxMarkup(s) {
       const Fx = root.Journey2RuinFx;
       if (!Fx || !root.document.createElement('canvas').getContext) return ruinMarkup(s, false);
-      return '<g class="j2-ruin j2-ruin2" data-ruin="' + esc(s.id) + '" transform="translate(' + fmt(s.x, 1) + ' ' + fmt(s.y, 1) + ') scale(' + RUIN_SCALE + ')">' + Fx.markup(s.id) + '</g>';
+      return '<g class="j2-ruin j2-ruin2" data-ruin="' + esc(s.id) + '" data-glyph="' + esc(s.glyph || 'G1') + '" transform="translate(' + fmt(s.x, 1) + ' ' + fmt(s.y, 1) + ') scale(' + RUIN_SCALE + ')">' + Fx.markup(s.id) + '</g>';
     }
 
     /** The still drawing of one destroyed sanctuary at the icon centre of `s` ({ id, x, y }): flat black and white, no gradient, no animation, no CSS variables.
      *  `print` = at the A4 page's scale; without it, at the screen scale (only the fallback of `ruinFxMarkup`). */
     function ruinMarkup(s, print) {
       const k = print ? RUIN_SCALE_PRINT : RUIN_SCALE;
+      const st = root.Journey2RuinFx && root.Journey2RuinFx.stillOf ? root.Journey2RuinFx.stillOf(s.glyph) : null;   // null = G1 (the hand-drawn constants above)
       let h = '<g class="j2-ruin is-print" data-ruin="' + esc(s.id) + '" transform="translate(' + fmt(s.x, 1) + ' ' + fmt(s.y, 1) + ') scale(' + k + ')">';
-      h += '<g class="j2-ruin-still">';
+      h += '<g class="j2-ruin-still"' + (st && st.dy ? ' transform="translate(0 ' + st.dy + ')"' : '') + '>';
       for (const d of RUIN_STRANDS) h += '<path class="j2-ruin-strand-halo" d="' + d + '"/><path class="j2-ruin-strand" d="' + d + '"/>';
-      h += '</g><ellipse class="j2-ruin-bed" cy="18" rx="17" ry="3.2"/><g class="j2-ruin-flame">';
-      for (const d of RUIN_TONGUES) h += '<path class="j2-ruin-flame-out" d="' + d + '"/>';
-      h += '<path class="j2-ruin-flame-in" d="' + RUIN_CORE + '"/>';
+      h += '</g><ellipse class="j2-ruin-bed" cy="' + (st ? st.bedY : 18) + '" rx="17" ry="3.2"' + (st ? ' cx="' + st.glowX + '"' : '') + '/><g class="j2-ruin-flame">';
+      for (const d of (st ? st.tongues : RUIN_TONGUES)) h += '<path class="j2-ruin-flame-out" d="' + d + '"/>';
+      h += '<path class="j2-ruin-flame-in" d="' + (st ? st.core : RUIN_CORE) + '"/>';
       h += '</g></g>';
       return h;
     }

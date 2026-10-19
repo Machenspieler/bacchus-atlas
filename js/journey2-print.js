@@ -136,7 +136,7 @@
       const s = ruined.get(id);
       if (!s) continue;
       const box = [s.x - RUIN_BOX[0], s.y - RUIN_BOX[1], RUIN_BOX[2], RUIN_BOX[3]];
-      pages.forEach((p, i) => { if (rectsOverlap(box, p.rect)) out[i].ruins.push({ id: s.id, x: s.x, y: s.y }); });
+      pages.forEach((p, i) => { if (rectsOverlap(box, p.rect)) out[i].ruins.push({ id: s.id, x: s.x, y: s.y, glyph: s.glyph || null }); });
     }
     // a name belongs to the page holding its icon; it is laid out inside that page only, so it is never split across the seam
     const bySanctuary = new Map(ctx.sanctuaries.map(s => [s.id, s]));
