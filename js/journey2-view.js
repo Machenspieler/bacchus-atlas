@@ -1296,6 +1296,7 @@
     function toggleSide() {
       const before = sideInset();
       sideCollapsed = !sideCollapsed;
+      if (!sideCollapsed && playerMode && isPhoneWidth()) exitRoute({ quiet: true });   // opening the phone legend ends route planning
       applySideState(true);
       // the free map area grows/shrinks by the inset difference: keep the zoom and slide the map by half of it, so what was centred stays centred (no Fit)
       if (data && ui.viewport) { const dx = (sideInset() - before) / 2; if (Math.abs(dx) >= 1) animateCameraBy(dx, 0, 250); }
@@ -2992,6 +2993,7 @@
       cancelTransient(); cancelFogStroke(); setFogTool(null, { quiet: true });
       exitLocate({ quiet: true });
       closeMenus(); hideEnvTip(); clearHint();
+      if (playerMode && !sideCollapsed && isPhoneWidth()) { sideCollapsed = true; applySideState(false); }   // the phone's legend sheet and the route banner never stack
       if (diagOpen) setDiagnostics(false);
       closeInspector({ quiet: true }); closeSanctuary({ quiet: true });
       if (sel.tileId) { sel.tileId = null; renderSelection(); renderInventory(false); }
