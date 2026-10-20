@@ -33530,6 +33530,129 @@
         "underground"
       ],
       "source": "Tales From Jinglewood"
+    },
+    {
+      "id": "city-festival",
+      "tier": 2,
+      "type": "social",
+      "difficulty": 13,
+      "name": {
+        "en": "City Festival",
+        "ru": "Фестиваль в городе"
+      },
+      "lore": {
+        "en": "Bright carts bristling with baked goods, fresh produce, cold drinks, and finely cut meat flow like a river around a rich stone plaza.",
+        "ru": "Яркие тележки, ломящиеся от выпечки, свежих овощей, холодных напитков и тонко нарезанного мяса, текут рекой вокруг богатой каменной площади."
+      },
+      "impulses": {
+        "en": [
+          "Feed well",
+          "restore",
+          "sell"
+        ],
+        "ru": [
+          "Сытно кормить",
+          "восстанавливать силы",
+          "продавать"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Guards (Archer Guard, Bladed Guard, Head Guard)",
+          "Courtier",
+          "Masked Thief",
+          "Merchant Baron",
+          "Royal Advisor"
+        ],
+        "ru": [
+          "Стража (Стражник-Лучник, Стражник-Мечник, Капитан Стражи)",
+          "Придворный",
+          "Вор в Маске",
+          "Торговый Барон",
+          "Королевский Советник"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Joy for Sale",
+            "ru": "Радость на продажу"
+          },
+          "description": {
+            "en": "A PC who takes a rest at the City Festival automatically clears all Stress, so long as they spend at least a handful of gold.",
+            "ru": "Персонаж, который отдыхает на фестивале в городе, автоматически снимает весь Стресс, если потратит хотя бы горсть золота."
+          },
+          "prompt": {
+            "en": "What brings them such delights at the market? The food, the goods, the company, or something else?",
+            "ru": "Что дарит им такую радость на рынке? Еда, товары, компания или что-то другое?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Deals Everywhere",
+            "ru": "Сделки на каждом шагу"
+          },
+          "description": {
+            "en": "Most anything of appropriate Tier may be found here for sale, or at least rumor of it. PCs looking for these deals can make an Instinct or Presence Roll.\n- **Critical Success:** The PC finds the magic item they're looking for on sale, and gets a clue to where a Tier 3 magic item is they may quest for later.\n- **Success with Hope:** The PC finds reliable information on the location of a magic item they wish to buy, and a good deal on any more mundane goods immediately.\n- **Success with Fear:** As with success with Hope, but they catch sight of a Mask Thief they're not certain is tailing them—marking a Stress.\n- **Any Failure:** A Merchant Baron more interested in pumping them for information than making a deal gets the better of them and wastes their time—they mark a Stress, and the Merchant Baron uses Everyone has a Price against them without spending a Fear.",
+            "ru": "Здесь можно найти на продажу почти всё подходящего Ранга — или, по крайней мере, услышать о нём слух. Персонажи, ищущие такие сделки, могут совершить бросок Инстинкта или Влияния.\n- **Критический успех:** персонаж находит в продаже магический предмет, который искал, и получает подсказку, где находится магический предмет 3 Ранга, за которым можно отправиться позже.\n- **Успех с Надеждой:** персонаж находит надёжные сведения о местонахождении магического предмета, который хочет купить, и сразу получает хорошую цену на более обычные товары.\n- **Успех со Страхом:** как при успехе с Надеждой, но персонаж замечает Вора в Маске, который, возможно, следит за ним, — персонаж отмечает Стресс.\n- **Любая неудача:** Торговый Барон, которому важнее выудить из персонажей сведения, чем заключить сделку, берёт над ними верх и впустую тратит их время — они отмечают Стресс, а Торговый Барон применяет против них «У каждого своя цена», не тратя Страх."
+          },
+          "prompt": {
+            "en": "How common are magical goods in this city? Are there regulations people are skirting or flouting?",
+            "ru": "Насколько обычны магические товары в этом городе? Какие правила люди обходят или нарушают?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "City Business",
+            "ru": "Городские дела"
+          },
+          "description": {
+            "en": "After the PCs do a deal or cause a scene, spend a Fear to have a Royal Advisor close in, flanked by 4 Bladed Guards and 2 Archer Guards. They want to have a little conversation.",
+            "ru": "После того как персонажи заключат сделку или устроят сцену, потратьте Страх, чтобы к ним приблизился Королевский Советник в сопровождении 4 Стражников-Мечников и 2 Стражников-Лучников. Они хотят немного побеседовать."
+          },
+          "prompt": {
+            "en": "Is the advisor investigating illegitimate business, or drawing them into a ploy?",
+            "ru": "Советник расследует незаконные дела или втягивает персонажей в интригу?"
+          }
+        }
+      ],
+      "story_seeds": [
+        {
+          "title": {
+            "en": "Sting of the Law",
+            "ru": "Ловушка для закона"
+          },
+          "body": {
+            "en": "The PCs are contracted to buy illegal goods; guards lay in wait for their signal once they confirm a sale.",
+            "ru": "Персонажей нанимают купить запрещённый товар; стража затаилась и ждёт их сигнала, как только сделка будет подтверждена."
+          },
+          "prompt": {
+            "en": "Who else lurks? What are the goods?",
+            "ru": "Кто ещё скрывается поблизости? Что это за товар?"
+          }
+        },
+        {
+          "title": {
+            "en": "My Father's Sword",
+            "ru": "Меч моего отца"
+          },
+          "body": {
+            "en": "A humble farmer insists a magic blade for sale is a family heirloom.",
+            "ru": "Скромный фермер настаивает, что магический клинок, выставленный на продажу, — семейная реликвия."
+          },
+          "prompt": {
+            "en": "Is his story legitimate? Will the PCs care?",
+            "ru": "Правдива ли его история? Будет ли это важно персонажам?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Resting Dagger"
     }
   ]
 }
