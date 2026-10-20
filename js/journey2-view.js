@@ -257,7 +257,9 @@
     let playerProjection = null;                            // the projection currently drawn in Player Preview
     let ruinDrawn = null;                                   // the destroyedSanctuaries object the GM ruins layer currently shows (an unrelated change never rebuilds it)
     let ruinShownKey = null;                                // Player Preview / player page: the ids the ruins layer currently shows (a fog stroke that reveals no ruin never rebuilds its canvases)
-    let echoDrawn = null;                                 // the soulEchoes object the GM echoes layer currently shows (an unrelated change never rebuilds it)
+    let echoTimer = 0;                                    // the ~8 fps stepper of the live Echo animations (syncEchoTicker)
+    cleanups.push(() => { if (echoTimer) { clearTimeout(echoTimer); echoTimer = 0; } });
+    let echoDrawn = null;                                // the soulEchoes object the GM echoes layer currently shows (an unrelated change never rebuilds it)
     let sanctuaryOpen = null;                               // anchor id of the sanctuary whose overlay is open (transient: never persisted, never in history)
     let sanctuaryRenaming = false;                          // the open overlay's name is being edited (transient: ends on save, cancel, close or another sanctuary)
     let sanctuaryShown = null;                             // anchor id the overlay DOM currently shows (so its scroll position survives re-renders)
@@ -2335,6 +2337,29 @@
       }
       ui.g.echoes.innerHTML = h;
       echoDrawn = doc.soulEchoes;
+      syncEchoTicker();
+    }
+
+    /**
+     * An SVG animation repaints the tiles under it every display frame, and nine Echoes kept an integrated GPU near 99 % (measured by the user: shadow alone ~59 %,
+     * with Echoes ~99 %). The CSS animations stay the source of the easing, but are paused and stepped from here at ~8 fps, and held still while the camera moves or the tab is hidden.
+     */
+    function syncEchoTicker() {
+      if (echoTimer) { clearTimeout(echoTimer); echoTimer = 0; }
+      if (!ui.g || !ui.g.echoes || !ui.g.echoes.querySelector('.j2-echo:not(.is-collected)')) return;
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (typeof ui.g.echoes.getAnimations !== 'function') return;
+      const anims = ui.g.echoes.getAnimations({ subtree: true });
+      if (!anims.length) return;
+      for (const a of anims) a.pause();
+      const t0 = performance.now();
+      const step = () => {
+        echoTimer = setTimeout(step, 125);
+        if (document.hidden || (ui.world && ui.world.classList.contains('is-cam-active'))) return;
+        const t = performance.now() - t0;
+        for (const a of anims) a.currentTime = t;
+      };
+      echoTimer = setTimeout(step, 125);
     }
 
     /**
