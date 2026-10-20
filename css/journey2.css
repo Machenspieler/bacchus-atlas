@@ -1098,7 +1098,7 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-pp-marks { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: #000; stroke-width: 0.25; }
 .j2-pp-pagelabel { position: absolute; left: 0; right: 0; bottom: 6mm; margin: 0; text-align: center; font: 8pt/1.2 Arial, Helvetica, sans-serif; color: #333; }
 /* black ink only: the same classes the screen map uses, restated without any screen-state colour */
-.j2-pp-svg .j2-pp-svg .j2-tile-hex { fill: none; stroke: #000; stroke-opacity: 0.55; stroke-width: 1; }
+.j2-pp-svg .j2-tile-hex { fill: none; stroke: #000; stroke-opacity: 0.55; stroke-width: 1; }
 .j2-pp-svg .j2-tile-hex.is-glyphless { stroke-dasharray: 4 3; stroke-opacity: 0.8; stroke-width: 1.4; }
 .j2-pp-svg .j2-tile-halo { fill: #fff; fill-opacity: 0.85; stroke: none; }
 .j2-pp-svg .j2-tile-blight-halo { fill: none; stroke: #fff; stroke-width: 5.6; stroke-linecap: round; }

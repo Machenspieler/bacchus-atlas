@@ -178,8 +178,7 @@ async function runPrintChecks(env) {
       const html = root.innerHTML;
       return { bad: bad, badEls: badEls, odd: odd.slice(0, 3), colours: Array.from(colours), ids: /b_|tile|batch|environment|time-loop|echo|region/i.test(html.replace(/<image[^>]*>/g, '').replace(/class="[^"]*"/g, '')) };
     });
-    // rgb(20, 17, 15) is the screen ink of the hex outline: `.j2-pp-svg .j2-pp-svg .j2-tile-hex` in journey2.css has a doubled prefix and never matches (pre-existing, unrelated to the sheet layout)
-    const allowed = new Set(['none', 'rgb(0, 0, 0)', 'rgb(255, 255, 255)', 'rgb(20, 17, 15)']);
+    const allowed = new Set(['none', 'rgb(0, 0, 0)', 'rgb(255, 255, 255)']);
     return { ok: r.bad === 0 && r.colours.every(c => allowed.has(c)) && !r.ids, detail: r };
   });
 
