@@ -1289,7 +1289,16 @@ body[data-route="list"] #grid-wrap { padding-top: var(--s-2); }
   padding-block: calc(var(--s-8) + env(safe-area-inset-top)) calc(var(--s-8) + env(safe-area-inset-bottom));
   padding-inline: max(var(--s-4), env(safe-area-inset-left)) max(var(--s-4), env(safe-area-inset-right));
   overflow-y: auto; overscroll-behavior: contain;
+  /* Its own compositor layer: the translucent overlay scrolls over a page full of
+   * filtered art, drop-shadowed ribbons and a blurred sticky header, and without a
+   * layer of its own the browser repaints that stack under it on every scroll
+   * frame, which shows up as flicker and torn patches. */
+  transform: translateZ(0); backface-visibility: hidden;
 }
+/* The header's blur has nothing to do while a card is open (the page under it is
+ * dimmed and still), and a live backdrop blur beneath a scrolling layer is the
+ * costliest thing to re-composite. Its own fill is already near-opaque. */
+body:has(.modal-overlay) .site-header { backdrop-filter: none; }
 /* The card grows to its content and scrolls inside the overlay; its header is sticky (see .modal-header).
  * `margin:auto`
  * centres a card shorter than the viewport and collapses to the top padding
