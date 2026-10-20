@@ -301,7 +301,7 @@ test('print CSS: A4 portrait named page, a page break after every sheet but the 
   assert.match(printBlock, /@media print[\s\S]*\.j2-print-page\s*\{[^}]*width:\s*210mm;\s*height:\s*296mm/, 'a sheet is 296mm tall in print so rounding never adds a ninth page');
 });
 
-test('a print sheet has no frame or marks layer: the map''s own edge is the cut line (PD-073)', () => {
+test('a print sheet has no frame or marks layer: the map\'s own edge is the cut line (PD-073)', () => {
   assert.ok(!/j2-pp-marks/.test(read('js/journey2-view.js')) && !/j2-pp-marks/.test(read('css/journey2.css')), 'a second layer can drift from the map (it did, by about 1 mm)');
 });
 
