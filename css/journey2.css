@@ -206,6 +206,9 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 /* Remove Echoes: neutral at rest (it is confirmed and undoable); the remove treatment appears only on hover / focus (D2) */
 .j2-menu-item[data-j2-echo-clear]:hover:not(:disabled), .j2-menu-item[data-j2-echo-clear]:focus-visible { color: var(--fear-soft); background: var(--fear-tint); }
 .j2-menu-item[data-j2-echo-clear]:hover:not(:disabled) .j2-mi-ico, .j2-menu-item[data-j2-echo-clear]:focus-visible .j2-mi-ico { color: var(--fear-soft); }
+/* Clear the whole map (PD-074): irreversible, so it carries the destructive colour at rest, in its own group at the bottom of the menu */
+.j2-mi-danger, .j2-mi-danger .j2-mi-ico { color: var(--fear-soft); }
+.j2-mi-danger:hover:not(:disabled), .j2-mi-danger:focus-visible { background: var(--fear-tint); }
 /* Map bar: history, zoom and Fit float over the map's bottom edge, clear of the rail and the panel */
 .j2-mapbar {
   position: absolute; z-index: 3; left: var(--j2-bar-left, var(--j2-inset-left)); bottom: var(--j2-side-gap); display: flex; align-items: center; gap: var(--s-2); padding: var(--s-1);

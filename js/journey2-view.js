@@ -849,6 +849,10 @@
                     <p class="j2-menu-h" role="presentation" data-t="journey2_ruin_group"></p>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitem" data-j2-ruin-place data-t-title="journey2_ruin_place_title"><span class="j2-mi-ico" aria-hidden="true">${LI.flame}</span><span data-t="journey2_menu_ruin_place"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitem" data-j2-ruin-clear data-t-title="journey2_ruin_clear_title"><span class="j2-mi-ico" aria-hidden="true">${LI.eraser}</span><span data-t="journey2_ruin_clear"></span></button>
+                    <p class="j2-menu-h" role="presentation" data-t="journey2_shadow_group"></p>
+                    <button type="button" class="j2-menu-item j2-mi" role="menuitem" data-j2-shadow-reset data-t-title="journey2_shadow_reset_title"><span class="j2-mi-ico" aria-hidden="true">${LI.eraser}</span><span data-t="journey2_shadow_reset"></span></button>
+                    <p class="j2-menu-h" role="presentation" data-t="journey2_clearmap_group"></p>
+                    <button type="button" class="j2-menu-item j2-mi j2-mi-danger" role="menuitem" data-j2-clear-map data-t-title="journey2_clearmap_title"><span class="j2-mi-ico" aria-hidden="true">${LI.trash}</span><span data-t="journey2_clearmap"></span></button>
                   </div>
                 </div>
               </nav>
@@ -966,6 +970,8 @@
       ui.echoClear = container.querySelector('[data-j2-echo-clear]');
       ui.ruinPlace = container.querySelector('[data-j2-ruin-place]');
       ui.ruinClear = container.querySelector('[data-j2-ruin-clear]');
+      ui.shadowReset = container.querySelector('[data-j2-shadow-reset]');
+      ui.clearMap = container.querySelector('[data-j2-clear-map]');
       ui.legendRuin = container.querySelector('[data-j2-legend-ruin]');
       ui.legendItems = Array.from(container.querySelectorAll('[data-j2-legend-item]'));
       ui.echoLocate = container.querySelector('[data-j2-echo-locate]');
@@ -2430,6 +2436,73 @@
       });
     }
 
+    /** Toolbar state of the Shadowblight and whole-map items (PD-074): each is disabled while edits are locked or there is nothing to reset / clear. */
+    function updateShadowUi() {
+      if (!ui.shadowReset || !doc) return;
+      ui.shadowReset.disabled = editLocked || !(doc.shadowMarks.added.length || doc.shadowMarks.suppressed.length);
+      ui.clearMap.disabled = editLocked || Model.isEmptyDocument(doc);
+    }
+
+    /** PD-074: puts every Shadowblight X back where its tiles imply it — wandering X's (off their tiles) vanish, X's that left a tile return — as ONE undoable command. */
+    function confirmResetShadow() {
+      if (inst.disposed || editLocked || previewMode || !doc || ui.shadowReset.disabled) return;
+      openDialog({
+        title: t('journey2_shadow_reset_title_dlg'),
+        lines: [t('journey2_shadow_reset_msg'), t('journey2_echo_undo_note')],
+        actions: [
+          { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
+          { label: t('journey2_shadow_reset_go'), kind: 'btn-danger', value: 'reset' },
+        ],
+      }).then(v => {
+        if (inst.disposed) return;
+        if (v === 'reset') {
+          const r = dispatch({ type: 'setShadowMarks', added: [], suppressed: [] }, 'shadowReset');
+          if (!r.ok) { hint(errorText(r.error)); return; }
+          announce(t('journey2_live_shadow_reset'));
+        }
+        if (ui.shadowReset) focusTool(ui.shadowReset);
+      });
+    }
+
+    /**
+     * PD-074: clears the whole map (regions, hexes, fog, Echoes, sanctuaries, ruins, Shadowblight, party). Not undoable (Undo history is cleared), so two
+     * dialogs — the first offers a backup download first — and a recovery copy of the current map before the document is replaced (as in an import).
+     * Camera, Display switches, language and every other storage key are untouched.
+     */
+    async function confirmClearMap() {
+      if (inst.disposed || editLocked || previewMode || !doc || Model.isEmptyDocument(doc) || conflictBlocks()) return;
+      const keepsRecovery = saveState.status !== 'unavailable';
+      const lines = [fillN('journey2_clearmap_msg', { batches: n(doc.batches.length), tiles: n(doc.tiles.length) }, [doc.batches.length, doc.tiles.length]), t('journey2_clearmap_scope')];
+      if (keepsRecovery) lines.push(t('journey2_import_recovery_kept'));
+      const first = await openDialog({
+        title: t('journey2_clearmap_title_dlg'), lines: lines,
+        actions: [
+          { label: t('journey2_import_download_first'), kind: 'btn-ghost', keepOpen: true, run: () => download(Model.serializeBackup(doc), backupFileName()) },
+          { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
+          { label: t('journey2_clearmap_next'), kind: 'btn-danger', value: 'next' },
+        ],
+      });
+      if (inst.disposed) return;
+      const back = () => { if (ui.clearMap) focusTool(ui.clearMap); };
+      if (first !== 'next') { back(); return; }
+      const second = await openDialog({
+        title: t('journey2_clearmap_final_title'), lines: [t('journey2_clearmap_final_msg')],
+        actions: [
+          { label: t('journey2_cancel'), kind: 'btn-ghost', value: 'cancel', autofocus: true },
+          { label: t('journey2_clearmap_go'), kind: 'btn-danger', value: 'clear' },
+        ],
+      });
+      if (inst.disposed) return;
+      if (second !== 'clear' || conflictBlocks()) { back(); return; }   // cancelled (or another tab saved meanwhile): nothing changed
+      if (keepsRecovery && !store.savePrevious(doc).ok) {
+        await openDialog({ title: t('journey2_clearmap_title_dlg'), lines: [t('journey2_import_recovery_failed'), t('journey2_import_error_hint')], actions: [{ label: t('journey2_close'), kind: 'btn-primary', value: 'close', autofocus: true }] });
+        if (!inst.disposed) back();
+        return;
+      }
+      replaceDocument(Model.emptyDocument(data.ctx));
+      toast(t('journey2_clearmap_done'));
+    }
+
     /** Toolbar state of the Soul Echoes group: Remove disabled when there is nothing to remove, both disabled while edits are locked. */
     function updateEchoUi() {
       if (!ui.echoPlace || !doc) return;
@@ -3750,6 +3823,7 @@
       updateFogUi();
       updateEchoUi();
       updateRuinUi();
+      updateShadowUi();
       updateSanctuaryUi();
       renderSanctuaryRings();
       renderSanctuaryPanel();
@@ -5184,6 +5258,8 @@
       else if (b.hasAttribute('data-j2-echo-clear')) confirmClearSoulEchoes();
       else if (b.hasAttribute('data-j2-ruin-place')) placeDestroyedSanctuaries();
       else if (b.hasAttribute('data-j2-ruin-clear')) confirmClearDestroyedSanctuaries();
+      else if (b.hasAttribute('data-j2-shadow-reset')) confirmResetShadow();
+      else if (b.hasAttribute('data-j2-clear-map')) confirmClearMap();
       else if (b.hasAttribute('data-j2-route-plan')) startRoute();
       else if (b.hasAttribute('data-j2-route-cancel')) exitRoute({ focus: true });
       else if (b.hasAttribute('data-j2-route-details-close')) closeRouteDetails();
