@@ -38,8 +38,8 @@
    * step = torn-edge resampling in world px; rim = 'full' (two small blurs), 'soft' (one), 'flat' (no filter at all).
    */
   const QUALITY = Object.freeze({
-    high:     Object.freeze({ hz: 30, oct: 5, warp: 2, res: 0.6,  ppuMin: 0.35, ppuMax: 1.0,  budget: 1.6e6,  step: 2.2, rim: 'full' }),
-    balanced: Object.freeze({ hz: 20, oct: 4, warp: 2, res: 0.42, ppuMin: 0.25, ppuMax: 0.6,  budget: 0.6e6,  step: 3.2, rim: 'soft' }),
+    high:     Object.freeze({ hz: 20, oct: 5, warp: 2, res: 0.5,  ppuMin: 0.3,  ppuMax: 0.8,  budget: 0.9e6,  step: 2.2, rim: 'full' }),
+    balanced: Object.freeze({ hz: 15, oct: 4, warp: 2, res: 0.4,  ppuMin: 0.25, ppuMax: 0.55, budget: 0.5e6,  step: 3.2, rim: 'soft' }),
     low:      Object.freeze({ hz: 10, oct: 3, warp: 1, res: 0.3,  ppuMin: 0.18, ppuMax: 0.35, budget: 0.25e6, step: 5,   rim: 'flat' }),
   });
   const LEVELS = Object.freeze(['low', 'balanced', 'high']);
