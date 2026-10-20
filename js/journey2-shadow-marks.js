@@ -1,7 +1,7 @@
 /* ============================================================
    Bacchus's Atlas — journey2-shadow-marks.js
    Pure, DOM-free planner of the Shadowblight X's that "Locate Soul Echoes" sets in motion (PD-041): the GM picks the party's hex, and each "+" moves
-   every block of X's one hex closer to it. The planner never touches a document: it reads one (through the model's derived shadow-mark helpers)
+   the nearest block of X's one hex closer to it. The planner never touches a document: it reads one (through the model's derived shadow-mark helpers)
    and returns the frames of a whole session, each frame being the canonical { added, suppressed } list pair that the `setShadowMarks` command stores.
 
      - hexDistance      axial hex distance
@@ -11,7 +11,7 @@
 
    Rules (all deterministic — no RNG, so "-" is the exact inverse of "+" and a redo can never differ):
      - a BLOCK is an edge-connected group of X cells, or an edge-connected group of fully overtaken ("skull") cells that still hold their one X; the
-       two kinds never merge; EVERY block moves, wherever it stands on the map (the Shadowblight of all regions converges on the origin);
+       two kinds never merge; the block(s) at the minimum hex distance from the origin move, ALL blocks tied at that distance, the others stand still;
      - every X steps onto a free neighbouring hex that is strictly closer to the origin by path (a breadth-first field from the origin over the hexes an
        X may enter: valid, not decorative, not a printed sanctuary / Marrogate / Horizon hex, not a skull tile; water is NOT an obstacle yet); with no
        such hex it stays; a hex never holds two X's; nearer X's move first, ties by cell id;
@@ -81,11 +81,11 @@
       return best;                                                  // a mark standing on a hex it could not enter (legacy data) still has a way out
     };
 
-    // blocks: EVERY block moves (the Shadowblight of every region heads for the party, PD-041 amended); `nearest` is only reported
+    // blocks, nearest first: the minimum hex distance wins, every block tied at it moves
     const blocks = componentsOf(xs).map(cells => ({ kind: 'x', cells: cells })).concat(componentsOf(pending).map(cells => ({ kind: 'skull', cells: cells })));
     for (const b of blocks) b.distance = Math.min.apply(null, b.cells.map(id => hexDistance(Geo.parseCellId(id), origin)));
     const nearest = Math.min.apply(null, blocks.map(b => b.distance));
-    const moving = blocks;
+    const moving = blocks.filter(b => b.distance === nearest);
     const movers = [];
     for (const b of moving) for (const id of b.cells) movers.push({ pos: id, virtual: b.kind === 'skull' });
     const movingCells = new Set(movers.filter(m => !m.virtual).map(m => m.pos));
