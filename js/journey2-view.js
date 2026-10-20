@@ -2872,7 +2872,7 @@
       else {
         const f = s.plan.frames[target];
         const r = Model.apply(s.baseDoc, { type: 'setShadowMarks', added: f.added, suppressed: f.suppressed, at: new Date().toISOString() }, data.ctx);
-        if (!r.ok) { hint(t('journey2_seek_settled')); return; }
+        if (!r.ok) { hint(t(seekSettledKey(s.plan))); return; }
         next = r.doc;
       }
       const top = history.undo[history.undo.length - 1];
@@ -2890,6 +2890,11 @@
       if (seekers && (!doc || doc !== seekers.doc)) { seekers = null; renderSeekers(); }
     }
 
+    /** The message for a "+" that has nothing left to do: arrived next to the party, the way is shut, or the step cap. */
+    function seekSettledKey(plan) {
+      return plan.settled === 'arrived' ? 'journey2_seek_arrived' : plan.settled === 'blocked' ? 'journey2_seek_blocked' : 'journey2_seek_settled';
+    }
+
     /** The red dashed frame on the party's hex and the bubble under it. */
     function renderSeekers() {
       const g = ui.g && ui.g.seekers;
@@ -2904,7 +2909,7 @@
       ui.seekCount.setAttribute('aria-label', fill('journey2_seek_count', { n: n(s.step), max: n(s.plan.maxStep) }));
       ui.seekLess.disabled = editLocked || s.step <= 0;
       ui.seekMore.disabled = editLocked || s.step >= s.plan.maxStep;
-      ui.seekMore.title = s.plan.maxStep === 0 || s.step >= s.plan.maxStep ? t('journey2_seek_settled') : t('journey2_seek_more');
+      ui.seekMore.title = s.plan.maxStep === 0 || s.step >= s.plan.maxStep ? t(seekSettledKey(s.plan)) : t('journey2_seek_more');
       positionSeekers();
     }
 

@@ -136,8 +136,39 @@ test('planner: a block walks one hex closer per step, X\'s never stack, the coun
     assert.equal(new Set(xs).size, 3);
   }
   const last = xSet(docAt(doc, plan, plan.maxStep));
-  assert.deepEqual(last, [at(8), at(9), at(10)].sort(M.compareCellKeys), 'packed against the origin: the front X stands on it, the rest right behind');
-  assert.equal(plan.maxStep, 8, 'the front X needs 10 hexes to the origin... minus the 2 the row already started ahead of its tail');
+  assert.ok(last.includes(at(10)), 'the front X stands on the origin');
+  assert.ok(last.includes(at(9)), 'the next one right behind it');
+  for (const x of last) assert.ok(S.hexDistance(Geo.parseCellId(x), Geo.parseCellId(at(10))) <= 1, 'the third slid sideways round the packed row instead of queueing: every X ends on or next to the origin');
+  assert.equal(plan.maxStep, 10, 'two extra steps over the straight walk: the rear X queues, then slides sideways');
+  assert.equal(plan.settled, 'arrived');
+});
+
+test('planner: an X whose way closer is taken slides sideways to a free hex at the same distance, never straight back, and gets there', () => {
+  const doc = world([{ habitat: BLIGHT, cells: [at(0), at(1), at(2), at(3), at(4)] }]);
+  const plan = S.createSeekerPlan({ doc, ctx, origin: at(10) });
+  const origin = Geo.parseCellId(at(10));
+  const end = xSet(docAt(doc, plan, plan.maxStep));
+  assert.equal(end.length, 5);
+  assert.equal(new Set(end).size, 5);
+  assert.ok(end.filter(x => S.hexDistance(Geo.parseCellId(x), origin) <= 1).length >= 4, 'the column wraps the origin instead of queueing in a single file');
+  assert.ok(end.some(x => Geo.parseCellId(x).r !== ROW.r), 'at least one X left the row by sliding sideways');
+  let prev = null, prevprev = null;
+  for (let k = 0; k <= plan.maxStep; k++) {
+    const cur = JSON.stringify(plan.frames[k]);
+    assert.notEqual(cur, prevprev, 'no frame ever repeats the one before the last (no back-and-forth)');
+    prevprev = prev; prev = cur;
+  }
+});
+
+test('planner: why "+" ended is reported — arrived next to the party, blocked, or the step cap', () => {
+  const doc = world([{ habitat: BLIGHT, cells: [at(0)] }]);
+  assert.equal(S.createSeekerPlan({ doc, ctx, origin: at(5) }).settled, 'arrived');
+  assert.equal(S.createSeekerPlan({ doc, ctx, origin: at(24) }).settled, 'limit');
+  const corridor = new Set([at(10), at(0), at(1)]);
+  const walled = Object.assign({}, ctx, { policy: (q, r) => (corridor.has(Geo.cellId(q, r)) ? ctx.policy(q, r) : { ok: false }) });
+  const plan = S.createSeekerPlan({ doc, ctx: walled, origin: at(10) });
+  assert.equal(plan.maxStep, 0);
+  assert.equal(plan.settled, 'blocked', 'no way to the party exists');
 });
 
 test('planner: a step beyond the packed state changes nothing, and the number of steps is capped at 20', () => {
@@ -274,5 +305,5 @@ test('documentation: PD-041, the architecture note and the QA checklist exist', 
   assert.match(pd, /## PD-041/); assert.match(pd, /shadowMarks/); assert.match(pd, /one bubble session is one Undo entry/);
   assert.match(arch, /Shadowblight control \(PD-041\)/); assert.match(qa, /Shadowblight control \(GM only, PD-041\)/);
   const i18n = JSON.parse(read('data/i18n.json'));
-  for (const k of ['journey2_seek_group', 'journey2_seek_less', 'journey2_seek_more', 'journey2_seek_close', 'journey2_seek_count', 'journey2_seek_settled', 'journey2_live_seek']) assert.ok(i18n.en[k] && i18n.ru[k], k);
+  for (const k of ['journey2_seek_group', 'journey2_seek_less', 'journey2_seek_more', 'journey2_seek_close', 'journey2_seek_count', 'journey2_seek_settled', 'journey2_seek_arrived', 'journey2_seek_blocked', 'journey2_live_seek']) assert.ok(i18n.en[k] && i18n.ru[k], k);
 });

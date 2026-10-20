@@ -7,14 +7,16 @@
      - hexDistance      axial hex distance
      - createSeekerPlan { doc, ctx, origin, maxSteps } -> null | { origin, maxStep, frames: [{ added, suppressed }], movers }
                         frames[0] is the starting state, frames[k] the state after k "+" presses; `maxStep` is the last step that still changes something
-                        (so "+" is unavailable once everything has settled), never above `maxSteps` (20).
+                        (so "+" is unavailable once everything has settled), never above `maxSteps` (20). `settled` says why "+" ended:
+                        'arrived' (an X stands next to / on the origin), 'blocked' (none can get closer) or 'limit' (the 20-step cap).
 
    Rules (all deterministic — no RNG, so "-" is the exact inverse of "+" and a redo can never differ):
      - a BLOCK is an edge-connected group of X cells, or an edge-connected group of fully overtaken ("skull") cells that still hold their one X; the
        two kinds never merge; the block(s) at the minimum hex distance from the origin move, ALL blocks tied at that distance, the others stand still;
      - every X steps onto a free neighbouring hex that is strictly closer to the origin by path (a breadth-first field from the origin over the hexes an
        X may enter: valid, not decorative, not a printed sanctuary / Marrogate / Horizon hex, not a skull tile; water is NOT an obstacle yet); with no
-       such hex it stays; a hex never holds two X's; nearer X's move first, ties by cell id;
+       such hex it first waits for the others, then slides to a free hex at the SAME distance when that hex has a free way closer (never straight back to
+   where it came from); otherwise it stays; a hex never holds two X's; nearer X's move first, ties by cell id;
      - a skull releases its X exactly once (the skull stays; the cell is then `suppressed`), the released X walks like any other.
    ============================================================ */
 (function (root, factory) {
@@ -100,33 +102,50 @@
       return Model.normalizeShadowMarks(doc, added, suppressed);
     };
 
-    let state = movers.map(m => ({ pos: m.pos, virtual: m.virtual }));
+    // a free hex an X standing at path distance `d` could step closer onto (nearest field value first, ties by cell id), or null
+    const closerFree = (pos, d, occupied) => {
+      let pick = null;
+      for (const nb of neighborCells(Geo.parseCellId(pos))) {
+        if (!passable(nb.id) || occupied.has(nb.id) || !field.has(nb.id) || field.get(nb.id) >= d) continue;
+        if (!pick || field.get(nb.id) < field.get(pick) || (field.get(nb.id) === field.get(pick) && Model.compareCellKeys(nb.id, pick) < 0)) pick = nb.id;
+      }
+      return pick;
+    };
+
+    let state = movers.map(m => ({ pos: m.pos, virtual: m.virtual, last: null }));
     const frames = [frameOf(state)];
     let maxStep = 0;
     for (let step = 1; step <= maxSteps; step++) {
       const occupied = new Set(stillX.concat(state.filter(m => !m.virtual).map(m => m.pos)));
       const order = state.map((m, i) => ({ m: m, i: i, d: ownDist(m.pos) })).sort((a, b) => a.d - b.d || Model.compareCellKeys(a.m.pos, b.m.pos));
-      const next = state.map(m => ({ pos: m.pos, virtual: m.virtual }));
+      const next = state.map(m => ({ pos: m.pos, virtual: m.virtual, last: m.last }));
+      const go = (cur, to) => { if (!cur.virtual) occupied.delete(cur.pos); occupied.add(to); cur.last = cur.pos; cur.pos = to; cur.virtual = false; };
+      const stuck = [];
       let moved = false;
-      for (const e of order) {
+      for (const e of order) {                                      // first pass: every X that can steps strictly closer
         const cur = next[e.i];
         if (!isFinite(e.d) || e.d === 0) continue;
-        let pick = null;
+        const pick = closerFree(cur.pos, e.d, occupied);
+        if (pick) { go(cur, pick); moved = true; } else stuck.push(e);
+      }
+      for (const e of stuck) {                                      // second pass: a blocked X slides to a free hex at the same distance, but only when that opens a way closer
+        const cur = next[e.i];
+        let side = null;
         for (const nb of neighborCells(Geo.parseCellId(cur.pos))) {
-          if (!passable(nb.id) || occupied.has(nb.id) || !field.has(nb.id) || field.get(nb.id) >= e.d) continue;
-          if (!pick || field.get(nb.id) < field.get(pick) || (field.get(nb.id) === field.get(pick) && Model.compareCellKeys(nb.id, pick) < 0)) pick = nb.id;
+          if (nb.id === cur.last || !passable(nb.id) || occupied.has(nb.id) || field.get(nb.id) !== e.d || !closerFree(nb.id, e.d, occupied)) continue;
+          if (!side || Model.compareCellKeys(nb.id, side) < 0) side = nb.id;
         }
-        if (!pick) continue;
-        if (!cur.virtual) occupied.delete(cur.pos);
-        occupied.add(pick);
-        cur.pos = pick; cur.virtual = false; moved = true;
+        if (side) { go(cur, side); moved = true; }
       }
       if (!moved) break;
       state = next;
       frames.push(frameOf(state));
       maxStep = step;
     }
-    return { origin: originId, maxStep: maxStep, frames: frames, movers: movers.length, nearestDistance: nearest };
+    // why "+" ended: the Shadowblight is next to (or on) the party's hex, or its way is shut, or the 20-step cap was hit
+    const arrived = state.some(m => ownDist(m.pos) <= 1);
+    const settled = arrived ? 'arrived' : maxStep >= maxSteps ? 'limit' : 'blocked';
+    return { origin: originId, maxStep: maxStep, frames: frames, movers: movers.length, nearestDistance: nearest, settled: settled };
   }
 
   return { MAX_STEPS: MAX_STEPS, hexDistance: hexDistance, componentsOf: componentsOf, createSeekerPlan: createSeekerPlan };

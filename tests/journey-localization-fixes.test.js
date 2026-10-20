@@ -120,11 +120,14 @@ test('L5-22: relocalize re-renders the Shadowblight bubble (count labels, settle
   const rs = view.slice(view.indexOf('function renderSeekers()'), view.indexOf('function positionSeekers'));
   assert.match(rs, /setAttribute\('title', fill\('journey2_seek_count'/);
   assert.match(rs, /setAttribute\('aria-label', fill\('journey2_seek_count'/);
-  assert.match(rs, /journey2_seek_settled.*journey2_seek_more/s);
+  assert.match(rs, /seekSettledKey\(s\.plan\).*journey2_seek_more/s);
+  const sk = view.slice(view.indexOf('function seekSettledKey'), view.indexOf('function renderSeekers()'));
+  for (const k of ['journey2_seek_arrived', 'journey2_seek_blocked', 'journey2_seek_settled']) assert.match(sk, new RegExp(k));
   assert.doesNotMatch(rs, /seekers\s*=|s\.step\s*=|history|commit/, 'rendering is read-only');
   for (const lang of ['en', 'ru']) {
     const d = i18n[lang];
     assert.notEqual(d.journey2_seek_settled, d.journey2_seek_more);
+    assert.equal(new Set([d.journey2_seek_arrived, d.journey2_seek_blocked, d.journey2_seek_settled, d.journey2_seek_more]).size, 4);
     const h = helpers(lang);
     for (const [step, max] of [[0, 16], [8, 16], [16, 16]]) assert.match(h.fill('journey2_seek_count', { n: step, max }), new RegExp(String(step) + '.*' + max));
   }
