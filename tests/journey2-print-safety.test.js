@@ -30,20 +30,22 @@ const place = (name, x, bounds, opts) => {
   const l = G.layoutSanctuaryLabels([{ anchorId: 'a', name }], [a], Object.assign({ icons: [a], bounds }, opts || { ink: { strokePx: STROKE } }))[0];
   return { l, left: l.cx - l.w / 2, right: l.cx + l.w / 2 };
 };
-const WEST = PAGES[0].rect, EAST = PAGES[1].rect;
-const boundsOf = r => [r[0], r[1], r[0] + r[2], r[1] + r[3]];
+// the label bounds of the north row's west and east sheets: the core minus the overlap strips (PD-073)
+const WEST = PAGES[0].labelBounds, EAST = PAGES[1].labelBounds;
+const boundsOf = b => b;
+const MARGIN = PR.OVERLAP_PX / 2;                       // a label stays this far from the vertical seam on each side
 
 test('F-01: the old flat estimate really was too narrow for Watershaw (the audited defect)', () => {
   const old = place('Watershaw', SEAM + 21, boundsOf(EAST), { });          // no `ink` option = the previous estimate
   assert.ok(old.right - old.left < realInkWidth('Watershaw') - 15, 'flat estimate ' + (old.right - old.left) + ' vs real ' + realInkWidth('Watershaw'));
 });
 
-test('F-01: label near the central seam keeps its whole first letter on page 2 and its last on page 1', () => {
+test('F-01: label near the central seam keeps its whole first letter on the east sheet and its last on the west one, clear of the overlap strip', () => {
   const e = place('Watershaw', SEAM + 21, boundsOf(EAST));
-  assert.ok(e.left >= SEAM + 4 - 1e-9, 'left ink edge ' + (e.left - SEAM) + ' px inside the east page');
+  assert.ok(e.left >= SEAM + MARGIN + 4 - 1e-9, 'left ink edge ' + (e.left - SEAM) + ' px inside the east page');
   assert.ok(e.right - e.left >= realInkWidth('Watershaw'), 'box covers the real rendered ink');
   const w = place('Watershaw', SEAM - 21, boundsOf(WEST));
-  assert.ok(w.right <= SEAM - 4 + 1e-9, 'right ink edge ' + (SEAM - w.right) + ' px inside the west page');
+  assert.ok(w.right <= SEAM - MARGIN - 4 + 1e-9, 'right ink edge ' + (SEAM - w.right) + ' px inside the west page');
 });
 
 test('F-01: western and eastern outer edges are respected too', () => {
@@ -55,7 +57,7 @@ test('F-01: western and eastern outer edges are respected too', () => {
 
 test('F-01: wide characters (a name of capital Ws) and the halo are inside the clamp', () => {
   const w = place('WWWWWWWWW', SEAM + 10, boundsOf(EAST));
-  assert.ok(w.left >= SEAM + 4 - 1e-9);
+  assert.ok(w.left >= SEAM + MARGIN + 4 - 1e-9);
   assert.ok(w.right - w.left >= 9 * 0.9404 * 17 + STROKE, 'at least the glyphs plus the halo');
   const withStroke = place('Watershaw', 2000, boundsOf(WEST)), noStroke = place('Watershaw', 2000, boundsOf(WEST), { ink: { strokePx: 0 } });
   assert.ok(Math.abs((withStroke.right - withStroke.left) - (noStroke.right - noStroke.left) - STROKE) < 1e-9, 'the stroke adds its full width');
@@ -64,7 +66,7 @@ test('F-01: wide characters (a name of capital Ws) and the halo are inside the c
 
 test('F-01: every real sanctuary icon, with the widest plausible name, keeps its label inside its own page; typical names stay centred under the icon', () => {
   for (const s of ctx.sanctuaries) {
-    const page = PAGES.find(p => s.x >= p.rect[0] && s.x < p.rect[0] + p.rect[2]) || PAGES[1], b = boundsOf(page.rect);
+    const page = PR.pageOfPoint([s.x, s.y], PAGES), b = boundsOf(page.labelBounds);
     for (const name of ['Watershaw', 'Wiwiwiwiw']) {
       const l = G.layoutSanctuaryLabels([{ anchorId: s.id, name }], [{ id: s.id, rect: s.rect }], { icons: ctx.iconRects, ink: { strokePx: STROKE }, bounds: b })[0];
       assert.ok(l.cx - l.w / 2 >= b[0] + 4 - 1e-9 && l.cx + l.w / 2 <= b[2] - 4 + 1e-9, s.id + ' ' + name);

@@ -549,10 +549,11 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
 
 - [ ] Prepare regions, reveal a few cells, reveal one sanctuary name and leave another hidden, assign a hex Environment, place Soul Echoes, Biome colors on.
 - [ ] Player Preview still shows its fog hatch; the toolbar has "Print player map".
-- [ ] Print Preview: exactly two white A4 sheets ("Page 1 of 2", "Page 2 of 2") on a neutral ground; no fog hatch, tint, Environment marker or Echo on either; the full Old Valloren map
-      is present; generated symbols/dots/boundaries only in revealed cells; only the revealed sanctuary name shows.
+- [ ] Print Preview: exactly four white A4 landscape sheets ("Sheet 1 of 4" … "Sheet 4 of 4", each with its trim instruction) on a neutral ground; no fog hatch, tint, Environment marker or Echo on any; the full Old Valloren map
+      is present across the 2 x 2 grid (the neighbouring sheets share a strip about one hex wide); generated symbols/dots/boundaries only in revealed cells; only the revealed sanctuary name shows.
 - [ ] Pan/zoom/Fit/sidebar before opening it never changes the pages. Escape and "Back to Player Preview" return to Player Preview (not the GM view) and refocus "Print player map".
-- [ ] The browser print dialog (Save as PDF, A4 portrait, default and no margins): two pages, no third blank page, no controls or labels, compass / MARROGATE / HORIZON unclipped.
+- [ ] The browser print dialog (paper A4 — not Letter, which shrinks the sheets about 6 % — margins None, scale 100): four pages, no fifth blank page, no controls, only the sheet label; compass / MARROGATE / HORIZON unclipped.
+- [ ] On paper: trim sheets 1–3 along the marks, lay them over their neighbours (4 at the bottom, then 3 and 2, 1 on top); the map lines and hexes line up across the overlap, and nothing is lost to the printer's own margin. A hex measures about 12 mm.
 - [ ] RU and EN: heading, status, buttons and page labels are translated and do not clip.
 
 ## Journey browser harnesses: release gates vs retired
@@ -561,7 +562,7 @@ Run browser scripts with Chrome (`channel: 'chrome'`) when Playwright's bundled 
 
 | Script | Status | Why |
 | --- | --- | --- |
-| `scripts/journey2/lib/print-checks.js` | **Current gate** | Player Print: two A4 pages, no GM data, native-print safety |
+| `scripts/journey2/lib/print-checks.js` | **Current gate** | Player Print: four A4 landscape sheets, no GM data, native-print safety |
 | `scripts/journey2/verify-shadowblight-state.js` | **Current gate** | 464/464 |
 | `scripts/journey2/verify-hex-stock-art.js` | Current | hex card artwork |
 | `scripts/journey2/lib/locate-checks.js` | **Not a gate (stale)** | strict-mode selector clash on the duplicated drawer + rail controls (same defect fixed only in `print-checks.js`) |

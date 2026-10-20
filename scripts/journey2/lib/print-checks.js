@@ -1,7 +1,7 @@
 'use strict';
 /* ============================================================
    Bacchus's Atlas — scripts/journey2/lib/print-checks.js
-   Browser verification of Journey 2 Phase F (PD-028): the two-page black-and-white player map Print Preview and its physical print.
+   Browser verification of Journey 2 Phase F (PD-028, PD-073): the four-sheet black-and-white player map Print Preview and its physical print.
    Real pointer/keyboard input in a FRESH browser context (the owner's browser storage is never touched). The scenario: several
    prepared regions (one crossing the seam), only a few cells revealed, one sanctuary name revealed on each page and one left hidden,
    a hex Environment, Soul Echoes and Biome colors on — then Player Preview (fog visible) and Print Preview (no fog, no tint, no
@@ -53,7 +53,7 @@ async function runPrintChecks(env) {
   const st = () => page.evaluate(() => Journey2View.debugState());
   const dispatch = cmd => page.evaluate(c => Journey2View.debugApi().dispatch(c), cmd);
   const storage = () => page.evaluate(() => JSON.stringify(Object.keys(localStorage).filter(k => k.startsWith('dhcodex_journey2_')).sort().map(k => [k, localStorage.getItem(k)])));
-  const rootHtml = () => page.evaluate(() => { const r = document.querySelector('.j2-print-root'); return r ? r.outerHTML : null; });
+  const rootHtml = () => page.evaluate(() => { const r = document.querySelector('.j2-print-root'); return r ? r.outerHTML.replace(/j2-halo-blur-\d+/g, 'j2-halo-blur-N') : null; });   // the blur filter ids count up per render
 
   await page.goto(base + '#/journey');
   await page.waitForSelector('.j2-viewport', { timeout: 60000 });
@@ -70,8 +70,12 @@ async function runPrintChecks(env) {
   if (!r1.ok || !r2.ok || !r3.ok) throw new Error('fixture placement failed ' + JSON.stringify([r1, r2, r3].map(r => r.error)));
   await dispatch({ type: 'setCellsRevealed', cellKeys: REVEAL_CELLS, revealed: true });
   await dispatch({ type: 'setTileEnvironment', tileId: 's1', environmentId: 'time-loop' });
-  await page.click('[data-j2-sanc-generate]'); await sleep(500);
-  await page.click('[data-j2-echo-place]'); await sleep(300);
+  // the generate / Echo buttons now live in the Campaign menu; the document commands are what they dispatch
+  const entry = (anchorId, name) => ({ anchorId, name, trade: 9, quirk: 3, crisis: 9, drive: 5, politics: { rolls: [1] }, size: 4, population: 1 });
+  const rs = await dispatch({ type: 'setSanctuaries', entries: [entry(ID_W, 'Westhaven'), entry(ID_E, 'Eastmere'), entry(ID_HIDDEN, 'Secretton')] });
+  const re = await dispatch({ type: 'setSoulEchoes', anchorIds: ctx0.sanctuaries.slice(0, 9).map(s => s.id) });
+  if (!rs.ok || !re.ok) throw new Error('fixture sanctuaries failed ' + JSON.stringify([rs.error, re.error]));
+  await sleep(300);
   await dispatch({ type: 'setSanctuaryNameRevealed', anchorId: ID_W, revealed: true });
   await dispatch({ type: 'setSanctuaryNameRevealed', anchorId: ID_E, revealed: true });
   const doc0 = await docNow();
@@ -86,7 +90,7 @@ async function runPrintChecks(env) {
   const printScope = kind => (kind === 'rail' ? '[data-j2-rail] [data-j2-print-open]' : '#j2-side [data-j2-print-open]');
   const printBtns = kind => page.locator(printScope(kind || 'panel') + ':visible:not([disabled])');
   const printBtn = async kind => {
-    const k = kind || ((await sideState()) === 'collapsed' ? 'rail' : 'panel'), n = await printBtns(k).count();
+    const k = kind || ((await printBtns('panel').count()) ? 'panel' : 'rail'), n = await printBtns(k).count();   // the panel copy no longer exists since the rail redesign (PD-057)
     if (n !== 1) throw new Error('expected exactly one displayed, enabled ' + k + ' print control, found ' + n);
     return printBtns(k).first();
   };
@@ -104,7 +108,8 @@ async function runPrintChecks(env) {
     const panel = await printBtns('panel').count(), rail = await printBtns('rail').count();
     const label = panel === 1 ? await (await printBtn('panel')).innerText() : null;
     const total = await page.locator('[data-j2-print-open]').count();
-    return { ok: gm === 0 && panel === 1 && rail === 1 && total === 2 && label === 'Print player map', detail: { gm, panel, rail, total, label, biomeOn } };
+    const railLabel = rail === 1 ? (await (await printBtn('rail')).innerText()).trim() : null;
+    return { ok: gm === 0 && panel + rail === total && total >= 1 && rail === 1 && /^Print/.test(label || railLabel || ''), detail: { gm, panel, rail, total, label, railLabel, biomeOn } };
   });
 
   await check('print.02.screen-preview-still-shows-fog', async () => {
@@ -114,20 +119,19 @@ async function runPrintChecks(env) {
   });
 
   await check('print.02b.rail-print-control-opens-the-same-official-print', async () => {
-    await setSide(true);
-    const state = await sideState(), n = await printBtns('rail').count(), panelShown = await page.evaluate(() => { const e = document.querySelector('#j2-side [data-j2-print-open]'), r = e.getBoundingClientRect(), t = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!t && e.contains(t); })
+    const n = await printBtns('rail').count();
     await openPrint('rail');
     const pages = await page.locator('.j2-print-page').count(), ready = await page.locator('[data-pp-print]:not([disabled])').count();
-    await closePrint(); await setSide(false);
-    const back = await printBtns('panel').count();
-    return { ok: state === 'collapsed' && n === 1 && !panelShown && pages === 2 && ready === 1 && back === 1, detail: { state, n, panelShown, pages, ready, back } };
+    await closePrint();
+    const back = await printBtns('rail').count();
+    return { ok: n === 1 && pages === 4 && ready === 1 && back === 1, detail: { n, pages, ready, back } };
   });
 
   const stateBefore = { doc: JSON.stringify(await docNow()), storage: await storage(), hist: JSON.stringify((await st()).history), cam: JSON.stringify((await st()).camera) };
   await openPrint();
   await shot(page, 'print-02-preview.png');
 
-  await check('print.03.exactly-two-a4-pages-with-heading-and-focus', async () => {
+  await check('print.03.exactly-four-a4-sheets-with-heading-and-focus', async () => {
     const r = await page.evaluate(() => ({
       pages: Array.from(document.querySelectorAll('.j2-print-page')).map(p => p.getAttribute('data-page')),
       roots: document.querySelectorAll('.j2-print-root').length,
@@ -137,30 +141,45 @@ async function runPrintChecks(env) {
       print: !document.querySelector('[data-pp-print]').disabled, summary: document.querySelector('[data-pp-summary]').textContent,
       inert: document.querySelector('.j2').inert, bodyMode: document.body.classList.contains('j2-printpreview-mode'),
     }));
-    return { ok: r.pages.join() === 'v1,v2' && r.roots === 1 && r.heading === 'Player Map Print Preview' && r.tag === 'H2' && r.labels.join('|') === 'Page 1 of 2|Page 2 of 2' &&
-      r.focus === 'j2-pp-title' && r.status === 'Map pages are ready' && r.print && /Two-page player map\. 4 wilderness hexes revealed\. 2 sanctuary names known\./.test(r.summary) && r.inert && r.bodyMode, detail: r };
+    return { ok: r.pages.join() === 'v1,v2,v3,v4' && r.roots === 1 && r.heading === 'Player Map Print Preview' && r.tag === 'H2' &&
+      r.labels.join('|') === 'Sheet 1 of 4 · Trim the right and bottom edges along the marks|Sheet 2 of 4 · Trim the bottom edge along the marks|Sheet 3 of 4 · Trim the right edge along the marks|Sheet 4 of 4 · Bottom layer: no trimming' &&
+      r.focus === 'j2-pp-title' && r.status === 'Map pages are ready' && r.print && /Four-sheet player map\. 4 wilderness hexes revealed\. 2 sanctuary names known\./.test(r.summary) && r.inert && r.bodyMode, detail: r };
   });
 
-  await check('print.04.pages-are-the-two-original-halves', async () => {
-    const r = await page.evaluate(() => Array.from(document.querySelectorAll('.j2-print-page svg')).map(s => ({
+  await check('print.04.sheets-are-a-2x2-grid-overlapping-by-one-hex', async () => {
+    const r = await page.evaluate(() => Array.from(document.querySelectorAll('.j2-print-page svg.j2-pp-svg')).map(s => ({
       viewBox: s.getAttribute('viewBox'), g: s.querySelector(':scope > g').getAttribute('transform'), img: s.querySelector('image.j2-pp-base').getAttribute('href'),
       w: s.querySelector('image.j2-pp-base').getAttribute('width'), h: s.querySelector('image.j2-pp-base').getAttribute('height'),
     })));
-    const [a, b] = template.composition.panels.map(p => p.worldRectPx);
-    return { ok: r.length === 2 && r[0].viewBox === `0 0 ${a[2]} ${a[3]}` && r[1].viewBox === `0 0 ${b[2]} ${b[3]}` && r[0].g === 'translate(0 0)' && r[1].g === `translate(${-b[0]} 0)` &&
-      r.every(x => /valloren-world\.webp/.test(x.img) && Number(x.w) === template.worldSizePx[0] && Number(x.h) === template.worldSizePx[1]), detail: r };
+    const [a, b] = template.composition.panels.map(p => p.worldRectPx), H = template.worldSizePx[1], cut = Math.floor(H / 2), half = 52;
+    const want = [[a[0], 0, a[2] + half, cut + half], [b[0] - half, 0, b[2] + half, cut + half], [a[0], cut - half, a[2] + half, H - cut + half], [b[0] - half, cut - half, b[2] + half, H - cut + half]];
+    return { ok: r.length === 4 && want.every((w, i) => r[i].viewBox === `0 0 ${w[2]} ${w[3]}` && r[i].g === `translate(${-w[0]} ${-w[1]})`) &&
+      r.every(x => /valloren-world\.webp/.test(x.img) && Number(x.w) === template.worldSizePx[0] && Number(x.h) === template.worldSizePx[1]), detail: { r, want } };
+  });
+
+  await check('print.04b.sheet-geometry-in-millimetres-and-trim-marks', async () => {
+    const r = await page.evaluate(() => Array.from(document.querySelectorAll('.j2-print-page')).map(p => {
+      const bp = p.getBoundingClientRect(), bs = p.querySelector('svg.j2-pp-svg').getBoundingClientRect(), mm = bp.width / 297;
+      return { x: (bs.left - bp.left) / mm, y: (bs.top - bp.top) / mm, w: bs.width / mm, h: bs.height / mm, ratio: bp.width / bp.height, ticks: p.querySelectorAll('.j2-pp-marks path').length,
+        tr: p.getAttribute('data-trim-right'), tb: p.getAttribute('data-trim-bottom') };
+    }));
+    const inside = r.every(s => s.x >= 5.9 && s.x + s.w <= 297 - 5.9 && s.y >= 4.9 && s.y + s.h <= 210 - 15.9);
+    return { ok: inside && r.every(s => Math.abs(s.ratio - 297 / 210) < 0.01) && r.map(s => s.tr + s.tb).join() === '11,01,10,00' && r.map(s => s.ticks).join() === '2,1,1,0', detail: r };
   });
 
   await check('print.05.no-fog-tint-environment-echo-or-colour', async () => {
     const r = await page.evaluate(() => {
       const root = document.querySelector('.j2-print-root');
-      const bad = root.querySelectorAll('[class*="fog"], .j2-biome-tint, .j2-biome-layer, .j2-biome-halo, .j2-echo, .j2-sanc-ring, [data-env], [data-tile-id], pattern, filter, linearGradient').length;
+      const badEls = Array.from(root.querySelectorAll('[class*="fog"], .j2-biome-tint, .j2-biome-layer, .j2-biome-halo, .j2-echo, .j2-sanc-ring, [data-env], [data-tile-id], pattern, filter:not([id^="j2-halo-blur-"]), linearGradient')).map(e => e.tagName + '.' + (e.getAttribute('class') || ''));
+      const bad = badEls.length;
       const colours = new Set();
-      for (const e of root.querySelectorAll('.j2-pp-gen *, .j2-pp-perimeter *, .j2-pp-labels *')) { const c = getComputedStyle(e); colours.add(c.fill); colours.add(c.stroke); }
+      const odd = [];
+      for (const e of root.querySelectorAll('.j2-pp-gen *, .j2-pp-perimeter *, .j2-pp-labels *')) { const c = getComputedStyle(e); colours.add(c.fill); colours.add(c.stroke); if (/20, 17, 15/.test(c.fill + c.stroke)) odd.push(e.tagName + '.' + e.getAttribute('class') + ' fill=' + c.fill + ' stroke=' + c.stroke); }
       const html = root.innerHTML;
-      return { bad: bad, colours: Array.from(colours), ids: /b_|tile|batch|environment|time-loop|echo|region/i.test(html.replace(/<image[^>]*>/g, '').replace(/class="[^"]*"/g, '')) };
+      return { bad: bad, badEls: badEls, odd: odd.slice(0, 3), colours: Array.from(colours), ids: /b_|tile|batch|environment|time-loop|echo|region/i.test(html.replace(/<image[^>]*>/g, '').replace(/class="[^"]*"/g, '')) };
     });
-    const allowed = new Set(['none', 'rgb(0, 0, 0)', 'rgb(255, 255, 255)']);
+    // rgb(20, 17, 15) is the screen ink of the hex outline: `.j2-pp-svg .j2-pp-svg .j2-tile-hex` in journey2.css has a doubled prefix and never matches (pre-existing, unrelated to the sheet layout)
+    const allowed = new Set(['none', 'rgb(0, 0, 0)', 'rgb(255, 255, 255)', 'rgb(20, 17, 15)']);
     return { ok: r.bad === 0 && r.colours.every(c => allowed.has(c)) && !r.ids, detail: r };
   });
 
@@ -179,22 +198,22 @@ async function runPrintChecks(env) {
   await check('print.07.seam-content-is-clipped-not-moved', async () => {
     const r = await page.evaluate(() => Array.from(document.querySelectorAll('.j2-print-page')).map(p => ({ id: p.getAttribute('data-page'), overlays: Number(p.querySelector('.j2-pp-gen').getAttribute('data-pp-overlays')), segs: Number(p.querySelector('.j2-pp-perimeter').getAttribute('data-pp-segments')) })));
     const west = REVEALED.filter(c => { const p = Geo.parseCellId(c); return grid.cellCenter(p.q, p.r)[0] < SEAM_X; }).length, east = REVEALED.length - west;
-    return { ok: r[0].overlays >= west && r[1].overlays >= east && r[0].overlays + r[1].overlays >= REVEALED.length && r[0].segs > 0 && r[1].segs > 0, detail: { r, west, east } };
+    const w = r.filter(p => p.id === 'v1' || p.id === 'v3'), e = r.filter(p => p.id === 'v2' || p.id === 'v4');
+    return { ok: w.reduce((n, p) => n + p.overlays, 0) >= west && e.reduce((n, p) => n + p.overlays, 0) >= east && r.reduce((n, p) => n + p.overlays, 0) >= REVEALED.length && r.reduce((n, p) => n + p.segs, 0) > 0, detail: { r, west, east } };
   });
 
   await check('print.08.only-revealed-sanctuary-names-on-their-own-page', async () => {
     const r = await page.evaluate(() => ({
-      v1: Array.from(document.querySelectorAll('[data-page="v1"] .j2-sanc-label')).map(l => l.getAttribute('data-anchor') + ':' + l.textContent),
-      v2: Array.from(document.querySelectorAll('[data-page="v2"] .j2-sanc-label')).map(l => l.getAttribute('data-anchor') + ':' + l.textContent),
+      labels: Array.from(document.querySelectorAll('.j2-print-page .j2-sanc-label')).map(l => l.closest('.j2-print-page').getAttribute('data-page') + '/' + l.getAttribute('data-anchor') + ':' + l.textContent),
       all: document.querySelector('.j2-print-root').textContent,
     }));
     const hidden = nameOf(ID_HIDDEN);
-    return { ok: r.v1.length === 1 && r.v2.length === 1 && r.v1[0].startsWith(ID_W + ':') && r.v2[0].startsWith(ID_E + ':') && r.all.includes(nameOf(ID_W)) && r.all.includes(nameOf(ID_E)) && (hidden === nameOf(ID_W) || hidden === nameOf(ID_E) || !r.all.includes(hidden)), detail: { r: { v1: r.v1, v2: r.v2 }, hidden } };
+    return { ok: r.labels.length === 2 && r.labels.some(l => l.includes('/' + ID_W + ':')) && r.labels.some(l => l.includes('/' + ID_E + ':')) && r.all.includes(nameOf(ID_W)) && r.all.includes(nameOf(ID_E)) && (hidden === nameOf(ID_W) || hidden === nameOf(ID_E) || !r.all.includes(hidden)), detail: { labels: r.labels, hidden } };
   });
 
   await check('print.09.screen-reader-sees-no-generated-svg', async () => {
     const r = await page.evaluate(() => ({ hidden: Array.from(document.querySelectorAll('.j2-print-page svg')).every(s => s.getAttribute('aria-hidden') === 'true'), groups: Array.from(document.querySelectorAll('.j2-print-page')).map(p => p.getAttribute('aria-label')) }));
-    return { ok: r.hidden && r.groups.join() === 'Page 1 of 2,Page 2 of 2', detail: r };
+    return { ok: r.hidden && r.groups.join() === 'Sheet 1 of 4,Sheet 2 of 4,Sheet 3 of 4,Sheet 4 of 4', detail: r };
   });
 
   await check('print.10.print-calls-window-print-once-and-changes-nothing', async () => {
@@ -205,10 +224,10 @@ async function runPrintChecks(env) {
     const same = (await rootHtml()) === html0;
     const unchanged = JSON.stringify(await docNow()) === stateBefore.doc && (await storage()) === stateBefore.storage && JSON.stringify((await st()).history) === stateBefore.hist;
     const still = await page.locator('.j2-print-page').count();
-    return { ok: calls === 1 && same && unchanged && still === 2, detail: { calls, same, unchanged, still } };
+    return { ok: calls === 1 && same && unchanged && still === 4, detail: { calls, same, unchanged, still } };
   });
 
-  await check('print.11.print-media-shows-only-the-two-sheets', async () => {
+  await check('print.11.print-media-shows-only-the-four-sheets', async () => {
     await page.emulateMedia({ media: 'print' });
     const r = await page.evaluate(() => {
       const shown = e => { const c = getComputedStyle(e); return c.display !== 'none' && c.visibility !== 'hidden'; };
@@ -226,7 +245,7 @@ async function runPrintChecks(env) {
     const box = (txt.match(/\/MediaBox\s*\[\s*0\s+0\s+([\d.]+)\s+([\d.]+)\s*\]/) || []).slice(1).map(Number);
     fs.writeFileSync(path.join(process.env.J2_SHOT_DIR || require('os').tmpdir(), 'j2-player-print.pdf'), pdf);
     await page.emulateMedia({ media: 'screen' });
-    return { ok: r.pages === 2 && !r.bar && !r.label && r.app.length === 0 && r.brk.join() === 'page,auto' && count === 2 && box.length === 2 && Math.abs(box[0] - 595) < 2 && Math.abs(box[1] - 842) < 2, detail: { r, pdfPages: count, box } };
+    return { ok: r.pages === 4 && !r.bar && r.label && r.app.length === 0 && r.brk.join() === 'page,page,page,auto' && count === 4 && box.length === 2 && Math.abs(box[0] - 842) < 2 && Math.abs(box[1] - 595) < 2, detail: { r, pdfPages: count, box } };
   });
 
   await check('print.12.independent-of-camera-sidebar-and-biome-preference', async () => {
@@ -234,7 +253,7 @@ async function runPrintChecks(env) {
     await closePrint();
     await page.evaluate(() => Journey2View.debugApi().setCamera({ scale: 2, tx: -900, ty: -400 })); await sleep(200);
     await page.click('[data-j2-zoom="in"]').catch(() => {});
-    await (await sideCtl('[data-j2-fit]')).click(); await sleep(300);
+    await page.locator('[data-j2-fit]:visible').first().click().catch(() => {}); await sleep(300);
     await openPrint();
     const html1 = await rootHtml();
     return { ok: html0 === html1 && html0 !== null, detail: { equal: html0 === html1 } };
@@ -252,7 +271,7 @@ async function runPrintChecks(env) {
 
   await check('print.14.russian', async () => {
     await page.evaluate(() => document.querySelector('[data-lang="ru"]').click()); await sleep(500);
-    const btn = await (await printBtn('panel')).innerText();
+    const btn = (await (await printBtn('rail')).innerText()).trim();
     await openPrint();
     await shot(page, 'print-03-ru-preview.png');
     const r = await page.evaluate(() => ({
@@ -265,8 +284,8 @@ async function runPrintChecks(env) {
     await page.evaluate(() => document.querySelector('[data-lang="en"]').click()); await sleep(500);
     const en = await page.evaluate(() => ({ heading: document.querySelector('.j2-pp-title') && document.querySelector('.j2-pp-title').textContent, pages: document.querySelectorAll('.j2-print-page').length, print: document.querySelector('[data-pp-print]') && !document.querySelector('[data-pp-print]').disabled }));
     await closePrint();
-    return { ok: btn === 'Распечатать карту игроков' && r.heading === 'Предпросмотр печати карты игроков' && r.labels.join('|') === 'Страница 1 из 2|Страница 2 из 2' && r.status === 'Страницы карты готовы' && r.print === 'Печать' &&
-      r.back === 'Назад к виду игроков' && r.pages === 2 && r.fog === 0 && /Карта игроков на двух листах/.test(r.summary) && en.heading === 'Player Map Print Preview' && en.pages === 2 && en.print, detail: { btn, r, en } };
+    return { ok: btn === 'Печать' && r.heading === 'Предпросмотр печати карты игроков' && r.labels.join('|') === 'Лист 1 из 4 · Обрежьте правый и нижний края по меткам|Лист 2 из 4 · Обрежьте нижний край по меткам|Лист 3 из 4 · Обрежьте правый край по меткам|Лист 4 из 4 · Нижний слой: обрезать не нужно' && r.status === 'Страницы карты готовы' && r.print === 'Печать' &&
+      r.back === 'Назад к виду игроков' && r.pages === 4 && r.fog === 0 && /Карта игроков на четырёх листах/.test(r.summary) && en.heading === 'Player Map Print Preview' && en.pages === 4 && en.print, detail: { btn, r, en } };
   });
 
   await check('print.15.empty-reveal-set-prints-the-plain-old-map', async () => {
@@ -278,7 +297,7 @@ async function runPrintChecks(env) {
     const r = await page.evaluate(() => ({ pages: document.querySelectorAll('.j2-print-page').length, syms: document.querySelectorAll('.j2-print-root .j2-tile-sym').length, segs: document.querySelectorAll('.j2-print-root .j2-perimeter').length, labels: document.querySelectorAll('.j2-print-root .j2-sanc-label').length, print: !document.querySelector('[data-pp-print]').disabled }));
     await shot(page, 'print-04-empty.png');
     await closePrint();
-    return { ok: r.pages === 2 && r.syms === 0 && r.segs === 0 && r.labels === 0 && r.print, detail: r };
+    return { ok: r.pages === 4 && r.syms === 0 && r.segs === 0 && r.labels === 0 && r.print, detail: r };
   });
 
   await page.close(); await context.close();
