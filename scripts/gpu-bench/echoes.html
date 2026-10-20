@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>GPU bench — Soul Echoes</title>
+<link rel="stylesheet" href="../../css/styles.css"><link rel="stylesheet" href="../../css/journey2.css">
+<style>
+ html,body{margin:0;height:100%;background:#1c1713;color:#eee;font:13px/1.4 system-ui,sans-serif;overflow:hidden}
+ #bar{position:fixed;z-index:10;left:0;right:0;top:0;padding:8px 12px;background:rgba(20,16,12,.92);display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center}
+ #bar a{color:#e8c36a} #bar b{color:#fff} #hud div{font-family:ui-monospace,monospace} #desc{opacity:.75;flex-basis:100%}
+ #viewport{position:fixed;left:0;right:0;top:110px;bottom:0;overflow:hidden}
+ #viewport .j2-world{position:absolute;left:0;top:0}
+ select,label{font:inherit}
+</style></head>
+<body data-page="echoes">
+<div id="bar"><b>GPU bench</b><span id="nav"><a href="baseline.html">Baseline — static map</a> · <a href="echoes.html">Soul Echoes</a> · <a href="shadow.html">Living shadow</a> · <a href="ruins.html">Destroyed sanctuaries</a> · <a href="combined.html">Everything together</a></span><div id="desc">Nine Echo markers (CSS animation). Compare "CSS, every frame" with "stepped ~8 fps" and "frozen". Leave it alone for ~20 s, then read Task Manager → GPU → 3D (or Details → GPU column for this browser).</div>
+ <div id="controls"></div><div id="hud"><div>…</div><div></div></div></div>
+<div id="viewport"></div>
+<script src="../../js/journey2-geometry.js"></script>
+<script src="../../js/journey2-ruin-fx.js"></script>
+<script src="../../js/journey2-shadowblight-fx.js"></script>
+<script src="bench.js"></script><script src="pages.js"></script>
+</body></html>
