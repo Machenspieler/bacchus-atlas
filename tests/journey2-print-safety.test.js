@@ -30,8 +30,8 @@ const place = (name, x, bounds, opts) => {
   const l = G.layoutSanctuaryLabels([{ anchorId: 'a', name }], [a], Object.assign({ icons: [a], bounds }, opts || { ink: { strokePx: STROKE } }))[0];
   return { l, left: l.cx - l.w / 2, right: l.cx + l.w / 2 };
 };
-// the label bounds of the north row's west and east sheets: the core minus the overlap strips (PD-073)
-const WEST = PAGES[0].labelBounds, EAST = PAGES[1].labelBounds;
+// the label bounds of the north row's sheets either side of the central seam (columns 2 and 3), and of the two outer sheets: the core minus the overlap strips (PD-073)
+const WEST = PAGES[1].labelBounds, EAST = PAGES[2].labelBounds, OUTER_WEST = PAGES[0].labelBounds, OUTER_EAST = PAGES[3].labelBounds;
 const boundsOf = b => b;
 const MARGIN = PR.OVERLAP_PX / 2;                       // a label stays this far from the vertical seam on each side
 
@@ -49,9 +49,9 @@ test('F-01: label near the central seam keeps its whole first letter on the east
 });
 
 test('F-01: western and eastern outer edges are respected too', () => {
-  const west = place('Watershaw', 6, boundsOf(WEST));
+  const west = place('Watershaw', 6, boundsOf(OUTER_WEST));
   assert.ok(west.left >= 4 - 1e-9);
-  const east = place('Watershaw', template.worldSizePx[0] - 6, boundsOf(EAST));
+  const east = place('Watershaw', template.worldSizePx[0] - 6, boundsOf(OUTER_EAST));
   assert.ok(east.right <= template.worldSizePx[0] - 4 + 1e-9);
 });
 

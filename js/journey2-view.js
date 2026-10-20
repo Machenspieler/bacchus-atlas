@@ -4286,7 +4286,7 @@
     }
 
     /* ============================================================
-       Player map Print Preview (PD-028, PD-073). Four overlapping A4 landscape sheets built from `Journey2Print.buildPrintModel` — a data filter over the
+       Player map Print Preview (PD-028, PD-073). Eight overlapping A4 portrait sheets built from `Journey2Print.buildPrintModel` — a data filter over the
        revealed cells with NO fog layer, tint or GM data — drawn as the original map half (a 1:1 crop of the world raster through the
        SVG viewBox) plus a vector overlay. The pages shown on screen ARE the printed DOM: the same `.j2-print-root` is what
        `@media print` leaves visible, so there is one renderer. Read-only and transient: no document change, history entry or autosave.

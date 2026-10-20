@@ -32,7 +32,7 @@ function neighbours(cells, keep) { return Array.from(new Set(cells.flatMap(c => 
 /* a seam region (4 tiles revealed, 2 hidden), a far hidden region, a blighted revealed tile, an Environment, Echoes, sanctuaries with names */
 function fixture() {
   let doc = M.emptyDocument(ctx, AT);
-  const seamRow = row(SEAM, 1300, 6);
+  const seamRow = row(SEAM + 210, 1300, 6);                    // `row` ends at the cell it is given, so start east of the seam to make the row cross it
   const bSeam = M.newId('b'), bFar = M.newId('b'), bBlight = M.newId('b');
   doc = must(M.apply(doc, { type: 'createBatch', batch: M.batchFromRegion(region('forest'), { id: bSeam, createdAt: AT }), at: AT }, ctx));
   doc = must(M.apply(doc, { type: 'place', batchId: bSeam, tiles: seamRow.map((cell, i) => ({ id: 'seam' + i, cell })), at: AT }, ctx));
@@ -43,7 +43,7 @@ function fixture() {
   doc = must(M.apply(doc, { type: 'createBatch', batch: M.batchFromRegion(region('aquatic', { size: 2, habitat: { biome: 'aquatic', blighted: true, overtaken: false, source: 'rolled', rolls: [6] } }), { id: bBlight, createdAt: AT }), at: AT }, ctx));
   doc = must(M.apply(doc, { type: 'place', batchId: bBlight, tiles: blightCell.map((cell, i) => ({ id: 'bl' + i, cell })), allowDetached: true, at: AT }, ctx));
   const firstEast = seamRow.findIndex(c => { const p = G.parseCellId(c); return grid.cellCenter(p.q, p.r)[0] >= SEAM; });
-  const lo = Math.max(1, Math.min(firstEast - 2, 1));
+  const lo = Math.max(1, Math.min(firstEast - 2, seamRow.length - 5));      // four tiles straddling the seam, the row's end cells stay hidden
   const revealedTiles = seamRow.slice(lo, lo + 4).concat([blightCell[0]]);
   doc = must(M.apply(doc, { type: 'setCellsRevealed', cellKeys: revealedTiles.concat(neighbours(revealedTiles, seamRow.concat(far, blightCell))), revealed: true, at: AT }, ctx));
   doc = must(M.apply(doc, { type: 'setTileEnvironment', tileId: 'seam1', environmentId: 'time-loop', at: AT }, ctx));
@@ -62,27 +62,30 @@ const both = fn => model.pages.flatMap(fn);
 
 /* ---------------- pages and transforms ---------------- */
 
-const HALF = PR.OVERLAP_PX / 2, CUT = Math.floor(template.worldSizePx[1] / 2);
+const HALF = PR.OVERLAP_PX / 2, CUT = Math.floor(template.worldSizePx[1] / 2), COLW = template.worldSizePx[0] / 4;
+const X = [0, COLW, 2 * COLW, 3 * COLW, 4 * COLW];
 
-test('exactly four pages, a 2 x 2 grid of the original panels, row-major (NW, NE, SW, SE)', () => {
+test('exactly eight pages, a 4 x 2 grid of equal cores, row-major (4 across, 2 down)', () => {
   const pages = PR.pagesFromTemplate(template);
-  assert.equal(pages.length, 4);
-  assert.deepEqual(pages.map(p => p.id), ['v1', 'v2', 'v3', 'v4']);
-  assert.deepEqual(pages.map(p => p.panelId), ['west', 'east', 'west', 'east']);
-  assert.deepEqual(pages.map(p => [p.col, p.row]), [[0, 0], [1, 0], [0, 1], [1, 1]]);
-  const [nw, ne, sw, se] = pages;
-  assert.deepEqual(nw.core, [0, 0, SEAM, CUT]);
-  assert.deepEqual(se.core, [SEAM, CUT, template.worldSizePx[0] - SEAM, template.worldSizePx[1] - CUT]);
+  assert.equal(pages.length, 8);
+  assert.deepEqual(pages.map(p => p.id), ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8']);
+  assert.deepEqual(pages.map(p => p.panelId), ['west', 'west', 'east', 'east', 'west', 'west', 'east', 'east']);
+  assert.deepEqual(pages.map(p => [p.col, p.row]), [[0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [1, 1], [2, 1], [3, 1]]);
+  assert.equal(SEAM, X[2], 'the original panels\' seam is still a column boundary');
+  assert.deepEqual(pages[0].core, [0, 0, COLW, CUT]);
+  assert.deepEqual(pages[7].core, [X[3], CUT, COLW, template.worldSizePx[1] - CUT]);
   // the cores partition the map exactly
   assert.equal(pages.reduce((a, p) => a + p.core[2] * p.core[3], 0), template.worldSizePx[0] * template.worldSizePx[1]);
   // each page is its core grown by half the overlap towards each internal neighbour, and by nothing at the map's edge
-  assert.deepEqual(nw.rect, [0, 0, SEAM + HALF, CUT + HALF]);
-  assert.deepEqual(se.rect, [SEAM - HALF, CUT - HALF, template.worldSizePx[0] - SEAM + HALF, template.worldSizePx[1] - CUT + HALF]);
-  assert.equal(nw.rect[0] + nw.rect[2] - (ne.rect[0]), PR.OVERLAP_PX, 'neighbours share exactly one overlap strip (east-west)');
-  assert.equal(nw.rect[1] + nw.rect[3] - sw.rect[1], PR.OVERLAP_PX, 'neighbours share exactly one overlap strip (north-south)');
-  assert.deepEqual(pages.map(p => p.trim), [{ right: true, bottom: true }, { right: false, bottom: true }, { right: true, bottom: false }, { right: false, bottom: false }]);
+  assert.deepEqual(pages[0].rect, [0, 0, COLW + HALF, CUT + HALF]);
+  assert.deepEqual(pages[1].rect, [X[1] - HALF, 0, COLW + 2 * HALF, CUT + HALF], 'a middle column grows on both sides');
+  assert.deepEqual(pages[7].rect, [X[3] - HALF, CUT - HALF, COLW + HALF, template.worldSizePx[1] - CUT + HALF]);
+  for (let c = 0; c < 3; c++) assert.equal(pages[c].rect[0] + pages[c].rect[2] - pages[c + 1].rect[0], PR.OVERLAP_PX, 'neighbours share exactly one overlap strip (east-west)');
+  for (let c = 0; c < 4; c++) assert.equal(pages[c].rect[1] + pages[c].rect[3] - pages[c + 4].rect[1], PR.OVERLAP_PX, 'neighbours share exactly one overlap strip (north-south)');
+  assert.deepEqual(pages.map(p => [p.trim.right, p.trim.bottom]), [[true, true], [true, true], [true, true], [false, true], [true, false], [true, false], [true, false], [false, false]]);
   for (const p of pages) { assert.deepEqual(p.viewBox, [0, 0, p.rect[2], p.rect[3]]); assert.equal(p.source.path, template.assembledAsset.path); assert.deepEqual(p.translate, [-p.rect[0], -p.rect[1]]); }
   const A = PR.A4_MM;
+  assert.deepEqual([A.widthMm, A.heightMm], [210, 297], 'A4 portrait');
   assert.equal(new Set(pages.map(p => p.scaleMmPerPx)).size, 1, 'one uniform scale, so hexes and overlap strips match across sheets');
   for (const p of pages) {
     const [x, y, w, h] = p.placeMm;
@@ -90,9 +93,8 @@ test('exactly four pages, a 2 x 2 grid of the original panels, row-major (NW, NE
     assert.ok(x >= A.marginXMm - 1e-9 && x + w <= A.widthMm - A.marginXMm + 1e-9, 'inside the side margins');
     assert.ok(y >= A.marginTopMm - 1e-9 && y + h <= A.heightMm - A.marginBottomMm + 1e-9, 'leaves the bottom margin for the sheet label');
   }
-  assert.ok(nw.scaleMmPerPx > 0.11, 'a hex is about 12 mm on paper (the old two-page print was 8.2 mm)');
+  assert.ok(pages[0].scaleMmPerPx > 0.145, 'a hex is about 15.8 mm on paper (the four-sheet print was 12 mm, the first two-page print 8.2 mm)');
 });
-
 test('invalid page geometry fails loudly (no stretched full-map fallback)', () => {
   const bad = f => { const t = JSON.parse(JSON.stringify(template)); f(t); return () => PR.pagesFromTemplate(t); };
   assert.throws(bad(t => { t.composition.panels.pop(); }), /exactly two/);
@@ -105,40 +107,42 @@ test('invalid page geometry fails loudly (no stretched full-map fallback)', () =
 test('world points map to the page whose core owns them; a seam belongs to the east / south page', () => {
   const pages = PR.pagesFromTemplate(template);
   const W = template.worldSizePx[0], H = template.worldSizePx[1];
+  const idAt = (x, y) => { const p = PR.pageOfPoint([x, y], pages); return p && p.id; };
   const marrogate = anchorsDoc.anchors.find(a => a.stableId === 'mk-056').worldPixelAnchor, horizon = anchorsDoc.anchors.find(a => a.stableId === 'mk-002').worldPixelAnchor;
-  assert.equal(PR.pageOfPoint(marrogate, pages).id, marrogate[1] < CUT ? 'v1' : 'v3');
-  assert.equal(PR.pageOfPoint(horizon, pages).id, horizon[1] < CUT ? 'v2' : 'v4');
-  assert.equal(PR.pageOfPoint([SEAM - 0.001, 10], pages).id, 'v1');
-  assert.equal(PR.pageOfPoint([SEAM, 10], pages).id, 'v2');
-  assert.equal(PR.pageOfPoint([10, CUT - 0.001], pages).id, 'v1');
-  assert.equal(PR.pageOfPoint([10, CUT], pages).id, 'v3');
-  assert.equal(PR.pageOfPoint([SEAM, CUT], pages).id, 'v4');
-  assert.equal(PR.pageOfPoint([W, 10], pages).id, 'v2');
-  assert.equal(PR.pageOfPoint([10, H], pages).id, 'v3');
-  assert.equal(PR.pageOfPoint([W, H], pages).id, 'v4');
+  assert.equal(idAt(marrogate[0], marrogate[1]), 'v' + ((marrogate[1] < CUT ? 0 : 4) + Math.min(3, Math.floor(marrogate[0] / COLW)) + 1));
+  assert.equal(idAt(horizon[0], horizon[1]), 'v' + ((horizon[1] < CUT ? 0 : 4) + Math.min(3, Math.floor(horizon[0] / COLW)) + 1));
+  assert.equal(idAt(COLW - 0.001, 10), 'v1');
+  assert.equal(idAt(COLW, 10), 'v2');
+  assert.equal(idAt(SEAM - 0.001, 10), 'v2');
+  assert.equal(idAt(SEAM, 10), 'v3');
+  assert.equal(idAt(10, CUT - 0.001), 'v1');
+  assert.equal(idAt(10, CUT), 'v5');
+  assert.equal(idAt(SEAM, CUT), 'v7');
+  assert.equal(idAt(W, 10), 'v4');
+  assert.equal(idAt(10, H), 'v5');
+  assert.equal(idAt(W, H), 'v8');
   assert.equal(PR.pageOfPoint([-1, 10], pages), null);
   assert.equal(PR.pageOfPoint([10, H + 1], pages), null);
   assert.deepEqual(PR.worldToPage([100, 50], pages[0]), [100, 50]);
-  assert.deepEqual(PR.worldToPage([SEAM + 100, 50], pages[1]), [100 + HALF, 50]);
-  assert.deepEqual(PR.worldToPage([100, CUT + 100], pages[2]), [100, 100 + HALF]);
-  assert.deepEqual(PR.pageToWorld(PR.worldToPage([3000, 2777], pages[3]), pages[3]), [3000, 2777]);
+  assert.deepEqual(PR.worldToPage([COLW + 100, 50], pages[1]), [100 + HALF, 50]);
+  assert.deepEqual(PR.worldToPage([100, CUT + 100], pages[4]), [100, 100 + HALF]);
+  assert.deepEqual(PR.pageToWorld(PR.worldToPage([4000, 2777], pages[7]), pages[7]), [4000, 2777]);
 });
 
 test('rectangles and segments crossing a seam are clipped to each page (which overlap by one strip), never moved', () => {
-  const [a, b, c] = PR.pagesFromTemplate(template);
-  // the east-west strip is [SEAM - HALF, SEAM + HALF]: both neighbours draw it
+  const pages = PR.pagesFromTemplate(template), a = pages[1], b = pages[2], c = pages[5];
+  // the east-west strip at SEAM is [SEAM - HALF, SEAM + HALF]: both neighbours (columns 2 and 3) draw it
   assert.deepEqual(PR.clipRect([SEAM - 30, 100, 60, 40], a), [SEAM - 30, 100, 60, 40]);
   assert.deepEqual(PR.clipRect([SEAM - 30, 100, 60, 40], b), [SEAM - 30, 100, 60, 40]);
   assert.deepEqual(PR.clipRect([SEAM + HALF - 10, 100, 60, 40], a), [SEAM + HALF - 10, 100, 10, 40], 'clipped at the page edge, not moved');
   assert.deepEqual(PR.clipRect([SEAM - HALF - 50, 100, 60, 40], b), [SEAM - HALF, 100, 10, 40]);
   assert.equal(PR.clipRect([10, 10, 20, 20], b), null, 'outside the page: nothing');
   assert.equal(PR.clipRect([SEAM - HALF - 10, 10, 10, 20], b), null, 'touching only: nothing');
-  assert.deepEqual(PR.clipRect([100, CUT - 30, 40, 60], c), [100, CUT - 30, 40, 60], 'north-south strip too');
+  assert.deepEqual(PR.clipRect([COLW + 100, CUT - 30, 40, 60], c), [COLW + 100, CUT - 30, 40, 60], 'north-south strip too');
   assert.deepEqual(PR.clipSegment([SEAM - 200, 10], [SEAM + 200, 10], a), [[SEAM - 200, 10], [SEAM + HALF, 10]]);
   assert.deepEqual(PR.clipSegment([SEAM - 200, 10], [SEAM + 200, 10], b), [[SEAM - HALF, 10], [SEAM + 200, 10]]);
   assert.equal(PR.clipSegment([SEAM + HALF + 10, 10], [SEAM + 200, 10], a), null);
 });
-
 test('the model is deterministic and has no input from camera, zoom, UI or preferences', () => {
   assert.equal(JSON.stringify(PR.buildPrintModel(FX.doc, ctx, template)), JSON.stringify(model));
   assert.equal(PR.buildPrintModel.length, 3, '(doc, ctx, template) — no options, no UI state');
@@ -183,9 +187,9 @@ test('Biome colors and the screen fog preference cannot change the model', () =>
   assert.deepEqual(PR.buildPrintModel(FX.doc, ctx, template), model);
 });
 
-test('an empty reveal set prints the plain map: four pages, nothing generated', () => {
+test('an empty reveal set prints the plain map: eight pages, nothing generated', () => {
   const empty = PR.buildPrintModel(M.emptyDocument(ctx, AT), ctx, template);
-  assert.equal(empty.pages.length, 4);
+  assert.equal(empty.pages.length, 8);
   for (const p of empty.pages) assert.deepEqual([p.overlays.length, p.segments.length, p.labels.length], [0, 0, 0]);
   assert.deepEqual(empty.summary, { wildernessHexes: 0, sanctuaryNames: 0, destroyedSanctuaries: 0, party: false });
   const none = M.apply(FX.doc, { type: 'setSanctuaryNameRevealed', anchorId: FX.ids[0], revealed: false, at: AT }, ctx);
@@ -263,7 +267,7 @@ test('a name next to a seam is clamped inside its owner page and clear of the ov
 });
 
 test('seam-crossing generated content appears on both pages (clipped by each page), once per page', () => {
-  const [a, b] = model.pages;
+  const [a, b] = [model.pages[1], model.pages[2]];                 // the north row's two sheets either side of the central seam
   const westHex = FX.revealedTiles.filter(c => { const p = G.parseCellId(c); return grid.cellCenter(p.q, p.r)[0] < SEAM; });
   assert.ok(westHex.length > 0 && a.overlays.length > 0 && b.overlays.length > 0, 'the seam region has revealed hexes on both sides');
   for (const page of model.pages) assert.equal(new Set(page.overlays.map(o => o.q + ',' + o.r)).size, page.overlays.length, 'no duplicates within a page');
@@ -287,9 +291,9 @@ test('print DOM: two .j2-print-page sections in one .j2-print-root, drawn from t
   assert.match(code, /decode/);
 });
 
-test('print CSS: A4 landscape named page, a page break after every sheet but the last, everything else hidden, no fog or colour', () => {
+test('print CSS: A4 portrait named page, a page break after every sheet but the last, everything else hidden, no fog or colour', () => {
   const css = strip(read('css/journey2.css'));
-  assert.match(css, /@page j2player\s*\{[^}]*size:\s*A4 landscape/);
+  assert.match(css, /@page j2player\s*\{[^}]*size:\s*A4 portrait/);
   const printBlock = css.slice(css.indexOf('@page j2player'));
   assert.match(printBlock, /body\.j2-printpreview-mode > \*:not\(\.j2-printpreview\)\s*\{[^}]*display:\s*none !important/);
   assert.match(printBlock, /\.j2-print-page\s*\{[^}]*break-after:\s*page/);
@@ -299,7 +303,7 @@ test('print CSS: A4 landscape named page, a page break after every sheet but the
   const pp = printBlock.split('\n').filter(l => /^\.j2-pp-svg/.test(l)).join('\n');
   assert.ok(!/rgba|#(?!000|fff)[0-9a-f]{3,6}|var\(--hope|--teal|--fear|gold|hatch|url\(/i.test(pp), 'ink is black/white only');
   assert.ok(!/j2-fog|biome|echo/i.test(printBlock.split('@media print')[0].split('.j2-print-root')[1] || ''));
-  assert.match(printBlock, /@media print[\s\S]*\.j2-print-page\s*\{[^}]*width:\s*297mm;\s*height:\s*209mm/, 'a sheet is 209mm tall in print so rounding never adds a fifth page');
+  assert.match(printBlock, /@media print[\s\S]*\.j2-print-page\s*\{[^}]*width:\s*210mm;\s*height:\s*296mm/, 'a sheet is 296mm tall in print so rounding never adds a ninth page');
 });
 
 test('the legacy diagnostic print proof no longer shares .j2-print-page and keeps its own landscape page box', () => {
@@ -335,5 +339,5 @@ test('every new string exists in English and Russian, with the plural pair and i
   for (const k of keys) { assert.ok(typeof en[k] === 'string' && en[k] && typeof ru[k] === 'string' && ru[k], k); assert.deepEqual((en[k].match(/\{\w+\}/g) || []).sort(), (ru[k].match(/\{\w+\}/g) || []).sort(), 'placeholders of ' + k); }
   for (const base of ['journey2_pp_hexes', 'journey2_pp_names']) assert.ok(en[base + '_n'] && en[base + '_one'] && ru[base + '_n'] && ru[base + '_one']);
   assert.ok(dict);
-  for (const required of ['Print player map', 'Player Map Print Preview', 'Sheet {n} of {total}', 'Print', 'Back to Player Preview', 'Preparing print preview', 'Map pages are ready', 'Unable to prepare map for printing', 'Retry', 'Four-sheet player map', 'Print contains only player-visible information.', 'Unexplored areas remain blank on the Old Valloren map.']) assert.ok(Object.values(en).includes(required), required);
+  for (const required of ['Print player map', 'Player Map Print Preview', 'Sheet {n} of {total}', 'Print', 'Back to Player Preview', 'Preparing print preview', 'Map pages are ready', 'Unable to prepare map for printing', 'Retry', 'Eight-sheet player map', 'Print contains only player-visible information.', 'Unexplored areas remain blank on the Old Valloren map.']) assert.ok(Object.values(en).includes(required), required);
 });

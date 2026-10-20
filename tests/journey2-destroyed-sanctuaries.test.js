@@ -180,7 +180,7 @@ test('print model: a revealed ruin is on the page(s) its glyph touches, an unrev
   const ids = SANCT.slice(0, 5);
   let doc = ruin(M.emptyDocument(ctx, AT), ids);
   const bare = PR.buildPrintModel(doc, ctx, template);
-  assert.deepEqual(bare.pages.map(p => p.ruins), [[], [], [], []]);
+  assert.deepEqual(bare.pages.map(p => p.ruins), [[], [], [], [], [], [], [], []]);
   assert.equal(bare.summary.destroyedSanctuaries, 0);
   doc = must(M.apply(doc, { type: 'setCellsRevealed', cellKeys: ids.map(cellOf), revealed: true, at: AT }, ctx));
   const model = PR.buildPrintModel(doc, ctx, template);

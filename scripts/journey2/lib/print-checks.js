@@ -1,7 +1,7 @@
 'use strict';
 /* ============================================================
    Bacchus's Atlas — scripts/journey2/lib/print-checks.js
-   Browser verification of Journey 2 Phase F (PD-028, PD-073): the four-sheet black-and-white player map Print Preview and its physical print.
+   Browser verification of Journey 2 Phase F (PD-028, PD-073): the eight-sheet black-and-white player map Print Preview and its physical print.
    Real pointer/keyboard input in a FRESH browser context (the owner's browser storage is never touched). The scenario: several
    prepared regions (one crossing the seam), only a few cells revealed, one sanctuary name revealed on each page and one left hidden,
    a hex Environment, Soul Echoes and Biome colors on — then Player Preview (fog visible) and Print Preview (no fog, no tint, no
@@ -124,14 +124,14 @@ async function runPrintChecks(env) {
     const pages = await page.locator('.j2-print-page').count(), ready = await page.locator('[data-pp-print]:not([disabled])').count();
     await closePrint();
     const back = await printBtns('rail').count();
-    return { ok: n === 1 && pages === 4 && ready === 1 && back === 1, detail: { n, pages, ready, back } };
+    return { ok: n === 1 && pages === 8 && ready === 1 && back === 1, detail: { n, pages, ready, back } };
   });
 
   const stateBefore = { doc: JSON.stringify(await docNow()), storage: await storage(), hist: JSON.stringify((await st()).history), cam: JSON.stringify((await st()).camera) };
   await openPrint();
   await shot(page, 'print-02-preview.png');
 
-  await check('print.03.exactly-four-a4-sheets-with-heading-and-focus', async () => {
+  await check('print.03.exactly-eight-a4-sheets-with-heading-and-focus', async () => {
     const r = await page.evaluate(() => ({
       pages: Array.from(document.querySelectorAll('.j2-print-page')).map(p => p.getAttribute('data-page')),
       roots: document.querySelectorAll('.j2-print-root').length,
@@ -141,30 +141,31 @@ async function runPrintChecks(env) {
       print: !document.querySelector('[data-pp-print]').disabled, summary: document.querySelector('[data-pp-summary]').textContent,
       inert: document.querySelector('.j2').inert, bodyMode: document.body.classList.contains('j2-printpreview-mode'),
     }));
-    return { ok: r.pages.join() === 'v1,v2,v3,v4' && r.roots === 1 && r.heading === 'Player Map Print Preview' && r.tag === 'H2' &&
-      r.labels.join('|') === 'Sheet 1 of 4 · Trim the right and bottom edges along the marks|Sheet 2 of 4 · Trim the bottom edge along the marks|Sheet 3 of 4 · Trim the right edge along the marks|Sheet 4 of 4 · Bottom layer: no trimming' &&
-      r.focus === 'j2-pp-title' && r.status === 'Map pages are ready' && r.print && /Four-sheet player map\. 4 wilderness hexes revealed\. 2 sanctuary names known\./.test(r.summary) && r.inert && r.bodyMode, detail: r };
+    return { ok: r.pages.join() === 'v1,v2,v3,v4,v5,v6,v7,v8' && r.roots === 1 && r.heading === 'Player Map Print Preview' && r.tag === 'H2' &&
+      r.labels.join('|') === [1, 2, 3, 4, 5, 6, 7, 8].map(n => 'Sheet ' + n + ' of 8 · ' + (n === 8 ? 'Bottom layer: no trimming' : n === 4 ? 'Trim the bottom edge along the marks' : n > 4 ? 'Trim the right edge along the marks' : 'Trim the right and bottom edges along the marks')).join('|') &&
+      r.focus === 'j2-pp-title' && r.status === 'Map pages are ready' && r.print && /Eight-sheet player map\. 4 wilderness hexes revealed\. 2 sanctuary names known\./.test(r.summary) && r.inert && r.bodyMode, detail: r };
   });
 
-  await check('print.04.sheets-are-a-2x2-grid-overlapping-by-one-hex', async () => {
+  await check('print.04.sheets-are-a-4x2-grid-overlapping-by-one-hex', async () => {
     const r = await page.evaluate(() => Array.from(document.querySelectorAll('.j2-print-page svg.j2-pp-svg')).map(s => ({
       viewBox: s.getAttribute('viewBox'), g: s.querySelector(':scope > g').getAttribute('transform'), img: s.querySelector('image.j2-pp-base').getAttribute('href'),
       w: s.querySelector('image.j2-pp-base').getAttribute('width'), h: s.querySelector('image.j2-pp-base').getAttribute('height'),
     })));
-    const [a, b] = template.composition.panels.map(p => p.worldRectPx), H = template.worldSizePx[1], cut = Math.floor(H / 2), half = 52;
-    const want = [[a[0], 0, a[2] + half, cut + half], [b[0] - half, 0, b[2] + half, cut + half], [a[0], cut - half, a[2] + half, H - cut + half], [b[0] - half, cut - half, b[2] + half, H - cut + half]];
-    return { ok: r.length === 4 && want.every((w, i) => r[i].viewBox === `0 0 ${w[2]} ${w[3]}` && r[i].g === `translate(${-w[0]} ${-w[1]})`) &&
+    const W = template.worldSizePx[0], H = template.worldSizePx[1], cut = Math.floor(H / 2), half = 52, cw = W / 4;
+    const want = [];
+    for (let ri = 0; ri < 2; ri++) for (let ci = 0; ci < 4; ci++) { const x0 = ci * cw - (ci > 0 ? half : 0), x1 = (ci + 1) * cw + (ci < 3 ? half : 0), y0 = ri ? cut - half : 0, y1 = ri ? H : cut + half; want.push([x0, y0, x1 - x0, y1 - y0]); }
+    return { ok: r.length === 8 && want.every((w, i) => r[i].viewBox === `0 0 ${w[2]} ${w[3]}` && r[i].g === `translate(${-w[0]} ${-w[1]})`) &&
       r.every(x => /valloren-world\.webp/.test(x.img) && Number(x.w) === template.worldSizePx[0] && Number(x.h) === template.worldSizePx[1]), detail: { r, want } };
   });
 
   await check('print.04b.sheet-geometry-in-millimetres-and-trim-marks', async () => {
     const r = await page.evaluate(() => Array.from(document.querySelectorAll('.j2-print-page')).map(p => {
-      const bp = p.getBoundingClientRect(), bs = p.querySelector('svg.j2-pp-svg').getBoundingClientRect(), mm = bp.width / 297;
+      const bp = p.getBoundingClientRect(), bs = p.querySelector('svg.j2-pp-svg').getBoundingClientRect(), mm = bp.width / 210;
       return { x: (bs.left - bp.left) / mm, y: (bs.top - bp.top) / mm, w: bs.width / mm, h: bs.height / mm, ratio: bp.width / bp.height, ticks: p.querySelectorAll('.j2-pp-marks path').length,
         tr: p.getAttribute('data-trim-right'), tb: p.getAttribute('data-trim-bottom') };
     }));
-    const inside = r.every(s => s.x >= 5.9 && s.x + s.w <= 297 - 5.9 && s.y >= 4.9 && s.y + s.h <= 210 - 15.9);
-    return { ok: inside && r.every(s => Math.abs(s.ratio - 297 / 210) < 0.01) && r.map(s => s.tr + s.tb).join() === '11,01,10,00' && r.map(s => s.ticks).join() === '2,1,1,0', detail: r };
+    const inside = r.every(s => s.x >= 5.9 && s.x + s.w <= 210 - 5.9 && s.y >= 4.9 && s.y + s.h <= 297 - 15.9);
+    return { ok: inside && r.every(s => Math.abs(s.ratio - 210 / 297) < 0.01) && r.map(s => s.tr + s.tb).join() === '11,11,11,01,10,10,10,00' && r.map(s => s.ticks).join() === '2,2,2,1,1,1,1,0', detail: r };
   });
 
   await check('print.05.no-fog-tint-environment-echo-or-colour', async () => {
@@ -197,7 +198,7 @@ async function runPrintChecks(env) {
   await check('print.07.seam-content-is-clipped-not-moved', async () => {
     const r = await page.evaluate(() => Array.from(document.querySelectorAll('.j2-print-page')).map(p => ({ id: p.getAttribute('data-page'), overlays: Number(p.querySelector('.j2-pp-gen').getAttribute('data-pp-overlays')), segs: Number(p.querySelector('.j2-pp-perimeter').getAttribute('data-pp-segments')) })));
     const west = REVEALED.filter(c => { const p = Geo.parseCellId(c); return grid.cellCenter(p.q, p.r)[0] < SEAM_X; }).length, east = REVEALED.length - west;
-    const w = r.filter(p => p.id === 'v1' || p.id === 'v3'), e = r.filter(p => p.id === 'v2' || p.id === 'v4');
+    const w = r.filter(p => ['v1', 'v2', 'v5', 'v6'].includes(p.id)), e = r.filter(p => ['v3', 'v4', 'v7', 'v8'].includes(p.id));
     return { ok: w.reduce((n, p) => n + p.overlays, 0) >= west && e.reduce((n, p) => n + p.overlays, 0) >= east && r.reduce((n, p) => n + p.overlays, 0) >= REVEALED.length && r.reduce((n, p) => n + p.segs, 0) > 0, detail: { r, west, east } };
   });
 
@@ -212,7 +213,7 @@ async function runPrintChecks(env) {
 
   await check('print.09.screen-reader-sees-no-generated-svg', async () => {
     const r = await page.evaluate(() => ({ hidden: Array.from(document.querySelectorAll('.j2-print-page svg')).every(s => s.getAttribute('aria-hidden') === 'true'), groups: Array.from(document.querySelectorAll('.j2-print-page')).map(p => p.getAttribute('aria-label')) }));
-    return { ok: r.hidden && r.groups.join() === 'Sheet 1 of 4,Sheet 2 of 4,Sheet 3 of 4,Sheet 4 of 4', detail: r };
+    return { ok: r.hidden && r.groups.join() === [1, 2, 3, 4, 5, 6, 7, 8].map(n => 'Sheet ' + n + ' of 8').join(), detail: r };
   });
 
   await check('print.10.print-calls-window-print-once-and-changes-nothing', async () => {
@@ -223,10 +224,10 @@ async function runPrintChecks(env) {
     const same = (await rootHtml()) === html0;
     const unchanged = JSON.stringify(await docNow()) === stateBefore.doc && (await storage()) === stateBefore.storage && JSON.stringify((await st()).history) === stateBefore.hist;
     const still = await page.locator('.j2-print-page').count();
-    return { ok: calls === 1 && same && unchanged && still === 4, detail: { calls, same, unchanged, still } };
+    return { ok: calls === 1 && same && unchanged && still === 8, detail: { calls, same, unchanged, still } };
   });
 
-  await check('print.11.print-media-shows-only-the-four-sheets', async () => {
+  await check('print.11.print-media-shows-only-the-eight-sheets', async () => {
     await page.emulateMedia({ media: 'print' });
     const r = await page.evaluate(() => {
       const shown = e => { const c = getComputedStyle(e); return c.display !== 'none' && c.visibility !== 'hidden'; };
@@ -244,7 +245,7 @@ async function runPrintChecks(env) {
     const box = (txt.match(/\/MediaBox\s*\[\s*0\s+0\s+([\d.]+)\s+([\d.]+)\s*\]/) || []).slice(1).map(Number);
     fs.writeFileSync(path.join(process.env.J2_SHOT_DIR || require('os').tmpdir(), 'j2-player-print.pdf'), pdf);
     await page.emulateMedia({ media: 'screen' });
-    return { ok: r.pages === 4 && !r.bar && r.label && r.app.length === 0 && r.brk.join() === 'page,page,page,auto' && count === 4 && box.length === 2 && Math.abs(box[0] - 842) < 2 && Math.abs(box[1] - 595) < 2, detail: { r, pdfPages: count, box } };
+    return { ok: r.pages === 8 && !r.bar && r.label && r.app.length === 0 && r.brk.join() === 'page,page,page,page,page,page,page,auto' && count === 8 && box.length === 2 && Math.abs(box[0] - 595) < 2 && Math.abs(box[1] - 842) < 2, detail: { r, pdfPages: count, box } };
   });
 
   await check('print.12.independent-of-camera-sidebar-and-biome-preference', async () => {
@@ -283,8 +284,8 @@ async function runPrintChecks(env) {
     await page.evaluate(() => document.querySelector('[data-lang="en"]').click()); await sleep(500);
     const en = await page.evaluate(() => ({ heading: document.querySelector('.j2-pp-title') && document.querySelector('.j2-pp-title').textContent, pages: document.querySelectorAll('.j2-print-page').length, print: document.querySelector('[data-pp-print]') && !document.querySelector('[data-pp-print]').disabled }));
     await closePrint();
-    return { ok: btn === 'Печать' && r.heading === 'Предпросмотр печати карты игроков' && r.labels.join('|') === 'Лист 1 из 4 · Обрежьте правый и нижний края по меткам|Лист 2 из 4 · Обрежьте нижний край по меткам|Лист 3 из 4 · Обрежьте правый край по меткам|Лист 4 из 4 · Нижний слой: обрезать не нужно' && r.status === 'Страницы карты готовы' && r.print === 'Печать' &&
-      r.back === 'Назад к виду игроков' && r.pages === 4 && r.fog === 0 && /Карта игроков на четырёх листах/.test(r.summary) && en.heading === 'Player Map Print Preview' && en.pages === 4 && en.print, detail: { btn, r, en } };
+    return { ok: btn === 'Печать' && r.heading === 'Предпросмотр печати карты игроков' && r.labels.join('|') === [1, 2, 3, 4, 5, 6, 7, 8].map(n => 'Лист ' + n + ' из 8 · ' + (n === 8 ? 'Нижний слой: обрезать не нужно' : n === 4 ? 'Обрежьте нижний край по меткам' : n > 4 ? 'Обрежьте правый край по меткам' : 'Обрежьте правый и нижний края по меткам')).join('|') && r.status === 'Страницы карты готовы' && r.print === 'Печать' &&
+      r.back === 'Назад к виду игроков' && r.pages === 8 && r.fog === 0 && /Карта игроков на восьми листах/.test(r.summary) && en.heading === 'Player Map Print Preview' && en.pages === 8 && en.print, detail: { btn, r, en } };
   });
 
   await check('print.15.empty-reveal-set-prints-the-plain-old-map', async () => {
@@ -296,7 +297,7 @@ async function runPrintChecks(env) {
     const r = await page.evaluate(() => ({ pages: document.querySelectorAll('.j2-print-page').length, syms: document.querySelectorAll('.j2-print-root .j2-tile-sym').length, segs: document.querySelectorAll('.j2-print-root .j2-perimeter').length, labels: document.querySelectorAll('.j2-print-root .j2-sanc-label').length, print: !document.querySelector('[data-pp-print]').disabled }));
     await shot(page, 'print-04-empty.png');
     await closePrint();
-    return { ok: r.pages === 4 && r.syms === 0 && r.segs === 0 && r.labels === 0 && r.print, detail: r };
+    return { ok: r.pages === 8 && r.syms === 0 && r.segs === 0 && r.labels === 0 && r.print, detail: r };
   });
 
   await page.close(); await context.close();

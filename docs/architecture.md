@@ -1455,11 +1455,11 @@ renderer-facing entry for print: black-and-white mode never carries a tint.
 
 ### Journey 2 player map print (PD-028, sheet layout PD-073)
 
-- *Sheets (PD-073).* The print is **four A4 landscape sheets**, a 2 x 2 grid (row-major `v1` NW, `v2` NE, `v3` SW, `v4` SE). `pagesFromTemplate` takes the two panels of
-  `template.composition.panels` as the columns and halves the map's height (`floor(H / 2)`) for the rows: four `core` rects that partition the map. A page's `rect` is its core grown by
+- *Sheets (PD-073).* The print is **eight A4 portrait sheets**, a 4 x 2 grid (row-major: `v1`–`v4` the top row west to east, `v5`–`v8` the bottom row; the same cut as the campaign frame's own printable). `pagesFromTemplate` validates the two panels of
+  `template.composition.panels` (the raster's sources), then cuts the raster into `COLS` = 4 equal columns and `ROWS` = 2 rows (`floor(H / 2)`): eight `core` rects that partition the map. A page's `rect` is its core grown by
   `OVERLAP_PX / 2` (52 world px, about one hex) towards each internal neighbour, so neighbours share a strip `OVERLAP_PX` (104 px) wide; `labelBounds` is the core minus those strips;
-  `trim` is `{ right: col 0, bottom: row 0 }`. One uniform `scaleMmPerPx` for all four (≈ 0.115, a hex ≈ 12 mm), and `placeMm [x, y, w, h]` is the map's box on the sheet inside `A4_MM`
-  (297 x 210 mm; margins 6 mm sides, 5 mm top, 16 mm bottom for the printed sheet label). `pageOfPoint` uses the cores (half-open, so a seam belongs to the east / south sheet).
+  `trim` is `{ right: every column but the last, bottom: row 0 }`. One uniform `scaleMmPerPx` for all eight (≈ 0.15, a hex ≈ 15.8 mm), and `placeMm [x, y, w, h]` is the map's box on the sheet inside `A4_MM`
+  (210 x 297 mm; margins 6 mm sides, 5 mm top, 16 mm bottom for the printed sheet label). `pageOfPoint` uses the cores (half-open, so a seam belongs to the east / south sheet).
 - *Model.* `js/journey2-print.js` (`Journey2Print`, pure, loaded after the projection and before the view). `pagesFromTemplate(template)` reads
   the two panels of `template.composition.panels` and **throws** on bad geometry (not exactly two, a gap/overlap,
   a different height, no asset) — there is no stretched-map fallback. A page is `{ rect (world px), core, viewBox [0,0,w,h], translate [-x,-y],
@@ -1474,11 +1474,11 @@ renderer-facing entry for print: black-and-white mode never carries a tint.
   percentage from `placeMm`) → `<g transform="translate(-x -y)">`
   holding the base `<image>` (the world raster, `href` = the already-loaded, content-hashed URL), `.j2-pp-gen` (`overlayMarkup`, no tint), `.j2-pp-perimeter`
   (`chainEdgeSegments` + `polylinesPath`) and `.j2-pp-labels`; then `svg.j2-pp-marks` (viewBox in mm: trim ticks in the margins, in line with each cut) and `p.j2-pp-pagelabel`
-  ("Sheet n of 4 · trim instruction", printed). All four sheets sit in `.j2-print-root` inside the body-level `.j2-printpreview`
+  ("Sheet n of 8 · trim instruction", printed). All eight sheets sit in `.j2-print-root` inside the body-level `.j2-printpreview`
   (toolbar with the `h2`, status `role=status`, Back / Retry / Print, and an `.sr-only` summary). While open, `.j2` is `inert`. The legacy diagnostic proof now uses `.j2-proof-*`.
-- *CSS.* Screen: neutral `--ink` ground, white 297x210 mm sheets (`aspect-ratio`, `max-width: 100%`). `@page j2player { size: A4 landscape; margin: 0 }` is a **named** page (the proof has its own
-  `j2proof`, also landscape), selected by `page:` on `.j2-print-root`. `@media print`: every other `body` child and the toolbar are `display: none` (the sheet label stays); the sheets are 209 mm
-  tall (never 210, so rounding cannot add a fifth page) with `break-after: page` on all but the last.
+- *CSS.* Screen: neutral `--ink` ground, white 210x297 mm sheets (`aspect-ratio`, `max-width: 100%`). `@page j2player { size: A4 portrait; margin: 0 }` is a **named** page (the proof has its own
+  `j2proof`, also landscape), selected by `page:` on `.j2-print-root`. `@media print`: every other `body` child and the toolbar are `display: none` (the sheet label stays); the sheets are 296 mm
+  tall (never 297, so rounding cannot add a ninth page) with `break-after: page` on all but the last.
   Ink is black on white only; the classes restate the screen map's rules without any state colour.
 - *Readiness.* `printAssetsReady()` waits for the map-lettering font, `Image.decode()` of the world raster and of every symbol used, then two animation frames. Print stays
   disabled until then (`journey2_pp_preparing` → `journey2_pp_ready`); a failure shows `journey2_pp_failed` with Retry and no blank print. `runPlayerPrint()` re-checks and
@@ -1493,7 +1493,7 @@ renderer-facing entry for print: black-and-white mode never carries a tint.
   letter-spacing, ×1.06, + halo + 1 px); the output `w`/`cx` describe that box, the drawn text (anchor, font, halo) is unchanged.
 - *Tests.* `tests/journey2-print-safety.test.js` (label ink bounds incl. seam / edges / wide glyphs / all 56 icons, native-print CSS scope and exclusions, i18n, print-checks selector rules);
   `tests/journey2-print.test.js` (pure model, pages, seam, boundaries, names, source guards for DOM/CSS/i18n/wiring); `scripts/journey2/lib/print-checks.js`
-  (real browser: fog visible on screen, none in print, four A4 landscape sheets incl. a print-to-PDF page count and MediaBox, camera independence, one `window.print()`, no document /
+  (real browser: fog visible on screen, none in print, eight A4 portrait sheets incl. a print-to-PDF page count and MediaBox, camera independence, one `window.print()`, no document /
   storage / history change, Back + focus, EN/RU, empty reveal set).
 
 ### Destroyed sanctuary VFX (PD-070)

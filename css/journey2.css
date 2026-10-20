@@ -1079,10 +1079,10 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-hexenv-assigned { flex: none; font-size: var(--fs-xs); color: var(--hope-soft); }
 
 /* ---------- player map print (PD-028) ----------
- * One DOM for the on-screen preview and the physical print: `.j2-print-root` holds exactly four `.j2-print-page` A4 landscape sheets (a 2 x 2
+ * One DOM for the on-screen preview and the physical print: `.j2-print-root` holds exactly eight `.j2-print-page` A4 portrait sheets (a 4 x 2
  * grid of the Old Valloren map, overlapping by one hex, a vector overlay over the original raster; PD-073). There is NO fog, hatch, wash or grey anywhere in it —
  * unrevealed cells are just the untouched map — and everything is black on white. Screen: a neutral ground behind the white sheets. */
-@page j2player { size: A4 landscape; margin: 0; }
+@page j2player { size: A4 portrait; margin: 0; }
 .j2-printpreview { position: fixed; inset: 0; z-index: 3000; overflow: auto; background: var(--ink); color: var(--parchment); padding: 0 var(--s-4) var(--s-6); }
 .j2-pp-bar { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); margin: 0 calc(-1 * var(--s-4)) var(--s-4); padding: var(--s-3) var(--s-4); background: var(--ink-raised); border-bottom: 1px solid var(--line); }
 .j2-pp-title { margin: 0; font-size: var(--fs-lg); font-weight: 600; }
@@ -1092,7 +1092,7 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-pp-status[data-failed] { color: var(--fear-soft); }
 .j2-pp-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-left: auto; }
 .j2-print-root { display: flex; flex-direction: column; align-items: center; gap: var(--s-5); page: j2player; }
-.j2-print-page { position: relative; width: 297mm; max-width: 100%; aspect-ratio: 297 / 210; margin: 0; padding: 0; box-sizing: border-box; background: #fff; color: #000; box-shadow: 0 2px 18px rgba(0, 0, 0, 0.55); overflow: hidden; }
+.j2-print-page { position: relative; width: 210mm; max-width: 100%; aspect-ratio: 210 / 297; margin: 0; padding: 0; box-sizing: border-box; background: #fff; color: #000; box-shadow: 0 2px 18px rgba(0, 0, 0, 0.55); overflow: hidden; }
 /* the map box is placed by percentage (inline left / top / width from the model's `placeMm`), so the sheet scales on screen and is exact in mm in print */
 .j2-pp-svg { position: absolute; display: block; height: auto; background: #fff; }
 .j2-pp-marks { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: #000; stroke-width: 0.25; }
@@ -1113,7 +1113,7 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
   .j2-printpreview { position: static; inset: auto; overflow: visible; background: #fff; padding: 0; }
   .j2-printpreview > :not(.j2-print-root) { display: none !important; }
   .j2-print-root { display: block; }
-  .j2-print-page { width: 297mm; height: 209mm; aspect-ratio: auto; margin: 0; box-shadow: none; break-after: page; page-break-after: always; break-inside: avoid; }
+  .j2-print-page { width: 210mm; height: 296mm; aspect-ratio: auto; margin: 0; box-shadow: none; break-after: page; page-break-after: always; break-inside: avoid; }
   .j2-print-page:last-child { break-after: auto; page-break-after: auto; }
 }
 
