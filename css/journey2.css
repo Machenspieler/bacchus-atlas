@@ -246,6 +246,8 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-legend-sym .j2-legend-fx { display: none; }
 .j2[data-sbfx] .j2-legend-sym .j2-legend-fx { display: block; }
 .j2[data-sbfx] .j2-legend-sym .j2-legend-glyph { display: none; }
+.j2-legend-sym svg.j2-legend-void { width: 28px; height: 28px; }
+.j2-legend-list--biomes .j2-legend-sym svg.j2-legend-void { width: 24px; height: 24px; }
 .j2-legend-sym img.j2-legend-fx { max-width: 28px; max-height: 28px; }   /* the burning castle baked from the map's own fire renderer (scripts/generate-ruin-legend.js) */
 .j2-legend-dot { fill: var(--ink); }
 .j2-legend-biomes[hidden] { display: none; }

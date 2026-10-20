@@ -585,13 +585,11 @@
      */
     const LEGEND_SHADOW_FX = '<img class="j2-legend-fx" src="img/journey2/legend-shadowblight.webp" alt="" width="28" height="28" draggable="false">';
     function legendVoidSvg() {
-      const Fx = root.Journey2ShadowblightFx, hex = [[11, 0], [5.5, -9.5], [-5.5, -9.5], [-11, 0], [-5.5, 9.5], [5.5, 9.5]];
-      let pts = hex;
-      if (Fx) pts = Fx.tear(hex, (x, y) => Geo.pointInConvexPolygon([x, y], hex), 0.9, (x, y) => 0.25 + 1.1 * Fx.vnoise(x * 1.1 + 40, y * 1.1 + 40, 7)).torn;
-      const d = 'M' + pts.map(p => fmt(p[0], 2) + ' ' + fmt(p[1], 2)).join('L') + 'Z';
-      return '<svg class="j2-legend-fx" viewBox="-12 -12 24 24" aria-hidden="true"><defs><clipPath id="j2-legend-void-clip"><path d="' + d + '"/></clipPath></defs>' +
-        '<image href="' + SB_NEBULA.path + '" x="-58" y="-6" width="82" height="46" preserveAspectRatio="none" clip-path="url(#j2-legend-void-clip)"/>' +
-        '<path d="' + d + '" fill="none" stroke="#2a1f16" stroke-opacity=".75" stroke-width=".7"/></svg>';
+      // a clean hex cut from the brightest part of the approved Nebula (a still crop, no tear): reads as a window onto the void at 28px
+      const d = 'M11 0L5.5 -9.5L-5.5 -9.5L-11 0L-5.5 9.5L5.5 9.5Z';
+      return '<svg class="j2-legend-fx j2-legend-void" viewBox="-12 -12 24 24" aria-hidden="true"><defs><clipPath id="j2-legend-void-clip"><path d="' + d + '"/></clipPath></defs>' +
+        '<image href="' + SB_NEBULA.path + '" x="-26.4" y="-20.9" width="95.5" height="53.8" preserveAspectRatio="none" clip-path="url(#j2-legend-void-clip)"/>' +
+        '<path d="' + d + '" fill="none" stroke="#9db4ff" stroke-opacity=".55" stroke-width=".8" stroke-linejoin="round"/></svg>';
     }
     const RUIN_SCALE = 1.2;                                  // on the screen map; the print passes its own (the A4 page shrinks the map to about a fifth)
     const RUIN_SCALE_PRINT = 1.6;
