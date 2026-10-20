@@ -190,7 +190,7 @@
     let cam = { scale: 0.25, tx: 0, ty: 0 };
     let fitMode = true;
     let savedView = null, liveView = null, cameraReady = false, cameraSaveTimer = 0;   // the stored camera ({ fit, cx, cy, scale } | null), whether a stored camera may be overwritten yet, and the debounce timer
-    let rafId = 0, pendingApply = false, appliedScale = 0;
+    let rafId = 0, pendingApply = false, appliedScale = 0, appliedTx = NaN, appliedTy = NaN;
 
     /* committed state */
     let doc = null, history = null, store = null;
@@ -3878,11 +3878,14 @@
            (hundreds of MB) — the phone's GPU gives up and the whole page, UI included, goes black until the next tap. So the layer is promoted only for a pure pan
            (the scale unchanged since the last frame); any frame that changes the scale demotes it and the browser re-rasters at the new scale. */
         const scaling = appliedScale !== 0 && appliedScale !== cam.scale;
-        appliedScale = cam.scale;
-        ui.world.classList.toggle('is-cam-active', !scaling);
-        clearTimeout(camIdleTimer);
-        camIdleTimer = setTimeout(dropCamPromotion, 600);
-        ui.world.style.transform = 'translate(' + cam.tx + 'px,' + cam.ty + 'px) scale(' + cam.scale + ')';
+        const moved = appliedScale !== cam.scale || appliedTx !== cam.tx || appliedTy !== cam.ty;   // a re-apply with the same camera must not promote / demote the layer
+        appliedScale = cam.scale; appliedTx = cam.tx; appliedTy = cam.ty;
+        if (moved) {
+          ui.world.classList.toggle('is-cam-active', !scaling);
+          clearTimeout(camIdleTimer);
+          camIdleTimer = setTimeout(dropCamPromotion, 600);
+          ui.world.style.transform = 'translate(' + cam.tx + 'px,' + cam.ty + 'px) scale(' + cam.scale + ')';
+        }
         if (sbfx) { const [vw, vh] = viewSize(); sbfx.setCamera(cam, vw, vh); }   // the same frame: the cosmos box and culling never lag the map; nothing is read back
         ui.world.style.setProperty('--j2-inv', String(1 / cam.scale));
         ui.world.classList.toggle('is-pixel', cam.scale >= 2);
@@ -4449,7 +4452,7 @@
         cleanups.push(() => ro.disconnect());
       }
       if (typeof ResizeObserver === 'function') {
-        const ro2 = new ResizeObserver(() => { if (!inst.disposed) scheduleApply(); });
+        const ro2 = new ResizeObserver(() => { if (!inst.disposed) positionInspector(); });   // only the panel follows its own size: never a camera re-apply (it promoted the map layer for 600 ms, a visible 1-2 px hop)
         ro2.observe(ui.inspector);
         cleanups.push(() => ro2.disconnect());
       }
