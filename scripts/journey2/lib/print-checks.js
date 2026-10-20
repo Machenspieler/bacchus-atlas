@@ -142,7 +142,7 @@ async function runPrintChecks(env) {
       inert: document.querySelector('.j2').inert, bodyMode: document.body.classList.contains('j2-printpreview-mode'),
     }));
     return { ok: r.pages.join() === 'v1,v2,v3,v4,v5,v6,v7,v8' && r.roots === 1 && r.heading === 'Player Map Print Preview' && r.tag === 'H2' &&
-      r.labels.join('|') === [1, 2, 3, 4, 5, 6, 7, 8].map(n => 'Sheet ' + n + ' of 8 · Cut along the frame').join('|') &&
+      r.labels.join('|') === [1, 2, 3, 4, 5, 6, 7, 8].map(n => 'Sheet ' + n + ' of 8 · Trim to the edge of the map').join('|') &&
       r.focus === 'j2-pp-title' && r.status === 'Map pages are ready' && r.print && /Eight-sheet player map\. 4 wilderness hexes revealed\. 2 sanctuary names known\./.test(r.summary) && r.inert && r.bodyMode, detail: r };
   });
 
@@ -158,13 +158,13 @@ async function runPrintChecks(env) {
       r.every(x => /valloren-world\.webp/.test(x.img) && Number(x.w) === template.worldSizePx[0] && Number(x.h) === template.worldSizePx[1]), detail: { r, want } };
   });
 
-  await check('print.04b.sheet-geometry-in-millimetres-and-cut-frame', async () => {
+  await check('print.04b.sheet-geometry-in-millimetres-and-no-frame', async () => {
     const r = await page.evaluate(() => Array.from(document.querySelectorAll('.j2-print-page')).map(p => {
       const bp = p.getBoundingClientRect(), bs = p.querySelector('svg.j2-pp-svg').getBoundingClientRect(), mm = bp.width / 210;
-      return { x: (bs.left - bp.left) / mm, y: (bs.top - bp.top) / mm, w: bs.width / mm, h: bs.height / mm, ratio: bp.width / bp.height, frame: p.querySelectorAll('.j2-pp-marks rect').length };
+      return { x: (bs.left - bp.left) / mm, y: (bs.top - bp.top) / mm, w: bs.width / mm, h: bs.height / mm, ratio: bp.width / bp.height, marks: p.querySelectorAll('.j2-pp-marks').length };
     }));
     const inside = r.every(s => s.x >= 4.9 && s.x + s.w <= 210 - 4.9 && s.y >= 4.9 && s.y + s.h <= 297 - 15.9);
-    return { ok: inside && r.every(s => Math.abs(s.ratio - 210 / 297) < 0.01) && r.every(s => s.frame === 1), detail: r };
+    return { ok: inside && r.every(s => Math.abs(s.ratio - 210 / 297) < 0.01) && r.every(s => s.marks === 0), detail: r };
   });
 
   await check('print.05.no-fog-tint-environment-echo-or-colour', async () => {
@@ -283,7 +283,7 @@ async function runPrintChecks(env) {
     await page.evaluate(() => document.querySelector('[data-lang="en"]').click()); await sleep(500);
     const en = await page.evaluate(() => ({ heading: document.querySelector('.j2-pp-title') && document.querySelector('.j2-pp-title').textContent, pages: document.querySelectorAll('.j2-print-page').length, print: document.querySelector('[data-pp-print]') && !document.querySelector('[data-pp-print]').disabled }));
     await closePrint();
-    return { ok: btn === 'Печать' && r.heading === 'Предпросмотр печати карты игроков' && r.labels.join('|') === [1, 2, 3, 4, 5, 6, 7, 8].map(n => 'Лист ' + n + ' из 8 · Режьте по рамке').join('|') && r.status === 'Страницы карты готовы' && r.print === 'Печать' &&
+    return { ok: btn === 'Печать' && r.heading === 'Предпросмотр печати карты игроков' && r.labels.join('|') === [1, 2, 3, 4, 5, 6, 7, 8].map(n => 'Лист ' + n + ' из 8 · Обрезайте по краю карты').join('|') && r.status === 'Страницы карты готовы' && r.print === 'Печать' &&
       r.back === 'Назад к виду игроков' && r.pages === 8 && r.fog === 0 && /Карта игроков на восьми листах/.test(r.summary) && en.heading === 'Player Map Print Preview' && en.pages === 8 && en.print, detail: { btn, r, en } };
   });
 

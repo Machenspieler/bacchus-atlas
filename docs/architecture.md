@@ -1471,8 +1471,8 @@ renderer-facing entry for print: black-and-white mode never carries a tint.
 - *DOM.* `printPageMarkup(page)` (view): `<section class="j2-print-page" data-page>` → `<svg class="j2-pp-svg" viewBox="0 0 w h" aria-hidden>` (absolutely placed by
   percentage from `placeMm`) → `<g transform="translate(-x -y)">`
   holding the base `<image>` (the world raster, `href` = the already-loaded, content-hashed URL), `.j2-pp-gen` (`overlayMarkup`, no tint), `.j2-pp-perimeter`
-  (`chainEdgeSegments` + `polylinesPath`) and `.j2-pp-labels`; then `svg.j2-pp-marks` (viewBox in mm: the cut frame, one thin rectangle on the map box's edge) and `p.j2-pp-pagelabel`
-  ("Sheet n of 8 · Cut along the frame", printed). All eight sheets sit in `.j2-print-root` inside the body-level `.j2-printpreview`
+  (`chainEdgeSegments` + `polylinesPath`) and `.j2-pp-labels`; then `p.j2-pp-pagelabel` (no frame or marks: the map's own edge is the cut line)
+  ("Sheet n of 8 · Trim to the edge of the map", printed). All eight sheets sit in `.j2-print-root` inside the body-level `.j2-printpreview`
   (toolbar with the `h2`, status `role=status`, Back / Retry / Print, and an `.sr-only` summary). While open, `.j2` is `inert`. The legacy diagnostic proof now uses `.j2-proof-*`.
 - *CSS.* Screen: neutral `--ink` ground, white 210x297 mm sheets (`aspect-ratio`, `max-width: 100%`). `@page j2player { size: A4 portrait; margin: 0 }` is a **named** page (the proof has its own
   `j2proof`, also landscape), selected by `page:` on `.j2-print-root`. `@media print`: every other `body` child and the toolbar are `display: none` (the sheet label stays); the sheets are 296 mm

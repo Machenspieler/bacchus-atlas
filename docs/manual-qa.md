@@ -549,11 +549,11 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
 
 - [ ] Prepare regions, reveal a few cells, reveal one sanctuary name and leave another hidden, assign a hex Environment, place Soul Echoes, Biome colors on.
 - [ ] Player Preview still shows its fog hatch; the toolbar has "Print player map".
-- [ ] Print Preview: exactly eight white A4 portrait sheets ("Sheet 1 of 8" … "Sheet 8 of 8", each saying "Cut along the frame") on a neutral ground; no fog hatch, tint, Environment marker or Echo on any; the full Old Valloren map
-      is present across the 4 x 2 grid (each sheet has a thin frame; tiles are butt-joined, no shared strip); generated symbols/dots/boundaries only in revealed cells; only the revealed sanctuary name shows.
+- [ ] Print Preview: exactly eight white A4 portrait sheets ("Sheet 1 of 8" … "Sheet 8 of 8", each saying "Trim to the edge of the map") on a neutral ground; no fog hatch, tint, Environment marker or Echo on any; the full Old Valloren map
+      is present across the 4 x 2 grid (no frame or marks; tiles are butt-joined, no shared strip); generated symbols/dots/boundaries only in revealed cells; only the revealed sanctuary name shows.
 - [ ] Pan/zoom/Fit/sidebar before opening it never changes the pages. Escape and "Back to Player Preview" return to Player Preview (not the GM view) and refocus "Print player map".
 - [ ] The browser print dialog (paper A4 — not Letter, which shrinks the sheets about 6 % — margins None, scale 100): eight pages, no ninth blank page, no controls, only the sheet label; compass / MARROGATE / HORIZON unclipped.
-- [ ] On paper: cut each sheet along its frame and join the sheets edge to edge (1 2 3 4 over 5 6 7 8); the map lines and hexes continue across every join. Check that the printer's own unprintable margin does not eat the frame (there are 5 mm from the paper edge). A hex measures about 10 mm across the flats.
+- [ ] On paper: trim each sheet to the edge of the printed map and join the sheets edge to edge (1 2 3 4 over 5 6 7 8); the map lines and hexes continue across every join. Check that the printer's own unprintable margin does not eat the map's edge (the map starts 5 mm from the paper edge). A hex measures about 10 mm across the flats.
 - [ ] RU and EN: heading, status, buttons and page labels are translated and do not clip.
 
 ## Journey browser harnesses: release gates vs retired

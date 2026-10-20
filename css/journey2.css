@@ -1095,7 +1095,6 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-print-page { position: relative; width: 210mm; max-width: 100%; aspect-ratio: 210 / 297; margin: 0; padding: 0; box-sizing: border-box; background: #fff; color: #000; box-shadow: 0 2px 18px rgba(0, 0, 0, 0.55); overflow: hidden; }
 /* the map box is placed by percentage (inline left / top / width from the model's `placeMm`), so the sheet scales on screen and is exact in mm in print */
 .j2-pp-svg { position: absolute; display: block; height: auto; background: #fff; }
-.j2-pp-marks { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: #000; stroke-width: 0.25; }
 .j2-pp-pagelabel { position: absolute; left: 0; right: 0; bottom: 6mm; margin: 0; text-align: center; font: 8pt/1.2 Arial, Helvetica, sans-serif; color: #333; }
 /* black ink only: the same classes the screen map uses, restated without any screen-state colour */
 .j2-pp-svg .j2-tile-hex { fill: none; stroke: #000; stroke-opacity: 0.55; stroke-width: 1; }

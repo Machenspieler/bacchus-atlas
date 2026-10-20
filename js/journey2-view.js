@@ -4305,8 +4305,6 @@
       const mm = page.scaleMmPerPx, A4 = Print.A4_MM, [px, py, pw, ph] = page.placeMm;
       const sheetLabel = fill('journey2_pp_page_n', { n: n(index + 1), total: n(count) });
       const pct = (v, of) => fmt(v / of * 100, 4) + '%';
-      // the cut frame (viewBox in mm): a thin rectangle on the map box's edge; the sheets are cut along it and joined edge to edge, like the campaign frame's own printable
-      const frame = '<rect x="' + fmt(px, 2) + '" y="' + fmt(py, 2) + '" width="' + fmt(pw, 2) + '" height="' + fmt(ph, 2) + '"/>';
       return '<section class="j2-print-page" data-page="' + page.id + '" role="group" aria-label="' + esc(sheetLabel) + '">' +
         '<svg class="j2-pp-svg" xmlns="' + SVG_NS + '" style="left:' + pct(px, A4.widthMm) + ';top:' + pct(py, A4.heightMm) + ';width:' + pct(pw, A4.widthMm) + '" width="' + fmt(vw * mm, 2) + 'mm" height="' + fmt(vh * mm, 2) + 'mm" viewBox="' + vx + ' ' + vy + ' ' + vw + ' ' + vh + '" aria-hidden="true" focusable="false">' +
         '<g transform="translate(' + page.translate[0] + ' ' + page.translate[1] + ')">' +
@@ -4317,7 +4315,6 @@
         '<g class="j2-pp-labels" data-pp-labels="' + page.labels.length + '">' + labels + '</g>' +
         '<g class="j2-pp-party" data-pp-party="' + (page.party ? 1 : 0) + '">' + (page.party ? partyMarkup(page.party.q, page.party.r, { bw: true }) : '') + '</g>' +
         '</g></svg>' +
-        '<svg class="j2-pp-marks" xmlns="' + SVG_NS + '" viewBox="0 0 ' + A4.widthMm + ' ' + A4.heightMm + '" aria-hidden="true" focusable="false">' + frame + '</svg>' +
         '<p class="j2-pp-pagelabel">' + esc(sheetLabel + ' · ' + t('journey2_pp_cut')) + '</p></section>';
     }
 
