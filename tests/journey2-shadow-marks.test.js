@@ -152,12 +152,15 @@ test('planner: a step beyond the packed state changes nothing, and the number of
   assert.equal(standing.maxStep, 0, 'already on the origin: nothing can move');
 });
 
-test('planner: only the nearest block moves; the others stand still, even when it has stopped', () => {
+test('planner: every block moves, near or far (the Shadowblight of all regions converges on the origin)', () => {
   const doc = world([{ habitat: BLIGHT, cells: [at(0), at(1)] }, { habitat: BLIGHT, cells: [at(18), at(19)] }]);
   const plan = S.createSeekerPlan({ doc, ctx, origin: at(9) });
+  const f1 = xSet(docAt(doc, plan, 1));
+  assert.ok(!f1.includes(at(19)) && !f1.includes(at(0)), 'both the near and the far block left their cells on the first step');
+  assert.equal(plan.movers, 4);
   const end = xSet(docAt(doc, plan, plan.maxStep));
-  assert.ok(end.includes(at(18)) && end.includes(at(19)), 'the far block never started');
-  assert.equal(plan.movers, 2);
+  assert.equal(end.length, 4);
+  assert.ok(end.includes(at(9)), 'the nearest X ends on the origin');
 });
 
 test('planner: blocks at exactly the same distance both move', () => {
@@ -186,7 +189,7 @@ test('planner: an overtaken block releases one X per skull; skulls stay and neve
 test('planner: X blocks and skull blocks never merge into one block', () => {
   const doc = world([{ habitat: BLIGHT, cells: [at(0)] }, { habitat: SKULL, cells: [at(1)] }]);
   const plan = S.createSeekerPlan({ doc, ctx, origin: at(10) });
-  assert.equal(plan.movers, 1, 'only the nearer kind moves: the skull (distance 9) beats the X (distance 10)');
+  assert.equal(plan.movers, 2, 'both kinds move, each as its own block');
   assert.deepEqual(S.componentsOf(new Set([at(0), at(1)])).length, 1, 'adjacency by itself would join them — the planner groups each kind on its own');
 });
 

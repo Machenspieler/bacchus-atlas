@@ -529,6 +529,7 @@ void main(){
     const env = { webgl: false, vw: win.innerWidth || 1024, vh: win.innerHeight || 768, dpr: win.devicePixelRatio || 1,
       coarse: !!(win.matchMedia && win.matchMedia('(pointer: coarse)').matches), memory: win.navigator && win.navigator.deviceMemory, cores: win.navigator && win.navigator.hardwareConcurrency };
     let glr = null;
+    const fieldCache = new Map(), FIELD_CACHE_MAX = 48;
     try { glr = createGl(doc); } catch (e) { glr = null; }
     env.webgl = !!glr;
     const start = initialQuality(env);
@@ -575,12 +576,21 @@ void main(){
       updateCosmos(true);
     }
 
+    /**
+     * An area whose cell set is unchanged keeps its canvas, texture and animation clock (a Shadowblight "+" moves a few X's, so most areas stay as they
+     * are); distance fields of recently seen cell sets are cached, so stepping back ("-") builds nothing. Returns the new areas, which the caller draws.
+     */
     function rebuildAreas() {
-      for (const a of st.areas) { if (a.tex && glr) glr.drop(a.tex); a.fo.remove(); }
-      st.areas = [];
+      const keep = new Map(st.areas.map(a => [a.key, a])), fresh = [], next = [];
       const B = new Set(Array.from(st.blighted).filter(id => !st.overtaken.has(id)));
       for (const comp of componentsOf(B)) {
-        const field = buildField(grid, new Set(comp)), b = field.box;
+        const key = comp.slice().sort(compareIds).join(';'), old = keep.get(key);
+        if (old) { keep.delete(key); next.push(old); continue; }
+        let field = fieldCache.get(key);
+        if (field) fieldCache.delete(key); else field = buildField(grid, new Set(comp));
+        fieldCache.set(key, field);                                        // most recent last
+        if (fieldCache.size > FIELD_CACHE_MAX) fieldCache.delete(fieldCache.keys().next().value);
+        const b = field.box;
         const fo = doc.createElementNS(SVG_NS, 'foreignObject'), cv = doc.createElementNS(XHTML_NS, 'canvas');
         fo.setAttribute('x', b.x0.toFixed(2)); fo.setAttribute('y', b.y0.toFixed(2));
         fo.setAttribute('width', (b.x1 - b.x0).toFixed(2)); fo.setAttribute('height', (b.y1 - b.y0).toFixed(2));
@@ -588,10 +598,14 @@ void main(){
         cv.setAttribute('class', 'j2-sbfx-cv');
         fo.appendChild(cv);
         o.shadowGroup.appendChild(fo);
-        st.areas.push({ ids: comp, field: field, box: b, fo: fo, cv: cv, ctx: cv.getContext('2d'), tex: glr ? glr.texture(field) : null,
+        const area = { key: key, ids: comp, field: field, box: b, fo: fo, cv: cv, ctx: cv.getContext('2d'), tex: glr ? glr.texture(field) : null,
           small: Math.max(0, Math.min(1, (6 - comp.length) / 5)),            // 1 for a lone hex, 0 from six cells on: a small area is a little denser
-          ppu: 0, t: 30 + hash2(comp.length, Geo.parseCellId(comp[0]).q, 7) * 400, visible: true });
+          ppu: 0, t: 30 + hash2(comp.length, Geo.parseCellId(comp[0]).q, 7) * 400, visible: true };
+        next.push(area); fresh.push(area);
       }
+      for (const a of keep.values()) { if (a.tex && glr) glr.drop(a.tex); a.fo.remove(); }
+      st.areas = next;
+      return fresh;
     }
 
     /* ----- camera ----- */
@@ -719,9 +733,9 @@ void main(){
         const t0 = win.performance.now(), holesChanged = Array.from(O).sort().join(';') !== Array.from(st.overtaken).sort().join(';');
         st.key = key; st.blighted = B; st.overtaken = O;
         if (holesChanged) rebuildHoles();
-        rebuildAreas();
+        const fresh = rebuildAreas();
         measure(true);
-        drawAll(0, true);
+        if (holesChanged || !fresh.length) drawAll(0, true); else for (const a of fresh) drawArea(a, 0);
         st.stats.rebuildMs = win.performance.now() - t0;
         syncLoop();
         return true;
