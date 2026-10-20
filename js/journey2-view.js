@@ -3882,7 +3882,10 @@
         ui.world.classList.toggle('is-cam-active', !scaling);
         clearTimeout(camIdleTimer);
         camIdleTimer = setTimeout(dropCamPromotion, 600);
-        ui.world.style.transform = 'translate(' + cam.tx + 'px,' + cam.ty + 'px) scale(' + cam.scale + ')';
+        /* Whole device pixels: a fractional offset is rastered one way while the layer is promoted (a pan) and snapped another when the promotion drops
+           ~600 ms later, which showed as the map hopping a pixel or two and settling back (opening an inspector pans the camera). */
+        const dpr = window.devicePixelRatio || 1;
+        ui.world.style.transform = 'translate(' + Math.round(cam.tx * dpr) / dpr + 'px,' + Math.round(cam.ty * dpr) / dpr + 'px) scale(' + cam.scale + ')';
         if (sbfx) { const [vw, vh] = viewSize(); sbfx.setCamera(cam, vw, vh); }   // the same frame: the cosmos box and culling never lag the map; nothing is read back
         ui.world.style.setProperty('--j2-inv', String(1 / cam.scale));
         ui.world.classList.toggle('is-pixel', cam.scale >= 2);
