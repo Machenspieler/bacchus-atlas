@@ -1,8 +1,8 @@
 /* ============================================================
    Bacchus's Atlas — journey2-print.js
    The PLAYER MAP PRINT model (PD-028, PD-073): a pure, DOM-free function from the one GM document to the content of exactly EIGHT A4
-   portrait sheets — the original Old Valloren map cut into a 4 x 2 grid, each sheet overlapping its neighbours by about one hex so the
-   sheets can be trimmed and taped together. It is the only thing the Print Preview and the physical print
+   portrait sheets — the original Old Valloren map cut into a 4 x 2 grid of butt-joined tiles, the way the campaign frame's own printable
+   cuts it: each sheet carries a thin frame, the sheets are cut along it and joined edge to edge. It is the only thing the Print Preview and the physical print
    draw from; it knows no camera, zoom, pan, sidebar, viewport, selection, language or UI preference.
 
    Fog of War is a DATA FILTER here, not a drawing: the print has no fog layer, hatch, wash or grey at all. Generated New Valloren
@@ -12,15 +12,11 @@
    is the party marker (PD-045): while it is shown its seven cells are present like revealed ones (the projection merges them) and the marker itself is drawn, as a black star.
 
    Pages. `pagesFromTemplate` validates the two panels the world raster was assembled from (`template.composition.panels`) and cuts the raster
-   into COLS x ROWS equal `core` rectangles that partition the map (row-major, 4 across and 2 down). A page is a
-   1:1 crop of that raster: its `rect` is its core grown by OVERLAP_HALF_PX towards each internal neighbour, so two neighbours share a
-   strip OVERLAP_PX wide; plus the SVG `viewBox` of the page ([0, 0, w, h]) and the `translate` that maps a world point into page-local
-   space (`worldToPage`). One uniform scale for all four. Content in an overlap strip is assigned to both pages and clipped by each page's
-   own viewport — nothing is shifted or stretched. A sanctuary label is never split: it belongs to the page whose CORE holds its icon and
-   is clamped inside that core minus the overlap strips, so it is visible whichever sheet ends up on top. `trim` says which edges of a
-   sheet are cut off along the printed marks (the right edge of every column but the last, the bottom edge of the top row): each sheet is laid over its right and lower
-   neighbours, so the sheets go down in reverse order (8 first, 1 on top).
-   ============================================================ */
+   into COLS x ROWS equal `core` rectangles that partition the map (row-major, 4 across and 2 down). A page is a 1:1 crop of that raster: its
+   `rect` IS its core, plus the SVG `viewBox` of the page ([0, 0, w, h]) and the `translate` that maps a world point into page-local space
+   (`worldToPage`). One uniform scale for all eight. Content crossing a seam (a hex, a boundary edge) is assigned to both pages and clipped by each
+   page's own viewport — nothing is shifted or stretched. A sanctuary label is never split: it belongs to the page whose core holds its icon and is
+   clamped inside that core. `placeMm` is the map's box on the sheet; the sheet's frame is drawn on its edge (PD-073).   ============================================================ */
 (function (root, factory) {
   if (typeof module !== 'undefined' && module.exports) module.exports = factory(require('./journey2-geometry.js'), require('./journey2-projection.js'));
   else root.Journey2Print = factory(root.Journey2Geometry, root.Journey2Projection);
@@ -28,11 +24,9 @@
   'use strict';
 
   // A4 portrait. The map is drawn inside the margins; the bottom margin also carries the sheet label (printed, PD-073).
-  const A4_MM = { widthMm: 210, heightMm: 297, marginXMm: 6, marginTopMm: 5, marginBottomMm: 16 };
+  const A4_MM = { widthMm: 210, heightMm: 297, marginXMm: 5, marginTopMm: 5, marginBottomMm: 16 };
   const COLS = 4, ROWS = 2;                                     // 4 across x 2 down = 8 sheets, the same cut as the campaign frame's own printable
   const PAGE_IDS = ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8'];
-  const OVERLAP_PX = 104;                                       // about one hex (the lattice period is 104.86 world px): the strip two neighbouring sheets share
-  const OVERLAP_HALF_PX = OVERLAP_PX / 2;
   const RUIN_BOX = [45, 160, 240, 200];                          // the destroyed-sanctuary glyph's world box relative to the icon centre: [left, up, width, height] — keep in step with ruinMarkup in journey2-view.js
   const LABEL_STROKE_PX = 3;                                    // the halo of `.j2-pp-svg .j2-sanc-label` in journey2.css — keep in step
 
@@ -60,23 +54,20 @@
     const pages = [];
     for (let ri = 0; ri < ROWS; ri++) for (let ci = 0; ci < COLS; ci++) {
       const core = [xs[ci], ys[ri], xs[ci + 1] - xs[ci], ys[ri + 1] - ys[ri]];
-      const hl = ci > 0 ? OVERLAP_HALF_PX : 0, hr = ci < COLS - 1 ? OVERLAP_HALF_PX : 0, ht = ri > 0 ? OVERLAP_HALF_PX : 0, hb = ri < ROWS - 1 ? OVERLAP_HALF_PX : 0;
-      const r = [core[0] - hl, core[1] - ht, core[2] + hl + hr, core[3] + ht + hb];
+      const r = core.slice();
       const panel = sorted.find(p => core[0] + core[2] / 2 < p.worldRectPx[0] + p.worldRectPx[2]) || sorted[sorted.length - 1];
       const src = ((comp.sources || []).find(s => s.id === panel.id)) || null;
       pages.push({
         id: PAGE_IDS[pages.length], panelId: panel.id, index: pages.length, col: ci, row: ri,
         core: core,
         rect: r,
-        // where labels may stand: the core minus the overlap strips, so a label is readable whichever sheet is laid on top
-        labelBounds: [core[0] + hl, core[1] + ht, core[0] + core[2] - hr, core[1] + core[3] - hb],
+        labelBounds: [core[0], core[1], core[0] + core[2], core[1] + core[3]],              // where labels may stand: the core
         viewBox: [0, 0, r[2], r[3]],
         translate: [-r[0], -r[1]],
-        trim: { right: ci < COLS - 1, bottom: ri < ROWS - 1 },
         source: { path: asset.path, worldSizePx: size.slice(), nativeSource: src ? { path: src.sourcePath, sha256: src.sha256 } : null },
       });
     }
-    // one uniform scale for all sheets, so a hex is the same size on every one and the overlap strips match
+    // one uniform scale for all sheets, so a hex is the same size on every one
     const scale = Math.min(printable[0] / Math.max.apply(null, pages.map(p => p.rect[2])), printable[1] / Math.max.apply(null, pages.map(p => p.rect[3])));
     pages.forEach(p => {
       const w = p.rect[2] * scale, h = p.rect[3] * scale;
@@ -136,7 +127,7 @@
     const grid = ctx.grid;
     const out = pages.map(p => ({
       id: p.id, panelId: p.panelId, col: p.col, row: p.row, core: p.core.slice(), rect: p.rect.slice(), viewBox: p.viewBox.slice(), translate: p.translate.slice(), scaleMmPerPx: p.scaleMmPerPx,
-      placeMm: p.placeMm.slice(), trim: { right: p.trim.right, bottom: p.trim.bottom },
+      placeMm: p.placeMm.slice(),
       source: { path: p.source.path, worldSizePx: p.source.worldSizePx.slice(), nativeSource: p.source.nativeSource ? { path: p.source.nativeSource.path, sha256: p.source.nativeSource.sha256 } : null },
       overlays: [], marks: [], segments: [], labels: [], ruins: [], party: null,
     }));
@@ -170,7 +161,7 @@
       const box = [s.x - RUIN_BOX[0], s.y - RUIN_BOX[1], RUIN_BOX[2], RUIN_BOX[3]];
       pages.forEach((p, i) => { if (rectsOverlap(box, p.rect)) out[i].ruins.push({ id: s.id, x: s.x, y: s.y, glyph: s.glyph || null }); });
     }
-    // a name belongs to the page whose core holds its icon; it is laid out inside that core minus the overlap strips, so it is never split or hidden by a neighbouring sheet
+    // a name belongs to the page whose core holds its icon; it is laid out inside that core, so it is never split across a seam
     const bySanctuary = new Map(ctx.sanctuaries.map(s => [s.id, s]));
     pages.forEach((p, i) => {
       const mine = proj.sanctuaryLabels.filter(l => { const s = bySanctuary.get(l.anchorId); const pg = s ? pageOfPoint([s.rect[0] + s.rect[2] / 2, s.rect[1] + s.rect[3] / 2], pages) : null; return pg && pg.id === p.id; });
@@ -182,5 +173,5 @@
     };
   }
 
-  return { A4_MM: A4_MM, PAGE_IDS: PAGE_IDS, COLS: COLS, ROWS: ROWS, OVERLAP_PX: OVERLAP_PX, pagesFromTemplate: pagesFromTemplate, worldToPage: worldToPage, pageToWorld: pageToWorld, pageOfPoint: pageOfPoint, clipRect: clipRect, clipSegment: clipSegment, buildPrintModel: buildPrintModel };
+  return { A4_MM: A4_MM, PAGE_IDS: PAGE_IDS, COLS: COLS, ROWS: ROWS,  pagesFromTemplate: pagesFromTemplate, worldToPage: worldToPage, pageToWorld: pageToWorld, pageOfPoint: pageOfPoint, clipRect: clipRect, clipSegment: clipSegment, buildPrintModel: buildPrintModel };
 });

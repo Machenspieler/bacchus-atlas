@@ -1455,26 +1455,24 @@ renderer-facing entry for print: black-and-white mode never carries a tint.
 
 ### Journey 2 player map print (PD-028, sheet layout PD-073)
 
-- *Sheets (PD-073).* The print is **eight A4 portrait sheets**, a 4 x 2 grid (row-major: `v1`–`v4` the top row west to east, `v5`–`v8` the bottom row; the same cut as the campaign frame's own printable). `pagesFromTemplate` validates the two panels of
-  `template.composition.panels` (the raster's sources), then cuts the raster into `COLS` = 4 equal columns and `ROWS` = 2 rows (`floor(H / 2)`): eight `core` rects that partition the map. A page's `rect` is its core grown by
-  `OVERLAP_PX / 2` (52 world px, about one hex) towards each internal neighbour, so neighbours share a strip `OVERLAP_PX` (104 px) wide; `labelBounds` is the core minus those strips;
-  `trim` is `{ right: every column but the last, bottom: row 0 }`. One uniform `scaleMmPerPx` for all eight (≈ 0.15, a hex ≈ 15.8 mm), and `placeMm [x, y, w, h]` is the map's box on the sheet inside `A4_MM`
-  (210 x 297 mm; margins 6 mm sides, 5 mm top, 16 mm bottom for the printed sheet label). `pageOfPoint` uses the cores (half-open, so a seam belongs to the east / south sheet).
-- *Model.* `js/journey2-print.js` (`Journey2Print`, pure, loaded after the projection and before the view). `pagesFromTemplate(template)` reads
+- *Sheets (PD-073).* The print is **eight A4 portrait sheets**, a 4 x 2 grid of butt-joined tiles (row-major: `v1`–`v4` the top row west to east, `v5`–`v8` the bottom row; the same cut as the campaign frame's own
+  printable). `pagesFromTemplate` validates the two panels of `template.composition.panels` (the raster's sources), then cuts the raster into `COLS` = 4 equal columns and `ROWS` = 2 rows (`floor(H / 2)`): eight `core`
+  rects that partition the map. A page's `rect` **is** its core — no overlap. One uniform `scaleMmPerPx` for all eight (≈ 0.165, a hex ≈ 10 mm across the flats = 60.54 world px), and `placeMm [x, y, w, h]` is the map's box
+  on the sheet inside `A4_MM` (210 x 297 mm; margins 5 mm at the sides and top, 16 mm at the bottom for the printed sheet label). `pageOfPoint` uses the cores (half-open, so a seam belongs to the east / south sheet).- *Model.* `js/journey2-print.js` (`Journey2Print`, pure, loaded after the projection and before the view). `pagesFromTemplate(template)` reads
   the two panels of `template.composition.panels` and **throws** on bad geometry (not exactly two, a gap/overlap,
   a different height, no asset) — there is no stretched-map fallback. A page is `{ rect (world px), core, viewBox [0,0,w,h], translate [-x,-y],
-  scaleMmPerPx, placeMm, trim, source }`; `worldToPage` / `pageToWorld` are pure translations (the page is a 1:1 crop), `clipRect` / `clipSegment` are the pure clip helpers. `buildPrintModel(doc, ctx, template)` → `{ version, printMode: 'bw', pages: [{ …page,
+  scaleMmPerPx, placeMm, source }`; `worldToPage` / `pageToWorld` are pure translations (the page is a 1:1 crop), `clipRect` / `clipSegment` are the pure clip helpers. `buildPrintModel(doc, ctx, template)` → `{ version, printMode: 'bw', pages: [{ …page,
   overlays[{q,r,symbolId,dots,blightMark}], segments[{cell,dir,kind}], labels[placed] }], summary { wildernessHexes, sanctuaryNames } }`. It is built from
   `Projection.buildPrintProjection` only (revealed cells → overlays, projected `perimeter`, `sanctuaryLabels`) and takes no UI input. Fog is not drawn: hidden
   content is not in the model.
-- *Seams.* An overlay or boundary edge is assigned to every page whose rect (plus a few px of ink slack) it touches — so anything in an overlap strip is on both sheets; each page's SVG viewport clips the
+- *Seams.* An overlay or boundary edge is assigned to every page whose rect (plus a few px of ink slack) it touches — so a hex or edge crossing a seam is on both sheets; each page's SVG viewport clips the
   part that is not its own, nothing is moved. A sanctuary label is laid out only on the page whose **core** contains its icon centre, with `Journey2Geometry.layoutSanctuaryLabels(…,
-  { bounds: [x0, y0, x1, y1] })` clamping it inside that page's `labelBounds` (clear of the overlap strips, so whichever sheet is laid on top shows it).
-- *DOM.* `printPageMarkup(page)` (view): `<section class="j2-print-page" data-page data-trim-right data-trim-bottom>` → `<svg class="j2-pp-svg" viewBox="0 0 w h" aria-hidden>` (absolutely placed by
+  { bounds: [x0, y0, x1, y1] })` clamping it inside that page's `labelBounds` (its tile).
+- *DOM.* `printPageMarkup(page)` (view): `<section class="j2-print-page" data-page>` → `<svg class="j2-pp-svg" viewBox="0 0 w h" aria-hidden>` (absolutely placed by
   percentage from `placeMm`) → `<g transform="translate(-x -y)">`
   holding the base `<image>` (the world raster, `href` = the already-loaded, content-hashed URL), `.j2-pp-gen` (`overlayMarkup`, no tint), `.j2-pp-perimeter`
-  (`chainEdgeSegments` + `polylinesPath`) and `.j2-pp-labels`; then `svg.j2-pp-marks` (viewBox in mm: trim ticks in the margins, in line with each cut) and `p.j2-pp-pagelabel`
-  ("Sheet n of 8 · trim instruction", printed). All eight sheets sit in `.j2-print-root` inside the body-level `.j2-printpreview`
+  (`chainEdgeSegments` + `polylinesPath`) and `.j2-pp-labels`; then `svg.j2-pp-marks` (viewBox in mm: the cut frame, one thin rectangle on the map box's edge) and `p.j2-pp-pagelabel`
+  ("Sheet n of 8 · Cut along the frame", printed). All eight sheets sit in `.j2-print-root` inside the body-level `.j2-printpreview`
   (toolbar with the `h2`, status `role=status`, Back / Retry / Print, and an `.sr-only` summary). While open, `.j2` is `inert`. The legacy diagnostic proof now uses `.j2-proof-*`.
 - *CSS.* Screen: neutral `--ink` ground, white 210x297 mm sheets (`aspect-ratio`, `max-width: 100%`). `@page j2player { size: A4 portrait; margin: 0 }` is a **named** page (the proof has its own
   `j2proof`, also landscape), selected by `page:` on `.j2-print-root`. `@media print`: every other `body` child and the toolbar are `display: none` (the sheet label stays); the sheets are 296 mm

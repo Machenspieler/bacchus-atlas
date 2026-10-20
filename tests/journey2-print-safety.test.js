@@ -30,17 +30,17 @@ const place = (name, x, bounds, opts) => {
   const l = G.layoutSanctuaryLabels([{ anchorId: 'a', name }], [a], Object.assign({ icons: [a], bounds }, opts || { ink: { strokePx: STROKE } }))[0];
   return { l, left: l.cx - l.w / 2, right: l.cx + l.w / 2 };
 };
-// the label bounds of the north row's sheets either side of the central seam (columns 2 and 3), and of the two outer sheets: the core minus the overlap strips (PD-073)
+// the label bounds of the north row's sheets either side of the central seam (columns 2 and 3), and of the two outer sheets: the tile itself (PD-073)
 const WEST = PAGES[1].labelBounds, EAST = PAGES[2].labelBounds, OUTER_WEST = PAGES[0].labelBounds, OUTER_EAST = PAGES[3].labelBounds;
 const boundsOf = b => b;
-const MARGIN = PR.OVERLAP_PX / 2;                       // a label stays this far from the vertical seam on each side
+const MARGIN = 0;                                       // butt-joined tiles: a label may reach the seam, but its ink stays inside its own tile
 
 test('F-01: the old flat estimate really was too narrow for Watershaw (the audited defect)', () => {
   const old = place('Watershaw', SEAM + 21, boundsOf(EAST), { });          // no `ink` option = the previous estimate
   assert.ok(old.right - old.left < realInkWidth('Watershaw') - 15, 'flat estimate ' + (old.right - old.left) + ' vs real ' + realInkWidth('Watershaw'));
 });
 
-test('F-01: label near the central seam keeps its whole first letter on the east sheet and its last on the west one, clear of the overlap strip', () => {
+test('F-01: label near the central seam keeps its whole first letter on the east sheet and its last on the west one', () => {
   const e = place('Watershaw', SEAM + 21, boundsOf(EAST));
   assert.ok(e.left >= SEAM + MARGIN + 4 - 1e-9, 'left ink edge ' + (e.left - SEAM) + ' px inside the east page');
   assert.ok(e.right - e.left >= realInkWidth('Watershaw'), 'box covers the real rendered ink');

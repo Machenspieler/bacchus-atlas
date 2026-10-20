@@ -1080,7 +1080,7 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 
 /* ---------- player map print (PD-028) ----------
  * One DOM for the on-screen preview and the physical print: `.j2-print-root` holds exactly eight `.j2-print-page` A4 portrait sheets (a 4 x 2
- * grid of the Old Valloren map, overlapping by one hex, a vector overlay over the original raster; PD-073). There is NO fog, hatch, wash or grey anywhere in it —
+ * grid of butt-joined tiles of the Old Valloren map, a vector overlay over the original raster; PD-073). There is NO fog, hatch, wash or grey anywhere in it —
  * unrevealed cells are just the untouched map — and everything is black on white. Screen: a neutral ground behind the white sheets. */
 @page j2player { size: A4 portrait; margin: 0; }
 .j2-printpreview { position: fixed; inset: 0; z-index: 3000; overflow: auto; background: var(--ink); color: var(--parchment); padding: 0 var(--s-4) var(--s-6); }

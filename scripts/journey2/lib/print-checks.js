@@ -142,30 +142,29 @@ async function runPrintChecks(env) {
       inert: document.querySelector('.j2').inert, bodyMode: document.body.classList.contains('j2-printpreview-mode'),
     }));
     return { ok: r.pages.join() === 'v1,v2,v3,v4,v5,v6,v7,v8' && r.roots === 1 && r.heading === 'Player Map Print Preview' && r.tag === 'H2' &&
-      r.labels.join('|') === [1, 2, 3, 4, 5, 6, 7, 8].map(n => 'Sheet ' + n + ' of 8 · ' + (n === 8 ? 'Bottom layer: no trimming' : n === 4 ? 'Trim the bottom edge along the marks' : n > 4 ? 'Trim the right edge along the marks' : 'Trim the right and bottom edges along the marks')).join('|') &&
+      r.labels.join('|') === [1, 2, 3, 4, 5, 6, 7, 8].map(n => 'Sheet ' + n + ' of 8 · Cut along the frame').join('|') &&
       r.focus === 'j2-pp-title' && r.status === 'Map pages are ready' && r.print && /Eight-sheet player map\. 4 wilderness hexes revealed\. 2 sanctuary names known\./.test(r.summary) && r.inert && r.bodyMode, detail: r };
   });
 
-  await check('print.04.sheets-are-a-4x2-grid-overlapping-by-one-hex', async () => {
+  await check('print.04.sheets-are-a-4x2-grid-of-butt-joined-tiles', async () => {
     const r = await page.evaluate(() => Array.from(document.querySelectorAll('.j2-print-page svg.j2-pp-svg')).map(s => ({
       viewBox: s.getAttribute('viewBox'), g: s.querySelector(':scope > g').getAttribute('transform'), img: s.querySelector('image.j2-pp-base').getAttribute('href'),
       w: s.querySelector('image.j2-pp-base').getAttribute('width'), h: s.querySelector('image.j2-pp-base').getAttribute('height'),
     })));
-    const W = template.worldSizePx[0], H = template.worldSizePx[1], cut = Math.floor(H / 2), half = 52, cw = W / 4;
+    const W = template.worldSizePx[0], H = template.worldSizePx[1], cut = Math.floor(H / 2), cw = W / 4;
     const want = [];
-    for (let ri = 0; ri < 2; ri++) for (let ci = 0; ci < 4; ci++) { const x0 = ci * cw - (ci > 0 ? half : 0), x1 = (ci + 1) * cw + (ci < 3 ? half : 0), y0 = ri ? cut - half : 0, y1 = ri ? H : cut + half; want.push([x0, y0, x1 - x0, y1 - y0]); }
+    for (let ri = 0; ri < 2; ri++) for (let ci = 0; ci < 4; ci++) { const y0 = ri ? cut : 0, y1 = ri ? H : cut; want.push([ci * cw, y0, cw, y1 - y0]); }
     return { ok: r.length === 8 && want.every((w, i) => r[i].viewBox === `0 0 ${w[2]} ${w[3]}` && r[i].g === `translate(${-w[0]} ${-w[1]})`) &&
       r.every(x => /valloren-world\.webp/.test(x.img) && Number(x.w) === template.worldSizePx[0] && Number(x.h) === template.worldSizePx[1]), detail: { r, want } };
   });
 
-  await check('print.04b.sheet-geometry-in-millimetres-and-trim-marks', async () => {
+  await check('print.04b.sheet-geometry-in-millimetres-and-cut-frame', async () => {
     const r = await page.evaluate(() => Array.from(document.querySelectorAll('.j2-print-page')).map(p => {
       const bp = p.getBoundingClientRect(), bs = p.querySelector('svg.j2-pp-svg').getBoundingClientRect(), mm = bp.width / 210;
-      return { x: (bs.left - bp.left) / mm, y: (bs.top - bp.top) / mm, w: bs.width / mm, h: bs.height / mm, ratio: bp.width / bp.height, ticks: p.querySelectorAll('.j2-pp-marks path').length,
-        tr: p.getAttribute('data-trim-right'), tb: p.getAttribute('data-trim-bottom') };
+      return { x: (bs.left - bp.left) / mm, y: (bs.top - bp.top) / mm, w: bs.width / mm, h: bs.height / mm, ratio: bp.width / bp.height, frame: p.querySelectorAll('.j2-pp-marks rect').length };
     }));
-    const inside = r.every(s => s.x >= 5.9 && s.x + s.w <= 210 - 5.9 && s.y >= 4.9 && s.y + s.h <= 297 - 15.9);
-    return { ok: inside && r.every(s => Math.abs(s.ratio - 210 / 297) < 0.01) && r.map(s => s.tr + s.tb).join() === '11,11,11,01,10,10,10,00' && r.map(s => s.ticks).join() === '2,2,2,1,1,1,1,0', detail: r };
+    const inside = r.every(s => s.x >= 4.9 && s.x + s.w <= 210 - 4.9 && s.y >= 4.9 && s.y + s.h <= 297 - 15.9);
+    return { ok: inside && r.every(s => Math.abs(s.ratio - 210 / 297) < 0.01) && r.every(s => s.frame === 1), detail: r };
   });
 
   await check('print.05.no-fog-tint-environment-echo-or-colour', async () => {
@@ -219,7 +218,7 @@ async function runPrintChecks(env) {
   await check('print.10.print-calls-window-print-once-and-changes-nothing', async () => {
     await page.evaluate(() => { window.__printCalls = 0; window.print = () => { window.__printCalls++; }; });
     const html0 = await rootHtml();
-    await page.click('[data-pp-print]'); await sleep(500);
+    await page.click('[data-pp-print]'); await page.waitForFunction(() => window.__printCalls > 0, null, { timeout: 8000 }).catch(() => {}); await sleep(300);   // runPlayerPrint re-checks the assets first, which takes longer with eight sheets
     const calls = await page.evaluate(() => window.__printCalls);
     const same = (await rootHtml()) === html0;
     const unchanged = JSON.stringify(await docNow()) === stateBefore.doc && (await storage()) === stateBefore.storage && JSON.stringify((await st()).history) === stateBefore.hist;
@@ -284,7 +283,7 @@ async function runPrintChecks(env) {
     await page.evaluate(() => document.querySelector('[data-lang="en"]').click()); await sleep(500);
     const en = await page.evaluate(() => ({ heading: document.querySelector('.j2-pp-title') && document.querySelector('.j2-pp-title').textContent, pages: document.querySelectorAll('.j2-print-page').length, print: document.querySelector('[data-pp-print]') && !document.querySelector('[data-pp-print]').disabled }));
     await closePrint();
-    return { ok: btn === 'Печать' && r.heading === 'Предпросмотр печати карты игроков' && r.labels.join('|') === [1, 2, 3, 4, 5, 6, 7, 8].map(n => 'Лист ' + n + ' из 8 · ' + (n === 8 ? 'Нижний слой: обрезать не нужно' : n === 4 ? 'Обрежьте нижний край по меткам' : n > 4 ? 'Обрежьте правый край по меткам' : 'Обрежьте правый и нижний края по меткам')).join('|') && r.status === 'Страницы карты готовы' && r.print === 'Печать' &&
+    return { ok: btn === 'Печать' && r.heading === 'Предпросмотр печати карты игроков' && r.labels.join('|') === [1, 2, 3, 4, 5, 6, 7, 8].map(n => 'Лист ' + n + ' из 8 · Режьте по рамке').join('|') && r.status === 'Страницы карты готовы' && r.print === 'Печать' &&
       r.back === 'Назад к виду игроков' && r.pages === 8 && r.fog === 0 && /Карта игроков на восьми листах/.test(r.summary) && en.heading === 'Player Map Print Preview' && en.pages === 8 && en.print, detail: { btn, r, en } };
   });
 

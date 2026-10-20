@@ -4286,7 +4286,7 @@
     }
 
     /* ============================================================
-       Player map Print Preview (PD-028, PD-073). Eight overlapping A4 portrait sheets built from `Journey2Print.buildPrintModel` — a data filter over the
+       Player map Print Preview (PD-028, PD-073). Eight butt-joined A4 portrait sheets built from `Journey2Print.buildPrintModel` — a data filter over the
        revealed cells with NO fog layer, tint or GM data — drawn as the original map half (a 1:1 crop of the world raster through the
        SVG viewBox) plus a vector overlay. The pages shown on screen ARE the printed DOM: the same `.j2-print-root` is what
        `@media print` leaves visible, so there is one renderer. Read-only and transient: no document change, history entry or autosave.
@@ -4304,13 +4304,10 @@
       }
       const mm = page.scaleMmPerPx, A4 = Print.A4_MM, [px, py, pw, ph] = page.placeMm;
       const sheetLabel = fill('journey2_pp_page_n', { n: n(index + 1), total: n(count) });
-      const trimKey = page.trim.right && page.trim.bottom ? 'journey2_pp_trim_rb' : page.trim.right ? 'journey2_pp_trim_r' : page.trim.bottom ? 'journey2_pp_trim_b' : 'journey2_pp_trim_none';
       const pct = (v, of) => fmt(v / of * 100, 4) + '%';
-      // trim marks sit in the margins, in line with the cut: ticks above and below a vertical cut, left and right of a horizontal one (viewBox in mm)
-      let ticks = '';
-      if (page.trim.right) ticks += '<path d="M' + fmt(px + pw, 2) + ' 1.5V4M' + fmt(px + pw, 2) + ' ' + fmt(py + ph + 1.5, 2) + 'V' + fmt(py + ph + 4, 2) + '"/>';
-      if (page.trim.bottom) ticks += '<path d="M1.5 ' + fmt(py + ph, 2) + 'H4M' + fmt(A4.widthMm - 4, 2) + ' ' + fmt(py + ph, 2) + 'H' + fmt(A4.widthMm - 1.5, 2) + '"/>';
-      return '<section class="j2-print-page" data-page="' + page.id + '" data-trim-right="' + (page.trim.right ? 1 : 0) + '" data-trim-bottom="' + (page.trim.bottom ? 1 : 0) + '" role="group" aria-label="' + esc(sheetLabel) + '">' +
+      // the cut frame (viewBox in mm): a thin rectangle on the map box's edge; the sheets are cut along it and joined edge to edge, like the campaign frame's own printable
+      const frame = '<rect x="' + fmt(px, 2) + '" y="' + fmt(py, 2) + '" width="' + fmt(pw, 2) + '" height="' + fmt(ph, 2) + '"/>';
+      return '<section class="j2-print-page" data-page="' + page.id + '" role="group" aria-label="' + esc(sheetLabel) + '">' +
         '<svg class="j2-pp-svg" xmlns="' + SVG_NS + '" style="left:' + pct(px, A4.widthMm) + ';top:' + pct(py, A4.heightMm) + ';width:' + pct(pw, A4.widthMm) + '" width="' + fmt(vw * mm, 2) + 'mm" height="' + fmt(vh * mm, 2) + 'mm" viewBox="' + vx + ' ' + vy + ' ' + vw + ' ' + vh + '" aria-hidden="true" focusable="false">' +
         '<g transform="translate(' + page.translate[0] + ' ' + page.translate[1] + ')">' +
         '<image class="j2-pp-base" href="' + baseHref + '" x="0" y="0" width="' + W + '" height="' + H + '" preserveAspectRatio="none"/>' +
@@ -4320,8 +4317,8 @@
         '<g class="j2-pp-labels" data-pp-labels="' + page.labels.length + '">' + labels + '</g>' +
         '<g class="j2-pp-party" data-pp-party="' + (page.party ? 1 : 0) + '">' + (page.party ? partyMarkup(page.party.q, page.party.r, { bw: true }) : '') + '</g>' +
         '</g></svg>' +
-        '<svg class="j2-pp-marks" xmlns="' + SVG_NS + '" viewBox="0 0 ' + A4.widthMm + ' ' + A4.heightMm + '" aria-hidden="true" focusable="false">' + ticks + '</svg>' +
-        '<p class="j2-pp-pagelabel">' + esc(sheetLabel + ' · ' + t(trimKey)) + '</p></section>';
+        '<svg class="j2-pp-marks" xmlns="' + SVG_NS + '" viewBox="0 0 ' + A4.widthMm + ' ' + A4.heightMm + '" aria-hidden="true" focusable="false">' + frame + '</svg>' +
+        '<p class="j2-pp-pagelabel">' + esc(sheetLabel + ' · ' + t('journey2_pp_cut')) + '</p></section>';
     }
 
     /** Everything the preview says, rebuilt from state so a language switch or a replaced document never leaves stale text or pages. */
