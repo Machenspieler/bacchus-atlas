@@ -26,11 +26,11 @@ Import or correct the Environment Stat Block described by `$ARGUMENTS` in
    numbered lists, line breaks, prompts, emphasis, and mechanical notation
    where the current format supports them (see the data contract's
    "Feature object" section for what's supported).
-5. **Create or verify a stable `id`.** Check for a normalized-name
-   collision (a new Russian name matching an existing entry's name under a
-   different id — this has happened silently before) and an id collision,
-   by searching the whole of `data/environments.json`, not just the
-   obvious candidate.
+5. **Create or verify a stable `id`.** Check for an id collision by
+   searching the whole of `data/environments.json`, not just the obvious
+   candidate. A Russian (or English) name equal to another entry's is
+   allowed (PD-075): keep the natural translation, don't invent a variant,
+   and just mention the shared name in the report.
 6. **Populate only the fields the source actually supports** — don't
    fabricate `lore`, `prompt`, `potential_adversaries`, `story_seeds`,
    `source`, `biomes`, or a translation the source doesn't provide. Missing

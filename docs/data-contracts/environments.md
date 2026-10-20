@@ -51,7 +51,7 @@ authority and correct this document.
 | `id` | slug string | Stable across renames — routes, Lists, and Prep selections all reference it. Never derive it from the Russian name. |
 | `tier` | integer (1–4 in current data) | May be `null` for an explicitly tier-agnostic environment (rare — confirm intent before doing this). |
 | `type` | one of `traversal \| social \| event \| exploration` | Enforced by the validator; translated for display via `type_*` keys in `data/i18n.json`. |
-| `name` | `{ en, ru }` | Both required. Check the whole file for a duplicate normalized `ru` name before merging a new one (a silent collision has happened before — see [docs/translation-glossary.md](../translation-glossary.md)). |
+| `name` | `{ en, ru }` | Both required. Names need not be unique (PD-075): two environments may share a `ru` (or `en`) name — e.g. «Городской фестиваль» for Town Festival and City Festival — and a shared name is not a defect. Only `id` must be unique. |
 | `impulses` | `{ en: string[], ru: string[] }` | Every environment has a non-empty list; when the source names none, use the literal placeholder `["None"]`/`["Нет"]` rather than an empty array or an invented impulse. |
 | `potential_adversaries` | `{ en: string[], ru: string[] }` | Same non-empty/placeholder rule as `impulses`. Drives search, display, and (when a name matches a `featured_adversaries` entry) the clickable stat-block link. |
 | `features` | array of feature objects | See "Feature object" below. |
