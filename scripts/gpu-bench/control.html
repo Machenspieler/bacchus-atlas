@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>GPU bench — control</title>
+<style>
+ html,body{margin:0;height:100%;background:#1c1713;color:#eee;font:13px/1.4 system-ui,sans-serif;overflow:hidden}
+ #bar{position:fixed;z-index:10;left:0;right:0;top:0;padding:8px 12px;background:#14100c;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center}
+ #bar a{color:#e8c36a} #hud{font-family:ui-monospace,monospace}
+ #stage{position:fixed;left:0;right:0;top:80px;bottom:0;overflow:hidden;background:#f1e8d2}
+ #map{position:absolute;left:0;top:0;width:4848px;height:3185px;display:none}
+ #dot{position:absolute;left:300px;top:200px;width:60px;height:60px;border-radius:50%;background:#2f78cc;will-change:transform}
+ @keyframes pulse{0%,100%{transform:scale(.6);opacity:.4}50%{transform:scale(1.2);opacity:1}}
+ .run #dot{animation:pulse 3.6s ease-in-out infinite}
+ .steps #dot{animation-timing-function:steps(30)}
+ .big #stage{} 
+</style></head><body>
+<div id="bar"><b>GPU bench — control</b> <a href="index.html">all pages</a>
+ <label>Test <select id="t">
+  <option value="idle">nothing moves (page only)</option>
+  <option value="dot">one 60 px dot pulsing, no map</option>
+  <option value="dotmap">same dot, with the 4848x3185 map image behind it</option>
+  <option value="dotsteps">same dot + map, stepped ~8 fps</option>
+  <option value="canvas">a 100x100 canvas redrawn every frame, no map</option>
+ </select></label>
+ <span id="hud">…</span>
+ <span style="flex-basis:100%;opacity:.7">Leave ~20 s per option and read GPU 3D. If the single dot alone already takes tens of %, the GPU is simply waking up for any animation and no layering will help — only fewer / shorter animations.</span></div>
+<div id="stage"><img id="map" alt="" src="../../img/journey2/valloren-world-light.webp"><div id="dot"></div><canvas id="cv" width="100" height="100" style="position:absolute;left:300px;top:200px;display:none"></canvas></div>
+<script>
+const st=document.getElementById('stage'),map=document.getElementById('map'),cv=document.getElementById('cv'),ctx=cv.getContext('2d'),dot=document.getElementById('dot');
+let raf=0,t=0;
+function apply(){const v=document.getElementById('t').value;
+ st.className='';map.style.display=v==='dotmap'||v==='dotsteps'?'block':'none';
+ dot.style.display=v==='canvas'||v==='idle'?'none':'block';cv.style.display=v==='canvas'?'block':'none';
+ if(v==='dot'||v==='dotmap')st.className='run';if(v==='dotsteps')st.className='run steps';
+ cancelAnimationFrame(raf);
+ if(v==='canvas')(function f(n){ctx.clearRect(0,0,100,100);ctx.fillStyle='#2f78cc';ctx.beginPath();ctx.arc(50,50,20+15*Math.sin(n/500),0,7);ctx.fill();raf=requestAnimationFrame(f)})(0);}
+document.getElementById('t').onchange=apply;apply();
+let fr=0,w=0,l=performance.now(),t0=l;(function k(n){fr++;w=Math.max(w,n-l);l=n;if(n-t0>=1000){document.getElementById('hud').textContent=fr+' fps (rAF) · worst '+w.toFixed(0)+' ms';fr=0;w=0;t0=n}requestAnimationFrame(k)})(l);
+</script></body></html>
