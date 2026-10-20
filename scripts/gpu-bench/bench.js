@@ -33,10 +33,11 @@
             '<g data-g="tint"></g><g data-g="blight" pointer-events="none"></g><g data-g="tear" pointer-events="none"></g><g data-g="tiles"></g>' +
             '<g data-g="sanct"></g><g data-g="echoes"></g><g data-g="ruins"></g>' +
           '</svg>' +
+          '<div data-host style="position:absolute;left:0;top:0;width:' + W + 'px;height:' + H + 'px;pointer-events:none"></div>' +
         '</div>';
       const q = s => vp.querySelector(s), g = n => vp.querySelector('[data-g="' + n + '"]');
       Bench.ui = { vp, world: q('#world'), ground: q('[data-ground]'), cosmos: q('[data-cosmos]'), defs: q('[data-sbfx-defs]'),
-        tint: g('tint'), blight: g('blight'), tear: g('tear'), tiles: g('tiles'), echoes: g('echoes'), ruins: g('ruins'), W, H };
+        host: q('[data-host]'), svg: q('.j2-overlay'), tint: g('tint'), blight: g('blight'), tear: g('tear'), tiles: g('tiles'), echoes: g('echoes'), ruins: g('ruins'), W, H };
       Bench.setCamera(Bench.cam.scale, Bench.anchors.find(a => a.stableId === 'mk-001').worldPixelAnchor);
       return Bench.ui;
     },
@@ -89,6 +90,31 @@
         requestAnimationFrame(tick);
       })(last);
     },
+
+    /** "Own layers" experiment: moves every canvas out of its <foreignObject> (inside the map's one big SVG) into an HTML div over the world, at the same
+     *  world position, with its own compositor layer (will-change). Re-run after the effect rebuilds its canvases; stale divs are dropped. */
+    lift(scope) {
+      const ui = Bench.ui;
+      for (const d of Array.from(ui.host.querySelectorAll('[data-lift]'))) if (!d.__fo.isConnected) d.remove();
+      scope.querySelectorAll('foreignObject').forEach(fo => {
+        const cv = fo.querySelector('canvas');
+        if (!cv || fo.__lifted) return;
+        fo.__lifted = true;
+        let M = new DOMMatrix();
+        for (let n = fo.parentNode; n && n !== ui.svg; n = n.parentNode) {                // compose the SVG groups' own transforms, outermost first
+          const l = n.transform && n.transform.baseVal && n.transform.baseVal.consolidate();
+          if (l) M = new DOMMatrix([l.matrix.a, l.matrix.b, l.matrix.c, l.matrix.d, l.matrix.e, l.matrix.f]).multiply(M);
+        }
+        M = M.translate(+fo.getAttribute('x'), +fo.getAttribute('y'));
+        const d = document.createElement('div');
+        d.setAttribute('data-lift', ''); d.__fo = fo;
+        d.style.cssText = 'position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform;pointer-events:none;width:' + fo.getAttribute('width') + 'px;height:' + fo.getAttribute('height') + 'px;transform:' + M.toString();
+        d.appendChild(cv);
+        fo.style.display = 'none';
+        ui.host.appendChild(d);
+      });
+    },
+    unlift() { Bench.ui.host.querySelectorAll('[data-lift]').forEach(n => n.remove()); },
 
     controls(html) { document.getElementById('controls').insertAdjacentHTML('beforeend', html); },
   };

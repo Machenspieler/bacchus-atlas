@@ -41,32 +41,44 @@
       '<radialGradient id="j2-echo-halo"><stop offset="0" stop-color="#7cc4f4" stop-opacity=".37"/><stop offset=".45" stop-color="#3f86de" stop-opacity=".13"/><stop offset="1" stop-color="#2a5fd6" stop-opacity="0"/></radialGradient>' +
       '<radialGradient id="j2-echo-orb"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#bfeaff"/><stop offset="1" stop-color="#2f74d0"/></radialGradient>';
 
-    let count = 9, mode = 'css', timer = 0;
+    let count = 9, mode = 'css', timer = 0, own = false;
     function stop() { if (timer) { clearTimeout(timer); timer = 0; } }
     function draw() {
       stop();
       // the nine sanctuaries nearest the focus point, so they are all on screen at 100 %
       const near = B.sanctuaries().map(s => ({ s, d: Math.hypot(s.worldPixelAnchor[0] - focusPoint[0], s.worldPixelAnchor[1] - focusPoint[1]) })).sort((a, b) => a.d - b.d).slice(0, count).map(x => x.s);
-      ui.echoes.innerHTML = near.map((s, i) => {
+      ui.host.querySelectorAll('[data-echo]').forEach(n => n.remove());
+      if (own) {
+        ui.echoes.innerHTML = '';
+        near.forEach((s, i) => {
+          const r = s.iconProtectionArea.rectPx, x = r[0] + r[2] / 2, y = r[1] - 26, d = document.createElement('div');
+          d.setAttribute('data-echo', ''); d.className = 'j2-overlay';
+          d.style.cssText = 'position:absolute;left:' + (x - 40) + 'px;top:' + (y - 40) + 'px;width:80px;height:80px;will-change:transform;pointer-events:none';
+          d.innerHTML = '<svg xmlns="' + SVG_NS + '" width="80" height="80" viewBox="-40 -40 80 80"><g class="j2-echo" style="--j2-echo-i:' + i + '"><g transform="scale(1.3)">' + LIVE + '</g></g></svg>';
+          ui.host.appendChild(d);
+        });
+      } else ui.echoes.innerHTML = near.map((s, i) => {
         const r = s.iconProtectionArea.rectPx, x = r[0] + r[2] / 2, y = r[1] - 26;
         return '<g class="j2-echo" style="--j2-echo-i:' + i + '"><g transform="translate(' + fmt(x, 1) + ' ' + fmt(y, 1) + ') scale(1.3)">' + LIVE + '</g></g>';
       }).join('');
-      ui.echoes.style.display = mode === 'off' ? 'none' : '';
+      ui.echoes.style.display = ui.host.style.display = mode === 'off' ? 'none' : '';
       if (mode === 'stepped') {
-        const anims = ui.echoes.getAnimations({ subtree: true });
+        const anims = (own ? ui.host : ui.echoes).getAnimations({ subtree: true });
         for (const a of anims) a.pause();
         const t0 = performance.now();
         (function step() { timer = setTimeout(step, 125); const t = performance.now() - t0; for (const a of anims) a.currentTime = t; })();
       }
-      if (mode === 'frozen') for (const a of ui.echoes.getAnimations({ subtree: true })) a.pause();
+      if (mode === 'frozen') for (const a of (own ? ui.host : ui.echoes).getAnimations({ subtree: true })) a.pause();
     }
     B.controls(
+      '<label>Layering <select id="c-elayer"><option value="svg">inside the map SVG (now)</option><option value="own">own layers (HTML overlay)</option></select></label> ' +
       '<label>Echoes <select id="c-ecount"><option>1</option><option>3</option><option selected>9</option></select></label> ' +
       '<label>Animation <select id="c-emode"><option value="css">CSS, every frame (the old way)</option><option value="stepped">stepped ~8 fps (current code)</option><option value="frozen">frozen (still frame)</option><option value="off">layer hidden</option></select></label> ');
     document.getElementById('c-ecount').onchange = e => { count = +e.target.value; draw(); };
+    document.getElementById('c-elayer').onchange = e => { own = e.target.value === 'own'; draw(); };
     document.getElementById('c-emode').onchange = e => { mode = e.target.value; draw(); };
     draw();
-    return () => 'echoes ' + count + ' · ' + mode;
+    return () => 'echoes ' + count + ' · ' + mode + (own ? ' · own layers' : ' · in SVG');
   }
 
   /* ---------- living shadow (the real module) ---------- */
@@ -78,7 +90,8 @@
       baseHref: ui.ground.querySelector('img').src, reducedMotion: false,
     });
     B.onCamera = (cam, vw, vh) => fx.setCamera(cam, vw, vh);
-    let cells = 30, tear = 0, areas = 1;
+    let cells = 30, tear = 0, areas = 1, own = false;
+    new MutationObserver(() => { if (own) B.lift(ui.blight); }).observe(ui.blight, { childList: true });
     function apply() {
       const blighted = [], overtaken = [];
       const spots = [focusPoint, [focusPoint[0] + 700, focusPoint[1] + 120], [focusPoint[0] - 600, focusPoint[1] + 500]].slice(0, areas);
@@ -86,12 +99,15 @@
       if (tear) B.cluster([focusPoint[0] + 250, focusPoint[1] + 500], tear).forEach(id => overtaken.push(id));
       fx.setCells({ blighted: blighted.filter(id => !overtaken.includes(id)), overtaken });
       fx.setCamera(B.cam, ui.vp.clientWidth, ui.vp.clientHeight);
+      if (own) B.lift(ui.blight);
     }
     B.controls(
+      '<label>Layering <select id="c-slayer"><option value="svg">canvas inside the map SVG (now)</option><option value="own">own layers (HTML overlay)</option></select></label> ' +
       '<label>Cells per area <select id="c-scells"><option>7</option><option selected>30</option><option>90</option></select></label> ' +
       '<label>Areas <select id="c-sareas"><option selected>1</option><option>2</option><option>3</option></select></label> ' +
       '<label>Torn hole (cells) <select id="c-stear"><option value="0">none</option><option value="7">7</option><option value="30">30</option></select></label> ' +
       '<label><input type="checkbox" id="c-spause"> Pause the shadow</label> ');
+    document.getElementById('c-slayer').onchange = e => { if (e.target.value === 'own') { own = true; B.lift(ui.blight); } else location.reload(); };
     document.getElementById('c-scells').onchange = e => { cells = +e.target.value; apply(); };
     document.getElementById('c-sareas').onchange = e => { areas = +e.target.value; apply(); };
     document.getElementById('c-stear').onchange = e => { tear = +e.target.value; apply(); };
@@ -103,16 +119,19 @@
   /* ---------- ruins: smoke + fire canvases (the real module) ---------- */
   function ruins() {
     const Fx = window.Journey2RuinFx;
-    let count = 5;
+    let count = 5, own = false;
     function draw() {
+      B.unlift();
       const near = B.sanctuaries().map(s => ({ s, d: Math.hypot(s.worldPixelAnchor[0] - focusPoint[0], s.worldPixelAnchor[1] - focusPoint[1]) })).sort((a, b) => a.d - b.d).slice(0, count).map(x => x.s);
       ui.ruins.innerHTML = near.map(s => {
         const r = s.iconProtectionArea.rectPx;
         return '<g class="j2-ruin j2-ruin2" data-ruin="' + s.stableId + '" data-glyph="' + (s.glyphClass || 'G1') + '" transform="translate(' + fmt(r[0] + r[2] / 2, 1) + ' ' + fmt(r[1] + r[3] / 2, 1) + ') scale(1.2)">' + Fx.markup(s.stableId) + '</g>';
       }).join('');
       Fx.attach(ui.ruins);
+      if (own) B.lift(ui.ruins);
     }
-    B.controls('<label>Ruins <select id="c-rcount"><option>1</option><option selected>5</option></select></label> ');
+    B.controls('<label>Layering <select id="c-rlayer"><option value="svg">canvas inside the map SVG (now)</option><option value="own">own layers (HTML overlay)</option></select></label> <label>Ruins <select id="c-rcount"><option>1</option><option selected>5</option></select></label> ');
+    document.getElementById('c-rlayer').onchange = e => { own = e.target.value === 'own'; draw(); };
     document.getElementById('c-rcount').onchange = e => { count = +e.target.value; draw(); };
     draw();
     return () => 'ruins ' + count;
