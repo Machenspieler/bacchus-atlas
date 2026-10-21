@@ -29765,8 +29765,8 @@
             "ru": "Распространение огня (Изменение окружения)"
           },
           "description": {
-            "en": "Countdown (Decreasing 3). When a fire breaks out, activate the countdown. It ticks down when a PC rolls with Fear. When the countdown triggers, the fire spreads by a range band (Melee to Very Close, Very Close to Close, etc.). When the countdown resets to 0, the fire threatens the entire town. Shift to the Raging Fire* environment and immediately activate its “Flame Plume” feature.",
-            "ru": "Отсчёт (Убывающий 3). Когда вспыхивает пожар, активируйте отсчёт. Он уменьшается, когда персонаж выбрасывает результат со Страхом. Когда отсчёт срабатывает, огонь распространяется на одну полосу дистанции (от Вплотную до Очень Близкой, от Очень Близкой до Средней и т. д.). Когда отсчёт сбрасывается до 0, огонь угрожает всему городу. Перейдите к окружению «Бушующий пожар*» и немедленно активируйте его особенность «Столб пламени»."
+            "en": "Countdown (Decreasing 3). When a fire breaks out, activate the countdown. It ticks down when a PC rolls with Fear. When the countdown triggers, the fire spreads by a range band (Melee to Very Close, Very Close to Close, etc.). When the countdown resets to 0, the fire threatens the entire town. Shift to the Raging Fire environment and immediately activate its “Flame Plume” feature.",
+            "ru": "Отсчёт (Убывающий 3). Когда вспыхивает пожар, активируйте отсчёт. Он уменьшается, когда персонаж выбрасывает результат со Страхом. Когда отсчёт срабатывает, огонь распространяется на одну полосу дистанции (от Вплотную до Очень Близкой, от Очень Близкой до Средней и т. д.). Когда отсчёт сбрасывается до 0, огонь угрожает всему городу. Перейдите к окружению «Бушующий пожар» и немедленно активируйте его особенность «Столб пламени»."
           },
           "prompt": {
             "en": "What catches fire? Who is around to witness it? What lives and precious items are threatened by the blaze?",
@@ -30050,8 +30050,8 @@
             "ru": "«Взять их!»"
           },
           "description": {
-            "en": "When the PCs break curfew or otherwise draw negative attention to themselves, spend a Fear to introduce a number of Bladed Guards equal to the number of PCs, plus an Arcanist Guard* and a Head Guard to apprehend and imprison the party.",
-            "ru": "Когда персонажи нарушают комендантский час или иным образом привлекают к себе нежелательное внимание, потратьте Страх, чтобы ввести количество Стражников-Мечников, равное числу персонажей, а также Стражника-Чародея* и Капитана Стражи, чтобы схватить отряд и бросить его в тюрьму."
+            "en": "When the PCs break curfew or otherwise draw negative attention to themselves, spend a Fear to introduce a number of Bladed Guards equal to the number of PCs, plus an Arcanist Guard and a Head Guard to apprehend and imprison the party.",
+            "ru": "Когда персонажи нарушают комендантский час или иным образом привлекают к себе нежелательное внимание, потратьте Страх, чтобы ввести количество Стражников-Мечников, равное числу персонажей, а также Стражника-Чародея и Капитана Стражи, чтобы схватить отряд и бросить его в тюрьму."
           },
           "prompt": {
             "en": "Who snitched on the PCs? What reward is offered to citizens that “help keep the peace”? What really happens to snitches?",
@@ -32666,14 +32666,14 @@
           "Master Elementalist",
           "Major Air Elemental",
           "Minor Chaos Elemental",
-          "Storm Mage*"
+          "Storm Mage"
         ],
         "ru": [
           "Стихийные Искры",
           "Мастер Стихий",
           "Крупный Воздушный Элементаль",
           "Малый Элементаль Хаоса",
-          "Грозовой Маг*"
+          "Грозовой Маг"
         ]
       },
       "features": [
