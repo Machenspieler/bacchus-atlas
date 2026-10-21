@@ -2,8 +2,7 @@
 /* Journey 2: per-hex Environment assignment. Pure — no browser. Covers the optional tile `environmentId` (schema, the single
    `setTileEnvironment` command, Undo/Redo, move / return / delete, backup round-trip, unknown ids), the player projection that must
    never carry it, localization, and source-level guards on the view (inline picker, reused overlay link, GM-only marker, no storage of
-   transient state). The click / picker / overlay / Player Preview behaviour in a real browser lives in
-   scripts/journey2/lib/hex-environment-checks.js (checks `hexenv.*`). */
+   transient state). The click / picker / overlay / Player Preview behaviour is covered by docs/manual-qa.md. */
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
