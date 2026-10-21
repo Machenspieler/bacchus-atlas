@@ -494,11 +494,45 @@
     return n;
   }
 
+  /**
+   * The print's ruin (PD-077): the very still frame the "Static effects" switch draws on screen (same time, seed, glyph and level of detail), rendered once to two
+   * canvases and handed over as grayscale PNG data URIs (alpha kept) — the one piece of colour in the effect is the fire, and paper has none (its pale yellow tips would vanish on white, so its grey is darkened by a gamma). `null` where there is no canvas.
+   * `{ smoke, fire }`, each `{ href, x, y, w, h }` in icon-centred units; the print scales the group like the screen one. Cached per (id, glyph).
+   */
+  const stillCache = new Map();
+  function stillImages(id, cls) {
+    const key = String(id) + '|' + (cls || 'G1');
+    if (stillCache.has(key)) return stillCache.get(key);
+    let out = null;
+    const doc = G.document;
+    if (doc && doc.createElement) {
+      const seed = seedOf(id), time = 23 + seed, SPPU = 3, FPPU = 4;
+      const mk = (R, ppu) => { const cv = doc.createElement('canvas'); cv.width = R.w * ppu; cv.height = R.h * ppu; const ctx = cv.getContext && cv.getContext('2d'); return ctx ? { cv, ctx, img: ctx.createImageData(cv.width, cv.height) } : null; };
+      const sm = mk(SMOKE, SPPU), fi = mk(FIRE, FPPU);
+      if (sm && fi) {
+        renderSmoke(sm.img, time, seed, cls);
+        sm.ctx.putImageData(sm.img, 0, 0);
+        drawEmbers(sm.ctx, time, seed, SPPU, cls);
+        renderFire(fi.img, time, seed, 1.2, cls);
+        fi.ctx.putImageData(fi.img, 0, 0);
+        const gray = (l, g) => {
+          const im = l.ctx.getImageData(0, 0, l.cv.width, l.cv.height), d = im.data;
+          for (let k = 0; k < d.length; k += 4) { const y = 255 * Math.pow((0.299 * d[k] + 0.587 * d[k + 1] + 0.114 * d[k + 2]) / 255, g); d[k] = d[k + 1] = d[k + 2] = y; }
+          l.ctx.putImageData(im, 0, 0);
+          return l.cv.toDataURL('image/png');
+        };
+        out = { smoke: { href: gray(sm, 1), x: SMOKE.x0, y: SMOKE.y0, w: SMOKE.w, h: SMOKE.h }, fire: { href: gray(fi, 1.7), x: FIRE.x0, y: FIRE.y0, w: FIRE.w, h: FIRE.h } };
+      }
+    }
+    stillCache.set(key, out);
+    return out;
+  }
+
   function markup(id) {
     const px = (r) => ' width="' + r.w * r.ppu + '" height="' + r.h * r.ppu + '"';
     const fo = (r, fx) => '<foreignObject x="' + r.x0 + '" y="' + r.y0 + '" width="' + r.w + '" height="' + r.h + '" class="j2-r2-fo"><canvas xmlns="http://www.w3.org/1999/xhtml" data-fx="' + fx + '"' + px(r) + ' class="j2-r2-cv"></canvas></foreignObject>';
     return fo(SMOKE, 'smoke') + fo(FIRE, 'fire');           // the flames burn in front of their own smoke: its dark base is what makes them glow
   }
 
-  return Object.freeze({ SMOKE, FIRE, FLAMES, LAYOUTS, layoutOf, stillOf, bakeNoise, renderSmoke, renderFire, fireLevel, lodOf, firePpu, smokePpu, attach, setStill, markup, seedOf });
+  return Object.freeze({ SMOKE, FIRE, FLAMES, LAYOUTS, layoutOf, stillOf, bakeNoise, renderSmoke, renderFire, fireLevel, lodOf, firePpu, smokePpu, attach, setStill, markup, stillImages, seedOf });
 });

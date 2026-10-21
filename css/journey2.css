@@ -664,6 +664,9 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-ruin-flame-in { fill: #ffd98a; opacity: 0.55; stroke: none; }
 /* printed: black ink only, no gradient — white tongues with a fine black outline and a black core, a wavy smoke strand with a white halo */
 .j2-ruin.is-print .j2-ruin-still { display: inline; }
+.j2-pp-svg .j2-echo-hollow { fill: #fff; fill-opacity: 1; stroke: #000; stroke-width: 1; }
+.j2-pp-svg .j2-echo-rest { fill: #000; opacity: .9; }
+.j2-pp-svg .j2-echo-rest.is-faint { opacity: .55; }
 .j2-ruin.is-print .j2-ruin-bed { fill: #000; opacity: 0.8; }
 .j2-ruin.is-print .j2-ruin-flame-out { fill: #fff; stroke: #000; stroke-width: 1.5; stroke-linejoin: round; }
 .j2-ruin.is-print .j2-ruin-flame-in { fill: #000; opacity: 1; }

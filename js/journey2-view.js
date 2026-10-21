@@ -596,6 +596,7 @@
     }
     const RUIN_SCALE = 1.2;                                  // on the screen map; the print passes its own (the A4 page shrinks the map to about a fifth)
     const RUIN_SCALE_PRINT = 1.6;
+    const ECHO_SCALE_PRINT = ECHO_SCALE * RUIN_SCALE_PRINT / RUIN_SCALE;   // the spent Echo grows with the print's ruin: the page shrinks the map, the icons beside it stay readable
 
     /** One destroyed sanctuary on the screen map: the animated canvas plume and fire (one still frame under prefers-reduced-motion). Where canvas is missing, the still drawing at screen scale. */
     function ruinFxMarkup(s) {
@@ -608,6 +609,12 @@
      *  `print` = at the A4 page's scale; without it, at the screen scale (only the fallback of `ruinFxMarkup`). */
     function ruinMarkup(s, print) {
       const k = print ? RUIN_SCALE_PRINT : RUIN_SCALE;
+      // the print is the screen's still frame itself in grayscale (PD-077); the hand-drawn tongues and strands below remain only where there is no canvas
+      const img = print && root.Journey2RuinFx && root.Journey2RuinFx.stillImages ? root.Journey2RuinFx.stillImages(s.id, s.glyph || 'G1') : null;
+      if (img) {
+        const im = (r) => '<image href="' + r.href + '" x="' + r.x + '" y="' + r.y + '" width="' + r.w + '" height="' + r.h + '" preserveAspectRatio="none"/>';
+        return '<g class="j2-ruin is-print is-still-image" data-ruin="' + esc(s.id) + '" transform="translate(' + fmt(s.x, 1) + ' ' + fmt(s.y, 1) + ') scale(' + k + ')">' + im(img.smoke) + im(img.fire) + '</g>';
+      }
       const st = root.Journey2RuinFx && root.Journey2RuinFx.stillOf ? root.Journey2RuinFx.stillOf(s.glyph) : null;   // null = G1 (the hand-drawn constants above)
       let h = '<g class="j2-ruin is-print" data-ruin="' + esc(s.id) + '" transform="translate(' + fmt(s.x, 1) + ' ' + fmt(s.y, 1) + ') scale(' + k + ')">';
       h += '<g class="j2-ruin-still"' + (st && st.dy ? ' transform="translate(0 ' + st.dy + ')"' : '') + '>';
@@ -4418,6 +4425,7 @@
         '<g class="j2-pp-gen" data-pp-overlays="' + page.overlays.length + '">' + overlayMarkup(page.overlays.map(o => ({ q: o.q, r: o.r, spec: { symbolId: o.symbolId, dots: o.dots, blightMark: o.blightMark }, region: o.region, tint: null })).concat(page.marks.map(m => ({ q: m.q, r: m.r, floating: true })))) + '</g>' +
         '<g class="j2-pp-perimeter" data-pp-segments="' + page.segments.length + '">' + (d ? '<path class="j2-perimeter" d="' + d + '"/>' : '') + '</g>' +
         '<g class="j2-pp-ruins" data-pp-ruins="' + page.ruins.length + '">' + page.ruins.map(r => ruinMarkup(r, true)).join('') + '</g>' +
+        '<g class="j2-pp-echoes" data-pp-echoes="' + page.spent.length + '">' + page.spent.map(e => '<g class="j2-echo is-collected is-print" data-echo="' + esc(e.id) + '"><g transform="translate(' + fmt(e.x, 1) + ' ' + fmt(e.top - ECHO_LIFT, 1) + ') scale(' + ECHO_SCALE_PRINT + ')">' + ECHO_SPENT + '</g></g>').join('') + '</g>' +
         '<g class="j2-pp-labels" data-pp-labels="' + page.labels.length + '">' + labels + '</g>' +
         '<g class="j2-pp-party" data-pp-party="' + (page.party ? 1 : 0) + '">' + (page.party ? partyMarkup(page.party.q, page.party.r, { bw: true }) : '') + '</g>' +
         '</g></svg>' +

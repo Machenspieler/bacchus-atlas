@@ -185,7 +185,7 @@ test('projection (PD-052): a COLLECTED Echo is emitted only while its sanctuary 
   doc = must(M.apply(doc, { type: 'setCellsRevealed', cellKeys: [cellOf(ids[0]), cellOf(ids[2])], revealed: true, at: AT }, ctx));
   assert.deepEqual(P.buildPlayerProjection(doc, ctx).collectedEchoes, [ids[0]], 'only the collected one on a revealed hex (ids[2] is Available, ids[1] is fogged)');
   assert.deepEqual(P.buildPlayerProjection(doc, null).collectedEchoes, [], 'without a context nothing counts as revealed');
-  assert.deepEqual(P.buildPrintProjection(doc, ctx).collectedEchoes, [], 'the print carries no Echo');
+  assert.deepEqual(P.buildPrintProjection(doc, ctx).collectedEchoes, [ids[0]], 'the print carries the same revealed Collected Echo (PD-077)');
 });
 
 /* ---------------- view source guards ---------------- */

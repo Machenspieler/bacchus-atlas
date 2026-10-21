@@ -27,6 +27,7 @@
   const A4_MM = { widthMm: 210, heightMm: 297, marginXMm: 5, marginTopMm: 5, marginBottomMm: 16 };
   const COLS = 4, ROWS = 2;                                     // 4 across x 2 down = 8 sheets, the same cut as the campaign frame's own printable
   const PAGE_IDS = ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8'];
+  const ECHO_LIFT = 26, ECHO_BOX = 40;                           // the spent Echo marker's centre above the icon's top edge, and its half-box (in step with ECHO_LIFT / ECHO_SCALE in journey2-view.js)
   const RUIN_BOX = [45, 160, 240, 200];                          // the destroyed-sanctuary glyph's world box relative to the icon centre: [left, up, width, height] — keep in step with ruinMarkup in journey2-view.js
   const LABEL_STROKE_PX = 3;                                    // the halo of `.j2-pp-svg .j2-sanc-label` in journey2.css — keep in step
 
@@ -129,7 +130,7 @@
       id: p.id, panelId: p.panelId, col: p.col, row: p.row, core: p.core.slice(), rect: p.rect.slice(), viewBox: p.viewBox.slice(), translate: p.translate.slice(), scaleMmPerPx: p.scaleMmPerPx,
       placeMm: p.placeMm.slice(),
       source: { path: p.source.path, worldSizePx: p.source.worldSizePx.slice(), nativeSource: p.source.nativeSource ? { path: p.source.nativeSource.path, sha256: p.source.nativeSource.sha256 } : null },
-      overlays: [], marks: [], segments: [], labels: [], ruins: [], party: null,
+      overlays: [], marks: [], segments: [], labels: [], ruins: [], spent: [], party: null,
     }));
     const SLACK = 4;                                              // a hex or edge just touching a page can still put ink (stroke, glyph) on it
     const fat = r => [r[0] - SLACK, r[1] - SLACK, r[2] + 2 * SLACK, r[3] + 2 * SLACK];
@@ -160,6 +161,14 @@
       if (!s) continue;
       const box = [s.x - RUIN_BOX[0], s.y - RUIN_BOX[1], RUIN_BOX[2], RUIN_BOX[3]];
       pages.forEach((p, i) => { if (rectsOverlap(box, p.rect)) out[i].ruins.push({ id: s.id, x: s.x, y: s.y, glyph: s.glyph || null }); });
+    }
+    // a Collected Echo (PD-077, revealed ones only — the projection already filtered): the static spent marker sits above the icon's top edge, so it is on every page its box touches
+    const echoed = new Map(ctx.sanctuaries.map(s => [s.id, s]));
+    for (const id of proj.collectedEchoes) {
+      const s = echoed.get(id);
+      if (!s || !(s.top >= 0)) continue;
+      const box = [s.x - ECHO_BOX, s.top - ECHO_LIFT - ECHO_BOX, 2 * ECHO_BOX, 2 * ECHO_BOX];
+      pages.forEach((p, i) => { if (rectsOverlap(box, p.rect)) out[i].spent.push({ id: s.id, x: s.x, top: s.top }); });
     }
     // a name belongs to the page whose core holds its icon; it is laid out inside that core, so it is never split across a seam
     const bySanctuary = new Map(ctx.sanctuaries.map(s => [s.id, s]));

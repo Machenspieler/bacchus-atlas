@@ -23,7 +23,7 @@
        area and the shape of a hidden region is never leaked. Cells only: no region ids.
      - `sanctuaryLabels`: [{ anchorId, name }] sorted by anchor id — ONLY the names the GM revealed by hand (PD-027), independent of fog. Nothing else
        about a sanctuary (tables, rolls, Soul Echo, notes) is ever emitted, and an unrevealed sanctuary is absent altogether. `Geo.layoutSanctuaryLabels` places them.
-     - `collectedEchoes`: sorted sanctuary ids of Soul Echoes the GM marked Collected whose sanctuary hex is REVEALED (PD-052; fog wins). Nothing else about Echoes is ever emitted; the print blanks it.
+     - `collectedEchoes`: sorted sanctuary ids of Soul Echoes the GM marked Collected whose sanctuary hex is REVEALED (PD-052; fog wins). Nothing else about Echoes is ever emitted; the print draws it as the static spent marker (PD-077).
      - `destroyedSanctuaries`: sorted sanctuary ids the GM marked destroyed (PD-070) whose sanctuary hex is REVEALED (fog wins, the party's light counts). Nothing else — never how many exist. The print KEEPS it.
    What it never contains (GM-only): batch/tile/region ids, Encounter, Rumor, notes, the suggested-environment
    list, placement state, selection, warnings, diagnostics, history, an Available Echo.
@@ -58,7 +58,7 @@
 
   /**
    * Soul Echoes players know about (PD-052): ONLY an Echo the GM marked Collected, and only while its sanctuary's own hex is revealed — Fog of War beats it.
-   * An Available Echo is never emitted (the secret stays GM-only) and neither is how many exist. Sorted sanctuary ids; without a context nothing counts as revealed.
+   * An Available Echo is never emitted (the secret stays GM-only) and neither is how many exist. Sorted sanctuary ids; without a context nothing counts as revealed. The print carries it too, as the same static spent marker in black and white (PD-077).
    */
   function collectedEchoesOf(doc, ctx, revealed) {
     if (!ctx) return [];
@@ -138,7 +138,7 @@
     p.printMode = color ? 'color' : 'bw';
     // the Shadowblight X's print (PD-072, reversing the 2026-10-16 amendment): on paper they are the only mark of the corruption — the screen's living
     // shadow never prints — so a revealed X prints where it is now, on a tile (`blightMark`) or on open ground (`shadowMarks`), fog-filtered like the rest
-    p.collectedEchoes = [];                                  // the print carries no Soul Echo, collected or not (PD-028); destroyedSanctuaries stays (PD-070), already limited to revealed hexes
+    // the print keeps what players know: a Collected Echo and a destroyed sanctuary, both only on revealed hexes (PD-077; an Available Echo is never emitted)
     return p;
   }
 

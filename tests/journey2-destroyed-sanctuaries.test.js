@@ -173,7 +173,20 @@ test('projection: the print KEEPS the destroyed sanctuaries (unlike the Echoes),
   let doc = ruin(M.emptyDocument(ctx, AT), ids);
   doc = must(M.apply(doc, { type: 'setCellsRevealed', cellKeys: [cellOf(ids[1])], revealed: true, at: AT }, ctx));
   assert.deepEqual(P.buildPrintProjection(doc, ctx).destroyedSanctuaries, [ids[1]]);
-  assert.deepEqual(P.buildPrintProjection(doc, ctx).collectedEchoes, []);
+  assert.deepEqual(P.buildPrintProjection(doc, ctx).collectedEchoes, [], 'nothing collected, nothing printed');
+});
+
+test('print: a Collected Echo on a revealed hex is printed (PD-077), an Available or fogged one never', () => {
+  const id = SANCT[0], other = SANCT[1];
+  let doc = M.emptyDocument(ctx, AT);
+  doc = must(M.apply(doc, { type: 'setCellsRevealed', cellKeys: [cellOf(id)], revealed: true, at: AT }, ctx));
+  doc = Object.assign({}, doc, { soulEchoes: { anchorIds: [id, other], collectedAnchorIds: [id, other] } });
+  assert.deepEqual(P.buildPrintProjection(doc, ctx).collectedEchoes, [id], 'the fogged one is absent');
+  const model = PR.buildPrintModel(doc, ctx, template);
+  const printed = model.pages.flatMap(p => p.spent.map(e => e.id));
+  assert.ok(printed.length >= 1 && printed.every(x => x === id));
+  doc = Object.assign({}, doc, { soulEchoes: { anchorIds: [id], collectedAnchorIds: [] } });
+  assert.deepEqual(PR.buildPrintModel(doc, ctx, template).pages.flatMap(p => p.spent), [], 'Available stays secret');
 });
 
 test('print model: a revealed ruin is on the page(s) its glyph touches, an unrevealed one is absent, nothing else is carried', () => {

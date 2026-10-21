@@ -400,14 +400,14 @@ test('session: "here" results and the reduced-motion path use their own short pl
 test('isolation: collected / Locate state never reaches the player projection, the print projection or the print model', () => {
   let doc = withEchoes(SANCT.slice(0, 9));
   doc = must(collect(doc, SANCT[0], true));
-  for (const proj of [P.buildPlayerProjection(doc, ctx), P.buildPrintProjection(doc, ctx)]) {
+  for (const proj of [P.buildPlayerProjection(doc, ctx), P.buildPrintProjection(doc, ctx)]) {   // PD-077: the print shows a revealed Collected Echo like players do, so fog is what this guards
     assert.deepEqual(proj.collectedEchoes, [], 'a collected Echo under fog is never emitted (PD-052: fog wins)');
     const text = JSON.stringify(Object.assign({}, proj, { collectedEchoes: undefined })).toLowerCase();   // the (empty) PD-052 field itself is the one allowed mention
     assert.ok(!/echo|collected|locate|compass|bearing|mk-/.test(text), 'leaked: ' + text.slice(0, 80));
   }
   const model = PR.buildPrintModel(doc, ctx, template);
   assert.ok(!/echo|collected|locate|compass|bearing/.test(JSON.stringify(model).toLowerCase()), 'the print model carries no Echo data');
-  assert.doesNotMatch(strip(read('js/journey2-print.js')), /soulEcho|collected|Locate/, 'journey2-print.js');
+  assert.doesNotMatch(strip(read('js/journey2-print.js')), /soulEcho|Locate/, 'journey2-print.js');
   assert.doesNotMatch(strip(read('js/journey2-projection.js')), /soulEcho|Locate/, 'journey2-projection.js');   // it reads only Model.getCollectedEchoSet (PD-052), never the Echo list or Locate
 });
 
