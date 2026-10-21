@@ -631,6 +631,8 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-overlay .j2-echo-w2 path { fill: #2f6fc4; opacity: .7; }
 .j2-overlay .j2-echo-w3 path { fill: #2a63b8; opacity: .45; }
 .j2-overlay .j2-echo-orb { animation: j2-echo-orb 3.6s ease-in-out infinite; animation-delay: var(--j2-echo-d); }
+/* Echoes hold still while the camera moves (is-cam-active): an SVG animation repaints the whole overlay layer every frame, and a pan already repaints it. */
+.j2-world.is-cam-active .j2-overlay .j2-echo-halo, .j2-world.is-cam-active .j2-overlay .j2-echo-wave, .j2-world.is-cam-active .j2-overlay .j2-echo-orb { animation-play-state: paused; }
 @keyframes j2-echo-halo { 0%, 100% { opacity: .5; } 20% { opacity: 1; } }
 @keyframes j2-echo-wave { 0% { transform: scale(.8) rotate(-6deg); opacity: 0; } 14% { opacity: 1; } 55% { transform: scale(1.14) rotate(5deg); opacity: 0; } 100% { transform: scale(1.14) rotate(5deg); opacity: 0; } }
 @keyframes j2-echo-orb { 0%, 100% { transform: scale(.94); } 10% { transform: scale(1.1); } 30% { transform: scale(1); } }
