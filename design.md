@@ -527,7 +527,7 @@ are not breakpoints and are not listed.
 
 | Threshold | Scope | Purpose |
 | --- | --- | --- |
-| `<=640` / `>=641` | global (also JS `ENV_ART_ROOM`, `sizes` hints) | phone composition: compact header, sheet-style detail card, dimmed watermark, stacked toasts, full-width filter rows |
+| `<=640` / `>=641` | global (also JS `ENV_ART_ROOM`, `sizes` hints) | phone composition: compact header, sheet-style detail card (slim sticky bar, name scrolls — PD-080), dimmed watermark, stacked toasts, full-width filter rows |
 | `<=400`, `<=480` | component | nav labels drop to icons; detail footer and Prep "New" compaction |
 | `<=760` / `>=761` | Prep | Prep bar and picker toolbars wrap, 44px touch rows |
 | `<=900` / `>=901` | Catalog, Prep, Journey | Catalog filters collapse behind the disclosure / sit inline in the three-column bar; Prep goes single column; Journey's floating panels become map-wide |

@@ -54,12 +54,21 @@ locally") before starting.
 - [ ] Dice buttons, Fear-cost emphasis, and condition-name emphasis render
       and the dice buttons roll correctly.
 
-- [ ] Header: the Prep action and the bookmark sit beside the title (Prep
+- [ ] Header (>=641px; phones: see PD-080 below): the Prep action and the bookmark sit beside the title (Prep
       action first), level with the title's first line; a long name wraps
       without the buttons detaching or touching the tier pills / ×.
 - [ ] Header Prep action matches the card's state, and toggling it updates
       the card behind (and, when opened above `#/prep`, the central
       Environments list, its count, and the picker checkbox).
+- [ ] Phone (PD-080): at 320x568, 360x640, 375x667, 390x844 and 430x932, in
+      Russian with the longest names ("Планарное вторжение: Арканная воронка",
+      "Заброшенная мастерская алхимика") and in English: the name takes the full
+      width and wraps at hyphenation points, not mid-word; only a ~56px bar
+      (Prep, bookmark, ×) stays pinned while scrolling, with the × beside the
+      language pill and never overlapping it or wrapping; the name and tier
+      row scroll away; no sideways page scroll; the × closes the card; at
+      >=641px the card is unchanged (sticky header with the title, tier row
+      and ×).
 - [ ] Bottom button reads "Add to…" / "Добавить в…" and opens the expanded
       dialog (see "Add to… dialog" below).
 

@@ -2134,6 +2134,54 @@ ol.feature-bullets { list-style: decimal; }
   .modal-close { order: 2; margin-left: var(--s-2); }
   .detail-tier-pills { order: 3; flex-basis: 100%; margin-right: 0; }
 
+  /* The environment card on a phone (PD-080): only a slim bar is sticky — the
+   * Prep / list buttons and the ×, beside the floating language pill — and the
+   * name and the tier row scroll away with the text. A long Russian name no
+   * longer shares a 100px column with the buttons and the pill's reserve (it
+   * took half a 360x640 screen), it gets the full width.
+   * The header and title row dissolve into the card's grid (display: contents).
+   * The controls span every row but sit at the top (align-self: start), so
+   * their containing block is the whole card and they can stick; the ::before
+   * strip is the bar's own surface. No scripting, and the ≥641px card is
+   * untouched. */
+  #detail-modal {
+    --bar-h: calc(56px + env(safe-area-inset-top, 0px));
+    --side-l: max(var(--s-4), env(safe-area-inset-left));
+    --side-r: max(var(--s-4), env(safe-area-inset-right));
+    display: grid; grid-template-columns: 1fr auto; grid-template-rows: var(--bar-h) auto auto 1fr;
+  }
+  #detail-modal .modal-header, #detail-modal .modal-title-row { display: contents; }
+  #detail-modal::before {
+    content: ""; grid-area: 1 / 1 / -1 / -1; align-self: start; height: var(--bar-h);
+    position: sticky; top: 0; z-index: 2;
+    background: var(--ink-card); border-bottom: 1px solid var(--line);
+  }
+  #detail-modal .env-actions, #detail-modal .modal-close {
+    grid-row: 1 / -1; align-self: start; position: sticky; top: 0; z-index: 3; order: 0;
+  }
+  /* The vertical offset is the sticky `top`, not a margin: a margin is not part of what sticks, so the
+   * buttons would sit at the very top of the bar once it is pinned and centred only before. */
+  #detail-modal .env-actions {
+    grid-column: 1; justify-self: start; margin: 0 0 0 calc(var(--side-l) - var(--s-3));
+    top: calc(env(safe-area-inset-top, 0px) + 8px);
+  }
+  /* Clears the floating pill (98px + its 12px inset), which is fixed to the same corner. */
+  #detail-modal .modal-close {
+    grid-column: 2; justify-self: end; margin: 0 calc(var(--s-3) + 98px + var(--s-2)) 0 0;
+    top: calc(env(safe-area-inset-top, 0px) + 16px);
+  }
+  #detail-modal #detail-title {
+    grid-row: 2; grid-column: 1 / -1;
+    padding: var(--s-4) var(--side-r) var(--s-3) var(--side-l);
+    hyphens: auto; overflow-wrap: break-word;
+  }
+  #detail-modal .detail-tier-pills {
+    grid-row: 3; grid-column: 1 / -1; margin: 0;
+    padding: 0 var(--side-r) var(--s-3) var(--side-l);
+    border-bottom: 1px solid var(--line);
+  }
+  #detail-modal .modal-body { grid-row: 4; grid-column: 1 / -1; }
+
   .list-cards-grid { grid-template-columns: 1fr; }
   /* Toasts go full width here, which would lay them straight over a countdown
    * tracker pinned bottom-right. They move under the header instead and stack

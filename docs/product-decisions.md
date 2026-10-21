@@ -1376,6 +1376,7 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Date:** 2026-10-14
 - **Decision:** Every `.modal-header` (title, tier pills, actions and the close ×) is `position: sticky; top: 0` inside the scrolling overlay, on all routes and widths, instead of a Journey-only floating "close dock" outside the card. The same card no longer behaves differently per route; the × never scrolls out of reach and never hangs outside the card. Backdrop click and Escape still close it as a complement.
 - **Where:** `css/styles.css` (`.modal-header`), `js/app.js` (`openDetailOverlay`), `js/soundboard-ui.js` (`position()`).
+- **Amended by PD-080 (2026-10-21):** at <=640px the environment card pins only a slim bar; the name and tier row scroll.
 - **Addendum (2026-10-14):** the detail card's bottom "Add to…" button and the expanded destination dialog (Current Prep row + Lists) are removed: the sticky header always carries the same `[Prep][bookmark]` pair as every catalogue card, with state visible on the icons. The footer is now biome at the start, source at the end (wrapping, left-aligned ≤480px). The bookmark popup stays list-only.
 
 ## PD-065: Player page — title and legend live in the panel; Legend is a rail tool
@@ -1546,3 +1547,11 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Status:** Active (decided 2026-10-21). Replaces a short-lived "Traveling over Water" rules popover (reverted the same day).
 - **Decision:** the Route Planner's details overlay (GM view, Player Preview, public player map) ends with one note: water travel duration is calculated separately by the GM; the Route Planner does not account for river currents or ocean weather. No rules text, pill, popover or table; no route calculation changes. Russian says «ведущий» (project terminology).
 - **Where:** `journey2_route_water_note` in `data/i18n.json`, `.j2-route-water-note` in the `.j2-route` aside of `js/journey2-view.js`.
+
+## PD-080: Environment card on a phone — a slim sticky bar, the name scrolls with the text
+
+- **Status:** Active (decided 2026-10-21). Amends PD-064 for widths <=640px only; PD-064 stands for >=641px and for every other card.
+- **Why:** on a phone the sticky header (name + Prep/bookmark + tier pills + ×) shared a 100px-wide name column with the buttons and with the ~116px the floating language/sound pill reserved over the whole header height. A long Russian name broke mid-word over 6-8 lines and the header took 41-50% of a 360x640 screen (67% at 320x568; at 320 the × even wrapped onto its own row). Mobile use of this card is expected to be rare, so the fix is deliberately CSS-only.
+- **Decision:** at <=640px `#detail-modal` becomes a grid; only a 56px bar (+ safe-area inset) is sticky: the Prep action and bookmark at the start, the × just left of the floating pill (which is `position: fixed` in the same corner). The name (full width, `hyphens: auto`) and the tier row scroll away with the body. The rules live in the `@media (max-width: 640px)` block of `css/styles.css`, scoped to `#detail-modal`; the DOM is unchanged and no script is involved (`display: contents` on the header and title row, controls `position: sticky` over the whole card). Tier switching is therefore not reachable mid-scroll on a phone; accepted.
+- **Out of scope:** the item card and the small dialogs keep the PD-064 header; no collapse animation, no hide-on-scroll, no overflow "..." menu (it would hide the Prep / list state that PD-064 wants visible on the icons).
+- **Where:** `css/styles.css` (`#detail-modal` rules in the <=640px block), `tests/journey-overlay-fixes.test.js` (source guard), `docs/manual-qa.md` "Environment overlay".

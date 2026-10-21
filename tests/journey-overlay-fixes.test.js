@@ -24,6 +24,14 @@ test('every modal header is sticky so the × stays reachable', () => {
   assert.doesNotMatch(css, /modal--close-dock/);
 });
 
+test('PD-080: on a phone only a slim bar of the environment card is sticky, the name scrolls', () => {
+  const phone = css.slice(css.indexOf('#detail-modal {'));
+  assert.match(phone, /#detail-modal \.modal-header, #detail-modal \.modal-title-row \{ display: contents; \}/);
+  assert.match(phone, /#detail-modal \.env-actions, #detail-modal \.modal-close \{[^}]*position: sticky/);
+  assert.match(phone, /#detail-modal #detail-title \{[^}]*hyphens: auto/);
+  assert.doesNotMatch(phone.slice(0, phone.indexOf('#detail-modal #detail-title')), /#detail-title[^{]*\{[^}]*position: sticky/);
+});
+
 test('Z-03: opening a Journey environment card dismisses only the soundboard popover', () => {
   const reg = app.slice(app.indexOf('function registerOverlay'), app.indexOf('function onKeyDown', app.indexOf('function registerOverlay')));
   assert.match(reg, /overlayKind === 'detail' && state\.route\.name === 'journey'\) SoundboardUI\.dismissPanel\(\)/);
