@@ -73,7 +73,7 @@
     B.controls(
       '<label>Layering <select id="c-elayer"><option value="svg">inside the map SVG (now)</option><option value="own">own layers (HTML overlay)</option></select></label> ' +
       '<label>Echoes <select id="c-ecount"><option>1</option><option>3</option><option selected>9</option></select></label> ' +
-      '<label>Animation <select id="c-emode"><option value="css">CSS, every frame (the old way)</option><option value="stepped">stepped ~8 fps (current code)</option><option value="frozen">frozen (still frame)</option><option value="off">layer hidden</option></select></label> ');
+      '<label>Animation <select id="c-emode"><option value="css">CSS, every frame (the old way)</option><option value="stepped">stepped ~8 fps (was tried in the app, reverted)</option><option value="frozen">frozen (still frame)</option><option value="off">layer hidden</option></select></label> ');
     document.getElementById('c-ecount').onchange = e => { count = +e.target.value; draw(); };
     document.getElementById('c-elayer').onchange = e => { own = e.target.value === 'own'; draw(); };
     document.getElementById('c-emode').onchange = e => { mode = e.target.value; draw(); };
