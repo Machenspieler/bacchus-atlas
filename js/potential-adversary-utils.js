@@ -49,7 +49,7 @@
     if (tierMatch) return { label: tierMatch[1].trim(), members: splitAdversaryMembers(tierMatch[2]), isGroup: true, style: 'tier' };
     const match = text.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
     if (!match) return { label: text, members: text ? [text] : [], isGroup: false };
-    if (/^(?:tier|ранг)\s*\d+/i.test(match[2].trim())) {
+    if (/^(?:tier|ранг)\s*\d+/i.test(match[2].trim()) || /^(?:trap|ловушка)$/i.test(match[2].trim())) {
       const label = match[1].trim();
       return { label, members: label ? [label] : [], isGroup: false, annotation: match[2].trim() };
     }

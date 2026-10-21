@@ -44,6 +44,13 @@ test('a parenthetical tier/role annotation is metadata, not a member', () => {
   assert.deepEqual(names('Barbara Yaga (Tier 4 Solo)'), ['Barbara Yaga']);
 });
 
+test('a "(Trap)" tag is an annotation, so a hazard entry is not a group of one member', () => {
+  assert.deepEqual(PAU.parsePotentialAdversaryEntry('Faux Pas (Trap)'),
+    { label: 'Faux Pas', members: ['Faux Pas'], isGroup: false, annotation: 'Trap' });
+  assert.deepEqual(PAU.parsePotentialAdversaryEntry('Ловушка'),
+    { label: 'Ловушка', members: ['Ловушка'], isGroup: false });
+});
+
 test('"or"-separated members share the trailing noun', () => {
   assert.deepEqual(PAU.splitAdversaryMembers('Green or Red Ooze'), ['Green Ooze', 'Red Ooze']);
   assert.deepEqual(PAU.splitAdversaryMembers('Gobstalker, Green Ooze'), ['Gobstalker', 'Green Ooze']);

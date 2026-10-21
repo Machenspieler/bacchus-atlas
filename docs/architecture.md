@@ -668,7 +668,7 @@ removing an environment never changes `prep.adversaryIds`.
 (`PotentialAdversaryUtils`), the only parser of an environment's
 `potential_adversaries` text. `envAdversaryNames(env)` expands the English
 entries (ordinary names, `Label (Member, …)` groups, `Tier N: …` entries,
-tier/role annotations, group prefixes and member aliases, `any X` and bare
+tier/role annotations (and a `(Trap)` tag), group prefixes and member aliases, `any X` and bare
 family references; `Any`/`All` and `see "…"` citations resolve to nothing)
 into canonical English adversary names; the environment card's FreshCutGrass
 links in `js/app.js` read the same function. The Bandits rule is two
