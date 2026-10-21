@@ -3718,7 +3718,7 @@
             "ru": "Извержение Слизи"
           },
           "description": {
-            "en": "Pick a point and everyone within Close Range of it is hit with an explosion of acidic green slime. Everyone affected must make an Agility Reaction Roll or take 4d8+8 magical damage. On a success, the PC takes half damage.",
+            "en": "Pick a point and everyone within Close range of it is hit with an explosion of acidic green slime. Everyone affected must make an Agility Reaction Roll or take 4d8+8 magical damage. On a success, the PC takes half damage.",
             "ru": "Выберите точку — все, кто находится в пределах Средней дистанции от неё, поражаются взрывом едкой зелёной слизи. Все затронутые должны совершить Бросок Реакции на Проворность или получить 4d8+8 магического урона. При успехе персонаж получает половину урона."
           },
           "prompt": {
@@ -22930,7 +22930,7 @@
             "ru": "Поднять Истребители!"
           },
           "description": {
-            "en": "Summon 3 SKY Fighters that appear within Close Range of a PC vehicle. Spotlight one of them.",
+            "en": "Summon 3 SKY Fighters that appear within Close range of a PC vehicle. Spotlight one of them.",
             "ru": "Призовите 3 Небесных Истребителя, которые появляются в пределах Средней дистанции от транспорта персонажа. Дайте Активацию одному из них."
           },
           "prompt": {
@@ -23036,7 +23036,7 @@
             "ru": "Извилистые Каньоны"
           },
           "description": {
-            "en": "Vehicles can only attack another vehicle if the target is Vulnerable and within Very Close Range.",
+            "en": "Vehicles can only attack another vehicle if the target is Vulnerable and within Very Close range.",
             "ru": "Транспорты могут атаковать другой транспорт, только если цель Уязвима и находится в пределах Очень Близкой дистанции."
           },
           "prompt": {
@@ -23336,7 +23336,7 @@
             "ru": "Зависть Тарзана"
           },
           "description": {
-            "en": "A PC may spend a Hope, or the GM may Spend a Fear, to have a character swing anywhere within Very Far Range on the same or a lower canopy level. If used in response to an attack, the attack is made with disadvantage.",
+            "en": "A PC may spend a Hope, or the GM may Spend a Fear, to have a character swing anywhere within Very Far range on the same or a lower canopy level. If used in response to an attack, the attack is made with disadvantage.",
             "ru": "Персонаж может потратить Надежду, или Мастер может потратить Страх, чтобы существо перемахнуло куда угодно в пределах Очень Дальней дистанции на том же или более низком ярусе полога. Если это используется в ответ на атаку, атака совершается с помехой."
           },
           "prompt": {
@@ -23414,7 +23414,7 @@
             "ru": "Лиановые Магистрали"
           },
           "description": {
-            "en": "Massive vines allow travel between the floating mountains. When in danger or under pressure while on the vines, moving beyond Very Close Range requires an Agility Action Roll.",
+            "en": "Massive vines allow travel between the floating mountains. When in danger or under pressure while on the vines, moving beyond Very Close range requires an Agility Action Roll.",
             "ru": "Массивные лианы позволяют перемещаться между парящими горами. В опасности или под давлением, находясь на лианах, перемещение дальше Очень Близкой дистанции требует броска действия на Проворность."
           },
           "prompt": {
@@ -23844,7 +23844,7 @@
             "ru": "Автоматическая Оборона"
           },
           "description": {
-            "en": "Spend a Fear to target a PC and all PCs within Very Close Range. Each target makes a Reaction Roll. On a failure, they suffer 3d10 energy damage and become Restrained. A PC can end the Restrained condition by succeeding on another Reaction Roll (taking the same damage on a failure). The condition also ends if the PCs disable or destroy the defenses.",
+            "en": "Spend a Fear to target a PC and all PCs within Very Close range. Each target makes a Reaction Roll. On a failure, they suffer 3d10 energy damage and become Restrained. A PC can end the Restrained condition by succeeding on another Reaction Roll (taking the same damage on a failure). The condition also ends if the PCs disable or destroy the defenses.",
             "ru": "Потратьте Страх, чтобы выбрать персонажа и всех персонажей в пределах Очень Близкой дистанции от него в качестве целей. Каждая цель совершает Бросок Реакции. При неудаче она получает 3d10 урона энергией и становится Обездвиженной. Персонаж может снять состояние Обездвижен, преуспев в другом Броске Реакции (получая тот же урон при неудаче). Состояние также снимается, если персонажи отключают или уничтожают оборонительные системы."
           },
           "prompt": {
@@ -23859,7 +23859,7 @@
             "ru": "Подкрепление!"
           },
           "description": {
-            "en": "Spend a Fear to summon a Surge Commander, a Surge Trooper Squad, and two additional adversaries of the GM’s choice. They appear within Far Range of a chosen PC. The Surge Commander immediately gains the spotlight.",
+            "en": "Spend a Fear to summon a Surge Commander, a Surge Trooper Squad, and two additional adversaries of the GM’s choice. They appear within Far range of a chosen PC. The Surge Commander immediately gains the spotlight.",
             "ru": "Потратьте Страх, чтобы призвать Командира Прорыва, Отряд Штурмовиков Прорыва и двух дополнительных противников по выбору Мастера. Они появляются в пределах Дальней дистанции от выбранного персонажа. Командир Прорыва немедленно получает Активацию."
           },
           "prompt": {
@@ -23965,7 +23965,7 @@
             "ru": "Подкрепление!"
           },
           "description": {
-            "en": "Spend a Fear to summon a Surge Commander, a Surge Trooper Squad, and two additional adversaries of the GM’s choice within Far Range of a chosen PC. The Surge Commander immediately gains the spotlight.",
+            "en": "Spend a Fear to summon a Surge Commander, a Surge Trooper Squad, and two additional adversaries of the GM’s choice within Far range of a chosen PC. The Surge Commander immediately gains the spotlight.",
             "ru": "Потратьте Страх, чтобы призвать Командира Прорыва, Отряд Штурмовиков Прорыва и двух дополнительных противников по выбору Мастера в пределах Дальней дистанции от выбранного персонажа. Командир Прорыва немедленно получает Активацию."
           },
           "prompt": {
@@ -24010,7 +24010,7 @@
             "ru": "Автоматическая Оборона"
           },
           "description": {
-            "en": "Spend a Fear to activate the ship’s internal defenses. Choose a target and all characters within Very Close Range of the target must make a Reaction Roll. On a failure, they suffer 3d10 energy damage and become Restrained. A PC may end the Restrained condition by succeeding on another Reaction Roll (taking the damage again on a failure). The condition also ends if the PCs disable or destroy the defenses.",
+            "en": "Spend a Fear to activate the ship’s internal defenses. Choose a target and all characters within Very Close range of the target must make a Reaction Roll. On a failure, they suffer 3d10 energy damage and become Restrained. A PC may end the Restrained condition by succeeding on another Reaction Roll (taking the damage again on a failure). The condition also ends if the PCs disable or destroy the defenses.",
             "ru": "Потратьте Страх, чтобы активировать внутреннюю оборону корабля. Выберите цель — все персонажи в пределах Очень Близкой дистанции от цели должны совершить Бросок Реакции. При неудаче они получают 3d10 урона энергией и становятся Обездвиженными. Персонаж может снять состояние Обездвижен, преуспев в другом Броске Реакции (получая урон снова при неудаче). Состояние также снимается, если персонажи отключают или уничтожают оборонительные системы."
           },
           "prompt": {
@@ -24502,7 +24502,7 @@
             "ru": "Бесконечные Коридоры"
           },
           "description": {
-            "en": "The base is a tight maze, unless inside the Armor Depot, characters cannot see each other (except on a camera) at farther than Close Range. Unless the PCs have a map or schematic, the GM can spend a Fear when the PCs move through the base to have them arrive at an inconvenient location.",
+            "en": "The base is a tight maze, unless inside the Armor Depot, characters cannot see each other (except on a camera) at farther than Close range. Unless the PCs have a map or schematic, the GM can spend a Fear when the PCs move through the base to have them arrive at an inconvenient location.",
             "ru": "База — это тесный лабиринт: за исключением Оружейного Склада, персонажи не видят друг друга (кроме как по камере) дальше Средней дистанции. Если у персонажей нет карты или схемы, Мастер может потратить Страх, когда персонажи перемещаются по базе, чтобы они оказались в неудобном месте."
           },
           "prompt": {
@@ -24517,7 +24517,7 @@
             "ru": "Оружейный Склад"
           },
           "description": {
-            "en": "The depot is filled with Sovereignty war machines and the staff maintaining them. Commandeering one of the war machine’s weapons allows making an attack using Agility to deal d10+3 energy damage using proficiency. Make an attack against a target and all creatures within Very Close Range of the target.",
+            "en": "The depot is filled with Sovereignty war machines and the staff maintaining them. Commandeering one of the war machine’s weapons allows making an attack using Agility to deal d10+3 energy damage using proficiency. Make an attack against a target and all creatures within Very Close range of the target.",
             "ru": "Склад заполнен боевыми машинами Суверенитета и персоналом, который их обслуживает. Захватив оружие одной из боевых машин, можно совершить атаку, используя Проворность, нанося d10+3 урона энергией с использованием профессионализма. Атакуйте цель и всех существ в пределах Очень Близкой дистанции от цели."
           },
           "prompt": {
@@ -27080,7 +27080,7 @@
             "ru": "Огонь поднимается"
           },
           "description": {
-            "en": "Whenever a PC takes a hit within Very Close Range of an open fire pit, they must make an Agility roll—on failure, they suffer 2d8 direct physical damage.",
+            "en": "Whenever a PC takes a hit within Very Close range of an open fire pit, they must make an Agility roll—on failure, they suffer 2d8 direct physical damage.",
             "ru": "Каждый раз, когда персонаж получает удар в пределах Очень Близкой дистанции от открытой огненной ямы, он должен совершить Бросок Проворности — при неудаче он получает 2d8 прямого физического урона."
           },
           "prompt": {
