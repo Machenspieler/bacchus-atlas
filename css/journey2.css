@@ -1234,6 +1234,34 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 @media (max-width: 900px) { .j2-route { left: var(--s-3); right: var(--s-3); width: auto; max-height: 55%; } }
 @media print { .j2-route, .j2-route-chip, .j2-route-bubbles { display: none !important; } }
 
+/* Traveling over Water: an informational pill (visible while the Route Planner is open) and a rules popover; no route, camera or document state behind it */
+.j2-water { position: absolute; top: var(--s-3); right: var(--s-3); z-index: 5; display: flex; flex-direction: column; align-items: flex-end; gap: var(--s-2); max-width: calc(100% - 2 * var(--s-3)); pointer-events: none; }
+.j2-water[hidden] { display: none; }
+.j2-water > * { pointer-events: auto; }
+.j2-water-btn { min-height: 36px; padding: var(--s-1) var(--s-3); background: var(--ink-raised); border: 1px solid var(--hope-border); border-radius: var(--r-md); box-shadow: var(--e-2); color: var(--parchment); font: inherit; font-size: var(--fs-sm); font-weight: 600; cursor: pointer; }
+.j2-water-btn:hover, .j2-water-btn[aria-expanded="true"] { background: var(--ink-hover); }
+.j2-water-btn:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.j2-water-pop {
+  display: flex; flex-direction: column; gap: var(--s-2); width: var(--j2-pop-w-wide); max-width: 100%; max-height: min(70dvh, 560px); padding: var(--s-3);
+  background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-lg); box-shadow: var(--e-3);
+  font-family: var(--font-body); font-size: var(--fs-sm); color: var(--parchment); outline: 0;
+}
+.j2-water-pop[hidden] { display: none; }
+.j2-water-head { flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
+.j2-water-body { min-height: 0; display: grid; gap: var(--s-2); overflow-y: auto; overscroll-behavior: contain; align-content: start; }
+.j2-water-p { margin: 0; line-height: var(--lh-sm); }
+.j2-water-list { margin: 0; padding-left: var(--s-4); display: grid; gap: var(--s-1); line-height: var(--lh-sm); }
+.j2-water-table { width: 100%; border-collapse: collapse; font-size: var(--fs-xs); }
+.j2-water-table th, .j2-water-table td { padding: 4px var(--s-2); text-align: left; border-bottom: 1px solid var(--line-faint); }
+.j2-water-table th { font-family: var(--font-mono); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--parchment-dim); font-weight: 600; }
+.j2-water-table td:first-child { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.j2-water-note { flex: none; }
+@media (max-width: 900px) {
+  .j2-water { top: auto; right: var(--s-3); left: var(--s-3); bottom: calc(var(--j2-bar-h, 64px) + var(--s-3)); flex-direction: column-reverse; align-items: flex-start; }
+  .j2-water-pop { width: 100%; max-height: min(62dvh, 460px); }
+}
+@media print { .j2-water { display: none !important; } }
+
 /* Hex Stock card artwork (PD-050): the Environment catalogue's vertical biome illustration (applied via data-art in applyStockArt()) spans the whole card as a decorative ::before layer,
    fading into the card's ink. No geometry is touched: the layer sits behind the unchanged content (inset / mask / background only), pointer-events none, so the hand-drawn icon tile and
    every control stay above it; an asset that fails to load simply leaves the plain dark card.
