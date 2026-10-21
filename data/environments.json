@@ -33653,6 +33653,219 @@
         "settlement"
       ],
       "source": "Resting Dagger"
+    },
+    {
+      "id": "the-squealing-boar-tavern-brawl",
+      "tier": 1,
+      "type": "event",
+      "difficulty": 12,
+      "name": {
+        "en": "The Squealing Boar Tavern Brawl",
+        "ru": "Трактирная драка в «Визжащем Кабане»"
+      },
+      "lore": {
+        "en": "The tavern's animated boar's head starts to squeal and the brawl begins. Local laborers come here to blow off steam.",
+        "ru": "Оживлённая кабанья голова в таверне начинает визжать, и драка начинается. Местные работяги приходят сюда спустить пар."
+      },
+      "impulses": {
+        "en": [
+          "Destress",
+          "bloody your knuckles",
+          "make new friends",
+          "work out frustrations"
+        ],
+        "ru": [
+          "Снять стресс",
+          "разбить костяшки",
+          "завести новых друзей",
+          "выпустить пар"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Hardened Laborer",
+          "Merchant",
+          "Pirates",
+          "Sellsword",
+          "Street Tough",
+          "Faux Pas (Trap)"
+        ],
+        "ru": [
+          "Закалённый Работяга",
+          "Торговец",
+          "Пираты",
+          "Наёмник",
+          "Уличный Громила",
+          "Faux Pas (Ловушка)"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "The Boar Squeal Brawl",
+            "ru": "Драка под визг кабана"
+          },
+          "description": {
+            "en": "An animated boar's head is mounted in the rafters of the tavern. When a tavern goer hits the boar with a dart, it begins to squeal and everyone in the bar breaks out into a friendly brawl. Start a Standard Countdown (d8). When the Countdown triggers, the fight ends as the boar squeals die down.",
+            "ru": "Оживлённая кабанья голова закреплена под стропилами таверны. Когда кто-то из посетителей попадает в кабана дротиком, он начинает визжать, и все в баре затевают дружескую драку. Запустите Стандартный Отсчёт (d8). Когда Отсчёт срабатывает, драка заканчивается — визг кабана стихает."
+          },
+          "prompt": {
+            "en": "Is this a well known tradition, or is it a surprise to the PCs? How do the tavern goers engage with the PCs when the fight breaks out? Who enchanted the boar in the first place?",
+            "ru": "Это общеизвестная традиция или сюрприз для персонажей? Как посетители таверны вовлекают персонажей, когда начинается драка? Кто вообще зачаровал кабана?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Cathartic",
+            "ru": "Очищающая драка"
+          },
+          "description": {
+            "en": "When a PC makes a successful unarmed attack against a target, the PC clears a Stress. All damage done from unarmed attacks during the Brawl is non-lethal, if a PC marks their last HP, they only fall unconscious and do not make a Death Move.",
+            "ru": "Когда персонаж совершает успешную безоружную атаку по цели, он снимает Стресс. Весь урон от безоружных атак во время Драки нелетален: если персонаж отмечает свою последнюю Рану, он лишь теряет сознание и не совершает Предсмертный ход."
+          },
+          "prompt": {
+            "en": "How does it feel to throw a punch? Is it easy for the PCs to let go and join in? How do the PCs feel to be on the receiving end of a friendly blow?",
+            "ru": "Каково это — ударить кулаком? Легко ли персонажам расслабиться и вступить в драку? Что чувствуют персонажи, получая дружеский удар?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Taboo",
+            "ru": "Табу"
+          },
+          "description": {
+            "en": "Weapons are forbidden during the Brawl. If anyone draws a weapon, the tavern goers will shout \"Blade!\" and the Brawl Countdown ends immediately. PCs who violate this Taboo become banned from the tavern forever.",
+            "ru": "Во время Драки оружие под запретом. Если кто-то обнажает оружие, посетители кричат: «Клинок!» — и Отсчёт Драки немедленно завершается. Персонажи, нарушившие это Табу, навсегда изгоняются из таверны."
+          },
+          "prompt": {
+            "en": "Is there any leeway for a first time offender? Who is in charge of enforcing this taboo?",
+            "ru": "Есть ли послабление для тех, кто нарушил впервые? Кто следит за соблюдением этого табу?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Gain Respect",
+            "ru": "Заслужить уважение"
+          },
+          "description": {
+            "en": "Style is respected amongst these patrons. When a PC makes a successful attack using an Experience against a target, the PC gains advantage on Presence rolls to influence the target until the next rest.",
+            "ru": "Среди этих посетителей уважают стиль. Когда персонаж совершает успешную атаку, используя Опыт, против цели, он получает преимущество на броски Влияния, чтобы повлиять на эту цель, до следующего отдыха."
+          },
+          "prompt": {
+            "en": "Is there an NPC at the tavern who fights very stylishly? How do tavern goers react to a fumbled attack?",
+            "ru": "Есть ли в таверне NPC, который дерётся очень стильно? Как посетители реагируют на неудачный удар?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Heads Up!",
+            "ru": "Берегись!"
+          },
+          "description": {
+            "en": "An errant fist, boot, leg of lamb, or some other spontaneous act of violence hurdles in each PC's direction. Each PC makes a Reaction Roll of their choice. On a failure, they take 1d4 physical damage. On a success they describe how their Reaction Roll choice helped them dodge the attack.",
+            "ru": "В сторону каждого персонажа летит шальной кулак, сапог, баранья ножка или иное спонтанное проявление насилия. Каждый персонаж совершает Бросок Реакции по своему выбору. При провале он получает 1d4 физического урона. При успехе он описывает, как выбранный Бросок Реакции помог ему уклониться от удара."
+          },
+          "prompt": {
+            "en": "Who threw the punch? Do the PCs take the hit in stride? Is the attacker trying to make friends, take out frustration, or flirt?",
+            "ru": "Кто нанёс удар? Спокойно ли персонажи принимают его? Нападающий пытается подружиться, выплеснуть злость или пофлиртовать?"
+          }
+        }
+      ],
+      "story_seeds": [
+        {
+          "title": {
+            "en": "Delicate! Handle Carefully!",
+            "ru": "Хрупкое! Обращаться осторожно!"
+          },
+          "body": {
+            "en": "A group of PCs, unaware of the Boar's tradition, return to town and take refuge at the Squealing Boar. They have secured a delicate magical artifact that must be delivered to their patron the next day. While they sip ale wearily, the Brawl breaks out and now that artifact might be in jeopardy.",
+            "ru": "Группа персонажей, не подозревающая о традиции Кабана, возвращается в город и находит приют в «Визжащем Кабане». Они раздобыли хрупкий магический артефакт, который нужно доставить покровителю на следующий день. Пока они устало потягивают эль, начинается Драка, и артефакт может оказаться под угрозой."
+          },
+          "prompt": {
+            "en": "How do the PCs keep the artifact safe? Do other patrons realize or care that the PCs may not want to participate? What chaos erupts if the artifact breaks?",
+            "ru": "Как персонажи сберегут артефакт? Понимают ли другие посетители, что персонажи могут не хотеть участвовать, и волнует ли их это? Какой хаос начнётся, если артефакт разобьётся?"
+          }
+        },
+        {
+          "title": {
+            "en": "Hide and Seek",
+            "ru": "Прятки"
+          },
+          "body": {
+            "en": "A pair of assassins chase the PCs through the streets. The PCs come upon the Squealing Boar, a perfect opportunity to escape their pursuers. They run inside and throw a dart at the boar. The fight breaks out, an excellent cover to escape.",
+            "ru": "Пара убийц гонится за персонажами по улицам. Персонажи натыкаются на «Визжащего Кабана» — отличная возможность оторваться от преследователей. Они вбегают внутрь и бросают дротик в кабана. Начинается драка — прекрасное прикрытие для побега."
+          },
+          "prompt": {
+            "en": "Who are their pursuers? Do they respect the traditions of the tavern? How do the PCs take advantage of the chaos to ultimately escape?",
+            "ru": "Кто их преследует? Уважают ли они традиции таверны? Как персонажи используют хаос, чтобы в итоге скрыться?"
+          }
+        },
+        {
+          "title": {
+            "en": "Chaos and Coinpurses",
+            "ru": "Хаос и кошельки"
+          },
+          "body": {
+            "en": "As the Brawl breaks out, a pickpocket takes the chance to start rifling through the belongings of tavern goers.",
+            "ru": "Пока начинается Драка, карманник пользуется шансом и принимается шарить по вещам посетителей таверны."
+          },
+          "prompt": {
+            "en": "What does the pickpocket take from a PC? Does the PC notice? How does the pickpocket navigate the fight to their benefit?",
+            "ru": "Что карманник забирает у персонажа? Замечает ли это персонаж? Как карманник использует драку себе на пользу?"
+          }
+        },
+        {
+          "title": {
+            "en": "Punch Drunk",
+            "ru": "Пьяный удар"
+          },
+          "body": {
+            "en": "The PCs have spent some time at the bar and have had perhaps one too many ales. An errant billiard ball flies and knocks the Boar's tusk and it begins to squeal. Drunk as skunks, only one punch will knock each PC unconscious.",
+            "ru": "Персонажи провели в баре какое-то время и, пожалуй, выпили лишнего. Шальной бильярдный шар летит и задевает клык Кабана, и тот начинает визжать. Пьяные в стельку, они валятся без сознания от одного удара."
+          },
+          "prompt": {
+            "en": "How do the PCs fight in their drunken state? If they all go down, where do they wake up?",
+            "ru": "Как персонажи дерутся в пьяном состоянии? Если они все падут, где они очнутся?"
+          }
+        },
+        {
+          "title": {
+            "en": "The Wrong Idea",
+            "ru": "Неверное впечатление"
+          },
+          "body": {
+            "en": "The Brawl is progressing jauntily until, \"BLADE!\" The fight stops. A traveling Weaponmaster has drawn their sword, taking the Brawl as a threat to their life. The room is tense as they hold another patron against their blade.",
+            "ru": "Драка идёт весело, пока не раздаётся: «КЛИНОК!» Драка прекращается. Странствующий Мастер Оружия обнажил меч, приняв Драку за угрозу своей жизни. В зале напряжение: он держит другого посетителя на острие клинка."
+          },
+          "prompt": {
+            "en": "Why is this warrior so anxious? What triggers might cause the warrior to do serious damage? How do the PCs diffuse the situation?",
+            "ru": "Почему этот воин так тревожен? Что может заставить его нанести серьёзный урон? Как персонажи разрядят обстановку?"
+          }
+        },
+        {
+          "title": {
+            "en": "Informant, Uninformed",
+            "ru": "Информатор в неведении"
+          },
+          "body": {
+            "en": "An informant at the Squealing Boar knows of a serious event happening this evening. As they begin to talk, the fight starts. The informant only has 3 HP and is getting hit from every direction. If they go down, the PCs might not get the information they need.",
+            "ru": "Информатор в «Визжащем Кабане» знает о серьёзном событии, которое произойдёт этим вечером. Как только он начинает говорить, начинается драка. У информатора всего 3 Раны, и его бьют со всех сторон. Если он упадёт, персонажи могут не получить нужных сведений."
+          },
+          "prompt": {
+            "en": "How do the PCs keep their informant up? Is someone at the bar trying to silence the informant?",
+            "ru": "Как персонажи удержат информатора на ногах? Не пытается ли кто-то в баре заставить информатора замолчать?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "The Squealing Boar Tavern"
     }
   ]
 }
