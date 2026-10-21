@@ -280,7 +280,6 @@
     let routeTerrain = { doc: null, index: null };          // Terrain Ratings by cell for the current document (derived, never stored)
     let routeDrawn = { line: '', mark: '' };
     let printSafety = null;                                 // O-01: the one print-only instruction line (see mountPrintSafety)
-    let waterOpen = false;                                  // the Traveling over Water rules popover is open (informational only; transient, never stored, touches no route or map state)
     let routeDetails = false;                               // the selected route's details popover is open (a click on its bubble; transient)
     let routeBubbleSpecs = [];                              // [{ s, x, y }] world anchor of each drawn route's bubble (rebuilt by every paint)                                    // signature of what the route layers currently show (a re-render with the same state must not restart the draw-in)
     let routePinDrag = null;                                // transient (PD-031 / PD-045): { which: 'start'|'end', pointerId, from } — the A or B pin being dragged; never stored
@@ -800,38 +799,8 @@
                 </header>
                 <div class="j2-route-body" data-j2-r="body" role="status" aria-live="polite" aria-atomic="true"></div>
                 <div class="j2-route-cmp" data-j2-r="cmp" hidden></div>
+                <p class="j2-route-warn j2-route-water-note" data-t="journey2_route_water_note"></p>
               </aside>
-              <div class="j2-water" data-j2-water hidden>
-                <button type="button" class="j2-water-btn" data-j2-water-toggle aria-expanded="false" aria-controls="j2-water-pop" aria-haspopup="dialog" data-t="journey2_water_link"></button>
-                <section class="j2-water-pop" id="j2-water-pop" role="dialog" aria-labelledby="j2-water-title" tabindex="-1" data-j2-water-pop hidden>
-                  <header class="j2-water-head">
-                    <h3 class="j2-route-title" id="j2-water-title" data-t="journey2_water_title"></h3>
-                    <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-water-close data-t-aria="journey2_water_close" data-t-title="journey2_water_close">${LI.close}</button>
-                  </header>
-                  <div class="j2-water-body">
-                    <p class="j2-water-p" data-t="journey2_water_intro"></p>
-                    <h4 class="j2-route-h" data-t="journey2_water_rivers"></h4>
-                    <p class="j2-water-p" data-t="journey2_water_rivers_intro"></p>
-                    <ul class="j2-water-list">
-                      <li><strong data-t="journey2_water_down_k"></strong> <span data-t="journey2_water_down"></span></li>
-                      <li><strong data-t="journey2_water_up_k"></strong> <span data-t="journey2_water_up"></span></li>
-                    </ul>
-                    <h4 class="j2-route-h" data-t="journey2_water_ocean"></h4>
-                    <p class="j2-water-p" data-t="journey2_water_ocean_intro"></p>
-                    <table class="j2-water-table">
-                      <thead><tr><th scope="col" data-t="journey2_water_th_d4"></th><th scope="col" data-t="journey2_water_th_weather"></th><th scope="col" data-t="journey2_water_th_time"></th></tr></thead>
-                      <tbody>
-                        <tr><td>1</td><td data-t="journey2_water_w1"></td><td data-t="journey2_water_t1"></td></tr>
-                        <tr><td>2</td><td data-t="journey2_water_w2"></td><td data-t="journey2_water_t2"></td></tr>
-                        <tr><td>3</td><td data-t="journey2_water_w3"></td><td data-t="journey2_water_t3"></td></tr>
-                        <tr><td>4</td><td data-t="journey2_water_w4"></td><td data-t="journey2_water_t4"></td></tr>
-                      </tbody>
-                    </table>
-                    <p class="j2-water-p"><strong data-t="journey2_water_tip_k"></strong> <span data-t="journey2_water_tip"></span></p>
-                  </div>
-                  <p class="j2-route-warn j2-water-note" data-t="journey2_water_note"></p>
-                </section>
-              </div>
             </div>
             <div class="j2-mapbar" data-j2-mapbar role="toolbar" data-t-aria="journey2_mapbar_label">
               <div class="j2-tb-group" role="group" data-j2-history-group data-t-aria="journey2_history_label">
@@ -1023,9 +992,6 @@
       ui.routeChipText = container.querySelector('[data-j2-route-chip-text]');
       ui.route = container.querySelector('[data-j2-route]');
       ui.routeBubbles = container.querySelector('[data-j2-route-bubbles]');
-      ui.water = container.querySelector('[data-j2-water]');
-      ui.waterBtn = container.querySelector('[data-j2-water-toggle]');
-      ui.waterPop = container.querySelector('[data-j2-water-pop]');
       ui.r = {};
       for (const x of ui.route.querySelectorAll('[data-j2-r]')) ui.r[x.getAttribute('data-j2-r')] = x;
       ui.seek = container.querySelector('[data-j2-seek]');
@@ -3213,19 +3179,6 @@
       return true;
     }
 
-    /** Traveling over Water (informational): a pill while the planner is open, a popover with the book's river / ocean rules. Reads and writes no route, camera or document state. */
-    function closeWater(o) {
-      if (!waterOpen) return false;
-      waterOpen = false; ui.waterPop.hidden = true; ui.waterBtn.setAttribute('aria-expanded', 'false');
-      if (o && o.focus) ui.waterBtn.focus({ preventScroll: true });
-      return true;
-    }
-    function toggleWater() {
-      if (waterOpen) { closeWater({ focus: true }); return; }
-      waterOpen = true; ui.waterPop.hidden = false; ui.waterBtn.setAttribute('aria-expanded', 'true');
-      ui.waterPop.scrollTop = 0; ui.waterPop.focus({ preventScroll: true });
-    }
-
     /** Escape: open details close first; choosing B goes back to choosing A; choosing A or viewing a route closes the planner. Returns true when it consumed the key. */
     function routeEscape() {
       const st = routePlanner.state;
@@ -3280,7 +3233,6 @@
       const st = routePlanner.state, active = !!st, selecting = routeSelecting();
       if (ui.routePlan) { ui.routePlan.disabled = routeLocked(); ui.routePlan.setAttribute('aria-pressed', String(active)); }
       ui.routeChip.hidden = !selecting;
-      ui.water.hidden = !active; if (!active) closeWater();
       if (selecting) ui.routeChipText.textContent = t(st.status === 'select-start' ? 'journey2_route_select_start' : 'journey2_route_select_end');
       ui.viewport.classList.toggle('is-routing', selecting);
       ui.root.setAttribute('data-route', active ? st.status : '');
@@ -4618,7 +4570,6 @@
       }
       listen(ui.sidewrap, 'transitionend', () => { positionInspector(); });
       listen(ui.root, 'click', onRootClick);
-      listen(ui.root, 'pointerdown', e => { if (waterOpen && !ui.water.contains(e.target)) closeWater(); }, true);   // an outside press closes the water-travel rules
       listen(ui.sancNameInput, 'keydown', onSanctuaryNameKey);
       listen(ui.gen, 'submit', onGenerate);
       listen(ui.panel.querySelector('[data-j2-goto]'), 'submit', onGoto);
@@ -5210,7 +5161,6 @@
       if (e.key === 'Escape') {
         if (document.querySelector('dialog[open]') || document.querySelector('.modal-overlay')) return;   // an environment overlay (app.js) owns Escape while it is open
         if (printOpen) { closePrintPreview({ focus: true }); e.preventDefault(); return; }
-        if (waterOpen) { closeWater({ focus: true }); e.preventDefault(); return; }               // the water-travel rules close before anything else
         if (openMenu) { const b = openMenu.btn; closeMenus(); b.focus(); return; }
         // priority: menu, a fog stroke, a drag / armed placement / pan, Player Preview, the fog tool, the Region Inspector, then the diagnostic selection
         if (fogStroke) { cancelFogStroke(true); e.preventDefault(); return; }
@@ -5321,8 +5271,6 @@
       else if (b.hasAttribute('data-j2-shadow-reset')) confirmResetShadow();
       else if (b.hasAttribute('data-j2-clear-map')) confirmClearMap();
       else if (b.hasAttribute('data-j2-route-plan')) startRoute();
-      else if (b.hasAttribute('data-j2-water-toggle')) toggleWater();
-      else if (b.hasAttribute('data-j2-water-close')) closeWater({ focus: true });
       else if (b.hasAttribute('data-j2-route-cancel')) exitRoute({ focus: true });
       else if (b.hasAttribute('data-j2-route-details-close')) closeRouteDetails();
       else if (b.hasAttribute('data-j2-route-strategy')) chooseRouteStrategy(b.getAttribute('data-j2-route-strategy'));
