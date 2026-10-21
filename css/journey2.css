@@ -690,6 +690,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-pv-detach path { stroke: #e0a324; stroke-width: 1.8; stroke-linecap: round; fill: none; }
 .j2-pv.is-origin { fill: none; stroke: var(--parchment-dim); }
 .j2-pv-glyph { opacity: 0.8; }
+.j2-pv-glyph.is-refused { opacity: 0.55; }
 .j2-grid { fill: none; stroke: var(--teal); stroke-width: 1; stroke-opacity: 0.9; }
 .j2-deco { fill: none; stroke: var(--muted); stroke-width: 1.25; stroke-dasharray: 2 4; }
 .j2-deco-cell { fill: var(--fear-tint); stroke: none; }

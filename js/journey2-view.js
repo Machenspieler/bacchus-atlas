@@ -4958,7 +4958,8 @@
       }
       // detached candidate: a non-colour marker (a broken-link glyph on every cell) next to the amber dashed outline
       if (p.separateEligible) for (const c of p.cells) { const ctr = data.grid.cellCenter(c.q, c.r); h += '<g class="j2-pv-detach" transform="translate(' + ctr[0] + ' ' + ctr[1] + ')"><circle r="7"/><path d="M-4 4L4 -4"/></g>'; }
-      if (batch && p.valid) for (const c of p.cells) if (c.ok) h += '<g class="j2-pv-glyph">' + tileMarkup(c.q, c.r, specOfBatch(batch), 'j2-pvt', true) + '</g>';
+      // the dragged hex stays identifiable on a refused cell too: its glyph is drawn dimmed there, so the GM always sees which tile is in hand
+      if (batch) for (const c of p.cells) if (p.valid ? c.ok : true) h += '<g class="j2-pv-glyph' + (p.valid ? '' : ' is-refused') + '">' + tileMarkup(c.q, c.r, specOfBatch(batch), 'j2-pvt', true) + '</g>';
       ui.g.preview.innerHTML = h;
     }
 
