@@ -27,9 +27,10 @@ routing" for when a change is small enough to skip planning entirely.
    existing coverage (a test file is often the clearest spec of a module's
    contract). If the change touches validated data, read the relevant part
    of `scripts/validate-data.js`.
-4. **If the change is UI-facing**, follow
-   [ui-mockups.md](../../../ui-mockups.md) before finalizing layout/
-   interaction details, and fold the approved result into the plan as
+4. **If the change is UI-facing**, build a
+   lightweight mockup grounded in the real markup/CSS and
+   [design.md](../../../design.md) (never a detached redesign) before
+   finalizing layout/interaction details, and fold the approved result into the plan as
    concrete constraints — not as a "see mockup" pointer.
 5. **Identify target behavior**, the ownership boundaries it touches
    (which module owns state, rendering, persistence, validation for this

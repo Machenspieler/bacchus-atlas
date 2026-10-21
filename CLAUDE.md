@@ -288,7 +288,6 @@ versioning wiring itself.
 | Russian translation terminology | [docs/translation-glossary.md](docs/translation-glossary.md) |
 | Where something lives / how the app is wired together | [docs/architecture.md](docs/architecture.md) |
 | What the product is, how to run/deploy it, where storage and sharing limits are | [README.md](README.md) |
-| Planning workflow (historical process notes, not a spec) | [planning.md](planning.md), [ui-mockups.md](ui-mockups.md) |
 
 ## Definition of done
 

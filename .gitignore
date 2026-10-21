@@ -15,7 +15,7 @@ img/logo_tr.png
 # Claude Code's per-machine config: launch.json (this checkout's local dev-server
 # setup) and settings.local.json (locally granted tool permissions) describe this
 # machine, not the project. .claude/plans/ is scratch working documents for a
-# change in progress, not project documentation (see planning.md). Everything
+# change in progress, not project documentation. Everything
 # else under .claude/ — rules/, skills/ — is shared project configuration and
 # is tracked.
 .claude/launch.json

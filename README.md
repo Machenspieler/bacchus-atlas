@@ -200,7 +200,6 @@ Anyone with the URL can open the site, but it is not meant to be found:
 | [docs/manual-qa.md](docs/manual-qa.md) | Manual QA checklist for user-visible changes |
 | [docs/translation-glossary.md](docs/translation-glossary.md) | Established EN → RU terminology |
 | [.claude/rules/](.claude/rules/) | Area rules for data, browser state, UI, build and deploy |
-| [planning.md](planning.md), [ui-mockups.md](ui-mockups.md) | Workflow notes for planning a change (historical process documents, not a product specification) |
 
 ## Compatibility, attribution and disclaimer
 
