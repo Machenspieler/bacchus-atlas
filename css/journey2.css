@@ -650,6 +650,8 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-sbfx-fo { pointer-events: none; overflow: hidden; }
 .j2-sbfx-cv { display: block; width: 100%; height: 100%; pointer-events: none; }
 .j2-overlay .j2-sbfx-worn { fill: #86704d; fill-opacity: .42; stroke: none; }
+.j2-overlay .j2-sbfx-aged { fill: #5a4429; fill-opacity: .24; stroke: none; }
+.j2-overlay .j2-sbfx-ivory { fill: #f3e8c8; fill-opacity: .3; stroke: none; }
 .j2-overlay .j2-sbfx-line { fill: none; stroke: #2a1f16; stroke-opacity: .72; stroke-width: .8; stroke-linejoin: round; }
 .j2-overlay .j2-sbfx-patch { isolation: isolate; }
 .j2-overlay .j2-sbfx-paper { fill: #f1e8d2; }

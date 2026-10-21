@@ -96,6 +96,24 @@ test('torn edge: inward only — every point of a tear lies inside its own cells
   for (let i = 0; i < 2000; i++) assert.ok(Fx.tearDepth(i * 7.3, i * 3.1) >= 0.4);
 });
 
+test('torn rim: deterministic in map coordinates, band keeps its width, tone runs taper to the tear line and stay inside the band', () => {
+  const set = new Set([at(3), at(4), at(5), at(4, -1)]);
+  const a = Fx.tornLoops(grid, set, 2.2), b = Fx.tornLoops(grid, set, 2.2);
+  assert.deepEqual(a, b, 'the same cells tear the same way on every rebuild');
+  const widths = [];
+  for (const l of a) l.torn.forEach((p, i) => widths.push(Math.hypot(l.worn[i][0] - p[0], l.worn[i][1] - p[1])));
+  widths.sort((x, y) => x - y);
+  const med = widths[widths.length >> 1];
+  assert.ok(med > 2.5 && med < 6.5 && widths[0] >= 0.3 && widths[widths.length - 1] < 16, 'band width stays in the approved range: ' + med);
+  for (const l of a) {
+    const d = Fx.stainPath(l, () => 1), none = Fx.stainPath(l, () => 0);
+    assert.equal(d, '', 'a loop with no gap has no run');
+    assert.equal(none, '');
+    const half = Fx.stainPath(l, (x, y) => (x + y) % 40 < 20 ? 0 : 1);
+    assert.match(half, /^M[-\d. LZM]+$/);
+  }
+});
+
 test('mask and rim: the ground mask keeps islands with evenodd; the rim has no light outline, its blurs are bounded to the tear\'s own box', () => {
   const set = new Set([at(3), at(4)]), loops = Fx.tornLoops(grid, set, 2.2);
   assert.match(decodeURIComponent(Fx.holeMaskCss(4848, 3185, Fx.loopsPath(loops))), /fill-rule="evenodd" d="M0 0H4848V3185H0Z/);

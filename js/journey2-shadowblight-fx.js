@@ -154,10 +154,18 @@
   function tearDepth(x, y) {
     const s1 = vnoise(x / 34, y / 34, 11) * 2 - 1, s2 = vnoise(x / 8.5, y / 8.5, 23) * 2 - 1, s3 = vnoise(x / 21, y / 21, 37);
     const s4 = vnoise(x / 3.2, y / 3.2, 41) * 2 - 1, s5 = vnoise(x / 1.7, y / 1.7, 43) * 2 - 1, s6 = vnoise(x / 5.5, y / 5.5, 47);
-    return Math.max(0.4, 2.1 + 2.3 * s1 + 1.8 * s2 + 0.9 * s4 + 0.45 * s5 + (s3 > 0.72 ? (s3 - 0.72) * 30 : 0) + (s6 > 0.8 ? (s6 - 0.8) * 16 : 0));
+    const s7 = vnoise(x / 15, y / 15, 73) * 2 - 1, rough = 0.55 + 0.9 * vnoise(x / 46, y / 46, 71);   // some stretches of the tear are rougher than others
+    return Math.max(0.4, 2.1 + 2.3 * s1 + 0.9 * s7 + rough * (1.8 * s2 + 0.9 * s4 + 0.45 * s5) + (s3 > 0.72 ? (s3 - 0.72) * 30 : 0) + (s6 > 0.8 ? (s6 - 0.8) * 16 : 0));
   }
-  /** Width (world px) of the worn, darker parchment just outside the tear: uneven, thin, sometimes almost nothing. */
-  function wornWidth(x, y) { return 0.5 + 2.4 * vnoise(x / 11, y / 11, 51) + 1.6 * Math.max(0, vnoise(x / 4, y / 4, 53) - 0.45); }
+  /**
+   * How far (world px) the outer edge of the worn band lies OUTSIDE the hex line: uneven (about +-20 %, a slow swell on top of the old patchy width), thin,
+   * sometimes almost nothing, and with its own small contour (not just the tear's) so the band is no uniform outline of the cut. A function of position only.
+   */
+  function wornWidth(x, y) {
+    const base = 0.5 + 2.4 * vnoise(x / 11, y / 11, 51) + 1.6 * Math.max(0, vnoise(x / 4, y / 4, 53) - 0.45);
+    const rough = 0.5 + vnoise(x / 40, y / 40, 87);
+    return Math.max(0.3, base * (0.8 + 0.4 * vnoise(x / 31, y / 31, 81)) + rough * (1.1 * (vnoise(x / 6.5, y / 6.5, 83) - 0.5) + 0.6 * (vnoise(x / 2.6, y / 2.6, 85) - 0.5)));
+  }
 
   /**
    * One closed outline -> { torn, worn }: corners softened once (Chaikin), resampled every `step` px, each point pushed along the normal toward
@@ -211,6 +219,29 @@
   }
 
   /**
+   * Tonal drift of the worn band (static, no filter, no extra pass): runs of the band, tapering to nothing at both ends along the tear line, are
+   * overlaid in a slightly darker (aged) or lighter (ivory) parchment tone. `weight(x, y)` is 0..1 per point; a run is a stretch where it is above 0.
+   * Returns one path `d` (many small closed runs). A loop that is nowhere zero is left out — a whole-ring tone is just the band's own colour.
+   */
+  function stainPath(loop, weight) {
+    const n = loop.torn.length, f = new Array(n);
+    let start = -1;
+    for (let i = 0; i < n; i++) { f[i] = weight(loop.torn[i][0], loop.torn[i][1]); if (start < 0 && f[i] <= 0.02) start = i; }
+    if (start < 0) return '';
+    const pt = (p, q, k) => (p[0] + (q[0] - p[0]) * k).toFixed(1) + ' ' + (p[1] + (q[1] - p[1]) * k).toFixed(1);
+    let d = '', run = [];
+    const flush = () => {
+      if (run.length > 2) d += 'M' + run.map(i => pt(loop.torn[i], loop.worn[i], f[i])).join('L') + 'L' + run.slice().reverse().map(i => pt(loop.torn[i], loop.torn[i], 0)).join('L') + 'Z';
+      run = [];
+    };
+    for (let k = 0; k < n; k++) { const i = (start + k) % n; if (f[i] > 0.02) run.push(i); else flush(); }
+    flush();
+    return d;
+  }
+  const toneDark = (x, y) => Math.min(1, Math.max(0, (vnoise(x / 52, y / 52, 91) - 0.58) / 0.2));
+  const toneLight = (x, y) => toneDark(x, y) > 0.02 ? 0 : Math.min(1, Math.max(0, (vnoise(x / 38, y / 38, 93) - 0.6) / 0.2));
+
+  /**
    * The static rim of one tear (world px, SVG markup), quiet by design: an uneven band of worn, darker parchment just outside the tear (a filled ring
    * between the torn edge and the worn edge — no stroke, no light outline), the thin dark tear line, and inside a small contact shadow the paper casts
    * down-right into the void plus (High) a gentle depth falloff. Blur filters are bounded to the tear's own box (userSpaceOnUse).
@@ -224,6 +255,9 @@
     const P = attrs => '<path fill="none" stroke-linejoin="round" d="' + d + '" ' + attrs + '/>';
     const IN = x => '<g clip-path="url(#' + id + '-in)">' + x + '</g>';
     let body = '<path class="j2-sbfx-worn" fill-rule="evenodd" d="' + band + '"/>';
+    const dark = loops.map(l => stainPath(l, toneDark)).join(''), light = loops.map(l => stainPath(l, toneLight)).join('');
+    if (dark) body += '<path class="j2-sbfx-aged" d="' + dark + '"/>';
+    if (light) body += '<path class="j2-sbfx-ivory" d="' + light + '"/>';
     if (mode === 'full') {
       defs += blur('b4', 3.2) + blur('b9', 8);
       body += IN(P('stroke="#000" stroke-opacity=".3" stroke-width="20" filter="url(#' + id + '-b9)"') + P('stroke="#000" stroke-opacity=".82" stroke-width="8" transform="translate(1.5 2.1)" filter="url(#' + id + '-b4)"'));
@@ -770,6 +804,6 @@ void main(){
   return Object.freeze({
     QUALITY, LEVELS, FIELD_TEXEL, FIELD_DMAX, FEATURE, DEFAULTS, OVERTAKEN_SYMBOL,
     hash2, vnoise, fbm, componentsOf, outerEdges, boundsOf, cellsFromDocument, cellsFromProjection,
-    tearDepth, wornWidth, tear, tornLoops, loopsPath, holeMaskCss, rimMarkup, patchMarkup, buildField, fragmentSource, initialQuality, createGovernor, create,
+    tearDepth, wornWidth, stainPath, tear, tornLoops, loopsPath, holeMaskCss, rimMarkup, patchMarkup, buildField, fragmentSource, initialQuality, createGovernor, create,
   });
 });
