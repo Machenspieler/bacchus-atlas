@@ -976,7 +976,7 @@ Run all of them with `node --test tests/*.test.js`.
   (`Journey2View.mount/unmount`: DOM, transient pointer state, rendering),
   `css/journey2.css` (scoped to `.j2`, `body[data-route="journey"]`, the
   print root). Data: `data/journey2/{map-template,map-anchors,symbols}.json`;
-  raster `img/journey2/valloren-world.webp` (loaded only on this route).
+  raster `img/journey2/valloren-world.webp` (loaded only on this route). The raster is the crop+translate of two native panels plus one documented retouch that removes the printed download-pointer line (`scripts/journey2/retouch-credit-line.js`, PD-078).
   The model owns every rule; the view builds commands and never mutates a
   document. Both pure modules are `require()`d by `tests/journey2-*.test.js`.
 - **Document** (`schemaVersion` 1, `kind` `bacchus-atlas.journey2.gm-backup`):

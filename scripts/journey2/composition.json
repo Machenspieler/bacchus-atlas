@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "compositionId": "valloren-world-v1",
-  "description": "Deterministic assembly of the two native Valloren map panels into one canonical world raster. Pure integer crop + translate; no resampling, warp, filling or redraw.",
+  "description": "Deterministic assembly of the two native Valloren map panels into one canonical world raster. Integer crop + translate; no resampling or warp. One documented post-step (see postProcess) removes the printed download-pointer line.",
   "worldSizePx": [
     4848,
     3185
@@ -69,6 +69,14 @@
         3185
       ],
       "notes": "x 71..2494, y 58..3242 (native). Keeps the outer right/top/bottom frame with a 2 px white margin; drops the seam frame (cols 63-67) and cols 68-70 which duplicate west cols 2479-2481."
+    }
+  ],
+  "postProcess": [
+    {
+      "id": "remove-credit-line",
+      "script": "scripts/journey2/retouch-credit-line.js",
+      "decision": "PD-078",
+      "note": "Copies clean hex-lattice background (the same rows 121 px higher) over the letters and halo of 'FOR ADDITIONAL VERSIONS OF THIS MAP, VISIT DAGGERHEART.COM/DOWNLOADS.' (about 48,600 px in world x 3107..4408, y 3078..3121). Nothing else changes; the 'scale statement' line above it is kept. The native panels are not in the repo, so the shipped raster was retouched in place; pixelSha256 in map-template.json is the hash after this step."
     }
   ],
   "seam": {

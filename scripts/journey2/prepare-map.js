@@ -4,8 +4,8 @@
    Dev-only. Assembles the canonical Journey 2 world raster from the two
    native panels of the (immutable) handoff package, exactly as described by
    scripts/journey2/composition.json: an integer crop and an integer
-   translation per panel, nothing else — no scaling, warping, fill or
-   redraw. Deterministic: same inputs -> same pixels (the pixel hash below
+   translation per panel, then the single documented retouch of
+   retouch-credit-line.js (PD-078) — no scaling or warping. Deterministic: same inputs -> same pixels (the pixel hash below
    is what a re-run must reproduce).
 
    Usage:
@@ -23,6 +23,7 @@ const sharp = require('sharp');
 
 const ROOT = path.join(__dirname, '..', '..');
 const composition = require('./composition.json');
+const { retouchCreditLine } = require('./retouch-credit-line');
 
 function sha256(buf) { return crypto.createHash('sha256').update(buf).digest('hex'); }
 
@@ -66,6 +67,7 @@ async function main() {
   const args = parseArgs(process.argv);
   const [worldW, worldH] = composition.worldSizePx;
   const { raw, sources } = await assemble(args.handoff);
+  const retouched = retouchCreditLine(raw, worldW, worldH);   // PD-078: the one pixel edit after crop+translate
   const pixelSha256 = sha256(raw);
   const png = await sharp(raw, { raw: { width: worldW, height: worldH, channels: 3 } })
     .webp(composition.output.encoderOptions).toBuffer();
@@ -74,6 +76,7 @@ async function main() {
     compositionId: composition.compositionId,
     worldSizePx: composition.worldSizePx,
     sources,
+    retouchedPixels: retouched,
     output: { path: composition.output.path, pixelSha256, fileSha256: sha256(png), bytes: png.length },
   };
   if (args.check) {
