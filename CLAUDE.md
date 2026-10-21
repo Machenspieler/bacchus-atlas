@@ -57,12 +57,12 @@ versions; there is no compilation, transpilation, or bundling step. See
 script load order, state ownership, rendering boundaries, and the build
 pipeline in detail).
 
-`package.json` exists only for one dev-only offline tool
-(`scripts/generate-adversary-art.js`, which uses `sharp` to pre-generate
-Prep adversary art derivatives — see
-[docs/architecture.md](docs/architecture.md)'s "Adversary artwork data and
-generation"); nothing under `dist/` or the runtime `js/`/`css/` loads
-anything from `node_modules/` (gitignored), and this doesn't relax the
+`package.json` exists only for dev-only offline tooling: `sharp` for
+`scripts/generate-adversary-art.js` (pre-generates Prep adversary art
+derivatives — see [docs/architecture.md](docs/architecture.md)'s "Adversary
+artwork data and generation") and `playwright` for the Journey browser checks
+under `scripts/journey2/`; nothing under `dist/` or the runtime `js/`/`css/`
+loads anything from `node_modules/` (gitignored), and this doesn't relax the
 "no runtime dependency" rule above.
 
 ## Critical invariants
@@ -185,8 +185,9 @@ undo, drag-to-delete or `+` grid cell. Pointer/geometry logic lives in
 ### Journey map editor (internally "Journey 2")
 
 `#/journey` is the one canonical Journey page and a GM tile editor on the original Valloren map (its tools are an always-visible labelled rail — Party, Route, Find Echo, Display menu, Campaign menu — beside a panel with a GM | Players segment, New region and the stock, plus a floating Undo / zoom / Fit bar; Player Preview is the same screen, panel and camera — PD-040, PD-057; generate a
-batch → drag one / drag all remaining → move, return, Undo/Redo → local save
-and full JSON backup). The rules live in the pure `js/journey2-model.js`
+batch → drag one / drag all remaining → move, return, Undo/Redo → local autosave; the
+full JSON backup has no toolbar button — export is offered by the save-failed / conflict banners and before "Clear the whole map…", import by the unreadable-map banner).
+The GM editor is not offered on touch-only devices (`(pointer: coarse) and (hover: none)` shows an explanation page instead, PD-048); the player page is. The rules live in the pure `js/journey2-model.js`
 (document, placement policy, atomic commands, history); the view only builds
 commands. Route cutover (PD-029): `#/journey` (+ `/env/<id>`) is the only public route;
 `#/journey2[/env/<id>]` is a replace-redirect kept for old bookmarks; the standalone generator page is retired.
@@ -206,10 +207,10 @@ same-region edges — that Player Preview draws only between revealed cells via 
 read in one transient, GM-only Region Inspector over the map (opened from a hex
 or a card's Inspect button, independent of the expanded card, never persisted,
 never in history); the sidebar only generates, places and deletes. Soul Echoes are GM-only
-campaign data (`soulEchoes`, at most nine sanctuaries): one toolbar button places all nine by the
+campaign data (`soulEchoes`, at most nine sanctuaries): one Campaign-menu item places all nine by the
 book's west-to-east rule, one removes them, and they never reach print; drawn as the "Echo Resonance" marker — broken ripple rings round a core, and a separate static spent drawing once collected, never the live one dimmed (PD-071); players see only a Collected Echo on a revealed sanctuary hex (PD-022, PD-052).
 Generated sanctuaries are GM-only too (`sanctuaries.entries`, one per printed sanctuary icon, numbers not
-sentences): one toolbar button rolls all 56 through the book's sanctuary tables (`journey2Generator`), clicking an icon opens an
+sentences): one Campaign-menu item rolls all 56 through the book's sanctuary tables (`journey2Generator`), clicking an icon opens an
 overlay with Delete / Reroll / close, and none of it reaches Player Preview or print (PD-023).
 A placed hex carries one optional catalog Environment (`tile.environmentId`, id only; follows the tile, dies with
 it; GM-only, never in Player Preview or print — PD-025). It is dealt automatically at placement (PD-033): from the region's biome
@@ -251,8 +252,9 @@ Display menu (PD-066): "Biome colors", "Sepia map" and "Regions" live in one rai
 "Regions" (PD-062): a display switch (default off, `regionIcons` in `dhcodex_journey2_ui`) that draws ONE icon per region instead of one per hex, as in the book — GM: all of a region's hexes; Player Preview / player page: only its revealed hexes (a one-hex region shows its own icon, connected revealed hexes share one); picked by the pure `Geo.pickRegionIconCells`; the print is unchanged.
 Campaign menu housekeeping (PD-074): **Return Shadowblight home** resets `shadowMarks` (`added` and `suppressed` both emptied; one Undo entry) and **Clear the whole map…** empties every campaign field via `replaceDocument(Model.emptyDocument())` — not undoable, so two dialogs (the first offers a backup download) and a `store.savePrevious` recovery copy come first; camera, Display switches and other storage are kept.
 Static effects (PD-076): the Display menu's device-wide switch (key `dhcodex_motion`, outside the four `dhcodex_journey2_*` keys, so the player page may use it; follows the system's reduced motion until the user chooses) draws Soul Echo, destroyed sanctuaries and Shadowblight as one still frame; not in the link, the map or print.
+Rendering and performance (detail: [docs/architecture.md](docs/architecture.md) "Journey 2 on phones: light raster and camera layer", "Shadowblight FX"): touch screens load the half-resolution light raster; `.j2-world` carries `will-change: transform` only while the camera moves; the camera is clamped to the map and zooms out no further than Fit (PD-059); the Shadowblight FX are throttled and idle during camera moves, off-screen or hidden, the ruin FX skip off-screen instances, both draw one still frame under reduced motion / "Static effects", and the Nebula cosmos sits outside the camera transform. The FX are presentation only — document, link and print data never depend on them.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-077/PD-076/PD-074/PD-073/PD-072/PD-071/PD-070/PD-066/PD-067/PD-068/PD-057/PD-052/PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040/PD-041/PD-045/PD-051 (Place all rolls a random frozen footprint per press), detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-078/PD-077/PD-076/PD-074/PD-073/PD-072/PD-071/PD-070/PD-066/PD-067/PD-068/PD-048/PD-057/PD-052/PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040/PD-041/PD-045/PD-051 (Place all rolls a random frozen footprint per press), detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 
@@ -265,6 +267,7 @@ node scripts/build.js                     # copy runtime files into dist/
 node scripts/version-assets.js            # stamp content-hash versions into dist/index.html
 node scripts/check-asset-versioning.js    # verify the versions above are correct
 node scripts/check-unlisted-build.js      # verify dist/ still holds the unlisted model
+node scripts/check-journey2-build.js      # verify no Journey development material is in dist/
 ```
 
 This is the exact sequence `.github/workflows/deploy.yml` runs before every
@@ -284,6 +287,8 @@ versioning wiring itself.
 | Product behavior / "is this intentional?" | [docs/product-decisions.md](docs/product-decisions.md) |
 | Russian translation terminology | [docs/translation-glossary.md](docs/translation-glossary.md) |
 | Where something lives / how the app is wired together | [docs/architecture.md](docs/architecture.md) |
+| What the product is, how to run/deploy it, where storage and sharing limits are | [README.md](README.md) |
+| Planning workflow (historical process notes, not a spec) | [planning.md](planning.md), [ui-mockups.md](ui-mockups.md) |
 
 ## Definition of done
 

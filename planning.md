@@ -1,5 +1,7 @@
 # Planning new work
 
+> **Status:** a working-process note for planning a change, not a product specification. Product behavior lives in [docs/product-decisions.md](docs/product-decisions.md) and [docs/architecture.md](docs/architecture.md); the workflow itself is implemented as the `/plan-change` skill.
+
 Bacchus's Atlas has no issue tracker, no orchestrator, and no multi-agent
 handoff protocol — it's a static site maintained through direct commits,
 usually one focused chat session per change. The planning workflow for a

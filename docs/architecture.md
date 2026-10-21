@@ -17,11 +17,15 @@ build's asset-versioning pass:
 
 ```
 js/safe-storage.js      — localStorage read/write boundary
+js/motion-pref.js       — the device-wide "Static effects" preference (dhcodex_motion)
 js/data-version.js      — versionedDataUrl() for data/*.json fetches
 js/route-utils.js       — location.hash parsing/building
 js/list-utils.js        — Lists name validation
 js/search-index.js      — environment search index builder
-js/prep-utils.js — Prep pure selection/search/filter logic
+js/catalog-progressive.js — catalogue "Show more" batching arithmetic (pure)
+js/random-environment-utils.js — Random Environment card badge + pick (pure)
+js/prep-utils.js        — Prep pure selection/search/filter logic
+js/prep-share-utils.js  — Prep share-link payload encode/decode (pure)
 js/prep-reorder-utils.js — Prep manual ordering: id moves/inserts, insertion-slot geometry, autoscroll curve (pure)
 js/prep-reorder-ui.js   — Prep drag-and-drop / Alt+Arrow controller (pointer events, insertion line, autoscroll)
 js/potential-adversary-utils.js — Potential Adversaries parser + Prep recommendation matching (shared by env detail + Prep)
@@ -32,15 +36,23 @@ js/soundboard-manifest.js — the nine bundled sound effects + stored-level norm
 js/soundboard-icons.js  — the soundboard's inline SVG icons (pure)
 js/soundboard-engine.js — shared Web Audio engine (context injected, so testable)
 js/soundboard-ui.js     — global soundboard panel + header trigger
+js/journey2-geometry.js … js/journey2-view.js — the Journey map editor (see "Journey 2 map editor" below):
+    geometry, model, store, biome-tint, projection, print, share, locate, shadow-marks, route,
+    env-deal, encounter-roll, ruin-fx, shadowblight-fx, then the view
+js/ribbon-flow.js       — header-ribbon / catalogue-filter-row layout helper (DOM only)
 js/app.js               — everything else: state, rendering, event wiring
 ```
 
+`css/styles.css` (site-wide, design tokens) and `css/journey2.css` (scoped to the Journey editor and player page) are both linked from `index.html`.
+Fonts come from Google Fonts; everything else is local.
+
+```
+
 Everything above `js/app.js` is a dependency-free module exposing a global
-(`SafeStorage`, `RouteUtils`, `ListUtils`, `SearchIndex`, `PrepUtils`, `PrepReorderUtils`, `FreshCutGrassUtils`, `PotentialAdversaryUtils`, `SoundboardManifest`, `SoundboardIcons`, `SoundboardEngine`)
+(`SafeStorage`, `MotionPref`, `RouteUtils`, `ListUtils`, `SearchIndex`, `CatalogProgressive`, `RandomEnvironmentUtils`, `PrepUtils`, `PrepShareUtils`, `PrepReorderUtils`, `PotentialAdversaryUtils`, `FreshCutGrassUtils`, `BattlePoints`, `SoundboardManifest`, `SoundboardIcons`, `SoundboardEngine`, and the `Journey2*` modules)
 that also works under plain Node `require()` — that's what makes each one
 directly unit-testable in `tests/*.test.js` without a DOM or bundler.
-`js/soundboard-ui.js` is the one exception: it needs the DOM, so it is only
-exercised in the browser (its logic lives in the engine and manifest).
+The DOM-bound files — `js/soundboard-ui.js`, `js/battle-points-ui.js`, `js/prep-reorder-ui.js`, `js/journey2-view.js`, `js/ribbon-flow.js` and `js/app.js` — are exercised in the browser (and, for the Journey view and the others, partly through source-guard tests); their logic lives in the pure modules beside them.
 
 ## Catalog toolbar row
 
@@ -87,9 +99,10 @@ One module-level `state` object holds everything: `lang`, the loaded
 catalogs (`builtinEnvs`, `regions`, `itemCatalog`, `adversaryCatalog`,
 `prepCatalog`), the search index (`environmentSearchIndex`, a
 `Map<envId, record>` built once — see below), every persisted slice loaded
-through `SafeStorage` at construction time (`lists`, `envLists`, `journey*`,
-`prep`), transient UI-only state that is deliberately never persisted
-(`filtersOpen`, `prepUI`, `journeyDraft`), and the current parsed
+through `SafeStorage` at construction time (`lists`, `envLists`, `prep`, and the
+language), the loaded Journey generator tables (`state.journey`, from
+`data/journey.json`, never persisted), transient UI-only state that is
+deliberately never persisted (`filtersOpen`, `prepUI`), and the current parsed
 route (`state.route`, from `readCurrentRoute()`).
 
 There is no separate "store" abstraction or reducer — functions read and
@@ -887,10 +900,17 @@ pauses or ducks music. Product rules: [PD-011](product-decisions.md).
 and `localStorage` — see [.claude/rules/browser-state.md](../.claude/rules/browser-state.md)
 for the read/write/migration contract. `LS_KEYS` (top of `js/app.js`) is the
 full list of persisted keys: language, lists, environment-to-list
-membership, the storage-notice dismissal flag, the two Journey tables, the
-global soundboard levels (see "Global soundboard"), and
-Prep's multi-prep store (see "Prep multi-prep model"
-above). `persist()`/`persistRaw()`/`persistBatch()`
+membership, the storage-notice dismissal flag, Prep's multi-prep store (see
+"Prep multi-prep model" above) and its hint / item-view flags, the Battle Points
+character count, and the global soundboard levels (see "Global soundboard").
+The Journey editor keeps its own four `dhcodex_journey2_*` keys
+(`js/journey2-store.js`) and the device-wide `dhcodex_motion` preference
+(`js/motion-pref.js`) outside `LS_KEYS`; the retired `dhcodex_journey_regions` /
+`dhcodex_journey_sanctuaries` keys are no longer read or written. See
+[.claude/rules/browser-state.md](../.claude/rules/browser-state.md) for the full
+list and contracts. Nothing is synced between browsers or devices, and the only
+things that leave the browser are explicit: the Journey JSON backup, the Journey
+player link, the Prep share link and the print. `persist()`/`persistRaw()`/`persistBatch()`
 in `js/app.js` wrap `SafeStorage`'s write functions and centralize
 write-failure reporting (`reportStorageWriteFailure()`).
 
@@ -912,16 +932,21 @@ directly rather than driving it through the DOM:
 | `js/potential-adversary-utils.js` | Potential Adversaries parsing/alias/family resolution (incl. the Bandits → Jagged Knife rule), canonical-name catalogue matching, per-environment recommendation index, recommendation provenance aggregation |
 | `js/battle-points.js` | Battle Points base budget, per-type cost, automatic/manual adjustments, number formatting |
 | `js/random-environment-utils.js` | Random Environment card's Tier-badge derivation and pool pick |
+| `js/catalog-progressive.js` | Catalogue "Show more" batch sizing |
+| `js/prep-share-utils.js` | Prep share-link payload encoding / decoding / normalization |
+| `js/motion-pref.js` | the "Static effects" preference (`MotionPref.load/save/isStatic`) |
+| `js/journey2-*.js` (every module except the DOM-bound `journey2-view.js`; the two FX modules have a pure core and a DOM part) | Journey rules and projections: geometry, model/history, store, biome tint, player projection, print model, share codec, locate, shadow marks, route planner, environment deal, encounter roll |
 
 ## Build and deployment flow
 
 ```
 node --test tests/*.test.js         # unit tests for every pure module + validator
 node scripts/validate-data.js       # semantic validation of everything under data/
-node scripts/build.js               # copy-only: index.html, css/, js/, data/, img/, favicons → dist/
+node scripts/build.js               # copy-only: index.html, css/, js/, data/, img/, sound/, favicons → dist/
 node scripts/version-assets.js      # computes UI/data content hashes, writes them into dist/index.html
 node scripts/check-asset-versioning.js  # re-derives both hashes, fails on any mismatch
 node scripts/check-unlisted-build.js    # fails if dist/ regresses the public-but-unlisted model
+node scripts/check-journey2-build.js    # fails if Journey development material is in dist/ or a Journey runtime file is missing
 ```
 
 This is exactly the sequence `.github/workflows/deploy.yml` runs on every
@@ -950,10 +975,26 @@ stays copy-only.
 | Initial loading shell lifecycle | `js/app.js` (`beginInitialLoading()` etc.) | `tests/loading-state.test.js` |
 | Random Environment card Tier badge/pick | `js/random-environment-utils.js` | `tests/random-environment-utils.test.js` |
 | Soundboard manifest, stored levels, audio engine races | `js/soundboard-manifest.js`, `js/soundboard-engine.js` | `tests/soundboard.test.js` |
+| Prep share links | `js/prep-share-utils.js` | `tests/prep-share-utils.test.js` |
+| Catalogue progressive loading | `js/catalog-progressive.js` | `tests/catalog-progressive.test.js` |
+| Static-effects preference | `js/motion-pref.js` | `tests/motion-pref.test.js` |
+| Journey model, projection, print, share, route, locate, shadow marks, FX, store, build guard | `js/journey2-*.js`, `scripts/build.js` | `tests/journey2-*.test.js`, `tests/journey-*.test.js`; real-browser checks under `scripts/journey2/` are run by hand, not in CI |
 
 Run all of them with `node --test tests/*.test.js`.
 
 ## Journey 2 map editor (`#/journey`, Phase 1; Phases A, B and C below)
+
+> **Reading this section.** "Journey 2" is the retained internal name of the one public Journey page (`#/journey`); public text just says "Journey". The bullets below were written phase by phase (Phase 1, A–H, later PD-0xx decisions) and later phases amend earlier ones — where two statements differ, the later PD in [product-decisions.md](product-decisions.md) wins. Section text that says `#/journey2` describes that same route under its pre-cutover address.
+
+**Gameplay state vs. presentation.** Journey keeps these apart on purpose:
+
+- *Campaign state* is the saved map **document** (`js/journey2-model.js`; stored under `dhcodex_journey2_map`, the JSON backup): batches and tiles, `playerVisibility` (Fog of War), Soul Echoes, sanctuaries and their names, destroyed sanctuaries, the party marker, and `shadowMarks`. It changes only through model commands and carries Undo/Redo. The player link (`Journey2Share`) and the print (`Journey2Print`) are derived from it through the pure player / print projections (`js/journey2-projection.js`), which is where Fog of War is applied: unrevealed cells and GM-only data are absent from what players or the printer receive.
+- *Presentation* never alters that document: the Shadowblight living shadow, the torn holes and Nebula, the ruin fire and smoke, the Echo Resonance animation, Biome Tint, Sepia, the fog hatch and the camera. FX modules read cell lists and the camera and write nothing to the document, storage or history. Their quality, throttling and still-frame fallbacks (reduced motion, the "Static effects" switch, WebGL context loss) change how the map is drawn, never what it contains. View preferences (`dhcodex_journey2_ui`, `dhcodex_motion`) are separate from campaign state.
+- Consequently the print draws no FX (it draws the Shadowblight X and skull glyphs and static icons for a collected Echo and a destroyed sanctuary), and the player page, which has no storage, runs the same FX code over a synthetic document rebuilt from the link.
+
+**Platforms.** The GM editor is not mounted on a touch-only device (`journeyUnsupportedHere()` in `js/app.js`, `(pointer: coarse) and (hover: none)`, PD-048): an explanation page is shown and no `dhcodex_journey2_*` key is read or written. The player page (`#/map/<link>`, PD-052, PD-067) is phone-first and mounts the same view in `playerMode`.
+
+**Backup.** `Journey2Model.serializeBackup()` produces the versioned document (`bacchus-atlas-journey-map-<date>.json`). The editor has no toolbar Export/Import button: export is offered by the conflict / save-failed / storage-unavailable banners and as a "download first" step before "Clear the whole map…", and import by the unreadable-map banner (the original "full GM JSON backup" of PD-016 predates the removal of the Backup menu). Dev scripts reach it through `Journey2View.debugApi()`.
 - **Route cutover (Phase G, PD-029).** The public canonical route is `#/journey` (+ `#/journey/env/:id`), route name `journey`,
   rendered by `renderJourneyPage()` → `Journey2View.mount()`; `render()` unmounts the view on every other route and an overlay
   open/close (same base route) only calls `syncDetail()`, so the editor is never remounted by it. `#/journey2[/env/:id]` is parsed by

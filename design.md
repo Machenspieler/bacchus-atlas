@@ -403,6 +403,15 @@ only the Shadowblighted badge and the hover/focus state of Remove Echoes. The ca
 `.icon-btn` with a magnifier — the info glyph is reserved for help. In Player Preview the fog brush is a rail tool
 that shows the gold pressed fill (its on-map chip names the active tool), and the way back is the GM side of the segment.
 
+### Journey map presentation (screen vs print)
+The map is the book's own artwork (`img/journey2/valloren-world.webp`), not a redrawn one; everything the editor adds sits on it as a thin, readable layer. Presentation never changes campaign data (see [docs/architecture.md](docs/architecture.md) "Gameplay state vs. presentation").
+- **Ground.** Sepia by default with a "Sepia map" switch (PD-060); Biome Tint is a faint derived wash inside placed hexes (PD-026), switchable under Display with the "Regions" icon mode (PD-062, PD-066). Region boundaries are one thick divider between regions, thin within one.
+- **Fog (Player Preview and the player page).** Flat grey, fine grain, feathered edge, translucent over the whole base map, with only the printed title / compass / scale lettering cut clear (PD-020, PD-063). The GM view never draws the fog veil (PD-036).
+- **Shadowblight.** On screen, Shadowblighted land is a living, low-frequency shadow over the map (no X and no skull glyph while the FX are on); Fully Shadowblighted land is a torn hole in the paper with a worn, aged rim, showing the Nebula (`img/journey2/void-nebula.webp`) behind it. The Nebula is fixed to the viewport — it never pans or scales with the map — and icons printed over a tear are redrawn as parchment patches (PD-072). Fear-red remains reserved for the Shadowblighted badge and destructive hover states.
+- **Markers.** The Soul Echo is the "Echo Resonance" drawing, with a separate static spent drawing once collected (PD-071); destroyed sanctuaries burn with a fire-and-smoke plume (PD-070); the party is one gold star (PD-045).
+- **Motion.** The animated effects run only for what is on screen (the Shadowblight shadow also idles while the camera moves); under `prefers-reduced-motion` or the Display menu's "Static effects" switch (PD-076) each is one still frame.
+- **Print is not a screenshot.** The player print (PD-028, PD-073) is eight A4 portrait sheets, black and white: no fog, no tint, no FX, no GM data; the Shadowblight X and skull, a collected Echo and a destroyed sanctuary are drawn as black-and-white static glyphs (PD-072, PD-077). Light-scheme only, whatever the app theme.
+
 ### Toast & tooltip
 Toasts stack from one screen corner (the same corner the "back to top" button
 claims, so the two never collide). The tooltip is a single reused custom
@@ -502,6 +511,8 @@ One compact header, `--hdr-h` (45px) tall, on every route — brand (28px logo +
 
 Colours are tokens: `--rb-catalog` gold `#c9952f`, `--rb-lists` purple `#6c3698` (Core Set), `--rb-prep` green `#2e8062`, `--rb-journey` red `#b70c28` (Hope & Fear), sampled from product photos of the real ribbons. They identify a page and never a state, an intentional exception to "gold is affirmative" and "red is Fear": don't reuse them elsewhere. The current page is marked by length, brightness and `aria-current="page"`, never by colour alone. On a phone (<=640px) the title comes off, the ribbons narrow to 40px with icons only and shorter tails. Motion (length spring, drop-and-swing on activation, hover sway) is off under `prefers-reduced-motion`. On the catalogue and on a list the filter row is sticky under the header and 10% smaller (`zoom: 0.9`); the footer is pinned to the bottom of short pages and holds the "Daggerheart™ Compatible" line (Prep and Journey have no footer, by decision).
 
+**Photographic fabric skin (PD-054).** The default ribbon look is photographic: layered `img/ui/ribbon-fabric/*.webp` cloth layers (generated offline from a photo master by `scripts/generate-ribbon-fabric.js`); `?ribbonSkin=css` selects the original plain-CSS ribbons. The skin changes only the ribbon's material, not its tokens, lengths, motion or `aria-current` rule.
+
 ## Responsive breakpoints
 
 The layout uses a small, deliberate set of breakpoints rather than a generic
@@ -518,8 +529,8 @@ are not breakpoints and are not listed.
 | --- | --- | --- |
 | `<=640` / `>=641` | global (also JS `ENV_ART_ROOM`, `sizes` hints) | phone composition: compact header, sheet-style detail card, dimmed watermark, stacked toasts, full-width filter rows |
 | `<=400`, `<=480` | component | nav labels drop to icons; detail footer and Prep "New" compaction |
-| `<=760` / `>=761` | Prep, Journey | Prep bar and picker toolbars wrap, 44px touch rows; Journey's two generator columns stack |
-| `<=900` / `>=901` | Catalog, Prep | Catalog filters collapse behind the disclosure / sit inline in the three-column bar; Prep goes single column |
+| `<=760` / `>=761` | Prep | Prep bar and picker toolbars wrap, 44px touch rows |
+| `<=900` / `>=901` | Catalog, Prep, Journey | Catalog filters collapse behind the disclosure / sit inline in the three-column bar; Prep goes single column; Journey's floating panels become map-wide |
 | `641–1091` | Catalog | grid capped at two 420px cards (a third 340px column needs a 1092px viewport) |
 | `<=1199` / `>=1200` | Prep | two-column (central on top) vs three-column workspace; page scroll becomes internal panel scroll |
 | `1200–1439` | Prep | laptop range: shell padding and gap drop one step, grid fractions `.8fr / 1.5fr / 1fr` (≈592px central at 1366) |
@@ -566,7 +577,7 @@ table says. The layouts in between are valid, just one column narrower.
   treatment.
 - Don't add a second reading typeface (serif or otherwise) outside the
   Forum/Spectral/JetBrains Mono trio, and don't use `--font-ui` outside
-  Prep or `--font-map` outside the Journey 2 map's SVG lettering.
+  Prep or `--font-map` outside the Journey map's SVG lettering (sanctuary names).
 - Don't add `content-visibility` or a similar layout-estimate optimization to
   `.card` — it was tried and measured to make the scrollbar lie.
 - Don't reach for a native `<select multiple>` for a new multi-choice filter

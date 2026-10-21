@@ -1,5 +1,7 @@
 # UI mockups
 
+> **Status:** a working-process note for the planning step, not a description of the shipped product. For what the app looks like and does today, see [design.md](design.md), [docs/architecture.md](docs/architecture.md) and [docs/product-decisions.md](docs/product-decisions.md). Tool names below (`preview_*`) refer to the Claude Code preview tooling and may change.
+
 Guidance for the mockup step referenced from [planning.md](planning.md). Use
 this when a plan introduces a new UI element, changes layout or interaction,
 or leaves visual structure under-specified. The goal is a lightweight,
@@ -74,7 +76,7 @@ These are easy to violate in a "just a mockup" mindset — don't:
 ## Closing the loop
 
 Once a mockup is approved — by the user, or self-approved for a routine,
-low-ambiguity case per planning.md's "Deciding vs. asking" — record the
+low-ambiguity case — record the
 approved constraints directly in the plan file as concrete UI/behavior
 requirements, not as a "see mockup" pointer. The mockup file itself is
 scratch and can be discarded with the rest of `.claude/plans/<slug>/` once

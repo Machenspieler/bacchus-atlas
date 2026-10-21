@@ -467,6 +467,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
   `data/prep.json`.
 
 ## PD-015: Journey 2 is a separate experimental route on the original Valloren map
+- **Status:** Historical in its route and "experimental" framing — superseded by PD-029 (the editor became the canonical `#/journey`; `#/journey2` is only a legacy redirect). The geometry, immutable-marker and legacy-isolation rules below still stand.
 - **Date:** 2026-10-06
 - **Decision:** `#/journey2` is a GM-only map workspace built on the
   *original* Journey to Horizon artwork (two native panels assembled into one
@@ -492,6 +493,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Where:** [architecture.md](architecture.md) "Journey 2 diagnostic view"; the Stage 0 evidence folder was removed (recoverable from git history before `b8b386f`).
 
 ## PD-016: Journey 2 Phase 1 — a batch/tile map editor with its own storage
+- **Status:** Active as the editor's foundation (route since renamed by PD-029). Note, not a new decision: the "full GM JSON backup" below is still the document format, but the toolbar Backup menu has since been removed — see [docs/architecture.md](architecture.md) "Journey 2 map editor" → Backup for where export and import are reachable today.
 - **Date:** 2026-10-06
 - **Decision:** `#/journey2` becomes a usable GM tile editor: generate a
   *batch* (one card per generated region, not per hex), place it one hex at a
@@ -703,7 +705,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Where:** [architecture.md](architecture.md) "Connected placement and region perimeter (PD-021)".
 
 ## PD-022: Journey 2 — Soul Echoes are GM-only, placed by one button
-- **Status:** Active. **Amended by PD-052 (planned):** a *collected* Echo — and only that, only on a revealed sanctuary cell — becomes visible to players; an Available Echo stays secret.
+- **Status:** Active. **Amended by PD-052 (implemented):** a *collected* Echo — and only that, only on a revealed sanctuary cell — becomes visible to players; an Available Echo stays secret.
 - **Date:** 2026-10-07
 - **Context:** the *Journey to Horizon* campaign frame says the GM chooses nine sanctuaries before the first
   session to hold a Soul Echo: far enough apart that the PCs cross all of Valloren, not predictable (no
@@ -958,7 +960,7 @@ what it explicitly rules out, and — when identifiable — what it replaced.
 - **Where:** `js/route-utils.js`, `js/app.js` (`render`, `routeTitle`, `renderJourneyPage`), `index.html` boot script, `tests/routing.test.js`, `tests/journey-route-cutover.test.js`,
 
 ## PD-030: Journey — "Locate Soul Echoes" is a GM-only map tool with a magic compass, and Echoes can be collected
-- **Status:** Active. **Amended by PD-052 (planned):** the Collected state is no longer GM-only (see PD-022); the compass and everything else stay GM-only.
+- **Status:** Active. **Amended by PD-052 (implemented):** the Collected state is no longer GM-only (see PD-022); the compass and everything else stay GM-only.
 - **Date:** 2026-10-07
 - **Decision (what it is):** the campaign's downtime move "Locate Soul Echoes" becomes a GM-only toolbar action beside **Soul Echoes** / **Remove Echoes**. The GM picks the party's
   hex on the map; the app answers with an animated magical compass pointing toward the **nearest uncollected Soul Echo** and one text line (`NNE · North-northeast`).

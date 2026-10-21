@@ -176,3 +176,61 @@ here, per [docs/product-decisions.md](../product-decisions.md) PD-004 — this
 contract does not restrict that. English text is canonical (see
 [.claude/rules/data.md](../../.claude/rules/data.md)); Russian translations
 follow [docs/translation-glossary.md](../translation-glossary.md).
+
+## Item names in feature lists (`data/items.json`)
+
+Some features list loot as a bulleted list. A list item that names an entry of
+`data/items.json` renders as a button that opens an item card over the
+environment card; one that doesn't stays plain text. The file has two parts:
+
+```json
+{
+  "aliases": { "Nursewood": "w62", "Древо-Нянька": "w62" },
+  "items": {
+    "w62": {
+      "kind": "consumable", "src": "wondrous", "roll": 62, "img": "w62.webp",
+      "en": { "name": "Nursewood Sap", "description": "…" },
+      "ru": { "name": "Целебная Смола", "description": "…" }
+    }
+  }
+}
+```
+
+- `items` holds both localizations and comes from the Daggerheart Loot
+  Generator's own data (<https://artex-x.github.io/daggerheart-loot/>), which
+  is also where item art and item pages are linked from at render time —
+  neither is copied into this repository. `data/prep.json` references the same
+  items by id for Prep's item picker (PD-006).
+- `aliases` maps a name used in a stat block (the plant, `Nursewood`) to the
+  catalogue entry it yields (`Nursewood Sap`). Items' own catalogue names work
+  without an alias.
+- Matching ignores case, punctuation and whitespace, and the name must fill the
+  whole list item (or stand before a colon/dash); a mention inside a sentence
+  never becomes a link.
+- The optional `craft` field is the id of what the item upgrades into; the
+  reverse direction ("Crafted from") is derived.
+- Russian plant names in stat blocks follow the loot generator's own RU item
+  names (so "Тенелилия" opens "Лепестки Тенелилии"); when translating a new
+  environment, take a plant's name from its item's RU name, never translate it
+  fresh.
+
+## Environment background art
+
+An environment may have art that fills the screen behind its open card
+(slightly blurred and darkened; everything interactive stays in front).
+
+1. Put the original PNG in `img/env/src/` (gitignored, never committed),
+   encode a JPEG named after the environment's `id` to `img/env/<id>.jpg`, at
+   the master's own pixel width (the blur is light, so an upscale would show).
+2. Add that `id` to the `ENV_ART` set in `js/app.js`. The set is listed by hand
+   so environments without art never probe for a 404.
+
+The image must be **landscape, 1536 × 1024** (the layer covers a landscape
+screen with `object-fit: cover`); biome art in `img/biomes/` is the opposite,
+portrait, because it is cropped into a narrow card banner. Composition is built
+around the 720 px centred card: keep the middle calm and anything meant to be
+seen in the side thirds. No cache-busting step is needed — see
+[.claude/rules/build-and-deploy.md](../../.claude/rules/build-and-deploy.md).
+Under 641 px the card fills the screen and the image is not loaded. Two CSS
+knobs in `css/styles.css`: `--bd-blur` on `.env-backdrop` and
+`--ink-overlay-art` on `:root`.
