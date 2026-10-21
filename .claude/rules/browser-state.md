@@ -133,6 +133,12 @@ The editor's public route is `#/journey` (`#/journey2` redirects, PD-029); the `
   `js/list-utils.js`/`js/prep-utils.js` when documenting or
   discussing this layer — don't invent an abstraction that isn't there.
 
+## Journey "Static effects" device preference (PD-076)
+
+`dhcodex_motion` (bare JSON `"static"` | `"animated"`, none = follow the system's reduced motion) is read and written only through `js/motion-pref.js`
+(`MotionPref.load/save/isStatic`, `SafeStorage.validators.motionPref`). It is deliberately outside the four `dhcodex_journey2_*` keys: the player page (`storage: null`)
+receives it as `motionStorage` and may touch no other key. Never add it to the map document, the share link or Undo history.
+
 ## Journey map: multi-tab write protection (PD-053)
 
 `Journey2Store.save()` refuses (`reason: 'conflict'`) when `dhcodex_journey2_map` no longer holds the text this tab last read or wrote; the view then

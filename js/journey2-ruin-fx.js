@@ -459,10 +459,24 @@
     }
   }
 
+  /** Whether new instances start as one still frame: the host's "Static effects" choice (PD-076) when it has set one, else the system's reduced-motion setting. */
+  let stillMode = null;
+  function stillWanted() { return stillMode !== null ? stillMode : !!(G.matchMedia && G.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+
+  /** Switches every live instance, and every later one, between the still frame (true) and the animation (false); the host's setting overrides the system's. */
+  function setStill(flag) {
+    stillMode = !!flag;
+    for (const inst of instances) {
+      inst.still = stillMode ? 23 + inst.seed : 0;
+      drawInstance(inst, stillMode ? inst.still : G.performance.now() / 1000);
+    }
+    if (!stillMode && instances.size && !rafId) rafId = G.requestAnimationFrame(tick);
+  }
+
   /** Starts (or restarts) the effect on every `.j2-ruin2` element under `scope`: each holds a `canvas[data-fx="smoke"]` and a `canvas[data-fx="fire"]`. Returns the number started. */
   function attach(scope) {
     if (!scope || !scope.querySelectorAll) return 0;
-    const reduce = !!(G.matchMedia && G.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const reduce = stillWanted();
     let n = 0;
     scope.querySelectorAll('.j2-ruin2').forEach(el => {
       const sc = el.querySelector('canvas[data-fx="smoke"]'), fc = el.querySelector('canvas[data-fx="fire"]');
@@ -486,5 +500,5 @@
     return fo(SMOKE, 'smoke') + fo(FIRE, 'fire');           // the flames burn in front of their own smoke: its dark base is what makes them glow
   }
 
-  return Object.freeze({ SMOKE, FIRE, FLAMES, LAYOUTS, layoutOf, stillOf, bakeNoise, renderSmoke, renderFire, fireLevel, lodOf, firePpu, smokePpu, attach, markup, seedOf });
+  return Object.freeze({ SMOKE, FIRE, FLAMES, LAYOUTS, layoutOf, stillOf, bakeNoise, renderSmoke, renderFire, fireLevel, lodOf, firePpu, smokePpu, attach, setStill, markup, seedOf });
 });

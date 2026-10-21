@@ -413,6 +413,13 @@
     return { ok: true, value: parsed, changed: false };
   }
 
+  /* Journey "Static effects" device preference (dhcodex_motion): a bare JSON string,
+   * 'static' or 'animated'. Anything else is unusable (no stored choice: follow the system). */
+  function sanitizeMotionPref(parsed) {
+    if (parsed !== 'static' && parsed !== 'animated') return { ok: false };
+    return { ok: true, value: parsed, changed: false };
+  }
+
   function sanitizeEnvLists(parsed) {
     if (!isPlainObject(parsed)) return { ok: false };
     var out = {};
@@ -698,6 +705,7 @@
       prep: sanitizePrep,
       soundboard: sanitizeSoundboard,
       prepItemView: sanitizePrepItemView,
+      motionPref: sanitizeMotionPref,
     },
   };
 });

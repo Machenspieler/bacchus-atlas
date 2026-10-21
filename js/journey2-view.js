@@ -251,6 +251,11 @@
     const playerMode = !!(opts && opts.player);             // the read-only player page (PD-052): Player Preview of a decoded link — no storage, no GM controls, never leaves the preview
     let playerLoad = null;                                  // its decoded link: { ok: true, doc, snap } | { ok: false, code }
     let previewMode = false;                               // Player Preview: a read-only render of the player projection
+    /* "Static effects" (PD-076): the device preference ('static' | 'animated' | null = follow the system) lives in its own key (js/motion-pref.js), read on the player page too; staticFx is the resolved value */
+    const MP = root.MotionPref;
+    const motionStorage = opts && opts.motionStorage ? opts.motionStorage : null;
+    let motionPref = MP ? MP.load(motionStorage) : null;
+    let staticFx = MP ? MP.isStatic(motionPref, prefersReducedMotion()) : prefersReducedMotion();
     let sbfx = null;                                       // the Shadowblight FX controller (PD-072, js/journey2-shadowblight-fx.js); null = unavailable, the glyphs stay
     let sbfxCells = { blighted: [], overtaken: [] };       // what it was last given (derived each render, never stored)
     const OVERTAKEN_SYMBOL = Model.symbolIdOf({ habitat: { overtaken: true } });
@@ -830,6 +835,7 @@
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-biome-colors><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_biome_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-sepia><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_sepia_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="false" data-j2-regions><span class="j2-mi-ico" aria-hidden="true">${LI.hexes}</span><span data-t="journey2_regions_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
+                    <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="false" data-j2-static-fx><span class="j2-mi-ico" aria-hidden="true">${LI.flame}</span><span data-t="journey2_static_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="false" data-j2-outline data-t-title="journey2_outline_title" hidden><span class="j2-mi-ico" aria-hidden="true">${LI.hexes}</span><span data-t="journey2_rail_outline"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-party-mark hidden><span class="j2-mi-ico" aria-hidden="true">${LI.party}</span><span data-t="journey2_party_mark_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                   </div>
@@ -959,6 +965,7 @@
       ui.biomeColors = container.querySelector('[data-j2-biome-colors]');
       ui.sepia = container.querySelector('[data-j2-sepia]');
       ui.regions = container.querySelector('[data-j2-regions]');
+      ui.staticFx = container.querySelector('[data-j2-static-fx]');
       ui.partyMark = container.querySelector('[data-j2-party-mark]');
       ui.fogTool = container.querySelector('[data-j2-fog-tool="paint"]');
       ui.outlineBtn = container.querySelector('[data-j2-outline]');
@@ -1044,6 +1051,7 @@
       showSepia = linked ? linked.sepiaMap !== false : prefs.sepiaMap !== false;
       showRegions = playerMode ? !!(linked && linked.regionIcons) : !!prefs.regionIcons;
       ui.root.toggleAttribute('data-sepia', showSepia);
+      applyMotion();
       ui.partyMark.hidden = !playerMode;
       showOutline = !!prefs.showPlacedOutline;
       savedView = prefs.view;
@@ -2135,17 +2143,17 @@
       const Fx = root.Journey2ShadowblightFx;
       if (!Fx || !ui.viewport) return;
       try {
-        const reduce = typeof window.matchMedia === 'function' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+        const reduce = typeof window.matchMedia === 'function' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;   // only watched for a change: the resolved choice is `staticFx`
         const fx = Fx.create({
           grid: data.grid, worldSize: data.template.worldSizePx, shadowGroup: ui.g.blight, rimGroup: ui.g.tear, defs: container.querySelector('[data-j2-sbfx-defs]'),   // its own <defs>: ui.defs is rebuilt by the fog layers
           ground: container.querySelector('[data-j2-ground]'), world: ui.world, cosmos: container.querySelector('[data-j2-cosmos]'),
           cosmosImage: { url: SB_NEBULA.path, width: SB_NEBULA.width, height: SB_NEBULA.height },
-          protections: data.ctx.protections, baseHref: ui.base.currentSrc || ui.base.src, reducedMotion: !!(reduce && reduce.matches),
+          protections: data.ctx.protections, baseHref: ui.base.currentSrc || ui.base.src, reducedMotion: staticFx,
         });
         if (!fx.available) { fx.destroy(); return; }
         sbfx = fx;
         cleanups.push(() => { if (sbfx) { sbfx.destroy(); sbfx = null; } });
-        if (reduce && typeof reduce.addEventListener === 'function') listen(reduce, 'change', e => { if (sbfx) sbfx.setReducedMotion(e.matches); });
+        if (reduce && typeof reduce.addEventListener === 'function') listen(reduce, 'change', () => { if (motionPref === null) applyMotion(); });
       } catch (err) {
         sbfx = null;                                           // a failing effect never breaks the map: the glyphs stay
       }
@@ -4058,6 +4066,8 @@
       ui.sepia.setAttribute('aria-checked', String(showSepia));
       ui.sepia.title = showSepia ? t('journey2_sepia_hide') : t('journey2_sepia_show');
       ui.regions.setAttribute('aria-checked', String(showRegions));
+      ui.staticFx.setAttribute('aria-checked', String(staticFx));
+      ui.staticFx.title = staticFx ? t('journey2_static_hide') : t('journey2_static_show');
       ui.regions.title = showRegions ? t('journey2_regions_hide') : t('journey2_regions_show');
       ui.partyMark.setAttribute('aria-checked', String(showPartyMark));
       ui.partyMark.title = showPartyMark ? t('journey2_party_mark_hide') : t('journey2_party_mark_show');
@@ -4120,6 +4130,22 @@
       ui.root.toggleAttribute('data-sepia', showSepia);
       saveUiPrefs();
       updateFogUi();
+    }
+
+    /** "Static effects" (PD-076): Soul Echo, destroyed sanctuaries and Shadowblight drawn as one still frame. A device preference, not map data: no command, no history, no document change. */
+    function toggleStaticFx() {
+      motionPref = staticFx ? 'animated' : 'static';
+      if (MP) MP.save(motionStorage, motionPref);              // a failed write keeps the choice for this page load only
+      applyMotion();
+      updateFogUi();
+    }
+
+    /** Resolves the preference (an explicit choice, else the system setting) and pushes it to the three effects: the Echo CSS (`data-motion`), the ruin canvases and the living shadow. */
+    function applyMotion() {
+      staticFx = MP ? MP.isStatic(motionPref, prefersReducedMotion()) : prefersReducedMotion();
+      if (ui.root) ui.root.setAttribute('data-motion', staticFx ? 'static' : 'animated');
+      if (root.Journey2RuinFx && root.Journey2RuinFx.setStill) root.Journey2RuinFx.setStill(staticFx);
+      if (sbfx) sbfx.setReducedMotion(staticFx);
     }
 
     /** "Regions": one icon per region instead of one per hex. A display preference like Biome colors — no command, no history, no change to the document or fog. */
@@ -5222,6 +5248,7 @@
       else if (b.hasAttribute('data-j2-biome-colors')) toggleBiomeColors();
       else if (b.hasAttribute('data-j2-sepia')) toggleSepia();
       else if (b.hasAttribute('data-j2-regions')) toggleRegions();
+      else if (b.hasAttribute('data-j2-static-fx')) toggleStaticFx();
       else if (b.hasAttribute('data-j2-party-mark')) togglePartyMark();
       else if (b.hasAttribute('data-j2-outline')) toggleOutline();
       else if (b.hasAttribute('data-j2-fog-tool')) setFogTool(b.getAttribute('data-j2-fog-tool'));

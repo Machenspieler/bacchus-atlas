@@ -3018,7 +3018,7 @@ function renderJourneyPage() {
   document.getElementById('result-count').innerHTML = '';
   if (journeyUnsupportedHere()) { renderJourneyUnsupported(); return; }
   Journey2View.mount(document.getElementById('grid-wrap'), {
-    t, lang: state.lang, generator: journey2Generator, toast: showToast, storage: lsStorage,
+    t, lang: state.lang, generator: journey2Generator, toast: showToast, storage: lsStorage, motionStorage: lsStorage,
     environmentsForBiome: journey2EnvironmentsForBiome,
   });
 }
@@ -3029,7 +3029,7 @@ function renderPlayerMapPage() {
   document.getElementById('toolbar').innerHTML = '';
   document.getElementById('result-count').innerHTML = '';
   Journey2View.mount(document.getElementById('grid-wrap'), {
-    t, lang: state.lang, generator: null, toast: showToast, storage: null,
+    t, lang: state.lang, generator: null, toast: showToast, storage: null, motionStorage: lsStorage,   // the "Static effects" device preference (dhcodex_motion) is the one key the player page may touch (PD-076)
     environmentsForBiome: () => [],
     player: {
       link: state.route.id || '',

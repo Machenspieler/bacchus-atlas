@@ -634,7 +634,8 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 @keyframes j2-echo-halo { 0%, 100% { opacity: .5; } 20% { opacity: 1; } }
 @keyframes j2-echo-wave { 0% { transform: scale(.8) rotate(-6deg); opacity: 0; } 14% { opacity: 1; } 55% { transform: scale(1.14) rotate(5deg); opacity: 0; } 100% { transform: scale(1.14) rotate(5deg); opacity: 0; } }
 @keyframes j2-echo-orb { 0%, 100% { transform: scale(.94); } 10% { transform: scale(1.1); } 30% { transform: scale(1); } }
-@media (prefers-reduced-motion: reduce) { .j2-overlay .j2-echo-halo, .j2-overlay .j2-echo-wave, .j2-overlay .j2-echo-orb { animation: none; } }
+/* "Static effects" (PD-076): the view resolves the explicit choice, else the system's reduced motion, into data-motion on its root; every ring and the core then sit at their authored (final) frame */
+.j2[data-motion="static"] .j2-overlay .j2-echo-halo, .j2[data-motion="static"] .j2-overlay .j2-echo-wave, .j2[data-motion="static"] .j2-overlay .j2-echo-orb { animation: none; }
 /* Collected: its own static drawing (never the live one dimmed) — a hollow ring where the core was, the first ripple frozen with one arc gone, one faint arc of the
    second; no glow, nothing animated. Unscoped so the legend swatch ("Soul Echo collected") is the same drawing. */
 .j2-echo-hollow { fill: #f2ead7; fill-opacity: .5; stroke: #4c6584; stroke-width: 1; }

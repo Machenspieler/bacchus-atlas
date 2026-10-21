@@ -43,7 +43,8 @@ test('isolation: the player page is mounted with NO storage and NO generator, an
   assert.match(page, /player: \{\s*link: state\.route\.id \|\| ''/);
   assert.match(page, /onOpened: snap => \{\s*if \(linkLangOffered \|\| langWasStored/, 'the language in a link is only a default for a reader who never chose one');
   assert.doesNotMatch(strip(page), /persist\(LS_KEYS\.lang/, 'and it is never saved on behalf of the reader');
-  assert.doesNotMatch(strip(page), /lsStorage|localStorage|persist\(|SafeStorage/);
+  assert.match(page, /storage: null, motionStorage: lsStorage,/, 'the ONE thing the page may touch is the device-wide "Static effects" key (PD-076), handed over as its own option');
+  assert.doesNotMatch(strip(page).replace('motionStorage: lsStorage', ''), /lsStorage|localStorage|persist\(|SafeStorage/);
   assert.match(fn('initDocument', 'persist'), /if \(playerMode\) \{[\s\S]{0,400}Store\.createStore\(null, data\.ctx\)[\s\S]{0,300}editLocked = true/);
   assert.match(view, /function saveUiPrefs\(\) \{ if \(store && !playerMode\)/, 'no view preference is ever written from the player page');
   assert.match(view, /function leavePreview\(o\) \{\s*if \(!previewMode \|\| playerMode\) return;/, 'there is no GM view to go back to');

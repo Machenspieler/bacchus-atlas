@@ -220,7 +220,7 @@ test('view: placing is one planned command (ids chosen before dispatch); replaci
 
 test('view: the echoes are never drawn from the diagnostics layer toggles and the crystal is inlined (CSS cannot reach a <use> clone)', () => {
   assert.doesNotMatch(view, /<use href="#j2-echo/);
-  assert.match(read('css/journey2.css'), /@media \(prefers-reduced-motion: reduce\) \{ \.j2-overlay \.j2-echo-halo, \.j2-overlay \.j2-echo-wave, \.j2-overlay \.j2-echo-orb \{ animation: none; \} \}/);
+  assert.match(read('css/journey2.css'), /\.j2\[data-motion="static"\] \.j2-overlay \.j2-echo-halo, \.j2\[data-motion="static"\] \.j2-overlay \.j2-echo-wave, \.j2\[data-motion="static"\] \.j2-overlay \.j2-echo-orb \{ animation: none; \}/, 'Static effects (PD-076) stops the Echo at its authored still frame');
 });
 
 test('view: a Collected Echo is its own static drawing (PD-071), never the live marker dimmed, and the legend swatch is that drawing', () => {
