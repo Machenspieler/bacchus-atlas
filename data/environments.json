@@ -33866,6 +33866,512 @@
         "settlement"
       ],
       "source": "The Squealing Boar Tavern"
+    },
+    {
+      "id": "dark-forest-faerie-portal",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 14,
+      "name": {
+        "en": "Dark Forest Faerie Portal",
+        "ru": "Портал Фейри в Тёмном Лесу"
+      },
+      "lore": {
+        "en": "A subtle natural formation that marks an entrance to Faerie that only a few locals believe actually exists.",
+        "ru": "Неприметное природное образование, отмечающее вход в Фейри, в существование которого верят лишь немногие местные."
+      },
+      "impulses": {
+        "en": [
+          "Blend in",
+          "keep uninvited mortals out"
+        ],
+        "ru": [
+          "Сливаться с окружением",
+          "не пускать незваных смертных"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Centaur Warden",
+          "Dark Forest Boggle",
+          "Dark Forest Boggle Honcho"
+        ],
+        "ru": [
+          "Кентавр-Страж",
+          "Боггл Тёмного Леса",
+          "Боггл-Заводила Тёмного Леса"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Discover What’s Hidden",
+            "ru": "Обнаружить скрытое"
+          },
+          "description": {
+            "en": "To mortal eyes, the portal blends in with the natural environment. To discover the portal, a PC must succeed on an Instinct Roll to perceive it and a PC must succeed on a Knowledge Roll to understand it. Once they have succeeded on both rolls, they can begin investigating the ritual to pass through.",
+            "ru": "Для глаз смертных портал сливается с окружающей природой. Чтобы обнаружить портал, один из персонажей должен преуспеть в броске Инстинкта, чтобы заметить его, а один из персонажей — в броске Знания, чтобы понять его. Когда оба броска удались, они могут приступить к изучению ритуала, позволяющего пройти сквозь портал."
+          },
+          "prompt": {
+            "en": "What subtle inconsistencies hint at the presence of a portal? How does it strain you to keep trying to perceive it? What combination of circumstances cause it to appear in this location at this time? Who can help you discover the portal?",
+            "ru": "Какие едва заметные несоответствия намекают на присутствие портала? Чего вам стоит усилие, чтобы продолжать его замечать? Какое стечение обстоятельств заставляет его появиться именно здесь и сейчас? Кто может помочь вам обнаружить портал?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Investigate the Ritual",
+            "ru": "Изучение ритуала"
+          },
+          "description": {
+            "en": "Once the PCs have discovered the portal, they can perform the ritual to open it to mortals. Each PC must succeed on an appropriate action roll to investigate a component of the ritual before they can attempt to perform it together.",
+            "ru": "Когда персонажи обнаружили портал, они могут исполнить ритуал, чтобы открыть его для смертных. Каждый персонаж должен преуспеть в подходящем броске действия, чтобы изучить один из компонентов ритуала, прежде чем они смогут попытаться исполнить его вместе."
+          },
+          "prompt": {
+            "en": "What clues can you find near the portal? What other nearby locations might hold clues? What complicates the investigation?",
+            "ru": "Какие улики можно найти возле портала? Какие ещё места поблизости могут хранить подсказки? Что осложняет расследование?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Stand on Ceremony",
+            "ru": "Не без церемоний"
+          },
+          "description": {
+            "en": "The portal requires all who wish to pass through to participate in the ritual. Have the PCs make a group action roll (18) where each PC executes a component of the ritual, with the results based on the following criteria:\n- **Critical Success:** They pass through in an advantageous position\n- **Success with Hope:** They pass through with no complication\n- **Success with Fear:** They pass through with a complication\n- **Any Failure:** Trigger “No Admittance.” The PCs can each mark a Stress to replace the leader’s Fear die with a d20 on their next Group roll attempt. Have the PCs describe what they do differently each time they attempt the Group roll.",
+            "ru": "Портал требует, чтобы все желающие пройти сквозь него участвовали в ритуале. Пусть персонажи совершат групповой бросок (18), в котором каждый исполняет один из компонентов ритуала; результаты зависят от следующих условий:\n- **Критический успех:** Они проходят в выгодном положении\n- **Успех с Надеждой:** Они проходят без осложнений\n- **Успех со Страхом:** Они проходят с осложнением\n- **Любая неудача:** Срабатывает «Вход воспрещён». Каждый персонаж может отметить Стресс, чтобы при следующей попытке группового броска заменить Кость Страха лидера на d20. Пусть персонажи описывают, что они делают иначе при каждой попытке группового броска."
+          },
+          "prompt": {
+            "en": "How does working together make the ritual possible? Does the ritual require using components in an unexpected way? What serious or silly complications arise?",
+            "ru": "Как совместные действия делают ритуал возможным? Требует ли ритуал использовать компоненты неожиданным образом? Какие серьёзные или забавные осложнения возникают?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Get Out of My Forest, Mortal",
+            "ru": "Прочь из моего леса, смертный"
+          },
+          "description": {
+            "en": "Spend a Fear to summon 1 Centaur Warden for each PC in the scene to protect the portal from mortal incursion and immediately spotlight one.",
+            "ru": "Потратьте Страх, чтобы призвать по одному Кентавру-Стражу на каждого персонажа в сцене для защиты портала от вторжения смертных и немедленно дайте одному из них Активацию."
+          },
+          "prompt": {
+            "en": "How do the Wardens interrupt the PCs’ progress? Can they be reasoned with? What complication could a violent confrontation cause later?",
+            "ru": "Как Стражи мешают продвижению персонажей? Можно ли с ними договориться? Какое осложнение может повлечь за собой жестокая схватка в будущем?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "No Admittance",
+            "ru": "Вход воспрещён"
+          },
+          "description": {
+            "en": "If a PC accidentally or intentionally attempts to pass through the portal without successfully executing the ritual, spend a Fear to have the portal reject them. Once, one PC within Close range of the portal can mark a Stress to capitalize on the rejection and gain an automatic success on a roll to perceive or understand the portal, or to investigate a component of its ritual.",
+            "ru": "Если персонаж случайно или намеренно пытается пройти сквозь портал, не выполнив ритуал успешно, потратьте Страх, чтобы портал отверг его. Один раз один из персонажей в пределах Средней дистанции от портала может отметить Стресс, чтобы воспользоваться отторжением и получить автоматический успех в броске, чтобы заметить или понять портал, либо изучить компонент его ритуала."
+          },
+          "prompt": {
+            "en": "What ridiculous or painful effects occur when the portal rejects a PC? How do the effects linger? What do they learn about the portal from the failed attempt?",
+            "ru": "Какие нелепые или болезненные последствия наступают, когда портал отвергает персонажа? Как долго они не проходят? Что персонажи узнают о портале из неудачной попытки?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "When Am I?",
+            "ru": "Когда я?"
+          },
+          "description": {
+            "en": "Time passes unpredictably in Faerie. Select a unit of time (hours, weeks, months, etc.) most appropriate to measure the time the party spent in Faerie. Spend any number of Fear to have an equal amount of the chosen unit pass since the PCs entered Faerie.",
+            "ru": "Время в Фейри течёт непредсказуемо. Выберите единицу времени (часы, недели, месяцы и т. д.), лучше всего подходящую для измерения времени, проведённого отрядом в Фейри. Потратьте любое количество Страха, чтобы с момента входа персонажей в Фейри прошло столько же выбранных единиц."
+          },
+          "prompt": {
+            "en": "How do you learn how much time has passed? Did more or less time pass? What have you missed out on while you were in Faerie?",
+            "ru": "Как вы узнаёте, сколько времени прошло? Прошло больше или меньше времени? Что вы пропустили, пока были в Фейри?"
+          }
+        }
+      ],
+      "biomes": [
+        "forest"
+      ],
+      "source": "Folk & Fear: Volume One"
+    },
+    {
+      "id": "sanctuary-of-the-story-tree",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 14,
+      "name": {
+        "en": "Sanctuary of The Story Tree",
+        "ru": "Убежище Древа Историй"
+      },
+      "lore": {
+        "en": "An ancient, sentient tree known as Seanachas, whose roots thrive on the completed stories of the dead buried beneath it.",
+        "ru": "Древнее разумное дерево по имени Сеанахас, чьи корни питаются завершёнными историями мёртвых, погребённых под ним."
+      },
+      "impulses": {
+        "en": [
+          "Be the public square",
+          "nourish Confidants with the power of stories",
+          "repair broken plot lines of Fae Raconteurs"
+        ],
+        "ru": [
+          "Быть общественной площадью",
+          "питать Наперсников силой историй",
+          "чинить разорванные сюжетные линии Фейских Рассказчиков"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Beasts (Bear, Dire Wolf, Giant Eagle)",
+          "Disruptors (Banshee, Jack-o’-Lantern, Spectral Guardian)",
+          "Protectors (Centaur Warden, Minor Treant, Sprite, Young Dryad)"
+        ],
+        "ru": [
+          "Звери (Медведь, Лютоволк, Огромный Орёл)",
+          "Нарушители (Банши, Тыквоголовый, Призрачный Страж)",
+          "Защитники (Кентавр-Страж, Малый Древень, Спрайт, Юная Дриада)"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Plot Lines",
+            "ru": "Сюжетные линии"
+          },
+          "description": {
+            "en": "Confidants and Raconteurs gather here to hear and share stories in a public forum that feeds the Tree. If a PC succeeds on a Presence Roll to listen to a Raconteur’s tale, they clear a Stress and gain a Confidant token. PCs add +1 to Presence rolls for each Confidant token they hold when speaking to Fae around the Tree.",
+            "ru": "Наперсники и Рассказчики собираются здесь, чтобы слушать и пересказывать истории на открытой площадке, которая питает Древо. Если персонаж преуспевает в броске Влияния, слушая рассказ Рассказчика, он снимает Стресс и получает жетон Наперсника. Персонажи добавляют +1 к броскам Влияния за каждый жетон Наперсника, который у них есть, когда говорят с фейскими существами вокруг Древа."
+          },
+          "prompt": {
+            "en": "Which stories sound familiar to you? Which stories can you not seem to stop listening to?",
+            "ru": "Какие истории кажутся вам знакомыми? Какие истории вы никак не можете перестать слушать?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Contractually Obligated",
+            "ru": "Связан договором"
+          },
+          "description": {
+            "en": "At the start of a session, a PC who is Contractually Obligated gains a Hope. For each Contractually Obligated PC, gain a Fear.",
+            "ru": "В начале сессии персонаж, связанный договором, получает Надежду. За каждого персонажа, связанного договором, получите Страх."
+          },
+          "prompt": {
+            "en": "How are you bolstered with purpose to complete this quest? How does the Faerie realm bend to either help or hinder their mission?",
+            "ru": "Как цель этого задания придаёт вам сил? Как мир Фейри меняется, чтобы помочь или помешать их миссии?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Developmental Edits",
+            "ru": "Правки по сюжету"
+          },
+          "description": {
+            "en": "Introduce a Fae Raconteur who needs help with their story. A PC can make a Presence Roll to convince the Raconteur that they can help. On a success, the PC becomes Contractually Obligated until they successfully complete the relevant quest to help the Raconteur, or until the quest fails.",
+            "ru": "Представьте Фейского Рассказчика, которому нужна помощь с его историей. Персонаж может совершить бросок Влияния, чтобы убедить Рассказчика, что способен помочь. При успехе персонаж становится связанным договором, пока не выполнит соответствующее задание, чтобы помочь Рассказчику, или пока задание не будет провалено."
+          },
+          "prompt": {
+            "en": "What unexpected reward does the Fae creature consider as acceptable payment? What would cause the quest to fail? Are they expected to complete the quest in a certain amount of time or in a certain way?",
+            "ru": "Какую неожиданную награду это фейское существо сочтёт приемлемой платой? Что приведёт к провалу задания? Ожидается ли, что задание будет выполнено за определённое время или определённым способом?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Spin a Yarn",
+            "ru": "Расскажи сказку"
+          },
+          "description": {
+            "en": "Once per PC, they may recount a story related to one of their Experiences. While they remain in Faerie, they gain +1 to that Experience.",
+            "ru": "Один раз на персонажа он может рассказать историю, связанную с одним из его Опытов. Пока он остаётся в Фейри, он получает +1 к этому Опыту."
+          },
+          "prompt": {
+            "en": "What new realization do you gain from recalling this memory? How does that new understanding impact your actions?",
+            "ru": "Какое новое осознание приходит к вам, когда вы вспоминаете это? Как это новое понимание влияет на ваши поступки?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Choose Your Words Carefully",
+            "ru": "Выбирай слова осторожно"
+          },
+          "description": {
+            "en": "If a PC utters any word to a Fae Raconteur that can be even remotely interpreted as an agreement to help them, you can Spend a Fear to make the PC Contractually Obligated until they complete the quest for the creature, or until the quest fails.",
+            "ru": "Если персонаж произносит перед Фейским Рассказчиком любое слово, которое хотя бы отдалённо можно истолковать как согласие помочь, вы можете потратить Страх, чтобы сделать персонажа связанным договором, пока он не выполнит задание для этого существа или пока задание не будет провалено."
+          },
+          "prompt": {
+            "en": "Did the Fae creature trick them into agreeing? Do the PCs know the terms of the contract? What must they now accomplish and in what way? What do you worry will happen if you fail?",
+            "ru": "Обмануло ли его это фейское существо, заставив согласиться? Знают ли персонажи условия договора? Что им теперь предстоит совершить и каким способом? Чего вы опасаетесь в случае провала?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "The Fine Print",
+            "ru": "Мелкий шрифт"
+          },
+          "description": {
+            "en": "If a PC fails a quest they are Contractually Obligated to complete, they lose all Confidant tokens and become Unmannerly. Unmannerly PCs make Presence rolls around the Story Tree at disadvantage until they gain a Confidant token.",
+            "ru": "Если персонаж проваливает задание, которое обязан выполнить по договору, он теряет все жетоны Наперсника и становится Невоспитанным. Невоспитанные персонажи совершают броски Влияния возле Древа Историй с помехой, пока не получат жетон Наперсника."
+          },
+          "prompt": {
+            "en": "What other consequences occur from failure? How do the Folk here treat you? Are you being treated fairly, by your standards?",
+            "ru": "Какие ещё последствия влечёт провал? Как к вам относится Народ здесь? Справедливо ли с вами обращаются, по вашим меркам?"
+          }
+        }
+      ],
+      "biomes": [
+        "forest"
+      ],
+      "source": "Folk & Fear: Volume One"
+    },
+    {
+      "id": "siege-of-the-story-tree",
+      "tier": 2,
+      "type": "event",
+      "difficulty": 12,
+      "name": {
+        "en": "Siege of The Story Tree",
+        "ru": "Осада Древа Историй"
+      },
+      "lore": {
+        "en": "A Fae lich attacks Seanachas the Story Tree to siphon power from the tales of the living gathered there, and the dead underneath.",
+        "ru": "Фейский лич нападает на Сеанахас, Древо Историй, чтобы высосать силу из рассказов живых, собравшихся здесь, и мёртвых, лежащих под ним."
+      },
+      "impulses": {
+        "en": [
+          "Consume the vulnerable",
+          "leech life force",
+          "sow chaos"
+        ],
+        "ru": [
+          "Пожирать слабых",
+          "высасывать жизненную силу",
+          "сеять хаос"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Dark Elves (The Unfinished One, Fatechaser Elf)",
+          "Ghosts (Banshee, Spectral Guardian, Unresolved Ghost)"
+        ],
+        "ru": [
+          "Тёмные Эльфы (Незавершённый, Эльф Преследователь Судьбы)",
+          "Призраки (Банши, Призрачный Страж, Неупокоенный Призрак)"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Ransacked Home",
+            "ru": "Разорённый дом"
+          },
+          "description": {
+            "en": "The Fatechaser Elves have set up a ritual to pull the dead from their resting place so The Unfinished One can consume their stories. Disturbed spirits emanate from 6 ritual locations, harrying everyone in the scene while the Tree has begun to wither. The first time you spotlight the Siege, you gain a Fear.",
+            "ru": "Эльфы Преследователи Судьбы устроили ритуал, чтобы поднять мёртвых из мест упокоения, чтобы Незавершённый мог поглотить их истории. Потревоженные духи исходят из 6 ритуальных мест, донимая всех в сцене, пока Древо начинает увядать. Когда вы впервые даёте Осаде Активацию, вы получаете Страх."
+          },
+          "prompt": {
+            "en": "What is the first indication that the Tree is in danger? Who else is fighting to save the Tree? Who are the ghosts and what does it cost the Tree if any are defeated?",
+            "ru": "Каков первый признак того, что Древу грозит опасность? Кто ещё сражается, чтобы спасти Древо? Кто эти призраки и чего будет стоить Древу, если кого-то из них победят?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Free the Tree Spirit",
+            "ru": "Освободить дух Древа"
+          },
+          "description": {
+            "en": "Countdown (6): When any PC first moves within Far range of the Tree, summon 6 Fatechaser Elves guarding the ritual locations and activate the countdown. It ticks down when a ritual location is disrupted. When the countdown reaches 3, summon The Unfinished One within Close range of the Tree and immediately spotlight them. When the countdown reaches 0, Seanachas is reawakened and removes any remaining adversaries from this scene. All PCs gain a Confidant Token.",
+            "ru": "Отсчёт (6): Когда любой персонаж впервые приближается к Древу на расстояние в пределах Дальней дистанции, призовите 6 Эльфов Преследователей Судьбы, охраняющих ритуальные места, и запустите отсчёт. Он уменьшается, когда нарушено одно из ритуальных мест. Когда отсчёт достигает 3, призовите Незавершённого в пределах Средней дистанции от Древа и немедленно дайте ему Активацию. Когда отсчёт достигает 0, Сеанахас пробуждается и убирает из этой сцены всех оставшихся противников. Все персонажи получают жетон Наперсника."
+          },
+          "prompt": {
+            "en": "How does The Unfinished One make their entrance? How does the Tree remove the remaining adversaries? How do the Folk show appreciation for the PCs’ help? Do any of the spirits remain disturbed?",
+            "ru": "Как Незавершённый появляется на сцене? Как Древо убирает оставшихся противников? Как Народ выражает признательность за помощь персонажей? Остаются ли какие-то духи потревоженными?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "A Heavy Toll",
+            "ru": "Тяжкая пошлина"
+          },
+          "description": {
+            "en": "Spend a Fear to cause one of the Tree’s massive branches to crash down from the forest canopy above. All creatures within Close range must make an Agility Reaction Roll. On a failure, they take 1d12+3 physical damage. On a success, they must mark a Stress.",
+            "ru": "Потратьте Страх, чтобы одна из массивных ветвей Древа обрушилась с лесного полога наверху. Все существа в пределах Средней дистанции должны совершить Бросок Реакции на Проворность. При провале они получают 1d12+3 физического урона. При успехе они должны отметить Стресс."
+          },
+          "prompt": {
+            "en": "What other signs show the stress that is being placed on the tree by this event? Who else is in danger of falling branches?",
+            "ru": "Какие ещё признаки показывают, какое напряжение это событие оказывает на дерево? Кому ещё грозит опасность от падающих ветвей?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "A Quest! [Phase Change]",
+            "ru": "Задание! [Смена фазы]"
+          },
+          "description": {
+            "en": "When The Unfinished One is defeated, the Tree still shows signs of damage. Restore the Sanctuary of the Story Tree environment with the exception of the “Plot Lines” feature. Start a Healing Countdown (X), where X is the number of PCs, that ticks down every time the PCs help a Fae Raconteur with their story. When it triggers, restore the “Plot Lines” feature as the Tree heals.",
+            "ru": "Когда Незавершённый повержен, Древо всё ещё несёт следы повреждений. Восстановите окружение «Убежище Древа Историй», за исключением особенности «Сюжетные линии». Запустите Отсчёт Исцеления (X), где X — число персонажей, который уменьшается каждый раз, когда персонажи помогают Фейскому Рассказчику с его историей. Когда он срабатывает, восстановите особенность «Сюжетные линии», пока Древо исцеляется."
+          },
+          "prompt": {
+            "en": "What is the damage to the Tree like? What other quests can the PCs undertake to help? How do the Folk celebrate healing the Tree? Is the Unfinished One planning their next attempt at immortality?",
+            "ru": "Каков ущерб, нанесённый Древу? Какие ещё задания могут взять на себя персонажи, чтобы помочь? Как Народ празднует исцеление Древа? Замышляет ли Незавершённый следующую попытку обрести бессмертие?"
+          }
+        }
+      ],
+      "biomes": [
+        "forest"
+      ],
+      "source": "Folk & Fear: Volume One"
+    },
+    {
+      "id": "dark-forest-revel",
+      "tier": 2,
+      "type": "social",
+      "difficulty": 13,
+      "name": {
+        "en": "Dark Forest Revel",
+        "ru": "Празднество в Тёмном Лесу"
+      },
+      "lore": {
+        "en": "A gathering for fae and their mortal guests to indulge in dancing, eating, drinking, games, flirting, and playing music…forever.",
+        "ru": "Собрание фейских существ и их смертных гостей, предающихся танцам, еде, питью, играм, флирту и музыке… вечно."
+      },
+      "impulses": {
+        "en": [
+          "Entice mortals",
+          "entrap them for entertainment",
+          "wear down their defenses"
+        ],
+        "ru": [
+          "Соблазнять смертных",
+          "держать их в плену ради развлечения",
+          "подтачивать их защиту"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Fae Court (Courtier, Courtesan)",
+          "Forest Creatures (Banshee, Harpy, Kelpie, Minor Treant, Sprite, Young Dryad)",
+          "Security (Centaur Warden, Minotaur Wrecker, Sylvan Soldier)",
+          "Master of Revels",
+          "Smiling Woman"
+        ],
+        "ru": [
+          "Фейский Двор (Придворный, Куртизанка)",
+          "Лесные Существа (Банши, Гарпия, Келпи, Малый Древень, Спрайт, Юная Дриада)",
+          "Охрана (Кентавр-Страж, Минотавр Крушитель, Лесной Солдат)",
+          "Распорядитель Празднества",
+          "Улыбающаяся Женщина"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Shifting Glamour",
+            "ru": "Переменчивое очарование"
+          },
+          "description": {
+            "en": "The true nature of the revel is obscured. Begin the scene with “Delights & Diversions” activated. On any roll with Fear, you can activate “Horrors & Grotesqueries.” On any roll with Hope, you can activate “Delights & Diversions.”",
+            "ru": "Истинная природа празднества скрыта. Начните сцену с активированными «Радостями и забавами». При любом броске со Страхом вы можете активировать «Ужасы и гротески». При любом броске с Надеждой вы можете активировать «Радости и забавы»."
+          },
+          "prompt": {
+            "en": "Which one is the true form of the party? Which one is just an illusion? How are guests encouraged to participate in revel activities? What other benefits come from participation?",
+            "ru": "Какой облик — истинный облик празднества? Какой — лишь иллюзия? Как гостей побуждают участвовать в развлечениях? Какие ещё выгоды приносит участие?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Seize Your Destiny",
+            "ru": "Возьми судьбу в свои руки"
+          },
+          "description": {
+            "en": "When a PC spends a Hope to help an ally make an action roll to entertain the Master of Revels, they add the advantage die to the ally’s Hope die. On a success with Hope, the ally PC gains an additional Hope that can be given to any PC.",
+            "ru": "Когда персонаж тратит Надежду, чтобы помочь союзнику в броске действия, чтобы развлечь Распорядителя Празднества, он добавляет кость преимущества к Кости Надежды союзника. При успехе с Надеждой персонаж-союзник получает дополнительную Надежду, которую можно отдать любому персонажу."
+          },
+          "prompt": {
+            "en": "How do you choose to take control of your fate to escape the revel? How does working together bolster you?",
+            "ru": "Как вы решаете взять судьбу в свои руки, чтобы сбежать с празднества? Как совместные действия придают вам сил?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Merry Wanderers",
+            "ru": "Весёлые странники"
+          },
+          "description": {
+            "en": "Countdown (#PCs + 2). The revel’s magic secretly binds the PCs into participation the first time any of the PCs interact with a person or activity there. When a PC first attempts to leave the revel, move them to a point within Close range of the Master of Revels instead and activate a Countdown equal to the number of PCs +1. It ticks down when a PC spends a Hope to help an ally make an action roll to entertain the Master of Revels. When it triggers, the PCs can leave. Until it triggers, any attempt to leave fails.",
+            "ru": "Отсчёт (число персонажей + 2). Магия празднества тайно вовлекает персонажей в участие, когда кто-либо из них впервые взаимодействует там с кем-то или чем-то. Когда персонаж впервые пытается покинуть празднество, вместо этого переместите его в точку в пределах Средней дистанции от Распорядителя Празднества и запустите Отсчёт, равный числу персонажей +1. Он уменьшается, когда персонаж тратит Надежду, чтобы помочь союзнику в броске действия, чтобы развлечь Распорядителя Празднества. Когда он срабатывает, персонажи могут уйти. Пока он не сработал, любая попытка уйти проваливается."
+          },
+          "prompt": {
+            "en": "What magic binds the PCs to the revel? What happens when they try to leave? How do the other guests respond to their failed attempts to leave?",
+            "ru": "Какая магия привязывает персонажей к празднеству? Что происходит, когда они пытаются уйти? Как остальные гости реагируют на их неудачные попытки уйти?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Lose Yourself in Indulgence",
+            "ru": "Растворись в излишествах"
+          },
+          "description": {
+            "en": "When a PC rolls with Fear while the countdown is active, they lose a Hope as their spirit diminishes.",
+            "ru": "Когда персонаж совершает бросок со Страхом, пока отсчёт активен, он теряет Надежду, поскольку его дух угасает."
+          },
+          "prompt": {
+            "en": "What part of you fades? Does it manifest physically at the Revel? Are you aware of the loss?",
+            "ru": "Какая часть вас угасает? Проявляется ли это физически на празднестве? Осознаёте ли вы потерю?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Delights & Diversions",
+            "ru": "Радости и забавы"
+          },
+          "description": {
+            "en": "The revel contains pleasures, entertainment, and delectables unlike the PCs have ever seen. The first time a PC succeeds on a roll to participate in the Revel, they clear a Stress.",
+            "ru": "Празднество полно удовольствий, развлечений и лакомств, каких персонажи ещё не видели. Когда персонаж впервые преуспевает в броске, чтобы принять участие в празднестве, он снимает Стресс."
+          },
+          "prompt": {
+            "en": "What enjoyment can you simply not resist?",
+            "ru": "Какому наслаждению вы просто не можете сопротивляться?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Horrors & Grotesqueries",
+            "ru": "Ужасы и гротески"
+          },
+          "description": {
+            "en": "The revel contains twisted games, disgusting foods, and menacing acts. When the PCs interact with a new horror, they must succeed on an appropriate Reaction Roll or mark a Stress.",
+            "ru": "Празднество полно извращённых игр, отвратительной еды и зловещих действий. Когда персонажи сталкиваются с новым ужасом, они должны преуспеть в подходящем Броске Реакции или отметить Стресс."
+          },
+          "prompt": {
+            "en": "How are the true forms of the things around you horrifying?",
+            "ru": "Чем ужасны истинные облики окружающих вас вещей?"
+          }
+        }
+      ],
+      "biomes": [
+        "forest"
+      ],
+      "source": "Folk & Fear: Volume One"
     }
   ]
 }
