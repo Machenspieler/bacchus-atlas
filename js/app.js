@@ -7069,7 +7069,7 @@ function copyItemImage(src, name) {
  * "s" as the prose it belongs to. */
 const DICE_RE = /\b(\d{0,2})d(2|3|4|6|8|10|12|20|100)(?=s?\b)(?:\s*([+-])\s*(\d+)\b(?!\s*d\s*\d))?/gi;
 const COUNTDOWN_KEYWORD_RE = /(Countdown|Отсчёт\w*|Отсчет\w*|Счётчик\w*|Счетчик\w*)/gi;
-const COUNTDOWN_PAREN_RE = /\(\s*(?:(?:Loop|Цикл)\s+)?(?:(\d*)d)?(\d+)\s*\)/gi;
+const COUNTDOWN_PAREN_RE = /\(\s*(?:(?:Loop|Цикл)\s+)?(?:(\d*)d(\d+)(?:\s*\+\s*(\d+))?|(\d+))\s*\)/gi;
 
 /* A difficulty in parentheses is not a countdown. "…stop the countdown with a
  * successful Finesse Roll (20)" names a check the party makes against the
@@ -7079,11 +7079,11 @@ const COUNTDOWN_ROLL_WORD_RE = /\b(?:roll|check|DC)\b|Брос\w*|Провер\w
 
 /** Finds "<...Countdown/Отсчёт...> (6)"-style spans in free text: scans for a
  * plain integer, optionally prefixed by a "Loop"/"Цикл" qualifier and/or dice
- * notation (e.g. "(6)", "(Loop 1d6)", "(Цикл d20)"), then walks back to the
- * nearest sentence boundary and takes the text from the closest preceding
- * countdown keyword up to the parens. A "Loop XdY" countdown starts at the
- * highest the dice can show (X times Y), not a roll, so this is matched ahead
- * of the plain dice-roll regex to keep it out of a roll button. */
+ * notation (e.g. "(6)", "(Loop 1d6)", "(Цикл d20)", "(Loop 1d6+1)"), then walks
+ * back to the nearest sentence boundary and takes the text from the closest
+ * preceding countdown keyword up to the parens. A "Loop XdY+Z" countdown starts
+ * at the highest the dice can show (X times Y, plus Z), not a roll, so this is
+ * matched ahead of the plain dice-roll regex to keep it out of a roll button. */
 function findCountdownMatches(text) {
   const matches = [];
   COUNTDOWN_PAREN_RE.lastIndex = 0;
@@ -7103,10 +7103,11 @@ function findCountdownMatches(text) {
     while ((mm = COUNTDOWN_KEYWORD_RE.exec(segment))) kwMatch = mm;
     if (!kwMatch) continue;
     if (COUNTDOWN_ROLL_WORD_RE.test(segment.slice(kwMatch.index + kwMatch[0].length))) continue;
-    // m[1] is the die count: absent for a plain "(6)", empty for "(d20)".
-    const sides = parseInt(m[2], 10);
-    const dieCount = m[1] === undefined ? 0 : (m[1] === '' ? 1 : parseInt(m[1], 10));
-    const value = dieCount ? dieCount * sides : sides;
+    // m[4] is a plain "(6)". Otherwise m[1] is the die count (empty for "(d20)"),
+    // m[2] the sides and m[3] an optional flat bonus: "(Loop 1d6+1)" starts at 7.
+    const value = m[4] !== undefined
+      ? parseInt(m[4], 10)
+      : (m[1] === '' ? 1 : parseInt(m[1], 10)) * parseInt(m[2], 10) + (m[3] ? parseInt(m[3], 10) : 0);
     const labelStart = segmentStart + kwMatch.index;
     matches.push({ start: labelStart, end: parenEnd, type: 'countdown', value, label: text.slice(labelStart, parenEnd) });
   }

@@ -105,6 +105,14 @@ line). `description` supports the site's rich-text conventions — bullets as
 auto-detected Fear-cost/condition-name emphasis; `prompt` renders as plain
 text and does not support bullets.
 
+A countdown is written `Countdown (6)`, or `Countdown (Loop 1d6)` /
+`Отсчёт (Цикл 1d6)` for a looping one. A `Loop XdY` (or `XdY+Z`) countdown is
+**not** a roll: it starts at, and resets to, the highest the dice can show —
+`Loop 1d6` starts at 6, `Loop 2d6` at 12, `Loop 1d6+1` at 7 — so the whole span
+becomes one countdown button (`findCountdownMatches()` in `js/app.js`,
+`tests/countdown-parsing.test.js`), never a dice button. A flat bonus is read
+only after a die: `(Loop 4+1)` is not a countdown.
+
 ## Biome tagging
 
 Eleven biomes describe real terrain and always take priority over the two
