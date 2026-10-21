@@ -1291,12 +1291,12 @@
   },
   {
    "id": "scale-statement",
-   "kind": "scale-and-credit-lettering",
+   "kind": "scale-lettering",
    "rectPx": [
-    3106,
+    3860,
     3021,
-    1304,
-    97
+    550,
+    45
    ],
    "placementPolicy": "protected: overlays avoid it; cells stay valid"
   }
