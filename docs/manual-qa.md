@@ -546,6 +546,12 @@ private window, or accept that it writes the four `dhcodex_journey2_*` keys.
       keeps the overlay open, and is one Undo entry. Pressing the toolbar button again asks before replacing. Clicking empty map closes the overlay; opening a hex's Region Inspector replaces it.
       `S` / `Shift+S` (map focused) step through the sanctuaries. Reload keeps them; the JSON backup round-trips them. **Player Preview** shows no ring, no overlay and no button.
       Check RU wording against daggerheart.ru/frame/journey-to-horizon, a narrow window (overlay full width) and the overlay beside the sidebar.
+- [ ] Sanctuary Environments (GM only, PD-081): **Generate 56 sanctuaries** also deals one Environment to every sanctuary and to HORIZON and MARROGATE (58 different ones, all tagged Settlement; check a few in the catalog) —
+      the overlay shows an **Environment / Окружение** section under the header with the Environment as a link (opens the Environment overlay on the same page, Back returns to the map) and **Change / Изменить**.
+      Change opens the same scrollable picker as the Hex Environment (Tier number, name, Assign; the current one marked *Assigned*); Assign changes it, closes the picker, moves focus to the link, announces it, one Undo entry.
+      **Reroll sanctuary** also deals a new Environment (usually one nobody else holds); Delete removes it with the sanctuary. The dashed dot on HORIZON / MARROGATE opens a small overlay (printed name, Environment link, **Reroll Environment**;
+      no Change, no Delete, no name button); Reroll is one Undo entry, Redo restores the same Environment. A save generated before PD-081 shows *No Environment assigned* with Change; nothing is filled in on load.
+      Pressing Generate again says the Environments are replaced too. Switch RU / EN with an overlay open: the name, labels and Environment name follow. **Player Preview**, the player link and the print show none of it.
 - [ ] Sanctuary names for players (PD-027): in the overlay header the button beside the name reads **Reveal to players** (crossed eye); pressing it flips to **Hide from players** (eye)
       (overlay stays open, map does not move, focus stays on the button, one Undo entry each way). The ring dot disappears (no eye marker); hovering the icon shows "Name · Name visible to players".
       **Player Preview** shows the name in dark serif with a thin light halo beside that fixed icon (not covering it, inside the map, never over MARROGATE/HORIZON), even under fog;

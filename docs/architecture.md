@@ -1373,6 +1373,14 @@ Run all of them with `node --test tests/*.test.js`.
     `afterDocChange` closes it when its entry vanishes (delete, Undo).
   - *GM-only.* In Player Preview the ring layer is emptied, the group is hidden and `openSanctuary` refuses;
     `buildPlayerProjection` has no sanctuary field. `tests/journey2-sanctuaries.test.js` asserts all of this.
+  - *Environments (PD-081).* An entry may carry `environmentId` (catalog id, optional) and
+    `doc.sanctuaries.destinations = [{ anchorId, environmentId }]` holds the same for Horizon / Marrogate
+    (`ctx.destinations` / `ctx.destinationIds`, kept apart from `ctx.sanctuaries`). `setSanctuaries { entries, destinations? }`
+    replaces both (omitted `destinations` = kept); `setSanctuary` carries Reroll and Change; the new
+    `setDestinationEnvironment { anchorId, environmentId }` is the destination reroll; every sanctuary patch goes through
+    `withSanctuaries(doc, parts)` so none can drop the other half. The view deals the 56 + 2 ids from
+    `environmentsFor('settlement')` with `Journey2EnvDeal.dealEnvironments` (no new dealer) and shows them in the
+    overlay's `envSec` (`renderSanctuaryEnv`, picker row = the hex `envRowHtml(…, 'sancenv')`). GM-only like the rest.
 - **Deployment note:** `scripts/build.js` copies everything not excluded;
   `docs/journey2-*` (handoff PDFs, review packages, evidence, stage ZIPs) are
   excluded and `scripts/check-journey2-build.js` fails the build if any of it

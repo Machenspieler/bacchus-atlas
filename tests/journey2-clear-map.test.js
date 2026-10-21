@@ -72,7 +72,7 @@ test('a document with any campaign data is not empty; a fresh emptyDocument is e
   assert.deepEqual(fresh.playerVisibility, { revealedCells: [], revealedSanctuaryNameAnchorIds: [] });
   assert.deepEqual(fresh.soulEchoes, { anchorIds: [], collectedAnchorIds: [] });
   assert.deepEqual(fresh.destroyedSanctuaries, { anchorIds: [] });
-  assert.deepEqual(fresh.sanctuaries, { entries: [] });
+  assert.deepEqual(fresh.sanctuaries, { entries: [], destinations: [] });
   assert.deepEqual(fresh.shadowMarks, { added: [], suppressed: [] });
   assert.deepEqual(fresh.party, { cell: null, shown: false });
 });

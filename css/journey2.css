@@ -852,6 +852,11 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-sanc-foot { flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); padding: var(--s-2) var(--s-3); border-top: 1px solid var(--line-faint); }
 .j2-sanc-foot .j2-ico { display: inline-flex; margin-right: var(--s-1); }
 .j2-sanc-foot .j2-ico svg { width: 16px; height: 16px; }
+/* PD-081: the Environment section sits between the header and the tables, outside the scroller (the picker list scrolls on its own); Horizon / Marrogate keep a single Reroll in the footer */
+.j2-sanc-env { flex: none; padding: var(--s-2) var(--s-3) var(--s-3); border-top: 0; border-bottom: 1px solid var(--line-faint); }
+.j2-sanc-env .j2-hexenv-list { max-height: 11rem; }
+.j2-sanc-foot.is-dest { justify-content: flex-end; }
+.j2-sanc-foot .btn[hidden] { display: none; }
 @media (max-width: 900px) {
   .j2-region-inspector.j2-sanctuary { width: calc(100% - 2 * var(--s-3)); }
 }

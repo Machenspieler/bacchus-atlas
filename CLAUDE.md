@@ -211,7 +211,7 @@ campaign data (`soulEchoes`, at most nine sanctuaries): one Campaign-menu item p
 book's west-to-east rule, one removes them, and they never reach print; drawn as the "Echo Resonance" marker — broken ripple rings round a core, and a separate static spent drawing once collected, never the live one dimmed (PD-071); players see only a Collected Echo on a revealed sanctuary hex (PD-022, PD-052).
 Generated sanctuaries are GM-only too (`sanctuaries.entries`, one per printed sanctuary icon, numbers not
 sentences): one Campaign-menu item rolls all 56 through the book's sanctuary tables (`journey2Generator`), clicking an icon opens an
-overlay with Delete / Reroll / close, and none of it reaches Player Preview or print (PD-023).
+overlay with Delete / Reroll / close, and none of it reaches Player Preview or print (PD-023). The same press deals each sanctuary AND Horizon / Marrogate one catalog Environment tagged `settlement` (`entry.environmentId`, `sanctuaries.destinations`; no filter, Reroll re-deals, Change reuses the hex picker, Horizon / Marrogate get a Reroll-only mini overlay — PD-081).
 A placed hex carries one optional catalog Environment (`tile.environmentId`, id only; follows the tile, dies with
 it; GM-only, never in Player Preview or print — PD-025). It is dealt automatically at placement (PD-033): from the region's biome
 list via the existing adapter, least-used-in-the-region first and random among equals (pure `js/journey2-env-deal.js`), carried
@@ -254,7 +254,7 @@ Campaign menu housekeeping (PD-074): **Return Shadowblight home** resets `shadow
 Static effects (PD-076): the Display menu's device-wide switch (key `dhcodex_motion`, outside the four `dhcodex_journey2_*` keys, so the player page may use it; follows the system's reduced motion until the user chooses) draws Soul Echo, destroyed sanctuaries and Shadowblight as one still frame; not in the link, the map or print.
 Rendering and performance (detail: [docs/architecture.md](docs/architecture.md) "Journey 2 on phones: light raster and camera layer", "Shadowblight FX"): touch screens load the half-resolution light raster; `.j2-world` carries `will-change: transform` only while the camera moves; the camera is clamped to the map and zooms out no further than Fit (PD-059); the Shadowblight FX are throttled and idle during camera moves, off-screen or hidden, the ruin FX skip off-screen instances, both draw one still frame under reduced motion / "Static effects", and the Nebula cosmos sits outside the camera transform. The FX are presentation only — document, link and print data never depend on them.
 Decisions:
-[docs/product-decisions.md](docs/product-decisions.md) PD-078/PD-077/PD-076/PD-074/PD-073/PD-072/PD-071/PD-070/PD-066/PD-067/PD-068/PD-048/PD-057/PD-052/PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040/PD-041/PD-045/PD-051 (Place all rolls a random frozen footprint per press), detail:
+[docs/product-decisions.md](docs/product-decisions.md) PD-081/PD-078/PD-077/PD-076/PD-074/PD-073/PD-072/PD-071/PD-070/PD-066/PD-067/PD-068/PD-048/PD-057/PD-052/PD-015/PD-016/PD-018/PD-020/PD-021/PD-022/PD-023/PD-024/PD-025/PD-026/PD-027/PD-028/PD-029/PD-030/PD-031/PD-032/PD-033/PD-034/PD-039/PD-040/PD-041/PD-045/PD-051 (Place all rolls a random frozen footprint per press), detail:
 [docs/architecture.md](docs/architecture.md) "Journey 2 map editor",
 [.claude/rules/browser-state.md](.claude/rules/browser-state.md).
 

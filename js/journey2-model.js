@@ -17,7 +17,8 @@
        playerVisibility: { revealedCells: [ "q,r", ... ], revealedSanctuaryNameAnchorIds: [ "mk-012", ... ] },
        soulEchoes: { anchorIds: [ "mk-012", ... ], collectedAnchorIds: [ "mk-012" ] },
        destroyedSanctuaries: { anchorIds: [ "mk-007", ... ] },
-       sanctuaries: { entries: [ { anchorId, name, trade, quirk, crisis, drive, politics: { rolls }, size, population } ] },
+       sanctuaries: { entries: [ { anchorId, name, trade, quirk, crisis, drive, politics: { rolls }, size, population, environmentId? } ],
+                      destinations: [ { anchorId, environmentId } ] },
        shadowMarks: { added: [ "q,r", ... ], suppressed: [ "q,r", ... ] },
        party: { cell: "q,r" | null, shown: boolean } }
    The party marker (PD-045) is ONE map object: where the party stands and whether it is shown. It may stand on any foggable cell. While it is shown, its hex and the
@@ -97,8 +98,9 @@
   const SHADOW_KEYS = ['added', 'suppressed'];
   const VISIBILITY_KEYS = ['revealedCells', 'revealedSanctuaryNameAnchorIds'];
   const SOUL_ECHO_KEYS = ['anchorIds', 'collectedAnchorIds'];
-  const SANCTUARY_KEYS = ['entries'];
-  const SANCTUARY_ENTRY_KEYS = ['anchorId', 'name', 'trade', 'quirk', 'crisis', 'drive', 'politics', 'size', 'population'];
+  const SANCTUARY_KEYS = ['entries', 'destinations'];
+  const SANCTUARY_ENTRY_KEYS = ['anchorId', 'name', 'trade', 'quirk', 'crisis', 'drive', 'politics', 'size', 'population', 'environmentId'];
+  const DESTINATION_KEYS = ['anchorId', 'environmentId'];
   /** The book's sanctuary tables (Journey to Horizon, "Creating Sanctuaries"): the die behind each single-roll row. Political system is d8 with its own rule. */
   const SANCTUARY_DICE = Object.freeze({ trade: 20, quirk: 12, crisis: 10, drive: 10, size: 6, population: 4 });
   const POLITICS_SYSTEMS = 7;          // political system rows 1-7; an 8 is "roll twice and combine" and is never stored
@@ -151,6 +153,10 @@
       .filter(a => a && a.kind === 'sanctuary' && typeof a.stableId === 'string' && Array.isArray(a.worldPixelAnchor))
       .map(a => ({ id: a.stableId, x: a.worldPixelAnchor[0], y: a.worldPixelAnchor[1], cellId: typeof a.cellId === 'string' ? a.cellId : null, top: a.iconProtectionArea.rectPx[1], rect: a.iconProtectionArea.rectPx.slice(), glyph: typeof a.glyphClass === 'string' ? a.glyphClass : null, labelPoint: a.labelAnchor && Array.isArray(a.labelAnchor.pointPx) ? a.labelAnchor.pointPx.slice() : null }))
       .sort((a, b) => a.x - b.x || a.y - b.y || (a.id < b.id ? -1 : 1));
+    const destinations = ((anchorsDoc && anchorsDoc.anchors) || [])
+      .filter(a => a && a.kind === 'destination' && typeof a.stableId === 'string' && Array.isArray(a.worldPixelAnchor))
+      .map(a => ({ id: a.stableId, x: a.worldPixelAnchor[0], y: a.worldPixelAnchor[1] }))
+      .sort((a, b) => a.x - b.x || a.y - b.y || (a.id < b.id ? -1 : 1));
     const sanctuaryCells = new Set(((anchorsDoc && anchorsDoc.anchors) || []).filter(a => a && typeof a.cellId === 'string').map(a => a.cellId));
     return {
       grid: grid, templateId: template.templateId, templateVersion: template.schemaVersion,
@@ -158,6 +164,8 @@
       placeable: (q, r) => policy(q, r).ok && !sanctuaryCells.has(Geo.cellId(q, r)),
       allowedCellCount: grid.validCellCount() - decorative.size,
       sanctuaries: sanctuaries, sanctuaryIds: new Set(sanctuaries.map(s => s.id)),
+      /* The two printed destinations (Horizon, Marrogate): never sanctuaries, but each can carry one catalog Environment (PD-081). West to east like the sanctuaries. */
+      destinations: destinations, destinationIds: new Set(destinations.map(d => d.id)),
       /* Every printed icon (sanctuaries AND the Horizon / Marrogate destinations): the label layout keeps a player-visible name clear of all of them. */
       iconRects: ((anchorsDoc && anchorsDoc.anchors) || []).filter(a => a && a.iconProtectionArea && Array.isArray(a.iconProtectionArea.rectPx)).map(a => ({ id: a.stableId, rect: a.iconProtectionArea.rectPx.slice() })),
       worldSize: Array.isArray(template.worldSizePx) ? template.worldSizePx.slice() : null,
@@ -174,7 +182,7 @@
 
   function emptyDocument(ctx, nowIso) {
     const now = nowIso || new Date().toISOString();
-    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [], revealedSanctuaryNameAnchorIds: [] }, soulEchoes: { anchorIds: [], collectedAnchorIds: [] }, destroyedSanctuaries: { anchorIds: [] }, sanctuaries: { entries: [] }, shadowMarks: { added: [], suppressed: [] }, party: { cell: null, shown: false } };
+    return { schemaVersion: SCHEMA_VERSION, kind: KIND, templateId: ctx.templateId, templateVersion: ctx.templateVersion, createdAt: now, updatedAt: now, batches: [], tiles: [], playerVisibility: { revealedCells: [], revealedSanctuaryNameAnchorIds: [] }, soulEchoes: { anchorIds: [], collectedAnchorIds: [] }, destroyedSanctuaries: { anchorIds: [] }, sanctuaries: { entries: [], destinations: [] }, shadowMarks: { added: [], suppressed: [] }, party: { cell: null, shown: false } };
   }
 
   function isEmptyDocument(doc) {
@@ -182,7 +190,7 @@
       && !(doc.playerVisibility && (doc.playerVisibility.revealedCells.length || (doc.playerVisibility.revealedSanctuaryNameAnchorIds || []).length))
       && !(doc.soulEchoes && doc.soulEchoes.anchorIds.length)
       && !(doc.destroyedSanctuaries && doc.destroyedSanctuaries.anchorIds.length)
-      && !(doc.sanctuaries && doc.sanctuaries.entries.length)
+      && !(doc.sanctuaries && (doc.sanctuaries.entries.length || (doc.sanctuaries.destinations || []).length))
       && !(doc.shadowMarks && (doc.shadowMarks.added.length || doc.shadowMarks.suppressed.length))
       && !(doc.party && doc.party.cell));
   }
@@ -666,13 +674,14 @@
         !p.rolls.every(n => isInt(n) && n >= 1 && n <= POLITICS_SYSTEMS) || new Set(p.rolls).size !== p.rolls.length) {
       errors.push(where + ': politics must be { rolls: 1-' + MAX_POLITICS_SYSTEMS + ' distinct results of 1-' + POLITICS_SYSTEMS + ' }');
     }
+    if (own(e, 'environmentId') && !isEnvironmentId(e.environmentId)) errors.push(where + ': environmentId must be a catalog id');
     if (errors.length) return { errors: errors, entry: null };
-    return {
-      errors: [], entry: {
-        anchorId: e.anchorId, name: e.name, trade: e.trade, quirk: e.quirk, crisis: e.crisis, drive: e.drive,
-        politics: { rolls: p.rolls.slice() }, size: e.size, population: e.population,
-      },
+    const entry = {
+      anchorId: e.anchorId, name: e.name, trade: e.trade, quirk: e.quirk, crisis: e.crisis, drive: e.drive,
+      politics: { rolls: p.rolls.slice() }, size: e.size, population: e.population,
     };
+    if (own(e, 'environmentId')) entry.environmentId = e.environmentId;   // PD-081: one optional catalog id, stored by id only (missing = none)
+    return { errors: [], entry: entry };
   }
 
   /** Canonical stored order: the stable anchor id, so equal sets serialize identically. */
@@ -683,11 +692,12 @@
    * { entries: [one valid entry per sanctuary, no duplicates] }. Anything else rejects the whole document, never silently repaired.
    */
   function validateSanctuaries(v, ctx, errors) {
-    const none = { entries: [] };
+    const none = { entries: [], destinations: [] };
     if (v === undefined || v === null) return none;
     if (!isObj(v)) { errors.push('sanctuaries: not an object'); return none; }
     checkKeys(v, SANCTUARY_KEYS, 'sanctuaries', errors);
-    if (v.entries === undefined) return none;
+    const destinations = validateDestinations(v.destinations, ctx, errors);
+    if (v.entries === undefined) return { entries: [], destinations: destinations };
     if (!Array.isArray(v.entries)) { errors.push('sanctuaries.entries: not an array'); return none; }
     if (v.entries.length > ctx.sanctuaries.length) { errors.push('sanctuaries.entries: more entries than the map has sanctuaries'); return none; }
     const out = [], seen = new Set();
@@ -698,8 +708,37 @@
       if (seen.has(r.entry.anchorId)) { errors.push('sanctuaries.entries[' + i + ']: duplicate sanctuary "' + r.entry.anchorId + '"'); return; }
       seen.add(r.entry.anchorId); out.push(r.entry);
     });
-    return { entries: sortSanctuaries(out) };
+    return { entries: sortSanctuaries(out), destinations: destinations };
   }
+
+  /** Strict check of one destination Environment ({ anchorId, environmentId }); returns the normalized copy or null (errors pushed). */
+  function validateDestinationEntry(e, ctx, where, errors) {
+    if (!isObj(e)) { errors.push(where + ': not an object'); return null; }
+    checkKeys(e, DESTINATION_KEYS, where, errors);
+    if (typeof e.anchorId !== 'string' || !ctx.destinationIds.has(e.anchorId)) { errors.push(where + ': anchorId is not a destination'); return null; }
+    if (!isEnvironmentId(e.environmentId)) { errors.push(where + ': environmentId must be a catalog id'); return null; }
+    return { anchorId: e.anchorId, environmentId: e.environmentId };
+  }
+
+  /** `destinations` (PD-081): MISSING is not an error (none); a present value is an array of distinct destination Environments, stored sorted by anchor id. */
+  function validateDestinations(v, ctx, errors) {
+    if (v === undefined || v === null) return [];
+    if (!Array.isArray(v)) { errors.push('sanctuaries.destinations: not an array'); return []; }
+    if (v.length > ctx.destinations.length) { errors.push('sanctuaries.destinations: more entries than the map has destinations'); return []; }
+    const out = [], seen = new Set();
+    v.forEach((raw, i) => {
+      const d = validateDestinationEntry(raw, ctx, 'sanctuaries.destinations[' + i + ']', errors);
+      if (!d) return;
+      if (seen.has(d.anchorId)) { errors.push('sanctuaries.destinations[' + i + ']: duplicate destination "' + d.anchorId + '"'); return; }
+      seen.add(d.anchorId); out.push(d);
+    });
+    return sortDestinations(out);
+  }
+  const sortDestinations = list => list.slice().sort((a, b) => (a.anchorId < b.anchorId ? -1 : a.anchorId > b.anchorId ? 1 : 0));
+  /** The destination Environments of a document (a document without the field reads as none). */
+  const destinationList = doc => (doc && doc.sanctuaries && doc.sanctuaries.destinations) || [];
+  /** The document's `sanctuaries` object rebuilt with the given parts; a part left out keeps its value, so no command can drop the other half. */
+  const withSanctuaries = (doc, parts) => Object.assign({ entries: (doc.sanctuaries && doc.sanctuaries.entries) || [], destinations: destinationList(doc) }, parts);
 
   /* ---------------- Sanctuary name visibility (player knowledge, PD-027) ---------------- */
 
@@ -1083,8 +1122,11 @@
    *                                                                ('echo-on-destroyed'); same set => noop
    *   setSoulEchoCollected { anchorId, collected:boolean, at }     GM-only: mark one distributed Echo Collected / Available again; unknown anchor, a destination
    *                                                                (Marrogate / Horizon) or an anchor without an Echo is refused; already in that state => noop
-   *   setSanctuaries { entries:[{anchorId,name,trade,...}], at }   GM-only: REPLACES every generated sanctuary (one entry per sanctuary id; [] removes
-   *                                                                all); touches ONLY sanctuaries; same set => noop; anything invalid is refused whole
+   *   setSanctuaries { entries:[{anchorId,name,trade,...}], destinations?, at }
+   *                                                                GM-only: REPLACES every generated sanctuary (one entry per sanctuary id; [] removes
+   *                                                                all) and, when `destinations` ([{anchorId,environmentId}] for Horizon / Marrogate, PD-081) is given, their
+   *                                                                Environments (left out = kept); touches ONLY sanctuaries; same set => noop; anything invalid is refused whole
+   *   setDestinationEnvironment { anchorId, environmentId, at }    the reroll of Horizon / Marrogate: replaces the Environment of ONE destination that already has one; same id => noop
    *   setSanctuary   { entry, at }                                 replaces ONE existing sanctuary (the reroll); an unknown one is refused
    *   deleteSanctuary { anchorId, at }                             removes ONE generated sanctuary (and its revealed name, in the same command); the printed icon is never touched
    *   setParty { cell?, shown?, at }                               the party marker (PD-045): move it to a foggable cell (cell), show / hide it (shown); an omitted field keeps
@@ -1232,10 +1274,17 @@
           if (!r.entry || seen.has(r.entry.anchorId)) return fail('bad-sanctuaries');
           seen.add(r.entry.anchorId); next.push(r.entry);
         }
+        // PD-081: `destinations` is the Environments dealt to Horizon / Marrogate in the same press; left out, the stored ones are kept
+        let dest = destinationList(doc);
+        if (cmd.destinations !== undefined) {
+          const probe = [], v = validateDestinations(cmd.destinations, ctx, probe);
+          if (probe.length || !Array.isArray(cmd.destinations) || v.length !== cmd.destinations.length) return fail('bad-sanctuaries');
+          dest = v;
+        }
         const sorted = sortSanctuaries(next), have = doc.sanctuaries ? doc.sanctuaries.entries : [];
-        if (JSON.stringify(sorted) === JSON.stringify(have)) return { ok: true, doc: doc, noop: true };
+        if (JSON.stringify(sorted) === JSON.stringify(have) && JSON.stringify(dest) === JSON.stringify(destinationList(doc))) return { ok: true, doc: doc, noop: true };
         // a revealed name stays revealed only for an anchor that still has an entry; a new entry is never revealed by the replacement
-        const kept = revealedNameList(doc).filter(id => seen.has(id)), patch = { sanctuaries: { entries: sorted } };
+        const kept = revealedNameList(doc).filter(id => seen.has(id)), patch = { sanctuaries: { entries: sorted, destinations: dest } };
         if (kept.length !== revealedNameList(doc).length) patch.playerVisibility = withRevealedNames(doc, kept);
         return { ok: true, doc: touch(doc, cmd.at, patch), changed: sorted.length };
       }
@@ -1246,12 +1295,21 @@
         if (!have.some(e => e.anchorId === r.entry.anchorId)) return fail('no-sanctuary');
         const next = have.map(e => (e.anchorId === r.entry.anchorId ? r.entry : e));
         if (JSON.stringify(next) === JSON.stringify(have)) return { ok: true, doc: doc, noop: true };
-        return { ok: true, doc: touch(doc, cmd.at, { sanctuaries: { entries: next } }) };
+        return { ok: true, doc: touch(doc, cmd.at, { sanctuaries: withSanctuaries(doc, { entries: next }) }) };
+      }
+      case 'setDestinationEnvironment': {
+        // the reroll of Horizon / Marrogate (PD-081): replaces the Environment of ONE destination that already has one; never creates one
+        const probe = [], d = validateDestinationEntry({ anchorId: cmd.anchorId, environmentId: cmd.environmentId }, ctx, 'destination', probe);
+        if (!d) return fail('bad-destination');
+        const have = destinationList(doc), cur = have.find(x => x.anchorId === d.anchorId);
+        if (!cur) return fail('no-destination');
+        if (cur.environmentId === d.environmentId) return { ok: true, doc: doc, noop: true };
+        return { ok: true, doc: touch(doc, cmd.at, { sanctuaries: withSanctuaries(doc, { destinations: have.map(x => (x.anchorId === d.anchorId ? d : x)) }) }) };
       }
       case 'deleteSanctuary': {
         const have = doc.sanctuaries ? doc.sanctuaries.entries : [];
         if (!have.some(e => e.anchorId === cmd.anchorId)) return fail('no-sanctuary');
-        const patch = { sanctuaries: { entries: have.filter(e => e.anchorId !== cmd.anchorId) } };
+        const patch = { sanctuaries: withSanctuaries(doc, { entries: have.filter(e => e.anchorId !== cmd.anchorId) }) };   // its Environment leaves with the entry (PD-081)
         if (getRevealedSanctuaryNameSet(doc).has(cmd.anchorId)) patch.playerVisibility = withRevealedNames(doc, revealedNameList(doc).filter(id => id !== cmd.anchorId));   // the visible name leaves with its sanctuary, atomically
         return { ok: true, doc: touch(doc, cmd.at, patch) };
       }
@@ -1505,7 +1563,7 @@
     shadowBase: shadowBase, getShadowXSet: getShadowXSet, getPendingSkullSet: getPendingSkullSet, normalizeShadowMarks: normalizeShadowMarks, validateShadowMarks: validateShadowMarks,
     MAX_DESTROYED_SANCTUARIES: MAX_DESTROYED_SANCTUARIES, planDestroyedSanctuaries: planDestroyedSanctuaries, getDestroyedSanctuarySet: getDestroyedSanctuarySet, isSanctuaryDestroyed: isSanctuaryDestroyed,
     MAX_SOUL_ECHOES: MAX_SOUL_ECHOES, planSoulEchoes: planSoulEchoes, getCollectedEchoSet: getCollectedEchoSet, isEchoCollected: isEchoCollected, availableEchoIds: availableEchoIds,
-    SANCTUARY_DICE: SANCTUARY_DICE, MAX_SANCTUARY_NAME: MAX_SANCTUARY_NAME, validateSanctuaryEntry: validateSanctuaryEntry, planSanctuaries: planSanctuaries,
+    destinationList: destinationList, SANCTUARY_DICE: SANCTUARY_DICE, MAX_SANCTUARY_NAME: MAX_SANCTUARY_NAME, validateSanctuaryEntry: validateSanctuaryEntry, planSanctuaries: planSanctuaries,
     getRevealedSanctuaryNameSet: getRevealedSanctuaryNameSet, isSanctuaryNameRevealed: isSanctuaryNameRevealed,
     validateParty: validateParty, getPartyCell: getPartyCell, getPartyLightSet: getPartyLightSet, getVisibleCellSet: getVisibleCellSet,
     isFoggableCell: isFoggableCell, getRevealedCellSet: getRevealedCellSet, isCellRevealed: isCellRevealed, cellsToChange: cellsToChange, compareCellKeys: compareCellKeys,

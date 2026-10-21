@@ -268,7 +268,8 @@
     let sanctuaryShown = null;                             // anchor id the overlay DOM currently shows (so its scroll position survives re-renders)
     let sancDrawn = { sanctuaries: null, open: null, names: null };   // what the sanctuary ring layer currently shows
     let sancLabelsDrawn = null;                             // the sanctuaryLabels currently drawn (GM map and Player Preview share them)
-    let sancAnchors = null;                                 // Map anchor id -> the printed sanctuary anchor (built once)
+    let sancAnchors = null;                                 // Map anchor id -> the printed sanctuary / destination anchor (built once)
+    let sancEnvPicker = false;                              // transient: the open sanctuary's inline Environment picker is open (never persisted, never in history)
     let locateHover = null;                                 // { q, r } under the pointer while Locate Soul Echoes is selecting (transient: never persisted, never in history)
     let locateNeedleStarted = false;                        // the needle transition of the current result has been started (a re-render must not restart it)
     let seekers = null;                                     // the open Shadowblight control of the current Locate result (PD-041): { origin, plan, step, baseDoc, doc, entry } — transient; the X's it moved are document state
@@ -744,10 +745,15 @@
                   <button type="button" class="btn btn-sm j2-sanc-act" data-j2-echo-collect><span class="j2-ico" aria-hidden="true">${LI.echo}</span><span data-j2-s="echoLabel"></span></button>
                 </div>
                 <p class="j2-sanc-ruin" data-j2-s="ruin" hidden><span class="j2-ico" aria-hidden="true">${LI.flame}</span><span data-t="journey2_sanc_ruin_note"></span></p>
+                <section class="j2-insp-sec j2-hexenv j2-sanc-env" data-j2-s="envSec" aria-labelledby="j2-sancenv-title" hidden>
+                  <h4 class="j2-insp-h" id="j2-sancenv-title" data-t="journey2_sancenv_title"></h4>
+                  <div data-j2-s="envBody"></div>
+                </section>
                 <div class="j2-insp-scroll j2-sanc-rows" data-j2-s="rows"></div>
                 <footer class="j2-sanc-foot" data-j2-s="foot">
                   <button type="button" class="btn btn-sm btn-danger" data-j2-sanc-delete data-t="journey2_sanc_delete"></button>
                   <button type="button" class="btn btn-sm btn-primary" data-j2-sanc-reroll><span class="j2-ico" aria-hidden="true">${LI.dice}</span><span data-t="journey2_sanc_reroll"></span></button>
+                  <button type="button" class="btn btn-sm btn-primary" data-j2-dest-reroll hidden><span class="j2-ico" aria-hidden="true">${LI.dice}</span><span data-t="journey2_dest_reroll"></span></button>
                 </footer>
               </aside>
               <aside class="j2-region-inspector j2-locate" id="j2-locate" role="dialog" aria-modal="false" aria-labelledby="j2-locate-title" tabindex="-1" data-j2-locate hidden>
@@ -941,6 +947,7 @@
       ui.sancGenerate = container.querySelector('[data-j2-sanc-generate]');
       ui.sancGenerateLabel = container.querySelector('[data-j2-sanc-generate-label]');
       ui.sancReroll = ui.sanctuary.querySelector('[data-j2-sanc-reroll]');
+      ui.destReroll = ui.sanctuary.querySelector('[data-j2-dest-reroll]');
       ui.sancDelete = ui.sanctuary.querySelector('[data-j2-sanc-delete]');
       ui.sancName = ui.sanctuary.querySelector('[data-j2-sanc-name]');
       ui.sancField = ui.sanctuary.querySelector('[data-j2-sanc-field]');
@@ -1470,10 +1477,11 @@
       return biome ? environmentsFor(biome) : [];
     }
 
-    function envRowHtml(e, current, i) {
+    function envRowHtml(e, current, i, kind) {
+      const sanc = kind === 'sancenv';   // the sanctuary overlay's picker reuses the hex row; only the action hook and the aria text differ
       return '<li class="j2-hexenv-row' + (current ? ' is-current' : '') + '"><a class="j2-env-link" href="' + esc(e.href) + '" data-j2-env><span class="j2-env-tier" aria-hidden="true">' + esc(n(e.tier)) + '</span><span class="j2-env-name">' + esc(e.name) + '</span><span class="sr-only">' + esc(fill('journey2_hexenv_tier', { n: n(e.tier) }) + ' · ' + t('journey2_hexenv_open')) + '</span></a>' +
         (current ? '<span class="j2-hexenv-assigned">' + esc(t('journey2_hexenv_assigned')) + '</span>'
-          : '<button type="button" class="btn btn-sm" data-j2-hexenv="assign" data-env-id="' + esc(e.id) + '" aria-label="' + esc(fill('journey2_hexenv_assign_aria', { name: e.name })) + '"' + (editLocked ? ' disabled' : '') + '>' + esc(t('journey2_hexenv_assign')) + '</button>') + '</li>';
+          : '<button type="button" class="btn btn-sm" data-j2-' + (sanc ? 'sancenv' : 'hexenv') + '="assign" data-env-id="' + esc(e.id) + '" aria-label="' + esc(fill(sanc ? 'journey2_sancenv_assign_aria' : 'journey2_hexenv_assign_aria', { name: e.name })) + '"' + (editLocked ? ' disabled' : '') + '>' + esc(t('journey2_hexenv_assign')) + '</button>') + '</li>';
     }
 
     /**
@@ -3487,14 +3495,17 @@
     const SANC_RING_R = 34;                                // world px: the ring drawn round a generated sanctuary icon
 
     function sanctuaryAnchorMap() {
-      if (!sancAnchors) sancAnchors = new Map(data.anchorsDoc.anchors.filter(a => a.kind === 'sanctuary').map(a => [a.stableId, a]));
+      if (!sancAnchors) sancAnchors = new Map(data.anchorsDoc.anchors.filter(a => a.kind === 'sanctuary' || a.kind === 'destination').map(a => [a.stableId, a]));
       return sancAnchors;
     }
     function sanctuaryEntry(id) { return id && doc ? (doc.sanctuaries.entries.find(e => e.anchorId === id) || null) : null; }
+    /** Horizon / Marrogate (PD-081): the stored Environment of a destination, or null. A destination is clickable only once it has one. */
+    function destinationEntry(id) { return id && doc ? (Model.destinationList(doc).find(d => d.anchorId === id) || null) : null; }
+    function destinationTitle(id) { const a = sanctuaryAnchorMap().get(id); return t(a && a.builtInLabel && a.builtInLabel.text === 'HORIZON' ? 'journey2_dest_horizon' : 'journey2_dest_marrogate'); }
     /** The overlay opens for a sanctuary with generated characteristics OR a Soul Echo (the Echo's state belongs to the fixed anchor, not to the generated data). */
     function sanctuaryHasEcho(id) { return !!(id && doc && doc.soulEchoes.anchorIds.includes(id)); }
-    function sanctuaryOpenable(id) { return !!(sanctuaryEntry(id) || sanctuaryHasEcho(id)); }
-    function openableSanctuaryIds() { const ids = new Set(doc.sanctuaries.entries.map(e => e.anchorId)); for (const id of doc.soulEchoes.anchorIds) ids.add(id); return ids; }
+    function sanctuaryOpenable(id) { return !!(sanctuaryEntry(id) || sanctuaryHasEcho(id) || destinationEntry(id)); }
+    function openableSanctuaryIds() { const ids = new Set(doc.sanctuaries.entries.map(e => e.anchorId)); for (const id of doc.soulEchoes.anchorIds) ids.add(id); for (const d of Model.destinationList(doc)) ids.add(d.anchorId); return ids; }
     function sanctuaryTitle(entry) { return entry.name || t('journey2_sanc_fallback'); }
     function sanctuaryReady() { return !!(generator && generator.ready() && typeof generator.rollSanctuary === 'function'); }
 
@@ -3514,6 +3525,13 @@
         if (Model.isSanctuaryNameRevealed(doc, e.anchorId)) continue;
         h += '<g class="j2-sanc" data-sanc="' + esc(e.anchorId) + '" data-name-visible="false"><circle class="j2-sanc-dot" cx="' + x + '" cy="' + y + '" r="3"/></g>';
       }
+      // Horizon / Marrogate carry no name to reveal, so their dot is always drawn: it is the only sign that the icon opens an Environment (PD-081)
+      for (const d of Model.destinationList(doc)) {
+        const a = at.get(d.anchorId);
+        if (!a) continue;
+        const pr = a.iconProtectionArea.rectPx;
+        h += '<g class="j2-sanc" data-sanc="' + esc(d.anchorId) + '" data-name-visible="false"><circle class="j2-sanc-dot" cx="' + fmt(a.worldPixelAnchor[0], 1) + '" cy="' + fmt(pr[1] + pr[3], 1) + '" r="3"/></g>';
+      }
       ui.g.sanct.innerHTML = h;
       sancDrawn = { sanctuaries: doc.sanctuaries, open: sanctuaryOpen, names: names };
     }
@@ -3531,25 +3549,29 @@
       ui.sanctuary.hidden = true; sanctuaryShown = null; applyArt(ui.sanctuary, '');
       sanctuaryRenaming = false; ui.sancNameInput.value = '';
       ui.s.name.textContent = ''; ui.s.rows.innerHTML = ''; ui.s.rows.removeAttribute('data-sig');
+      sancEnvPicker = false; ui.s.envSec.hidden = true; ui.s.envBody.innerHTML = ''; ui.s.envBody.removeAttribute('data-sig');
     }
 
     /** Paints the open overlay from the committed document (rows only when they changed, so a scroll position survives). */
     function renderSanctuaryPanel() {
       if (!ui.sanctuary) return;
-      const e = previewMode ? null : sanctuaryEntry(sanctuaryOpen), echo = !previewMode && sanctuaryHasEcho(sanctuaryOpen);
-      if (!e && !echo) { clearSanctuaryPanel(); return; }
+      const e = previewMode ? null : sanctuaryEntry(sanctuaryOpen), echo = !previewMode && sanctuaryHasEcho(sanctuaryOpen), dest = previewMode ? null : destinationEntry(sanctuaryOpen);
+      if (!e && !echo && !dest) { clearSanctuaryPanel(); return; }
       ui.sanctuary.hidden = false;
       applyArt(ui.sanctuary, SANCTUARY_ART.file, SANCTUARY_ART.pos);
-      if (sanctuaryShown !== sanctuaryOpen) sanctuaryRenaming = false;   // another sanctuary: an unfinished edit is dropped
+      if (sanctuaryShown !== sanctuaryOpen) { sanctuaryRenaming = false; sancEnvPicker = false; }   // another sanctuary: an unfinished edit and an open picker are dropped
       if (!e) sanctuaryRenaming = false;
-      ui.s.name.textContent = e ? e.name : t('journey2_sanc_fallback');   // an empty name shows nothing (the pencil still offers the edit)
+      ui.s.name.textContent = dest ? destinationTitle(dest.anchorId) : e ? e.name : t('journey2_sanc_fallback');   // an empty name shows nothing (the pencil still offers the edit)
       ui.s.name.hidden = sanctuaryRenaming;
       ui.sancField.hidden = !sanctuaryRenaming;                          // the input keeps what is typed across re-renders
       ui.sancRename.hidden = ui.sancRename.parentNode.hidden = !e || sanctuaryRenaming;   // the wrapper goes too, or it keeps an empty box
       ui.sancClose.disabled = sanctuaryRenaming;                        // no second X next to the discard X while editing
       ui.sancRename.disabled = editLocked;
       // an Echo-only sanctuary (its characteristics were deleted) shows just the Soul Echo row: no name toggle, no tables, no Reroll / Delete
-      ui.sancName.hidden = !e; ui.s.rows.hidden = !e; ui.s.foot.hidden = !e;
+      ui.sancName.hidden = !e; ui.s.rows.hidden = !e; ui.s.foot.hidden = !(e || dest);
+      // Horizon / Marrogate (PD-081): the footer keeps only its own Reroll (no Delete, no sanctuary Reroll)
+      ui.sancDelete.hidden = ui.sancReroll.hidden = !!dest; ui.destReroll.hidden = !dest; ui.s.foot.classList.toggle('is-dest', !!dest);
+      renderSanctuaryEnv(e, dest);
       if (e) {
         const rows = generator && generator.ready() && typeof generator.describeSanctuary === 'function' ? generator.describeSanctuary(e) : [];
         const cell = r =>
@@ -3573,7 +3595,8 @@
         ui.sancName.disabled = editLocked;
         ui.sancReroll.disabled = editLocked || !sanctuaryReady();
         ui.sancDelete.disabled = editLocked;
-      } else if (ui.s.rows.getAttribute('data-sig')) { ui.s.rows.innerHTML = ''; ui.s.rows.removeAttribute('data-sig'); }
+      } else if (dest) ui.destReroll.disabled = editLocked || !sanctuaryEnvironments().length;
+      if (!e && ui.s.rows.getAttribute('data-sig')) { ui.s.rows.innerHTML = ''; ui.s.rows.removeAttribute('data-sig'); }
       // GM-only Soul Echo strip: one real button whose label is the next action (the spent marker on the map shows the state); only when this sanctuary holds an Echo
       ui.s.echo.hidden = !echo;
       ui.s.ruin.hidden = !(e && Model.isSanctuaryDestroyed(doc, sanctuaryOpen));   // GM note only: the flame on the map says the same; nothing to click (the name button above still works)
@@ -3584,6 +3607,91 @@
       }
       if (sanctuaryShown !== sanctuaryOpen) ui.s.rows.scrollTop = 0;
       sanctuaryShown = sanctuaryOpen;
+    }
+
+    /* ---------------- Sanctuary Environments (PD-081) ---------------- */
+
+    /** Every catalog Environment tagged `settlement`, no Tier or other filter: the pool for the 56 sanctuaries and for Horizon / Marrogate (the existing biome adapter, untouched). */
+    function sanctuaryEnvironments() { return environmentsFor('settlement'); }
+
+    /** How many sanctuaries / destinations already carry each Environment id (the open one's current id included, so a reroll prefers one nobody holds). */
+    function sanctuaryEnvironmentUse() {
+      const used = {};
+      for (const x of doc.sanctuaries.entries) if (x.environmentId) used[x.environmentId] = (used[x.environmentId] || 0) + 1;
+      for (const x of Model.destinationList(doc)) used[x.environmentId] = (used[x.environmentId] || 0) + 1;
+      return used;
+    }
+
+    /** One id from the settlement pool by the hex rule (least used first, random among equals), or null when the pool is empty. */
+    function dealSanctuaryEnvironment() {
+      const ids = EnvDeal.dealEnvironments({ pool: sanctuaryEnvironments().map(x => x.id), used: sanctuaryEnvironmentUse(), count: 1, random: dealRandom });
+      return ids.length ? ids[0] : null;
+    }
+
+    /** The overlay's Environment section: the assigned one as a link to the Environment overlay plus Change (a sanctuary only; Horizon / Marrogate have Reroll in the footer). Rebuilt only when its signature changes. */
+    function renderSanctuaryEnv(e, dest) {
+      const S = ui.s;
+      if (!e && !dest) { sancEnvPicker = false; S.envSec.hidden = true; S.envBody.innerHTML = ''; S.envBody.removeAttribute('data-sig'); return; }
+      S.envSec.hidden = false;
+      const list = sanctuaryEnvironments(), id = (e ? e.environmentId : dest.environmentId) || null;
+      const found = id ? list.find(x => x.id === id) || null : null;
+      const canChange = !!e && list.length > 0, open = !!(sancEnvPicker && canChange);
+      if (sancEnvPicker && !canChange) sancEnvPicker = false;
+      const sig = [lang, sanctuaryOpen, id || '', open ? 1 : 0, canChange ? 1 : 0, editLocked ? 1 : 0, list.map(x => x.id + ':' + x.name + ':' + x.tier).join(',')].join('|');
+      if (S.envBody.getAttribute('data-sig') === sig) return;
+      S.envBody.setAttribute('data-sig', sig);
+      const change = canChange
+        ? '<button type="button" class="btn btn-sm" data-j2-sancenv="change" aria-expanded="' + open + '" aria-controls="j2-sancenv-picker"' + (editLocked ? ' disabled' : '') + '>' + esc(t('journey2_hexenv_change')) + '</button>' : '';
+      let h = '';
+      if (id && found) {
+        h += '<div class="j2-hexenv-card"><a class="j2-env-link j2-hexenv-link" href="' + esc(found.href) + '" data-j2-env data-j2-sancenv-link><span class="j2-env-name">' + esc(found.name) + '</span><span class="sr-only"> (' + esc(t('journey2_hexenv_open')) + ')</span></a>' + change + '</div>';
+      } else if (id) {
+        h += '<div class="j2-hexenv-card is-unavailable"><div class="j2-hexenv-info"><strong class="j2-hexenv-gone">' + esc(t('journey2_hexenv_unavailable')) + '</strong>' +
+          '<span class="j2-hexenv-id">' + esc(t('journey2_hexenv_stored_id')) + ': <code>' + esc(id) + '</code></span>' +
+          (list.length ? '<span class="j2-insp-muted">' + esc(t('journey2_sancenv_gone')) + '</span>' : '') + '</div>' + change + '</div>';
+      } else {
+        h += '<div class="j2-hexenv-card is-unavailable"><span class="j2-insp-muted">' + esc(t('journey2_sancenv_none')) + '</span>' + change + '</div>';   // an older save: Change (or Reroll) assigns one
+      }
+      if (open) h += '<ul class="j2-envs-list j2-hexenv-list" id="j2-sancenv-picker" role="group" aria-label="' + esc(t('journey2_sancenv_picker')) + '">' + list.map((x, i) => envRowHtml(x, x.id === id, i, 'sancenv')).join('') + '</ul>';
+      S.envBody.innerHTML = h;
+    }
+
+    /** Opens/closes the inline picker. Pure UI state: no command, no history, no autosave. */
+    function setSancEnvPicker(open, focus) {
+      if (previewMode || !sanctuaryEntry(sanctuaryOpen)) { sancEnvPicker = false; return; }
+      sancEnvPicker = !!open;
+      renderSanctuaryPanel(); positionSanctuary();
+      if (focus) { const b = ui.s.envBody.querySelector('[data-j2-sancenv="change"]'); if (b) b.focus({ preventScroll: true }); }
+    }
+
+    function onSancEnvClick(btn) {
+      if (inst.disposed || previewMode || !doc || !sanctuaryOpen) return;
+      const kind = btn.getAttribute('data-j2-sancenv'), e = sanctuaryEntry(sanctuaryOpen);
+      if (!e) return;
+      if (kind === 'change') { setSancEnvPicker(!sancEnvPicker, true); return; }
+      if (kind === 'assign') {
+        if (editLocked) return;
+        const id = btn.getAttribute('data-env-id'), pick = sanctuaryEnvironments().find(x => x.id === id);
+        if (!pick) return;                                    // only what the settlement list currently offers can be assigned
+        const r = dispatch({ type: 'setSanctuary', entry: Object.assign({}, e, { environmentId: pick.id }) }, 'sanctuaryEnvironment', true);
+        if (!r.ok) { hint(t('journey2_hexenv_failed')); return; }
+        sancEnvPicker = false; renderSanctuaryPanel(); positionSanctuary();
+        announce(fill('journey2_hexenv_live_changed', { name: pick.name }));
+        const l = ui.s.envBody.querySelector('[data-j2-sancenv-link]'); if (l) l.focus({ preventScroll: true });
+      }
+    }
+
+    /** Horizon / Marrogate: deals the open destination a fresh Environment (one Undo entry; no confirmation, like the sanctuary Reroll). */
+    function rerollDestination() {
+      if (inst.disposed || editLocked || previewMode || !doc || !sanctuaryOpen) return;
+      const d = destinationEntry(sanctuaryOpen);
+      if (!d) return;
+      const id = dealSanctuaryEnvironment();
+      if (!id) { hint(t('journey2_sanc_unavailable')); return; }
+      const r = dispatch({ type: 'setDestinationEnvironment', anchorId: d.anchorId, environmentId: id }, 'destinationReroll');
+      if (!r.ok) { hint(t('journey2_sanc_failed')); return; }
+      const found = sanctuaryEnvironments().find(x => x.id === id);
+      announce(fill('journey2_hexenv_live_changed', { name: found ? found.name : id }));
     }
 
     /** The open sanctuary's icon in map-area px, or null when it is off screen (the overlay then takes its stable corner). */
@@ -3633,7 +3741,7 @@
       sanctuaryOpen = id;
       if (envTipKey && String(envTipKey).indexOf('sanc:') === 0) hideEnvTip();
       renderSanctuaryRings(); renderSanctuaryPanel(); positionSanctuary();
-      announce(fill('journey2_live_sanc_opened', { name: e ? sanctuaryTitle(e) : t('journey2_sanc_fallback') }));
+      announce(fill('journey2_live_sanc_opened', { name: e ? sanctuaryTitle(e) : destinationEntry(id) ? destinationTitle(id) : t('journey2_sanc_fallback') }));
       return true;
     }
 
@@ -3641,7 +3749,7 @@
     function closeSanctuary(opts) {
       if (!sanctuaryOpen) return false;
       const o = opts || {};
-      sanctuaryOpen = null; sanctuaryShown = null;
+      sanctuaryOpen = null; sanctuaryShown = null; sancEnvPicker = false;
       if (ui.sanctuary) { clearSanctuaryPanel(); ui.sanctuary.style.transform = ''; }
       renderSanctuaryRings();
       if (!o.quiet) announce(t('journey2_live_sanc_closed'));
@@ -3667,7 +3775,13 @@
       if (!sanctuaryReady()) { hint(t('journey2_sanc_unavailable')); return; }
       const commit = () => {
         const entries = Model.planSanctuaries(data.ctx, () => generator.rollSanctuary());
-        const r = entries.length ? dispatch({ type: 'setSanctuaries', entries: entries }, 'sanctuariesGenerate') : { ok: false };
+        // PD-081: one Environment per sanctuary AND per destination (Horizon, Marrogate), all dealt in this one press from the settlement pool by the hex rule —
+        // 58 slots from the whole pool, so none repeats; carried by the same single command (one Undo, Redo never re-deals)
+        const dests = data.ctx.destinations;
+        const ids = EnvDeal.dealEnvironments({ pool: sanctuaryEnvironments().map(x => x.id), used: {}, count: entries.length + dests.length, random: dealRandom });
+        entries.forEach((x, i) => { if (ids[i]) x.environmentId = ids[i]; });
+        const destinations = dests.map((d, i) => ({ anchorId: d.id, environmentId: ids[entries.length + i] })).filter(d => d.environmentId);
+        const r = entries.length ? dispatch({ type: 'setSanctuaries', entries: entries, destinations: destinations }, 'sanctuariesGenerate') : { ok: false };
         if (!r.ok) { hint(t('journey2_sanc_failed')); return; }
         announce(fillN('journey2_live_sanc_generated', { n: n(entries.length) }, [entries.length]));
       };
@@ -3723,6 +3837,8 @@
       let rolled = generator.rollSanctuary();
       for (let i = 0; i < 6 && rolled.name && taken.has(rolled.name.toLowerCase()); i++) rolled = generator.rollSanctuary();
       const next = Object.assign({ anchorId: e.anchorId }, rolled);
+      const env = dealSanctuaryEnvironment() || e.environmentId;      // PD-081: the Environment is dealt anew with the rest (kept only when the catalog offers nothing)
+      if (env) next.environmentId = env;
       const r = dispatch({ type: 'setSanctuary', entry: next }, 'sanctuaryReroll');
       if (!r.ok) { hint(t('journey2_sanc_failed')); return; }
       announce(fill('journey2_live_sanc_rerolled', { name: sanctuaryTitle(next) }));
@@ -5288,6 +5404,8 @@
       else if (b.hasAttribute('data-j2-sanc-rename-cancel')) endSanctuaryRename(false);
       else if (b.hasAttribute('data-j2-sanc-rename')) startSanctuaryRename();
       else if (b.hasAttribute('data-j2-sanc-reroll')) rerollSanctuary();
+      else if (b.hasAttribute('data-j2-dest-reroll')) rerollDestination();
+      else if (b.hasAttribute('data-j2-sancenv')) onSancEnvClick(b);
       else if (b.hasAttribute('data-j2-sanc-delete')) confirmDeleteSanctuary();
       else if (b.hasAttribute('data-j2-preview-back')) leavePreview();
       else if (b.hasAttribute('data-j2-print-open')) openPrintPreview();

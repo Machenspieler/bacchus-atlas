@@ -270,7 +270,8 @@ test('view: Assign goes through one setTileEnvironment command and re-checks the
 test('view: names are real links to the existing overlay href, Assign is a real button with a contextual label', () => {
   const r = fn('envRowHtml', 'renderHexEnvironment') + fn('renderHexEnvironment', 'hexEnvButton');
   assert.match(r, /<a class="j2-env-link"[^>]*href="' \+ esc\(e\.href\)/);
-  assert.match(r, /<button type="button" class="btn btn-sm" data-j2-hexenv="assign"[^>]*aria-label="' \+ esc\(fill\('journey2_hexenv_assign_aria'/);
+  // the row is shared with the sanctuary overlay's picker (PD-081): the hook and the aria key follow `kind`, the hex one stays the default
+  assert.match(r, /<button type="button" class="btn btn-sm" data-j2-' \+ \(sanc \? 'sancenv' : 'hexenv'\) \+ '="assign"[^>]*aria-label="' \+ esc\(fill\(sanc \? 'journey2_sancenv_assign_aria' : 'journey2_hexenv_assign_aria'/);
   assert.match(r, /found\.href/);
   assert.doesNotMatch(r, /#\/journey2\?|#\/env|envHash/, 'no hand-built overlay URLs');
   assert.match(r, /journey2_hexenv_open/);

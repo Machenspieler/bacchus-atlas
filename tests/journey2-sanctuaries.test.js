@@ -36,13 +36,13 @@ function counterRoll(names) {
 
 test('a new document has no sanctuaries; a document without the field loads unchanged (schemaVersion stays 1)', () => {
   const doc = M.emptyDocument(ctx, AT);
-  assert.deepEqual(doc.sanctuaries, { entries: [] });
+  assert.deepEqual(doc.sanctuaries, { entries: [], destinations: [] });
   assert.equal(M.SCHEMA_VERSION, 1);
   const old = JSON.parse(JSON.stringify(doc));
   delete old.sanctuaries;
   const r = M.validateDocument(old, ctx);
   assert.equal(r.ok, true);
-  assert.deepEqual(r.doc.sanctuaries, { entries: [] });
+  assert.deepEqual(r.doc.sanctuaries, { entries: [], destinations: [] });
 });
 
 test('validation: sorts by sanctuary id; rejects duplicates, non-sanctuaries, bad rolls, unknown fields and malformed values', () => {

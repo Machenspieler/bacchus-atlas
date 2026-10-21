@@ -36,6 +36,7 @@ silently breaks the roll button.
 | Party (Journey UI controls and hints, audit 05 L5-05) | отряд («где сейчас находится отряд», «Маркер отряда»). «Группа» may remain in official encounter / rumor narrative in `data/journey.json` |
 | Compass points, 16-point rose (audit 05 L5-08) | Запад-юго-запад, Запад-северо-запад, Восток-северо-восток, Восток-юго-восток (not «западо-/востоко-…»); abbreviations ЗЮЗ / ЗСЗ / ВСВ / ВЮВ unchanged |
 | Drive (sanctuary table, PD-023) | Движущая сила (daggerheart.ru/frame/journey-to-horizon; was «Стремление») |
+| Horizon / Marrogate (the two printed destinations, PD-081) | Горизонт / Marrogate (the name stays Latin, as in «Marrogate и юго-запад»; Horizon follows «Путешествие к Горизонту») |
 | Passive (feature type) | Пассивно |
 | Action (feature type) | Действие |
 | Reaction (feature type) | Реакция |
