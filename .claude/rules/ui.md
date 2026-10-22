@@ -98,3 +98,5 @@ before substantial UI work — this file assumes both.
 - Rail menus close on Tab (focus continues from their button), support Home / End, and a Campaign action hands focus back to its button.
 - Panel family: every panel has a header X (Locate included); a footer's primary (gold) button is a real action, never "Close". Environment links are teal (reference), not gold.
 - Dice on map panels are the 3D die (`img/journey2/dice/d6-3d.png`): Encounter roll and Reroll; the side panel's Generate keeps the line icon.
+- One header for every map panel (`.j2-insp-head`, min-height 64px): a 40px tile (an object's symbol, or a tool's icon — `.j2-insp-sym--tool`), a Display-font title, an optional mono sub line, a header X. Route details use it too (title "Route", sub = strategy · A → B). A lone footer action sits on the right; Locate has no footer Close (the X closes it). The sanctuary panel is `max(--j2-pop-w, 392px)` so Delete + Reroll fit one row in Russian.
+- Not unified on purpose: the region footer exists only while a hex is selected (a stub would say nothing true), and Delete keeps its red outline.

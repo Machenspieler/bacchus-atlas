@@ -739,7 +739,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 /* morphInspector() in journey2-view.js: an in-place height change (terrain note, Hex Environment picker) eases instead of snapping; the scroller clips meanwhile so no scrollbar flickers */
 .j2-region-inspector.is-morphing { transition: height var(--t-base) var(--ease-out); }
 .j2-region-inspector.is-morphing .j2-insp-scroll { overflow-y: hidden; }
-.j2-insp-head { flex: none; display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-3) var(--s-2); border-bottom: 1px solid var(--line-faint); }
+.j2-insp-head { flex: none; display: flex; align-items: center; gap: var(--s-3); min-height: 64px; padding: var(--s-3) var(--s-3) var(--s-2); border-bottom: 1px solid var(--line-faint); }   /* one header height for every map panel */
 .j2-insp-sym { flex: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--parchment); border-radius: var(--r-sm); }
 .j2-insp-sym img { width: auto; height: auto; max-width: 30px; max-height: 28px; display: block; }
 .j2-insp-titles { flex: 1 1 auto; min-width: 0; }
@@ -818,7 +818,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 }
 
 /* ---------- Sanctuary overlay (PD-023): the same screen-space panel as the Region Inspector, compact width, with its own footer ---------- */
-.j2-region-inspector.j2-sanctuary { width: var(--j2-pop-w); }
+.j2-region-inspector.j2-sanctuary { width: max(var(--j2-pop-w), 392px); }   /* Delete + Reroll (3D die) need ~385px in Russian */
 /* header: the name and its one player-facing button share a line, the button drops under a long name; the close button keeps the corner */
 .j2-sanc-headmain { flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); }
 .j2-sanc-headmain .j2-insp-titles { flex: 1 1 auto; }
@@ -853,7 +853,7 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 .j2-sanc-row { display: grid; gap: var(--s-1); align-content: start; min-width: 0; }
 .j2-sanc-v { margin: 0; display: grid; font-size: var(--fs-md); line-height: var(--lh-md); color: var(--parchment); }
 .j2-sanc-text { overflow-wrap: anywhere; }
-.j2-sanc-foot { flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); padding: var(--s-2) var(--s-3); border-top: 1px solid var(--line-faint); }
+.j2-sanc-foot { flex: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2); padding: var(--s-2) var(--s-3); border-top: 1px solid var(--line-faint); }
 .j2-sanc-foot .j2-ico { display: inline-flex; margin-right: var(--s-1); }
 .j2-sanc-foot .j2-ico svg { width: 16px; height: 16px; }
 /* PD-081: the Environment section sits between the header and the tables, outside the scroller (the picker list scrolls on its own); Horizon / Marrogate keep a single Reroll in the footer */
@@ -1217,17 +1217,12 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 /* details popover: bottom-right of the visible map, never a modal */
 .j2-route {
   position: absolute; right: var(--s-3); bottom: var(--s-3); z-index: 4; width: var(--j2-pop-w); max-height: calc(100% - var(--s-6));
-  display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-3);
+  display: flex; flex-direction: column; gap: 0; padding: 0;
   background: var(--ink-raised); border: 1px solid var(--line-strong); border-radius: var(--r-lg); box-shadow: var(--e-3);
   font-family: var(--font-body); font-size: var(--fs-sm); color: var(--parchment); overflow-y: auto; overscroll-behavior: contain; outline: 0;
 }
 .j2-route[hidden] { display: none; }
 .j2-route:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
-.j2-route-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-2); }
-.j2-route-titles { display: grid; gap: 2px; }
-.j2-route-title { display: inline-flex; align-items: center; gap: var(--s-1); margin: 0; font-family: var(--font-mono); font-size: var(--fs-xs); font-weight: 600; letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--parchment-dim); }
-.j2-route-title .j2-ico svg { width: 16px; height: 16px; }
-.j2-route-sub { margin: 0; color: var(--parchment); font-weight: 600; }
 .j2-route-body { display: grid; gap: var(--s-2); }
 .j2-route-stats { display: grid; gap: var(--s-1); margin: 0; }
 .j2-route-stats > div { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
@@ -1295,3 +1290,17 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 
 /* phone: menu rows are full-size touch targets (the bar's buttons are 52px) */
 @media (max-width: 640px) { .j2[data-player] .j2-menu-item { min-height: 44px; } }
+
+/* ---------- one header / footer contract for the map panels (audit 2026-10-22) ---------- */
+/* a tool panel (Locate, route details) carries its icon in the same 40px parchment tile an object panel carries its symbol in */
+.j2-insp-sym--tool { color: var(--ink); }
+.j2-insp-sym--tool svg { width: 24px; height: 24px; }
+.j2-insp-sym img { width: auto; height: auto; max-width: 32px; max-height: 30px; }
+.j2-insp-sub:empty { display: none; }
+/* route details: header like the other panels, the body and notes pad themselves */
+.j2-route-body { padding: var(--s-3); }
+.j2-route-cmp { margin: 0 var(--s-3) var(--s-3); }
+.j2-route-warn { margin: 0 var(--s-3) var(--s-3); }
+/* footers: a lone action sits on the right, as the region's Return to stock does */
+.j2-sanc-foot > :only-child, .j2-sanc-foot [data-j2-sanc-reroll], .j2-sanc-foot [data-j2-dest-reroll] { margin-left: auto; }
+.j2-route-head { position: sticky; top: 0; z-index: 1; background: var(--ink-raised); border-radius: calc(var(--r-lg) - 1px) calc(var(--r-lg) - 1px) 0 0; }   /* the long details scroll under their header */

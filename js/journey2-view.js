@@ -727,6 +727,7 @@
               <aside class="j2-region-inspector j2-sanctuary" id="j2-sanctuary" role="dialog" aria-modal="false" aria-labelledby="j2-sanctuary-title" data-j2-sanctuary hidden>
                 <span class="j2-insp-caret" aria-hidden="true"></span>
                 <header class="j2-insp-head">
+                  <span class="j2-insp-sym"><img src="img/journey2/legend-sanctuary.webp" alt="" width="44" height="39" draggable="false"></span>
                   <div class="j2-sanc-headmain">
                     <div class="j2-insp-titles j2-sanc-titles">
                       <h3 class="j2-insp-title" id="j2-sanctuary-title" data-j2-s="name"></h3>
@@ -758,7 +759,7 @@
               </aside>
               <aside class="j2-region-inspector j2-locate" id="j2-locate" role="dialog" aria-modal="false" aria-labelledby="j2-locate-title" tabindex="-1" data-j2-locate hidden>
                 <span class="j2-insp-caret" aria-hidden="true"></span>
-                <header class="j2-insp-head"><div class="j2-insp-titles"><h3 class="j2-insp-title" id="j2-locate-title" data-t="journey2_loc_title"></h3></div><button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-locate-close data-t-aria="journey2_loc_close" data-t-title="journey2_loc_close">${LI.close}</button></header>
+                <header class="j2-insp-head"><span class="j2-insp-sym j2-insp-sym--tool" aria-hidden="true">${LI.locate}</span><div class="j2-insp-titles"><h3 class="j2-insp-title" id="j2-locate-title" data-t="journey2_loc_title"></h3></div><button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-locate-close data-t-aria="journey2_loc_close" data-t-title="journey2_loc_close">${LI.close}</button></header>
                 <div class="j2-locate-body">
                   ${COMPASS_SVG}
                   <p class="j2-locate-searching" data-j2-l="searching" data-t="journey2_loc_searching"></p>
@@ -770,7 +771,6 @@
                 </div>
                 <footer class="j2-sanc-foot j2-locate-foot">
                   <button type="button" class="btn btn-sm" data-j2-locate-again data-t="journey2_loc_again"></button>
-                  <button type="button" class="btn btn-sm" data-j2-locate-close data-t-aria="journey2_loc_close"><span data-t="journey2_loc_close_label"></span></button>
                 </footer>
               </aside>
               <div class="j2-fog-chip j2-route-chip" data-j2-route-chip hidden>
@@ -796,10 +796,11 @@
                 <button type="button" class="j2-seek-btn j2-seek-x" data-j2-seek-close data-t-aria="journey2_seek_close" data-t-title="journey2_seek_close">${LI.close}</button>
               </div>
               <aside class="j2-route" id="j2-route" role="region" aria-labelledby="j2-route-title" tabindex="-1" data-j2-route hidden>
-                <header class="j2-route-head">
-                  <div class="j2-route-titles">
-                    <h3 class="j2-route-title" id="j2-route-title"><span class="j2-ico" aria-hidden="true">${LI.route}</span><span data-t="journey2_route_title"></span></h3>
-                    <p class="j2-route-sub" data-j2-r="sub"></p>
+                <header class="j2-insp-head j2-route-head">
+                  <span class="j2-insp-sym j2-insp-sym--tool" aria-hidden="true">${LI.route}</span>
+                  <div class="j2-insp-titles j2-route-titles">
+                    <h3 class="j2-insp-title j2-route-title" id="j2-route-title" data-t="journey2_route_title"></h3>
+                    <p class="j2-insp-sub j2-route-sub" data-j2-r="sub"></p>
                   </div>
                   <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-route-details-close data-t-aria="journey2_route_details_close" data-t-title="journey2_route_details_close">${LI.close}</button>
                 </header>
