@@ -686,7 +686,7 @@
                 <button type="button" class="btn btn-sm" data-j2-locate-cancel data-t="journey2_loc_cancel"></button>
               </div>
               <aside class="j2-panel" id="j2-panel" data-t-aria="journey2_panel_label" hidden></aside>
-              <aside class="j2-region-inspector" id="j2-region-inspector" role="dialog" aria-modal="false" aria-labelledby="j2-region-inspector-title" data-j2-inspector hidden>
+              <aside class="j2-region-inspector" id="j2-region-inspector" role="dialog" aria-modal="false" aria-labelledby="j2-region-inspector-title" tabindex="-1" data-j2-inspector hidden>
                 <span class="j2-insp-caret" aria-hidden="true"></span>
                 <header class="j2-insp-head">
                   <span class="j2-insp-sym"><img alt="" width="28" height="28" data-j2-i="img"></span>
@@ -752,13 +752,13 @@
                 <div class="j2-insp-scroll j2-sanc-rows" data-j2-s="rows"></div>
                 <footer class="j2-sanc-foot" data-j2-s="foot">
                   <button type="button" class="btn btn-sm btn-danger" data-j2-sanc-delete data-t="journey2_sanc_delete"></button>
-                  <button type="button" class="btn btn-sm btn-primary" data-j2-sanc-reroll><span class="j2-ico" aria-hidden="true">${LI.dice}</span><span data-t="journey2_sanc_reroll"></span></button>
-                  <button type="button" class="btn btn-sm btn-primary" data-j2-dest-reroll hidden><span class="j2-ico" aria-hidden="true">${LI.dice}</span><span data-t="journey2_dest_reroll"></span></button>
+                  <button type="button" class="btn btn-sm btn-primary" data-j2-sanc-reroll><span class="j2-ico" aria-hidden="true"><img src="img/journey2/dice/d6-3d.png" alt="" width="33" height="33" draggable="false"></span><span data-t="journey2_sanc_reroll"></span></button>
+                  <button type="button" class="btn btn-sm btn-primary" data-j2-dest-reroll hidden><span class="j2-ico" aria-hidden="true"><img src="img/journey2/dice/d6-3d.png" alt="" width="33" height="33" draggable="false"></span><span data-t="journey2_dest_reroll"></span></button>
                 </footer>
               </aside>
               <aside class="j2-region-inspector j2-locate" id="j2-locate" role="dialog" aria-modal="false" aria-labelledby="j2-locate-title" tabindex="-1" data-j2-locate hidden>
                 <span class="j2-insp-caret" aria-hidden="true"></span>
-                <header class="j2-insp-head"><div class="j2-insp-titles"><h3 class="j2-insp-title" id="j2-locate-title" data-t="journey2_loc_title"></h3></div></header>
+                <header class="j2-insp-head"><div class="j2-insp-titles"><h3 class="j2-insp-title" id="j2-locate-title" data-t="journey2_loc_title"></h3></div><button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-locate-close data-t-aria="journey2_loc_close" data-t-title="journey2_loc_close">${LI.close}</button></header>
                 <div class="j2-locate-body">
                   ${COMPASS_SVG}
                   <p class="j2-locate-searching" data-j2-l="searching" data-t="journey2_loc_searching"></p>
@@ -770,7 +770,7 @@
                 </div>
                 <footer class="j2-sanc-foot j2-locate-foot">
                   <button type="button" class="btn btn-sm" data-j2-locate-again data-t="journey2_loc_again"></button>
-                  <button type="button" class="btn btn-sm btn-primary" data-j2-locate-close data-t-aria="journey2_loc_close"><span data-t="journey2_loc_close_label"></span></button>
+                  <button type="button" class="btn btn-sm" data-j2-locate-close data-t-aria="journey2_loc_close"><span data-t="journey2_loc_close_label"></span></button>
                 </footer>
               </aside>
               <div class="j2-fog-chip j2-route-chip" data-j2-route-chip hidden>
@@ -1703,6 +1703,8 @@
       if (keepSel) sel.tileId = null;                    // the strong outline belonged to the inspected hex of the previous region
       if (diagOpen) setDiagnostics(false);
       afterInspectorChange();
+      // the panel sits before the rail and the cards in tab order: a keyboard user who pressed Inspect must land in it (Esc returns to the button)
+      if (ui.inspector && !ui.inspector.hidden) ui.inspector.focus({ preventScroll: true });
     }
 
     function announceInspector(next) {
@@ -1882,6 +1884,20 @@
       return out;
     }
 
+    /** Narrow windows (641-900px): a panel keeps clear of the open sidebar and rail instead of sliding under them (phones, <= 640px, use the full width). */
+    function narrowLeftInset(wrap) {
+      if (playerMode || window.innerWidth <= 640) return 0;
+      let right = 0;
+      for (const node of [ui.rail, sideCollapsed ? null : ui.side]) { if (node && !node.hidden) { const r = node.getBoundingClientRect(); if (r.width > 0) right = Math.max(right, r.right - wrap.left); } }
+      return right ? right + 8 : 0;
+    }
+    /** Narrow windows: the panel's bottom edge stays above the floating map bar when they share a column. */
+    function narrowBottomLimit(wrap) {
+      if (window.innerWidth <= 640 || !ui.mapbar) return null;
+      const r = ui.mapbar.getBoundingClientRect();
+      return r.height > 0 ? r.top - wrap.top - 8 : null;
+    }
+
     /** Places one screen-space panel (the Region Inspector or the sanctuary overlay) beside its anchor, clear of the sidebar and the drawer. */
     function positionPanel(node, anchorOf, key) {
       const wrap = ui.mapwrap.getBoundingClientRect();
@@ -1889,7 +1905,7 @@
       if (!view.w || !view.h) return;
       const pos = Geo.placeInspector({
         view: view, size: { w: node.offsetWidth, h: node.offsetHeight }, anchor: anchorOf(view),
-        blocked: inspectorBlocked(wrap), narrow: window.innerWidth <= 900,
+        blocked: inspectorBlocked(wrap), narrow: window.innerWidth <= 900, left: narrowLeftInset(wrap), bottom: narrowBottomLimit(wrap),
       });
       // A panel that grows or shrinks in place (an expanded section, the environment picker) keeps its top edge where it was and grows downward
       // (clamped to the map area), instead of re-centring on the hex and jumping. A camera move, another hex or another side re-centres as before.
@@ -4939,7 +4955,7 @@
         case '+': case '=': zoomStep(1); break;
         case '-': case '_': zoomStep(-1); break;
         case '0': fitToView(); break;
-        case 's': case 'S': if (fogTool || locateSession.isActive() || routeSelecting()) handled = false; else cycleSanctuary(e.shiftKey ? -1 : 1); break;
+        case 's': case 'S': case 'ы': case 'Ы': if (fogTool || locateSession.isActive() || routeSelecting()) handled = false; else cycleSanctuary(e.shiftKey ? -1 : 1); break;
         case 'Delete': case 'Backspace':
           if (sel.tileId && !fogTool && !previewMode) returnSelected(); else handled = false;
           break;
@@ -5353,7 +5369,7 @@
       }
       const b = e.target.closest('button');
       if (!b || !ui.root.contains(b)) return;
-      if (b.closest('[data-j2-menu="campaign"]')) closeMenus();   // a Campaign action closes the menu; the Display switches (their own menu) keep it open
+      if (b.closest('[data-j2-menu="campaign"]')) { const mb = openMenu && openMenu.btn; closeMenus(); if (mb) mb.focus({ preventScroll: true }); }   // a Campaign action closes the menu and hands focus back to its button (a dialog it opens then takes it); the Display switches (their own menu) keep it open
       if (b.hasAttribute('data-j2-zoom')) {
         const z = b.getAttribute('data-j2-zoom');
         if (z === 'reset') zoomToScale(1);
@@ -5465,6 +5481,9 @@
       const i = items.indexOf(document.activeElement);
       if (e.key === 'ArrowDown') { items[(i + 1) % items.length].focus(); e.preventDefault(); }
       else if (e.key === 'ArrowUp') { items[(i - 1 + items.length) % items.length].focus(); e.preventDefault(); }
+      else if (e.key === 'Home') { items[0].focus(); e.preventDefault(); }
+      else if (e.key === 'End') { items[items.length - 1].focus(); e.preventDefault(); }
+      else if (e.key === 'Tab') { const b = openMenu.btn; closeMenus(); b.focus({ preventScroll: true }); }   // leaving the menu closes it; Tab then continues from its button
     }
 
     /* ============================================================

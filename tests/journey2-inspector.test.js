@@ -198,6 +198,14 @@ test('placement: the narrow layout centres the panel at the bottom of the map an
   assert.ok(p.y + 360 <= view.h - 12 && p.y >= 12);
 });
 
+test("placement: a narrow window keeps the panel beside the open sidebar and above the map bar", () => {
+  const view = { w: 800, h: 560 };
+  const p = Geo.placeInspector({ view: view, size: { w: 340, h: 300 }, anchor: null, blocked: [], narrow: true, left: 436, bottom: 490 });
+  assert.ok(p.x >= 436, "x " + p.x);
+  assert.ok(p.x + 340 <= view.w - 12);
+  assert.ok(p.y + 300 <= 490, "y " + p.y);
+});
+
 test('placement: a panel larger than the map is shrunk to fit and never leaves the map area', () => {
   const view = { w: 380, h: 300 };
   const p = Geo.placeInspector({ view: view, size: { w: 440, h: 420 }, anchor: { x: 190, y: 150, r: 20 }, blocked: [] });

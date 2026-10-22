@@ -89,3 +89,12 @@ before substantial UI work — this file assumes both.
   `journey2_import_code_*`.
 - Russian terminology: GM = «ведущий», party = «отряд» (UI only), Soul Echo
   plural = «Эхо Душ» — see [docs/translation-glossary.md](../../docs/translation-glossary.md).
+
+## Journey map panels (audit 2026-10-22)
+
+- Map panels (`.j2-region-inspector` family) sit at z-index 6, above the rail + panel (5). At 641–900px they take the room *beside* the open sidebar
+  (`placeInspector({ narrow, left, bottom })`, `narrowLeftInset()`) and stay above the map bar; <= 640px they use the full width.
+- Opening the inspector from a card moves focus into it (`tabindex="-1"`, the panel precedes the cards in tab order); Esc returns it to the card's button.
+- Rail menus close on Tab (focus continues from their button), support Home / End, and a Campaign action hands focus back to its button.
+- Panel family: every panel has a header X (Locate included); a footer's primary (gold) button is a real action, never "Close". Environment links are teal (reference), not gold.
+- Dice on map panels are the 3D die (`img/journey2/dice/d6-3d.png`): Encounter roll and Reroll; the side panel's Generate keeps the line icon.

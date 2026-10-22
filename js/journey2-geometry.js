@@ -459,7 +459,12 @@
     const clampX = x => Math.min(maxX, Math.max(margin, x)), clampY = y => Math.min(maxY, Math.max(margin, y));
     const hits = (x, y, blocked) => blocked.some(b => x < b.x + b.w && x + w > b.x && y < b.y + b.h && y + h > b.y);
     const overlap = (x, y, blocked) => blocked.reduce((s, b) => s + Math.max(0, Math.min(x + w, b.x + b.w) - Math.max(x, b.x)) * Math.max(0, Math.min(y + h, b.y + b.h) - Math.max(y, b.y)), 0);
-    if (o.narrow) return { x: clampX((view.w - w) / 2), y: maxY, side: 'narrow', caret: null };
+    if (o.narrow) {
+      // `left`: the strip the open sidebar covers (a tablet / half-screen window keeps it visible beside the panel); `bottom`: the top edge of the map bar to stay above
+      const left = Math.min(Math.max(0, o.left || 0), Math.max(0, view.w - w - 2 * margin));
+      const lowest = o.bottom == null ? maxY : Math.max(margin, Math.min(maxY, o.bottom - h));
+      return { x: Math.max(margin, Math.min(maxX, Math.round(left + (view.w - left - w) / 2))), y: lowest, side: 'narrow', caret: null };
+    }
     const a = o.anchor;
     const out = (x, y, side, caret) => ({ x: Math.round(x), y: Math.round(y), side: side, caret: caret });
     if (!a) {

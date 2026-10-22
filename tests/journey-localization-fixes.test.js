@@ -89,7 +89,7 @@ test('L5-06: Russian Soul Echo plural is «Эхо Душ»; singular contexts ke
     assert.match(ru[k], /Эхо Душ(?![а-я])/, k + ': ' + ru[k]);
     assert.doesNotMatch(ru[k], /Эхо Души/, k + ': ' + ru[k]);
   }
-  assert.equal(ru.journey2_loc_title, 'Поиск Эха Души');
+  assert.equal(ru.journey2_loc_title, 'Найти Эхо Душ');
   assert.equal(ru.journey2_live_echo_collected, 'Эхо Души отмечено как собранное');
   assert.equal(ru.journey2_live_echo_restored, 'Эхо Души возвращено');
   assert.equal(ru.journey2_loc_here, 'Ближайшее Эхо Души находится здесь.');
