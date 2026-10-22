@@ -197,10 +197,11 @@ test('view: the pool is the settlement biome, one deal covers sanctuaries and de
   assert.equal((g.match(/dispatch\(/g) || []).length, 1, 'one command, one Undo entry');
 });
 
-test('view: Reroll deals a new Environment with the rest; Change reuses the hex row; Horizon / Marrogate have Reroll only', () => {
+test('view: Reroll deals a new Environment with the rest; Change reuses the hex row; Horizon / Marrogate have Reroll and Change but no Delete', () => {
   assert.match(fn('commitReroll', 'startSanctuaryRename'), /dealSanctuaryEnvironment\(\)/);
   const e = fn('renderSanctuaryEnv', 'setSancEnvPicker');
-  assert.match(e, /canChange = !!e && list\.length > 0/, 'a destination has no Change');
+  assert.match(e, /canChange = list\.length > 0/, 'a destination has Change too');
+  assert.match(fn('onSancEnvClick', 'rerollDestination'), /type: 'setDestinationEnvironment', anchorId: d\.anchorId, environmentId: pick\.id/);
   assert.match(e, /envRowHtml\(x, x\.id === id, i, 'sancenv'\)/);
   assert.match(e, /is-unavailable[\s\S]*journey2_hexenv_unavailable[\s\S]*journey2_hexenv_stored_id/);
   assert.match(fn('renderSanctuaryPanel', 'sanctuaryAnchorPx'), /ui\.sancDelete\.hidden = ui\.sancReroll\.hidden = !!dest/);

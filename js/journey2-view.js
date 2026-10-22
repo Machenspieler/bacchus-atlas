@@ -3645,14 +3645,14 @@
       return ids.length ? ids[0] : null;
     }
 
-    /** The overlay's Environment section: the assigned one as a link to the Environment overlay plus Change (a sanctuary only; Horizon / Marrogate have Reroll in the footer). Rebuilt only when its signature changes. */
+    /** The overlay's Environment section: the assigned one as a link to the Environment overlay plus Change (Horizon / Marrogate also have Reroll in the footer). Rebuilt only when its signature changes. */
     function renderSanctuaryEnv(e, dest) {
       const S = ui.s;
       if (!e && !dest) { sancEnvPicker = false; S.envSec.hidden = true; S.envBody.innerHTML = ''; S.envBody.removeAttribute('data-sig'); return; }
       S.envSec.hidden = false;
       const list = sanctuaryEnvironments(), id = (e ? e.environmentId : dest.environmentId) || null;
       const found = id ? list.find(x => x.id === id) || null : null;
-      const canChange = !!e && list.length > 0, open = !!(sancEnvPicker && canChange);
+      const canChange = list.length > 0, open = !!(sancEnvPicker && canChange);
       if (sancEnvPicker && !canChange) sancEnvPicker = false;
       const sig = [lang, sanctuaryOpen, id || '', open ? 1 : 0, canChange ? 1 : 0, editLocked ? 1 : 0, list.map(x => x.id + ':' + x.name + ':' + x.tier).join(',')].join('|');
       if (S.envBody.getAttribute('data-sig') === sig) return;
@@ -3675,7 +3675,7 @@
 
     /** Opens/closes the inline picker. Pure UI state: no command, no history, no autosave. */
     function setSancEnvPicker(open, focus) {
-      if (previewMode || !sanctuaryEntry(sanctuaryOpen)) { sancEnvPicker = false; return; }
+      if (previewMode || !(sanctuaryEntry(sanctuaryOpen) || destinationEntry(sanctuaryOpen))) { sancEnvPicker = false; return; }
       sancEnvPicker = !!open;
       renderSanctuaryPanel(); positionSanctuary();
       if (focus) { const b = ui.s.envBody.querySelector('[data-j2-sancenv="change"]'); if (b) b.focus({ preventScroll: true }); }
@@ -3683,14 +3683,16 @@
 
     function onSancEnvClick(btn) {
       if (inst.disposed || previewMode || !doc || !sanctuaryOpen) return;
-      const kind = btn.getAttribute('data-j2-sancenv'), e = sanctuaryEntry(sanctuaryOpen);
-      if (!e) return;
+      const kind = btn.getAttribute('data-j2-sancenv'), e = sanctuaryEntry(sanctuaryOpen), d = e ? null : destinationEntry(sanctuaryOpen);
+      if (!e && !d) return;
       if (kind === 'change') { setSancEnvPicker(!sancEnvPicker, true); return; }
       if (kind === 'assign') {
         if (editLocked) return;
         const id = btn.getAttribute('data-env-id'), pick = sanctuaryEnvironments().find(x => x.id === id);
         if (!pick) return;                                    // only what the settlement list currently offers can be assigned
-        const r = dispatch({ type: 'setSanctuary', entry: Object.assign({}, e, { environmentId: pick.id }) }, 'sanctuaryEnvironment', true);
+        const r = e
+          ? dispatch({ type: 'setSanctuary', entry: Object.assign({}, e, { environmentId: pick.id }) }, 'sanctuaryEnvironment', true)
+          : dispatch({ type: 'setDestinationEnvironment', anchorId: d.anchorId, environmentId: pick.id }, 'destinationEnvironment', true);
         if (!r.ok) { hint(t('journey2_hexenv_failed')); return; }
         sancEnvPicker = false; renderSanctuaryPanel(); positionSanctuary();
         announce(fill('journey2_hexenv_live_changed', { name: pick.name }));
