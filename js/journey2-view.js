@@ -739,6 +739,7 @@
                       </span>
                     </div>
                     <button type="button" class="btn btn-sm j2-sanc-act" data-j2-sanc-name><span class="j2-ico" aria-hidden="true" data-j2-s="nameIco"></span><span data-j2-s="nameLabel"></span></button>
+                    <p class="j2-insp-sub j2-sanc-desc" data-j2-s="desc" hidden></p>
                   </div>
                   <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-close data-t-aria="journey2_sanc_close" data-t-title="journey2_sanc_close">${LI.close}</button>
                 </header>
@@ -3518,7 +3519,8 @@
     function sanctuaryEntry(id) { return id && doc ? (doc.sanctuaries.entries.find(e => e.anchorId === id) || null) : null; }
     /** Horizon / Marrogate (PD-081): the stored Environment of a destination, or null. A destination is clickable only once it has one. */
     function destinationEntry(id) { return id && doc ? (Model.destinationList(doc).find(d => d.anchorId === id) || null) : null; }
-    function destinationTitle(id) { const a = sanctuaryAnchorMap().get(id); return t(a && a.builtInLabel && a.builtInLabel.text === 'HORIZON' ? 'journey2_dest_horizon' : 'journey2_dest_marrogate'); }
+    function destinationKey(id) { const a = sanctuaryAnchorMap().get(id); return a && a.builtInLabel && a.builtInLabel.text === 'HORIZON' ? 'journey2_dest_horizon' : 'journey2_dest_marrogate'; }
+    function destinationTitle(id) { return t(destinationKey(id)); }
     /** The overlay opens for a sanctuary with generated characteristics OR a Soul Echo (the Echo's state belongs to the fixed anchor, not to the generated data). */
     function sanctuaryHasEcho(id) { return !!(id && doc && doc.soulEchoes.anchorIds.includes(id)); }
     function sanctuaryOpenable(id) { return !!(sanctuaryEntry(id) || sanctuaryHasEcho(id) || destinationEntry(id)); }
@@ -3565,7 +3567,7 @@
       if (!ui.sanctuary) return;
       ui.sanctuary.hidden = true; sanctuaryShown = null; applyArt(ui.sanctuary, '');
       sanctuaryRenaming = false; ui.sancNameInput.value = '';
-      ui.s.name.textContent = ''; ui.s.rows.innerHTML = ''; ui.s.rows.removeAttribute('data-sig');
+      ui.s.name.textContent = ''; ui.s.desc.textContent = ''; ui.s.desc.hidden = true; ui.s.rows.innerHTML = ''; ui.s.rows.removeAttribute('data-sig');
       sancEnvPicker = false; ui.s.envSec.hidden = true; ui.s.envBody.innerHTML = ''; ui.s.envBody.removeAttribute('data-sig');
     }
 
@@ -3580,6 +3582,8 @@
       if (!e) sanctuaryRenaming = false;
       ui.s.name.textContent = dest ? destinationTitle(dest.anchorId) : e ? e.name : t('journey2_sanc_fallback');   // an empty name shows nothing (the pencil still offers the edit)
       ui.s.name.hidden = sanctuaryRenaming;
+      ui.s.desc.textContent = dest ? t(destinationKey(dest.anchorId) + '_desc') : '';   // one campaign-book sentence, Horizon / Marrogate only
+      ui.s.desc.hidden = !dest;
       ui.sancField.hidden = !sanctuaryRenaming;                          // the input keeps what is typed across re-renders
       ui.sancRename.hidden = ui.sancRename.parentNode.hidden = !e || sanctuaryRenaming;   // the wrapper goes too, or it keeps an empty box
       ui.sancClose.disabled = sanctuaryRenaming;                        // no second X next to the discard X while editing

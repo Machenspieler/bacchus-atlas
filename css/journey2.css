@@ -822,6 +822,8 @@ body.j2-dragging, body.j2-dragging * { cursor: grabbing !important; user-select:
 /* header: the name and its one player-facing button share a line, the button drops under a long name; the close button keeps the corner */
 .j2-sanc-headmain { flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); }
 .j2-sanc-headmain .j2-insp-titles { flex: 1 1 auto; }
+.j2-sanc-desc { flex: 1 1 100%; font-family: inherit; font-size: var(--fs-sm); line-height: 1.4; }   /* Horizon / Marrogate: one campaign sentence under the name */
+.j2-sanc-desc[hidden] { display: none; }
 .j2-sanc-titles { display: flex; align-items: center; gap: var(--s-1); }
 .j2-sanc-titles .j2-insp-title[hidden], .j2-sanc-field[hidden], .j2-sanc-rename[hidden] { display: none; }
 .j2-sanc-rename { flex: none; display: inline-flex; }
