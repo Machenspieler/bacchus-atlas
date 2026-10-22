@@ -1507,7 +1507,7 @@
       const dis = editLocked ? ' disabled' : '';
       // PD-033: the Environment is dealt at placement, so the one control is Change (no Choose, no Detach), at the right of the card; a hex without one has nothing to click
       const change = list.length && id
-        ? '<button type="button" class="btn btn-sm" data-j2-hexenv="change" aria-expanded="' + open + '" aria-controls="j2-hexenv-picker"' + dis + '>' + esc(t('journey2_hexenv_change')) + '</button>' : '';
+        ? '<button type="button" class="btn btn-sm" data-j2-hexenv="change" aria-expanded="' + open + '" aria-controls="j2-hexenv-picker"' + dis + '>' + esc(t(open ? 'journey2_close' : 'journey2_hexenv_change')) + '</button>' : '';
       if (!list.length) h += '<p class="j2-insp-p j2-insp-muted">' + esc(t('journey2_hexenv_no_habitat')) + '</p>';
       if (id && found) {
         // the link opens the Environment overlay on this same page (not a new tab), so it carries no external-link arrow
@@ -3658,7 +3658,7 @@
       if (S.envBody.getAttribute('data-sig') === sig) return;
       S.envBody.setAttribute('data-sig', sig);
       const change = canChange
-        ? '<button type="button" class="btn btn-sm" data-j2-sancenv="change" aria-expanded="' + open + '" aria-controls="j2-sancenv-picker"' + (editLocked ? ' disabled' : '') + '>' + esc(t('journey2_hexenv_change')) + '</button>' : '';
+        ? '<button type="button" class="btn btn-sm" data-j2-sancenv="change" aria-expanded="' + open + '" aria-controls="j2-sancenv-picker"' + (editLocked ? ' disabled' : '') + '>' + esc(t(open ? 'journey2_close' : 'journey2_hexenv_change')) + '</button>' : '';
       let h = '';
       if (id && found) {
         h += '<div class="j2-hexenv-card"><a class="j2-env-link j2-hexenv-link" href="' + esc(found.href) + '" data-j2-env data-j2-sancenv-link><span class="j2-env-name">' + esc(found.name) + '</span><span class="sr-only"> (' + esc(t('journey2_hexenv_open')) + ')</span></a>' + change + '</div>';
