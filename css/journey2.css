@@ -1099,11 +1099,12 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-hexenv-id { font-size: var(--fs-xs); color: var(--muted); }
 .j2-hexenv-id code { font-family: var(--font-mono); overflow-wrap: anywhere; }
 .j2-hexenv-list { margin-top: var(--s-2); max-height: 14rem; overflow-y: auto; /* default chaining: at its top/bottom the wheel hands off to the inspector scroller */ }
-.j2-hexenv-row { display: flex; align-items: center; gap: var(--s-2); padding-right: var(--s-2); }
+.j2-hexenv-list { display: grid; grid-template-columns: minmax(0, 1fr) auto; }   /* one shared action column: the buttons and the "Assigned" label centre on the same axis */
+.j2-hexenv-row { display: grid; grid-template-columns: subgrid; grid-column: 1 / -1; align-items: center; column-gap: var(--s-2); padding-right: var(--s-2); }
 .j2-hexenv-row .j2-env-link { flex: 1 1 auto; min-width: 0; }
 .j2-hexenv-row .btn { flex: none; }
 .j2-hexenv-row.is-current { background: var(--hope-wash); }
-.j2-hexenv-assigned { flex: none; font-size: var(--fs-xs); color: var(--hope-soft); }
+.j2-hexenv-assigned { justify-self: stretch; text-align: center; font-size: var(--fs-xs); color: var(--hope-soft); }
 
 /* ---------- player map print (PD-028) ----------
  * One DOM for the on-screen preview and the physical print: `.j2-print-root` holds exactly eight `.j2-print-page` A4 portrait sheets (a 4 x 2
