@@ -1304,3 +1304,5 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 /* footers: a lone action sits on the right, as the region's Return to stock does */
 .j2-sanc-foot > :only-child, .j2-sanc-foot [data-j2-sanc-reroll], .j2-sanc-foot [data-j2-dest-reroll] { margin-left: auto; }
 .j2-route-head { position: sticky; top: 0; z-index: 1; background: var(--ink-raised); border-radius: calc(var(--r-lg) - 1px) calc(var(--r-lg) - 1px) 0 0; }   /* the long details scroll under their header */
+.j2-gen-go .j2-ico { display: inline-flex; }
+.j2-gen-go .j2-ico img { width: 33px; height: 33px; margin: -4px -1px; display: block; }   /* the same 3D die as Roll / Reroll */

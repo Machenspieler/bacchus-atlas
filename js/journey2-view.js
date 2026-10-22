@@ -911,7 +911,7 @@
                   </div>
                 </div>
                 <form class="j2-gen" data-j2-gen novalidate>
-                  <button type="submit" class="btn btn-primary j2-gen-go" data-j2-generate data-t-title="journey2_gen_hint" aria-describedby="j2-gen-desc"><span class="j2-ico">${LI.dice}</span><span data-t="journey2_gen_go"></span></button>
+                  <button type="submit" class="btn btn-primary j2-gen-go" data-j2-generate data-t-title="journey2_gen_hint" aria-describedby="j2-gen-desc"><span class="j2-ico"><img src="img/journey2/dice/d6-3d.png" alt="" width="33" height="33" draggable="false"></span><span data-t="journey2_gen_go"></span></button>
                   <span class="sr-only" id="j2-gen-desc" data-t="journey2_gen_hint"></span>
                   <p class="j2-field-error" id="j2-gen-error" data-j2-gen-error role="alert" hidden></p>
                 </form>
