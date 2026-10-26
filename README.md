@@ -1,6 +1,6 @@
 # Bacchus's Atlas
 
-*Атлас Бахуса* — a Daggerheart™ Compatible field guide to environments,
+*Bacchus's Atlas* — a Daggerheart™ Compatible field guide to environments,
 journeys, and perils. It is a bilingual (English / Russian) static website:
 a searchable catalogue of environments, personal Lists, a Prep workspace for
 assembling a session, and Journey, a GM map editor with a shareable player map.
