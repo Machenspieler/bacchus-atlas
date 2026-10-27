@@ -22,10 +22,19 @@ Import or correct the Environment Stat Block described by `$ARGUMENTS` in
    the available tools, stop and report exactly what's missing rather than
    guessing or hallucinating its content.
 4. **Treat the English source text as canonical** — do not summarize,
-   rewrite, embellish, or silently correct it. Preserve headings, bullets,
-   numbered lists, line breaks, prompts, emphasis, and mechanical notation
-   where the current format supports them (see the data contract's
-   "Feature object" section for what's supported).
+   rewrite or embellish it. Preserve headings, bullets, numbered lists,
+   line breaks, prompts, emphasis, and mechanical notation where the
+   current format supports them (see the data contract's "Feature object"
+   section for what's supported). A line-break hyphen in the PDF
+   ("Agil-ity") is not part of the word.
+4a. **Fix obvious author errors and apply the house style** per
+   [.claude/rules/data.md](../../rules/data.md): typos, broken grammar, a
+   mis-named adversary, a feature name copy-pasted from another stat block;
+   capitalized game terms, "<Trait> Roll", American spelling, curly
+   apostrophes/quotes, capitalized first impulse. Write each adversary in
+   feature text by its canonical full name (EN from the bestiary, RU from
+   `data/prep.json`). Never silent: every fix goes in the report. Anything
+   ambiguous, or that would change mechanics, is proposed first.
 5. **Create or verify a stable `id`.** Check for an id collision by
    searching the whole of `data/environments.json`, not just the obvious
    candidate. A Russian (or English) name equal to another entry's is
@@ -41,12 +50,25 @@ Import or correct the Environment Stat Block described by `$ARGUMENTS` in
    flag it as unverified rather than presenting it as settled.
 8. **Keep the English and Russian structures aligned** — same number of
    list items, same placeholder counts, same feature ordering.
-9. **Tag biomes** per the data contract's biome table — the eleven terrain
-   biomes take priority in order, `settlement`/`universal` are fallbacks
-   only; never invent a new biome id.
-10. **Don't reorder unrelated environment records** in the JSON file.
-11. **Run** `node scripts/validate-data.js` and `node --test tests/*.test.js`.
-12. **Report**: files changed; the environment `id`; validation results;
-    which optional fields are intentionally absent and why; any source
-    ambiguity left unresolved (an odd phrasing, an uncertain translation
-    choice) rather than silently picked.
+9. **Tag biomes yourself** per the data contract's "Biome tagging" — the
+   eleven terrain biomes take priority, `settlement`/`universal` are
+   fallbacks only; judge where the place lies and how a party reaches it,
+   not just literal terrain words; never invent a new biome id. Don't ask
+   the owner — state the choice in the report.
+10. **Don't add the environment to a region** (`data/regions.json`) and
+    don't ask about it, unless the owner supplies the membership.
+11. **Don't reorder unrelated environment records** in the JSON file.
+12. **Run** `node scripts/validate-data.js` and `node --test tests/*.test.js`,
+    and check `PotentialAdversaryUtils.envAdversaryNames()` resolves every
+    potential adversary to a full bestiary name.
+13. **Verify in the browser** with the claude-in-chrome tools: open
+    `#/env/<id>`, check EN and RU, the features, expanded story seeds, the
+    biome/source footer, the FreshCutGrass links and the console. If the
+    `daggerheart-codex` preview server doesn't come up (its `npx serve`
+    has failed to listen), serve the repo with a tiny Node static server
+    on `127.0.0.1` instead, and stop it afterwards.
+14. **Report**: files changed; the environment `id`; validation results;
+    the chosen biome and why; every author error fixed; which optional
+    fields are intentionally absent and why; any source ambiguity left
+    unresolved (an odd phrasing, an uncertain translation choice) rather
+    than silently picked.

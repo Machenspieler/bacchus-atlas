@@ -139,8 +139,20 @@ castle, temple, base) or `universal` ("Other" — no terrain at all: planar
 realms, space, dreams, abstract scenes, events that could happen anywhere).
 **Never add a new biome id** — anything that isn't one of the eleven
 belongs in `settlement` or `universal`. An environment may carry more than
-one biome, most to least characteristic; tag only what the text actually
-supports, never guess a terrain from the name alone.
+one biome, most to least characteristic; never guess a terrain from the
+name alone.
+
+Choosing the biome is the importer's call — don't ask the owner for it,
+just state the choice in the report (owner decision, 2026-10-27). Read the
+text for where the place actually lies and how a party gets there, not only
+for literal terrain words: a floating ruin in the sky is reached from the
+heights, so Lion Ascendant is `mountain`; a world of ripped-up terrain and
+ghastly chasms is barren, so Shattered Lands is `badlands`. Reach for
+`universal` only when the place truly has no terrain at all. The biome is
+also what deals an environment to a Journey hex of that Habitat (PD-033), so
+ask "would a GM want this rolled in a `<biome>` region?". Never take a biome
+from a feature name that is itself a copy error (Lion Ascendant's
+copy-pasted "Thick Snow" had made it `frozen`).
 
 ## Cross-file references
 

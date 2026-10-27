@@ -10,11 +10,37 @@ paths:
 Read [docs/data-contracts/environments.md](../../docs/data-contracts/environments.md)
 for the environment schema in full before editing `data/environments.json`.
 
-- **English source text is canonical.** When importing or correcting a
-  stat block, the English text is what the source book says — don't
-  paraphrase, summarize, embellish, or silently "fix" it. If something
-  looks wrong (a possible typo, an odd phrasing), preserve it and flag it
-  rather than guessing the intended text.
+- **English source text is canonical — but obvious author errors are
+  fixed.** When importing or correcting a stat block, the English text is
+  what the source book says — don't paraphrase, summarize or embellish it.
+  Clear author errors are corrected in the data rather than preserved
+  (owner decision, 2026-10-27; Resting Dagger books in particular are full
+  of them): typos and broken grammar ("does fails", "PCs connections",
+  "food stuffs"), a mis-named adversary ("Mask Thief" for Masked Thief), and
+  a feature name copy-pasted from another stat block that doesn't match its
+  own text (Lion Ascendant's "Thick Snow" → "The Lion Favors the Bold").
+  Every such fix is never silent: list each one in the report (and name a
+  renamed feature in the commit message). An ambiguous phrase whose intended
+  meaning you'd have to guess, or a change that would alter mechanics, is
+  proposed to the owner first, not applied. Deliberate wordplay is not a
+  typo — see the glossary's proper-noun note.
+- **House style for environment English text** (normalize on import, in
+  the same pass as the typo fixes): game terms capitalized — Stress, Hope,
+  Fear, Advantage/Disadvantage, Experience, "<Trait> Roll" ("Agility Roll",
+  not "Agility roll"); American spelling (armor, rumors, favor); curly
+  apostrophes and quotes (’ “ ”), never straight ones; the first impulse
+  starts with a capital letter, the rest lowercase (RU likewise); one
+  spelling of a proper noun across an entry ("Teal-Heart" everywhere).
+- **Adversaries are named by their canonical full name.** In feature text,
+  an adversary is written as its standard bestiary name from the core book /
+  Hope & Fear (`Fallen Warlord: Realm-Breaker`, not "a Warlord:
+  Realm-Breaker"; `Head Guard`/`Archer Guard`, not "Guard Captain"/"Guard
+  Archer"), and its RU form is the one in `data/prep.json` (`Полководец
+  Падших: Губитель Миров`), so the reader knows exactly who it is. In
+  `potential_adversaries`, keep the book's group form ("Fallen (Shock
+  Troop, Warlord: Realm-Breaker)") only where
+  `js/potential-adversary-utils.js` already expands it to the full names —
+  check with `envAdversaryNames()` that every member resolves.
 - **Preserve source formatting the renderer supports**: Markdown-style
   bullets (`\n- **Label:** ...`), numbered lists, line breaks, bold/italic,
   and dice notation are never normalized away — see
