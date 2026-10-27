@@ -3160,6 +3160,7 @@
         }
       ],
       "biomes": [
+        "mountain",
         "settlement"
       ],
       "source": "Dread GM Toolbox"
@@ -11902,6 +11903,7 @@
         }
       ],
       "biomes": [
+        "grassland",
         "settlement"
       ],
       "source": "Wondrous Environments"
@@ -31196,7 +31198,7 @@
         }
       ],
       "biomes": [
-        "universal"
+        "badlands"
       ],
       "source": "Atlas of Adventure"
     },
