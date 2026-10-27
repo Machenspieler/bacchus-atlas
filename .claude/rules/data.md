@@ -71,11 +71,19 @@ for the environment schema in full before editing `data/environments.json`.
   `Countdown (#PCs + 2)`, the body says "activate the Countdown", not a
   second size (Dark Forest Revel had +2 and +1). When the two disagree, the
   header's value stays.
-- **A "(Any)" placeholder in `potential_adversaries` becomes the book's
-  group form** with the official members of that tier from `data/prep.json`
-  ("Demons (Any)" at Tier 3 → "Demons (Avarice, Despair, Hubris, Jealousy,
-  Wrath)", as in Ancient City). Still open: Prison City Pyrrhexis (T4
-  demons) and Time Loop Atlas' "Vampires (any)".
+- **A "(Any)" placeholder in `potential_adversaries` is left as the book
+  wrote it.** The app already expands it itself — the PD-008 family rosters
+  in `js/potential-adversary-utils.js` (Jagged Knife, Cultists, Assassins,
+  Vault Guardians, Outer Realms, …) and the per-tier Beasts roster — so
+  rewriting the text would narrow Prep's recommendations and drop the
+  Beasts tier links. Only where no roster exists *and the owner asks* is it
+  made explicit with the tier's official group form from `data/prep.json`
+  (Prophetic Nightmare, Time Loop Atlas: "Demons (Avarice, Despair, Hubris,
+  Jealousy, Wrath)", as in Ancient City). Open design question (owner's
+  proposed rule, not built): expand "(any)" for families without a roster
+  by tier — at the environment's tier, or every tier when that has 0-2
+  adversaries, tier-filtered only for big pools such as Beasts — and keep
+  the whole list to 6-7 different adversaries, 8 at most, never 9+.
 - **A missing `difficulty` is intentional** (Epic Duel prints none): never
   add a number, never report its absence.
 - **Setting-specific terms are flagged, not "fixed".** A word that only a
