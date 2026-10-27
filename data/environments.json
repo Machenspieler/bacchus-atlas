@@ -27766,8 +27766,7 @@
         }
       ],
       "biomes": [
-        "settlement",
-        "frozen"
+        "universal"
       ],
       "source": "Resting Dagger"
     },
