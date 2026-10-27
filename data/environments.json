@@ -26497,7 +26497,7 @@
         "ru": "Логово Разума-Прародителя"
       },
       "lore": {
-        "en": "A pulsating teal labyrinth of too-smooth vines and worn away rocks—the Progenitor Mind awaiting within.",
+        "en": "A pulsating teal labyrinth of too-smooth vines and worn-away rocks—the Progenitor Mind awaiting within.",
         "ru": "Пульсирующий бирюзовый лабиринт из неестественно гладких лоз и стёртых камней — внутри поджидает Разум-Прародитель."
       },
       "impulses": {
@@ -26662,7 +26662,7 @@
             "ru": "Отчаянная просьба"
           },
           "body": {
-            "en": "The vulnerable farmlands beyond the river-fort are a peaceful place recently ravaged by war. They have few defenders and their last standing point of resistance, the river-fort, threatens to fall under the next petty warlord or bandit chief's assault. The PCs answer the call.",
+            "en": "The vulnerable farmlands beyond the river-fort are a peaceful place recently ravaged by war. They have few defenders and their last standing point of resistance, the river-fort, threatens to fall under the next petty warlord or bandit chief’s assault. The PCs answer the call.",
             "ru": "Уязвимые фермерские земли за речным фортом — мирное место, недавно разорённое войной. У них мало защитников, а их последний оплот сопротивления, речной форт, грозит падению под натиском очередного мелкого военачальника или бандитского главаря. Персонажи откликаются на зов."
           },
           "prompt": {
@@ -26732,7 +26732,7 @@
             "ru": "Место размышлений"
           },
           "description": {
-            "en": "The world is well-ordered here, clear in its natural beauty and constructed aesthetics that complement it. A PC may make an Instinct or Knowledge Roll here to gain insights about their present quest or information they have come seeking. This takes the form of a meditative walk or silent reflection. On a success with Hope, they receive a significant revelation. On a success with Fear, they gain future insight but also reflect upon past oversights that may blossom into new dangers (make 1 stress). On failure, a PC may mark 1 stress to gain slight insight.\nInsights on future enemy abilities, weaknesses, and plans can be presented obliquely.\nDoubts and imagined dangers about allies and neutral parties can be presented as imminent.\nA general sense that this is a mix of their own reflections and some indescribable presence in the Garden should be maintained: this isn’t a factual view of the future, but an imagined one.",
+            "en": "The world is well-ordered here, clear in its natural beauty and constructed aesthetics that complement it. A PC may make an Instinct or Knowledge Roll here to gain insights about their present quest or information they have come seeking. This takes the form of a meditative walk or silent reflection. On a success with Hope, they receive a significant revelation. On a success with Fear, they gain future insight but also reflect upon past oversights that may blossom into new dangers (mark 1 Stress). On failure, a PC may mark 1 Stress to gain slight insight.\nInsights on future enemy abilities, weaknesses, and plans can be presented obliquely.\nDoubts and imagined dangers about allies and neutral parties can be presented as imminent.\nA general sense that this is a mix of their own reflections and some indescribable presence in the Garden should be maintained: this isn’t a factual view of the future, but an imagined one.",
             "ru": "Здесь мир хорошо устроен, ясен в своей природной красоте и рукотворной эстетике, которая её дополняет. Персонаж может совершить Бросок Инстинкта или Знания, чтобы получить озарения о своём текущем задании или сведениях, которые он ищет. Это происходит в форме медитативной прогулки или тихого размышления. При успехе с Надеждой он получает значительное откровение. При успехе со Страхом он получает озарение о будущем, но также осознаёт прошлые упущения, которые могут обернуться новыми опасностями (отметьте 1 Стресс). При неудаче персонаж может отметить 1 Стресс, чтобы получить незначительное озарение.\nОзарения о будущих способностях, слабостях и планах врагов можно преподносить намёками.\nСомнения и воображаемые опасности, касающиеся союзников и нейтральных сторон, можно преподносить как неминуемые.\nСледует поддерживать общее ощущение, что это смесь собственных размышлений персонажа и некоего неописуемого присутствия в Саду: это не фактический взгляд на будущее, а лишь воображаемый."
           },
           "prompt": {
@@ -26821,11 +26821,11 @@
       },
       "impulses": {
         "en": [
-          "gluttonous consumption",
+          "Gluttonous consumption",
           "polite reflection"
         ],
         "ru": [
-          "ненасытное чревоугодие",
+          "Ненасытное чревоугодие",
           "учтивая задумчивость"
         ]
       },
@@ -26847,7 +26847,7 @@
             "ru": "Всё стало намного больше"
           },
           "description": {
-            "en": "PCs need to make Agility Rolls to make significant elevation changes, as there are no stairs or handholds intended for people their size; any motion requiring an Agility Roll normally performed here suffers disadvantage unless the environment is used creatively.",
+            "en": "PCs need to make Agility Rolls to make significant elevation changes, as there are no stairs or handholds intended for people their size; any motion requiring an Agility Roll normally performed here suffers Disadvantage unless the environment is used creatively.",
             "ru": "Персонажам нужно совершать Броски Проворности, чтобы преодолевать значительные перепады высоты, поскольку здесь нет ни лестниц, ни опор, рассчитанных на существ их роста; любое движение, обычно требующее здесь Броска Проворности, совершается с Помехой, если только окружение не используется творчески."
           },
           "prompt": {
@@ -26877,7 +26877,7 @@
             "ru": "Рука"
           },
           "description": {
-            "en": "A giant figure, incomprehensible in nature, is sitting eating. Whenever a creature disturbs the food or a PC Rolls with Fear while out of hiding, the hand descends—dealing 1d10+2 damage to all within Very Close of the source of the disturbance.",
+            "en": "A giant figure, incomprehensible in nature, is sitting eating. Whenever a creature disturbs the food or a PC rolls with Fear while out of hiding, the Hand descends—dealing 1d10+2 damage to all within Very Close of the source of the disturbance.",
             "ru": "Гигантская фигура непостижимой природы сидит и ест. Каждый раз, когда существо тревожит еду, или персонаж совершает Бросок со Страхом, находясь не в укрытии, рука опускается — нанося 1d10+2 урона всем в пределах Очень Близкой дистанции от источника беспокойства."
           },
           "prompt": {
@@ -26936,12 +26936,12 @@
       },
       "impulses": {
         "en": [
-          "drown",
+          "Drown",
           "creep",
           "preserve"
         ],
         "ru": [
-          "затоплять",
+          "Затоплять",
           "подступать",
           "сохранять"
         ]
@@ -27080,7 +27080,7 @@
             "ru": "Огонь поднимается"
           },
           "description": {
-            "en": "Whenever a PC takes a hit within Very Close range of an open fire pit, they must make an Agility roll—on failure, they suffer 2d8 direct physical damage.",
+            "en": "Whenever a PC takes a hit within Very Close range of an open fire pit, they must make an Agility Roll—on failure, they suffer 2d8 direct physical damage.",
             "ru": "Каждый раз, когда персонаж получает удар в пределах Очень Близкой дистанции от открытой огненной ямы, он должен совершить Бросок Проворности — при неудаче он получает 2d8 прямого физического урона."
           },
           "prompt": {
@@ -27227,7 +27227,7 @@
             "ru": "За ещё несколько горстей"
           },
           "description": {
-            "en": "A PC may approach some of the loitering mercenaries in the tavern (as per Potential Adversaries) and make a Presence roll to hire them on as a temporary Companion. On a critical success, it costs 1 handful of gold; on a success, 2; and on a failure with Hope, 3. They won’t take the job on a failure with Fear.",
+            "en": "A PC may approach some of the loitering mercenaries in the tavern (as per Potential Adversaries) and make a Presence Roll to hire them on as a temporary Companion. On a critical success, it costs 1 handful of gold; on a success, 2; and on a failure with Hope, 3. They won’t take the job on a failure with Fear.",
             "ru": "Персонаж может обратиться к кому-то из бездельничающих в трактире наёмников (согласно Потенциальным Противникам) и совершить Бросок на Влияние, чтобы временно нанять его в качестве Спутника. При критическом успехе это стоит 1 горсть золота; при успехе — 2; а при неудаче с Надеждой — 3. При неудаче со Страхом наёмник не соглашается на эту работу."
           },
           "prompt": {
@@ -27272,7 +27272,7 @@
             "ru": "Тёмный вербовщик"
           },
           "body": {
-            "en": "The armies of darkness have more hired muscle than normal—you hear they’re recruiting mercs at the Teal Heart.",
+            "en": "The armies of darkness have more hired muscle than normal—you hear they’re recruiting mercs at the Teal-Heart.",
             "ru": "У армий тьмы сейчас больше наёмной силы, чем обычно — вы слышали, что они набирают наёмников в «Бирюзовом Сердце»."
           },
           "prompt": {
@@ -27329,7 +27329,7 @@
             "ru": "Нагруженный переход"
           },
           "description": {
-            "en": "Bringing anything but oneself across these stones uses a Progress Countdown (12). It dips down according to the following criteria when the PCs make an action roll to bring it across (greasing axles, calming animals, dragging with ropes, etc):\n**Critical Success:** Tick down 3.\n**Success with Hope:** Tick down 2.\n**Success with Fear:** Tick down 1.\n**Failure with Hope:** No advancement.\n**Failure with Fear:** Tick up 1.\nWhen the countdown triggers, the party has brought whatever they were bringing with them (cart, heavy pack, animal, etc) across to the far side of the map.",
+            "en": "Bringing anything but oneself across these stones uses a Progress Countdown (12). It dips down according to the following criteria when the PCs make an action roll to bring it across (greasing axles, calming animals, dragging with ropes, etc.):\n**Critical Success:** Tick down 3.\n**Success with Hope:** Tick down 2.\n**Success with Fear:** Tick down 1.\n**Failure with Hope:** No advancement.\n**Failure with Fear:** Tick up 1.\nWhen the countdown triggers, the party has brought whatever they were bringing with them (cart, heavy pack, animal, etc.) across to the far side of the map.",
             "ru": "Перенос через эти камни чего-либо, кроме самих персонажей, отслеживается Отсчётом Прогресса (12). Он уменьшается по следующим правилам, когда персонажи совершают Бросок Действия, чтобы перенести груз (смазывая оси, успокаивая животных, перетаскивая с помощью веревок и т. д.):\n- **Критический успех:** -3\n- **Успех с Надеждой:** -2\n- **Успех со Страхом:** -1\n- **Неудача с Надеждой:** без изменений\n- **Неудача со Страхом:** +1\nКогда Отсчёт срабатывает, отряд переносит то, что он вёз (повозку, тяжёлый рюкзак, животное и т. д.), на дальнюю сторону."
           },
           "prompt": {
@@ -27359,7 +27359,7 @@
             "ru": "Демон переправы"
           },
           "description": {
-            "en": "Spend a Fear to have a cackling, winged Minor Demon materialize within Close of the furthest ahead PC. They make cryptic allusions to the party’s secrets, especially those kept from one another, and attempt to egg them on into conflict between one another. It keeps going until it’s clearly unsuccessful or something delectable fraught has happened between the PCs, at which point it attacks.",
+            "en": "Spend a Fear to have a cackling, winged Minor Demon materialize within Close of the furthest ahead PC. They make cryptic allusions to the party’s secrets, especially those kept from one another, and attempt to egg them on into conflict between one another. It keeps going until it’s clearly unsuccessful or something delectably fraught has happened between the PCs, at which point it attacks.",
             "ru": "Потратьте Страх, чтобы хохочущий крылатый Малый Демон материализовался в пределах Средней дистанции от персонажа, идущего дальше всех вперёд. Он делает загадочные намёки на секреты отряда, особенно те, что скрыты друг от друга, и пытается стравить их между собой. Он продолжает, пока это явно не терпит неудачи или между персонажами не произойдёт что-то воистину пикантное, после чего он нападает."
           },
           "prompt": {
@@ -27389,7 +27389,7 @@
             "ru": "Потерянный караван"
           },
           "body": {
-            "en": "A wealthy merchant recently lost a wagon over the rocks and wants someone to look into what happened and why. If possible, they are to retrieve a locked, lead-lined box without opening. The merchant is offering a bag of gold per PC for this information, and double that if the box is returned unopened.",
+            "en": "A wealthy merchant recently lost a wagon over the rocks and wants someone to look into what happened and why. If possible, they are to retrieve a locked, lead-lined box without opening it. The merchant is offering a bag of gold per PC for this information, and double that if the box is returned unopened.",
             "ru": "Богатый торговец недавно потерял повозку, упавшую со скал, и хочет, чтобы кто-то разобрался, что произошло и почему. Если возможно, нужно вернуть запертый, свинцом обшитый ящик не открывая его. Торговец предлагает мешок золота за каждого персонажа за эти сведения, и вдвое больше, если ящик будет возвращён невскрытым."
           },
           "prompt": {
@@ -27403,7 +27403,7 @@
             "ru": "Испытание горы"
           },
           "body": {
-            "en": "The party wants knowledge from a community’s elder who is tight-lipped—they say only those who traverse the pass laden with the traditional urn will earn the community’s trust, at which point in time they will freely inform them. The urn is the size of a large person and will not be moved easily.",
+            "en": "The party wants knowledge from a community’s elder who is tight-lipped—they say only those who traverse the pass laden with the traditional urn will earn the community’s trust, at which point they will freely inform them. The urn is the size of a large person and will not be moved easily.",
             "ru": "Отряд хочет получить знания от старейшины общины, который держит язык за зубами — он говорит, что лишь те, кто пересечёт перевал, нагруженный традиционной урной, заслужат доверие общины, и только тогда им всё расскажут без утайки. Урна размером со взрослого человека, и её не так-то просто переместить."
           },
           "prompt": {
@@ -27433,7 +27433,7 @@
       "impulses": {
         "en": [
           "Offer shade and comfort",
-          "remind of the impermanence of peoples’ divisions"
+          "remind of the impermanence of people’s divisions"
         ],
         "ru": [
           "Дарить тень и покой",
@@ -27458,7 +27458,7 @@
             "ru": "Древние границы"
           },
           "description": {
-            "en": "Once this place was tightly regulated, well-kept, and fiercely contested. PCs can make an Instinct Roll to study the area; success with Hope learns all pieces of information, with Fear learns two; on a failure, PCs can mark 1 stress to learn 1, gaining Advantage on the next action roll in this environment. PCs with appropriate backgrounds or Experience can learn an extra detail:\nMarkings on the stone were added and scratched out.\nOld lines of stone fencing moved and shifted slowly over time—then suddenly dashed apart.\nEvidence of a fight (body-sized depressions, broken bits of metal armour and weapons, tool shards stained with ancient blood) just below the surface soil.",
+            "en": "Once this place was tightly regulated, well-kept, and fiercely contested. PCs can make an Instinct Roll to study the area; success with Hope learns all pieces of information, with Fear learns two; on a failure, PCs can mark 1 Stress to learn 1, gaining Advantage on the next action roll in this environment. PCs with appropriate backgrounds or Experience can learn an extra detail:\nMarkings on the stone were added and scratched out.\nOld lines of stone fencing moved and shifted slowly over time—then suddenly dashed apart.\nEvidence of a fight (body-sized depressions, broken bits of metal armor and weapons, tool shards stained with ancient blood) just below the surface soil.",
             "ru": "Когда-то это место было строго регулируемым, ухоженным и яростно оспариваемым. Персонажи могут совершить Бросок Инстинкта, чтобы изучить местность; при успехе с Надеждой они узнают все сведения, при успехе со Страхом — два; при неудаче персонаж может отметить 1 Стресс, чтобы узнать одно, получив Преимущество на следующий Бросок Действия в этом окружении. Персонажи с подходящей Предысторией или Опытом могут узнать дополнительную деталь:\nОтметки на камне были нанесены и стёрты.\nСтарые линии каменных изгородей медленно смещались со временем — а затем внезапно оказались разрушены.\nПрямо под поверхностью почвы видны следы боя (вмятины размером с тело, обломки металлических доспехов и оружия, осколки инструментов, покрытые древней кровью)."
           }
         },
@@ -27484,7 +27484,7 @@
             "ru": "Memento Mori"
           },
           "description": {
-            "en": "Spend a Fear to have long-dead Skeletons from a skirmish fought over these lands emerge, animated by the baleful memory of conflict over the fields they died for. They appear surrounding the party within Far from the PCs—they are led by a Skeleton Knight, which immediately takes the spotlight.",
+            "en": "Spend a Fear to have long-dead Skeletons from a skirmish fought over these lands emerge, animated by the baleful memory of conflict over the fields they died for. They appear surrounding the party at Far range from the PCs—they are led by a Skeleton Knight, which immediately takes the spotlight.",
             "ru": "Потратьте Страх, чтобы давно погибшие Скелеты, павшие в стычке за эти земли, поднялись, оживлённые злобной памятью о конфликте за поля, за которые они умерли. Они появляются, окружая отряд в пределах Далёкой дистанции от персонажей — их ведёт Скелет-Рыцарь, который немедленно берёт Активацию."
           }
         }
@@ -27510,7 +27510,7 @@
             "ru": "Новая весна"
           },
           "body": {
-            "en": "A new generation of farmers is coming of age as an older one arrives, disenfranchised by misfortunes abroad—they pool together seeking new lands to till. Rumours of brigands, bad soil, and hauntings have them unsure of laying down new roots here. They look to the PCs to check out the area.",
+            "en": "A new generation of farmers is coming of age as an older one arrives, disenfranchised by misfortunes abroad—they pool together seeking new lands to till. Rumors of brigands, bad soil, and hauntings have them unsure of laying down new roots here. They look to the PCs to check out the area.",
             "ru": "Новое поколение фермеров вступает во взрослую жизнь, пока прибывает и старое, обездоленное несчастьями на чужбине — они объединяются в поисках новых земель для возделывания. Слухи о разбойниках, дурной почве и призраках заставляют их не решаться пускать здесь новые корни. Они обращаются к персонажам, чтобы те осмотрели местность."
           },
           "prompt": {
@@ -27520,7 +27520,7 @@
         },
         {
           "title": {
-            "en": "To Remember for Awhile",
+            "en": "To Remember for a While",
             "ru": "Немного вспомнить"
           },
           "body": {
@@ -27700,7 +27700,7 @@
             "ru": "Глубокий снег"
           },
           "description": {
-            "en": "PCs who act without fear gain advantage on Presence rolls here—The statue grants its favour to the boldest.",
+            "en": "PCs who act without fear gain Advantage on Presence Rolls here—the statue grants its favor to the boldest.",
             "ru": "Персонажи, действующие без страха, получают Преимущество на Броски на Влияние здесь — статуя одаряет своей милостью самых смелых."
           }
         },
@@ -27726,7 +27726,7 @@
             "ru": "Обвал"
           },
           "description": {
-            "en": "Spend a Fear to have the ground crumble below a PC’s feet, sending them scattering towards the ground below and falling to the world further down shortly thereafter. If the next action does fails, they are left dangling off the edge and take 1d10 physical damage.",
+            "en": "Spend a Fear to have the ground crumble below a PC’s feet, sending them scattering towards the ground below and falling to the world further down shortly thereafter. If the next action fails, they are left dangling off the edge and take 1d10 physical damage.",
             "ru": "Потратьте Страх, чтобы земля обвалилась под ногами персонажа, отправив его лететь к земле внизу, а вскоре после этого — упасть в мир, находящийся ещё ниже. Если следующее действие всё же проваливается, он остаётся висеть на краю и получает 1d10 физического урона."
           },
           "prompt": {
@@ -27818,7 +27818,7 @@
             "ru": "Тихая река, приятные люди"
           },
           "description": {
-            "en": "When a PC takes a Short Rest here and Clears Stress, they remove 1 additional Stress.",
+            "en": "When a PC takes a Short Rest here and clears Stress, they remove 1 additional Stress.",
             "ru": "Когда персонаж совершает Короткий Отдых здесь и снимает Стресс, он снимает 1 дополнительный Стресс."
           },
           "prompt": {
@@ -27833,7 +27833,7 @@
             "ru": "Нервный торговец"
           },
           "description": {
-            "en": "A merchant has cautiously unpacked some of his cargo and is offering a very agreeable rate for the goods. They are not eager to explain why, but items the PCs have taken an interest in acquiring are on offer here.",
+            "en": "A merchant has cautiously unpacked some of their cargo and is offering a very agreeable rate for the goods. They are not eager to explain why, but items the PCs have taken an interest in acquiring are on offer here.",
             "ru": "Торговец осторожно распаковал часть своего груза и предлагает весьма выгодную цену за товары. Он не спешит объяснять, почему, но предметы, которыми интересовались персонажи, есть здесь в продаже."
           },
           "prompt": {
@@ -27939,7 +27939,7 @@
             "ru": "Место почитания и знаний"
           },
           "description": {
-            "en": "PCs can gain advantage on a Knowledge Roll by showing respect to the dead.",
+            "en": "PCs can gain Advantage on a Knowledge Roll by showing respect to the dead.",
             "ru": "Персонажи могут получить Преимущество на Бросок Знания, проявив уважение к мёртвым."
           },
           "prompt": {
@@ -27973,7 +27973,7 @@
             "ru": "Потратьте Страх, чтобы пробудить отряд Скелетов (2 Скелета-Рыцаря, 2 Скелета-Лучника, столько Скелетов-Гнилей, сколько персонажей в группе) после того, как отряд что-то задел или проявил неуважение к этому святому месту."
           },
           "prompt": {
-            "en": "What rules offend them to rise? What force animates them? Does the chamber communicate its limits, or are they waiting, unseen, to be transgressed?",
+            "en": "What rules, when broken, cause them to rise? What force animates them? Does the chamber communicate its limits, or are they waiting, unseen, to be transgressed?",
             "ru": "Какие правила заставляют их подняться, если их нарушить? Какая сила оживляет их? Даёт ли эта усыпальница знать о своих границах, или они просто невидимо ждут, когда их нарушат?"
           }
         }
@@ -28060,7 +28060,7 @@
             "ru": "Тайны мёртвых"
           },
           "description": {
-            "en": "Souls linger, and marrow congeals in the woods here; a shadowed truth looms ever just out of reach. A PC can make an Instinct Roll to uncover parts of that truth. On a success with Hope, learn all three parts of the truth. On a success with Fear, learn two. On a failure, a PC can mark a Stress to learn one and gain advantage on the next action roll to investigate this environment. A PC with an appropriate background or experience can decide they have a connection to this hidden truth.\nWhat is the nature of the truth (evidence of atrocity, lurking entity long thought dead, region-threatening danger growing strength)?\nWhat is the nature of the truth’s obfuscation (a magic spell, the deep bramble of the wood, hidden in plain sight)?\nWhat are the PCs going to have to do to get it (reach into a dark log, burn a tree, sacrifice a living creature)?",
+            "en": "Souls linger, and marrow congeals in the woods here; a shadowed truth looms ever just out of reach. A PC can make an Instinct Roll to uncover parts of that truth. On a success with Hope, learn all three parts of the truth. On a success with Fear, learn two. On a failure, a PC can mark a Stress to learn one and gain Advantage on the next action roll to investigate this environment. A PC with an appropriate background or Experience can decide they have a connection to this hidden truth.\nWhat is the nature of the truth (evidence of atrocity, lurking entity long thought dead, region-threatening danger growing in strength)?\nWhat is the nature of the truth’s obfuscation (a magic spell, the deep bramble of the wood, hidden in plain sight)?\nWhat are the PCs going to have to do to get it (reach into a dark log, burn a tree, sacrifice a living creature)?",
             "ru": "Здесь задерживаются души, а в лесу застывает костный мозг; тень истины маячит вечно вне досягаемости. Персонаж может совершить Бросок Инстинкта, чтобы раскрыть часть этой истины. При успехе с Надеждой он узнаёт все три части истины. При успехе со Страхом — две. При неудаче персонаж может отметить Стресс, чтобы узнать одну и получить Преимущество на следующий Бросок Действия для исследования этого окружения. Персонаж с подходящей Предысторией или Опытом может решить, что у него есть связь с этой скрытой истиной.\nКакова природа этой истины (свидетельство злодеяния, скрывающаяся сущность, давно считавшаяся мёртвой, растущая угроза для региона)?\nКакова природа сокрытия этой истины (заклинание, густой подлесок леса, скрытое на самом видном месте)?\nЧто персонажам нужно сделать, чтобы получить её (сунуть руку в тёмное дупло, сжечь дерево, принести в жертву живое существо)?"
           },
           "prompt": {
@@ -28106,7 +28106,7 @@
             "ru": "Её верные спутники"
           },
           "body": {
-            "en": "A questing hero was last seen disappearing into this forest with her most stalwart companions—none of them ever to be seen again. Tell-tale signs along the road, local rumours, and studious research all point to this Gnarled Glen. When the PCs arrive, evidence of the heroes will be forthcoming. Unfortunately for them, so will 1 Skeleton Knight, 2 Skeleton Archers, and 8 Skeleton Dredges—the hero and her companions not appreciating their graves’ disturbance.",
+            "en": "A questing hero was last seen disappearing into this forest with her most stalwart companions—none of them ever to be seen again. Tell-tale signs along the road, local rumors, and studious research all point to this Gnarled Glen. When the PCs arrive, evidence of the heroes will be forthcoming. Unfortunately for them, so will 1 Skeleton Knight, 2 Skeleton Archers, and 8 Skeleton Dredges—the hero and her companions not appreciating their graves’ disturbance.",
             "ru": "Ищущую героиню последний раз видели входящей в этот лес со своими самыми стойкими спутниками — никого из них больше никто не видел. Явные знаки вдоль дороги, местные слухи и тщательные исследования — всё указывает на эту Кривую Лощину. Когда персонажи прибудут, свидетельства о героях не заставят себя ждать. К несчастью для них, как и 1 Скелет-Рыцарь, 2 Скелета-Лучника и 8 Скелетов-Гнилей — герои и её спутники не оценят нарушения покоя их могил."
           },
           "prompt": {
@@ -28120,7 +28120,7 @@
             "ru": "Дары природы"
           },
           "body": {
-            "en": "The creatures here appear animated by a force beyond anything normal; whether through selection of the fittest or fel magic, they seem to hunt harder and hide more effectively than creatures elsewhere. This has spilled out over neighbouring farmlands and woods. Locals have passed the hat and offer 3 bags of coins for a cull that can slake this menace.",
+            "en": "The creatures here appear animated by a force beyond anything normal; whether through selection of the fittest or fel magic, they seem to hunt harder and hide more effectively than creatures elsewhere. This has spilled out over neighboring farmlands and woods. Locals have passed the hat and offer 3 bags of coins for a cull that can slake this menace.",
             "ru": "Существа здесь, похоже, движимы силой, превосходящей всё обычное; будь то естественный отбор или тёмная магия, они охотятся упорнее и скрываются эффективнее, чем существа в других местах. Это распространилось на соседние фермерские земли и леса. Местные жители собрали средства и предлагают 3 мешка монет за расправу, способную усмирить эту угрозу."
           },
           "prompt": {
@@ -28283,7 +28283,7 @@
             "ru": "Глубокий снег"
           },
           "description": {
-            "en": "Disadvantage on Agility checks to move quickly, first attempt to Hide does not require marking Stress. Results with Fear may send snow cascading down around either, potentially revealing something bleak...",
+            "en": "Disadvantage on Agility checks to move quickly; the first attempt to Hide does not require marking Stress. Results with Fear may send snow cascading down around them, potentially revealing something bleak...",
             "ru": "Помеха на проверки Проворности для быстрого перемещения, первая попытка Спрятаться не требует отметки Стресса. Результаты со Страхом могут вызвать обвал снега вокруг, потенциально раскрывая что-то мрачное..."
           },
           "prompt": {
@@ -28343,11 +28343,11 @@
             "ru": "Кровь на снегу"
           },
           "body": {
-            "en": "The party passes the tree, only to hear a ghastly howl and smell an acrid waft of blood on the cold wind. The once clean snows are now coated red with sanguine blood, and a group of Dire Wolves has appeared (3 more than there are PCs).",
+            "en": "The party passes the tree, only to hear a ghastly howl and smell an acrid waft of blood on the cold wind. The once clean snows are now coated red with blood, and a group of Dire Wolves has appeared (3 more than there are PCs).",
             "ru": "Отряд проходит мимо дерева, но вдруг слышит жуткий вой и ощущает резкий запах крови на морозном ветру. Некогда чистый снег теперь покрыт алой кровью, и появляется стая Лютоволков (на 3 больше, чем персонажей в группе)."
           },
           "prompt": {
-            "en": "What do the Direwolves seek? Have they snuck upon the party naturally, or is there a supernatural force at work? What lost all that blood?",
+            "en": "What do the Dire Wolves seek? Have they snuck upon the party naturally, or is there a supernatural force at work? What lost all that blood?",
             "ru": "Чего ищут Лютоволки? Подобрались ли они к отряду естественным образом, или здесь действует сверхъестественная сила? Что потеряло столько крови?"
           }
         }
@@ -28396,7 +28396,7 @@
             "ru": "Преимущество своего поля"
           },
           "description": {
-            "en": "These zealous assassins have trained in this temple and woven its stones with the magic in the roots and their blood for generations; reduce the PC’s Hope Die to a **d10** here. This effect ends when 50% (rounded down) of enemies are defeated, or they complete a Countdown Clock (6 parts).",
+            "en": "These zealous assassins have trained in this temple and woven its stones with the magic in the roots and their blood for generations; reduce the PCs’ Hope Die to a **d10** here. This effect ends when 50% (rounded down) of enemies are defeated, or they complete a Countdown Clock (6 parts).",
             "ru": "Эти ревностные убийцы тренировались в этом храме и вплетали его камни в магию корней и своей крови на протяжении поколений; понизьте Кость Надежды персонажей до **d10** здесь. Этот эффект прекращается, когда 50% (округляя вниз) противников побеждены, либо когда завершается Отсчёт (6 делений)."
           },
           "prompt": {
@@ -28426,7 +28426,7 @@
             "ru": "«Мы знали, что вы это сделаете»"
           },
           "description": {
-            "en": "When a PC moves to a space no PC has entered before, spend 1 Fear to unleash a poisonous spike trap on them. They must pass an Agility roll or suffer 1d10 damage that armor cannot defend against.",
+            "en": "When a PC moves to a space no PC has entered before, spend 1 Fear to unleash a poisonous spike trap on them. They must pass an Agility Roll or suffer 1d10 damage that armor cannot defend against.",
             "ru": "Когда персонаж перемещается в пространство, куда ещё не заходил ни один персонаж, потратьте 1 Страх, чтобы обрушить на него ядовитый шипованный капкан. Он должен пройти Бросок Проворности, иначе получит 1d10 урона, от которого не защищает броня."
           },
           "prompt": {
@@ -28522,7 +28522,7 @@
             "ru": "Зов иного мира"
           },
           "description": {
-            "en": "Possibility bends here, and anything seems possible—but efforts to change the course of reality fainter. Reduce the PCs’ Fear Die to d10 while the portal is open.",
+            "en": "Possibility bends here, and anything seems possible—but efforts to change the course of reality grow fainter. Reduce the PCs’ Fear Die to d10 while the portal is open.",
             "ru": "Здесь реальность искажается, и кажется, что возможно всё — но попытки изменить ход реальности слабеют. Понизьте Кость Страха персонажей до d10, пока портал открыт."
           },
           "prompt": {
@@ -28656,8 +28656,8 @@
             "ru": "У всего есть цена"
           },
           "description": {
-            "en": "The PCs overhear a hit being placed on a surface-side merchant—there’s a Chest of gold in it for the killers.",
-            "ru": "Персонажи слышат, как заказывают убийство торговца с поверхности — за это убийцам обещан Сундук золота."
+            "en": "The PCs overhear a hit being placed on a surface-side merchant—there’s a chest of gold in it for the killers.",
+            "ru": "Персонажи слышат, как заказывают убийство торговца с поверхности — за это убийцам обещан сундук золота."
           },
           "prompt": {
             "en": "Do the PCs care about why this is happening, and will they try to find out before intervening or stepping away?",
@@ -28686,7 +28686,7 @@
             "ru": "О... Крысы!"
           },
           "description": {
-            "en": "When the party is here, or anyone in the scene takes out some food, you may spend a Fear to introduce an appropriate number of Swarms of Rats. They pour out of cracks in the walls and around the bodies of water to rip and tear at food stuffs and wounded people. If the party starts killing the rats, a Giant Rat emerges to challenge them and rampage through the stalls.",
+            "en": "When the party is here, or anyone in the scene takes out some food, you may spend a Fear to introduce an appropriate number of Swarms of Rats. They pour out of cracks in the walls and around the bodies of water to rip and tear at foodstuffs and wounded people. If the party starts killing the rats, a Giant Rat emerges to challenge them and rampage through the stalls.",
             "ru": "Когда отряд находится здесь, или кто-то на сцене достаёт еду, вы можете потратить Страх, чтобы ввести подходящее число Стай Крыс. Они высыпают из трещин в стенах и вокруг водоёмов, чтобы рвать и терзать продукты и раненых. Если отряд начинает убивать крыс, появляется Гигантская Крыса, чтобы вызвать их на бой и устроить погром среди прилавков."
           },
           "prompt": {
@@ -28716,7 +28716,7 @@
             "ru": "Зачистка"
           },
           "description": {
-            "en": "while something very blatantly illegal is occurring, the guards finally make their move—it’s a raid! Guards (led by a Head Guard with a mix of Bladed and Archer Guards backing them up) pour in from the stairs above.",
+            "en": "While something very blatantly illegal is occurring, the guards finally make their move—it’s a raid! Guards (led by a Head Guard with a mix of Bladed and Archer Guards backing them up) pour in from the stairs above.",
             "ru": "Пока происходит что-то явно незаконное, стражники наконец решаются действовать — это рейд! Стражники (во главе с Капитаном Стражи, при поддержке смеси Стражников-Мечников и Стражников-Лучников) врываются с лестниц наверху."
           },
           "prompt": {
@@ -28747,7 +28747,7 @@
       "impulses": {
         "en": [
           "Entertain guests",
-          "offer a good night's rest"
+          "offer a good night’s rest"
         ],
         "ru": [
           "Развлекать гостей",
@@ -28757,11 +28757,11 @@
       "potential_adversaries": {
         "en": [
           "Merchant",
-          "Guard (Bladed, Archer, Captain)"
+          "Guards (Bladed, Archer, Head)"
         ],
         "ru": [
           "Торговец",
-          "Стражник (Стражник-Мечник, Стражник-Лучник, Капитан Стражи)"
+          "Стража (Стражник-Мечник, Стражник-Лучник, Капитан Стражи)"
         ]
       },
       "features": [
@@ -28787,7 +28787,7 @@
             "ru": "Сыграй за постой"
           },
           "description": {
-            "en": "The inn's stage is welcoming: the PCs may present their musical or otherwise entertaining talents, making a Group Presence Roll with the following result:\n- **Critical Success:** they all get a bag full of gold and a free week's stay.\n- **Success with Hope:** they all get a handful of gold and a free night's stay.\n- **Success with Fear:** they get heckled, but a free night's stay.\n- **Any Failure:** free night's stay if they mark a Stress.",
+            "en": "The inn’s stage is welcoming: the PCs may present their musical or otherwise entertaining talents, making a Group Presence Roll with the following result:\n- **Critical Success:** they all get a bag full of gold and a free week’s stay.\n- **Success with Hope:** they all get a handful of gold and a free night’s stay.\n- **Success with Fear:** they get heckled, but get a free night’s stay.\n- **Any Failure:** free night’s stay if they mark a Stress.",
             "ru": "Сцена трактира приветлива: персонажи могут показать свои музыкальные или иные развлекательные таланты, совершив Групповой бросок на Влияние со следующим результатом:\n- **Критический успех:** все получают мешок золота и бесплатную неделю проживания.\n- **Успех с Надеждой:** все получают горсть золота и одну бесплатную ночь проживания.\n- **Успех со Страхом:** их освистывают, но всё равно дают бесплатную ночь проживания.\n- **Любая неудача:** бесплатная ночь проживания, если они отмечают Стресс."
           },
           "prompt": {
@@ -28802,11 +28802,11 @@
             "ru": "Погоди, я тебя знаю"
           },
           "description": {
-            "en": "Spend a Fear to have a rival adventuring party recognize the PCs—they hold a grievance related to a past quest the PCs may not even realize, but they demand satisfaction. If it turns to violence, they act as 1 Guard Captain, 3 Bladed Guards, and 1 Guard Archer.",
+            "en": "Spend a Fear to have a rival adventuring party recognize the PCs—they hold a grievance related to a past quest the PCs may not even realize, but they demand satisfaction. If it turns to violence, they act as 1 Head Guard, 3 Bladed Guards, and 1 Archer Guard.",
             "ru": "Потратьте Страх, чтобы отряд соперников узнал персонажей — у них есть претензии, связанные с прошлым заданием, о котором персонажи могут даже не подозревать, но они требуют сатисфакции. Если дело доходит до насилия, они действуют как 1 Капитан Стражи, 3 Стражника-Мечника и 1 Стражник-Лучник."
           },
           "prompt": {
-            "en": "Is the grievance legitimate or concocted? Did the PCs' success ensure their rivals' quest's failure, or were they beaten to the punch on the same job?",
+            "en": "Is the grievance legitimate or concocted? Did the PCs’ success ensure their rivals’ quest’s failure, or were they beaten to the punch on the same job?",
             "ru": "Их претензия обоснована или выдумана? Успех персонажей обернулся провалом задания соперников, или тех просто опередили в том же деле?"
           }
         }
@@ -28818,7 +28818,7 @@
             "ru": "Настоятельная рекомендация"
           },
           "body": {
-            "en": "On their last romp through dangerous dungeons and rugged wilderness, the party met a fellow traveler—who sang the praises of the Resting Dagger Inn. They say it's a wonderful place to relax and enjoy a bit of entertainment between adventures. What's more, they're certain someone there mentioned your names, but they're not sure who...",
+            "en": "On their last romp through dangerous dungeons and rugged wilderness, the party met a fellow traveler—who sang the praises of the Resting Dagger Inn. They say it’s a wonderful place to relax and enjoy a bit of entertainment between adventures. What’s more, they’re certain someone there mentioned your names, but they’re not sure who...",
             "ru": "Во время последнего похода по опасным подземельям и суровой глуши отряд встретил попутчика, который расхваливал «Отдыхающий кинжал». По его словам, это чудесное место, чтобы отдохнуть и немного развлечься между приключениями. Более того, он уверен, что там кто-то упоминал ваши имена, но не может вспомнить, кто именно..."
           },
           "prompt": {
@@ -28832,7 +28832,7 @@
             "ru": "Танец под небесным огнём"
           },
           "body": {
-            "en": "A performer here perfectly matches a character from a PC's dreams.",
+            "en": "A performer here perfectly matches a character from a PC’s dreams.",
             "ru": "Здешний исполнитель — точное подобие персонажа из снов одного из героев."
           },
           "prompt": {
@@ -29232,12 +29232,12 @@
       },
       "impulses": {
         "en": [
-          "toss off",
+          "Toss off",
           "hold up",
           "lead along"
         ],
         "ru": [
-          "сбрасывать",
+          "Сбрасывать",
           "задерживать",
           "заманивать"
         ]
@@ -29306,7 +29306,7 @@
             "ru": "Демон на Краю"
           },
           "body": {
-            "en": "The party's dreams are haunted by visions of demons on a cliff. After comparing details and local maps, they realize all their dreams match up with one remote cliff...",
+            "en": "The party’s dreams are haunted by visions of demons on a cliff. After comparing details and local maps, they realize all their dreams match up with one remote cliff...",
             "ru": "Отряду снятся видения демонов на утёсе. Сравнив детали снов и местные карты, они понимают, что все их сны сходятся на одном отдалённом утёсе..."
           },
           "prompt": {
@@ -29573,7 +29573,7 @@
             "ru": "Знания Мегалитов Фейри"
           },
           "description": {
-            "en": "These Faestones hold the lore of nature, etched in glowing magic runes. They hold great lore, but evade the minds that pursue them. A PC can make a Knowledge Roll to study these stones for information about nature magic and the local area. On a success or failure with fear, activate \"Defenders of the Stones\" for free.",
+            "en": "These Faestones hold the lore of nature, etched in glowing magic runes. They hold great lore, but evade the minds that pursue them. A PC can make a Knowledge Roll to study these stones for information about nature magic and the local area. On a success or failure with Fear, activate “Defenders of the Stones” for free.",
             "ru": "Эти Мегалиты Фейри хранят знания природы, начертанные светящимися магическими рунами. В них скрыта великая мудрость, но она ускользает от умов, что пытаются её постичь. Персонаж может совершить бросок Знания, чтобы изучить эти камни в поисках сведений о природной магии и окрестностях. При успехе или провале со Страхом бесплатно активируйте «Защитников Камней»."
           },
           "prompt": {
@@ -29603,7 +29603,7 @@
             "ru": "Козни Фейри"
           },
           "description": {
-            "en": "Countdown (Loop 4). Every time a PC rolls with Fear, advance the countdown. When it triggers, the next PC to spotlight has Disadvantage as the Faestones flicker and some trickery sprites them.",
+            "en": "Countdown (Loop 4). Every time a PC rolls with Fear, advance the countdown. When it triggers, the next PC to spotlight has Disadvantage as the Faestones flicker and some trickery springs on them.",
             "ru": "Отсчёт (Цикл 4). Каждый раз, когда персонаж выбрасывает результат со Страхом, продвигайте отсчёт. Когда он срабатывает, следующий персонаж, получающий Активацию, действует с Помехой — Мегалиты Фейри мерцают, и озорство Фейри подшучивает над ним."
           },
           "prompt": {
@@ -29619,7 +29619,7 @@
             "ru": "Тайна Леса"
           },
           "body": {
-            "en": "One of the PCs connections requires information only known in the deep faestone lore of the fae they are reluctant to share. It seems the only way to appease their desire is to gaze upon the Faestones.",
+            "en": "One of the PCs’ connections requires information only known in the deep faestone lore of the fae they are reluctant to share. It seems the only way to appease their desire is to gaze upon the Faestones.",
             "ru": "Один из Знакомых персонажей нуждается в сведениях, известных лишь из глубинных знаний Фейри о Мегалитах Фейри, которыми они делятся неохотно. Похоже, единственный способ утолить эту нужду — взглянуть на сами Мегалиты Фейри."
           },
           "prompt": {
@@ -29633,7 +29633,7 @@
             "ru": "Свернули не туда"
           },
           "body": {
-            "en": "The Faestone Wode is not a place everyone arrives at deliberately—many tricky woodland paths twist and turn here. Those who try to follow desire paths and remote dirt roads may find themselves brought here. While it's nature to be fascinated by the Faestones, these wanderers may need to study them closely to figure out how to get where they were originally going.",
+            "en": "The Faestone Wode is not a place everyone arrives at deliberately—many tricky woodland paths twist and turn here. Those who try to follow desire paths and remote dirt roads may find themselves brought here. While it’s natural to be fascinated by the Faestones, these wanderers may need to study them closely to figure out how to get where they were originally going.",
             "ru": "В Чащу с Мегалитами Фейри не все попадают намеренно — здесь петляет множество обманчивых лесных троп. Те, кто пытается срезать путь по протоптанным дорожкам и глухим просёлкам, порой оказываются именно здесь. И хотя Мегалиты Фейри завораживают почти любого, этим путникам, возможно, придётся присмотреться к ним внимательнее, чтобы понять, как выбраться туда, куда они изначально держали путь."
           },
           "prompt": {
@@ -33349,7 +33349,7 @@
             "ru": "Утраченное знание"
           },
           "description": {
-            "en": "A PC can seek lost secrets of the automatons’ creation here with a Knowledge Roll. On a success, they can pick two of the below to learn—three on a critical. On a failure, they can pick one and mark a Stress as the innards crackle.\n- A revelation relating to the PC’s background and ancient tech.\n- Strong clue about the machines’ locomotion mechanism.\n- A lead on the metal alloys used to create the automata.\n- Curious glyphs related to constructs.",
+            "en": "A PC can seek lost secrets of the automata’s creation here with a Knowledge Roll. On a success, they can pick two of the below to learn—three on a critical. On a failure, they can pick one and mark a Stress as the innards crackle.\n- A revelation relating to the PC’s background and ancient tech.\n- Strong clue about the machines’ locomotion mechanism.\n- A lead on the metal alloys used to create the automata.\n- Curious glyphs related to constructs.",
             "ru": "Персонаж может искать здесь утраченные тайны создания автоматов, совершив Бросок Знания. При успехе он может выбрать два пункта из списка ниже, чтобы узнать их, — три при критическом успехе. При неудаче он может выбрать один пункт и отметить Стресс, пока внутренности механизмов потрескивают.\n- Откровение, связанное с прошлым персонажа и древними технологиями.\n- Веский намёк на механизм передвижения машин.\n- Зацепка о металлических сплавах, из которых созданы автоматы.\n- Любопытные символы, связанные с конструктами."
           },
           "prompt": {
@@ -33395,7 +33395,7 @@
             "ru": "Карта незнакомца"
           },
           "body": {
-            "en": "A stranger at the tavern offered the PCs a treasure map promising “the secrets of the soul” in exchange for a drink. It led them here, a treasure trove of once-animate automatons.",
+            "en": "A stranger at the tavern offered the PCs a treasure map promising “the secrets of the soul” in exchange for a drink. It led them here, a treasure trove of once-animate automata.",
             "ru": "Незнакомец в таверне предложил персонажам карту сокровищ, обещающую «тайны души», в обмен на выпивку. Она привела их сюда — в сокровищницу некогда одушевлённых автоматов."
           },
           "prompt": {
@@ -33595,7 +33595,7 @@
             "ru": "Сделки на каждом шагу"
           },
           "description": {
-            "en": "Most anything of appropriate Tier may be found here for sale, or at least rumor of it. PCs looking for these deals can make an Instinct or Presence Roll.\n- **Critical Success:** The PC finds the magic item they're looking for on sale, and gets a clue to where a Tier 3 magic item is they may quest for later.\n- **Success with Hope:** The PC finds reliable information on the location of a magic item they wish to buy, and a good deal on any more mundane goods immediately.\n- **Success with Fear:** As with success with Hope, but they catch sight of a Mask Thief they're not certain is tailing them—marking a Stress.\n- **Any Failure:** A Merchant Baron more interested in pumping them for information than making a deal gets the better of them and wastes their time—they mark a Stress, and the Merchant Baron uses Everyone has a Price against them without spending a Fear.",
+            "en": "Most anything of appropriate Tier may be found here for sale, or at least rumor of it. PCs looking for these deals can make an Instinct or Presence Roll.\n- **Critical Success:** The PC finds the magic item they’re looking for on sale, and gets a clue to where a Tier 3 magic item is they may quest for later.\n- **Success with Hope:** The PC finds reliable information on the location of a magic item they wish to buy, and a good deal on any more mundane goods immediately.\n- **Success with Fear:** As with success with Hope, but they catch sight of a Masked Thief they’re not certain is tailing them—marking a Stress.\n- **Any Failure:** A Merchant Baron more interested in pumping them for information than making a deal gets the better of them and wastes their time—they mark a Stress, and the Merchant Baron uses Everyone Has a Price against them without spending a Fear.",
             "ru": "Здесь можно найти на продажу почти всё подходящего Ранга — или, по крайней мере, услышать о нём слух. Персонажи, ищущие такие сделки, могут совершить бросок Инстинкта или Влияния.\n- **Критический успех:** персонаж находит в продаже магический предмет, который искал, и получает подсказку, где находится магический предмет 3 Ранга, за которым можно отправиться позже.\n- **Успех с Надеждой:** персонаж находит надёжные сведения о местонахождении магического предмета, который хочет купить, и сразу получает хорошую цену на более обычные товары.\n- **Успех со Страхом:** как при успехе с Надеждой, но персонаж замечает Вора в Маске, который, возможно, следит за ним, — персонаж отмечает Стресс.\n- **Любая неудача:** Торговый Барон, которому важнее выудить из персонажей сведения, чем заключить сделку, берёт над ними верх и впустую тратит их время — они отмечают Стресс, а Торговый Барон применяет против них «У каждого своя цена», не тратя Страх."
           },
           "prompt": {
@@ -33626,7 +33626,7 @@
             "ru": "Ловушка для закона"
           },
           "body": {
-            "en": "The PCs are contracted to buy illegal goods; guards lay in wait for their signal once they confirm a sale.",
+            "en": "The PCs are contracted to buy illegal goods; guards lie in wait for their signal once they confirm a sale.",
             "ru": "Персонажей нанимают купить запрещённый товар; стража затаилась и ждёт их сигнала, как только сделка будет подтверждена."
           },
           "prompt": {
@@ -33636,7 +33636,7 @@
         },
         {
           "title": {
-            "en": "My Father's Sword",
+            "en": "My Father’s Sword",
             "ru": "Меч моего отца"
           },
           "body": {
@@ -34420,7 +34420,7 @@
             "ru": "Чтобы воспользоваться способностью или действием, снимающим Стресс, нужно потратить Надежду."
           },
           "prompt": {
-            "en": "What about this atmosphere chokes out the heroes' capacity to even temporarily relax?",
+            "en": "What about this atmosphere chokes out the heroes’ capacity to even temporarily relax?",
             "ru": "Что в этой атмосфере душит способность героев хотя бы ненадолго расслабиться?"
           }
         },
@@ -34435,7 +34435,7 @@
             "ru": "Персонаж может исследовать расколотый ландшафт и совершить Бросок Знания или Инстинкта, чтобы узнать, что случилось с этим местом и со всем миром, а также как остановить или обратить вспять этот процесс."
           },
           "prompt": {
-            "en": "Is the whole world doomed to suffer this fate? What force is driving this? What do the PCs think they know that's wrong?",
+            "en": "Is the whole world doomed to suffer this fate? What force is driving this? What do the PCs think they know that’s wrong?",
             "ru": "Неужели весь мир обречён на такую участь? Какая сила за этим стоит? Что, по мнению персонажей, они знают — но ошибаются?"
           }
         },
@@ -34461,7 +34461,7 @@
             "ru": "Явившаяся Погибель"
           },
           "description": {
-            "en": "Spend a Fear to have a Fallen Warlord: Realm-Breaker emerge from the cracked ground. It's here to break the PCs like it did these lands.",
+            "en": "Spend a Fear to have a Fallen Warlord: Realm-Breaker emerge from the cracked ground. It’s here to break the PCs like it did these lands.",
             "ru": "Потратьте Страх, чтобы из треснувшей земли поднялся Полководец Падших: Губитель Миров. Он явился, чтобы сломить персонажей так же, как сломил эти земли."
           },
           "prompt": {
@@ -34477,11 +34477,11 @@
             "ru": "Судьба павшего королевства"
           },
           "body": {
-            "en": "Queen Eluriel's realm lies on the border of the shattered lands; for a generation the mystery of what happened there has gripped her people with fear. She wants to break the ignorance around the event and come up with a real plan of action: to either heal the shattered lands or ensure the same fate cannot befall her people.",
+            "en": "Queen Eluriel’s realm lies on the border of the shattered lands; for a generation the mystery of what happened there has gripped her people with fear. She wants to break the ignorance around the event and come up with a real plan of action: to either heal the shattered lands or ensure the same fate cannot befall her people.",
             "ru": "Владения королевы Элуриэль лежат на границе расколотых земель; целое поколение тайна случившегося там держит её народ в страхе. Она хочет развеять неведение вокруг этого события и выработать настоящий план действий: либо исцелить расколотые земли, либо не допустить, чтобы та же участь постигла её народ."
           },
           "prompt": {
-            "en": "What does Queen Eluriel know she isn't telling? What can the scholars and wizards of the realm equip the PCs with for this job?",
+            "en": "What does Queen Eluriel know she isn’t telling? What can the scholars and wizards of the realm equip the PCs with for this job?",
             "ru": "Что известно королеве Элуриэль, но о чём она умалчивает? Чем учёные и волшебники королевства могут снарядить персонажей для этой задачи?"
           }
         },
