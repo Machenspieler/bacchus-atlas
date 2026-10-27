@@ -34372,6 +34372,138 @@
         "forest"
       ],
       "source": "Folk & Fear: Volume One"
+    },
+    {
+      "id": "shattered-lands",
+      "tier": 4,
+      "type": "exploration",
+      "difficulty": 19,
+      "name": {
+        "en": "Shattered Lands",
+        "ru": "Расколотые Земли"
+      },
+      "lore": {
+        "en": "A world torn asunder, raw pink skies over ghastly blue chasms.",
+        "ru": "Мир, разорванный на части: багровые, словно содранная плоть, небеса над жуткими голубыми безднами."
+      },
+      "impulses": {
+        "en": [
+          "Rip apart",
+          "descend below"
+        ],
+        "ru": [
+          "Разрывать на части",
+          "опускаться вниз"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Fallen (Shock Troop, Sorcerer, Warlord: Realm-Breaker, Warlord: Undefeated Champion)",
+          "Hallowed (Archer, Soldier)",
+          "Oracle of Doom"
+        ],
+        "ru": [
+          "Падшие (Штурмовой Отряд, Чародей, Полководец: Губитель Миров, Полководец: Непобеждённый Чемпион)",
+          "Освящённые (Лучник, Солдат)",
+          "Оракул Погибели"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Fractured Reality",
+            "ru": "Расколотая реальность"
+          },
+          "description": {
+            "en": "A feature or action that clears Stress requires spending a Hope to use.",
+            "ru": "Чтобы воспользоваться способностью или действием, снимающим Стресс, нужно потратить Надежду."
+          },
+          "prompt": {
+            "en": "What about this atmosphere chokes out the heroes' capacity to even temporarily relax?",
+            "ru": "Что в этой атмосфере душит способность героев хотя бы ненадолго расслабиться?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Patterns of Doom",
+            "ru": "Узоры Погибели"
+          },
+          "description": {
+            "en": "A PC can investigate the shattered landscape and make a Knowledge or Instinct Roll to learn information related to the fate of this place, the world at large, and ways to stop or reverse this process.",
+            "ru": "Персонаж может исследовать расколотый ландшафт и совершить Бросок Знания или Инстинкта, чтобы узнать, что случилось с этим местом и со всем миром, а также как остановить или обратить вспять этот процесс."
+          },
+          "prompt": {
+            "en": "Is the whole world doomed to suffer this fate? What force is driving this? What do the PCs think they know that's wrong?",
+            "ru": "Неужели весь мир обречён на такую участь? Какая сила за этим стоит? Что, по мнению персонажей, они знают — но ошибаются?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Shattered Ground",
+            "ru": "Расколотая земля"
+          },
+          "description": {
+            "en": "Floating rock, ripped-up terrain, and ghastly chasms divide the land. Any Agility Roll to move faster or maneuver around the land is at Disadvantage.",
+            "ru": "Парящие скалы, вывороченная земля и жуткие бездны разделяют эту землю. Любой Бросок Проворности, чтобы двигаться быстрее или маневрировать по местности, совершается с помехой."
+          },
+          "prompt": {
+            "en": "How is gravity impacted by the shatter?",
+            "ru": "Как раскол повлиял на гравитацию?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "The Doom That Came",
+            "ru": "Явившаяся Погибель"
+          },
+          "description": {
+            "en": "Spend a Fear to have a Warlord: Realm-Breaker emerge from the cracked ground. It's here to break the PCs like it did these lands.",
+            "ru": "Потратьте Страх, чтобы из треснувшей земли поднялся Полководец: Губитель Миров. Он явился, чтобы сломить персонажей так же, как сломил эти земли."
+          },
+          "prompt": {
+            "en": "Can the Warlord be reasoned with, or manipulated into seeing the PCs as a tool for their scheme long enough to gain info?",
+            "ru": "Можно ли договориться с Полководцем или обманом заставить его увидеть в персонажах орудие своего замысла — хотя бы на время, достаточное, чтобы выведать сведения?"
+          }
+        }
+      ],
+      "story_seeds": [
+        {
+          "title": {
+            "en": "The Fate of the Fallen Kingdom",
+            "ru": "Судьба павшего королевства"
+          },
+          "body": {
+            "en": "Queen Eluriel's realm lies on the border of the shattered lands; for a generation the mystery of what happened there has gripped her people with fear. She wants to break the ignorance around the event and come up with a real plan of action: to either heal the shattered lands or ensure the same fate cannot befall her people.",
+            "ru": "Владения королевы Элуриэль лежат на границе расколотых земель; целое поколение тайна случившегося там держит её народ в страхе. Она хочет развеять неведение вокруг этого события и выработать настоящий план действий: либо исцелить расколотые земли, либо не допустить, чтобы та же участь постигла её народ."
+          },
+          "prompt": {
+            "en": "What does Queen Eluriel know she isn't telling? What can the scholars and wizards of the realm equip the PCs with for this job?",
+            "ru": "Что известно королеве Элуриэль, но о чём она умалчивает? Чем учёные и волшебники королевства могут снарядить персонажей для этой задачи?"
+          }
+        },
+        {
+          "title": {
+            "en": "Stand at the End of the World",
+            "ru": "Последний рубеж на краю мира"
+          },
+          "body": {
+            "en": "The enemy is upon them—a power too great to withstand has come for the PCs, and their opening salvo cracked the world around them. As the people flee and reality itself bends, the antagonist of their adventure emerges to either monologue or get straight to the killing, as befits their nature; afterward, the PCs are left to pick up the pieces...",
+            "ru": "Враг уже здесь — сила, которой невозможно противостоять, пришла за персонажами, и её первый залп расколол мир вокруг них. Пока люди бегут, а сама реальность изгибается, антагонист их приключения появляется, чтобы либо произнести монолог, либо сразу взяться за убийство — как подобает его натуре; после этого персонажам остаётся собирать осколки…"
+          },
+          "prompt": {
+            "en": "How did they get the power to do this?",
+            "ru": "Откуда у них взялась сила, способная на такое?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "Resting Dagger"
     }
   ]
 }
