@@ -41,6 +41,49 @@ for the environment schema in full before editing `data/environments.json`.
   Troop, Warlord: Realm-Breaker)") only where
   `js/potential-adversary-utils.js` already expands it to the full names —
   check with `envAdversaryNames()` that every member resolves.
+- **Audits fix; they don't just list** (owner decision, 2026-10-27, after a
+  309-environment proofreading pass). Every obvious defect found in a
+  review — typos, punctuation, agreement, stray spaces or a Latin letter
+  inside a Cyrillic word, a missing final period, house-style slips, an
+  EN/RU mismatch with one clear right answer — is fixed in the same pass,
+  then reported. Listing them and waiting for a go-ahead is the wrong
+  default. Only a genuinely ambiguous case (needs the printed book,
+  changes mechanics, a real terminology choice) is asked about, and then
+  with a recommendation. When the owner says "decide logically", decide and
+  state the choice. Workflow: [.claude/skills/audit-environments](../skills/audit-environments/SKILL.md).
+- **Items follow the catalogue.** `data/items.json` (names, Russian names,
+  aliases and the wording of an item's properties) is the source of truth
+  for any item named inside an environment. Check an item mention against
+  the catalogue, never by comparing the English and Russian text of the
+  environment with each other (Orphanmaker River: the EN "soft ground" was
+  right and the RU "твёрдой земле" wrong — the Lakestrider Boots item says
+  "as if it were soft ground"). A parenthetical that restates an item's
+  property is shortened from the catalogue text, not paraphrased.
+  `node scripts/check-item-references.js` lists name mismatches.
+- **Structural defects are fixed structurally.** Text of one feature
+  glued into another's description (Forum Between Worlds' "Um, Actually…"),
+  a prompt sentence that belongs to the description, a question stranded in
+  the description beside an empty prompt, two impulses merged into one
+  entry, a reference to a feature that doesn't exist (Prophetic Nightmare's
+  "Recurring Dream" is "Once More, With Feeling"): split, move or retarget,
+  keeping both languages aligned.
+- **A countdown's size is stated once per feature.** If the header says
+  `Countdown (#PCs + 2)`, the body says "activate the Countdown", not a
+  second size (Dark Forest Revel had +2 and +1). When the two disagree, the
+  header's value stays.
+- **A "(Any)" placeholder in `potential_adversaries` becomes the book's
+  group form** with the official members of that tier from `data/prep.json`
+  ("Demons (Any)" at Tier 3 → "Demons (Avarice, Despair, Hubris, Jealousy,
+  Wrath)", as in Ancient City). Still open: Prison City Pyrrhexis (T4
+  demons) and Time Loop Atlas' "Vampires (any)".
+- **A missing `difficulty` is intentional** (Epic Duel prints none): never
+  add a number, never report its absence.
+- **Setting-specific terms are flagged, not "fixed".** A word that only a
+  campaign frame explains (Fractus' "personal gliders" in Empty Cliffside
+  Village — not the catalogue's Glider/Парашют item) can't be settled from
+  the data; leave it and ask for the frame's text.
+- **Range wording in Russian text:** "на Средней дистанции" or "в пределах
+  Средней дистанции", never "в Средней дистанции" (glossary).
 - **Preserve source formatting the renderer supports**: Markdown-style
   bullets (`\n- **Label:** ...`), numbered lists, line breaks, bold/italic,
   and dice notation are never normalized away — see

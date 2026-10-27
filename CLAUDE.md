@@ -282,6 +282,7 @@ versioning wiring itself.
 | A UI-facing change | [design.md](design.md), [.claude/rules/ui.md](.claude/rules/ui.md), [docs/manual-qa.md](docs/manual-qa.md), or run `/implement-ui-change` |
 | Environment/adversary/region/item data | [.claude/rules/data.md](.claude/rules/data.md), [docs/data-contracts/environments.md](docs/data-contracts/environments.md) |
 | Importing/correcting an environment | run `/add-environment` |
+| Proofreading environments (EN + RU) | run `/audit-environments` — obvious defects are fixed, not just listed |
 | Storage, routing, or Lists/Prep persistence | [.claude/rules/browser-state.md](.claude/rules/browser-state.md) |
 | Build, versioning, or deployment | [.claude/rules/build-and-deploy.md](.claude/rules/build-and-deploy.md) |
 | Product behavior / "is this intentional?" | [docs/product-decisions.md](docs/product-decisions.md) |

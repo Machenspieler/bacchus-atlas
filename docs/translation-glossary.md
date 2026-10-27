@@ -163,6 +163,26 @@ new source book. Check `data/adversaries.json` and existing environments'
 verify against daggerheart.su's `/adversary` pages when the creature is
 core-book (not homebrew).
 
+Environment text, settled by the 2026-10-27 proofreading pass:
+
+- **Range in a sentence** takes «на» or «в пределах»: «на Средней
+  дистанции», «в пределах Дальней дистанции»; never «в Средней дистанции».
+  (The range enums above — «Средне», «Далеко» — are the card labels, not
+  sentence wording.)
+- **Items named in an environment** use the Russian name and property
+  wording from `data/items.json` («Ботинки Хождения по Воде», «Камень
+  Облика»), not a fresh translation — see
+  [.claude/rules/data.md](../.claude/rules/data.md) "Items follow the
+  catalogue".
+- **Glider vs. "personal gliders":** the catalogue's Glider is the
+  «Парашют» item; Fractus' "personal gliders" are a campaign-frame thing
+  and stay un-translated-by-guess until the frame's text is at hand.
+- **Still open — ask the owner, don't mass-rewrite:** «Отсчёт» vs «Счётчик»
+  for Countdown (the data mostly says «Отсчёт»), «Продолжительный» vs
+  «Долгий» отдых (≈23 vs 12 uses), «Игрок» vs «персонаж» for PC, «Мастер» in
+  source text (the GM row above covers UI only), «очки здоровья» vs
+  «Раны» in source text, «Культист-Хранитель Тайн» vs "Secret-Keeper".
+
 Campaign frame: *Journey to Horizon* = «Путешествие к Горизонту» (per
 daggerheart.ru/frame/journey-to-horizon). Used as the Journey page's visible
 title (PD-056); the nav tab stays «Путешествие».

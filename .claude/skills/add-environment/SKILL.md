@@ -35,6 +35,14 @@ Import or correct the Environment Stat Block described by `$ARGUMENTS` in
    feature text by its canonical full name (EN from the bestiary, RU from
    `data/prep.json`). Never silent: every fix goes in the report. Anything
    ambiguous, or that would change mechanics, is proposed first.
+4b. **Check structure and references, and fix them.** Text of one feature
+   glued into another, a prompt sentence that belongs to the description, a
+   question stranded beside an empty prompt, merged impulses, a reference to
+   a feature that doesn't exist, a countdown size stated twice, a "(Any)"
+   placeholder in `potential_adversaries`; every item mentioned follows
+   `data/items.json` (`node scripts/check-item-references.js`). See the
+   matching bullets in [.claude/rules/data.md](../../rules/data.md). An
+   omitted `difficulty` stays omitted when the source prints none.
 5. **Create or verify a stable `id`.** Check for an id collision by
    searching the whole of `data/environments.json`, not just the obvious
    candidate. A Russian (or English) name equal to another entry's is

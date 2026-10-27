@@ -70,7 +70,7 @@ backfill proactively.
   `js/app.js` render this form on the card. When writing one, phrase it so
   it doesn't repeat the word "Difficulty"/"Сложность" (the label is
   prepended automatically) — see the translation glossary's difficulty note.
-  A missing `difficulty` is also legitimate (owner decision, 2026-10-27): a
+  A missing `difficulty` is also legitimate (owner decision, 2026-10-27, PD-082): a
   source environment that prints none — Epic Duel is the one today — stays
   without the field. Never add a placeholder number, and never flag the
   absence as a data defect in an audit.
