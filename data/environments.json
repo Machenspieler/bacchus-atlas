@@ -2174,7 +2174,8 @@
         }
       ],
       "biomes": [
-        "forest"
+        "forest",
+        "rolling"
       ],
       "source": "Dread GM Toolbox"
     },
@@ -2817,7 +2818,8 @@
         }
       ],
       "biomes": [
-        "underground"
+        "underground",
+        "badlands"
       ],
       "source": "Dread GM Toolbox"
     },
@@ -3035,6 +3037,7 @@
         }
       ],
       "biomes": [
+        "settlement",
         "underground"
       ],
       "source": "Dread GM Toolbox"
@@ -3248,7 +3251,9 @@
         }
       ],
       "biomes": [
-        "badlands"
+        "rolling",
+        "wetland",
+        "grassland"
       ],
       "source": "Dread GM Toolbox"
     },
@@ -8956,8 +8961,9 @@
         }
       ],
       "biomes": [
-        "mountain",
-        "underground"
+        "badlands",
+        "underground",
+        "mountain"
       ],
       "source": "Daggerheart: Hope & Fear"
     },
@@ -12450,7 +12456,8 @@
         }
       ],
       "biomes": [
-        "badlands"
+        "badlands",
+        "drylands"
       ],
       "source": "Wondrous Environments"
     },
@@ -14849,7 +14856,7 @@
         }
       ],
       "biomes": [
-        "settlement"
+        "universal"
       ],
       "source": "Wondrous Environments"
     },
@@ -19932,7 +19939,8 @@
         }
       ],
       "biomes": [
-        "forest"
+        "forest",
+        "frozen"
       ],
       "source": "Incredible Creatures"
     },
