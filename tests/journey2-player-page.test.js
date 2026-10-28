@@ -172,7 +172,7 @@ test('player copy: every <key>_pl variant has a base key, both languages and the
 test('player copy: no GM vocabulary reaches a player through the route and load strings', () => {
   for (const lang of ['en', 'ru']) {
     for (const k of Object.keys(i18n[lang]).filter(k => k.endsWith('_pl'))) {
-      assert.doesNotMatch(i18n[lang][k], /generated|GM only|nothing is saved|geometry|console|сгенерирован|только для ведущего|консол/i, lang + ' ' + k);
+      assert.doesNotMatch(i18n[lang][k], /generated|GM only|nothing is saved|geometry|console|сгенерирован|только для Мастера|консол/i, lang + ' ' + k);
     }
   }
 });

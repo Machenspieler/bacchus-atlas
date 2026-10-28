@@ -100,8 +100,8 @@ test('L5-04 / L5-05 / L5-07 / L5-08 / L5-17: Russian terminology, hint, compass 
   const ru = i18n.ru;
   const gmKeys = Object.keys(ru).filter(k => k.startsWith('journey2_'));
   for (const k of gmKeys) assert.doesNotMatch(ru[k], /мастер|(?<![А-Яа-я])ГМ(?![А-Яа-я])|\bGM\b/, k + ': ' + ru[k]);
-  assert.equal(ru.journey2_preview_back, 'К виду ведущего');
-  assert.equal(ru.journey2_loc_reminder_label, 'Напоминание ведущему:');
+  assert.equal(ru.journey2_preview_back, 'К виду Мастера');
+  assert.equal(ru.journey2_loc_reminder_label, 'Напоминание Мастеру:');
   assert.equal(ru.journey2_loc_select_hint, 'Укажите гекс, в котором сейчас находится отряд.');
   assert.equal(ru.journey2_loc_hover, 'Местоположение отряда');
   assert.equal(ru.journey2_gen_hint, 'Случайные параметры: среда обитания, размер, местность, встреча и слух.');
@@ -110,7 +110,7 @@ test('L5-04 / L5-05 / L5-07 / L5-08 / L5-17: Russian terminology, hint, compass 
   assert.equal(ru.journey2_status_placed.replace('{placed}', 0).replace('{total}', 3) + ' · ' + ru.journey2_status_left.replace('{n}', 3), 'Размещено 0/3 · осталось 3');
   assert.match(ru.journey2_loc_reminder, /Искатели‑в‑Тени/);
   assert.equal(i18n.en.journey2_loc_reminder_label, 'GM reminder:');
-  assert.match(read('docs/translation-glossary.md'), /ведущий/);
+  assert.match(read('docs/translation-glossary.md'), /Мастер/);
 });
 
 test('L5-22: relocalize re-renders the Shadowblight bubble (count labels, settled "+" explanation) without touching its plan', () => {

@@ -30,7 +30,7 @@
     },
     {
       "id": "hivelands",
-      "name": { "en": "The Hivelands", "ru": "Земли Ульев" },
+      "name": { "en": "The Hivelands", "ru": "Земли ульев" },
       "environments": [
         "webbed-terrain",
         "thrumming-hives",

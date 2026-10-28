@@ -6055,9 +6055,7 @@
         printRoot.innerHTML = proofs.map((p, i) => '<section class="j2-proof-page">' +
           '<header class="j2-print-head"><strong>' + esc(t('journey2_print_heading')) + '</strong> · ' + esc(t(p.titleKey)) + '</header>' +
           proofPageMarkup(p, rasterUrls[i]) +
-          '<footer class="j2-print-foot">' + esc(t('journey2_print_foot')
-            .replace('{rect}', p.rectPx.join(', ')).replace('{paper}', PRINT_PAGE.paper).replace('{scale}', String(PRINT_SCALE_MM_PER_PX))
-            .replace('{hex}', fmt(data.grid.shortDimensionPx * PRINT_SCALE_MM_PER_PX, 2)).replace('{status}', t(data.readiness.ready ? 'journey2_status_ready' : 'journey2_status_unverified'))) + '</footer></section>').join('');
+          '</section>').join('');
         document.body.appendChild(printRoot);
         document.body.classList.add('j2-print-mode');
         return { pages: proofs.map(p => ({ id: p.id, rectPx: p.rectPx })), scaleMmPerWorldPx: PRINT_SCALE_MM_PER_PX, page: PRINT_PAGE, physicalPrintTested: tplv && tplv.physicalPrintTest ? tplv.physicalPrintTest.status !== 'not-tested' : false };

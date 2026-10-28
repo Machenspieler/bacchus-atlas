@@ -25,7 +25,7 @@
     { "roll": 5,  "text": { "en": "The **Seekers-in-Shadow** make their presence known, and the party must escape their grasp or stand and fight.", "ru": "**Ищущие-в-Тенях** дают о себе знать — группа должна ускользнуть от них или принять бой." } },
     { "roll": 6,  "text": { "en": "An **extreme weather** event occurs, such as an earthquake, a forest fire, a thunderstorm, or a blizzard.", "ru": "Происходит **экстремальное погодное явление**: землетрясение, лесной пожар, гроза или метель." } },
     { "roll": 7,  "text": { "en": "The party faces **potential adversaries**, such as bandits, brigands, or mercenaries — or discovers warning signs of their recent activity.", "ru": "Группа сталкивается с **потенциальными противниками** — разбойниками, бандитами или наёмниками — либо обнаруживает следы их недавней активности." } },
-    { "roll": 8,  "text": { "en": "The heroes find themselves in the lair or hunting grounds of a territorial **beast** or pack of creatures.", "ru": "Герои оказываются в логове или на охотничьих угодьях **территориального зверя или стаи существ**." } },
+    { "roll": 8,  "text": { "en": "The heroes find themselves in the lair or hunting grounds of a territorial **beast** or pack of creatures.", "ru": "Герои оказываются в логове или на охотничьих угодьях **территориального зверя** или стаи существ." } },
     { "roll": 9,  "text": { "en": "The heroes must overcome an **environmental hazard or obstacle**, such as a yawning chasm, rushing river, or quicksand.", "ru": "Герои должны преодолеть **природную опасность или препятствие**: зияющую пропасть, бурную реку или зыбучий песок." } },
     { "roll": 10, "text": { "en": "The party encounters members of the **Cult of the Two-Headed Coin**, their agents, or signs of their recent activity.", "ru": "Группа встречает членов **Культа Двуглавой Монеты**, их агентов или следы их недавней активности." } },
     { "roll": 11, "text": { "en": "The party discovers a **wondrous or dangerous site** worth exploring, such as a ruin of Old Valloren or a place of magical power.", "ru": "Группа обнаруживает **удивительное или опасное место**, которое стоит исследовать: руины Старого Валлорена или место магической силы." } },
@@ -56,7 +56,7 @@
     { "roll": 11,  "text": { "en": "A bell tolls at midnight, though no source can be found.", "ru": "В полночь раздаётся колокольный звон, хотя источник найти невозможно." } },
     { "roll": 12,  "text": { "en": "Lights flicker in the windows of a drowned city.", "ru": "В окнах затопленного города мерцают огни." } },
     { "roll": 13,  "text": { "en": "A broken bridge leads to another time.", "ru": "Разрушенный мост ведёт в другое время." } },
-    { "roll": 14,  "text": { "en": "A harpist made of light appears at a crossroads and demands a song in exchange for safe passage.", "ru": "Арфистка из света появляется на перекрёстке и требует песню в обмен на безопасный проход." } },
+    { "roll": 14,  "text": { "en": "A harpist made of light appears at a crossroads and demands a song in exchange for safe passage.", "ru": "Арфист из света появляется на перекрёстке и требует песню в обмен на безопасный проход." } },
     { "roll": 15,  "text": { "en": "A storm of shadowblight hunts travelers like a thinking beast.", "ru": "Буря теневой порчи охотится на путников, словно разумный зверь." } },
     { "roll": 16,  "text": { "en": "The earthquakes here are echoes of a chained giant's nightmares.", "ru": "Землетрясения здесь — это отголоски кошмаров закованного в цепи великана." } },
     { "roll": 17,  "text": { "en": "A storm of embers perpetually drifts overhead.", "ru": "Над головой вечно дрейфует буря из искр." } },
@@ -80,7 +80,7 @@
     { "roll": 35,  "text": { "en": "A quartz tower splits the light of dawn into separate bands of color.", "ru": "Кварцевая башня рассеивает свет зари на отдельные цветные полосы." } },
     { "roll": 36,  "text": { "en": "A bridge of spider silk spans a bottomless chasm.", "ru": "Мост из паутины перекинут через бездонную пропасть." } },
     { "roll": 37,  "text": { "en": "The friendly hermit who lives here knows when others will die.", "ru": "Дружелюбный отшельник, живущий здесь, знает, когда умрут другие." } },
-    { "roll": 38,  "text": { "en": "The blood-red lake is filled with eels who grant wishes — that those who make them come to regret.", "ru": "Кроваво-красное озеро кишит угрями, исполняющими желания — которые впоследствии заставляют их обладателей сожалеть." } },
+    { "roll": 38,  "text": { "en": "The blood-red lake is filled with eels who grant wishes — that those who make them come to regret.", "ru": "Кроваво-красное озеро кишит угрями, исполняющими желания, о которых загадавшие потом жалеют." } },
     { "roll": 39,  "text": { "en": "A curse of magical silence befell this place.", "ru": "На это место пало проклятие магической тишины." } },
     { "roll": 40,  "text": { "en": "A candle here burned through the Long Sorrow, and burns still.", "ru": "Свеча здесь горела на протяжении всей Долгой Скорби и горит до сих пор." } },
     { "roll": 41,  "text": { "en": "A castle made of bone appears only at twilight.", "ru": "Замок из костей появляется только в сумерках." } },
@@ -139,7 +139,7 @@
     { "roll": 94,  "text": { "en": "A meadow of glass flowers rings in the wind. If its music can be deciphered, it tells the future.", "ru": "Луг из стеклянных цветов звенит на ветру. Если расшифровать его музыку, она предскажет будущее." } },
     { "roll": 95,  "text": { "en": "Soldiers made of sand appear in the morning but crumble when touched.", "ru": "Солдаты из песка появляются по утрам, но рассыпаются при прикосновении." } },
     { "roll": 96,  "text": { "en": "A tree bears glowing fruit that changes the age of anyone who consumes it.", "ru": "Дерево приносит светящиеся плоды, которые меняют возраст того, кто их съест." } },
-    { "roll": 97,  "text": { "en": "A pool of tears cried by an Aurelian saint heals wounds but deepens despair.", "ru": "Озеро слёз, пролитых святым Аурелианского ордена, заживляет раны, но усиливает отчаяние." } },
+    { "roll": 97,  "text": { "en": "A pool of tears cried by an Aurelian saint heals wounds but deepens despair.", "ru": "Озерцо слёз, пролитых аурелианским святым, заживляет раны, но усиливает отчаяние." } },
     { "roll": 98,  "text": { "en": "A crown of ice lies within a frozen palace and whispers promises of conquest.", "ru": "Корона изо льда покоится в ледяном дворце и шепчет обещания о завоеваниях." } },
     { "roll": 99,  "text": { "en": "A lone cottage stands with shadowblight trailing out of its chimney and into the sky.", "ru": "Одинокий домик стоит одиноко, а из его трубы тянется в небо теневая порча." } },
     { "roll": 100, "text": { "en": "A comet hangs in the sky but never falls. Rival religious groups argue about its meaning.", "ru": "Комета висит в небе, но никогда не падает. Соперничающие религиозные группы спорят о её значении." } }
@@ -240,14 +240,14 @@
         { "roll": 3, "text": { "en": "Village", "ru": "Деревня" } },
         { "roll": 4, "text": { "en": "Small town", "ru": "Небольшой город" } },
         { "roll": 5, "text": { "en": "Large town", "ru": "Крупный город" } },
-        { "roll": 6, "text": { "en": "City", "ru": "Мегаполис" } }
+        { "roll": 6, "text": { "en": "City", "ru": "Город" } }
       ]
     },
     {
       "key": "population", "die": 4,
       "rows": [
         { "roll": 1, "text": { "en": "Sparse", "ru": "Редкое" } },
-        { "roll": 2, "text": { "en": "Stable", "ru": "Среднее, стабильное" } },
+        { "roll": 2, "text": { "en": "Stable", "ru": "Стабильное" } },
         { "roll": 3, "text": { "en": "Full", "ru": "Многочисленное" } },
         { "roll": 4, "text": { "en": "Crowded", "ru": "Переполненное" } }
       ]
