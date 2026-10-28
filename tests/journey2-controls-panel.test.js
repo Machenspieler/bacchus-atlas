@@ -64,7 +64,7 @@ test('Display menu (PD-066): Biome colors, Sepia map and Regions in their own ra
   assert.match(rail, /class="j2-menu-wrap j2-camp j2-disp">\s*\$\{railBtn\('data-j2-menu-btn="display"/, 'a rail button of its own, with no GM-row marker: nothing hides it in a mode');
   assert.doesNotMatch(rail.slice(rail.indexOf('j2-disp'), rail.indexOf('data-j2-gm-row')), /data-j2-gm-row/);
   for (const key of ['journey2_rail_display', 'journey2_display_aria']) for (const lang of Object.keys(i18n)) if (i18n[lang] && i18n[lang].journey2_rail_campaign) assert.ok(i18n[lang][key], lang + ' ' + key);
-  assert.match(css, /\.j2\[data-player\] \.j2-camp \.j2-menu \{[^}]*bottom: calc\(100% \+ var\(--s-2\)\)/, 'on the phone bar the menu opens upward');
+  assert.match(css, /\.j2\[data-player\] \.j2-camp \.j2-menu \{[^}]*bottom: var\(--j2-sheet-bottom\)/, 'on the phone bar the menu is a sheet anchored just above the bar (PD-083)');
 });
 
 test('Player Preview: the same panel, content swapped, camera shared, Fit inset unchanged', () => {

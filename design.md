@@ -384,11 +384,12 @@ width; at <= 900px every one of them is the map width minus `2 * var(--s-3)`. Ca
 for static headings. A control whose label is the action it will take (e.g. *Reveal to players* / *Hide from players*)
 does not also carry `aria-pressed`.
 
-The player page is phone-first: below 641px the legend and the route-details panel are map-wide sheets above the bottom bar
-(`--j2-bar-h` includes the safe-area inset) — the legend capped at `min(52dvh, 440px)` and scrolling inside, route details at
-`min(40dvh, 360px)` and lifted above Fit — and the route-planning chip is a compact map-wide card with a 44px Cancel; primary
-touch controls there (Fit, the details close button, Cancel) are at least 44 x 44. A touch screen shows the "tap Cancel" hint
-(`journey2_route_touch_hint`) instead of the keyboard's Esc hint. Journey panels use `--font-body`, never `--font-ui`; disabled
+The player page is phone-first (PD-067, PD-083): below 641px the legend, the Display menu and the route details are ONE family of
+bottom sheets — map width minus `--j2-side-gap` each side, `--r-lg`, `--e-3`, anchored at `--j2-sheet-bottom` (the bar, `--j2-bar-h` incl. the
+safe-area inset, plus the docked route summary while a route is drawn), height-capped by `--j2-sheet-max` (`min(60dvh, 480px, …)` so a sheet never
+reaches Fit), a header of one line with a 44px close, and a body that scrolls on its own. They share one motion (`j2-sheet-in`, 180ms, off under
+`prefers-reduced-motion`). The route summary is the route bubbles docked as one row above the bar (Fastest first); the route-planning chip is one
+row (A / B step badge, the prompt, a 44px icon-only cancel) left of Fit, which sits top right. Primary touch controls there are at least 44 x 44. Journey panels use `--font-body`, never `--font-ui`; disabled
 Journey controls use `--opacity-disabled`.
 
 ### Journey rail and side drawer (`.j2-rail`, `.j2-side`, `.j2-mapbar`)

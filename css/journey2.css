@@ -274,41 +274,86 @@ body[data-route="playermap"] #grid-wrap { display: block; }
     linear-gradient(rgba(var(--j2-cue-rgb), 0.16), rgba(var(--j2-cue-rgb), 0.06) 40%, rgba(var(--j2-cue-rgb), 0.015) 75%, transparent) 0 0 / 100% 20px no-repeat scroll,
     linear-gradient(transparent, rgba(var(--j2-cue-rgb), 0.015) 25%, rgba(var(--j2-cue-rgb), 0.06) 60%, rgba(var(--j2-cue-rgb), 0.16)) 0 100% / 100% 20px no-repeat scroll;
 }
-/* a touch phone on the player page: the rail becomes a bottom bar with full-size targets (PD-052) */
+/* a touch phone on the player page (PD-052, PD-067, PD-083): the rail becomes a bottom bar and everything else is a family of bottom-anchored sheets that
+ * share one rule set: map width minus the gap on both sides, the same skin, one anchor just above the bar (and above the docked route summary while
+ * a route is drawn), one header height, a 44px close, and a body that scrolls on its own. The map stays central: nothing here moves the camera. */
 @media (max-width: 640px) {
-  .j2[data-player] .j2-stage { --j2-bar-h: calc(64px + env(safe-area-inset-bottom, 0px)); --j2-inset-left: var(--j2-side-gap); --j2-fit-size: 44px; --j2-room: max(96px, calc(100dvh - 198px - var(--j2-bar-h) - 2 * var(--j2-side-gap) - var(--j2-fit-size))); --j2-stack-legend: calc((var(--j2-room) - var(--j2-side-gap)) * 0.45); --j2-stack-route: calc((var(--j2-room) - var(--j2-side-gap)) * 0.55); }   /* --j2-room: the column between the route chip (top) and the Fit row (bottom) that the sheets may use; the 198px is the page header plus the chip */
-  /* the legend opens above the bar at the map's width (design.md: a map panel is the map width minus 2 * gap below 900px) */
-  .j2[data-player] .j2-side { position: absolute; left: var(--j2-side-gap); right: var(--j2-side-gap); top: auto; bottom: calc(var(--j2-bar-h) + 2 * var(--j2-side-gap) + var(--j2-fit-size)); width: auto; max-width: none; flex: none; align-self: auto; max-height: min(48dvh, 420px); }   /* one row above the bar stays clear for Fit; the map stays visible above the sheet and the legend scrolls inside */
-  .j2[data-player] .j2-mapbar [data-j2-zoom] { display: none; }   /* a touch screen zooms with a pinch: only Fit stays */
+  .j2[data-player] .j2-stage {
+    --j2-bar-h: calc(64px + env(safe-area-inset-bottom, 0px)); --j2-inset-left: var(--j2-side-gap); --j2-fit-size: 44px;
+    --j2-dock-h: 64px; --j2-dock-space: 0px;                                                                    /* the docked route summary, and the room the sheets above it must leave */
+    --j2-sheet-bottom: calc(var(--j2-bar-h) + var(--j2-side-gap) + var(--j2-dock-space));
+    --j2-sheet-max: min(60dvh, 480px, calc(100dvh - var(--j2-header-h, 46px) - 2 * var(--s-3) - var(--j2-sheet-bottom) - 2 * var(--j2-side-gap) - var(--j2-fit-size)));   /* never reaches the Fit row at the top: the stage is the window minus the page header and gutters (a % would resolve against the rail's own box) */
+    --j2-sheet-ease: 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .j2[data-player] .j2-stage:has(.j2-route-bub) { --j2-dock-space: calc(var(--j2-dock-h) + var(--j2-side-gap)); }
+  /* the legend sheet */
+  .j2[data-player] .j2-side { position: absolute; left: var(--j2-side-gap); right: var(--j2-side-gap); top: auto; bottom: var(--j2-sheet-bottom); width: auto; max-width: none; flex: none; align-self: auto; max-height: var(--j2-sheet-max); border-radius: var(--r-lg); transition: opacity 140ms ease, transform var(--j2-sheet-ease); }
+  .j2[data-player] .j2-stage[data-side="collapsed"] .j2-side { left: var(--j2-side-gap); top: auto; bottom: var(--j2-sheet-bottom); transform: translateY(var(--s-3)); }   /* folded: it sinks back toward the bar it came from */
+  .j2[data-player] .j2-about { position: relative; padding: var(--s-2) calc(var(--s-3) + var(--j2-fit-size)) var(--s-2) var(--s-3); border-bottom: 1px solid var(--line-faint); }
+  .j2[data-player] .j2-legend-close { display: inline-flex; position: absolute; top: 0; right: var(--s-1); width: var(--j2-fit-size); height: var(--j2-fit-size); }
+  .j2[data-player] .j2-legend { padding-bottom: var(--s-4); }
   .j2[data-player] .j2-sidewrap { left: 0; right: 0; top: auto; bottom: 0; }
+  .j2[data-player] .j2-mapbar [data-j2-zoom] { display: none; }   /* a touch screen zooms with a pinch: only Fit stays */
   .j2[data-player] .j2-rail {
     flex-direction: row; justify-content: center; width: 100%; max-height: none; border-width: 1px 0 0; border-radius: 0;
     padding: var(--s-1) var(--s-3) calc(var(--s-1) + env(safe-area-inset-bottom));
   }
   .j2[data-player] .j2-rail-grp { flex-direction: row; border-top: 0; padding-top: 0; }
   .j2[data-player] .j2-rail-grow { display: none; }
-  .j2[data-player] .j2-rb { min-width: 72px; min-height: 52px; }
-  .j2[data-player] .j2-camp { border-top: 0; padding-top: 0; }
-  .j2[data-player] .j2-camp .j2-menu { left: auto; right: 0; bottom: calc(100% + var(--s-2)); min-width: min(288px, calc(100vw - 2 * var(--j2-side-gap))); }   /* the rail is a bottom bar here: the menu opens upward */
-  /* Fit alone: one 44px map-control button in the shared floating-panel skin (no frame inside a frame), right edge, clear of the bar and of the sheets */
-  .j2[data-player] .j2-mapbar { left: auto; right: var(--j2-side-gap); bottom: calc(var(--j2-bar-h) + var(--j2-side-gap)); padding: 0; z-index: 6; }
+  .j2[data-player] .j2-rb { flex: 0 1 96px; min-width: 72px; min-height: 52px; }
+  .j2[data-player] .j2-rb-lbl { display: inline; }   /* a bar button always carries its word, even in a short window (the vertical rail drops labels there, a bar has the room) */
+  .j2[data-player] .j2-rb[aria-pressed="true"], .j2[data-player] .j2-rb[data-j2-menu-btn][aria-expanded="true"] { box-shadow: inset 0 -2px 0 var(--hope-border-strong); }   /* the active tab reads from its underline as well as its wash */
+  .j2[data-player] .j2-camp { border-top: 0; padding-top: 0; position: static; }   /* static: the Display sheet is placed against the stage, like the legend */
+  /* the Display sheet: the same width, skin and anchor as the legend; its rows are 48px with a full-size switch */
+  .j2[data-player] .j2-camp .j2-menu { left: var(--j2-side-gap); right: var(--j2-side-gap); top: auto; bottom: var(--j2-sheet-bottom); min-width: 0; max-height: var(--j2-sheet-max); overflow-y: auto; overscroll-behavior: contain; padding: 0 var(--s-1) var(--s-1); animation: j2-sheet-in var(--j2-sheet-ease); }
+  .j2[data-player] .j2-menu-h--sheet { display: block; margin: 0 calc(-1 * var(--s-1)) var(--s-1); padding: var(--s-3) var(--s-3) var(--s-2); border-bottom: 1px solid var(--line-faint); font-family: var(--font-display); font-size: var(--fs-md); line-height: var(--lh-md); letter-spacing: var(--tracking-display); text-transform: none; color: var(--parchment); }
+  .j2[data-player] .j2-menu-item { min-height: 48px; }   /* no `display` here: `.j2-mi[hidden]` (Outline, the Party marker) must stay hidden */
+  .j2[data-player] .j2-mi-sw { width: 44px; height: 26px; border-radius: 13px; }
+  .j2[data-player] .j2-mi-sw::after { width: 20px; height: 20px; border-radius: 50%; }
+  .j2[data-player] .j2-mi[aria-checked="true"] .j2-mi-sw::after { left: 22px; }
+  /* Fit alone, top right of the map: clear of the bar, the sheets and the route summary; one 44px control in the shared floating-panel skin */
+  .j2[data-player] .j2-mapbar { left: auto; right: var(--j2-side-gap); top: var(--j2-side-gap); bottom: auto; padding: 0; z-index: 6; }
   .j2[data-player] .j2-mapbar .btn { border-color: transparent; background: transparent; }
   .j2[data-player] .j2-mapbar .btn:hover:not(:disabled) { background: var(--neutral-hover-bg); }
-  /* route details lift above Fit; with the legend open too the two sheets stack (legend lower, details above it) and each scrolls inside */
-  .j2[data-player] .j2-stage:not([data-side="collapsed"]):has(.j2-route:not([hidden])) .j2-side { max-height: var(--j2-stack-legend); }
-  .j2[data-player] .j2-stage:not([data-side="collapsed"]):has(.j2-route:not([hidden])) .j2-route { bottom: calc(var(--j2-bar-h) + 3 * var(--j2-side-gap) + var(--j2-fit-size) + var(--j2-stack-legend)); max-height: var(--j2-stack-route); }
-  /* route details: map-wide like the legend sheet, lifted above Fit so neither Fit nor the bottom bar is covered, and short enough to leave the map in view (its body scrolls) */
-  .j2[data-player] .j2-route { left: var(--j2-side-gap); right: var(--j2-side-gap); bottom: calc(var(--j2-bar-h) + 2 * var(--j2-side-gap) + var(--j2-fit-size)); max-height: min(40dvh, 360px, var(--j2-room)); padding: var(--s-2) var(--s-3) var(--s-3); }
-  /* the route-planning chip: a compact map-wide card under the top edge — title and prompt on one line, the touch hint, then the full-width Cancel */
-  .j2[data-player] .j2-route-chip { left: var(--j2-side-gap); right: var(--j2-side-gap); top: var(--s-2); transform: none; width: auto; max-width: none; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 2px var(--s-2); padding: var(--s-2) var(--s-3); transition: none; text-align: left; }
-  .j2[data-player] .j2-route-chip strong { grid-area: 1 / 1; }
-  .j2[data-player] .j2-route-chip [data-j2-route-chip-text] { grid-area: 1 / 2; }
-  .j2[data-player] .j2-route-chip .j2-hint-touch { grid-area: 2 / 1 / 3 / 3; }
-  .j2[data-player] .j2-route-chip .btn { grid-area: 3 / 1 / 4 / 3; margin-top: var(--s-1); }
-  .j2[data-player] .j2-route-chip .j2-fog-chip-hint { white-space: normal; }
-  .j2[data-player] .j2-route-chip .j2-ico { display: none; }
-  .j2[data-player] .j2-route-chip .btn { width: 100%; min-height: 44px; }
+  /* the route summary: the route bubbles dock as one row above the bar instead of floating over the line (the JS still lays them out; the transform is overridden) */
+  .j2[data-player] .j2-route-bubbles { inset: auto var(--j2-side-gap) calc(var(--j2-bar-h) + var(--j2-side-gap)) var(--j2-side-gap); display: flex; gap: var(--s-2); }
+  .j2[data-player] .j2-route-bub { position: relative; flex: 1 1 0; min-width: 0; max-width: none; height: var(--j2-dock-h); align-content: center; padding: var(--s-1) calc(var(--s-3) + 12px) var(--s-1) var(--s-3); transform: none !important; animation: j2-sheet-in var(--j2-sheet-ease); }
+  .j2[data-player] .j2-route-bub[data-j2-route-strategy="fastest"] { order: -1; }   /* Fastest first, as everywhere else */
+  .j2[data-player] .j2-route-bub-v { white-space: normal; font-size: var(--fs-xs); line-height: 1.3; text-wrap: balance; }
+  .j2[data-player] .j2-route-bub.is-selected::after { content: ""; position: absolute; right: var(--s-3); top: 50%; width: 7px; height: 7px; border: solid var(--parchment-dim); border-width: 2px 2px 0 0; transform: translateY(-50%) rotate(-45deg); transition: transform var(--j2-sheet-ease); }   /* a chevron: tap to open the details */
+  .j2[data-player] .j2-route-bub.is-selected[aria-expanded="true"]::after { transform: translateY(-50%) rotate(135deg); }
+  /* route details: the same sheet, lifted above the summary; header = title + one line, close at the right */
+  .j2[data-player] .j2-route { left: var(--j2-side-gap); right: var(--j2-side-gap); bottom: var(--j2-sheet-bottom); width: auto; max-height: var(--j2-sheet-max); animation: j2-sheet-in var(--j2-sheet-ease); }
+  .j2[data-player] .j2-route-head { min-height: 0; padding: var(--s-2) var(--s-1) var(--s-2) var(--s-3); gap: var(--s-2); }
+  .j2[data-player] .j2-route-head .j2-insp-sym { display: none; }
+  .j2[data-player] .j2-route-head .j2-btn-icon, .j2[data-player] .j2-legend-close { border-color: transparent; background: transparent; }   /* the sheet closes read as one control: no frame inside the frame */
+  .j2[data-player] .j2-route-title { font-size: var(--fs-md); line-height: var(--lh-md); }
+  .j2[data-player] .j2-route-sub { font-family: var(--font-body); font-size: var(--fs-xs); color: var(--parchment-dim); }
+  .j2[data-player] .j2-route-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
+  .j2[data-player] .j2-route-stats > div { flex-direction: column-reverse; align-items: flex-start; justify-content: flex-end; gap: 0; padding: var(--s-2) var(--s-3); background: var(--ink); border: 1px solid var(--line-faint); border-radius: var(--r-md); }
+  .j2[data-player] .j2-route-stats dd { font-family: var(--font-display); font-size: var(--fs-lg); line-height: var(--lh-lg); font-weight: 400; }
+  .j2[data-player] .j2-route-stats dt { font-size: var(--fs-xs); }
+  /* the route-planning chip: one compact row under the top edge, left of Fit — step badge (A, then B), the prompt and a 44px cancel */
+  .j2[data-player] .j2-route-chip { left: var(--j2-side-gap); right: calc(2 * var(--j2-side-gap) + var(--j2-fit-size)); top: var(--j2-side-gap); transform: none; width: auto; max-width: none; display: flex; flex-wrap: nowrap; align-items: center; gap: var(--s-2); min-height: var(--j2-fit-size); padding: 0 0 0 var(--s-3); transition: none; text-align: left; animation: j2-sheet-in var(--j2-sheet-ease); }
+  .j2[data-player] .j2-route-chip .j2-ico, .j2[data-player] .j2-route-chip strong, .j2[data-player] .j2-route-chip .j2-hint-touch, .j2[data-player] .j2-route-chip .j2-hint-key { display: none; }
+  .j2[data-player] .j2-route-step { display: inline-flex; }
+  .j2[data-player] .j2-route-chip [data-j2-route-chip-text] { flex: 1 1 auto; min-width: 0; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment); white-space: normal; padding-block: var(--s-1); }
+  .j2[data-player] .j2-route-cancel { flex: none; width: var(--j2-fit-size); min-width: var(--j2-fit-size); height: var(--j2-fit-size); min-height: var(--j2-fit-size); margin: 0; padding: 0; border-color: transparent; background: transparent; display: inline-flex; align-items: center; justify-content: center; }
+  .j2[data-player] .j2-route-cancel:hover:not(:disabled) { background: var(--neutral-hover-bg); }
+  .j2[data-player] .j2-route-cancel-ico { display: inline-flex; }
+  .j2[data-player] .j2-route-cancel-ico svg { width: var(--icon-md); height: var(--icon-md); }
+  .j2[data-player] .j2-route-cancel-txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }   /* the accessible name of the icon-only button */
 }
+/* narrow phones: the biome list falls back to one column rather than clip a long label */
+@media (max-width: 340px) { .j2[data-player] .j2-legend-list--biomes { grid-template-columns: minmax(0, 1fr); } }
+@keyframes j2-sheet-in { from { opacity: 0; transform: translateY(var(--s-2)); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .j2[data-player] .j2-menu, .j2[data-player] .j2-route, .j2[data-player] .j2-route-bub, .j2[data-player] .j2-route-chip { animation: none !important; } .j2[data-player] .j2-side, .j2[data-player] .j2-route-bub::after { transition: none !important; } }
+/* the step badge and the cancel icon belong to the phone chip only; the desktop / tablet chip keeps its words */
+.j2-route-step { display: none; flex: none; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); border: 2px solid var(--hope-border-strong); color: var(--hope-soft); font-family: var(--font-mono); font-weight: 700; font-size: var(--fs-sm); }
+.j2-route-step[data-step="b"] { box-shadow: 0 0 0 2px var(--ink-raised), 0 0 0 3.5px var(--hope-border-strong); }   /* B carries the second ring its map pin has: the two differ by shape as well as letter */
+.j2-route-cancel-ico { display: none; }
+.j2-legend-close { display: none; }
+.j2-menu-h--sheet { display: none; }
 /* narrower than that the free column is small: title and prompt share a line, the hint sits under them and Cancel takes the full width (the phone layout, in the same grid) */
 @media (max-width: 900px) {
   .j2-route-chip { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 2px var(--s-2); text-align: left; }
@@ -317,12 +362,6 @@ body[data-route="playermap"] #grid-wrap { display: block; }
   .j2-route-chip [data-j2-route-chip-text] { grid-area: 1 / 2; }
   .j2-route-chip .j2-hint-key, .j2-route-chip .j2-hint-touch { grid-area: 2 / 1 / 3 / 3; }
   .j2-route-chip .btn { grid-area: 3 / 1 / 4 / 3; margin-top: var(--s-1); width: 100%; }
-}
-/* a landscape phone (short, still <= 640px wide): the route chip is one row — title and prompt, the touch hint under them, Cancel at the right — so it leaves the map in view */
-@media (max-width: 640px) and (max-height: 500px) {
-  .j2[data-player] .j2-route-chip { grid-template-columns: auto minmax(0, 1fr) auto; }
-  .j2[data-player] .j2-route-chip .btn { grid-area: 1 / 3 / 3 / 4; margin-top: 0; width: auto; padding-inline: var(--s-3); }
-  .j2[data-player] .j2-route-chip .j2-hint-touch { grid-area: 2 / 1 / 3 / 3; }
 }
 /* the player page is never taller than the window: a landscape phone must not scroll the page under the map */
 body[data-route="playermap"] .j2-host { min-height: 240px; }
@@ -1234,8 +1273,11 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-route-unk { color: var(--muted); font-weight: 400; font-style: italic; }
 .j2-route-h { margin: var(--s-1) 0 0; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--parchment-dim); font-weight: 600; }
 .j2-route-terrain { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-1); }
-.j2-route-terrain li { display: flex; align-items: center; gap: var(--s-3); }
-.j2-route-settle { color: var(--parchment-dim); font-size: var(--fs-xs); }
+/* terrain breakdown: symbol, a name with its days per hex, and how many hexes of it the route crosses */
+.j2-route-terrain li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--s-3); align-items: center; min-height: 28px; }
+.j2-route-tname { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--s-2); font-size: var(--fs-sm); color: var(--parchment); }
+.j2-route-perhex { font-size: var(--fs-xs); color: var(--muted); }
+.j2-route-settle { grid-column: 1 / 3; color: var(--parchment); font-size: var(--fs-sm); }
 .j2-route-count { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--parchment); }
 .j2-route-warn { margin: 0; padding: var(--s-2); border-left: 3px solid var(--hope-border-strong); background: var(--hope-wash); font-size: var(--fs-xs); line-height: var(--lh-sm); color: var(--parchment); }
 .j2-route-note { margin: 0; font-size: var(--fs-xs); line-height: var(--lh-sm); color: var(--muted); }
@@ -1291,8 +1333,6 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 /* Reroll carries the same 3D die as the Encounter roll button (one dice style on the map's panels) */
 .j2-sanc-foot [data-j2-sanc-reroll] .j2-ico img, .j2-sanc-foot [data-j2-dest-reroll] .j2-ico img { width: 33px; height: 33px; margin: -3px -1px; display: block; }
 
-/* phone: menu rows are full-size touch targets (the bar's buttons are 52px) */
-@media (max-width: 640px) { .j2[data-player] .j2-menu-item { min-height: 44px; } }
 
 /* ---------- one header / footer contract for the map panels (audit 2026-10-22) ---------- */
 /* a tool panel (Locate, route details) carries its icon in the same 40px parchment tile an object panel carries its symbol in */

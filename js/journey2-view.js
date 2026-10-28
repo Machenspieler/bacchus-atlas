@@ -776,11 +776,12 @@
               </aside>
               <div class="j2-fog-chip j2-route-chip" data-j2-route-chip hidden>
                 <span class="j2-ico" aria-hidden="true">${LI.route}</span>
+                <span class="j2-route-step" data-j2-route-chip-step aria-hidden="true">A</span>
                 <strong data-t="journey2_route_plan"></strong>
                 <span class="j2-fog-chip-hint" data-j2-route-chip-text></span>
                 <span class="j2-fog-chip-hint j2-hint-key" data-t="journey2_route_esc_hint"></span>
                 <span class="j2-fog-chip-hint j2-hint-touch" data-t="journey2_route_touch_hint"></span>
-                <button type="button" class="btn btn-sm" data-j2-route-cancel data-t="journey2_route_cancel"></button>
+                <button type="button" class="btn btn-sm j2-route-cancel" data-j2-route-cancel><span class="j2-route-cancel-ico" aria-hidden="true">${LI.close}</span><span class="j2-route-cancel-txt" data-t="journey2_route_cancel"></span></button>
               </div>
               <div class="j2-fog-chip j2-party-chip" data-j2-party-chip hidden>
                 <span class="j2-ico" aria-hidden="true">${LI.party}</span>
@@ -848,6 +849,7 @@
                 <div class="j2-menu-wrap j2-camp j2-disp">
                   ${railBtn('data-j2-menu-btn="display" aria-haspopup="menu" aria-expanded="false" data-t-aria="journey2_display_aria"', LI.display, 'journey2_rail_display')}
                   <div class="j2-menu j2-camp-menu" role="menu" data-j2-menu="display" data-t-aria="journey2_display_aria" hidden>
+                    <p class="j2-menu-h j2-menu-h--sheet" role="presentation" data-t="journey2_rail_display"></p>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-biome-colors><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_biome_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-sepia><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_sepia_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="false" data-j2-regions><span class="j2-mi-ico" aria-hidden="true">${LI.hexes}</span><span data-t="journey2_regions_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
@@ -878,6 +880,7 @@
                 <header class="j2-about">
                   <h2 class="j2-about-title" data-t="journey2_about_title"></h2>
                   <p class="j2-about-sub" data-t="journey2_about_sub"></p>
+                  <button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-legend-close" data-j2-legend-close data-t-aria="journey2_legend_close" data-t-title="journey2_legend_close">${LI.close}</button>
                 </header>
                 <div class="j2-legend" data-j2-legend>
                   <h3 class="j2-legend-h" data-t="journey2_legend_h"></h3>
@@ -999,6 +1002,7 @@
       ui.routePlan = container.querySelector('[data-j2-route-plan]');
       ui.routeChip = container.querySelector('[data-j2-route-chip]');
       ui.routeChipText = container.querySelector('[data-j2-route-chip-text]');
+      ui.routeChipStep = container.querySelector('[data-j2-route-chip-step]');
       ui.route = container.querySelector('[data-j2-route]');
       ui.routeBubbles = container.querySelector('[data-j2-route-bubbles]');
       ui.r = {};
@@ -3259,7 +3263,10 @@
       const st = routePlanner.state, active = !!st, selecting = routeSelecting();
       if (ui.routePlan) { ui.routePlan.disabled = routeLocked(); ui.routePlan.setAttribute('aria-pressed', String(active)); }
       ui.routeChip.hidden = !selecting;
-      if (selecting) ui.routeChipText.textContent = t(st.status === 'select-start' ? 'journey2_route_select_start' : 'journey2_route_select_end');
+      if (selecting) {
+        ui.routeChipText.textContent = t(st.status === 'select-start' ? 'journey2_route_select_start' : 'journey2_route_select_end');
+        if (ui.routeChipStep) { ui.routeChipStep.textContent = st.status === 'select-start' ? 'A' : 'B'; ui.routeChipStep.setAttribute('data-step', st.status === 'select-start' ? 'a' : 'b'); }   // the phone chip's step badge (A -> B)
+      }
       ui.viewport.classList.toggle('is-routing', selecting);
       ui.root.setAttribute('data-route', active ? st.status : '');
       paintRoute();
@@ -3431,8 +3438,9 @@
       if (rows.length) {
         h += '<h4 class="j2-route-h">' + esc(t('journey2_route_terrain')) + '</h4><ul class="j2-route-terrain">' + rows.map(r => {
           const c = s.terrainCounts[r], text = fill(c === 1 ? 'journey2_route_terrain_row_one' : 'journey2_route_terrain_row_n', { t: n(r), n: n(c) });
-          if (r === 0) return '<li><span class="j2-route-settle" aria-hidden="true">' + esc(t('journey2_route_settlement')) + '</span><span class="j2-route-count" aria-hidden="true">' + n(c) + '</span><span class="sr-only">' + esc(t('journey2_route_settlement') + ': ' + n(c)) + '</span></li>';
-          return '<li>' + dotsHtml(r) + '<span class="j2-route-count" aria-hidden="true">' + n(c) + '</span><span class="sr-only">' + esc(text) + '</span></li>';
+          const count = '<span class="j2-route-count" aria-hidden="true">' + esc(fillN('journey2_route_hexcount', { n: n(c) }, [c])) + '</span>';   // a rating is also the days one hex costs (Terrain 2 = 2 days/hex); a Sanctuary costs none
+          if (r === 0) return '<li><span class="j2-route-settle" aria-hidden="true">' + esc(t('journey2_route_settlement')) + '</span>' + count + '<span class="sr-only">' + esc(t('journey2_route_settlement') + ': ' + n(c)) + '</span></li>';
+          return '<li>' + dotsHtml(r) + '<span class="j2-route-tname" aria-hidden="true">' + esc(fill('journey2_route_terrain_name', { t: n(r) })) + '<span class="j2-route-perhex">' + esc(fillN('journey2_route_perhex', { n: n(r) }, [r])) + '</span></span>' + count + '<span class="sr-only">' + esc(text) + '</span></li>';
         }).join('') + '</ul>';
       }
       return h;
@@ -5393,6 +5401,7 @@
       else if (b.hasAttribute('data-j2-clear-unplaced')) confirmClearUnplaced();
       else if (b.hasAttribute('data-j2-delete')) confirmDelete(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-side-toggle') || b.hasAttribute('data-j2-legend-btn')) toggleSide();
+      else if (b.hasAttribute('data-j2-legend-close')) { if (!sideCollapsed) toggleSide(); }
       else if (b.hasAttribute('data-j2-fit')) fitToView();
       else if (b.hasAttribute('data-j2-biome-colors')) toggleBiomeColors();
       else if (b.hasAttribute('data-j2-sepia')) toggleSepia();
