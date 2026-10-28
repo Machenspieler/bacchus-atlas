@@ -849,7 +849,7 @@
                 <div class="j2-menu-wrap j2-camp j2-disp">
                   ${railBtn('data-j2-menu-btn="display" aria-haspopup="menu" aria-expanded="false" data-t-aria="journey2_display_aria"', LI.display, 'journey2_rail_display')}
                   <div class="j2-menu j2-camp-menu" role="menu" data-j2-menu="display" data-t-aria="journey2_display_aria" hidden>
-                    <p class="j2-menu-h j2-menu-h--sheet" role="presentation" data-t="journey2_rail_display"></p>
+                    <div class="j2-menu-h j2-menu-h--sheet" role="presentation"><span data-t="journey2_rail_display"></span><button type="button" class="btn btn-ghost btn-sm j2-btn-icon j2-menu-close" data-j2-menu-close data-t-aria="journey2_display_close" data-t-title="journey2_display_close">${LI.close}</button></div>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-biome-colors><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_biome_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="true" data-j2-sepia><span class="j2-mi-ico" aria-hidden="true">${LI.palette}</span><span data-t="journey2_sepia_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
                     <button type="button" class="j2-menu-item j2-mi" role="menuitemcheckbox" aria-checked="false" data-j2-regions><span class="j2-mi-ico" aria-hidden="true">${LI.hexes}</span><span data-t="journey2_regions_label"></span><span class="j2-mi-sw" aria-hidden="true"></span></button>
@@ -1352,7 +1352,11 @@
     function toggleSide() {
       const before = sideInset();
       sideCollapsed = !sideCollapsed;
-      if (!sideCollapsed && playerMode && isPhoneWidth()) exitRoute({ quiet: true });   // opening the phone legend ends route planning
+      if (!sideCollapsed && playerMode) closeMenus();   // the legend and a rail menu never stack, whichever path opened the legend
+      if (!sideCollapsed && playerMode && isPhoneWidth()) {   // opening the phone legend ends an unfinished pick; a drawn route stays (its summary docks below the sheet) but its details step aside
+        const rs = routePlanner.state;
+        if (rs && rs.status === 'result') { if (routeDetails) { routeDetails = false; renderRoute(); } } else exitRoute({ quiet: true });
+      }
       applySideState(true);
       // the free map area grows/shrinks by the inset difference: keep the zoom and slide the map by half of it, so what was centred stays centred (no Fit)
       if (data && ui.viewport) { const dx = (sideInset() - before) / 2; if (Math.abs(dx) >= 1) animateCameraBy(dx, 0, 250); }
@@ -3273,6 +3277,7 @@
       renderRouteBubbles();
       renderRoutePanel();
       positionRouteBubbles();
+      ui.root.setAttribute('data-route-panel', ui.route.hidden ? '' : 'open');   // the phone's docked summary and the details sheet are one surface in two states: CSS hides the summary while the details show
     }
 
     const routeCenter = id => { const c = Geo.parseCellId(id), p = data.grid.cellCenter(c.q, c.r); return [p[0], p[1]]; };
@@ -3483,6 +3488,7 @@
       if (!v) return;
       if (v.eff === s) {
         routeDetails = !routeDetails; renderRoute();
+        if (routeDetails && playerMode && isPhoneWidth() && ui.route && !ui.route.hidden) ui.route.focus({ preventScroll: true });   // the summary just gave way to the details: focus follows
         if (!routeDetails && ui.routeBubbles) { const b = ui.routeBubbles.querySelector('[data-j2-route-strategy="' + s + '"]'); if (b) b.focus({ preventScroll: true }); }
         return;
       }
@@ -5402,6 +5408,7 @@
       else if (b.hasAttribute('data-j2-delete')) confirmDelete(b.closest('[data-batch]').getAttribute('data-batch'));
       else if (b.hasAttribute('data-j2-side-toggle') || b.hasAttribute('data-j2-legend-btn')) toggleSide();
       else if (b.hasAttribute('data-j2-legend-close')) { if (!sideCollapsed) toggleSide(); }
+      else if (b.hasAttribute('data-j2-menu-close')) { const btn = openMenu && openMenu.btn; closeMenus(); if (btn) btn.focus({ preventScroll: true }); }
       else if (b.hasAttribute('data-j2-fit')) fitToView();
       else if (b.hasAttribute('data-j2-biome-colors')) toggleBiomeColors();
       else if (b.hasAttribute('data-j2-sepia')) toggleSepia();
@@ -5470,6 +5477,7 @@
       if (openMenu && openMenu.menu === menu) { closeMenus(); return; }
       closeMenus();
       if (playerMode && !sideCollapsed) { sideCollapsed = true; applySideState(false); }   // the legend and a rail menu never stack (the menu opens over the panel)
+      if (playerMode && routeDetails && isPhoneWidth()) { routeDetails = false; renderRoute(); }   // nor do route details and a rail menu: they share one anchor
       menu.hidden = false;
       btn.setAttribute('aria-expanded', 'true');
       openMenu = { btn: btn, menu: menu };

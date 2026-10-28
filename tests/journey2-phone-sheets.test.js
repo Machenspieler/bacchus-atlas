@@ -37,7 +37,9 @@ test('the planning chip is one row with a step badge and an icon-only cancel tha
 test('the legend has a 44px close wired to the same fold, and the Display sheet a heading', () => {
   assert.match(view, /data-j2-legend-close data-t-aria="journey2_legend_close"/);
   assert.match(view, /b\.hasAttribute\('data-j2-legend-close'\)\) \{ if \(!sideCollapsed\) toggleSide\(\); \}/);
-  assert.match(view, /j2-menu-h--sheet" role="presentation" data-t="journey2_rail_display"/);
+  assert.match(view, /j2-menu-h--sheet" role="presentation"><span data-t="journey2_rail_display"><\/span><button[^>]*data-j2-menu-close/);
+  assert.ok(view.includes("b.hasAttribute('data-j2-menu-close')"));
+  assert.ok(i18n.en.journey2_display_close && i18n.ru.journey2_display_close);
   assert.match(css, /\.j2-menu-h--sheet \{ display: none; \}/, 'hidden outside the phone sheet');
 });
 
@@ -56,4 +58,16 @@ test('a short phone window (landscape) gets a slimmer bar and summary and sheets
   assert.match(block, /--j2-bar-h: calc\(56px/);
   assert.match(block, /--j2-dock-h: 48px/);
   assert.match(block, /right: calc\(2 \* var\(--j2-side-gap\) \+ var\(--j2-fit-size\)\)/);
+});
+
+test('the docked route summary and the details sheet are one surface in two states (PD-083)', () => {
+  assert.ok(view.includes("ui.root.setAttribute('data-route-panel', ui.route.hidden ? '' : 'open')"));
+  assert.ok(phone.includes('[data-route-panel="open"] .j2-route-bubbles { display: none; }'));
+  assert.ok(phone.includes('[data-route-panel="open"] .j2-stage:has(.j2-route-bub) { --j2-dock-space: 0px; }'));
+  assert.ok(view.includes('if (!sideCollapsed && playerMode) closeMenus();'), 'the legend and a rail menu never stack');
+});
+
+test('the summary has no foreign full blue frame: the route colour is a left key and a finger tap leaves no ring', () => {
+  assert.ok(phone.includes('.j2-route-bub:not(.is-selected) { border: 1px solid var(--line-strong); border-left: 4px solid var(--rc)'));
+  assert.ok(phone.includes('.j2-route-bub:focus:not(:focus-visible) { outline: 0; }'));
 });
