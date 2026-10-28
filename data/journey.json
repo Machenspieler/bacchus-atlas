@@ -38,7 +38,7 @@
   "terrain": [
     { "roll": 1, "days": 1, "name": { "en": "Optimal", "ru": "Оптимальная" }, "text": { "en": "Paved roads, stone highways, or raised paths allow swift and reliable travel. These routes are more heavily trafficked, increasing the chance of meeting merchants, patrols, or other fellow travelers.", "ru": "Мощёные дороги, каменные тракты или приподнятые пути обеспечивают быстрые и надёжные переходы. Эти маршруты более оживлённы, что увеличивает шанс встретить торговцев, патрули или других попутчиков." } },
     { "roll": 2, "days": 2, "name": { "en": "Fair", "ru": "Сносная" }, "text": { "en": "Beaten trade roads, caravan paths, or wilderness trails provide steady passage. Though slower than highways, they're dependable, with only modest risk of delay or misdirection.", "ru": "Накатанные торговые дороги, караванные тропы или лесные тропы обеспечивают устойчивый переход. Хотя они медленнее трактов, они надёжны, с умеренным риском задержки или потери пути." } },
-    { "roll": 3, "days": 3, "name": { "en": "Rough", "ru": "Сложная" }, "text": { "en": "Narrow tracks, game trails, or tangled undergrowth make for slow, uncertain travel. Travelers risk getting lost, straying into hazards, or encountering dangerous creatures.", "ru": "Узкие тропы, звериные тропы или густые заросли делают путешествие медленным и неопределённым. Путешественники рискуют заблудиться, угодить в ловушку или столкнуться с опасными существами." } },
+    { "roll": 3, "days": 3, "name": { "en": "Rough", "ru": "Сложная" }, "text": { "en": "Narrow tracks, game trails, or tangled undergrowth make for slow, uncertain travel. Travelers risk getting lost, straying into hazards, or encountering dangerous creatures.", "ru": "Узкие тропы, звериные тропы или густые заросли делают путешествие медленным и неопределённым. Путешественники рискуют заблудиться, забрести в опасные места или столкнуться с опасными существами." } },
     { "roll": 4, "days": 4, "name": { "en": "Extreme", "ru": "Экстремальная" }, "text": { "en": "Cliff faces, quagmires, collapsing terrain, or trackless wilds push travelers to their limits. Progress is grueling, dangerous, and often impossible without climbing gear, strong magic, or sheer luck.", "ru": "Скалистые обрывы, трясины, осыпающаяся местность или бездорожье — всё это испытывает путешественников на прочность. Продвижение изнурительное, опасное и зачастую невозможное без альпинистского снаряжения, сильной магии или простой удачи." } }
   ],
 
@@ -65,7 +65,7 @@
     { "roll": 20,  "text": { "en": "Travelers hear lullabies sung by unseen mothers.", "ru": "Путешественники слышат колыбельные, которые поют невидимые матери." } },
     { "roll": 21,  "text": { "en": "A cloaked figure pays gold for tales of grief — no one knows why.", "ru": "Закутанная в плащ фигура платит золотом за истории о горе — никто не знает, зачем." } },
     { "roll": 22,  "text": { "en": "A sword of living fire fell into the earth here. No one has yet been strong enough to pull it from the ground.", "ru": "Меч из живого пламени упал в землю здесь. Никто до сих пор не смог вырвать его из земли." } },
-    { "roll": 23,  "text": { "en": "A new caravan route allows trade and safety in numbers.", "ru": "Новый караванный путь обеспечивает торговлю и безопасность в численности." } },
+    { "roll": 23,  "text": { "en": "A new caravan route allows trade and safety in numbers.", "ru": "Новый караванный путь обеспечивает торговлю и безопасность большого каравана." } },
     { "roll": 24,  "text": { "en": "Invisible, impenetrable barriers turn the landscape into a labyrinth.", "ru": "Невидимые, непроницаемые барьеры превращают ландшафт в лабиринт." } },
     { "roll": 25,  "text": { "en": "Within a canyon, gravity fluctuates and inverts itself unpredictably.", "ru": "Внутри каньона гравитация колеблется и непредсказуемо меняется на противоположную." } },
     { "roll": 26,  "text": { "en": "A spring bubbles with ink that heals wounds but permanently stains anything it touches.", "ru": "Источник бьёт чернилами, которые заживляют раны, но навсегда окрашивают всё, к чему прикасаются." } },
@@ -107,17 +107,17 @@
     { "roll": 62,  "text": { "en": "Fire burns cold and blue here.", "ru": "Здесь огонь горит холодным синим пламенем." } },
     { "roll": 63,  "text": { "en": "The path is protected by wards forged by a nameless saint.", "ru": "Тропа защищена оберегами, созданными безымянным святым." } },
     { "roll": 64,  "text": { "en": "A gallery of stone figures stands, each a thousand feet tall.", "ru": "Галерея каменных изваяний возвышается, каждое высотой в тысячу футов." } },
-    { "roll": 65,  "text": { "en": "A black sun traces its course across the sky every hour.", "ru": "Чёрное солнце каждые два часа проходит по небу." } },
+    { "roll": 65,  "text": { "en": "A black sun traces its course across the sky every hour.", "ru": "Чёрное солнце каждый час проходит по небу." } },
     { "roll": 66,  "text": { "en": "A bridge of flesh groans and sighs beneath travelers' weight.", "ru": "Мост из плоти стонет и вздыхает под тяжестью путников." } },
     { "roll": 67,  "text": { "en": "A tree bleeds golden sap that hardens into cursed jewels.", "ru": "Дерево источает золотой сок, который затвердевает в проклятые самоцветы." } },
     { "roll": 68,  "text": { "en": "A chained serpent begs for release.", "ru": "Закованный в цепи змей молит об освобождении." } },
     { "roll": 69,  "text": { "en": "The trees uproot themselves and walk around at night.", "ru": "По ночам деревья вырываются из земли и бродят вокруг." } },
     { "roll": 70,  "text": { "en": "A chained door built into the ground in the middle of nowhere rattles at night. No one knows what's trapped behind it.", "ru": "Вкопанная в землю запертая дверь посреди безлюдья гремит по ночам. Никто не знает, что за ней заточено." } },
-    { "roll": 71,  "text": { "en": "Ancient ruins offer shelter and salvageable relics.", "ru": "Древние руины дают приют и спасённые реликвии." } },
+    { "roll": 71,  "text": { "en": "Ancient ruins offer shelter and salvageable relics.", "ru": "Древние руины дают приют и уцелевшие реликвии." } },
     { "roll": 72,  "text": { "en": "A spectral orchestra plays in a ruined amphitheater.", "ru": "Призрачный оркестр играет в разрушенном амфитеатре." } },
-    { "roll": 73,  "text": { "en": "A storm of crystal shards scours the land clean as it drifts.", "ru": "Буря из кристаллических осколков счищает землю дотла, когда проходит." } },
+    { "roll": 73,  "text": { "en": "A storm of crystal shards scours the land clean as it drifts.", "ru": "Буря из кристаллических осколков счищает землю дочиста, когда проходит." } },
     { "roll": 74,  "text": { "en": "A child living here claims to have memories of Old Valloren.", "ru": "Ребёнок, живущий здесь, утверждает, что помнит Старый Валлорен." } },
-    { "roll": 75,  "text": { "en": "A cemetery grows larger each night.", "ru": "Кладбище с каждую ночь становится больше." } },
+    { "roll": 75,  "text": { "en": "A cemetery grows larger each night.", "ru": "Кладбище с каждой ночью становится больше." } },
     { "roll": 76,  "text": { "en": "The moon weeps silver droplets that burn the ground.", "ru": "Луна роняет серебряные капли, которые прожигают землю." } },
     { "roll": 77,  "text": { "en": "A warrior in golden armor battles never-ending waves of shadowblighted beasts.", "ru": "Воин в золотых доспехах сражается с бесконечными волнами чудовищ, поражённых теневой порчей." } },
     { "roll": 78,  "text": { "en": "A songbird guards a nest filled with magic rings.", "ru": "Певчая птица охраняет гнездо, полное магических колец." } },
@@ -141,7 +141,7 @@
     { "roll": 96,  "text": { "en": "A tree bears glowing fruit that changes the age of anyone who consumes it.", "ru": "Дерево приносит светящиеся плоды, которые меняют возраст того, кто их съест." } },
     { "roll": 97,  "text": { "en": "A pool of tears cried by an Aurelian saint heals wounds but deepens despair.", "ru": "Озеро слёз, пролитых святым Аурелианского ордена, заживляет раны, но усиливает отчаяние." } },
     { "roll": 98,  "text": { "en": "A crown of ice lies within a frozen palace and whispers promises of conquest.", "ru": "Корона изо льда покоится в ледяном дворце и шепчет обещания о завоеваниях." } },
-    { "roll": 99,  "text": { "en": "A lone cottage stands with shadowblight trailing out of its chimney and into the sky.", "ru": "Одинокий домик стоит посреди пустоши, а из его трубы тянется в небо теневая порча." } },
+    { "roll": 99,  "text": { "en": "A lone cottage stands with shadowblight trailing out of its chimney and into the sky.", "ru": "Одинокий домик стоит одиноко, а из его трубы тянется в небо теневая порча." } },
     { "roll": 100, "text": { "en": "A comet hangs in the sky but never falls. Rival religious groups argue about its meaning.", "ru": "Комета висит в небе, но никогда не падает. Соперничающие религиозные группы спорят о её значении." } }
   ],
 
@@ -249,7 +249,7 @@
         { "roll": 1, "text": { "en": "Sparse", "ru": "Редкое" } },
         { "roll": 2, "text": { "en": "Stable", "ru": "Среднее, стабильное" } },
         { "roll": 3, "text": { "en": "Full", "ru": "Многочисленное" } },
-        { "roll": 4, "text": { "en": "Crowded", "ru": "Перенаселение" } }
+        { "roll": 4, "text": { "en": "Crowded", "ru": "Переполненное" } }
       ]
     }
   ],
