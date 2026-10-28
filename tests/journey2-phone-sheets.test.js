@@ -48,3 +48,12 @@ test('the terrain rows name the terrain, its days per hex and the hex count; eve
   }
   assert.match(view, /fillN\('journey2_route_perhex', \{ n: n\(r\) \}, \[r\]\)/);
 });
+
+test('a short phone window (landscape) gets a slimmer bar and summary and sheets that leave the Fit column free', () => {
+  const at = css.indexOf('@media (max-width: 640px) and (max-height: 480px)');
+  assert.ok(at > 0);
+  const block = css.slice(at, css.indexOf('\n}\n', at));
+  assert.match(block, /--j2-bar-h: calc\(56px/);
+  assert.match(block, /--j2-dock-h: 48px/);
+  assert.match(block, /right: calc\(2 \* var\(--j2-side-gap\) \+ var\(--j2-fit-size\)\)/);
+});
