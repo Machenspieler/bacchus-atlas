@@ -94,6 +94,7 @@
   const Locate = root.Journey2Locate;
   const Seekers = root.Journey2ShadowMarks;
   const Route = root.Journey2Route;
+  const Nav = root.Journey2Nav;
   const Share = root.Journey2Share;                 // the player link codec (PD-052); only the read-only player page decodes with it
   const EnvDeal = root.Journey2EnvDeal;
   const EncRoll = root.Journey2EncounterRoll;
@@ -1311,7 +1312,16 @@
       // the hidden half is taken out of the tab order and the accessibility tree; the transition itself is CSS-only. The rail is always there (PD-057).
       ui.side.inert = sideCollapsed;
       syncSideToggle();
+      syncNav();
       if (persistIt) saveUiPrefs();
+    }
+
+    /** The player map's one active bottom-bar destination (PD-083): derived from the open sheet and the route, never stored. A sheet (Legend / Display) outranks the persistent route while it is open; CSS reads `data-nav` to tuck the route summary away meanwhile. */
+    function syncNav() {
+      if (!playerMode || !ui.root) return;
+      const dest = Nav.activeDestination({ legendOpen: !sideCollapsed, menu: openMenu ? openMenu.btn.getAttribute('data-j2-menu-btn') : null, routeActive: !!routePlanner.state });
+      ui.root.setAttribute('data-nav', dest || '');
+      if (ui.routePlan) ui.routePlan.setAttribute('aria-pressed', String(isPhoneWidth() ? dest === 'route' : !!routePlanner.state));   // only the phone bar has one active tab; the wide rail keeps its Route tool pressed beside the open legend
     }
 
     /* ---- the rail (PD-057): its buttons ARE the tools (no proxies), so state code writes straight to them ---- */
@@ -1967,6 +1977,7 @@
     }
     function reconcileInspectorAfterResize() {
       resizeReconcileTimer = 0;
+      if (!inst.disposed) syncNav();   // the phone / wide split decides which Route state the bar shows
       if (inst.disposed || !data || !cameraReady || previewMode) return;
       if (inspector.batchId == null || !inspector.tileId || !ui.inspector || ui.inspector.hidden) return;
       const wrap = ui.mapwrap.getBoundingClientRect(), view = { w: wrap.width, h: wrap.height };
@@ -3187,7 +3198,11 @@
     /** Enters the transient tool: everything that could compete for the map is cancelled first; pan, zoom, the sidebar and Fog of War are untouched. */
     function startRoute() {
       if (inst.disposed || routeLocked() || !doc || !data) return;
-      if (routePlanner.isActive()) { exitRoute({ focus: true }); return; }
+      if (routePlanner.isActive()) {
+        // on the phone bar, Route while a sheet covers it means "go back to the route": close the sheet, keep the route (only a press on the visible Route tab ends it)
+        if (playerMode && isPhoneWidth() && (!sideCollapsed || openMenu)) { closeMenus(); if (!sideCollapsed) { sideCollapsed = true; applySideState(false); } syncNav(); focusTool(ui.routePlan); return; }
+        exitRoute({ focus: true }); return;
+      }
       cancelTransient(); cancelFogStroke(); setFogTool(null, { quiet: true });
       exitLocate({ quiet: true });
       closeMenus(); hideEnvTip(); clearHint();
@@ -3266,6 +3281,7 @@
       if (!ui.route || !doc || !data) return;
       const st = routePlanner.state, active = !!st, selecting = routeSelecting();
       if (ui.routePlan) { ui.routePlan.disabled = routeLocked(); ui.routePlan.setAttribute('aria-pressed', String(active)); }
+      syncNav();
       ui.routeChip.hidden = !selecting;
       if (selecting) {
         ui.routeChipText.textContent = t(st.status === 'select-start' ? 'journey2_route_select_start' : 'journey2_route_select_end');
@@ -5481,6 +5497,7 @@
       menu.hidden = false;
       btn.setAttribute('aria-expanded', 'true');
       openMenu = { btn: btn, menu: menu };
+      syncNav();
       const first = menu.querySelector('.j2-menu-item');
       if (first) first.focus();
     }
@@ -5489,6 +5506,7 @@
       openMenu.menu.hidden = true;
       openMenu.btn.setAttribute('aria-expanded', 'false');
       openMenu = null;
+      syncNav();
     }
 
     function runAction(act) {

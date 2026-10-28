@@ -328,6 +328,9 @@ body[data-route="playermap"] #grid-wrap { display: block; }
   /* the summary and the details are one surface in two states: while the details are open the docked row is gone and the sheets drop to the bar */
   .j2[data-player][data-route-panel="open"] .j2-route-bubbles { display: none; }
   .j2[data-player][data-route-panel="open"] .j2-stage:has(.j2-route-bub) { --j2-dock-space: 0px; }
+  /* one active destination (Journey2Nav): while Legend or Display is open the summary steps aside (the route stays drawn) and the sheet sits on the bar; closing the sheet brings it back */
+  .j2[data-player][data-nav="legend"] .j2-route-bubbles, .j2[data-player][data-nav="display"] .j2-route-bubbles { display: none; }
+  .j2[data-player][data-nav="legend"] .j2-stage:has(.j2-route-bub), .j2[data-player][data-nav="display"] .j2-stage:has(.j2-route-bub) { --j2-dock-space: 0px; }
   .j2[data-player] .j2-route-bub-v { white-space: normal; font-size: var(--fs-xs); line-height: 1.3; text-wrap: balance; }
   .j2[data-player] .j2-route-bub.is-selected::after { content: ""; position: absolute; right: var(--s-3); top: 50%; width: 7px; height: 7px; border: solid var(--parchment-dim); border-width: 2px 2px 0 0; transform: translateY(-50%) rotate(-45deg); transition: transform var(--j2-sheet-ease); }   /* a chevron: tap to open the details */
   .j2[data-player] .j2-route-bub.is-selected[aria-expanded="true"]::after { transform: translateY(-50%) rotate(135deg); }
