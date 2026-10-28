@@ -678,8 +678,9 @@ a bare `Bandits (tier 2)` reach it through the existing family code), and
 `BANDIT_GROUP_MEMBER_FAMILY_ALIASES` lets the plural forms mean the family
 as a member of another group too.
 
-Four more families are keys of the same table — `Guards`/`Guard`,
-`Skeletons`/`Skeleton`, `Assassins`/`Assassin` and `Cultists`/`Cultist` —
+Five more families are keys of the same table — `Guards`/`Guard`,
+`Skeletons`/`Skeleton`, `Assassins`/`Assassin`, `Cultists`/`Cultist` and
+`Zombies`/`Zombie` (all seven Zombie adversaries) —
 so a *bare* entry of one of those words expands to its roster (Head/Archer/
 Bladed Guard, the four Skeleton adversaries, the three Assassins, the three
 Cult adversaries). Unlike Bandits they do **not** expand as a member of

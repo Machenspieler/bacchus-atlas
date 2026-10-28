@@ -89,6 +89,7 @@ const BARE_FAMILIES = {
   Skeletons: ['Skeleton Archer', 'Skeleton Dredge', 'Skeleton Knight', 'Skeleton Warrior'],
   Assassins: ['Apprentice Assassin', 'Master Assassin', 'Assassin Poisoner'],
   Cultists: ['Cult Adept', 'Cult Fang', 'Cult Initiate'],
+  Zombies: ['Brawny Zombie', 'Patchwork Zombie Hulk', 'Perfected Zombie', 'Rotted Zombie', 'Shambling Zombie', 'Zombie Legion', 'Zombie Pack'],
 };
 Object.entries(BARE_FAMILIES).forEach(([plural, roster]) => {
   test(`bare ${plural} (and its singular) is the whole family`, () => {

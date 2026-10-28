@@ -192,6 +192,10 @@
   const SKELETON_ROSTER = ['Skeleton Archer', 'Skeleton Dredge', 'Skeleton Knight', 'Skeleton Warrior'];
   const ASSASSIN_ROSTER = ['Apprentice Assassin', 'Master Assassin', 'Assassin Poisoner'];
   const CULT_ROSTER = ['Cult Adept', 'Cult Fang', 'Cult Initiate'];
+  const ZOMBIE_ROSTER = [
+    'Brawny Zombie', 'Patchwork Zombie Hulk', 'Perfected Zombie', 'Rotted Zombie',
+    'Shambling Zombie', 'Zombie Legion', 'Zombie Pack',
+  ];
 
   /** A handful of Potential Adversaries entries — grouped or standalone — don't
    * enumerate their members at all, instead naming a family and leaving the GM
@@ -204,7 +208,7 @@
    * since source text uses either ("any Vault Guardian" / "any Vault
    * Guardians").
    *
-   * Guards, Skeletons, Assassins and Cultists work the same way when they
+   * Guards, Skeletons, Assassins, Cultists and Zombies work the same way when they
    * stand alone as a whole entry ("Guards", "Skeleton"): FreshCutGrass has no
    * adversary by those names, only the roster members. Inside another group
    * ("Undead (…, Skeletons)") they are left as written, like "Pirates" there.
@@ -233,6 +237,8 @@
     Skeletons: SKELETON_ROSTER,
     Assassin: ASSASSIN_ROSTER,
     Assassins: ASSASSIN_ROSTER,
+    Zombie: ZOMBIE_ROSTER,
+    Zombies: ZOMBIE_ROSTER,
     Pirate: ['Pirate Captain', 'Pirate Raiders', 'Pirate Tough'],
     Pirates: ['Pirate Captain', 'Pirate Raiders', 'Pirate Tough'],
   };
