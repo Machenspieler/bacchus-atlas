@@ -177,11 +177,21 @@ Environment text, settled by the 2026-10-27 proofreading pass:
 - **Glider vs. "personal gliders":** the catalogue's Glider is the
   «Парашют» item; Fractus' "personal gliders" are a campaign-frame thing
   and stay un-translated-by-guess until the frame's text is at hand.
-- **Still open — ask the owner, don't mass-rewrite:** «Отсчёт» vs «Счётчик»
-  for Countdown (the data mostly says «Отсчёт»), «Продолжительный» vs
-  «Долгий» отдых (≈23 vs 12 uses), «Игрок» vs «персонаж» for PC, «Мастер» in
-  source text (the GM row above covers UI only), «очки здоровья» vs
-  «Раны» in source text, «Культист-Хранитель Тайн» vs "Secret-Keeper".
+- **Settled 2026-10-28 (owner confirmed; daggerheart.su's
+  [terms table](https://daggerheart.su/rule/terms-translation) is the
+  source):** Countdown = «Отсчёт» (never «Счётчик»); Long Rest =
+  «Продолжительный Отдых», Short Rest = «Короткий Отдых» (never «Долгий»);
+  PC = «персонаж» (lowercase mid-sentence; «игрок» is only the real
+  player at the table); Hit Points = «Раны», a slot is a «Ячейка Ран»
+  (daggerheart.su's adversary pages: «Ячеек Ран»), so "marks their last
+  HP" is «отмечает свою последнюю Рану» and "clears HP" is «снимает Раны»;
+  never «очки здоровья»; the GM in environment text is «Мастер» (the
+  participle «ведущий» — "leading" — and «Ведущий персонаж» are ordinary
+  words and stay); Secret-Keeper = «Хранитель Тайн», not «Культист-Хранитель
+  Тайн» (the name `prep.json` and the other environments use).
+- **Still open:** how the book's group forms with no roster ("Vampires
+  (all, including Lamia)", "Outer Realms (any)", "Spectral Forces") should
+  expand — decided case by case, see PD-082.
 
 Campaign frame: *Journey to Horizon* = «Путешествие к Горизонту» (per
 daggerheart.ru/frame/journey-to-horizon). Used as the Journey page's visible

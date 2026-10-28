@@ -31,14 +31,16 @@
           "Jackalweres (Dunerider, Hierophant, Raider, Ravager, Sandknife)",
           "Sellsword",
           "Glintsand Drakona (Efreeti, Firewalker, Nomad, Spellbreaker, Stalker, Urdu)",
-          "Giant Scorpion"
+          "Giant Scorpion",
+          "Shark"
         ],
         "ru": [
           "Убийцы (Ученик, Отравитель)",
           "Шакалвиры (Всадник Дюн, Иерофант, Налётчик, Разоритель, Песчаный Клинок)",
           "Наёмник",
           "Дракона Мерцающих Песков (Ифрит, Огнеходец, Кочевник, Разрушитель Чар, Ловчий, Урду)",
-          "Гигантский Скорпион"
+          "Гигантский Скорпион",
+          "Акула"
         ]
       },
       "features": [
@@ -507,7 +509,7 @@
           },
           "description": {
             "en": "When a PC rolls with Fear, they may mark a Stress to swap the values of the dice. If a PC does this, the GM gains 2 Fear.",
-            "ru": "Когда персонаж совершает бросок со Страхом, он может отметить Стресс, чтобы поменять значения костей местами. Если персонаж делает это, Ведущий получает 2 Страха."
+            "ru": "Когда персонаж совершает бросок со Страхом, он может отметить Стресс, чтобы поменять значения костей местами. Если персонаж делает это, Мастер получает 2 Страха."
           },
           "prompt": {
             "en": "Who offers this deal to the PC? Is there something they gain from helping the party?",
@@ -1451,7 +1453,7 @@
           },
           "description": {
             "en": "When the Greater Chaosblight Elemental is defeated, start an Increasing Dynamic Consequence Countdown (4). When it triggers, the Greater Chaosblight Elemental returns at full hit points Very Close to one of the PCs, but with no allies. This interrupts the Ritual once again. Every time Rebirth is triggered, the countdown starts one higher, so 5, 6, 7, and so on.",
-            "ru": "Когда Великий Элементаль Хаоса и Порчи побеждён, начните Возрастающий Динамический Отсчёт Последствий (4). Когда он срабатывает, Великий Элементаль Хаоса и Порчи возвращается с полным запасом здоровья на Очень Близкой дистанции от одного из персонажей, но без союзников. Это вновь прерывает Ритуал. Каждый раз, когда срабатывает Возрождение, счётчик начинается на единицу выше — то есть 5, 6, 7 и так далее."
+            "ru": "Когда Великий Элементаль Хаоса и Порчи побеждён, начните Возрастающий Динамический Отсчёт Последствий (4). Когда он срабатывает, Великий Элементаль Хаоса и Порчи возвращается с полностью снятыми Ранами на Очень Близкой дистанции от одного из персонажей, но без союзников. Это вновь прерывает Ритуал. Каждый раз, когда срабатывает Возрождение, счётчик начинается на единицу выше — то есть 5, 6, 7 и так далее."
           },
           "prompt": {
             "en": "Who does the Elemental appear next to? What image does the Elemental force into the PCs' minds?",
@@ -1808,12 +1810,14 @@
         "en": [
           "All oozes",
           "all fungal creatures",
-          "Slime Demon"
+          "Slime Demon",
+          "Huge Green Ooze"
         ],
         "ru": [
           "Все слизни",
           "все грибные существа",
-          "Демон Слизи"
+          "Демон Слизи",
+          "Огромная Зелёная Слизь"
         ]
       },
       "features": [
@@ -2095,7 +2099,9 @@
           "Prince of Hounds",
           "Redcap",
           "Sylvan Soldier",
-          "Treants"
+          "Treants",
+          "Oak Treant",
+          "Stag Knight"
         ],
         "ru": [
           "Багровый Колпак",
@@ -2108,7 +2114,9 @@
           "Принц Псов",
           "Красный Колпак",
           "Лесной Солдат",
-          "Трэнты"
+          "Трэнты",
+          "Дубовый Трэнт",
+          "Рыцарь-Олень"
         ]
       },
       "features": [
@@ -2331,7 +2339,8 @@
           "Queen of Cats",
           "Redcap",
           "Sylvan Soldier",
-          "Treants"
+          "Treants",
+          "Oak Treant"
         ],
         "ru": [
           "Стая Фейских Кошек",
@@ -2347,7 +2356,8 @@
           "Королева Кошек",
           "Красный Колпак",
           "Лесной Солдат",
-          "Трэнты"
+          "Трэнты",
+          "Дубовый Трэнт"
         ]
       },
       "features": [
@@ -2640,14 +2650,16 @@
           "Devils",
           "Elemental Spark",
           "Dread Salamanders",
-          "Volcanic Dragon"
+          "Volcanic Dragon",
+          "Greater Earth Elemental"
         ],
         "ru": [
           "Демоны",
           "Дьяволы",
           "Стихийная Искра",
           "Ужасные Саламандры",
-          "Вулканический Дракон"
+          "Вулканический Дракон",
+          "Великий Земляной Элементаль"
         ]
       },
       "features": [
@@ -3296,7 +3308,7 @@
           "Летающие Полипы",
           "Великая Раса Йита",
           "Огромная Зелёная Слизь",
-          "Культист-Хранитель Тайн",
+          "Хранитель Тайн",
           "Шоггот"
         ]
       },
@@ -3399,7 +3411,7 @@
           },
           "description": {
             "en": "The party hears chanting far away. Following the sound leads them to a massive chamber and a Cult Ritual encounter. The cult is attempting to summon a Shuggoth using sacrificial prisoners. There is a Secret-Keeper with a Lightning Gun leading the ritual, supported by a Cult Adept and a Cult Fang. There are 3 Cult Initiates for every PC.",
-            "ru": "Группа слышит пение вдалеке. Следуя за звуком, они попадают в исполинский зал и встречу Ритуала Культа. Культ пытается призвать Шоггота, используя пленников для жертвоприношения. Ритуал возглавляет Культист-Хранитель Тайн с Молниевым Ружьём, которому помогают Адепт Культа и Клык Культа. На каждого персонажа приходится по 3 Посвящённых Культа."
+            "ru": "Группа слышит пение вдалеке. Следуя за звуком, они попадают в исполинский зал и встречу Ритуала Культа. Культ пытается призвать Шоггота, используя пленников для жертвоприношения. Ритуал возглавляет Хранитель Тайн с Молниевым Ружьём, которому помогают Адепт Культа и Клык Культа. На каждого персонажа приходится по 3 Посвящённых Культа."
           },
           "prompt": {
             "en": "What makes you think the ritual is almost complete?",
@@ -3414,7 +3426,7 @@
           },
           "description": {
             "en": "The ruins are massive, mostly underground, and take days to explore. Ancient devices seem to be some kind of machines, art, or both. There are no stairs, only ramps. Everything is large, sized for the Great Race of Yith. Start a Linked Countdown. The first is a Decreasing Dynamic Consequence Countdown (Loop 6) as they explore; when it goes off, adversaries charge out of the darkness (Flying Polyps are classic). The second is a Dynamic Progress Countdown (10) to find the promised rewards.",
-            "ru": "Руины исполинские, находятся преимущественно под землёй и требуют дней на исследование. Древние устройства напоминают некие механизмы, произведения искусства или и то, и другое сразу. Здесь нет лестниц, только пандусы. Всё огромно, рассчитано на Великую Расу Йита. Начните Связанный Отсчёт. Первый — Убывающий Динамический Счётчик Последствий (Цикл 6): пока группа исследует, когда он срабатывает, из темноты выступают противники (Летающие Полипы — классический выбор). Второй — Динамический Счётчик Прогресса (10) для нахождения обещанных наград."
+            "ru": "Руины исполинские, находятся преимущественно под землёй и требуют дней на исследование. Древние устройства напоминают некие механизмы, произведения искусства или и то, и другое сразу. Здесь нет лестниц, только пандусы. Всё огромно, рассчитано на Великую Расу Йита. Начните Связанный Отсчёт. Первый — Убывающий Динамический Отсчёт Последствий (Цикл 6): пока группа исследует, когда он срабатывает, из темноты выступают противники (Летающие Полипы — классический выбор). Второй — Динамический Отсчёт Прогресса (10) для нахождения обещанных наград."
           },
           "prompt": {
             "en": "How can you tell the city fell to violence? What are you doing to explore the ruins?",
@@ -3598,7 +3610,7 @@
           },
           "description": {
             "en": "Travel can be instant, where the PCs know they traveled for weeks, but remember nothing. Or travel can be everything, where the destination is forgotten, remembered, changed, and forgotten again, but the PCs keep on moving. If the party wishes to control their travel, start a Dynamic Progress Countdown (8). Failures might result in distractions that act to keep the party from the intended destination. When the Countdown triggers, the party reaches their destination and everyone gains a Hope.",
-            "ru": "Путешествие может быть мгновенным, когда персонажи знают, что путешествовали неделями, но ничего не помнят. Или же путешествие может быть всем сразу, когда пункт назначения забывается, вспоминается, меняется и забывается снова, но персонажи продолжают идти. Если группа желает контролировать своё путешествие, начните Динамический Счётчик Прогресса (8). Неудачи могут привести к отвлечениям, которые не дают группе достичь намеченного пункта назначения. Когда Счётчик срабатывает, группа достигает места назначения, и каждый получает Надежду."
+            "ru": "Путешествие может быть мгновенным, когда персонажи знают, что путешествовали неделями, но ничего не помнят. Или же путешествие может быть всем сразу, когда пункт назначения забывается, вспоминается, меняется и забывается снова, но персонажи продолжают идти. Если группа желает контролировать своё путешествие, начните Динамический Отсчёт Прогресса (8). Неудачи могут привести к отвлечениям, которые не дают группе достичь намеченного пункта назначения. Когда Отсчёт срабатывает, группа достигает места назначения, и каждый получает Надежду."
           },
           "prompt": {
             "en": "What does it feel like to have time and memory behave this way? Are you going in circles?",
@@ -3710,7 +3722,7 @@
           },
           "description": {
             "en": "When the party enters the forest or jungle (the Green Doom takes the form of the biome it was born in), activate a Dynamic Progress Countdown (6) to get to the next segment. Describe the woodland each step of the way, and allow party members to use Reaction Rolls using any traits and experiences that make sense to help their navigator make their navigate roll. When the countdown is triggered, they reach their target segment and each PC gains a Hope.",
-            "ru": "Когда группа входит в лес или джунгли (Зелёная Гибель принимает форму того биома, в котором она зародилась), активируйте Динамический Счётчик Прогресса (6) для перехода к следующему участку. Описывайте лесную местность на каждом шагу пути и позвольте участникам группы совершать Броски Реакции, используя любые черты и опыт, подходящие для помощи штурману в его броске навигации. Когда отсчёт срабатывает, они достигают целевого участка, и каждый персонаж получает Надежду."
+            "ru": "Когда группа входит в лес или джунгли (Зелёная Гибель принимает форму того биома, в котором она зародилась), активируйте Динамический Отсчёт Прогресса (6) для перехода к следующему участку. Описывайте лесную местность на каждом шагу пути и позвольте участникам группы совершать Броски Реакции, используя любые черты и опыт, подходящие для помощи штурману в его броске навигации. Когда отсчёт срабатывает, они достигают целевого участка, и каждый персонаж получает Надежду."
           },
           "prompt": {
             "en": "What tells your character that you are making progress?",
@@ -3793,7 +3805,7 @@
           },
           "description": {
             "en": "When the party enters the Clouds, activate a Dynamic Progress Countdown (8) to get to the next segment. Describe the buffeting storm each flap of the wing, and allow party members to use Reaction Rolls using any traits and experiences that make sense to help their navigator make their navigate roll. When the countdown is triggered, they reach their target segment and each PC gains a Hope.",
-            "ru": "Когда группа входит в Облака, активируйте Динамический Счётчик Прогресса (8) для перехода к следующему участку. Описывайте швыряющую из стороны в сторону бурю на каждом взмахе крыльев и позвольте участникам группы совершать Броски Реакции, используя любые черты и опыт, подходящие для помощи штурману в его броске навигации. Когда отсчёт срабатывает, они достигают целевого участка, и каждый персонаж получает Надежду."
+            "ru": "Когда группа входит в Облака, активируйте Динамический Отсчёт Прогресса (8) для перехода к следующему участку. Описывайте швыряющую из стороны в сторону бурю на каждом взмахе крыльев и позвольте участникам группы совершать Броски Реакции, используя любые черты и опыт, подходящие для помощи штурману в его броске навигации. Когда отсчёт срабатывает, они достигают целевого участка, и каждый персонаж получает Надежду."
           },
           "prompt": {
             "en": "Are you making progress through the storm? How can you tell?",
@@ -3927,7 +3939,7 @@
           },
           "description": {
             "en": "When the Burrower marks their last HP for the first time, they regain HP equal to twice the number of PCs (maximum 10) and clear all Stress. The Burrower’s Difficulty decreases by 1 and their damage increases by 2. Immediately spotlight the Burrower.",
-            "ru": "Когда Землекоп впервые отмечает своё последнее очко здоровья, он восстанавливает здоровье, равное удвоенному числу персонажей (максимум 10), и снимает весь Стресс. Сложность Землекопа уменьшается на 1, а его урон увеличивается на 2. Немедленно дайте Землекопу Активацию."
+            "ru": "Когда Землекоп впервые отмечает свою последнюю Рану, он снимает Раны, равные удвоенному числу персонажей (максимум 10), и снимает весь Стресс. Сложность Землекопа уменьшается на 1, а его урон увеличивается на 2. Немедленно дайте Землекопу Активацию."
           },
           "prompt": {
             "en": "How does the burrower change for this second phase?",
@@ -4006,7 +4018,7 @@
           },
           "description": {
             "en": "The rules for a duel are outlined below.\n- The GM sets aside their Fear pool and starts with 1 Fear. Any remaining Fear at the end of the duel is discarded.\n- The PC and adversary make an Agility Reaction Roll to determine who acts first.\n- The adversary gains the Relentless (2) feature (if they don’t have a Relentless feature) and they can’t summon other adversaries.\n- The PC can’t use Armor Slots.\n- When the last HP is marked, the target only dies if there is intent to kill.",
-            "ru": "Ниже изложены правила дуэли.\n- Мастер откладывает свой запас Страха и начинает с 1 Страхом. Весь оставшийся Страх по окончании дуэли отбрасывается.\n- Персонаж и противник совершают Бросок Реакции на Проворность, чтобы определить, кто действует первым.\n- Противник получает свойство Неутомимый (2) (если у него ещё нет свойства Неутомимый) и не может призывать других противников.\n- Персонаж не может использовать Ячейки Брони.\n- Когда отмечено последнее очко здоровья, цель погибает, только если было намерение убить."
+            "ru": "Ниже изложены правила дуэли.\n- Мастер откладывает свой запас Страха и начинает с 1 Страхом. Весь оставшийся Страх по окончании дуэли отбрасывается.\n- Персонаж и противник совершают Бросок Реакции на Проворность, чтобы определить, кто действует первым.\n- Противник получает свойство Неутомимый (2) (если у него ещё нет свойства Неутомимый) и не может призывать других противников.\n- Персонаж не может использовать Ячейки Брони.\n- Когда отмечена последняя Рана, цель погибает, только если было намерение убить."
           },
           "prompt": {
             "en": "Is there an instant-lose boundary, such as falling from a platform or exiting the ring?",
@@ -4330,7 +4342,8 @@
           "Lizardfolk (Chameleon, Gila Monster, Monitor)",
           "Swarm of Piranhas",
           "Vehicles (Air Balloon, Skimmer)",
-          "Zombies (Beast, Pack, Rotted)"
+          "Zombies (Beast, Pack, Rotted)",
+          "Zombie Pack"
         ],
         "ru": [
           "Кислотный Землекоп",
@@ -4340,7 +4353,8 @@
           "Ящеролюды (Хамелеон, Гила-Монстр, Монитор)",
           "Рой Пираний",
           "Транспорт (Воздушный Шар, Скиммер)",
-          "Зомби (Звериный, Стая, Гнилой)"
+          "Зомби (Звериный, Стая, Гнилой)",
+          "Орда Зомби"
         ]
       },
       "features": [
@@ -4726,7 +4740,7 @@
           },
           "description": {
             "en": "Spend a Fear to summon three adversaries, who fall from the sky. Each adversary begins with two HP marked.",
-            "ru": "Потратьте Страх, чтобы призвать трёх противников, падающих с неба. Каждый противник начинает с двумя отмеченными очками здоровья."
+            "ru": "Потратьте Страх, чтобы призвать трёх противников, падающих с неба. Каждый противник начинает с двумя отмеченными Ранами."
           },
           "prompt": {
             "en": "Were the adversaries swept up in the storm, summoned by it, or created by it? Are they hostile, friendly, or neutral?",
@@ -4788,7 +4802,7 @@
           "Торговый Барон",
           "Мелкий Аристократ",
           "Королевский Советник",
-          "Культист-Хранитель Тайн",
+          "Хранитель Тайн",
           "Шпион"
         ]
       },
@@ -5054,7 +5068,7 @@
           },
           "description": {
             "en": "The rules for the duel are outlined below.\n- The first to deal Severe damage or defeat their opponent wins the duel.\n- The GM sets aside their Fear pool and starts with 1 Fear. Any remaining Fear at the end of the duel is discarded.\n- The PC and adversary make an Agility Reaction Roll to determine who acts first.\n- The adversary gains the Relentless (2) feature (if they don’t have a Relentless feature) and they can’t summon other adversaries.\n- The PC can’t use Armor Slots.\n- When the last HP is marked, the target only dies if there is intent to kill.",
-            "ru": "Ниже изложены правила дуэли.\n- Первый, кто нанесёт Тяжёлый урон или победит противника, выигрывает дуэль.\n- Мастер откладывает свой запас Страха и начинает с 1 Страхом. Весь оставшийся Страх по окончании дуэли отбрасывается.\n- Персонаж и противник совершают Бросок Реакции на Проворность, чтобы определить, кто действует первым.\n- Противник получает свойство Неутомимый (2) (если у него ещё нет свойства Неутомимый) и не может призывать других противников.\n- Персонаж не может использовать Ячейки Брони.\n- Когда отмечено последнее очко здоровья, цель погибает, только если было намерение убить."
+            "ru": "Ниже изложены правила дуэли.\n- Первый, кто нанесёт Тяжёлый урон или победит противника, выигрывает дуэль.\n- Мастер откладывает свой запас Страха и начинает с 1 Страхом. Весь оставшийся Страх по окончании дуэли отбрасывается.\n- Персонаж и противник совершают Бросок Реакции на Проворность, чтобы определить, кто действует первым.\n- Противник получает свойство Неутомимый (2) (если у него ещё нет свойства Неутомимый) и не может призывать других противников.\n- Персонаж не может использовать Ячейки Брони.\n- Когда отмечена последняя Рана, цель погибает, только если было намерение убить."
           },
           "prompt": {
             "en": "Do the duelers start back-to-back and pace forwards to a mark, or start apart with holstered weapons?",
@@ -6027,7 +6041,7 @@
           },
           "description": {
             "en": "Spend a Fear to inflict a PC with one of the following conditions for the next 1d4 days or until they find an antidote.\n- **Spirit Fever:** The PC has a -1 penalty to their maximum HP and Stress.\n- **Nightbane:** The PC can only take one downtime move during a rest.\n- **Blight:** Hope features require spending an additional Hope.",
-            "ru": "Потратьте Страх, чтобы наделить персонажа одним из следующих состояний на следующие 1d4 дня или до тех пор, пока он не найдёт противоядие.\n- **Духовная Лихорадка:** у персонажа штраф -1 к максимальным очкам здоровья и Стресса.\n- **Ночная Хворь:** персонаж может совершить только один Ход Отдыха во время отдыха.\n- **Скверна:** свойства Надежды требуют траты дополнительной Надежды."
+            "ru": "Потратьте Страх, чтобы наделить персонажа одним из следующих состояний на следующие 1d4 дня или до тех пор, пока он не найдёт противоядие.\n- **Духовная Лихорадка:** у персонажа штраф -1 к максимуму Ран и Стресса.\n- **Ночная Хворь:** персонаж может совершить только один Ход Отдыха во время отдыха.\n- **Скверна:** свойства Надежды требуют траты дополнительной Надежды."
           },
           "prompt": {
             "en": "What caused the disease - a poisonous plant, disease-carrying insect, or infected water supply?",
@@ -6645,7 +6659,7 @@
           },
           "description": {
             "en": "When the sea monster first marks their last HP, clear HP equal to twice the number of PCs (maximum 10), and clear all Stress. The sea monster’s Difficulty decreases by 1 and their damage increases by 2. The sea monster immediately takes the spotlight.",
-            "ru": "Когда морское чудовище впервые отмечает своё последнее очко здоровья, снимите здоровье, равное удвоенному числу персонажей (максимум 10), и снимите весь Стресс. Сложность морского чудовища уменьшается на 1, а его урон увеличивается на 2. Морское чудовище немедленно получает Активацию."
+            "ru": "Когда морское чудовище впервые отмечает свою последнюю Рану, снимите Раны, равные удвоенному числу персонажей (максимум 10), и снимите весь Стресс. Сложность морского чудовища уменьшается на 1, а его урон увеличивается на 2. Морское чудовище немедленно получает Активацию."
           },
           "prompt": {
             "en": "How does the sea monster change for this second phase?",
@@ -6828,11 +6842,13 @@
       "potential_adversaries": {
         "en": [
           "Darkweave Spiders (Darkweave Crawler, Darkweave Spinner, Darkweave Swarmlings)",
-          "Miner Ghosts (Poltergeist, Will-o'-the-Wisps)"
+          "Miner Ghosts (Poltergeist, Will-o'-the-Wisps)",
+          "Darkweave Queen"
         ],
         "ru": [
           "Паутинные Пауки (Паутинный Ползун, Паутинный Ткач, Паутинные Детёныши)",
-          "Призраки Шахтёров (Полтергейст, Блуждающие Огоньки)"
+          "Призраки Шахтёров (Полтергейст, Блуждающие Огоньки)",
+          "Паутинная Королева"
         ]
       },
       "features": [
@@ -6929,10 +6945,12 @@
       },
       "potential_adversaries": {
         "en": [
-          "Lab Leftovers (Construct, Minor Fire Elemental, Patchwork Zombie Hulk, Swarm of Rats)"
+          "Lab Leftovers (Construct, Minor Fire Elemental, Patchwork Zombie Hulk, Swarm of Rats)",
+          "Failed Experiment"
         ],
         "ru": [
-          "Остатки Лаборатории (Конструкт, Малый Огненный Элементаль, Лоскутный Зомби-Громила, Стая Крыс)"
+          "Остатки Лаборатории (Конструкт, Малый Огненный Элементаль, Лоскутный Зомби-Громила, Стая Крыс)",
+          "Провальный Эксперимент"
         ]
       },
       "features": [
@@ -7156,7 +7174,7 @@
           },
           "description": {
             "en": "If a PC marks their last HP while in the graveyard, they become a Specter instead of making a death move. While a Specter, a PC can communicate with the living but can’t interact with the physical world, and they must stay within Close range of their corpse or cross through the veil of death. This condition is cleared when the PC clears a HP.",
-            "ru": "Если персонаж отмечает своё последнее очко здоровья, находясь на кладбище, он становится Призраком вместо того, чтобы совершать предсмертный ход. Будучи Призраком, персонаж может общаться с живыми, но не может взаимодействовать с физическим миром, и должен оставаться в пределах Средней дистанции от своего тела или пересечь завесу смерти. Это состояние снимается, когда персонаж снимает Рану."
+            "ru": "Если персонаж отмечает свою последнюю Рану, находясь на кладбище, он становится Призраком вместо того, чтобы совершать предсмертный ход. Будучи Призраком, персонаж может общаться с живыми, но не может взаимодействовать с физическим миром, и должен оставаться в пределах Средней дистанции от своего тела или пересечь завесу смерти. Это состояние снимается, когда персонаж снимает Рану."
           },
           "prompt": {
             "en": "What new information or experience does a PC gain from becoming a specter? How can the party reunite the PC’s spirit with their flesh? What happens if their ritual goes wrong?",
@@ -7216,7 +7234,7 @@
           },
           "description": {
             "en": "When an adversary would mark their last HP, roll a d6. On a result of 5 or 6, the adversary doesn’t mark it.",
-            "ru": "Когда противник должен был бы отметить своё последнее очко здоровья, бросьте d6. При результате 5 или 6 противник не отмечает его."
+            "ru": "Когда противник должен был бы отметить свою последнюю Рану, бросьте d6. При результате 5 или 6 противник не отмечает его."
           },
           "prompt": {
             "en": "Who commanded this land to reject death? How do the dead come back different here?",
@@ -7326,7 +7344,7 @@
           },
           "description": {
             "en": "After a long night, the partygoers start filtering out. When the feast concludes, all PCs who participated in the festivities clear all Stress and gain a Hope. Additionally, each Honored Guest clears all HP and gains an additional Hope, then clears the condition. Each PC who overindulged must succeed on a Strength Reaction Roll or become Hungover until their next rest. While Hungover, a PC gains a −1 penalty to action rolls.",
-            "ru": "После долгой ночи гуляки начинают расходиться. Когда пир завершается, все персонажи, участвовавшие в веселье, снимают весь Стресс и получают Надежду. Кроме того, каждый Почётный Гость снимает все очки здоровья и получает дополнительную Надежду, после чего снимает это состояние. Каждый персонаж, который перебрал, должен преуспеть в Броске Реакции на Силу, иначе становится Похмельным до следующего отдыха. Будучи Похмельным, персонаж получает штраф −1 к броскам действия."
+            "ru": "После долгой ночи гуляки начинают расходиться. Когда пир завершается, все персонажи, участвовавшие в веселье, снимают весь Стресс и получают Надежду. Кроме того, каждый Почётный Гость снимает все Раны и получает дополнительную Надежду, после чего снимает это состояние. Каждый персонаж, который перебрал, должен преуспеть в Броске Реакции на Силу, иначе становится Похмельным до следующего отдыха. Будучи Похмельным, персонаж получает штраф −1 к броскам действия."
           },
           "prompt": {
             "en": "What crazy stories do the PCs share with one another as they leave the party? Who do the PCs see unexpectedly canoodling afterward?",
@@ -8003,7 +8021,7 @@
         "ru": [
           "Капитан Стражи",
           "Минотавр Крушитель",
-          "Культист-Хранитель Тайн",
+          "Хранитель Тайн",
           "Призрачный Страж"
         ]
       },
@@ -9221,12 +9239,14 @@
       },
       "potential_adversaries": {
         "en": [
-          "Automated Security (Vault Guardians)",
-          "Gamblers (Courtesan, Merchant Baron, Petty Noble, Spy)"
+          "Vault Guardians (Gaoler, Sentinel, Turret)",
+          "Gamblers (Courtesan, Merchant Baron, Petty Noble, Spy)",
+          "Demon of Avarice"
         ],
         "ru": [
-          "Автоматизированная Охрана (Стражи Хранилища)",
-          "Игроки (Куртизанка, Торговый Барон, Мелкий Аристократ, Шпион)"
+          "Стражи Хранилища (Тюремщик, Дозорный, Турель)",
+          "Игроки (Куртизанка, Торговый Барон, Мелкий Аристократ, Шпион)",
+          "Демон Алчности"
         ]
       },
       "features": [
@@ -11001,7 +11021,7 @@
           "Существа Запределья (Растлитель, Мерзость из внешних миров, Прислужник)",
           "Энигмантис",
           "Провальный Эксперимент",
-          "Культист-Хранитель Тайн"
+          "Хранитель Тайн"
         ]
       },
       "features": [
@@ -12524,7 +12544,7 @@
           },
           "description": {
             "en": "Huge gusts of winds slam into the PCs, attempting to scatter them. Each PC must make a Strength Reaction Roll. Each target that fails is moved up to Very Far in a direction of the GM’s choosing. If this movement causes them to hit a solid object, the PC stops there and takes 2d12+2 physical damage.",
-            "ru": "Мощные порывы ветра обрушиваются на персонажей, пытаясь их разметать. Каждый персонаж должен совершить Бросок Реакции на Силу. Каждая цель, потерпевшая неудачу, перемещается на расстояние вплоть до Очень Дальней дистанции в направлении, выбранном Ведущим. Если это перемещение приводит к столкновению с твёрдым объектом, персонаж останавливается там и получает 2d12+2 физического урона."
+            "ru": "Мощные порывы ветра обрушиваются на персонажей, пытаясь их разметать. Каждый персонаж должен совершить Бросок Реакции на Силу. Каждая цель, потерпевшая неудачу, перемещается на расстояние вплоть до Очень Дальней дистанции в направлении, выбранном Мастером. Если это перемещение приводит к столкновению с твёрдым объектом, персонаж останавливается там и получает 2d12+2 физического урона."
           },
           "prompt": {
             "en": "How do you anchor yourself as the hurricane winds hit? Where do the PCs end up, can they still see their allies?",
@@ -13738,13 +13758,15 @@
           "Head Vampire",
           "Vampire",
           "Vault Guardians (Gaoler, Sentinel, Turret)",
-          "Time Frog"
+          "Time Frog",
+          "Hydra"
         ],
         "ru": [
           "Владыка Вампиров",
           "Вампир",
           "Стражи Хранилища (Тюремщик, Дозорный, Турель)",
-          "Хроножаба"
+          "Хроножаба",
+          "Гидра"
         ]
       },
       "features": [
@@ -14889,12 +14911,14 @@
         "en": [
           "Cultists (Cult Adept, Cult Fang, Cult Initiate)",
           "Mortuary Priest",
-          "Spy"
+          "Spy",
+          "Elite Soldier"
         ],
         "ru": [
           "Культисты (Адепт, Клык, Посвящённый)",
           "Жрец Усыпальницы",
-          "Шпион"
+          "Шпион",
+          "Элитный Солдат"
         ]
       },
       "features": [
@@ -15207,7 +15231,7 @@
           },
           "description": {
             "en": "The land itself is tainted with poison. Whenever a PC rolls with Fear, they must mark a Stress or become Poisoned until they clear a HP. A Poisoned PC has disadvantage on Strength and Agility Rolls.",
-            "ru": "Сама земля отравлена ядом. Каждый раз, когда Игрок совершает бросок со Страхом, он должен отметить Стресс или получить состояние Отравлен(а), пока не снимет Рану. Отравленный Игрок совершает Броски на Силу и Проворность с помехой."
+            "ru": "Сама земля отравлена ядом. Каждый раз, когда персонаж совершает бросок со Страхом, он должен отметить Стресс или получить состояние Отравлен(а), пока не снимет Рану. Отравленный персонаж совершает Броски на Силу и Проворность с помехой."
           },
           "prompt": {
             "en": "What signs of the taint exist in the land? How do you realize you have come in contact with something toxic?",
@@ -15222,7 +15246,7 @@
           },
           "description": {
             "en": "When the environment first takes the spotlight, activate a Consequence Countdown (8). When it triggers, the river bank collapses and the toxic waters flood into the nearby land. All creatures take 2d10+3 physical damage, mark 2 Stress, and become Poisoned. The PCs can prevent this collapse by completing a Progress Countdown (6) before it triggers, to shore up the levees and divert the river.",
-            "ru": "Когда окружение впервые получает Активацию, запустите Отсчёт Последствий (8). Когда он сработает, берег реки обрушится, и токсичные воды затопят близлежащие земли. Все существа получают 2d10+3 физического урона, отмечают 2 Стресса и получают состояние Отравлен(а). Игроки могут предотвратить обрушение, завершив Отсчёт Прогресса (6) до его срабатывания, укрепив дамбу и отведя реку."
+            "ru": "Когда окружение впервые получает Активацию, запустите Отсчёт Последствий (8). Когда он сработает, берег реки обрушится, и токсичные воды затопят близлежащие земли. Все существа получают 2d10+3 физического урона, отмечают 2 Стресса и получают состояние Отравлен(а). Персонажи могут предотвратить обрушение, завершив Отсчёт Прогресса (6) до его срабатывания, укрепив дамбу и отведя реку."
           },
           "prompt": {
             "en": "What materials were used to make this improvised dam? What is failing? How corrosive does the river appear to be?",
@@ -15237,11 +15261,11 @@
           },
           "description": {
             "en": "Spend a Fear to summon two Green Oozes within Very Close range of a PC. One of them immediately takes the spotlight and attacks. PCs that mark one or more HP from an Ooze’s attack become Poisoned.",
-            "ru": "Потратьте Страх, чтобы призвать двух Зелёных Слизей на Очень Близкой дистанции от Игрока. Одна из них немедленно получает Активацию и атакует. Игроки, отметившие одну или более Ран от атаки Слизи, получают состояние Отравлен(а)."
+            "ru": "Потратьте Страх, чтобы призвать двух Зелёных Слизей на Очень Близкой дистанции от персонажа. Одна из них немедленно получает Активацию и атакует. Персонажи, отметившие одну или более Ран от атаки Слизи, получают состояние Отравлен(а)."
           },
           "prompt": {
             "en": "What foul smell do the oozes emit? What noises of the PCs are they drawn to?",
-            "ru": "Какой мерзкий запах источают слизи? На какие звуки Игроков они реагируют?"
+            "ru": "Какой мерзкий запах источают слизи? На какие звуки персонажей они реагируют?"
           }
         },
         {
@@ -15252,7 +15276,7 @@
           },
           "description": {
             "en": "When a PC fails with Fear on the Progress Countdown, you can spray a jet of polluted water from the levee into their face. They must make an Agility Reaction Roll. On a failure, they take 2d8+3 physical damage and are moved to Close range.",
-            "ru": "Когда Игрок терпит Неудачу со Страхом при Отсчёте Прогресса, вы можете брызнуть струёй загрязнённой воды с дамбы ему в лицо. Он должен совершить Бросок Реакции на Проворность. При провале он получает 2d8+3 физического урона и перемещается на Среднюю дистанцию."
+            "ru": "Когда персонаж терпит Неудачу со Страхом при Отсчёте Прогресса, вы можете брызнуть струёй загрязнённой воды с дамбы ему в лицо. Он должен совершить Бросок Реакции на Проворность. При провале он получает 2d8+3 физического урона и перемещается на Среднюю дистанцию."
           },
           "prompt": {
             "en": "What weak spot of the dam breaks open? How can you shore it up to prevent it from expanding?",
@@ -15312,7 +15336,7 @@
           },
           "description": {
             "en": "The oxygen in this area is sparse, making it difficult to move quickly. Whenever a PC moves farther than Very Close range or rolls with Fear, they become Hypoxic and gain a Hypoxia token. While Hypoxic, they have a penalty on all rolls equal to the number of Hypoxia tokens on their character sheet. They can remove the condition and all tokens by spending a Hope to catch their breath. When they do so, you gain a Fear.",
-            "ru": "Кислорода в этой местности мало, что затрудняет быстрое передвижение. Каждый раз, когда Игрок перемещается дальше, чем на Очень Близкую дистанцию, или совершает бросок со Страхом, он получает состояние Гипоксия и жетон Гипоксии. Пока у него есть это состояние, он получает штраф ко всем броскам, равный количеству жетонов Гипоксии на его листе персонажа. Он может снять это состояние и все жетоны, потратив Надежду, чтобы перевести дыхание. Когда он это делает, вы получаете Страх."
+            "ru": "Кислорода в этой местности мало, что затрудняет быстрое передвижение. Каждый раз, когда персонаж перемещается дальше, чем на Очень Близкую дистанцию, или совершает бросок со Страхом, он получает состояние Гипоксия и жетон Гипоксии. Пока у него есть это состояние, он получает штраф ко всем броскам, равный количеству жетонов Гипоксии на его листе персонажа. Он может снять это состояние и все жетоны, потратив Надежду, чтобы перевести дыхание. Когда он это делает, вы получаете Страх."
           },
           "prompt": {
             "en": "What first alerts you of the need to conserve your breath? What signs do you see of other adventurers who have navigated this corridor?",
@@ -15327,7 +15351,7 @@
           },
           "description": {
             "en": "The PCs encounter a precarious area of terrain. Each one must make a Strength or Agility Roll to pass it. On a failure, the PC is Sprained until they clear a HP. A Sprained PC has disadvantage on Agility Rolls. If any of them fail with Fear, you can trigger the “Unstable Ceiling” action without spending a Fear.",
-            "ru": "Игроки сталкиваются с ненадёжным участком местности. Каждый должен совершить Бросок на Силу или Проворность, чтобы преодолеть его. При провале Игрок получает состояние Растяжение, пока не снимет Рану. Игрок с Растяжением совершает Броски на Проворность с помехой. Если кто-то из них терпит Неудачу со Страхом, вы можете задействовать действие «Нестабильный потолок» без траты Страха."
+            "ru": "Персонажи сталкиваются с ненадёжным участком местности. Каждый должен совершить Бросок на Силу или Проворность, чтобы преодолеть его. При провале персонаж получает состояние Растяжение, пока не снимет Рану. Персонаж с Растяжением совершает Броски на Проворность с помехой. Если кто-то из них терпит Неудачу со Страхом, вы можете задействовать действие «Нестабильный потолок» без траты Страха."
           },
           "prompt": {
             "en": "What about this terrain is so dangerous? How do you help your injured allies?",
@@ -15342,11 +15366,11 @@
           },
           "description": {
             "en": "Spend a Fear to cause the ceiling to collapse over the party. All PCs must make an Agility Reaction Roll. On a failure, they take 2d6+3 physical damage. If more than half the party fail, the party is split in two, with the ones who succeed on one side of the cave-in, the rest on the other side.",
-            "ru": "Потратьте Страх, чтобы обрушить потолок над отрядом. Все Игроки должны совершить Бросок Реакции на Проворность. При провале они получают 2d6+3 физического урона. Если проваливает больше половины отряда, отряд разделяется на две части: преуспевшие оказываются по одну сторону завала, остальные — по другую."
+            "ru": "Потратьте Страх, чтобы обрушить потолок над отрядом. Все персонажи должны совершить Бросок Реакции на Проворность. При провале они получают 2d6+3 физического урона. Если проваливает больше половины отряда, отряд разделяется на две части: преуспевшие оказываются по одну сторону завала, остальные — по другую."
           },
           "prompt": {
             "en": "What sounds does the ceiling make that warn of the dangers of collapse? Do any of the PCs have past experiences with cave-ins?",
-            "ru": "Какие звуки издаёт потолок, предупреждая об опасности обрушения? Есть ли у кого-то из Игроков прошлый опыт с обвалами?"
+            "ru": "Какие звуки издаёт потолок, предупреждая об опасности обрушения? Есть ли у кого-то из персонажей прошлый опыт с обвалами?"
           }
         },
         {
@@ -15357,7 +15381,7 @@
           },
           "description": {
             "en": "The gas in the corridor is dangerously flammable. Whenever a PC creates a spark or fire, they must succeed on a Finesse Reaction Roll or ignite the gas in the area. All PCs and creatures within Close range of the trigger take 2d10+2 physical damage. You can also spend a Fear to move the PCs to Far range of each other.",
-            "ru": "Газ в коридоре опасно горюч. Каждый раз, когда Игрок создаёт искру или огонь, он должен преуспеть в Броске Реакции на Искусность, иначе воспламенит газ в округе. Все Игроки и существа на Средней дистанции от источника получают 2d10+2 физического урона. Вы также можете потратить Страх, чтобы переместить Игроков на Дальнюю дистанцию друг от друга."
+            "ru": "Газ в коридоре опасно горюч. Каждый раз, когда персонаж создаёт искру или огонь, он должен преуспеть в Броске Реакции на Искусность, иначе воспламенит газ в округе. Все персонажи и существа на Средней дистанции от источника получают 2d10+2 физического урона. Вы также можете потратить Страх, чтобы переместить персонажей на Дальнюю дистанцию друг от друга."
           },
           "prompt": {
             "en": "What signs of the gases' volatility are visible? What inquisitive creatures are drawn by the noise?",
@@ -15418,7 +15442,7 @@
           },
           "description": {
             "en": "PCs have disadvantage on Instinct Rolls unless they have a magical light source.",
-            "ru": "Игроки совершают Броски на Инстинкт с помехой, если у них нет магического источника света."
+            "ru": "Персонажи совершают Броски на Инстинкт с помехой, если у них нет магического источника света."
           },
           "prompt": {
             "en": "Since natural flames will not work, what light sources do you use? What creatures are drawn to the light?",
@@ -15433,7 +15457,7 @@
           },
           "description": {
             "en": "A PC can make a Knowledge or Instinct Roll to identify plants worth harvesting. On a success with Hope, they find three of the below plants. On a success with Fear, they find two. On a failure, they can mark a Stress to find one.\n- Umbra Lily\n- Phantom Ferns\n- Gloomblossom Anemone\n- Thieves' Eelgrass",
-            "ru": "Игрок может совершить Бросок на Знание или Инстинкт, чтобы определить растения, пригодные для сбора. При Успехе с Надеждой он находит три из перечисленных ниже растений. При Успехе со Страхом — два. При Неудаче он может отметить Стресс, чтобы найти одно.\n- Тенелилия\n- Призрачные Папоротники\n- Анемона Мрачноцвет\n- Воровской Взморник"
+            "ru": "Персонаж может совершить Бросок на Знание или Инстинкт, чтобы определить растения, пригодные для сбора. При Успехе с Надеждой он находит три из перечисленных ниже растений. При Успехе со Страхом — два. При Неудаче он может отметить Стресс, чтобы найти одно.\n- Тенелилия\n- Призрачные Папоротники\n- Анемона Мрачноцвет\n- Воровской Взморник"
           },
           "prompt": {
             "en": "What does this plant look like? How do you know of its use, and why do you want it?",
@@ -15448,7 +15472,7 @@
           },
           "description": {
             "en": "A thick bank of shadows rolls in. All PCs must succeed on a Strength Reaction Roll or take 2d6+3 magic damage and become temporarily Vulnerable. Until the mists rise, all enemies are Hidden.",
-            "ru": "Накатывает плотная завеса теней. Все Игроки должны преуспеть в Броске Реакции на Силу, иначе получат 2d6+3 магического урона и временно станут Уязвимы. Пока туман теней не рассеется, все враги Скрыты."
+            "ru": "Накатывает плотная завеса теней. Все персонажи должны преуспеть в Броске Реакции на Силу, иначе получат 2d6+3 магического урона и временно станут Уязвимы. Пока туман теней не рассеется, все враги Скрыты."
           },
           "prompt": {
             "en": "What childhood terrors are reignited by the mists? What real or imagined dangers do you see within them?",
@@ -15463,11 +15487,11 @@
           },
           "description": {
             "en": "When a PC fails an Instinct Roll, you can spend a Fear to summon a Shadowangler, which appears within Far range of the PC and is immediately spotlighted.",
-            "ru": "Когда Игрок терпит Неудачу в Броске на Инстинкт, вы можете потратить Страх, чтобы призвать Теневого Удильщика, который появляется на Дальней дистанции от Игрока и немедленно получает Активацию."
+            "ru": "Когда персонаж терпит Неудачу в Броске на Инстинкт, вы можете потратить Страх, чтобы призвать Теневого Удильщика, который появляется на Дальней дистанции от персонажа и немедленно получает Активацию."
           },
           "prompt": {
             "en": "What form does the Shadowangler’s lure take? What figure from the PCs' past does it evoke?",
-            "ru": "Какую форму принимает приманка Теневого Удильщика? Какую фигуру из прошлого Игрока она вызывает в памяти?"
+            "ru": "Какую форму принимает приманка Теневого Удильщика? Какую фигуру из прошлого персонажа она вызывает в памяти?"
           }
         }
       ],
@@ -15537,7 +15561,7 @@
           },
           "description": {
             "en": "Crossing the pool requires the party to complete a Progress Countdown (6). A PC who rolls a failure with Fear is immediately targeted by the “Plunge” action without requiring a Fear to be spent on the feature.",
-            "ru": "Чтобы пересечь пруд, отряду нужно завершить Отсчёт Прогресса (6). Игрок, выбросивший Неудачу со Страхом, немедленно становится целью действия «Погружение» без необходимости тратить Страх на эту особенность."
+            "ru": "Чтобы пересечь пруд, отряду нужно завершить Отсчёт Прогресса (6). Персонаж, выбросивший Неудачу со Страхом, немедленно становится целью действия «Погружение» без необходимости тратить Страх на эту особенность."
           },
           "prompt": {
             "en": "How does the party avoid becoming separated in the darkness? What remains of others do they encounter in the shadows?",
@@ -15552,7 +15576,7 @@
           },
           "description": {
             "en": "Spend a Fear to have a PC slip into the Pool of Darkness. If they aren’t saved on the next action, they plunge into the liquid shadow and tick up the countdown timer by 2. The PC takes 3d6+5 magic damage and is Restrained. Any failed attempt to rescue the PC deals them 1d6 physical damage unless they mark a Stress. The Progress Countdown can’t tick down until the PC is freed from the pool.",
-            "ru": "Потратьте Страх, чтобы Игрок поскользнулся и упал в Пруд Тьмы. Если его не спасут в следующем действии, он погружается в жидкую тень, и счётчик отсчёта увеличивается на 2. Игрок получает 3d6+5 магического урона и получает состояние Обездвижен(а). Любая неудачная попытка спасти Игрока наносит ему 1d6 физического урона, если он не отметит Стресс. Отсчёт Прогресса не может уменьшаться, пока Игрок не освобождён из пруда."
+            "ru": "Потратьте Страх, чтобы персонаж поскользнулся и упал в Пруд Тьмы. Если его не спасут в следующем действии, он погружается в жидкую тень, и счётчик отсчёта увеличивается на 2. Персонаж получает 3d6+5 магического урона и получает состояние Обездвижен(а). Любая неудачная попытка спасти персонажа наносит ему 1d6 физического урона, если он не отметит Стресс. Отсчёт Прогресса не может уменьшаться, пока персонаж не освобождён из пруда."
           },
           "prompt": {
             "en": "How do you react to falling into the pool? What do you feel under the surface, able to be felt but not seen?",
@@ -15567,7 +15591,7 @@
           },
           "description": {
             "en": "Spend a Fear to summon 1d4 Demons of Despair within Close range of a chosen PC. A Demon immediately takes the spotlight and uses their “Your Struggle is Pointless” action without spending a Fear.",
-            "ru": "Потратьте Страх, чтобы призвать 1d4 Демонов Уныния на Средней дистанции от выбранного Игрока. Один Демон немедленно получает Активацию и использует своё действие «Твоя борьба бессмысленна» без траты Страха."
+            "ru": "Потратьте Страх, чтобы призвать 1d4 Демонов Уныния на Средней дистанции от выбранного персонажа. Один Демон немедленно получает Активацию и использует своё действие «Твоя борьба бессмысленна» без траты Страха."
           },
           "prompt": {
             "en": "What dark emotions are the Demons drawn to? What core hopes do you cling to in the assault of despair?",
@@ -15626,7 +15650,7 @@
           },
           "description": {
             "en": "The consuming darkness saps creatures' spirit. Reduce the PCs' Hope Die to a d10 while in this environment.",
-            "ru": "Всепоглощающая тьма истощает дух существ. Пока Игроки находятся в этом окружении, их Кость Надежды уменьшается до d10."
+            "ru": "Всепоглощающая тьма истощает дух существ. Пока персонажи находятся в этом окружении, их Кость Надежды уменьшается до d10."
           },
           "prompt": {
             "en": "What warning signs are there of the coming attack? What hopeful memory do you cling to?",
@@ -15656,7 +15680,7 @@
           },
           "description": {
             "en": "When a PC makes a death move, all lights within Far range of them are extinguished and a ghostly wail rises from the darkness.",
-            "ru": "Когда Игрок совершает Предсмертный ход, все источники света на Дальней дистанции от него гаснут, и из тьмы поднимается призрачный вой."
+            "ru": "Когда персонаж совершает Предсмертный ход, все источники света на Дальней дистанции от него гаснут, и из тьмы поднимается призрачный вой."
           },
           "prompt": {
             "en": "How does this affect your fading moments? How do the spirits react to the night’s call?",
@@ -15703,7 +15727,7 @@
           "Череп Хаоса",
           "Культисты (Адепт, Клык, Посвящённый)",
           "Стая Электрических Угрей",
-          "Культист-Хранитель Тайн"
+          "Хранитель Тайн"
         ]
       },
       "features": [
@@ -15715,7 +15739,7 @@
           },
           "description": {
             "en": "Crossing the marsh requires the party to complete a Progress Countdown (6). A PC who rolls a failure with Fear is immediately targeted by the “Inky Grasp” action without requiring a Fear to be spent on the feature.",
-            "ru": "Чтобы пересечь болото, отряду нужно завершить Отсчёт Прогресса (6). Игрок, выбросивший Неудачу со Страхом, немедленно становится целью действия «Чернильная хватка» без необходимости тратить Страх на эту особенность."
+            "ru": "Чтобы пересечь болото, отряду нужно завершить Отсчёт Прогресса (6). Персонаж, выбросивший Неудачу со Страхом, немедленно становится целью действия «Чернильная хватка» без необходимости тратить Страх на эту особенность."
           },
           "prompt": {
             "en": "What do you see if you gaze into the pool of ink? What fragments of literature coalesce in its depths?",
@@ -15730,11 +15754,11 @@
           },
           "description": {
             "en": "Spend a Fear to have inky tendrils reach out and attempt to snare a PC. They must succeed on an Agility Reaction Roll or take 1d8+4 physical damage and become Restrained and Vulnerable until they break free, clearing both conditions, with a successful Finesse or Strength Roll. When a PC fails, you can spend an additional Fear to summon a Chaos Skull within Close range of the PC, and spotlight them immediately.",
-            "ru": "Потратьте Страх, чтобы чернильные щупальца потянулись и попытались схватить Игрока. Он должен преуспеть в Броске Реакции на Проворность, иначе получит 1d8+4 физического урона и получит состояния Обездвижен(а) и Уязвим(а), пока не вырвется, сняв оба состояния успешным Броском на Искусность или Силу. Если Игрок терпит неудачу, вы можете потратить дополнительный Страх, чтобы призвать Черепа Хаоса на Средней дистанции от Игрока, и немедленно дать ему Активацию."
+            "ru": "Потратьте Страх, чтобы чернильные щупальца потянулись и попытались схватить персонажа. Он должен преуспеть в Броске Реакции на Проворность, иначе получит 1d8+4 физического урона и получит состояния Обездвижен(а) и Уязвим(а), пока не вырвется, сняв оба состояния успешным Броском на Искусность или Силу. Если персонаж терпит неудачу, вы можете потратить дополнительный Страх, чтобы призвать Черепа Хаоса на Средней дистанции от персонажа, и немедленно дать ему Активацию."
           },
           "prompt": {
             "en": "How does the ink feel to the PC as they are pulled in? What fears might the tendril conjure up?",
-            "ru": "Каково Игроку ощущать чернила, когда его затягивает? Какие страхи может пробудить это щупальце?"
+            "ru": "Каково персонажу ощущать чернила, когда его затягивает? Какие страхи может пробудить это щупальце?"
           }
         },
         {
@@ -15745,7 +15769,7 @@
           },
           "description": {
             "en": "Target a creature Restrained by the “Inky Grasp” feature. The target must succeed on a Knowledge Reaction Roll or take 1d8+4 magic damage and mark a Stress. If they can’t mark a Stress, they cross out an Experience instead. The Experience remains crossed out until the PC and one other party member each use a downtime move to contemplate the lost memory.",
-            "ru": "Выберите целью существо, Обездвиженное особенностью «Чернильная хватка». Цель должна преуспеть в Броске Реакции на Знание, иначе получит 1d8+4 магического урона и отметит Стресс. Если он не может отметить Стресс, вместо этого он вычёркивает Опыт. Опыт остаётся вычеркнутым, пока Игрок и ещё один член отряда не используют Ход Отдыха, чтобы осмыслить утраченное воспоминание."
+            "ru": "Выберите целью существо, Обездвиженное особенностью «Чернильная хватка». Цель должна преуспеть в Броске Реакции на Знание, иначе получит 1d8+4 магического урона и отметит Стресс. Если он не может отметить Стресс, вместо этого он вычёркивает Опыт. Опыт остаётся вычеркнутым, пока персонаж и ещё один член отряда не используют Ход Отдыха, чтобы осмыслить утраченное воспоминание."
           },
           "prompt": {
             "en": "What type of memories does the ink try to consume? How do you feel with a hole in your recollection?",
@@ -15760,7 +15784,7 @@
           },
           "description": {
             "en": "When a PC fails the Agility Reaction Roll from the “Inky Grasp” feature, offer them the choice to beseech the presence in the Grave. If they do, they succeed instead, and add 2 Watched tokens to their character sheet. A PC has a penalty on all Instinct Rolls equal to their number of Watched tokens. They clear all Watched tokens when they leave The Watcher’s Grave.",
-            "ru": "Когда Игрок терпит неудачу в Броске Реакции на Проворность от особенности «Чернильная хватка», предложите ему возможность взмолиться к присутствию в Могиле. Если он согласится, он преуспевает вместо этого и добавляет 2 жетона Наблюдения на свой лист персонажа. Игрок получает штраф ко всем Броскам на Инстинкт, равный количеству жетонов Наблюдения. Он снимает все жетоны Наблюдения, покинув Могилу Наблюдателя."
+            "ru": "Когда персонаж терпит неудачу в Броске Реакции на Проворность от особенности «Чернильная хватка», предложите ему возможность взмолиться к присутствию в Могиле. Если он согласится, он преуспевает вместо этого и добавляет 2 жетона Наблюдения на свой лист персонажа. Персонаж получает штраф ко всем Броскам на Инстинкт, равный количеству жетонов Наблюдения. Он снимает все жетоны Наблюдения, покинув Могилу Наблюдателя."
           },
           "prompt": {
             "en": "What do you do to attract the watcher’s attention? How does the feeling of being watched distract you?",
@@ -15807,7 +15831,7 @@
         "ru": [
           "Культисты (Адепт, Клык, Посвящённый)",
           "Провальный Эксперимент",
-          "Культист-Хранитель Тайн"
+          "Хранитель Тайн"
         ]
       },
       "features": [
@@ -15819,7 +15843,7 @@
           },
           "description": {
             "en": "The field contains many possibilities. A PC who seeks to find them may make an Instinct or Knowledge Roll to gain enlightenment about a specific question or problem.\n- **Success with Hope:** They learn insightful information on the question.\n- **Success with Fear:** They get an answer, but the information is vague and potentially misleading.\n- **Any Failure:** They gain no information, but can mark a Stress to gain advantage on the next action roll to investigate this environment.",
-            "ru": "Поле таит в себе множество возможностей. Игрок, стремящийся отыскать их, может совершить Бросок на Инстинкт или Знание, чтобы получить озарение по конкретному вопросу или проблеме.\n- **Успех с Надеждой:** он узнаёт проницательную информацию по вопросу.\n- **Успех со Страхом:** он получает ответ, но информация расплывчата и потенциально вводит в заблуждение.\n- **Любая Неудача:** он не получает информации, но может отметить Стресс, чтобы получить преимущество на следующий бросок действия для исследования этого окружения."
+            "ru": "Поле таит в себе множество возможностей. Персонаж, стремящийся отыскать их, может совершить Бросок на Инстинкт или Знание, чтобы получить озарение по конкретному вопросу или проблеме.\n- **Успех с Надеждой:** он узнаёт проницательную информацию по вопросу.\n- **Успех со Страхом:** он получает ответ, но информация расплывчата и потенциально вводит в заблуждение.\n- **Любая Неудача:** он не получает информации, но может отметить Стресс, чтобы получить преимущество на следующий бросок действия для исследования этого окружения."
           },
           "prompt": {
             "en": "What do the whispers do to help make your questions easier to understand? Do you really trust the whispers in the mists?",
@@ -15834,7 +15858,7 @@
           },
           "description": {
             "en": "PCs can only see within Very Close range, and must succeed on an Instinct Roll to perceive any farther. Anything further than Far range can’t be perceived at all. If a PC rolls with Fear on the Instinct Roll, they see something moving in the fog, and must mark a Stress or become Panicked until they roll with Hope. While Panicked they can’t spend Hope.",
-            "ru": "Игроки видят только в пределах Очень Близкой дистанции и должны преуспеть в Броске на Инстинкт, чтобы разглядеть что-либо дальше. Всё, что находится дальше Дальней дистанции, невозможно воспринять вовсе. Если Игрок совершает бросок со Страхом при Броске на Инстинкт, он видит, как что-то движется в тумане, и должен отметить Стресс или впасть в Панику, пока не совершит бросок с Надеждой. Пока Игрок в Панике, он не может тратить Надежду."
+            "ru": "Персонажи видят только в пределах Очень Близкой дистанции и должны преуспеть в Броске на Инстинкт, чтобы разглядеть что-либо дальше. Всё, что находится дальше Дальней дистанции, невозможно воспринять вовсе. Если персонаж совершает бросок со Страхом при Броске на Инстинкт, он видит, как что-то движется в тумане, и должен отметить Стресс или впасть в Панику, пока не совершит бросок с Надеждой. Пока персонаж в Панике, он не может тратить Надежду."
           },
           "prompt": {
             "en": "What emotions do you feel in the isolating fog? What tricks do your eyes play on you with the absence of visibility?",
@@ -15849,7 +15873,7 @@
           },
           "description": {
             "en": "The mists swirl and disorient the PCs. All PCs must succeed on an Instinct Reaction Roll or be moved to Far range from one another. If a PC fails with Fear, they become Forlorn. While Forlorn, PCs have disadvantage on all Presence Rolls. A PC’s ally can clear this condition by using a downtime move to make and succeed on a Presence Roll.",
-            "ru": "Туманы кружатся и дезориентируют Игроков. Все Игроки должны преуспеть в Броске Реакции на Инстинкт, иначе будут перемещены на Дальнюю дистанцию друг от друга. Если Игрок терпит Неудачу со Страхом, он получает состояние Покинутость. Пока Игрок в состоянии Покинутость, он совершает все Броски на Влияние с помехой. Союзник Игрока может снять это состояние, использовав Ход Отдыха, чтобы совершить и преуспеть в Броске на Влияние."
+            "ru": "Туманы кружатся и дезориентируют персонажей. Все персонажи должны преуспеть в Броске Реакции на Инстинкт, иначе будут перемещены на Дальнюю дистанцию друг от друга. Если персонаж терпит Неудачу со Страхом, он получает состояние Покинутость. Пока персонаж в состоянии Покинутость, он совершает все Броски на Влияние с помехой. Союзник персонажа может снять это состояние, использовав Ход Отдыха, чтобы совершить и преуспеть в Броске на Влияние."
           },
           "prompt": {
             "en": "What causes you to become separated from your group? What crushing realizations do you come to in the isolation?",
@@ -15864,7 +15888,7 @@
           },
           "description": {
             "en": "When a PC fails a roll, offer them the choice to mark a Stress to succeed and gain the attention of the presence in the Grave. The PC adds a Watched token to their character sheet. A PC has a penalty on all Instinct Rolls equal to their number of Watched tokens. They clear all Watched tokens when they leave The Watcher’s Grave.",
-            "ru": "Когда Игрок терпит неудачу в броске, предложите ему возможность отметить Стресс, чтобы преуспеть и привлечь внимание присутствия в Могиле. Игрок добавляет жетон Наблюдения на свой лист персонажа. Игрок получает штраф ко всем Броскам на Инстинкт, равный количеству жетонов Наблюдения. Он снимает все жетоны Наблюдения, покинув Могилу Наблюдателя."
+            "ru": "Когда персонаж терпит неудачу в броске, предложите ему возможность отметить Стресс, чтобы преуспеть и привлечь внимание присутствия в Могиле. Персонаж добавляет жетон Наблюдения на свой лист персонажа. Персонаж получает штраф ко всем Броскам на Инстинкт, равный количеству жетонов Наблюдения. Он снимает все жетоны Наблюдения, покинув Могилу Наблюдателя."
           },
           "prompt": {
             "en": "What makes you feel like you are being watched? How do you react to feeling like every moment of your life is being observed?",
@@ -15912,7 +15936,7 @@
         "ru": [
           "Культисты (Адепт, Клык, Посвящённый)",
           "Око Загадок",
-          "Культист-Хранитель Тайн",
+          "Хранитель Тайн",
           "Призрачные Воины (Лучник, Командующий, Страж)"
         ]
       },
@@ -15925,7 +15949,7 @@
           },
           "description": {
             "en": "A PC can make a Knowledge Roll to exchange information with the hungry inhabitants of the library. If the information they seek is rarer than the information they give in return, the roll is made with disadvantage.\n- **Critical Success:** The PC receives clear information and can gain back a crossed out Experience.\n- **Success with Hope:** The PC receives clear information.\n- **Success with Fear:** The PC receives vague information and may make their next Instinct Roll to investigate with advantage.\n- **Any Failure:** The PC receives false information that will not help them at all. Instead, they may choose to mark a Stress and add a Watched token to their character to understand this is false information, and make their next Instinct Roll to investigate with advantage.",
-            "ru": "Игрок может совершить Бросок на Знание, чтобы обменяться сведениями с голодными обитателями библиотеки. Если информация, которую он ищет, реже той, что он даёт взамен, бросок совершается с помехой.\n- **Критический Успех:** Игрок получает чёткую информацию и может вернуть себе вычеркнутый Опыт.\n- **Успех с Надеждой:** Игрок получает чёткую информацию.\n- **Успех со Страхом:** Игрок получает расплывчатую информацию и может совершить следующий Бросок на Инстинкт для расследования с преимуществом.\n- **Любая Неудача:** Игрок получает ложную информацию, которая совершенно ему не поможет. Вместо этого он может отметить Стресс и добавить жетон Наблюдения своему персонажу, чтобы понять, что это ложная информация, и совершить следующий Бросок на Инстинкт для расследования с преимуществом."
+            "ru": "Персонаж может совершить Бросок на Знание, чтобы обменяться сведениями с голодными обитателями библиотеки. Если информация, которую он ищет, реже той, что он даёт взамен, бросок совершается с помехой.\n- **Критический Успех:** Персонаж получает чёткую информацию и может вернуть себе вычеркнутый Опыт.\n- **Успех с Надеждой:** Персонаж получает чёткую информацию.\n- **Успех со Страхом:** Персонаж получает расплывчатую информацию и может совершить следующий Бросок на Инстинкт для расследования с преимуществом.\n- **Любая Неудача:** Персонаж получает ложную информацию, которая совершенно ему не поможет. Вместо этого он может отметить Стресс и добавить жетон Наблюдения своему персонажу, чтобы понять, что это ложная информация, и совершить следующий Бросок на Инстинкт для расследования с преимуществом."
           },
           "prompt": {
             "en": "Whose knowledge do you find to sate your thirst? Do you notice any evidence of what befell the last individual to read this book?",
@@ -15940,7 +15964,7 @@
           },
           "description": {
             "en": "Summon a Riddling Eye to a spot within Close range of at least one PC. The Riddling Eye asks a PC 3 questions using its “Riddle Me This” feature without spending Fear. Those questions are riddles or trivia questions unless the PC has any Watched tokens, in which case they are personal questions or concerning secrets of theirs.\n- If a PC lies about their secrets, the Riddling Eye can uncover the truth by taking a Watched token. The PC marks a Stress.\n- If a revealed secret causes conflict in the party, the affected PCs can’t collaborate on the “Prepare” downtime move until the conflict is resolved.",
-            "ru": "Призовите Око Загадок в точке на Средней дистанции от хотя бы одного Игрока. Око Загадок задаёт Игроку 3 вопроса, используя свою особенность «Загадай мне» без траты Страха. Эти вопросы являются загадками или вопросами на эрудицию, если только у Игрока нет жетонов Наблюдения — в этом случае они становятся личными вопросами или касаются его тайн.\n- Если Игрок лжёт о своих тайнах, Око Загадок может раскрыть правду, получив жетон Наблюдения. Игрок отмечает Стресс.\n- Если раскрытая тайна вызывает конфликт в отряде, затронутые Игроки не могут сотрудничать в Ходе Отдыха «Подготовка», пока конфликт не будет разрешён."
+            "ru": "Призовите Око Загадок в точке на Средней дистанции от хотя бы одного персонажа. Око Загадок задаёт персонажу 3 вопроса, используя свою особенность «Загадай мне» без траты Страха. Эти вопросы являются загадками или вопросами на эрудицию, если только у персонажа нет жетонов Наблюдения — в этом случае они становятся личными вопросами или касаются его тайн.\n- Если персонаж лжёт о своих тайнах, Око Загадок может раскрыть правду, получив жетон Наблюдения. Персонаж отмечает Стресс.\n- Если раскрытая тайна вызывает конфликт в отряде, затронутые персонажи не могут сотрудничать в Ходе Отдыха «Подготовка», пока конфликт не будет разрешён."
           },
           "prompt": {
             "en": "How do you feel to have your secrets pried into? Why do you want this information to remain hidden? What does it feel like to be caught in a lie?",
@@ -15955,7 +15979,7 @@
           },
           "description": {
             "en": "When the PCs attempt to leave the environment, you can spend a Fear to hold them back. They must succeed on a group Presence Roll to escape. On a failure, they are forced to remain, and one PC of your choice must use the “Commune with Knowledge” feature.",
-            "ru": "Когда Игроки пытаются покинуть окружение, вы можете потратить Страх, чтобы удержать их. Они должны преуспеть в Групповом броске на Влияние, чтобы сбежать. При провале их вынуждают остаться, и один Игрок по вашему выбору должен использовать особенность «Общение со знанием»."
+            "ru": "Когда персонажи пытаются покинуть окружение, вы можете потратить Страх, чтобы удержать их. Они должны преуспеть в Групповом броске на Влияние, чтобы сбежать. При провале их вынуждают остаться, и один персонаж по вашему выбору должен использовать особенность «Общение со знанием»."
           },
           "prompt": {
             "en": "What valuable information do you know that the archives desire? What compulsion forces you to stay?",
@@ -16016,7 +16040,7 @@
           },
           "description": {
             "en": "Navigating through the pass requires the party to complete a Progress Countdown (6). A PC making an Instinct Roll to navigate must mark a Stress or make the roll at disadvantage.",
-            "ru": "Чтобы пройти через перевал, отряду нужно завершить Отсчёт Прогресса (6). Игрок, совершающий Бросок на Инстинкт для навигации, должен отметить Стресс или совершить бросок с помехой."
+            "ru": "Чтобы пройти через перевал, отряду нужно завершить Отсчёт Прогресса (6). Персонаж, совершающий Бросок на Инстинкт для навигации, должен отметить Стресс или совершить бросок с помехой."
           },
           "prompt": {
             "en": "What unusual landmarks do you see on your path? What signs of past travelers (or victims) do you notice?",
@@ -16031,7 +16055,7 @@
           },
           "description": {
             "en": "Spend a Fear to make all PCs make an Instinct Reaction Roll. If they fail, each PC loses a Hope and marks a Stress. Then tick up the countdown by 1.",
-            "ru": "Потратьте Страх, чтобы заставить всех Игроков совершить Бросок Реакции на Инстинкт. Если они проваливают, каждый Игрок теряет Надежду и отмечает Стресс. Затем увеличьте отсчёт на 1."
+            "ru": "Потратьте Страх, чтобы заставить всех персонажей совершить Бросок Реакции на Инстинкт. Если они проваливают, каждый персонаж теряет Надежду и отмечает Стресс. Затем увеличьте отсчёт на 1."
           },
           "prompt": {
             "en": "What proof do you see that others have tried and failed the path before you?",
@@ -16046,7 +16070,7 @@
           },
           "description": {
             "en": "Spend a Fear to cause all PCs to become Demoralized until they roll a success with Hope or they take a rest. Demoralized PCs replace their Hope Die with a d8.",
-            "ru": "Потратьте Страх, чтобы все Игроки получили состояние Деморализован(а), пока не совершат Успех с Надеждой или не отдохнут. У Деморализованных Игроков Кость Надежды заменяется на d8."
+            "ru": "Потратьте Страх, чтобы все персонажи получили состояние Деморализован(а), пока не совершат Успех с Надеждой или не отдохнут. У Деморализованных персонажей Кость Надежды заменяется на d8."
           },
           "prompt": {
             "en": "What songs do you sing to keep up your spirits? What mocking echoes do the mountains sing back to you?",
@@ -16061,7 +16085,7 @@
           },
           "description": {
             "en": "When the PCs succeed with Fear, they come across the remains of a previous party. The party finds 1d6 bags of gold and 1 Uncommon item.",
-            "ru": "Когда Игроки совершают Успех со Страхом, они натыкаются на останки предыдущего отряда. Отряд находит 1d6 мешков золота и 1 Необычный предмет."
+            "ru": "Когда персонажи совершают Успех со Страхом, они натыкаются на останки предыдущего отряда. Отряд находит 1d6 мешков золота и 1 Необычный предмет."
           },
           "prompt": {
             "en": "What familiar regalia do you notice on the fallen adventurers? What about their fate strikes fear into your hearts?",
@@ -16118,7 +16142,7 @@
           },
           "description": {
             "en": "A PC can make a Knowledge or Instinct Roll to identify plants worth harvesting. On a success with Hope, they find all three of the below plants. On a success with Fear, they find two. On a failure, they can mark a Stress to find one.\n- Blossomveil Ivy\n- Nursewood\n- Witherroot",
-            "ru": "Игрок может совершить Бросок на Знание или Инстинкт, чтобы определить растения, пригодные для сбора. При Успехе с Надеждой он находит все три из перечисленных ниже растений. При Успехе со Страхом — два. При Неудаче он может отметить Стресс, чтобы найти одно.\n- Плющ Цветочной Вуали\n- Целебное Древо\n- Вянущий Корень"
+            "ru": "Персонаж может совершить Бросок на Знание или Инстинкт, чтобы определить растения, пригодные для сбора. При Успехе с Надеждой он находит все три из перечисленных ниже растений. При Успехе со Страхом — два. При Неудаче он может отметить Стресс, чтобы найти одно.\n- Плющ Цветочной Вуали\n- Целебное Древо\n- Вянущий Корень"
           },
           "prompt": {
             "en": "What makes you realize this plant is useful? How do you know how to use the plant?",
@@ -16133,7 +16157,7 @@
           },
           "description": {
             "en": "Spend a Fear to have a PC become Younger or Older until they take their first long rest outside this environment. They must make a Strength Reaction Roll. On a success, they gain a boon from the condition, on a failure they gain a bane.\n- **Boons:** Younger: They have a +1 bonus to Strength and Agility. Older: They have a +1 bonus to their Experiences.\n- **Banes:** Younger: They have a –1 penalty to their Experiences. Older: They have a –1 penalty to Strength and Agility.",
-            "ru": "Потратьте Страх, чтобы Игрок стал Моложе или Старше, пока не совершит свой первый Продолжительный отдых за пределами этого окружения. Он должен совершить Бросок Реакции на Силу. При успехе он получает благо от этого состояния, при провале — проклятие.\n- **Блага:** Моложе: он получает бонус +1 к Силе и Проворности. Старше: он получает бонус +1 к своим Опытам.\n- **Проклятия:** Моложе: он получает штраф –1 к своим Опытам. Старше: он получает штраф –1 к Силе и Проворности."
+            "ru": "Потратьте Страх, чтобы персонаж стал Моложе или Старше, пока не совершит свой первый Продолжительный отдых за пределами этого окружения. Он должен совершить Бросок Реакции на Силу. При успехе он получает благо от этого состояния, при провале — проклятие.\n- **Блага:** Моложе: он получает бонус +1 к Силе и Проворности. Старше: он получает бонус +1 к своим Опытам.\n- **Проклятия:** Моложе: он получает штраф –1 к своим Опытам. Старше: он получает штраф –1 к Силе и Проворности."
           },
           "prompt": {
             "en": "What memories spark as your age changes? How do you feel about your sudden change in age, and why?",
@@ -16148,7 +16172,7 @@
           },
           "description": {
             "en": "Pick a point within the Valley. All PCs within Close range must succeed on a Strength Reaction Roll or take 2d8+2 physical damage and be Restrained until they clear the condition with a successful Strength Roll. While Restrained, they must mark a Stress each time they roll with Fear.",
-            "ru": "Выберите точку в пределах Долины. Все Игроки на Средней дистанции должны преуспеть в Броске Реакции на Силу, иначе получат 2d8+2 физического урона и состояние Обездвижен(а), пока не снимут его успешным Броском на Силу. Пока Игрок Обездвижен, он должен отмечать Стресс каждый раз, когда совершает бросок со Страхом."
+            "ru": "Выберите точку в пределах Долины. Все персонажи на Средней дистанции должны преуспеть в Броске Реакции на Силу, иначе получат 2d8+2 физического урона и состояние Обездвижен(а), пока не снимут его успешным Броском на Силу. Пока персонаж Обездвижен, он должен отмечать Стресс каждый раз, когда совершает бросок со Страхом."
           },
           "prompt": {
             "en": "How does the sudden wave of exhaustion feel to you? What motivates you to push through it?",
@@ -16223,7 +16247,7 @@
           },
           "description": {
             "en": "PCs that take a long rest in this environment experience a shared dream. They must make a group Instinct Roll to shape the dream into a positive form. On a success, all the dreamers gain 2 Hope in addition to their normal benefits from the rest. On a failure, they must all mark a Stress.",
-            "ru": "Игроки, устраивающие Продолжительный отдых в этом окружении, переживают общий сон. Они должны совершить Групповой бросок на Инстинкт, чтобы придать сну позитивную форму. При успехе все сновидцы получают 2 Надежды в дополнение к обычным преимуществам отдыха. При провале все они должны отметить Стресс."
+            "ru": "Персонажи, устраивающие Продолжительный отдых в этом окружении, переживают общий сон. Они должны совершить Групповой бросок на Инстинкт, чтобы придать сну позитивную форму. При успехе все сновидцы получают 2 Надежды в дополнение к обычным преимуществам отдыха. При провале все они должны отметить Стресс."
           },
           "prompt": {
             "en": "What visions of past glories or future hopes do you share in your slumber? How is the peace of the dream threatened, and how do you oppose it?",
@@ -16238,7 +16262,7 @@
           },
           "description": {
             "en": "The field is full of Sparks which allow viewers to relive past traumas. A PC who interacts with a Spark can make a Presence Roll to attempt to come to terms with a trauma from their past.\n- **Critical Success:** The PC resolves the trauma, drawing knowledge from it. They gain 1d4 Hope, which can be distributed between the party if they share the vision and guidance they received.\n- **Success with Hope:** The PC resolves the trauma.\n- **Success with Fear:** The PC does not gain resolution, but gets brief flashes of insight and emotions that may point them in the right direction.\n- **Any Failure:** The PC grapples with the issue but can mark a Stress to gain some insight toward a resolution.",
-            "ru": "Поле полно Искр, которые позволяют наблюдателям заново пережить прошлые травмы. Игрок, взаимодействующий с Искрой, может совершить Бросок на Влияние, пытаясь примириться с травмой из своего прошлого.\n- **Критический успех:** Игрок разрешает травму, извлекая из неё знание. Он получает 1d4 Надежды, которую можно распределить между отрядом, если он поделится видением и наставлением, которые получил.\n- **Успех с Надеждой:** Игрок разрешает травму.\n- **Успех со Страхом:** Игрок не получает разрешения, но получает краткие вспышки прозрения и эмоций, которые могут указать ему верное направление.\n- **Любая Неудача:** Игрок борется с проблемой, но может отметить Стресс, чтобы получить некоторое понимание на пути к разрешению."
+            "ru": "Поле полно Искр, которые позволяют наблюдателям заново пережить прошлые травмы. Персонаж, взаимодействующий с Искрой, может совершить Бросок на Влияние, пытаясь примириться с травмой из своего прошлого.\n- **Критический успех:** Персонаж разрешает травму, извлекая из неё знание. Он получает 1d4 Надежды, которую можно распределить между отрядом, если он поделится видением и наставлением, которые получил.\n- **Успех с Надеждой:** Персонаж разрешает травму.\n- **Успех со Страхом:** Персонаж не получает разрешения, но получает краткие вспышки прозрения и эмоций, которые могут указать ему верное направление.\n- **Любая Неудача:** Персонаж борется с проблемой, но может отметить Стресс, чтобы получить некоторое понимание на пути к разрешению."
           },
           "prompt": {
             "en": "What is the memory that haunts you so? What feelings linger even if you get resolution?",
@@ -16253,7 +16277,7 @@
           },
           "description": {
             "en": "When a PC fails on a roll, you can spend a Fear to have one of the Sparks take an interest in them and force them to make a roll on the “Spark of Regret” feature with disadvantage.",
-            "ru": "Когда Игрок терпит неудачу в броске, вы можете потратить Страх, чтобы одна из Искр заинтересовалась им и заставила его совершить бросок по особенности «Искра сожаления» с помехой."
+            "ru": "Когда персонаж терпит неудачу в броске, вы можете потратить Страх, чтобы одна из Искр заинтересовалась им и заставила его совершить бросок по особенности «Искра сожаления» с помехой."
           },
           "prompt": {
             "en": "What past failing do you wish to avoid? How does the Spark bring it to the surface?",
@@ -16379,11 +16403,13 @@
       "potential_adversaries": {
         "en": [
           "Beasts (Bear, Dire Wolf, Glass Snake)",
-          "Grove Guardians (Minor Treant, Sylvan Soldier, Young Dryad)"
+          "Grove Guardians (Minor Treant, Sylvan Soldier, Young Dryad)",
+          "Minor Chaos Elemental"
         ],
         "ru": [
           "Звери (Медведь, Лютоволк, Стеклянная Змея)",
-          "Стражи Рощи (Молодой Трэнт, Лесной Солдат, Юная Дриада)"
+          "Стражи Рощи (Молодой Трэнт, Лесной Солдат, Юная Дриада)",
+          "Малый Элементаль Хаоса"
         ]
       },
       "features": [
@@ -16570,7 +16596,7 @@
           },
           "description": {
             "en": "A PC can ask the bartender, staff, or patrons about local events, rumors, and potential work with a Presence Roll. On a success, they can pick two of the below details to learn—or three if they critically succeed. On a failure, they can pick one and mark a Stress as the local carries on about something irrelevant.\n\n- A fascinating rumor with a connection to a PC’s background\n- A promising job for the party involving a nearby threat\n- Local folklore that relates to something they’ve seen\n- Town gossip that hints at a community problem",
-            "ru": "Игрок может спросить бармена, персонал или посетителей о местных событиях, слухах и потенциальной работе, выполнив бросок на Влияние. В случае успеха они могут выбрать две из перечисленных ниже подробностей, или три, если бросок имел критический успех. В случае неудачи они могут выбрать одну и отметить Стресс, пока местный житель продолжает говорить о чем-то не имеющем отношения к делу.\n\n- Интересный слух, имеющий связь с предысторией персонажа\n- Многообещающая работа для группы, связанная с ближайшей угрозой\n- Местный фольклор, связанный с тем, что они видели\n- Городские сплетни, намекающие на проблему сообщества"
+            "ru": "Персонаж может спросить бармена, персонал или посетителей о местных событиях, слухах и потенциальной работе, выполнив бросок на Влияние. В случае успеха они могут выбрать две из перечисленных ниже подробностей, или три, если бросок имел критический успех. В случае неудачи они могут выбрать одну и отметить Стресс, пока местный житель продолжает говорить о чем-то не имеющем отношения к делу.\n\n- Интересный слух, имеющий связь с предысторией персонажа\n- Многообещающая работа для группы, связанная с ближайшей угрозой\n- Местный фольклор, связанный с тем, что они видели\n- Городские сплетни, намекающие на проблему сообщества"
           },
           "prompt": {
             "en": "Who has what kind of information? What gossip do the locals start spreading about the PCs?",
@@ -16630,7 +16656,7 @@
           },
           "description": {
             "en": "Spend a Fear to have a bar fight erupt in the tavern. When a PC tries to move through the tavern while the fight persists, they must succeed on an Agility or Presence Roll or take 1d6+2 physical damage from a wild swing or thrown object. A PC can try to activate this feature by succeeding on an action roll that would provoke tavern patrons.",
-            "ru": "Потратьте Страх, чтобы в таверне началась драка. Когда персонаж пытается пройти через таверну во время драки, он должен успешно пройти проверку на Проворность или Влияние, иначе получит 1d6+2 физического урона от удара или брошенного предмета. Игрок может попытаться активировать это свойство, успешно выполнив бросок действия, который спровоцирует посетителей таверны."
+            "ru": "Потратьте Страх, чтобы в таверне началась драка. Когда персонаж пытается пройти через таверну во время драки, он должен успешно пройти проверку на Проворность или Влияние, иначе получит 1d6+2 физического урона от удара или брошенного предмета. Персонаж может попытаться активировать это свойство, успешно выполнив бросок действия, который спровоцирует посетителей таверны."
           },
           "prompt": {
             "en": "Who started the fight? What will it take to stop it?",
@@ -17255,10 +17281,12 @@
       },
       "potential_adversaries": {
         "en": [
-          "Cult of the Fallen (Cult Adept, Cult Fang, Cult Initiate, Secret-Keeper)"
+          "Cult of the Fallen (Cult Adept, Cult Fang, Cult Initiate, Secret-Keeper)",
+          "Minor Demon"
         ],
         "ru": [
-          "Культ Падших (Адепт Культа, Клык Культа, Посвящённый культа, Хранитель тайн)"
+          "Культ Падших (Адепт Культа, Клык Культа, Посвящённый культа, Хранитель тайн)",
+          "Малый Демон"
         ]
       },
       "features": [
@@ -17355,10 +17383,12 @@
       },
       "potential_adversaries": {
         "en": [
-          "Guards (Archer Guard, Bladed Guard, Head Guard)"
+          "Guards (Archer Guard, Bladed Guard, Head Guard)",
+          "High Seraph"
         ],
         "ru": [
-          "Стражники (Стражник-Лучник, Стражник-Мечник, Капитан Стражи)"
+          "Стражники (Стражник-Лучник, Стражник-Мечник, Капитан Стражи)",
+          "Высший Серафим"
         ]
       },
       "features": [
@@ -18210,7 +18240,7 @@
           },
           "description": {
             "en": "On a result with Fear, you can ask the PC to describe which of their fears the Chaos Realm evokes as a vision of reality unmakes and reconstitutes itself to the PC. The PC loses a Hope. If it is their last Hope, you gain a Fear.",
-            "ru": "При результате со Страхом вы можете попросить игрока описать, какой из своих страхов персонаж ощущает, когда Царство Хаоса проявляется перед ним, и сама реальность вокруг расслаивается и заново складывается на его глазах. Игрок теряет Надежду. Если это его последняя Надежда, вы получаете Страх."
+            "ru": "При результате со Страхом вы можете попросить игрока описать, какой из своих страхов персонаж ощущает, когда Царство Хаоса проявляется перед ним, и сама реальность вокруг расслаивается и заново складывается на его глазах. Персонаж теряет Надежду. Если это его последняя Надежда, вы получаете Страх."
           },
           "prompt": {
             "en": "What moment do they see? If it’s a memory, how is it warped by this place? How hard will it be to hold on to the real memory?",
@@ -21957,13 +21987,15 @@
           "Bladed Guard",
           "Greater Earth Elemental",
           "Mutated Rat",
-          "any Vault Guardian"
+          "any Vault Guardian",
+          "Minor Chaos Elemental"
         ],
         "ru": [
           "Стражник-Мечник",
           "Великий Земляной Элементаль",
           "Мутировавшая Крыса",
-          "любой Страж Хранилища"
+          "любой Страж Хранилища",
+          "Малый Элементаль Хаоса"
         ]
       },
       "features": [
@@ -29108,7 +29140,7 @@
           },
           "description": {
             "en": "The tunnels and chambers within the cliff twist and turn in ways which seem chaotic to anyone who didn’t grow up here. When the PCs arrive, they must make a group Instinct or Knowledge roll to get their bearings. They gain +3 to the final roll if they spoke with Ninal Reed Dancer or Wyston Nimbleglide in the camp above.\n- **Success with Hope:** They feel confident in their ability to navigate the town. They hear either a shout or a puppy’s bark (GM’s choice).\n- **Success with Fear:** They feel reasonably certain they can move through the town without getting lost. Upon finishing their assessment, they see a light wink out and a momentary chill passes through the air along with a ghastly wail. Each PC must mark a Stress.\n- **Failure:** They can’t seem to make sense of the random openings and winding passages and find sounds impossible to track. Initiate the “Nesting Shrikes” action twice immediately without spending the additional Fear.",
-            "ru": "Туннели и залы внутри утёса извиваются и петляют так, что кажутся хаотичными всем, кроме тех, кто вырос здесь. Когда персонажи прибывают, они должны совершить групповой бросок Инстинкта или Знания, чтобы сориентироваться. Они получают +3 к итоговому броску, если говорили с Нинал Камышовой Плясуньей или Уистоном Ловкокрылом в лагере наверху.\n- **Успех с Надеждой:** Персонажи уверены, что смогут ориентироваться в посёлке. Они слышат либо крик, либо щенячий лай (на выбор Ведущего).\n- **Успех со Страхом:** Персонажи достаточно уверены, что смогут пройти через посёлок, не потерявшись. Завершив осмотр, они видят, как гаснет огонёк, и по воздуху проходит мимолётный холод вместе с жутким воем. Каждый персонаж должен отметить Стресс.\n- **Провал:** Персонажи не могут разобраться в беспорядочных проходах и извилистых коридорах, а звуки невозможно отследить. Немедленно запустите действие «Гнездящиеся Сорокопуты» два раза, не тратя на это дополнительный Страх."
+            "ru": "Туннели и залы внутри утёса извиваются и петляют так, что кажутся хаотичными всем, кроме тех, кто вырос здесь. Когда персонажи прибывают, они должны совершить групповой бросок Инстинкта или Знания, чтобы сориентироваться. Они получают +3 к итоговому броску, если говорили с Нинал Камышовой Плясуньей или Уистоном Ловкокрылом в лагере наверху.\n- **Успех с Надеждой:** Персонажи уверены, что смогут ориентироваться в посёлке. Они слышат либо крик, либо щенячий лай (на выбор Мастера).\n- **Успех со Страхом:** Персонажи достаточно уверены, что смогут пройти через посёлок, не потерявшись. Завершив осмотр, они видят, как гаснет огонёк, и по воздуху проходит мимолётный холод вместе с жутким воем. Каждый персонаж должен отметить Стресс.\n- **Провал:** Персонажи не могут разобраться в беспорядочных проходах и извилистых коридорах, а звуки невозможно отследить. Немедленно запустите действие «Гнездящиеся Сорокопуты» два раза, не тратя на это дополнительный Страх."
           },
           "prompt": {
             "en": "Has a Spirit found Dorn Brightway? Can the PCs lure Bouncer the Puppy to them?",
@@ -31135,14 +31167,16 @@
           "Mortal Hunter",
           "Necromancer",
           "Skeletons (Archer, Bonewright, Dredge, Knight, Warrior)",
-          "Zombies (Brawny, Pack, Noxious, Shambling, Patchwork Hulk)"
+          "Zombies (Brawny, Pack, Noxious, Shambling, Patchwork Hulk)",
+          "Zombie Pack"
         ],
         "ru": [
           "Провальный Эксперимент",
           "Охотник на Живых",
           "Некромант",
           "Скелеты (Лучник, Костодел, Гниль, Рыцарь, Воин)",
-          "Зомби (Силач, Орда, Ядовитый, Бредущий, Лоскутный Громила)"
+          "Зомби (Силач, Орда, Ядовитый, Бредущий, Лоскутный Громила)",
+          "Орда Зомби"
         ]
       },
       "features": [
@@ -31390,13 +31424,15 @@
           "Battle Box",
           "Construct",
           "Masked Thief",
-          "Swarm of Rats"
+          "Swarm of Rats",
+          "Spectral Captain"
         ],
         "ru": [
           "Боевой Куб",
           "Конструкт",
           "Вор в Маске",
-          "Стая Крыс"
+          "Стая Крыс",
+          "Призрачный Командующий"
         ]
       },
       "features": [
@@ -31497,14 +31533,14 @@
           "Pirates (Captain, Raiders, Tough)",
           "Shark",
           "Siren",
-          "Spectral Forces (Archer, Captain, Guardian)"
+          "Spectral (Archer, Captain, Guardian)"
         ],
         "ru": [
           "Стая Электрических Угрей",
           "Пираты (Капитан, Налётчики, Громила)",
           "Акула",
           "Сирена",
-          "Призрачные Силы (Лучник, Командующий, Страж)"
+          "Призрачные (Лучник, Капитан, Страж)"
         ]
       },
       "features": [
@@ -31698,14 +31734,16 @@
           "Spectral Archer",
           "Spectral Captain",
           "Spectral Guardian",
-          "Young Thorn Dragon"
+          "Young Thorn Dragon",
+          "Mortal Hunter"
         ],
         "ru": [
           "Череп Хаоса",
           "Призрачный Лучник",
           "Призрачный Командующий",
           "Призрачный Страж",
-          "Молодой Терновый Дракон"
+          "Молодой Терновый Дракон",
+          "Охотник на Живых"
         ]
       },
       "features": [
@@ -32956,13 +32994,15 @@
           "Arch-Necromancer",
           "Fallen Shock Troop",
           "Fallen Sorcerer",
-          "Fallen Warlord"
+          "Fallen Warlord",
+          "Fallen Warlord: Realm-Breaker"
         ],
         "ru": [
           "Архинекромант",
           "Падший Пехотинец",
           "Падший Чародей",
-          "Полководец Падших"
+          "Полководец Падших",
+          "Полководец Падших: Губитель Миров"
         ]
       },
       "features": [
@@ -33094,7 +33134,10 @@
           "Extraplanar Army",
           "Fallen Warlord",
           "Oracle of Doom",
-          "Outer Realms (any)"
+          "Outer Realms (any)",
+          "Outer Realms Abomination",
+          "Outer Realms Corrupter",
+          "Outer Realms Thrall"
         ],
         "ru": [
           "Архинекромант",
@@ -33102,7 +33145,10 @@
           "Внепланарная Армия",
           "Полководец Падших",
           "Оракул Погибели",
-          "Внешние Миры (любые)"
+          "Внешние Миры (любые)",
+          "Мерзость из внешних миров",
+          "Искуситель из внешних миров",
+          "Прислужник из внешних миров"
         ]
       },
       "features": [
@@ -33499,7 +33545,7 @@
           },
           "description": {
             "en": "When the PCs enter the caverns, start a Countdown equal to the number of players. Each time a PC rolls with Fear, the Countdown ticks down 1. When it triggers, choose one of the following options:\n- **Spend 0 Fear:** 1d4 Minions (e.g. Minor Treant) appear and attack.\n- **Spend 0 Fear:** Everyone makes a Reaction Roll to prevent their light sources from turning dark or to avoid a minor hazard.\n- **Spend 1 Fear:** 1d4 Standard adversaries (e.g. Skeleton Warrior) appear and attack.\n- **Spend 1 Fear:** Something in the dungeon becomes a Mimic. Add 1 Mimic token to the table. At any time, the GM as well as the players can spend 1 Mimic token to turn one object into a Mimic.\n- **Spend 2 Fear:** Increase the Difficulty of this environment by 1d2.\n- **Spend 3 Fear:** 1 Solo adversary (e.g. Acid Burrower / Minor Fire Elemental) appears and attacks.\n- **Spend 4 Fear:** Create a serious hazard with a Consequence Countdown (6) and life-threatening consequences.",
-            "ru": "Когда персонажи входят в пещеры, запустите Отсчёт, равный числу игроков. Каждый раз, когда персонаж совершает бросок со Страхом, Отсчёт сдвигается на 1. Когда он срабатывает, выберите один из вариантов:\n- **Потратьте 0 Страха:** появляются 1d4 Миньонов (например, Молодой Древень) и нападают.\n- **Потратьте 0 Страха:** все совершают Бросок Реакции, чтобы их источники света не погасли, либо чтобы избежать незначительной опасности.\n- **Потратьте 1 Страх:** появляются 1d4 Стандартных противников (например, Скелет Воин) и нападают.\n- **Потратьте 1 Страх:** что-то в подземелье превращается в Мимика. Добавьте на стол 1 жетон Мимика. В любой момент и ведущий, и игроки могут потратить 1 жетон Мимика, чтобы превратить один предмет в Мимика.\n- **Потратьте 2 Страха:** повысьте Сложность этого окружения на 1d2.\n- **Потратьте 3 Страха:** появляется 1 противник-Одиночка (например, Кислотный Землекоп / Малый Огненный Элементаль) и нападает.\n- **Потратьте 4 Страха:** создайте серьёзную опасность с Отсчётом Последствий (6) и смертельными последствиями."
+            "ru": "Когда персонажи входят в пещеры, запустите Отсчёт, равный числу игроков. Каждый раз, когда персонаж совершает бросок со Страхом, Отсчёт сдвигается на 1. Когда он срабатывает, выберите один из вариантов:\n- **Потратьте 0 Страха:** появляются 1d4 Миньонов (например, Молодой Древень) и нападают.\n- **Потратьте 0 Страха:** все совершают Бросок Реакции, чтобы их источники света не погасли, либо чтобы избежать незначительной опасности.\n- **Потратьте 1 Страх:** появляются 1d4 Стандартных противников (например, Скелет Воин) и нападают.\n- **Потратьте 1 Страх:** что-то в подземелье превращается в Мимика. Добавьте на стол 1 жетон Мимика. В любой момент и Мастер, и игроки могут потратить 1 жетон Мимика, чтобы превратить один предмет в Мимика.\n- **Потратьте 2 Страха:** повысьте Сложность этого окружения на 1d2.\n- **Потратьте 3 Страха:** появляется 1 противник-Одиночка (например, Кислотный Землекоп / Малый Огненный Элементаль) и нападает.\n- **Потратьте 4 Страха:** создайте серьёзную опасность с Отсчётом Последствий (6) и смертельными последствиями."
           },
           "prompt": {
             "en": "How do you react to the sudden appearance of adversaries? What kind of hazard is threatening you?",
