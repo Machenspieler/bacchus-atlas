@@ -3679,7 +3679,7 @@
       },
       "lore": {
         "en": "A walking forest dripping with slime under a perpetual cloud. It is hiding an emerald obelisk in its center. PCs must traverse the woodlands to move from one segment to another. Flying over 100 feet up moves the PC into the Clouds.",
-        "ru": "Шагающий лес, сочащийся слизью под непрекращающимся облаком. В его центре скрыт изумрудный обелиск. Персонажи должны пробираться через лесные заросли, чтобы перейти от одного участка к другому. Полёт выше 100 футов переносит персонажа в Облака."
+        "ru": "Шагающий лес, сочащийся слизью под непрекращающимся облаком. В его центре скрыт изумрудный обелиск. Персонажи должны пробираться через лесные заросли, чтобы перейти от одного участка к другому. Полёт выше 30 м переносит персонажа в Облака."
       },
       "impulses": {
         "en": [
@@ -4592,7 +4592,7 @@
           },
           "description": {
             "en": "Some adversaries might leave quicksand in their wake (such as a Great Worm) or lure the PCs into a patch of quicksand (such as a Harpy). A PC moving through quicksand must make an Agility Reaction Roll. On a failure they sink 1d4 feet into the sand and are Engulfed, with the spotlight passing to the GM. An Engulfed creature is Restrained and Vulnerable. They can break free with a Strength or Finesse Roll, but sink an additional 1 foot on a failure. A PC in over their head must mark a Stress each time they act.",
-            "ru": "Некоторые противники могут оставлять за собой зыбучие пески (например, Великий Червь) или заманивать персонажей в такой участок (например, Гарпия). Персонаж, идущий по зыбучим пескам, должен совершить Бросок Реакции на Проворность. При неудаче он проваливается в песок на 1d4 фута и становится Поглощённым, а Активация переходит к Мастеру. Поглощённое существо Обездвижено и Уязвимо. Освободиться можно броском Силы или Искусности, но при неудаче персонаж проваливается ещё на 1 фут. Персонаж, ушедший в песок с головой, должен отмечать Стресс каждый раз, когда действует."
+            "ru": "Некоторые противники могут оставлять за собой зыбучие пески (например, Великий Червь) или заманивать персонажей в такой участок (например, Гарпия). Персонаж, идущий по зыбучим пескам, должен совершить Бросок Реакции на Проворность. При неудаче он проваливается в песок на 1d4 × 30 см и становится Поглощённым, а Активация переходит к Мастеру. Поглощённое существо Обездвижено и Уязвимо. Освободиться можно броском Силы или Искусности, но при неудаче персонаж проваливается ещё на 30 см. Персонаж, ушедший в песок с головой, должен отмечать Стресс каждый раз, когда действует."
           },
           "prompt": {
             "en": "Is something important buried in the sand here?",
@@ -8427,7 +8427,7 @@
           },
           "prompt": {
             "en": "How does the storm look to the heroes as it rolls in from miles away? Is the storm natural or unnatural? How can you tell?",
-            "ru": "Как гроза выглядит героям, надвигаясь издалека, за много миль? Естественна эта буря или неестественна? Как это понять?"
+            "ru": "Как гроза выглядит героям, надвигаясь издалека, за много километров? Естественна эта буря или неестественна? Как это понять?"
           }
         },
         {
@@ -22721,7 +22721,7 @@
       },
       "lore": {
         "en": "Miles of musty tunnels beneath the city.",
-        "ru": "Мили затхлых туннелей под городом."
+        "ru": "Километры затхлых туннелей под городом."
       },
       "impulses": {
         "en": [
@@ -29882,7 +29882,7 @@
           },
           "description": {
             "en": "Once each night at midnight, the barrier flares in a 30-foot radius. All enemies in Very Close range must succeed on a Strength Reaction roll or be pushed to Far range and gain 2 Fear as ghostly ward energy sweeps them back.",
-            "ru": "Раз за ночь, ровно в полночь, барьер вспыхивает в радиусе 30 футов. Все враги в Очень Близкой дистанции должны преуспеть в Броске Реакции на Силу, иначе призрачная энергия барьера отбрасывает их на Дальнюю дистанцию, а они получают 2 Страха."
+            "ru": "Раз за ночь, ровно в полночь, барьер вспыхивает в радиусе 9 м. Все враги в Очень Близкой дистанции должны преуспеть в Броске Реакции на Силу, иначе призрачная энергия барьера отбрасывает их на Дальнюю дистанцию, а они получают 2 Страха."
           },
           "prompt": {
             "en": "What vivid sensation strikes you as the barrier’s pulse radiates outward?",
@@ -30072,7 +30072,7 @@
           },
           "description": {
             "en": "Spend a Fear to have a Yujao slam into the floor from underneath, gnashing at the rock and stone with its dozens of dorsal mouths. Roll a d4 for each PC:\n- **1.** The PC must succeed on an Agility Reaction Roll or fall prone if they are not flying. On a failure, they are Vulnerable until they next act.\n- **2.** The PC must succeed on an Agility Reaction Roll or be hit by stones falling from the ceiling, taking 1d6+2 physical damage on a failure.\n- **3.** The PC must succeed on an Agility Reaction Roll or fall into a newly-created 5-foot hole in the floor if they are not flying. They catch themselves on the edge, but must succeed on a Strength Roll to climb out. Place a token on the map to indicate where the hole is.\n- **4.** Nothing happens to this PC.\nRoll one more d4 to determine how many adversaries are also subjected to an effect. Decide which of the three outcomes they suffer and note the consequences.",
-            "ru": "Потратьте Страх, чтобы Юджао ударил по полу снизу, вгрызаясь в камень десятками спинных ртов. Бросьте d4 за каждого персонажа:\n- **1.** Персонаж должен совершить успешный Бросок Реакции на Проворность, иначе падает, если не летит. При провале персонаж становится Уязвим до своего следующего действия.\n- **2.** Персонаж должен совершить успешный Бросок Реакции на Проворность, иначе получает удар упавшими с потолка камнями, получая 1d6+2 физического урона при провале.\n- **3.** Персонаж должен совершить успешный Бросок Реакции на Проворность, иначе падает в новообразовавшуюся дыру шириной 5 футов в полу, если не летит. Он успевает зацепиться за край, но должен совершить успешный Бросок Силы, чтобы выбраться. Отметьте на карте место, где образовалась дыра.\n- **4.** С этим персонажем ничего не происходит.\nБросьте ещё один d4, чтобы определить, сколько противников также подвергается воздействию. Решите, какой из трёх исходов они получают, и учтите последствия."
+            "ru": "Потратьте Страх, чтобы Юджао ударил по полу снизу, вгрызаясь в камень десятками спинных ртов. Бросьте d4 за каждого персонажа:\n- **1.** Персонаж должен совершить успешный Бросок Реакции на Проворность, иначе падает, если не летит. При провале персонаж становится Уязвим до своего следующего действия.\n- **2.** Персонаж должен совершить успешный Бросок Реакции на Проворность, иначе получает удар упавшими с потолка камнями, получая 1d6+2 физического урона при провале.\n- **3.** Персонаж должен совершить успешный Бросок Реакции на Проворность, иначе падает в новообразовавшуюся дыру шириной 1,5 м в полу, если не летит. Он успевает зацепиться за край, но должен совершить успешный Бросок Силы, чтобы выбраться. Отметьте на карте место, где образовалась дыра.\n- **4.** С этим персонажем ничего не происходит.\nБросьте ещё один d4, чтобы определить, сколько противников также подвергается воздействию. Решите, какой из трёх исходов они получают, и учтите последствия."
           },
           "prompt": {
             "en": "Does this affect the morale of the adversaries? Can the Yujao be enticed or frightened to go elsewhere?",
