@@ -3485,7 +3485,7 @@
       const R = ui.r, routes = v.st.routes;
       ui.route.hidden = false;
       const tx = v.shown.indexOf(v.eff) >= 0 ? routeBubbleText(v, v.eff).label : t(ROUTE_LABEL[v.eff]);
-      R.sub.textContent = tx + ' · A → B';
+      R.sub.textContent = tx + ' · A → B';
       let body = '';
       if (v.route.status === 'ok') {
         if (routes.fastest.status !== 'ok' && routes.fastest.reason === 'unknown-terrain') body += '<p class="j2-route-warn">' + esc(t('journey2_route_no_terrain')) + ' ' + esc(t('journey2_route_no_terrain_short')) + '</p>';
