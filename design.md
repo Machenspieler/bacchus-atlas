@@ -209,6 +209,10 @@ elsewhere in the app.
   raw value that equals a step is always the token. Dense expert-tool regions
   may keep documented local micro-values where the scale is too coarse. The
   off-scale values that remain each have a reason:
+  - `--bar-pad-top` / `--bar-pad-bottom` (fractional by construction): the sticky
+    catalogue bar is zoomed (`--bar-zoom`, 0.9), so its vertical air is `--s-4`
+    divided by the zoom — drawn, exactly 16px, the same as the card grid's gap.
+    A new bar control takes these tokens, never its own margin (PD-047).
   - `--inline-control-gap` (5px): optical icon↔label gap of inline controls
     (dice, item, countdown, field error, Battle Points summary, d12 roll).
   - Pill padding: icon side is 2px tighter than the text side (dice/countdown

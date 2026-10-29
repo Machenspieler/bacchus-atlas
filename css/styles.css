@@ -109,6 +109,13 @@
    * stacked menu rows. Everything else off-scale stays a documented local value. */
   --inline-control-gap: 5px;
   --menu-item-gap: 1px;
+  /* Sticky catalogue bar (PD-047): the bar is zoomed, so its vertical air is
+   * divided by the zoom to land on whole scale steps as drawn. Top = one --s-4
+   * (the grid's own gap); bottom is --s-4 minus the --s-1 the grid keeps for a
+   * hovered card's lift, so header -> controls == controls -> first card row. */
+  --bar-zoom: 0.9;
+  --bar-pad-top: calc(var(--s-4) / var(--bar-zoom));
+  --bar-pad-bottom: calc((var(--s-4) - var(--s-1)) / var(--bar-zoom));
 
   /* ---- radii: tight, but scaled to the object ---- */
   --r-xs: 2px;      /* chips, badges          */
@@ -855,7 +862,7 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: var
 /* #toolbar dissolves so the list bar, the filter toolbar and the status become
  * items of .catalog-bar. Below 901px they are full-width flex rows (the status
  * wraps underneath, as before). */
-.catalog-bar { display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--s-5); zoom: 0.9; }
+.catalog-bar { display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--s-5); zoom: var(--bar-zoom); }
 /* A container query can't style its own container, so the query target is the
  * wrapper around the grid. */
 .catalog-bar-wrap { container-type: inline-size; }
@@ -903,9 +910,9 @@ body[data-route="list"] #grid-wrap { padding-top: var(--s-1); }
   body[data-route="list"] .catalog-bar .toolbar,
   body[data-route="list"] .catalog-bar .toolbar-filters { display: contents; }
   .catalog-bar .list-context-bar, .catalog-bar .skeleton-toolbar { flex: 1 1 100%; }
-  .catalog-bar .toolbar-filters > .field, .catalog-bar .search-field { flex-shrink: 0; margin-block: var(--s-4); }
+  .catalog-bar .toolbar-filters > .field, .catalog-bar .search-field { flex-shrink: 0; margin-block: var(--bar-pad-top) var(--bar-pad-bottom); }
   .catalog-bar .rank-pills { flex-wrap: nowrap; }
-  .catalog-bar .result-count { margin: var(--s-4) 0; flex-wrap: nowrap; white-space: nowrap; }
+  .catalog-bar .result-count { margin: var(--bar-pad-top) 0 var(--bar-pad-bottom); flex-wrap: nowrap; white-space: nowrap; }
 }
 
 /* Tablet widths (a phone's short ribbons clear the row on their own): the same
@@ -917,9 +924,9 @@ body[data-route="list"] #grid-wrap { padding-top: var(--s-1); }
   body[data-route="list"] .catalog-bar { column-gap: var(--s-3); }
   body[data-route="catalog"] .catalog-bar .toolbar,
   body[data-route="list"] .catalog-bar .toolbar { display: contents; }
-  .catalog-bar .search-field, .catalog-bar .filter-toggle { margin-block: var(--s-4); }
-  .catalog-bar .toolbar-filters { margin-block: var(--s-4); }
-  .catalog-bar .result-count { margin: var(--s-4) 0; }
+  .catalog-bar .search-field, .catalog-bar .filter-toggle { margin-block: var(--bar-pad-top) var(--bar-pad-bottom); }
+  .catalog-bar .toolbar-filters { margin-block: var(--bar-pad-top) var(--bar-pad-bottom); }
+  .catalog-bar .result-count { margin: var(--bar-pad-top) 0 var(--bar-pad-bottom); }
 }
 
 /* Below the main catalog grid only — never rendered on Lists, Journey, or
