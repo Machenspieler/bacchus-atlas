@@ -7407,7 +7407,7 @@
           },
           "description": {
             "en": "The PCs must protect an NPC (their “Charge”) long enough for the Charge to complete a task, such as finishing a magical ritual or repairing a mechanical device. At the start of the scene, activate a Task Countdown with a value equal to the number of PCs in the scene. It ticks down when the PCs defeat a wave of adversaries. When it triggers, the Charge completes their task.",
-            "ru": "Персонажи должны защищать НПС (своего «Подопечного») достаточно долго, чтобы Подопечный завершил задачу, например, закончил магический ритуал или починил механическое устройство. В начале сцены активируйте Отсчёт Задачи со значением, равным числу персонажей в сцене. Он уменьшается, когда персонажи побеждают волну противников. Когда он срабатывает, Подопечный завершает свою задачу."
+            "ru": "Персонажи должны защищать неигрового персонажа (своего «Подопечного») достаточно долго, чтобы Подопечный завершил задачу, например, закончил магический ритуал или починил механическое устройство. В начале сцены активируйте Отсчёт Задачи со значением, равным числу персонажей в сцене. Он уменьшается, когда персонажи побеждают волну противников. Когда он срабатывает, Подопечный завершает свою задачу."
           },
           "prompt": {
             "en": "Who are the PCs protecting, and what is the Charge trying to do? Who wants to stop them? What will happen if the Charge isn’t able to complete their task?",
