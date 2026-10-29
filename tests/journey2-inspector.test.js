@@ -136,6 +136,33 @@ test('placement: uses the left side when the right side has no room', () => {
   assert.equal(p.caret.edge, 'right');
 });
 
+test('placement: a preferred side that still fits is kept (no flip while the hex drifts)', () => {
+  // x = 800 fits both sides (right edge 800+26+14+440 = 1280 <= 1288); without `prefer` the right side wins, with it the panel stays left
+  const a = { anchor: { x: 800, y: 300, r: 26 } };
+  assert.equal(place(a).side, 'right');
+  const p = place(Object.assign({ prefer: 'left' }, a));
+  assert.equal(p.side, 'left');
+  assert.equal(p.caret.edge, 'right');
+  assert.ok(inside(p, VIEW, 12));
+});
+
+test('placement: a preferred side with no room is ignored, and an unknown one changes nothing', () => {
+  const a = { anchor: { x: 1100, y: 300, r: 26 } };
+  assert.equal(place(Object.assign({ prefer: 'right' }, a)).side, 'left');
+  const b = { anchor: { x: 500, y: 300, r: 26 } };
+  assert.deepEqual(place(Object.assign({ prefer: 'nonsense' }, b)), place(b));
+  assert.deepEqual(place(Object.assign({ prefer: 'right' }, b)), place(b));
+});
+
+test('sanctuary overlay: positioned with its own key, a show-on-map button for an off-screen icon, Esc ends a rename first', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'js', 'journey2-view.js'), 'utf8');
+  assert.match(src, /positionPanel\(ui\.sanctuary, sanctuaryAnchorPx, sanctuaryOpen\)/, 'the key keeps the top edge when the panel grows');
+  assert.match(src, /data-j2-sanc-show hidden/, 'the button starts hidden');
+  assert.match(src, /sanctuaryOpen && sanctuaryRenaming\) \{ endSanctuaryRename\(false\)/, 'Esc with focus on the tick / cross ends only the edit');
+  const i18n = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'i18n.json'), 'utf8'));
+  assert.ok(i18n.en.journey2_sanc_show && i18n.ru.journey2_sanc_show, 'EN and RU label');
+});
+
 test('placement: goes above or below when neither side has room', () => {
   const p = place({ view: { w: 600, h: 900 }, anchor: { x: 300, y: 200, r: 26 } });
   assert.equal(p.side, 'below');

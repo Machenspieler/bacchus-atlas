@@ -80,6 +80,7 @@ body[data-route="playermap"] #grid-wrap { display: block; }
 .j2-ctl-preview[hidden], .j2-side-scroll[hidden], .j2-rail-grp[hidden], .j2-rb[hidden] { display: none; }
 .j2-btn-icon { width: var(--h-sm); padding: 0; font-size: var(--fs-md); display: inline-flex; align-items: center; justify-content: center; }
 .j2-btn-icon svg { width: var(--icon-md); height: var(--icon-md); }
+.j2-btn-icon[hidden] { display: none; }
 .j2-btn-icon:disabled, .j2-btn-icon[aria-disabled="true"] { opacity: var(--opacity-disabled); cursor: default; }
 .j2-zoom-readout {
   min-width: 6ch; justify-content: center; text-align: center; font-family: var(--font-mono); font-size: var(--fs-sm);

@@ -506,6 +506,7 @@
       panelOpen: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 3v18" /><path d="m14 9 3 3-3 3" /></svg>',
       close: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>',
       check: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>',
+      crosshair: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="7" /><path d="M12 2v4M12 18v4M2 12h4M18 12h4" /></svg>',
       pencil: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /><path d="m15 5 4 4" /></svg>',
       warn: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>',
       inspect: '<svg class="j2-li" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>',
@@ -742,6 +743,7 @@
                     <button type="button" class="btn btn-sm j2-sanc-act" data-j2-sanc-name><span class="j2-ico" aria-hidden="true" data-j2-s="nameIco"></span><span data-j2-s="nameLabel"></span></button>
                     <p class="j2-insp-sub j2-sanc-desc" data-j2-s="desc" hidden></p>
                   </div>
+                  <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-show hidden data-t-aria="journey2_sanc_show" data-t-title="journey2_sanc_show">${LI.crosshair}</button>
                   <button type="button" class="btn btn-ghost btn-sm j2-btn-icon" data-j2-sanc-close data-t-aria="journey2_sanc_close" data-t-title="journey2_sanc_close">${LI.close}</button>
                 </header>
                 <div class="j2-sanc-echo" data-j2-s="echo" hidden>
@@ -960,6 +962,7 @@
       ui.sancClose = ui.sanctuary.querySelector('[data-j2-sanc-close]');
       ui.sancNameInput = ui.sanctuary.querySelector('[data-j2-sanc-name-input]');
       ui.sancRename = ui.sanctuary.querySelector('[data-j2-sanc-rename]');
+      ui.sancShow = ui.sanctuary.querySelector('[data-j2-sanc-show]');
       ui.echoCollect = ui.sanctuary.querySelector('[data-j2-echo-collect]');
       ui.knownSanc = container.querySelector('[data-j2-known-sanc]');
       ui.zoomReadout = container.querySelector('[data-j2-zoom-readout]');
@@ -1923,10 +1926,13 @@
       const wrap = ui.mapwrap.getBoundingClientRect();
       const view = { w: wrap.width, h: wrap.height };
       if (!view.w || !view.h) return;
+      // Same panel, same object (`key`): stay on the side it already took while that side still fits, instead of flipping as the camera moves.
+      const kept = key != null && node._j2side && node._j2side.key === key ? node._j2side.side : null;
       const pos = Geo.placeInspector({
         view: view, size: { w: node.offsetWidth, h: node.offsetHeight }, anchor: anchorOf(view),
-        blocked: inspectorBlocked(wrap), narrow: window.innerWidth <= 900, left: narrowLeftInset(wrap), bottom: narrowBottomLimit(wrap),
+        blocked: inspectorBlocked(wrap), narrow: window.innerWidth <= 900, left: narrowLeftInset(wrap), bottom: narrowBottomLimit(wrap), prefer: kept,
       });
+      if (key != null && (pos.side === 'right' || pos.side === 'left' || pos.side === 'above' || pos.side === 'below')) node._j2side = { key: key, side: pos.side };
       // A panel that grows or shrinks in place (an expanded section, the environment picker) keeps its top edge where it was and grows downward
       // (clamped to the map area), instead of re-centring on the hex and jumping. A camera move, another hex or another side re-centres as before.
       const a = anchorOf(view), side = pos.side === 'right' || pos.side === 'left';
@@ -3760,7 +3766,20 @@
 
     function positionSanctuary() {
       if (!sanctuaryOpen || !ui.sanctuary || ui.sanctuary.hidden || !data) return;
-      positionPanel(ui.sanctuary, sanctuaryAnchorPx);
+      // keyed by the sanctuary: a panel that grows (name field, Environment picker) keeps its top edge, and keeps its side while the icon moves
+      positionPanel(ui.sanctuary, sanctuaryAnchorPx, sanctuaryOpen);
+      // icon scrolled off screen: the panel sits in its corner with no caret, so offer a way back to it
+      const wrap = ui.mapwrap.getBoundingClientRect();
+      ui.sancShow.hidden = !sanctuaryAnchorMap().has(sanctuaryOpen) || !!sanctuaryAnchorPx({ w: wrap.width, h: wrap.height });
+    }
+
+    /** Header button: recentres the camera on the open sanctuary's icon (zoom unchanged), so the panel docks beside it again. */
+    function showSanctuaryOnMap() {
+      const a = sanctuaryOpen && sanctuaryAnchorMap().get(sanctuaryOpen);
+      if (!a) return;
+      centerOnWorld(a.worldPixelAnchor[0], a.worldPixelAnchor[1]);
+      positionSanctuary();
+      if (ui.sanctuary.querySelector('[data-j2-sanc-close]')) ui.sanctuary.querySelector('[data-j2-sanc-close]').focus({ preventScroll: true });   // the button hides itself once the icon is in view
     }
 
     /** The generated sanctuary under a viewport point (the icon's hit rectangle, or the usual marker slop), or null. */
@@ -5343,6 +5362,7 @@
         if (previewMode && routePlanner.isActive()) { routeEscape(); e.preventDefault(); return; }    // a route shown in the preview closes before the preview does (PD-052)
         if (playerMode && !sideCollapsed) { toggleSide(); e.preventDefault(); return; }                // the player page's legend closes before anything else is left
         if (previewMode) { leavePreview(); e.preventDefault(); return; }
+        if (sanctuaryOpen && sanctuaryRenaming) { endSanctuaryRename(false); e.preventDefault(); return; }   // focus on the tick / cross while renaming: Esc still only ends the edit
         if (sanctuaryOpen) { closeSanctuary({ focus: true }); e.preventDefault(); return; }
         if (inspectorOpen()) { closeInspector({ focus: true }); e.preventDefault(); return; }
         if (routePlanner.isActive()) { routeEscape(); e.preventDefault(); return; }                   // a shown route closes last, after the panels above it
@@ -5454,6 +5474,7 @@
       else if (b.hasAttribute('data-j2-echo-collect')) toggleEchoCollected();
       else if (b.hasAttribute('data-j2-sanc-generate')) generateSanctuaries();
       else if (b.hasAttribute('data-j2-sanc-close')) closeSanctuary({ focus: true });
+      else if (b.hasAttribute('data-j2-sanc-show')) showSanctuaryOnMap();
       else if (b.hasAttribute('data-j2-sanc-name')) toggleSanctuaryName();
       else if (b.hasAttribute('data-j2-sanc-rename-save')) endSanctuaryRename(true);
       else if (b.hasAttribute('data-j2-sanc-rename-cancel')) endSanctuaryRename(false);

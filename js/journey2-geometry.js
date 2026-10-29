@@ -448,6 +448,7 @@
    *   blocked  [{ x, y, w, h, soft? }] rectangles the inspector must not cover (sidebar or rail, diagnostics drawer); a `soft` one (the
    *                                 selected-tile bar) is avoided only while a clean spot beside the hex exists
    *   margin, gap, narrow            edge margin (default 12), gap to the hex (default 14), phone/narrow layout flag
+   *   prefer                         optional side ('right' | 'left' | 'below' | 'above') to try first (hysteresis); ignored when it does not fit cleanly
    * Returns { x, y, side, caret } — `side` is where the panel sits relative to the hex ('right' | 'left' | 'above' | 'below'),
    * or 'corner' (stable top-right, no hex) / 'clamped' / 'narrow'; `caret` is { edge, offset } pointing at the hex, or null.
    */
@@ -481,6 +482,8 @@
       { side: 'below', x: clampX(a.x - w / 2), y: a.y + ry + gap, fits: a.y + ry + gap + h <= view.h - margin },
       { side: 'above', x: clampX(a.x - w / 2), y: a.y - ry - gap - h, fits: a.y - ry - gap - h >= margin },
     ];
+    // `prefer`: the side the panel already sits on — tried first, so a hex drifting toward an edge doesn't flip the panel to the other side while the old one still fits
+    if (o.prefer) { const i = cands.findIndex(c => c.side === o.prefer); if (i > 0) cands.unshift(cands.splice(i, 1)[0]); }
     const caretFor = (side, x, y) => {
       const horiz = side === 'right' || side === 'left';
       const off = horiz ? a.y - y : a.x - x, len = horiz ? h : w;
