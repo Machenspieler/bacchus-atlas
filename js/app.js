@@ -2244,7 +2244,7 @@ const SOURCES = [
   'Incredible Creatures',
   'Archibald’s Almanac of Adversaries',
   'Wondrous Environments',
-  'Dungeons of Drakkenheim Campaign Frame Beta',
+  'Dungeons of Drakkenheim',
   'City of the Black Rose',
   'Court & Shadow',
   'Pistol Heart',
