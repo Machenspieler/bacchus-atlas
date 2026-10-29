@@ -4143,7 +4143,7 @@
           },
           "description": {
             "en": "Spend a Fear to raid the hideout with a Head Guard, two Bladed Guards, and two Archer Guards. They take on NPC threats in addition to the PCs.",
-            "ru": "Потратьте Страх, чтобы устроить облаву на логово силами Капитана Стражи, двух Стражников-Мечников и двух Стражников-Лучников. Они противостоят и НПС-угрозам, и персонажам."
+            "ru": "Потратьте Страх, чтобы устроить облаву на логово силами Капитана Стражи, двух Стражников-Мечников и двух Стражников-Лучников. Они противостоят и неигровым угрозам, и персонажам."
           },
           "prompt": {
             "en": "How do the PCs feel being on the wrong side of the law? Are there secret means of escape?",
@@ -4219,7 +4219,7 @@
           },
           "description": {
             "en": "Each racer begins with a d20 progress die to track their progress, set to 1. The first to reach 20 wins. For initiative, start with the highest progress die and work downwards, with PCs moving before NPCs for shared die values. Each turn, a racer makes an action roll, progressing as follows:\n- Tick up 1 on a Failure.\n- Tick up 2 on a Success.\n- Tick up 3 on a Critical Success. If a racer’s action roll involves anything other than racing, the amount the racer’s die ticks up is reduced by 1. If they target another racer, on a success the target’s die might tick down by 1, or they may have disadvantage on their next action roll, depending on the effect.",
-            "ru": "Каждый гонщик начинает с d20-кости прогресса, отслеживающей его продвижение, установленной на 1. Первый, кто достигнет 20, побеждает. Для очерёдности начинайте с наибольшего значения кости прогресса и двигайтесь вниз, при равных значениях персонажи ходят раньше НПС. Каждый ход гонщик совершает бросок действия, продвигаясь следующим образом:\n- При Неудаче — +1.\n- При Успехе — +2.\n- При Критическом Успехе — +3. Если бросок действия гонщика связан не с самой гонкой, а с чем-то ещё, продвижение кости уменьшается на 1. Если он целится в другого гонщика, при успехе кость цели может уменьшиться на 1, либо цель получает помеху на следующий бросок действия, в зависимости от эффекта."
+            "ru": "Каждый гонщик начинает с d20-кости прогресса, отслеживающей его продвижение, установленной на 1. Первый, кто достигнет 20, побеждает. Для очерёдности начинайте с наибольшего значения кости прогресса и двигайтесь вниз, при равных значениях персонажи ходят раньше неигровых персонажей. Каждый ход гонщик совершает бросок действия, продвигаясь следующим образом:\n- При Неудаче — +1.\n- При Успехе — +2.\n- При Критическом Успехе — +3. Если бросок действия гонщика связан не с самой гонкой, а с чем-то ещё, продвижение кости уменьшается на 1. Если он целится в другого гонщика, при успехе кость цели может уменьшиться на 1, либо цель получает помеху на следующий бросок действия, в зависимости от эффекта."
           },
           "prompt": {
             "en": "How have the racers modified their vehicles for the race?",
@@ -4819,7 +4819,7 @@
           },
           "prompt": {
             "en": "Who are the well-known socialites and notorious scoundrels in this settlement? What masks do the PCs and NPCs wear?",
-            "ru": "Кто из известных светских львов и печально известных негодяев может быть на этом приёме? Какие маски носят персонажи и НПС?"
+            "ru": "Кто из известных светских львов и печально известных негодяев может быть на этом приёме? Какие маски носят персонажи и неигровые персонажи?"
           }
         },
         {
@@ -4962,7 +4962,7 @@
           },
           "description": {
             "en": "Each racer begins with a d12 progress die to track their progress, set to 1. The first to 12 wins. For initiative, start with the highest progress die and work downwards, with PCs moving before NPCs for shared die values. Each turn, a racer makes an action roll, progressing as follows:\n- Tick up 1 on a Failure.\n- Tick up 2 on a Success.\n- Tick up 3 on a Critical Success. If a racer’s action roll involves anything other than racing, the amount the racer’s die ticks up is reduced by 1. If they target another racer, on a success the target’s die might tick down by 1, or they may have disadvantage on their next action roll, depending on the effect.",
-            "ru": "Каждый гонщик начинает с d12-кости прогресса, отслеживающей его продвижение, установленной на 1. Первый, кто достигнет 12, побеждает. Для очерёдности начинайте с наибольшего значения кости прогресса и двигайтесь вниз, при равных значениях персонажи ходят раньше НПС. Каждый ход гонщик совершает бросок действия, продвигаясь следующим образом:\n- При Неудаче — +1.\n- При Успехе — +2.\n- При Критическом Успехе — +3. Если бросок действия гонщика связан не с самой гонкой, а с чем-то ещё, продвижение кости уменьшается на 1. Если он целится в другого гонщика, при успехе кость цели может уменьшиться на 1, либо цель получает помеху на следующий бросок действия, в зависимости от эффекта."
+            "ru": "Каждый гонщик начинает с d12-кости прогресса, отслеживающей его продвижение, установленной на 1. Первый, кто достигнет 12, побеждает. Для очерёдности начинайте с наибольшего значения кости прогресса и двигайтесь вниз, при равных значениях персонажи ходят раньше неигровых персонажей. Каждый ход гонщик совершает бросок действия, продвигаясь следующим образом:\n- При Неудаче — +1.\n- При Успехе — +2.\n- При Критическом Успехе — +3. Если бросок действия гонщика связан не с самой гонкой, а с чем-то ещё, продвижение кости уменьшается на 1. Если он целится в другого гонщика, при успехе кость цели может уменьшиться на 1, либо цель получает помеху на следующий бросок действия, в зависимости от эффекта."
           },
           "prompt": {
             "en": "Why are the PCs competing - to gain someone’s trust, settle differences, or show they are worthy?",
@@ -5520,7 +5520,7 @@
           },
           "description": {
             "en": "Publicly accessible areas are open during business hours, and supervised access to restricted areas can be achieved with successful Presence Rolls. Blueprints can be obtained to find an unguarded entry point by speaking with knowledgeable NPCs or from original plans in a library.",
-            "ru": "Общедоступные зоны открыты в рабочие часы, а контролируемый доступ в закрытые зоны можно получить успешными бросками Влияния. Чертежи можно раздобыть, чтобы найти неохраняемую точку входа — расспросив осведомлённых НПС или найдя оригинальные планы в библиотеке."
+            "ru": "Общедоступные зоны открыты в рабочие часы, а контролируемый доступ в закрытые зоны можно получить успешными бросками Влияния. Чертежи можно раздобыть, чтобы найти неохраняемую точку входа — расспросив осведомлённых неигровых персонажей или найдя оригинальные планы в библиотеке."
           },
           "prompt": {
             "en": "How many guards are there? Who grants access to the restricted areas? Where are the alternative entrances?",
@@ -6735,7 +6735,7 @@
           "type": "passive",
           "name": {
             "en": "Trapped NPCs",
-            "ru": "Пленённые НПС"
+            "ru": "Пленённые неигровые персонажи"
           },
           "description": {
             "en": "The PCs are not the only ones trapped in the loop. Whether consciously or not they have become highly skilled due to their time spent in the loop.",
@@ -6743,7 +6743,7 @@
           },
           "prompt": {
             "en": "Are the NPCs aware they are trapped? If they aren’t, why is it different for the PCs? Is the person or group that created the loop within it or was it an external force such as a God?",
-            "ru": "Осознают ли НПС, что застряли? Если нет, почему для персонажей всё иначе? Находится ли создавший петлю человек или группа внутри неё, или это была внешняя сила, например, Бог?"
+            "ru": "Осознают ли неигровые персонажи, что застряли? Если нет, почему для персонажей всё иначе? Находится ли создавший петлю человек или группа внутри неё, или это была внешняя сила, например, Бог?"
           }
         },
         {
@@ -6773,7 +6773,7 @@
           },
           "prompt": {
             "en": "Why was the time loop created—to trap a powerful NPC, as a result of failed time travel, or as a God’s punishment?",
-            "ru": "Зачем была создана временная петля — чтобы поймать в ловушку могущественного НПС, в результате неудачного путешествия во времени, или как наказание от Бога?"
+            "ru": "Зачем была создана временная петля — чтобы поймать в ловушку могущественного неигрового персонажа, в результате неудачного путешествия во времени, или как наказание от Бога?"
           }
         },
         {
@@ -9095,7 +9095,7 @@
           },
           "description": {
             "en": "The Megastorm is sowing fear and chaos among the locals. Describe how the storm puts an NPC in danger. If the PC who next takes the spotlight doesn’t use their action to rescue the endangered NPC, you gain a Fear.",
-            "ru": "Мегашторм сеет страх и хаос среди местных жителей. Опишите, как буря подвергает опасности НПС. Если персонаж, который следующим получит Активацию, не использует своё действие, чтобы спасти этого НПС, вы получаете Страх."
+            "ru": "Мегашторм сеет страх и хаос среди местных жителей. Опишите, как буря подвергает опасности неигрового персонажа. Если персонаж, который следующим получит Активацию, не использует своё действие, чтобы спасти этого неигрового персонажа, вы получаете Страх."
           },
           "prompt": {
             "en": "Who’s taking advantage of the situation? Who’s supposed to be in charge here, and what happened to them?",
@@ -9468,7 +9468,7 @@
           },
           "description": {
             "en": "Convergence is a nexus of gods, monsters, aliens, and all manner of dimension-hoppers. Because mortal life is generally beneath these beings' concern, PCs have disadvantage on action rolls to influence them unless they have leverage against them or know what the NPC cares about.",
-            "ru": "Конвергенция — это узел богов, чудовищ, инопланетян и всевозможных странников между измерениями. Поскольку смертная жизнь, как правило, ниже заботы этих существ, персонажи совершают броски действия, чтобы повлиять на них, с помехой, если только у них нет рычага влияния на них или они не знают, что заботит этого НПС."
+            "ru": "Конвергенция — это узел богов, чудовищ, инопланетян и всевозможных странников между измерениями. Поскольку смертная жизнь, как правило, ниже заботы этих существ, персонажи совершают броски действия, чтобы повлиять на них, с помехой, если только у них нет рычага влияния на них или они не знают, что заботит этого неигрового персонажа."
           },
           "prompt": {
             "en": "What manner of being currently holds sway in the city? What strange customs do they practice? Which PC is most confused or offended by them, and which PC adopts these customs as their own?",
@@ -18462,11 +18462,11 @@
           },
           "description": {
             "en": "Introduce an NPC that knows something about the area and can potentially direct the party. Choose from the options below, or make one of your own. If a PC can provide something that satisfies the NPC’s request, all PCs in the party gain a Hope.\n• An ancient troll who has become exhausted while searching for a way out\n• A small faerie with batlike wings whose home is riddled by woodpeckers\n• An animal that has the ability to speak and would like help obtaining food\n• A tree that has somehow retained its consciousness who wishes to be rid of their curse",
-            "ru": "Введите НПС, который знает нечто об этой местности и потенциально может направить группу. Выберите один из вариантов ниже или придумайте свой. Если персонаж может предоставить то, что удовлетворит просьбу НПС, вся группа получает Надежду.\n• Древний тролль, изнемогший в поисках выхода.\n• Маленькая фея с крыльями как у летучей мыши, чей дом донимают дятлы.\n• Животное, способное говорить, которое хотело бы получить помощь в добыче еды.\n• Дерево, каким-то образом сохранившее сознание, которое желает избавиться от своего проклятия."
+            "ru": "Введите неигрового персонажа, который знает нечто об этой местности и потенциально может направить группу. Выберите один из вариантов ниже или придумайте свой. Если персонаж может предоставить то, что удовлетворит просьбу неигрового персонажа, вся группа получает Надежду.\n• Древний тролль, изнемогший в поисках выхода.\n• Маленькая фея с крыльями как у летучей мыши, чей дом донимают дятлы.\n• Животное, способное говорить, которое хотело бы получить помощь в добыче еды.\n• Дерево, каким-то образом сохранившее сознание, которое желает избавиться от своего проклятия."
           },
           "prompt": {
             "en": "Who is the NPC and what do they know about this location? Do some of these NPCs want the forest to stay?",
-            "ru": "Кто этот НПС и что он знает об этом месте? Хотят ли некоторые из этих НПС, чтобы лес остался таким, какой он есть?"
+            "ru": "Кто этот неигровой персонаж и что он знает об этом месте? Хотят ли некоторые из этих неигровых персонажей, чтобы лес остался таким, какой он есть?"
           }
         }
       ],
@@ -19478,11 +19478,11 @@
           },
           "description": {
             "en": "A PC that succeeds on a Knowledge Roll uncovers a prominent NPC has made a deal with the hag. If the hag has not been defeated, the roll is made with disadvantage.",
-            "ru": "Персонаж, преуспевший в броске Знания, узнаёт, что видный НПС заключил сделку с ведьмой. Если ведьма ещё не побеждена, бросок совершается с помехой."
+            "ru": "Персонаж, преуспевший в броске Знания, узнаёт, что видный неигровой персонаж заключил сделку с ведьмой. Если ведьма ещё не побеждена, бросок совершается с помехой."
           },
           "prompt": {
             "en": "What damning information might the PCs find? Is the NPC someone they trust?",
-            "ru": "Какие компрометирующие сведения могут найти персонажи? Является ли этот НПС тем, кому они доверяют?"
+            "ru": "Какие компрометирующие сведения могут найти персонажи? Является ли этот неигровой персонаж тем, кому они доверяют?"
           }
         },
         {
@@ -20668,7 +20668,7 @@
           },
           "description": {
             "en": "Souls banished here during the Earliest Age scheme endlessly. PCs attempting to barter or gain information must make a Presence Roll (18).\n• **On a Critical Success:** they learn three of the below details.\n• **On a Success:** If the roll is a success with Hope, they learn two details. On a success with Fear they learn one, but mark a Stress.\n• **On a Failure:** They are surrounded by members of the Hellish Army or adversaries of your choosing. Killing these adversaries might direct the party to an NPC who wishes to help them, for a price.\n• **Details:** At the center of Pyrrhexis is the Palace of Spite. The Ashen Demon King sits the throne in the Palace and is the chief jailor of souls in the Circle; he alone judges their weight and worth. The singular rule of Pyrrhexis is that one must give up something of equal value to that which they gain.",
-            "ru": "Души, изгнанные сюда с Древнейшей Эпохи, бесконечно строят козни. Персонажи, пытающиеся торговаться или получить сведения, должны совершить бросок Влияния (18).\n• **При критическом успехе:** они узнают три из сведений ниже.\n• **При успехе:** если бросок — успех с Надеждой, они узнают два сведения. При успехе со Страхом они узнают одно, но отмечают Стресс.\n• **При неудаче:** их окружают члены Адского Воинства или противники по вашему выбору. Победа над этими противниками может привести группу к НПС, который хочет им помочь, за плату.\n• **Сведения:** в центре Пиррексиса находится Дворец Злобы. Пепельный Царь Демонов восседает на троне во Дворце и является главным тюремщиком душ в Круге; только он взвешивает их вес и ценность. Единственное правило Пиррексиса — нужно отдать нечто равноценное тому, что получаешь."
+            "ru": "Души, изгнанные сюда с Древнейшей Эпохи, бесконечно строят козни. Персонажи, пытающиеся торговаться или получить сведения, должны совершить бросок Влияния (18).\n• **При критическом успехе:** они узнают три из сведений ниже.\n• **При успехе:** если бросок — успех с Надеждой, они узнают два сведения. При успехе со Страхом они узнают одно, но отмечают Стресс.\n• **При неудаче:** их окружают члены Адского Воинства или противники по вашему выбору. Победа над этими противниками может привести группу к неигровому персонажу, который хочет им помочь, за плату.\n• **Сведения:** в центре Пиррексиса находится Дворец Злобы. Пепельный Царь Демонов восседает на троне во Дворце и является главным тюремщиком душ в Круге; только он взвешивает их вес и ценность. Единственное правило Пиррексиса — нужно отдать нечто равноценное тому, что получаешь."
           },
           "prompt": {
             "en": "Who might the PCs ask for information? What does it cost to gain this information?",
@@ -26542,7 +26542,7 @@
           },
           "description": {
             "en": "A local farmer offers to hire the players for some labor on her \"island farm\" — a small plot of land in a wheeled cart tethered via Mechanus Chain to a network of other trailer farms. Her rig is in the shop, so she needs strong backs to carry supplies on foot, hopping from cart to cart — and no one else has been dumb enough to take her up on the offer.\n\nPlayers can attempt this semi-perilous task manually by making Strength or Agility rolls. Start a countdown (3), ticking it down with each successful roll:\n- When you fail, describe your misstep and how you avoided becoming roadkill, and take 2 Stress.\n- When you succeed, describe your feats of ability and strength as you show off and mark a Stress (no Stress on a critical success).\n\nFor your reward, you receive the following:\n- **A Sore Back** — Next time you clear Stress, clear half as many instead.\n- **A Day’s Pay** — Everyone receives 2 Handfuls of Gold & a pat on the back.\n- **A Warm Meal** — and a cold drink.\n- **A Piece of Junk** — Each player rolls on the Equipment table. All gear has the Broken condition.\n\n**Note:** Day Labor can be used as a framework. Reskin with different odd jobs and NPCs as you flesh out your version of Nowhere.",
-            "ru": "Местная фермерша предлагает нанять персонажей на работу на своей «островной ферме» — небольшом участке земли в колёсной повозке, привязанной Механус-Цепью к сети других повозок-ферм. Её риг в ремонте, так что ей нужны крепкие спины, чтобы носить припасы пешком, перепрыгивая с повозки на повозку — а больше никто не был настолько глуп, чтобы согласиться на её предложение.\n\nПерсонажи могут попытаться выполнить эту полуопасную задачу вручную, совершая броски на Силу или Проворность. Начните отсчёт (3), уменьшая его с каждым успешным броском:\n- Когда вы проваливаете бросок, опишите свой промах и то, как вы избежали превращения в придорожное месиво, и получите 2 Стресса.\n- Когда вы преуспеваете, опишите свои проявления ловкости и силы, красуясь, и отметьте Стресс (без Стресса при критическом успехе).\n\nЗа вашу награду вы получаете следующее:\n- **Больная спина** — В следующий раз, когда вы снимаете Стресс, снимите вдвое меньше.\n- **Дневная плата** — Каждый получает 2 Горсти Золота и похлопывание по спине.\n- **Тёплая еда** — и холодный напиток.\n- **Кусок хлама** — Каждый игрок бросает по таблице Снаряжения. Всё снаряжение получает состояние Сломано.\n\n**Примечание:** «Подённую Работу» можно использовать как шаблон. Переосмыслите её с другими случайными работами и NPC, развивая свою версию Нигде."
+            "ru": "Местная фермерша предлагает нанять персонажей на работу на своей «островной ферме» — небольшом участке земли в колёсной повозке, привязанной Механус-Цепью к сети других повозок-ферм. Её риг в ремонте, так что ей нужны крепкие спины, чтобы носить припасы пешком, перепрыгивая с повозки на повозку — а больше никто не был настолько глуп, чтобы согласиться на её предложение.\n\nПерсонажи могут попытаться выполнить эту полуопасную задачу вручную, совершая броски на Силу или Проворность. Начните отсчёт (3), уменьшая его с каждым успешным броском:\n- Когда вы проваливаете бросок, опишите свой промах и то, как вы избежали превращения в придорожное месиво, и получите 2 Стресса.\n- Когда вы преуспеваете, опишите свои проявления ловкости и силы, красуясь, и отметьте Стресс (без Стресса при критическом успехе).\n\nЗа вашу награду вы получаете следующее:\n- **Больная спина** — В следующий раз, когда вы снимаете Стресс, снимите вдвое меньше.\n- **Дневная плата** — Каждый получает 2 Горсти Золота и похлопывание по спине.\n- **Тёплая еда** — и холодный напиток.\n- **Кусок хлама** — Каждый игрок бросает по таблице Снаряжения. Всё снаряжение получает состояние Сломано.\n\n**Примечание:** «Подённую Работу» можно использовать как шаблон. Переосмыслите её с другими случайными работами и неигровыми персонажами, развивая свою версию Нигде."
           },
           "prompt": {
             "en": "",
@@ -28472,7 +28472,7 @@
           },
           "description": {
             "en": "Any NPC who takes melee damage, or PC who chooses to reduce incoming melee damage by marking an armor slot, moves within Very Close of where they stood or becomes Vulnerable if they were standing anywhere in the rubble.",
-            "ru": "Любой NPC, получивший урон в ближнем бою, или персонаж, решивший снизить входящий урон в ближнем бою, отметив Ячейку Брони, перемещается в пределы Очень Близкой дистанции от места, где он стоял, либо становится *Уязвим*, если он стоял где-либо среди развалин."
+            "ru": "Любой неигровой персонаж, получивший урон в ближнем бою, или персонаж, решивший снизить входящий урон в ближнем бою, отметив Ячейку Брони, перемещается в пределы Очень Близкой дистанции от места, где он стоял, либо становится *Уязвим*, если он стоял где-либо среди развалин."
           },
           "prompt": {
             "en": "What’s stuck in the undergrowth here someone could trip over, either sneaking or fighting across the old town? Why was it left behind?",
@@ -28528,7 +28528,7 @@
           },
           "body": {
             "en": "Either a party member or an NPC dear to them is from this village. Conflict and banditry wash over the land, but they must go back for just one last trip... one last thing.",
-            "ru": "Кто-то из членов отряда или NPC, дорогой их сердцу, родом из этой деревни. Конфликты и разбой захлестнули эти земли, но им нужно вернуться всего один раз... за чем-то одним."
+            "ru": "Кто-то из членов отряда или неигровой персонаж, дорогой их сердцу, родом из этой деревни. Конфликты и разбой захлестнули эти земли, но им нужно вернуться всего один раз... за чем-то одним."
           },
           "prompt": {
             "en": "What do they need to go back for?",
@@ -28732,7 +28732,7 @@
           },
           "description": {
             "en": "Introduce a significant NPC who is connected to a PC’s background or the broader quest, arriving here unexpectedly—and looking for them.",
-            "ru": "Введите значимого NPC, связанного с предысторией персонажа или общим заданием, который неожиданно прибывает сюда — и ищет их."
+            "ru": "Введите значимого неигрового персонажа, связанного с предысторией персонажа или общим заданием, который неожиданно прибывает сюда — и ищет их."
           },
           "prompt": {
             "en": "Did they come here seeking the party, or is this a curious coincidence? Are they known to the PC whose background they are connected to, or is this their first time meeting them?",
@@ -33042,7 +33042,7 @@
           },
           "description": {
             "en": "A single conversation at this ball could determine the fate of an entire nation. Gaining access to the highest-status NPCs at the ball requires previous arrangements or completing a Progress Countdown (4 to 8).",
-            "ru": "Один-единственный разговор на этом балу может решить судьбу целого государства. Чтобы получить доступ к самым влиятельным NPC на балу, необходимы предварительные договорённости или завершение Отсчёта Прогресса (от 4 до 8)."
+            "ru": "Один-единственный разговор на этом балу может решить судьбу целого государства. Чтобы получить доступ к самым влиятельным неигровым персонажам на балу, необходимы предварительные договорённости или завершение Отсчёта Прогресса (от 4 до 8)."
           },
           "prompt": {
             "en": "Whose attention is most sought after? Who here has power but is not in demand? Why? Who is fully concealing their identity and why? Who is posing as someone else?",
@@ -34654,7 +34654,7 @@
           },
           "prompt": {
             "en": "Is there an NPC at the tavern who fights very stylishly? How do tavern goers react to a fumbled attack?",
-            "ru": "Есть ли в таверне NPC, который дерётся очень стильно? Как посетители реагируют на неудачный удар?"
+            "ru": "Есть ли в таверне неигровой персонаж, который дерётся очень стильно? Как посетители реагируют на неудачный удар?"
           }
         },
         {
