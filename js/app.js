@@ -7073,7 +7073,7 @@ function copyItemImage(src, name) {
  * "s" as the prose it belongs to. */
 const DICE_RE = /\b(\d{0,2})d(2|3|4|6|8|10|12|20|100)(?=s?\b)(?:\s*([+-])\s*(\d+)\b(?!\s*d\s*\d))?/gi;
 const COUNTDOWN_KEYWORD_RE = /(Countdown|Отсчёт\w*|Отсчет\w*|Счётчик\w*|Счетчик\w*)/gi;
-const COUNTDOWN_PAREN_RE = /\(\s*(?:(?:Loop|Цикл)\s+)?(?:(\d*)d(\d+)(?:\s*\+\s*(\d+))?|(\d+))\s*\)/gi;
+const COUNTDOWN_PAREN_RE = /\(\s*(?:(?:Loop|Цикл)\s+)?(?:(\d*)d(\d+)(?:\s*\+\s*(\d+))?|(\d+)(?:\s*[–—-]\s*(?:[A-Za-zА-Яа-я]+\s+)?(?:Loop|Цикл))?)\s*\)/gi;
 
 /* A difficulty in parentheses is not a countdown. "…stop the countdown with a
  * successful Finesse Roll (20)" names a check the party makes against the

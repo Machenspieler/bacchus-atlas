@@ -58,3 +58,12 @@ test('every "Loop"/"Цикл" countdown in data/environments.json is read as one
   assert.ok(found.length >= 10, 'expected the data to contain several looped countdowns');
   for (const s of found) assert.equal(findCountdownMatches(s).length, 1, s);
 });
+
+test('a trailing "– Decreasing Loop" / "– Убывающий Цикл" qualifier is part of the countdown button', () => {
+  const en = 'set an Expedition Countdown (6 – Decreasing Loop) that advances each time';
+  const [m] = findCountdownMatches(en);
+  assert.equal(m.value, 6);
+  assert.equal(m.label, 'Countdown (6 – Decreasing Loop)');
+  assert.equal(startOf('установить Отсчёт Экспедиции (6 – Убывающий Цикл), который'), 6);
+  assert.equal(startOf('Countdown (3 – Decreasing Loop). When it triggers'), 3);
+});
