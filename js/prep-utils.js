@@ -292,10 +292,10 @@
   function environmentIndexRawFields(env, i18nEn, i18nRu) {
     var enDict = i18nEn || {};
     var ruDict = i18nRu || {};
-    var tier = env.tier;
-    var tierFields = (tier === 0 || tier) ? [
-      String(tier), 'tier ' + tier, 'rank ' + tier, 'ранг ' + tier,
-    ] : [];
+    var ownTiers = Array.isArray(env.tiers) && env.tiers.length ? env.tiers : (env.tier === 0 || env.tier ? [env.tier] : []);
+    var tierFields = ownTiers.reduce(function (acc, tier) {
+      return acc.concat([String(tier), 'tier ' + tier, 'rank ' + tier, 'ранг ' + tier]);
+    }, []);
     var typeFields = env.type ? [env.type, enDict['type_' + env.type], ruDict['type_' + env.type]] : [];
     var biomeFields = (env.biomes || []).flatMap(function (id) {
       return [id, enDict['biome_' + id], ruDict['biome_' + id]];
@@ -340,7 +340,10 @@
     var tokens = opts.tokens || tokenizeEnvironmentQuery(opts.search);
     var byIndex = index || new Map();
     return (environments || []).filter(function (env) {
-      if (tiers.size && !tiers.has(env.tier)) return false;
+      if (tiers.size) {
+        var own = Array.isArray(env.tiers) && env.tiers.length ? env.tiers : [env.tier];
+        if (!own.some(function (n) { return tiers.has(n); })) return false;
+      }
       return matchesEnvironmentTokens(byIndex.get(env.id) || '', tokens);
     });
   }

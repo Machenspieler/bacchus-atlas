@@ -261,6 +261,33 @@ test('environment difficulty accepts 9 and rejects 8', () => {
   assert.ok(errorsOf(low).some(d => d.path === '$.environments[0].difficulty'));
 });
 
+/* PD-084: an environment written for several tiers. */
+test('multi-tier environment: valid tiers + difficulty_by_tier pass', () => {
+  const ok = validateRepositoryData(buildFixture({ environments: v => {
+    const e = v.environments[0];
+    e.tier = 2; e.tiers = [2, 3, 4]; e.difficulty = 13;
+    e.difficulty_by_tier = { 2: 13, 3: 16, 4: 19 };
+  } }));
+  assert.equal(errorsOf(ok).length, 0);
+});
+
+test('multi-tier environment: bad tiers, mismatched keys and difficulty fail', () => {
+  const bad = (mut, pathRe) => {
+    const r = validateRepositoryData(buildFixture({ environments: v => {
+      const e = v.environments[0];
+      e.tier = 2; e.tiers = [2, 3, 4]; e.difficulty = 13;
+      e.difficulty_by_tier = { 2: 13, 3: 16, 4: 19 };
+      mut(e);
+    } }));
+    assert.ok(errorsOf(r).some(d => pathRe.test(d.path)), JSON.stringify(errorsOf(r)));
+  };
+  bad(e => { e.tiers = [3, 2]; }, /\.tiers$/);
+  bad(e => { e.tiers = [3, 4]; }, /\.tiers$/);
+  bad(e => { delete e.difficulty_by_tier[4]; }, /\.difficulty_by_tier$/);
+  bad(e => { e.difficulty = 14; }, /\.difficulty$/);
+  bad(e => { delete e.tiers; }, /\.difficulty_by_tier$/);
+});
+
 /* ---------------- 7: invalid environment type ---------------- */
 
 test('invalid environment type fails', () => {

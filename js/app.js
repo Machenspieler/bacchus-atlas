@@ -1611,7 +1611,7 @@ function renderToolbar() {
   const has = { tiers: new Set(), types: new Set(), sources: new Set(), biomes: new Set() };
   const sourceCounts = new Map();
   envs.forEach(e => {
-    has.tiers.add(e.tier);
+    EnvTierUtils.envTiers(e).forEach(n => has.tiers.add(n));
     has.types.add(e.type);
     if (e.source) {
       has.sources.add(e.source);
@@ -1918,7 +1918,7 @@ function getSearchRecord(env) {
 function envMatchesFilters(env, preparedQuery) {
   const f = state.filters;
   if (!preparedQuery.empty && !SearchIndex.matches(getSearchRecord(env), preparedQuery)) return false;
-  if (f.tiers.size && !f.tiers.has(env.tier)) return false;
+  if (f.tiers.size && !EnvTierUtils.envTiers(env).some(n => f.tiers.has(n))) return false;
   if (f.types.size && !f.types.has(env.type)) return false;
   if (f.sources.size && !f.sources.has(env.source)) return false;
   if (f.regionOnly && !regionOfEnv(env.id)) return false;
@@ -2176,7 +2176,7 @@ function cardHtml(env) {
   // keyboard and a card opens in a new tab on a middle-click or ctrl-click.
   return `
     <article class="card" data-id="${env.id}">
-      <span class="rank-icon rank-icon-sm active card-tier-badge" role="img" aria-label="${t('tier_label')} ${env.tier}" data-tip="${t('tier_label')} ${env.tier}"><span aria-hidden="true">${env.tier}</span></span>
+      <span class="rank-icon rank-icon-sm active card-tier-badge" role="img" aria-label="${t('tier_label')} ${EnvTierUtils.tierLabel(env)}" data-tip="${t('tier_label')} ${EnvTierUtils.tierLabel(env)}"><span aria-hidden="true">${EnvTierUtils.tierLabel(env)}</span></span>
       ${biomeArtHtml(env)}
       <div class="card-body">
         <div class="card-top">
@@ -3428,7 +3428,7 @@ function envPickerRowHtml(env, prep) {
         ${prepEnvThumbHtml(env)}
         <span class="prep-row-text">
           <span class="prep-row-name">${escapeHtml(name)}</span>
-          <span class="prep-row-meta">${t('tier_label')} ${env.tier} · ${escapeHtml(t('type_' + env.type))}${biome ? ' · ' + escapeHtml(t('biome_' + biome)) : ''}</span>
+          <span class="prep-row-meta">${t('tier_label')} ${EnvTierUtils.tierLabel(env)} · ${escapeHtml(t('type_' + env.type))}${biome ? ' · ' + escapeHtml(t('biome_' + biome)) : ''}</span>
         </span>
       </button>
     </div>`;
@@ -4538,7 +4538,7 @@ function centralEnvCardHtml(env) {
   return selectedEntityHtml({
     layout: 'card', id: env.id, name,
     thumb: centralThumbHtml('env', biome ? `img/biomes/${biome}-200.webp` : ''),
-    meta: `${t('tier_label')} ${env.tier}`,
+    meta: `${t('tier_label')} ${EnvTierUtils.tierLabel(env)}`,
     openAttr: 'data-sp-open-env',
     openLabel: t('prep_open_environment_detail').replace('{name}', name),
     removeAttr: 'data-sp-remove-env',
@@ -6261,9 +6261,11 @@ const ATLAS_TIER_DIFFICULTY_SHIFT = 3;
 /** The `{ from, to }` a card read at `toTier` is scaled by, or null at the
  * environment's own tier. `atlas` marks the Atlas of Adventure Tier 1 ↔ 2 rule. */
 function retierFor(env, toTier) {
-  if (toTier === env.tier) return null;
-  const atlas = env.source === ATLAS_SOURCE && [env.tier, toTier].every(n => n === 1 || n === 2);
-  return { from: env.tier, to: toTier, atlas };
+  if (EnvTierUtils.isNativeTier(env, toTier)) return null;
+  // A multi-tier card (PD-084) scales from whichever of its own tiers is nearest.
+  const from = EnvTierUtils.nearestNativeTier(env, toTier);
+  const atlas = env.source === ATLAS_SOURCE && [from, toTier].every(n => n === 1 || n === 2);
+  return { from, to: toTier, atlas };
 }
 
 /** A number tuned for `fromTier` (a difficulty, or a single check's DC), read at
@@ -6282,7 +6284,8 @@ function retierValue(value, fromTier, toTier, atlas = false) {
 function retierDifficulty(env, tier) {
   if (typeof env.difficulty !== 'number') return envDifficulty(env);
   const retier = retierFor(env, tier);
-  return retier ? retierValue(env.difficulty, retier.from, retier.to, retier.atlas) : env.difficulty;
+  const own = EnvTierUtils.difficultyAt(env, retier ? retier.from : tier);
+  return retier ? retierValue(own, retier.from, retier.to, retier.atlas) : own;
 }
 
 const damageLadderCache = new Map();
@@ -6592,8 +6595,8 @@ function openDetailOverlay(envId, carry = null) {
       <p class="region-name">${escapeHtml(regionName(region))}</p>
       <div class="region-envs">
         ${members.map(member => member.id === env.id
-          ? `<button type="button" class="region-env-btn active" disabled aria-current="true">${escapeHtml(envName(member))}<span class="region-env-tier">${member.tier}</span></button>`
-          : `<button type="button" class="region-env-btn" data-region-env="${member.id}">${escapeHtml(envName(member))}<span class="region-env-tier">${member.tier}</span></button>`
+          ? `<button type="button" class="region-env-btn active" disabled aria-current="true">${escapeHtml(envName(member))}<span class="region-env-tier">${EnvTierUtils.tierLabel(member)}</span></button>`
+          : `<button type="button" class="region-env-btn" data-region-env="${member.id}">${escapeHtml(envName(member))}<span class="region-env-tier">${EnvTierUtils.tierLabel(member)}</span></button>`
         ).join('')}
       </div>
     </div>` : '';
@@ -6602,9 +6605,9 @@ function openDetailOverlay(envId, carry = null) {
    * which tier the stat block was actually written for — and so the row reads as
    * something switchable rather than as a rating. */
   const tierPillsHtml = [1, 2, 3, 4].map(n => `
-    <button type="button" class="rank-icon rank-icon-sm ${n === env.tier ? 'native' : ''}" data-view-tier="${n}"
-            aria-label="${t('view_as_tier')} ${n}" data-tip="${n === env.tier ? t('native_tier') : t('view_as_tier') + ' ' + n}"
-      ><span>${n}</span>${n === env.tier ? '<i class="rank-native-dot" aria-hidden="true"></i>' : ''}</button>`).join('');
+    <button type="button" class="rank-icon rank-icon-sm ${EnvTierUtils.isNativeTier(env, n) ? 'native' : ''}" data-view-tier="${n}"
+            aria-label="${t('view_as_tier')} ${n}" data-tip="${EnvTierUtils.isNativeTier(env, n) ? t('native_tier') : t('view_as_tier') + ' ' + n}"
+      ><span>${n}</span>${EnvTierUtils.isNativeTier(env, n) ? '<i class="rank-native-dot" aria-hidden="true"></i>' : ''}</button>`).join('');
 
   const biomesHtml = (env.biomes || []).length ? `
     <div class="detail-footer-biomes">
@@ -6732,7 +6735,7 @@ function openDetailOverlay(envId, carry = null) {
   }
 
   function applyViewTier() {
-    const overridden = viewTier !== env.tier;
+    const overridden = !EnvTierUtils.isNativeTier(env, viewTier);
     // While a card is read at another tier it says so twice over: an amber rim
     // around the whole card, and the environment's own difficulty spelled out
     // next to the scaled one.
@@ -6743,8 +6746,9 @@ function openDetailOverlay(envId, carry = null) {
       const annotate = overridden && difficultyScales(env);
       difficultyValueEl.textContent = String(retierDifficulty(env, viewTier));
       if (annotate) {
+        const from = EnvTierUtils.nearestNativeTier(env, viewTier);
         difficultyValueEl.dataset.tip =
-          t('retier_original').replace('{v}', `${t('tier_label')} ${env.tier}, ${t('difficulty_label')} ${envDifficulty(env)}`);
+          t('retier_original').replace('{v}', `${t('tier_label')} ${from}, ${t('difficulty_label')} ${EnvTierUtils.difficultyAt(env, from)}`);
       } else {
         delete difficultyValueEl.dataset.tip;
       }
@@ -7453,6 +7457,42 @@ function renderSpans(container, text, retier) {
 const BULLET_LINE_RE = /^[-•]\s+/;
 const NUMBERED_LINE_RE = /^\d+\.\s+/;
 
+/* A table is consecutive `| a | b |` lines (PD-084); the first row is the
+ * header, and a `| --- | --- |` rule after it is optional. Cells take the same
+ * rich text as a paragraph, so a `1d6` in a cell is still a dice button. */
+const TABLE_LINE_RE = /^\|.*\|$/;
+const TABLE_RULE_RE = /^\|[\s:|-]+\|$/;
+
+function buildFeatureTable(rows, retier) {
+  const cells = row => row.slice(1, -1).split('|').map(c => c.trim());
+  const body = rows.filter(r => !TABLE_RULE_RE.test(r)).map(cells);
+  const wrap = document.createElement('div');
+  wrap.className = 'feature-table-wrap';
+  const table = document.createElement('table');
+  table.className = 'feature-table';
+  const fill = (tr, values, tag) => values.forEach(value => {
+    const cell = document.createElement(tag);
+    if (tag === 'th') cell.scope = tr.parentNode.tagName === 'THEAD' ? 'col' : 'row';
+    renderRichText(cell, value, retier);
+    tr.appendChild(cell);
+  });
+  const head = document.createElement('thead');
+  const headRow = document.createElement('tr');
+  head.appendChild(headRow);
+  fill(headRow, body[0] || [], 'th');
+  table.appendChild(head);
+  const tbody = document.createElement('tbody');
+  body.slice(1).forEach(values => {
+    const tr = document.createElement('tr');
+    tbody.appendChild(tr);
+    fill(tr, values.slice(0, 1), 'th');
+    fill(tr, values.slice(1), 'td');
+  });
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  return wrap;
+}
+
 /** Splits feature/raw text into paragraphs and "- "/"• "-prefixed bullet lists,
  * rendering dice/countdown spans within each line via renderRichText. */
 function renderFeatureBody(container, text, retier) {
@@ -7469,6 +7509,13 @@ function renderFeatureBody(container, text, retier) {
   let i = 0;
   while (i < lines.length) {
     const line = lines[i].trim();
+    if (TABLE_LINE_RE.test(line)) {
+      flushPara();
+      const rows = [];
+      while (i < lines.length && TABLE_LINE_RE.test(lines[i].trim())) rows.push(lines[i++].trim());
+      container.appendChild(buildFeatureTable(rows, retier));
+      continue;
+    }
     const listRe = BULLET_LINE_RE.test(line) ? BULLET_LINE_RE : NUMBERED_LINE_RE.test(line) ? NUMBERED_LINE_RE : null;
     if (listRe) {
       flushPara();

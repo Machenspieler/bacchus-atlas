@@ -199,6 +199,50 @@ function isValidDamageNotation(v) { return typeof v === 'string' && DAMAGE_NOTAT
 
 /* ---------------- data/environments.json ---------------- */
 
+/* PD-084: an environment written for several tiers carries `tiers` (its own
+ * tiers, `tier` being the lowest) and, optionally, `difficulty_by_tier` — one
+ * number per own tier, agreeing with `difficulty` at `tier`. Both are optional;
+ * a plain environment has neither. */
+function validateEnvMultiTier(env, p, reporter, idLabel) {
+  const hasTiers = env.tiers !== undefined;
+  const hasBy = env.difficulty_by_tier !== undefined;
+  if (!hasTiers && !hasBy) return;
+  if (!hasTiers) {
+    reporter.error(`${p}.difficulty_by_tier`, `Environment "${idLabel}" has difficulty_by_tier but no tiers.`, idLabel);
+    return;
+  }
+  const ok = Array.isArray(env.tiers) && env.tiers.length >= 2
+    && env.tiers.every(n => isFiniteInteger(n) && n >= TIER_MIN && n <= TIER_MAX)
+    && env.tiers.every((n, i) => i === 0 || n > env.tiers[i - 1]);
+  if (!ok) {
+    reporter.error(`${p}.tiers`, `Environment "${idLabel}" has invalid tiers ${JSON.stringify(env.tiers)}; expected two or more distinct integers from ${TIER_MIN} to ${TIER_MAX}, ascending.`, idLabel);
+    return;
+  }
+  if (env.tiers[0] !== env.tier) {
+    reporter.error(`${p}.tiers`, `Environment "${idLabel}" has tier ${env.tier} but its tiers start at ${env.tiers[0]}; tier must be the lowest.`, idLabel);
+  }
+  if (!hasBy) return;
+  const by = env.difficulty_by_tier;
+  if (!isPlainObject(by)) {
+    reporter.error(`${p}.difficulty_by_tier`, `Environment "${idLabel}" has an invalid difficulty_by_tier (${describeType(by)}); expected an object keyed by tier.`, idLabel);
+    return;
+  }
+  const keys = Object.keys(by).sort();
+  if (keys.join(',') !== env.tiers.map(String).join(',')) {
+    reporter.error(`${p}.difficulty_by_tier`, `Environment "${idLabel}" difficulty_by_tier keys [${keys}] do not match its tiers [${env.tiers}].`, idLabel);
+  }
+  keys.forEach(k => {
+    if (typeof by[k] !== 'number') {
+      reporter.error(`${p}.difficulty_by_tier.${k}`, `Environment "${idLabel}" needs a numeric difficulty for tier ${k}.`, idLabel);
+    } else {
+      validateEnvDifficulty(by[k], `${p}.difficulty_by_tier.${k}`, reporter, idLabel);
+    }
+  });
+  if (env.difficulty !== by[env.tier]) {
+    reporter.error(`${p}.difficulty`, `Environment "${idLabel}" difficulty must equal difficulty_by_tier[${env.tier}] (${by[env.tier]}).`, idLabel);
+  }
+}
+
 function validateEnvDifficulty(value, jsonPath, reporter, idLabel) {
   if (typeof value === 'number') {
     if (!isFiniteInteger(value) || value < DIFFICULTY_MIN || value > DIFFICULTY_MAX) {
@@ -307,6 +351,8 @@ function validateEnvironments(data, file, diagnostics) {
     if (env.difficulty !== undefined && env.difficulty !== null) {
       validateEnvDifficulty(env.difficulty, `${p}.difficulty`, reporter, idLabel);
     }
+
+    validateEnvMultiTier(env, p, reporter, idLabel);
 
     if (env.name === undefined) {
       reporter.error(`${p}.name`, `Environment "${idLabel}" is missing a name.`, idLabel);

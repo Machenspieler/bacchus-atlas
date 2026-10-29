@@ -1521,6 +1521,13 @@ a:hover .ext-icon, a:focus-visible .ext-icon { opacity: 1; }
 .feature-bullets li { margin: 3px 0; }
 ol.feature-bullets { list-style: decimal; }
 .feature-bullets:last-child { margin-bottom: 0; }
+/* A table inside a feature description (PD-084). */
+.feature-table-wrap { margin: var(--s-2) 0; overflow-x: auto; }
+.feature-table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); line-height: var(--lh-base); }
+.feature-table th, .feature-table td { padding: var(--s-1) var(--s-2); border: 1px solid var(--line); text-align: left; vertical-align: top; }
+.feature-table thead th { color: var(--parchment); font-weight: 600; background: var(--hope-wash); }
+.feature-table tbody th { color: var(--parchment-dim); font-weight: 600; white-space: nowrap; }
+.feature-table td { color: var(--parchment-dim); }
 /* Hanging indent: the lozenge sits in its own gutter so a wrapped second line
  * starts under the first line's text rather than under the glyph. */
 .feature-prompt {

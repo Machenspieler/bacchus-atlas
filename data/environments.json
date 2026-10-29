@@ -21458,7 +21458,949 @@
       "biomes": [
         "settlement"
       ],
-      "source": "Dungeons of Drakkenheim (beta)"
+      "source": "Dungeons of Drakkenheim"
+    },
+    {
+      "id": "drakkenheim-outer-city-tier-2",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 13,
+      "name": {
+        "en": "Drakkenheim: Outer City",
+        "ru": "Драккенхайм: Внешний Город"
+      },
+      "lore": {
+        "en": "A ramshackle slum consisting of crumbling tenements, wattle and daub cottages, and fieldstone hovels.",
+        "ru": "Обветшалые трущобы: осыпающиеся многоквартирные дома, мазанки из прутьев и глины и хижины из бутового камня."
+      },
+      "impulses": {
+        "en": [
+          "Entice the unready",
+          "conceal danger and opportunity"
+        ],
+        "ru": [
+          "Заманивать неготовых",
+          "скрывать опасность и возможность"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Delerium Dregs",
+          "Haze Husks",
+          "Ratlings (any)"
+        ],
+        "ru": [
+          "Отребье Делирия",
+          "Оболочки Дымки",
+          "Крысюки (любые)"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "The Haze",
+            "ru": "Дымка"
+          },
+          "description": {
+            "en": "Whenever the party enters the Haze for an expedition into the city, the GM should set an Expedition Countdown (6 – Decreasing Loop) that advances each time the party takes a short rest, spends a meaningful time in a location, or travels between two areas in the city.\n\nAdvance the countdown when the PCs:\n- Travel between the Outer and Inner City\n- Travel between locations\n- Take a short rest\n- Exert themselves in a battle or chase\n- Spend a meaningful time in one place\n\nLonger journeys within the city may advance the countdown more than once. When the countdown triggers, the characters must make a Strength Reaction Roll or gain a level of contamination. Once the Loop resets to zero, the PCs must make a Strength Reaction Roll every time the countdown would advance. On a failure, they gain a level of contamination.\n\nClear the Expedition Countdown when the PCs take a long rest outside the Haze.",
+            "ru": "Всякий раз, когда группа входит в Дымку ради вылазки в город, Мастер должен установить Отсчёт Экспедиции (6 – Убывающий Цикл), который продвигается каждый раз, когда группа совершает короткий отдых, проводит значимое время в одном месте или перемещается между двумя районами города.\n\nПродвигайте отсчёт, когда персонажи:\n- Перемещаются между Внешним и Внутренним Городом\n- Перемещаются между местами\n- Совершают короткий отдых\n- Выкладываются в бою или погоне\n- Проводят значимое время в одном месте\n\nБолее длинные переходы внутри города могут продвинуть отсчёт более одного раза. Когда отсчёт срабатывает, персонажи должны совершить Бросок Реакции на Силу или получить Уровень Заражения. Как только Цикл сбрасывается до нуля, персонажи должны совершать Бросок Реакции на Силу каждый раз, когда отсчёт должен продвинуться. При неудаче они получают Уровень Заражения.\n\nСнимите Отсчёт Экспедиции, когда персонажи совершают долгий отдых за пределами Дымки."
+          },
+          "prompt": {
+            "en": "What does the Haze smell like? Does it obscure some items or beings more than others? What is the nearest landmark you can see above the Haze?",
+            "ru": "Чем пахнет Дымка? Скрывает ли она одни предметы или существа сильнее, чем другие? Какой ближайший ориентир виден над Дымкой?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Search the Ruins",
+            "ru": "Обыскать Руины"
+          },
+          "description": {
+            "en": "If the party conducts a thorough search of an area (looking for scavenged supplies, lost treasures, unknown locations, a hidden foe, or a safe place to rest), call for a Group Action Roll. Each such roll takes at least an hour (advance the Expedition Countdown).\n- **Critical Success:** The party finds what they were looking for and something extra (loot, a clue related to another location, or something of value to a faction).\n- **Success with Hope:** The party finds what they were looking for without additional complications.\n- **Success with Fear:** The party finds what they were looking for, but must each mark a Stress.\n- **Failure with Hope:** The party doesn’t find what they were looking for, but they do find something else useful.\n- **Failure with Fear:** The party fails to find what they were looking for and runs afoul of adversaries or a major complication.",
+            "ru": "Если группа проводит тщательный поиск в области (в поисках добытых припасов, потерянных сокровищ, неизвестных мест, скрытого врага или безопасного места для отдыха), потребуйте Групповой бросок. Каждый такой бросок занимает не менее часа (продвиньте Отсчёт Экспедиции).\n- **Критический успех:** группа находит то, что искала, и что-то ещё (добычу, улику, связанную с другим местом, или нечто ценное для фракции).\n- **Успех с Надеждой:** группа находит то, что искала, без дополнительных осложнений.\n- **Успех со Страхом:** группа находит то, что искала, но каждый должен отметить Стресс.\n- **Неудача с Надеждой:** группа не находит то, что искала, но находит что-то другое полезное.\n- **Неудача со Страхом:** группа не находит то, что искала, и натыкается на противников или серьёзное осложнение."
+          },
+          "prompt": {
+            "en": "Treasure Hunter, what signs of hidden wealth are you looking for? What kind of neighborhood is this? What signs of the factions or adversary groups can be found here?",
+            "ru": "Охотник за сокровищами, какие признаки скрытого богатства вы ищете? Что это за район? Какие следы фракций или групп противников здесь можно найти?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Endangered Pilgrims",
+            "ru": "Паломники в Опасности"
+          },
+          "description": {
+            "en": "Reveal a group of pilgrims being attacked by Delerium Dregs or Ratlings. Set a Countdown (10) representing the pilgrims, which advances when a pilgrim is killed. If the PCs defeat or scare off the attackers, ask a player to roll their Fear Die. If the result is under the current value of the countdown, the PCs each gain a Hope and a minor favor from the Followers of the Falling Fire.",
+            "ru": "Раскройте группу паломников, на которых напали Отребье Делирия или Крысюки. Установите Отсчёт (10), представляющий паломников, который продвигается, когда паломник погибает. Если персонажи побеждают или прогоняют нападающих, попросите одного игрока бросить свою Кость Страха. Если результат меньше текущего значения отсчёта, каждый персонаж получает Надежду и небольшую услугу от Последователей Павшего Огня."
+          },
+          "prompt": {
+            "en": "Missionary, which of these pilgrims recognizes you as a person of faith, and what do you say to bolster their spirits?",
+            "ru": "Миссионер, кто из этих паломников узнаёт в вас человека веры и что вы говорите, чтобы поддержать их дух?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Wrong Turn",
+            "ru": "Не Туда Свернули"
+          },
+          "description": {
+            "en": "On any failed roll to navigate or search the ruins, advance the Expedition Countdown as the party gets turned around, traveling in circles and wasting time. You may additionally spend a Fear to introduce a new obstacle, threat, or group of adversaries.",
+            "ru": "При любом провальном броске на навигацию или поиск в руинах продвиньте Отсчёт Экспедиции, поскольку группа сбивается с пути, кружит на месте и теряет время. Вы также можете потратить Страх, чтобы ввести новое препятствие, угрозу или группу противников."
+          },
+          "prompt": {
+            "en": "What distracted or misled the PCs so that they didn’t notice the problem right away? What creatures or faction agents are watching as the party travels in circles?",
+            "ru": "Что отвлекло или сбило персонажей с толку, из-за чего они не сразу заметили проблему? Какие существа или агенты фракций наблюдают, пока группа кружит на месте?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Dungeons of Drakkenheim"
+    },
+    {
+      "id": "emberwood-village",
+      "tier": 2,
+      "type": "social",
+      "difficulty": 13,
+      "name": {
+        "en": "Emberwood Village",
+        "ru": "Деревня Эмбервуд"
+      },
+      "lore": {
+        "en": "A humble village turned base camp and provisioning depot for travelers venturing into Drakkenheim. Amidst a bustling market square, a small crowd of adventurers, merchants, and prospectors busily traffic in all manner of weapons, equipment, coins, recovered treasures, and delerium.",
+        "ru": "Скромная деревня, превратившаяся в базовый лагерь и снабженческий склад для путников, отправляющихся в Драккенхайм. На шумной рыночной площади небольшая толпа авантюристов, торговцев и старателей бойко торгует всевозможным оружием, снаряжением, монетами, найденными сокровищами и делирием."
+      },
+      "impulses": {
+        "en": [
+          "Assemble fresh meat for the factions",
+          "provision adventurers",
+          "separate visitors from their money"
+        ],
+        "ru": [
+          "Собирать свежее мясо для фракций",
+          "снабжать авантюристов",
+          "отделять приезжих от их денег"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Merchant",
+          "Jagged Knife Bandits (all)",
+          "Hooded Lanterns (Bladed Guard, etc.)"
+        ],
+        "ru": [
+          "Торговец",
+          "Бандиты из «Зазубренного ножа» (все)",
+          "Фонари в Капюшонах (Клинковый Стражник и т. д.)"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Eclectic Assortment",
+            "ru": "Разнообразный Ассортимент"
+          },
+          "description": {
+            "en": "Merchants in the Caravan Court have a shifting selection of wares, from staples like provisions, water, and adventuring equipment to specialized items and even some magical gear. If the party’s acclaim is 6 or higher, they gain Advantage on rolls interacting with merchants.",
+            "ru": "У торговцев Каравансарая постоянно меняется выбор товаров: от предметов первой необходимости, таких как провизия, вода и снаряжение для приключений, до специализированных предметов и даже магического снаряжения. Если известность группы равна 6 или выше, она получает Преимущество на броски при взаимодействии с торговцами."
+          },
+          "prompt": {
+            "en": "What strange item is on offer? What basic supplies or gear are currently out of stock?",
+            "ru": "Какой странный предмет предлагают на продажу? Каких основных припасов или снаряжения сейчас нет в наличии?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Rumors Abound",
+            "ru": "Слухи Повсюду"
+          },
+          "description": {
+            "en": "When the party spends several hours in Emberwood Village, they will learn several rumors, a mix between old and new as well as a mix of truthful and misleading.",
+            "ru": "Когда группа проводит несколько часов в деревне Эмбервуд, она узнаёт несколько слухов: старых и новых, правдивых и вводящих в заблуждение."
+          },
+          "prompt": {
+            "en": "What’s the talk of the town? Who is sharing the rumor, and what’s their angle?",
+            "ru": "О чём судачит весь город? Кто делится слухом и какова его цель?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Rival Adventurers",
+            "ru": "Соперники-Авантюристы"
+          },
+          "description": {
+            "en": "Introduce or spotlight a group of rival adventurers. They might taunt the PCs, they might allude to a mission they’ve just completed, they might overhear the PCs and try to beat them to the punch by getting to a site in the city first.",
+            "ru": "Введите или выведите на передний план группу соперников-авантюристов. Они могут поддразнивать персонажей, могут намекнуть на только что выполненное задание, могут подслушать персонажей и попытаться опередить их, первыми добравшись до места в городе."
+          },
+          "prompt": {
+            "en": "Who are these other adventurers? Which factions are they aligned with? What was their last trip into Drakkenheim like?",
+            "ru": "Кто эти другие авантюристы? С какими фракциями они связаны? Какой была их последняя вылазка в Драккенхайм?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Look Who We Have Here",
+            "ru": "Посмотрите, Кто Тут У Нас"
+          },
+          "description": {
+            "en": "Spend 2 Fear to introduce a group from a faction that dislikes the PCs (Relationship 4 or lower). The group antagonizes the PCs and might outright attack them if they think they can get away with it.",
+            "ru": "Потратьте 2 Страха, чтобы ввести группу из фракции, которая недолюбливает персонажей (Отношение 4 или ниже). Группа провоцирует персонажей и может напасть на них открыто, если сочтёт, что ей это сойдёт с рук."
+          },
+          "prompt": {
+            "en": "Which faction is it? What do they want from the interaction? What news or promise could make them back off?",
+            "ru": "Что это за фракция? Чего они хотят от этой встречи? Какая новость или обещание может заставить их отступить?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Just Who I Was Looking For",
+            "ru": "Именно Тот, Кого Я Искал"
+          },
+          "description": {
+            "en": "When a PC splits from the group, introduce an NPC related to their archetype or background, who intercepts the PC. They want to talk, but have reason to not want the other PCs to know about the meeting. They have an opportunity, request, or demand for the PC that the other characters might not like…",
+            "ru": "Когда персонаж отделяется от группы, введите НИП, связанного с его архетипом или прошлым, который перехватывает его. Он хочет поговорить, но имеет причины не желать, чтобы остальные персонажи узнали об этой встрече. У него есть возможность, просьба или требование к персонажу, которые могут не понравиться остальным…"
+          },
+          "prompt": {
+            "en": "Where do they find the PC? Is this person connected to one of the factions? What are they asking for? Why don’t they want the other PCs to know about this situation?",
+            "ru": "Где они находят персонажа? Связан ли этот человек с одной из фракций? О чём он просит? Почему он не хочет, чтобы остальные персонажи знали об этой ситуации?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Dungeons of Drakkenheim"
+    },
+    {
+      "id": "rats-nest-tavern",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 14,
+      "name": {
+        "en": "Rat’s Nest Tavern",
+        "ru": "Таверна «Крысиное Гнездо»"
+      },
+      "lore": {
+        "en": "A subterranean ratling colony with twisting tunnels, muddy slopes, and no lighting.",
+        "ru": "Подземная колония крысюков с извилистыми туннелями, грязными склонами и полным отсутствием освещения."
+      },
+      "impulses": {
+        "en": [
+          "Draw in the curious",
+          "echo the past"
+        ],
+        "ru": [
+          "Привлекать любопытных",
+          "отзываться эхом прошлого"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Giant Rat Pack",
+          "Ratlings (any)"
+        ],
+        "ru": [
+          "Стая Гигантских Крыс",
+          "Крысюки (любые)"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Darkened Corridors",
+            "ru": "Тёмные Коридоры"
+          },
+          "description": {
+            "en": "There are no sources of light beyond the entrance passage, as the ratlings do not need it to navigate. Many action rolls made in the dark will gain Disadvantage.",
+            "ru": "За пределами входного коридора нет источников света, поскольку крысюкам он не нужен для ориентации. Многие броски действия, совершаемые в темноте, получают помеху."
+          },
+          "prompt": {
+            "en": "What smells and sounds become more prominent in the dark? Which way is the nearest source of light?",
+            "ru": "Какие запахи и звуки становятся заметнее в темноте? В какой стороне ближайший источник света?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Ratling Treasures",
+            "ru": "Сокровища Крысюков"
+          },
+          "description": {
+            "en": "PCs can find some stolen goods in the [5] Food Cache, or potentially elsewhere on a successful Instinct Roll, when defeating a group of ratlings, etc.\n- 2 Minor Health Potions\n- A 1d12 result on the consumables table",
+            "ru": "Персонажи могут найти украденные вещи в [5] Кладовой с едой или, возможно, в других местах при успешном Броске Инстинкта, при победе над группой крысюков и т. п.\n- Малое Зелье Лечения (2 шт.)\n- Результат 1d12 по таблице расходуемых предметов"
+          },
+          "prompt": {
+            "en": "What else might the PCs find? How has it been chewed, mangled, or mishandled? How might they tell whether a potion is contaminated?",
+            "ru": "Что ещё могут найти персонажи? Как оно было погрызено, изуродовано или испорчено? Как они могут определить, заражено ли зелье?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Get the Light!",
+            "ru": "Отними Свет!"
+          },
+          "description": {
+            "en": "Move a Ratling within Close of a PC into Melee range and make an attack roll. On a success, instead of dealing damage, the ratling takes the light source and throws it into the mud, dousing it. If this was the PCs’ only source of light, once per scene, gain 2 Fear.",
+            "ru": "Переместите Крысюка, находящегося на Средней дистанции от персонажа, на дистанцию Вплотную и совершите бросок атаки. При успехе вместо нанесения урона крысюк забирает источник света и бросает его в грязь, гася его. Если это был единственный источник света персонажей, один раз за сцену получите 2 Страха."
+          },
+          "prompt": {
+            "en": "What was the last thing you saw before the light went out? What senses do you rely on without being able to see?",
+            "ru": "Что вы видели последним, перед тем как погас свет? На какие чувства вы полагаетесь, не имея возможности видеть?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Call the Pack",
+            "ru": "Зов Стаи"
+          },
+          "description": {
+            "en": "When a Ratling marks major damage but is not defeated, spend a Fear to have them call out for aid. Activate a Countdown (3 – Decreasing Loop). When it triggers, introduce a Ratling Pack within Close to take the spotlight. When the countdown resets to 0, or by spending a Fear any time it triggers, introduce the Rat Prince to prove his might against the interlopers.",
+            "ru": "Когда Крысюк получает значительный урон, но не побеждён, потратьте Страх, чтобы он позвал на помощь. Запустите Отсчёт (3 – Убывающий Цикл). Когда он срабатывает, введите Стаю Крысюков на Средней дистанции, которая забирает фокус на себя. Когда отсчёт сбрасывается до 0 или когда вы тратите Страх в любой момент его срабатывания, введите Крысиного Принца, чтобы он доказал свою силу чужакам."
+          },
+          "prompt": {
+            "en": "How many ratlings are in these warrens while others are out hunting? Where is the Rat Prince right now?",
+            "ru": "Сколько крысюков в этих норах, пока остальные на охоте? Где сейчас Крысиный Принц?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Spring a Trap",
+            "ru": "Захлопнуть Ловушку"
+          },
+          "description": {
+            "en": "When a PC moves into a new area or rolls a Failure with Fear on a roll to navigate the warrens, spend a number of Fear:\n- **Pit Trap (1 Fear):** The PC must make a Finesse Reaction Roll or slip on a mud slide into a pit trap, taking 2d10 physical damage. Spend an additional Fear to reveal that there is a hostile Swarm of Rats in the pit. Climbing out requires an Agility Roll or assistance from an ally using rope and making an action roll.\n- **Ambush (2 Fear):** Reveal 2 Ratling Guttersnipes and a Ratling Pack within Close distance. A Guttersnipe takes the spotlight immediately.",
+            "ru": "Когда персонаж переходит в новую область или выбрасывает Неудачу со Страхом на броске навигации по норам, потратьте несколько Страха:\n- **Ловушка-яма (1 Страх):** персонаж должен совершить Бросок Реакции на Искусность, иначе соскользнёт по грязевому склону в яму-ловушку и получит 2d10 физического урона. Потратьте ещё один Страх, чтобы показать, что в яме находится враждебный Рой Крыс. Чтобы выбраться, нужен Бросок Проворности или помощь союзника с верёвкой, совершающего бросок действия.\n- **Засада (2 Страха):** покажите 2 Крысюков-Уличных Оборванцев и Стаю Крысюков на Средней дистанции. Один Оборванец немедленно забирает фокус на себя."
+          },
+          "prompt": {
+            "en": "Where else might there be a muddy slide in the tunnels or a stand-alone spike trap? What have the Ratlings used to conceal their trap or ambush site?",
+            "ru": "Где ещё в туннелях может быть грязевой склон или отдельная ловушка с шипами? Чем крысюки замаскировали свою ловушку или место засады?"
+          }
+        }
+      ],
+      "biomes": [
+        "underground"
+      ],
+      "source": "Dungeons of Drakkenheim"
+    },
+    {
+      "id": "midnight-monstrosity",
+      "tier": 1,
+      "type": "event",
+      "difficulty": 13,
+      "name": {
+        "en": "Midnight Monstrosity",
+        "ru": "Полуночное Чудовище"
+      },
+      "lore": {
+        "en": "The party meets a group of travelers fleeing Drakkenheim and learn the dangers of contamination first-hand.",
+        "ru": "Группа встречает путников, бегущих из Драккенхайма, и на собственном опыте узнаёт об опасности заражения."
+      },
+      "impulses": {
+        "en": [
+          "Display the horrors of Drakkenheim",
+          "force the PCs to choose whether to intervene",
+          "make them care and then make it hurt"
+        ],
+        "ru": [
+          "Показать ужасы Драккенхайма",
+          "заставить персонажей решать, вмешиваться ли",
+          "заставить их привязаться, а затем причинить боль"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Contaminated Rikard Vos"
+        ],
+        "ru": [
+          "Заражённый Рикард Вос"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Dispirited Travelers",
+            "ru": "Павшие Духом Путники"
+          },
+          "description": {
+            "en": "The trio are bitter, defeated, cynical, and never plan to return, but share one or more rumors about the city as they sit and share stories by the fire. They are hesitant to talk about their fallen friends, but suggest watching out for the rats in Drakkenheim.\n\nOnce per PC, when they ask a question about the travelers, they gain a Hope for connecting with the other group.",
+            "ru": "Трое путников озлоблены, подавлены, циничны и не собираются возвращаться, но делятся одним или несколькими слухами о городе, сидя у костра и обмениваясь историями. Они неохотно говорят о погибших друзьях, но советуют остерегаться крыс в Драккенхайме.\n\nОдин раз для каждого персонажа, когда он задаёт вопрос о путниках, он получает Надежду за установление связи с другой группой."
+          },
+          "prompt": {
+            "en": "What rumors do the trio share? What are they not willing to talk about?",
+            "ru": "Какими слухами делятся трое путников? О чём они не хотят говорить?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "About Contamination",
+            "ru": "О Заражении"
+          },
+          "description": {
+            "en": "If the characters detect Vos’ mutations or pry the travelers about his illnesses, they confess that he became sick after picking up one of the strange crystals in Drakkenheim. They insist the illness is not contagious, but rather caused by overexposure to the contaminated magic in Drakkenheim. They’ve heard expensive magical medicine might be able to help, but they can’t afford it. Instead, they’re hoping he’ll get better once they bring him far away from the city.",
+            "ru": "Если персонажи замечают мутации Воса или расспрашивают путников о его болезнях, те признаются, что он заболел после того, как поднял один из странных кристаллов в Драккенхайме. Они настаивают, что болезнь не заразна, а вызвана чрезмерным воздействием заражённой магии Драккенхайма. Они слышали, что дорогое магическое лекарство могло бы помочь, но не могут его себе позволить. Вместо этого они надеются, что ему станет лучше, когда они увезут его далеко от города."
+          },
+          "prompt": {
+            "en": "What rumors have the PCs heard about how to deal with contamination? How do they feel seeing the horrific effects of mutations up close?",
+            "ru": "Какие слухи слышали персонажи о том, как бороться с заражением? Что они чувствуют, видя ужасные последствия мутаций вблизи?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Late-Night Transformation",
+            "ru": "Ночное Превращение"
+          },
+          "description": {
+            "en": "During the night, Vos succumbs to contamination and transforms into a delerium dreg (Contaminated Rikard Vos). The monster flies into a rage and attacks one of its former companions. It’s up to the characters to decide how to intervene. When Rikard takes the spotlight, the creature attacks the nearest human. The creature is beyond reason and attacks unceasingly until killed.\n\nLudwig Von Graff and Endra Jansen have difficulties of 10, thresholds of 6/12, 5 HP, and 2 Stress each.",
+            "ru": "Ночью Вос поддаётся заражению и превращается в отребье делирия (Заражённый Рикард Вос). Чудовище впадает в ярость и нападает на одного из своих бывших спутников. Персонажам решать, как вмешаться. Когда Рикард забирает фокус на себя, существо нападает на ближайшего человека. Существо лишено рассудка и нападает безостановочно, пока его не убьют.\n\nУ Людвига фон Графа и Эндры Янсен сложность 10, пороги 6/12, по 5 Ран и по 2 Стресса."
+          },
+          "prompt": {
+            "en": "What is nearby that they might use to contain the creature? Why doesn’t it work despite their best efforts? Which PC’s dreams foreshadowed this attack?",
+            "ru": "Что поблизости можно использовать, чтобы сдержать существо? Почему это не работает, несмотря на все усилия? Чьи сны предвещали это нападение?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Outmatched",
+            "ru": "Не По Силам"
+          },
+          "description": {
+            "en": "Overcome by grief, Von Graff and Jansen cannot defeat the contaminated Rikard. Eren Marlowe puts up a fight but is no match for this creature. If the PCs don’t intervene, the dreg will kill all three of them and then move on to the party.",
+            "ru": "Охваченные горем, фон Граф и Янсен не могут победить заражённого Рикарда. Эрен Марлоу сопротивляется, но не ровня этому существу. Если персонажи не вмешаются, отребье убьёт всех троих, а затем двинется на группу."
+          },
+          "prompt": {
+            "en": "Why do the PCs not leap into the fray earlier? What trauma or fears does this event awaken in them?",
+            "ru": "Почему персонажи не бросаются в схватку раньше? Какие травмы или страхи пробуждает в них это событие?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Aftermath",
+            "ru": "Последствия"
+          },
+          "description": {
+            "en": "When the monster is defeated, if Von Graff and Jansen survive, they are deeply troubled by this incident. They solemnly warn the characters about the horrors of the city as they set off in the morning. They and Eren thank the PCs for intervening.\n\nMarlowe has heard stories about contamination and delerium, but never witnessed it first-hand. They note that handling delerium should be done with extreme care, and that far more terrible creatures are said to dwell in Drakkenheim, many the result of those who suffered a similar fate as Rikard Vos.\n\nThe next morning, Marlowe states that they have no intention of turning back, and insists the caravan press on towards Emberwood Village. In town, they will meet agents of the five factions, detailed in the next chapter.",
+            "ru": "Когда чудовище побеждено, если фон Граф и Янсен выжили, они глубоко потрясены случившимся. Утром, отправляясь в путь, они торжественно предупреждают персонажей об ужасах города. Они и Эрен благодарят персонажей за вмешательство.\n\nМарлоу слышал истории о заражении и делирии, но никогда не видел их воочию. Он отмечает, что с делирием нужно обращаться крайне осторожно и что в Драккенхайме, как говорят, обитают куда более ужасные существа, многие из которых — результат судьбы, подобной судьбе Рикарда Воса.\n\nНа следующее утро Марлоу заявляет, что не собирается поворачивать назад, и настаивает, чтобы караван двигался дальше к деревне Эмбервуд. В городе они встретят агентов пяти фракций, описанных в следующей главе."
+          },
+          "prompt": {
+            "en": "What friends or allies have other PCs lost to contamination? How has the fight changed or reinforced their feelings about what they seek to do in Drakkenheim?",
+            "ru": "Каких друзей или союзников другие персонажи потеряли из-за заражения? Как схватка изменила или укрепила их чувства по поводу того, чего они ищут в Драккенхайме?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "Dungeons of Drakkenheim"
+    },
+    {
+      "id": "search-the-ruins",
+      "tier": 2,
+      "tiers": [
+        2,
+        3,
+        4
+      ],
+      "type": "exploration",
+      "difficulty": 13,
+      "difficulty_by_tier": {
+        "2": 13,
+        "3": 16,
+        "4": 19
+      },
+      "name": {
+        "en": "Search the Ruins",
+        "ru": "Обыск Руин"
+      },
+      "lore": {
+        "en": "The party searches the cursed city for scavenged supplies, lost treasures, delerium deposits, unknown locations, a hidden foe, or a safe place to rest, etc.",
+        "ru": "Группа обыскивает проклятый город в поисках добытых припасов, потерянных сокровищ, залежей делирия, неизвестных мест, скрытого врага или безопасного места для отдыха и т. п."
+      },
+      "impulses": {
+        "en": [
+          "Narrow focus",
+          "distract from incoming danger",
+          "promise great reward",
+          "split the party"
+        ],
+        "ru": [
+          "Сужать внимание",
+          "отвлекать от надвигающейся опасности",
+          "сулить великую награду",
+          "разделять группу"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Delerium Dregs",
+          "Faction agents",
+          "Ratlings (any)"
+        ],
+        "ru": [
+          "Отребье Делирия",
+          "Агенты фракций",
+          "Крысюки (любые)"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Basics of Searching",
+            "ru": "Основы Поиска"
+          },
+          "description": {
+            "en": "Conducting a good search takes at least one hour; during which the characters may survey an area with up to a ¼ mile diameter.",
+            "ru": "Хороший поиск занимает не менее часа; за это время персонажи могут обследовать область диаметром до ¼ мили."
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Dungeon City",
+            "ru": "Город-Подземелье"
+          },
+          "description": {
+            "en": "Drakkenheim is inimical to all mortals, presenting many challenges to interlopers and explorers.\n- **Vehicles:** Land vehicles are largely impractical in the ruins, although characters could use a boat to travel via the river normally (though at your discretion characters may risk attack from aquatic or sewer-dwelling monsters!). Characters moving with a land vehicle or portaging a water vehicle travel ¼ mile per hour. Land and water vehicles can’t be hidden without magic, but individual characters might be able to use stealth.\n- **Flying:** Flying characters may soar across the city rapidly. At your discretion, they may risk hostile attention from the gargoyles defending the walls or the harpies inhabiting the Inner City.\n- **Finding Sustenance:** Finding suitable sustenance within Drakkenheim is difficult since most food and water within the city is either spoiled or contaminated. Instead, characters should bring their own supply of food and water from outside the city. Nevertheless, a character who eats or drinks anything found in Drakkenheim that has not been magically purified makes a Strength Reaction Roll. On a failure, they gain one level of contamination.",
+            "ru": "Драккенхайм враждебен всем смертным и ставит перед чужаками и исследователями множество испытаний.\n- **Транспорт:** наземный транспорт в руинах по большей части непрактичен, хотя персонажи могут обычно путешествовать на лодке по реке (однако на ваше усмотрение они могут рисковать нападением водных чудовищ или обитателей канализации!). Персонажи, передвигающиеся с наземным транспортом или тащащие водный транспорт волоком, проходят ¼ мили в час. Наземный и водный транспорт нельзя спрятать без магии, но отдельные персонажи могут действовать скрытно.\n- **Полёт:** летающие персонажи могут быстро пролетать над городом. На ваше усмотрение они могут рисковать вниманием горгулий, защищающих стены, или гарпий, обитающих во Внутреннем Городе.\n- **Поиск пропитания:** найти подходящую еду в Драккенхайме трудно, так как большая часть еды и воды в городе либо испорчена, либо заражена. Персонажам следует приносить собственный запас еды и воды из-за пределов города. Тем не менее персонаж, который ест или пьёт что-либо найденное в Драккенхайме и не очищенное магией, совершает Бросок Реакции на Силу. При неудаче он получает один Уровень Заражения."
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Delerium Hunt",
+            "ru": "Охота за Делирием"
+          },
+          "description": {
+            "en": "If the PCs are looking for delerium to mine, make a Group Action Roll (default to Instinct). The amount of delerium they find depends on the result and location (see the chart below). The group finds the delerium for their result and each result below it in the same column.\n\nOnce found, extracting delerium is its own challenge. If the PCs take their time and use the proper tools, advance the Expedition Countdown and call for a Finesse Group Action Roll. Consult the following table for results. If they’re rushed or lack the proper mining tools, make the roll with Disadvantage. If searching within a quarter mile of the Crater’s edge, improve the party’s results by one step (Success with Fear to Success with Hope).\n\n| Result | Outer City | Inner City | Crater |\n| --- | --- | --- | --- |\n| Critical Success | 1 shard | 1 crystal | 2 crystals |\n| Success with Hope | 1d6 fragments | 1d6 shards | 1 crystal |\n| Success with Fear | 3d6 chips | 2d6 fragments | 1d6 shards |\n| Failure with Hope | N/A | 3d6 chips | 2d6 fragments |\n| Failure with Fear | N/A | N/A | N/A |",
+            "ru": "Если персонажи ищут делирий для добычи, совершите Групповой бросок (по умолчанию Инстинкт). Количество найденного делирия зависит от результата и места (см. таблицу ниже). Группа находит делирий за свой результат и за каждый результат ниже него в том же столбце.\n\nНайденный делирий ещё нужно добыть, и это отдельное испытание. Если персонажи не торопятся и используют подходящие инструменты, продвиньте Отсчёт Экспедиции и потребуйте Групповой бросок Искусности. Результаты смотрите в следующей таблице. Если они спешат или у них нет подходящих горных инструментов, совершайте бросок с помехой. Если поиск ведётся в пределах четверти мили от края Кратера, улучшите результаты группы на один шаг (с Успеха со Страхом до Успеха с Надеждой).\n\n| Результат | Внешний Город | Внутренний Город | Кратер |\n| --- | --- | --- | --- |\n| Критический успех | 1 осколок | 1 кристалл | 2 кристалла |\n| Успех с Надеждой | 1d6 фрагментов | 1d6 осколков | 1 кристалл |\n| Успех со Страхом | 3d6 крошек | 2d6 фрагментов | 1d6 осколков |\n| Неудача с Надеждой | Н/Д | 3d6 крошек | 2d6 фрагментов |\n| Неудача со Страхом | Н/Д | Н/Д | Н/Д |"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Looking for Something",
+            "ru": "В Поисках Чего-То"
+          },
+          "description": {
+            "en": "For searches not focused on delerium or a resting spot, the party describes what specifically they are looking for and the GM sets a difficulty for a Group Action Roll.",
+            "ru": "Если поиск не связан с делирием или местом для отдыха, группа описывает, что именно она ищет, а Мастер назначает сложность для Группового броска."
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Resting Spot",
+            "ru": "Место для Отдыха"
+          },
+          "description": {
+            "en": "When the PCs search for a safe place to rest, make a Group Action Roll (default to Instinct). On a success, the party finds a suitable location to take a short rest without danger of being attacked during downtime. Check for random encounters each short rest the party takes in the Haze.",
+            "ru": "Когда персонажи ищут безопасное место для отдыха, совершите Групповой бросок (по умолчанию Инстинкт). При успехе группа находит подходящее место для короткого отдыха без опасности нападения во время передышки. Проверяйте случайные встречи при каждом коротком отдыхе группы в Дымке."
+          },
+          "prompt": {
+            "en": "What is the safe place you find? How is it protected or obscured from threats?",
+            "ru": "Что за безопасное место вы находите? Как оно защищено или скрыто от угроз?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "We’re Not Alone",
+            "ru": "Мы Не Одни"
+          },
+          "description": {
+            "en": "Spend up to 8 Fear to introduce a threat in the form of adversaries. If the PCs succeed in defeating or driving off the adversaries, they find or recover a reward (roll a number of d12s equal to their Tier and use the result for one of the item/consumable tables).\n\n| Fear Spent | Threat |\n| --- | --- |\n| 1 | 1/3 standard BP budget |\n| 2 | 2/3 standard BP budget |\n| 3 | Standard BP budget |\n| 6 | Standard BP budget +4 |",
+            "ru": "Потратьте до 8 Страха, чтобы ввести угрозу в виде противников. Если персонажи побеждают или прогоняют противников, они находят или возвращают награду (бросьте число d12, равное их Рангу, и используйте результат для одной из таблиц предметов/расходуемых предметов).\n\n| Потрачено Страха | Угроза |\n| --- | --- |\n| 1 | 1/3 стандартного бюджета БО |\n| 2 | 2/3 стандартного бюджета БО |\n| 3 | Стандартный бюджет БО |\n| 6 | Стандартный бюджет БО +4 |"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Well, We Found Something, All Right",
+            "ru": "Что Ж, Кое-Что Мы Нашли"
+          },
+          "description": {
+            "en": "On any failure to search the ruins, introduce a random encounter that complicates the party’s agenda — agents of a rival faction, another adventuring party, etc.",
+            "ru": "При любой неудаче в поиске по руинам введите случайную встречу, которая осложняет планы группы: агентов соперничающей фракции, другую группу авантюристов и т. п."
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Dungeons of Drakkenheim"
+    },
+    {
+      "id": "chapel-of-st-brenna",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 14,
+      "name": {
+        "en": "Chapel of St. Brenna",
+        "ru": "Часовня Святой Бренны"
+      },
+      "lore": {
+        "en": "A moldering chapel containing remains of beloved heroes of the Sacred Flame, protected by puzzling doors and rites of preservation.",
+        "ru": "Обветшалая часовня, хранящая останки любимых героев Священного Пламени, защищённая загадочными дверями и обрядами сохранения."
+      },
+      "impulses": {
+        "en": [
+          "Confound grave robbers",
+          "entomb the faithful dead",
+          "unleash vengeful revenants"
+        ],
+        "ru": [
+          "Сбивать с толку расхитителей гробниц",
+          "погребать верных мёртвых",
+          "выпускать мстительных ревенантов"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Followers of the Falling Fire (any)",
+          "Silver Order (any)",
+          "Queen’s Men (any)"
+        ],
+        "ru": [
+          "Последователи Павшего Огня (любые)",
+          "Серебряный Орден (любые)",
+          "Люди Королевы (любые)"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Items of Faith",
+            "ru": "Предметы Веры"
+          },
+          "description": {
+            "en": "The Chapel contains a variety of items used for rituals and practice of faith. On a successful roll to investigate a space, a PC might find one of the following:\n- 2 Hallowed Shards\n- 5 handfuls of gold from donations\n- A silver holy symbol of the Sacred Flame\n- Materials for the rites of preservation (like oils, holy water, candles, etc.)\n- Token of Light",
+            "ru": "В Часовне хранятся разнообразные предметы, используемые для ритуалов и отправления веры. При успешном броске на исследование помещения персонаж может найти одно из следующего:\n- 2 Освящённых Осколка\n- 5 горстей золота из пожертвований\n- Серебряный святой символ Священного Пламени\n- Материалы для обрядов сохранения (масла, святую воду, свечи и т. п.)\n- Знак Света"
+          },
+          "prompt": {
+            "en": "Where were these items made? What signs of use do they still bear? How were they found and what does that say about this place’s last moments during the city’s fall?",
+            "ru": "Где были сделаны эти предметы? Какие следы использования они ещё носят? Как они были найдены и что это говорит о последних мгновениях этого места во время падения города?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Meddling Factions",
+            "ru": "Вмешательство Фракций"
+          },
+          "description": {
+            "en": "Spend a Fear to have a strike team from one of the factions present barge in, having followed the PCs and deciding that this is the time for them to step in and push the PCs out of the way. They can be talked down, but might escalate to violence if things go poorly.",
+            "ru": "Потратьте Страх, чтобы ударный отряд одной из фракций ворвался внутрь: он проследил за персонажами и решил, что настало время вмешаться и оттеснить персонажей. Их можно урезонить, но они могут перейти к насилию, если дела пойдут плохо."
+          },
+          "prompt": {
+            "en": "What is the team’s leader thinking in the moment? What would it take to get them to back off? Could they be persuaded to work together, and if so, what will they demand?",
+            "ru": "О чём в этот момент думает лидер отряда? Что нужно, чтобы они отступили? Можно ли убедить их работать вместе, и если да, чего они потребуют?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Rejuvenation",
+            "ru": "Омоложение"
+          },
+          "description": {
+            "en": "When one of the undead guardians is slain, set a Countdown (5). When triggered, the guardian returns to life, all HP and Stress cleared. This can be prevented by a successful Progress Countdown (4) to renew the rite of sanctification. If multiple honored dead are slain in the same scene, use one countdown instead of one each.",
+            "ru": "Когда один из мёртвых стражей убит, установите Отсчёт (5). Когда он срабатывает, страж возвращается к жизни, все Раны и Стресс снимаются. Этому можно помешать успешным Отсчётом Прогресса (4), обновив обряд освящения. Если в одной сцене убито несколько почитаемых мертвецов, используйте один отсчёт вместо отдельного для каждого."
+          },
+          "prompt": {
+            "en": "What part of the deceased begins moving first? Which PC collected the materials needed for last rites? How do the PCs know that the last rites are successful?",
+            "ru": "Какая часть умершего начинает двигаться первой? Какой персонаж собрал материалы, необходимые для последнего обряда? Как персонажи понимают, что последний обряд успешен?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "We’ll Take It from Here",
+            "ru": "Дальше Мы Сами"
+          },
+          "description": {
+            "en": "When the PCs or another group emerge from the Chapel with the Scepter of Saint Vitruvio in-hand, spend 2 Fear to have one of the faction strike teams intercept them and demand that they hand over the scepter. Convincing them to back off requires completing a Progress Countdown (5) before triggering the Consequence Countdown (3) representing the leader’s patience. If the Consequence Countdown triggers first, the strike team escalates. You can spend an additional 2 Fear to have more than one group step in, potentially setting off a three-way skirmish.",
+            "ru": "Когда персонажи или другая группа выходят из Часовни со Скипетром Святого Витрувио в руках, потратьте 2 Страха, чтобы один из ударных отрядов фракций перехватил их и потребовал отдать скипетр. Чтобы убедить их отступить, нужно завершить Отсчёт Прогресса (5) раньше, чем сработает Отсчёт Последствий (3), представляющий терпение лидера. Если первым срабатывает Отсчёт Последствий, ударный отряд переходит к насилию. Вы можете потратить ещё 2 Страха, чтобы вмешались несколько групп, что может привести к схватке трёх сторон."
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Dungeons of Drakkenheim"
+    },
+    {
+      "id": "cosmological-clocktower",
+      "tier": 3,
+      "type": "traversal",
+      "difficulty": 15,
+      "name": {
+        "en": "Cosmological Clocktower",
+        "ru": "Космологическая Часовая Башня"
+      },
+      "lore": {
+        "en": "A three-hundred-foot-tall square tower, about fifty feet wide at the base, with an intricate clock permanently showing a time of 11:11 from 111 years ago. Now the roost of the Crimson Countess, queen of the harpies.",
+        "ru": "Квадратная башня высотой в триста футов и около пятидесяти футов шириной у основания, с замысловатыми часами, навсегда застывшими на 11:11 111 лет назад. Теперь это насест Багровой Графини, королевы гарпий."
+      },
+      "impulses": {
+        "en": [
+          "House winged monstrosities",
+          "lure in adventurers with the promise of safe rest",
+          "crumble stairs at inopportune moments to drop adventurers to their death"
+        ],
+        "ru": [
+          "Приютить крылатых чудовищ",
+          "заманивать авантюристов обещанием безопасного отдыха",
+          "обрушивать лестницы в неподходящий момент, чтобы сбросить авантюристов насмерть"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Harpy Flock",
+          "Manticore"
+        ],
+        "ru": [
+          "Стая Гарпий",
+          "Мантикора"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Daunting Climb",
+            "ru": "Пугающий Подъём"
+          },
+          "description": {
+            "en": "After fifteen years of decay and neglect, the staircase inside the tower is moldering and liable to collapse. When the PCs begin scaling the tower, set a Progress Countdown (8) representing their efforts to climb to the higher levels. When triggered, the PCs have reached the belfry (see “Slumbering Consorts”).",
+            "ru": "После пятнадцати лет упадка и запустения лестница внутри башни обветшала и может рухнуть. Когда персонажи начинают подъём по башне, установите Отсчёт Прогресса (8), представляющий их усилия по подъёму на верхние уровни. Когда он срабатывает, персонажи достигают звонницы (см. «Дремлющие Супруги»)."
+          },
+          "prompt": {
+            "en": "What signs of previous (failed) expeditions do the PCs find at the base of the tower or during the climb? What recognizable bones do they find along the way?",
+            "ru": "Какие следы прошлых (неудачных) экспедиций персонажи находят у подножия башни или во время подъёма? Какие узнаваемые кости они находят по пути?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Decaying Staircase",
+            "ru": "Гниющая Лестница"
+          },
+          "description": {
+            "en": "A segment of the stairs collapses underneath a PC. That PC must make an Agility Reaction Roll to safely recover or mark 2 Stress as they strain to catch themselves on a lower level. On a Failure with Fear, increase the Progress Countdown by 2 as the PCs have to backtrack.",
+            "ru": "Участок лестницы обрушивается под персонажем. Этот персонаж должен совершить Бросок Реакции на Проворность, чтобы благополучно удержаться, или отметить 2 Стресса, изо всех сил цепляясь за нижний уровень. При Неудаче со Страхом увеличьте Отсчёт Прогресса на 2, так как персонажам приходится отступать."
+          },
+          "prompt": {
+            "en": "What materials on hand could assist with repairs? What is there to grab on to if you fall?",
+            "ru": "Какие имеющиеся под рукой материалы могут помочь с починкой? За что можно ухватиться, если вы упадёте?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Home to Roost",
+            "ru": "Возвращение на Насест"
+          },
+          "description": {
+            "en": "Spend 2 Fear to have a Harpy Flock return from the hunt with fresh kills and squirming victims. They land up and down the stairwells, taking notice of any PCs not well hidden.",
+            "ru": "Потратьте 2 Страха, чтобы Стая Гарпий вернулась с охоты со свежей добычей и извивающимися жертвами. Они приземляются вверху и внизу на лестничных пролётах, замечая всех персонажей, которые плохо спрятались."
+          },
+          "prompt": {
+            "en": "Who are their victims? What treasure have the harpies secured along with their dinner?",
+            "ru": "Кто их жертвы? Какое сокровище гарпии добыли вместе с ужином?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Harpy Harriers",
+            "ru": "Гарпии-Налётчицы"
+          },
+          "description": {
+            "en": "Spend a Fear when harpies are present to have them swarm, harassing the PCs while they are climbing. Each PC must make a Reaction Roll to fight off the harpies. Each PC that fails must mark a Stress and take 2d10 physical damage.",
+            "ru": "Потратьте Страх, когда гарпии рядом, чтобы они роились и донимали персонажей во время подъёма. Каждый персонаж должен совершить Бросок Реакции, чтобы отбиться от гарпий. Каждый персонаж, потерпевший неудачу, должен отметить Стресс и получить 2d10 физического урона."
+          },
+          "prompt": {
+            "en": "What do the harpies say to taunt the PCs? How do the PCs try to fend them off?",
+            "ru": "Что гарпии говорят, дразня персонажей? Как персонажи пытаются отбиться?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Slumbering Consorts",
+            "ru": "Дремлющие Супруги"
+          },
+          "description": {
+            "en": "The Countess’s manticore consorts make their nest in the belfry. When the PCs come within Close range of the belfry, introduce a Consequence Countdown (4). When the countdown triggers, the manticores wake and locate the PCs. When you introduce the countdown, spend 2 Fear to instead reveal that the Manticores are already awake and set the Countdown at 3. It’s a two-hundred foot drop to the floor below the belfry.",
+            "ru": "Супруги-мантикоры Графини устроили гнездо в звоннице. Когда персонажи подходят на Среднюю дистанцию к звоннице, введите Отсчёт Последствий (4). Когда отсчёт срабатывает, мантикоры просыпаются и находят персонажей. Когда вы вводите отсчёт, потратьте 2 Страха, чтобы вместо этого показать, что Мантикоры уже проснулись, и установить Отсчёт на 3. От звонницы до пола внизу двести футов падения."
+          },
+          "prompt": {
+            "en": "How does the Countess tell the manticores apart? What remains of their last meal, and what was it?",
+            "ru": "Как Графиня отличает мантикор друг от друга? Что осталось от их последней трапезы и что это было?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Watch Your Step",
+            "ru": "Осторожно, Ступеньки"
+          },
+          "description": {
+            "en": "On a result with Fear while on the stairs, spend 2 Fear to have a section of the stairwell a Very Close range long collapse beneath a PC. They must make an Agility Reaction Roll to leap down or up to safety, or fall up to a Far range and suffer 1d20+5 physical damage. Traversing the gap or repairing it will likely require an action roll.",
+            "ru": "При результате со Страхом на лестнице потратьте 2 Страха, чтобы участок лестничного пролёта длиной в Близкую дистанцию обрушился под персонажем. Он должен совершить Бросок Реакции на Проворность, чтобы перепрыгнуть вниз или вверх в безопасное место, иначе упадёт на расстояние до Дальней дистанции и получит 1d20+5 физического урона. Преодоление провала или его починка, скорее всего, потребуют броска действия."
+          },
+          "prompt": {
+            "en": "What terrifying sound does the stairwell make before it collapses? Who or what does the debris fall onto?",
+            "ru": "Какой пугающий звук издаёт лестница перед обрушением? На кого или на что падают обломки?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Dungeons of Drakkenheim"
+    },
+    {
+      "id": "countess-rookery",
+      "tier": 3,
+      "type": "traversal",
+      "difficulty": 17,
+      "name": {
+        "en": "Countess’s Rookery",
+        "ru": "Гнездовье Графини"
+      },
+      "lore": {
+        "en": "A disgusting amalgamation of bird nest and boudoir. Macabre decorations of bone, skulls, and body parts are presented alongside ruined finery: pillows, sheets, veils, and the like. Gibbet cages with skeletal remains of several prisoners hang from the balconies.",
+        "ru": "Отвратительная смесь птичьего гнезда и будуара. Жуткие украшения из костей, черепов и частей тел соседствуют с испорченной роскошью: подушками, простынями, вуалями и тому подобным. С балконов свисают клетки-виселицы со скелетами нескольких узников."
+      },
+      "impulses": {
+        "en": [
+          "Lure prey into the hunting grounds",
+          "display squalor and splendor",
+          "toss about with powerful wind"
+        ],
+        "ru": [
+          "Заманивать добычу на охотничьи угодья",
+          "выставлять напоказ убожество и роскошь",
+          "швырять мощным ветром"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Harpy Flock",
+          "Manticore",
+          "The Crimson Countess"
+        ],
+        "ru": [
+          "Стая Гарпий",
+          "Мантикора",
+          "Багровая Графиня"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "A Long Drop",
+            "ru": "Долгое Падение"
+          },
+          "description": {
+            "en": "If a PC is knocked off the side of the Rookery, they can make a Reaction Roll to grab hold of something. On a failure, they fall up to a Close range. The falling PC can mark 2 Stress to grab onto a rope, ledge, or convenient handhold. If they don’t, they instead fall a Very Far range and must make a death move. Alternatively, you might have a strike team from a friendly or rival faction save the PC (as a boon for a friend or to extort the PC if a rival).",
+            "ru": "Если персонажа сбрасывает с края Гнездовья, он может совершить Бросок Реакции, чтобы за что-нибудь ухватиться. При неудаче он падает на расстояние до Средней дистанции. Падающий персонаж может отметить 2 Стресса, чтобы ухватиться за верёвку, выступ или удобную опору. Если он этого не делает, то падает на Очень Дальнюю дистанцию и должен совершить предсмертный ход. Либо вы можете сделать так, чтобы персонажа спас ударный отряд дружественной или соперничающей фракции (как услугу другу или чтобы шантажировать персонажа, если это соперник)."
+          },
+          "prompt": {
+            "en": "What is available to grab onto? How long will it hold?",
+            "ru": "За что можно ухватиться? Как долго оно выдержит?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Whipping Winds",
+            "ru": "Хлёсткие Ветры"
+          },
+          "description": {
+            "en": "Hundreds of feet above the market square, deadly winds whip about the Rookery, making flight and ranged attacks difficult for all not used to the mercurial currents. All PCs’ ranged attacks and Agility Rolls to maneuver within Far of the Rookery are made with Disadvantage.",
+            "ru": "Высоко над рыночной площадью, в сотнях футов, смертоносные ветры хлещут вокруг Гнездовья, затрудняя полёт и дальние атаки для всех, кто не привык к переменчивым потокам. Все дальние атаки персонажей и Броски Проворности для манёвров на Дальней дистанции от Гнездовья совершаются с помехой."
+          },
+          "prompt": {
+            "en": "How do you steady yourself? Have you ever experienced winds this intense?",
+            "ru": "Как вы удерживаете равновесие? Приходилось ли вам сталкиваться с такими сильными ветрами?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Aerial Undertow",
+            "ru": "Воздушное Подводное Течение"
+          },
+          "description": {
+            "en": "Spend 2 Fear to manifest a powerful wind current to pull PCs off the edge of the Rookery. All PCs are moved by a Very Close range in a direction of your choice. If this would move them off the Rookery, apply falling rules as per “A Long Drop”.",
+            "ru": "Потратьте 2 Страха, чтобы создать мощный воздушный поток, стаскивающий персонажей с края Гнездовья. Все персонажи перемещаются на Близкую дистанцию в выбранном вами направлении. Если это сбросило бы их с Гнездовья, применяются правила падения из «Долгого Падения»."
+          },
+          "prompt": {
+            "en": "What changes right before the winds switch to this undertow? What can the PC grab onto if they fall?",
+            "ru": "Что меняется прямо перед тем, как ветры сменяются этим потоком? За что может ухватиться персонаж, если упадёт?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Eldritch Storm",
+            "ru": "Потусторонняя Буря"
+          },
+          "description": {
+            "en": "Spend 3 Fear to introduce a contaminated thunderstorm. Set a Countdown (Loop 1d4+1). When it triggers, all PCs in the Rookery must make an Instinct Reaction Roll or gain a level of contamination from ingesting tainted water. While the storm is active, you can use the “Octarine Lightning” feature.",
+            "ru": "Потратьте 3 Страха, чтобы вызвать заражённую грозу. Установите Отсчёт (Цикл 1d4+1). Когда он срабатывает, все персонажи в Гнездовье должны совершить Бросок Реакции на Инстинкт, иначе получат Уровень Заражения от попавшей внутрь загрязнённой воды. Пока гроза бушует, вы можете использовать способность «Октаринная Молния»."
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Octarine Lightning",
+            "ru": "Октаринная Молния"
+          },
+          "description": {
+            "en": "While there is a storm, spend a Fear to have an octarine lightning bolt strike a point on the Rookery. All targets within Melee of the point must make an Agility Reaction Roll or suffer 3d20 magic damage. On a success, they still mark a Stress.",
+            "ru": "Пока бушует гроза, потратьте Страх, чтобы октаринная молния ударила в точку на Гнездовье. Все цели на дистанции Вплотную от точки должны совершить Бросок Реакции на Проворность, иначе получат 3d20 магического урона. При успехе они всё равно отмечают Стресс."
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Deadly Winds",
+            "ru": "Смертоносные Ветры"
+          },
+          "description": {
+            "en": "When a PC makes an Agility Reaction Roll, if the GM holds more than 8 Fear, the roll gains +2 difficulty.",
+            "ru": "Когда персонаж совершает Бросок Реакции на Проворность, если у Мастера больше 8 Страха, сложность броска повышается на +2."
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Dungeons of Drakkenheim"
     },
     {
       "id": "city-streets",

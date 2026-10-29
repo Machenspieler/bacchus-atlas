@@ -24,6 +24,7 @@ js/list-utils.js        — Lists name validation
 js/search-index.js      — environment search index builder
 js/catalog-progressive.js — catalogue "Show more" batching arithmetic (pure)
 js/random-environment-utils.js — Random Environment card badge + pick (pure)
+js/env-tier-utils.js — an environment's own tiers, tier label, per-tier difficulty (pure, PD-084)
 js/prep-utils.js        — Prep pure selection/search/filter logic
 js/prep-share-utils.js  — Prep share-link payload encode/decode (pure)
 js/prep-reorder-utils.js — Prep manual ordering: id moves/inserts, insertion-slot geometry, autoscroll curve (pure)

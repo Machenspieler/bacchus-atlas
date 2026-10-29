@@ -59,7 +59,7 @@ authority and correct this document.
 ## Optional fields
 
 `lore`, `biomes`, `source`, `featured_adversaries`, `story_seeds`,
-`rawText`, and an absent/empty `ru` inside any bilingual field are all
+`rawText`, `tiers`, `difficulty_by_tier`, and an absent/empty `ru` inside any bilingual field are all
 legitimately optional — the validator only checks their shape when
 present, and older entries not having them is expected, not a data gap to
 backfill proactively.
@@ -74,6 +74,15 @@ backfill proactively.
   source environment that prints none — Epic Duel is the one today — stays
   without the field. Never add a placeholder number, and never flag the
   absence as a data defect in an audit.
+- **`tiers` / `difficulty_by_tier`** (PD-084) — an environment printed for
+  several tiers ("Tier 2-4", "Difficulty 13/16/19"): `tier: 2` (the lowest),
+  `tiers: [2, 3, 4]`, `difficulty: 13` and `difficulty_by_tier: { "2": 13,
+  "3": 16, "4": 19 }`. Every listed tier is the environment's own (dot in the
+  detail card, no rescaling); the validator checks the keys match `tiers` and
+  `difficulty` equals the lowest tier's number.
+- **Tables in a feature** (PD-084) — consecutive `| a | b |` lines inside a
+  `description` (header row first, optional `| --- | --- |` rule) render as a
+  table; keep EN and RU the same size.
 - **`lore`** — a one-to-two-sentence bilingual flavor lead-in shown under
   the title, copied from the source book, not written fresh. Many older
   entries don't have it.
