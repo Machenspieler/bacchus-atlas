@@ -887,7 +887,7 @@ body[data-route="list"] .catalog-bar-wrap[data-stuck="true"]::before {
 /* The first card row sits flush under the sticky bar, which paints over it:
  * a hovered card's 2px lift (and its shadow) would be cut off at the top. */
 body[data-route="catalog"] #grid-wrap,
-body[data-route="list"] #grid-wrap { padding-top: var(--s-2); }
+body[data-route="list"] #grid-wrap { padding-top: var(--s-1); }
 .catalog-bar .toolbar { margin: var(--s-2) 0; flex: 0 1 auto; justify-content: flex-start; }
 .catalog-bar .list-context-bar { margin: var(--s-2) 0; }
 @media (min-width: 901px) {
@@ -903,9 +903,9 @@ body[data-route="list"] #grid-wrap { padding-top: var(--s-2); }
   body[data-route="list"] .catalog-bar .toolbar,
   body[data-route="list"] .catalog-bar .toolbar-filters { display: contents; }
   .catalog-bar .list-context-bar, .catalog-bar .skeleton-toolbar { flex: 1 1 100%; }
-  .catalog-bar .toolbar-filters > .field, .catalog-bar .search-field { flex-shrink: 0; margin-block: var(--s-2); }
+  .catalog-bar .toolbar-filters > .field, .catalog-bar .search-field { flex-shrink: 0; margin-block: var(--s-4); }
   .catalog-bar .rank-pills { flex-wrap: nowrap; }
-  .catalog-bar .result-count { margin: var(--s-2) 0; flex-wrap: nowrap; white-space: nowrap; }
+  .catalog-bar .result-count { margin: var(--s-4) 0; flex-wrap: nowrap; white-space: nowrap; }
 }
 
 /* Tablet widths (a phone's short ribbons clear the row on their own): the same
@@ -917,9 +917,9 @@ body[data-route="list"] #grid-wrap { padding-top: var(--s-2); }
   body[data-route="list"] .catalog-bar { column-gap: var(--s-3); }
   body[data-route="catalog"] .catalog-bar .toolbar,
   body[data-route="list"] .catalog-bar .toolbar { display: contents; }
-  .catalog-bar .search-field, .catalog-bar .filter-toggle { margin-block: var(--s-2); }
-  .catalog-bar .toolbar-filters { margin-block: var(--s-2); }
-  .catalog-bar .result-count { margin: var(--s-2) 0; }
+  .catalog-bar .search-field, .catalog-bar .filter-toggle { margin-block: var(--s-4); }
+  .catalog-bar .toolbar-filters { margin-block: var(--s-4); }
+  .catalog-bar .result-count { margin: var(--s-4) 0; }
 }
 
 /* Below the main catalog grid only — never rendered on Lists, Journey, or
