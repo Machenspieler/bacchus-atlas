@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Artwork Crop Lab — Bacchus's Atlas</title>
+<!-- Development-only. Lives under .claude/, which scripts/build.js never copies into dist/.
+     Serve the repo root (launch.json "atlas-lab", port 8107) and open
+     /.claude/mockups/artwork-crop-lab/artwork-crop-lab.html -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Forum&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@500;700&family=Architects+Daughter&display=swap">
+<link rel="stylesheet" href="../../../css/styles.css">
+<link rel="stylesheet" href="artwork-crop-lab.css">
+</head>
+<body class="lab">
+<main class="shell lab-shell" id="main">
+
+  <header class="lab-head">
+    <div>
+      <h1 class="lab-title">Artwork Crop &amp; Integration Lab</h1>
+      <p class="lab-sub">Haunted &amp; Deathly Places — <em>The Quiet Dead</em>. Does one cinematic image serve Catalog, Session Prep and My Lists, or do we need a second, portrait master? Experiment only: nothing here touches production, storage or data.</p>
+    </div>
+    <ul class="lab-status" id="asset-status" aria-label="Asset status"></ul>
+  </header>
+
+  <!-- ============ controls ============ -->
+  <section class="lab-controls" id="controls" aria-label="Crop controls">
+    <div class="lab-row">
+      <div class="lab-field">
+        <span class="lab-label">Editing context</span>
+        <div class="seg" id="ctx-seg" role="group" aria-label="Context being edited"></div>
+      </div>
+      <div class="lab-field">
+        <span class="lab-label">Source</span>
+        <div class="seg" id="src-seg" role="group" aria-label="Artwork source">
+          <button type="button" data-src="biome">Existing biome</button>
+          <button type="button" data-src="landscape">Haunted Landscape</button>
+          <button type="button" data-src="portrait">Haunted Portrait</button>
+        </div>
+      </div>
+      <div class="lab-field">
+        <span class="lab-label">Preview</span>
+        <div class="seg" id="mode-seg" role="group" aria-label="Preview mode">
+          <button type="button" data-mode="compare">Compare all</button>
+          <button type="button" data-mode="single">Selected source only</button>
+        </div>
+      </div>
+      <div class="lab-field lab-field-env">
+        <label class="lab-label" for="env-select">Environment</label>
+        <select id="env-select"></select>
+      </div>
+    </div>
+
+    <div class="lab-row lab-row-sliders">
+      <label class="lab-slider"><span class="lab-label">Horizontal <b id="x-val">50%</b></span><input type="range" id="x" min="0" max="100" step="1" value="50"></label>
+      <label class="lab-slider"><span class="lab-label">Vertical <b id="y-val">50%</b></span><input type="range" id="y" min="0" max="100" step="1" value="50"></label>
+      <label class="lab-slider"><span class="lab-label">Zoom <b id="z-val">1.00×</b></span><input type="range" id="z" min="1" max="2.5" step="0.05" value="1"></label>
+      <label class="lab-slider"><span class="lab-label">Brightness <b id="b-val">100%</b></span><input type="range" id="b" min="70" max="220" step="1" value="100"></label>
+      <label class="lab-slider"><span class="lab-label">Contrast <b id="c-val">100%</b></span><input type="range" id="c" min="70" max="180" step="1" value="100"></label>
+      <div class="lab-actions">
+        <button type="button" class="btn btn-sm" id="reset-ctx">Reset crop</button>
+        <button type="button" class="btn btn-sm" id="reset-all">Reset all</button>
+        <button type="button" class="btn btn-sm btn-primary" id="copy-json">Copy JSON</button>
+        <button type="button" class="btn btn-sm" id="copy-css">Copy CSS</button>
+        <button type="button" class="btn btn-sm" id="collapse" aria-expanded="true">Collapse ▴</button>
+        <span class="lab-toast" id="toast" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+
+    <div class="lab-row lab-row-actions">
+      <div class="lab-field lab-field-presets">
+        <span class="lab-label">Presets (this context + source)</span>
+        <div class="chips" id="preset-chips"></div>
+      </div>
+      <p class="lab-note" id="edit-note"></p>
+    </div>
+  </section>
+
+  <!-- ============ A catalog ============ -->
+  <section class="lab-section" id="sec-catalog">
+    <h2>A · Catalog <small>.card + .card-art, 95px strip × the card's own height</small></h2>
+    <p class="lab-lead">Real <code>.card</code> markup and production CSS. Same environment, same data, same dimensions — only the strip's picture changes. <span id="catalog-dim" class="lab-dim"></span></p>
+    <div class="lab-grid3 grid" id="catalog-cards"></div>
+  </section>
+
+  <!-- ============ B prep ============ -->
+  <section class="lab-section" id="sec-prep">
+    <h2>B · Session Prep <small>.prep-thumb, 48 × 48 px</small></h2>
+    <p class="lab-lead">Real <code>.prep-env-row</code> rows. The selected environment is shown three ways, then inside a realistic list that mixes the new art with ordinary biome thumbnails.</p>
+    <div class="lab-prep-compare" id="prep-compare"></div>
+    <h3>Mixed list</h3>
+    <div class="lab-prep-mixed" id="prep-mixed"></div>
+  </section>
+
+  <!-- ============ C lists ============ -->
+  <section class="lab-section" id="sec-lists">
+    <h2>C · My Lists <small>.list-card-cover, 90 px strip, up to three tiles</small></h2>
+    <p class="lab-lead">Real <code>.list-card</code> markup (names, counts, Open, trash). Production only paints a cover from <code>ENV_ART</code>; the lab feeds the same container other sources. <span id="lists-dim" class="lab-dim"></span></p>
+    <div id="list-scenarios"></div>
+  </section>
+
+  <!-- ============ inspection ============ -->
+  <section class="lab-section" id="sec-inspect">
+    <h2>D · Crop inspection <small>which part of the master survives where</small></h2>
+    <div class="lab-row">
+      <div class="lab-field">
+        <span class="lab-label">Inspected master</span>
+        <div class="seg" id="insp-seg" role="group"><button type="button" data-isrc="landscape">Landscape 16:9</button><button type="button" data-isrc="portrait">Portrait 2:3</button></div>
+      </div>
+      <label class="lab-check"><input type="checkbox" id="overlay-on" checked> Show crop overlays</label>
+      <div class="chips" id="overlay-toggles"></div>
+    </div>
+    <div class="lab-inspect">
+      <figure class="insp-main"><div class="insp-stage" id="insp-stage"><img id="insp-img" alt="Selected master with crop windows"></div><figcaption id="insp-caption"></figcaption></figure>
+      <div class="insp-crops" id="insp-crops"></div>
+    </div>
+  </section>
+
+  <!-- ============ stress ============ -->
+  <section class="lab-section" id="sec-stress">
+    <h2>E · Stress tests</h2>
+    <h3>Actual sizes, side by side</h3>
+    <div class="lab-actual" id="stress-actual"></div>
+    <h3>Beside the brighter biome paintings</h3>
+    <div class="lab-grid3 grid" id="stress-multi"></div>
+    <h3>Repetition — six Haunted &amp; Deathly environments, one illustration</h3>
+    <div class="lab-grid3 grid" id="stress-repeat"></div>
+    <h3>Low light</h3>
+    <p class="lab-lead">The same crops on the darkest and the lightest surfaces the site uses. Use the Brightness / Contrast sliders above (lab-only; never applied in production).</p>
+    <div class="lab-low" id="stress-low"></div>
+  </section>
+
+  <!-- ============ strategy ============ -->
+  <section class="lab-section" id="sec-strategy">
+    <h2>F · Two masters or one? <small>comparison matrix</small></h2>
+    <p class="lab-lead">Every context, every source, at real size with the crops currently set. The radio in each row is Strategy C's pick; nothing is decided for you.</p>
+    <div class="lab-matrix-wrap"><table class="lab-matrix" id="matrix"></table></div>
+    <h3>Three strategies, one screenful each</h3>
+    <div class="lab-strategies" id="strategies"></div>
+  </section>
+
+  <!-- ============ config ============ -->
+  <section class="lab-section" id="sec-config">
+    <h2>G · Crop configuration <small>lab-only model — not wired into production</small></h2>
+    <div class="lab-row lab-config-row">
+      <pre class="lab-code" id="out-json" tabindex="0"></pre>
+      <pre class="lab-code" id="out-css" tabindex="0"></pre>
+    </div>
+  </section>
+
+</main>
+<script src="../../../js/env-tier-utils.js"></script>
+<script src="artwork-crop-lab.js"></script>
+</body>
+</html>
