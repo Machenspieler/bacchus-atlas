@@ -91,7 +91,7 @@
   function looksLikeAdversaryName(name) {
     const text = String(name || '').trim();
     if (!text) return false;
-    if (/^(?:any|all)$/i.test(text)) return false;
+    if (/^(?:any|all|etc.?)$/i.test(text)) return false;
     if (/[“”"]/.test(text)) return false;
     if (/\bsee\b/i.test(text)) return false;
     return true;
@@ -333,6 +333,10 @@
       if (bareFamily) return bareFamily;
     } else if (BANDIT_GROUP_MEMBER_FAMILY_ALIASES.has(trimmed)) {
       return ADVERSARY_FAMILY_MEMBERS[trimmed];
+    } else if (/^(?:any|all)$/i.test(trimmed) && BANDIT_GROUP_MEMBER_FAMILY_ALIASES.has(groupLabel)) {
+      // "Jagged Knife Bandits (all)": the qualifier asks for the whole gang. Only the Bandit
+      // labels — other families' "(any)" is left to the card, as before.
+      return ADVERSARY_FAMILY_MEMBERS[groupLabel];
     }
     const includingMatch = trimmed.match(/^including\s+(.+)$/i);
     const nameToResolve = includingMatch ? includingMatch[1].trim() : memberName;

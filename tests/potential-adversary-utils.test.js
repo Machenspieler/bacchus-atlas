@@ -272,3 +272,9 @@ test('"Beasts (any)" resolves to the tiered beast rosters and links per tier', (
   assert.equal(PAU.beastTierGroups(PAU.parsePotentialAdversaryEntry('Beasts (Bear, Dire Wolf)')), null);
   assert.deepEqual(names('Beasts (Bear, Dire Wolf)'), ['Bear', 'Dire Wolf']);
 });
+
+test('"Jagged Knife Bandits (all)" is the whole gang; a trailing "etc." names nobody', () => {
+  assert.deepEqual(names('Jagged Knife Bandits (all)'), JAGGED_KNIFE);
+  assert.deepEqual(names('Jagged Knife Bandits (any)'), JAGGED_KNIFE);
+  assert.deepEqual(names('Hooded Lanterns (Bladed Guard, etc.)'), ['Bladed Guard']);
+});
