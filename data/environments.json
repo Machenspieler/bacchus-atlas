@@ -35581,6 +35581,1187 @@
         "universal"
       ],
       "source": "Pistolheart"
+    },
+    {
+      "id": "high-noon",
+      "tier": 1,
+      "type": "event",
+      "difficulty": 10,
+      "name": {
+        "en": "High Noon",
+        "ru": "Ровно в Полдень"
+      },
+      "lore": {
+        "en": "A quick-draw duel between two gunfighters.",
+        "ru": "Дуэль на скорость между двумя стрелками."
+      },
+      "impulses": {
+        "en": [
+          "Put the pressure on",
+          "go all in",
+          "only one walks away"
+        ],
+        "ru": [
+          "Давить на героя",
+          "идти ва-банк",
+          "уйдёт только один"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Someone with a gun"
+        ],
+        "ru": [
+          "Кто-то с пистолетом"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Everyone’s Watching",
+            "ru": "Весь город смотрит"
+          },
+          "description": {
+            "en": "Raise or lower the Difficulty by 1 depending on whether the town’s disposition toward the PC participating in the duel is negative or positive.",
+            "ru": "Повысьте или понизьте Сложность на 1 в зависимости от того, относится ли город к участвующему в дуэли персонажу негативно или позитивно."
+          },
+          "prompt": {
+            "en": "Who is the opponent? What’s at stake for this town if they lose? What happens if they win?",
+            "ru": "Кто противник? Что поставлено на карту для города, если он проиграет? Что случится, если он победит?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Draw!",
+            "ru": "Стреляй!"
+          },
+          "description": {
+            "en": "Spend all remaining Fear to draw, increasing the Difficulty by 1 for each 2 Fear spent. The PC must make an attack roll, spending all remaining Hope and adding +1 to the roll for each Hope spent. Other PCs can each spend 3 Hope to bestow a +1 bonus to the duelist’s roll. On a success, the duelist’s opponent is defeated. On a failure with Hope, the PC marks all but 1 HP but also injures the other duelist. On a failure with Fear, the PC marks a Scar and is unconscious until the next long rest.",
+            "ru": "Потратьте весь оставшийся Страх, чтобы выхватить оружие: Сложность повышается на 1 за каждые 2 потраченных Страха. Персонаж должен совершить бросок атаки, потратив всю оставшуюся Надежду и добавив +1 к броску за каждую потраченную Надежду. Другие персонажи могут потратить по 3 Надежды, чтобы дать дуэлянту бонус +1 к броску. При успехе противник дуэлянта повержен. При провале с Надеждой персонаж отмечает все Раны, кроме одной, но и противник дуэлянта получает ранение. При провале со Страхом персонаж получает Шрам и остаётся без сознания до следующего Продолжительного Отдыха."
+          },
+          "prompt": {
+            "en": "What sort of firearm is the opponent using? Is the sun in anyone’s eye?",
+            "ru": "Из какого огнестрельного оружия стреляет противник? Не слепит ли кому-нибудь глаза солнце?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "One for the Road",
+            "ru": "На Дорожку"
+          },
+          "description": {
+            "en": "If the PC succeeds with Fear during Draw!, spend a Fear to make the PC mark 3 HP.",
+            "ru": "Если персонаж преуспевает со Страхом во время «Стреляй!», потратьте Страх, чтобы персонаж отметил 3 Раны."
+          },
+          "prompt": {
+            "en": "What are the opponent’s last words? What strange object do they have on their person?",
+            "ru": "Каковы последние слова противника? Какой странный предмет у него при себе?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "friendly-campfire",
+      "tier": 1,
+      "type": "social",
+      "difficulty": 11,
+      "name": {
+        "en": "Friendly Campfire",
+        "ru": "Дружеский Костёр"
+      },
+      "lore": {
+        "en": "Whether a solitary camp in the midst of the great plains or a cookfire in a settlement, the campfire is a place to share meals, swap stories, and hear the latest gossip.",
+        "ru": "Будь то одинокий лагерь посреди бескрайних равнин или костёр для готовки в поселении, у костра делятся едой, обмениваются историями и узнают свежие сплетни."
+      },
+      "impulses": {
+        "en": [
+          "Share the fire",
+          "share a meal",
+          "stomachs full and pockets empty"
+        ],
+        "ru": [
+          "Делить костёр",
+          "делить трапезу",
+          "сытые желудки и пустые карманы"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Black Hats",
+          "Merchant",
+          "Spy"
+        ],
+        "ru": [
+          "Чёрные Шляпы",
+          "Торговец",
+          "Шпион"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Stranger at the Fire",
+            "ru": "Незнакомец у Костра"
+          },
+          "description": {
+            "en": "A stranger stokes the campfire, with a bubbling pot of something cooking over it. They’re more than willing to share their fire in exchange for stew ingredients and a story.",
+            "ru": "Незнакомец подкладывает дрова в костёр, над которым булькает котелок с чем-то варящимся. Он охотно поделится огнём в обмен на ингредиенты для рагу и историю."
+          },
+          "prompt": {
+            "en": "Who is the stranger? Do they know the PCs? Do the PCs know them?",
+            "ru": "Кто этот незнакомец? Знает ли он персонажей? Знают ли они его?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Stranger’s Stew",
+            "ru": "Рагу Незнакомца"
+          },
+          "description": {
+            "en": "If the PCs rest in the camp, each creature at camp clears 1 HP or Stress and 1 additional HP or Stress for each PC who contributed an item to the stew.",
+            "ru": "Если персонажи отдыхают в лагере, каждое существо в лагере снимает 1 Рану или Стресс и ещё 1 дополнительную Рану или Стресс за каждого персонажа, внёсшего в рагу какой-либо предмет."
+          },
+          "prompt": {
+            "en": "What do the PCs have in their packs that they can contribute? On the scale of scrumptious to barely edible, where does this stew fall?",
+            "ru": "Что у персонажей в рюкзаках можно положить в котелок? Где это рагу на шкале от восхитительного до едва съедобного?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Ghost Story",
+            "ru": "Страшная История"
+          },
+          "description": {
+            "en": "Once per scene, spend a Fear to make each PC make an Instinct Reaction Roll as the stranger tells a chilling campfire tale. PCs that fail mark a Stress. If the majority succeed, each PC gains a Hope.",
+            "ru": "Один раз за сцену потратьте Страх, чтобы каждый персонаж совершил Бросок Реакции на Инстинкт, пока незнакомец рассказывает леденящую душу байку у костра. Персонажи, провалившие бросок, отмечают Стресс. Если большинство преуспело, каждый персонаж получает Надежду."
+          },
+          "prompt": {
+            "en": "What local legends might this stranger know about? How does the stranger’s ghost story tie into the PCs’ own tale?",
+            "ru": "Какие местные легенды может знать этот незнакомец? Как его страшная история связана с историей самих персонажей?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Whelp… (Slaps Knee)",
+            "ru": "Ну что ж… (Хлопает по Колену)"
+          },
+          "description": {
+            "en": "The stranger turns in for the night. The PCs must use their downtime moves or leave camp.",
+            "ru": "Незнакомец ложится спать. Персонажи должны использовать свои ходы простоя или покинуть лагерь."
+          },
+          "prompt": {
+            "en": "Does the stranger seem trustworthy enough to share a camp with? What suggests they are? Or aren’t?",
+            "ru": "Кажется ли незнакомец достаточно надёжным, чтобы делить с ним лагерь? Что на это указывает? Или, наоборот, что не указывает?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Sorry, Friend",
+            "ru": "Прости, Друг"
+          },
+          "description": {
+            "en": "When the PCs conclude their downtime moves, you can spend 2 Fear to make each PC roll a d4. On an odd result, the PC loses a handful of gold, but is left with an I.O.U. note from the stranger.",
+            "ru": "Когда персонажи завершают свои ходы простоя, вы можете потратить 2 Страха, чтобы каждый персонаж бросил d4. При нечётном результате персонаж теряет горсть золота, но взамен находит долговую расписку от незнакомца."
+          },
+          "prompt": {
+            "en": "What treasured but valueless item did the stranger steal along with the gold? How did they get past the PCs keeping watch?",
+            "ru": "Какую дорогую сердцу, но ничего не стоящую вещь незнакомец украл вместе с золотом? Как ему удалось пройти мимо персонажей, несших караул?"
+          }
+        }
+      ],
+      "biomes": [
+        "grassland",
+        "settlement"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "mounted-escape",
+      "tier": 1,
+      "type": "event",
+      "difficulty": 11,
+      "name": {
+        "en": "Mounted Escape",
+        "ru": "Бегство Верхом"
+      },
+      "lore": {
+        "en": "As the heroes flee on their mounts, their pursuers are not far behind!",
+        "ru": "Герои скачут прочь на своих скакунах, а преследователи висят у них на хвосте!"
+      },
+      "impulses": {
+        "en": [
+          "Close the gap",
+          "prevent their escape",
+          "punish failure"
+        ],
+        "ru": [
+          "Сократить отрыв",
+          "не дать им уйти",
+          "наказать за промах"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Black Hat Cattle Rustlers",
+          "Jagged Knife Bandits",
+          "Boreworms",
+          "Skeletons"
+        ],
+        "ru": [
+          "Конокрады-Чёрные Шляпы",
+          "Бандиты из «Зазубренного Ножа»",
+          "Буровые Черви",
+          "Скелеты"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "They’re On Our Tails!",
+            "ru": "Они у Нас на Хвосте!"
+          },
+          "description": {
+            "en": "Start a Chase Countdown (8) that ticks down whenever the GM takes the spotlight. If the countdown triggers, the pursuers catch up to the PCs.",
+            "ru": "Начните Отсчёт Погони (8), который уменьшается всякий раз, когда Мастер получает Активацию. Если Отсчёт срабатывает, преследователи настигают персонажей."
+          },
+          "prompt": {
+            "en": "Who are the PCs running from? How big a head start do they have on them?",
+            "ru": "От кого бегут персонажи? Насколько велик их отрыв?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Gotta Lose ’Em",
+            "ru": "Надо Оторваться"
+          },
+          "description": {
+            "en": "Place 8 Pursuer Tokens on this stat block. The PCs can make action rolls to stop the pursuers. On a success, remove a token. On a Critical Success, remove 2. If all tokens are removed before the countdown triggers, end the countdown as the party escapes to safety.",
+            "ru": "Положите 8 жетонов преследователей на этот блок характеристик. Персонажи могут совершать броски действия, чтобы остановить преследователей. При успехе уберите жетон. При Критическом успехе уберите 2. Если все жетоны убраны до срабатывания Отсчёта, завершите Отсчёт: отряд уходит в безопасное место."
+          },
+          "prompt": {
+            "en": "In what ways, that aren’t resorting to violence, can the PCs lose their pursuers? Are the pursuers attempting to kill or apprehend?",
+            "ru": "Какими способами, не прибегая к насилию, персонажи могут оторваться от преследователей? Преследователи хотят убить или схватить?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Spurs",
+            "ru": "Шпоры"
+          },
+          "description": {
+            "en": "Spend a Fear to make each PC make a Strength Reaction Roll. If the majority fail, tick down the Chase Countdown by 1. If all PCs fail, tick it down by 2.",
+            "ru": "Потратьте Страх, чтобы каждый персонаж совершил Бросок Реакции на Силу. Если большинство проваливает бросок, уменьшите Отсчёт Погони на 1. Если проваливают все персонажи, уменьшите его на 2."
+          },
+          "prompt": {
+            "en": "How are the pursuers able to close the gap? What is slowing down the PCs?",
+            "ru": "Как преследователям удаётся сократить отрыв? Что замедляет персонажей?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Fire Back",
+            "ru": "Ответный Огонь"
+          },
+          "description": {
+            "en": "Spend a Fear when a PC fails with Fear to deal 1d10 damage to them.",
+            "ru": "Потратьте Страх, когда персонаж проваливает бросок со Страхом, чтобы нанести ему 1d10 урона."
+          },
+          "prompt": {
+            "en": "What collateral damage happens as a result of this chase? Are the PCs being mindful of their surroundings? Are their pursuers?",
+            "ru": "Какой побочный ущерб причиняет эта погоня? Следят ли персонажи за тем, что вокруг? А их преследователи?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "mounted-pursuit",
+      "tier": 1,
+      "type": "event",
+      "difficulty": 11,
+      "name": {
+        "en": "Mounted Pursuit",
+        "ru": "Погоня Верхом"
+      },
+      "lore": {
+        "en": "A group of mounted riders flees from the party. Saddle up and catch them!",
+        "ru": "Группа всадников удирает от отряда. В седло — и догнать их!"
+      },
+      "impulses": {
+        "en": [
+          "Create distance",
+          "fire back",
+          "leave them in the dust"
+        ],
+        "ru": [
+          "Увеличивать отрыв",
+          "отстреливаться",
+          "оставить их глотать пыль"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Black Hat Cattle Rustlers",
+          "Emperor of Nothing",
+          "Jagged Knife Bandits",
+          "Skeletons"
+        ],
+        "ru": [
+          "Конокрады-Чёрные Шляпы",
+          "Император Пустоты",
+          "Бандиты из «Зазубренного Ножа»",
+          "Скелеты"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Saddle Up!",
+            "ru": "В Седло!"
+          },
+          "description": {
+            "en": "Start a Pursuit Countdown (6) that ticks down whenever a PC succeeds on an action roll to close the gap in the chase. Until this countdown triggers, the PCs are considered to be beyond Very Far range. If this countdown triggers before the Getaway Countdown, the PCs catch up to their targets, moving into Far range.",
+            "ru": "Начните Отсчёт Погони (6), который уменьшается всякий раз, когда персонаж преуспевает в броске действия, чтобы сократить отрыв. Пока этот Отсчёт не сработал, считается, что персонажи находятся за пределами Очень Дальней дистанции. Если этот Отсчёт срабатывает раньше Отсчёта Побега, персонажи настигают свои цели и переходят на Дальнюю дистанцию."
+          },
+          "prompt": {
+            "en": "How big a lead do the riders have on the PCs? How can this pursuit highlight how the PCs work together?",
+            "ru": "Насколько велик отрыв всадников? Как эта погоня может подчеркнуть слаженность работы персонажей?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "They’re Gettin’ Away!",
+            "ru": "Они Уходят!"
+          },
+          "description": {
+            "en": "Start a Getaway Countdown (6). This countdown ticks down whenever the PCs fail an action roll to close the gap. If the countdown triggers, the PCs lose track of their targets.",
+            "ru": "Начните Отсчёт Побега (6). Этот Отсчёт уменьшается всякий раз, когда персонажи проваливают бросок действия, чтобы сократить отрыв. Если Отсчёт срабатывает, персонажи теряют цели из виду."
+          },
+          "prompt": {
+            "en": "What sorts of mounts are the riders atop? What landscape is this chase passing through? Urban? Rural? Remote?",
+            "ru": "На каких скакунах сидят всадники? Через какой ландшафт проходит эта погоня? Городской? Сельский? Глухомань?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Blind Fire",
+            "ru": "Стрельба Вслепую"
+          },
+          "description": {
+            "en": "Spend a Fear to make the PCs make an Agility Reaction Roll. On a failure deal 1d6+3 physical damage.",
+            "ru": "Потратьте Страх, чтобы персонажи совершили Бросок Реакции на Проворность. При провале нанесите 1d6+3 физического урона."
+          },
+          "prompt": {
+            "en": "What firearms or ranged weaponry do they wield? What dirty tricks are they using to throw the PCs off their tail?",
+            "ru": "Какое огнестрельное или дальнобойное оружие они применяют? Какие грязные трюки используют, чтобы сбросить персонажей со следа?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "great-plains",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 14,
+      "name": {
+        "en": "Great Plains",
+        "ru": "Великие Равнины"
+      },
+      "lore": {
+        "en": "A vast rolling prairie, full of wildlife and very little cover.",
+        "ru": "Необъятная холмистая прерия, полная дичи и почти лишённая укрытий."
+      },
+      "impulses": {
+        "en": [
+          "Burn them for greed",
+          "present prime hunting opportunities",
+          "weigh them down"
+        ],
+        "ru": [
+          "Наказать их за жадность",
+          "предлагать отличные возможности для охоты",
+          "нагрузить их ношей"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Any Animal",
+          "Acid Burrower",
+          "Black Hats",
+          "Chupacabra",
+          "Spectral Stampede"
+        ],
+        "ru": [
+          "Любое животное",
+          "Кислотный Землекоп",
+          "Чёрные Шляпы",
+          "Чупакабра",
+          "Призрачная Стампеда"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Prime Hunting Grounds",
+            "ru": "Богатые Охотничьи Угодья"
+          },
+          "description": {
+            "en": "All manner of beasts make their home here. Roll 1d8 and place that number of Supply Tokens on this stat block, representing the size of the herd that makes its home here. A PC can attempt to hunt by making an action roll. On a success, remove a token and give it to a PC. A PC can hold only 1 Supply Token at a time. A PC with a Supply Token is considered to have a full inventory, and can’t carry anything else.",
+            "ru": "Здесь обитают самые разные звери. Бросьте 1d8 и положите на этот блок характеристик столько жетонов припасов, представляющих размер стада, живущего здесь. Персонаж может попытаться поохотиться, совершив бросок действия. При успехе уберите жетон и отдайте его персонажу. Персонаж может держать только 1 жетон припасов одновременно. Считается, что у персонажа с жетоном припасов полный инвентарь, и больше ничего он нести не может."
+          },
+          "prompt": {
+            "en": "What herds graze in these plains? What creature has been overhunted to near extinction here?",
+            "ru": "Какие стада пасутся на этих равнинах? Какое существо здесь выбили почти до полного исчезновения?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Heavy Load",
+            "ru": "Тяжёлая Ноша"
+          },
+          "description": {
+            "en": "PCs seeking to unload their Supply Tokens will have to find a Trading Post. When the PCs have finished hunting, start a Heavy Load Countdown equal to the number of Supply Tokens the PCs carry in total, which ticks down every time a PC succeeds on an action roll to find the nearest trading post. The GM and PC work together to narrate what they must contend with, and how they attempt to overcome it on the road to the Trading Post. When the Heavy Load Countdown triggers, the PCs exit this environment and enter a Trading Post environment.",
+            "ru": "Персонажам, желающим сбыть свои жетоны припасов, придётся найти Торговую Факторию. Когда персонажи закончили охоту, начните Отсчёт Тяжёлой Ноши, равный общему числу жетонов припасов, которые несут персонажи; он уменьшается каждый раз, когда персонаж преуспевает в броске действия, чтобы найти ближайшую факторию. Мастер и игрок вместе описывают, с чем приходится бороться и как персонаж пытается это преодолеть на пути к Торговой Фактории. Когда Отсчёт Тяжёлой Ноши срабатывает, персонажи покидают это окружение и попадают в окружение «Торговая Фактория»."
+          },
+          "prompt": {
+            "en": "What supplies are the PCs bringing with them? What are the PCs forced to leave behind on their return?",
+            "ru": "Какие припасы персонажи везут с собой? Что им приходится бросить на обратном пути?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Prairie Fire",
+            "ru": "Степной Пожар"
+          },
+          "description": {
+            "en": "Spend 3 Fear to start a raging prairie fire. PCs must make an Agility or Strength Reaction Roll to avoid the burn. PCs holding a Supply Token have disadvantage on this roll unless they spend the token to remove it. On a success, mark a Stress. On a failure, lose 2 Hope and take 2d8+6 direct damage.",
+            "ru": "Потратьте 3 Страха, чтобы вызвать бушующий степной пожар. Персонажи должны совершить Бросок Реакции на Проворность или Силу, чтобы избежать ожога. Персонажи с жетоном припасов совершают этот бросок с помехой, если не потратят жетон, чтобы избавиться от него. При успехе отметьте Стресс. При провале потеряйте 2 Надежды и получите 2d8+6 прямого урона."
+          },
+          "prompt": {
+            "en": "What is the source of the fire? Is the fire between the PCs and their destination or at their backs?",
+            "ru": "Что стало источником пожара? Огонь между персонажами и их целью или у них за спиной?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Rage of the Hunted",
+            "ru": "Ярость Загнанных"
+          },
+          "description": {
+            "en": "If all tokens are removed from this stat block, start a Rage Countdown (4) that ticks down every time a PC rolls with Fear in this environment. When the countdown triggers, a Spectral Stampede appears and is immediately spotlighted.",
+            "ru": "Если все жетоны убраны с этого блока характеристик, начните Отсчёт Ярости (4), который уменьшается каждый раз, когда персонаж совершает бросок со Страхом в этом окружении. Когда Отсчёт срабатывает, появляется Призрачная Стампеда, и она немедленно получает Активацию."
+          },
+          "prompt": {
+            "en": "How does this ghostly herd manifest when it appears? Do they appear as they did in life, or as something more terrifying?",
+            "ru": "Как проявляет себя это призрачное стадо, когда появляется? Оно выглядит так же, как при жизни, или как нечто более жуткое?"
+          }
+        }
+      ],
+      "biomes": [
+        "grassland"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "murder-on-the-casino-train",
+      "tier": 2,
+      "type": "social",
+      "difficulty": 14,
+      "name": {
+        "en": "Murder on the Casino Train",
+        "ru": "Убийство в Поезде-Казино"
+      },
+      "lore": {
+        "en": "A rolling gambling house where the festivities have been interrupted by a MURDER!",
+        "ru": "Игорный дом на колёсах, где веселье прервало УБИЙСТВО!"
+      },
+      "impulses": {
+        "en": [
+          "Involve them in the case",
+          "keep them guessing",
+          "never let them feel confident"
+        ],
+        "ru": [
+          "Втянуть их в дело",
+          "держать их в неведении",
+          "не давать им почувствовать уверенность"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Black Hats",
+          "Corrupt Sheriff",
+          "Crooked Deputy",
+          "Frontier Marshals",
+          "Skeletons"
+        ],
+        "ru": [
+          "Чёрные Шляпы",
+          "Продажный Шериф",
+          "Нечестный Помощник Шерифа",
+          "Пограничные Маршалы",
+          "Скелеты"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Murder Mystery",
+            "ru": "Тайна Убийства"
+          },
+          "description": {
+            "en": "Someone’s been murdered! The Frontier Marshal aboard deputizes the party to investigate the rumors surrounding the three suspects. Start 3 Investigations (4) with 2 Rumors on each. The Rumors should represent a different witness or clue scattered somewhere on the boat.",
+            "ru": "Кого-то убили! Пограничный Маршал на борту назначает отряд своими помощниками, чтобы расследовать слухи о трёх подозреваемых. Начните 3 Расследования (4) с 2 Слухами в каждом. Слухи должны представлять разных свидетелей или улики, разбросанные по судну."
+          },
+          "prompt": {
+            "en": "Who are the suspects, the victim, and the investigating marshal? What tie does the victim have to the PCs?",
+            "ru": "Кто подозреваемые, жертва и маршал, ведущий расследование? Какая связь у жертвы с персонажами?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "J’accuse!",
+            "ru": "Я Обвиняю!"
+          },
+          "description": {
+            "en": "When the PCs have completed at least 1 Investigation (4), they can make an accusation against a target with a complete investigation by making an Instinct Roll. If they have all three investigations completed, their Hope Die is a d20. Ultimately, the result of the accusation roll is what determines the truth.\n- **Success with Hope:** The PC identifies the correct murderer.\n- **Success with Fear:** The PC identifies the correct murderer, but they’re making an escape.\n- **Failure with Hope:** The PC identifies the correct murderer, but it’s revealed one of the other suspects was an accomplice. They must make another accusation.\n- **Failure with Fear:** The PCs send an innocent person to the gallows.",
+            "ru": "Когда персонажи завершили хотя бы 1 Расследование (4), они могут выдвинуть обвинение против цели с завершённым расследованием, совершив Бросок Инстинкта. Если завершены все три расследования, их Кость Надежды — d20. В конечном счёте правду определяет результат броска обвинения.\n- **Успех с Надеждой:** Персонаж называет верного убийцу.\n- **Успех со Страхом:** Персонаж называет верного убийцу, но тот пытается сбежать.\n- **Неудача с Надеждой:** Персонаж называет верного убийцу, но выясняется, что один из других подозреваемых был его сообщником. Нужно выдвинуть ещё одно обвинение.\n- **Неудача со Страхом:** Персонажи отправляют на виселицу невиновного."
+          },
+          "prompt": {
+            "en": "Who have the PCs encountered previously who might be involved? Who’s the biggest VIP here?",
+            "ru": "Кого из ранее встреченных персонажами людей можно впутать в дело? Кто здесь самая важная персона?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Silence is Golden!",
+            "ru": "Молчание — Золото!"
+          },
+          "description": {
+            "en": "Spend 2 Fear to remove a clue token and cross a completed Rumor off an investigation as a credible witness mysteriously disappears.",
+            "ru": "Потратьте 2 Страха, чтобы убрать жетон улики и вычеркнуть завершённый Слух из расследования: надёжный свидетель таинственным образом исчезает."
+          },
+          "prompt": {
+            "en": "What sorts of train-adjacent “accidents” might have befallen these poor witnesses? What hidden dangers lurk aboard and around the train?",
+            "ru": "Какие «несчастные случаи», связанные с поездом, могли постигнуть этих бедных свидетелей? Какие скрытые опасности таятся на борту и вокруг поезда?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "What Goes Around…",
+            "ru": "Что Посеешь…"
+          },
+          "description": {
+            "en": "If the PCs send an innocent to the gallows, spend a Fear to make each PC mark 2 Stress and leave them with a lingering sense of dread that vengeance will come back to haunt them some day…",
+            "ru": "Если персонажи отправляют на виселицу невиновного, потратьте Страх, чтобы каждый персонаж отметил 2 Стресса и остался с неотступным ощущением ужаса: когда-нибудь месть вернётся, чтобы преследовать их…"
+          },
+          "prompt": {
+            "en": "How might the PCs’ poor investigation skills come back to haunt them? What are the repercussions of this innocent’s death?",
+            "ru": "Как плохие навыки расследования могут аукнуться персонажам? Каковы последствия смерти этого невиновного?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "stagecoach-ambush",
+      "tier": 2,
+      "type": "event",
+      "difficulty": 14,
+      "name": {
+        "en": "Stagecoach Ambush",
+        "ru": "Засада на Дилижанс"
+      },
+      "lore": {
+        "en": "A short ride from safety, outlaws descend on the party as the heroes drive a stagecoach full of valuable cargo.",
+        "ru": "В считаных милях от безопасного места на отряд обрушиваются разбойники, пока герои правят дилижансом с ценным грузом."
+      },
+      "impulses": {
+        "en": [
+          "Damage the wagon",
+          "make off with the cargo",
+          "prevent their escape"
+        ],
+        "ru": [
+          "Повредить повозку",
+          "скрыться с грузом",
+          "не дать им уйти"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Black Hats",
+          "Corrupt Sheriff",
+          "Crooked Deputy",
+          "Frontier Marshals",
+          "Skeletons"
+        ],
+        "ru": [
+          "Чёрные Шляпы",
+          "Продажный Шериф",
+          "Нечестный Помощник Шерифа",
+          "Пограничные Маршалы",
+          "Скелеты"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Stagecoach Integrity",
+            "ru": "Прочность Дилижанса"
+          },
+          "description": {
+            "en": "When you enter this environment start a Stagecoach Countdown (8). Each time a PC takes Major damage, tick the countdown down 1. Each time a PC takes Severe damage, tick the Stagecoach Countdown down 2. When it triggers, each PC marks a HP as the stagecoach crashes.",
+            "ru": "Когда вы входите в это окружение, начните Отсчёт Дилижанса (8). Каждый раз, когда персонаж получает Ощутимый урон, уменьшайте Отсчёт на 1. Каждый раз, когда персонаж получает Тяжёлый урон, уменьшайте Отсчёт Дилижанса на 2. Когда он срабатывает, дилижанс разбивается, и каждый персонаж отмечает Рану."
+          },
+          "prompt": {
+            "en": "What valuable cargo is the stagecoach carrying? What kind of stagecoach is this? A fully enclosed one, or more akin to a covered wagon?",
+            "ru": "Какой ценный груз везёт дилижанс? Что это за дилижанс? Полностью закрытый или скорее похожий на крытую повозку?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Black Hat Pursuit",
+            "ru": "Погоня Чёрных Шляп"
+          },
+          "description": {
+            "en": "Place 10 Pursuer Tokens on this stat block. The PCs can make action rolls to stop the pursuers. On a success, remove a token. On a Critical Success, remove 2. If all tokens are removed before the countdown triggers, end the countdown as the party escapes to safety.",
+            "ru": "Положите 10 жетонов преследователей на этот блок характеристик. Персонажи могут совершать броски действия, чтобы остановить преследователей. При успехе уберите жетон. При Критическом успехе уберите 2. Если все жетоны убраны до срабатывания Отсчёта, завершите Отсчёт: отряд уходит в безопасное место."
+          },
+          "prompt": {
+            "en": "What are the black hats mounted on? What landmark in the distance represents safety to the PCs?",
+            "ru": "На чём скачут чёрные шляпы? Какой ориентир вдали означает для персонажей безопасность?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Get ’Em!",
+            "ru": "Взять Их!"
+          },
+          "description": {
+            "en": "The PCs must succeed on an Agility, Instinct, or Presence Reaction Roll or take 2d8+6 physical damage as the outlaws attack!",
+            "ru": "Персонажи должны преуспеть в Броске Реакции на Проворность, Инстинкт или Влияние, иначе они получают 2d8+6 физического урона, когда разбойники атакуют!"
+          },
+          "prompt": {
+            "en": "In what ways do the black hats act that highlight the abilities of the PCs? What can the PCs use to throw off their pursuers rather than just shooting back?",
+            "ru": "Как действуют чёрные шляпы, чтобы подчеркнуть способности персонажей? Что персонажи могут использовать, чтобы сбить преследователей со следа, а не просто отстреливаться?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Road Hazards",
+            "ru": "Опасности Дороги"
+          },
+          "description": {
+            "en": "Spend a Fear to make the driver of the coach make an Instinct or Finesse Reaction Roll to keep control of the coach. On a failure, mark a Stress and tick down the Stagecoach Countdown by 1.",
+            "ru": "Потратьте Страх, чтобы возница дилижанса совершил Бросок Реакции на Инстинкт или Искусность, чтобы сохранить контроль над экипажем. При провале отметьте Стресс и уменьшите Отсчёт Дилижанса на 1."
+          },
+          "prompt": {
+            "en": "What are the conditions of the road? Who is driving the coach and what hazards can be thrown in their way to highlight their abilities?",
+            "ru": "В каком состоянии дорога? Кто правит дилижансом и какие препятствия можно поставить на его пути, чтобы подчеркнуть его способности?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Boarding Party",
+            "ru": "Абордажная Команда"
+          },
+          "description": {
+            "en": "If a PC fails their Agility Reaction Roll during Get ’Em!, spend a Fear to make a number of Black Hat Road Agents (Pistolheart Vol 2, pg15), equal to the number of PCs who failed their Reaction Roll, jump onto the stagecoach. PCs may not make action rolls to remove pursuer tokens while any adversaries are on the stagecoach.",
+            "ru": "Если персонаж проваливает Бросок Реакции на Проворность во время «Взять Их!», потратьте Страх, чтобы на дилижанс запрыгнуло столько Грабителей с Большой Дороги из Чёрных Шляп (Pistolheart Vol 2, стр. 15), сколько персонажей провалили Бросок Реакции. Пока на дилижансе есть противники, персонажи не могут совершать броски действия, чтобы убирать жетоны преследователей."
+          },
+          "prompt": {
+            "en": "Do the bandits seem desperate, or bloodthirsty? What tools are they using as weapons?",
+            "ru": "Бандиты кажутся отчаявшимися или кровожадными? Что они используют в качестве оружия?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "trading-post",
+      "tier": 2,
+      "type": "social",
+      "difficulty": 15,
+      "name": {
+        "en": "Trading Post",
+        "ru": "Торговая Фактория"
+      },
+      "lore": {
+        "en": "A bustling trading post where supplies can be sold or bartered.",
+        "ru": "Шумная торговая фактория, где можно продать или обменять припасы."
+      },
+      "impulses": {
+        "en": [
+          "Bilk them out of their money",
+          "present trade opportunities",
+          "spread rumors"
+        ],
+        "ru": [
+          "Выманить у них деньги",
+          "предлагать выгодные сделки",
+          "распускать слухи"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Bartender",
+          "Black Hats",
+          "Corrupt Sheriff",
+          "Crooked Deputy",
+          "Flim-Flam Mogul",
+          "Merchant"
+        ],
+        "ru": [
+          "Бармен",
+          "Чёрные Шляпы",
+          "Продажный Шериф",
+          "Нечестный Помощник Шерифа",
+          "Магнат-Мошенник",
+          "Торговец"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Supplies Needed",
+            "ru": "Нужны Припасы"
+          },
+          "description": {
+            "en": "A PC can spend any amount of Supply Tokens to make a Presence or Knowledge Roll to haggle over the trading price. On a failure, roll 1d6 per token and the PC gains that number of handfuls of gold. On a success, roll 1d8+2 per token and the PC gains that number of handfuls of gold plus a number of handfuls equal to the difference between the PC’s roll and the Difficulty.",
+            "ru": "Персонаж может потратить любое количество жетонов припасов, чтобы совершить Бросок Влияния или Знания и поторговаться о цене. При провале бросьте 1d6 за каждый жетон, и персонаж получает столько горстей золота. При успехе бросьте 1d8+2 за каждый жетон, и персонаж получает столько горстей золота плюс столько горстей, какова разница между его броском и Сложностью."
+          },
+          "prompt": {
+            "en": "What does the trading post look like from the outside? Is it a walled fort, a small settlement, or something more ramshackle?",
+            "ru": "Как выглядит фактория снаружи? Это форт со стенами, небольшое поселение или что-то более ветхое?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Watering Hole",
+            "ru": "Водопой"
+          },
+          "description": {
+            "en": "Whether it’s a tent or a full-blown saloon, there’s always a place to drink, with a Bartender who knows too much. A Bartender in a trading post hears a lot more than one in a city. Once per day, when a PC uses the Bartender’s Rumor Mill feature, they can pay an additional 3 handfuls of gold to lower the Difficulty of an investigation by 1.",
+            "ru": "Будь то палатка или полноценный салун, здесь всегда найдётся место выпить, и Бармен, который знает слишком много. Бармен в фактории слышит гораздо больше, чем городской. Один раз в день, когда персонаж использует особенность Бармена «Мельница Слухов», он может заплатить дополнительно 3 горсти золота, чтобы понизить Сложность расследования на 1."
+          },
+          "prompt": {
+            "en": "What kind of bar does this trading post sport? What has the bartender already heard about the PCs before they arrived?",
+            "ru": "Что за бар в этой фактории? Что бармен уже слышал о персонажах до их прибытия?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Junk Dealers",
+            "ru": "Торговцы Барахлом"
+          },
+          "description": {
+            "en": "Spend a Fear to force a PC to make a Presence Reaction Roll as a hawker approaches them. On a failure, the PC spends handfuls of gold equal to the difference between their Reaction Roll and the Difficulty. They must pay, but if they cannot afford to pay the full amount, they pay as much as they can and mark a Stress.",
+            "ru": "Потратьте Страх, чтобы заставить персонажа совершить Бросок Реакции на Влияние, когда к нему подходит зазывала. При провале персонаж тратит столько горстей золота, какова разница между его Броском Реакции и Сложностью. Он обязан заплатить, но если не может позволить себе полную сумму, он платит сколько может и отмечает Стресс."
+          },
+          "prompt": {
+            "en": "What sorts of bunko supplies and equipment are the peddlers hawking? How can the sales pitch be tailored to what the PCs think they need?",
+            "ru": "Какое сомнительное снаряжение и припасы втюхивают разносчики? Как подогнать уговоры под то, что, по мнению персонажей, им нужно?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Got a Look About You",
+            "ru": "В Вас Что-то Есть"
+          },
+          "description": {
+            "en": "If a PC fails a Presence Roll with Fear, you can spend a Fear to make that PC Most Wanted, as a bounty poster for them is spotted nearby. A Most Wanted PC has disadvantage on Presence Rolls in populated locations. A Most Wanted PC can clear the condition by spending a chest of gold to pay the bounty or by finding another way to clear their name.",
+            "ru": "Если персонаж проваливает Бросок Влияния со Страхом, вы можете потратить Страх, чтобы сделать его Разыскиваемым: поблизости замечена листовка с наградой за его голову. Разыскиваемый персонаж совершает Броски Влияния с помехой в населённых местах. Разыскиваемый персонаж может снять это состояние, потратив сундук золота на уплату награды или найдя другой способ очистить своё имя."
+          },
+          "prompt": {
+            "en": "Who is keeping an eye on the PCs as they move through the trading post? Is this bounty justified, or due to a misunderstanding?",
+            "ru": "Кто следит за персонажами, пока они перемещаются по фактории? Награда оправданна или это недоразумение?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "gypsum-dunes",
+      "tier": 3,
+      "type": "exploration",
+      "difficulty": 17,
+      "name": {
+        "en": "Gypsum Dunes",
+        "ru": "Гипсовые Дюны"
+      },
+      "lore": {
+        "en": "Endless white dunes of gypsum, giving it the appearance of snowfields. Strange structures poke through the fine powder every so often.",
+        "ru": "Бескрайние белые дюны из гипса, похожие на снежные поля. Время от времени сквозь мелкий порошок проступают странные сооружения."
+      },
+      "impulses": {
+        "en": [
+          "Dry the PCs out to the point of desperation",
+          "get dust in everything",
+          "hide secrets beneath the sand"
+        ],
+        "ru": [
+          "Иссушить персонажей до отчаяния",
+          "набить пыль повсюду",
+          "скрыть тайны под песком"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Black Hats",
+          "Boneyard Bandits",
+          "Glass Snake",
+          "Greater Earth Elemental",
+          "Frontier Marshals"
+        ],
+        "ru": [
+          "Чёрные Шляпы",
+          "Бандиты с Кладбища",
+          "Стеклянная Змея",
+          "Великий Земляной Элементаль",
+          "Пограничные Маршалы"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Endless Dunes",
+            "ru": "Бесконечные Дюны"
+          },
+          "description": {
+            "en": "Start an Endless Dunes Countdown (10) that ticks down whenever the PCs fail with Fear. When the countdown triggers, the PCs become Stranded in the Desert. This environment is replaced by the Stranded in the Desert environment.",
+            "ru": "Начните Отсчёт Бесконечных Дюн (10), который уменьшается всякий раз, когда персонажи проваливают бросок со Страхом. Когда Отсчёт срабатывает, персонажи оказываются Затерянными в Пустыне. Это окружение заменяется окружением «Затерянные в Пустыне»."
+          },
+          "prompt": {
+            "en": "What features lie on the horizon to tempt the PCs deeper into the alabaster sands? What landmark do the PCs repeatedly pass?",
+            "ru": "Что виднеется на горизонте и манит персонажей вглубь алебастровых песков? Какой ориентир персонажи проходят снова и снова?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Ultrafine",
+            "ru": "Тончайшая Пыль"
+          },
+          "description": {
+            "en": "The fine gypsum dust gets into everything. Each time a PC makes an action roll in this environment, place a token on this stat block. Spend 3 tokens to turn a roll with Hope into a roll with Fear.",
+            "ru": "Мелкая гипсовая пыль забивается повсюду. Каждый раз, когда персонаж совершает бросок действия в этом окружении, положите жетон на этот блок характеристик. Потратьте 3 жетона, чтобы превратить бросок с Надеждой в бросок со Страхом."
+          },
+          "prompt": {
+            "en": "What ways can this dust be used to frustrate and confound the PCs? What treasured object belonging to the PCs is absolutely ruined by the fine powder?",
+            "ru": "Как эту пыль можно использовать, чтобы раздражать и сбивать с толку персонажей? Какая дорогая персонажам вещь безнадёжно испорчена мелким порошком?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Haboob",
+            "ru": "Хабуб"
+          },
+          "description": {
+            "en": "Spend a Fear to summon a haboob on the horizon until the end of the scene or until the PCs collectively spend 6 Hope to end it. While a Haboob is active, PCs who fail with Hope do not gain Hope.",
+            "ru": "Потратьте Страх, чтобы вызвать на горизонте хабуб — песчаную бурю — до конца сцены или пока персонажи совместно не потратят 6 Надежды, чтобы её прекратить. Пока Хабуб активен, персонажи, провалившие бросок с Надеждой, не получают Надежду."
+          },
+          "prompt": {
+            "en": "What sorts of cover or shelter can the PCs access? Is the haboob moving toward the PCs, or just looming ominously?",
+            "ru": "Какие укрытия доступны персонажам? Хабуб движется на персонажей или просто зловеще нависает вдали?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Desert Lightning Storm",
+            "ru": "Пустынная Гроза"
+          },
+          "description": {
+            "en": "If the PCs spend 6 Hope to end the Haboob, you can spend 10 Fear to charge the haboob with lightning and send it barreling toward the PCs. Each PC marks 2 HP, a Stress, and must make an Instinct Reaction Roll. For each PC who fails, tick down the Endless Dunes Countdown by 1. If an Excavation Countdown is active, roll any die. On an even result, tick the Countdown down 1. On an odd result, tick up the Countdown by 1.",
+            "ru": "Если персонажи тратят 6 Надежды, чтобы прекратить Хабуб, вы можете потратить 10 Страха, чтобы зарядить хабуб молниями и обрушить его на персонажей. Каждый персонаж отмечает 2 Раны и Стресс и должен совершить Бросок Реакции на Инстинкт. За каждого персонажа, провалившего бросок, уменьшите Отсчёт Бесконечных Дюн на 1. Если активен Отсчёт Раскопок, бросьте любую кость. При чётном результате уменьшите Отсчёт на 1. При нечётном увеличьте Отсчёт на 1."
+          },
+          "prompt": {
+            "en": "Is there cover anywhere the PCs can reach? What might the storm reveal?",
+            "ru": "Есть ли где-нибудь укрытие, до которого персонажи могут добраться? Что может обнажить буря?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Secrets of the Dunes",
+            "ru": "Тайны Дюн"
+          },
+          "description": {
+            "en": "Ancient ruins and strange metallic vessels poke out of the snow white sands. If the PCs attempt to unearth one of these ruins or vessels, start an Excavation Countdown (4) that ticks down every time a PC succeeds on an action roll to unearth the mystery. When it triggers, the PCs enter a Cosmic Crash, Boneyard, or Haunted City environment.",
+            "ru": "Древние руины и странные металлические корабли торчат из белоснежных песков. Если персонажи пытаются откопать одни из этих руин или кораблей, начните Отсчёт Раскопок (4), который уменьшается каждый раз, когда персонаж преуспевает в броске действия, чтобы раскопать тайну. Когда он срабатывает, персонажи попадают в окружение «Космическое Крушение», «Кладбище» или «Город с Привидениями»."
+          },
+          "prompt": {
+            "en": "What secrets from the PCs’ pasts are somehow buried in this vast expanse? How can the excavation highlight how the PCs work together?",
+            "ru": "Какие тайны из прошлого персонажей каким-то образом оказались погребены в этой необъятной шири? Как раскопки могут подчеркнуть слаженность работы персонажей?"
+          }
+        }
+      ],
+      "biomes": [
+        "drylands"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "stranded-in-the-desert",
+      "tier": 3,
+      "type": "traversal",
+      "difficulty": 16,
+      "name": {
+        "en": "Stranded in the Desert",
+        "ru": "Затерянные в Пустыне"
+      },
+      "lore": {
+        "en": "Bleached bones, scrub brush, and rocky desert as far as the eye can see. No water. No hope.",
+        "ru": "Выбеленные кости, колючий кустарник и каменистая пустыня до самого горизонта. Ни воды. Ни надежды."
+      },
+      "impulses": {
+        "en": [
+          "Drain their hope",
+          "emphasize the arduous journey",
+          "feed them dust"
+        ],
+        "ru": [
+          "Высосать из них надежду",
+          "подчёркивать тяготы пути",
+          "накормить их пылью"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Adult Boreworm",
+          "Demon of Despair",
+          "Demon of Hubris",
+          "Glass Snake",
+          "Hillfolk"
+        ],
+        "ru": [
+          "Взрослый Буровой Червь",
+          "Демон Уныния",
+          "Демон Гордыни",
+          "Стеклянная Змея",
+          "Горцы"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Parched and Dry",
+            "ru": "Пересохшие и Обезвоженные"
+          },
+          "description": {
+            "en": "The PCs are Stranded in the deep desert without water. While Stranded, a PC cannot gain Hope from rolling with Hope and must spend a Hope to make an action roll. If they can’t spend Hope, they must mark a Stress to make an action roll.",
+            "ru": "Персонажи затеряны в глубине пустыни без воды. Пока персонаж Затерян, он не получает Надежду за бросок с Надеждой и должен потратить Надежду, чтобы совершить бросок действия. Если он не может потратить Надежду, он должен отметить Стресс, чтобы совершить бросок действия."
+          },
+          "prompt": {
+            "en": "What went so wrong that the PCs ended up here? How can this experience highlight the resilience of the PCs?",
+            "ru": "Что пошло настолько не так, что персонажи оказались здесь? Как этот опыт может подчеркнуть стойкость персонажей?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "The Long Trek",
+            "ru": "Долгий Переход"
+          },
+          "description": {
+            "en": "Start a Long Trek Countdown (8) that ticks down whenever a PC succeeds on an action roll to lead the party out of the desert, find resources, or keep morale up. When it triggers, the PCs find sanctuary and are no longer Stranded.",
+            "ru": "Начните Отсчёт Долгого Перехода (8), который уменьшается всякий раз, когда персонаж преуспевает в броске действия, чтобы вывести отряд из пустыни, найти ресурсы или поддержать боевой дух. Когда он срабатывает, персонажи находят убежище и больше не Затеряны."
+          },
+          "prompt": {
+            "en": "What type of terrain is this? Rocky and barren? Sand dunes? What can be observed through a heat haze on the horizon?",
+            "ru": "Что это за местность? Каменистая и бесплодная? Песчаные дюны? Что можно разглядеть сквозь марево на горизонте?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Oasis",
+            "ru": "Оазис"
+          },
+          "description": {
+            "en": "If half or more of the PCs have no Hope left to spend, an Oasis appears and you gain 2 Fear. PCs can drink the water to gain 1d6 Hope.",
+            "ru": "Если у половины или более персонажей не осталось Надежды, чтобы тратить, появляется Оазис, и вы получаете 2 Страха. Персонажи могут выпить воды, чтобы получить 1d6 Надежды."
+          },
+          "prompt": {
+            "en": "What sorts of strange, desert plant life has sprung up around the water? Is the water crystal clear or full of sediment?",
+            "ru": "Какая странная пустынная растительность выросла вокруг воды? Вода кристально чистая или полна осадка?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Mirage",
+            "ru": "Мираж"
+          },
+          "description": {
+            "en": "If at least half the PCs roll the same number when drinking water from the Oasis, spend a Fear to make the water turn to dust. The PCs gain no Hope and mark a Stress as they choke on sand. It was all a mirage.",
+            "ru": "Если как минимум у половины персонажей выпадает одно и то же число, когда они пьют воду из Оазиса, потратьте Страх, чтобы вода обратилась в прах. Персонажи не получают Надежду и отмечают Стресс, давясь песком. Это был всего лишь мираж."
+          },
+          "prompt": {
+            "en": "What vision from a PC’s past comes to them in this desert illusion? How does this mishap create tension between the party?",
+            "ru": "Какое видение из прошлого персонажа приходит к нему в этой пустынной иллюзии? Как эта неудача создаёт напряжение внутри отряда?"
+          }
+        }
+      ],
+      "biomes": [
+        "drylands",
+        "badlands"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "cosmic-crash",
+      "tier": 4,
+      "type": "exploration",
+      "difficulty": 20,
+      "name": {
+        "en": "Cosmic Crash",
+        "ru": "Космическое Крушение"
+      },
+      "lore": {
+        "en": "An otherworldly vessel, half buried in the rocks and sand. A gaping hole in its side invites ingress.",
+        "ru": "Неземной корабль, наполовину погребённый в камнях и песке. Зияющая дыра в борту манит внутрь."
+      },
+      "impulses": {
+        "en": [
+          "Challenge exploration",
+          "end with a bang",
+          "make them move quickly"
+        ],
+        "ru": [
+          "Бросать вызов исследованию",
+          "закончить грохотом",
+          "заставить их двигаться быстро"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Cosmic Amalgam",
+          "Cosmic Captain",
+          "Cosmic Infiltrator",
+          "Cosmic Invaders",
+          "Outer Realms Abomination",
+          "Outer Realms Corrupter",
+          "Outer Realms Thrall"
+        ],
+        "ru": [
+          "Космический Конгломерат",
+          "Космический Капитан",
+          "Космический Лазутчик",
+          "Космические Захватчики",
+          "Мерзость из внешних миров",
+          "Искуситель из внешних миров",
+          "Прислужник из внешних миров"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Wrecked Vessel",
+            "ru": "Разбитый Корабль"
+          },
+          "description": {
+            "en": "Place 5 tokens on this stat block, representing the number of explorable rooms leading to the Unstable Core. Each time the PCs enter a room, roll 1d6 and describe the nature of the obstacle and trait used to overcome it. A PC must make an action roll to overcome the obstacle. On a failure, they face the corresponding consequence and remove a token. On a success, remove a token. Describe what they find in the next chamber, giving them context clues about the next obstacle. A PC can mark a Stress to use a different trait instead of the one listed on the obstacle.\n1. **Security Hazards:** Agility. On a failure to bypass, the PCs take 4d10+6 magic damage.\n2. **Complex Biometric Locks:** Knowledge. On a failure, the PCs mark 2 Stress.\n3. **Decontamination Protocols:** Finesse. On a failure to bypass, each PC takes 4d6+10 physical damage.\n4. **Gravity Flux:** Instinct. On a failure to bypass, each PC marks 1 HP and 1 Stress.\n5. **Psionic Resonance:** Presence. On a failure, each PC loses 2 Hope. If they cannot lose a Hope, they mark Stress instead.\n6. **Hazardous Flora:** Strength. On a failure to bypass, each PC becomes Vulnerable until the end of the scene or they take damage.",
+            "ru": "Положите 5 жетонов на этот блок характеристик: это число исследуемых помещений на пути к Нестабильному Ядру. Каждый раз, когда персонажи входят в помещение, бросьте 1d6 и опишите природу препятствия и черту, которой его можно преодолеть. Персонаж должен совершить бросок действия, чтобы преодолеть препятствие. При провале персонажи сталкиваются с соответствующим последствием и убирают жетон. При успехе уберите жетон. Опишите, что они находят в следующем отсеке, дав им намёки на следующее препятствие. Персонаж может отметить Стресс, чтобы использовать другую черту вместо указанной у препятствия.\n1. **Охранные Ловушки:** Проворность. При провале обхода персонажи получают 4d10+6 магического урона.\n2. **Сложные Биометрические Замки:** Знание. При провале персонажи отмечают 2 Стресса.\n3. **Протоколы Дезактивации:** Искусность. При провале обхода каждый персонаж получает 4d6+10 физического урона.\n4. **Скачки Гравитации:** Инстинкт. При провале обхода каждый персонаж отмечает 1 Рану и 1 Стресс.\n5. **Псионический Резонанс:** Влияние. При провале каждый персонаж теряет 2 Надежды. Если потерять Надежду он не может, то вместо этого отмечает Стресс.\n6. **Опасная Флора:** Сила. При провале обхода каждый персонаж становится Уязвимым до конца сцены или пока не получит урон."
+          },
+          "prompt": {
+            "en": "What is the vessel’s shape? What context clues are in each room that can give the PCs an idea of how to overcome the obstacles?",
+            "ru": "Какова форма корабля? Какие намёки в каждом помещении подсказывают персонажам, как преодолеть препятствия?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Vent Core",
+            "ru": "Сброс Ядра"
+          },
+          "description": {
+            "en": "Spend 2 Fear to reset the countdown and force each PC to make an Instinct Reaction Roll. On a failure, targets take 4d10 direct damage. Reset the Core Vent Countdown.",
+            "ru": "Потратьте 2 Страха, чтобы сбросить Отсчёт и заставить каждого персонажа совершить Бросок Реакции на Инстинкт. При провале цели получают 4d10 прямого урона. Сбросьте Отсчёт Сброса Ядра."
+          },
+          "prompt": {
+            "en": "What indicators do the PCs have that the ship is headed towards destruction?",
+            "ru": "Какие признаки указывают персонажам, что корабль движется к гибели?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Unstable Core",
+            "ru": "Нестабильное Ядро"
+          },
+          "description": {
+            "en": "After the first token is removed from this stat block, start a Core Vent Countdown (Loop 4), that ticks down every time a PC rolls with Fear. When the countdown triggers, targets inside the vessel take 4d10 direct damage as toxic chemicals are vented throughout the ship. PCs that discover the Unstable Core can attempt to stabilize it with a group action roll. On a success, end the Core Vent Countdown. Once stabilized, the vessel can be repaired fully while resting in it with a long-term project (4), which when completed grants access to a vehicle, capable of flight at great speeds.",
+            "ru": "После того как с этого блока характеристик убран первый жетон, начните Отсчёт Сброса Ядра (Цикл 4), который уменьшается каждый раз, когда персонаж совершает бросок со Страхом. Когда Отсчёт срабатывает, цели внутри корабля получают 4d10 прямого урона, пока по кораблю выбрасываются токсичные химикаты. Персонажи, обнаружившие Нестабильное Ядро, могут попытаться стабилизировать его групповым броском действия. При успехе завершите Отсчёт Сброса Ядра. После стабилизации корабль можно полностью починить во время отдыха в нём с помощью долгосрочного проекта (4); по его завершении открывается доступ к транспорту, способному летать с огромной скоростью."
+          },
+          "prompt": {
+            "en": "What form does the core take? What would having control over an alien vessel mean for the PCs and the world at large?",
+            "ru": "Какую форму принимает ядро? Что значил бы контроль над инопланетным кораблём для персонажей и для мира в целом?"
+          }
+        }
+      ],
+      "biomes": [
+        "badlands",
+        "drylands"
+      ],
+      "source": "Pistolheart"
     }
   ]
 }
