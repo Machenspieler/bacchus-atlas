@@ -1,0 +1,364 @@
+{
+  "_note": "Lab-only reviewable judgments (Artwork Crop Lab V2, section 13). Made by looking at each master and reading the catalog lore; not canonical, not read by production. Environment ids and the archetype each belongs to come from docs/research/lists-cover-classification.json, which this file does not change. verdict: strong | acceptable | poor.",
+  "archetypes": {
+    "haunted-and-deathly": {
+      "scene": "Moonlit Gothic cemetery before a ruined manor, fog, weathered stones, slate blue.",
+      "envs": {
+        "cursed-graveyard": {
+          "v": "strong",
+          "why": "A crumbling cemetery with mossy crypts is literally the foreground."
+        },
+        "desecrated-graveyard": {
+          "v": "strong",
+          "why": "Misty graveyard of the unquiet dead; fog and headstones are the picture."
+        },
+        "possessed-abode": {
+          "v": "strong",
+          "why": "A dwelling with a presence: the manor facade reads as exactly that."
+        },
+        "vampires-castle": {
+          "v": "acceptable",
+          "why": "Gothic and ominous, but the lore is a castle on a mountain pass with a ravine; the art has no heights."
+        },
+        "castle-of-wails": {
+          "v": "acceptable",
+          "why": "A shattered watchtower; the ruined manor is the right mood, the wrong building."
+        },
+        "abandoned-building": {
+          "v": "acceptable",
+          "why": "A cursed multistory building; a haunted manor is a fair stand-in."
+        },
+        "haunted-city": {
+          "v": "acceptable",
+          "why": "Restless spirits and decay, but one house is not a city."
+        },
+        "neverhome-corridors": {
+          "v": "acceptable",
+          "why": "Neverhome Manor is a manor; the lore is its interior, the art its exterior."
+        },
+        "shatter-the-heart": {
+          "v": "acceptable",
+          "why": "The Manor's living heart: the house is right, the scene is inside it."
+        },
+        "haunted-oratorium": {
+          "v": "acceptable",
+          "why": "A ruined hall of echoing minds; ruin and ghosts fit, a lecture hall does not appear."
+        },
+        "forced-penance": {
+          "v": "acceptable",
+          "why": "Guilt left by the judged dead; the graves fit the theme, the place is not a cemetery."
+        },
+        "deserted-moor": {
+          "v": "poor",
+          "why": "A lonely moor of curious plants and wolf howls: open rolling land, no graves, no manor."
+        },
+        "haunted-mountain-pass": {
+          "v": "poor",
+          "why": "Steep cliffs, mountain rivers and tall trees; the art is flat ground and a building."
+        },
+        "wispy-wasteland": {
+          "v": "poor",
+          "why": "Moors, swamps and wisps over open land; nothing in the art is open wasteland."
+        },
+        "valley-of-death": {
+          "v": "poor",
+          "why": "The land beyond the Veil, souls travelling to rest; a mortal cemetery is the wrong plane."
+        },
+        "realm-of-the-dead": {
+          "v": "poor",
+          "why": "Endless colorless still water; the art is solid, detailed ground."
+        },
+        "bubblys-bottom": {
+          "v": "poor",
+          "why": "An abandoned carnival and a clown ghost; a Gothic manor would mislead."
+        },
+        "empty-cliffside-village": {
+          "v": "poor",
+          "why": "A village behind a waterfall on a cliff face; there is no cliff or waterfall in the art."
+        }
+      }
+    },
+    "forgotten-ruins": {
+      "scene": "Monumental sandstone temple consumed by a primordial forest; colossal roots, dark entrance, golden light, 3:2.",
+      "envs": {
+        "forgotten-temple-of-the-serpent": {
+          "v": "strong",
+          "why": "Overgrown ruins hiding new owners: this is that exact picture."
+        },
+        "korathi-temple": {
+          "v": "strong",
+          "why": "An ancient temple with deadly guardians; the colossal statues and dark door fit (Shadow essence is absent)."
+        },
+        "ruined-castle": {
+          "v": "strong",
+          "why": "Disrepair and vines on a large structure; reads as a castle ruin more than as a temple, but the claim is true."
+        },
+        "abandoned-grove": {
+          "v": "acceptable",
+          "why": "Nature reclaiming a druidic site; the forest is right, the masonry is more than a grove has."
+        },
+        "ancient-city": {
+          "v": "acceptable",
+          "why": "An intact abandoned past civilization; a single temple front stands for the city."
+        },
+        "ancient-power-conduit": {
+          "v": "acceptable",
+          "why": "A ruin of old knowledge and power; the architecture says old, the power is missing."
+        },
+        "ruined-mage-tower": {
+          "v": "acceptable",
+          "why": "Remains of arcane study; ruined monumental stone, but no tower."
+        },
+        "search-the-ruins": {
+          "v": "acceptable",
+          "why": "Searching a cursed city for loot; ruins to scavenge, but sunlit and lush rather than cursed."
+        },
+        "mistfield-of-possibility": {
+          "v": "acceptable",
+          "why": "Mists through ruins; the shafts of light and ruins fit, the thick mists do not."
+        },
+        "moon-kingdom": {
+          "v": "acceptable",
+          "why": "Luminous ruins of a forgotten kingdom; luminous is here sunlight, and the lunar part is missing."
+        },
+        "lost-village": {
+          "v": "poor",
+          "why": "Stone foundations and rotting timbers, nothing monumental left; the art would promise a temple."
+        },
+        "swamp-ruins": {
+          "v": "poor",
+          "why": "A ruin below a swamp's surface; the art is dry, high and golden."
+        },
+        "mystic-ring": {
+          "v": "poor",
+          "why": "A circle of standing stones on open ground; no stone circle appears and there is no open sky."
+        },
+        "titan-boneyard": {
+          "v": "poor",
+          "why": "Stony canyons of giant skeletons; there are no bones or canyon walls."
+        },
+        "valley-of-automata": {
+          "v": "poor",
+          "why": "Colossal metal bodies and gearwork; entirely stone and vegetation here."
+        }
+      }
+    },
+    "arcane-sanctums": {
+      "scene": "Arcane observatory and wizard tower on cliffs at sunset, celestial mechanism, bridges, waterfalls, warm windows.",
+      "envs": {
+        "archmages-tower": {
+          "v": "strong",
+          "why": "An impossibly tall tower resonating with power: the lit tower and orb are the picture."
+        },
+        "eternal-observatory": {
+          "v": "strong",
+          "why": "A magical observatory; the celestial mechanism is its centerpiece (the art is pristine, the lore dilapidated)."
+        },
+        "tower-of-the-moon": {
+          "v": "acceptable",
+          "why": "A multi-level tower, but its moonlike facade and the Moonlit King are not here."
+        },
+        "cosmological-clocktower": {
+          "v": "acceptable",
+          "why": "A tall tower with an intricate clock face; the orb stands in for the clock, the square 300 ft shaft does not."
+        },
+        "magic-city": {
+          "v": "acceptable",
+          "why": "Opulent, ease-filled magic; a palatial arcane complex is a fair glimpse, though not a city."
+        },
+        "arcanists-laboratory": {
+          "v": "acceptable",
+          "why": "An abandoned mage complex; the complex reads, its ruin and twisted experiments do not."
+        },
+        "laboratory": {
+          "v": "acceptable",
+          "why": "Halls of a mad mage; the architecture hints at halls, nothing is monstrous."
+        },
+        "alchemists-abandoned-workshop": {
+          "v": "poor",
+          "why": "A lightning-powered immortality workshop; a sunset sanctum on cliffs has no lightning and no workshop."
+        },
+        "arcane-laboratory": {
+          "v": "poor",
+          "why": "Bubbling vials and half-finished creatures: an indoor bench, not a monumental exterior."
+        },
+        "arcane-magic-shop": {
+          "v": "poor",
+          "why": "A shop front attached to a residence; a cliff-top megastructure promises far more."
+        }
+      }
+    },
+    "feasts-and-revelry": {
+      "scene": "Grand banquet hall: chandeliers, crimson drapery, laid tables, warm gold light, vaulted architecture, polished floor.",
+      "envs": {
+        "masquerade-ball": {
+          "v": "strong",
+          "why": "A high-society gala in a grand hall; the room is right (masks absent, no guests)."
+        },
+        "masquerade-ball-atlas": {
+          "v": "strong",
+          "why": "The premier party of the season; this hall is the setting."
+        },
+        "masquerade-party": {
+          "v": "strong",
+          "why": "A lavish party in a noble's manor; the interior matches."
+        },
+        "grand-feast": {
+          "v": "strong",
+          "why": "Community feast overflowing with food and drink; the laid tables and fruit are in front."
+        },
+        "divine-feast": {
+          "v": "acceptable",
+          "why": "A feast table set for giants; the feast fits, the scale of the table does not show."
+        },
+        "the-commanders-dinner": {
+          "v": "acceptable",
+          "why": "A fine dinner in warm magical light; far smaller than the cathedral-sized hall, same mood."
+        },
+        "upscale-casino": {
+          "v": "acceptable",
+          "why": "Dazzling wealth and opulence; no gaming tables, but the grandeur reads."
+        },
+        "fairwell-casino": {
+          "v": "acceptable",
+          "why": "A casino at its chaotic height; only the glitter carries over."
+        },
+        "local-festival": {
+          "v": "poor",
+          "why": "A week-long commoner festival; a palace interior is the wrong class and the wrong outdoors."
+        },
+        "town-festival": {
+          "v": "poor",
+          "why": "A neighborhood turned festival with games; no street or daylight in the art."
+        },
+        "city-festival": {
+          "v": "poor",
+          "why": "Carts flowing around a stone plaza; the art is a closed hall."
+        }
+      }
+    }
+  },
+  "scorecard": {
+    "title": "Landscape-first scorecard (my read — review it in the lab)",
+    "lead": "One landscape master per archetype, judged at the recommended crops. Provisional: crops are starting values, and the verdicts are mine, not yours.",
+    "columns": [
+      "Archetype",
+      "Catalog strip",
+      "Prep 48 px",
+      "Lists single",
+      "Lists 3-up",
+      "Focal fix needed?",
+      "Portrait justified?"
+    ],
+    "rows": [
+      [
+        "Haunted & Deathly",
+        {
+          "v": "Works",
+          "n": "Manor and fog survive at x 64."
+        },
+        {
+          "v": "Works",
+          "n": "Dark manor silhouette."
+        },
+        {
+          "v": "Works",
+          "n": "Strongest case."
+        },
+        {
+          "v": "Works",
+          "n": "Manor at x 88."
+        },
+        {
+          "v": "Mild",
+          "n": "x only; centre loses the manor's edge."
+        },
+        {
+          "v": "No",
+          "n": "V1: modest strip gain only."
+        }
+      ],
+      [
+        "Forgotten Ruins (3:2)",
+        {
+          "v": "Works",
+          "n": "Arch, statue and stairs recognizable at x 67."
+        },
+        {
+          "v": "Works",
+          "n": "Dark arch reads."
+        },
+        {
+          "v": "Works",
+          "n": "Arch and statues at y 38."
+        },
+        {
+          "v": "Works",
+          "n": "x 90 keeps the arch."
+        },
+        {
+          "v": "Mild",
+          "n": "centre halves the arch."
+        },
+        {
+          "v": "No",
+          "n": "3:2 is the most strip-friendly master."
+        }
+      ],
+      [
+        "Arcane Sanctums",
+        {
+          "v": "Works",
+          "n": "Tower and orb whole at x 67 — centre halves the tower."
+        },
+        {
+          "v": "Works",
+          "n": "Blue orb makes it the most distinct thumb."
+        },
+        {
+          "v": "Mostly",
+          "n": "Needs y 8 to keep the orb."
+        },
+        {
+          "v": "Works",
+          "n": "x 85 keeps the tower."
+        },
+        {
+          "v": "Yes",
+          "n": "x 67 / 79 / 85 are required."
+        },
+        {
+          "v": "No",
+          "n": "x-positioning solves it."
+        }
+      ],
+      [
+        "Feasts & Revelry",
+        {
+          "v": "Mostly",
+          "n": "Reads as a candlelit hall, but busy."
+        },
+        {
+          "v": "Mostly",
+          "n": "Warm gold blur; close to the orange biome art."
+        },
+        {
+          "v": "Works",
+          "n": "Wide hall, strong."
+        },
+        {
+          "v": "Works",
+          "n": "Reads."
+        },
+        {
+          "v": "No",
+          "n": "centre is already fine."
+        },
+        {
+          "v": "No",
+          "n": "Complexity, not framing, is its limit."
+        }
+      ]
+    ]
+  }
+}

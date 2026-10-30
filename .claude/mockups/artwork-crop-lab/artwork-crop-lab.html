@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Artwork Crop Lab — Bacchus's Atlas</title>
+<title>Artwork Crop Lab V2 — Bacchus's Atlas</title>
 <!-- Development-only. Lives under .claude/, which scripts/build.js never copies into dist/.
      Serve the repo root (launch.json "atlas-lab", port 8107) and open
      /.claude/mockups/artwork-crop-lab/artwork-crop-lab.html -->
@@ -15,27 +15,37 @@
 <body class="lab">
 <main class="shell lab-shell" id="main">
 
-  <header class="lab-head">
+  <header class="lab-head" id="sec-overview">
     <div>
-      <h1 class="lab-title">Artwork Crop &amp; Integration Lab</h1>
-      <p class="lab-sub">Haunted &amp; Deathly Places — <em>The Quiet Dead</em>. Does one cinematic image serve Catalog, Session Prep and My Lists, or do we need a second, portrait master? Experiment only: nothing here touches production, storage or data.</p>
+      <h1 class="lab-title">Artwork Crop &amp; Integration Lab <small class="lab-v">V2</small></h1>
+      <p class="lab-sub">Four thematic illustrations, three production surfaces. Can <em>one landscape master per archetype</em> carry Catalog, Session Prep and My Lists, with portraits made only when truly needed? Experiment only: nothing here touches production, storage or data.</p>
     </div>
     <ul class="lab-status" id="asset-status" aria-label="Asset status"></ul>
   </header>
 
   <!-- ============ controls ============ -->
   <section class="lab-controls" id="controls" aria-label="Crop controls">
+    <nav class="lab-nav" id="lab-nav" aria-label="Sections">
+      <a href="#sec-overview">Overview</a><a href="#sec-catalog">Catalog</a><a href="#sec-prep">Session Prep</a><a href="#sec-lists">My Lists</a><a href="#sec-gallery">Library Gallery</a><a href="#sec-inspect">Crop Inspector</a><a href="#sec-stress">Stress Tests</a><a href="#sec-strategy">Strategy Comparison</a><a href="#sec-relevance">Relevance Audit</a><a href="#sec-config">Configuration</a>
+    </nav>
     <div class="lab-row">
+      <div class="lab-field">
+        <span class="lab-label">Archetype</span>
+        <div class="seg" id="arch-seg" role="group" aria-label="Archetype"></div>
+      </div>
       <div class="lab-field">
         <span class="lab-label">Editing context</span>
         <div class="seg" id="ctx-seg" role="group" aria-label="Context being edited"></div>
       </div>
       <div class="lab-field">
         <span class="lab-label">Source</span>
-        <div class="seg" id="src-seg" role="group" aria-label="Artwork source">
-          <button type="button" data-src="biome">Existing biome</button>
-          <button type="button" data-src="landscape">Haunted Landscape</button>
-          <button type="button" data-src="portrait">Haunted Portrait</button>
+        <div class="seg" id="src-seg" role="group" aria-label="Artwork source"></div>
+      </div>
+      <div class="lab-field">
+        <span class="lab-label">Crop shown</span>
+        <div class="seg" id="basis-seg" role="group" aria-label="Crop shown">
+          <button type="button" data-basis="working" title="Recommended starting crop plus any edit you made">Recommended / edited</button>
+          <button type="button" data-basis="center" title="object-position 50% 50%, zoom 1 — everywhere">Center 50 / 50</button>
         </div>
       </div>
       <div class="lab-field">
@@ -59,7 +69,8 @@
       <label class="lab-slider"><span class="lab-label">Contrast <b id="c-val">100%</b></span><input type="range" id="c" min="70" max="180" step="1" value="100"></label>
       <div class="lab-actions">
         <button type="button" class="btn btn-sm" id="reset-ctx">Reset crop</button>
-        <button type="button" class="btn btn-sm" id="reset-all">Reset all</button>
+        <button type="button" class="btn btn-sm" id="reset-arch" title="Crops, filter and picks of the current archetype">Reset archetype</button>
+        <button type="button" class="btn btn-sm" id="reset-all" title="All four archetypes">Reset all</button>
         <button type="button" class="btn btn-sm btn-primary" id="copy-json">Copy JSON</button>
         <button type="button" class="btn btn-sm" id="copy-css">Copy CSS</button>
         <button type="button" class="btn btn-sm" id="collapse" aria-expanded="true">Collapse ▴</button>
@@ -69,34 +80,64 @@
 
     <div class="lab-row lab-row-actions">
       <div class="lab-field lab-field-presets">
-        <span class="lab-label">Presets (this context + source)</span>
+        <span class="lab-label">Presets (this archetype · context · source)</span>
         <div class="chips" id="preset-chips"></div>
       </div>
       <p class="lab-note" id="edit-note"></p>
     </div>
   </section>
 
+  <!-- ============ overview ============ -->
+  <section class="lab-section" id="sec-inventory">
+    <h2>Artwork inventory <small>actual files, actual dimensions</small></h2>
+    <p class="lab-lead">Masters are read from <code>img/cover-archetypes-source/</code> (checked by <code>HEAD</code>, never decoded); the lab draws only the optimized previews beside this file. Aspect ratios drive every crop calculation — nothing is assumed 16:9.</p>
+    <div class="lab-matrix-wrap"><table class="lab-inv" id="inventory"></table></div>
+    <div class="lab-scorecard" id="scorecard"></div>
+  </section>
+
   <!-- ============ A catalog ============ -->
   <section class="lab-section" id="sec-catalog">
     <h2>A · Catalog <small>.card + .card-art, 95px strip × the card's own height</small></h2>
     <p class="lab-lead">Real <code>.card</code> markup and production CSS. Same environment, same data, same dimensions — only the strip's picture changes. <span id="catalog-dim" class="lab-dim"></span></p>
+    <h3 id="h-cat-selected">Selected environment</h3>
     <div class="lab-grid3 grid" id="catalog-cards"></div>
+    <div class="lab-grid3 grid lab-measure" id="measure-grid" aria-hidden="true"></div>
+    <h3>Card height range — short, medium, tall</h3>
+    <p class="lab-lead" id="catalog-range-lead"></p>
+    <div id="catalog-range"></div>
+    <h3>Strip lineup — every archetype at the three measured heights</h3>
+    <div class="lab-strips" id="catalog-strips"></div>
   </section>
 
   <!-- ============ B prep ============ -->
   <section class="lab-section" id="sec-prep">
     <h2>B · Session Prep <small>.prep-thumb, 48 × 48 px</small></h2>
-    <p class="lab-lead">Real <code>.prep-env-row</code> rows. The selected environment is shown three ways, then inside a realistic list that mixes the new art with ordinary biome thumbnails.</p>
+    <p class="lab-lead">Real <code>.prep-env-row</code> rows. The selected environment is shown against the current biome thumbnail, then in mixed lists of all four archetypes, then repeated.</p>
+    <h3>Single row — current biome vs new art</h3>
     <div class="lab-prep-compare" id="prep-compare"></div>
-    <h3>Mixed list</h3>
+    <h3>Mixed lists — four archetypes and ordinary biome art</h3>
     <div class="lab-prep-mixed" id="prep-mixed"></div>
+    <h3>Repeated archetype — five environments, one illustration</h3>
+    <div class="lab-prep-repeat" id="prep-repeat"></div>
   </section>
 
   <!-- ============ C lists ============ -->
   <section class="lab-section" id="sec-lists">
     <h2>C · My Lists <small>.list-card-cover, 90 px strip, up to three tiles</small></h2>
-    <p class="lab-lead">Real <code>.list-card</code> markup (names, counts, Open, trash). Production only paints a cover from <code>ENV_ART</code>; the lab feeds the same container other sources. <span id="lists-dim" class="lab-dim"></span></p>
+    <p class="lab-lead">Real <code>.list-card</code> markup (names, counts, Open, trash). Production only paints a cover from <code>ENV_ART</code>; the lab feeds the same container other sources. Scenario F's picker is an illustration of how an adaptive cover could work — not a rule. <span id="lists-dim" class="lab-dim"></span></p>
     <div id="list-scenarios"></div>
+  </section>
+
+  <!-- ============ gallery ============ -->
+  <section class="lab-section" id="sec-gallery">
+    <h2>Artwork Library — Visual Consistency <small>do these four read as one library?</small></h2>
+    <p class="lab-lead">No color or brightness is normalized. A cold Gothic cemetery and a warm banquet hall should look different; any filter shown is that archetype's own lab experiment (default 100 %).</p>
+    <h3>Full-art gallery — real aspect ratios, one display width</h3>
+    <div class="lab-art-gallery" id="gallery-full"></div>
+    <h3>Actual-size UI gallery</h3>
+    <div class="lab-matrix-wrap"><table class="lab-matrix lab-gal" id="gallery-ui"></table></div>
+    <h3>The library side by side — same surface, same size</h3>
+    <div class="lab-library" id="gallery-together"></div>
   </section>
 
   <!-- ============ inspection ============ -->
@@ -105,7 +146,7 @@
     <div class="lab-row">
       <div class="lab-field">
         <span class="lab-label">Inspected master</span>
-        <div class="seg" id="insp-seg" role="group"><button type="button" data-isrc="landscape">Landscape 16:9</button><button type="button" data-isrc="portrait">Portrait 2:3</button></div>
+        <div class="seg" id="insp-seg" role="group"></div>
       </div>
       <label class="lab-check"><input type="checkbox" id="overlay-on" checked> Show crop overlays</label>
       <div class="chips" id="overlay-toggles"></div>
@@ -123,8 +164,10 @@
     <div class="lab-actual" id="stress-actual"></div>
     <h3>Beside the brighter biome paintings</h3>
     <div class="lab-grid3 grid" id="stress-multi"></div>
-    <h3>Repetition — six Haunted &amp; Deathly environments, one illustration</h3>
+    <h3>Repetition — one archetype, up to six environments, one illustration</h3>
     <div class="lab-grid3 grid" id="stress-repeat"></div>
+    <h3>All four archetypes in one Catalog row</h3>
+    <div class="lab-grid3 grid lab-grid4" id="stress-four"></div>
     <h3>Low light</h3>
     <p class="lab-lead">The same crops on the darkest and the lightest surfaces the site uses. Use the Brightness / Contrast sliders above (lab-only; never applied in production).</p>
     <div class="lab-low" id="stress-low"></div>
@@ -132,16 +175,25 @@
 
   <!-- ============ strategy ============ -->
   <section class="lab-section" id="sec-strategy">
-    <h2>F · Two masters or one? <small>comparison matrix</small></h2>
-    <p class="lab-lead">Every context, every source, at real size with the crops currently set. The radio in each row is Strategy C's pick; nothing is decided for you.</p>
+    <h2>F · One master or two? <small>comparison matrix</small></h2>
+    <p class="lab-lead">Every context, every available source, at real size with the crops currently set. The radio in each row is Strategy C's pick; nothing is decided for you.</p>
     <div class="lab-matrix-wrap"><table class="lab-matrix" id="matrix"></table></div>
+    <p class="lab-note" id="matrix-note"></p>
     <h3>Three strategies, one screenful each</h3>
     <div class="lab-strategies" id="strategies"></div>
   </section>
 
+  <!-- ============ relevance ============ -->
+  <section class="lab-section" id="sec-relevance">
+    <h2>G · Relevance audit <small>does the picture say what the environment is?</small></h2>
+    <p class="lab-lead">Every environment the classification dataset assigns to each archetype, judged against the actual master and the catalog lore. These are reviewable judgments, not truth; <code>docs/research/lists-cover-classification.json</code> is untouched. Left thumbnail: the archetype art as Prep would show it; right: today's biome thumbnail.</p>
+    <div id="relevance"></div>
+  </section>
+
   <!-- ============ config ============ -->
   <section class="lab-section" id="sec-config">
-    <h2>G · Crop configuration <small>lab-only model — not wired into production</small></h2>
+    <h2>H · Crop configuration <small>lab-only model — not wired into production</small></h2>
+    <p class="lab-lead">JSON covers all four archetypes and every context; CSS covers the archetype currently selected. Recommended values are provisional until visually approved.</p>
     <div class="lab-row lab-config-row">
       <pre class="lab-code" id="out-json" tabindex="0"></pre>
       <pre class="lab-code" id="out-css" tabindex="0"></pre>
