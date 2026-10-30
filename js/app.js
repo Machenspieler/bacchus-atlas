@@ -3404,16 +3404,24 @@ function envCountText() {
   return t('prep_results_count').replace('{n}', prepFilteredEnvs().length).replace('{total}', allEnvs().length);
 }
 
-/** A small biome-art thumbnail — the same per-biome fallback picture the
- * catalog card's <picture> falls back to (img/biomes/*-200.webp; no smaller
- * width is served), downscaled by CSS into a compact row here. No thumbnail
- * exists per-environment, only per-biome, so an environment with no terrain
- * biome (a settlement/universal-only entry) falls back to a plain icon
- * rather than a wrong or blank image. */
+/** The square Prep thumbnail of a biome's art: one file per device-pixel ratio of the
+ * 48px tile (img/biomes/<biome>-thumb-{48,96,144}.webp, scripts/generate-biome-thumbs.js),
+ * each resampled once from the master to the size it is drawn at. The 200x600 catalogue strip
+ * used to be squeezed into the tile and gave speckle instead of detail. The 40-44px tile of the
+ * central column reads the same files. */
+function biomeThumbAttrs(biome) {
+  const base = `img/biomes/${biome}-thumb-`;
+  return { src: `${base}48.webp`, srcset: `${base}96.webp 2x, ${base}144.webp 3x` };
+}
+
+/** A small biome-art thumbnail. No thumbnail exists per-environment, only per-biome,
+ * so an environment with no terrain biome (a settlement/universal-only entry) falls back
+ * to a plain icon rather than a wrong or blank image. */
 function prepEnvThumbHtml(env) {
   const biome = artBiome(env);
   if (!biome) return `<span class="prep-thumb prep-thumb-fallback" aria-hidden="true">${ICON_HEX}</span>`;
-  return `<img class="prep-thumb" src="img/biomes/${biome}-200.webp" alt="" loading="lazy" decoding="async">`;
+  const { src, srcset } = biomeThumbAttrs(biome);
+  return `<img class="prep-thumb" src="${src}" srcset="${srcset}" alt="" loading="lazy" decoding="async">`;
 }
 
 function envPickerRowHtml(env, prep) {
@@ -4399,9 +4407,10 @@ const CENTRAL_THUMB_FALLBACK = { env: ICON_HEX, adv: ICON_ADVERSARY_FALLBACK, it
  * button itself stays in the accessibility tree with its own name while the
  * picture inside is hidden from it. A fallback thumbnail is never a button —
  * nothing to open — same rule as the catalog's prepAdvThumbHtml(). */
-function centralThumbHtml(kind, src, action = null) {
+function centralThumbHtml(kind, src, action = null, srcset = '') {
   if (!src) return `<span class="prep-sel-thumb is-fallback" data-kind="${kind}" aria-hidden="true">${CENTRAL_THUMB_FALLBACK[kind]}</span>`;
-  const img = `<img src="${escapeAttr(src)}" alt="" loading="lazy" decoding="async" data-sel-thumb-img>`;
+  const set = srcset ? ` srcset="${escapeAttr(srcset)}"` : '';
+  const img = `<img src="${escapeAttr(src)}"${set} alt="" loading="lazy" decoding="async" data-sel-thumb-img>`;
   if (!action) return `<span class="prep-sel-thumb" data-kind="${kind}" aria-hidden="true">${img}</span>`;
   return `<button type="button" class="prep-sel-thumb prep-sel-thumb-btn" data-kind="${kind}" ${action.attr}="${escapeAttr(action.id)}"
             data-tip="${escapeAttr(action.tip)}" aria-label="${escapeAttr(action.label)}">${img}</button>`;
@@ -4535,9 +4544,10 @@ function centralEmptyHtml(key) {
 function centralEnvCardHtml(env) {
   const name = envName(env);
   const biome = artBiome(env);
+  const art = biome ? biomeThumbAttrs(biome) : { src: '', srcset: '' };
   return selectedEntityHtml({
     layout: 'card', id: env.id, name,
-    thumb: centralThumbHtml('env', biome ? `img/biomes/${biome}-200.webp` : ''),
+    thumb: centralThumbHtml('env', art.src, null, art.srcset),
     meta: `${t('tier_label')} ${EnvTierUtils.tierLabel(env)}`,
     openAttr: 'data-sp-open-env',
     openLabel: t('prep_open_environment_detail').replace('{name}', name),

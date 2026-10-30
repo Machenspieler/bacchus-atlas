@@ -1368,6 +1368,7 @@ const EXTRA_REQUIRED_I18N_KEYS = [
 /* ---------------- local biome asset check ---------------- */
 
 const BIOME_ART_WIDTHS = [100, 200, 250, 300];
+const BIOME_THUMB_SIZES = [48, 96, 144];   // 1x / 2x / 3x of the 48px Prep thumbnail
 
 function validateBiomeAssets(rootPath, usedBiomes, diagnostics) {
   for (const biome of usedBiomes) {
@@ -1375,6 +1376,12 @@ function validateBiomeAssets(rootPath, usedBiomes, diagnostics) {
       const rel = `img/biomes/${biome}-${w}.avif`;
       if (!fs.existsSync(path.join(rootPath, rel))) {
         diagnostics.push({ severity: 'error', file: rel, path: '$', message: `Missing biome art asset required by biome "${biome}" (see biomeArtHtml() in js/app.js).`, id: biome });
+      }
+    }
+    for (const size of BIOME_THUMB_SIZES) {
+      const rel = `img/biomes/${biome}-thumb-${size}.webp`;
+      if (!fs.existsSync(path.join(rootPath, rel))) {
+        diagnostics.push({ severity: 'error', file: rel, path: '$', message: `Missing biome Prep thumbnail required by biome "${biome}" (see biomeThumbAttrs() in js/app.js; run scripts/generate-biome-thumbs.js).`, id: biome });
       }
     }
     const relWebp = `img/biomes/${biome}-200.webp`;

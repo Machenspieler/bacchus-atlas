@@ -41,7 +41,10 @@ paths:
   file by name — appears in `dist/`, or if a Journey 2 runtime file (`img/journey2/`, `data/journey2/`,
   `js/journey2-*`, `css/journey2.css`) goes missing. It is scoped to Journey development inputs: an
   unrelated public PDF/ZIP is not rejected for its extension. Extend the pattern list (and its fixtures in
-  `tests/journey2-build-guard.test.js`) rather than adding a second copy route.
+  `tests/journey2-build-guard.test.js`) rather than adding a second copy route. Art masters are excluded the
+  same way (`img/biomes src/`, `biome-artwork-source/`, `ribbon-fabric-source/`, `cover-archetypes-source/`);
+  a new master folder needs its `EXCLUDE_PATHS` line and a case in `tests/biome-art-assets.test.js` — mind
+  folder names with spaces.
 - **A print/PDF proof is judged on the exported file**, not the on-screen emulation: the app theme is
   `color-scheme: dark`, so any print view must set `color-scheme: light` (not just a white background) or
   Chromium paints its `#121212` canvas into the page margins.

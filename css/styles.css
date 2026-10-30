@@ -3190,8 +3190,9 @@ body[data-route="prep"][data-sp-header-mode="expanded"] .prep-bar {
    biome art already frame themselves. */
 .prep-sel-thumb[data-kind="adv"] { --thumb-pad: 2px; }
 .prep-sel-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
-/* The one exception to contain: biome art is a tall 200×600 landscape strip
-   meant to be cropped — contained it would shrink to a 13px sliver. */
+/* The one exception to contain: biome art is a landscape picture meant to fill
+   the tile. The served thumbnail is already square (img/biomes/*-thumb-*.webp), so
+   cover only absorbs the 40/44px tile being a little smaller than the 48px file. */
 .prep-sel-thumb[data-kind="env"] img { object-fit: cover; }
 .prep-sel-thumb.is-fallback { background: var(--ink); }
 .prep-sel-thumb.is-fallback svg { width: 60%; height: 60%; color: var(--muted); }

@@ -576,10 +576,16 @@ narrower, so it stays one column there). Sections are semantic `<section>`s with
   with `scrollbar-gutter: stable`; section headers are sticky inside it.
   It is a size container (`prep-central`) — environment cards step 3→2→1
   columns and item cards 2→1 at its width breakpoints, not the viewport's.
-- **Thumbnail exception:** biome art is a 200×600 strip meant to be cropped,
-  so environment thumbs use `object-fit: cover`; adversary/item art use
-  `contain` (adversaries with a small inset for their uneven transparent
-  padding).
+- **Thumbnail exception:** environment thumbs show biome art through
+  `object-fit: cover`; adversary/item art use `contain` (adversaries with a
+  small inset for their uneven transparent padding). The biome thumb is its own
+  square file per device-pixel ratio, `img/biomes/<biome>-thumb-{48,96,144}.webp`
+  (`biomeThumbAttrs()`, `src` + `srcset` 2x/3x), produced by
+  `scripts/generate-biome-thumbs.js` from the PNG masters in `img/biomes src/`
+  (the middle third of the Catalog strip, Lanczos once, mild unsharp). Never
+  point a small tile back at the 200×600 strip: the browser's ~4:1 downscale
+  of it speckles. Audit and evidence:
+  [docs/research/biome-artwork-quality-audit.md](research/biome-artwork-quality-audit.md).
 - The Prep encounter action reads "Open Encounter" + the shared icon (service-agnostic);
   its "…in FreshCutGrass" sentence is the `aria-label` and tooltip. The Adversaries
   header is width-budgeted (title, Battle Points, ★ +N, this button), so by

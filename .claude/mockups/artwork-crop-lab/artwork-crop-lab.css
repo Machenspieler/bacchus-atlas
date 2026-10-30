@@ -238,3 +238,14 @@
 .rel-why { margin: 2px 0 0; font-size: var(--fs-xs); color: var(--parchment-dim); }
 .rel-why b { color: var(--parchment); font-weight: 500; }
 .gal-fig.is-portrait { order: 9; }
+
+/* ---- I · Biome quality (lab only) ---- */
+.lab-bq-row { display: flex; flex-wrap: wrap; gap: var(--s-6); align-items: flex-start; }
+.lab-bq-col { display: flex; flex-direction: column; gap: var(--s-2); }
+.lab-bq-col .card { width: 300px; min-height: 150px; }
+.lab-bq-col .prep-list { display: flex; flex-direction: column; gap: var(--s-2); width: 280px; }
+.lab-bq-diag { display: block; width: 240px; height: 240px; image-rendering: pixelated; border: 1px solid var(--line); }
+.lab-bq-list { display: flex; flex-wrap: wrap; gap: var(--s-6); margin-bottom: var(--s-5); }
+.lab-bq-list .list-card { width: 346px; }
+.lab-bq-tab { width: 100%; border-collapse: collapse; }
+.lab-bq-good { color: var(--hope-soft); }

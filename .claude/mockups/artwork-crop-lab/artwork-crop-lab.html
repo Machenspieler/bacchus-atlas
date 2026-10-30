@@ -26,7 +26,7 @@
   <!-- ============ controls ============ -->
   <section class="lab-controls" id="controls" aria-label="Crop controls">
     <nav class="lab-nav" id="lab-nav" aria-label="Sections">
-      <a href="#sec-overview">Overview</a><a href="#sec-catalog">Catalog</a><a href="#sec-prep">Session Prep</a><a href="#sec-lists">My Lists</a><a href="#sec-gallery">Library Gallery</a><a href="#sec-inspect">Crop Inspector</a><a href="#sec-stress">Stress Tests</a><a href="#sec-strategy">Strategy Comparison</a><a href="#sec-relevance">Relevance Audit</a><a href="#sec-config">Configuration</a>
+      <a href="#sec-overview">Overview</a><a href="#sec-catalog">Catalog</a><a href="#sec-prep">Session Prep</a><a href="#sec-lists">My Lists</a><a href="#sec-gallery">Library Gallery</a><a href="#sec-inspect">Crop Inspector</a><a href="#sec-stress">Stress Tests</a><a href="#sec-strategy">Strategy Comparison</a><a href="#sec-relevance">Relevance Audit</a><a href="#sec-biome-quality">Biome Quality</a><a href="#sec-config">Configuration</a>
     </nav>
     <div class="lab-row">
       <div class="lab-field">
@@ -190,6 +190,25 @@
     <div id="relevance"></div>
   </section>
 
+  <!-- ============ biome quality ============ -->
+  <section class="lab-section" id="sec-biome-quality">
+    <h2>I · Biome Quality Comparison <small>fallback artwork vs the archetype standard</small></h2>
+    <p class="lab-lead">Evidence for <code>docs/research/biome-artwork-quality-audit.md</code>. Normal-size panels are live production markup at this browser's own pixel density (<span id="bq-dpr"></span>); panels marked <b>DIAGNOSTIC</b> are magnified browser screenshots and are not what a user sees. No brightness, contrast or colour is changed anywhere in this section.</p>
+    <div class="lab-row"><div class="lab-field"><label class="lab-label" for="bq-biome">Biome</label><select id="bq-biome"></select></div></div>
+    <h3>1 · Catalog strip — production vs the master itself</h3>
+    <p class="lab-lead">Left: what ships (<code>biomeArtHtml()</code>, AVIF). Middle: the same crop resampled straight from the PNG master. Right: an archetype illustration on the same strip. The first two should be indistinguishable.</p>
+    <div class="lab-bq-row" id="bq-catalog"></div>
+    <h3>2 · Session Prep — 48 × 48 thumbnail, before and after</h3>
+    <div class="lab-bq-row" id="bq-prep"></div>
+    <h3>3 · My Lists — biome fallback in a cover (current strip vs wide derivative)</h3>
+    <p class="lab-lead">Production draws no biome cover yet; this is what the 1:3 strip does the moment a cover uses it, against a derivative cut from the master's full width. Cover-selection rules are untouched.</p>
+    <div id="bq-lists"></div>
+    <h3>4 · DIAGNOSTIC — the 48 px thumbnail magnified 5×</h3>
+    <div class="lab-bq-row" id="bq-diag"></div>
+    <h3>5 · Scorecard</h3>
+    <div class="lab-matrix-wrap"><table class="lab-matrix" id="bq-score"></table></div>
+  </section>
+
   <!-- ============ config ============ -->
   <section class="lab-section" id="sec-config">
     <h2>H · Crop configuration <small>lab-only model — not wired into production</small></h2>
@@ -203,5 +222,6 @@
 </main>
 <script src="../../../js/env-tier-utils.js"></script>
 <script src="artwork-crop-lab.js"></script>
+<script src="biome-quality.js"></script>
 </body>
 </html>
