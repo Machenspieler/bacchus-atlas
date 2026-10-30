@@ -26,7 +26,7 @@
   <!-- ============ controls ============ -->
   <section class="lab-controls" id="controls" aria-label="Crop controls">
     <nav class="lab-nav" id="lab-nav" aria-label="Sections">
-      <a href="#sec-overview">Overview</a><a href="#sec-catalog">Catalog</a><a href="#sec-prep">Session Prep</a><a href="#sec-lists">My Lists</a><a href="#sec-gallery">Library Gallery</a><a href="#sec-inspect">Crop Inspector</a><a href="#sec-stress">Stress Tests</a><a href="#sec-strategy">Strategy Comparison</a><a href="#sec-relevance">Relevance Audit</a><a href="#sec-biome-quality">Biome Quality</a><a href="#sec-config">Configuration</a>
+      <a href="#sec-overview">Overview</a><a href="#sec-catalog">Catalog</a><a href="#sec-prep">Session Prep</a><a href="#sec-lists">My Lists</a><a href="#sec-gallery">Library Gallery</a><a href="#sec-inspect">Crop Inspector</a><a href="#sec-stress">Stress Tests</a><a href="#sec-strategy">Strategy Comparison</a><a href="#sec-relevance">Relevance Audit</a><a href="#sec-biome-quality">Biome Quality</a><a href="#sec-biome-covers">Biome Cover Sources</a><a href="#sec-config">Configuration</a>
     </nav>
     <div class="lab-row">
       <div class="lab-field">
@@ -209,6 +209,59 @@
     <div class="lab-matrix-wrap"><table class="lab-matrix" id="bq-score"></table></div>
   </section>
 
+  <!-- ============ biome cover sources ============ -->
+  <section class="lab-section" id="sec-biome-covers">
+    <h2>K · Biome Cover Source Comparison <small>which existing image should a My Lists cover draw for each biome?</small></h2>
+    <p class="lab-lead">Evidence for <code>docs/research/biome-cover-source-comparison.md</code>; proposed mapping in <code>docs/research/biome-cover-registry.json</code> (lab-only, never read by production). Every panel is real <code>.list-card-cover</code> markup at its real size (<span id="k-dpr"></span>); the only variable is the artwork source and its crop. No brightness, contrast or colour is changed.</p>
+
+    <h3>K1 · Inventory <small>actual files, real dimensions measured from the loaded image</small></h3>
+    <div class="lab-matrix-wrap"><table class="lab-matrix" id="k-inv"></table></div>
+
+    <div class="lab-row lab-k-ctl">
+      <div class="lab-field"><span class="lab-label">Crop shown</span>
+        <div class="seg" id="k-basis" role="group" aria-label="Crop shown"><button type="button" data-basis="rec" aria-pressed="true">Recommended / edited</button><button type="button" data-basis="center" aria-pressed="false">Center 50 / 50</button></div></div>
+      <div class="lab-field"><label class="lab-label" for="k-biome">Biome</label><select id="k-biome"></select></div>
+      <div class="lab-field"><span class="lab-label">Context</span>
+        <div class="seg" id="k-ctx" role="group" aria-label="Context being edited"><button type="button" data-ctx="listsHero">Single</button><button type="button" data-ctx="listsPanel2">2-up</button><button type="button" data-ctx="listsPanel3">3-up</button></div></div>
+      <div class="lab-field"><label class="lab-label" for="k-kind">Source edited</label><select id="k-kind"></select></div>
+      <label class="lab-slider"><span class="lab-label">Horizontal <b id="k-xv">50%</b></span><input type="range" id="k-x" min="0" max="100" step="1" value="50"></label>
+      <label class="lab-slider"><span class="lab-label">Vertical <b id="k-yv">50%</b></span><input type="range" id="k-y" min="0" max="100" step="1" value="50"></label>
+      <div class="lab-actions"><button type="button" class="btn btn-sm" id="k-reset">Reset this crop</button><button type="button" class="btn btn-sm" id="k-reset-all">Reset all</button></div>
+      <p class="lab-note" id="k-note"></p>
+    </div>
+
+    <h3>K2 · Comparison A — single cover, every source <small>318 × 90 · selected biome</small></h3>
+    <div id="k-single"></div>
+
+    <h3>K3 · Comparison B — two-image collage <small>159 × 90 panels</small></h3>
+    <div class="lab-row"><div class="lab-field"><label class="lab-label" for="k-p1">Left</label><select id="k-p1"></select></div><div class="lab-field"><label class="lab-label" for="k-p2">Right</label><select id="k-p2"></select></div></div>
+    <div id="k-pair"></div>
+
+    <h3>K4 · Comparison C — three-image collage <small>105 × 90 panels: does the subject survive?</small></h3>
+    <div class="lab-row"><div class="lab-field"><label class="lab-label" for="k-t1">Left</label><select id="k-t1"></select></div><div class="lab-field"><label class="lab-label" for="k-t2">Middle</label><select id="k-t2"></select></div><div class="lab-field"><label class="lab-label" for="k-t3">Right</label><select id="k-t3"></select></div></div>
+    <div id="k-trio"></div>
+
+    <h3>K5 · Comparison D — mixed sources <small>archetype + biome fallback + unique painting</small></h3>
+    <div id="k-mixed"></div>
+
+    <h3>K6 · Per-biome gallery <small>every candidate × single, 2-up, 3-up</small></h3>
+    <p class="lab-lead">Columns are the three real tile sizes (318 / 159 / 105 px wide, 90 px high). The ★ marks the registry's recommended source. Use Center to see the unadjusted crop, or the controls above to move a focal point.</p>
+    <div id="k-gallery"></div>
+
+    <h3>K7 · Selection matrix</h3>
+    <div class="lab-matrix-wrap"><table class="lab-matrix lab-k-matrix" id="k-matrix"></table></div>
+
+    <h3>K8 · Mixed collections from real catalog records <small>1, 2, 3, 5, 10 environments · illustrative picker, not the production rule</small></h3>
+    <div id="k-lists"></div>
+
+    <h3>K9 · Proposed hybrid, all 13 biomes <small>the registry as written, in all three layouts</small></h3>
+    <div id="k-hybrid"></div>
+
+    <h3>K10 · Registry crops <small>recommended values plus anything edited above</small></h3>
+    <p class="lab-note" id="k-edited"></p>
+    <pre class="lab-code" id="k-json" tabindex="0"></pre>
+  </section>
+
   <!-- ============ config ============ -->
   <section class="lab-section" id="sec-config">
     <h2>H · Crop configuration <small>lab-only model — not wired into production</small></h2>
@@ -223,5 +276,6 @@
 <script src="../../../js/env-tier-utils.js"></script>
 <script src="artwork-crop-lab.js"></script>
 <script src="biome-quality.js"></script>
+<script src="biome-sources.js"></script>
 </body>
 </html>

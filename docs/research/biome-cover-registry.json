@@ -1,0 +1,1035 @@
+{
+ "_note": "Lab-only proposal. Not read by production code; ENV_ART, listCoverHtml(), the Catalog, Prep and Journey are untouched. Paths are repo-root relative and exist today unless marked lab. Crops are CSS object-position percentages (x y) for a source drawn with object-fit: cover into the three My Lists tile sizes. Provisional until the owner approves them in the lab.",
+ "generated": "2026-10-30",
+ "contexts": {
+  "listsHero": {
+   "w": 318,
+   "h": 90,
+   "note": "one tile"
+  },
+  "listsPanel2": {
+   "w": 158.5,
+   "h": 90,
+   "note": "two tiles"
+  },
+  "listsPanel3": {
+   "w": 105.3,
+   "h": 90,
+   "note": "three tiles"
+  }
+ },
+ "sourceKinds": {
+  "strip": "production Catalog strip, img/biomes/<b>-200.webp (200x600, 1:3)",
+  "band": "lab wide band from the master, 640x181 (audit asset)",
+  "b16": "lab 16:9 window of the master's full width, 640x360",
+  "journey": "Journey header, img/journey2/headers/<b>.webp (960x540, 16:9), shipped today"
+ },
+ "biomes": [
+  {
+   "biome": "aquatic",
+   "catalogEnvironments": 22,
+   "sources": {
+    "strip": {
+     "path": "img/biomes/aquatic-200.webp",
+     "w": 200,
+     "h": 600,
+     "kb": 40.4,
+     "shipped": true
+    },
+    "band": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-quality/wide-aquatic-640.webp",
+     "w": 640,
+     "h": 181,
+     "kb": null,
+     "shipped": false,
+     "lab": true
+    },
+    "b16": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-cover/b16-aquatic-640.webp",
+     "w": 640,
+     "h": 360,
+     "kb": 67,
+     "shipped": false,
+     "lab": true,
+     "master": "img/biomes src/aquatic.png",
+     "masterWindowTop": 326
+    },
+    "journey": {
+     "path": "img/journey2/headers/aquatic.webp",
+     "w": 960,
+     "h": 540,
+     "kb": 155.3,
+     "shipped": true,
+     "master": "img/biome-artwork-source/Aquatic-h.png",
+     "masterPx": "1672x941"
+    }
+   },
+   "preferredHeroSource": "journey",
+   "preferredCollageSource": "journey",
+   "crops": {
+    "listsHero": {
+     "journey": {
+      "x": 50,
+      "y": 45
+     },
+     "b16": {
+      "x": 50,
+      "y": 45
+     }
+    },
+    "listsPanel2": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel3": {
+     "journey": {
+      "x": 85,
+      "y": 45
+     },
+     "b16": {
+      "x": 85,
+      "y": 45
+     }
+    }
+   },
+   "effectiveQuality": "good",
+   "representativeness": "good",
+   "status": "accepted-existing",
+   "additionalAssetNeeded": false,
+   "explanation": "A lagoon with sea stacks and reef; reads as coast and open water. Sea stack sits at the right third, so the three-up panel needs x 85."
+  },
+  {
+   "biome": "badlands",
+   "catalogEnvironments": 14,
+   "sources": {
+    "strip": {
+     "path": "img/biomes/badlands-200.webp",
+     "w": 200,
+     "h": 600,
+     "kb": 33.1,
+     "shipped": true
+    },
+    "band": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-quality/wide-badlands-640.webp",
+     "w": 640,
+     "h": 181,
+     "kb": null,
+     "shipped": false,
+     "lab": true
+    },
+    "b16": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-cover/b16-badlands-640.webp",
+     "w": 640,
+     "h": 360,
+     "kb": 62.2,
+     "shipped": false,
+     "lab": true,
+     "master": "img/biomes src/badlands.png",
+     "masterWindowTop": 403
+    },
+    "journey": {
+     "path": "img/journey2/headers/badlands.webp",
+     "w": 960,
+     "h": 540,
+     "kb": 101.5,
+     "shipped": true,
+     "master": "img/biome-artwork-source/Badlands-h.png",
+     "masterPx": "1672x941"
+    }
+   },
+   "preferredHeroSource": "journey",
+   "preferredCollageSource": "journey",
+   "crops": {
+    "listsHero": {
+     "journey": {
+      "x": 50,
+      "y": 35
+     },
+     "b16": {
+      "x": 50,
+      "y": 35
+     }
+    },
+    "listsPanel2": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel3": {
+     "journey": {
+      "x": 25,
+      "y": 45
+     },
+     "b16": {
+      "x": 25,
+      "y": 45
+     }
+    }
+   },
+   "effectiveQuality": "good",
+   "representativeness": "good",
+   "status": "accepted-existing",
+   "additionalAssetNeeded": false,
+   "explanation": "Spires and lava rivers under a red sky. Dark and low-key, but the scene is legible at every size."
+  },
+  {
+   "biome": "drylands",
+   "catalogEnvironments": 12,
+   "sources": {
+    "strip": {
+     "path": "img/biomes/drylands-200.webp",
+     "w": 200,
+     "h": 600,
+     "kb": 42.4,
+     "shipped": true
+    },
+    "band": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-quality/wide-drylands-640.webp",
+     "w": 640,
+     "h": 181,
+     "kb": null,
+     "shipped": false,
+     "lab": true
+    },
+    "b16": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-cover/b16-drylands-640.webp",
+     "w": 640,
+     "h": 360,
+     "kb": 71.6,
+     "shipped": false,
+     "lab": true,
+     "master": "img/biomes src/drylands.png",
+     "masterWindowTop": 296
+    },
+    "journey": {
+     "path": "img/journey2/headers/drylands.webp",
+     "w": 960,
+     "h": 540,
+     "kb": 128.9,
+     "shipped": true,
+     "master": "img/biome-artwork-source/Drylands-h.png",
+     "masterPx": "1672x941"
+    }
+   },
+   "preferredHeroSource": "journey",
+   "preferredCollageSource": "journey",
+   "crops": {
+    "listsHero": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel2": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel3": {
+     "journey": {
+      "x": 55,
+      "y": 50
+     },
+     "b16": {
+      "x": 55,
+      "y": 50
+     }
+    }
+   },
+   "effectiveQuality": "good",
+   "representativeness": "good",
+   "status": "accepted-existing",
+   "additionalAssetNeeded": false,
+   "explanation": "Canyon, cacti and a low sun; unmistakably desert."
+  },
+  {
+   "biome": "forest",
+   "catalogEnvironments": 33,
+   "sources": {
+    "strip": {
+     "path": "img/biomes/forest-200.webp",
+     "w": 200,
+     "h": 600,
+     "kb": 45.2,
+     "shipped": true
+    },
+    "band": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-quality/wide-forest-640.webp",
+     "w": 640,
+     "h": 181,
+     "kb": null,
+     "shipped": false,
+     "lab": true
+    },
+    "b16": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-cover/b16-forest-640.webp",
+     "w": 640,
+     "h": 360,
+     "kb": 85.4,
+     "shipped": false,
+     "lab": true,
+     "master": "img/biomes src/forest.png",
+     "masterWindowTop": 326
+    },
+    "journey": {
+     "path": "img/journey2/headers/forest.webp",
+     "w": 960,
+     "h": 540,
+     "kb": 142.2,
+     "shipped": true,
+     "master": "img/biome-artwork-source/forest_h.png",
+     "masterPx": "1672x941"
+    }
+   },
+   "preferredHeroSource": "journey",
+   "preferredCollageSource": "journey",
+   "crops": {
+    "listsHero": {
+     "journey": {
+      "x": 50,
+      "y": 30
+     },
+     "b16": {
+      "x": 50,
+      "y": 30
+     }
+    },
+    "listsPanel2": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel3": {
+     "journey": {
+      "x": 62,
+      "y": 50
+     },
+     "b16": {
+      "x": 62,
+      "y": 50
+     }
+    }
+   },
+   "effectiveQuality": "good",
+   "representativeness": "good",
+   "status": "accepted-existing",
+   "additionalAssetNeeded": false,
+   "explanation": "Conifer valley with light shafts and a stream; the valley sits right of centre."
+  },
+  {
+   "biome": "frozen",
+   "catalogEnvironments": 7,
+   "sources": {
+    "strip": {
+     "path": "img/biomes/frozen-200.webp",
+     "w": 200,
+     "h": 600,
+     "kb": 34.8,
+     "shipped": true
+    },
+    "band": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-quality/wide-frozen-640.webp",
+     "w": 640,
+     "h": 181,
+     "kb": null,
+     "shipped": false,
+     "lab": true
+    },
+    "b16": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-cover/b16-frozen-640.webp",
+     "w": 640,
+     "h": 360,
+     "kb": 78.3,
+     "shipped": false,
+     "lab": true,
+     "master": "img/biomes src/frozen.png",
+     "masterWindowTop": 357
+    },
+    "journey": {
+     "path": "img/journey2/headers/frozen.webp",
+     "w": 960,
+     "h": 540,
+     "kb": 130.4,
+     "shipped": true,
+     "master": "img/biome-artwork-source/frozen-h.png",
+     "masterPx": "1672x941"
+    }
+   },
+   "preferredHeroSource": "journey",
+   "preferredCollageSource": "journey",
+   "crops": {
+    "listsHero": {
+     "journey": {
+      "x": 50,
+      "y": 35
+     },
+     "b16": {
+      "x": 50,
+      "y": 35
+     }
+    },
+    "listsPanel2": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel3": {
+     "journey": {
+      "x": 55,
+      "y": 40
+     },
+     "b16": {
+      "x": 55,
+      "y": 40
+     }
+    }
+   },
+   "effectiveQuality": "good",
+   "representativeness": "good",
+   "status": "accepted-existing",
+   "additionalAssetNeeded": false,
+   "explanation": "Aurora, peaks and a frozen lake; the aurora is the best thumbnail insurance."
+  },
+  {
+   "biome": "grassland",
+   "catalogEnvironments": 3,
+   "sources": {
+    "strip": {
+     "path": "img/biomes/grassland-200.webp",
+     "w": 200,
+     "h": 600,
+     "kb": 41.1,
+     "shipped": true
+    },
+    "band": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-quality/wide-grassland-640.webp",
+     "w": 640,
+     "h": 181,
+     "kb": null,
+     "shipped": false,
+     "lab": true
+    },
+    "b16": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-cover/b16-grassland-640.webp",
+     "w": 640,
+     "h": 360,
+     "kb": 74.1,
+     "shipped": false,
+     "lab": true,
+     "master": "img/biomes src/grassland.png",
+     "masterWindowTop": 296
+    },
+    "journey": {
+     "path": "img/journey2/headers/grassland.webp",
+     "w": 960,
+     "h": 540,
+     "kb": 129.7,
+     "shipped": true,
+     "master": "img/biome-artwork-source/Grassland-h.png",
+     "masterPx": "1672x941"
+    }
+   },
+   "preferredHeroSource": "journey",
+   "preferredCollageSource": "journey",
+   "crops": {
+    "listsHero": {
+     "journey": {
+      "x": 50,
+      "y": 40
+     },
+     "b16": {
+      "x": 50,
+      "y": 40
+     }
+    },
+    "listsPanel2": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel3": {
+     "journey": {
+      "x": 35,
+      "y": 50
+     },
+     "b16": {
+      "x": 35,
+      "y": 50
+     }
+    }
+   },
+   "effectiveQuality": "good",
+   "representativeness": "good",
+   "status": "accepted-existing",
+   "additionalAssetNeeded": false,
+   "explanation": "Acacia, plain and a low sun. The portrait strip was mostly sky; the 16:9 scene fixes that."
+  },
+  {
+   "biome": "mountain",
+   "catalogEnvironments": 10,
+   "sources": {
+    "strip": {
+     "path": "img/biomes/mountain-200.webp",
+     "w": 200,
+     "h": 600,
+     "kb": 45.6,
+     "shipped": true
+    },
+    "band": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-quality/wide-mountain-640.webp",
+     "w": 640,
+     "h": 181,
+     "kb": null,
+     "shipped": false,
+     "lab": true
+    },
+    "b16": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-cover/b16-mountain-640.webp",
+     "w": 640,
+     "h": 360,
+     "kb": 79,
+     "shipped": false,
+     "lab": true,
+     "master": "img/biomes src/mountain.png",
+     "masterWindowTop": 326
+    },
+    "journey": {
+     "path": "img/journey2/headers/mountain.webp",
+     "w": 960,
+     "h": 540,
+     "kb": 110.4,
+     "shipped": true,
+     "master": "img/biome-artwork-source/Mountain-h.png",
+     "masterPx": "1672x941"
+    }
+   },
+   "preferredHeroSource": "journey",
+   "preferredCollageSource": "journey",
+   "crops": {
+    "listsHero": {
+     "journey": {
+      "x": 50,
+      "y": 55
+     },
+     "b16": {
+      "x": 50,
+      "y": 55
+     }
+    },
+    "listsPanel2": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel3": {
+     "journey": {
+      "x": 65,
+      "y": 55
+     },
+     "b16": {
+      "x": 65,
+      "y": 55
+     }
+    }
+   },
+   "effectiveQuality": "good",
+   "representativeness": "good",
+   "status": "accepted-existing",
+   "additionalAssetNeeded": false,
+   "explanation": "Sunlit peaks over a cloud sea."
+  },
+  {
+   "biome": "rolling",
+   "catalogEnvironments": 4,
+   "sources": {
+    "strip": {
+     "path": "img/biomes/rolling-200.webp",
+     "w": 200,
+     "h": 600,
+     "kb": 43.3,
+     "shipped": true
+    },
+    "band": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-quality/wide-rolling-640.webp",
+     "w": 640,
+     "h": 181,
+     "kb": null,
+     "shipped": false,
+     "lab": true
+    },
+    "b16": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-cover/b16-rolling-640.webp",
+     "w": 640,
+     "h": 360,
+     "kb": 67,
+     "shipped": false,
+     "lab": true,
+     "master": "img/biomes src/rolling.png",
+     "masterWindowTop": 250
+    },
+    "journey": {
+     "path": "img/journey2/headers/rolling.webp",
+     "w": 960,
+     "h": 540,
+     "kb": 136.9,
+     "shipped": true,
+     "master": "img/biome-artwork-source/Rolling-h.png",
+     "masterPx": "1672x941"
+    }
+   },
+   "preferredHeroSource": "journey",
+   "preferredCollageSource": "journey",
+   "crops": {
+    "listsHero": {
+     "journey": {
+      "x": 50,
+      "y": 45
+     },
+     "b16": {
+      "x": 50,
+      "y": 45
+     }
+    },
+    "listsPanel2": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel3": {
+     "journey": {
+      "x": 70,
+      "y": 45
+     },
+     "b16": {
+      "x": 70,
+      "y": 45
+     }
+    }
+   },
+   "effectiveQuality": "good",
+   "representativeness": "good",
+   "status": "accepted-existing",
+   "additionalAssetNeeded": false,
+   "explanation": "Layered ridges and a long road; the hero band shows ridge lines, the three-up shows the near hill."
+  },
+  {
+   "biome": "settlement",
+   "catalogEnvironments": 98,
+   "sources": {
+    "strip": {
+     "path": "img/biomes/settlement-200.webp",
+     "w": 200,
+     "h": 600,
+     "kb": 39,
+     "shipped": true
+    },
+    "band": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-quality/wide-settlement-640.webp",
+     "w": 640,
+     "h": 181,
+     "kb": null,
+     "shipped": false,
+     "lab": true
+    },
+    "b16": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-cover/b16-settlement-640.webp",
+     "w": 640,
+     "h": 360,
+     "kb": 77.5,
+     "shipped": false,
+     "lab": true,
+     "master": "img/biomes src/settlement.png",
+     "masterWindowTop": 326
+    },
+    "journey": {
+     "path": "img/journey2/headers/settlement.webp",
+     "w": 960,
+     "h": 540,
+     "kb": 117.2,
+     "shipped": true,
+     "master": "img/biome-artwork-source/settlement-h.png",
+     "masterPx": "1672x941"
+    }
+   },
+   "preferredHeroSource": "journey",
+   "preferredCollageSource": "journey",
+   "crops": {
+    "listsHero": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel2": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel3": {
+     "journey": {
+      "x": 40,
+      "y": 50
+     },
+     "b16": {
+      "x": 40,
+      "y": 50
+     }
+    }
+   },
+   "effectiveQuality": "good",
+   "representativeness": "acceptable",
+   "status": "accepted-existing-replacement-recommended",
+   "additionalAssetNeeded": true,
+   "explanation": "A sunset harbour with tall ships. Beautiful, but specifically coastal and nautical; 98 of 316 environments are Settlement (taverns, markets, inland cities)."
+  },
+  {
+   "biome": "tropical",
+   "catalogEnvironments": 9,
+   "sources": {
+    "strip": {
+     "path": "img/biomes/tropical-200.webp",
+     "w": 200,
+     "h": 600,
+     "kb": 41.5,
+     "shipped": true
+    },
+    "band": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-quality/wide-tropical-640.webp",
+     "w": 640,
+     "h": 181,
+     "kb": null,
+     "shipped": false,
+     "lab": true
+    },
+    "b16": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-cover/b16-tropical-640.webp",
+     "w": 640,
+     "h": 360,
+     "kb": 77.9,
+     "shipped": false,
+     "lab": true,
+     "master": "img/biomes src/tropical.png",
+     "masterWindowTop": 326
+    },
+    "journey": {
+     "path": "img/journey2/headers/tropical.webp",
+     "w": 960,
+     "h": 540,
+     "kb": 151,
+     "shipped": true,
+     "master": "img/biome-artwork-source/Tropical-h.png",
+     "masterPx": "1672x941"
+    }
+   },
+   "preferredHeroSource": "journey",
+   "preferredCollageSource": "journey",
+   "crops": {
+    "listsHero": {
+     "journey": {
+      "x": 50,
+      "y": 45
+     },
+     "b16": {
+      "x": 50,
+      "y": 45
+     }
+    },
+    "listsPanel2": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel3": {
+     "journey": {
+      "x": 75,
+      "y": 45
+     },
+     "b16": {
+      "x": 75,
+      "y": 45
+     }
+    }
+   },
+   "effectiveQuality": "good",
+   "representativeness": "good",
+   "status": "accepted-existing",
+   "additionalAssetNeeded": false,
+   "explanation": "Jungle gorge, waterfall and overgrown temple; the waterfall sits right of centre."
+  },
+  {
+   "biome": "underground",
+   "catalogEnvironments": 37,
+   "sources": {
+    "strip": {
+     "path": "img/biomes/underground-200.webp",
+     "w": 200,
+     "h": 600,
+     "kb": 32.7,
+     "shipped": true
+    },
+    "band": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-quality/wide-underground-640.webp",
+     "w": 640,
+     "h": 181,
+     "kb": null,
+     "shipped": false,
+     "lab": true
+    },
+    "b16": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-cover/b16-underground-640.webp",
+     "w": 640,
+     "h": 360,
+     "kb": 61.3,
+     "shipped": false,
+     "lab": true,
+     "master": "img/biomes src/underground.png",
+     "masterWindowTop": 403
+    },
+    "journey": {
+     "path": "img/journey2/headers/underground.webp",
+     "w": 960,
+     "h": 540,
+     "kb": 116.2,
+     "shipped": true,
+     "master": "img/biome-artwork-source/Underground-h.png",
+     "masterPx": "1672x941"
+    }
+   },
+   "preferredHeroSource": "journey",
+   "preferredCollageSource": "journey",
+   "crops": {
+    "listsHero": {
+     "journey": {
+      "x": 50,
+      "y": 55
+     },
+     "b16": {
+      "x": 50,
+      "y": 55
+     }
+    },
+    "listsPanel2": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel3": {
+     "journey": {
+      "x": 50,
+      "y": 55
+     },
+     "b16": {
+      "x": 50,
+      "y": 55
+     }
+    }
+   },
+   "effectiveQuality": "good",
+   "representativeness": "good",
+   "status": "accepted-existing",
+   "additionalAssetNeeded": false,
+   "explanation": "Mine rails, crystals and glowing mushrooms; the strongest cool accent in the set."
+  },
+  {
+   "biome": "universal",
+   "catalogEnvironments": 53,
+   "sources": {
+    "strip": {
+     "path": "img/biomes/universal-200.webp",
+     "w": 200,
+     "h": 600,
+     "kb": 44.9,
+     "shipped": true
+    },
+    "band": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-quality/wide-universal-640.webp",
+     "w": 640,
+     "h": 181,
+     "kb": null,
+     "shipped": false,
+     "lab": true
+    },
+    "b16": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-cover/b16-universal-640.webp",
+     "w": 640,
+     "h": 360,
+     "kb": 83.8,
+     "shipped": false,
+     "lab": true,
+     "master": "img/biomes src/universal.png",
+     "masterWindowTop": 173
+    }
+   },
+   "preferredHeroSource": "b16",
+   "preferredCollageSource": "b16",
+   "crops": {
+    "listsHero": {
+     "b16": {
+      "x": 50,
+      "y": 75
+     }
+    },
+    "listsPanel2": {
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel3": {
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    }
+   },
+   "effectiveQuality": "acceptable",
+   "representativeness": "acceptable",
+   "status": "existing-only-replacement-recommended",
+   "additionalAssetNeeded": true,
+   "explanation": "No Journey illustration exists (Journey has no universal region). Only the 1024x1536 portrait master: a 16:9 window of its full width, 640 px wide, is native (no upscale) and shows the portal and floating rocks, but never the spire. Universal is the second largest fallback (53 environments)."
+  },
+  {
+   "biome": "wetland",
+   "catalogEnvironments": 14,
+   "sources": {
+    "strip": {
+     "path": "img/biomes/wetland-200.webp",
+     "w": 200,
+     "h": 600,
+     "kb": 34.1,
+     "shipped": true
+    },
+    "band": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-quality/wide-wetland-640.webp",
+     "w": 640,
+     "h": 181,
+     "kb": null,
+     "shipped": false,
+     "lab": true
+    },
+    "b16": {
+     "path": ".claude/mockups/artwork-crop-lab/assets/biome-cover/b16-wetland-640.webp",
+     "w": 640,
+     "h": 360,
+     "kb": 53.7,
+     "shipped": false,
+     "lab": true,
+     "master": "img/biomes src/wetland.png",
+     "masterWindowTop": 480
+    },
+    "journey": {
+     "path": "img/journey2/headers/wetland.webp",
+     "w": 960,
+     "h": 540,
+     "kb": 128,
+     "shipped": true,
+     "master": "img/biome-artwork-source/Wetland-h.png",
+     "masterPx": "1672x941"
+    }
+   },
+   "preferredHeroSource": "journey",
+   "preferredCollageSource": "journey",
+   "crops": {
+    "listsHero": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel2": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    },
+    "listsPanel3": {
+     "journey": {
+      "x": 50,
+      "y": 50
+     },
+     "b16": {
+      "x": 50,
+      "y": 50
+     }
+    }
+   },
+   "effectiveQuality": "acceptable",
+   "representativeness": "good",
+   "status": "accepted-existing",
+   "additionalAssetNeeded": false,
+   "explanation": "Cypress swamp in mist. Soft by nature: low contrast and haze, a mood rather than a lack of pixels."
+  }
+ ]
+}
