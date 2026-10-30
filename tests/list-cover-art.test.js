@@ -121,3 +121,33 @@ test('index.html loads the registry and the rules before js/app.js, and app.js h
   assert.match(APP_JS, /ListCoverUtils\.coverForEnvironments/);
   assert.doesNotMatch(APP_JS, /ENV_THUMB_WIDTHS|listsCoveredFirst/);
 });
+
+test('phase 2: the rejected misleading matches stay out of ARCHETYPE_FIT, and the new masters are the approved files', () => {
+  for (const id of ['volcanic-eruption', 'forest-wildfire', 'snow-squall', 'raging-fire', 'demonic-abyss', 'cult-ritual', 'shipwreck',
+    'realm-of-the-dead', 'fortress', 'bandit-hideout', 'acid-burrows', 'thrumming-hives', 'devouring-green', 'heart-of-the-mire',
+    'court-of-hounds', 'dark-forest-revel', 'cauldera-valley', 'field-of-dreams']) {
+    assert.equal(Art.ARCHETYPE_FIT[id], undefined, id);
+  }
+  for (const stem of ['storms-and-calamity', 'infernal-and-profane', 'drowned-depths', 'strongholds-and-sieges', 'monster-lairs', 'cursed-and-blighted-lands', 'fey-and-enchanted']) {
+    assert.equal(SOURCES['archetype-' + stem], `img/cover-archetypes-source/${stem}.png`);
+  }
+  for (const stem of Object.keys(SOURCES)) assert.ok(!/starfaring|sacred-sanctuaries|streets-and-towns/.test(stem), stem);
+});
+
+test('phase 2: unapproved masters present in the folder are never derived or shipped', () => {
+  const masters = new Set(Object.values(SOURCES).map(m => path.basename(m)));
+  for (const f of fs.readdirSync(path.join(ROOT, 'img/cover-archetypes-source'))) {
+    if (!/^(starfaring|sacred-sanctuaries|streets-and-towns)/.test(f)) continue;
+    assert.ok(!masters.has(f), f);
+    assert.equal(isExcluded('img/cover-archetypes-source/' + f), true, f);
+  }
+});
+
+test('phase 2: every framing is a percentage inside 0..100 and each archetype picture is a whole-frame 16:9 cut', () => {
+  for (const img of Object.values(Art.IMAGES)) {
+    for (const n of [1, 2, 3]) {
+      const { x, y } = img.pos[n];
+      assert.ok(x >= 0 && x <= 100 && y >= 0 && y <= 100, `${img.id} ${n}`);
+    }
+  }
+});

@@ -1622,3 +1622,10 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Not changed:** Catalog art, Prep thumbnails, Journey art, `ENV_ART` / the detail-card backdrop, the classification dataset, list data and storage.
 - **Where:** `js/list-cover-art.js` (registry), `js/list-cover-utils.js` (rules), `js/app.js` (`listCoverHtml`), `css/styles.css` (`.list-card-cover`), `scripts/generate-list-covers.js`, [docs/research/adaptive-list-covers-implementation.md](research/adaptive-list-covers-implementation.md).
 
+
+## PD-086: List covers, Phase 2 — seven more archetype pictures, mapped one environment at a time
+
+- **Status:** Active (amends PD-085's picture set; its rules are unchanged)
+- **Date:** 2026-10-30
+- **Decision:** `storms-and-calamity`, `infernal-and-profane`, `drowned-depths`, `strongholds-and-sieges`, `monster-lairs`, `cursed-and-blighted-lands` and `fey-and-enchanted` join the registry, each with a single variant. Only 22 environments are mapped (`ARCHETYPE_FIT`); every other environment in those taxonomy groups keeps its biome picture or none. The pictures are specific scenes (a tornado, a fortress-city of Hell, a dragon's bone cavern…), so a shared archetype id is never enough. `starfaring`, `sacred-sanctuaries` and `streets-and-towns` have no approved picture: they stay out of the registry, `SOURCES` and `ARCHETYPE_FIT` until new art is approved.
+- **Where:** `js/list-cover-art.js`, `scripts/generate-list-covers.js [stem…]`, [docs/research/adaptive-list-covers-phase2.md](research/adaptive-list-covers-phase2.md).

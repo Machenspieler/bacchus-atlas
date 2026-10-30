@@ -78,7 +78,8 @@ test('a missing archetype or biome asset falls through, down to nothing', () => 
 });
 
 test('universal and settlement environments get no picture, so none is invented', () => {
-  const universal = idsWhere(e => artBiome(e) === 'universal');
+  /* Phase 2: a universal event the audit judged to fit a picture (a tornado) is explicit, like a harbour. */
+  const universal = idsWhere(e => artBiome(e) === 'universal' && !Art.ARCHETYPE_FIT[e.id]);
   assert.ok(universal.length >= 40);
   for (const id of universal) assert.equal(U.resolveEnvironmentArt(rec(id)), null, id);
   const settlementOnly = idsWhere(e => artBiome(e) === 'settlement' && !Art.ARCHETYPE_FIT[e.id] && !Art.ENV_IMAGE_OVERRIDES[e.id]);
@@ -252,4 +253,108 @@ test('a duplicated member counts once in the picture, twice in the share, and ne
 test('every tile carries its registry image, so rendering needs no lookup', () => {
   const c = cover('cauldera-valley', 'cursed-graveyard', 'harsh-desert');
   for (const t of c.tiles) assert.equal(t.image, Art.IMAGES[t.imageId]);
+});
+
+/* ---- Phase 2: seven more archetype pictures, conservatively mapped ---- */
+
+const PHASE2 = {
+  'storms-and-calamity': { strong: ['tornado', 'megastorm'], acceptable: ['thunderstorm', 'magical-storm', 'unbound-arcanostorm', 'green-doom-skies'] },
+  'infernal-and-profane': { strong: ['circles-below-dis', 'fallen-citadel', 'prison-city-pyrrhexis'], acceptable: ['infernal-railyard', 'the-metal-throne-of-sin'] },
+  'drowned-depths': { strong: ['sunken-citadel', 'deep-one-city'], acceptable: ['drowned-sanctum'] },
+  'strongholds-and-sieges': { strong: ['castle-siege'], acceptable: ['defense-of-the-river-fort'] },
+  'monster-lairs': { strong: [], acceptable: ['dragons-lair'] },
+  'cursed-and-blighted-lands': { strong: ['rewritten-grove'], acceptable: ['gnarled-glen', 'cursed-valley'] },
+  'fey-and-enchanted': { strong: ['court-of-cats'], acceptable: ['fey-lands'] },
+};
+/* Same archetype in the taxonomy, wrong picture: each falls to its biome picture or nothing. */
+const REJECTED = {
+  'storms-and-calamity': ['volcanic-eruption', 'forest-wildfire', 'snow-squall', 'raging-fire', 'rain-ritual', 'stampede', 'flickerstorm', 'cloudy-sky', 'the-proving-pyre'],
+  'infernal-and-profane': ['cult-ritual', 'darkened-temple', 'unhallowed-ground', 'moonlight-temple', 'divine-usurpation', 'demonic-abyss', 'the-profane-ascendancy'],
+  'drowned-depths': ['shipwreck', 'realm-of-the-dead', 'undersea-trench', 'umbral-basin', 'fathomless-baths-deeps', 'fathomless-baths-surface'],
+  'strongholds-and-sieges': ['fortress', 'bandit-hideout', 'bandit-attack', 'capital-ship-assault', 'occupied-town', 'pitched-battle', 'hold-the-line', 'sovereignty-outpost'],
+  'monster-lairs': ['acid-burrows', 'astral-mound', 'webbed-terrain', 'thrumming-hives', 'rats-nest-tavern', 'escape-the-swarm', 'scorching-dungeon', 'progenitor-minds-lair'],
+  'cursed-and-blighted-lands': ['devouring-green', 'heart-of-the-mire', 'green-doom-tangle', 'obsidian-forest', 'rimefouled-wastes', 'valley-of-ruination', 'burning-heart-of-the-woods'],
+  'fey-and-enchanted': ['court-of-hounds', 'faestone-wode', 'dark-forest-revel', 'witchs-hut', 'hags-hut', 'gloaming-forest', 'wishmaker-glade'],
+};
+
+test('phase 2: seven new archetype pictures are registered with files, one variant each', () => {
+  for (const arch of Object.keys(PHASE2)) {
+    assert.deepEqual(Art.ARCHETYPES[arch].variants, ['archetype:' + arch], arch);
+    assert.equal(Art.IMAGES['archetype:' + arch].kind, 'archetype');
+  }
+});
+
+test('phase 2: the audited environments resolve to their picture with the audited grade', () => {
+  for (const [arch, grades] of Object.entries(PHASE2)) {
+    for (const [fit, ids] of Object.entries(grades)) {
+      for (const id of ids) {
+        assert.deepEqual(U.resolveEnvironmentArt(rec(id)), { imageId: 'archetype:' + arch, kind: 'archetype', fit }, id);
+      }
+    }
+  }
+  const mapped = Object.keys(Art.ARCHETYPE_FIT).filter(id => Object.values(PHASE2).some(g => [...g.strong, ...g.acceptable].includes(id)));
+  assert.equal(mapped.length, 22);
+});
+
+test('phase 2: rejected environments never get the new picture and still fall back honestly', () => {
+  const newIds = new Set(Object.keys(PHASE2).map(a => 'archetype:' + a));
+  for (const ids of Object.values(REJECTED)) {
+    for (const id of ids) {
+      assert.ok(BY_ID[id], id);
+      assert.equal(Art.ARCHETYPE_FIT[id], undefined, id);
+      const r = U.resolveEnvironmentArt(rec(id));
+      assert.ok(!r || !newIds.has(r.imageId), id);
+      /* the fallback is the biome picture, or nothing for universal / settlement */
+      if (r) assert.equal(r.kind, 'biome', id);
+    }
+  }
+  assert.equal(U.resolveEnvironmentArt(rec('forest-wildfire')).imageId, 'biome:forest');
+  assert.equal(U.resolveEnvironmentArt(rec('volcanic-eruption')).imageId, 'biome:badlands');
+  assert.equal(U.resolveEnvironmentArt(rec('snow-squall')).imageId, 'biome:frozen');
+  assert.equal(U.resolveEnvironmentArt(rec('raging-fire')), null);
+  assert.equal(U.resolveEnvironmentArt(rec('acid-burrows')).imageId, 'biome:underground');
+});
+
+test('phase 2: a unique painting still outranks the fey picture, and the original four are unchanged', () => {
+  for (const id of ['cauldera-valley', 'field-of-dreams', 'ouroborean-pass']) assert.equal(U.resolveEnvironmentArt(rec(id)).kind, 'unique', id);
+  assert.equal(Art.ARCHETYPE_FIT['cauldera-valley'], undefined);
+  assert.equal(Art.ARCHETYPE_FIT['field-of-dreams'], undefined);
+  assert.equal(U.resolveEnvironmentArt(rec('cursed-graveyard')).imageId, 'archetype:haunted-and-deathly');
+  assert.equal(U.resolveEnvironmentArt(rec('ruined-castle')).imageId, 'archetype:forgotten-ruins');
+  assert.equal(U.resolveEnvironmentArt(rec('archmages-tower')).imageId, 'archetype:arcane-sanctums');
+  assert.equal(U.resolveEnvironmentArt(rec('grand-feast')).imageId, 'archetype:feasts-and-revelry');
+});
+
+test('phase 2: the three unapproved pictures are not in the registry and their environments get no archetype picture', () => {
+  for (const arch of ['starfaring', 'sacred-sanctuaries', 'streets-and-towns']) {
+    assert.equal(Art.ARCHETYPES[arch], undefined, arch);
+    assert.equal(Art.IMAGES['archetype:' + arch], undefined, arch);
+    assert.ok(!Object.values(Art.ARCHETYPE_FIT).some(f => f[0] === arch), arch);
+  }
+  for (const id of Object.keys(Art.IMAGES)) assert.ok(!/starfaring|sacred|streets/.test(id), id);
+});
+
+test('phase 2: a same-archetype list does not paint every member with the tornado', () => {
+  const c = cover('tornado', 'forest-wildfire', 'volcanic-eruption');
+  assert.deepEqual(imageIds(c), ['archetype:storms-and-calamity', 'biome:forest', 'biome:badlands']);
+  const two = cover('thunderstorm', 'tornado', 'megastorm');
+  assert.deepEqual(imageIds(two), ['archetype:storms-and-calamity']);
+  assert.equal(two.tiles[0].count, 3);
+});
+
+test('phase 2: mixed lists keep up to three distinct pictures, deterministic, painting first', () => {
+  const ids = ['cauldera-valley', 'tornado', 'castle-siege', 'sunken-citadel', 'rewritten-grove', 'cursed-graveyard', 'dragons-lair', 'circles-below-dis'];
+  const a = cover(...ids), b = cover(...ids.slice().reverse().reverse());
+  assert.deepEqual(imageIds(a), imageIds(b));
+  assert.equal(a.layout, 3);
+  assert.equal(new Set(imageIds(a)).size, 3);
+  assert.ok(imageIds(a).includes('env:cauldera-valley'));
+  assert.deepEqual(imageIds(cover(...ids.slice(1))).length, 3);
+});
+
+test('phase 2: a ten-member list of one new archetype plus others never repeats a tile', () => {
+  const c = cover('tornado', 'megastorm', 'thunderstorm', 'magical-storm', 'unbound-arcanostorm', 'green-doom-skies', 'circles-below-dis', 'fallen-citadel', 'sunken-citadel', 'deep-one-city');
+  assert.equal(new Set(imageIds(c)).size, imageIds(c).length);
+  assert.ok(c.layout <= 3);
+  assert.ok(imageIds(c).includes('archetype:storms-and-calamity'));
 });

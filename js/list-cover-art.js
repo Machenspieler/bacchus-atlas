@@ -74,6 +74,13 @@
     archetype('forgotten-ruins', [50, 38], [50, 25], [90, 30]),
     archetype('arcane-sanctums', [50, 8], [60, 30], [85, 30]),
     archetype('feasts-and-revelry', [50, 40], [50, 50], [45, 40]),
+    archetype('storms-and-calamity', [52, 18], [55, 38], [55, 30]),
+    archetype('infernal-and-profane', [58, 22], [58, 35], [60, 30]),
+    archetype('drowned-depths', [50, 38], [48, 40], [50, 40]),
+    archetype('strongholds-and-sieges', [60, 30], [72, 40], [80, 35]),
+    archetype('monster-lairs', [50, 72], [30, 55], [22, 55]),
+    archetype('cursed-and-blighted-lands', [50, 48], [40, 45], [30, 40]),
+    archetype('fey-and-enchanted', [50, 35], [60, 40], [70, 35]),
 
     biome('aquatic', [50, 45], [85, 45]),
     biome('badlands', [50, 35], [25, 45]),
@@ -99,6 +106,13 @@
     'forgotten-ruins': { variants: ['archetype:forgotten-ruins'] },
     'arcane-sanctums': { variants: ['archetype:arcane-sanctums'] },
     'feasts-and-revelry': { variants: ['archetype:feasts-and-revelry'] },
+    'storms-and-calamity': { variants: ['archetype:storms-and-calamity'] },
+    'infernal-and-profane': { variants: ['archetype:infernal-and-profane'] },
+    'drowned-depths': { variants: ['archetype:drowned-depths'] },
+    'strongholds-and-sieges': { variants: ['archetype:strongholds-and-sieges'] },
+    'monster-lairs': { variants: ['archetype:monster-lairs'] },
+    'cursed-and-blighted-lands': { variants: ['archetype:cursed-and-blighted-lands'] },
+    'fey-and-enchanted': { variants: ['archetype:fey-and-enchanted'] },
   };
 
   /* environment id -> [archetype, fit, variant?]. 'strong': the picture shows this
@@ -147,6 +161,39 @@
     'the-commanders-dinner': ['feasts-and-revelry', 'acceptable'],
     'upscale-casino': ['feasts-and-revelry', 'acceptable'],
     'fairwell-casino': ['feasts-and-revelry', 'acceptable'],
+    /* Phase 2 (docs/research/adaptive-list-covers-phase2.md §5-6): judged one by one against
+     * each environment's lore. The pictures are specific — a tornado over a coast, an infernal
+     * fortress-city, a drowned city, a fortress under assault, a dragon's bone cavern, a dying
+     * wilderness, an elven-built glade — so a shared archetype id is not enough. */
+    /* storms-and-calamity: a tornado and storm front, not fire, ice or ground disasters */
+    tornado: ['storms-and-calamity', 'strong'],
+    megastorm: ['storms-and-calamity', 'strong'],
+    thunderstorm: ['storms-and-calamity', 'acceptable'],
+    'magical-storm': ['storms-and-calamity', 'acceptable'],
+    'unbound-arcanostorm': ['storms-and-calamity', 'acceptable'],
+    'green-doom-skies': ['storms-and-calamity', 'acceptable'],
+    /* infernal-and-profane: Hell's cities and fortresses, not cults, shrines or chasms */
+    'circles-below-dis': ['infernal-and-profane', 'strong'],
+    'fallen-citadel': ['infernal-and-profane', 'strong'],
+    'prison-city-pyrrhexis': ['infernal-and-profane', 'strong'],
+    'infernal-railyard': ['infernal-and-profane', 'acceptable'],
+    'the-metal-throne-of-sin': ['infernal-and-profane', 'acceptable'],
+    /* drowned-depths: submerged architecture, not open water, wrecks or darkness */
+    'sunken-citadel': ['drowned-depths', 'strong'],
+    'deep-one-city': ['drowned-depths', 'strong'],
+    'drowned-sanctum': ['drowned-depths', 'acceptable'],
+    /* strongholds-and-sieges: a stronghold actually under attack */
+    'castle-siege': ['strongholds-and-sieges', 'strong'],
+    'defense-of-the-river-fort': ['strongholds-and-sieges', 'acceptable'],
+    /* monster-lairs: the one lair of a colossal beast in a cave */
+    'dragons-lair': ['monster-lairs', 'acceptable'],
+    /* cursed-and-blighted-lands: dying, corrupted wilderness — not swamp, desert, lava or ice */
+    'rewritten-grove': ['cursed-and-blighted-lands', 'strong'],
+    'gnarled-glen': ['cursed-and-blighted-lands', 'acceptable'],
+    'cursed-valley': ['cursed-and-blighted-lands', 'acceptable'],
+    /* fey-and-enchanted: luminous, built fey places — not dark, wild or abstract ones */
+    'court-of-cats': ['fey-and-enchanted', 'strong'],
+    'fey-lands': ['fey-and-enchanted', 'acceptable'],
   };
 
   /* biome -> picture. 'universal' has none on purpose: an "Other" environment says

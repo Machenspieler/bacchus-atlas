@@ -11,7 +11,7 @@
    the cover tile at 1x / 2x / 3x (a single tile is 318 CSS px; a third of the card is 105);
    AVIF carries the detail, one 640 WebP is the fallback for a browser that cannot decode it.
    Masters are never modified and never shipped (scripts/build.js excludes both folders).
-   Run: node scripts/generate-list-covers.js
+   Run: node scripts/generate-list-covers.js [stem ...]   (no stems = every picture; stems = only those)
    ============================================================ */
 'use strict';
 const fs = require('fs');
@@ -43,13 +43,22 @@ const SOURCES = {
   'archetype-forgotten-ruins': 'img/cover-archetypes-source/forgotten-ruins-landscape.png',
   'archetype-arcane-sanctums': 'img/cover-archetypes-source/arcane-sanctums-landscape.png',
   'archetype-feasts-and-revelry': 'img/cover-archetypes-source/feasts-and-revelry-landscape.png',
+  'archetype-storms-and-calamity': 'img/cover-archetypes-source/storms-and-calamity.png',
+  'archetype-infernal-and-profane': 'img/cover-archetypes-source/infernal-and-profane.png',
+  'archetype-drowned-depths': 'img/cover-archetypes-source/drowned-depths.png',
+  'archetype-strongholds-and-sieges': 'img/cover-archetypes-source/strongholds-and-sieges.png',
+  'archetype-monster-lairs': 'img/cover-archetypes-source/monster-lairs.png',
+  'archetype-cursed-and-blighted-lands': 'img/cover-archetypes-source/cursed-and-blighted-lands.png',
+  'archetype-fey-and-enchanted': 'img/cover-archetypes-source/fey-and-enchanted.png',
 };
 
 async function main() {
   fs.mkdirSync(OUT, { recursive: true });
   let total = 0;
   let files = 0;
+  const only = process.argv.slice(2);
   for (const [stem, master] of Object.entries(SOURCES)) {
+    if (only.length && !only.includes(stem)) continue;
     const src = path.join(ROOT, master);
     if (!fs.existsSync(src)) { console.error('missing master: ' + master); process.exitCode = 1; continue; }
     for (const w of WIDTHS) {
