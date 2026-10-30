@@ -1857,11 +1857,8 @@ ol.feature-bullets { list-style: decimal; }
  * everyone off for a mistake they had not made yet. */
 .field-error[hidden] { display: none; }
 
-/* align-items: start, because a cover makes cards in a row different heights and
- * the default stretch would pass that height to the pictureless ones — a card
- * with nothing to show would carry a cover's worth of blank between its count
- * and its button. Each card is its own height instead, and a row of covers ends
- * lower than the plain cards beside it. */
+/* align-items: start, so a card whose rename error is showing grows by itself
+ * instead of stretching every card in its row to match. */
 .list-cards-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 320px)); gap: var(--s-4);
   align-items: start; margin-top: var(--s-6);
@@ -1893,29 +1890,41 @@ ol.feature-bullets { list-style: decimal; }
 .list-rename, .list-card-del { position: relative; z-index: 2; }
 /* Full bleed: the negative margins spend the card's own padding, and the card
  * clips the corners. One row of equal columns however many tiles there are —
- * one picture the card wide, or three a third of it each. The 2px gap is the
- * ground showing between them. */
+ * one picture the card wide, two halves, three thirds. The 1px gap is the ground
+ * showing between them. Every card wears one, 90px tall whatever it holds, so the
+ * grid stays an even grid: a list with nothing to draw gets the neutral panel
+ * below instead of no cover at all. */
 .list-card-cover {
   margin: calc(var(--s-4) * -1) calc(var(--s-4) * -1) var(--s-1);
   height: 90px; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
   gap: 1px; background: var(--line);
 }
-/* One height for every cover, letterbox and all: a taller strip for the single
- * picture bought back some of the painting at the price of a card standing
- * 30px above the ones beside it, which is the raggedness the grid was ordered
- * to avoid in the first place. */
 .list-card-cover picture { display: block; overflow: hidden; min-width: 0; }
-/* Env pictures are 3:2 landscapes and a tile is nearer a square, so the crop
- * takes the middle — unlike the card rail, where a 1:3 painting is anchored to
- * its top. */
+/* Landscapes in a 3.5:1 band (or a near-square third of one): object-fit crops,
+ * never stretches, and object-position holds the part of the picture the registry
+ * (js/list-cover-art.js) chose for this layout — --pos is "x% y%". */
 .list-card-cover img {
   display: block; width: 100%; height: 100%;
-  /* Centre unless the painting says otherwise — ENV_ART_FOCUS sets --focus for
-   * the ones whose subject does not sit in the middle. */
-  object-fit: cover; object-position: center var(--focus, 50%);
+  object-fit: cover; object-position: var(--pos, 50% 50%);
   transition: filter var(--t-base) var(--ease-out);
 }
 .list-card:hover .list-card-cover img { filter: brightness(1.12); }
+/* Nothing in the list has an honest picture: a quiet ink panel with a fine
+ * diagonal ruling and one small ornament, in the card's own hairline colours —
+ * no scene, so it cannot be read as the list's contents. An empty list (.is-empty)
+ * is the same panel, a little dimmer, since it has nothing to say at all. */
+.list-card-cover.is-neutral {
+  display: flex; align-items: center; justify-content: center;
+  background:
+    radial-gradient(ellipse 60% 120% at 50% 50%, var(--hope-wash), transparent 70%),
+    repeating-linear-gradient(135deg, transparent 0 7px, rgba(255,255,255,0.025) 7px 8px),
+    var(--ink-raised);
+  box-shadow: inset 0 -1px 0 var(--line);
+  color: var(--line-strong);
+}
+.list-card-cover.is-neutral svg { width: 120px; height: 20px; flex: none; opacity: 0.85; }
+.list-card-cover.is-neutral.is-empty { color: var(--line); }
+.list-card-cover.is-neutral.is-empty svg { opacity: 0.7; }
 /* gap ≥ 10px so the delete button's 44px hit area never reaches into the name field */
 .list-card-top { display: flex; align-items: center; gap: var(--s-3); }
 /* A faint rule under the name at rest, because it is an input dressed as a

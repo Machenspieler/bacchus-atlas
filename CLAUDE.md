@@ -170,6 +170,10 @@ Adversaries parser is `js/potential-adversary-utils.js` — see
 [docs/architecture.md](docs/architecture.md) "Environment → Recommended
 Adversaries".
 
+### My Lists covers
+
+Every list card wears a 90px cover of at most three distinct pictures chosen from the list's current members — own painting, then a fitting thematic archetype picture (`ARCHETYPE_FIT`, never the whole taxonomy), then the biome's Journey landscape; `universal` and generic `settlement` get no picture — or a neutral panel when nothing honest applies. Derived on render, never stored; registry `js/list-cover-art.js`, rules `js/list-cover-utils.js`. Decision record: [docs/product-decisions.md](docs/product-decisions.md) PD-085, detail: [docs/architecture.md](docs/architecture.md) "My Lists adaptive covers".
+
 ### Manual ordering
 
 The selected cards on `#/prep` are manually orderable: `prep.environmentIds`

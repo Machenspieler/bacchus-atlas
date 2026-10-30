@@ -289,6 +289,16 @@ state (no preview, badge or indicator).
 - Structural coverage: `tests/prep-notes.test.js`; data behaviour in
   `tests/prep-utils.test.js` and `tests/storage.test.js`.
 
+## My Lists adaptive covers (PD-085)
+
+`listCoverHtml(list)` in `js/app.js` builds the 90px cover of every list card from the list's *current* members: `envsInList()` → `{id, artBiome}` (the app's own `artBiome()`) → `ListCoverUtils.coverForEnvironments()` → up to three tiles, or the neutral panel (`.is-neutral`, `.is-empty` for a list with no members). Nothing is stored; per-environment resolutions are memoised in `coverResolutionCache`.
+
+- `js/list-cover-art.js` — the registry (pure data): `IMAGES` (id → AVIF ladder, WebP fallback, per-layout `object-position`), `UNIQUE_ENV_IDS`, `ARCHETYPES` (variants per archetype), `ARCHETYPE_FIT` (environment → archetype + `strong`/`acceptable`), `BIOME_IMAGES`, `EXPLICIT_ONLY_BIOMES`, `ENV_IMAGE_OVERRIDES`. New artwork is an edit here plus `scripts/generate-list-covers.js`.
+- `js/list-cover-utils.js` — `resolveEnvironmentArt`, `selectCoverImages`, `coverForEnvironments`; pure, no randomness. Loaded after `list-utils.js`, before `app.js`.
+- Files: `img/list-covers/<biome|archetype>-<name>-{320,640,960}.avif` + `-640.webp`, cut by `scripts/generate-list-covers.js` from `img/biome-artwork-source/` and `img/cover-archetypes-source/` (both excluded from `dist/`). Unique paintings keep `img/env/thumb/`.
+- A tile whose file fails to load is removed by a capture-phase `error` listener (`bindCoverFallback`); with none left the cover turns neutral — never a broken-image icon.
+- Tests: `tests/list-cover-art.test.js` (registry integrity, paths, build exclusion, `ENV_ART` sync), `tests/list-cover-utils.test.js` (resolution and selection on the real catalogue). Visual QA: `node scripts/shoot-list-covers.js`.
+
 ## Prep manual ordering (drag-and-drop)
 
 The three stored arrays — `prep.environmentIds`, `prep.adversaryIds`,

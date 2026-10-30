@@ -2435,7 +2435,7 @@ function renderListsHome() {
         <p class="field-error" id="new-list-error" hidden>${ICON_ALERT}<span>${t('list_name_required')}</span></p>
       </div>
       ${state.lists.length
-        ? `<div class="list-cards-grid">${listsCoveredFirst().map(listCardHtml).join('')}</div>`
+        ? `<div class="list-cards-grid">${state.lists.map(listCardHtml).join('')}</div>`
         : emptyStateHtml({ icon: ICON_BOOKMARK, title: t('no_lists_yet'), hint: t('no_lists_hint') })}
     </div>`;
 
@@ -2600,11 +2600,6 @@ function bindListRename(input) {
   });
 }
 
-/* A cover shows at most three pictures. Beyond that the tiles are too narrow to
- * be a painting rather than a stripe, and the count line under them already says
- * how much is in the list. */
-const COVER_MAX = 3;
-
 /* What a cover tile is asked to draw. The tiles split the card between them, so
  * the slot depends on how many there are: one is the card wide, three are a
  * third of it each. Desktop figures are the 320px cap on .list-cards-grid
@@ -2614,45 +2609,70 @@ const COVER_SIZES = {
   2: '(max-width: 640px) 50vw, 160px',
   3: '(max-width: 640px) 33vw, 107px',
 };
-const ENV_THUMB_WIDTHS = [200, 400, 800];
 
-/* The env pictures a list's members own, hung across the top of its card. Only
- * env pictures: biome art is not used to pad a row of two out to three, because
- * a cover says "these paintings are in here" and a stand-in would say something
- * else. Most lists hold none of the three and get no cover at all. */
-function listCoverHtml(list) {
-  const ids = envsInList(list.id).map(e => e.id).filter(id => ENV_ART.has(id)).slice(0, COVER_MAX);
-  if (!ids.length) return '';
-  const sizes = COVER_SIZES[ids.length];
-  // The full-size env picture is a backdrop for a whole window — three of them
-  // behind a 112px strip would be the heaviest page on the site, so the cover
-  // is served from the thumbnails cut for it.
-  const tiles = ids.map(id => {
-    const base = 'img/env/thumb/' + id;
-    const avif = ENV_THUMB_WIDTHS.map(w => `${base}-${w}.avif ${w}w`).join(', ');
-    const focus = ENV_ART_FOCUS[id] ? ` style="--focus:${ENV_ART_FOCUS[id]}"` : '';
-    return `<picture>
-            <source type="image/avif" sizes="${sizes}" srcset="${avif}">
-            <img src="${base}-400.webp" alt="" loading="lazy" decoding="async"${focus}>
+/* The picture an environment resolves to never changes while the page is open (the
+ * registry is static and artBiome() reads only the catalogue), so one lookup per
+ * environment serves every list it is in and every re-render. */
+const coverResolutionCache = new Map();
+
+/* The NEUTRAL cover's one ornament: a four-point star between two short rules. It is
+ * a drawing, not a claim — no scene, no place, nothing a list could be mistaken for
+ * containing. */
+const ICON_COVER_ORNAMENT = '<svg viewBox="0 0 120 20" fill="none" aria-hidden="true"><path d="M8 10h38M74 10h38" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><path d="M60 2l2.6 7.4L70 10l-7.4 2.6L60 18l-2.6-5.4L50 10l7.4-.6z" fill="currentColor"/></svg>';
+
+/* One tile of a cover. The registry says which files the picture has and where in
+ * the frame it should be held at this layout (object-position); the layout also
+ * picks the `sizes` slot so the browser fetches the width this tile really draws. */
+function coverTileHtml(tile, layout) {
+  const img = tile.image;
+  const srcset = img.avif.map(a => `${a.path} ${a.w}w`).join(', ');
+  const p = img.pos[layout];
+  const style = p.x === 50 && p.y === 50 ? '' : ` style="--pos:${p.x}% ${p.y}%"`;
+  return `<picture>
+            <source type="image/avif" sizes="${COVER_SIZES[layout]}" srcset="${srcset}">
+            <img src="${img.fallback}" alt="" loading="lazy" decoding="async"${style}>
           </picture>`;
-  }).join('');
+}
+
+/* The cover every list card wears: up to three distinct pictures chosen from what
+ * the list holds right now (ListCoverUtils — its own painting, then a fitting
+ * thematic picture, then its biome's), or, when nothing in it has an honest
+ * picture — the list is empty, or holds only environments no picture suits —
+ * a restrained neutral panel of the same size. Derived on every render from the
+ * current members, never stored. */
+function listCoverHtml(list) {
+  const members = envsInList(list.id);
+  const cover = ListCoverUtils.coverForEnvironments(
+    members.map(e => ({ id: e.id, artBiome: artBiome(e) })), ListCoverArt, coverResolutionCache);
   /* No click handler of its own: the Open button's stretched ::after covers the
    * whole card, cover included. Out of the tab order and out of the
    * accessibility tree too — that button is the real control, and a screen
    * reader has no use for a decorative crop of a painting. */
+  if (!cover.layout) {
+    return `
+      <div class="list-card-cover is-neutral${members.length ? '' : ' is-empty'}" aria-hidden="true">${ICON_COVER_ORNAMENT}</div>`;
+  }
   return `
-      <div class="list-card-cover" aria-hidden="true">${tiles}</div>`;
+      <div class="list-card-cover" aria-hidden="true">${cover.tiles.map(t => coverTileHtml(t, cover.layout)).join('')}</div>`;
 }
 
-/* Lists with a cover first. A cover makes a card 90px taller than a plain one,
- * and the two shapes interleaved leave the grid ragged wherever they meet — in
- * this order the seam happens once instead of in every row. Stable within each
- * group, and for the rendering only: state.lists keeps the order the lists were
- * made in, which is the order a rename or a delete is written against. */
-function listsCoveredFirst() {
-  const covered = list => envsInList(list.id).some(e => ENV_ART.has(e.id));
-  return [...state.lists.filter(covered), ...state.lists.filter(l => !covered(l))];
+/* A tile whose file cannot be loaded is taken out of the cover rather than left as
+ * a broken-image icon. The tiles share the row equally, so the rest widen to fill;
+ * with none left the cover is the neutral panel, which is what its background
+ * already is. Capture phase: image errors do not bubble. */
+function bindCoverFallback(root) {
+  root.addEventListener('error', e => {
+    const img = e.target;
+    if (!(img instanceof HTMLImageElement) || !img.closest('.list-card-cover')) return;
+    const cover = img.closest('.list-card-cover');
+    img.closest('picture').remove();
+    if (!cover.querySelector('picture')) {
+      cover.classList.add('is-neutral');
+      cover.insertAdjacentHTML('beforeend', ICON_COVER_ORNAMENT);
+    }
+  }, true);
 }
+bindCoverFallback(document);
 
 function listCardHtml(list) {
   const cover = listCoverHtml(list);
@@ -2668,7 +2688,7 @@ function listCardHtml(list) {
    * rename error needs one of its own to associate via aria-describedby. */
   const errorId = 'list-rename-error-' + list.id;
   return `
-    <div class="list-card${cover ? ' has-cover' : ''}" data-list="${list.id}">${cover}
+    <div class="list-card" data-list="${list.id}">${cover}
       <div class="list-card-top">
         <input type="text" value="${escapeAttr(list.name)}" maxlength="${ListUtils.MAX_NAME_LENGTH}" class="list-rename" aria-label="${t('rename_list_label')}" aria-describedby="${errorId}">
         <button type="button" class="icon-btn icon-btn--danger icon-btn--reach list-card-del" data-del-list="${list.id}"
