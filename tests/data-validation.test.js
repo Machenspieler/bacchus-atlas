@@ -244,6 +244,44 @@ test('duplicate environment id fails', () => {
   assert.ok(errorsOf(result).some(d => /Duplicate environment id/.test(d.message)));
 });
 
+/* ---------------- 5b: same content under two names ---------------- */
+
+const twinFeatures = () => [{
+  type: 'passive',
+  name: bi('Evil Bargain', 'Дьявольская Сделка'),
+  description: bi('When a PC rolls with Fear, they may mark a Stress.', 'Когда персонаж выбрасывает Страх, он может отметить Стресс.'),
+}];
+
+test('two environments with different names but identical content fail', () => {
+  const dir = buildFixture({
+    environments: v => {
+      v.environments[0].features = twinFeatures();
+      v.environments.push(defaultEnvironment({
+        id: 'other-name',
+        name: bi('Something Else', 'Что-то другое'),
+        features: twinFeatures(),
+      }));
+      // Case, spacing and curly quotes must not hide the copy.
+      v.environments[1].features[0].description.en = 'when a pc rolls with  FEAR, they may mark a stress';
+    },
+  });
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => /same features and impulses as "test-env"/.test(d.message)));
+});
+
+test('environments with different feature text pass the content check', () => {
+  const dir = buildFixture({
+    environments: v => {
+      v.environments[0].features = twinFeatures();
+      const other = twinFeatures();
+      other[0].description.en = 'When a PC rolls with Hope, they may clear a Stress.';
+      v.environments.push(defaultEnvironment({ id: 'other-name', name: bi('Something Else', 'Что-то другое'), features: other }));
+    },
+  });
+  const result = validateRepositoryData(dir);
+  assert.ok(!errorsOf(result).some(d => /same features and impulses/.test(d.message)));
+});
+
 /* ---------------- 6: invalid environment tier ---------------- */
 
 test('invalid environment tier fails', () => {

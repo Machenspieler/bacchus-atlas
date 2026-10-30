@@ -58,6 +58,28 @@ function normalizeDisplayName(name) {
   return String(name).trim().toLowerCase().replace(/\s+/g, ' ');
 }
 
+/* Content fingerprint for the "same environment under two names" check: the
+   English impulses plus every feature's type, name and description, with case,
+   spacing, quotes and punctuation flattened. Null when the entry has no
+   features, so there is nothing to compare and it never collides. */
+function environmentContentFingerprint(env) {
+  const flat = value => String(value == null ? '' : value)
+    .toLowerCase()
+    .replace(/[‘’]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .trim();
+  const enOf = value => (isPlainObject(value) ? value.en : value);
+  const features = Array.isArray(env.features)
+    ? env.features.filter(isPlainObject).map(f => [f.type, enOf(f.name), enOf(f.description)].map(flat).join('|'))
+    : [];
+  const impulses = isPlainObject(env.impulses) && Array.isArray(env.impulses.en)
+    ? env.impulses.en.map(flat)
+    : [];
+  if (features.length === 0) return null;
+  return JSON.stringify([features, impulses]);
+}
+
 function createReporter(file, diagnostics) {
   return {
     error(jsonPath, message, id) {
@@ -317,6 +339,7 @@ function validateEnvironments(data, file, diagnostics) {
   }
 
   const nameOccurrences = new Map(); // normalized name -> [{ id, index, original }]
+  const contentOccurrences = new Map(); // content fingerprint -> first { id, index }
 
   list.forEach((env, i) => {
     const p = `$.environments[${i}]`;
@@ -353,6 +376,16 @@ function validateEnvironments(data, file, diagnostics) {
     }
 
     validateEnvMultiTier(env, p, reporter, idLabel);
+
+    const fingerprint = environmentContentFingerprint(env);
+    if (fingerprint !== null) {
+      const twin = contentOccurrences.get(fingerprint);
+      if (twin) {
+        reporter.error(p, `Environment "${idLabel}" has the same features and impulses as "${twin.id}" — one environment listed under two names. Keep one.`, idLabel);
+      } else {
+        contentOccurrences.set(fingerprint, { id: idLabel, index: i });
+      }
+    }
 
     if (env.name === undefined) {
       reporter.error(`${p}.name`, `Environment "${idLabel}" is missing a name.`, idLabel);

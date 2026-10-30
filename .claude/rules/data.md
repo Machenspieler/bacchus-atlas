@@ -136,5 +136,14 @@ for the environment schema in full before editing `data/environments.json`.
   broken reference, or writes a baseline of its own. If it catches a real
   error in checked-in data, fix the data by hand — don't weaken the check
   that caught it.
+- **One environment, one entry.** The validator fails when two environments
+  with different ids have identical English features (type, name,
+  description) after case, spacing, quote and punctuation are flattened —
+  the same environment listed under two names (owner decision, 2026-10-30,
+  after Underground Chasm turned out to be Demonic Abyss reprinted; the
+  Incredible Creatures one was kept). Fix it by deleting one entry, not by
+  tweaking text to slip past the check. Entries with no features never
+  collide; same-name pairs stay a warning (Time Loop / Masquerade Ball
+  Atlas editions differ on purpose).
 - **Run `node scripts/validate-data.js`** after any change under `data/`;
   it's the same check CI runs before every deploy.
