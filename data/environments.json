@@ -35280,6 +35280,295 @@
         "badlands"
       ],
       "source": "Resting Dagger"
+    },
+    {
+      "id": "cattle-drive",
+      "tier": 1,
+      "type": "traversal",
+      "difficulty": 11,
+      "name": {
+        "en": "Cattle Drive",
+        "ru": "Перегон Скота"
+      },
+      "lore": {
+        "en": "A cattle drive across the great plains.",
+        "ru": "Перегон скота через бескрайние равнины."
+      },
+      "impulses": {
+        "en": [
+          "Emphasize the length of the journey",
+          "try to break the herd",
+          "exhaust the heroes"
+        ],
+        "ru": [
+          "Подчеркнуть длину пути",
+          "попытаться разбить стадо",
+          "измотать героев"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Acid Burrower",
+          "Black Hat Cattle Rustlers",
+          "Coyote (Wolf)"
+        ],
+        "ru": [
+          "Кислотный Землекоп",
+          "Конокрады-Чёрные Шляпы",
+          "Койот (Волк)"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "A Thousand Head or So",
+            "ru": "Тысяча голов, или около того"
+          },
+          "description": {
+            "en": "Start a Cattle Countdown (20), representing the size of the herd. If the countdown is 10 or lower during a rest, one PC can use both of their downtime moves to search for lost cattle. A PC searching for cattle on a short rest rolls a d4 and ticks up the Cattle Countdown by the value rolled; if a PC searches for cattle on a long rest, they roll a d8 instead. If the Cattle Countdown triggers before the Drive Countdown, the PCs lose the entire herd and fail the drive.",
+            "ru": "Начните Отсчёт Скота (20), представляющий размер стада. Если во время отдыха Отсчёт равен 10 или меньше, один персонаж может потратить оба своих хода простоя на поиски потерявшихся голов. Персонаж, ищущий скот во время Короткого Отдыха, бросает d4 и увеличивает Отсчёт Скота на выпавшее значение; если персонаж ищет скот во время Продолжительного Отдыха, он бросает d8. Если Отсчёт Скота срабатывает раньше Отсчёта Перегона, персонажи теряют всё стадо и проваливают перегон."
+          },
+          "prompt": {
+            "en": "How large is the herd? What happens if the PCs aren’t able to deliver the herd to its destination?",
+            "ru": "Насколько велико стадо? Что случится, если персонажи не смогут доставить стадо до места назначения?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Hard Drivin’ Wranglers",
+            "ru": "Суровые Погонщики"
+          },
+          "description": {
+            "en": "Start a Drive Countdown (3) that ticks down every time the PCs complete a day’s work. To complete a day’s work, each PC must describe what obstacles they face and how they work to overcome them, then make a relevant action roll. For each failure, tick the Cattle Countdown down by 1. When the Drive Countdown triggers, the PCs complete the drive.",
+            "ru": "Начните Отсчёт Перегона (3), который уменьшается каждый раз, когда персонажи завершают дневную работу. Чтобы завершить дневную работу, каждый персонаж должен описать, с какими препятствиями он сталкивается и как их преодолевает, а затем совершить подходящий бросок действия. За каждый провал уменьшите Отсчёт Скота на 1. Когда Отсчёт Перегона срабатывает, персонажи завершают перегон."
+          },
+          "prompt": {
+            "en": "If not cattle, what kind of livestock is the herd? Are there any distinct animals that stand out from the rest?",
+            "ru": "Если не коровы, то какой скот в стаде? Есть ли отдельные животные, выделяющиеся среди остальных?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Driving Hazards",
+            "ru": "Опасности в Пути"
+          },
+          "description": {
+            "en": "Roll a d6 and introduce the obstacle matching the result on the list below, then ask the PCs what they do in response. You can spend a Fear to choose an option instead of rolling.\n1. **Cattle Rustlers:** Each PC makes a Reaction Roll using their equipped weapon’s trait. If half or more of the PCs fail, tick down the Cattle Countdown by 2. Otherwise, tick down the Cattle Countdown by 1.\n2. **Prairie Fire:** Tick down the Cattle Countdown by 2. Each PC marks 2 Stress.\n3. **Water Woes:** A deep river blocks the PCs’ path and they must decide as a group to either ford the river or find a long way around. If the party chooses to ford the river, tick down the Cattle Countdown by 1. If the party chooses the long way around, tick up the Drive Countdown by 1.\n4. **Stampede!:** Roll a d4 and tick down the Cattle Countdown by a number equal to the result. Each PC must succeed on an Instinct Reaction Roll or take 1d12+2 physical damage.\n5. **Hard Rains:** All PCs mark 1 Stress and have disadvantage on their next action roll.\n6. **Clear skies and trails:** Far as the eye can see.",
+            "ru": "Бросьте d6 и введите препятствие, соответствующее результату в списке ниже, затем спросите персонажей, что они делают в ответ. Вы можете потратить Страх, чтобы выбрать вариант, а не бросать кость.\n1. **Конокрады:** Каждый персонаж совершает Бросок Реакции, используя черту своего экипированного оружия. Если половина или больше персонажей проваливают бросок, уменьшите Отсчёт Скота на 2. В противном случае уменьшите Отсчёт Скота на 1.\n2. **Степной пожар:** Уменьшите Отсчёт Скота на 2. Каждый персонаж отмечает 2 Стресса.\n3. **Беда с водой:** Глубокая река преграждает путь, и персонажи должны решить всей группой: переправляться через реку вброд или искать долгий обход. Если группа решает переправляться вброд, уменьшите Отсчёт Скота на 1. Если группа выбирает долгий обход, увеличьте Отсчёт Перегона на 1.\n4. **Стампеда!:** Бросьте d4 и уменьшите Отсчёт Скота на выпавшее число. Каждый персонаж должен преуспеть в Броске Реакции на Инстинкт или получить 1d12+2 физического урона.\n5. **Проливные дожди:** Все персонажи отмечают 1 Стресс и совершают свой следующий бросок действия с помехой.\n6. **Чистое небо и ровная тропа:** Насколько хватает глаз."
+          },
+          "prompt": {
+            "en": "What is the weather like during the journey, and what are the trail conditions? What sorts of areas do the PCs make camp?",
+            "ru": "Какая погода стоит в пути и в каком состоянии тропа? В каких местах персонажи разбивают лагерь?"
+          }
+        }
+      ],
+      "biomes": [
+        "grassland"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "haunted-gold-mine",
+      "tier": 1,
+      "type": "exploration",
+      "difficulty": 11,
+      "name": {
+        "en": "Haunted Gold Mine",
+        "ru": "Проклятый Золотой Рудник"
+      },
+      "lore": {
+        "en": "A spooky abandoned gold mine hidden deep in the rocky hills.",
+        "ru": "Жуткий заброшенный золотой рудник, спрятанный в глубине скалистых холмов."
+      },
+      "impulses": {
+        "en": [
+          "Haunt the heroes",
+          "produce abundance",
+          "trap the heroes"
+        ],
+        "ru": [
+          "Преследовать героев",
+          "дарить изобилие",
+          "заманить героев в ловушку"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Acid Burrower",
+          "Bear",
+          "Boneyard Goldtooth",
+          "Cave Ogre",
+          "Giant Rat",
+          "Giant Scorpion",
+          "Skeletons",
+          "Swarm of Rats"
+        ],
+        "ru": [
+          "Кислотный Землекоп",
+          "Медведь",
+          "Золотозуб с Кладбища",
+          "Пещерный Огр",
+          "Гигантская Крыса",
+          "Гигантский Скорпион",
+          "Скелеты",
+          "Стая Крыс"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Vexing Cave",
+            "ru": "Гнетущая Пещера"
+          },
+          "description": {
+            "en": "An unsettling scene of gore and violence greets the PCs at the entrance and they must mark a Stress to enter the mine. Inside the mine, disturbing whispers echo off the walls, preventing the PCs from clearing Stress while inside it.",
+            "ru": "У входа персонажей встречает тревожная сцена крови и насилия, и они должны отметить Стресс, чтобы войти в рудник. Внутри рудника от стен отдаются тревожные шёпоты, не позволяющие персонажам снимать Стресс, пока они там находятся."
+          },
+          "prompt": {
+            "en": "What were the dead miners fleeing from? Which loved one’s voice do the PCs hear echoing amongst the whispers?",
+            "ru": "От чего бежали погибшие шахтёры? Чей голос близкого человека персонажи слышат среди шёпота?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Gold Rush",
+            "ru": "Золотая Лихорадка"
+          },
+          "description": {
+            "en": "A PC can mark a Stress and make a Strength Roll to try and mine a gold vein. On a success, they gain a handful of gold, and you place 1d4 tokens on this stat block. The Difficulty to mine this vein increases by 1 for each token on this stat block. Alternatively, a PC can spend a Hope to make an Instinct Roll or Knowledge Roll to locate a new vein of gold. On a success, remove 1d4 tokens.",
+            "ru": "Персонаж может отметить Стресс и совершить Бросок Силы, пытаясь добыть золото из жилы. При успехе он получает горсть золота, а вы кладёте 1d4 жетонов на этот блок характеристик. Сложность добычи из этой жилы повышается на 1 за каждый жетон на этом блоке характеристик. Либо персонаж может потратить Надежду и совершить Бросок Инстинкта или Бросок Знания, чтобы найти новую золотую жилу. При успехе уберите 1d4 жетонов."
+          },
+          "prompt": {
+            "en": "What happened to the miners?",
+            "ru": "Что случилось с шахтёрами?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Dead Prospector",
+            "ru": "Мёртвый Старатель"
+          },
+          "description": {
+            "en": "Spend 2 Fear to introduce a crumbling Boneyard Goldtooth, rotten with age and permanently Vulnerable, to the scene that attempts to chase the PCs out of the mine.",
+            "ru": "Потратьте 2 Страха, чтобы ввести в сцену рассыпающегося Золотозуба с Кладбища, прогнившего от времени и постоянно Уязвимого, который пытается выгнать персонажей из рудника."
+          },
+          "prompt": {
+            "en": "What fears do the PCs hold that can be stoked in these claustrophobic tunnels? What did the previous occupants leave behind?",
+            "ru": "Какие страхи персонажей можно разжечь в этих клаустрофобных туннелях? Что оставили после себя прежние обитатели?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Code Violations",
+            "ru": "Нарушения Техники Безопасности"
+          },
+          "description": {
+            "en": "When a PC mines for gold, you can spend a Fear to have the roof cave in. Each PC must succeed on an Agility Reaction Roll or take 1d12+6 physical damage and become Restrained until another PC succeeds on a Strength Roll to free them from the rubble or they succeed on a Strength Roll with disadvantage to free themselves.",
+            "ru": "Когда персонаж добывает золото, вы можете потратить Страх, чтобы обрушить кровлю. Каждый персонаж должен преуспеть в Броске Реакции на Проворность или получить 1d12+6 физического урона и стать Обездвиженным, пока другой персонаж не преуспеет в Броске Силы, чтобы вытащить его из-под завала, или пока он сам не преуспеет в Броске Силы с помехой, чтобы выбраться."
+          },
+          "prompt": {
+            "en": "Is there seismic activity nearby that affects the mine? What level of disrepair is the mine in?",
+            "ru": "Есть ли поблизости сейсмическая активность, влияющая на рудник? В каком состоянии находится рудник?"
+          }
+        }
+      ],
+      "biomes": [
+        "underground",
+        "rolling"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "surrounded",
+      "tier": 3,
+      "type": "event",
+      "difficulty": 16,
+      "name": {
+        "en": "Surrounded",
+        "ru": "В Окружении"
+      },
+      "lore": {
+        "en": "The heroes are surrounded by foes, unable to escape!",
+        "ru": "Герои окружены врагами и не могут вырваться!"
+      },
+      "impulses": {
+        "en": [
+          "Keep them pinned",
+          "relentlessly pummel them",
+          "make them submit"
+        ],
+        "ru": [
+          "Не давать им двинуться",
+          "безжалостно избивать их",
+          "принудить их сдаться"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Any"
+        ],
+        "ru": [
+          "Любые"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Impenetrable Circle",
+            "ru": "Непроницаемое Кольцо"
+          },
+          "description": {
+            "en": "The PCs’ foes have surrounded them, preventing their escape. Create a Far range circle around the PCs that blocks all foot travel.",
+            "ru": "Враги персонажей окружили их, не давая им сбежать. Создайте круг радиусом в Дальнюю дистанцию вокруг персонажей, который блокирует любое передвижение пешком."
+          },
+          "prompt": {
+            "en": "How are the PCs’ foes cutting off any means of escape? What do these adversaries want from the heroes?",
+            "ru": "Как враги персонажей отрезают все пути к бегству? Чего эти противники хотят от героев?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Closin’ In",
+            "ru": "Сжимая Кольцо"
+          },
+          "description": {
+            "en": "Spend a Fear to reduce the size of the circle to Close range.",
+            "ru": "Потратьте Страх, чтобы сократить круг до Средней дистанции."
+          },
+          "prompt": {
+            "en": "What are the PCs accused of doing that landed them in this predicament? Does the accusation have any merit, or are the PCs innocent of their supposed crimes?",
+            "ru": "В чём обвиняют персонажей, что привело их в такое положение? Есть ли в обвинении доля правды, или персонажи невиновны в приписываемых им преступлениях?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Clip Their Wings",
+            "ru": "Подрезать Крылья"
+          },
+          "description": {
+            "en": "When a PC attempts to fly out of the circle, spend a Fear to make them make an Agility Reaction Roll. On a failure, they are knocked out of the air and become temporarily Vulnerable.",
+            "ru": "Когда персонаж пытается вылететь за пределы круга, потратьте Страх, чтобы он совершил Бросок Реакции на Проворность. При провале его сбивают в воздухе, и он становится временно Уязвимым."
+          },
+          "prompt": {
+            "en": "What sorts of firearms or ranged weaponry are the adversaries utilizing? Is someone in the crowd calling the shots?",
+            "ru": "Какое огнестрельное или дальнобойное оружие используют противники? Есть ли в толпе тот, кто командует стрельбой?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "Pistolheart"
     }
   ]
 }
