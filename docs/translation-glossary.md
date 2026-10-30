@@ -192,8 +192,14 @@ Environment text, settled by the 2026-10-27 proofreading pass:
 - **Downtime move (settled 2026-10-30, owner confirmed):** «Ход Отдыха»
   (plural «Ходы Отдыха», capitalised like the other rest terms) — never
   «ход/действие простоя», «действие отдыха» or lowercase «ход отдыха».
-  "During downtime" is «во время отдыха»; a "downtime project" is «проект
-  Хода Отдыха». Item and adversary text already follow this.
+  "During downtime" is «во время отдыха». Item and adversary text already
+  follow this.
+- **Downtime projects (settled 2026-10-30, from daggerheart.ru/rule/downtime
+  and /rule/work-on-a-project):** Downtime Project = «Проект во время
+  Отдыха»; the downtime move Work on a Project = «Работа над Проектом»;
+  a long-term project is «долгосрочный проект». Dynamic Countdown =
+  «Динамический Отсчёт» — the site still prints «Динамический Счетчик»,
+  but the project rule is Countdown = «Отсчёт», never «Счётчик».
 - **Still open:** how the book's group forms with no roster ("Vampires
   (all, including Lamia)", "Outer Realms (any)", "Spectral Forces") should
   expand — decided case by case, see PD-082.
