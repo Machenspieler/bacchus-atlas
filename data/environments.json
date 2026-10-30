@@ -35310,12 +35310,12 @@
         "en": [
           "Acid Burrower",
           "Black Hat Cattle Rustlers",
-          "Coyote (Wolf)"
+          "Dire Wolf"
         ],
         "ru": [
           "Кислотный Землекоп",
           "Конокрады-Чёрные Шляпы",
-          "Койот (Волк)"
+          "Лютоволк"
         ]
       },
       "features": [
@@ -35487,9 +35487,21 @@
     },
     {
       "id": "surrounded",
-      "tier": 3,
+      "tier": 1,
+      "tiers": [
+        1,
+        2,
+        3,
+        4
+      ],
       "type": "event",
-      "difficulty": 16,
+      "difficulty": 12,
+      "difficulty_by_tier": {
+        "1": 12,
+        "2": 14,
+        "3": 16,
+        "4": 18
+      },
       "name": {
         "en": "Surrounded",
         "ru": "В Окружении"
