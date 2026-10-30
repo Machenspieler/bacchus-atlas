@@ -189,6 +189,11 @@ Environment text, settled by the 2026-10-27 proofreading pass:
   participle «ведущий» — "leading" — and «Ведущий персонаж» are ordinary
   words and stay); Secret-Keeper = «Хранитель Тайн», not «Культист-Хранитель
   Тайн» (the name `prep.json` and the other environments use).
+- **Downtime move (settled 2026-10-30, owner confirmed):** «Ход Отдыха»
+  (plural «Ходы Отдыха», capitalised like the other rest terms) — never
+  «ход/действие простоя», «действие отдыха» or lowercase «ход отдыха».
+  "During downtime" is «во время отдыха»; a "downtime project" is «проект
+  Хода Отдыха». Item and adversary text already follow this.
 - **Still open:** how the book's group forms with no roster ("Vampires
   (all, including Lamia)", "Outer Realms (any)", "Spectral Forces") should
   expand — decided case by case, see PD-082.

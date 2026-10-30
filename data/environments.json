@@ -2118,7 +2118,7 @@
           },
           "description": {
             "en": "The PCs quickly notice a small stream where plants were obviously harvested. A PC can use Knowledge to identify these as potent healing herbs. This area is mostly cleared out, but has enough for one dose. Start a Progress Countdown (6) to find more of these healing herbs. Start a Consequence Countdown (4) for a rival group to find them first; a Serpent Sorcerer and 1d2 Lightning Trolls. Success yields 2d12 doses worth of herbs that let you take an additional rest action during a long rest.",
-            "ru": "Персонажи быстро замечают небольшой ручей, у которого явно собирали растения. Персонаж может использовать Знание, чтобы опознать в них мощные целебные травы. Этот участок в основном опустошён, но трав хватит на одну дозу. Начните Отсчёт Прогресса (6), чтобы найти больше этих целебных трав. Начните Отсчёт Последствий (4) для соперничающей группы, которая может найти их первой — Змеиного Чародея и 1d2 Молниевых Троллей. Успех приносит 2d12 доз трав, позволяющих совершить дополнительное действие отдыха во время долгого отдыха."
+            "ru": "Персонажи быстро замечают небольшой ручей, у которого явно собирали растения. Персонаж может использовать Знание, чтобы опознать в них мощные целебные травы. Этот участок в основном опустошён, но трав хватит на одну дозу. Начните Отсчёт Прогресса (6), чтобы найти больше этих целебных трав. Начните Отсчёт Последствий (4) для соперничающей группы, которая может найти их первой — Змеиного Чародея и 1d2 Молниевых Троллей. Успех приносит 2d12 доз трав, позволяющих выбрать дополнительный Ход Отдыха во время продолжительного отдыха."
           },
           "prompt": {
             "en": "What about these healing herbs surprises you? How can you tell others have been harvesting these herbs?",
@@ -5890,7 +5890,7 @@
           },
           "description": {
             "en": "PCs can navigate through the jungle by completing a progress countdown. Failed rolls extend the journey time, potentially diminishing supplies. During downtime, PCs can make an action roll to forage for food and water. On a success with Fear, roll a d6. On a 1, the food or water is tainted and all PCs that consume it contract Spirit Fever (see the \"Tropical Diseases\" action).",
-            "ru": "Персонажи могут пройти через джунгли, завершив отсчёт прогресса. Провальные броски продлевают время пути, потенциально сокращая запасы. Во время простоя персонажи могут совершить бросок действия, чтобы добыть еду и воду. При успехе со Страхом бросьте d6. При результате 1 еда или вода заражены, и все персонажи, употребившие их, заражаются Духовной Лихорадкой (см. действие «Тропические Болезни»)."
+            "ru": "Персонажи могут пройти через джунгли, завершив отсчёт прогресса. Провальные броски продлевают время пути, потенциально сокращая запасы. Во время отдыха персонажи могут совершить бросок действия, чтобы добыть еду и воду. При успехе со Страхом бросьте d6. При результате 1 еда или вода заражены, и все персонажи, употребившие их, заражаются Духовной Лихорадкой (см. действие «Тропические Болезни»)."
           },
           "prompt": {
             "en": "How do the PCs set up camp to avoid wildlife and stay dry?",
@@ -19113,7 +19113,7 @@
           },
           "description": {
             "en": "The first time each scene that a PC with 0 Hope enters the Wishmaker Glade, they gain a Hope. PCs that Prepare in the Wishmaker Glade gain an additional Hope.",
-            "ru": "Первый раз за сцену, когда персонаж с 0 Надежды входит на Поляну Желаний, он получает Надежду. Персонажи, использующие ход простоя «Подготовка» на Поляне Желаний, получают дополнительную Надежду."
+            "ru": "Первый раз за сцену, когда персонаж с 0 Надежды входит на Поляну Желаний, он получает Надежду. Персонажи, использующие Ход Отдыха «Подготовка» на Поляне Желаний, получают дополнительную Надежду."
           },
           "prompt": {
             "en": "What about the glade inspires such enduring Hope? What possibilities seem within reach that would normally seem impossible?",
@@ -19951,7 +19951,7 @@
           },
           "prompt": {
             "en": "What things do the PCs see or hear during their downtime to make it less restful? Can you advance a long-term countdown as a result of their delay?",
-            "ru": "Что персонажи видят или слышат во время простоя, из-за чего отдых не приносит покоя? Можете ли вы продвинуть долгосрочный отсчёт из-за их промедления?"
+            "ru": "Что персонажи видят или слышат во время отдыха, из-за чего он не приносит покоя? Можете ли вы продвинуть долгосрочный отсчёт из-за их промедления?"
           }
         },
         {
@@ -22314,7 +22314,7 @@
           },
           "description": {
             "en": "If the PCs take a rest in the lounge or rooms of the speakeasy, they add +1 to the results of any downtime moves.",
-            "ru": "Если персонажи отдыхают в зале или комнатах спикизи, они добавляют +1 к результатам любых ходов простоя."
+            "ru": "Если персонажи отдыхают в зале или комнатах спикизи, они добавляют +1 к результатам любых Ходов Отдыха."
           },
           "prompt": {
             "en": "",
@@ -23724,7 +23724,7 @@
           },
           "description": {
             "en": "Reaching a stable anchor point to enter the Stream Fold and programming the drive uses a Progress Countdown (4d4). It ticks down according to the following criteria when the PCs make an Action Roll to enter the Stream Fold:\n- **Critical Success:** Tick down 3\n- **Success with Hope:** Tick down 2\n- **Success with Fear:** Tick down 1\n- **Failure with Hope:** No advancement\n- **Failure with Fear:** Tick up 1\n\nOnce the countdown is 6 or less, the PCs may choose to enter the Stream Fold as a Reaction. When they do, roll a d6. If the result is equal to or greater than the current number of ticks, the ship enters the Stream Fold and emerges safely at the intended destination.\n\nIf the result is less than the number of ticks, the ship enters the Stream Fold and emerges near the intended destination, but later than expected. Also, in this case, as the ship exits the Stream Fold, roll a d6 to determine additional effects:\n- **1 – Reactor Meltdown:** The ship’s reactor enters cascade. If it is not shut down, it explodes, destroying the ship and forcing all PCs to make a Death Move.\n- **2–5 – System Damage:** One of the ship’s systems is heavily damaged. It can be repaired with a downtime action during the next long rest.\n- **6 – Glitching:** The vehicle’s systems are unstable, causing disadvantage on the next Action Roll using the vehicle.",
-            "ru": "Достижение устойчивой точки старта для входа в Складку Потока и программирование двигателя требует Отсчёта Прогресса (4d4). Он уменьшается по следующим критериям, когда персонажи совершают бросок действия, чтобы войти в Складку Потока:\n- **Критический успех:** Уменьшить на 3\n- **Успех с Надеждой:** Уменьшить на 2\n- **Успех со Страхом:** Уменьшить на 1\n- **Неудача с Надеждой:** Без изменений\n- **Неудача со Страхом:** Увеличить на 1\n\nКогда отсчёт равен 6 или меньше, персонажи могут выбрать войти в Складку Потока как Реакцию. Когда они это делают, бросьте d6. Если результат равен текущему числу делений или превышает его, корабль входит в Складку Потока и благополучно выходит в пункте назначения.\n\nЕсли результат меньше числа делений, корабль входит в Складку Потока и выходит вблизи пункта назначения, но позже, чем ожидалось. Также в этом случае, когда корабль покидает Складку Потока, бросьте d6, чтобы определить дополнительные эффекты:\n- **1 – Расплавление реактора:** Реактор корабля переходит в каскадный режим. Если его не заглушить, он взрывается, уничтожая корабль и вынуждая всех персонажей совершить Предсмертный ход.\n- **2–5 – Повреждение систем:** Одна из систем корабля серьёзно повреждена. Её можно починить ходом отдыха во время следующего продолжительного отдыха.\n- **6 – Сбои:** Системы транспорта нестабильны, что даёт помеху на следующий бросок действия с использованием этого транспорта."
+            "ru": "Достижение устойчивой точки старта для входа в Складку Потока и программирование двигателя требует Отсчёта Прогресса (4d4). Он уменьшается по следующим критериям, когда персонажи совершают бросок действия, чтобы войти в Складку Потока:\n- **Критический успех:** Уменьшить на 3\n- **Успех с Надеждой:** Уменьшить на 2\n- **Успех со Страхом:** Уменьшить на 1\n- **Неудача с Надеждой:** Без изменений\n- **Неудача со Страхом:** Увеличить на 1\n\nКогда отсчёт равен 6 или меньше, персонажи могут выбрать войти в Складку Потока как Реакцию. Когда они это делают, бросьте d6. Если результат равен текущему числу делений или превышает его, корабль входит в Складку Потока и благополучно выходит в пункте назначения.\n\nЕсли результат меньше числа делений, корабль входит в Складку Потока и выходит вблизи пункта назначения, но позже, чем ожидалось. Также в этом случае, когда корабль покидает Складку Потока, бросьте d6, чтобы определить дополнительные эффекты:\n- **1 – Расплавление реактора:** Реактор корабля переходит в каскадный режим. Если его не заглушить, он взрывается, уничтожая корабль и вынуждая всех персонажей совершить Предсмертный ход.\n- **2–5 – Повреждение систем:** Одна из систем корабля серьёзно повреждена. Её можно починить Ходом Отдыха во время следующего продолжительного отдыха.\n- **6 – Сбои:** Системы транспорта нестабильны, что даёт помеху на следующий бросок действия с использованием этого транспорта."
           },
           "prompt": {
             "en": "What is making the PCs’ escape difficult? Is the stream hard to program? Is the anchor point far away? Is something blocking or herding the PCs?",
@@ -26491,7 +26491,7 @@
           },
           "description": {
             "en": "A section of the workshop is devoted to salvaging scrap. A PC can mark a Stress as they pull apart the twisted metal and warped flesh to find functional parts of a Deadrig:\n- **A Set of Wheels** — Describe a strange sensory effect they produce.\n- **A Chassis** — Describe its unique shape and material.\n- **An Engine** — What internal organ is fused with it.\n\nOnce all the parts have been collected and you have acquired a set of Mechanus Chains, construct the vehicle by either paying a Road Priest 2 Bags of Gold or starting a downtime project (6) to build it yourself.",
-            "ru": "Часть мастерской отведена под разборку металлолома. Персонаж может отметить Стресс, разбирая искорёженный металл и искажённую плоть в поисках рабочих частей Мертворига:\n- **Комплект колёс** — Опишите странный сенсорный эффект, который они производят.\n- **Шасси** — Опишите его уникальную форму и материал.\n- **Двигатель** — Какой внутренний орган сплавлен с ним.\n\nКогда все части собраны и вы приобрели набор Механус-Цепей, соберите транспортное средство, либо заплатив Дорожному Жрецу 2 Мешка Золота, либо начав ход отдыха (6), чтобы построить его самостоятельно."
+            "ru": "Часть мастерской отведена под разборку металлолома. Персонаж может отметить Стресс, разбирая искорёженный металл и искажённую плоть в поисках рабочих частей Мертворига:\n- **Комплект колёс** — Опишите странный сенсорный эффект, который они производят.\n- **Шасси** — Опишите его уникальную форму и материал.\n- **Двигатель** — Какой внутренний орган сплавлен с ним.\n\nКогда все части собраны и вы приобрели набор Механус-Цепей, соберите транспортное средство, либо заплатив Дорожному Жрецу 2 Мешка Золота, либо начав проект Хода Отдыха (6), чтобы построить его самостоятельно."
           },
           "prompt": {
             "en": "",
@@ -31640,7 +31640,7 @@
           },
           "description": {
             "en": "The punishing sun prevents PCs from making downtime moves unless they find meaningful cover from the heat.",
-            "ru": "Беспощадное солнце не позволяет персонажам совершать ходы отдыха, пока те не найдут надёжное укрытие от жары."
+            "ru": "Беспощадное солнце не позволяет персонажам совершать Ходы Отдыха, пока те не найдут надёжное укрытие от жары."
           },
           "prompt": {
             "en": "What dangers lurk in the night while the party rests? Do they travel at night as well, or just rest and plan for the next day?",
@@ -31700,7 +31700,7 @@
           },
           "description": {
             "en": "If a PC rolls at least a 19 (or critically succeeds) on a roll to navigate the environment, they locate an oasis. Each PC gains a Hope. Additionally, while in the oasis, the PCs can make downtime moves during the day despite the “No Place to Hide” feature.",
-            "ru": "Если персонаж выбрасывает не менее 19 (или критический успех) на броске для навигации по окружению, он находит оазис. Каждый персонаж получает Надежду. Кроме того, находясь в оазисе, персонажи могут совершать ходы отдыха днём, несмотря на особенность «Негде укрыться»."
+            "ru": "Если персонаж выбрасывает не менее 19 (или критический успех) на броске для навигации по окружению, он находит оазис. Каждый персонаж получает Надежду. Кроме того, находясь в оазисе, персонажи могут совершать Ходы Отдыха днём, несмотря на особенность «Негде укрыться»."
           },
           "prompt": {
             "en": "What makes this oasis so hard to find? Is anyone else present when you arrive? Has someone tried to seize this site by force?",
@@ -35327,7 +35327,7 @@
           },
           "description": {
             "en": "Start a Cattle Countdown (20), representing the size of the herd. If the countdown is 10 or lower during a rest, one PC can use both of their downtime moves to search for lost cattle. A PC searching for cattle on a short rest rolls a d4 and ticks up the Cattle Countdown by the value rolled; if a PC searches for cattle on a long rest, they roll a d8 instead. If the Cattle Countdown triggers before the Drive Countdown, the PCs lose the entire herd and fail the drive.",
-            "ru": "Начните Отсчёт Скота (20), представляющий размер стада. Если во время отдыха Отсчёт равен 10 или меньше, один персонаж может потратить оба своих хода простоя на поиски потерявшихся голов. Персонаж, ищущий скот во время Короткого Отдыха, бросает d4 и увеличивает Отсчёт Скота на выпавшее значение; если персонаж ищет скот во время Продолжительного Отдыха, он бросает d8. Если Отсчёт Скота срабатывает раньше Отсчёта Перегона, персонажи теряют всё стадо и проваливают перегон."
+            "ru": "Начните Отсчёт Скота (20), представляющий размер стада. Если во время отдыха Отсчёт равен 10 или меньше, один персонаж может потратить оба своих Хода Отдыха на поиски потерявшихся голов. Персонаж, ищущий скот во время Короткого Отдыха, бросает d4 и увеличивает Отсчёт Скота на выпавшее значение; если персонаж ищет скот во время Продолжительного Отдыха, он бросает d8. Если Отсчёт Скота срабатывает раньше Отсчёта Перегона, персонажи теряют всё стадо и проваливают перегон."
           },
           "prompt": {
             "en": "How large is the herd? What happens if the PCs aren’t able to deliver the herd to its destination?",
@@ -35758,7 +35758,7 @@
           },
           "description": {
             "en": "The stranger turns in for the night. The PCs must use their downtime moves or leave camp.",
-            "ru": "Незнакомец ложится спать. Персонажи должны использовать свои ходы простоя или покинуть лагерь."
+            "ru": "Незнакомец ложится спать. Персонажи должны использовать свои Ходы Отдыха или покинуть лагерь."
           },
           "prompt": {
             "en": "Does the stranger seem trustworthy enough to share a camp with? What suggests they are? Or aren’t?",
@@ -35773,7 +35773,7 @@
           },
           "description": {
             "en": "When the PCs conclude their downtime moves, you can spend 2 Fear to make each PC roll a d4. On an odd result, the PC loses a handful of gold, but is left with an I.O.U. note from the stranger.",
-            "ru": "Когда персонажи завершают свои ходы простоя, вы можете потратить 2 Страха, чтобы каждый персонаж бросил d4. При нечётном результате персонаж теряет горсть золота, но взамен находит долговую расписку от незнакомца."
+            "ru": "Когда персонажи завершают свои Ходы Отдыха, вы можете потратить 2 Страха, чтобы каждый персонаж бросил d4. При нечётном результате персонаж теряет горсть золота, но взамен находит долговую расписку от незнакомца."
           },
           "prompt": {
             "en": "What treasured but valueless item did the stranger steal along with the gold? How did they get past the PCs keeping watch?",
