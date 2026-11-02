@@ -54,3 +54,18 @@ test('footer stays out of flow while the loading shell is busy, and only then', 
   assert.match(app, /function finishInitialLoading\(\)\s*\{\s*document\.getElementById\('main'\)\.removeAttribute\('aria-busy'\)/);
   assert.match(app, /function failInitialLoading\(\)\s*\{\s*document\.getElementById\('main'\)\.setAttribute\('aria-busy', 'false'\)/);
 });
+
+/* #/lists boots without the catalogue skeleton toolbar/cards, but a single list (#/lists/<id>) still
+ * renders the catalogue grid and must keep them. */
+test('lists boot route drops the catalogue skeleton only on the lists page', () => {
+  const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+  const m = html.match(/<script>if\((\/[^\n]*?\/)\.test\(location\.hash\)\)document\.documentElement\.dataset\.bootRoute='lists';<\/script>/);
+  assert.ok(m, 'pre-paint lists boot script present');
+  const re = new RegExp(m[1].slice(1, -1));
+  for (const h of ['#/lists', '#/lists/env/tornado']) assert.ok(re.test(h), h);
+  for (const h of ['#/', '#/lists/qa-0', '#/listsx', '#/prep', '#/journey']) assert.ok(!re.test(h), h);
+  const css = fs.readFileSync(path.join(__dirname, '..', 'css', 'styles.css'), 'utf8');
+  assert.match(css, /html\[data-boot-route="lists"\] \.skeleton-toolbar,\s*html\[data-boot-route="lists"\] #grid-wrap > \.sk-card\s*\{\s*display:\s*none;\s*\}/);
+  const app = fs.readFileSync(path.join(__dirname, '..', 'js', 'app.js'), 'utf8');
+  assert.match(app, /delete document\.documentElement\.dataset\.bootRoute/);
+});

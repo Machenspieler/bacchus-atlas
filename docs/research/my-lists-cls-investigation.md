@@ -26,6 +26,10 @@ One CSS rule in `css/styles.css` next to `.site-footer`:
 `#main[aria-busy="true"] ~ .site-footer { display: none; }`
 `#main` carries `aria-busy` for exactly the shell's lifetime (`beginInitialLoading` → `finishInitialLoading` / `failInitialLoading`, which sets `"false"`), so the footer simply appears with the real page. No JS, no markup, no timers; the footer's final look is unchanged, ribbons untouched.
 
+### 6b. Phone follow-up (second change)
+At 390 px the footer fix did nothing (0.179): the catalogue-shaped skeleton toolbar wraps tall, then the Lists page — which has no toolbar — replaced it (`#grid-wrap` y 237 → 60, height 607 → 784). Following the existing `data-boot-route` pattern, a pre-paint script in `index.html` sets `bootRoute='lists'` for `#/lists` and `#/lists/env/<id>` only (a single list, `#/lists/<id>`, still renders the catalogue grid and keeps its skeleton), and `css/styles.css` hides `.skeleton-toolbar` and the skeleton cards under it. `finishInitialLoading()` already deletes the flag. Cost: the Lists page has no skeleton while data loads (~100–200 ms); it then appears whole.
+After: 390×844 0.008 (illustrated/biome, en), 0.0006 (empty); 1440×900 0.003 / 0.0004; warm phone 0.000.
+
 ## 7. Test-script changes
 New `scripts/measure-cls.js` and `scripts/lib/cls.js`; `tests/cls.test.js` covers the window maths (gap, 5 s cap, recent-input exclusion, max-not-sum) and the footer/`aria-busy` contract. `shoot-list-covers.js` is unchanged (it never measured CLS).
 
@@ -39,9 +43,9 @@ New `scripts/measure-cls.js` and `scripts/lib/cls.js`; `tests/cls.test.js` cover
 | illustrated, en cold | 0.304 | 0.042 | same as ru |
 | 1280×800 / 1920×1080 illustrated cold | 0.444 / 0.033 | 0.052 / 0.031 | same |
 | Catalogue `#/` cold (out of scope, same cause) | 0.443 | 0.006 | same |
-| 390×844 illustrated cold | 0.179 | 0.179 | **not the footer** — see §11 |
+| 390×844 illustrated cold | 0.179 | 0.008 | not the footer: wrapped skeleton toolbar — fixed by §6b |
 
-After-fix, full matrix (4 viewports × illustrated/biome/empty × ru/en × cold/warm = 48 runs): every desktop run 0.017–0.051; the six 390 px configurations 0.171–0.200. Illustrated vs biome-only differ by ≤0.01 — the covers are not a factor.
+After-fix, full matrix (4 viewports × illustrated/biome/empty × ru/en × cold/warm = 48 runs): every desktop run 0.017–0.051 (footer fix alone); the 390 px runs 0.171–0.200 until §6b brought them to ≤ 0.008 (spot-checked, not the full matrix). Illustrated vs biome-only differ by ≤0.01 — the covers are not a factor.
 
 ## 9. Visual regression
 Before/after screenshots in `docs/research/my-lists-cls-investigation/` (lists RU/EN, empty, catalogue, ribbon hover). EN/empty/catalogue/hover PNGs are byte-identical; the RU lists PNG differs only by sub-pixel text antialiasing (viewed side by side: same layout, covers, ribbons, footer). The footer is `display:flex`, 76 px, after load. Card/cover heights, ribbons and hover untouched (CSS touches only the pre-render footer).
@@ -50,6 +54,6 @@ Before/after screenshots in `docs/research/my-lists-cls-investigation/` (lists R
 `node --test tests/*.test.js` 1575/1575 pass (incl. new `tests/cls.test.js`); `validate-data` 0 errors; build/versioning/unlisted/journey checks pass (see commit).
 
 ## 11. Remaining limitations
-- **Phone width (390)**: 0.17–0.20 ("needs improvement"). Cause: at that width the catalogue-shaped skeleton toolbar wraps tall (`#grid-wrap` y 237 → 60, height 607 → 784), then the Lists page has no toolbar. Smallest next step, in the existing `data-boot-route` pattern (PD journey skeleton): a pre-paint `bootRoute='lists'` that drops the skeleton toolbar/cards on `#/lists`. Not done: it changes the loading look and the brief asked for no speculative redesign.
+- Phone width (390): resolved by §6b.
 - `#/prep`: 0.08 (`main.shell` width 1180 → full-bleed after render) — under 0.10, left alone.
 - Web-font swap contributes ≈0.003–0.008; not worth a metric-compatible fallback.
