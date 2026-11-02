@@ -68,7 +68,9 @@
       parts.push(fn);
     });
     /* The two replaced seams; the lab decides what they return. */
-    parts.push('function biomeArtHtml(env) { return hooks.catalogArt ? hooks.catalogArt(env) : prodBiomeArtHtml(env); }');
+    /* Production's cardHtml now calls catalogArtHtml (PD-089: the Catalog rollout this lab informed). The lab keeps its own
+     * seam under that name, with the pre-rollout biome strip as Strategy A, so the experiment's baseline stays the baseline. */
+    parts.push('function catalogArtHtml(env) { return hooks.catalogArt ? hooks.catalogArt(env) : prodBiomeArtHtml(env); }');
     parts.push('function prepEnvThumbHtml(env) { return hooks.prepThumb ? hooks.prepThumb(env) : prodPrepEnvThumbHtml(env); }');
     parts.push('return { cardHtml, envPickerRowHtml, artBiome, prodBiomeArtHtml, prodPrepEnvThumbHtml, biomeThumbAttrs, envName, t, BIOMES, GENERIC_BIOMES, ART_SIZES, ART_WIDTHS };');
     // eslint-disable-next-line no-new-func

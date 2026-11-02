@@ -300,6 +300,14 @@ state (no preview, badge or indicator).
 - A tile whose file fails to load is removed by a capture-phase `error` listener (`bindCoverFallback`); with none left the cover turns neutral — never a broken-image icon.
 - Tests: `tests/list-cover-art.test.js` (registry integrity, paths, build exclusion, `ENV_ART` sync), `tests/list-cover-utils.test.js` (resolution and selection on the real catalogue). Visual QA: `node scripts/shoot-list-covers.js`.
 
+## Catalog strips (PD-089)
+
+`cardHtml()` calls `catalogArtHtml(env)`, which asks `CatalogArt.resolveCatalogArt(env)` (`js/catalog-art.js`, pure, id-only, no language) what the 95px strip shows: `unique` (the environment's own painting), `override` (the harbour, i.e. the existing settlement biome strip), `thematic` (an approved archetype picture) or `biome` — in which case the original `biomeArtHtml()` runs, unchanged. Both gates are explicit: the environment must be mapped in `ARCHETYPE_FIT` (`js/list-cover-art.js`), and the picture's entry in `CatalogArt.PICTURES` must say it reads in a strip (`use: 'all' | 'strong' | 'none'`; `strong` needs a `strong` fit; no entry = never used). `ENV_KEEP_BIOME` is the per-environment escape hatch (empty today).
+
+- Files: `img/catalog-art/<archetype-name|env-id>-{100,200,250,300}.avif` + `-200.webp`, a 1:3 window of the master (full height, left edge at `x`% of the travel) cut by `scripts/generate-catalog-art.js` from the same masters as `img/list-covers/` (archetypes) and `img/env/<id>.jpg` (paintings). Only pictures in use are cut; the script deletes stale files. The ladder and `ART_SIZES` match the biome strips, so `.card-art` CSS, lazy loading and card geometry are shared.
+- Independent of My Lists crops (`js/list-cover-art.js` `pos`) and of Prep thumbnails (`prepEnvThumbHtml`, `biomeThumbAttrs`), which never read `CatalogArt`.
+- Tests: `tests/catalog-art.test.js` (resolution gates, no dead assets, 1:3 dimensions and no upscaling, reproducible encode, isolation of other pages). Visual and delivery QA: `node scripts/shoot-catalog-art.js` (baseline = `js/catalog-art.js` stubbed to "always biome", so the comparison is the same code on the same data).
+
 ## Prep manual ordering (drag-and-drop)
 
 The three stored arrays — `prep.environmentIds`, `prep.adversaryIds`,

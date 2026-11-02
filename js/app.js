@@ -2156,6 +2156,33 @@ function biomeArtHtml(env) {
       </div>`;
 }
 
+/* The card's picture panel: a thematic strip where js/catalog-art.js has one the
+ * place deserves and the strip can carry (a painting, an explicit harbour override,
+ * an approved archetype picture), the biome strip otherwise. Every strip is the same
+ * 1:3 panel with the same srcset contract as biomeArtHtml, so card geometry never
+ * depends on which one is drawn. */
+function catalogArtHtml(env) {
+  const art = CatalogArt.resolveCatalogArt(env);
+  if (art.kind === 'biome') return biomeArtHtml(env);
+  // The harbour override is the settlement biome's own strip, already served.
+  if (art.kind === 'override') {
+    return stripHtml(ART_WIDTHS.map(w => ({ path: `img/biomes/settlement-${w}.avif`, w })), 'img/biomes/settlement-200.webp');
+  }
+  const f = CatalogArt.files(CatalogArt.PICTURES[art.imageId].stem);
+  return stripHtml(f.avif, f.fallback);
+}
+
+function stripHtml(avifSet, fallback) {
+  const avif = avifSet.map(a => `${a.path} ${a.w}w`).join(', ');
+  return `
+      <div class="card-art">
+        <picture>
+          <source type="image/avif" sizes="${ART_SIZES}" srcset="${avif}">
+          <img src="${fallback}" alt="" loading="lazy" decoding="async">
+        </picture>
+      </div>`;
+}
+
 function cardHtml(env) {
   const impulses = envField(env, 'impulses');
   const loreText = bilingual(env.lore);
@@ -2177,7 +2204,7 @@ function cardHtml(env) {
   return `
     <article class="card" data-id="${env.id}">
       <span class="rank-icon rank-icon-sm active card-tier-badge" role="img" aria-label="${t('tier_label')} ${EnvTierUtils.tierLabel(env)}" data-tip="${t('tier_label')} ${EnvTierUtils.tierLabel(env)}"><span aria-hidden="true">${EnvTierUtils.tierLabel(env)}</span></span>
-      ${biomeArtHtml(env)}
+      ${catalogArtHtml(env)}
       <div class="card-body">
         <div class="card-top">
           <h3 class="card-title"><a class="card-open" href="${envHash(env.id)}" data-open-env="${env.id}">${escapeHtml(envName(env))}</a></h3>

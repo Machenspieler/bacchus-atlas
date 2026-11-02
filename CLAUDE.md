@@ -174,6 +174,10 @@ Adversaries".
 
 Every list card wears a 90px cover of at most three distinct pictures chosen from the list's current members — own painting, then a fitting thematic archetype picture (`ARCHETYPE_FIT`, never the whole taxonomy), then the biome's Journey landscape; `universal` and generic `settlement` get no picture — or a neutral panel when nothing honest applies. Derived on render, never stored; registry `js/list-cover-art.js`, rules `js/list-cover-utils.js`. Decision record: [docs/product-decisions.md](docs/product-decisions.md) PD-085, detail: [docs/architecture.md](docs/architecture.md) "My Lists adaptive covers".
 
+### Catalog strips
+
+The Catalog card's vertical strip wears a thematic picture only where both gates pass: the environment is mapped in `ARCHETYPE_FIT` AND the picture was reviewed in the real strip (`js/catalog-art.js` `PICTURES[id].use`: `all` / `strong` / `none`; no entry = never). Order: own painting → harbour override → approved thematic picture → the unchanged biome strip. Strips are dedicated 1:3 cuts in `img/catalog-art/` (`scripts/generate-catalog-art.js`); no scoring, no CSS tint/blur, and Prep thumbnails, Journey and My Lists never read it. Decision record: [docs/product-decisions.md](docs/product-decisions.md) PD-089, detail: [docs/architecture.md](docs/architecture.md) "Catalog strips".
+
 ### Manual ordering
 
 The selected cards on `#/prep` are manually orderable: `prep.environmentIds`
