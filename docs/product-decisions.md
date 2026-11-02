@@ -1636,3 +1636,10 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Date:** 2026-11-02
 - **Decision:** The revised (V2) `starfaring`, `sacred-sanctuaries` and `streets-and-towns` illustrations are eligible for My Lists, each with a single variant, subject to explicit environment-by-environment `ARCHETYPE_FIT` mappings. Only 9 environments are mapped; a shared taxonomy archetype is never enough (a spaceport is not a warship, a Marian-style statue temple is not a stone circle, a cheerful market street is not a slum). Catalog, Prep and Journey artwork are unchanged. The registry holds fourteen archetype pictures.
 - **Where:** `js/list-cover-art.js`, `scripts/generate-list-covers.js`, [docs/research/adaptive-list-covers-phase3.md](research/adaptive-list-covers-phase3.md).
+
+## PD-088: List covers, Phase 4 — the complete 28-picture library
+
+- **Status:** Active (amends PD-087's picture set; PD-085's rules are unchanged)
+- **Date:** 2026-11-02
+- **Decision:** The remaining fourteen archetype illustrations (crypts & tombs, taverns & inns, blighted mires, archives & libraries, planar rifts, arenas & duels, chase & ambush, intrigue & underworld, time & dream (V2), dungeon delves, perilous passages, seafaring, sinister woods, sky realms (V2)) are eligible for My Lists, one variant each, through explicit environment-by-environment `ARCHETYPE_FIT` mappings: 53 environments, of which `local-tavern` (from streets & towns) and `gnarled-glen` (from cursed & blighted lands) move to the picture that shows them exactly. The registry holds all 28 taxonomy archetypes. Where a place's lore names no setting (`universal`) a picture is used only if the lore itself names the scene it shows (an ambush, a blocked road, a time loop). Catalog, Prep and Journey artwork are unchanged and stay on their existing art pending a separate decision.
+- **Where:** `js/list-cover-art.js`, `scripts/generate-list-covers.js`, [docs/research/adaptive-list-covers-complete-library.md](research/adaptive-list-covers-complete-library.md).

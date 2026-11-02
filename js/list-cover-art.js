@@ -84,6 +84,20 @@
     archetype('starfaring', [50, 40], [60, 40], [75, 40]),
     archetype('sacred-sanctuaries', [50, 12], [30, 30], [15, 25]),
     archetype('streets-and-towns', [50, 28], [62, 40], [80, 35]),
+    archetype('crypts-and-tombs', [50, 45], [50, 50], [25, 50]),
+    archetype('taverns-and-inns', [50, 45], [50, 50], [30, 50]),
+    archetype('blighted-mires', [50, 40], [50, 50], [60, 45]),
+    archetype('archives-and-libraries', [50, 55], [50, 50], [60, 50]),
+    archetype('planar-rifts', [50, 30], [50, 50], [55, 40]),
+    archetype('arenas-and-duels', [50, 35], [50, 50], [45, 40]),
+    archetype('chase-and-ambush', [50, 35], [50, 50], [45, 40]),
+    archetype('intrigue-and-underworld', [50, 35], [50, 50], [60, 40]),
+    archetype('time-and-dream', [50, 40], [50, 50], [55, 40]),
+    archetype('dungeon-delves', [50, 50], [50, 50], [40, 50]),
+    archetype('perilous-passages', [50, 40], [50, 50], [70, 40]),
+    archetype('seafaring', [50, 50], [50, 50], [75, 50]),
+    archetype('sinister-woods', [50, 45], [50, 50], [40, 45]),
+    archetype('sky-realms', [50, 35], [50, 50], [45, 40]),
 
     biome('aquatic', [50, 45], [85, 45]),
     biome('badlands', [50, 35], [25, 45]),
@@ -119,6 +133,20 @@
     starfaring: { variants: ['archetype:starfaring'] },
     'sacred-sanctuaries': { variants: ['archetype:sacred-sanctuaries'] },
     'streets-and-towns': { variants: ['archetype:streets-and-towns'] },
+    'crypts-and-tombs': { variants: ['archetype:crypts-and-tombs'] },
+    'taverns-and-inns': { variants: ['archetype:taverns-and-inns'] },
+    'blighted-mires': { variants: ['archetype:blighted-mires'] },
+    'archives-and-libraries': { variants: ['archetype:archives-and-libraries'] },
+    'planar-rifts': { variants: ['archetype:planar-rifts'] },
+    'arenas-and-duels': { variants: ['archetype:arenas-and-duels'] },
+    'chase-and-ambush': { variants: ['archetype:chase-and-ambush'] },
+    'intrigue-and-underworld': { variants: ['archetype:intrigue-and-underworld'] },
+    'time-and-dream': { variants: ['archetype:time-and-dream'] },
+    'dungeon-delves': { variants: ['archetype:dungeon-delves'] },
+    'perilous-passages': { variants: ['archetype:perilous-passages'] },
+    'seafaring': { variants: ['archetype:seafaring'] },
+    'sinister-woods': { variants: ['archetype:sinister-woods'] },
+    'sky-realms': { variants: ['archetype:sky-realms'] },
   };
 
   /* environment id -> [archetype, fit, variant?]. 'strong': the picture shows this
@@ -195,7 +223,6 @@
     'dragons-lair': ['monster-lairs', 'acceptable'],
     /* cursed-and-blighted-lands: dying, corrupted wilderness — not swamp, desert, lava or ice */
     'rewritten-grove': ['cursed-and-blighted-lands', 'strong'],
-    'gnarled-glen': ['cursed-and-blighted-lands', 'acceptable'],
     'cursed-valley': ['cursed-and-blighted-lands', 'acceptable'],
     /* fey-and-enchanted: luminous, built fey places — not dark, wild or abstract ones */
     'court-of-cats': ['fey-and-enchanted', 'strong'],
@@ -213,10 +240,86 @@
      * festivals, occupation or a village in the wild */
     'bustling-marketplace': ['streets-and-towns', 'strong'],
     'resting-dagger-inn': ['streets-and-towns', 'strong'],
-    'local-tavern': ['streets-and-towns', 'acceptable'],
     'emberwood-village': ['streets-and-towns', 'acceptable'],
     'outpost-town': ['streets-and-towns', 'acceptable'],
     'street-chase': ['streets-and-towns', 'acceptable'],
+    /* Phase 4 (docs/research/adaptive-list-covers-complete-library.md): the last fourteen pictures.
+     * Same rule as before — one environment at a time, against its lore; a shared archetype id is
+     * never enough, and a settingless ('universal') place gets a picture only where the lore itself
+     * names the scene the picture shows. */
+    /* crypts-and-tombs: a built, candle-lit burial chamber with a sarcophagus — not an open
+     * cemetery, a burial mound, a bone-strewn canyon or a chapel above ground */
+    'heros-tomb': ['crypts-and-tombs', 'strong'],
+    'hallow-rest': ['crypts-and-tombs', 'strong'],
+    'necromancers-ossuary': ['crypts-and-tombs', 'acceptable'],
+    'ancient-tomb': ['crypts-and-tombs', 'acceptable'],
+    'endless-catacombs': ['crypts-and-tombs', 'acceptable'],
+    'catacomb-tunnels': ['crypts-and-tombs', 'acceptable'],
+    /* taverns-and-inns: a warm, timber-framed inn with a hearth — not a criminal den, a ratling
+     * warren or a cellar bar. local-tavern moves here from streets-and-towns (PD-087 stopgap). */
+    'teal-heart-inn': ['taverns-and-inns', 'strong'],
+    'local-tavern': ['taverns-and-inns', 'strong'],
+    'the-wandering-tavern': ['taverns-and-inns', 'acceptable'],
+    'the-squealing-boar-tavern-brawl': ['taverns-and-inns', 'acceptable'],
+    /* blighted-mires: a stagnant, dying swamp — not ink, time pools or a lizardfolk village */
+    shadowfen: ['blighted-mires', 'strong'],
+    'corrupted-swamp': ['blighted-mires', 'strong'],
+    'wretched-mire': ['blighted-mires', 'strong'],
+    'dread-mire': ['blighted-mires', 'strong'],
+    'buzzing-swamp': ['blighted-mires', 'acceptable'],
+    'blood-marsh': ['blighted-mires', 'acceptable'],
+    'heart-of-the-mire': ['blighted-mires', 'acceptable'],
+    'swamp-ruins': ['blighted-mires', 'acceptable'],
+    'beelzebufo-bog': ['blighted-mires', 'acceptable'],
+    /* archives-and-libraries: a sunlit scholars' library — not a ruined, buried or hostile one */
+    'library-of-the-dusk-tree': ['archives-and-libraries', 'strong'],
+    'civic-library': ['archives-and-libraries', 'acceptable'],
+    'neverhome-library': ['archives-and-libraries', 'acceptable'],
+    /* planar-rifts: a huge rupture in our own world, with ruins and floating fragments — not a
+     * realm seen from inside, an ordinary door or a storm */
+    'stop-the-collapse-of-reality': ['planar-rifts', 'strong'],
+    'extraplanar-breach': ['planar-rifts', 'strong'],
+    'portal-beyond': ['planar-rifts', 'acceptable'],
+    'planar-incursion-invasion': ['planar-rifts', 'acceptable'],
+    'planar-incursion-arcane-vortex': ['planar-rifts', 'acceptable'],
+    'shattered-lands': ['planar-rifts', 'acceptable'],
+    /* arenas-and-duels: a vast public stone arena — not a private duel, a pit, a race or a brawl */
+    'fighting-arena': ['arenas-and-duels', 'strong'],
+    'the-proving-pyre': ['arenas-and-duels', 'acceptable'],
+    /* chase-and-ambush: a wooded mountain track with a stone bridge and dropped gear — not
+     * rooftops, streets, canyons, trains or stagecoaches */
+    ambushed: ['chase-and-ambush', 'acceptable'],
+    ambushers: ['chase-and-ambush', 'acceptable'],
+    'road-blockade': ['chase-and-ambush', 'acceptable'],
+    /* intrigue-and-underworld: a shadowed medieval back street — not a court, a sewer market or a heist */
+    'gang-hideout': ['intrigue-and-underworld', 'acceptable'],
+    'thieves-guild': ['intrigue-and-underworld', 'acceptable'],
+    /* time-and-dream: a village square holding three seasons at once — only a place where time
+     * itself misbehaves, not a dream world, a court or a storm */
+    'time-loop': ['time-and-dream', 'acceptable'],
+    'time-loop-atlas': ['time-and-dream', 'acceptable'],
+    /* dungeon-delves: a built stone dungeon with gates and torches — not a mine, lava, crystal or a hazard */
+    'deadly-dungeon': ['dungeon-delves', 'strong'],
+    'dangerous-dungeon': ['dungeon-delves', 'strong'],
+    /* perilous-passages: a misty mountain crossing — not a river, a frozen lake or a floating rock */
+    'mountain-pass': ['perilous-passages', 'strong'],
+    'cliffside-ascent': ['perilous-passages', 'acceptable'],
+    'perilous-cliff': ['perilous-passages', 'acceptable'],
+    'haunted-mountain-pass': ['perilous-passages', 'acceptable'],
+    /* seafaring: a sailing ship under way — not a harbour, a wreck, a lake or a skyship */
+    'ocean-voyage': ['seafaring', 'strong'],
+    'terror-of-the-deep': ['seafaring', 'acceptable'],
+    /* sinister-woods: a dark, ancient, misty forest — not a hut, a tunnel, fey revels or a burning tree.
+     * gnarled-glen moves here from cursed-and-blighted-lands: "a twisted wood, dark canopies" is this picture. */
+    'unsettling-forest': ['sinister-woods', 'strong'],
+    'spooky-forest': ['sinister-woods', 'strong'],
+    'gnarled-glen': ['sinister-woods', 'strong'],
+    'gloaming-forest': ['sinister-woods', 'acceptable'],
+    'devouring-green': ['sinister-woods', 'acceptable'],
+    /* sky-realms: natural floating islands over a sea of cloud — not a sky city, a ship or a ruin */
+    'floating-mountains': ['sky-realms', 'strong'],
+    'stones-adrift': ['sky-realms', 'acceptable'],
+    'cloudy-sky': ['sky-realms', 'acceptable'],
   };
 
   /* biome -> picture. 'universal' has none on purpose: an "Other" environment says

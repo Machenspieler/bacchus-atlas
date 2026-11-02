@@ -53,6 +53,20 @@ const SOURCES = {
   'archetype-starfaring': 'img/cover-archetypes-source/starfaring.png',
   'archetype-sacred-sanctuaries': 'img/cover-archetypes-source/sacred-sanctuaries.png',
   'archetype-streets-and-towns': 'img/cover-archetypes-source/streets-and-towns.png',
+  'archetype-crypts-and-tombs': 'img/cover-archetypes-source/crypts-and-tombs.png',
+  'archetype-taverns-and-inns': 'img/cover-archetypes-source/taverns-and-inns.png',
+  'archetype-blighted-mires': 'img/cover-archetypes-source/blighted-mires.png',
+  'archetype-archives-and-libraries': 'img/cover-archetypes-source/archives-and-libraries.png',
+  'archetype-planar-rifts': 'img/cover-archetypes-source/planar-rifts.png',
+  'archetype-arenas-and-duels': 'img/cover-archetypes-source/arenas-and-duels.png',
+  'archetype-chase-and-ambush': 'img/cover-archetypes-source/chase-and-ambush.png',
+  'archetype-intrigue-and-underworld': 'img/cover-archetypes-source/intrigue-and-underworld.png',
+  'archetype-time-and-dream': 'img/cover-archetypes-source/time-and-dream.png',
+  'archetype-dungeon-delves': 'img/cover-archetypes-source/dungeon-delves.png',
+  'archetype-perilous-passages': 'img/cover-archetypes-source/perilous-passages.png',
+  'archetype-seafaring': 'img/cover-archetypes-source/seafaring.png',
+  'archetype-sinister-woods': 'img/cover-archetypes-source/sinister-woods.png',
+  'archetype-sky-realms': 'img/cover-archetypes-source/sky-realms.png',
 };
 
 async function main() {

@@ -6,7 +6,7 @@
    (never a real user's localStorage), screenshots #/lists at the sizes the brief asks
    for, and prints a machine check of every cover. Needs `playwright` (devDependency) and
    an installed Google Chrome. Run: node scripts/shoot-list-covers.js [outDir]
-   --phase3 seeds the Phase 3 scenarios (docs/research/adaptive-list-covers-phase3.md). --phase2 seeds the Phase 2 scenarios instead (docs/research/adaptive-list-covers-phase2.md §11).
+   --phase4 seeds the complete-library scenarios (docs/research/adaptive-list-covers-complete-library.md §11). --phase3 seeds the Phase 3 scenarios (docs/research/adaptive-list-covers-phase3.md). --phase2 seeds the Phase 2 scenarios instead (docs/research/adaptive-list-covers-phase2.md §11).
    ============================================================ */
 'use strict';
 const fs = require('fs');
@@ -15,10 +15,11 @@ const path = require('path');
 const { chromium } = require('playwright');
 
 const ROOT = path.join(__dirname, '..');
-const PHASE3 = process.argv.includes('--phase3');
-const PHASE2 = process.argv.includes('--phase2') || PHASE3; /* phase 3 reuses phase 2's report plumbing */
-const ARGS = process.argv.slice(2).filter(a => a !== '--phase2' && a !== '--phase3');
-const OUT = path.resolve(ARGS[0] || path.join(ROOT, PHASE3 ? 'docs/research/adaptive-list-covers-phase3-review' : PHASE2 ? 'docs/research/adaptive-list-covers-phase2-review' : 'docs/research/adaptive-list-covers-review'));
+const PHASE4 = process.argv.includes('--phase4');
+const PHASE3 = process.argv.includes('--phase3') || PHASE4;
+const PHASE2 = process.argv.includes('--phase2') || PHASE3; /* phases 3 and 4 reuse phase 2's report plumbing */
+const ARGS = process.argv.slice(2).filter(a => !['--phase2', '--phase3', '--phase4'].includes(a));
+const OUT = path.resolve(ARGS[0] || path.join(ROOT, PHASE4 ? 'docs/research/adaptive-list-covers-complete-library-review' : PHASE3 ? 'docs/research/adaptive-list-covers-phase3-review' : PHASE2 ? 'docs/research/adaptive-list-covers-phase2-review' : 'docs/research/adaptive-list-covers-review'));
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.webp': 'image/webp', '.avif': 'image/avif', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.ico': 'image/x-icon' };
 
 function serve() {
@@ -135,6 +136,48 @@ async function seedPhase3InPage() {
   return { lists, envLists, summary: S.map(([n, ids]) => [n, ids.length]) };
 }
 
+/* Phase 4 scenarios A-F: every one of the 28 pictures reachable, the new fourteen against approved and
+ * rejected real environments, shared and mixed lists, large lists, and regression lists. */
+async function seedPhase4InPage() {
+  const E = allEnvs();
+  const plain = (b, n, skip = 0) => E.filter(e => artBiome(e) === b && !ListCoverArt.ARCHETYPE_FIT[e.id] && !ListCoverArt.UNIQUE_ENV_IDS.includes(e.id)).slice(skip, skip + n).map(e => e.id);
+  const one = ['heros-tomb', 'teal-heart-inn', 'shadowfen', 'library-of-the-dusk-tree', 'stop-the-collapse-of-reality', 'fighting-arena', 'ambushed',
+    'thieves-guild', 'time-loop', 'deadly-dungeon', 'mountain-pass', 'ocean-voyage', 'unsettling-forest', 'floating-mountains'];
+  const S = [
+    ...one.map((id, i) => ['A' + String(i + 1).padStart(2, '0') + ' ' + id, [id]]),
+    ['B1 Two distinct', ['heros-tomb', 'fighting-arena']],
+    ['B2 Two, one picture', ['teal-heart-inn', 'local-tavern']],
+    ['B3 Thematic + biome', ['ocean-voyage', 'harsh-desert']],
+    ['B4 Painting + thematic', ['ouroborean-pass', 'floating-mountains']],
+    ['C1 Three distinct', ['shadowfen', 'library-of-the-dusk-tree', 'deadly-dungeon']],
+    ['C2 Painting + two', ['field-of-dreams', 'floating-mountains', 'unsettling-forest']],
+    ['C3 Three, one picture', ['heros-tomb', 'hallow-rest', 'ancient-tomb']],
+    ['C4 Thematic + biomes', ['stop-the-collapse-of-reality', 'harsh-desert', ...plain('forest', 1)]],
+    ['D1 Five', ['heros-tomb', 'teal-heart-inn', 'shadowfen', 'ocean-voyage', ...plain('forest', 1)]],
+    ['D2 Eight', ['ouroborean-pass', 'fighting-arena', 'mountain-pass', 'time-loop', 'ambushed', 'gang-hideout', ...plain('frozen', 2)]],
+    ['D3 Ten', ['cauldera-valley', ...one.slice(0, 7), ...plain('badlands', 2)]],
+    ['D4 All fourteen', one],
+    ['E1 Urban chase', ['rooftop-chase', 'bankburgh-chase']],
+    ['E2 Private duels', ['duel', 'quickdraw', 'epic-duel']],
+    ['E3 Empty space', ['lunar-surface', 'asteroid-chase']],
+    ['E4 Nature shrines', ['humble-altar', 'sanctuary-of-the-story-tree']],
+    ['E5 Sky cities', ['the-garden', 'lion-ascendant', 'the-skyship-windfall']],
+    ['E6 Cursed, no rupture', ['cursed-valley', 'rewritten-grove']],
+    ['E7 Wreck, lake, harbour', ['shipwreck', 'horizon-lake', 'port-city']],
+    ['E8 Criminal taverns', ['jazz-speakeasy', 'rats-nest-tavern', 'the-dungeoneer']],
+    ['F1 Original four', ['cursed-graveyard', 'ruined-castle', 'archmages-tower', 'masquerade-ball']],
+    ['F2 Phase 2 seven', ['tornado', 'circles-below-dis', 'sunken-citadel', 'castle-siege', 'dragons-lair', 'rewritten-grove', 'court-of-cats']],
+    ['F3 Phase 3 three', ['planetary-blockade', 'hallowed-temple', 'bustling-marketplace']],
+    ['F4 Three paintings', ['cauldera-valley', 'field-of-dreams', 'ouroborean-pass']],
+    ['F5 Empty', []],
+    ['F6 Stale reference', ['no-such-environment', 'shadowfen']],
+  ];
+  const lists = S.map(([name], i) => ({ id: 'qa-' + i, name }));
+  const envLists = {};
+  S.forEach(([, ids], i) => ids.forEach(id => { (envLists[id] = envLists[id] || []).push('qa-' + i); }));
+  return { lists, envLists, summary: S.map(([n, ids]) => [n, ids.length]) };
+}
+
 async function main() {
   fs.mkdirSync(OUT, { recursive: true });
   const { server, port } = await serve();
@@ -153,7 +196,7 @@ async function main() {
     page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
     await page.goto(base + 'index.html');
     await page.waitForFunction(() => typeof ListCoverUtils !== 'undefined' && typeof allEnvs === 'function' && allEnvs().length > 0);
-    const seed = await page.evaluate(PHASE3 ? seedPhase3InPage : PHASE2 ? seedPhase2InPage : seedInPage);
+    const seed = await page.evaluate(PHASE4 ? seedPhase4InPage : PHASE3 ? seedPhase3InPage : PHASE2 ? seedPhase2InPage : seedInPage);
     await page.evaluate(([s, l]) => {
       localStorage.setItem('dhcodex_lists', JSON.stringify(s.lists));
       localStorage.setItem('dhcodex_env_lists', JSON.stringify(s.envLists));

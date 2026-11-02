@@ -56,9 +56,10 @@ test('an acceptable archetype match is used and graded acceptable', () => {
 
 test('a misleading archetype match falls back to the biome picture', () => {
   assert.deepEqual(U.resolveEnvironmentArt(rec('deserted-moor')), { imageId: 'biome:rolling', kind: 'biome', fit: null });
-  assert.equal(U.resolveEnvironmentArt(rec('haunted-mountain-pass')).imageId, 'biome:mountain');
   assert.equal(U.resolveEnvironmentArt(rec('wispy-wasteland')).imageId, 'biome:rolling');
-  assert.equal(U.resolveEnvironmentArt(rec('swamp-ruins')).imageId, 'biome:wetland');
+  /* misleading for the haunted / ruins pictures, but a fit for a later one (phase 4) */
+  assert.equal(U.resolveEnvironmentArt(rec('haunted-mountain-pass')).imageId, 'archetype:perilous-passages');
+  assert.equal(U.resolveEnvironmentArt(rec('swamp-ruins')).imageId, 'archetype:blighted-mires');
 });
 
 test('an environment with no archetype entry uses its biome', () => {
@@ -80,7 +81,7 @@ test('a missing archetype or biome asset falls through, down to nothing', () => 
 test('universal and settlement environments get no picture, so none is invented', () => {
   /* Phase 2: a universal event the audit judged to fit a picture (a tornado) is explicit, like a harbour. */
   const universal = idsWhere(e => artBiome(e) === 'universal' && !Art.ARCHETYPE_FIT[e.id]);
-  assert.ok(universal.length >= 40);
+  assert.ok(universal.length >= 30);
   for (const id of universal) assert.equal(U.resolveEnvironmentArt(rec(id)), null, id);
   const settlementOnly = idsWhere(e => artBiome(e) === 'settlement' && !Art.ARCHETYPE_FIT[e.id] && !Art.ENV_IMAGE_OVERRIDES[e.id]);
   assert.ok(settlementOnly.length >= 50);
@@ -165,9 +166,9 @@ test('ten environments of one archetype: the archetype picture once, plus the di
 
 test('a list of ten across biomes shows three representative, different pictures, not the first three members', () => {
   const pick = (b, n) => idsWhere(e => artBiome(e) === b && !Art.ARCHETYPE_FIT[e.id] && !Art.UNIQUE_ENV_IDS.includes(e.id)).slice(0, n);
-  const ids = [...pick('forest', 5), ...pick('mountain', 3), ...pick('underground', 2)];
+  const ids = [...pick('forest', 5), ...pick('drylands', 3), ...pick('underground', 2)];
   const c = cover(...ids);
-  assert.deepEqual(imageIds(c), ['biome:forest', 'biome:mountain', 'biome:underground']);
+  assert.deepEqual(imageIds(c), ['biome:forest', 'biome:drylands', 'biome:underground']);
   assert.deepEqual(c.tiles.map(t => t.count), [5, 3, 2]);
   /* the first three members are all forests; a first-three rule would show one picture */
   assert.equal(new Set(ids.slice(0, 3).map(id => artBiome(BY_ID[id]))).size, 1);
@@ -263,7 +264,7 @@ const PHASE2 = {
   'drowned-depths': { strong: ['sunken-citadel', 'deep-one-city'], acceptable: ['drowned-sanctum'] },
   'strongholds-and-sieges': { strong: ['castle-siege'], acceptable: ['defense-of-the-river-fort'] },
   'monster-lairs': { strong: [], acceptable: ['dragons-lair'] },
-  'cursed-and-blighted-lands': { strong: ['rewritten-grove'], acceptable: ['gnarled-glen', 'cursed-valley'] },
+  'cursed-and-blighted-lands': { strong: ['rewritten-grove'], acceptable: ['cursed-valley'] },
   'fey-and-enchanted': { strong: ['court-of-cats'], acceptable: ['fey-lands'] },
 };
 /* Same archetype in the taxonomy, wrong picture: each falls to its biome picture or nothing. */
@@ -293,7 +294,7 @@ test('phase 2: the audited environments resolve to their picture with the audite
     }
   }
   const mapped = Object.keys(Art.ARCHETYPE_FIT).filter(id => Object.values(PHASE2).some(g => [...g.strong, ...g.acceptable].includes(id)));
-  assert.equal(mapped.length, 22);
+  assert.equal(mapped.length, 21);
 });
 
 test('phase 2: rejected environments never get the new picture and still fall back honestly', () => {
@@ -301,11 +302,12 @@ test('phase 2: rejected environments never get the new picture and still fall ba
   for (const ids of Object.values(REJECTED)) {
     for (const id of ids) {
       assert.ok(BY_ID[id], id);
-      assert.equal(Art.ARCHETYPE_FIT[id], undefined, id);
+      const later = Art.ARCHETYPE_FIT[id] && PHASE4[Art.ARCHETYPE_FIT[id][0]];
+      assert.ok(!Art.ARCHETYPE_FIT[id] || later, id);
       const r = U.resolveEnvironmentArt(rec(id));
       assert.ok(!r || !newIds.has(r.imageId), id);
-      /* the fallback is the biome picture, or nothing for universal / settlement */
-      if (r) assert.equal(r.kind, 'biome', id);
+      /* the fallback is the biome picture, or nothing for universal / settlement — unless a phase 4 picture fits */
+      if (r && !later) assert.equal(r.kind, 'biome', id);
     }
   }
   assert.equal(U.resolveEnvironmentArt(rec('forest-wildfire')).imageId, 'biome:forest');
@@ -325,11 +327,29 @@ test('phase 2: a unique painting still outranks the fey picture, and the origina
   assert.equal(U.resolveEnvironmentArt(rec('grand-feast')).imageId, 'archetype:feasts-and-revelry');
 });
 
+/* Phase 4 — the last fourteen pictures; defined here because the older audits above must not mistake a later fit for a mismatch. */
+const PHASE4 = {
+  'crypts-and-tombs': { strong: ['heros-tomb', 'hallow-rest'], acceptable: ['necromancers-ossuary', 'ancient-tomb', 'endless-catacombs', 'catacomb-tunnels'] },
+  'taverns-and-inns': { strong: ['teal-heart-inn', 'local-tavern'], acceptable: ['the-wandering-tavern', 'the-squealing-boar-tavern-brawl'] },
+  'blighted-mires': { strong: ['shadowfen', 'corrupted-swamp', 'wretched-mire', 'dread-mire'], acceptable: ['buzzing-swamp', 'blood-marsh', 'heart-of-the-mire', 'swamp-ruins', 'beelzebufo-bog'] },
+  'archives-and-libraries': { strong: ['library-of-the-dusk-tree'], acceptable: ['civic-library', 'neverhome-library'] },
+  'planar-rifts': { strong: ['stop-the-collapse-of-reality', 'extraplanar-breach'], acceptable: ['portal-beyond', 'planar-incursion-invasion', 'planar-incursion-arcane-vortex', 'shattered-lands'] },
+  'arenas-and-duels': { strong: ['fighting-arena'], acceptable: ['the-proving-pyre'] },
+  'chase-and-ambush': { strong: [], acceptable: ['ambushed', 'ambushers', 'road-blockade'] },
+  'intrigue-and-underworld': { strong: [], acceptable: ['gang-hideout', 'thieves-guild'] },
+  'time-and-dream': { strong: [], acceptable: ['time-loop', 'time-loop-atlas'] },
+  'dungeon-delves': { strong: ['deadly-dungeon', 'dangerous-dungeon'], acceptable: [] },
+  'perilous-passages': { strong: ['mountain-pass'], acceptable: ['cliffside-ascent', 'perilous-cliff', 'haunted-mountain-pass'] },
+  seafaring: { strong: ['ocean-voyage'], acceptable: ['terror-of-the-deep'] },
+  'sinister-woods': { strong: ['unsettling-forest', 'spooky-forest', 'gnarled-glen'], acceptable: ['gloaming-forest', 'devouring-green'] },
+  'sky-realms': { strong: ['floating-mountains'], acceptable: ['stones-adrift', 'cloudy-sky'] },
+};
+
 /* Phase 3 — the V2 pictures, mapped one environment at a time (docs/research/adaptive-list-covers-phase3.md). */
 const PHASE3 = {
   starfaring: { strong: [], acceptable: ['planetary-blockade'] },
   'sacred-sanctuaries': { strong: ['hallowed-temple'], acceptable: ['hallowed-cathedral'] },
-  'streets-and-towns': { strong: ['bustling-marketplace', 'resting-dagger-inn'], acceptable: ['local-tavern', 'emberwood-village', 'outpost-town', 'street-chase'] },
+  'streets-and-towns': { strong: ['bustling-marketplace', 'resting-dagger-inn'], acceptable: ['emberwood-village', 'outpost-town', 'street-chase'] },
 };
 /* in the taxonomy (or plausible by name), judged poor against the actual picture */
 const PHASE3_REJECTED = [
@@ -385,7 +405,6 @@ test('phase 3: existing mappings, overrides and paintings are untouched', () => 
   assert.equal(U.resolveEnvironmentArt(rec('defense-of-the-river-fort')).imageId, 'archetype:strongholds-and-sieges');
   assert.equal(U.resolveEnvironmentArt(rec('port-city')).imageId, 'biome:settlement');
   for (const id of ['cauldera-valley', 'field-of-dreams', 'ouroborean-pass']) assert.equal(U.resolveEnvironmentArt(rec(id)).kind, 'unique', id);
-  assert.equal(Object.keys(Art.ARCHETYPE_FIT).length, 56 + 10);
 });
 
 test('phase 3: collages with the new pictures are distinct, at most three, deterministic and ranked by fit', () => {
@@ -395,7 +414,7 @@ test('phase 3: collages with the new pictures are distinct, at most three, deter
   /* a strong thematic picture beats an acceptable one; the acceptable starfaring picture still beats a biome */
   assert.deepEqual(imageIds(cover('planetary-blockade', 'harsh-desert')), ['archetype:starfaring', 'biome:drylands']);
   /* same picture for several members is one tile */
-  const same = cover('bustling-marketplace', 'resting-dagger-inn', 'local-tavern', 'outpost-town');
+  const same = cover('bustling-marketplace', 'resting-dagger-inn', 'emberwood-village', 'outpost-town');
   assert.deepEqual(imageIds(same), ['archetype:streets-and-towns']);
   assert.equal(same.tiles[0].count, 4);
   /* a painting always wins its place; the new pictures never push it out */
@@ -437,4 +456,118 @@ test('phase 2: a ten-member list of one new archetype plus others never repeats 
   assert.equal(new Set(imageIds(c)).size, imageIds(c).length);
   assert.ok(c.layout <= 3);
   assert.ok(imageIds(c).includes('archetype:storms-and-calamity'));
+});
+
+/* ---- Phase 4: the complete library, mapped one environment at a time (docs/research/adaptive-list-covers-complete-library.md) ---- */
+
+/* in the taxonomy (primary or secondary), or plausible by name/lore, judged Poor against the actual picture */
+const PHASE4_REJECTED = {
+  'crypts-and-tombs': ['cursed-graveyard', 'desecrated-graveyard', 'martyrs-rest', 'titan-boneyard', 'chapel-of-st-brenna', 'para-lichs-archive'],
+  'taverns-and-inns': ['jazz-speakeasy', 'rats-nest-tavern', 'the-dungeoneer', 'den-of-vice-and-violence', 'trading-post'],
+  'blighted-mires': ['sentient-ink-marsh', 'chronon-pools', 'lizardfolk-village', 'wispy-wasteland'],
+  'archives-and-libraries': ['the-waking-archives', 'para-lichs-archive', 'forum-between-worlds', 'museum-of-lost-realities', 'haunted-oratorium'],
+  'planar-rifts': ['chaos-realm', 'shadow-well', 'interdimensional-building', 'astral-realm', 'convergence-city-of-portals', 'the-shifting-city', 'shard-field', 'body'],
+  'arenas-and-duels': ['fighting-pit', 'duel', 'epic-duel', 'quickdraw', 'high-noon', 'racetrack', 'obstacle-course', 'deathrace', 'frozen-chalice'],
+  'chase-and-ambush': ['rooftop-chase', 'bankburgh-chase', 'pursued', 'pursuers', 'mounted-escape', 'mounted-pursuit', 'stagecoach-ambush', 'rifle-canyon-run', 'mounted-train-chase', 'asteroid-chase', 'canyon-dogfight', 'hakturi-ambush'],
+  'intrigue-and-underworld': ['the-undermarket', 'den-of-vice-and-violence', 'imperial-court', 'corrupt-court', 'heist', 'bank-heist', 'murder-mystery', 'jazz-speakeasy', 'conclave-hall'],
+  'time-and-dream': ['dreamlands', 'prophetic-nightmare', 'city-out-of-time', 'time-court', 'chronon-pools', 'flickerstorm', 'astral-realm'],
+  'dungeon-delves': ['scorching-dungeon', 'chthon-verlies', 'underroot-tunnels', 'abandoned-mine', 'haunted-gold-mine', 'collapsing-floor', 'corridor-of-flammable-air', 'the-endless-song', 'the-dungeoneer'],
+  'perilous-passages': ['raging-river', 'frozen-lake', 'orphanmaker-river', 'lion-ascendant', 'empty-cliffside-village', 'yifangs-blackened-sands'],
+  seafaring: ['the-skyship-windfall', 'horizon-lake', 'shipwreck', 'beach-day', 'castle-of-wails', 'umbral-basin', 'sand-sea'],
+  'sinister-woods': ['witchs-hut', 'hags-hut', 'death-butterfly-grove', 'underroot-tunnels', 'court-of-hounds', 'burning-heart-of-the-woods', 'blade-root-sanctum', 'the-village-of-hush', 'bandit-hideout', 'endless-forest', 'green-doom-tangle', 'dark-forest-faerie-portal'],
+  'sky-realms': ['lion-ascendant', 'the-garden', 'the-skyship-windfall', 'countess-rookery'],
+};
+
+test('phase 4: fourteen new archetype pictures are registered, one variant each', () => {
+  assert.deepEqual(Object.keys(PHASE4).sort(), Object.keys(PHASE4_REJECTED).sort());
+  for (const arch of Object.keys(PHASE4)) {
+    assert.deepEqual(Art.ARCHETYPES[arch].variants, ['archetype:' + arch], arch);
+    assert.equal(Art.IMAGES['archetype:' + arch].kind, 'archetype');
+  }
+});
+
+test('phase 4: registration, exact grade per approved environment, and the picture it resolves to', () => {
+  for (const [arch, grades] of Object.entries(PHASE4)) {
+    for (const fit of ['strong', 'acceptable']) {
+      for (const id of grades[fit]) {
+        assert.ok(BY_ID[id], id);
+        assert.deepEqual(Art.ARCHETYPE_FIT[id], [arch, fit], id);
+        assert.deepEqual(U.resolveEnvironmentArt(rec(id)), { imageId: 'archetype:' + arch, kind: 'archetype', fit }, id);
+      }
+    }
+  }
+  const mapped = Object.values(PHASE4).flatMap(g => [...g.strong, ...g.acceptable]);
+  const inFit = Object.entries(Art.ARCHETYPE_FIT).filter(([, f]) => PHASE4[f[0]]).map(([id]) => id);
+  assert.deepEqual(inFit.sort(), mapped.sort(), 'nothing is mapped to a Phase 4 picture without being reviewed here');
+  assert.equal(new Set(mapped).size, mapped.length, 'an environment has one picture');
+  assert.equal(Object.keys(Art.ARCHETYPE_FIT).length, 66 - 2 + mapped.length, 'two moved (local-tavern, gnarled-glen), the rest are new');
+});
+
+test('phase 4: poor matches never get the picture they were judged against and fall back to biome art or none', () => {
+  for (const [arch, ids] of Object.entries(PHASE4_REJECTED)) {
+    for (const id of ids) {
+      assert.ok(BY_ID[id], id);
+      const f = Art.ARCHETYPE_FIT[id];
+      assert.ok(!f || f[0] !== arch, `${id} must not get the ${arch} picture`);
+      const r = U.resolveEnvironmentArt(rec(id));
+      assert.ok(!r || r.imageId !== 'archetype:' + arch, id);
+    }
+  }
+  /* the audit's own examples */
+  assert.equal(U.resolveEnvironmentArt(rec('rooftop-chase')), null);                                  /* urban chase vs forest ambush */
+  assert.equal(U.resolveEnvironmentArt(rec('duel')), null);                                           /* private duel vs arena */
+  assert.equal(U.resolveEnvironmentArt(rec('lunar-surface')), null);                                  /* empty space vs spaceport */
+  assert.equal(U.resolveEnvironmentArt(rec('humble-altar')), null);                            /* nature shrine vs Gothic statue */
+  assert.notEqual((U.resolveEnvironmentArt(rec('the-garden')) || {}).imageId, 'archetype:sky-realms');        /* sky city vs floating islands */
+  assert.notEqual((U.resolveEnvironmentArt(rec('lion-ascendant')) || {}).imageId, 'archetype:sky-realms');
+  assert.notEqual((U.resolveEnvironmentArt(rec('cursed-valley')) || {}).imageId, 'archetype:planar-rifts');   /* cursed terrain vs rupture */
+  assert.equal(U.resolveEnvironmentArt(rec('shipwreck')).imageId, 'biome:aquatic');                   /* wreck vs sailing ship */
+  assert.equal(U.resolveEnvironmentArt(rec('raging-river')).imageId, 'biome:aquatic');
+});
+
+test('phase 4: the two moves are explicit, every earlier mapping is otherwise untouched', () => {
+  assert.deepEqual(Art.ARCHETYPE_FIT['local-tavern'], ['taverns-and-inns', 'strong']);
+  assert.deepEqual(Art.ARCHETYPE_FIT['gnarled-glen'], ['sinister-woods', 'strong']);
+  assert.deepEqual(Art.ARCHETYPE_FIT['resting-dagger-inn'], ['streets-and-towns', 'strong']);
+  assert.deepEqual(Art.ARCHETYPE_FIT['street-chase'], ['streets-and-towns', 'acceptable']);
+  assert.equal(U.resolveEnvironmentArt(rec('rewritten-grove')).imageId, 'archetype:cursed-and-blighted-lands');
+  assert.equal(U.resolveEnvironmentArt(rec('cursed-valley')).imageId, 'archetype:cursed-and-blighted-lands');
+  assert.equal(U.resolveEnvironmentArt(rec('port-city')).imageId, 'biome:settlement');
+  assert.equal(U.resolveEnvironmentArt(rec('cursed-graveyard')).imageId, 'archetype:haunted-and-deathly');
+  assert.equal(U.resolveEnvironmentArt(rec('stones-adrift')).imageId, 'archetype:sky-realms');
+  for (const id of ['cauldera-valley', 'field-of-dreams', 'ouroborean-pass']) {
+    assert.equal(U.resolveEnvironmentArt(rec(id)).kind, 'unique', id);
+    assert.equal(Art.ARCHETYPE_FIT[id], undefined, id);
+  }
+});
+
+test('phase 4: collages stay distinct, at most three, deterministic, painting first', () => {
+  const c = cover('teal-heart-inn', 'mountain-pass', 'ocean-voyage', 'deadly-dungeon', 'floating-mountains');
+  assert.equal(c.layout, 3);
+  assert.equal(new Set(imageIds(c)).size, 3);
+  assert.deepEqual(imageIds(cover('teal-heart-inn', 'mountain-pass', 'ocean-voyage', 'deadly-dungeon', 'floating-mountains')), imageIds(c));
+  /* the same picture for several members is one tile */
+  const crypt = cover('heros-tomb', 'hallow-rest', 'ancient-tomb', 'endless-catacombs');
+  assert.deepEqual(imageIds(crypt), ['archetype:crypts-and-tombs']);
+  assert.equal(crypt.tiles[0].count, 4);
+  /* a strong thematic picture beats an acceptable one, an acceptable one still beats a lone biome */
+  assert.deepEqual(imageIds(cover('time-loop', 'harsh-desert')), ['archetype:time-and-dream', 'biome:drylands']);
+  /* a painting is never pushed out by the new pictures */
+  const withPainting = cover('field-of-dreams', 'shadowfen', 'fighting-arena', 'ocean-voyage', 'stop-the-collapse-of-reality', 'unsettling-forest');
+  assert.ok(imageIds(withPainting).includes('env:field-of-dreams'));
+  assert.equal(withPainting.layout, 3);
+  /* every new picture in one list of fourteen: still three tiles, none repeated */
+  const all = Object.values(PHASE4).map(g => (g.strong[0] || g.acceptable[0]));
+  const big = cover(...all);
+  assert.equal(big.layout, 3);
+  assert.equal(new Set(imageIds(big)).size, 3);
+  /* rejected members add no tile of the new picture */
+  assert.equal(cover('duel', 'quickdraw', 'pursued').layout, 0);
+});
+
+test('phase 4: a missing picture falls through to the next source instead of a broken image', () => {
+  const without = id => ({ ...Art, IMAGES: Object.fromEntries(Object.entries(Art.IMAGES).filter(([k]) => k !== id)) });
+  assert.equal(U.resolveEnvironmentArt(rec('shadowfen'), without('archetype:blighted-mires')).imageId, 'biome:wetland');
+  assert.equal(U.resolveEnvironmentArt(rec('mountain-pass'), without('archetype:perilous-passages')).imageId, 'biome:mountain');
+  assert.equal(U.resolveEnvironmentArt(rec('stop-the-collapse-of-reality'), without('archetype:planar-rifts')), null);
 });
