@@ -1,0 +1,4734 @@
+{
+ "schema": "bacchus-atlas/semantic-artwork-reuse-lab",
+ "version": 1,
+ "generated": "2026-11-02",
+ "sources": [
+  {
+   "id": "arcane-sanctums",
+   "path": "img/cover-archetypes-source/arcane-sanctums-landscape.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2603007
+  },
+  {
+   "id": "archives-and-libraries",
+   "path": "img/cover-archetypes-source/archives-and-libraries.png",
+   "width": 1671,
+   "height": 941,
+   "format": "png",
+   "bytes": 2587596
+  },
+  {
+   "id": "arenas-and-duels",
+   "path": "img/cover-archetypes-source/arenas-and-duels.png",
+   "width": 1671,
+   "height": 941,
+   "format": "png",
+   "bytes": 2729136
+  },
+  {
+   "id": "blighted-mires",
+   "path": "img/cover-archetypes-source/blighted-mires.png",
+   "width": 1671,
+   "height": 941,
+   "format": "png",
+   "bytes": 2842922
+  },
+  {
+   "id": "chase-and-ambush",
+   "path": "img/cover-archetypes-source/chase-and-ambush.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2959584
+  },
+  {
+   "id": "crypts-and-tombs",
+   "path": "img/cover-archetypes-source/crypts-and-tombs.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2413319
+  },
+  {
+   "id": "cursed-and-blighted-lands",
+   "path": "img/cover-archetypes-source/cursed-and-blighted-lands.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 3043346
+  },
+  {
+   "id": "drowned-depths",
+   "path": "img/cover-archetypes-source/drowned-depths.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 3199452
+  },
+  {
+   "id": "dungeon-delves",
+   "path": "img/cover-archetypes-source/dungeon-delves.png",
+   "width": 1670,
+   "height": 941,
+   "format": "png",
+   "bytes": 2531636
+  },
+  {
+   "id": "feasts-and-revelry",
+   "path": "img/cover-archetypes-source/feasts-and-revelry-landscape.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2647605
+  },
+  {
+   "id": "fey-and-enchanted",
+   "path": "img/cover-archetypes-source/fey-and-enchanted.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 3260506
+  },
+  {
+   "id": "forgotten-ruins",
+   "path": "img/cover-archetypes-source/forgotten-ruins-landscape.png",
+   "width": 1536,
+   "height": 1024,
+   "format": "png",
+   "bytes": 3438082
+  },
+  {
+   "id": "haunted-and-deathly",
+   "path": "img/cover-archetypes-source/haunted-and-deathly-landscape.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2914303
+  },
+  {
+   "id": "haunted-and-deathly-portrait",
+   "path": "img/cover-archetypes-source/haunted-and-deathly-portrait.png",
+   "width": 1024,
+   "height": 1536,
+   "format": "png",
+   "bytes": 2961030
+  },
+  {
+   "id": "infernal-and-profane",
+   "path": "img/cover-archetypes-source/infernal-and-profane.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2714234
+  },
+  {
+   "id": "intrigue-and-underworld",
+   "path": "img/cover-archetypes-source/intrigue-and-underworld.png",
+   "width": 1671,
+   "height": 941,
+   "format": "png",
+   "bytes": 2569027
+  },
+  {
+   "id": "monster-lairs",
+   "path": "img/cover-archetypes-source/monster-lairs.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2866597
+  },
+  {
+   "id": "perilous-passages",
+   "path": "img/cover-archetypes-source/perilous-passages.png",
+   "width": 1670,
+   "height": 941,
+   "format": "png",
+   "bytes": 2837676
+  },
+  {
+   "id": "planar-rifts",
+   "path": "img/cover-archetypes-source/planar-rifts.png",
+   "width": 1671,
+   "height": 941,
+   "format": "png",
+   "bytes": 2630123
+  },
+  {
+   "id": "sacred-sanctuaries",
+   "path": "img/cover-archetypes-source/sacred-sanctuaries.png",
+   "width": 1671,
+   "height": 941,
+   "format": "png",
+   "bytes": 3161634
+  },
+  {
+   "id": "seafaring",
+   "path": "img/cover-archetypes-source/seafaring.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2761584
+  },
+  {
+   "id": "sinister-woods",
+   "path": "img/cover-archetypes-source/sinister-woods.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2870424
+  },
+  {
+   "id": "sky-realms",
+   "path": "img/cover-archetypes-source/sky-realms.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2699134
+  },
+  {
+   "id": "starfaring",
+   "path": "img/cover-archetypes-source/starfaring.png",
+   "width": 1671,
+   "height": 941,
+   "format": "png",
+   "bytes": 2805748
+  },
+  {
+   "id": "storms-and-calamity",
+   "path": "img/cover-archetypes-source/storms-and-calamity.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 3081230
+  },
+  {
+   "id": "streets-and-towns",
+   "path": "img/cover-archetypes-source/streets-and-towns.png",
+   "width": 1670,
+   "height": 941,
+   "format": "png",
+   "bytes": 3261604
+  },
+  {
+   "id": "strongholds-and-sieges",
+   "path": "img/cover-archetypes-source/strongholds-and-sieges.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2764031
+  },
+  {
+   "id": "taverns-and-inns",
+   "path": "img/cover-archetypes-source/taverns-and-inns.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2517968
+  },
+  {
+   "id": "time-and-dream",
+   "path": "img/cover-archetypes-source/time-and-dream.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 3624282
+  }
+ ],
+ "regions": [
+  {
+   "id": "streets-and-towns-market-stalls",
+   "sourceId": "streets-and-towns",
+   "parentArtworkId": "streets-and-towns",
+   "label": "Market stall and vendor",
+   "description": "A vendor behind a stall of cheese, bread, apples and garlic, a customer in a cloak, awning overhead.",
+   "bounds": {
+    "x": 0,
+    "y": 0.18,
+    "width": 0.34,
+    "height": 0.82
+   },
+   "pixels": {
+    "x": 0,
+    "y": 169,
+    "w": 568,
+    "h": 772
+   },
+   "subject": {
+    "x": 0.15,
+    "y": 0.3,
+    "width": 0.45,
+    "height": 0.55
+   },
+   "subjects": {
+    "lists1": {
+     "x": 0.15,
+     "y": 0.4,
+     "width": 0.5,
+     "height": 0.18
+    },
+    "lists2": {
+     "x": 0.15,
+     "y": 0.4,
+     "width": 0.5,
+     "height": 0.28
+    }
+   },
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "medium",
+    "contrast": "good",
+    "lighting": "warm lantern light",
+    "detail": "dense but readable",
+    "distinct": "unlike every other pilot crop"
+   },
+   "notes": "",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 24.04,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Awning, goods and vendor read in the strip; the food is the giveaway.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 294.5,
+       "h": 772,
+       "share": 0.519
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.323,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.645,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 50,
+      "y": 78.38,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Warm awning + figure silhouette reads as a stall at 48px.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 568,
+       "h": 568,
+       "share": 0.736
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.085,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.169,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 48.74,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "A wide band over the produce counter still reads as a market.",
+     "viability": {
+      "status": "suitable-dpr1-limited-dpr2",
+      "computed": "suitable-dpr1-limited-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 568,
+       "h": 160.8,
+       "share": 0.208
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.56,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.12,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 56.89,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 568,
+       "h": 323.5,
+       "share": 0.419
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.278,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.556,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 70.31,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Third-width tile keeps the vendor.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 568,
+       "h": 486.9,
+       "share": 0.631
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.185,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.37,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "streets-and-towns-market-street",
+   "sourceId": "streets-and-towns",
+   "parentArtworkId": "streets-and-towns",
+   "label": "Cobbled market street",
+   "description": "A cobbled lane between timbered houses with walkers and a dog, an arched gate and banners ahead.",
+   "bounds": {
+    "x": 0.3,
+    "y": 0.25,
+    "width": 0.45,
+    "height": 0.65
+   },
+   "pixels": {
+    "x": 501,
+    "y": 235,
+    "w": 752,
+    "h": 612
+   },
+   "subject": {
+    "x": 0.36,
+    "y": 0.1,
+    "width": 0.3,
+    "height": 0.8
+   },
+   "subjects": {
+    "lists1": {
+     "x": 0.3,
+     "y": 0.42,
+     "width": 0.4,
+     "height": 0.18
+    },
+    "lists2": {
+     "x": 0.3,
+     "y": 0.1,
+     "width": 0.4,
+     "height": 0.8
+    }
+   },
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "high",
+    "contrast": "good",
+    "lighting": "low sun on wet cobbles",
+    "detail": "many small figures",
+    "distinct": "overlaps the archetype picture the Catalog already shows"
+   },
+   "notes": "",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 51.45,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Archway and walkers hold in the strip.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 233.5,
+       "h": 612,
+       "share": 0.31
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.407,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.814,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 55.37,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "Figures dissolve into noise at 48px; reads as a generic old town.",
+     "viability": {
+      "status": "visually-unsuitable",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 612,
+       "h": 612,
+       "share": 0.814
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.078,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.157,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 51.53,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Good band: street, gate, figures.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 752,
+       "h": 212.8,
+       "share": 0.348
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.423,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.846,
+       "upscaled": false
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.875,
+      "effective": {
+       "w": 752,
+       "h": 428.4,
+       "share": 0.7
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.21,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.42,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 69.79,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 714,
+       "h": 612,
+       "share": 0.949
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.147,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.294,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "streets-and-towns-tavern-terrace",
+   "sourceId": "streets-and-towns",
+   "parentArtworkId": "streets-and-towns",
+   "label": "Inn terrace on the street",
+   "description": "Patrons around a table under the awning of a timbered inn with a griffin sign; a barrel and a lantern beside the door.",
+   "bounds": {
+    "x": 0.7,
+    "y": 0.3,
+    "width": 0.3,
+    "height": 0.7
+   },
+   "pixels": {
+    "x": 1169,
+    "y": 282,
+    "w": 501,
+    "h": 659
+   },
+   "subject": {
+    "x": 0.45,
+    "y": 0.25,
+    "width": 0.5,
+    "height": 0.45
+   },
+   "subjects": {
+    "lists1": {
+     "x": 0.4,
+     "y": 0.3,
+     "width": 0.55,
+     "height": 0.16
+    }
+   },
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "medium",
+    "contrast": "good",
+    "lighting": "warm window glow",
+    "detail": "faces readable at 2x",
+    "distinct": "the only exterior inn in the library"
+   },
+   "notes": "",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 90.15,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Sign, awning, drinkers: an inn on a street.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 251.4,
+       "h": 659,
+       "share": 0.502
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.378,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.756,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 50,
+      "y": 39.57,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Awning and glowing windows read.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 501,
+       "h": 501,
+       "share": 0.76
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.096,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.192,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 34.71,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-limited-dpr2",
+      "computed": "suitable-dpr1-limited-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 501,
+       "h": 141.8,
+       "share": 0.215
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.635,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.269,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 45.59,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.962,
+      "effective": {
+       "w": 501,
+       "h": 285.4,
+       "share": 0.433
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.315,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.631,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 42.82,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 501,
+       "h": 429.4,
+       "share": 0.652
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.21,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.419,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "streets-and-towns-clock-tower-gate",
+   "sourceId": "streets-and-towns",
+   "parentArtworkId": "streets-and-towns",
+   "label": "Clock tower and gate",
+   "description": "A conventional stone clock tower with a pointed spire above a blue-bannered archway.",
+   "bounds": {
+    "x": 0.58,
+    "y": 0,
+    "width": 0.22,
+    "height": 0.62
+   },
+   "pixels": {
+    "x": 968,
+    "y": 0,
+    "w": 367,
+    "h": 583
+   },
+   "subject": {
+    "x": 0.25,
+    "y": 0,
+    "width": 0.5,
+    "height": 0.58
+   },
+   "subjects": {},
+   "status": "not-independently-meaningful",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "medium",
+    "contrast": "good",
+    "lighting": "daylight",
+    "detail": "adequate",
+    "distinct": "yes"
+   },
+   "notes": "Beautiful, and reads instantly — but no environment describes an ordinary clock tower or town gate. Its only literal matches (a frozen, 300ft arcane clocktower; a shattered haunted watchtower; a wizard's tower) are exactly the invented-semantics cases the brief forbids.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 222.4,
+       "h": 583,
+       "share": 0.606
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.427,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.854,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 367,
+       "h": 367,
+       "share": 0.63
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.131,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.262,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 24.45,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.307,
+      "effective": {
+       "w": 367,
+       "h": 103.9,
+       "share": 0.178
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.866,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.733,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 17.26,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.618,
+      "effective": {
+       "w": 367,
+       "h": 209.1,
+       "share": 0.359
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.431,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.861,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 4.39,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.93,
+      "effective": {
+       "w": 367,
+       "h": 314.6,
+       "share": 0.54
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.286,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.572,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "taverns-and-inns-fireplace",
+   "sourceId": "taverns-and-inns",
+   "parentArtworkId": "taverns-and-inns",
+   "label": "Hearth and common room",
+   "description": "A stone fireplace with a blazing fire, a daylit window and a rug; tables and chairs in the room beyond.",
+   "bounds": {
+    "x": 0.62,
+    "y": 0.3,
+    "width": 0.38,
+    "height": 0.65
+   },
+   "pixels": {
+    "x": 1036,
+    "y": 282,
+    "w": 635,
+    "h": 612
+   },
+   "subject": {
+    "x": 0.3,
+    "y": 0.12,
+    "width": 0.32,
+    "height": 0.5
+   },
+   "subjects": {
+    "lists1": {
+     "x": 0.3,
+     "y": 0.22,
+     "width": 0.35,
+     "height": 0.3
+    }
+   },
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "low",
+    "contrast": "excellent",
+    "lighting": "fire against shade",
+    "detail": "soft",
+    "distinct": "only hearth in the library"
+   },
+   "notes": "",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 43.67,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "The fire alone says hearth; strong focal point.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 233.5,
+       "h": 612,
+       "share": 0.368
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.407,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.814,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Brightest crop of the pilot at 48px.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 612,
+       "h": 612,
+       "share": 0.964
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.078,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.157,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 31.6,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-limited-dpr2",
+      "computed": "suitable-dpr1-limited-dpr2",
+      "survival": 0.979,
+      "effective": {
+       "w": 635,
+       "h": 179.7,
+       "share": 0.294
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.501,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.002,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 18.21,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 635,
+       "h": 361.7,
+       "share": 0.591
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.249,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.498,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 635,
+       "h": 544.3,
+       "share": 0.889
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.165,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.331,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "taverns-and-inns-bar-counter",
+   "sourceId": "taverns-and-inns",
+   "parentArtworkId": "taverns-and-inns",
+   "label": "Bar counter with casks",
+   "description": "A wooden bar with casks, bottles and tankards on shelves, candles, a stag banner overhead.",
+   "bounds": {
+    "x": 0,
+    "y": 0.2,
+    "width": 0.42,
+    "height": 0.5
+   },
+   "pixels": {
+    "x": 0,
+    "y": 188,
+    "w": 702,
+    "h": 471
+   },
+   "subject": {
+    "x": 0.42,
+    "y": 0.12,
+    "width": 0.22,
+    "height": 0.55
+   },
+   "subjects": {
+    "lists1": {
+     "x": 0.3,
+     "y": 0.3,
+     "width": 0.4,
+     "height": 0.3
+    }
+   },
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "medium",
+    "contrast": "good",
+    "lighting": "candles",
+    "detail": "rich",
+    "distinct": "bar, not a table"
+   },
+   "notes": "",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 54.03,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Casks on shelves read as a bar.",
+     "viability": {
+      "status": "suitable-dpr1-limited-dpr2",
+      "computed": "suitable-dpr1-limited-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 179.7,
+       "h": 471,
+       "share": 0.256
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.529,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.057,
+       "upscaled": true
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 59.12,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Barrels and candle read.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 471,
+       "h": 471,
+       "share": 0.671
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.102,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.204,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 41.35,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 702,
+       "h": 198.7,
+       "share": 0.422
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.453,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.906,
+       "upscaled": false
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 702,
+       "h": 399.9,
+       "share": 0.849
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.225,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.45,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 63.81,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 549.5,
+       "h": 471,
+       "share": 0.783
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "taverns-and-inns-dining-table",
+   "sourceId": "taverns-and-inns",
+   "parentArtworkId": "taverns-and-inns",
+   "label": "Laid table (still life)",
+   "description": "Bread, cheese, apples, a pitcher and a candle on a table runner.",
+   "bounds": {
+    "x": 0,
+    "y": 0.62,
+    "width": 0.45,
+    "height": 0.38
+   },
+   "pixels": {
+    "x": 0,
+    "y": 583,
+    "w": 752,
+    "h": 358
+   },
+   "subject": {
+    "x": 0.1,
+    "y": 0.1,
+    "width": 0.6,
+    "height": 0.75
+   },
+   "subjects": {},
+   "status": "not-independently-meaningful",
+   "visualQa": {
+    "recognizability": "low",
+    "complexity": "low",
+    "contrast": "good",
+    "lighting": "candle",
+    "detail": "good",
+    "distinct": "no"
+   },
+   "notes": "An isolated still life: it says \"food\", not \"tavern\" or \"feast\" — a generic object, the failure the brief warns about. Kept as a documented weak example.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 37.78,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.303,
+      "effective": {
+       "w": 136.6,
+       "h": 358,
+       "share": 0.182
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.696,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.391,
+       "upscaled": true
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 30.91,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.793,
+      "effective": {
+       "w": 358,
+       "h": 358,
+       "share": 0.476
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.134,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.268,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 43.83,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.793,
+      "effective": {
+       "w": 752,
+       "h": 212.8,
+       "share": 0.594
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.423,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.846,
+       "upscaled": false
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 628.5,
+       "h": 358,
+       "share": 0.836
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.251,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.503,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 27.51,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.926,
+      "effective": {
+       "w": 417.7,
+       "h": 358,
+       "share": 0.555
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.251,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.503,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "archives-and-libraries-shelves-ladder",
+   "sourceId": "archives-and-libraries",
+   "parentArtworkId": "archives-and-libraries",
+   "label": "Bookshelves with banner",
+   "description": "Floor-to-ceiling shelves of leather books and scroll bundles, creeping ivy, a banner with an open-book emblem.",
+   "bounds": {
+    "x": 0,
+    "y": 0,
+    "width": 0.36,
+    "height": 0.5
+   },
+   "pixels": {
+    "x": 0,
+    "y": 0,
+    "w": 602,
+    "h": 471
+   },
+   "subject": {
+    "x": 0.05,
+    "y": 0.1,
+    "width": 0.3,
+    "height": 0.8
+   },
+   "subjects": {
+    "lists1": {
+     "x": 0.05,
+     "y": 0.3,
+     "width": 0.4,
+     "height": 0.18
+    }
+   },
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "high",
+    "contrast": "medium",
+    "lighting": "warm, dim",
+    "detail": "dense",
+    "distinct": "yes"
+   },
+   "notes": "",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 7.23,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Books and the open-book banner: unmistakable.",
+     "viability": {
+      "status": "suitable-dpr1-limited-dpr2",
+      "computed": "suitable-dpr1-limited-dpr2",
+      "survival": 0.995,
+      "effective": {
+       "w": 179.7,
+       "h": 471,
+       "share": 0.299
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.529,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.057,
+       "upscaled": true
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Brown spines and scroll bundles read as a library.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 471,
+       "h": 471,
+       "share": 0.782
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.102,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.204,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 32.77,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Band over the shelves works.",
+     "viability": {
+      "status": "suitable-dpr1-limited-dpr2",
+      "computed": "suitable-dpr1-limited-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 602,
+       "h": 170.4,
+       "share": 0.362
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.528,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.056,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.91,
+      "effective": {
+       "w": 602,
+       "h": 342.9,
+       "share": 0.728
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.262,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.525,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 549.5,
+       "h": 471,
+       "share": 0.913
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "archives-and-libraries-scholars-desk",
+   "sourceId": "archives-and-libraries",
+   "parentArtworkId": "archives-and-libraries",
+   "label": "Scholar's desk",
+   "description": "A desk with a lantern, quill, an open map, scrolls, stacked books, a magnifying glass and an armillary sphere.",
+   "bounds": {
+    "x": 0,
+    "y": 0.5,
+    "width": 0.62,
+    "height": 0.5
+   },
+   "pixels": {
+    "x": 0,
+    "y": 470,
+    "w": 1036,
+    "h": 471
+   },
+   "subject": {
+    "x": 0.08,
+    "y": 0.05,
+    "width": 0.3,
+    "height": 0.8
+   },
+   "subjects": {
+    "lists1": {
+     "x": 0.08,
+     "y": 0.15,
+     "width": 0.4,
+     "height": 0.5
+    }
+   },
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "high",
+    "contrast": "good",
+    "lighting": "lantern",
+    "detail": "rich",
+    "distinct": "yes"
+   },
+   "notes": "",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 17.33,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "A 2.2:1 region in a 1:2.6 strip keeps only the lantern or only the scrolls: it stops saying \"desk\".",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.578,
+      "effective": {
+       "w": 179.7,
+       "h": 471,
+       "share": 0.173
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.529,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.057,
+       "upscaled": true
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 0.49,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Lantern + scrolls read at 48px.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 471,
+       "h": 471,
+       "share": 0.455
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.102,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.204,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 23.51,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Best use of this region: a wide desk band.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 1036,
+       "h": 293.2,
+       "share": 0.623
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.307,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.614,
+       "upscaled": false
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 826.9,
+       "h": 471,
+       "share": 0.798
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Third tile keeps the lantern and book.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 549.5,
+       "h": 471,
+       "share": 0.53
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "archives-and-libraries-window-hall",
+   "sourceId": "archives-and-libraries",
+   "parentArtworkId": "archives-and-libraries",
+   "label": "Vaulted hall and tall window",
+   "description": "A pillared hall under a vault, light pouring through a tall mullioned window wrapped in ivy; a globe on the floor.",
+   "bounds": {
+    "x": 0.55,
+    "y": 0,
+    "width": 0.35,
+    "height": 0.55
+   },
+   "pixels": {
+    "x": 919,
+    "y": 0,
+    "w": 585,
+    "h": 518
+   },
+   "subject": {
+    "x": 0.42,
+    "y": 0.05,
+    "width": 0.38,
+    "height": 0.75
+   },
+   "subjects": {},
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "medium",
+    "complexity": "medium",
+    "contrast": "excellent",
+    "lighting": "god-rays",
+    "detail": "good",
+    "distinct": "yes"
+   },
+   "notes": "",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 66.61,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Window and rays make a strong vertical.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.889,
+      "effective": {
+       "w": 197.6,
+       "h": 518,
+       "share": 0.338
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.481,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.961,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 100,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 518,
+       "h": 518,
+       "share": 0.885
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.093,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.185,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 38.98,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "Band crop slices the window into a pale stripe; reads as a church.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.426,
+      "effective": {
+       "w": 585,
+       "h": 165.6,
+       "share": 0.32
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.544,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.087,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 28.97,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.858,
+      "effective": {
+       "w": 585,
+       "h": 333.2,
+       "share": 0.643
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.27,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.54,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 585,
+       "h": 501.4,
+       "share": 0.968
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.179,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.359,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "strongholds-and-sieges-trebuchet",
+   "sourceId": "strongholds-and-sieges",
+   "parentArtworkId": "strongholds-and-sieges",
+   "label": "Trebuchet and crew",
+   "description": "A wooden trebuchet in silhouette against smoke and sun, its crew around it, a war banner beside.",
+   "bounds": {
+    "x": 0,
+    "y": 0.25,
+    "width": 0.25,
+    "height": 0.6
+   },
+   "pixels": {
+    "x": 0,
+    "y": 235,
+    "w": 418,
+    "h": 565
+   },
+   "subject": {
+    "x": 0.15,
+    "y": 0.08,
+    "width": 0.5,
+    "height": 0.65
+   },
+   "subjects": {
+    "lists2": {
+     "x": 0.15,
+     "y": 0.12,
+     "width": 0.5,
+     "height": 0.35
+    }
+   },
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "medium",
+    "contrast": "excellent",
+    "lighting": "backlit smoke",
+    "detail": "silhouette",
+    "distinct": "only siege engine in the library"
+   },
+   "notes": "",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 29.35,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "The throwing arm is the whole picture.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 215.6,
+       "h": 565,
+       "share": 0.516
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.441,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.881,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 50,
+      "y": 13.49,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Reads as siege machinery.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 418,
+       "h": 418,
+       "share": 0.74
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.115,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.23,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 37.98,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "In a 3.5:1 band the region becomes a grey blur: only the top of the arm survives.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.322,
+      "effective": {
+       "w": 418,
+       "h": 118.3,
+       "share": 0.209
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.761,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.522,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 14.57,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 418,
+       "h": 238.1,
+       "share": 0.421
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.378,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.756,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 24.03,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.976,
+      "effective": {
+       "w": 418,
+       "h": 358.3,
+       "share": 0.634
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.251,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.502,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "strongholds-and-sieges-castle-walls",
+   "sourceId": "strongholds-and-sieges",
+   "parentArtworkId": "strongholds-and-sieges",
+   "label": "Castle curtain wall under attack",
+   "description": "Crenellated curtain walls and towers of a hilltop castle, a portcullis gate, fires and smoke, arrows in flight.",
+   "bounds": {
+    "x": 0.45,
+    "y": 0.12,
+    "width": 0.55,
+    "height": 0.5
+   },
+   "pixels": {
+    "x": 752,
+    "y": 112,
+    "w": 920,
+    "h": 471
+   },
+   "subject": {
+    "x": 0.4,
+    "y": 0.25,
+    "width": 0.18,
+    "height": 0.65
+   },
+   "subjects": {
+    "lists1": {
+     "x": 0.3,
+     "y": 0.3,
+     "width": 0.4,
+     "height": 0.45
+    }
+   },
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "high",
+    "contrast": "medium",
+    "lighting": "fire glow",
+    "detail": "dense",
+    "distinct": "mostly the archetype picture again"
+   },
+   "notes": "",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 48.76,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Towers and the burning wall read; the siege is evident, which is the point and the limit.",
+     "viability": {
+      "status": "suitable-dpr1-limited-dpr2",
+      "computed": "suitable-dpr1-limited-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 179.7,
+       "h": 471,
+       "share": 0.195
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.529,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.057,
+       "upscaled": true
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 47.95,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 471,
+       "h": 471,
+       "share": 0.512
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.102,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.204,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 55.59,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 920,
+       "h": 260.4,
+       "share": 0.553
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.346,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.691,
+       "upscaled": false
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 40.12,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 826.9,
+       "h": 471,
+       "share": 0.899
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 47.52,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 549.5,
+       "h": 471,
+       "share": 0.597
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "starfaring-spaceport-promenade",
+   "sourceId": "starfaring",
+   "parentArtworkId": "starfaring",
+   "label": "Spaceport promenade",
+   "description": "A lamp-lit concourse with an orrery, travellers and a domed terminal behind a banner.",
+   "bounds": {
+    "x": 0,
+    "y": 0.15,
+    "width": 0.5,
+    "height": 0.85
+   },
+   "pixels": {
+    "x": 0,
+    "y": 141,
+    "w": 836,
+    "h": 800
+   },
+   "subject": {
+    "x": 0.2,
+    "y": 0.05,
+    "width": 0.4,
+    "height": 0.7
+   },
+   "subjects": {},
+   "status": "needs-better-crop",
+   "visualQa": {
+    "recognizability": "medium",
+    "complexity": "high",
+    "contrast": "good",
+    "lighting": "lanterns",
+    "detail": "rich",
+    "distinct": "no technological identity in this crop"
+   },
+   "notes": "Reads as a fantasy market hall: the sci-fi evidence (ships, planet) is outside the crop. Needs a different box.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 34.25,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.913,
+      "effective": {
+       "w": 305.2,
+       "h": 800,
+       "share": 0.365
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.311,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.622,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 800,
+       "h": 800,
+       "share": 0.957
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.06,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.12,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 35.8,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.423,
+      "effective": {
+       "w": 836,
+       "h": 236.6,
+       "share": 0.296
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.38,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.761,
+       "upscaled": false
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 25.29,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.85,
+      "effective": {
+       "w": 836,
+       "h": 476.2,
+       "share": 0.595
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.189,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.378,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 836,
+       "h": 716.6,
+       "share": 0.896
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.126,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.251,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "starfaring-docked-ship",
+   "sourceId": "starfaring",
+   "parentArtworkId": "starfaring",
+   "label": "Docked starship at the spaceport",
+   "description": "A weathered starship resting on a docking platform with a planet and other ships behind it.",
+   "bounds": {
+    "x": 0.68,
+    "y": 0.35,
+    "width": 0.32,
+    "height": 0.4
+   },
+   "pixels": {
+    "x": 1136,
+    "y": 329,
+    "w": 535,
+    "h": 376
+   },
+   "subject": {
+    "x": 0.1,
+    "y": 0.25,
+    "width": 0.85,
+    "height": 0.5
+   },
+   "subjects": {
+    "lists1": {
+     "x": 0.1,
+     "y": 0.3,
+     "width": 0.85,
+     "height": 0.32
+    }
+   },
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "medium",
+    "contrast": "medium",
+    "lighting": "cool daylight",
+    "detail": "good",
+    "distinct": "yes"
+   },
+   "notes": "",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 53.42,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "A long hull cannot live in a 1:2.6 strip: the ship is cut in half. Does not qualify.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.315,
+      "effective": {
+       "w": 143.5,
+       "h": 376,
+       "share": 0.268
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.662,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.324,
+       "upscaled": true
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 58.41,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "The hull is cropped at both ends in a square.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.827,
+      "effective": {
+       "w": 376,
+       "h": 376,
+       "share": 0.703
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.128,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.255,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 43.3,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Landscape band suits the ship.",
+     "viability": {
+      "status": "suitable-dpr1-limited-dpr2",
+      "computed": "suitable-dpr1-limited-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 535,
+       "h": 151.4,
+       "share": 0.403
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.594,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.189,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 535,
+       "h": 304.7,
+       "share": 0.81
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.295,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.591,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 63.88,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "Third tile cuts the hull.",
+     "viability": {
+      "status": "visually-unsuitable",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.965,
+      "effective": {
+       "w": 438.7,
+       "h": 376,
+       "share": 0.82
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.239,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.479,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "starfaring-orbital-arch-planet",
+   "sourceId": "starfaring",
+   "parentArtworkId": "starfaring",
+   "label": "Orbital ring and planet",
+   "description": "A large planet with a smaller moon, a segmented orbital ring and a floating tower-city, two ships under thrust.",
+   "bounds": {
+    "x": 0.55,
+    "y": 0,
+    "width": 0.45,
+    "height": 0.45
+   },
+   "pixels": {
+    "x": 919,
+    "y": 0,
+    "w": 752,
+    "h": 423
+   },
+   "subject": {
+    "x": 0.5,
+    "y": 0.35,
+    "width": 0.2,
+    "height": 0.3
+   },
+   "subjects": {},
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "low",
+    "contrast": "excellent",
+    "lighting": "starlit",
+    "detail": "good",
+    "distinct": "only pure space view"
+   },
+   "notes": "",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 62.73,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Planet limb and a ship under thrust: space at a glance.",
+     "viability": {
+      "status": "suitable-dpr1-limited-dpr2",
+      "computed": "suitable-dpr1-limited-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 161.4,
+       "h": 423,
+       "share": 0.215
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.589,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.177,
+       "upscaled": true
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 72.86,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "A planet disc reads at 48px.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 423,
+       "h": 423,
+       "share": 0.563
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.113,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.227,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 752,
+       "h": 212.8,
+       "share": 0.503
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.423,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.846,
+       "upscaled": false
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 100,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 742.6,
+       "h": 423,
+       "share": 0.987
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.213,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.426,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 79.09,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 493.5,
+       "h": 423,
+       "share": 0.656
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.213,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.426,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "seafaring-deck-rigging",
+   "sourceId": "seafaring",
+   "parentArtworkId": "seafaring",
+   "label": "Deck, mast and rigging",
+   "description": "The deck of a sailing ship: a lantern, casks, the mainmast with furled sail and rope rigging, the sea beyond the rail.",
+   "bounds": {
+    "x": 0,
+    "y": 0,
+    "width": 0.5,
+    "height": 0.8
+   },
+   "pixels": {
+    "x": 0,
+    "y": 0,
+    "w": 836,
+    "h": 753
+   },
+   "subject": {
+    "x": 0.3,
+    "y": 0,
+    "width": 0.35,
+    "height": 0.85
+   },
+   "subjects": {
+    "lists1": {
+     "x": 0.3,
+     "y": 0.1,
+     "width": 0.4,
+     "height": 0.28
+    },
+    "lists2": {
+     "x": 0.3,
+     "y": 0.1,
+     "width": 0.4,
+     "height": 0.4
+    }
+   },
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "high",
+    "contrast": "good",
+    "lighting": "sunset",
+    "detail": "rich",
+    "distinct": "close cousin of the archetype crop already used (x16)"
+   },
+   "notes": "",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 46.19,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Rigging and sail are the ship; nearly identical to the existing Seafaring strip.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.982,
+      "effective": {
+       "w": 287.3,
+       "h": 753,
+       "share": 0.344
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.331,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.661,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 24.82,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 753,
+       "h": 753,
+       "share": 0.901
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.064,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.127,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 12.09,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 836,
+       "h": 236.6,
+       "share": 0.314
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.38,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.761,
+       "upscaled": false
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 836,
+       "h": 476.2,
+       "share": 0.632
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.189,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.378,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 836,
+       "h": 716.6,
+       "share": 0.952
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.126,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.251,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "seafaring-lighthouse-coast",
+   "sourceId": "seafaring",
+   "parentArtworkId": "seafaring",
+   "label": "Distant lighthouse on the cliffs",
+   "description": "A small lighthouse on a headland above a harbour village, far across the water.",
+   "bounds": {
+    "x": 0.78,
+    "y": 0.12,
+    "width": 0.22,
+    "height": 0.35
+   },
+   "pixels": {
+    "x": 1304,
+    "y": 112,
+    "w": 368,
+    "h": 329
+   },
+   "subject": {
+    "x": 0.1,
+    "y": 0.4,
+    "width": 0.14,
+    "height": 0.25
+   },
+   "subjects": {},
+   "status": "insufficient-resolution",
+   "visualQa": {
+    "recognizability": "low",
+    "complexity": "low",
+    "contrast": "low",
+    "lighting": "overcast",
+    "detail": "none at this size",
+    "distinct": "n/a"
+   },
+   "notes": "The lighthouse is ~50px tall in the master. Every frame would enlarge a smudge. The lab's resolution-insufficient example.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "insufficient-resolution",
+      "computed": "insufficient-resolution",
+      "survival": 1,
+      "effective": {
+       "w": 125.5,
+       "h": 329,
+       "share": 0.341
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.757,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.514,
+       "upscaled": true
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "insufficient-resolution",
+      "computed": "insufficient-resolution",
+      "survival": 1,
+      "effective": {
+       "w": 329,
+       "h": 329,
+       "share": 0.894
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.146,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.292,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 53.66,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "insufficient-resolution",
+      "computed": "insufficient-resolution",
+      "survival": 1,
+      "effective": {
+       "w": 368,
+       "h": 104.2,
+       "share": 0.317
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.864,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.728,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 56.89,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "insufficient-resolution",
+      "computed": "insufficient-resolution",
+      "survival": 1,
+      "effective": {
+       "w": 368,
+       "h": 209.6,
+       "share": 0.637
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.429,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.859,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 100,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "insufficient-resolution",
+      "computed": "insufficient-resolution",
+      "survival": 1,
+      "effective": {
+       "w": 368,
+       "h": 315.4,
+       "share": 0.959
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.285,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.571,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "seafaring-storm-waves",
+   "sourceId": "seafaring",
+   "parentArtworkId": "seafaring",
+   "label": "Heavy sea off the rail",
+   "description": "Dark rolling waves with white crests seen over the ship's rail.",
+   "bounds": {
+    "x": 0.45,
+    "y": 0.5,
+    "width": 0.55,
+    "height": 0.5
+   },
+   "pixels": {
+    "x": 752,
+    "y": 470,
+    "w": 920,
+    "h": 471
+   },
+   "subject": {
+    "x": 0.2,
+    "y": 0.3,
+    "width": 0.4,
+    "height": 0.5
+   },
+   "subjects": {},
+   "status": "needs-better-crop",
+   "visualQa": {
+    "recognizability": "medium",
+    "complexity": "low",
+    "contrast": "good",
+    "lighting": "dusk",
+    "detail": "good",
+    "distinct": "partly"
+   },
+   "notes": "Generic open water with a hint of rail; it would stand for any sea. Only reads as a ship when the rail is kept in frame.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 37.57,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.488,
+      "effective": {
+       "w": 179.7,
+       "h": 471,
+       "share": 0.195
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.529,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.057,
+       "upscaled": true
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 29.51,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 471,
+       "h": 471,
+       "share": 0.512
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.102,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.204,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 61.18,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 920,
+       "h": 260.4,
+       "share": 0.553
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.346,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.691,
+       "upscaled": false
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 826.9,
+       "h": 471,
+       "share": 0.899
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 25.17,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 549.5,
+       "h": 471,
+       "share": 0.597
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  }
+ ],
+ "mappings": [
+  {
+   "regionId": "streets-and-towns-market-stalls",
+   "envId": "bustling-marketplace",
+   "review": "strong",
+   "reason": "Lore: artisans, traveling merchants, patrons across social classes — exactly a stall with vendor and customer.",
+   "crossArchetype": false,
+   "improvesExisting": true,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-market-stalls",
+   "envId": "city-festival",
+   "review": "acceptable",
+   "reason": "Carts of baked goods, produce and meat around a plaza; the stall shows bread, cheese and fruit. No festival mood, no plaza.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-market-stalls",
+   "envId": "emberwood-village",
+   "review": "acceptable",
+   "reason": "A bustling market square of merchants; a vendor at a stall fits, though the village itself is not shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-market-stalls",
+   "envId": "port-city",
+   "review": "needs-review",
+   "reason": "Lore says only \"trade, food, art, commerce\"; nothing in the crop says harbour.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-market-stalls",
+   "envId": "chaotic-marketplace",
+   "review": "rejected",
+   "reason": "Environment is panic and flight; the crop shows a calm stall.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-market-stalls",
+   "envId": "the-undermarket",
+   "review": "rejected",
+   "reason": "A criminal market in the sewers; this is a sunlit civilian stall (market stall ≠ underworld).",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-market-stalls",
+   "envId": "the-garden",
+   "review": "rejected",
+   "reason": "A floating market on wrecked airships; no sky, no sails.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-market-street",
+   "envId": "street-chase",
+   "review": "acceptable",
+   "reason": "A chase through winding streets; this cobbled street with an archway is a fair stage, though it holds no chase.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-market-street",
+   "envId": "outpost-town",
+   "review": "acceptable",
+   "reason": "A town street at a frontier; plausible, nothing contradicts.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-market-street",
+   "envId": "bustling-marketplace",
+   "review": "acceptable",
+   "reason": "Stalls and crowds line the lane, but the stall crop is the closer picture.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-market-street",
+   "envId": "city-streets",
+   "review": "needs-review",
+   "reason": "Lore: traffic, toxic smog and peddlers; the crop is clean and picturesque.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-market-street",
+   "envId": "the-village-of-hush",
+   "review": "needs-review",
+   "reason": "A friendly forest village; this reads as a walled city with a castle behind.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-market-street",
+   "envId": "jungle-river-village",
+   "review": "rejected",
+   "reason": "A jungle river village; timbered northern houses contradict it.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-tavern-terrace",
+   "envId": "resting-dagger-inn",
+   "review": "strong",
+   "reason": "Lore: a bustling inn along a busy street — an inn front with a griffin sign, patrons and the street beside it.",
+   "crossArchetype": true,
+   "improvesExisting": true,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-tavern-terrace",
+   "envId": "local-tavern",
+   "review": "acceptable",
+   "reason": "The social hub of a town: drinkers at a table. It shows the terrace, not a taproom.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-tavern-terrace",
+   "envId": "teal-heart-inn",
+   "review": "needs-review",
+   "reason": "A roadside inn for sleeping and scheming; a town-street terrace is not roadside.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-tavern-terrace",
+   "envId": "jazz-speakeasy",
+   "review": "rejected",
+   "reason": "A secret, criminal club; a bright public terrace implies the opposite (bright tavern ≠ criminal den).",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-tavern-terrace",
+   "envId": "the-squealing-boar-tavern-brawl",
+   "review": "rejected",
+   "reason": "A brawl in a laborers' tavern; the crop is a calm terrace and shows no boar.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-clock-tower-gate",
+   "envId": "cosmological-clocktower",
+   "review": "rejected",
+   "reason": "A 300ft square arcane clocktower frozen at 11:11; this is an ordinary Gothic clock tower with no magic.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-clock-tower-gate",
+   "envId": "archmages-tower",
+   "review": "rejected",
+   "reason": "An ordinary tower is not a wizard's tower: no arcane evidence anywhere in the crop.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-clock-tower-gate",
+   "envId": "castle-of-wails",
+   "review": "rejected",
+   "reason": "A shattered, haunted watchtower; this tower is intact and sunlit.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "streets-and-towns-clock-tower-gate",
+   "envId": "sovereignty-outpost",
+   "review": "rejected",
+   "reason": "Sci-fi guard towers; the crop is medieval.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "taverns-and-inns-fireplace",
+   "envId": "local-tavern",
+   "review": "acceptable",
+   "reason": "A hearth and tables in a lively common room; no crowd, but nothing contradicts.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "taverns-and-inns-fireplace",
+   "envId": "teal-heart-inn",
+   "review": "acceptable",
+   "reason": "A warm roadside inn: a blazing hearth and daylit window are its welcome.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "taverns-and-inns-fireplace",
+   "envId": "the-dungeoneer",
+   "review": "rejected",
+   "reason": "Lore specifies a low-ceilinged subterranean tavern with a stone bar; this room has a big daylight window.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "taverns-and-inns-fireplace",
+   "envId": "resting-dagger-inn",
+   "review": "acceptable",
+   "reason": "A bustling inn: the common room is plausible, but its picture of record is the street front.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "taverns-and-inns-bar-counter",
+   "envId": "local-tavern",
+   "review": "strong",
+   "reason": "A bar with casks, bottles and tankards: the taproom a \"lively tavern\" implies.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "taverns-and-inns-bar-counter",
+   "envId": "the-dungeoneer",
+   "review": "acceptable",
+   "reason": "Lore has a polished stone bar; this one is wooden and above ground, but it is unmistakably a bar.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "taverns-and-inns-bar-counter",
+   "envId": "the-wandering-tavern",
+   "review": "acceptable",
+   "reason": "An inn run by a barkeep; the stag banner and casks fit. The non-Euclidean strangeness is absent.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "taverns-and-inns-bar-counter",
+   "envId": "the-squealing-boar-tavern-brawl",
+   "review": "needs-review",
+   "reason": "A laborers' tavern with a boar-head; the bar fits but there is no boar and no brawl.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "taverns-and-inns-bar-counter",
+   "envId": "jazz-speakeasy",
+   "review": "rejected",
+   "reason": "A criminal speakeasy; warm bright cask-lit tavern reads as a public house.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "taverns-and-inns-bar-counter",
+   "envId": "den-of-vice-and-violence",
+   "review": "rejected",
+   "reason": "A seedy den of criminals; this bar is cosy, not sinister.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "taverns-and-inns-dining-table",
+   "envId": "grand-feast",
+   "review": "rejected",
+   "reason": "A single laid table is not a feast hall; scale and spectacle are missing.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "taverns-and-inns-dining-table",
+   "envId": "local-tavern",
+   "review": "rejected",
+   "reason": "An isolated still life says \"food\", not \"tavern\".",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-shelves-ladder",
+   "envId": "library-of-the-dusk-tree",
+   "review": "strong",
+   "reason": "An impressive library of histories: shelves of books and scrolls with a library emblem.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-shelves-ladder",
+   "envId": "civic-library",
+   "review": "acceptable",
+   "reason": "Books and shelves fit; the lore's brick façade, tiled floor and glass dome are not shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-shelves-ladder",
+   "envId": "neverhome-library",
+   "review": "needs-review",
+   "reason": "A library of dark texts; these warm leather shelves carry no menace.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-shelves-ladder",
+   "envId": "forum-between-worlds",
+   "review": "needs-review",
+   "reason": "A demiplane of scholars debating; books say \"learning\" but there is no forum.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-shelves-ladder",
+   "envId": "the-waking-archives",
+   "review": "rejected",
+   "reason": "Skeletal shelves of dusty books, a ruined repository; these shelves are intact, ivy-green and warm.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-shelves-ladder",
+   "envId": "para-lichs-archive",
+   "review": "rejected",
+   "reason": "Buried deep underground and sealed for centuries; the crop is a sunlit hall with a window beyond.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-shelves-ladder",
+   "envId": "necromancers-ossuary",
+   "review": "rejected",
+   "reason": "A crypt with a library; no sarcophagi, no bones.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-scholars-desk",
+   "envId": "murder-mystery",
+   "review": "acceptable",
+   "reason": "Building the mystery, uncovering clues: a desk with a map, a magnifying glass, scrolls and a lantern is an investigator's table.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-scholars-desk",
+   "envId": "library-of-the-dusk-tree",
+   "review": "acceptable",
+   "reason": "A reading desk fits a library of histories; the shelves crop is closer.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-scholars-desk",
+   "envId": "civic-library",
+   "review": "acceptable",
+   "reason": "A reading desk in an impressive library; its architecture is not shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-scholars-desk",
+   "envId": "arcanists-laboratory",
+   "review": "rejected",
+   "reason": "A laboratory of twisted experiments; the desk shows study, not experiment (no apparatus beyond an armillary).",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-scholars-desk",
+   "envId": "ruined-mage-tower",
+   "review": "rejected",
+   "reason": "A ruin of arcane study; this desk is intact and lit.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-scholars-desk",
+   "envId": "museum-of-lost-realities",
+   "review": "rejected",
+   "reason": "A museum of captured realities; nothing displayed.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-window-hall",
+   "envId": "civic-library",
+   "review": "acceptable",
+   "reason": "Lore: a main hall with a high ceiling and a glass dome; a vaulted hall with a great window and a globe is close.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-window-hall",
+   "envId": "library-of-the-dusk-tree",
+   "review": "acceptable",
+   "reason": "A grand reading hall; plausible.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-window-hall",
+   "envId": "hallowed-cathedral",
+   "review": "rejected",
+   "reason": "A majestic stronghold of a divine power; the window and vault look ecclesiastical but nothing here is holy (castle/church architecture ≠ sanctuary).",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "archives-and-libraries-window-hall",
+   "envId": "forum-between-worlds",
+   "review": "needs-review",
+   "reason": "A hall of scholars; no scholars shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "strongholds-and-sieges-trebuchet",
+   "envId": "castle-siege",
+   "review": "strong",
+   "reason": "Lore: siege weapons in an active siege — the trebuchet and its crew are the environment-change feature.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "strongholds-and-sieges-trebuchet",
+   "envId": "pitched-battle",
+   "review": "acceptable",
+   "reason": "A massive combat of armed groups: siege engine and soldiers fit, the second army is not shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "strongholds-and-sieges-trebuchet",
+   "envId": "defense-of-the-river-fort",
+   "review": "needs-review",
+   "reason": "Lore has a ballista on a humble fort; a trebuchet is a different weapon and an attacker's one.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "strongholds-and-sieges-trebuchet",
+   "envId": "fallen-citadel",
+   "review": "rejected",
+   "reason": "An infernal fortress with Worldbreaker siege weapons; this is a mundane wooden engine.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "strongholds-and-sieges-trebuchet",
+   "envId": "raiding-party",
+   "review": "rejected",
+   "reason": "Pirates at a port; no coast, no ship.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "strongholds-and-sieges-trebuchet",
+   "envId": "bandit-attack",
+   "review": "rejected",
+   "reason": "A raid on a settlement; a trebuchet is a castle-siege engine.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "strongholds-and-sieges-castle-walls",
+   "envId": "castle-siege",
+   "review": "strong",
+   "reason": "An attacking force before a fortified castle: curtain wall, towers and portcullis under fire.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "strongholds-and-sieges-castle-walls",
+   "envId": "fortress",
+   "review": "needs-review",
+   "reason": "An imposing fortress housing an army; this one is burning and under attack.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "strongholds-and-sieges-castle-walls",
+   "envId": "hallowed-cathedral",
+   "review": "rejected",
+   "reason": "A divine stronghold; a castle gate is not a holy sanctuary.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "strongholds-and-sieges-castle-walls",
+   "envId": "ruined-castle",
+   "review": "rejected",
+   "reason": "A castle in disrepair covered in vines; this one is intact and besieged.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "starfaring-spaceport-promenade",
+   "envId": "planetary-blockade",
+   "review": "needs-review",
+   "reason": "A spaceport concourse is plausible, but the crop shows no ships or sky.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "starfaring-spaceport-promenade",
+   "envId": "city-festival",
+   "review": "rejected",
+   "reason": "A festival plaza of stalls; the crop is sci-fi-adjacent and not festive.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "starfaring-docked-ship",
+   "envId": "planetary-blockade",
+   "review": "acceptable",
+   "reason": "Hostile ships in orbit: a starship before a planet fits the setting; the blockade is not shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "starfaring-docked-ship",
+   "envId": "capital-ship-high-alert",
+   "review": "needs-review",
+   "reason": "An exterior of a docked ship for an interior lockdown scenario; no security shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "starfaring-docked-ship",
+   "envId": "cosmic-crash",
+   "review": "rejected",
+   "reason": "A wrecked vessel half-buried in rock; this ship is intact and docked.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "starfaring-orbital-arch-planet",
+   "envId": "planetary-blockade",
+   "review": "strong",
+   "reason": "Ships swarm in orbit: a planet limb, an orbital ring and ships under thrust.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "starfaring-orbital-arch-planet",
+   "envId": "planetary-invasion",
+   "review": "needs-review",
+   "reason": "Forces descend on a world; the view is orbital but peaceful.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "starfaring-orbital-arch-planet",
+   "envId": "sovereignty-entanglements",
+   "review": "needs-review",
+   "reason": "Ships too many or too powerful; two ships, no hostility.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "starfaring-orbital-arch-planet",
+   "envId": "asteroid-chase",
+   "review": "rejected",
+   "reason": "A pursuit through an asteroid field; none shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "seafaring-deck-rigging",
+   "envId": "ocean-voyage",
+   "review": "strong",
+   "reason": "Working aboard a ship: deck, casks, rigging, open water.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "seafaring-deck-rigging",
+   "envId": "terror-of-the-deep",
+   "review": "acceptable",
+   "reason": "Sailing a dangerous sea; the monster and the storm are not shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "seafaring-deck-rigging",
+   "envId": "the-skyship-windfall",
+   "review": "needs-review",
+   "reason": "A royal navy freighter with three masts, but a skyship: the crop shows a sea.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "seafaring-deck-rigging",
+   "envId": "undersea-trench",
+   "review": "rejected",
+   "reason": "Beneath the waves; rigging is above them (ship rigging ≠ underwater).",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "seafaring-deck-rigging",
+   "envId": "deep-one-city",
+   "review": "rejected",
+   "reason": "An undersea coral city; nothing submerged.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "seafaring-deck-rigging",
+   "envId": "raiding-party",
+   "review": "rejected",
+   "reason": "Pirates landing at a port; this is a working deck at sea.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "seafaring-lighthouse-coast",
+   "envId": "port-city",
+   "review": "needs-review",
+   "reason": "A distant headland suits a port, but the lighthouse is unreadable at any frame.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "seafaring-storm-waves",
+   "envId": "terror-of-the-deep",
+   "review": "acceptable",
+   "reason": "A rogue wave on a sea only the brave sail; generic water, but the right place.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "seafaring-storm-waves",
+   "envId": "ocean-voyage",
+   "review": "acceptable",
+   "reason": "Foul weather at sea; no ship visible beyond the rail.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  }
+ ],
+ "coverage": {
+  "environments": 329,
+  "baseline": {
+   "catalog": {
+    "themed": 97,
+    "notThemed": 232
+   },
+   "prep": {
+    "themed": 0,
+    "notThemed": 329
+   },
+   "lists": {
+    "themed": 122,
+    "notThemed": 207
+   }
+  },
+  "candidate": {
+   "environments": 30,
+   "mappings": 46
+  },
+  "approved": {
+   "environments": 18,
+   "mappings": 28,
+   "ids": [
+    "bustling-marketplace",
+    "castle-siege",
+    "city-festival",
+    "civic-library",
+    "emberwood-village",
+    "library-of-the-dusk-tree",
+    "local-tavern",
+    "murder-mystery",
+    "ocean-voyage",
+    "outpost-town",
+    "pitched-battle",
+    "planetary-blockade",
+    "resting-dagger-inn",
+    "street-chase",
+    "teal-heart-inn",
+    "terror-of-the-deep",
+    "the-dungeoneer",
+    "the-wandering-tavern"
+   ]
+  },
+  "rejected": 33,
+  "needsReview": 16,
+  "unreviewedCounted": 0,
+  "byContext": {
+   "catalog": {
+    "usableEnvironments": 17,
+    "newlyCovered": 3,
+    "improved": 2,
+    "net": 5,
+    "ids": [
+     "bustling-marketplace",
+     "castle-siege",
+     "city-festival",
+     "civic-library",
+     "emberwood-village",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "ocean-voyage",
+     "outpost-town",
+     "pitched-battle",
+     "planetary-blockade",
+     "resting-dagger-inn",
+     "street-chase",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-dungeoneer",
+     "the-wandering-tavern"
+    ],
+    "newlyCoveredIds": [
+     "city-festival",
+     "pitched-battle",
+     "the-dungeoneer"
+    ],
+    "improvedIds": [
+     "bustling-marketplace",
+     "resting-dagger-inn"
+    ],
+    "netIds": [
+     "bustling-marketplace",
+     "city-festival",
+     "pitched-battle",
+     "resting-dagger-inn",
+     "the-dungeoneer"
+    ],
+    "regions": 11
+   },
+   "prep": {
+    "usableEnvironments": 16,
+    "newlyCovered": 16,
+    "improved": 0,
+    "net": 16,
+    "ids": [
+     "bustling-marketplace",
+     "castle-siege",
+     "city-festival",
+     "civic-library",
+     "emberwood-village",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "murder-mystery",
+     "ocean-voyage",
+     "pitched-battle",
+     "planetary-blockade",
+     "resting-dagger-inn",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-dungeoneer",
+     "the-wandering-tavern"
+    ],
+    "newlyCoveredIds": [
+     "bustling-marketplace",
+     "castle-siege",
+     "city-festival",
+     "civic-library",
+     "emberwood-village",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "murder-mystery",
+     "ocean-voyage",
+     "pitched-battle",
+     "planetary-blockade",
+     "resting-dagger-inn",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-dungeoneer",
+     "the-wandering-tavern"
+    ],
+    "improvedIds": [],
+    "netIds": [
+     "bustling-marketplace",
+     "castle-siege",
+     "city-festival",
+     "civic-library",
+     "emberwood-village",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "murder-mystery",
+     "ocean-voyage",
+     "pitched-battle",
+     "planetary-blockade",
+     "resting-dagger-inn",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-dungeoneer",
+     "the-wandering-tavern"
+    ],
+    "regions": 11
+   },
+   "lists": {
+    "usableEnvironments": 17,
+    "newlyCovered": 3,
+    "improved": 2,
+    "net": 5,
+    "ids": [
+     "bustling-marketplace",
+     "castle-siege",
+     "city-festival",
+     "civic-library",
+     "emberwood-village",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "murder-mystery",
+     "ocean-voyage",
+     "outpost-town",
+     "planetary-blockade",
+     "resting-dagger-inn",
+     "street-chase",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-dungeoneer",
+     "the-wandering-tavern"
+    ],
+    "newlyCoveredIds": [
+     "city-festival",
+     "murder-mystery",
+     "the-dungeoneer"
+    ],
+    "improvedIds": [
+     "bustling-marketplace",
+     "resting-dagger-inn"
+    ],
+    "netIds": [
+     "bustling-marketplace",
+     "city-festival",
+     "murder-mystery",
+     "resting-dagger-inn",
+     "the-dungeoneer"
+    ],
+    "regions": 10
+   }
+  },
+  "crossArchetype": {
+   "mappings": 5,
+   "strong": 1,
+   "environments": 5,
+   "ids": [
+    "city-festival",
+    "local-tavern",
+    "murder-mystery",
+    "resting-dagger-inn",
+    "street-chase"
+   ]
+  },
+  "netAnyContext": 16
+ },
+ "note": "Experimental, unapproved for production. Mapping reviews are one reviewer's judgement; nothing here changes the archetype taxonomy or the artwork registry.",
+ "_envCount": 329
+}

@@ -987,6 +987,11 @@ stays copy-only.
 
 `lab/artwork-v3/` is a standalone comparison page for Catalog and Prep artwork strategies (A current biome, B archetype first, C context adaptive). It is excluded from `dist/` (`EXCLUDE_PATHS` `^lab/`), linked from nowhere, and decides nothing — see [research/catalog-prep-artwork-lab-v3.md](research/catalog-prep-artwork-lab-v3.md). It never boots `js/app.js`: `prod-bridge.js` reads app.js as text, extracts `cardHtml`, `envPickerRowHtml`, `artBiome` and their helpers by name, and runs them in a private scope, replacing only `biomeArtHtml` / `prepEnvThumbHtml` — so a drift in those production functions shows up in the lab (and in `tests/artwork-lab-v3.test.js`) at once. `lab-core.js` is the pure part (strategies, crop maths, statistics, export); `context-review.js` is lab-only review data and is never read by the app. The lab stores only under `labv3:*` keys. `scripts/artwork-lab-v3-stats.js` and `scripts/shoot-artwork-lab-v3.js` regenerate `docs/research/artwork-lab-v3/`.
 
+
+## Semantic Artwork Reuse Lab (dev-only)
+
+`lab/semantic-reuse/` is a standalone research page that tests whether *regions* of the 28 archetype masters (`img/cover-archetypes-source/`) could stand for more environments than the whole pictures do. It is excluded from `dist/` (`^lab/`, plus the evidence folder `docs/research/semantic-artwork-reuse-lab-v1/`), linked from nowhere, and decides nothing — see [research/semantic-artwork-reuse-lab-v1.md](research/semantic-artwork-reuse-lab-v1.md). It reuses `lab/artwork-v3/prod-bridge.js` to draw the real card and picker row. `lab-core.js` is pure (region bounds ↔ pixels, editor view transforms, context framing, resolution viability, coverage, the versioned export); `data.js` is the curated research data (regions, environment mappings, the 28-source scan) and is never read by the app. The lab stores only under `labsr:*` keys. `scripts/semantic-reuse-lab.js` rebuilds the inventory, baseline, lab-only derivatives (`lab/semantic-reuse/derivs/`) and `stats.json` / `review-export.json`; `scripts/shoot-semantic-reuse-lab.js` the screenshots. It adds no registry entry, no environment record and no taxonomy change.
+
 ## Test and validator ownership
 
 | Concern | Lives in | Covered by |

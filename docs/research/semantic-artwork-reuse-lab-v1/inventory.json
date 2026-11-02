@@ -1,0 +1,1524 @@
+{
+ "arcane-sanctums": {
+  "path": "img/cover-archetypes-source/arcane-sanctums-landscape.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 2603007,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-arcane-sanctums-320.avif",
+     "w": 320,
+     "bytes": 12761
+    },
+    {
+     "path": "img/list-covers/archetype-arcane-sanctums-640.avif",
+     "w": 640,
+     "bytes": 40242
+    },
+    {
+     "path": "img/list-covers/archetype-arcane-sanctums-960.avif",
+     "w": 960,
+     "bytes": 77078
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-arcane-sanctums-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-arcane-sanctums-100.avif",
+     "w": 100,
+     "bytes": 7546
+    },
+    {
+     "path": "img/catalog-art/archetype-arcane-sanctums-200.avif",
+     "w": 200,
+     "bytes": 22018
+    },
+    {
+     "path": "img/catalog-art/archetype-arcane-sanctums-250.avif",
+     "w": 250,
+     "bytes": 29574
+    },
+    {
+     "path": "img/catalog-art/archetype-arcane-sanctums-300.avif",
+     "w": 300,
+     "bytes": 37096
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 7
+ },
+ "archives-and-libraries": {
+  "path": "img/cover-archetypes-source/archives-and-libraries.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1671,
+  "height": 941,
+  "format": "png",
+  "bytes": 2587596,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-archives-and-libraries-320.avif",
+     "w": 320,
+     "bytes": 12800
+    },
+    {
+     "path": "img/list-covers/archetype-archives-and-libraries-640.avif",
+     "w": 640,
+     "bytes": 40708
+    },
+    {
+     "path": "img/list-covers/archetype-archives-and-libraries-960.avif",
+     "w": 960,
+     "bytes": 77260
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-archives-and-libraries-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-archives-and-libraries-100.avif",
+     "w": 100,
+     "bytes": 6832
+    },
+    {
+     "path": "img/catalog-art/archetype-archives-and-libraries-200.avif",
+     "w": 200,
+     "bytes": 19174
+    },
+    {
+     "path": "img/catalog-art/archetype-archives-and-libraries-250.avif",
+     "w": 250,
+     "bytes": 25835
+    },
+    {
+     "path": "img/catalog-art/archetype-archives-and-libraries-300.avif",
+     "w": 300,
+     "bytes": 31426
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 3
+ },
+ "arenas-and-duels": {
+  "path": "img/cover-archetypes-source/arenas-and-duels.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1671,
+  "height": 941,
+  "format": "png",
+  "bytes": 2729136,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-arenas-and-duels-320.avif",
+     "w": 320,
+     "bytes": 12411
+    },
+    {
+     "path": "img/list-covers/archetype-arenas-and-duels-640.avif",
+     "w": 640,
+     "bytes": 39111
+    },
+    {
+     "path": "img/list-covers/archetype-arenas-and-duels-960.avif",
+     "w": 960,
+     "bytes": 75708
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-arenas-and-duels-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-arenas-and-duels-100.avif",
+     "w": 100,
+     "bytes": 7623
+    },
+    {
+     "path": "img/catalog-art/archetype-arenas-and-duels-200.avif",
+     "w": 200,
+     "bytes": 21790
+    },
+    {
+     "path": "img/catalog-art/archetype-arenas-and-duels-250.avif",
+     "w": 250,
+     "bytes": 29883
+    },
+    {
+     "path": "img/catalog-art/archetype-arenas-and-duels-300.avif",
+     "w": 300,
+     "bytes": 36689
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 2
+ },
+ "blighted-mires": {
+  "path": "img/cover-archetypes-source/blighted-mires.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1671,
+  "height": 941,
+  "format": "png",
+  "bytes": 2842922,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-blighted-mires-320.avif",
+     "w": 320,
+     "bytes": 11632
+    },
+    {
+     "path": "img/list-covers/archetype-blighted-mires-640.avif",
+     "w": 640,
+     "bytes": 39693
+    },
+    {
+     "path": "img/list-covers/archetype-blighted-mires-960.avif",
+     "w": 960,
+     "bytes": 81019
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-blighted-mires-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-blighted-mires-100.avif",
+     "w": 100,
+     "bytes": 5480
+    },
+    {
+     "path": "img/catalog-art/archetype-blighted-mires-200.avif",
+     "w": 200,
+     "bytes": 17102
+    },
+    {
+     "path": "img/catalog-art/archetype-blighted-mires-250.avif",
+     "w": 250,
+     "bytes": 23736
+    },
+    {
+     "path": "img/catalog-art/archetype-blighted-mires-300.avif",
+     "w": 300,
+     "bytes": 29177
+    }
+   ],
+   "catalogUse": "strong"
+  },
+  "fitEnvironments": 9
+ },
+ "chase-and-ambush": {
+  "path": "img/cover-archetypes-source/chase-and-ambush.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 2959584,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-chase-and-ambush-320.avif",
+     "w": 320,
+     "bytes": 14121
+    },
+    {
+     "path": "img/list-covers/archetype-chase-and-ambush-640.avif",
+     "w": 640,
+     "bytes": 50410
+    },
+    {
+     "path": "img/list-covers/archetype-chase-and-ambush-960.avif",
+     "w": 960,
+     "bytes": 102497
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-chase-and-ambush-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-chase-and-ambush-100.avif",
+     "w": 100,
+     "bytes": null
+    },
+    {
+     "path": "img/catalog-art/archetype-chase-and-ambush-200.avif",
+     "w": 200,
+     "bytes": null
+    },
+    {
+     "path": "img/catalog-art/archetype-chase-and-ambush-250.avif",
+     "w": 250,
+     "bytes": null
+    },
+    {
+     "path": "img/catalog-art/archetype-chase-and-ambush-300.avif",
+     "w": 300,
+     "bytes": null
+    }
+   ],
+   "catalogUse": "none"
+  },
+  "fitEnvironments": 3
+ },
+ "crypts-and-tombs": {
+  "path": "img/cover-archetypes-source/crypts-and-tombs.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 2413319,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-crypts-and-tombs-320.avif",
+     "w": 320,
+     "bytes": 8377
+    },
+    {
+     "path": "img/list-covers/archetype-crypts-and-tombs-640.avif",
+     "w": 640,
+     "bytes": 24480
+    },
+    {
+     "path": "img/list-covers/archetype-crypts-and-tombs-960.avif",
+     "w": 960,
+     "bytes": 46527
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-crypts-and-tombs-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-crypts-and-tombs-100.avif",
+     "w": 100,
+     "bytes": 4134
+    },
+    {
+     "path": "img/catalog-art/archetype-crypts-and-tombs-200.avif",
+     "w": 200,
+     "bytes": 11068
+    },
+    {
+     "path": "img/catalog-art/archetype-crypts-and-tombs-250.avif",
+     "w": 250,
+     "bytes": 15497
+    },
+    {
+     "path": "img/catalog-art/archetype-crypts-and-tombs-300.avif",
+     "w": 300,
+     "bytes": 18911
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 6
+ },
+ "cursed-and-blighted-lands": {
+  "path": "img/cover-archetypes-source/cursed-and-blighted-lands.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 3043346,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-cursed-and-blighted-lands-320.avif",
+     "w": 320,
+     "bytes": 14716
+    },
+    {
+     "path": "img/list-covers/archetype-cursed-and-blighted-lands-640.avif",
+     "w": 640,
+     "bytes": 54832
+    },
+    {
+     "path": "img/list-covers/archetype-cursed-and-blighted-lands-960.avif",
+     "w": 960,
+     "bytes": 112290
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-cursed-and-blighted-lands-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-cursed-and-blighted-lands-100.avif",
+     "w": 100,
+     "bytes": 7243
+    },
+    {
+     "path": "img/catalog-art/archetype-cursed-and-blighted-lands-200.avif",
+     "w": 200,
+     "bytes": 22778
+    },
+    {
+     "path": "img/catalog-art/archetype-cursed-and-blighted-lands-250.avif",
+     "w": 250,
+     "bytes": 31429
+    },
+    {
+     "path": "img/catalog-art/archetype-cursed-and-blighted-lands-300.avif",
+     "w": 300,
+     "bytes": 38125
+    }
+   ],
+   "catalogUse": "strong"
+  },
+  "fitEnvironments": 2
+ },
+ "drowned-depths": {
+  "path": "img/cover-archetypes-source/drowned-depths.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 3199452,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-drowned-depths-320.avif",
+     "w": 320,
+     "bytes": 16959
+    },
+    {
+     "path": "img/list-covers/archetype-drowned-depths-640.avif",
+     "w": 640,
+     "bytes": 61357
+    },
+    {
+     "path": "img/list-covers/archetype-drowned-depths-960.avif",
+     "w": 960,
+     "bytes": 126067
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-drowned-depths-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-drowned-depths-100.avif",
+     "w": 100,
+     "bytes": 9442
+    },
+    {
+     "path": "img/catalog-art/archetype-drowned-depths-200.avif",
+     "w": 200,
+     "bytes": 30047
+    },
+    {
+     "path": "img/catalog-art/archetype-drowned-depths-250.avif",
+     "w": 250,
+     "bytes": 42024
+    },
+    {
+     "path": "img/catalog-art/archetype-drowned-depths-300.avif",
+     "w": 300,
+     "bytes": 51636
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 3
+ },
+ "dungeon-delves": {
+  "path": "img/cover-archetypes-source/dungeon-delves.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1670,
+  "height": 941,
+  "format": "png",
+  "bytes": 2531636,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-dungeon-delves-320.avif",
+     "w": 320,
+     "bytes": 11703
+    },
+    {
+     "path": "img/list-covers/archetype-dungeon-delves-640.avif",
+     "w": 640,
+     "bytes": 38062
+    },
+    {
+     "path": "img/list-covers/archetype-dungeon-delves-960.avif",
+     "w": 960,
+     "bytes": 71668
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-dungeon-delves-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-dungeon-delves-100.avif",
+     "w": 100,
+     "bytes": 7277
+    },
+    {
+     "path": "img/catalog-art/archetype-dungeon-delves-200.avif",
+     "w": 200,
+     "bytes": 20437
+    },
+    {
+     "path": "img/catalog-art/archetype-dungeon-delves-250.avif",
+     "w": 250,
+     "bytes": 27286
+    },
+    {
+     "path": "img/catalog-art/archetype-dungeon-delves-300.avif",
+     "w": 300,
+     "bytes": 32995
+    }
+   ],
+   "catalogUse": "strong"
+  },
+  "fitEnvironments": 2
+ },
+ "feasts-and-revelry": {
+  "path": "img/cover-archetypes-source/feasts-and-revelry-landscape.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 2647605,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-feasts-and-revelry-320.avif",
+     "w": 320,
+     "bytes": 17119
+    },
+    {
+     "path": "img/list-covers/archetype-feasts-and-revelry-640.avif",
+     "w": 640,
+     "bytes": 54081
+    },
+    {
+     "path": "img/list-covers/archetype-feasts-and-revelry-960.avif",
+     "w": 960,
+     "bytes": 101288
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-feasts-and-revelry-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-feasts-and-revelry-100.avif",
+     "w": 100,
+     "bytes": 7990
+    },
+    {
+     "path": "img/catalog-art/archetype-feasts-and-revelry-200.avif",
+     "w": 200,
+     "bytes": 22392
+    },
+    {
+     "path": "img/catalog-art/archetype-feasts-and-revelry-250.avif",
+     "w": 250,
+     "bytes": 30167
+    },
+    {
+     "path": "img/catalog-art/archetype-feasts-and-revelry-300.avif",
+     "w": 300,
+     "bytes": 36568
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 8
+ },
+ "fey-and-enchanted": {
+  "path": "img/cover-archetypes-source/fey-and-enchanted.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 3260506,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-fey-and-enchanted-320.avif",
+     "w": 320,
+     "bytes": 20395
+    },
+    {
+     "path": "img/list-covers/archetype-fey-and-enchanted-640.avif",
+     "w": 640,
+     "bytes": 72345
+    },
+    {
+     "path": "img/list-covers/archetype-fey-and-enchanted-960.avif",
+     "w": 960,
+     "bytes": 145857
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-fey-and-enchanted-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-fey-and-enchanted-100.avif",
+     "w": 100,
+     "bytes": 10368
+    },
+    {
+     "path": "img/catalog-art/archetype-fey-and-enchanted-200.avif",
+     "w": 200,
+     "bytes": 32961
+    },
+    {
+     "path": "img/catalog-art/archetype-fey-and-enchanted-250.avif",
+     "w": 250,
+     "bytes": 45172
+    },
+    {
+     "path": "img/catalog-art/archetype-fey-and-enchanted-300.avif",
+     "w": 300,
+     "bytes": 55163
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 2
+ },
+ "forgotten-ruins": {
+  "path": "img/cover-archetypes-source/forgotten-ruins-landscape.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1536,
+  "height": 1024,
+  "format": "png",
+  "bytes": 3438082,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-forgotten-ruins-320.avif",
+     "w": 320,
+     "bytes": 17653
+    },
+    {
+     "path": "img/list-covers/archetype-forgotten-ruins-640.avif",
+     "w": 640,
+     "bytes": 67359
+    },
+    {
+     "path": "img/list-covers/archetype-forgotten-ruins-960.avif",
+     "w": 960,
+     "bytes": 145443
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-forgotten-ruins-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-forgotten-ruins-100.avif",
+     "w": 100,
+     "bytes": 8833
+    },
+    {
+     "path": "img/catalog-art/archetype-forgotten-ruins-200.avif",
+     "w": 200,
+     "bytes": 31608
+    },
+    {
+     "path": "img/catalog-art/archetype-forgotten-ruins-250.avif",
+     "w": 250,
+     "bytes": 46813
+    },
+    {
+     "path": "img/catalog-art/archetype-forgotten-ruins-300.avif",
+     "w": 300,
+     "bytes": 60707
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 10
+ },
+ "haunted-and-deathly": {
+  "path": "img/cover-archetypes-source/haunted-and-deathly-landscape.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 2914303,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-haunted-and-deathly-320.avif",
+     "w": 320,
+     "bytes": 10868
+    },
+    {
+     "path": "img/list-covers/archetype-haunted-and-deathly-640.avif",
+     "w": 640,
+     "bytes": 38147
+    },
+    {
+     "path": "img/list-covers/archetype-haunted-and-deathly-960.avif",
+     "w": 960,
+     "bytes": 79608
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-haunted-and-deathly-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-haunted-and-deathly-100.avif",
+     "w": 100,
+     "bytes": 5836
+    },
+    {
+     "path": "img/catalog-art/archetype-haunted-and-deathly-200.avif",
+     "w": 200,
+     "bytes": 19642
+    },
+    {
+     "path": "img/catalog-art/archetype-haunted-and-deathly-250.avif",
+     "w": 250,
+     "bytes": 27864
+    },
+    {
+     "path": "img/catalog-art/archetype-haunted-and-deathly-300.avif",
+     "w": 300,
+     "bytes": 34748
+    }
+   ],
+   "catalogUse": "strong"
+  },
+  "fitEnvironments": 10
+ },
+ "infernal-and-profane": {
+  "path": "img/cover-archetypes-source/infernal-and-profane.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 2714234,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-infernal-and-profane-320.avif",
+     "w": 320,
+     "bytes": 15516
+    },
+    {
+     "path": "img/list-covers/archetype-infernal-and-profane-640.avif",
+     "w": 640,
+     "bytes": 48939
+    },
+    {
+     "path": "img/list-covers/archetype-infernal-and-profane-960.avif",
+     "w": 960,
+     "bytes": 95113
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-infernal-and-profane-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-infernal-and-profane-100.avif",
+     "w": 100,
+     "bytes": 8201
+    },
+    {
+     "path": "img/catalog-art/archetype-infernal-and-profane-200.avif",
+     "w": 200,
+     "bytes": 22861
+    },
+    {
+     "path": "img/catalog-art/archetype-infernal-and-profane-250.avif",
+     "w": 250,
+     "bytes": 31258
+    },
+    {
+     "path": "img/catalog-art/archetype-infernal-and-profane-300.avif",
+     "w": 300,
+     "bytes": 37977
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 5
+ },
+ "intrigue-and-underworld": {
+  "path": "img/cover-archetypes-source/intrigue-and-underworld.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1671,
+  "height": 941,
+  "format": "png",
+  "bytes": 2569027,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-intrigue-and-underworld-320.avif",
+     "w": 320,
+     "bytes": 12076
+    },
+    {
+     "path": "img/list-covers/archetype-intrigue-and-underworld-640.avif",
+     "w": 640,
+     "bytes": 39032
+    },
+    {
+     "path": "img/list-covers/archetype-intrigue-and-underworld-960.avif",
+     "w": 960,
+     "bytes": 75475
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-intrigue-and-underworld-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-intrigue-and-underworld-100.avif",
+     "w": 100,
+     "bytes": null
+    },
+    {
+     "path": "img/catalog-art/archetype-intrigue-and-underworld-200.avif",
+     "w": 200,
+     "bytes": null
+    },
+    {
+     "path": "img/catalog-art/archetype-intrigue-and-underworld-250.avif",
+     "w": 250,
+     "bytes": null
+    },
+    {
+     "path": "img/catalog-art/archetype-intrigue-and-underworld-300.avif",
+     "w": 300,
+     "bytes": null
+    }
+   ],
+   "catalogUse": "none"
+  },
+  "fitEnvironments": 2
+ },
+ "monster-lairs": {
+  "path": "img/cover-archetypes-source/monster-lairs.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 2866597,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-monster-lairs-320.avif",
+     "w": 320,
+     "bytes": 13388
+    },
+    {
+     "path": "img/list-covers/archetype-monster-lairs-640.avif",
+     "w": 640,
+     "bytes": 47854
+    },
+    {
+     "path": "img/list-covers/archetype-monster-lairs-960.avif",
+     "w": 960,
+     "bytes": 96831
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-monster-lairs-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-monster-lairs-100.avif",
+     "w": 100,
+     "bytes": null
+    },
+    {
+     "path": "img/catalog-art/archetype-monster-lairs-200.avif",
+     "w": 200,
+     "bytes": null
+    },
+    {
+     "path": "img/catalog-art/archetype-monster-lairs-250.avif",
+     "w": 250,
+     "bytes": null
+    },
+    {
+     "path": "img/catalog-art/archetype-monster-lairs-300.avif",
+     "w": 300,
+     "bytes": null
+    }
+   ],
+   "catalogUse": "none"
+  },
+  "fitEnvironments": 1
+ },
+ "perilous-passages": {
+  "path": "img/cover-archetypes-source/perilous-passages.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1670,
+  "height": 941,
+  "format": "png",
+  "bytes": 2837676,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-perilous-passages-320.avif",
+     "w": 320,
+     "bytes": 14998
+    },
+    {
+     "path": "img/list-covers/archetype-perilous-passages-640.avif",
+     "w": 640,
+     "bytes": 50503
+    },
+    {
+     "path": "img/list-covers/archetype-perilous-passages-960.avif",
+     "w": 960,
+     "bytes": 95901
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-perilous-passages-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-perilous-passages-100.avif",
+     "w": 100,
+     "bytes": 9018
+    },
+    {
+     "path": "img/catalog-art/archetype-perilous-passages-200.avif",
+     "w": 200,
+     "bytes": 27593
+    },
+    {
+     "path": "img/catalog-art/archetype-perilous-passages-250.avif",
+     "w": 250,
+     "bytes": 37211
+    },
+    {
+     "path": "img/catalog-art/archetype-perilous-passages-300.avif",
+     "w": 300,
+     "bytes": 45602
+    }
+   ],
+   "catalogUse": "strong"
+  },
+  "fitEnvironments": 4
+ },
+ "planar-rifts": {
+  "path": "img/cover-archetypes-source/planar-rifts.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1671,
+  "height": 941,
+  "format": "png",
+  "bytes": 2630123,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-planar-rifts-320.avif",
+     "w": 320,
+     "bytes": 12650
+    },
+    {
+     "path": "img/list-covers/archetype-planar-rifts-640.avif",
+     "w": 640,
+     "bytes": 38761
+    },
+    {
+     "path": "img/list-covers/archetype-planar-rifts-960.avif",
+     "w": 960,
+     "bytes": 72708
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-planar-rifts-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-planar-rifts-100.avif",
+     "w": 100,
+     "bytes": 6407
+    },
+    {
+     "path": "img/catalog-art/archetype-planar-rifts-200.avif",
+     "w": 200,
+     "bytes": 16457
+    },
+    {
+     "path": "img/catalog-art/archetype-planar-rifts-250.avif",
+     "w": 250,
+     "bytes": 21884
+    },
+    {
+     "path": "img/catalog-art/archetype-planar-rifts-300.avif",
+     "w": 300,
+     "bytes": 26397
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 6
+ },
+ "sacred-sanctuaries": {
+  "path": "img/cover-archetypes-source/sacred-sanctuaries.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1671,
+  "height": 941,
+  "format": "png",
+  "bytes": 3161634,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-sacred-sanctuaries-320.avif",
+     "w": 320,
+     "bytes": 19818
+    },
+    {
+     "path": "img/list-covers/archetype-sacred-sanctuaries-640.avif",
+     "w": 640,
+     "bytes": 68980
+    },
+    {
+     "path": "img/list-covers/archetype-sacred-sanctuaries-960.avif",
+     "w": 960,
+     "bytes": 139553
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-sacred-sanctuaries-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-sacred-sanctuaries-100.avif",
+     "w": 100,
+     "bytes": 10973
+    },
+    {
+     "path": "img/catalog-art/archetype-sacred-sanctuaries-200.avif",
+     "w": 200,
+     "bytes": 34160
+    },
+    {
+     "path": "img/catalog-art/archetype-sacred-sanctuaries-250.avif",
+     "w": 250,
+     "bytes": 46738
+    },
+    {
+     "path": "img/catalog-art/archetype-sacred-sanctuaries-300.avif",
+     "w": 300,
+     "bytes": 57272
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 2
+ },
+ "seafaring": {
+  "path": "img/cover-archetypes-source/seafaring.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 2761584,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-seafaring-320.avif",
+     "w": 320,
+     "bytes": 13572
+    },
+    {
+     "path": "img/list-covers/archetype-seafaring-640.avif",
+     "w": 640,
+     "bytes": 41570
+    },
+    {
+     "path": "img/list-covers/archetype-seafaring-960.avif",
+     "w": 960,
+     "bytes": 77738
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-seafaring-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-seafaring-100.avif",
+     "w": 100,
+     "bytes": 6932
+    },
+    {
+     "path": "img/catalog-art/archetype-seafaring-200.avif",
+     "w": 200,
+     "bytes": 19239
+    },
+    {
+     "path": "img/catalog-art/archetype-seafaring-250.avif",
+     "w": 250,
+     "bytes": 26402
+    },
+    {
+     "path": "img/catalog-art/archetype-seafaring-300.avif",
+     "w": 300,
+     "bytes": 32309
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 2
+ },
+ "sinister-woods": {
+  "path": "img/cover-archetypes-source/sinister-woods.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 2870424,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-sinister-woods-320.avif",
+     "w": 320,
+     "bytes": 9962
+    },
+    {
+     "path": "img/list-covers/archetype-sinister-woods-640.avif",
+     "w": 640,
+     "bytes": 35262
+    },
+    {
+     "path": "img/list-covers/archetype-sinister-woods-960.avif",
+     "w": 960,
+     "bytes": 74341
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-sinister-woods-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-sinister-woods-100.avif",
+     "w": 100,
+     "bytes": 6694
+    },
+    {
+     "path": "img/catalog-art/archetype-sinister-woods-200.avif",
+     "w": 200,
+     "bytes": 21702
+    },
+    {
+     "path": "img/catalog-art/archetype-sinister-woods-250.avif",
+     "w": 250,
+     "bytes": 30433
+    },
+    {
+     "path": "img/catalog-art/archetype-sinister-woods-300.avif",
+     "w": 300,
+     "bytes": 37970
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 5
+ },
+ "sky-realms": {
+  "path": "img/cover-archetypes-source/sky-realms.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 2699134,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-sky-realms-320.avif",
+     "w": 320,
+     "bytes": 11240
+    },
+    {
+     "path": "img/list-covers/archetype-sky-realms-640.avif",
+     "w": 640,
+     "bytes": 34372
+    },
+    {
+     "path": "img/list-covers/archetype-sky-realms-960.avif",
+     "w": 960,
+     "bytes": 70265
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-sky-realms-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-sky-realms-100.avif",
+     "w": 100,
+     "bytes": 5663
+    },
+    {
+     "path": "img/catalog-art/archetype-sky-realms-200.avif",
+     "w": 200,
+     "bytes": 16466
+    },
+    {
+     "path": "img/catalog-art/archetype-sky-realms-250.avif",
+     "w": 250,
+     "bytes": 22836
+    },
+    {
+     "path": "img/catalog-art/archetype-sky-realms-300.avif",
+     "w": 300,
+     "bytes": 28079
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 3
+ },
+ "starfaring": {
+  "path": "img/cover-archetypes-source/starfaring.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1671,
+  "height": 941,
+  "format": "png",
+  "bytes": 2805748,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-starfaring-320.avif",
+     "w": 320,
+     "bytes": 15986
+    },
+    {
+     "path": "img/list-covers/archetype-starfaring-640.avif",
+     "w": 640,
+     "bytes": 51752
+    },
+    {
+     "path": "img/list-covers/archetype-starfaring-960.avif",
+     "w": 960,
+     "bytes": 98159
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-starfaring-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-starfaring-100.avif",
+     "w": 100,
+     "bytes": 6866
+    },
+    {
+     "path": "img/catalog-art/archetype-starfaring-200.avif",
+     "w": 200,
+     "bytes": 19124
+    },
+    {
+     "path": "img/catalog-art/archetype-starfaring-250.avif",
+     "w": 250,
+     "bytes": 25975
+    },
+    {
+     "path": "img/catalog-art/archetype-starfaring-300.avif",
+     "w": 300,
+     "bytes": 32245
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 1
+ },
+ "storms-and-calamity": {
+  "path": "img/cover-archetypes-source/storms-and-calamity.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 3081230,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-storms-and-calamity-320.avif",
+     "w": 320,
+     "bytes": 15165
+    },
+    {
+     "path": "img/list-covers/archetype-storms-and-calamity-640.avif",
+     "w": 640,
+     "bytes": 49989
+    },
+    {
+     "path": "img/list-covers/archetype-storms-and-calamity-960.avif",
+     "w": 960,
+     "bytes": 101868
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-storms-and-calamity-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-storms-and-calamity-100.avif",
+     "w": 100,
+     "bytes": 7434
+    },
+    {
+     "path": "img/catalog-art/archetype-storms-and-calamity-200.avif",
+     "w": 200,
+     "bytes": 22538
+    },
+    {
+     "path": "img/catalog-art/archetype-storms-and-calamity-250.avif",
+     "w": 250,
+     "bytes": 31263
+    },
+    {
+     "path": "img/catalog-art/archetype-storms-and-calamity-300.avif",
+     "w": 300,
+     "bytes": 38248
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 6
+ },
+ "streets-and-towns": {
+  "path": "img/cover-archetypes-source/streets-and-towns.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1670,
+  "height": 941,
+  "format": "png",
+  "bytes": 3261604,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-streets-and-towns-320.avif",
+     "w": 320,
+     "bytes": 21320
+    },
+    {
+     "path": "img/list-covers/archetype-streets-and-towns-640.avif",
+     "w": 640,
+     "bytes": 74824
+    },
+    {
+     "path": "img/list-covers/archetype-streets-and-towns-960.avif",
+     "w": 960,
+     "bytes": 147463
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-streets-and-towns-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-streets-and-towns-100.avif",
+     "w": 100,
+     "bytes": 10233
+    },
+    {
+     "path": "img/catalog-art/archetype-streets-and-towns-200.avif",
+     "w": 200,
+     "bytes": 31291
+    },
+    {
+     "path": "img/catalog-art/archetype-streets-and-towns-250.avif",
+     "w": 250,
+     "bytes": 43023
+    },
+    {
+     "path": "img/catalog-art/archetype-streets-and-towns-300.avif",
+     "w": 300,
+     "bytes": 52556
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 5
+ },
+ "strongholds-and-sieges": {
+  "path": "img/cover-archetypes-source/strongholds-and-sieges.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 2764031,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-strongholds-and-sieges-320.avif",
+     "w": 320,
+     "bytes": 12973
+    },
+    {
+     "path": "img/list-covers/archetype-strongholds-and-sieges-640.avif",
+     "w": 640,
+     "bytes": 45197
+    },
+    {
+     "path": "img/list-covers/archetype-strongholds-and-sieges-960.avif",
+     "w": 960,
+     "bytes": 90047
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-strongholds-and-sieges-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-strongholds-and-sieges-100.avif",
+     "w": 100,
+     "bytes": 7298
+    },
+    {
+     "path": "img/catalog-art/archetype-strongholds-and-sieges-200.avif",
+     "w": 200,
+     "bytes": 23068
+    },
+    {
+     "path": "img/catalog-art/archetype-strongholds-and-sieges-250.avif",
+     "w": 250,
+     "bytes": 31899
+    },
+    {
+     "path": "img/catalog-art/archetype-strongholds-and-sieges-300.avif",
+     "w": 300,
+     "bytes": 39295
+    }
+   ],
+   "catalogUse": "strong"
+  },
+  "fitEnvironments": 2
+ },
+ "taverns-and-inns": {
+  "path": "img/cover-archetypes-source/taverns-and-inns.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 2517968,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-taverns-and-inns-320.avif",
+     "w": 320,
+     "bytes": 13507
+    },
+    {
+     "path": "img/list-covers/archetype-taverns-and-inns-640.avif",
+     "w": 640,
+     "bytes": 39967
+    },
+    {
+     "path": "img/list-covers/archetype-taverns-and-inns-960.avif",
+     "w": 960,
+     "bytes": 71342
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-taverns-and-inns-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-taverns-and-inns-100.avif",
+     "w": 100,
+     "bytes": 5604
+    },
+    {
+     "path": "img/catalog-art/archetype-taverns-and-inns-200.avif",
+     "w": 200,
+     "bytes": 12938
+    },
+    {
+     "path": "img/catalog-art/archetype-taverns-and-inns-250.avif",
+     "w": 250,
+     "bytes": 16673
+    },
+    {
+     "path": "img/catalog-art/archetype-taverns-and-inns-300.avif",
+     "w": 300,
+     "bytes": 19638
+    }
+   ],
+   "catalogUse": "all"
+  },
+  "fitEnvironments": 4
+ },
+ "time-and-dream": {
+  "path": "img/cover-archetypes-source/time-and-dream.png",
+  "available": true,
+  "extra": false,
+  "productionPicture": true,
+  "width": 1672,
+  "height": 941,
+  "format": "png",
+  "bytes": 3624282,
+  "derivatives": {
+   "listCovers": [
+    {
+     "path": "img/list-covers/archetype-time-and-dream-320.avif",
+     "w": 320,
+     "bytes": 19395
+    },
+    {
+     "path": "img/list-covers/archetype-time-and-dream-640.avif",
+     "w": 640,
+     "bytes": 70193
+    },
+    {
+     "path": "img/list-covers/archetype-time-and-dream-960.avif",
+     "w": 960,
+     "bytes": 147682
+    }
+   ],
+   "listCoverFallback": "img/list-covers/archetype-time-and-dream-640.webp",
+   "catalogStrips": [
+    {
+     "path": "img/catalog-art/archetype-time-and-dream-100.avif",
+     "w": 100,
+     "bytes": null
+    },
+    {
+     "path": "img/catalog-art/archetype-time-and-dream-200.avif",
+     "w": 200,
+     "bytes": null
+    },
+    {
+     "path": "img/catalog-art/archetype-time-and-dream-250.avif",
+     "w": 250,
+     "bytes": null
+    },
+    {
+     "path": "img/catalog-art/archetype-time-and-dream-300.avif",
+     "w": 300,
+     "bytes": null
+    }
+   ],
+   "catalogUse": "none"
+  },
+  "fitEnvironments": 2
+ },
+ "haunted-and-deathly-portrait": {
+  "path": "img/cover-archetypes-source/haunted-and-deathly-portrait.png",
+  "available": true,
+  "extra": true,
+  "productionPicture": false,
+  "width": 1024,
+  "height": 1536,
+  "format": "png",
+  "bytes": 2961030
+ }
+}

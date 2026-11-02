@@ -1,0 +1,8218 @@
+{
+ "generated": "2026-11-02",
+ "sourcesInspected": 29,
+ "pilotSources": 6,
+ "mastersMissing": [],
+ "regions": {
+  "proposed": 18,
+  "approved": 13,
+  "byStatus": {
+   "proposed": 0,
+   "approved": 13,
+   "rejected": 0,
+   "needs-better-crop": 2,
+   "insufficient-resolution": 1,
+   "too-complex": 0,
+   "not-independently-meaningful": 2
+  },
+  "passingVisualQa": 13,
+  "resolutionPass": 13,
+  "usableFrames": 58,
+  "averageUsablePerPilotSource": 2.17
+ },
+ "mappings": {
+  "total": 79,
+  "byReview": {
+   "strong": 8,
+   "acceptable": 22,
+   "rejected": 33,
+   "needs-review": 16
+  }
+ },
+ "baseline": {
+  "environments": 329,
+  "catalog": {
+   "biome": 232,
+   "override": 2,
+   "thematic": 92,
+   "unique": 3
+  },
+  "lists": {
+   "biome": 118,
+   "override": 2,
+   "archetype": 117,
+   "none": 89,
+   "unique": 3
+  },
+  "prep": {
+   "biome": 329
+  }
+ },
+ "coverage": {
+  "environments": 329,
+  "baseline": {
+   "catalog": {
+    "themed": 97,
+    "notThemed": 232
+   },
+   "prep": {
+    "themed": 0,
+    "notThemed": 329
+   },
+   "lists": {
+    "themed": 122,
+    "notThemed": 207
+   }
+  },
+  "candidate": {
+   "environments": 30,
+   "mappings": 46
+  },
+  "approved": {
+   "environments": 18,
+   "mappings": 28,
+   "ids": [
+    "bustling-marketplace",
+    "castle-siege",
+    "city-festival",
+    "civic-library",
+    "emberwood-village",
+    "library-of-the-dusk-tree",
+    "local-tavern",
+    "murder-mystery",
+    "ocean-voyage",
+    "outpost-town",
+    "pitched-battle",
+    "planetary-blockade",
+    "resting-dagger-inn",
+    "street-chase",
+    "teal-heart-inn",
+    "terror-of-the-deep",
+    "the-dungeoneer",
+    "the-wandering-tavern"
+   ]
+  },
+  "rejected": 33,
+  "needsReview": 16,
+  "unreviewedCounted": 0,
+  "byContext": {
+   "catalog": {
+    "usableEnvironments": 17,
+    "newlyCovered": 3,
+    "improved": 2,
+    "net": 5,
+    "ids": [
+     "bustling-marketplace",
+     "castle-siege",
+     "city-festival",
+     "civic-library",
+     "emberwood-village",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "ocean-voyage",
+     "outpost-town",
+     "pitched-battle",
+     "planetary-blockade",
+     "resting-dagger-inn",
+     "street-chase",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-dungeoneer",
+     "the-wandering-tavern"
+    ],
+    "newlyCoveredIds": [
+     "city-festival",
+     "pitched-battle",
+     "the-dungeoneer"
+    ],
+    "improvedIds": [
+     "bustling-marketplace",
+     "resting-dagger-inn"
+    ],
+    "netIds": [
+     "bustling-marketplace",
+     "city-festival",
+     "pitched-battle",
+     "resting-dagger-inn",
+     "the-dungeoneer"
+    ],
+    "regions": 11
+   },
+   "prep": {
+    "usableEnvironments": 16,
+    "newlyCovered": 16,
+    "improved": 0,
+    "net": 16,
+    "ids": [
+     "bustling-marketplace",
+     "castle-siege",
+     "city-festival",
+     "civic-library",
+     "emberwood-village",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "murder-mystery",
+     "ocean-voyage",
+     "pitched-battle",
+     "planetary-blockade",
+     "resting-dagger-inn",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-dungeoneer",
+     "the-wandering-tavern"
+    ],
+    "newlyCoveredIds": [
+     "bustling-marketplace",
+     "castle-siege",
+     "city-festival",
+     "civic-library",
+     "emberwood-village",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "murder-mystery",
+     "ocean-voyage",
+     "pitched-battle",
+     "planetary-blockade",
+     "resting-dagger-inn",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-dungeoneer",
+     "the-wandering-tavern"
+    ],
+    "improvedIds": [],
+    "netIds": [
+     "bustling-marketplace",
+     "castle-siege",
+     "city-festival",
+     "civic-library",
+     "emberwood-village",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "murder-mystery",
+     "ocean-voyage",
+     "pitched-battle",
+     "planetary-blockade",
+     "resting-dagger-inn",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-dungeoneer",
+     "the-wandering-tavern"
+    ],
+    "regions": 11
+   },
+   "lists": {
+    "usableEnvironments": 17,
+    "newlyCovered": 3,
+    "improved": 2,
+    "net": 5,
+    "ids": [
+     "bustling-marketplace",
+     "castle-siege",
+     "city-festival",
+     "civic-library",
+     "emberwood-village",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "murder-mystery",
+     "ocean-voyage",
+     "outpost-town",
+     "planetary-blockade",
+     "resting-dagger-inn",
+     "street-chase",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-dungeoneer",
+     "the-wandering-tavern"
+    ],
+    "newlyCoveredIds": [
+     "city-festival",
+     "murder-mystery",
+     "the-dungeoneer"
+    ],
+    "improvedIds": [
+     "bustling-marketplace",
+     "resting-dagger-inn"
+    ],
+    "netIds": [
+     "bustling-marketplace",
+     "city-festival",
+     "murder-mystery",
+     "resting-dagger-inn",
+     "the-dungeoneer"
+    ],
+    "regions": 10
+   }
+  },
+  "crossArchetype": {
+   "mappings": 5,
+   "strong": 1,
+   "environments": 5,
+   "ids": [
+    "city-festival",
+    "local-tavern",
+    "murder-mystery",
+    "resting-dagger-inn",
+    "street-chase"
+   ]
+  },
+  "netAnyContext": 16
+ },
+ "unlockedByCrops": {
+  "count": 4,
+  "ids": [
+   "city-festival",
+   "murder-mystery",
+   "pitched-battle",
+   "the-dungeoneer"
+  ]
+ },
+ "assets": {
+  "files": 127,
+  "avifBytes": 873350,
+  "webpBytes": 215496,
+  "byContext": {
+   "catalog": {
+    "avif": 213898,
+    "files": 33
+   },
+   "prep": {
+    "avif": 40472,
+    "files": 22
+   },
+   "lists1": {
+    "avif": 259826,
+    "files": 22
+   },
+   "lists2": {
+    "avif": 211452,
+    "files": 26
+   },
+   "lists3": {
+    "avif": 147702,
+    "files": 24
+   }
+  },
+  "avifBytesDpr1": 237420,
+  "avifBytesDpr2": 635930,
+  "upscaledFiles": 13,
+  "existingCatalogStrip200Avg": 22436,
+  "existing960Avg": 96314,
+  "existing640Avg": 48501
+ },
+ "regionReports": [
+  {
+   "id": "streets-and-towns-market-stalls",
+   "sourceId": "streets-and-towns",
+   "status": "approved",
+   "pixels": {
+    "x": 0,
+    "y": 169,
+    "w": 568,
+    "h": 772
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 539,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 112.9,
+       "cssFullWidth": 538.6
+      },
+      "2": {
+       "needFullPx": 1078,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 169.3,
+       "cssFullWidth": 538.6
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 24.04,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 568,
+      "h": 772
+     },
+     "effective": {
+      "w": 294.5,
+      "h": 772,
+      "share": 0.519
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 256,
+      "h": 425
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.323,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.645,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 142,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 108.8,
+       "cssFullWidth": 141.1
+      },
+      "2": {
+       "needFullPx": 283,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 108.8,
+       "cssFullWidth": 141.1
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 50,
+      "y": 78.38,
+      "zoom": 1
+     },
+     "region": {
+      "w": 568,
+      "h": 772
+     },
+     "effective": {
+      "w": 568,
+      "h": 568,
+      "share": 0.736
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 256,
+      "h": 425
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.085,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.169,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-limited-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 935,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 326.5,
+       "cssFullWidth": 935
+      },
+      "2": {
+       "needFullPx": 1870,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 326.5,
+       "cssFullWidth": 935
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 48.74,
+      "zoom": 1
+     },
+     "region": {
+      "w": 568,
+      "h": 772
+     },
+     "effective": {
+      "w": 568,
+      "h": 160.8,
+      "share": 0.208
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 284,
+      "h": 139
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.56,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.12,
+       "upscaled": true
+      }
+     },
+     "label": "Suitable at DPR 1, limited at DPR 2"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 465,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 217.7,
+       "cssFullWidth": 464.5
+      },
+      "2": {
+       "needFullPx": 930,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 326.5,
+       "cssFullWidth": 464.5
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 56.89,
+      "zoom": 1
+     },
+     "region": {
+      "w": 568,
+      "h": 772
+     },
+     "effective": {
+      "w": 568,
+      "h": 323.5,
+      "share": 0.419
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 284,
+      "h": 216
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.278,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.556,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 309,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 108.8,
+       "cssFullWidth": 308.7
+      },
+      "2": {
+       "needFullPx": 618,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 217.7,
+       "cssFullWidth": 308.7
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 70.31,
+      "zoom": 1
+     },
+     "region": {
+      "w": 568,
+      "h": 772
+     },
+     "effective": {
+      "w": 568,
+      "h": 486.9,
+      "share": 0.631
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 256,
+      "h": 425
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.185,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.37,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "streets-and-towns-market-stalls",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-stalls--catalog-95x249.avif",
+     "bytes": 9095,
+     "sourceWindow": {
+      "left": 66,
+      "top": 169,
+      "width": 295,
+      "height": 772
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-stalls",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-stalls--catalog-190x498.avif",
+     "bytes": 26069,
+     "sourceWindow": {
+      "left": 66,
+      "top": 169,
+      "width": 295,
+      "height": 772
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-stalls",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-stalls--catalog-190x498.webp",
+     "bytes": 32602,
+     "sourceWindow": {
+      "left": 66,
+      "top": 169,
+      "width": 295,
+      "height": 772
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-stalls",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-stalls--prep-48x48.avif",
+     "bytes": 1230,
+     "sourceWindow": {
+      "left": 0,
+      "top": 329,
+      "width": 568,
+      "height": 568
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-stalls",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-stalls--prep-96x96.avif",
+     "bytes": 3790,
+     "sourceWindow": {
+      "left": 0,
+      "top": 329,
+      "width": 568,
+      "height": 568
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-stalls",
+     "ctx": "lists1",
+     "dpr": 1,
+     "w": 318,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-stalls--lists1-318x90.avif",
+     "bytes": 9340,
+     "sourceWindow": {
+      "left": 0,
+      "top": 467,
+      "width": 568,
+      "height": 161
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-stalls",
+     "ctx": "lists1",
+     "dpr": 2,
+     "w": 636,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-stalls--lists1-636x180.avif",
+     "bytes": 19510,
+     "sourceWindow": {
+      "left": 0,
+      "top": 467,
+      "width": 568,
+      "height": 161
+     },
+     "upscaled": true
+    },
+    {
+     "regionId": "streets-and-towns-market-stalls",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-stalls--lists2-158x90.avif",
+     "bytes": 5928,
+     "sourceWindow": {
+      "left": 0,
+      "top": 424,
+      "width": 568,
+      "height": 324
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-stalls",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-stalls--lists2-316x180.avif",
+     "bytes": 17337,
+     "sourceWindow": {
+      "left": 0,
+      "top": 424,
+      "width": 568,
+      "height": 324
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-stalls",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-stalls--lists3-105x90.avif",
+     "bytes": 4106,
+     "sourceWindow": {
+      "left": 0,
+      "top": 369,
+      "width": 568,
+      "height": 487
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-stalls",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-stalls--lists3-210x180.avif",
+     "bytes": 13405,
+     "sourceWindow": {
+      "left": 0,
+      "top": 369,
+      "width": 568,
+      "height": 487
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "streets-and-towns-market-street",
+   "sourceId": "streets-and-towns",
+   "status": "approved",
+   "pixels": {
+    "x": 501,
+    "y": 235,
+    "w": 752,
+    "h": 612
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 680,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 134.2,
+       "cssFullWidth": 679.5
+      },
+      "2": {
+       "needFullPx": 1359,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 134.2,
+       "cssFullWidth": 679.5
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 51.45,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 752,
+      "h": 612
+     },
+     "effective": {
+      "w": 233.5,
+      "h": 612,
+      "share": 0.31
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 226,
+      "h": 490
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.407,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.814,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "fail",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 131,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 117.3,
+       "cssFullWidth": 131
+      },
+      "2": {
+       "needFullPx": 262,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 117.3,
+       "cssFullWidth": 131
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 55.37,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 752,
+      "h": 612
+     },
+     "effective": {
+      "w": 612,
+      "h": 612,
+      "share": 0.814
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 226,
+      "h": 490
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.078,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.157,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 707,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 432.3,
+       "cssFullWidth": 706.2
+      },
+      "2": {
+       "needFullPx": 1413,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 432.3,
+       "cssFullWidth": 706.2
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 51.53,
+      "zoom": 1
+     },
+     "region": {
+      "w": 752,
+      "h": 612
+     },
+     "effective": {
+      "w": 752,
+      "h": 212.8,
+      "share": 0.348
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 301,
+      "h": 110
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.423,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.846,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 351,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 288.2,
+       "cssFullWidth": 350.9
+      },
+      "2": {
+       "needFullPx": 702,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 432.3,
+       "cssFullWidth": 350.9
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 752,
+      "h": 612
+     },
+     "effective": {
+      "w": 752,
+      "h": 428.4,
+      "share": 0.7
+     },
+     "survival": 0.875,
+     "subjectPx": {
+      "w": 301,
+      "h": 490
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.21,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.42,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 246,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 136.8,
+       "cssFullWidth": 245.6
+      },
+      "2": {
+       "needFullPx": 492,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 273.6,
+       "cssFullWidth": 245.6
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 69.79,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 752,
+      "h": 612
+     },
+     "effective": {
+      "w": 714,
+      "h": 612,
+      "share": 0.949
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 226,
+      "h": 490
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.147,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.294,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "streets-and-towns-market-street",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-street--catalog-95x249.avif",
+     "bytes": 7935,
+     "sourceWindow": {
+      "left": 768,
+      "top": 235,
+      "width": 233,
+      "height": 612
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-street",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-street--catalog-190x498.avif",
+     "bytes": 22807,
+     "sourceWindow": {
+      "left": 768,
+      "top": 235,
+      "width": 233,
+      "height": 612
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-street",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-street--catalog-190x498.webp",
+     "bytes": 30454,
+     "sourceWindow": {
+      "left": 768,
+      "top": 235,
+      "width": 233,
+      "height": 612
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-street",
+     "ctx": "lists1",
+     "dpr": 1,
+     "w": 318,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-street--lists1-318x90.avif",
+     "bytes": 10329,
+     "sourceWindow": {
+      "left": 501,
+      "top": 441,
+      "width": 752,
+      "height": 213
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-street",
+     "ctx": "lists1",
+     "dpr": 2,
+     "w": 636,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-street--lists1-636x180.avif",
+     "bytes": 28535,
+     "sourceWindow": {
+      "left": 501,
+      "top": 441,
+      "width": 752,
+      "height": 213
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-street",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-street--lists2-158x90.avif",
+     "bytes": 5774,
+     "sourceWindow": {
+      "left": 501,
+      "top": 327,
+      "width": 752,
+      "height": 428
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-street",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-street--lists2-316x180.avif",
+     "bytes": 19767,
+     "sourceWindow": {
+      "left": 501,
+      "top": 327,
+      "width": 752,
+      "height": 428
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-street",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-street--lists3-105x90.avif",
+     "bytes": 3932,
+     "sourceWindow": {
+      "left": 528,
+      "top": 235,
+      "width": 714,
+      "height": 612
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-market-street",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-market-street--lists3-210x180.avif",
+     "bytes": 13765,
+     "sourceWindow": {
+      "left": 528,
+      "top": 235,
+      "width": 714,
+      "height": 612
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "streets-and-towns-tavern-terrace",
+   "sourceId": "streets-and-towns",
+   "status": "approved",
+   "pixels": {
+    "x": 1169,
+    "y": 282,
+    "w": 501,
+    "h": 659
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 632,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 96.4,
+       "cssFullWidth": 631
+      },
+      "2": {
+       "needFullPx": 1263,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 144.5,
+       "cssFullWidth": 631
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 90.15,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 501,
+      "h": 659
+     },
+     "effective": {
+      "w": 251.4,
+      "h": 659,
+      "share": 0.502
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 251,
+      "h": 297
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.378,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.756,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 160,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 96,
+       "cssFullWidth": 160
+      },
+      "2": {
+       "needFullPx": 320,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 96,
+       "cssFullWidth": 160
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 50,
+      "y": 39.57,
+      "zoom": 1
+     },
+     "region": {
+      "w": 501,
+      "h": 659
+     },
+     "effective": {
+      "w": 501,
+      "h": 501,
+      "share": 0.76
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 251,
+      "h": 297
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.096,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.192,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-limited-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 1060,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 288,
+       "cssFullWidth": 1060
+      },
+      "2": {
+       "needFullPx": 2120,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 288,
+       "cssFullWidth": 1060
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 34.71,
+      "zoom": 1
+     },
+     "region": {
+      "w": 501,
+      "h": 659
+     },
+     "effective": {
+      "w": 501,
+      "h": 141.8,
+      "share": 0.215
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 276,
+      "h": 105
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.635,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.269,
+       "upscaled": true
+      }
+     },
+     "label": "Suitable at DPR 1, limited at DPR 2"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 527,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 192,
+       "cssFullWidth": 526.7
+      },
+      "2": {
+       "needFullPx": 1054,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 288,
+       "cssFullWidth": 526.7
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 45.59,
+      "zoom": 1
+     },
+     "region": {
+      "w": 501,
+      "h": 659
+     },
+     "effective": {
+      "w": 501,
+      "h": 285.4,
+      "share": 0.433
+     },
+     "survival": 0.962,
+     "subjectPx": {
+      "w": 251,
+      "h": 297
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.315,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.631,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 350,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 192,
+       "cssFullWidth": 350
+      },
+      "2": {
+       "needFullPx": 700,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 288,
+       "cssFullWidth": 350
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 42.82,
+      "zoom": 1
+     },
+     "region": {
+      "w": 501,
+      "h": 659
+     },
+     "effective": {
+      "w": 501,
+      "h": 429.4,
+      "share": 0.652
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 251,
+      "h": 297
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.21,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.419,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "streets-and-towns-tavern-terrace",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-tavern-terrace--catalog-95x249.avif",
+     "bytes": 7507,
+     "sourceWindow": {
+      "left": 1394,
+      "top": 282,
+      "width": 251,
+      "height": 659
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-tavern-terrace",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-tavern-terrace--catalog-190x498.avif",
+     "bytes": 21170,
+     "sourceWindow": {
+      "left": 1394,
+      "top": 282,
+      "width": 251,
+      "height": 659
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-tavern-terrace",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-tavern-terrace--catalog-190x498.webp",
+     "bytes": 28534,
+     "sourceWindow": {
+      "left": 1394,
+      "top": 282,
+      "width": 251,
+      "height": 659
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-tavern-terrace",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-tavern-terrace--prep-48x48.avif",
+     "bytes": 1092,
+     "sourceWindow": {
+      "left": 1169,
+      "top": 345,
+      "width": 501,
+      "height": 501
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-tavern-terrace",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-tavern-terrace--prep-96x96.avif",
+     "bytes": 3275,
+     "sourceWindow": {
+      "left": 1169,
+      "top": 345,
+      "width": 501,
+      "height": 501
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-tavern-terrace",
+     "ctx": "lists1",
+     "dpr": 1,
+     "w": 318,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-tavern-terrace--lists1-318x90.avif",
+     "bytes": 8668,
+     "sourceWindow": {
+      "left": 1169,
+      "top": 462,
+      "width": 501,
+      "height": 142
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-tavern-terrace",
+     "ctx": "lists1",
+     "dpr": 2,
+     "w": 636,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-tavern-terrace--lists1-636x180.avif",
+     "bytes": 17094,
+     "sourceWindow": {
+      "left": 1169,
+      "top": 462,
+      "width": 501,
+      "height": 142
+     },
+     "upscaled": true
+    },
+    {
+     "regionId": "streets-and-towns-tavern-terrace",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-tavern-terrace--lists2-158x90.avif",
+     "bytes": 5198,
+     "sourceWindow": {
+      "left": 1169,
+      "top": 452,
+      "width": 501,
+      "height": 285
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-tavern-terrace",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-tavern-terrace--lists2-316x180.avif",
+     "bytes": 15708,
+     "sourceWindow": {
+      "left": 1169,
+      "top": 452,
+      "width": 501,
+      "height": 285
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-tavern-terrace",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-tavern-terrace--lists3-105x90.avif",
+     "bytes": 3661,
+     "sourceWindow": {
+      "left": 1169,
+      "top": 380,
+      "width": 501,
+      "height": 429
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "streets-and-towns-tavern-terrace",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/streets-and-towns-tavern-terrace--lists3-210x180.avif",
+     "bytes": 11876,
+     "sourceWindow": {
+      "left": 1169,
+      "top": 380,
+      "width": 501,
+      "height": 429
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "streets-and-towns-clock-tower-gate",
+   "sourceId": "streets-and-towns",
+   "status": "not-independently-meaningful",
+   "pixels": {
+    "x": 968,
+    "y": 0,
+    "w": 367,
+    "h": 583
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 714,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 127.9,
+       "cssFullWidth": 713.3
+      },
+      "2": {
+       "needFullPx": 1427,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 127.9,
+       "cssFullWidth": 713.3
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 367,
+      "h": 583
+     },
+     "effective": {
+      "w": 222.4,
+      "h": 583,
+      "share": 0.606
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 184,
+      "h": 338
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.427,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.854,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 219,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 70.3,
+       "cssFullWidth": 218.4
+      },
+      "2": {
+       "needFullPx": 437,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 140.6,
+       "cssFullWidth": 218.4
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "region": {
+      "w": 367,
+      "h": 583
+     },
+     "effective": {
+      "w": 367,
+      "h": 367,
+      "share": 0.63
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 184,
+      "h": 338
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.131,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.262,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1448,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 211,
+       "cssFullWidth": 1447
+      },
+      "2": {
+       "needFullPx": 2895,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 211,
+       "cssFullWidth": 1447
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 24.45,
+      "zoom": 1
+     },
+     "region": {
+      "w": 367,
+      "h": 583
+     },
+     "effective": {
+      "w": 367,
+      "h": 103.9,
+      "share": 0.178
+     },
+     "survival": 0.307,
+     "subjectPx": {
+      "w": 184,
+      "h": 338
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.866,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.733,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists2": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 719,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 211,
+       "cssFullWidth": 719
+      },
+      "2": {
+       "needFullPx": 1438,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 211,
+       "cssFullWidth": 719
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 17.26,
+      "zoom": 1
+     },
+     "region": {
+      "w": 367,
+      "h": 583
+     },
+     "effective": {
+      "w": 367,
+      "h": 209.1,
+      "share": 0.359
+     },
+     "survival": 0.618,
+     "subjectPx": {
+      "w": 184,
+      "h": 338
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.431,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.861,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists3": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 478,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 140.6,
+       "cssFullWidth": 477.8
+      },
+      "2": {
+       "needFullPx": 956,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 211,
+       "cssFullWidth": 477.8
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 4.39,
+      "zoom": 1
+     },
+     "region": {
+      "w": 367,
+      "h": 583
+     },
+     "effective": {
+      "w": 367,
+      "h": 314.6,
+      "share": 0.54
+     },
+     "survival": 0.93,
+     "subjectPx": {
+      "w": 184,
+      "h": 338
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.286,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.572,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": []
+  },
+  {
+   "id": "taverns-and-inns-fireplace",
+   "sourceId": "taverns-and-inns",
+   "status": "approved",
+   "pixels": {
+    "x": 1036,
+    "y": 282,
+    "w": 635,
+    "h": 612
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 681,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 134.1,
+       "cssFullWidth": 680.3
+      },
+      "2": {
+       "needFullPx": 1361,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 134.1,
+       "cssFullWidth": 680.3
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 43.67,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 635,
+      "h": 612
+     },
+     "effective": {
+      "w": 233.5,
+      "h": 612,
+      "share": 0.368
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 203,
+      "h": 306
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.407,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.814,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 132,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 117.1,
+       "cssFullWidth": 131.1
+      },
+      "2": {
+       "needFullPx": 263,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 117.1,
+       "cssFullWidth": 131.1
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 635,
+      "h": 612
+     },
+     "effective": {
+      "w": 612,
+      "h": 612,
+      "share": 0.964
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 203,
+      "h": 306
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.078,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.157,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-limited-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 838,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 364.6,
+       "cssFullWidth": 837.3
+      },
+      "2": {
+       "needFullPx": 1675,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 364.6,
+       "cssFullWidth": 837.3
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 31.6,
+      "zoom": 1
+     },
+     "region": {
+      "w": 635,
+      "h": 612
+     },
+     "effective": {
+      "w": 635,
+      "h": 179.7,
+      "share": 0.294
+     },
+     "survival": 0.979,
+     "subjectPx": {
+      "w": 222,
+      "h": 184
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.501,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.002,
+       "upscaled": true
+      }
+     },
+     "label": "Suitable at DPR 1, limited at DPR 2"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 417,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 243.1,
+       "cssFullWidth": 416
+      },
+      "2": {
+       "needFullPx": 833,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 364.6,
+       "cssFullWidth": 416
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 18.21,
+      "zoom": 1
+     },
+     "region": {
+      "w": 635,
+      "h": 612
+     },
+     "effective": {
+      "w": 635,
+      "h": 361.7,
+      "share": 0.591
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 203,
+      "h": 306
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.249,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.498,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 277,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 121.5,
+       "cssFullWidth": 276.5
+      },
+      "2": {
+       "needFullPx": 553,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 243.1,
+       "cssFullWidth": 276.5
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "region": {
+      "w": 635,
+      "h": 612
+     },
+     "effective": {
+      "w": 635,
+      "h": 544.3,
+      "share": 0.889
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 203,
+      "h": 306
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.165,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.331,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "taverns-and-inns-fireplace",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-fireplace--catalog-95x249.avif",
+     "bytes": 3823,
+     "sourceWindow": {
+      "left": 1211,
+      "top": 282,
+      "width": 233,
+      "height": 612
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-fireplace",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-fireplace--catalog-190x498.avif",
+     "bytes": 9296,
+     "sourceWindow": {
+      "left": 1211,
+      "top": 282,
+      "width": 233,
+      "height": 612
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-fireplace",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-fireplace--catalog-190x498.webp",
+     "bytes": 14900,
+     "sourceWindow": {
+      "left": 1211,
+      "top": 282,
+      "width": 233,
+      "height": 612
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-fireplace",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-fireplace--prep-48x48.avif",
+     "bytes": 881,
+     "sourceWindow": {
+      "left": 1036,
+      "top": 282,
+      "width": 612,
+      "height": 612
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-fireplace",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-fireplace--prep-96x96.avif",
+     "bytes": 2357,
+     "sourceWindow": {
+      "left": 1036,
+      "top": 282,
+      "width": 612,
+      "height": 612
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-fireplace",
+     "ctx": "lists1",
+     "dpr": 1,
+     "w": 318,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-fireplace--lists1-318x90.avif",
+     "bytes": 5494,
+     "sourceWindow": {
+      "left": 1036,
+      "top": 419,
+      "width": 635,
+      "height": 180
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-fireplace",
+     "ctx": "lists1",
+     "dpr": 2,
+     "w": 636,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-fireplace--lists1-636x180.avif",
+     "bytes": 10695,
+     "sourceWindow": {
+      "left": 1036,
+      "top": 419,
+      "width": 635,
+      "height": 180
+     },
+     "upscaled": true
+    },
+    {
+     "regionId": "taverns-and-inns-fireplace",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-fireplace--lists2-158x90.avif",
+     "bytes": 3415,
+     "sourceWindow": {
+      "left": 1036,
+      "top": 328,
+      "width": 635,
+      "height": 362
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-fireplace",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-fireplace--lists2-316x180.avif",
+     "bytes": 8863,
+     "sourceWindow": {
+      "left": 1036,
+      "top": 328,
+      "width": 635,
+      "height": 362
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-fireplace",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-fireplace--lists3-105x90.avif",
+     "bytes": 2608,
+     "sourceWindow": {
+      "left": 1036,
+      "top": 282,
+      "width": 635,
+      "height": 544
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-fireplace",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-fireplace--lists3-210x180.avif",
+     "bytes": 7509,
+     "sourceWindow": {
+      "left": 1036,
+      "top": 282,
+      "width": 635,
+      "height": 544
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "taverns-and-inns-bar-counter",
+   "sourceId": "taverns-and-inns",
+   "status": "approved",
+   "pixels": {
+    "x": 0,
+    "y": 188,
+    "w": 702,
+    "h": 471
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-limited-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 884,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 103.2,
+       "cssFullWidth": 883.9
+      },
+      "2": {
+       "needFullPx": 1768,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 103.2,
+       "cssFullWidth": 883.9
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 54.03,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 702,
+      "h": 471
+     },
+     "effective": {
+      "w": 179.7,
+      "h": 471,
+      "share": 0.256
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 154,
+      "h": 259
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.529,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.057,
+       "upscaled": true
+      }
+     },
+     "label": "Suitable at DPR 1, limited at DPR 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 171,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 90.1,
+       "cssFullWidth": 170.4
+      },
+      "2": {
+       "needFullPx": 341,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 180.3,
+       "cssFullWidth": 170.4
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 59.12,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 702,
+      "h": 471
+     },
+     "effective": {
+      "w": 471,
+      "h": 471,
+      "share": 0.671
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 154,
+      "h": 259
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.102,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.204,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 758,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 403.1,
+       "cssFullWidth": 757.4
+      },
+      "2": {
+       "needFullPx": 1515,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 403.1,
+       "cssFullWidth": 757.4
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 41.35,
+      "zoom": 1
+     },
+     "region": {
+      "w": 702,
+      "h": 471
+     },
+     "effective": {
+      "w": 702,
+      "h": 198.7,
+      "share": 0.422
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 281,
+      "h": 141
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.453,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.906,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 377,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 268.7,
+       "cssFullWidth": 376.3
+      },
+      "2": {
+       "needFullPx": 753,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 403.1,
+       "cssFullWidth": 376.3
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "region": {
+      "w": 702,
+      "h": 471
+     },
+     "effective": {
+      "w": 702,
+      "h": 399.9,
+      "share": 0.849
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 154,
+      "h": 259
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.225,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.45,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 320,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 105.2,
+       "cssFullWidth": 319.5
+      },
+      "2": {
+       "needFullPx": 639,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 210.3,
+       "cssFullWidth": 319.5
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 63.81,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 702,
+      "h": 471
+     },
+     "effective": {
+      "w": 549.5,
+      "h": 471,
+      "share": 0.783
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 154,
+      "h": 259
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "taverns-and-inns-bar-counter",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-bar-counter--catalog-95x249.avif",
+     "bytes": 3630,
+     "sourceWindow": {
+      "left": 282,
+      "top": 188,
+      "width": 180,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-bar-counter",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-bar-counter--catalog-190x498.avif",
+     "bytes": 7035,
+     "sourceWindow": {
+      "left": 282,
+      "top": 188,
+      "width": 180,
+      "height": 471
+     },
+     "upscaled": true
+    },
+    {
+     "regionId": "taverns-and-inns-bar-counter",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-bar-counter--catalog-190x498.webp",
+     "bytes": 11038,
+     "sourceWindow": {
+      "left": 282,
+      "top": 188,
+      "width": 180,
+      "height": 471
+     },
+     "upscaled": true
+    },
+    {
+     "regionId": "taverns-and-inns-bar-counter",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-bar-counter--prep-48x48.avif",
+     "bytes": 1047,
+     "sourceWindow": {
+      "left": 137,
+      "top": 188,
+      "width": 471,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-bar-counter",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-bar-counter--prep-96x96.avif",
+     "bytes": 2872,
+     "sourceWindow": {
+      "left": 137,
+      "top": 188,
+      "width": 471,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-bar-counter",
+     "ctx": "lists1",
+     "dpr": 1,
+     "w": 318,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-bar-counter--lists1-318x90.avif",
+     "bytes": 5941,
+     "sourceWindow": {
+      "left": 0,
+      "top": 301,
+      "width": 702,
+      "height": 199
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-bar-counter",
+     "ctx": "lists1",
+     "dpr": 2,
+     "w": 636,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-bar-counter--lists1-636x180.avif",
+     "bytes": 12678,
+     "sourceWindow": {
+      "left": 0,
+      "top": 301,
+      "width": 702,
+      "height": 199
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-bar-counter",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-bar-counter--lists2-158x90.avif",
+     "bytes": 4014,
+     "sourceWindow": {
+      "left": 0,
+      "top": 188,
+      "width": 702,
+      "height": 400
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-bar-counter",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-bar-counter--lists2-316x180.avif",
+     "bytes": 11054,
+     "sourceWindow": {
+      "left": 0,
+      "top": 188,
+      "width": 702,
+      "height": 400
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-bar-counter",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-bar-counter--lists3-105x90.avif",
+     "bytes": 3198,
+     "sourceWindow": {
+      "left": 97,
+      "top": 188,
+      "width": 550,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "taverns-and-inns-bar-counter",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/taverns-and-inns-bar-counter--lists3-210x180.avif",
+     "bytes": 8571,
+     "sourceWindow": {
+      "left": 97,
+      "top": 188,
+      "width": 550,
+      "height": 471
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "taverns-and-inns-dining-table",
+   "sourceId": "taverns-and-inns",
+   "status": "not-independently-meaningful",
+   "pixels": {
+    "x": 0,
+    "y": 583,
+    "w": 752,
+    "h": 358
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1163,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 78.4,
+       "cssFullWidth": 1162.9
+      },
+      "2": {
+       "needFullPx": 2326,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 78.4,
+       "cssFullWidth": 1162.9
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 37.78,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 752,
+      "h": 358
+     },
+     "effective": {
+      "w": 136.6,
+      "h": 358,
+      "share": 0.182
+     },
+     "survival": 0.303,
+     "subjectPx": {
+      "w": 451,
+      "h": 269
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.696,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.391,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "prep": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 225,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 68.5,
+       "cssFullWidth": 224.2
+      },
+      "2": {
+       "needFullPx": 449,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 137,
+       "cssFullWidth": 224.2
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 30.91,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 752,
+      "h": 358
+     },
+     "effective": {
+      "w": 358,
+      "h": 358,
+      "share": 0.476
+     },
+     "survival": 0.793,
+     "subjectPx": {
+      "w": 451,
+      "h": 269
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.134,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.268,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists1": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 708,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 431.8,
+       "cssFullWidth": 707
+      },
+      "2": {
+       "needFullPx": 1415,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 431.8,
+       "cssFullWidth": 707
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 43.83,
+      "zoom": 1
+     },
+     "region": {
+      "w": 752,
+      "h": 358
+     },
+     "effective": {
+      "w": 752,
+      "h": 212.8,
+      "share": 0.594
+     },
+     "survival": 0.793,
+     "subjectPx": {
+      "w": 451,
+      "h": 269
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.423,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.846,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists2": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 421,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 240.6,
+       "cssFullWidth": 420.3
+      },
+      "2": {
+       "needFullPx": 841,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 360.9,
+       "cssFullWidth": 420.3
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 752,
+      "h": 358
+     },
+     "effective": {
+      "w": 628.5,
+      "h": 358,
+      "share": 0.836
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 451,
+      "h": 269
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.251,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.503,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 421,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 159.9,
+       "cssFullWidth": 420.3
+      },
+      "2": {
+       "needFullPx": 841,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 239.8,
+       "cssFullWidth": 420.3
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 27.51,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 752,
+      "h": 358
+     },
+     "effective": {
+      "w": 417.7,
+      "h": 358,
+      "share": 0.555
+     },
+     "survival": 0.926,
+     "subjectPx": {
+      "w": 451,
+      "h": 269
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.251,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.503,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": []
+  },
+  {
+   "id": "archives-and-libraries-shelves-ladder",
+   "sourceId": "archives-and-libraries",
+   "status": "approved",
+   "pixels": {
+    "x": 0,
+    "y": 0,
+    "w": 602,
+    "h": 471
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-limited-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 884,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 103.2,
+       "cssFullWidth": 883.4
+      },
+      "2": {
+       "needFullPx": 1767,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 103.2,
+       "cssFullWidth": 883.4
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 7.23,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 602,
+      "h": 471
+     },
+     "effective": {
+      "w": 179.7,
+      "h": 471,
+      "share": 0.299
+     },
+     "survival": 0.995,
+     "subjectPx": {
+      "w": 181,
+      "h": 377
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.529,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.057,
+       "upscaled": true
+      }
+     },
+     "label": "Suitable at DPR 1, limited at DPR 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 171,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 90.2,
+       "cssFullWidth": 170.3
+      },
+      "2": {
+       "needFullPx": 341,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 180.4,
+       "cssFullWidth": 170.3
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 602,
+      "h": 471
+     },
+     "effective": {
+      "w": 471,
+      "h": 471,
+      "share": 0.782
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 181,
+      "h": 377
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.102,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.204,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-limited-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 883,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 345.9,
+       "cssFullWidth": 882.7
+      },
+      "2": {
+       "needFullPx": 1766,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 345.9,
+       "cssFullWidth": 882.7
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 32.77,
+      "zoom": 1
+     },
+     "region": {
+      "w": 602,
+      "h": 471
+     },
+     "effective": {
+      "w": 602,
+      "h": 170.4,
+      "share": 0.362
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 241,
+      "h": 85
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.528,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.056,
+       "upscaled": true
+      }
+     },
+     "label": "Suitable at DPR 1, limited at DPR 2"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 439,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 230.6,
+       "cssFullWidth": 438.6
+      },
+      "2": {
+       "needFullPx": 878,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 345.9,
+       "cssFullWidth": 438.6
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 602,
+      "h": 471
+     },
+     "effective": {
+      "w": 602,
+      "h": 342.9,
+      "share": 0.728
+     },
+     "survival": 0.91,
+     "subjectPx": {
+      "w": 181,
+      "h": 377
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.262,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.525,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 320,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 105.2,
+       "cssFullWidth": 319.3
+      },
+      "2": {
+       "needFullPx": 639,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 210.5,
+       "cssFullWidth": 319.3
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 602,
+      "h": 471
+     },
+     "effective": {
+      "w": 549.5,
+      "h": 471,
+      "share": 0.913
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 181,
+      "h": 377
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "archives-and-libraries-shelves-ladder",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-shelves-ladder--catalog-95x249.avif",
+     "bytes": 4429,
+     "sourceWindow": {
+      "left": 31,
+      "top": 0,
+      "width": 180,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-shelves-ladder",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-shelves-ladder--catalog-190x498.avif",
+     "bytes": 9217,
+     "sourceWindow": {
+      "left": 31,
+      "top": 0,
+      "width": 180,
+      "height": 471
+     },
+     "upscaled": true
+    },
+    {
+     "regionId": "archives-and-libraries-shelves-ladder",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-shelves-ladder--catalog-190x498.webp",
+     "bytes": 14406,
+     "sourceWindow": {
+      "left": 31,
+      "top": 0,
+      "width": 180,
+      "height": 471
+     },
+     "upscaled": true
+    },
+    {
+     "regionId": "archives-and-libraries-shelves-ladder",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-shelves-ladder--prep-48x48.avif",
+     "bytes": 838,
+     "sourceWindow": {
+      "left": 0,
+      "top": 0,
+      "width": 471,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-shelves-ladder",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-shelves-ladder--prep-96x96.avif",
+     "bytes": 2291,
+     "sourceWindow": {
+      "left": 0,
+      "top": 0,
+      "width": 471,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-shelves-ladder",
+     "ctx": "lists1",
+     "dpr": 1,
+     "w": 318,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-shelves-ladder--lists1-318x90.avif",
+     "bytes": 5178,
+     "sourceWindow": {
+      "left": 0,
+      "top": 99,
+      "width": 602,
+      "height": 170
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-shelves-ladder",
+     "ctx": "lists1",
+     "dpr": 2,
+     "w": 636,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-shelves-ladder--lists1-636x180.avif",
+     "bytes": 11171,
+     "sourceWindow": {
+      "left": 0,
+      "top": 99,
+      "width": 602,
+      "height": 170
+     },
+     "upscaled": true
+    },
+    {
+     "regionId": "archives-and-libraries-shelves-ladder",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-shelves-ladder--lists2-158x90.avif",
+     "bytes": 3456,
+     "sourceWindow": {
+      "left": 0,
+      "top": 64,
+      "width": 602,
+      "height": 343
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-shelves-ladder",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-shelves-ladder--lists2-316x180.avif",
+     "bytes": 9639,
+     "sourceWindow": {
+      "left": 0,
+      "top": 64,
+      "width": 602,
+      "height": 343
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-shelves-ladder",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-shelves-ladder--lists3-105x90.avif",
+     "bytes": 2517,
+     "sourceWindow": {
+      "left": 0,
+      "top": 0,
+      "width": 550,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-shelves-ladder",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-shelves-ladder--lists3-210x180.avif",
+     "bytes": 7251,
+     "sourceWindow": {
+      "left": 0,
+      "top": 0,
+      "width": 550,
+      "height": 471
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "archives-and-libraries-scholars-desk",
+   "sourceId": "archives-and-libraries",
+   "status": "approved",
+   "pixels": {
+    "x": 0,
+    "y": 470,
+    "w": 1036,
+    "h": 471
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 884,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 103.2,
+       "cssFullWidth": 883.4
+      },
+      "2": {
+       "needFullPx": 1767,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 103.2,
+       "cssFullWidth": 883.4
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 17.33,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 1036,
+      "h": 471
+     },
+     "effective": {
+      "w": 179.7,
+      "h": 471,
+      "share": 0.173
+     },
+     "survival": 0.578,
+     "subjectPx": {
+      "w": 311,
+      "h": 377
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.529,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.057,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 171,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 90.2,
+       "cssFullWidth": 170.3
+      },
+      "2": {
+       "needFullPx": 341,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 180.4,
+       "cssFullWidth": 170.3
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 0.49,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 1036,
+      "h": 471
+     },
+     "effective": {
+      "w": 471,
+      "h": 471,
+      "share": 0.455
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 311,
+      "h": 377
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.102,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.204,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 513,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 396.8,
+       "cssFullWidth": 512.9
+      },
+      "2": {
+       "needFullPx": 1026,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 595.2,
+       "cssFullWidth": 512.9
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 23.51,
+      "zoom": 1
+     },
+     "region": {
+      "w": 1036,
+      "h": 471
+     },
+     "effective": {
+      "w": 1036,
+      "h": 293.2,
+      "share": 0.623
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 414,
+      "h": 236
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.307,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.614,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 320,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 158.3,
+       "cssFullWidth": 319.3
+      },
+      "2": {
+       "needFullPx": 639,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 316.7,
+       "cssFullWidth": 319.3
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 1036,
+      "h": 471
+     },
+     "effective": {
+      "w": 826.9,
+      "h": 471,
+      "share": 0.798
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 311,
+      "h": 377
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 320,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 105.2,
+       "cssFullWidth": 319.3
+      },
+      "2": {
+       "needFullPx": 639,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 210.5,
+       "cssFullWidth": 319.3
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 1036,
+      "h": 471
+     },
+     "effective": {
+      "w": 549.5,
+      "h": 471,
+      "share": 0.53
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 311,
+      "h": 377
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "archives-and-libraries-scholars-desk",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-scholars-desk--prep-48x48.avif",
+     "bytes": 978,
+     "sourceWindow": {
+      "left": 3,
+      "top": 470,
+      "width": 471,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-scholars-desk",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-scholars-desk--prep-96x96.avif",
+     "bytes": 2618,
+     "sourceWindow": {
+      "left": 3,
+      "top": 470,
+      "width": 471,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-scholars-desk",
+     "ctx": "lists1",
+     "dpr": 1,
+     "w": 318,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-scholars-desk--lists1-318x90.avif",
+     "bytes": 7761,
+     "sourceWindow": {
+      "left": 0,
+      "top": 512,
+      "width": 1036,
+      "height": 293
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-scholars-desk",
+     "ctx": "lists1",
+     "dpr": 2,
+     "w": 636,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-scholars-desk--lists1-636x180.avif",
+     "bytes": 21956,
+     "sourceWindow": {
+      "left": 0,
+      "top": 512,
+      "width": 1036,
+      "height": 293
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-scholars-desk",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-scholars-desk--lists2-158x90.avif",
+     "bytes": 4211,
+     "sourceWindow": {
+      "left": 0,
+      "top": 470,
+      "width": 827,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-scholars-desk",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-scholars-desk--lists2-316x180.avif",
+     "bytes": 12324,
+     "sourceWindow": {
+      "left": 0,
+      "top": 470,
+      "width": 827,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-scholars-desk",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-scholars-desk--lists3-105x90.avif",
+     "bytes": 2900,
+     "sourceWindow": {
+      "left": 0,
+      "top": 470,
+      "width": 550,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-scholars-desk",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-scholars-desk--lists3-210x180.avif",
+     "bytes": 8207,
+     "sourceWindow": {
+      "left": 0,
+      "top": 470,
+      "width": 550,
+      "height": 471
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "archives-and-libraries-window-hall",
+   "sourceId": "archives-and-libraries",
+   "status": "approved",
+   "pixels": {
+    "x": 919,
+    "y": 0,
+    "w": 585,
+    "h": 518
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 804,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 113.5,
+       "cssFullWidth": 803.2
+      },
+      "2": {
+       "needFullPx": 1607,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 113.5,
+       "cssFullWidth": 803.2
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 66.61,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 585,
+      "h": 518
+     },
+     "effective": {
+      "w": 197.6,
+      "h": 518,
+      "share": 0.338
+     },
+     "survival": 0.889,
+     "subjectPx": {
+      "w": 222,
+      "h": 389
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.481,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.961,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 155,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 99.2,
+       "cssFullWidth": 154.8
+      },
+      "2": {
+       "needFullPx": 310,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 99.2,
+       "cssFullWidth": 154.8
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 100,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 585,
+      "h": 518
+     },
+     "effective": {
+      "w": 518,
+      "h": 518,
+      "share": 0.885
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 222,
+      "h": 389
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.093,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.185,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 909,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 336.1,
+       "cssFullWidth": 908.3
+      },
+      "2": {
+       "needFullPx": 1817,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 336.1,
+       "cssFullWidth": 908.3
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 38.98,
+      "zoom": 1
+     },
+     "region": {
+      "w": 585,
+      "h": 518
+     },
+     "effective": {
+      "w": 585,
+      "h": 165.6,
+      "share": 0.32
+     },
+     "survival": 0.426,
+     "subjectPx": {
+      "w": 222,
+      "h": 389
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.544,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.087,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 452,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 224.1,
+       "cssFullWidth": 451.3
+      },
+      "2": {
+       "needFullPx": 903,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 336.1,
+       "cssFullWidth": 451.3
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 28.97,
+      "zoom": 1
+     },
+     "region": {
+      "w": 585,
+      "h": 518
+     },
+     "effective": {
+      "w": 585,
+      "h": 333.2,
+      "share": 0.643
+     },
+     "survival": 0.858,
+     "subjectPx": {
+      "w": 222,
+      "h": 389
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.27,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.54,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 300,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 112,
+       "cssFullWidth": 299.9
+      },
+      "2": {
+       "needFullPx": 600,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 224.1,
+       "cssFullWidth": 299.9
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "region": {
+      "w": 585,
+      "h": 518
+     },
+     "effective": {
+      "w": 585,
+      "h": 501.4,
+      "share": 0.968
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 222,
+      "h": 389
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.179,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.359,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "archives-and-libraries-window-hall",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-window-hall--catalog-95x249.avif",
+     "bytes": 5402,
+     "sourceWindow": {
+      "left": 1177,
+      "top": 0,
+      "width": 198,
+      "height": 518
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-window-hall",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-window-hall--catalog-190x498.avif",
+     "bytes": 12936,
+     "sourceWindow": {
+      "left": 1177,
+      "top": 0,
+      "width": 198,
+      "height": 518
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-window-hall",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-window-hall--catalog-190x498.webp",
+     "bytes": 17660,
+     "sourceWindow": {
+      "left": 1177,
+      "top": 0,
+      "width": 198,
+      "height": 518
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-window-hall",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-window-hall--prep-48x48.avif",
+     "bytes": 861,
+     "sourceWindow": {
+      "left": 986,
+      "top": 0,
+      "width": 518,
+      "height": 518
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-window-hall",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-window-hall--prep-96x96.avif",
+     "bytes": 2613,
+     "sourceWindow": {
+      "left": 986,
+      "top": 0,
+      "width": 518,
+      "height": 518
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-window-hall",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-window-hall--lists2-158x90.avif",
+     "bytes": 3434,
+     "sourceWindow": {
+      "left": 919,
+      "top": 54,
+      "width": 585,
+      "height": 333
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-window-hall",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-window-hall--lists2-316x180.avif",
+     "bytes": 9725,
+     "sourceWindow": {
+      "left": 919,
+      "top": 54,
+      "width": 585,
+      "height": 333
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-window-hall",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-window-hall--lists3-105x90.avif",
+     "bytes": 2677,
+     "sourceWindow": {
+      "left": 919,
+      "top": 0,
+      "width": 585,
+      "height": 501
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "archives-and-libraries-window-hall",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/archives-and-libraries-window-hall--lists3-210x180.avif",
+     "bytes": 7690,
+     "sourceWindow": {
+      "left": 919,
+      "top": 0,
+      "width": 585,
+      "height": 501
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "strongholds-and-sieges-trebuchet",
+   "sourceId": "strongholds-and-sieges",
+   "status": "approved",
+   "pixels": {
+    "x": 0,
+    "y": 235,
+    "w": 418,
+    "h": 565
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 737,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 123.8,
+       "cssFullWidth": 736.9
+      },
+      "2": {
+       "needFullPx": 1474,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 123.8,
+       "cssFullWidth": 736.9
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 29.35,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 418,
+      "h": 565
+     },
+     "effective": {
+      "w": 215.6,
+      "h": 565,
+      "share": 0.516
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 209,
+      "h": 367
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.441,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.881,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 192,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 80,
+       "cssFullWidth": 192
+      },
+      "2": {
+       "needFullPx": 384,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 160,
+       "cssFullWidth": 192
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 50,
+      "y": 13.49,
+      "zoom": 1
+     },
+     "region": {
+      "w": 418,
+      "h": 565
+     },
+     "effective": {
+      "w": 418,
+      "h": 418,
+      "share": 0.74
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 209,
+      "h": 367
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.115,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.23,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1272,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 240,
+       "cssFullWidth": 1272
+      },
+      "2": {
+       "needFullPx": 2544,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 240,
+       "cssFullWidth": 1272
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 37.98,
+      "zoom": 1
+     },
+     "region": {
+      "w": 418,
+      "h": 565
+     },
+     "effective": {
+      "w": 418,
+      "h": 118.3,
+      "share": 0.209
+     },
+     "survival": 0.322,
+     "subjectPx": {
+      "w": 209,
+      "h": 367
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.761,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.522,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 632,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 160,
+       "cssFullWidth": 632
+      },
+      "2": {
+       "needFullPx": 1264,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 240,
+       "cssFullWidth": 632
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 14.57,
+      "zoom": 1
+     },
+     "region": {
+      "w": 418,
+      "h": 565
+     },
+     "effective": {
+      "w": 418,
+      "h": 238.1,
+      "share": 0.421
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 209,
+      "h": 198
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.378,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.756,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 420,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 160,
+       "cssFullWidth": 420
+      },
+      "2": {
+       "needFullPx": 840,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 240,
+       "cssFullWidth": 420
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 24.03,
+      "zoom": 1
+     },
+     "region": {
+      "w": 418,
+      "h": 565
+     },
+     "effective": {
+      "w": 418,
+      "h": 358.3,
+      "share": 0.634
+     },
+     "survival": 0.976,
+     "subjectPx": {
+      "w": 209,
+      "h": 367
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.251,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.502,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "strongholds-and-sieges-trebuchet",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-trebuchet--catalog-95x249.avif",
+     "bytes": 5915,
+     "sourceWindow": {
+      "left": 59,
+      "top": 235,
+      "width": 216,
+      "height": 565
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-trebuchet",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-trebuchet--catalog-190x498.avif",
+     "bytes": 15166,
+     "sourceWindow": {
+      "left": 59,
+      "top": 235,
+      "width": 216,
+      "height": 565
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-trebuchet",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-trebuchet--catalog-190x498.webp",
+     "bytes": 21374,
+     "sourceWindow": {
+      "left": 59,
+      "top": 235,
+      "width": 216,
+      "height": 565
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-trebuchet",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-trebuchet--prep-48x48.avif",
+     "bytes": 984,
+     "sourceWindow": {
+      "left": 0,
+      "top": 255,
+      "width": 418,
+      "height": 418
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-trebuchet",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-trebuchet--prep-96x96.avif",
+     "bytes": 2825,
+     "sourceWindow": {
+      "left": 0,
+      "top": 255,
+      "width": 418,
+      "height": 418
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-trebuchet",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-trebuchet--lists2-158x90.avif",
+     "bytes": 3997,
+     "sourceWindow": {
+      "left": 0,
+      "top": 283,
+      "width": 418,
+      "height": 238
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-trebuchet",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-trebuchet--lists2-316x180.avif",
+     "bytes": 10500,
+     "sourceWindow": {
+      "left": 0,
+      "top": 283,
+      "width": 418,
+      "height": 238
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-trebuchet",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-trebuchet--lists3-105x90.avif",
+     "bytes": 3205,
+     "sourceWindow": {
+      "left": 0,
+      "top": 285,
+      "width": 418,
+      "height": 358
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-trebuchet",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-trebuchet--lists3-210x180.avif",
+     "bytes": 9206,
+     "sourceWindow": {
+      "left": 0,
+      "top": 285,
+      "width": 418,
+      "height": 358
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "strongholds-and-sieges-castle-walls",
+   "sourceId": "strongholds-and-sieges",
+   "status": "approved",
+   "pixels": {
+    "x": 752,
+    "y": 112,
+    "w": 920,
+    "h": 471
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-limited-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 884,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 103.2,
+       "cssFullWidth": 883.9
+      },
+      "2": {
+       "needFullPx": 1768,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 103.2,
+       "cssFullWidth": 883.9
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 48.76,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 920,
+      "h": 471
+     },
+     "effective": {
+      "w": 179.7,
+      "h": 471,
+      "share": 0.195
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 166,
+      "h": 306
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.529,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.057,
+       "upscaled": true
+      }
+     },
+     "label": "Suitable at DPR 1, limited at DPR 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 171,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 90.1,
+       "cssFullWidth": 170.4
+      },
+      "2": {
+       "needFullPx": 341,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 180.3,
+       "cssFullWidth": 170.4
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 47.95,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 920,
+      "h": 471
+     },
+     "effective": {
+      "w": 471,
+      "h": 471,
+      "share": 0.512
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 166,
+      "h": 306
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.102,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.204,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 578,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 352.2,
+       "cssFullWidth": 577.9
+      },
+      "2": {
+       "needFullPx": 1156,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 528.2,
+       "cssFullWidth": 577.9
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 55.59,
+      "zoom": 1
+     },
+     "region": {
+      "w": 920,
+      "h": 471
+     },
+     "effective": {
+      "w": 920,
+      "h": 260.4,
+      "share": 0.553
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 368,
+      "h": 212
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.346,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.691,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 320,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 158.3,
+       "cssFullWidth": 319.5
+      },
+      "2": {
+       "needFullPx": 639,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 316.5,
+       "cssFullWidth": 319.5
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 40.12,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 920,
+      "h": 471
+     },
+     "effective": {
+      "w": 826.9,
+      "h": 471,
+      "share": 0.899
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 166,
+      "h": 306
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 320,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 105.2,
+       "cssFullWidth": 319.5
+      },
+      "2": {
+       "needFullPx": 639,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 210.3,
+       "cssFullWidth": 319.5
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 47.52,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 920,
+      "h": 471
+     },
+     "effective": {
+      "w": 549.5,
+      "h": 471,
+      "share": 0.597
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 166,
+      "h": 306
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "strongholds-and-sieges-castle-walls",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-castle-walls--catalog-95x249.avif",
+     "bytes": 4021,
+     "sourceWindow": {
+      "left": 1113,
+      "top": 112,
+      "width": 180,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-castle-walls",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-castle-walls--catalog-190x498.avif",
+     "bytes": 9244,
+     "sourceWindow": {
+      "left": 1113,
+      "top": 112,
+      "width": 180,
+      "height": 471
+     },
+     "upscaled": true
+    },
+    {
+     "regionId": "strongholds-and-sieges-castle-walls",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-castle-walls--catalog-190x498.webp",
+     "bytes": 14006,
+     "sourceWindow": {
+      "left": 1113,
+      "top": 112,
+      "width": 180,
+      "height": 471
+     },
+     "upscaled": true
+    },
+    {
+     "regionId": "strongholds-and-sieges-castle-walls",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-castle-walls--prep-48x48.avif",
+     "bytes": 839,
+     "sourceWindow": {
+      "left": 967,
+      "top": 112,
+      "width": 471,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-castle-walls",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-castle-walls--prep-96x96.avif",
+     "bytes": 2234,
+     "sourceWindow": {
+      "left": 967,
+      "top": 112,
+      "width": 471,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-castle-walls",
+     "ctx": "lists1",
+     "dpr": 1,
+     "w": 318,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-castle-walls--lists1-318x90.avif",
+     "bytes": 6626,
+     "sourceWindow": {
+      "left": 752,
+      "top": 229,
+      "width": 920,
+      "height": 260
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-castle-walls",
+     "ctx": "lists1",
+     "dpr": 2,
+     "w": 636,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-castle-walls--lists1-636x180.avif",
+     "bytes": 20406,
+     "sourceWindow": {
+      "left": 752,
+      "top": 229,
+      "width": 920,
+      "height": 260
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-castle-walls",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-castle-walls--lists2-158x90.avif",
+     "bytes": 3406,
+     "sourceWindow": {
+      "left": 789,
+      "top": 112,
+      "width": 827,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-castle-walls",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-castle-walls--lists2-316x180.avif",
+     "bytes": 11269,
+     "sourceWindow": {
+      "left": 789,
+      "top": 112,
+      "width": 827,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-castle-walls",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-castle-walls--lists3-105x90.avif",
+     "bytes": 2411,
+     "sourceWindow": {
+      "left": 928,
+      "top": 112,
+      "width": 550,
+      "height": 471
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "strongholds-and-sieges-castle-walls",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/strongholds-and-sieges-castle-walls--lists3-210x180.avif",
+     "bytes": 7323,
+     "sourceWindow": {
+      "left": 928,
+      "top": 112,
+      "width": 550,
+      "height": 471
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "starfaring-spaceport-promenade",
+   "sourceId": "starfaring",
+   "status": "needs-better-crop",
+   "pixels": {
+    "x": 0,
+    "y": 141,
+    "w": 836,
+    "h": 800
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 521,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 116.9,
+       "cssFullWidth": 520.1
+      },
+      "2": {
+       "needFullPx": 1041,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 175.4,
+       "cssFullWidth": 520.1
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 34.25,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 836,
+      "h": 800
+     },
+     "effective": {
+      "w": 305.2,
+      "h": 800,
+      "share": 0.365
+     },
+     "survival": 0.913,
+     "subjectPx": {
+      "w": 334,
+      "h": 560
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.311,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.622,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 101,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 153.2,
+       "cssFullWidth": 100.3
+      },
+      "2": {
+       "needFullPx": 201,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 153.2,
+       "cssFullWidth": 100.3
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 836,
+      "h": 800
+     },
+     "effective": {
+      "w": 800,
+      "h": 800,
+      "share": 0.957
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 334,
+      "h": 560
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.06,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.12,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 636,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 320.2,
+       "cssFullWidth": 635.6
+      },
+      "2": {
+       "needFullPx": 1272,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 480.3,
+       "cssFullWidth": 635.6
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 35.8,
+      "zoom": 1
+     },
+     "region": {
+      "w": 836,
+      "h": 800
+     },
+     "effective": {
+      "w": 836,
+      "h": 236.6,
+      "share": 0.296
+     },
+     "survival": 0.423,
+     "subjectPx": {
+      "w": 334,
+      "h": 560
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.38,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.761,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists2": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 316,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 160.1,
+       "cssFullWidth": 315.8
+      },
+      "2": {
+       "needFullPx": 632,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 320.2,
+       "cssFullWidth": 315.8
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 25.29,
+      "zoom": 1
+     },
+     "region": {
+      "w": 836,
+      "h": 800
+     },
+     "effective": {
+      "w": 836,
+      "h": 476.2,
+      "share": 0.595
+     },
+     "survival": 0.85,
+     "subjectPx": {
+      "w": 334,
+      "h": 560
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.189,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.378,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 210,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 160.1,
+       "cssFullWidth": 209.9
+      },
+      "2": {
+       "needFullPx": 420,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 320.2,
+       "cssFullWidth": 209.9
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "region": {
+      "w": 836,
+      "h": 800
+     },
+     "effective": {
+      "w": 836,
+      "h": 716.6,
+      "share": 0.896
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 334,
+      "h": 560
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.126,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.251,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": []
+  },
+  {
+   "id": "starfaring-docked-ship",
+   "sourceId": "starfaring",
+   "status": "approved",
+   "pixels": {
+    "x": 1136,
+    "y": 329,
+    "w": 535,
+    "h": 376
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1107,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 82.4,
+       "cssFullWidth": 1106.6
+      },
+      "2": {
+       "needFullPx": 2214,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 82.4,
+       "cssFullWidth": 1106.6
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 53.42,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 535,
+      "h": 376
+     },
+     "effective": {
+      "w": 143.5,
+      "h": 376,
+      "share": 0.268
+     },
+     "survival": 0.315,
+     "subjectPx": {
+      "w": 455,
+      "h": 188
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.662,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.324,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "prep": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 214,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 72,
+       "cssFullWidth": 213.3
+      },
+      "2": {
+       "needFullPx": 427,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 144,
+       "cssFullWidth": 213.3
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 58.41,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 535,
+      "h": 376
+     },
+     "effective": {
+      "w": 376,
+      "h": 376,
+      "share": 0.703
+     },
+     "survival": 0.827,
+     "subjectPx": {
+      "w": 455,
+      "h": 188
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.128,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.255,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists1": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-limited-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 994,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 307.4,
+       "cssFullWidth": 993.2
+      },
+      "2": {
+       "needFullPx": 1987,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 307.4,
+       "cssFullWidth": 993.2
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 43.3,
+      "zoom": 1
+     },
+     "region": {
+      "w": 535,
+      "h": 376
+     },
+     "effective": {
+      "w": 535,
+      "h": 151.4,
+      "share": 0.403
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 455,
+      "h": 120
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.594,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.189,
+       "upscaled": true
+      }
+     },
+     "label": "Suitable at DPR 1, limited at DPR 2"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 494,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 204.9,
+       "cssFullWidth": 493.5
+      },
+      "2": {
+       "needFullPx": 987,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 307.4,
+       "cssFullWidth": 493.5
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 535,
+      "h": 376
+     },
+     "effective": {
+      "w": 535,
+      "h": 304.7,
+      "share": 0.81
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 455,
+      "h": 188
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.295,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.591,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "fail",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 400,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 168,
+       "cssFullWidth": 400
+      },
+      "2": {
+       "needFullPx": 800,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 252,
+       "cssFullWidth": 400
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 63.88,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 535,
+      "h": 376
+     },
+     "effective": {
+      "w": 438.7,
+      "h": 376,
+      "share": 0.82
+     },
+     "survival": 0.965,
+     "subjectPx": {
+      "w": 455,
+      "h": 188
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.239,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.479,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "starfaring-docked-ship",
+     "ctx": "lists1",
+     "dpr": 1,
+     "w": 318,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/starfaring-docked-ship--lists1-318x90.avif",
+     "bytes": 4971,
+     "sourceWindow": {
+      "left": 1136,
+      "top": 426,
+      "width": 535,
+      "height": 151
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "starfaring-docked-ship",
+     "ctx": "lists1",
+     "dpr": 2,
+     "w": 636,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/starfaring-docked-ship--lists1-636x180.avif",
+     "bytes": 10294,
+     "sourceWindow": {
+      "left": 1136,
+      "top": 426,
+      "width": 535,
+      "height": 151
+     },
+     "upscaled": true
+    },
+    {
+     "regionId": "starfaring-docked-ship",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/starfaring-docked-ship--lists2-158x90.avif",
+     "bytes": 3529,
+     "sourceWindow": {
+      "left": 1136,
+      "top": 365,
+      "width": 535,
+      "height": 305
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "starfaring-docked-ship",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/starfaring-docked-ship--lists2-316x180.avif",
+     "bytes": 9731,
+     "sourceWindow": {
+      "left": 1136,
+      "top": 365,
+      "width": 535,
+      "height": 305
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "starfaring-orbital-arch-planet",
+   "sourceId": "starfaring",
+   "status": "approved",
+   "pixels": {
+    "x": 919,
+    "y": 0,
+    "w": 752,
+    "h": 423
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-limited-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 984,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 92.7,
+       "cssFullWidth": 983.6
+      },
+      "2": {
+       "needFullPx": 1968,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 92.7,
+       "cssFullWidth": 983.6
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 62.73,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 752,
+      "h": 423
+     },
+     "effective": {
+      "w": 161.4,
+      "h": 423,
+      "share": 0.215
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 150,
+      "h": 127
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.589,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.177,
+       "upscaled": true
+      }
+     },
+     "label": "Suitable at DPR 1, limited at DPR 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 190,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 81,
+       "cssFullWidth": 189.6
+      },
+      "2": {
+       "needFullPx": 380,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 162,
+       "cssFullWidth": 189.6
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 72.86,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 752,
+      "h": 423
+     },
+     "effective": {
+      "w": 423,
+      "h": 423,
+      "share": 0.563
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 150,
+      "h": 127
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.113,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.227,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 707,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 432,
+       "cssFullWidth": 706.6
+      },
+      "2": {
+       "needFullPx": 1414,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 432,
+       "cssFullWidth": 706.6
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 752,
+      "h": 423
+     },
+     "effective": {
+      "w": 752,
+      "h": 212.8,
+      "share": 0.503
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 150,
+      "h": 127
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.423,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.846,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 356,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 284.4,
+       "cssFullWidth": 355.5
+      },
+      "2": {
+       "needFullPx": 712,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 426.6,
+       "cssFullWidth": 355.5
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 100,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 752,
+      "h": 423
+     },
+     "effective": {
+      "w": 742.6,
+      "h": 423,
+      "share": 0.987
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 150,
+      "h": 127
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.213,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.426,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 356,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 189,
+       "cssFullWidth": 355.5
+      },
+      "2": {
+       "needFullPx": 712,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 283.5,
+       "cssFullWidth": 355.5
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 79.09,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 752,
+      "h": 423
+     },
+     "effective": {
+      "w": 493.5,
+      "h": 423,
+      "share": 0.656
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 150,
+      "h": 127
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.213,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.426,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "starfaring-orbital-arch-planet",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/starfaring-orbital-arch-planet--catalog-95x249.avif",
+     "bytes": 2994,
+     "sourceWindow": {
+      "left": 1289,
+      "top": 0,
+      "width": 161,
+      "height": 423
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "starfaring-orbital-arch-planet",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/starfaring-orbital-arch-planet--catalog-190x498.avif",
+     "bytes": 6897,
+     "sourceWindow": {
+      "left": 1289,
+      "top": 0,
+      "width": 161,
+      "height": 423
+     },
+     "upscaled": true
+    },
+    {
+     "regionId": "starfaring-orbital-arch-planet",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs/starfaring-orbital-arch-planet--catalog-190x498.webp",
+     "bytes": 10194,
+     "sourceWindow": {
+      "left": 1289,
+      "top": 0,
+      "width": 161,
+      "height": 423
+     },
+     "upscaled": true
+    },
+    {
+     "regionId": "starfaring-orbital-arch-planet",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/starfaring-orbital-arch-planet--prep-48x48.avif",
+     "bytes": 853,
+     "sourceWindow": {
+      "left": 1159,
+      "top": 0,
+      "width": 423,
+      "height": 423
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "starfaring-orbital-arch-planet",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/starfaring-orbital-arch-planet--prep-96x96.avif",
+     "bytes": 2127,
+     "sourceWindow": {
+      "left": 1159,
+      "top": 0,
+      "width": 423,
+      "height": 423
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "starfaring-orbital-arch-planet",
+     "ctx": "lists1",
+     "dpr": 1,
+     "w": 318,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/starfaring-orbital-arch-planet--lists1-318x90.avif",
+     "bytes": 5550,
+     "sourceWindow": {
+      "left": 919,
+      "top": 105,
+      "width": 752,
+      "height": 213
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "starfaring-orbital-arch-planet",
+     "ctx": "lists1",
+     "dpr": 2,
+     "w": 636,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/starfaring-orbital-arch-planet--lists1-636x180.avif",
+     "bytes": 14507,
+     "sourceWindow": {
+      "left": 919,
+      "top": 105,
+      "width": 752,
+      "height": 213
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "starfaring-orbital-arch-planet",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/starfaring-orbital-arch-planet--lists2-158x90.avif",
+     "bytes": 3167,
+     "sourceWindow": {
+      "left": 928,
+      "top": 0,
+      "width": 743,
+      "height": 423
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "starfaring-orbital-arch-planet",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/starfaring-orbital-arch-planet--lists2-316x180.avif",
+     "bytes": 9021,
+     "sourceWindow": {
+      "left": 928,
+      "top": 0,
+      "width": 743,
+      "height": 423
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "starfaring-orbital-arch-planet",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/starfaring-orbital-arch-planet--lists3-105x90.avif",
+     "bytes": 2354,
+     "sourceWindow": {
+      "left": 1123,
+      "top": 0,
+      "width": 494,
+      "height": 423
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "starfaring-orbital-arch-planet",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/starfaring-orbital-arch-planet--lists3-210x180.avif",
+     "bytes": 6624,
+     "sourceWindow": {
+      "left": 1123,
+      "top": 0,
+      "width": 494,
+      "height": 423
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "seafaring-deck-rigging",
+   "sourceId": "seafaring",
+   "status": "approved",
+   "pixels": {
+    "x": 0,
+    "y": 0,
+    "w": 836,
+    "h": 753
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 553,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 110,
+       "cssFullWidth": 552.9
+      },
+      "2": {
+       "needFullPx": 1106,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 165,
+       "cssFullWidth": 552.9
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 46.19,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 836,
+      "h": 753
+     },
+     "effective": {
+      "w": 287.3,
+      "h": 753,
+      "share": 0.344
+     },
+     "survival": 0.982,
+     "subjectPx": {
+      "w": 293,
+      "h": 640
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.331,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.661,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 107,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 144.1,
+       "cssFullWidth": 106.6
+      },
+      "2": {
+       "needFullPx": 214,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 144.1,
+       "cssFullWidth": 106.6
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 24.82,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 836,
+      "h": 753
+     },
+     "effective": {
+      "w": 753,
+      "h": 753,
+      "share": 0.901
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 293,
+      "h": 640
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.064,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.127,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 636,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 320,
+       "cssFullWidth": 636
+      },
+      "2": {
+       "needFullPx": 1272,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 480,
+       "cssFullWidth": 636
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 12.09,
+      "zoom": 1
+     },
+     "region": {
+      "w": 836,
+      "h": 753
+     },
+     "effective": {
+      "w": 836,
+      "h": 236.6,
+      "share": 0.314
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 334,
+      "h": 211
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.38,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.761,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 316,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 160,
+       "cssFullWidth": 316
+      },
+      "2": {
+       "needFullPx": 632,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 320,
+       "cssFullWidth": 316
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "region": {
+      "w": 836,
+      "h": 753
+     },
+     "effective": {
+      "w": 836,
+      "h": 476.2,
+      "share": 0.632
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 334,
+      "h": 301
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.189,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.378,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 210,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 160,
+       "cssFullWidth": 210
+      },
+      "2": {
+       "needFullPx": 420,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 320,
+       "cssFullWidth": 210
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "region": {
+      "w": 836,
+      "h": 753
+     },
+     "effective": {
+      "w": 836,
+      "h": 716.6,
+      "share": 0.952
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 293,
+      "h": 640
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.126,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.251,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "seafaring-deck-rigging",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/seafaring-deck-rigging--catalog-95x249.avif",
+     "bytes": 5137,
+     "sourceWindow": {
+      "left": 253,
+      "top": 0,
+      "width": 287,
+      "height": 753
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "seafaring-deck-rigging",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/seafaring-deck-rigging--catalog-190x498.avif",
+     "bytes": 14173,
+     "sourceWindow": {
+      "left": 253,
+      "top": 0,
+      "width": 287,
+      "height": 753
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "seafaring-deck-rigging",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs/seafaring-deck-rigging--catalog-190x498.webp",
+     "bytes": 20328,
+     "sourceWindow": {
+      "left": 253,
+      "top": 0,
+      "width": 287,
+      "height": 753
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "seafaring-deck-rigging",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/seafaring-deck-rigging--prep-48x48.avif",
+     "bytes": 1008,
+     "sourceWindow": {
+      "left": 21,
+      "top": 0,
+      "width": 753,
+      "height": 753
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "seafaring-deck-rigging",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/seafaring-deck-rigging--prep-96x96.avif",
+     "bytes": 2859,
+     "sourceWindow": {
+      "left": 21,
+      "top": 0,
+      "width": 753,
+      "height": 753
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "seafaring-deck-rigging",
+     "ctx": "lists1",
+     "dpr": 1,
+     "w": 318,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/seafaring-deck-rigging--lists1-318x90.avif",
+     "bytes": 6502,
+     "sourceWindow": {
+      "left": 0,
+      "top": 62,
+      "width": 836,
+      "height": 237
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "seafaring-deck-rigging",
+     "ctx": "lists1",
+     "dpr": 2,
+     "w": 636,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/seafaring-deck-rigging--lists1-636x180.avif",
+     "bytes": 16620,
+     "sourceWindow": {
+      "left": 0,
+      "top": 62,
+      "width": 836,
+      "height": 237
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "seafaring-deck-rigging",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/seafaring-deck-rigging--lists2-158x90.avif",
+     "bytes": 4377,
+     "sourceWindow": {
+      "left": 0,
+      "top": 0,
+      "width": 836,
+      "height": 476
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "seafaring-deck-rigging",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/seafaring-deck-rigging--lists2-316x180.avif",
+     "bytes": 12608,
+     "sourceWindow": {
+      "left": 0,
+      "top": 0,
+      "width": 836,
+      "height": 476
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "seafaring-deck-rigging",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/seafaring-deck-rigging--lists3-105x90.avif",
+     "bytes": 3086,
+     "sourceWindow": {
+      "left": 0,
+      "top": 0,
+      "width": 836,
+      "height": 717
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "seafaring-deck-rigging",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs/seafaring-deck-rigging--lists3-210x180.avif",
+     "bytes": 9620,
+     "sourceWindow": {
+      "left": 0,
+      "top": 0,
+      "width": 836,
+      "height": 717
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "seafaring-lighthouse-coast",
+   "sourceId": "seafaring",
+   "status": "insufficient-resolution",
+   "pixels": {
+    "x": 1304,
+    "y": 112,
+    "w": 368,
+    "h": 329
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "unreviewed",
+     "status": "insufficient-resolution",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1266,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 72.1,
+       "cssFullWidth": 1265.4
+      },
+      "2": {
+       "needFullPx": 2531,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 72.1,
+       "cssFullWidth": 1265.4
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 368,
+      "h": 329
+     },
+     "effective": {
+      "w": 125.5,
+      "h": 329,
+      "share": 0.341
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 52,
+      "h": 82
+     },
+     "subjectTooSmall": true,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.757,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.514,
+       "upscaled": true
+      }
+     },
+     "label": "Insufficient native resolution"
+    },
+    "prep": {
+     "verdict": "unreviewed",
+     "status": "insufficient-resolution",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 244,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 63,
+       "cssFullWidth": 243.9
+      },
+      "2": {
+       "needFullPx": 488,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 125.9,
+       "cssFullWidth": 243.9
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 368,
+      "h": 329
+     },
+     "effective": {
+      "w": 329,
+      "h": 329,
+      "share": 0.894
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 52,
+      "h": 82
+     },
+     "subjectTooSmall": true,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.146,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.292,
+       "upscaled": false
+      }
+     },
+     "label": "Insufficient native resolution"
+    },
+    "lists1": {
+     "verdict": "unreviewed",
+     "status": "insufficient-resolution",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1445,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 211.3,
+       "cssFullWidth": 1444.8
+      },
+      "2": {
+       "needFullPx": 2890,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 211.3,
+       "cssFullWidth": 1444.8
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 53.66,
+      "zoom": 1
+     },
+     "region": {
+      "w": 368,
+      "h": 329
+     },
+     "effective": {
+      "w": 368,
+      "h": 104.2,
+      "share": 0.317
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 52,
+      "h": 82
+     },
+     "subjectTooSmall": true,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.864,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.728,
+       "upscaled": true
+      }
+     },
+     "label": "Insufficient native resolution"
+    },
+    "lists2": {
+     "verdict": "unreviewed",
+     "status": "insufficient-resolution",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 718,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 211.3,
+       "cssFullWidth": 717.9
+      },
+      "2": {
+       "needFullPx": 1436,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 211.3,
+       "cssFullWidth": 717.9
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 56.89,
+      "zoom": 1
+     },
+     "region": {
+      "w": 368,
+      "h": 329
+     },
+     "effective": {
+      "w": 368,
+      "h": 209.6,
+      "share": 0.637
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 52,
+      "h": 82
+     },
+     "subjectTooSmall": true,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.429,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.859,
+       "upscaled": false
+      }
+     },
+     "label": "Insufficient native resolution"
+    },
+    "lists3": {
+     "verdict": "unreviewed",
+     "status": "insufficient-resolution",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 478,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 140.9,
+       "cssFullWidth": 477.1
+      },
+      "2": {
+       "needFullPx": 955,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 211.3,
+       "cssFullWidth": 477.1
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 100,
+      "zoom": 1
+     },
+     "region": {
+      "w": 368,
+      "h": 329
+     },
+     "effective": {
+      "w": 368,
+      "h": 315.4,
+      "share": 0.959
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 52,
+      "h": 82
+     },
+     "subjectTooSmall": true,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.285,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.571,
+       "upscaled": false
+      }
+     },
+     "label": "Insufficient native resolution"
+    }
+   },
+   "derivatives": []
+  },
+  {
+   "id": "seafaring-storm-waves",
+   "sourceId": "seafaring",
+   "status": "needs-better-crop",
+   "pixels": {
+    "x": 752,
+    "y": 470,
+    "w": 920,
+    "h": 471
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 884,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 103.2,
+       "cssFullWidth": 883.9
+      },
+      "2": {
+       "needFullPx": 1768,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 103.2,
+       "cssFullWidth": 883.9
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 37.57,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 920,
+      "h": 471
+     },
+     "effective": {
+      "w": 179.7,
+      "h": 471,
+      "share": 0.195
+     },
+     "survival": 0.488,
+     "subjectPx": {
+      "w": 368,
+      "h": 236
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.529,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.057,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "prep": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 171,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 90.1,
+       "cssFullWidth": 170.4
+      },
+      "2": {
+       "needFullPx": 341,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 180.3,
+       "cssFullWidth": 170.4
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 29.51,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 920,
+      "h": 471
+     },
+     "effective": {
+      "w": 471,
+      "h": 471,
+      "share": 0.512
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 368,
+      "h": 236
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.102,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.204,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 578,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 352.2,
+       "cssFullWidth": 577.9
+      },
+      "2": {
+       "needFullPx": 1156,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 528.2,
+       "cssFullWidth": 577.9
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 61.18,
+      "zoom": 1
+     },
+     "region": {
+      "w": 920,
+      "h": 471
+     },
+     "effective": {
+      "w": 920,
+      "h": 260.4,
+      "share": 0.553
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 368,
+      "h": 236
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.346,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.691,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists2": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 320,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 158.3,
+       "cssFullWidth": 319.5
+      },
+      "2": {
+       "needFullPx": 639,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 316.5,
+       "cssFullWidth": 319.5
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 920,
+      "h": 471
+     },
+     "effective": {
+      "w": 826.9,
+      "h": 471,
+      "share": 0.899
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 368,
+      "h": 236
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 320,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 105.2,
+       "cssFullWidth": 319.5
+      },
+      "2": {
+       "needFullPx": 639,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 210.3,
+       "cssFullWidth": 319.5
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 25.17,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 920,
+      "h": 471
+     },
+     "effective": {
+      "w": 549.5,
+      "h": 471,
+      "share": 0.597
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 368,
+      "h": 236
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.191,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.382,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": []
+  }
+ ]
+}
