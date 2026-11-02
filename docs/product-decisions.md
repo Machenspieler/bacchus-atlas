@@ -1629,3 +1629,10 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Date:** 2026-10-30
 - **Decision:** `storms-and-calamity`, `infernal-and-profane`, `drowned-depths`, `strongholds-and-sieges`, `monster-lairs`, `cursed-and-blighted-lands` and `fey-and-enchanted` join the registry, each with a single variant. Only 22 environments are mapped (`ARCHETYPE_FIT`); every other environment in those taxonomy groups keeps its biome picture or none. The pictures are specific scenes (a tornado, a fortress-city of Hell, a dragon's bone cavern…), so a shared archetype id is never enough. `starfaring`, `sacred-sanctuaries` and `streets-and-towns` have no approved picture: they stay out of the registry, `SOURCES` and `ARCHETYPE_FIT` until new art is approved.
 - **Where:** `js/list-cover-art.js`, `scripts/generate-list-covers.js [stem…]`, [docs/research/adaptive-list-covers-phase2.md](research/adaptive-list-covers-phase2.md).
+
+## PD-087: List covers, Phase 3 — the revised Starfaring, Sacred Sanctuaries and Streets & Towns pictures
+
+- **Status:** Active (amends PD-086's picture set and its "not approved" clause; PD-085's rules are unchanged)
+- **Date:** 2026-11-02
+- **Decision:** The revised (V2) `starfaring`, `sacred-sanctuaries` and `streets-and-towns` illustrations are eligible for My Lists, each with a single variant, subject to explicit environment-by-environment `ARCHETYPE_FIT` mappings. Only 9 environments are mapped; a shared taxonomy archetype is never enough (a spaceport is not a warship, a Marian-style statue temple is not a stone circle, a cheerful market street is not a slum). Catalog, Prep and Journey artwork are unchanged. The registry holds fourteen archetype pictures.
+- **Where:** `js/list-cover-art.js`, `scripts/generate-list-covers.js`, [docs/research/adaptive-list-covers-phase3.md](research/adaptive-list-covers-phase3.md).

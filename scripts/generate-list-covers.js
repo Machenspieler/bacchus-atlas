@@ -50,6 +50,9 @@ const SOURCES = {
   'archetype-monster-lairs': 'img/cover-archetypes-source/monster-lairs.png',
   'archetype-cursed-and-blighted-lands': 'img/cover-archetypes-source/cursed-and-blighted-lands.png',
   'archetype-fey-and-enchanted': 'img/cover-archetypes-source/fey-and-enchanted.png',
+  'archetype-starfaring': 'img/cover-archetypes-source/starfaring.png',
+  'archetype-sacred-sanctuaries': 'img/cover-archetypes-source/sacred-sanctuaries.png',
+  'archetype-streets-and-towns': 'img/cover-archetypes-source/streets-and-towns.png',
 };
 
 async function main() {

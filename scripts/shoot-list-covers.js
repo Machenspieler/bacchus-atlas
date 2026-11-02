@@ -6,7 +6,7 @@
    (never a real user's localStorage), screenshots #/lists at the sizes the brief asks
    for, and prints a machine check of every cover. Needs `playwright` (devDependency) and
    an installed Google Chrome. Run: node scripts/shoot-list-covers.js [outDir]
-   --phase2 seeds the Phase 2 scenarios instead (docs/research/adaptive-list-covers-phase2.md §11).
+   --phase3 seeds the Phase 3 scenarios (docs/research/adaptive-list-covers-phase3.md). --phase2 seeds the Phase 2 scenarios instead (docs/research/adaptive-list-covers-phase2.md §11).
    ============================================================ */
 'use strict';
 const fs = require('fs');
@@ -15,9 +15,10 @@ const path = require('path');
 const { chromium } = require('playwright');
 
 const ROOT = path.join(__dirname, '..');
-const PHASE2 = process.argv.includes('--phase2');
-const ARGS = process.argv.slice(2).filter(a => a !== '--phase2');
-const OUT = path.resolve(ARGS[0] || path.join(ROOT, PHASE2 ? 'docs/research/adaptive-list-covers-phase2-review' : 'docs/research/adaptive-list-covers-review'));
+const PHASE3 = process.argv.includes('--phase3');
+const PHASE2 = process.argv.includes('--phase2') || PHASE3; /* phase 3 reuses phase 2's report plumbing */
+const ARGS = process.argv.slice(2).filter(a => a !== '--phase2' && a !== '--phase3');
+const OUT = path.resolve(ARGS[0] || path.join(ROOT, PHASE3 ? 'docs/research/adaptive-list-covers-phase3-review' : PHASE2 ? 'docs/research/adaptive-list-covers-phase2-review' : 'docs/research/adaptive-list-covers-review'));
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.webp': 'image/webp', '.avif': 'image/avif', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.ico': 'image/x-icon' };
 
 function serve() {
@@ -100,6 +101,40 @@ async function seedPhase2InPage() {
   return { lists, envLists, summary: S.map(([n, ids]) => [n, ids.length]) };
 }
 
+/* Phase 3 scenarios A-E: the V2 starfaring / sacred / streets pictures against approved and rejected
+ * real environments, a mixed list, and regression lists. */
+async function seedPhase3InPage() {
+  const E = allEnvs();
+  const plain = (b, n, skip = 0) => E.filter(e => artBiome(e) === b && !ListCoverArt.ARCHETYPE_FIT[e.id] && !ListCoverArt.UNIQUE_ENV_IDS.includes(e.id)).slice(skip, skip + n).map(e => e.id);
+  const S = [
+    ['A1 Starfaring approved', ['planetary-blockade']],
+    ['A2 Starfaring rejected', ['capital-ship-assault', 'asteroid-chase', 'stream-fold', 'cosmic-crash']],
+    ['A3 Starfaring both', ['planetary-blockade', 'capital-ship-assault', 'canyon-dogfight']],
+    ['B1 Sacred strong', ['hallowed-temple']],
+    ['B2 Sacred approved', ['hallowed-temple', 'hallowed-cathedral']],
+    ['B3 Sacred rejected', ['mystic-ring', 'throne-of-three', 'darkened-temple', 'moonlight-temple']],
+    ['B4 Sacred both', ['hallowed-cathedral', 'mystic-ring', 'blade-root-sanctum']],
+    ['C1 Streets strong', ['bustling-marketplace', 'resting-dagger-inn']],
+    ['C2 Streets acceptable', ['local-tavern', 'emberwood-village', 'outpost-town', 'street-chase']],
+    ['C3 Streets rejected', ['drakkenheim-outer-city', 'lost-village', 'the-undermarket', 'city-streets', 'haunted-city']],
+    ['C4 Streets both', ['bustling-marketplace', 'lost-village', 'occupied-town']],
+    ['D1 Three new', ['planetary-blockade', 'hallowed-temple', 'bustling-marketplace']],
+    ['D2 Mixed 5', ['field-of-dreams', 'planetary-blockade', 'hallowed-temple', 'bustling-marketplace', ...plain('forest', 1)]],
+    ['D3 Mixed 8', ['ouroborean-pass', 'planetary-blockade', 'hallowed-cathedral', 'local-tavern', 'tornado', 'cursed-graveyard', ...plain('badlands', 2)]],
+    ['D4 Mixed 10', ['cauldera-valley', 'bustling-marketplace', 'hallowed-temple', 'planetary-blockade', 'castle-siege', 'sunken-citadel', 'fey-lands', 'archmages-tower', ...plain('frozen', 2)]],
+    ['E Original four', ['cursed-graveyard', 'ruined-castle', 'archmages-tower', 'masquerade-ball']],
+    ['E Phase 2 seven', ['tornado', 'circles-below-dis', 'sunken-citadel', 'castle-siege', 'dragons-lair', 'rewritten-grove', 'court-of-cats']],
+    ['E Three paintings', ['cauldera-valley', 'field-of-dreams', 'ouroborean-pass']],
+    ['E Empty', []],
+    ['E One', ['hallowed-temple']],
+    ['E Stale reference', ['no-such-environment', 'bustling-marketplace']],
+  ];
+  const lists = S.map(([name], i) => ({ id: 'qa-' + i, name }));
+  const envLists = {};
+  S.forEach(([, ids], i) => ids.forEach(id => { (envLists[id] = envLists[id] || []).push('qa-' + i); }));
+  return { lists, envLists, summary: S.map(([n, ids]) => [n, ids.length]) };
+}
+
 async function main() {
   fs.mkdirSync(OUT, { recursive: true });
   const { server, port } = await serve();
@@ -118,7 +153,7 @@ async function main() {
     page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
     await page.goto(base + 'index.html');
     await page.waitForFunction(() => typeof ListCoverUtils !== 'undefined' && typeof allEnvs === 'function' && allEnvs().length > 0);
-    const seed = await page.evaluate(PHASE2 ? seedPhase2InPage : seedInPage);
+    const seed = await page.evaluate(PHASE3 ? seedPhase3InPage : PHASE2 ? seedPhase2InPage : seedInPage);
     await page.evaluate(([s, l]) => {
       localStorage.setItem('dhcodex_lists', JSON.stringify(s.lists));
       localStorage.setItem('dhcodex_env_lists', JSON.stringify(s.envLists));

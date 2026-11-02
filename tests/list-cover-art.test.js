@@ -131,16 +131,36 @@ test('phase 2: the rejected misleading matches stay out of ARCHETYPE_FIT, and th
   for (const stem of ['storms-and-calamity', 'infernal-and-profane', 'drowned-depths', 'strongholds-and-sieges', 'monster-lairs', 'cursed-and-blighted-lands', 'fey-and-enchanted']) {
     assert.equal(SOURCES['archetype-' + stem], `img/cover-archetypes-source/${stem}.png`);
   }
-  for (const stem of Object.keys(SOURCES)) assert.ok(!/starfaring|sacred-sanctuaries|streets-and-towns/.test(stem), stem);
 });
 
-test('phase 2: unapproved masters present in the folder are never derived or shipped', () => {
-  const masters = new Set(Object.values(SOURCES).map(m => path.basename(m)));
+test('phase 3: the three masters are the approved V2 files (pinned by content, 16:9), registered, derived, never shipped as masters', () => {
+  const PINNED = {
+    starfaring: '57ca9fc4ca60fab613543f3c8e6790ff52ae9958d0f81707aca0304648c6cd86',
+    'sacred-sanctuaries': 'aeaf1817506758c4545c14a15e74788fd0c3cfdb1ef42015bf3b035af55bedfd',
+    'streets-and-towns': '184221a5eb6c1ec814e0f08213d0168c4f24beb53dd1121a9f887bfa799ab0c5',
+  };
+  for (const [stem, hash] of Object.entries(PINNED)) {
+    const master = SOURCES['archetype-' + stem];
+    assert.equal(master, `img/cover-archetypes-source/${stem}.png`);
+    const buf = fs.readFileSync(path.join(ROOT, master));
+    assert.equal(require('node:crypto').createHash('sha256').update(buf).digest('hex'), hash, `${stem} master is not the approved V2`);
+    const w = buf.readUInt32BE(16), h = buf.readUInt32BE(20);
+    assert.ok(Math.abs(w / h - 16 / 9) < 0.01 && h === 941, `${stem} is ${w}x${h}`);
+    assert.ok(Art.IMAGES['archetype:' + stem], stem);
+    assert.equal(isExcluded(master), true);
+  }
+  assert.equal(Object.keys(SOURCES).filter(k => k.startsWith('archetype-')).length, 14);
   for (const f of fs.readdirSync(path.join(ROOT, 'img/cover-archetypes-source'))) {
-    if (!/^(starfaring|sacred-sanctuaries|streets-and-towns)/.test(f)) continue;
-    assert.ok(!masters.has(f), f);
+    assert.ok(!/(^|[-_])v1([-_.]|$)/i.test(f), `a V1 master is present: ${f}`);
     assert.equal(isExcluded('img/cover-archetypes-source/' + f), true, f);
   }
+});
+
+test('phase 3: the archetype picture set is fourteen, the original eleven untouched', () => {
+  assert.equal(Object.keys(Art.ARCHETYPES).length, 14);
+  for (const a of ['haunted-and-deathly', 'forgotten-ruins', 'arcane-sanctums', 'feasts-and-revelry', 'storms-and-calamity', 'infernal-and-profane',
+    'drowned-depths', 'strongholds-and-sieges', 'monster-lairs', 'cursed-and-blighted-lands', 'fey-and-enchanted']) assert.ok(Art.ARCHETYPES[a], a);
+  for (const a of ['starfaring', 'sacred-sanctuaries', 'streets-and-towns']) assert.deepEqual(Art.ARCHETYPES[a].variants, ['archetype:' + a]);
 });
 
 test('phase 2: every framing is a percentage inside 0..100 and each archetype picture is a whole-frame 16:9 cut', () => {

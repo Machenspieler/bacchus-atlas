@@ -325,13 +325,93 @@ test('phase 2: a unique painting still outranks the fey picture, and the origina
   assert.equal(U.resolveEnvironmentArt(rec('grand-feast')).imageId, 'archetype:feasts-and-revelry');
 });
 
-test('phase 2: the three unapproved pictures are not in the registry and their environments get no archetype picture', () => {
-  for (const arch of ['starfaring', 'sacred-sanctuaries', 'streets-and-towns']) {
-    assert.equal(Art.ARCHETYPES[arch], undefined, arch);
-    assert.equal(Art.IMAGES['archetype:' + arch], undefined, arch);
-    assert.ok(!Object.values(Art.ARCHETYPE_FIT).some(f => f[0] === arch), arch);
+/* Phase 3 — the V2 pictures, mapped one environment at a time (docs/research/adaptive-list-covers-phase3.md). */
+const PHASE3 = {
+  starfaring: { strong: [], acceptable: ['planetary-blockade'] },
+  'sacred-sanctuaries': { strong: ['hallowed-temple'], acceptable: ['hallowed-cathedral'] },
+  'streets-and-towns': { strong: ['bustling-marketplace', 'resting-dagger-inn'], acceptable: ['local-tavern', 'emberwood-village', 'outpost-town', 'street-chase'] },
+};
+/* in the taxonomy (or plausible by name), judged poor against the actual picture */
+const PHASE3_REJECTED = [
+  'sovereignty-outpost', 'operations-center', 'sovereignty-base', 'conclave-hall', 'capital-ship-assault', 'capital-ship-high-alert', 'capital-ship-infiltration',
+  'asteroid-chase', 'stream-fold', 'canyon-dogfight', 'lunar-surface', 'cosmic-crash', 'planetary-invasion', 'archons-throne-room', 'trading-post',
+  'moonlight-temple', 'darkened-temple', 'mystic-ring', 'throne-of-three', 'blade-root-sanctum', 'hallow-rest', 'martyrs-rest', 'humble-altar',
+  'chapel-of-st-brenna', 'garden-of-the-tranquil-order', 'divine-audience', 'divine-usurpation', 'the-profane-ascendancy', 'sanctuary-of-the-story-tree', 'moonlight-bastion',
+  'chaotic-marketplace', 'city-streets', 'city-festival', 'town-festival', 'rooftop-chase', 'bankburgh-chase', 'lizardfolk-village', 'jungle-river-village',
+  'the-village-of-hush', 'drakkenheim-outer-city', 'lost-village', 'occupied-town', 'bastion', 'the-undermarket', 'gang-hideout', 'den-of-vice-and-violence',
+  'haunted-city', 'ancient-city', 'civic-library', 'arcane-magic-shop', 'upscale-casino', 'the-garden', 'city-travel',
+];
+
+test('phase 3: registration, exact grade per approved environment, and the V2 picture it resolves to', () => {
+  for (const [arch, grades] of Object.entries(PHASE3)) {
+    assert.ok(Art.ARCHETYPES[arch]);
+    for (const fit of ['strong', 'acceptable']) {
+      for (const id of grades[fit]) {
+        assert.deepEqual(Art.ARCHETYPE_FIT[id], [arch, fit], id);
+        const r = U.resolveEnvironmentArt(rec(id));
+        assert.deepEqual(r, { imageId: 'archetype:' + arch, kind: 'archetype', fit }, id);
+      }
+    }
   }
-  for (const id of Object.keys(Art.IMAGES)) assert.ok(!/starfaring|sacred|streets/.test(id), id);
+  const mapped = Object.values(PHASE3).flatMap(g => [...g.strong, ...g.acceptable]);
+  const inFit = Object.entries(Art.ARCHETYPE_FIT).filter(([, f]) => PHASE3[f[0]]).map(([id]) => id);
+  assert.deepEqual(inFit.sort(), mapped.sort(), 'nothing is mapped to a Phase 3 picture without being reviewed here');
+});
+
+test('phase 3: poor matches stay out of ARCHETYPE_FIT and fall back to their biome picture or none', () => {
+  for (const id of PHASE3_REJECTED) {
+    assert.ok(BY_ID[id], id);
+    const f = Art.ARCHETYPE_FIT[id];
+    assert.ok(!f || !PHASE3[f[0]], `${id} must not get a Phase 3 picture`);
+    const r = U.resolveEnvironmentArt(rec(id));
+    assert.ok(!r || !/starfaring|sacred-sanctuaries|streets-and-towns/.test(r.imageId), id);
+  }
+  /* sharing a taxonomy archetype is never enough */
+  assert.equal(U.resolveEnvironmentArt(rec('capital-ship-assault')), null);
+  assert.equal(U.resolveEnvironmentArt(rec('stream-fold')), null);
+  assert.equal(U.resolveEnvironmentArt(rec('canyon-dogfight')).imageId, 'biome:drylands');
+  assert.equal(U.resolveEnvironmentArt(rec('moonlight-temple')).imageId, 'biome:drylands');
+  assert.equal(U.resolveEnvironmentArt(rec('mystic-ring')).imageId, 'biome:rolling');
+  assert.equal(U.resolveEnvironmentArt(rec('throne-of-three')).imageId, 'biome:forest');
+  assert.equal(U.resolveEnvironmentArt(rec('city-streets')), null);
+  assert.equal(U.resolveEnvironmentArt(rec('lizardfolk-village')).imageId, 'biome:wetland');
+});
+
+test('phase 3: existing mappings, overrides and paintings are untouched', () => {
+  assert.equal(U.resolveEnvironmentArt(rec('korathi-temple')).imageId, 'archetype:forgotten-ruins');
+  assert.equal(U.resolveEnvironmentArt(rec('magic-city')) && U.resolveEnvironmentArt(rec('magic-city')).imageId, 'archetype:arcane-sanctums');
+  assert.equal(U.resolveEnvironmentArt(rec('circles-below-dis')).imageId, 'archetype:infernal-and-profane');
+  assert.equal(U.resolveEnvironmentArt(rec('drowned-sanctum')).imageId, 'archetype:drowned-depths');
+  assert.equal(U.resolveEnvironmentArt(rec('defense-of-the-river-fort')).imageId, 'archetype:strongholds-and-sieges');
+  assert.equal(U.resolveEnvironmentArt(rec('port-city')).imageId, 'biome:settlement');
+  for (const id of ['cauldera-valley', 'field-of-dreams', 'ouroborean-pass']) assert.equal(U.resolveEnvironmentArt(rec(id)).kind, 'unique', id);
+  assert.equal(Object.keys(Art.ARCHETYPE_FIT).length, 56 + 10);
+});
+
+test('phase 3: collages with the new pictures are distinct, at most three, deterministic and ranked by fit', () => {
+  const c = cover('bustling-marketplace', 'hallowed-temple', 'planetary-blockade', 'cursed-graveyard');
+  assert.equal(c.layout, 3);
+  assert.equal(new Set(imageIds(c)).size, 3);
+  /* a strong thematic picture beats an acceptable one; the acceptable starfaring picture still beats a biome */
+  assert.deepEqual(imageIds(cover('planetary-blockade', 'harsh-desert')), ['archetype:starfaring', 'biome:drylands']);
+  /* same picture for several members is one tile */
+  const same = cover('bustling-marketplace', 'resting-dagger-inn', 'local-tavern', 'outpost-town');
+  assert.deepEqual(imageIds(same), ['archetype:streets-and-towns']);
+  assert.equal(same.tiles[0].count, 4);
+  /* a painting always wins its place; the new pictures never push it out */
+  const withPainting = cover('field-of-dreams', 'hallowed-temple', 'bustling-marketplace', 'planetary-blockade', 'tornado');
+  assert.ok(imageIds(withPainting).includes('env:field-of-dreams'));
+  assert.equal(withPainting.layout, 3);
+  assert.deepEqual(imageIds(cover('bustling-marketplace', 'hallowed-temple', 'planetary-blockade', 'cursed-graveyard')), imageIds(c));
+  /* a rejected urban or sacred member adds no new-picture tile */
+  assert.equal(cover('city-streets', 'capital-ship-assault', 'darkened-temple').layout, 0);
+});
+
+test('phase 3: a missing picture falls through to the next source instead of a broken image', () => {
+  const partial = { ...Art, IMAGES: Object.fromEntries(Object.entries(Art.IMAGES).filter(([id]) => id !== 'archetype:streets-and-towns')) };
+  assert.equal(U.resolveEnvironmentArt(rec('bustling-marketplace'), partial), null);
+  assert.equal(U.resolveEnvironmentArt(rec('emberwood-village'), partial), null);
+  assert.equal(U.resolveEnvironmentArt(rec('hallowed-temple'), partial).imageId, 'archetype:sacred-sanctuaries');
 });
 
 test('phase 2: a same-archetype list does not paint every member with the tornado', () => {

@@ -81,6 +81,9 @@
     archetype('monster-lairs', [50, 72], [30, 55], [22, 55]),
     archetype('cursed-and-blighted-lands', [50, 48], [40, 45], [30, 40]),
     archetype('fey-and-enchanted', [50, 35], [60, 40], [70, 35]),
+    archetype('starfaring', [50, 40], [60, 40], [75, 40]),
+    archetype('sacred-sanctuaries', [50, 12], [30, 30], [15, 25]),
+    archetype('streets-and-towns', [50, 28], [62, 40], [80, 35]),
 
     biome('aquatic', [50, 45], [85, 45]),
     biome('badlands', [50, 35], [25, 45]),
@@ -113,6 +116,9 @@
     'monster-lairs': { variants: ['archetype:monster-lairs'] },
     'cursed-and-blighted-lands': { variants: ['archetype:cursed-and-blighted-lands'] },
     'fey-and-enchanted': { variants: ['archetype:fey-and-enchanted'] },
+    starfaring: { variants: ['archetype:starfaring'] },
+    'sacred-sanctuaries': { variants: ['archetype:sacred-sanctuaries'] },
+    'streets-and-towns': { variants: ['archetype:streets-and-towns'] },
   };
 
   /* environment id -> [archetype, fit, variant?]. 'strong': the picture shows this
@@ -194,6 +200,23 @@
     /* fey-and-enchanted: luminous, built fey places — not dark, wild or abstract ones */
     'court-of-cats': ['fey-and-enchanted', 'strong'],
     'fey-lands': ['fey-and-enchanted', 'acceptable'],
+    /* Phase 3 (docs/research/adaptive-list-covers-phase3.md): the revised V2 pictures, again judged
+     * one environment at a time. Each is one specific scene, so the taxonomy group is not enough. */
+    /* starfaring: a busy, peaceful science-fantasy spaceport under a planet — not a derelict,
+     * a warship, an empty void or a military post */
+    'planetary-blockade': ['starfaring', 'acceptable'],
+    /* sacred-sanctuaries: a luminous Gothic temple with a statue, candles and an offering —
+     * benevolent, built, worshipful; not a ruin, a forest, a grave or a profane site */
+    'hallowed-temple': ['sacred-sanctuaries', 'strong'],
+    'hallowed-cathedral': ['sacred-sanctuaries', 'acceptable'],
+    /* streets-and-towns: a prosperous medieval market street — not slums, chases over roofs,
+     * festivals, occupation or a village in the wild */
+    'bustling-marketplace': ['streets-and-towns', 'strong'],
+    'resting-dagger-inn': ['streets-and-towns', 'strong'],
+    'local-tavern': ['streets-and-towns', 'acceptable'],
+    'emberwood-village': ['streets-and-towns', 'acceptable'],
+    'outpost-town': ['streets-and-towns', 'acceptable'],
+    'street-chase': ['streets-and-towns', 'acceptable'],
   };
 
   /* biome -> picture. 'universal' has none on purpose: an "Other" environment says
