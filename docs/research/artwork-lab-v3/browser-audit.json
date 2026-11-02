@@ -1,0 +1,5088 @@
+{
+ "audits": {
+  "1280x800": {
+   "dpr": 1,
+   "viewport": [
+    1280,
+    800
+   ],
+   "contexts": {
+    "catalog": {
+     "A": {
+      "envs": 329,
+      "images": 329,
+      "requests": 13,
+      "bytes": 131993,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1.05,
+      "files": [
+       {
+        "file": "aquatic-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "badlands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "drylands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "forest-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "frozen-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "grassland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "mountain-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "rolling-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "settlement-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "tropical-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "underground-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "universal-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "wetland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       }
+      ]
+     },
+     "B": {
+      "envs": 329,
+      "images": 329,
+      "requests": 45,
+      "bytes": 1572037,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1.05,
+      "files": [
+       {
+        "file": "aquatic-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "archetype-arcane-sanctums-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-archives-and-libraries-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-arenas-and-duels-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-blighted-mires-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-chase-and-ambush-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-crypts-and-tombs-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-drowned-depths-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-dungeon-delves-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-feasts-and-revelry-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-fey-and-enchanted-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-forgotten-ruins-640.avif",
+        "nw": 640,
+        "nh": 427,
+        "ratio": 1.71
+       },
+       {
+        "file": "archetype-haunted-and-deathly-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-infernal-and-profane-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-intrigue-and-underworld-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-monster-lairs-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-perilous-passages-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-planar-rifts-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-seafaring-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sinister-woods-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sky-realms-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-starfaring-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-storms-and-calamity-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-streets-and-towns-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-taverns-and-inns-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-time-and-dream-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "badlands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "biome-settlement-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "cauldera-valley-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "drylands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "field-of-dreams-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "forest-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "frozen-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "grassland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "mountain-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "ouroborean-pass-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "rolling-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "settlement-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "tropical-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "underground-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "universal-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "wetland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       }
+      ]
+     },
+     "C": {
+      "envs": 329,
+      "images": 329,
+      "requests": 41,
+      "bytes": 1364548,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1.05,
+      "files": [
+       {
+        "file": "aquatic-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "archetype-arcane-sanctums-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-archives-and-libraries-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-arenas-and-duels-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-blighted-mires-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-crypts-and-tombs-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-drowned-depths-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-dungeon-delves-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-feasts-and-revelry-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-fey-and-enchanted-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-forgotten-ruins-640.avif",
+        "nw": 640,
+        "nh": 427,
+        "ratio": 1.71
+       },
+       {
+        "file": "archetype-haunted-and-deathly-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-infernal-and-profane-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-perilous-passages-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-planar-rifts-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-seafaring-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sinister-woods-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sky-realms-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-starfaring-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-storms-and-calamity-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-streets-and-towns-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-taverns-and-inns-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "badlands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "biome-settlement-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "cauldera-valley-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "drylands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "field-of-dreams-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "forest-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "frozen-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "grassland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "mountain-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "ouroborean-pass-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "rolling-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "settlement-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "tropical-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "underground-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "universal-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "wetland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       }
+      ]
+     }
+    },
+    "prep": {
+     "A": {
+      "envs": 329,
+      "images": 329,
+      "requests": 13,
+      "bytes": 17250,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1,
+      "files": [
+       {
+        "file": "aquatic-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "badlands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "drylands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "forest-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "frozen-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "grassland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "mountain-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "rolling-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "settlement-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "tropical-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "underground-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "universal-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "wetland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       }
+      ]
+     },
+     "B": {
+      "envs": 329,
+      "images": 329,
+      "requests": 45,
+      "bytes": 442504,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1,
+      "files": [
+       {
+        "file": "aquatic-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "archetype-arcane-sanctums-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-archives-and-libraries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-arenas-and-duels-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-blighted-mires-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-chase-and-ambush-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-crypts-and-tombs-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-drowned-depths-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-dungeon-delves-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-feasts-and-revelry-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-fey-and-enchanted-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-forgotten-ruins-320.avif",
+        "nw": 320,
+        "nh": 213,
+        "ratio": 4.44
+       },
+       {
+        "file": "archetype-haunted-and-deathly-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-infernal-and-profane-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-intrigue-and-underworld-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-monster-lairs-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-perilous-passages-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-planar-rifts-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-seafaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sinister-woods-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sky-realms-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-starfaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-storms-and-calamity-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-streets-and-towns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-taverns-and-inns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-time-and-dream-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "badlands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "biome-settlement-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "cauldera-valley-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "drylands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "field-of-dreams-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "forest-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "frozen-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "grassland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "mountain-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "ouroborean-pass-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "rolling-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "settlement-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "tropical-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "underground-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "universal-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "wetland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       }
+      ]
+     },
+     "C": {
+      "envs": 329,
+      "images": 329,
+      "requests": 41,
+      "bytes": 383524,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1,
+      "files": [
+       {
+        "file": "aquatic-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "archetype-arcane-sanctums-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-archives-and-libraries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-arenas-and-duels-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-blighted-mires-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-crypts-and-tombs-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-drowned-depths-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-dungeon-delves-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-feasts-and-revelry-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-fey-and-enchanted-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-forgotten-ruins-320.avif",
+        "nw": 320,
+        "nh": 213,
+        "ratio": 4.44
+       },
+       {
+        "file": "archetype-haunted-and-deathly-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-infernal-and-profane-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-perilous-passages-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-planar-rifts-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-seafaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sinister-woods-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sky-realms-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-starfaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-storms-and-calamity-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-streets-and-towns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-taverns-and-inns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "badlands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "biome-settlement-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "cauldera-valley-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "drylands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "field-of-dreams-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "forest-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "frozen-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "grassland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "mountain-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "ouroborean-pass-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "rolling-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "settlement-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "tropical-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "underground-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "universal-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "wetland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       }
+      ]
+     }
+    }
+   }
+  },
+  "1440x900": {
+   "dpr": 1,
+   "viewport": [
+    1440,
+    900
+   ],
+   "contexts": {
+    "catalog": {
+     "A": {
+      "envs": 329,
+      "images": 329,
+      "requests": 13,
+      "bytes": 131993,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1.05,
+      "files": [
+       {
+        "file": "aquatic-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "badlands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "drylands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "forest-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "frozen-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "grassland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "mountain-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "rolling-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "settlement-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "tropical-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "underground-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "universal-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "wetland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       }
+      ]
+     },
+     "B": {
+      "envs": 329,
+      "images": 329,
+      "requests": 45,
+      "bytes": 1572037,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1.05,
+      "files": [
+       {
+        "file": "aquatic-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "archetype-arcane-sanctums-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-archives-and-libraries-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-arenas-and-duels-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-blighted-mires-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-chase-and-ambush-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-crypts-and-tombs-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-drowned-depths-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-dungeon-delves-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-feasts-and-revelry-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-fey-and-enchanted-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-forgotten-ruins-640.avif",
+        "nw": 640,
+        "nh": 427,
+        "ratio": 1.71
+       },
+       {
+        "file": "archetype-haunted-and-deathly-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-infernal-and-profane-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-intrigue-and-underworld-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-monster-lairs-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-perilous-passages-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-planar-rifts-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-seafaring-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sinister-woods-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sky-realms-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-starfaring-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-storms-and-calamity-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-streets-and-towns-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-taverns-and-inns-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-time-and-dream-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "badlands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "biome-settlement-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "cauldera-valley-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "drylands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "field-of-dreams-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "forest-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "frozen-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "grassland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "mountain-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "ouroborean-pass-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "rolling-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "settlement-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "tropical-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "underground-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "universal-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "wetland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       }
+      ]
+     },
+     "C": {
+      "envs": 329,
+      "images": 329,
+      "requests": 41,
+      "bytes": 1364548,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1.05,
+      "files": [
+       {
+        "file": "aquatic-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "archetype-arcane-sanctums-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-archives-and-libraries-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-arenas-and-duels-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-blighted-mires-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-crypts-and-tombs-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-drowned-depths-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-dungeon-delves-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-feasts-and-revelry-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-fey-and-enchanted-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-forgotten-ruins-640.avif",
+        "nw": 640,
+        "nh": 427,
+        "ratio": 1.71
+       },
+       {
+        "file": "archetype-haunted-and-deathly-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-infernal-and-profane-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-perilous-passages-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-planar-rifts-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-seafaring-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sinister-woods-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sky-realms-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-starfaring-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-storms-and-calamity-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-streets-and-towns-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-taverns-and-inns-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "badlands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "biome-settlement-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "cauldera-valley-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "drylands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "field-of-dreams-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "forest-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "frozen-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "grassland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "mountain-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "ouroborean-pass-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "rolling-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "settlement-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "tropical-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "underground-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "universal-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "wetland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       }
+      ]
+     }
+    },
+    "prep": {
+     "A": {
+      "envs": 329,
+      "images": 329,
+      "requests": 13,
+      "bytes": 17250,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1,
+      "files": [
+       {
+        "file": "aquatic-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "badlands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "drylands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "forest-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "frozen-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "grassland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "mountain-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "rolling-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "settlement-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "tropical-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "underground-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "universal-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "wetland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       }
+      ]
+     },
+     "B": {
+      "envs": 329,
+      "images": 329,
+      "requests": 45,
+      "bytes": 442504,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1,
+      "files": [
+       {
+        "file": "aquatic-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "archetype-arcane-sanctums-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-archives-and-libraries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-arenas-and-duels-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-blighted-mires-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-chase-and-ambush-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-crypts-and-tombs-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-drowned-depths-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-dungeon-delves-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-feasts-and-revelry-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-fey-and-enchanted-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-forgotten-ruins-320.avif",
+        "nw": 320,
+        "nh": 213,
+        "ratio": 4.44
+       },
+       {
+        "file": "archetype-haunted-and-deathly-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-infernal-and-profane-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-intrigue-and-underworld-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-monster-lairs-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-perilous-passages-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-planar-rifts-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-seafaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sinister-woods-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sky-realms-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-starfaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-storms-and-calamity-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-streets-and-towns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-taverns-and-inns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-time-and-dream-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "badlands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "biome-settlement-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "cauldera-valley-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "drylands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "field-of-dreams-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "forest-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "frozen-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "grassland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "mountain-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "ouroborean-pass-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "rolling-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "settlement-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "tropical-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "underground-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "universal-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "wetland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       }
+      ]
+     },
+     "C": {
+      "envs": 329,
+      "images": 329,
+      "requests": 41,
+      "bytes": 383524,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1,
+      "files": [
+       {
+        "file": "aquatic-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "archetype-arcane-sanctums-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-archives-and-libraries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-arenas-and-duels-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-blighted-mires-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-crypts-and-tombs-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-drowned-depths-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-dungeon-delves-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-feasts-and-revelry-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-fey-and-enchanted-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-forgotten-ruins-320.avif",
+        "nw": 320,
+        "nh": 213,
+        "ratio": 4.44
+       },
+       {
+        "file": "archetype-haunted-and-deathly-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-infernal-and-profane-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-perilous-passages-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-planar-rifts-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-seafaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sinister-woods-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sky-realms-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-starfaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-storms-and-calamity-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-streets-and-towns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-taverns-and-inns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "badlands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "biome-settlement-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "cauldera-valley-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "drylands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "field-of-dreams-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "forest-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "frozen-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "grassland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "mountain-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "ouroborean-pass-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "rolling-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "settlement-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "tropical-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "underground-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "universal-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "wetland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       }
+      ]
+     }
+    }
+   }
+  },
+  "1440x900-dpr2": {
+   "dpr": 2,
+   "viewport": [
+    1440,
+    900
+   ],
+   "contexts": {
+    "catalog": {
+     "A": {
+      "envs": 329,
+      "images": 329,
+      "requests": 13,
+      "bytes": 457237,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1.05,
+      "files": [
+       {
+        "file": "aquatic-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "badlands-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "drylands-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "forest-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "frozen-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "grassland-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "mountain-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "rolling-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "settlement-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "tropical-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "underground-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "universal-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "wetland-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       }
+      ]
+     },
+     "B": {
+      "envs": 329,
+      "images": 329,
+      "requests": 45,
+      "bytes": 3395222,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1.05,
+      "files": [
+       {
+        "file": "aquatic-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "archetype-arcane-sanctums-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-archives-and-libraries-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-arenas-and-duels-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-blighted-mires-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-chase-and-ambush-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-crypts-and-tombs-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-drowned-depths-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-dungeon-delves-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-feasts-and-revelry-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-fey-and-enchanted-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-forgotten-ruins-960.avif",
+        "nw": 960,
+        "nh": 640,
+        "ratio": 1.29
+       },
+       {
+        "file": "archetype-haunted-and-deathly-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-infernal-and-profane-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-intrigue-and-underworld-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-monster-lairs-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-perilous-passages-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-planar-rifts-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-seafaring-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-sinister-woods-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-sky-realms-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-starfaring-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-storms-and-calamity-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-streets-and-towns-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-taverns-and-inns-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-time-and-dream-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "badlands-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "biome-settlement-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "cauldera-valley-800.avif",
+        "nw": 800,
+        "nh": 533,
+        "ratio": 1.07
+       },
+       {
+        "file": "drylands-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "field-of-dreams-800.avif",
+        "nw": 800,
+        "nh": 533,
+        "ratio": 1.07
+       },
+       {
+        "file": "forest-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "frozen-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "grassland-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "mountain-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "ouroborean-pass-800.avif",
+        "nw": 800,
+        "nh": 533,
+        "ratio": 1.07
+       },
+       {
+        "file": "rolling-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "settlement-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "tropical-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "underground-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "universal-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "wetland-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       }
+      ]
+     },
+     "C": {
+      "envs": 329,
+      "images": 329,
+      "requests": 41,
+      "bytes": 2972737,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1.05,
+      "files": [
+       {
+        "file": "aquatic-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "archetype-arcane-sanctums-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-archives-and-libraries-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-arenas-and-duels-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-blighted-mires-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-crypts-and-tombs-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-drowned-depths-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-dungeon-delves-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-feasts-and-revelry-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-fey-and-enchanted-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-forgotten-ruins-960.avif",
+        "nw": 960,
+        "nh": 640,
+        "ratio": 1.29
+       },
+       {
+        "file": "archetype-haunted-and-deathly-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-infernal-and-profane-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-perilous-passages-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-planar-rifts-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-seafaring-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-sinister-woods-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-sky-realms-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-starfaring-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-storms-and-calamity-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-streets-and-towns-960.avif",
+        "nw": 960,
+        "nh": 541,
+        "ratio": 1.09
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "archetype-taverns-and-inns-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "badlands-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "biome-settlement-960.avif",
+        "nw": 960,
+        "nh": 540,
+        "ratio": 1.08
+       },
+       {
+        "file": "cauldera-valley-800.avif",
+        "nw": 800,
+        "nh": 533,
+        "ratio": 1.07
+       },
+       {
+        "file": "drylands-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "field-of-dreams-800.avif",
+        "nw": 800,
+        "nh": 533,
+        "ratio": 1.07
+       },
+       {
+        "file": "forest-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "frozen-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "grassland-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "mountain-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "ouroborean-pass-800.avif",
+        "nw": 800,
+        "nh": 533,
+        "ratio": 1.07
+       },
+       {
+        "file": "rolling-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "settlement-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "tropical-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "underground-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "universal-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       },
+       {
+        "file": "wetland-200.avif",
+        "nw": 200,
+        "nh": 600,
+        "ratio": 1.05
+       }
+      ]
+     }
+    },
+    "prep": {
+     "A": {
+      "envs": 329,
+      "images": 329,
+      "requests": 13,
+      "bytes": 58764,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1,
+      "files": [
+       {
+        "file": "aquatic-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "badlands-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "drylands-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "forest-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "frozen-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "grassland-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "mountain-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "rolling-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "settlement-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "tropical-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "underground-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "universal-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "wetland-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       }
+      ]
+     },
+     "B": {
+      "envs": 329,
+      "images": 329,
+      "requests": 45,
+      "bytes": 484018,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1,
+      "files": [
+       {
+        "file": "aquatic-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "archetype-arcane-sanctums-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-archives-and-libraries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-arenas-and-duels-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-blighted-mires-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-chase-and-ambush-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-crypts-and-tombs-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-drowned-depths-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-dungeon-delves-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-feasts-and-revelry-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-fey-and-enchanted-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-forgotten-ruins-320.avif",
+        "nw": 320,
+        "nh": 213,
+        "ratio": 2.22
+       },
+       {
+        "file": "archetype-haunted-and-deathly-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-infernal-and-profane-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-intrigue-and-underworld-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-monster-lairs-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-perilous-passages-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-planar-rifts-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-seafaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-sinister-woods-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-sky-realms-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-starfaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-storms-and-calamity-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-streets-and-towns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-taverns-and-inns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-time-and-dream-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "badlands-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "biome-settlement-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "cauldera-valley-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 1.39
+       },
+       {
+        "file": "drylands-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "field-of-dreams-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 1.39
+       },
+       {
+        "file": "forest-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "frozen-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "grassland-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "mountain-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "ouroborean-pass-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 1.39
+       },
+       {
+        "file": "rolling-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "settlement-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "tropical-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "underground-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "universal-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "wetland-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       }
+      ]
+     },
+     "C": {
+      "envs": 329,
+      "images": 329,
+      "requests": 41,
+      "bytes": 425038,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1,
+      "files": [
+       {
+        "file": "aquatic-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "archetype-arcane-sanctums-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-archives-and-libraries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-arenas-and-duels-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-blighted-mires-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-crypts-and-tombs-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-drowned-depths-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-dungeon-delves-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-feasts-and-revelry-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-fey-and-enchanted-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-forgotten-ruins-320.avif",
+        "nw": 320,
+        "nh": 213,
+        "ratio": 2.22
+       },
+       {
+        "file": "archetype-haunted-and-deathly-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-infernal-and-profane-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-perilous-passages-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-planar-rifts-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-seafaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-sinister-woods-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-sky-realms-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-starfaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-storms-and-calamity-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-streets-and-towns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "archetype-taverns-and-inns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "badlands-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "biome-settlement-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 1.88
+       },
+       {
+        "file": "cauldera-valley-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 1.39
+       },
+       {
+        "file": "drylands-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "field-of-dreams-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 1.39
+       },
+       {
+        "file": "forest-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "frozen-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "grassland-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "mountain-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "ouroborean-pass-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 1.39
+       },
+       {
+        "file": "rolling-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "settlement-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "tropical-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "underground-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "universal-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       },
+       {
+        "file": "wetland-thumb-96.webp",
+        "nw": 96,
+        "nh": 96,
+        "ratio": 1
+       }
+      ]
+     }
+    }
+   }
+  },
+  "1920x1080": {
+   "dpr": 1,
+   "viewport": [
+    1920,
+    1080
+   ],
+   "contexts": {
+    "catalog": {
+     "A": {
+      "envs": 329,
+      "images": 329,
+      "requests": 13,
+      "bytes": 131993,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1.05,
+      "files": [
+       {
+        "file": "aquatic-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "badlands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "drylands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "forest-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "frozen-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "grassland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "mountain-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "rolling-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "settlement-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "tropical-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "underground-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "universal-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "wetland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       }
+      ]
+     },
+     "B": {
+      "envs": 329,
+      "images": 329,
+      "requests": 45,
+      "bytes": 1572037,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1.05,
+      "files": [
+       {
+        "file": "aquatic-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "archetype-arcane-sanctums-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-archives-and-libraries-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-arenas-and-duels-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-blighted-mires-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-chase-and-ambush-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-crypts-and-tombs-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-drowned-depths-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-dungeon-delves-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-feasts-and-revelry-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-fey-and-enchanted-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-forgotten-ruins-640.avif",
+        "nw": 640,
+        "nh": 427,
+        "ratio": 1.71
+       },
+       {
+        "file": "archetype-haunted-and-deathly-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-infernal-and-profane-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-intrigue-and-underworld-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-monster-lairs-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-perilous-passages-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-planar-rifts-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-seafaring-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sinister-woods-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sky-realms-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-starfaring-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-storms-and-calamity-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-streets-and-towns-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-taverns-and-inns-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-time-and-dream-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "badlands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "biome-settlement-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "cauldera-valley-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "drylands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "field-of-dreams-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "forest-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "frozen-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "grassland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "mountain-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "ouroborean-pass-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "rolling-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "settlement-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "tropical-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "underground-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "universal-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "wetland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       }
+      ]
+     },
+     "C": {
+      "envs": 329,
+      "images": 329,
+      "requests": 41,
+      "bytes": 1364548,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1.05,
+      "files": [
+       {
+        "file": "aquatic-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "archetype-arcane-sanctums-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-archives-and-libraries-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-arenas-and-duels-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-blighted-mires-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-crypts-and-tombs-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-drowned-depths-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-dungeon-delves-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-feasts-and-revelry-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-fey-and-enchanted-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-forgotten-ruins-640.avif",
+        "nw": 640,
+        "nh": 427,
+        "ratio": 1.71
+       },
+       {
+        "file": "archetype-haunted-and-deathly-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-infernal-and-profane-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-perilous-passages-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-planar-rifts-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-seafaring-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sinister-woods-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-sky-realms-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-starfaring-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-storms-and-calamity-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-streets-and-towns-640.avif",
+        "nw": 640,
+        "nh": 361,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "archetype-taverns-and-inns-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "badlands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "biome-settlement-640.avif",
+        "nw": 640,
+        "nh": 360,
+        "ratio": 1.45
+       },
+       {
+        "file": "cauldera-valley-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "drylands-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "field-of-dreams-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "forest-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "frozen-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "grassland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "mountain-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "ouroborean-pass-400.avif",
+        "nw": 400,
+        "nh": 267,
+        "ratio": 1.07
+       },
+       {
+        "file": "rolling-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "settlement-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "tropical-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "underground-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "universal-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       },
+       {
+        "file": "wetland-100.avif",
+        "nw": 100,
+        "nh": 300,
+        "ratio": 1.05
+       }
+      ]
+     }
+    },
+    "prep": {
+     "A": {
+      "envs": 329,
+      "images": 329,
+      "requests": 13,
+      "bytes": 17250,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1,
+      "files": [
+       {
+        "file": "aquatic-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "badlands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "drylands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "forest-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "frozen-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "grassland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "mountain-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "rolling-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "settlement-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "tropical-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "underground-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "universal-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "wetland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       }
+      ]
+     },
+     "B": {
+      "envs": 329,
+      "images": 329,
+      "requests": 45,
+      "bytes": 442504,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1,
+      "files": [
+       {
+        "file": "aquatic-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "archetype-arcane-sanctums-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-archives-and-libraries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-arenas-and-duels-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-blighted-mires-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-chase-and-ambush-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-crypts-and-tombs-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-drowned-depths-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-dungeon-delves-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-feasts-and-revelry-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-fey-and-enchanted-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-forgotten-ruins-320.avif",
+        "nw": 320,
+        "nh": 213,
+        "ratio": 4.44
+       },
+       {
+        "file": "archetype-haunted-and-deathly-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-infernal-and-profane-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-intrigue-and-underworld-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-monster-lairs-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-perilous-passages-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-planar-rifts-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-seafaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sinister-woods-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sky-realms-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-starfaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-storms-and-calamity-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-streets-and-towns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-taverns-and-inns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-time-and-dream-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "badlands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "biome-settlement-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "cauldera-valley-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "drylands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "field-of-dreams-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "forest-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "frozen-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "grassland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "mountain-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "ouroborean-pass-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "rolling-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "settlement-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "tropical-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "underground-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "universal-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "wetland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       }
+      ]
+     },
+     "C": {
+      "envs": 329,
+      "images": 329,
+      "requests": 41,
+      "bytes": 383524,
+      "broken": 0,
+      "upscaled": 0,
+      "minRatio": 1,
+      "files": [
+       {
+        "file": "aquatic-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "archetype-arcane-sanctums-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-archives-and-libraries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-arenas-and-duels-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-blighted-mires-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-crypts-and-tombs-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-cursed-and-blighted-lands-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-drowned-depths-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-dungeon-delves-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-feasts-and-revelry-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-fey-and-enchanted-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-forgotten-ruins-320.avif",
+        "nw": 320,
+        "nh": 213,
+        "ratio": 4.44
+       },
+       {
+        "file": "archetype-haunted-and-deathly-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-infernal-and-profane-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-perilous-passages-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-planar-rifts-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sacred-sanctuaries-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-seafaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sinister-woods-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-sky-realms-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-starfaring-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-storms-and-calamity-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-streets-and-towns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-strongholds-and-sieges-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "archetype-taverns-and-inns-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "badlands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "biome-settlement-320.avif",
+        "nw": 320,
+        "nh": 180,
+        "ratio": 3.75
+       },
+       {
+        "file": "cauldera-valley-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "drylands-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "field-of-dreams-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "forest-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "frozen-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "grassland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "mountain-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "ouroborean-pass-200.avif",
+        "nw": 200,
+        "nh": 133,
+        "ratio": 2.77
+       },
+       {
+        "file": "rolling-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "settlement-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "tropical-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "underground-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "universal-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       },
+       {
+        "file": "wetland-thumb-48.webp",
+        "nw": 48,
+        "nh": 48,
+        "ratio": 1
+       }
+      ]
+     }
+    }
+   }
+  }
+ },
+ "problems": [],
+ "layout": {
+  "A": 0,
+  "B": 0,
+  "C": 0,
+  "cropIndependence": {
+   "catalog": {
+    "archetype:sky-realms": {
+     "x": 15,
+     "y": 40,
+     "zoom": 1
+    }
+   },
+   "prep": {}
+  }
+ }
+}

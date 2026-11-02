@@ -1,0 +1,665 @@
+{
+ "generated": "2026-11-02",
+ "environments": 329,
+ "coverage": {
+  "catalog": {
+   "total": 329,
+   "A": {
+    "counts": {
+     "unique": 0,
+     "override": 0,
+     "archetype": 0,
+     "biome": 329,
+     "none": 0
+    },
+    "thematic": 0,
+    "biomeRetained": 329,
+    "neutral": 0,
+    "missing": 0
+   },
+   "B": {
+    "counts": {
+     "unique": 3,
+     "override": 2,
+     "archetype": 117,
+     "biome": 207,
+     "none": 0
+    },
+    "thematic": 122,
+    "biomeRetained": 207,
+    "neutral": 0,
+    "missing": 0
+   },
+   "C": {
+    "counts": {
+     "unique": 3,
+     "override": 2,
+     "archetype": 92,
+     "biome": 232,
+     "none": 0
+    },
+    "thematic": 97,
+    "biomeRetained": 232,
+    "neutral": 0,
+    "missing": 0,
+    "downgradedToBiome": 25,
+    "downgradeReviewStatus": {
+     "reviewed": 25,
+     "unreviewed": 0
+    }
+   },
+   "eligible": {
+    "authorised": 122,
+    "notAuthorised": 207,
+    "taxonomyOnlyNotAuthorised": 157,
+    "byRole": {
+     "override": 2,
+     "archetype": 117,
+     "unique": 3
+    },
+    "byFit": {
+     "n/a": 5,
+     "acceptable": 72,
+     "strong": 45
+    }
+   }
+  },
+  "prep": {
+   "total": 329,
+   "A": {
+    "counts": {
+     "unique": 0,
+     "override": 0,
+     "archetype": 0,
+     "biome": 329,
+     "none": 0
+    },
+    "thematic": 0,
+    "biomeRetained": 329,
+    "neutral": 0,
+    "missing": 0
+   },
+   "B": {
+    "counts": {
+     "unique": 3,
+     "override": 2,
+     "archetype": 117,
+     "biome": 207,
+     "none": 0
+    },
+    "thematic": 122,
+    "biomeRetained": 207,
+    "neutral": 0,
+    "missing": 0
+   },
+   "C": {
+    "counts": {
+     "unique": 3,
+     "override": 2,
+     "archetype": 88,
+     "biome": 236,
+     "none": 0
+    },
+    "thematic": 93,
+    "biomeRetained": 236,
+    "neutral": 0,
+    "missing": 0,
+    "downgradedToBiome": 29,
+    "downgradeReviewStatus": {
+     "reviewed": 29,
+     "unreviewed": 0
+    }
+   },
+   "eligible": {
+    "authorised": 122,
+    "notAuthorised": 207,
+    "taxonomyOnlyNotAuthorised": 157,
+    "byRole": {
+     "override": 2,
+     "archetype": 117,
+     "unique": 3
+    },
+    "byFit": {
+     "n/a": 5,
+     "acceptable": 72,
+     "strong": 45
+    }
+   }
+  }
+ },
+ "repetition": {
+  "catalog": {
+   "A": {
+    "full": {
+     "count": 329,
+     "distinct": 13,
+     "adjacentSame": 56,
+     "adjacentSamePct": 17.07,
+     "maxRun": 4,
+     "top": [
+      {
+       "identity": "biome-production:settlement",
+       "n": 101
+      },
+      {
+       "identity": "biome-production:universal",
+       "n": 57
+      },
+      {
+       "identity": "biome-production:underground",
+       "n": 37
+      },
+      {
+       "identity": "biome-production:forest",
+       "n": 33
+      },
+      {
+       "identity": "biome-production:aquatic",
+       "n": 22
+      }
+     ]
+    },
+    "firstPage18": {
+     "count": 18,
+     "distinct": 6,
+     "adjacentSame": 3,
+     "adjacentSamePct": 17.65,
+     "maxRun": 2,
+     "top": [
+      {
+       "identity": "biome-production:settlement",
+       "n": 7
+      },
+      {
+       "identity": "biome-production:forest",
+       "n": 3
+      },
+      {
+       "identity": "biome-production:universal",
+       "n": 3
+      },
+      {
+       "identity": "biome-production:underground",
+       "n": 2
+      },
+      {
+       "identity": "biome-production:wetland",
+       "n": 2
+      }
+     ]
+    }
+   },
+   "B": {
+    "full": {
+     "count": 329,
+     "distinct": 45,
+     "adjacentSame": 27,
+     "adjacentSamePct": 8.23,
+     "maxRun": 4,
+     "top": [
+      {
+       "identity": "biome-production:settlement",
+       "n": 51
+      },
+      {
+       "identity": "biome-production:universal",
+       "n": 38
+      },
+      {
+       "identity": "biome-production:underground",
+       "n": 29
+      },
+      {
+       "identity": "biome-production:forest",
+       "n": 23
+      },
+      {
+       "identity": "biome-production:drylands",
+       "n": 14
+      }
+     ]
+    },
+    "firstPage18": {
+     "count": 18,
+     "distinct": 9,
+     "adjacentSame": 2,
+     "adjacentSamePct": 11.76,
+     "maxRun": 2,
+     "top": [
+      {
+       "identity": "biome-production:settlement",
+       "n": 6
+      },
+      {
+       "identity": "archetype:blighted-mires",
+       "n": 2
+      },
+      {
+       "identity": "archetype:chase-and-ambush",
+       "n": 2
+      },
+      {
+       "identity": "biome-production:forest",
+       "n": 2
+      },
+      {
+       "identity": "biome-production:underground",
+       "n": 2
+      }
+     ]
+    }
+   },
+   "C": {
+    "full": {
+     "count": 329,
+     "distinct": 41,
+     "adjacentSame": 32,
+     "adjacentSamePct": 9.76,
+     "maxRun": 4,
+     "top": [
+      {
+       "identity": "biome-production:settlement",
+       "n": 57
+      },
+      {
+       "identity": "biome-production:universal",
+       "n": 43
+      },
+      {
+       "identity": "biome-production:underground",
+       "n": 29
+      },
+      {
+       "identity": "biome-production:forest",
+       "n": 23
+      },
+      {
+       "identity": "biome-production:aquatic",
+       "n": 15
+      }
+     ]
+    },
+    "firstPage18": {
+     "count": 18,
+     "distinct": 8,
+     "adjacentSame": 2,
+     "adjacentSamePct": 11.76,
+     "maxRun": 2,
+     "top": [
+      {
+       "identity": "biome-production:settlement",
+       "n": 6
+      },
+      {
+       "identity": "biome-production:universal",
+       "n": 3
+      },
+      {
+       "identity": "biome-production:forest",
+       "n": 2
+      },
+      {
+       "identity": "biome-production:underground",
+       "n": 2
+      },
+      {
+       "identity": "biome-production:wetland",
+       "n": 2
+      }
+     ]
+    }
+   }
+  },
+  "prep": {
+   "A": {
+    "full": {
+     "count": 329,
+     "distinct": 13,
+     "adjacentSame": 56,
+     "adjacentSamePct": 17.07,
+     "maxRun": 4,
+     "top": [
+      {
+       "identity": "biome-production:settlement",
+       "n": 101
+      },
+      {
+       "identity": "biome-production:universal",
+       "n": 57
+      },
+      {
+       "identity": "biome-production:underground",
+       "n": 37
+      },
+      {
+       "identity": "biome-production:forest",
+       "n": 33
+      },
+      {
+       "identity": "biome-production:aquatic",
+       "n": 22
+      }
+     ]
+    },
+    "firstPage18": {
+     "count": 18,
+     "distinct": 6,
+     "adjacentSame": 3,
+     "adjacentSamePct": 17.65,
+     "maxRun": 2,
+     "top": [
+      {
+       "identity": "biome-production:settlement",
+       "n": 7
+      },
+      {
+       "identity": "biome-production:forest",
+       "n": 3
+      },
+      {
+       "identity": "biome-production:universal",
+       "n": 3
+      },
+      {
+       "identity": "biome-production:underground",
+       "n": 2
+      },
+      {
+       "identity": "biome-production:wetland",
+       "n": 2
+      }
+     ]
+    }
+   },
+   "B": {
+    "full": {
+     "count": 329,
+     "distinct": 45,
+     "adjacentSame": 27,
+     "adjacentSamePct": 8.23,
+     "maxRun": 4,
+     "top": [
+      {
+       "identity": "biome-production:settlement",
+       "n": 51
+      },
+      {
+       "identity": "biome-production:universal",
+       "n": 38
+      },
+      {
+       "identity": "biome-production:underground",
+       "n": 29
+      },
+      {
+       "identity": "biome-production:forest",
+       "n": 23
+      },
+      {
+       "identity": "biome-production:drylands",
+       "n": 14
+      }
+     ]
+    },
+    "firstPage18": {
+     "count": 18,
+     "distinct": 9,
+     "adjacentSame": 2,
+     "adjacentSamePct": 11.76,
+     "maxRun": 2,
+     "top": [
+      {
+       "identity": "biome-production:settlement",
+       "n": 6
+      },
+      {
+       "identity": "archetype:blighted-mires",
+       "n": 2
+      },
+      {
+       "identity": "archetype:chase-and-ambush",
+       "n": 2
+      },
+      {
+       "identity": "biome-production:forest",
+       "n": 2
+      },
+      {
+       "identity": "biome-production:underground",
+       "n": 2
+      }
+     ]
+    }
+   },
+   "C": {
+    "full": {
+     "count": 329,
+     "distinct": 41,
+     "adjacentSame": 33,
+     "adjacentSamePct": 10.06,
+     "maxRun": 4,
+     "top": [
+      {
+       "identity": "biome-production:settlement",
+       "n": 57
+      },
+      {
+       "identity": "biome-production:universal",
+       "n": 46
+      },
+      {
+       "identity": "biome-production:underground",
+       "n": 29
+      },
+      {
+       "identity": "biome-production:forest",
+       "n": 23
+      },
+      {
+       "identity": "biome-production:aquatic",
+       "n": 15
+      }
+     ]
+    },
+    "firstPage18": {
+     "count": 18,
+     "distinct": 8,
+     "adjacentSame": 2,
+     "adjacentSamePct": 11.76,
+     "maxRun": 2,
+     "top": [
+      {
+       "identity": "biome-production:settlement",
+       "n": 6
+      },
+      {
+       "identity": "biome-production:universal",
+       "n": 3
+      },
+      {
+       "identity": "biome-production:forest",
+       "n": 2
+      },
+      {
+       "identity": "biome-production:underground",
+       "n": 2
+      },
+      {
+       "identity": "biome-production:wetland",
+       "n": 2
+      }
+     ]
+    }
+   }
+  }
+ },
+ "delivery": {
+  "catalog": {
+   "A": {
+    "requests": 13,
+    "bytes": 457237,
+    "upscaled": 0,
+    "missing": 0
+   },
+   "B": {
+    "requests": 45,
+    "bytes": 3395222,
+    "upscaled": 0,
+    "missing": 0
+   },
+   "C": {
+    "requests": 41,
+    "bytes": 2972737,
+    "upscaled": 0,
+    "missing": 0
+   }
+  },
+  "prep": {
+   "A": {
+    "requests": 13,
+    "bytes": 58764,
+    "upscaled": 0,
+    "missing": 0
+   },
+   "B": {
+    "requests": 45,
+    "bytes": 484018,
+    "upscaled": 0,
+    "missing": 0
+   },
+   "C": {
+    "requests": 41,
+    "bytes": 425038,
+    "upscaled": 0,
+    "missing": 0
+   }
+  }
+ },
+ "deliveryDpr": {
+  "catalog": {
+   "1": {
+    "A": {
+     "requests": 13,
+     "bytes": 131993,
+     "upscaled": 0,
+     "missing": 0
+    },
+    "B": {
+     "requests": 45,
+     "bytes": 1572037,
+     "upscaled": 0,
+     "missing": 0
+    },
+    "C": {
+     "requests": 41,
+     "bytes": 1364548,
+     "upscaled": 0,
+     "missing": 0
+    }
+   },
+   "2": {
+    "A": {
+     "requests": 13,
+     "bytes": 457237,
+     "upscaled": 0,
+     "missing": 0
+    },
+    "B": {
+     "requests": 45,
+     "bytes": 3395222,
+     "upscaled": 0,
+     "missing": 0
+    },
+    "C": {
+     "requests": 41,
+     "bytes": 2972737,
+     "upscaled": 0,
+     "missing": 0
+    }
+   },
+   "3": {
+    "A": {
+     "requests": 13,
+     "bytes": 936680,
+     "upscaled": 0,
+     "missing": 0
+    },
+    "B": {
+     "requests": 45,
+     "bytes": 3874665,
+     "upscaled": 32,
+     "missing": 0
+    },
+    "C": {
+     "requests": 41,
+     "bytes": 3452180,
+     "upscaled": 28,
+     "missing": 0
+    }
+   }
+  },
+  "prep": {
+   "1": {
+    "A": {
+     "requests": 13,
+     "bytes": 17250,
+     "upscaled": 0,
+     "missing": 0
+    },
+    "B": {
+     "requests": 45,
+     "bytes": 442504,
+     "upscaled": 0,
+     "missing": 0
+    },
+    "C": {
+     "requests": 41,
+     "bytes": 383524,
+     "upscaled": 0,
+     "missing": 0
+    }
+   },
+   "2": {
+    "A": {
+     "requests": 13,
+     "bytes": 58764,
+     "upscaled": 0,
+     "missing": 0
+    },
+    "B": {
+     "requests": 45,
+     "bytes": 484018,
+     "upscaled": 0,
+     "missing": 0
+    },
+    "C": {
+     "requests": 41,
+     "bytes": 425038,
+     "upscaled": 0,
+     "missing": 0
+    }
+   },
+   "3": {
+    "A": {
+     "requests": 13,
+     "bytes": 123986,
+     "upscaled": 0,
+     "missing": 0
+    },
+    "B": {
+     "requests": 45,
+     "bytes": 581679,
+     "upscaled": 0,
+     "missing": 0
+    },
+    "C": {
+     "requests": 41,
+     "bytes": 522699,
+     "upscaled": 0,
+     "missing": 0
+    }
+   }
+  }
+ },
+ "missingFiles": 0
+}

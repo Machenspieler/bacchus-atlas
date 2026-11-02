@@ -33,7 +33,7 @@ paths:
   prerenderer or start reading `environments.json` to bake HTML — that
   would break the public-but-unlisted deployment model (see
   [docs/product-decisions.md](../../docs/product-decisions.md) PD-003).
-- **Development-only material never reaches `dist/`.** `scripts/build.js`'s `EXCLUDE_PATHS`
+- **Development-only material never reaches `dist/`.** `lab/` (the Artwork Lab V3 page, `^lab/` in `EXCLUDE_PATHS`, `tests/artwork-lab-v3.test.js`) is dev-only too. `scripts/build.js`'s `EXCLUDE_PATHS`
   (`docs/journey2-*`, root `journey2-*` staging, `journey2*.zip`, any `stage-<n>[a].zip`) keeps the Journey 2
   handoff, reference PDFs, review packages and evidence out of the published site. Matching is
   host-independent (`normalizeRelPath()` folds `\` to `/`; never rely on `path.sep`).

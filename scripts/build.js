@@ -37,6 +37,7 @@ const EXCLUDE_PATHS = [
   /^img\/biome-artwork-source(\/|$)/, // 1672x941 PNG masters of the Journey header artwork (~33 MB); the site serves only img/journey2/headers/*.webp
   /^img\/biomes src(\/|$)/,       // 1024x1536 PNG masters of the biome strips (~33 MB); the site serves only img/biomes/*.avif|webp
   /^img\/ribbon-fabric-source(\/|$)/, // 2 MB photographic master of the fabric ribbon; the site serves only the img/ui/ribbon-fabric/*.webp layers
+  /^lab(\/|$)/,                   // development-only laboratories (lab/artwork-v3/ ...): standalone pages that read the repo's data and app.js as text; never published
   /^img\/cover-archetypes-source(\/|$)/, // ~3 MB PNG masters of the thematic archetype illustrations (sources of img/list-covers/ via scripts/generate-list-covers.js; never served as-is)
 ];
 /* Host-independent: both separator conventions are folded to '/' before matching, so a Windows-style
@@ -68,4 +69,4 @@ if (require.main === module) {
   console.log('Built dist/ (copy-only, no prerendering)');
 }
 
-module.exports = { isExcluded, normalizeRelPath, EXCLUDE_PATHS };
+module.exports = { isExcluded, normalizeRelPath, copyTree, EXCLUDE_PATHS };
