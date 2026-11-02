@@ -1985,6 +1985,11 @@ ol.feature-bullets { list-style: decimal; }
   display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-4); flex-wrap: wrap;
 }
 .site-footer span { flex: 1 1 0; min-width: 200px; }
+/* While the static loading shell is up (#main[aria-busy] until finishInitialLoading()) the footer
+ * is an empty 41px bar pinned to the viewport bottom; the first real render grows the page past
+ * it and the bar leaves the viewport — the largest layout shift of a cold load. Out of flow
+ * until then; it simply appears at the end of the real page. */
+#main[aria-busy="true"] ~ .site-footer { display: none; }
 /* A button, not an anchor — the source list is an overlay, and an <a href="#">
  * would put a junk entry in the history the hash router then has to sweep up.
  * It still has to read as a link inside the sentence it sits in. */
