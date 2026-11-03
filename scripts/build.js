@@ -39,6 +39,7 @@ const EXCLUDE_PATHS = [
   /^img\/ribbon-fabric-source(\/|$)/, // 2 MB photographic master of the fabric ribbon; the site serves only the img/ui/ribbon-fabric/*.webp layers
   /^lab(\/|$)/,                   // development-only laboratories (lab/artwork-v3/ ...): standalone pages that read the repo's data and app.js as text; never published
   /^docs\/research\/semantic-artwork-reuse-lab-v[12](\/|$)/, // the Semantic Artwork Reuse Lab's (V1, V2) screenshots and generated data (dev-only research evidence; lab/ itself is excluded above)
+  /^docs\/research\/my-lists-cover-composition-lab-v2(\/|$)/, // the Cover Composition Lab V2's screenshots and metrics (dev-only research evidence; lab/ itself is excluded above)
   /^docs\/research\/curated-semantic-artwork-overrides(\/|$)/, // the curated overrides' screenshots and audit (dev-only evidence; the derivatives live in img/)
   /^docs\/research\/session-prep-context-adaptive-artwork-integration(\/|$)/, // Session Prep artwork QA (matrix, screenshots, candidate crops; dev-only evidence, the shipped thumbnails live in img/prep-art/)
   /^img\/cover-archetypes-source(\/|$)/, // ~3 MB PNG masters of the thematic archetype illustrations (sources of img/list-covers/ via scripts/generate-list-covers.js; never served as-is)

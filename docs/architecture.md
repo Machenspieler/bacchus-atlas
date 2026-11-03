@@ -299,6 +299,7 @@ state (no preview, badge or indicator).
 - Files: `img/list-covers/<biome|archetype>-<name>-{320,640,960}.avif` + `-640.webp`, cut by `scripts/generate-list-covers.js` from `img/biome-artwork-source/` and `img/cover-archetypes-source/` (both excluded from `dist/`). Unique paintings keep `img/env/thumb/`.
 - A tile whose file fails to load is removed by a capture-phase `error` listener (`bindCoverFallback`); with none left the cover turns neutral — never a broken-image icon.
 - Tests: `tests/list-cover-art.test.js` (registry integrity, paths, build exclusion, `ENV_ART` sync), `tests/list-cover-utils.test.js` (resolution and selection on the real catalogue). Visual QA: `node scripts/shoot-list-covers.js`.
+- Research (no production change): the Cover Composition Lab V2 (`lab/cover-composition/`, dev-only) compares how the selected pictures are arranged; findings and recommendation in [docs/research/my-lists-cover-composition-lab-v2.md](research/my-lists-cover-composition-lab-v2.md). Composition stays the production 1/2/3 equal panels until a product decision.
 
 ## Catalog strips (PD-089)
 
