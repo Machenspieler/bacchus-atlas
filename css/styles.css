@@ -896,7 +896,7 @@ button.rank-icon:focus-visible { outline: var(--focus-ring); outline-offset: var
  * scrollable overflow. Below the header (z-index 30) so the ribbons stay on top. */
 body[data-route="catalog"] .catalog-bar-wrap,
 body[data-route="list"] .catalog-bar-wrap {
-  position: sticky; top: calc(var(--hdr-h) + 1px); z-index: 25;
+  position: sticky; top: var(--hdr-h); z-index: 25;   /* tucked under the header's own 1px rule: at a fractional pixel ratio a flush edge leaves a sliver the glass would show */
 }
 body[data-route="catalog"] .catalog-bar-wrap::before,
 body[data-route="list"] .catalog-bar-wrap::before {
