@@ -17,6 +17,14 @@
   --ink-hover: #241d17;    /* --ink-raised lifted one step, for button hover */
   --ink-card: #211c18;
   --ink-overlay: rgba(10,8,7,0.80);
+  /* Glass: only for layers that float over scrolling art (header, filter bar,
+   * dropdown panels) — never for text-dense surfaces. A fill that is translucent
+   * without the blur reads as ghosted text, so the three travel together; the
+   * fallbacks below turn all of them solid. */
+  --glass-bg: rgba(20,17,15,0.66);
+  --glass-bg-raised: rgba(28,24,21,0.76);
+  --glass-blur: blur(20px) saturate(1.5);
+  --glass-edge: inset 0 1px 0 rgba(255,255,255,0.06);
   /* The same backdrop over a painting rather than over the catalog. There it has
    * to blank a grid of cards out; here there is nothing to blank — the picture is
    * the point — so it barely touches it. Every surface that carries text over
@@ -307,9 +315,19 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
   padding-bottom: calc(var(--s-10) + env(safe-area-inset-bottom));
 }
 
+/* No backdrop-filter, reduced transparency or more contrast: solid, never ghosted. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root { --glass-bg: var(--ink); --glass-bg-raised: var(--ink-raised); --glass-blur: none; --glass-edge: none; }
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  :root { --glass-bg: var(--ink); --glass-bg-raised: var(--ink-raised); --glass-blur: none; --glass-edge: none; }
+}
+html { overflow-x: clip; }   /* the filter bar's glass runs edge to edge (100vw) */
 .site-header {
   position: sticky; top: 0; z-index: 30;
-  background: var(--ink);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-edge);
   border-bottom: 1px solid var(--line);
 }
 /* One compact header on every route (PD-047), full width with the page's own
@@ -706,6 +724,11 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 }
 .ms-panel, .prep-menu, .bp-popover { background: var(--ink-raised); }
 .ms-panel {
+  background: var(--glass-bg-raised);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  box-shadow: var(--e-3), var(--glass-edge);
+}
+.ms-panel {
   position: absolute; top: calc(100% + var(--s-2)); left: 0; z-index: 20;
   min-width: 190px; max-width: min(280px, calc(100vw - var(--s-4) * 2));
   /* Available vertical space matters more than viewport width — a tall
@@ -877,18 +900,15 @@ body[data-route="list"] .catalog-bar-wrap {
 }
 body[data-route="catalog"] .catalog-bar-wrap::before,
 body[data-route="list"] .catalog-bar-wrap::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  --bar-bg: var(--ink);
-  background: var(--bar-bg);
-  box-shadow: -100vmax 0 0 var(--bar-bg), 100vmax 0 0 var(--bar-bg);
-  clip-path: inset(0 -100vmax -1px 0);
+  content: ""; position: absolute; inset: 0 calc(50% - 50vw); z-index: -1; pointer-events: none;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
 }
 /* The bottom rule appears only while content scrolls under the bar (js/app.js
  * syncCatalogBarStuck); at rest it was an extra line above the first cards. */
 body[data-route="catalog"] .catalog-bar-wrap[data-stuck="true"]::before,
 body[data-route="list"] .catalog-bar-wrap[data-stuck="true"]::before {
-  box-shadow: 0 1px 0 var(--line), -100vmax 0 0 var(--bar-bg), 100vmax 0 0 var(--bar-bg),
-              -100vmax 1px 0 var(--line), 100vmax 1px 0 var(--line);
+  box-shadow: 0 1px 0 var(--line);
 }
 /* The first card row sits flush under the sticky bar, which paints over it:
  * a hovered card's 2px lift (and its shadow) would be cut off at the top. */
@@ -1304,7 +1324,7 @@ body[data-route="list"] #grid-wrap { padding-top: var(--s-1); }
 /* The header's blur has nothing to do while a card is open (the page under it is
  * dimmed and still), and a live backdrop blur beneath a scrolling layer is the
  * costliest thing to re-composite. Its own fill is already near-opaque. */
-body:has(.modal-overlay) .site-header { backdrop-filter: none; }
+body:has(.modal-overlay) .site-header { background: var(--ink); -webkit-backdrop-filter: none; backdrop-filter: none; }
 /* The card grows to its content and scrolls inside the overlay; its header is sticky (see .modal-header).
  * `margin:auto`
  * centres a card shorter than the viewport and collapses to the top padding
