@@ -1376,3 +1376,15 @@ html[data-boot-route="journey2"] #grid-wrap > .sk-j2 {
 .j2-route-head { position: sticky; top: 0; z-index: 1; background: var(--ink-raised); border-radius: calc(var(--r-lg) - 1px) calc(var(--r-lg) - 1px) 0 0; }   /* the long details scroll under their header */
 .j2-gen-go .j2-ico { display: inline-flex; }
 .j2-gen-go .j2-ico img { width: 33px; height: 33px; margin: -4px -1px; display: block; }   /* the same 3D die as Roll / Reroll */
+
+/* Glass (tokens in styles.css): the rail and the floating map bar are the layers that sit over the painted map. Fine pointers only —
+ * the phone player page keeps solid surfaces until blur cost there is measured. The rail's menus stay solid on purpose: a descendant of a
+ * backdrop-filter element blurs only that element, so a glass menu inside the rail would show no map at all (a translucent fill without blur). */
+@media (hover: hover) and (pointer: fine) {
+  .j2-rail, .j2-mapbar {
+    background: var(--glass-bg-raised);
+    -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  }
+  .j2-rail { box-shadow: var(--e-3), var(--glass-edge); }
+  .j2-mapbar { box-shadow: var(--e-2), var(--glass-edge); }
+}
