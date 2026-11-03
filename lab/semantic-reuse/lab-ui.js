@@ -8,25 +8,29 @@
 (function () {
   'use strict';
   const Core = window.SemanticReuseCore;
-  const Data = window.SemanticReuseData;
+  const DataV1 = window.SemanticReuseData;
+  /* Pilot: V1 (default, the published six sources) or V2 (#pilot=v2, three more sources). Same lab, same rules; separate data, storage and results. */
+  const PILOT = new URLSearchParams(location.hash.replace(/^#/, '')).get('pilot') === 'v2' && window.SemanticReuseDataV2 ? 'v2' : 'v1';
+  const DataV2 = window.SemanticReuseDataV2;
+  const Data = PILOT === 'v2' ? Object.assign({}, DataV1, { PILOT_SOURCES: DataV2.PILOT_SOURCES, REGIONS: DataV2.REGIONS, MAPPINGS: DataV2.MAPPINGS }) : DataV1;
   const Art = window.ListCoverArt;
   const root = document.getElementById('lab-root');
-  const RES = 'docs/research/semantic-artwork-reuse-lab-v1/';
+  const RES = PILOT === 'v2' ? DataV2.RESULTS_DIR : 'docs/research/semantic-artwork-reuse-lab-v1/';
 
-  const LS = { regions: 'labsr:regions', mappings: 'labsr:mappings', ui: 'labsr:ui' };
+  const LS = PILOT === 'v2' ? { regions: 'labsr:v2:regions', mappings: 'labsr:v2:mappings', ui: 'labsr:v2:ui' } : { regions: 'labsr:regions', mappings: 'labsr:mappings', ui: 'labsr:ui' };
   const lsGet = (k, fb) => { try { const v = window.localStorage.getItem(k); return v ? JSON.parse(v) : fb; } catch (e) { return fb; } };
   const lsSet = (k, v) => { try { window.localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private mode */ } };
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const clone = o => JSON.parse(JSON.stringify(o));
-  const TABS = [['editor', 'Source & regions'], ['contexts', 'Context previews'], ['match', 'Environment matching'], ['coverage', 'Coverage'], ['library', 'Library scan · 28'], ['assets', 'Derivatives'], ['export', 'Review & export']];
+  const TABS = [['editor', 'Source & regions'], ['contexts', 'Context previews'], ['match', 'Environment matching'], ['coverage', 'Coverage'], ['library', 'Library scan · 28'], ['assets', 'Derivatives'], ['export', 'Review & export']].concat(PILOT === 'v2' ? [['sheet', 'Comparison sheet']] : []);
   const STATUS_LABEL = { proposed: 'Proposed', approved: 'Approve', rejected: 'Reject', 'needs-better-crop': 'Needs better crop', 'insufficient-resolution': 'Insufficient resolution', 'too-complex': 'Too visually complex', 'not-independently-meaningful': 'Not independently meaningful' };
   const REVIEW_LABEL = { strong: 'Strong', acceptable: 'Acceptable', rejected: 'Rejected', 'needs-review': 'Needs review' };
 
   let S; let inventory; let stats; let manifest; let envs; let byEnv; let classification; let primary; let secondary; let baseline; let prod;
 
   /* ---------- state ---------- */
-  function hashState() { const p = new URLSearchParams(location.hash.replace(/^#/, '')); return { tab: p.get('tab'), source: p.get('source'), region: p.get('region'), env: p.get('env'), ctx: p.get('ctx') }; }
-  function writeHash() { try { history.replaceState(null, '', location.pathname + '#' + new URLSearchParams({ tab: S.tab, source: S.sourceId, region: S.regionId || '', env: S.envId || '', ctx: S.ctx }).toString()); } catch (e) { /* ignore */ } }
+  function hashState() { const p = new URLSearchParams(location.hash.replace(/^#/, '')); return { pilot: p.get('pilot'), tab: p.get('tab'), source: p.get('source'), region: p.get('region'), env: p.get('env'), ctx: p.get('ctx') }; }
+  function writeHash() { try { history.replaceState(null, '', location.pathname + '#' + new URLSearchParams({ pilot: PILOT, tab: S.tab, source: S.sourceId, region: S.regionId || '', env: S.envId || '', ctx: S.ctx }).toString()); } catch (e) { /* ignore */ } }
   const regionsAll = () => S.regions;
   const regionById = id => S.regions.find(r => r.id === id);
   const curRegion = () => regionById(S.regionId);
@@ -100,7 +104,7 @@
   function shell(body) {
     root.innerHTML = `<div class="lab-main" style="padding-top:0"><div class="lab-top"><b style="font-size:15px">Semantic Artwork Reuse Lab</b>
       <div class="lab-tabs" role="tablist">${TABS.map(([id, label]) => `<button class="lab-tab" role="tab" aria-selected="${S.tab === id}" data-tab="${id}">${label}</button>`).join('')}</div>
-      <div class="lab-cur">dev-only · research · no production change · <button class="lab-btn" data-act="reset-data">Reset to curated data</button></div></div>
+      <div class="lab-cur">dev-only · research · no production change · pilot <button class="lab-btn${PILOT === 'v1' ? ' on' : ''}" data-act="pilot" data-pilot="v1">V1 · 6 sources</button><button class="lab-btn${PILOT === 'v2' ? ' on' : ''}" data-act="pilot" data-pilot="v2">V2 · 3 sources</button> <button class="lab-btn" data-act="reset-data">Reset to curated data</button></div></div>
       <div class="lab-body">${body}</div></div>`;
   }
 
@@ -306,6 +310,47 @@
       <div class="lab-sec"><h2 style="font-size:15px">My Lists cover (1 / 2 / 3 tiles)</h2><div class="sr-pair">${[1, 2, 3].map(n => col(n + (n === 1 ? ' tile' : ' tiles'), 'region' + frameNote(r, ['lists' + n]) + (n > 1 ? ' · companions are unchanged production pictures; a cover may hold one region per parent illustration' : ''), coverHtml(r, n, S.mode))).join('')}</div></div>`;
   }
 
+
+  /* ---------- V2 comparison sheet: sources, regions, approved crops and the real before / after ---------- */
+  const OV = { approved: '#8fd0a0', proposed: '#e6c36a' };
+  function viewSheet() {
+    const g = Core.gains(exportInput());
+    const regs = id => S.regions.filter(r => r.sourceId === id);
+    const srcBlock = id => {
+      const m = srcMeta(id); const W = 600; const H = Math.round(W * m.height / m.width);
+      const ov = regs(id).map(r => { const c = OV[r.status] || '#ef8b8b'; const b = r.bounds;
+        return `<div class="sr-ov" style="left:${b.x * 100}%;top:${b.y * 100}%;width:${b.width * 100}%;height:${b.height * 100}%;border-color:${c}"><span style="background:${c}">${esc(r.id.replace(id + '-', ''))}</span></div>`; }).join('');
+      const crops = regs(id).filter(r => r.status === 'approved').map(r => { const p = px(r); const w = Math.round(110 * p.w / Math.max(p.w, p.h) * 1.2); const h = Math.round(w * p.h / p.w);
+        return `<div><div class="sr-frame" style="width:${w}px;height:${h}px"><img src="${m.path}" alt="" style="left:${-p.x * w / p.w}px;top:${-p.y * w / p.w}px;width:${m.width * w / p.w}px;height:${m.height * w / p.w}px"></div><div class="sr-cap" style="max-width:${w}px">${esc(r.label)}</div></div>`; }).join('');
+      const rej = regs(id).filter(r => r.status !== 'approved').map(r => `<li><b>${esc(r.id.replace(id + '-', ''))}</b> <span class="lab-chip">${esc(r.status)}</span></li>`).join('');
+      return `<div class="sr-sheet-src"><div class="lab-sublabel">${esc(id)} · ${m.width}×${m.height}</div>
+        <div class="sr-sheet-img" style="position:relative;width:${W}px;height:${H}px"><img src="${m.path}" alt="" style="width:${W}px;height:${H}px;display:block">${ov}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:flex-start">${crops}</div><ul class="sr-cap" style="max-width:none;margin:6px 0 0 16px">${rej}</ul></div>`;
+    };
+    /* every environment with a gain in Catalog, Prep (vs archetype-first) or My Lists, with the crop that gives it */
+    const rows = {};
+    ['catalog', 'prepFuture', 'lists'].forEach(k => {
+      [['new', 'newIds'], ['qualitative', 'qualitativeIds']].forEach(([cat, key]) => g[k][key].forEach(e => {
+        const row = rows[e] = rows[e] || { cats: {}, region: null };
+        if (!row.cats[k] || cat === 'new') row.cats[k] = cat;
+        if (!row.region) row.region = (g[k].regionsByEnv[e] || [])[0];
+      }));
+    });
+    const gainCard = id => {
+      const env = byEnv.get(id); const row = rows[id]; const r = regionById(row.region); if (!env || !r) return '';
+      const cats = Object.entries(row.cats).map(([k, c]) => `<span class="lab-chip ${c === 'new' ? 'u' : ''}">${k}: ${c}</span>`).join(' ');
+      const inCat = !!row.cats.catalog; const inPrep = !!row.cats.prepFuture;
+      return `<div class="sr-sheet-gain"><div class="lab-sublabel"><b>${esc(env.name.en)}</b> <code>${esc(id)}</code> · ${esc(primary[id] || 'no archetype')} ← <code>${esc(r.id)}</code> ${primary[id] && primary[id] !== r.sourceId ? '<span class="lab-chip">cross-archetype</span>' : ''} ${cats}</div>
+        <div class="sr-pair">
+          ${inCat ? `<div><div class="sr-cap">Catalog now (${esc(baseline[id].catalog)})</div>${cardWith(env, productionCatalogArt(env))}</div><div><div class="sr-cap">Catalog with crop</div>${cardRegion(env, r, S.mode)}</div>` : ''}
+          ${inPrep ? `<div><div class="sr-cap">Prep now · biome</div><div style="width:300px">${rowWith(env, prod.prodPrepEnvThumbHtml(env))}</div>${fullArchetypeImage(env) ? `<div class="sr-cap">Prep, whole archetype (option 1)</div><div style="width:300px">${rowWith(env, `<span class="prep-thumb" style="display:block;overflow:hidden"><img src="${fullArchetypeImage(env).fallback}" alt="" style="width:100%;height:100%;object-fit:cover"></span>`)}</div>` : ''}</div><div><div class="sr-cap">Prep with crop (option 2)</div><div style="width:300px">${rowRegion(env, r, S.mode)}</div></div>` : ''}
+        </div></div>`;
+    };
+    return `<p class="lab-note">Three V2 sources with every proposed region (green = approved, amber = needs review, red = rejected), the approved crops, and every environment that gains a picture: real Catalog cards and Prep rows, before and after. Categories are kept apart; an environment is listed once.</p>
+      <div class="sr-sheet-grid">${Data.PILOT_SOURCES.map(srcBlock).join('')}</div>
+      <div class="lab-sec"><h2>Environments that gain</h2>${Object.keys(rows).sort().map(gainCard).join('') || '<p class="lab-note">None.</p>'}</div>`;
+  }
+
   /* ---------- coverage ---------- */
   function viewCoverage() {
     const cov = Core.coverage(exportInput()); const ids = a => a.length ? a.map(esc).join(', ') : '—';
@@ -314,7 +359,19 @@
     return `<div class="sr-stat">${k(envs.length, 'environments (current data)')}${k(S.regions.length, 'regions proposed')}${k(S.regions.filter(r => r.status === 'approved').length, 'regions approved')}${k(cov.candidate.environments, 'environments with a non-rejected candidate')}${k(cov.approved.environments, 'environments with a Strong/Acceptable match on an approved region')}${k(cov.netAnyContext, 'environments gaining a better option in at least one context')}${k(cov.crossArchetype.environments, 'cross-archetype environments')}${k(cov.rejected, 'rejected mappings')}${k(cov.needsReview, 'needs-review (not counted)')}</div>
       <div class="lab-sec" style="margin-top:16px"><h2>Per context (never double-counted; unique environment ids)</h2><p class="lab-note">"Themed now" = environments whose picture today is a painting, harbour override or thematic archetype picture (Session Prep draws a biome thumbnail for all). Newly covered = approved crop and no themed picture today; Improved = themed today and the mapping records a confirmed qualitative improvement.</p>
       <div class="lab-scroll"><table class="lab-table"><tr><th>Context</th><th>Themed now</th><th>Usable env ids</th><th>Newly covered</th><th>Improved</th><th>Net</th><th>Net ids</th></tr>${Core.COVERAGE_CONTEXTS.map(row).join('')}</table></div></div>
+      ${gainsSection()}
       <p class="lab-note">Cross-archetype approved: ${ids(cov.crossArchetype.ids)}. The same numbers, computed offline, are in <code>${RES}stats.json</code>.</p>`;
+  }
+
+  /** The three gain categories kept apart (lab-core gains()): new coverage, qualitative replacement, no meaningful gain. */
+  function gainsSection() {
+    const input = Object.assign(exportInput(), {});
+    const g = Core.gains(input);
+    const comb = PILOT === 'v2' ? Core.gains(Object.assign({}, input, { regions: DataV1.REGIONS.concat(S.regions), mappings: DataV1.MAPPINGS.concat(S.mappings) })) : null;
+    const ids = a => (a.length ? a.map(esc).join(', ') : '—');
+    const rows = (x, label) => [['catalog', 'Catalog'], ['prep', 'Session Prep (production: biome)'], ['prepFuture', 'Session Prep vs archetype-first'], ['lists', 'My Lists']].map(([k, n]) => `<tr><td>${label}</td><td>${n}</td><td class="num">${x[k].new}</td><td class="num">${x[k].qualitative}</td><td class="num">${x[k].noGain}</td><td>${ids(x[k].newIds)}</td><td>${ids(x[k].qualitativeIds)}</td></tr>`).join('');
+    return `<div class="lab-sec" style="margin-top:16px"><h2>New coverage · qualitative replacement · no gain (kept apart)</h2><p class="lab-note">One count per environment per context, at its best category. "Session Prep vs archetype-first" treats every environment the existing archetype pictures already reach as themed, so only gains beyond using the 28 whole pictures remain.</p>
+      <div class="lab-scroll"><table class="lab-table"><tr><th>Set</th><th>Context</th><th>New</th><th>Qualitative</th><th>No gain</th><th>New ids</th><th>Qualitative ids</th></tr>${rows(g, PILOT.toUpperCase())}${comb ? rows(comb, 'V1 + V2') : ''}</table></div></div>`;
   }
 
   function viewLibrary() {
@@ -342,7 +399,7 @@
   /* ---------- render + events ---------- */
   function render() {
     writeHash();
-    const body = { editor: viewEditor, contexts: viewContexts, match: viewMatch, coverage: viewCoverage, library: viewLibrary, assets: viewAssets, export: viewExport }[S.tab]();
+    const body = { editor: viewEditor, contexts: viewContexts, match: viewMatch, coverage: viewCoverage, library: viewLibrary, assets: viewAssets, export: viewExport, sheet: viewSheet }[S.tab]();
     const keepFocus = document.activeElement && document.activeElement.dataset && (document.activeElement.dataset.q !== undefined);
     shell(body);
     if (S.tab === 'editor') bindViewer();
@@ -370,6 +427,7 @@
         c.framing = d.act === 'fr-center' ? { x: 50, y: 50, zoom: 1 } : (delete c.framing, Core.contextFraming(Object.assign({}, r, { contexts: {} }), d.ctx, px(r))); if (d.act === 'fr-region') delete c.framing; persist(); return render(); }
       case 'map': { if (!r || !S.envId) return; let m = mappingOf(r.id, S.envId); if (!m) { m = { regionId: r.id, envId: S.envId, review: d.review, reason: '', improves: '' }; S.mappings.push(m); } m.review = d.review; persist(); return render(); }
       case 'map-clear': { S.mappings = S.mappings.filter(m => !(m.regionId === (r || {}).id && m.envId === S.envId)); persist(); return render(); }
+      case 'pilot': try { history.replaceState(null, '', location.pathname + '#pilot=' + d.pilot); } catch (err) { /* ignore */ } location.reload(); return undefined;
       case 'reset-data': S.regions = clone(Data.REGIONS); S.mappings = clone(Data.MAPPINGS); persist(); S.regionId = (S.regions.find(x => x.sourceId === S.sourceId) || {}).id || null; return render();
       case 'copy-export': { const text = JSON.stringify(Core.buildExport(exportInput()), null, 1); if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {}); return undefined; }
       default: return undefined;
@@ -410,7 +468,7 @@
   async function getJson(p) { const r = await fetch(p); if (!r.ok) throw new Error(p + ' ' + r.status); return r.json(); }
   async function boot() {
     try {
-      const [envData, cls, inv, st, man, i18n, regions, appSrc] = await Promise.all([getJson('data/environments.json'), getJson('docs/research/lists-cover-classification.json'), getJson(RES + 'inventory.json'), getJson(RES + 'stats.json'), getJson('lab/semantic-reuse/derivs-manifest.json'), getJson('data/i18n.json'), getJson('data/regions.json'), fetch('js/app.js').then(r => r.text())]);
+      const [envData, cls, inv, st, man, i18n, regions, appSrc] = await Promise.all([getJson('data/environments.json'), getJson('docs/research/lists-cover-classification.json'), getJson(RES + 'inventory.json'), getJson(RES + 'stats.json'), getJson(PILOT === 'v2' ? DataV2.MANIFEST : 'lab/semantic-reuse/derivs-manifest.json'), getJson('data/i18n.json'), getJson('data/regions.json'), fetch('js/app.js').then(r => r.text())]);
       envs = envData.environments; byEnv = new Map(envs.map(e => [e.id, e])); classification = cls; inventory = inv; stats = st; manifest = man;
       primary = {}; secondary = {}; cls.environments.forEach(c => { primary[c.id] = c.primary_archetype || null; secondary[c.id] = c.secondary_archetypes || []; });
       prod = window.ArtworkLabBridge.load(appSrc, { EnvTierUtils: window.EnvTierUtils, PrepUtils: window.PrepUtils, RouteUtils: window.RouteUtils }, { i18n, regions: regions.regions, lang: 'en' });
@@ -419,7 +477,7 @@
         baseline[e.id] = { catalog: c.kind, catalogImage: c.imageId, prep: 'biome', lists: !l ? 'none' : l.kind === 'unique' ? 'unique' : (Art.ENV_IMAGE_OVERRIDES[e.id] === l.imageId ? 'override' : l.kind === 'archetype' ? 'archetype' : 'biome') }; });
       const ui = lsGet(LS.ui, {}); const h = hashState();
       const regionsSaved = lsGet(LS.regions, null); const mappingsSaved = lsGet(LS.mappings, null);
-      const sourceId = h.source && inventory[h.source] ? h.source : (ui.sourceId && inventory[ui.sourceId] ? ui.sourceId : 'streets-and-towns');
+      const sourceId = h.source && inventory[h.source] ? h.source : (ui.sourceId && inventory[ui.sourceId] ? ui.sourceId : Data.PILOT_SOURCES[0]);
       S = { tab: TABS.some(t => t[0] === h.tab) ? h.tab : (ui.tab || 'editor'), sourceId, regions: regionsSaved || clone(Data.REGIONS), mappings: mappingsSaved || clone(Data.MAPPINGS), view: { scale: 1, panX: 0, panY: 0 }, tags: true, mode: ui.mode || 'master', ctx: h.ctx || 'catalog', envId: h.env || 'bustling-marketplace', drawing: false, draft: null };
       S.regionId = h.region && regionById(h.region) ? h.region : (S.regions.find(r => r.sourceId === sourceId) || {}).id || null;
       if (S.regionId) S.sourceId = regionById(S.regionId).sourceId;

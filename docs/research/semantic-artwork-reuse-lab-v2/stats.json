@@ -1,0 +1,6013 @@
+{
+ "pilot": "v2",
+ "generated": "2026-11-03",
+ "sourcesInspected": 29,
+ "pilotSources": 3,
+ "mastersMissing": [],
+ "regions": {
+  "proposed": 14,
+  "approved": 7,
+  "byStatus": {
+   "proposed": 2,
+   "approved": 7,
+   "rejected": 0,
+   "needs-better-crop": 0,
+   "insufficient-resolution": 2,
+   "too-complex": 0,
+   "not-independently-meaningful": 3
+  },
+  "passingVisualQa": 7,
+  "resolutionPass": 7,
+  "usableFrames": 24,
+  "averageUsablePerPilotSource": 2.33
+ },
+ "mappings": {
+  "total": 65,
+  "byReview": {
+   "strong": 0,
+   "acceptable": 14,
+   "rejected": 33,
+   "needs-review": 18
+  }
+ },
+ "baseline": {
+  "environments": 329,
+  "catalog": {
+   "biome": 232,
+   "override": 2,
+   "thematic": 92,
+   "unique": 3
+  },
+  "lists": {
+   "biome": 118,
+   "override": 2,
+   "archetype": 117,
+   "none": 89,
+   "unique": 3
+  },
+  "prep": {
+   "biome": 329
+  }
+ },
+ "coverage": {
+  "environments": 329,
+  "baseline": {
+   "catalog": {
+    "themed": 97,
+    "notThemed": 232
+   },
+   "prep": {
+    "themed": 0,
+    "notThemed": 329
+   },
+   "lists": {
+    "themed": 122,
+    "notThemed": 207
+   }
+  },
+  "candidate": {
+   "environments": 24,
+   "mappings": 32
+  },
+  "approved": {
+   "environments": 11,
+   "mappings": 13,
+   "ids": [
+    "chapel-of-st-brenna",
+    "chthon-verlies",
+    "dangerous-dungeon",
+    "deadly-dungeon",
+    "gang-hideout",
+    "garden-of-the-tranquil-order",
+    "hallowed-cathedral",
+    "hallowed-temple",
+    "heist",
+    "murder-mystery",
+    "street-chase"
+   ]
+  },
+  "rejected": 33,
+  "needsReview": 18,
+  "unreviewedCounted": 0,
+  "byContext": {
+   "catalog": {
+    "usableEnvironments": 8,
+    "newlyCovered": 3,
+    "improved": 0,
+    "net": 3,
+    "ids": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "dangerous-dungeon",
+     "deadly-dungeon",
+     "gang-hideout",
+     "hallowed-cathedral",
+     "hallowed-temple",
+     "street-chase"
+    ],
+    "newlyCoveredIds": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "gang-hideout"
+    ],
+    "improvedIds": [],
+    "netIds": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "gang-hideout"
+    ],
+    "regions": 5
+   },
+   "prep": {
+    "usableEnvironments": 11,
+    "newlyCovered": 11,
+    "improved": 0,
+    "net": 11,
+    "ids": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "dangerous-dungeon",
+     "deadly-dungeon",
+     "gang-hideout",
+     "garden-of-the-tranquil-order",
+     "hallowed-cathedral",
+     "hallowed-temple",
+     "heist",
+     "murder-mystery",
+     "street-chase"
+    ],
+    "newlyCoveredIds": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "dangerous-dungeon",
+     "deadly-dungeon",
+     "gang-hideout",
+     "garden-of-the-tranquil-order",
+     "hallowed-cathedral",
+     "hallowed-temple",
+     "heist",
+     "murder-mystery",
+     "street-chase"
+    ],
+    "improvedIds": [],
+    "netIds": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "dangerous-dungeon",
+     "deadly-dungeon",
+     "gang-hideout",
+     "garden-of-the-tranquil-order",
+     "hallowed-cathedral",
+     "hallowed-temple",
+     "heist",
+     "murder-mystery",
+     "street-chase"
+    ],
+    "regions": 7
+   },
+   "lists": {
+    "usableEnvironments": 4,
+    "newlyCovered": 3,
+    "improved": 0,
+    "net": 3,
+    "ids": [
+     "gang-hideout",
+     "garden-of-the-tranquil-order",
+     "heist",
+     "murder-mystery"
+    ],
+    "newlyCoveredIds": [
+     "garden-of-the-tranquil-order",
+     "heist",
+     "murder-mystery"
+    ],
+    "improvedIds": [],
+    "netIds": [
+     "garden-of-the-tranquil-order",
+     "heist",
+     "murder-mystery"
+    ],
+    "regions": 3
+   }
+  },
+  "crossArchetype": {
+   "mappings": 1,
+   "strong": 0,
+   "environments": 1,
+   "ids": [
+    "street-chase"
+   ]
+  },
+  "netAnyContext": 11
+ },
+ "gains": {
+  "v1": {
+   "catalog": {
+    "usableEnvironments": 17,
+    "newIds": [
+     "city-festival",
+     "pitched-battle",
+     "the-dungeoneer"
+    ],
+    "qualitativeIds": [
+     "bustling-marketplace",
+     "resting-dagger-inn"
+    ],
+    "noGainIds": [
+     "castle-siege",
+     "civic-library",
+     "emberwood-village",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "ocean-voyage",
+     "outpost-town",
+     "planetary-blockade",
+     "street-chase",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-wandering-tavern"
+    ],
+    "new": 3,
+    "qualitative": 2,
+    "noGain": 12
+   },
+   "prep": {
+    "usableEnvironments": 16,
+    "newIds": [
+     "bustling-marketplace",
+     "castle-siege",
+     "city-festival",
+     "civic-library",
+     "emberwood-village",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "murder-mystery",
+     "ocean-voyage",
+     "pitched-battle",
+     "planetary-blockade",
+     "resting-dagger-inn",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-dungeoneer",
+     "the-wandering-tavern"
+    ],
+    "qualitativeIds": [],
+    "noGainIds": [],
+    "new": 16,
+    "qualitative": 0,
+    "noGain": 0
+   },
+   "lists": {
+    "usableEnvironments": 17,
+    "newIds": [
+     "city-festival",
+     "murder-mystery",
+     "the-dungeoneer"
+    ],
+    "qualitativeIds": [
+     "bustling-marketplace",
+     "resting-dagger-inn"
+    ],
+    "noGainIds": [
+     "castle-siege",
+     "civic-library",
+     "emberwood-village",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "ocean-voyage",
+     "outpost-town",
+     "planetary-blockade",
+     "street-chase",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-wandering-tavern"
+    ],
+    "new": 3,
+    "qualitative": 2,
+    "noGain": 12
+   },
+   "prepFuture": {
+    "usableEnvironments": 16,
+    "newIds": [
+     "city-festival",
+     "murder-mystery",
+     "pitched-battle",
+     "the-dungeoneer"
+    ],
+    "qualitativeIds": [
+     "bustling-marketplace",
+     "resting-dagger-inn"
+    ],
+    "noGainIds": [
+     "castle-siege",
+     "civic-library",
+     "emberwood-village",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "ocean-voyage",
+     "planetary-blockade",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-wandering-tavern"
+    ],
+    "new": 4,
+    "qualitative": 2,
+    "noGain": 10
+   },
+   "dedupe": {
+    "mappings": 28,
+    "environments": 18,
+    "environmentParentPairs": 20,
+    "regions": 13
+   },
+   "anyNew": [
+    "city-festival",
+    "murder-mystery",
+    "pitched-battle",
+    "the-dungeoneer"
+   ],
+   "anyQualitative": [
+    "bustling-marketplace",
+    "resting-dagger-inn"
+   ]
+  },
+  "v2": {
+   "catalog": {
+    "usableEnvironments": 8,
+    "newIds": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "gang-hideout"
+    ],
+    "qualitativeIds": [],
+    "noGainIds": [
+     "dangerous-dungeon",
+     "deadly-dungeon",
+     "hallowed-cathedral",
+     "hallowed-temple",
+     "street-chase"
+    ],
+    "new": 3,
+    "qualitative": 0,
+    "noGain": 5
+   },
+   "prep": {
+    "usableEnvironments": 11,
+    "newIds": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "dangerous-dungeon",
+     "deadly-dungeon",
+     "gang-hideout",
+     "garden-of-the-tranquil-order",
+     "hallowed-cathedral",
+     "hallowed-temple",
+     "heist",
+     "murder-mystery",
+     "street-chase"
+    ],
+    "qualitativeIds": [],
+    "noGainIds": [],
+    "new": 11,
+    "qualitative": 0,
+    "noGain": 0
+   },
+   "lists": {
+    "usableEnvironments": 4,
+    "newIds": [
+     "garden-of-the-tranquil-order",
+     "heist",
+     "murder-mystery"
+    ],
+    "qualitativeIds": [],
+    "noGainIds": [
+     "gang-hideout"
+    ],
+    "new": 3,
+    "qualitative": 0,
+    "noGain": 1
+   },
+   "prepFuture": {
+    "usableEnvironments": 11,
+    "newIds": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "garden-of-the-tranquil-order",
+     "heist",
+     "murder-mystery"
+    ],
+    "qualitativeIds": [],
+    "noGainIds": [
+     "dangerous-dungeon",
+     "deadly-dungeon",
+     "gang-hideout",
+     "hallowed-cathedral",
+     "hallowed-temple",
+     "street-chase"
+    ],
+    "new": 5,
+    "qualitative": 0,
+    "noGain": 6
+   },
+   "dedupe": {
+    "mappings": 13,
+    "environments": 11,
+    "environmentParentPairs": 11,
+    "regions": 7
+   },
+   "anyNew": [
+    "chapel-of-st-brenna",
+    "chthon-verlies",
+    "gang-hideout",
+    "garden-of-the-tranquil-order",
+    "heist",
+    "murder-mystery"
+   ],
+   "anyQualitative": []
+  },
+  "combined": {
+   "catalog": {
+    "usableEnvironments": 24,
+    "newIds": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "city-festival",
+     "gang-hideout",
+     "pitched-battle",
+     "the-dungeoneer"
+    ],
+    "qualitativeIds": [
+     "bustling-marketplace",
+     "resting-dagger-inn"
+    ],
+    "noGainIds": [
+     "castle-siege",
+     "civic-library",
+     "dangerous-dungeon",
+     "deadly-dungeon",
+     "emberwood-village",
+     "hallowed-cathedral",
+     "hallowed-temple",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "ocean-voyage",
+     "outpost-town",
+     "planetary-blockade",
+     "street-chase",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-wandering-tavern"
+    ],
+    "new": 6,
+    "qualitative": 2,
+    "noGain": 16
+   },
+   "prep": {
+    "usableEnvironments": 26,
+    "newIds": [
+     "bustling-marketplace",
+     "castle-siege",
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "city-festival",
+     "civic-library",
+     "dangerous-dungeon",
+     "deadly-dungeon",
+     "emberwood-village",
+     "gang-hideout",
+     "garden-of-the-tranquil-order",
+     "hallowed-cathedral",
+     "hallowed-temple",
+     "heist",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "murder-mystery",
+     "ocean-voyage",
+     "pitched-battle",
+     "planetary-blockade",
+     "resting-dagger-inn",
+     "street-chase",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-dungeoneer",
+     "the-wandering-tavern"
+    ],
+    "qualitativeIds": [],
+    "noGainIds": [],
+    "new": 26,
+    "qualitative": 0,
+    "noGain": 0
+   },
+   "lists": {
+    "usableEnvironments": 20,
+    "newIds": [
+     "city-festival",
+     "garden-of-the-tranquil-order",
+     "heist",
+     "murder-mystery",
+     "the-dungeoneer"
+    ],
+    "qualitativeIds": [
+     "bustling-marketplace",
+     "resting-dagger-inn"
+    ],
+    "noGainIds": [
+     "castle-siege",
+     "civic-library",
+     "emberwood-village",
+     "gang-hideout",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "ocean-voyage",
+     "outpost-town",
+     "planetary-blockade",
+     "street-chase",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-wandering-tavern"
+    ],
+    "new": 5,
+    "qualitative": 2,
+    "noGain": 13
+   },
+   "prepFuture": {
+    "usableEnvironments": 26,
+    "newIds": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "city-festival",
+     "garden-of-the-tranquil-order",
+     "heist",
+     "murder-mystery",
+     "pitched-battle",
+     "the-dungeoneer"
+    ],
+    "qualitativeIds": [
+     "bustling-marketplace",
+     "resting-dagger-inn"
+    ],
+    "noGainIds": [
+     "castle-siege",
+     "civic-library",
+     "dangerous-dungeon",
+     "deadly-dungeon",
+     "emberwood-village",
+     "gang-hideout",
+     "hallowed-cathedral",
+     "hallowed-temple",
+     "library-of-the-dusk-tree",
+     "local-tavern",
+     "ocean-voyage",
+     "planetary-blockade",
+     "street-chase",
+     "teal-heart-inn",
+     "terror-of-the-deep",
+     "the-wandering-tavern"
+    ],
+    "new": 8,
+    "qualitative": 2,
+    "noGain": 16
+   },
+   "dedupe": {
+    "mappings": 41,
+    "environments": 27,
+    "environmentParentPairs": 31,
+    "regions": 20
+   },
+   "anyNew": [
+    "chapel-of-st-brenna",
+    "chthon-verlies",
+    "city-festival",
+    "gang-hideout",
+    "garden-of-the-tranquil-order",
+    "heist",
+    "murder-mystery",
+    "pitched-battle",
+    "the-dungeoneer"
+   ],
+   "anyQualitative": [
+    "bustling-marketplace",
+    "resting-dagger-inn"
+   ]
+  }
+ },
+ "unlockedByCrops": {
+  "count": 5,
+  "ids": [
+   "chapel-of-st-brenna",
+   "chthon-verlies",
+   "garden-of-the-tranquil-order",
+   "heist",
+   "murder-mystery"
+  ]
+ },
+ "assets": {
+  "files": 53,
+  "avifBytes": 293190,
+  "webpBytes": 91070,
+  "byContext": {
+   "catalog": {
+    "avif": 90622,
+    "files": 15
+   },
+   "prep": {
+    "avif": 23031,
+    "files": 14
+   },
+   "lists1": {
+    "avif": 73562,
+    "files": 6
+   },
+   "lists2": {
+    "avif": 44420,
+    "files": 6
+   },
+   "lists3": {
+    "avif": 61555,
+    "files": 12
+   }
+  },
+  "avifBytesDpr1": 79350,
+  "avifBytesDpr2": 213840,
+  "upscaledFiles": 1,
+  "existingCatalogStrip200Avg": 22436,
+  "existing960Avg": 96314,
+  "existing640Avg": 48501
+ },
+ "regionReports": [
+  {
+   "id": "intrigue-and-underworld-covert-table",
+   "sourceId": "intrigue-and-underworld",
+   "status": "approved",
+   "pixels": {
+    "x": 589,
+    "y": 190,
+    "w": 500,
+    "h": 530
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 786,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 116.2,
+       "cssFullWidth": 785.1
+      },
+      "2": {
+       "needFullPx": 1571,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 116.2,
+       "cssFullWidth": 785.1
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 13.06,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 500,
+      "h": 530
+     },
+     "effective": {
+      "w": 202.2,
+      "h": 530,
+      "share": 0.404
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 150,
+      "h": 223
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.47,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.94,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 161,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 95.8,
+       "cssFullWidth": 160.4
+      },
+      "2": {
+       "needFullPx": 321,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 191.5,
+       "cssFullWidth": 160.4
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 50,
+      "y": 100,
+      "zoom": 1
+     },
+     "region": {
+      "w": 500,
+      "h": 530
+     },
+     "effective": {
+      "w": 500,
+      "h": 500,
+      "share": 0.943
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 260,
+      "h": 223
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.096,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.192,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-limited-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 1063,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 287.3,
+       "cssFullWidth": 1062.8
+      },
+      "2": {
+       "needFullPx": 2126,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 287.3,
+       "cssFullWidth": 1062.8
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 65.01,
+      "zoom": 1
+     },
+     "region": {
+      "w": 500,
+      "h": 530
+     },
+     "effective": {
+      "w": 500,
+      "h": 141.5,
+      "share": 0.267
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 260,
+      "h": 117
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.636,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.272,
+       "upscaled": true
+      }
+     },
+     "label": "Suitable at DPR 1, limited at DPR 2"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 529,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 191.5,
+       "cssFullWidth": 528
+      },
+      "2": {
+       "needFullPx": 1057,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 287.3,
+       "cssFullWidth": 528
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 78.1,
+      "zoom": 1
+     },
+     "region": {
+      "w": 500,
+      "h": 530
+     },
+     "effective": {
+      "w": 500,
+      "h": 284.8,
+      "share": 0.537
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 260,
+      "h": 223
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.316,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.632,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 351,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 191.5,
+       "cssFullWidth": 350.9
+      },
+      "2": {
+       "needFullPx": 702,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 287.3,
+       "cssFullWidth": 350.9
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 100,
+      "zoom": 1
+     },
+     "region": {
+      "w": 500,
+      "h": 530
+     },
+     "effective": {
+      "w": 500,
+      "h": 428.6,
+      "share": 0.809
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 260,
+      "h": 223
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.21,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.42,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "intrigue-and-underworld-covert-table",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--catalog-95x249.avif",
+     "bytes": 3934,
+     "sourceWindow": {
+      "left": 628,
+      "top": 190,
+      "width": 202,
+      "height": 530
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-covert-table",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--catalog-190x498.avif",
+     "bytes": 9382,
+     "sourceWindow": {
+      "left": 628,
+      "top": 190,
+      "width": 202,
+      "height": 530
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-covert-table",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--catalog-190x498.webp",
+     "bytes": 14186,
+     "sourceWindow": {
+      "left": 628,
+      "top": 190,
+      "width": 202,
+      "height": 530
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-covert-table",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--prep-48x48.avif",
+     "bytes": 783,
+     "sourceWindow": {
+      "left": 589,
+      "top": 220,
+      "width": 500,
+      "height": 500
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-covert-table",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--prep-96x96.avif",
+     "bytes": 2031,
+     "sourceWindow": {
+      "left": 589,
+      "top": 220,
+      "width": 500,
+      "height": 500
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-covert-table",
+     "ctx": "lists1",
+     "dpr": 1,
+     "w": 318,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--lists1-318x90.avif",
+     "bytes": 4268,
+     "sourceWindow": {
+      "left": 589,
+      "top": 443,
+      "width": 500,
+      "height": 142
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-covert-table",
+     "ctx": "lists1",
+     "dpr": 2,
+     "w": 636,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--lists1-636x180.avif",
+     "bytes": 8558,
+     "sourceWindow": {
+      "left": 589,
+      "top": 443,
+      "width": 500,
+      "height": 142
+     },
+     "upscaled": true
+    },
+    {
+     "regionId": "intrigue-and-underworld-covert-table",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--lists2-158x90.avif",
+     "bytes": 2653,
+     "sourceWindow": {
+      "left": 589,
+      "top": 381,
+      "width": 500,
+      "height": 285
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-covert-table",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--lists2-316x180.avif",
+     "bytes": 7298,
+     "sourceWindow": {
+      "left": 589,
+      "top": 381,
+      "width": 500,
+      "height": 285
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-covert-table",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--lists3-105x90.avif",
+     "bytes": 2112,
+     "sourceWindow": {
+      "left": 589,
+      "top": 291,
+      "width": 500,
+      "height": 429
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-covert-table",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--lists3-210x180.avif",
+     "bytes": 5865,
+     "sourceWindow": {
+      "left": 589,
+      "top": 291,
+      "width": 500,
+      "height": 429
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "intrigue-and-underworld-arch-alley",
+   "sourceId": "intrigue-and-underworld",
+   "status": "approved",
+   "pixels": {
+    "x": 1009,
+    "y": 110,
+    "w": 470,
+    "h": 680
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 612,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 99.4,
+       "cssFullWidth": 611.9
+      },
+      "2": {
+       "needFullPx": 1224,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 149,
+       "cssFullWidth": 611.9
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 66.74,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 470,
+      "h": 680
+     },
+     "effective": {
+      "w": 259.4,
+      "h": 680,
+      "share": 0.552
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 259,
+      "h": 490
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.366,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.732,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 171,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 90,
+       "cssFullWidth": 170.7
+      },
+      "2": {
+       "needFullPx": 342,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 180,
+       "cssFullWidth": 170.7
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 50,
+      "y": 43.52,
+      "zoom": 1
+     },
+     "region": {
+      "w": 470,
+      "h": 680
+     },
+     "effective": {
+      "w": 470,
+      "h": 470,
+      "share": 0.691
+     },
+     "survival": 0.96,
+     "subjectPx": {
+      "w": 259,
+      "h": 490
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.102,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.204,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1131,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 270,
+       "cssFullWidth": 1130.6
+      },
+      "2": {
+       "needFullPx": 2262,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 270,
+       "cssFullWidth": 1130.6
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 47.51,
+      "zoom": 1
+     },
+     "region": {
+      "w": 470,
+      "h": 680
+     },
+     "effective": {
+      "w": 470,
+      "h": 133,
+      "share": 0.196
+     },
+     "survival": 0.272,
+     "subjectPx": {
+      "w": 259,
+      "h": 490
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.677,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.353,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists2": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 562,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 180,
+       "cssFullWidth": 561.7
+      },
+      "2": {
+       "needFullPx": 1124,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 270,
+       "cssFullWidth": 561.7
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 46.7,
+      "zoom": 1
+     },
+     "region": {
+      "w": 470,
+      "h": 680
+     },
+     "effective": {
+      "w": 470,
+      "h": 267.7,
+      "share": 0.394
+     },
+     "survival": 0.547,
+     "subjectPx": {
+      "w": 259,
+      "h": 490
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.336,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.672,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists3": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 374,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 180,
+       "cssFullWidth": 373.3
+      },
+      "2": {
+       "needFullPx": 747,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 270,
+       "cssFullWidth": 373.3
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 45.09,
+      "zoom": 1
+     },
+     "region": {
+      "w": 470,
+      "h": 680
+     },
+     "effective": {
+      "w": 470,
+      "h": 402.9,
+      "share": 0.592
+     },
+     "survival": 0.823,
+     "subjectPx": {
+      "w": 259,
+      "h": 490
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.223,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.447,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "intrigue-and-underworld-arch-alley",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-arch-alley--catalog-95x249.avif",
+     "bytes": 3909,
+     "sourceWindow": {
+      "left": 1150,
+      "top": 110,
+      "width": 259,
+      "height": 680
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-arch-alley",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-arch-alley--catalog-190x498.avif",
+     "bytes": 10579,
+     "sourceWindow": {
+      "left": 1150,
+      "top": 110,
+      "width": 259,
+      "height": 680
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-arch-alley",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-arch-alley--catalog-190x498.webp",
+     "bytes": 15166,
+     "sourceWindow": {
+      "left": 1150,
+      "top": 110,
+      "width": 259,
+      "height": 680
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-arch-alley",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-arch-alley--prep-48x48.avif",
+     "bytes": 711,
+     "sourceWindow": {
+      "left": 1009,
+      "top": 201,
+      "width": 470,
+      "height": 470
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-arch-alley",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-arch-alley--prep-96x96.avif",
+     "bytes": 1637,
+     "sourceWindow": {
+      "left": 1009,
+      "top": 201,
+      "width": 470,
+      "height": 470
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "intrigue-and-underworld-plotters-table",
+   "sourceId": "intrigue-and-underworld",
+   "status": "approved",
+   "pixels": {
+    "x": 0,
+    "y": 440,
+    "w": 830,
+    "h": 501
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "fail",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 831,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 109.8,
+       "cssFullWidth": 830.5
+      },
+      "2": {
+       "needFullPx": 1661,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 109.8,
+       "cssFullWidth": 830.5
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 4.53,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 830,
+      "h": 501
+     },
+     "effective": {
+      "w": 191.1,
+      "h": 501,
+      "share": 0.23
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 166,
+      "h": 426
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.497,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.994,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 161,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 95.9,
+       "cssFullWidth": 160.1
+      },
+      "2": {
+       "needFullPx": 321,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 191.9,
+       "cssFullWidth": 160.1
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 31.08,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 830,
+      "h": 501
+     },
+     "effective": {
+      "w": 501,
+      "h": 501,
+      "share": 0.604
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 457,
+      "h": 401
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.096,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.192,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 641,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 476.8,
+       "cssFullWidth": 640.2
+      },
+      "2": {
+       "needFullPx": 1281,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 476.8,
+       "cssFullWidth": 640.2
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 830,
+      "h": 501
+     },
+     "effective": {
+      "w": 830,
+      "h": 234.9,
+      "share": 0.469
+     },
+     "survival": 0.938,
+     "subjectPx": {
+      "w": 664,
+      "h": 251
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.383,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.766,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 319,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 158.9,
+       "cssFullWidth": 318.1
+      },
+      "2": {
+       "needFullPx": 637,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 317.9,
+       "cssFullWidth": 318.1
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 830,
+      "h": 501
+     },
+     "effective": {
+      "w": 830,
+      "h": 472.8,
+      "share": 0.944
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 664,
+      "h": 301
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.19,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.381,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 301,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 111.9,
+       "cssFullWidth": 300.2
+      },
+      "2": {
+       "needFullPx": 601,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 223.9,
+       "cssFullWidth": 300.2
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 830,
+      "h": 501
+     },
+     "effective": {
+      "w": 584.5,
+      "h": 501,
+      "share": 0.704
+     },
+     "survival": 0.88,
+     "subjectPx": {
+      "w": 664,
+      "h": 426
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.18,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.359,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "intrigue-and-underworld-plotters-table",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--prep-48x48.avif",
+     "bytes": 990,
+     "sourceWindow": {
+      "left": 102,
+      "top": 440,
+      "width": 501,
+      "height": 501
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-plotters-table",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--prep-96x96.avif",
+     "bytes": 2531,
+     "sourceWindow": {
+      "left": 102,
+      "top": 440,
+      "width": 501,
+      "height": 501
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-plotters-table",
+     "ctx": "lists1",
+     "dpr": 1,
+     "w": 318,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--lists1-318x90.avif",
+     "bytes": 6976,
+     "sourceWindow": {
+      "left": 0,
+      "top": 573,
+      "width": 830,
+      "height": 235
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-plotters-table",
+     "ctx": "lists1",
+     "dpr": 2,
+     "w": 636,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--lists1-636x180.avif",
+     "bytes": 18799,
+     "sourceWindow": {
+      "left": 0,
+      "top": 573,
+      "width": 830,
+      "height": 235
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-plotters-table",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--lists2-158x90.avif",
+     "bytes": 3757,
+     "sourceWindow": {
+      "left": 0,
+      "top": 454,
+      "width": 830,
+      "height": 473
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-plotters-table",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--lists2-316x180.avif",
+     "bytes": 11237,
+     "sourceWindow": {
+      "left": 0,
+      "top": 454,
+      "width": 830,
+      "height": 473
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-plotters-table",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--lists3-105x90.avif",
+     "bytes": 2620,
+     "sourceWindow": {
+      "left": 123,
+      "top": 440,
+      "width": 585,
+      "height": 501
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "intrigue-and-underworld-plotters-table",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--lists3-210x180.avif",
+     "bytes": 7716,
+     "sourceWindow": {
+      "left": 123,
+      "top": 440,
+      "width": 585,
+      "height": 501
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "intrigue-and-underworld-serpent-banner",
+   "sourceId": "intrigue-and-underworld",
+   "status": "not-independently-meaningful",
+   "pixels": {
+    "x": 170,
+    "y": 40,
+    "w": 201,
+    "h": 520
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 801,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 114,
+       "cssFullWidth": 800.2
+      },
+      "2": {
+       "needFullPx": 1601,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 114,
+       "cssFullWidth": 800.2
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 201,
+      "h": 520
+     },
+     "effective": {
+      "w": 198.4,
+      "h": 520,
+      "share": 0.987
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 161,
+      "h": 468
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.479,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.958,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 400,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 77,
+       "cssFullWidth": 399
+      },
+      "2": {
+       "needFullPx": 799,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 115.5,
+       "cssFullWidth": 399
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 201,
+      "h": 520
+     },
+     "effective": {
+      "w": 201,
+      "h": 201,
+      "share": 0.387
+     },
+     "survival": 0.429,
+     "subjectPx": {
+      "w": 161,
+      "h": 468
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.239,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.478,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists1": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 2644,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 115.5,
+       "cssFullWidth": 2643.7
+      },
+      "2": {
+       "needFullPx": 5288,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 115.5,
+       "cssFullWidth": 2643.7
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 201,
+      "h": 520
+     },
+     "effective": {
+      "w": 201,
+      "h": 56.9,
+      "share": 0.109
+     },
+     "survival": 0.122,
+     "subjectPx": {
+      "w": 161,
+      "h": 468
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 1.582,
+       "upscaled": true
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 3.164,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists2": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1314,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 115.5,
+       "cssFullWidth": 1313.5
+      },
+      "2": {
+       "needFullPx": 2628,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 115.5,
+       "cssFullWidth": 1313.5
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 201,
+      "h": 520
+     },
+     "effective": {
+      "w": 201,
+      "h": 114.5,
+      "share": 0.22
+     },
+     "survival": 0.245,
+     "subjectPx": {
+      "w": 161,
+      "h": 468
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.786,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 1.572,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists3": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 873,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 115.5,
+       "cssFullWidth": 872.9
+      },
+      "2": {
+       "needFullPx": 1746,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 115.5,
+       "cssFullWidth": 872.9
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 201,
+      "h": 520
+     },
+     "effective": {
+      "w": 201,
+      "h": 172.3,
+      "share": 0.331
+     },
+     "survival": 0.368,
+     "subjectPx": {
+      "w": 161,
+      "h": 468
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.522,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 1.045,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    }
+   },
+   "derivatives": []
+  },
+  {
+   "id": "intrigue-and-underworld-night-skyline",
+   "sourceId": "intrigue-and-underworld",
+   "status": "insufficient-resolution",
+   "pixels": {
+    "x": 1019,
+    "y": 0,
+    "w": 281,
+    "h": 169
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 2463,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 37,
+       "cssFullWidth": 2462
+      },
+      "2": {
+       "needFullPx": 4925,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 37,
+       "cssFullWidth": 2462
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 281,
+      "h": 169
+     },
+     "effective": {
+      "w": 64.5,
+      "h": 169,
+      "share": 0.229
+     },
+     "survival": 0.255,
+     "subjectPx": {
+      "w": 253,
+      "h": 152
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 1.473,
+       "upscaled": true
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 2.947,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "prep": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 475,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 64.7,
+       "cssFullWidth": 474.6
+      },
+      "2": {
+       "needFullPx": 950,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 97.1,
+       "cssFullWidth": 474.6
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 281,
+      "h": 169
+     },
+     "effective": {
+      "w": 169,
+      "h": 169,
+      "share": 0.601
+     },
+     "survival": 0.668,
+     "subjectPx": {
+      "w": 253,
+      "h": 152
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.284,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.568,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists1": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1892,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 161.4,
+       "cssFullWidth": 1891
+      },
+      "2": {
+       "needFullPx": 3783,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 161.4,
+       "cssFullWidth": 1891
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 281,
+      "h": 169
+     },
+     "effective": {
+      "w": 281,
+      "h": 79.5,
+      "share": 0.471
+     },
+     "survival": 0.523,
+     "subjectPx": {
+      "w": 253,
+      "h": 152
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 1.132,
+       "upscaled": true
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 2.263,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists2": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-limited-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 940,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 161.4,
+       "cssFullWidth": 939.6
+      },
+      "2": {
+       "needFullPx": 1880,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 161.4,
+       "cssFullWidth": 939.6
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 281,
+      "h": 169
+     },
+     "effective": {
+      "w": 281,
+      "h": 160.1,
+      "share": 0.947
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 253,
+      "h": 152
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.562,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 1.125,
+       "upscaled": true
+      }
+     },
+     "label": "Suitable at DPR 1, limited at DPR 2"
+    },
+    "lists3": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 890,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 113.3,
+       "cssFullWidth": 889.9
+      },
+      "2": {
+       "needFullPx": 1780,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 113.3,
+       "cssFullWidth": 889.9
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 281,
+      "h": 169
+     },
+     "effective": {
+      "w": 197.2,
+      "h": 169,
+      "share": 0.702
+     },
+     "survival": 0.78,
+     "subjectPx": {
+      "w": 253,
+      "h": 152
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.533,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 1.065,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    }
+   },
+   "derivatives": []
+  },
+  {
+   "id": "sacred-sanctuaries-statue-altar",
+   "sourceId": "sacred-sanctuaries",
+   "status": "approved",
+   "pixels": {
+    "x": 230,
+    "y": 60,
+    "w": 500,
+    "h": 710
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 587,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 103.7,
+       "cssFullWidth": 586
+      },
+      "2": {
+       "needFullPx": 1173,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 155.6,
+       "cssFullWidth": 586
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 76.19,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 500,
+      "h": 710
+     },
+     "effective": {
+      "w": 270.9,
+      "h": 710,
+      "share": 0.542
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 200,
+      "h": 497
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.351,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.701,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 161,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 95.8,
+       "cssFullWidth": 160.4
+      },
+      "2": {
+       "needFullPx": 321,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 191.5,
+       "cssFullWidth": 160.4
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "region": {
+      "w": 500,
+      "h": 710
+     },
+     "effective": {
+      "w": 500,
+      "h": 500,
+      "share": 0.704
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 200,
+      "h": 497
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.096,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.192,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1063,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 287.3,
+       "cssFullWidth": 1062.8
+      },
+      "2": {
+       "needFullPx": 2126,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 287.3,
+       "cssFullWidth": 1062.8
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 65.61,
+      "zoom": 1
+     },
+     "region": {
+      "w": 500,
+      "h": 710
+     },
+     "effective": {
+      "w": 500,
+      "h": 141.5,
+      "share": 0.199
+     },
+     "survival": 0.569,
+     "subjectPx": {
+      "w": 400,
+      "h": 248
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.636,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.272,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists2": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 529,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 191.5,
+       "cssFullWidth": 528
+      },
+      "2": {
+       "needFullPx": 1057,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 287.3,
+       "cssFullWidth": 528
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 24.95,
+      "zoom": 1
+     },
+     "region": {
+      "w": 500,
+      "h": 710
+     },
+     "effective": {
+      "w": 500,
+      "h": 284.8,
+      "share": 0.401
+     },
+     "survival": 0.573,
+     "subjectPx": {
+      "w": 200,
+      "h": 497
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.316,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.632,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 351,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 191.5,
+       "cssFullWidth": 350.9
+      },
+      "2": {
+       "needFullPx": 702,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 287.3,
+       "cssFullWidth": 350.9
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 12.16,
+      "zoom": 1
+     },
+     "region": {
+      "w": 500,
+      "h": 710
+     },
+     "effective": {
+      "w": 500,
+      "h": 428.6,
+      "share": 0.604
+     },
+     "survival": 0.862,
+     "subjectPx": {
+      "w": 200,
+      "h": 497
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.21,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.42,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "sacred-sanctuaries-statue-altar",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-statue-altar--catalog-95x249.avif",
+     "bytes": 8603,
+     "sourceWindow": {
+      "left": 405,
+      "top": 60,
+      "width": 271,
+      "height": 710
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "sacred-sanctuaries-statue-altar",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-statue-altar--catalog-190x498.avif",
+     "bytes": 24998,
+     "sourceWindow": {
+      "left": 405,
+      "top": 60,
+      "width": 271,
+      "height": 710
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "sacred-sanctuaries-statue-altar",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-statue-altar--catalog-190x498.webp",
+     "bytes": 30876,
+     "sourceWindow": {
+      "left": 405,
+      "top": 60,
+      "width": 271,
+      "height": 710
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "sacred-sanctuaries-statue-altar",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-statue-altar--prep-48x48.avif",
+     "bytes": 1106,
+     "sourceWindow": {
+      "left": 230,
+      "top": 60,
+      "width": 500,
+      "height": 500
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "sacred-sanctuaries-statue-altar",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-statue-altar--prep-96x96.avif",
+     "bytes": 3222,
+     "sourceWindow": {
+      "left": 230,
+      "top": 60,
+      "width": 500,
+      "height": 500
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "sacred-sanctuaries-statue-altar",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-statue-altar--lists3-105x90.avif",
+     "bytes": 3296,
+     "sourceWindow": {
+      "left": 230,
+      "top": 94,
+      "width": 500,
+      "height": 429
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "sacred-sanctuaries-statue-altar",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-statue-altar--lists3-210x180.avif",
+     "bytes": 10669,
+     "sourceWindow": {
+      "left": 230,
+      "top": 94,
+      "width": 500,
+      "height": 429
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "sacred-sanctuaries-arched-vista",
+   "sourceId": "sacred-sanctuaries",
+   "status": "proposed",
+   "pixels": {
+    "x": 1019,
+    "y": 90,
+    "w": 510,
+    "h": 630
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 661,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 138.1,
+       "cssFullWidth": 660.4
+      },
+      "2": {
+       "needFullPx": 1321,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 138.1,
+       "cssFullWidth": 660.4
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 87.83,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 510,
+      "h": 630
+     },
+     "effective": {
+      "w": 240.4,
+      "h": 630,
+      "share": 0.471
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 204,
+      "h": 378
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.395,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.79,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 158,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 97.7,
+       "cssFullWidth": 157.3
+      },
+      "2": {
+       "needFullPx": 315,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 97.7,
+       "cssFullWidth": 157.3
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 50,
+      "y": 23.75,
+      "zoom": 1
+     },
+     "region": {
+      "w": 510,
+      "h": 630
+     },
+     "effective": {
+      "w": 510,
+      "h": 510,
+      "share": 0.81
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 204,
+      "h": 378
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.094,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.188,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1042,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 293,
+       "cssFullWidth": 1041.9
+      },
+      "2": {
+       "needFullPx": 2084,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 293,
+       "cssFullWidth": 1041.9
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 43.51,
+      "zoom": 1
+     },
+     "region": {
+      "w": 510,
+      "h": 630
+     },
+     "effective": {
+      "w": 510,
+      "h": 144.3,
+      "share": 0.229
+     },
+     "survival": 0.382,
+     "subjectPx": {
+      "w": 204,
+      "h": 378
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.624,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.247,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists2": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 518,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 195.3,
+       "cssFullWidth": 517.7
+      },
+      "2": {
+       "needFullPx": 1036,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 293,
+       "cssFullWidth": 517.7
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 40.72,
+      "zoom": 1
+     },
+     "region": {
+      "w": 510,
+      "h": 630
+     },
+     "effective": {
+      "w": 510,
+      "h": 290.5,
+      "share": 0.461
+     },
+     "survival": 0.769,
+     "subjectPx": {
+      "w": 204,
+      "h": 378
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.31,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.62,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 345,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 195.3,
+       "cssFullWidth": 344
+      },
+      "2": {
+       "needFullPx": 689,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 293,
+       "cssFullWidth": 344
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 33.67,
+      "zoom": 1
+     },
+     "region": {
+      "w": 510,
+      "h": 630
+     },
+     "effective": {
+      "w": 510,
+      "h": 437.1,
+      "share": 0.694
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 204,
+      "h": 378
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.206,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.412,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": []
+  },
+  {
+   "id": "sacred-sanctuaries-lotus-pool",
+   "sourceId": "sacred-sanctuaries",
+   "status": "approved",
+   "pixels": {
+    "x": 900,
+    "y": 719,
+    "w": 770,
+    "h": 221
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1883,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 48.4,
+       "cssFullWidth": 1882.7
+      },
+      "2": {
+       "needFullPx": 3766,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 48.4,
+       "cssFullWidth": 1882.7
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 75.83,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 770,
+      "h": 221
+     },
+     "effective": {
+      "w": 84.3,
+      "h": 221,
+      "share": 0.11
+     },
+     "survival": 0.498,
+     "subjectPx": {
+      "w": 169,
+      "h": 166
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 1.127,
+       "upscaled": true
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 2.253,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 363,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 84.6,
+       "cssFullWidth": 362.9
+      },
+      "2": {
+       "needFullPx": 726,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 127,
+       "cssFullWidth": 362.9
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 82.26,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 770,
+      "h": 221
+     },
+     "effective": {
+      "w": 221,
+      "h": 221,
+      "share": 0.287
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 169,
+      "h": 166
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.217,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.434,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 691,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 442.4,
+       "cssFullWidth": 690.1
+      },
+      "2": {
+       "needFullPx": 1381,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 442.4,
+       "cssFullWidth": 690.1
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "region": {
+      "w": 770,
+      "h": 221
+     },
+     "effective": {
+      "w": 770,
+      "h": 217.9,
+      "share": 0.986
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 169,
+      "h": 166
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.413,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.826,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 681,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 222.9,
+       "cssFullWidth": 680.5
+      },
+      "2": {
+       "needFullPx": 1361,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 222.9,
+       "cssFullWidth": 680.5
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 96.36,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 770,
+      "h": 221
+     },
+     "effective": {
+      "w": 388,
+      "h": 221,
+      "share": 0.504
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 169,
+      "h": 166
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.407,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.814,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 681,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 148.1,
+       "cssFullWidth": 680.5
+      },
+      "2": {
+       "needFullPx": 1361,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 148.1,
+       "cssFullWidth": 680.5
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 84.58,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 770,
+      "h": 221
+     },
+     "effective": {
+      "w": 257.8,
+      "h": 221,
+      "share": 0.335
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 169,
+      "h": 166
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.407,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.814,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "sacred-sanctuaries-lotus-pool",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--prep-48x48.avif",
+     "bytes": 1149,
+     "sourceWindow": {
+      "left": 1352,
+      "top": 719,
+      "width": 221,
+      "height": 221
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "sacred-sanctuaries-lotus-pool",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--prep-96x96.avif",
+     "bytes": 3377,
+     "sourceWindow": {
+      "left": 1352,
+      "top": 719,
+      "width": 221,
+      "height": 221
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "sacred-sanctuaries-lotus-pool",
+     "ctx": "lists1",
+     "dpr": 1,
+     "w": 318,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--lists1-318x90.avif",
+     "bytes": 9537,
+     "sourceWindow": {
+      "left": 900,
+      "top": 719,
+      "width": 770,
+      "height": 218
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "sacred-sanctuaries-lotus-pool",
+     "ctx": "lists1",
+     "dpr": 2,
+     "w": 636,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--lists1-636x180.avif",
+     "bytes": 25424,
+     "sourceWindow": {
+      "left": 900,
+      "top": 719,
+      "width": 770,
+      "height": 218
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "sacred-sanctuaries-lotus-pool",
+     "ctx": "lists2",
+     "dpr": 1,
+     "w": 158,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--lists2-158x90.avif",
+     "bytes": 5469,
+     "sourceWindow": {
+      "left": 1268,
+      "top": 719,
+      "width": 388,
+      "height": 221
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "sacred-sanctuaries-lotus-pool",
+     "ctx": "lists2",
+     "dpr": 2,
+     "w": 316,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--lists2-316x180.avif",
+     "bytes": 14006,
+     "sourceWindow": {
+      "left": 1268,
+      "top": 719,
+      "width": 388,
+      "height": 221
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "sacred-sanctuaries-lotus-pool",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--lists3-105x90.avif",
+     "bytes": 3783,
+     "sourceWindow": {
+      "left": 1333,
+      "top": 719,
+      "width": 258,
+      "height": 221
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "sacred-sanctuaries-lotus-pool",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--lists3-210x180.avif",
+     "bytes": 9350,
+     "sourceWindow": {
+      "left": 1333,
+      "top": 719,
+      "width": 258,
+      "height": 221
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "sacred-sanctuaries-candle-steps",
+   "sourceId": "sacred-sanctuaries",
+   "status": "not-independently-meaningful",
+   "pixels": {
+    "x": 329,
+    "y": 479,
+    "w": 680,
+    "h": 290
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1435,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 63.6,
+       "cssFullWidth": 1434.8
+      },
+      "2": {
+       "needFullPx": 2870,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 63.6,
+       "cssFullWidth": 1434.8
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 680,
+      "h": 290
+     },
+     "effective": {
+      "w": 110.6,
+      "h": 290,
+      "share": 0.163
+     },
+     "survival": 0.203,
+     "subjectPx": {
+      "w": 544,
+      "h": 232
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.859,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.717,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "prep": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 277,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 55.5,
+       "cssFullWidth": 276.6
+      },
+      "2": {
+       "needFullPx": 554,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 111.1,
+       "cssFullWidth": 276.6
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 680,
+      "h": 290
+     },
+     "effective": {
+      "w": 290,
+      "h": 290,
+      "share": 0.426
+     },
+     "survival": 0.533,
+     "subjectPx": {
+      "w": 544,
+      "h": 232
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.166,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.331,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists1": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 782,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 390.7,
+       "cssFullWidth": 781.4
+      },
+      "2": {
+       "needFullPx": 1563,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 390.7,
+       "cssFullWidth": 781.4
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 680,
+      "h": 290
+     },
+     "effective": {
+      "w": 680,
+      "h": 192.5,
+      "share": 0.664
+     },
+     "survival": 0.83,
+     "subjectPx": {
+      "w": 544,
+      "h": 232
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.468,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.935,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists2": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 519,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 195,
+       "cssFullWidth": 518.6
+      },
+      "2": {
+       "needFullPx": 1038,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 292.5,
+       "cssFullWidth": 518.6
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 680,
+      "h": 290
+     },
+     "effective": {
+      "w": 509.1,
+      "h": 290,
+      "share": 0.749
+     },
+     "survival": 0.936,
+     "subjectPx": {
+      "w": 544,
+      "h": 232
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.31,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.621,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 519,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 129.6,
+       "cssFullWidth": 518.6
+      },
+      "2": {
+       "needFullPx": 1038,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 194.4,
+       "cssFullWidth": 518.6
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 680,
+      "h": 290
+     },
+     "effective": {
+      "w": 338.3,
+      "h": 290,
+      "share": 0.498
+     },
+     "survival": 0.622,
+     "subjectPx": {
+      "w": 544,
+      "h": 232
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.31,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.621,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    }
+   },
+   "derivatives": []
+  },
+  {
+   "id": "dungeon-delves-barred-gate",
+   "sourceId": "dungeon-delves",
+   "status": "approved",
+   "pixels": {
+    "x": 220,
+    "y": 19,
+    "w": 620,
+    "h": 680
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 612,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 99.4,
+       "cssFullWidth": 611.5
+      },
+      "2": {
+       "needFullPx": 1224,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 149.1,
+       "cssFullWidth": 611.5
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 620,
+      "h": 680
+     },
+     "effective": {
+      "w": 259.4,
+      "h": 680,
+      "share": 0.418
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 248,
+      "h": 544
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.366,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.732,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 130,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 118.8,
+       "cssFullWidth": 129.3
+      },
+      "2": {
+       "needFullPx": 259,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 118.8,
+       "cssFullWidth": 129.3
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "region": {
+      "w": 620,
+      "h": 680
+     },
+     "effective": {
+      "w": 620,
+      "h": 620,
+      "share": 0.912
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 248,
+      "h": 544
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.077,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.155,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 857,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 356.4,
+       "cssFullWidth": 856.5
+      },
+      "2": {
+       "needFullPx": 1714,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 356.4,
+       "cssFullWidth": 856.5
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 43.26,
+      "zoom": 1
+     },
+     "region": {
+      "w": 620,
+      "h": 680
+     },
+     "effective": {
+      "w": 620,
+      "h": 175.5,
+      "share": 0.258
+     },
+     "survival": 0.323,
+     "subjectPx": {
+      "w": 248,
+      "h": 544
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.513,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.026,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists2": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 426,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 237.6,
+       "cssFullWidth": 425.6
+      },
+      "2": {
+       "needFullPx": 852,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 356.4,
+       "cssFullWidth": 425.6
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 39.6,
+      "zoom": 1
+     },
+     "region": {
+      "w": 620,
+      "h": 680
+     },
+     "effective": {
+      "w": 620,
+      "h": 353.2,
+      "share": 0.519
+     },
+     "survival": 0.649,
+     "subjectPx": {
+      "w": 248,
+      "h": 544
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.255,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.51,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 283,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 118.8,
+       "cssFullWidth": 282.8
+      },
+      "2": {
+       "needFullPx": 566,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 237.6,
+       "cssFullWidth": 282.8
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 27.12,
+      "zoom": 1
+     },
+     "region": {
+      "w": 620,
+      "h": 680
+     },
+     "effective": {
+      "w": 620,
+      "h": 531.4,
+      "share": 0.782
+     },
+     "survival": 0.977,
+     "subjectPx": {
+      "w": 248,
+      "h": 544
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.169,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.339,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "dungeon-delves-barred-gate",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-barred-gate--catalog-95x249.avif",
+     "bytes": 4515,
+     "sourceWindow": {
+      "left": 220,
+      "top": 19,
+      "width": 259,
+      "height": 680
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "dungeon-delves-barred-gate",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-barred-gate--catalog-190x498.avif",
+     "bytes": 12150,
+     "sourceWindow": {
+      "left": 220,
+      "top": 19,
+      "width": 259,
+      "height": 680
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "dungeon-delves-barred-gate",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-barred-gate--catalog-190x498.webp",
+     "bytes": 17546,
+     "sourceWindow": {
+      "left": 220,
+      "top": 19,
+      "width": 259,
+      "height": 680
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "dungeon-delves-barred-gate",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-barred-gate--prep-48x48.avif",
+     "bytes": 804,
+     "sourceWindow": {
+      "left": 220,
+      "top": 19,
+      "width": 620,
+      "height": 620
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "dungeon-delves-barred-gate",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-barred-gate--prep-96x96.avif",
+     "bytes": 2105,
+     "sourceWindow": {
+      "left": 220,
+      "top": 19,
+      "width": 620,
+      "height": 620
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "dungeon-delves-barred-gate",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-barred-gate--lists3-105x90.avif",
+     "bytes": 2242,
+     "sourceWindow": {
+      "left": 220,
+      "top": 59,
+      "width": 620,
+      "height": 531
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "dungeon-delves-barred-gate",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-barred-gate--lists3-210x180.avif",
+     "bytes": 6412,
+     "sourceWindow": {
+      "left": 220,
+      "top": 59,
+      "width": 620,
+      "height": 531
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "dungeon-delves-stair-bridge",
+   "sourceId": "dungeon-delves",
+   "status": "approved",
+   "pixels": {
+    "x": 880,
+    "y": 0,
+    "w": 700,
+    "h": 640
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 650,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 140.4,
+       "cssFullWidth": 649.7
+      },
+      "2": {
+       "needFullPx": 1300,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 140.4,
+       "cssFullWidth": 649.7
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 17.75,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 700,
+      "h": 640
+     },
+     "effective": {
+      "w": 244.2,
+      "h": 640,
+      "share": 0.349
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 238,
+      "h": 544
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.389,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.778,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 126,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 122.6,
+       "cssFullWidth": 125.3
+      },
+      "2": {
+       "needFullPx": 251,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 122.6,
+       "cssFullWidth": 125.3
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 700,
+      "h": 640
+     },
+     "effective": {
+      "w": 640,
+      "h": 640,
+      "share": 0.914
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 238,
+      "h": 544
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.075,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.15,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 759,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 402.4,
+       "cssFullWidth": 758.7
+      },
+      "2": {
+       "needFullPx": 1518,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 402.4,
+       "cssFullWidth": 758.7
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 53.62,
+      "zoom": 1
+     },
+     "region": {
+      "w": 700,
+      "h": 640
+     },
+     "effective": {
+      "w": 700,
+      "h": 198.1,
+      "share": 0.31
+     },
+     "survival": 0.364,
+     "subjectPx": {
+      "w": 238,
+      "h": 544
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.454,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.909,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists2": {
+     "verdict": "fail",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 377,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 268.3,
+       "cssFullWidth": 376.9
+      },
+      "2": {
+       "needFullPx": 754,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 402.4,
+       "cssFullWidth": 376.9
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 56.63,
+      "zoom": 1
+     },
+     "region": {
+      "w": 700,
+      "h": 640
+     },
+     "effective": {
+      "w": 700,
+      "h": 398.7,
+      "share": 0.623
+     },
+     "survival": 0.733,
+     "subjectPx": {
+      "w": 238,
+      "h": 544
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.226,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.451,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists3": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": true,
+     "A": {
+      "1": {
+       "needFullPx": 251,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 134.1,
+       "cssFullWidth": 250.5
+      },
+      "2": {
+       "needFullPx": 501,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 268.3,
+       "cssFullWidth": 250.5
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 90,
+      "zoom": 1
+     },
+     "region": {
+      "w": 700,
+      "h": 640
+     },
+     "effective": {
+      "w": 700,
+      "h": 600,
+      "share": 0.938
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 238,
+      "h": 544
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.15,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.3,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": [
+    {
+     "regionId": "dungeon-delves-stair-bridge",
+     "ctx": "catalog",
+     "dpr": 1,
+     "w": 95,
+     "h": 249,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-stair-bridge--catalog-95x249.avif",
+     "bytes": 3450,
+     "sourceWindow": {
+      "left": 961,
+      "top": 0,
+      "width": 244,
+      "height": 640
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "dungeon-delves-stair-bridge",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-stair-bridge--catalog-190x498.avif",
+     "bytes": 9102,
+     "sourceWindow": {
+      "left": 961,
+      "top": 0,
+      "width": 244,
+      "height": 640
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "dungeon-delves-stair-bridge",
+     "ctx": "catalog",
+     "dpr": 2,
+     "w": 190,
+     "h": 498,
+     "format": "webp",
+     "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-stair-bridge--catalog-190x498.webp",
+     "bytes": 13296,
+     "sourceWindow": {
+      "left": 961,
+      "top": 0,
+      "width": 244,
+      "height": 640
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "dungeon-delves-stair-bridge",
+     "ctx": "prep",
+     "dpr": 1,
+     "w": 48,
+     "h": 48,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-stair-bridge--prep-48x48.avif",
+     "bytes": 736,
+     "sourceWindow": {
+      "left": 880,
+      "top": 0,
+      "width": 640,
+      "height": 640
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "dungeon-delves-stair-bridge",
+     "ctx": "prep",
+     "dpr": 2,
+     "w": 96,
+     "h": 96,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-stair-bridge--prep-96x96.avif",
+     "bytes": 1849,
+     "sourceWindow": {
+      "left": 880,
+      "top": 0,
+      "width": 640,
+      "height": 640
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "dungeon-delves-stair-bridge",
+     "ctx": "lists3",
+     "dpr": 1,
+     "w": 105,
+     "h": 90,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-stair-bridge--lists3-105x90.avif",
+     "bytes": 1947,
+     "sourceWindow": {
+      "left": 880,
+      "top": 36,
+      "width": 700,
+      "height": 600
+     },
+     "upscaled": false
+    },
+    {
+     "regionId": "dungeon-delves-stair-bridge",
+     "ctx": "lists3",
+     "dpr": 2,
+     "w": 210,
+     "h": 180,
+     "format": "avif",
+     "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-stair-bridge--lists3-210x180.avif",
+     "bytes": 5543,
+     "sourceWindow": {
+      "left": 880,
+      "top": 36,
+      "width": 700,
+      "height": 600
+     },
+     "upscaled": false
+    }
+   ]
+  },
+  {
+   "id": "dungeon-delves-explorers-kit",
+   "sourceId": "dungeon-delves",
+   "status": "proposed",
+   "pixels": {
+    "x": 0,
+    "y": 520,
+    "w": 860,
+    "h": 421
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "fail",
+     "status": "suitable-dpr1-limited-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 988,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 92.3,
+       "cssFullWidth": 987.7
+      },
+      "2": {
+       "needFullPx": 1976,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 92.3,
+       "cssFullWidth": 987.7
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 0.81,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 860,
+      "h": 421
+     },
+     "effective": {
+      "w": 160.6,
+      "h": 421,
+      "share": 0.187
+     },
+     "survival": 0.934,
+     "subjectPx": {
+      "w": 172,
+      "h": 379
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.591,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.183,
+       "upscaled": true
+      }
+     },
+     "label": "Suitable at DPR 1, limited at DPR 2"
+    },
+    "prep": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 191,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 80.7,
+       "cssFullWidth": 190.4
+      },
+      "2": {
+       "needFullPx": 381,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 161.3,
+       "cssFullWidth": 190.4
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 5.92,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 860,
+      "h": 421
+     },
+     "effective": {
+      "w": 421,
+      "h": 421,
+      "share": 0.49
+     },
+     "survival": 0.89,
+     "subjectPx": {
+      "w": 473,
+      "h": 379
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.114,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.228,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists1": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 618,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 329.6,
+       "cssFullWidth": 617.5
+      },
+      "2": {
+       "needFullPx": 1236,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 494.4,
+       "cssFullWidth": 617.5
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 44.07,
+      "zoom": 1
+     },
+     "region": {
+      "w": 860,
+      "h": 421
+     },
+     "effective": {
+      "w": 860,
+      "h": 243.4,
+      "share": 0.578
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 688,
+      "h": 232
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.37,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.74,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists2": {
+     "verdict": "pass",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 358,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 283.2,
+       "cssFullWidth": 357
+      },
+      "2": {
+       "needFullPx": 715,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 424.9,
+       "cssFullWidth": 357
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 860,
+      "h": 421
+     },
+     "effective": {
+      "w": 739.1,
+      "h": 421,
+      "share": 0.859
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 688,
+      "h": 337
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.214,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.428,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "fail",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 358,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 188.2,
+       "cssFullWidth": 357
+      },
+      "2": {
+       "needFullPx": 715,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 282.3,
+       "cssFullWidth": 357
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 860,
+      "h": 421
+     },
+     "effective": {
+      "w": 491.2,
+      "h": 421,
+      "share": 0.571
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 473,
+      "h": 379
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.214,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.428,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    }
+   },
+   "derivatives": []
+  },
+  {
+   "id": "dungeon-delves-flooded-steps",
+   "sourceId": "dungeon-delves",
+   "status": "not-independently-meaningful",
+   "pixels": {
+    "x": 850,
+    "y": 620,
+    "w": 710,
+    "h": 320
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1300,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 70.2,
+       "cssFullWidth": 1299.5
+      },
+      "2": {
+       "needFullPx": 2599,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 70.2,
+       "cssFullWidth": 1299.5
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 56.04,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 710,
+      "h": 320
+     },
+     "effective": {
+      "w": 122.1,
+      "h": 320,
+      "share": 0.172
+     },
+     "survival": 0.246,
+     "subjectPx": {
+      "w": 497,
+      "h": 224
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.778,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.556,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "prep": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 251,
+       "file": 320,
+       "upscaled": false,
+       "drawsWindowPx": 61.3,
+       "cssFullWidth": 250.5
+      },
+      "2": {
+       "needFullPx": 501,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 122.6,
+       "cssFullWidth": 250.5
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 59.1,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 710,
+      "h": 320
+     },
+     "effective": {
+      "w": 320,
+      "h": 320,
+      "share": 0.451
+     },
+     "survival": 0.644,
+     "subjectPx": {
+      "w": 497,
+      "h": 224
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.15,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.3,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists1": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 748,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 408.1,
+       "cssFullWidth": 748
+      },
+      "2": {
+       "needFullPx": 1496,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 408.1,
+       "cssFullWidth": 748
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 36.56,
+      "zoom": 1
+     },
+     "region": {
+      "w": 710,
+      "h": 320
+     },
+     "effective": {
+      "w": 710,
+      "h": 200.9,
+      "share": 0.628
+     },
+     "survival": 0.897,
+     "subjectPx": {
+      "w": 497,
+      "h": 224
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.448,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.896,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists2": {
+     "verdict": "unreviewed",
+     "status": "suitable-dpr1-dpr2",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 470,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 215.3,
+       "cssFullWidth": 469.7
+      },
+      "2": {
+       "needFullPx": 940,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 322.9,
+       "cssFullWidth": 469.7
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 73.95,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 710,
+      "h": 320
+     },
+     "effective": {
+      "w": 561.8,
+      "h": 320,
+      "share": 0.791
+     },
+     "survival": 1,
+     "subjectPx": {
+      "w": 497,
+      "h": 224
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.281,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.563,
+       "upscaled": false
+      }
+     },
+     "label": "Suitable at DPR 1 and 2"
+    },
+    "lists3": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 470,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 143.1,
+       "cssFullWidth": 469.7
+      },
+      "2": {
+       "needFullPx": 940,
+       "file": 960,
+       "upscaled": false,
+       "drawsWindowPx": 214.6,
+       "cssFullWidth": 469.7
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 60.54,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 710,
+      "h": 320
+     },
+     "effective": {
+      "w": 373.3,
+      "h": 320,
+      "share": 0.526
+     },
+     "survival": 0.751,
+     "subjectPx": {
+      "w": 497,
+      "h": 224
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.281,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.562,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    }
+   },
+   "derivatives": []
+  },
+  {
+   "id": "dungeon-delves-hanging-cage",
+   "sourceId": "dungeon-delves",
+   "status": "insufficient-resolution",
+   "pixels": {
+    "x": 1439,
+    "y": 60,
+    "w": 160,
+    "h": 320
+   },
+   "frames": {
+    "catalog": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1300,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 70.2,
+       "cssFullWidth": 1299.5
+      },
+      "2": {
+       "needFullPx": 2599,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 70.2,
+       "cssFullWidth": 1299.5
+      }
+     },
+     "context": "catalog",
+     "box": {
+      "w": 95,
+      "h": 249
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 160,
+      "h": 320
+     },
+     "effective": {
+      "w": 122.1,
+      "h": 320,
+      "share": 0.763
+     },
+     "survival": 0.848,
+     "subjectPx": {
+      "w": 144,
+      "h": 288
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.778,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.556,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "prep": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 501,
+       "file": 640,
+       "upscaled": false,
+       "drawsWindowPx": 61.3,
+       "cssFullWidth": 501
+      },
+      "2": {
+       "needFullPx": 1002,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 92,
+       "cssFullWidth": 501
+      }
+     },
+     "context": "prep",
+     "box": {
+      "w": 48,
+      "h": 48
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 160,
+      "h": 320
+     },
+     "effective": {
+      "w": 160,
+      "h": 160,
+      "share": 0.5
+     },
+     "survival": 0.556,
+     "subjectPx": {
+      "w": 144,
+      "h": 288
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.3,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.6,
+       "upscaled": false
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists1": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 3320,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 92,
+       "cssFullWidth": 3319.1
+      },
+      "2": {
+       "needFullPx": 6639,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 92,
+       "cssFullWidth": 3319.1
+      }
+     },
+     "context": "lists1",
+     "box": {
+      "w": 318,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 160,
+      "h": 320
+     },
+     "effective": {
+      "w": 160,
+      "h": 45.3,
+      "share": 0.142
+     },
+     "survival": 0.157,
+     "subjectPx": {
+      "w": 144,
+      "h": 288
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 1.988,
+       "upscaled": true
+      },
+      "2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 3.975,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists2": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1650,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 92,
+       "cssFullWidth": 1649.1
+      },
+      "2": {
+       "needFullPx": 3299,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 92,
+       "cssFullWidth": 1649.1
+      }
+     },
+     "context": "lists2",
+     "box": {
+      "w": 158,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 160,
+      "h": 320
+     },
+     "effective": {
+      "w": 160,
+      "h": 91.1,
+      "share": 0.285
+     },
+     "survival": 0.316,
+     "subjectPx": {
+      "w": 144,
+      "h": 288
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.988,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 1.975,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    },
+    "lists3": {
+     "verdict": "unreviewed",
+     "status": "requires-different-framing",
+     "usable": false,
+     "A": {
+      "1": {
+       "needFullPx": 1096,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 92,
+       "cssFullWidth": 1095.9
+      },
+      "2": {
+       "needFullPx": 2192,
+       "file": 960,
+       "upscaled": true,
+       "drawsWindowPx": 92,
+       "cssFullWidth": 1095.9
+      }
+     },
+     "context": "lists3",
+     "box": {
+      "w": 105,
+      "h": 90
+     },
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "region": {
+      "w": 160,
+      "h": 320
+     },
+     "effective": {
+      "w": 160,
+      "h": 137.1,
+      "share": 0.429
+     },
+     "survival": 0.476,
+     "subjectPx": {
+      "w": 144,
+      "h": 288
+     },
+     "subjectTooSmall": false,
+     "dpr": {
+      "1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.656,
+       "upscaled": false
+      },
+      "2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 1.313,
+       "upscaled": true
+      }
+     },
+     "label": "Requires different framing"
+    }
+   },
+   "derivatives": []
+  }
+ ]
+}

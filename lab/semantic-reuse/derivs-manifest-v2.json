@@ -1,0 +1,903 @@
+[
+ {
+  "regionId": "intrigue-and-underworld-covert-table",
+  "ctx": "catalog",
+  "dpr": 1,
+  "w": 95,
+  "h": 249,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--catalog-95x249.avif",
+  "bytes": 3934,
+  "sourceWindow": {
+   "left": 628,
+   "top": 190,
+   "width": 202,
+   "height": 530
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-covert-table",
+  "ctx": "catalog",
+  "dpr": 2,
+  "w": 190,
+  "h": 498,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--catalog-190x498.avif",
+  "bytes": 9382,
+  "sourceWindow": {
+   "left": 628,
+   "top": 190,
+   "width": 202,
+   "height": 530
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-covert-table",
+  "ctx": "catalog",
+  "dpr": 2,
+  "w": 190,
+  "h": 498,
+  "format": "webp",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--catalog-190x498.webp",
+  "bytes": 14186,
+  "sourceWindow": {
+   "left": 628,
+   "top": 190,
+   "width": 202,
+   "height": 530
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-covert-table",
+  "ctx": "prep",
+  "dpr": 1,
+  "w": 48,
+  "h": 48,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--prep-48x48.avif",
+  "bytes": 783,
+  "sourceWindow": {
+   "left": 589,
+   "top": 220,
+   "width": 500,
+   "height": 500
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-covert-table",
+  "ctx": "prep",
+  "dpr": 2,
+  "w": 96,
+  "h": 96,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--prep-96x96.avif",
+  "bytes": 2031,
+  "sourceWindow": {
+   "left": 589,
+   "top": 220,
+   "width": 500,
+   "height": 500
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-covert-table",
+  "ctx": "lists1",
+  "dpr": 1,
+  "w": 318,
+  "h": 90,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--lists1-318x90.avif",
+  "bytes": 4268,
+  "sourceWindow": {
+   "left": 589,
+   "top": 443,
+   "width": 500,
+   "height": 142
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-covert-table",
+  "ctx": "lists1",
+  "dpr": 2,
+  "w": 636,
+  "h": 180,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--lists1-636x180.avif",
+  "bytes": 8558,
+  "sourceWindow": {
+   "left": 589,
+   "top": 443,
+   "width": 500,
+   "height": 142
+  },
+  "upscaled": true
+ },
+ {
+  "regionId": "intrigue-and-underworld-covert-table",
+  "ctx": "lists2",
+  "dpr": 1,
+  "w": 158,
+  "h": 90,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--lists2-158x90.avif",
+  "bytes": 2653,
+  "sourceWindow": {
+   "left": 589,
+   "top": 381,
+   "width": 500,
+   "height": 285
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-covert-table",
+  "ctx": "lists2",
+  "dpr": 2,
+  "w": 316,
+  "h": 180,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--lists2-316x180.avif",
+  "bytes": 7298,
+  "sourceWindow": {
+   "left": 589,
+   "top": 381,
+   "width": 500,
+   "height": 285
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-covert-table",
+  "ctx": "lists3",
+  "dpr": 1,
+  "w": 105,
+  "h": 90,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--lists3-105x90.avif",
+  "bytes": 2112,
+  "sourceWindow": {
+   "left": 589,
+   "top": 291,
+   "width": 500,
+   "height": 429
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-covert-table",
+  "ctx": "lists3",
+  "dpr": 2,
+  "w": 210,
+  "h": 180,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-covert-table--lists3-210x180.avif",
+  "bytes": 5865,
+  "sourceWindow": {
+   "left": 589,
+   "top": 291,
+   "width": 500,
+   "height": 429
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-arch-alley",
+  "ctx": "catalog",
+  "dpr": 1,
+  "w": 95,
+  "h": 249,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-arch-alley--catalog-95x249.avif",
+  "bytes": 3909,
+  "sourceWindow": {
+   "left": 1150,
+   "top": 110,
+   "width": 259,
+   "height": 680
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-arch-alley",
+  "ctx": "catalog",
+  "dpr": 2,
+  "w": 190,
+  "h": 498,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-arch-alley--catalog-190x498.avif",
+  "bytes": 10579,
+  "sourceWindow": {
+   "left": 1150,
+   "top": 110,
+   "width": 259,
+   "height": 680
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-arch-alley",
+  "ctx": "catalog",
+  "dpr": 2,
+  "w": 190,
+  "h": 498,
+  "format": "webp",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-arch-alley--catalog-190x498.webp",
+  "bytes": 15166,
+  "sourceWindow": {
+   "left": 1150,
+   "top": 110,
+   "width": 259,
+   "height": 680
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-arch-alley",
+  "ctx": "prep",
+  "dpr": 1,
+  "w": 48,
+  "h": 48,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-arch-alley--prep-48x48.avif",
+  "bytes": 711,
+  "sourceWindow": {
+   "left": 1009,
+   "top": 201,
+   "width": 470,
+   "height": 470
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-arch-alley",
+  "ctx": "prep",
+  "dpr": 2,
+  "w": 96,
+  "h": 96,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-arch-alley--prep-96x96.avif",
+  "bytes": 1637,
+  "sourceWindow": {
+   "left": 1009,
+   "top": 201,
+   "width": 470,
+   "height": 470
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-plotters-table",
+  "ctx": "prep",
+  "dpr": 1,
+  "w": 48,
+  "h": 48,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--prep-48x48.avif",
+  "bytes": 990,
+  "sourceWindow": {
+   "left": 102,
+   "top": 440,
+   "width": 501,
+   "height": 501
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-plotters-table",
+  "ctx": "prep",
+  "dpr": 2,
+  "w": 96,
+  "h": 96,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--prep-96x96.avif",
+  "bytes": 2531,
+  "sourceWindow": {
+   "left": 102,
+   "top": 440,
+   "width": 501,
+   "height": 501
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-plotters-table",
+  "ctx": "lists1",
+  "dpr": 1,
+  "w": 318,
+  "h": 90,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--lists1-318x90.avif",
+  "bytes": 6976,
+  "sourceWindow": {
+   "left": 0,
+   "top": 573,
+   "width": 830,
+   "height": 235
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-plotters-table",
+  "ctx": "lists1",
+  "dpr": 2,
+  "w": 636,
+  "h": 180,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--lists1-636x180.avif",
+  "bytes": 18799,
+  "sourceWindow": {
+   "left": 0,
+   "top": 573,
+   "width": 830,
+   "height": 235
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-plotters-table",
+  "ctx": "lists2",
+  "dpr": 1,
+  "w": 158,
+  "h": 90,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--lists2-158x90.avif",
+  "bytes": 3757,
+  "sourceWindow": {
+   "left": 0,
+   "top": 454,
+   "width": 830,
+   "height": 473
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-plotters-table",
+  "ctx": "lists2",
+  "dpr": 2,
+  "w": 316,
+  "h": 180,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--lists2-316x180.avif",
+  "bytes": 11237,
+  "sourceWindow": {
+   "left": 0,
+   "top": 454,
+   "width": 830,
+   "height": 473
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-plotters-table",
+  "ctx": "lists3",
+  "dpr": 1,
+  "w": 105,
+  "h": 90,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--lists3-105x90.avif",
+  "bytes": 2620,
+  "sourceWindow": {
+   "left": 123,
+   "top": 440,
+   "width": 585,
+   "height": 501
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "intrigue-and-underworld-plotters-table",
+  "ctx": "lists3",
+  "dpr": 2,
+  "w": 210,
+  "h": 180,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/intrigue-and-underworld-plotters-table--lists3-210x180.avif",
+  "bytes": 7716,
+  "sourceWindow": {
+   "left": 123,
+   "top": 440,
+   "width": 585,
+   "height": 501
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "sacred-sanctuaries-statue-altar",
+  "ctx": "catalog",
+  "dpr": 1,
+  "w": 95,
+  "h": 249,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-statue-altar--catalog-95x249.avif",
+  "bytes": 8603,
+  "sourceWindow": {
+   "left": 405,
+   "top": 60,
+   "width": 271,
+   "height": 710
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "sacred-sanctuaries-statue-altar",
+  "ctx": "catalog",
+  "dpr": 2,
+  "w": 190,
+  "h": 498,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-statue-altar--catalog-190x498.avif",
+  "bytes": 24998,
+  "sourceWindow": {
+   "left": 405,
+   "top": 60,
+   "width": 271,
+   "height": 710
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "sacred-sanctuaries-statue-altar",
+  "ctx": "catalog",
+  "dpr": 2,
+  "w": 190,
+  "h": 498,
+  "format": "webp",
+  "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-statue-altar--catalog-190x498.webp",
+  "bytes": 30876,
+  "sourceWindow": {
+   "left": 405,
+   "top": 60,
+   "width": 271,
+   "height": 710
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "sacred-sanctuaries-statue-altar",
+  "ctx": "prep",
+  "dpr": 1,
+  "w": 48,
+  "h": 48,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-statue-altar--prep-48x48.avif",
+  "bytes": 1106,
+  "sourceWindow": {
+   "left": 230,
+   "top": 60,
+   "width": 500,
+   "height": 500
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "sacred-sanctuaries-statue-altar",
+  "ctx": "prep",
+  "dpr": 2,
+  "w": 96,
+  "h": 96,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-statue-altar--prep-96x96.avif",
+  "bytes": 3222,
+  "sourceWindow": {
+   "left": 230,
+   "top": 60,
+   "width": 500,
+   "height": 500
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "sacred-sanctuaries-statue-altar",
+  "ctx": "lists3",
+  "dpr": 1,
+  "w": 105,
+  "h": 90,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-statue-altar--lists3-105x90.avif",
+  "bytes": 3296,
+  "sourceWindow": {
+   "left": 230,
+   "top": 94,
+   "width": 500,
+   "height": 429
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "sacred-sanctuaries-statue-altar",
+  "ctx": "lists3",
+  "dpr": 2,
+  "w": 210,
+  "h": 180,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-statue-altar--lists3-210x180.avif",
+  "bytes": 10669,
+  "sourceWindow": {
+   "left": 230,
+   "top": 94,
+   "width": 500,
+   "height": 429
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "sacred-sanctuaries-lotus-pool",
+  "ctx": "prep",
+  "dpr": 1,
+  "w": 48,
+  "h": 48,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--prep-48x48.avif",
+  "bytes": 1149,
+  "sourceWindow": {
+   "left": 1352,
+   "top": 719,
+   "width": 221,
+   "height": 221
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "sacred-sanctuaries-lotus-pool",
+  "ctx": "prep",
+  "dpr": 2,
+  "w": 96,
+  "h": 96,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--prep-96x96.avif",
+  "bytes": 3377,
+  "sourceWindow": {
+   "left": 1352,
+   "top": 719,
+   "width": 221,
+   "height": 221
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "sacred-sanctuaries-lotus-pool",
+  "ctx": "lists1",
+  "dpr": 1,
+  "w": 318,
+  "h": 90,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--lists1-318x90.avif",
+  "bytes": 9537,
+  "sourceWindow": {
+   "left": 900,
+   "top": 719,
+   "width": 770,
+   "height": 218
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "sacred-sanctuaries-lotus-pool",
+  "ctx": "lists1",
+  "dpr": 2,
+  "w": 636,
+  "h": 180,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--lists1-636x180.avif",
+  "bytes": 25424,
+  "sourceWindow": {
+   "left": 900,
+   "top": 719,
+   "width": 770,
+   "height": 218
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "sacred-sanctuaries-lotus-pool",
+  "ctx": "lists2",
+  "dpr": 1,
+  "w": 158,
+  "h": 90,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--lists2-158x90.avif",
+  "bytes": 5469,
+  "sourceWindow": {
+   "left": 1268,
+   "top": 719,
+   "width": 388,
+   "height": 221
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "sacred-sanctuaries-lotus-pool",
+  "ctx": "lists2",
+  "dpr": 2,
+  "w": 316,
+  "h": 180,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--lists2-316x180.avif",
+  "bytes": 14006,
+  "sourceWindow": {
+   "left": 1268,
+   "top": 719,
+   "width": 388,
+   "height": 221
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "sacred-sanctuaries-lotus-pool",
+  "ctx": "lists3",
+  "dpr": 1,
+  "w": 105,
+  "h": 90,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--lists3-105x90.avif",
+  "bytes": 3783,
+  "sourceWindow": {
+   "left": 1333,
+   "top": 719,
+   "width": 258,
+   "height": 221
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "sacred-sanctuaries-lotus-pool",
+  "ctx": "lists3",
+  "dpr": 2,
+  "w": 210,
+  "h": 180,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/sacred-sanctuaries-lotus-pool--lists3-210x180.avif",
+  "bytes": 9350,
+  "sourceWindow": {
+   "left": 1333,
+   "top": 719,
+   "width": 258,
+   "height": 221
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "dungeon-delves-barred-gate",
+  "ctx": "catalog",
+  "dpr": 1,
+  "w": 95,
+  "h": 249,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-barred-gate--catalog-95x249.avif",
+  "bytes": 4515,
+  "sourceWindow": {
+   "left": 220,
+   "top": 19,
+   "width": 259,
+   "height": 680
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "dungeon-delves-barred-gate",
+  "ctx": "catalog",
+  "dpr": 2,
+  "w": 190,
+  "h": 498,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-barred-gate--catalog-190x498.avif",
+  "bytes": 12150,
+  "sourceWindow": {
+   "left": 220,
+   "top": 19,
+   "width": 259,
+   "height": 680
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "dungeon-delves-barred-gate",
+  "ctx": "catalog",
+  "dpr": 2,
+  "w": 190,
+  "h": 498,
+  "format": "webp",
+  "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-barred-gate--catalog-190x498.webp",
+  "bytes": 17546,
+  "sourceWindow": {
+   "left": 220,
+   "top": 19,
+   "width": 259,
+   "height": 680
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "dungeon-delves-barred-gate",
+  "ctx": "prep",
+  "dpr": 1,
+  "w": 48,
+  "h": 48,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-barred-gate--prep-48x48.avif",
+  "bytes": 804,
+  "sourceWindow": {
+   "left": 220,
+   "top": 19,
+   "width": 620,
+   "height": 620
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "dungeon-delves-barred-gate",
+  "ctx": "prep",
+  "dpr": 2,
+  "w": 96,
+  "h": 96,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-barred-gate--prep-96x96.avif",
+  "bytes": 2105,
+  "sourceWindow": {
+   "left": 220,
+   "top": 19,
+   "width": 620,
+   "height": 620
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "dungeon-delves-barred-gate",
+  "ctx": "lists3",
+  "dpr": 1,
+  "w": 105,
+  "h": 90,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-barred-gate--lists3-105x90.avif",
+  "bytes": 2242,
+  "sourceWindow": {
+   "left": 220,
+   "top": 59,
+   "width": 620,
+   "height": 531
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "dungeon-delves-barred-gate",
+  "ctx": "lists3",
+  "dpr": 2,
+  "w": 210,
+  "h": 180,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-barred-gate--lists3-210x180.avif",
+  "bytes": 6412,
+  "sourceWindow": {
+   "left": 220,
+   "top": 59,
+   "width": 620,
+   "height": 531
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "dungeon-delves-stair-bridge",
+  "ctx": "catalog",
+  "dpr": 1,
+  "w": 95,
+  "h": 249,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-stair-bridge--catalog-95x249.avif",
+  "bytes": 3450,
+  "sourceWindow": {
+   "left": 961,
+   "top": 0,
+   "width": 244,
+   "height": 640
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "dungeon-delves-stair-bridge",
+  "ctx": "catalog",
+  "dpr": 2,
+  "w": 190,
+  "h": 498,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-stair-bridge--catalog-190x498.avif",
+  "bytes": 9102,
+  "sourceWindow": {
+   "left": 961,
+   "top": 0,
+   "width": 244,
+   "height": 640
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "dungeon-delves-stair-bridge",
+  "ctx": "catalog",
+  "dpr": 2,
+  "w": 190,
+  "h": 498,
+  "format": "webp",
+  "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-stair-bridge--catalog-190x498.webp",
+  "bytes": 13296,
+  "sourceWindow": {
+   "left": 961,
+   "top": 0,
+   "width": 244,
+   "height": 640
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "dungeon-delves-stair-bridge",
+  "ctx": "prep",
+  "dpr": 1,
+  "w": 48,
+  "h": 48,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-stair-bridge--prep-48x48.avif",
+  "bytes": 736,
+  "sourceWindow": {
+   "left": 880,
+   "top": 0,
+   "width": 640,
+   "height": 640
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "dungeon-delves-stair-bridge",
+  "ctx": "prep",
+  "dpr": 2,
+  "w": 96,
+  "h": 96,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-stair-bridge--prep-96x96.avif",
+  "bytes": 1849,
+  "sourceWindow": {
+   "left": 880,
+   "top": 0,
+   "width": 640,
+   "height": 640
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "dungeon-delves-stair-bridge",
+  "ctx": "lists3",
+  "dpr": 1,
+  "w": 105,
+  "h": 90,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-stair-bridge--lists3-105x90.avif",
+  "bytes": 1947,
+  "sourceWindow": {
+   "left": 880,
+   "top": 36,
+   "width": 700,
+   "height": 600
+  },
+  "upscaled": false
+ },
+ {
+  "regionId": "dungeon-delves-stair-bridge",
+  "ctx": "lists3",
+  "dpr": 2,
+  "w": 210,
+  "h": 180,
+  "format": "avif",
+  "path": "lab/semantic-reuse/derivs-v2/dungeon-delves-stair-bridge--lists3-210x180.avif",
+  "bytes": 5543,
+  "sourceWindow": {
+   "left": 880,
+   "top": 36,
+   "width": 700,
+   "height": 600
+  },
+  "upscaled": false
+ }
+]

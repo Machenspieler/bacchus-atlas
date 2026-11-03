@@ -9,17 +9,23 @@
      - coverage, and the review export.
    Writes docs/research/semantic-artwork-reuse-lab-v1/{inventory,stats,review-export}.json.
    Needs `sharp` (devDependency). Masters are only read. Nothing here touches js/, data/ or the registry.
-   Run: node scripts/semantic-reuse-lab.js [--no-derivatives]
+   Run: node scripts/semantic-reuse-lab.js [--pilot=v2] [--no-derivatives]  (V2 writes docs/research/semantic-artwork-reuse-lab-v2/ and lab/semantic-reuse/derivs-v2/)
    ============================================================ */
 'use strict';
 const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const OUT = path.join(ROOT, 'docs/research/semantic-artwork-reuse-lab-v1');
-const DERIVS = path.join(ROOT, 'lab/semantic-reuse/derivs');
 const Core = require('../lab/semantic-reuse/lab-core.js');
-const Data = require('../lab/semantic-reuse/data.js');
+const DataV1 = require('../lab/semantic-reuse/data.js');
+const DataV2 = require('../lab/semantic-reuse/data-v2.js');
+/* Pilot selection: V1 (default, historical) or V2. V2 reuses V1's master inventory and writes only its own folders. */
+const pilotPaths = pilot => (pilot === 'v2'
+  ? { out: path.join(ROOT, DataV2.RESULTS_DIR), derivs: path.join(ROOT, DataV2.DERIVS_DIR), derivsRel: DataV2.DERIVS_DIR, manifest: path.join(ROOT, DataV2.MANIFEST) }
+  : { out: path.join(ROOT, 'docs/research/semantic-artwork-reuse-lab-v1'), derivs: path.join(ROOT, 'lab/semantic-reuse/derivs'), derivsRel: 'lab/semantic-reuse/derivs/', manifest: path.join(ROOT, 'lab/semantic-reuse/derivs-manifest.json') });
+const dataFor = pilot => (pilot === 'v2'
+  ? Object.assign({}, DataV1, { PILOT_SOURCES: DataV2.PILOT_SOURCES, REGIONS: DataV2.REGIONS, MAPPINGS: DataV2.MAPPINGS })
+  : DataV1);
 const read = p => JSON.parse(fs.readFileSync(path.join(ROOT, p), 'utf8'));
 const AVIF = { quality: 52, effort: 6 };
 const WEBP = { quality: 82, effort: 6 };
@@ -28,14 +34,14 @@ const LIST_COVER_WIDTHS = [320, 640, 960];
 /** Source id -> { path, width, height, format, bytes, available, ... } — missing masters are reported, never replaced. */
 async function inventory(sharp) {
   const out = {};
-  const files = Object.assign({}, Data.MASTER_FILES, Data.EXTRA_MASTERS);
+  const files = Object.assign({}, DataV1.MASTER_FILES, DataV1.EXTRA_MASTERS);
   const Art = require('../js/list-cover-art.js');
   const Catalog = require('../js/catalog-art.js');
   for (const [id, file] of Object.entries(files)) {
-    const rel = Data.MASTER_DIR + file;
+    const rel = DataV1.MASTER_DIR + file;
     const abs = path.join(ROOT, rel);
     const used = !!Art.IMAGES['archetype:' + id];
-    const entry = { path: rel, available: fs.existsSync(abs), extra: !!Data.EXTRA_MASTERS[id], productionPicture: used };
+    const entry = { path: rel, available: fs.existsSync(abs), extra: !!DataV1.EXTRA_MASTERS[id], productionPicture: used };
     if (entry.available) {
       const m = await sharp(abs).metadata();
       Object.assign(entry, { width: m.width, height: m.height, format: m.format, bytes: fs.statSync(abs).size });
@@ -104,7 +110,7 @@ function approachA(region, ctxId, px, framing, srcW) {
   return per;
 }
 
-async function buildDerivatives(sharp, region, src, srcMeta, verdicts) {
+async function buildDerivatives(sharp, region, src, srcMeta, verdicts, P) {
   const files = [];
   const px = Core.boundsToPixels(region.bounds, srcMeta);
   for (const ctx of Core.CONTEXT_IDS) {
@@ -120,13 +126,13 @@ async function buildDerivatives(sharp, region, src, srcMeta, verdicts) {
       const base = sharp(src).extract({ left, top, width, height }).resize(w, h, { fit: 'fill', kernel: 'lanczos3', withoutEnlargement: false });
       const name = derivName(region.id, ctx, w, h, 'avif');
       const buf = await base.clone().avif(AVIF).toBuffer();
-      fs.writeFileSync(path.join(DERIVS, name), buf);
-      files.push({ regionId: region.id, ctx, dpr, w, h, format: 'avif', path: 'lab/semantic-reuse/derivs/' + name, bytes: buf.length, sourceWindow: { left, top, width, height }, upscaled: width < w });
+      fs.writeFileSync(path.join(P.derivs, name), buf);
+      files.push({ regionId: region.id, ctx, dpr, w, h, format: 'avif', path: P.derivsRel + name, bytes: buf.length, sourceWindow: { left, top, width, height }, upscaled: width < w });
       if (ctx === 'catalog' && dpr === 2) {
         const wn = derivName(region.id, ctx, w, h, 'webp');
         const wb = await base.clone().webp(WEBP).toBuffer();
-        fs.writeFileSync(path.join(DERIVS, wn), wb);
-        files.push({ regionId: region.id, ctx, dpr, w, h, format: 'webp', path: 'lab/semantic-reuse/derivs/' + wn, bytes: wb.length, sourceWindow: { left, top, width, height }, upscaled: width < w });
+        fs.writeFileSync(path.join(P.derivs, wn), wb);
+        files.push({ regionId: region.id, ctx, dpr, w, h, format: 'webp', path: P.derivsRel + wn, bytes: wb.length, sourceWindow: { left, top, width, height }, upscaled: width < w });
       }
     }
   }
@@ -135,6 +141,8 @@ async function buildDerivatives(sharp, region, src, srcMeta, verdicts) {
 
 async function run(opts) {
   opts = opts || {};
+  const pilot = opts.pilot === 'v2' ? 'v2' : 'v1';
+  const P = pilotPaths(pilot); const Data = dataFor(pilot); const OUT = P.out; const DERIVS = P.derivs;
   const sharp = require('sharp');
   fs.mkdirSync(OUT, { recursive: true });
   const inv = await inventory(sharp);
@@ -162,7 +170,7 @@ async function run(opts) {
       frames[ctx] = Object.assign({ verdict: entry.verdict, status, usable, A: approachA(r, ctx, px, framing, srcMeta.width) }, viab);
     }
     let files = [];
-    if (!opts.noDerivatives && r.status === 'approved') files = await buildDerivatives(sharp, r, path.join(ROOT, srcMeta.path), srcMeta, verdicts);
+    if (!opts.noDerivatives && r.status === 'approved') files = await buildDerivatives(sharp, r, path.join(ROOT, srcMeta.path), srcMeta, verdicts, P);
     derivFiles.push(...files);
     regionReports.push({ id: r.id, sourceId: r.sourceId, status: r.status, pixels: px, frames, derivatives: files });
   }
@@ -171,7 +179,12 @@ async function run(opts) {
   const approvedRegions = Data.REGIONS.filter(r => r.status === 'approved');
   const usableFrames = regionReports.flatMap(r => Core.CONTEXT_IDS.filter(c => r.frames[c].usable).map(c => ({ region: r.id, ctx: c })));
   const bytes = (fmt, ctx) => derivFiles.filter(f => f.format === fmt && (!ctx || f.ctx === ctx)).reduce((n, f) => n + f.bytes, 0);
+  const gainInput = (regions, mappings) => ({ regions, mappings, sources, envIds, baseline, primaryArchetype: primary });
+  const gainsV2 = pilot === 'v2' ? Core.gains(gainInput(Data.REGIONS, Data.MAPPINGS)) : null;
+  const gainsCombined = pilot === 'v2' ? Core.gains(gainInput(DataV1.REGIONS.concat(DataV2.REGIONS), DataV1.MAPPINGS.concat(DataV2.MAPPINGS))) : null;
+  const gainsV1 = pilot === 'v2' ? Core.gains(gainInput(DataV1.REGIONS, DataV1.MAPPINGS)) : null;
   const stats = {
+    pilot,
     generated: new Date().toISOString().slice(0, 10),
     sourcesInspected: Object.keys(inv).length, pilotSources: Data.PILOT_SOURCES.length, mastersMissing: Object.keys(inv).filter(k => !inv[k].available),
     regions: {
@@ -193,6 +206,7 @@ async function run(opts) {
       prep: countBy(envIds, e => baseline[e].prep),
     },
     coverage: cov,
+    gains: pilot === 'v2' ? { v1: stripRegions(gainsV1), v2: stripRegions(gainsV2), combined: stripRegions(gainsCombined) } : undefined,
     unlockedByCrops: (() => { const ids = cov.approved.ids.filter(e => !['unique', 'override', 'archetype'].includes(baseline[e].lists) && !['unique', 'override', 'thematic'].includes(baseline[e].catalog)); return { count: ids.length, ids }; })(),
     assets: {
       files: derivFiles.length, avifBytes: bytes('avif'), webpBytes: bytes('webp'),
@@ -212,13 +226,14 @@ async function run(opts) {
   fs.writeFileSync(path.join(OUT, 'inventory.json'), JSON.stringify(inv, null, 1) + '\n');
   fs.writeFileSync(path.join(OUT, 'stats.json'), JSON.stringify(stats, null, 1) + '\n');
   fs.writeFileSync(path.join(OUT, 'review-export.json'), JSON.stringify(exp, null, 1) + '\n');
-  fs.writeFileSync(path.join(ROOT, 'lab/semantic-reuse/derivs-manifest.json'), JSON.stringify(derivFiles, null, 1) + '\n');
+  fs.writeFileSync(P.manifest, JSON.stringify(derivFiles, null, 1) + '\n');
   console.log('inventory', Object.keys(inv).length, 'regions', Data.REGIONS.length, 'approved', approvedRegions.length, 'derivative files', derivFiles.length);
   console.log('coverage', JSON.stringify({ approved: cov.approved.environments, net: Object.fromEntries(Core.COVERAGE_CONTEXTS.map(c => [c, cov.byContext[c].net])), any: cov.netAnyContext, cross: cov.crossArchetype.environments }));
   return { inv, stats, exp, baseline };
 }
+const stripRegions = g => JSON.parse(JSON.stringify(g, (k, v) => (k === 'regionsByEnv' ? undefined : v)));
 const countBy = (a, f) => a.reduce((o, x) => { const k = f(x); o[k] = (o[k] || 0) + 1; return o; }, {});
 const avg = a => (a.length ? Math.round(a.reduce((x, y) => x + y, 0) / a.length) : 0);
 
 module.exports = { inventory, productionBaseline, loadContext, approachA, run, derivName };
-if (require.main === module) run({ noDerivatives: process.argv.includes('--no-derivatives') }).catch(e => { console.error(e); process.exit(1); });
+if (require.main === module) run({ noDerivatives: process.argv.includes('--no-derivatives'), pilot: process.argv.includes('--pilot=v2') || process.argv.includes('v2') ? 'v2' : 'v1' }).catch(e => { console.error(e); process.exit(1); });

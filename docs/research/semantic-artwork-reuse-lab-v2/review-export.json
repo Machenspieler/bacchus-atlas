@@ -1,0 +1,3747 @@
+{
+ "schema": "bacchus-atlas/semantic-artwork-reuse-lab",
+ "version": 1,
+ "generated": "2026-11-03",
+ "sources": [
+  {
+   "id": "arcane-sanctums",
+   "path": "img/cover-archetypes-source/arcane-sanctums-landscape.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2603007
+  },
+  {
+   "id": "archives-and-libraries",
+   "path": "img/cover-archetypes-source/archives-and-libraries.png",
+   "width": 1671,
+   "height": 941,
+   "format": "png",
+   "bytes": 2587596
+  },
+  {
+   "id": "arenas-and-duels",
+   "path": "img/cover-archetypes-source/arenas-and-duels.png",
+   "width": 1671,
+   "height": 941,
+   "format": "png",
+   "bytes": 2729136
+  },
+  {
+   "id": "blighted-mires",
+   "path": "img/cover-archetypes-source/blighted-mires.png",
+   "width": 1671,
+   "height": 941,
+   "format": "png",
+   "bytes": 2842922
+  },
+  {
+   "id": "chase-and-ambush",
+   "path": "img/cover-archetypes-source/chase-and-ambush.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2959584
+  },
+  {
+   "id": "crypts-and-tombs",
+   "path": "img/cover-archetypes-source/crypts-and-tombs.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2413319
+  },
+  {
+   "id": "cursed-and-blighted-lands",
+   "path": "img/cover-archetypes-source/cursed-and-blighted-lands.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 3043346
+  },
+  {
+   "id": "drowned-depths",
+   "path": "img/cover-archetypes-source/drowned-depths.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 3199452
+  },
+  {
+   "id": "dungeon-delves",
+   "path": "img/cover-archetypes-source/dungeon-delves.png",
+   "width": 1670,
+   "height": 941,
+   "format": "png",
+   "bytes": 2531636
+  },
+  {
+   "id": "feasts-and-revelry",
+   "path": "img/cover-archetypes-source/feasts-and-revelry-landscape.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2647605
+  },
+  {
+   "id": "fey-and-enchanted",
+   "path": "img/cover-archetypes-source/fey-and-enchanted.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 3260506
+  },
+  {
+   "id": "forgotten-ruins",
+   "path": "img/cover-archetypes-source/forgotten-ruins-landscape.png",
+   "width": 1536,
+   "height": 1024,
+   "format": "png",
+   "bytes": 3438082
+  },
+  {
+   "id": "haunted-and-deathly",
+   "path": "img/cover-archetypes-source/haunted-and-deathly-landscape.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2914303
+  },
+  {
+   "id": "haunted-and-deathly-portrait",
+   "path": "img/cover-archetypes-source/haunted-and-deathly-portrait.png",
+   "width": 1024,
+   "height": 1536,
+   "format": "png",
+   "bytes": 2961030
+  },
+  {
+   "id": "infernal-and-profane",
+   "path": "img/cover-archetypes-source/infernal-and-profane.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2714234
+  },
+  {
+   "id": "intrigue-and-underworld",
+   "path": "img/cover-archetypes-source/intrigue-and-underworld.png",
+   "width": 1671,
+   "height": 941,
+   "format": "png",
+   "bytes": 2569027
+  },
+  {
+   "id": "monster-lairs",
+   "path": "img/cover-archetypes-source/monster-lairs.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2866597
+  },
+  {
+   "id": "perilous-passages",
+   "path": "img/cover-archetypes-source/perilous-passages.png",
+   "width": 1670,
+   "height": 941,
+   "format": "png",
+   "bytes": 2837676
+  },
+  {
+   "id": "planar-rifts",
+   "path": "img/cover-archetypes-source/planar-rifts.png",
+   "width": 1671,
+   "height": 941,
+   "format": "png",
+   "bytes": 2630123
+  },
+  {
+   "id": "sacred-sanctuaries",
+   "path": "img/cover-archetypes-source/sacred-sanctuaries.png",
+   "width": 1671,
+   "height": 941,
+   "format": "png",
+   "bytes": 3161634
+  },
+  {
+   "id": "seafaring",
+   "path": "img/cover-archetypes-source/seafaring.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2761584
+  },
+  {
+   "id": "sinister-woods",
+   "path": "img/cover-archetypes-source/sinister-woods.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2870424
+  },
+  {
+   "id": "sky-realms",
+   "path": "img/cover-archetypes-source/sky-realms.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2699134
+  },
+  {
+   "id": "starfaring",
+   "path": "img/cover-archetypes-source/starfaring.png",
+   "width": 1671,
+   "height": 941,
+   "format": "png",
+   "bytes": 2805748
+  },
+  {
+   "id": "storms-and-calamity",
+   "path": "img/cover-archetypes-source/storms-and-calamity.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 3081230
+  },
+  {
+   "id": "streets-and-towns",
+   "path": "img/cover-archetypes-source/streets-and-towns.png",
+   "width": 1670,
+   "height": 941,
+   "format": "png",
+   "bytes": 3261604
+  },
+  {
+   "id": "strongholds-and-sieges",
+   "path": "img/cover-archetypes-source/strongholds-and-sieges.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2764031
+  },
+  {
+   "id": "taverns-and-inns",
+   "path": "img/cover-archetypes-source/taverns-and-inns.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 2517968
+  },
+  {
+   "id": "time-and-dream",
+   "path": "img/cover-archetypes-source/time-and-dream.png",
+   "width": 1672,
+   "height": 941,
+   "format": "png",
+   "bytes": 3624282
+  }
+ ],
+ "regions": [
+  {
+   "id": "intrigue-and-underworld-covert-table",
+   "sourceId": "intrigue-and-underworld",
+   "parentArtworkId": "intrigue-and-underworld",
+   "label": "Candle-lit table under the awning",
+   "description": "Two cloaked patrons, one hooded, at a candle-lit table under a red awning beside barrels and crates; a hanging lantern above.",
+   "bounds": {
+    "x": 0.353,
+    "y": 0.202,
+    "width": 0.299,
+    "height": 0.563
+   },
+   "pixels": {
+    "x": 589,
+    "y": 190,
+    "w": 500,
+    "h": 530
+   },
+   "subject": {
+    "x": 0.14,
+    "y": 0.42,
+    "width": 0.52,
+    "height": 0.42
+   },
+   "subjects": {
+    "catalog": {
+     "x": 0.13,
+     "y": 0.42,
+     "width": 0.3,
+     "height": 0.42
+    },
+    "lists1": {
+     "x": 0.14,
+     "y": 0.5,
+     "width": 0.52,
+     "height": 0.22
+    }
+   },
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "medium",
+    "contrast": "good",
+    "lighting": "candle and lantern in dark",
+    "detail": "faces and cloaks readable at 2x",
+    "distinct": "the only seated gathering in the source"
+   },
+   "notes": "Evidence is a hooded figure, a candle, barrels: a discreet conversation. It does not show a crime.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 13.06,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 202.2,
+       "h": 530,
+       "share": 0.404
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.47,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.94,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 50,
+      "y": 100,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 500,
+       "h": 500,
+       "share": 0.943
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.096,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.192,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 65.01,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-limited-dpr2",
+      "computed": "suitable-dpr1-limited-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 500,
+       "h": 141.5,
+       "share": 0.267
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.636,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.272,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 78.1,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 500,
+       "h": 284.8,
+       "share": 0.537
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.316,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.632,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 100,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 500,
+       "h": 428.6,
+       "share": 0.809
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.21,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.42,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "intrigue-and-underworld-arch-alley",
+   "sourceId": "intrigue-and-underworld",
+   "parentArtworkId": "intrigue-and-underworld",
+   "label": "Wet lane and arched passage",
+   "description": "A cloaked figure walks a wet cobbled lane toward a stone archway; a hanging lantern, barrels and a banner on either side.",
+   "bounds": {
+    "x": 0.604,
+    "y": 0.117,
+    "width": 0.281,
+    "height": 0.723
+   },
+   "pixels": {
+    "x": 1009,
+    "y": 110,
+    "w": 470,
+    "h": 680
+   },
+   "subject": {
+    "x": 0.3,
+    "y": 0.12,
+    "width": 0.55,
+    "height": 0.72
+   },
+   "subjects": {},
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "medium",
+    "contrast": "good",
+    "lighting": "lantern glow on wet stone",
+    "detail": "good",
+    "distinct": "only passage-and-arch view"
+   },
+   "notes": "A dark street is not a hideout: this crop supports \"street at night\" and nothing criminal.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 66.74,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "The cloaked figure and the arch fill the strip: night street.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 259.4,
+       "h": 680,
+       "share": 0.552
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.366,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.732,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 50,
+      "y": 43.52,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.96,
+      "effective": {
+       "w": 470,
+       "h": 470,
+       "share": 0.691
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.102,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.204,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 47.51,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "A 3.5:1 band over a tall region keeps a slice; the subject is cut away. The arch, which is the point, is lost.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.272,
+      "effective": {
+       "w": 470,
+       "h": 133,
+       "share": 0.196
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.677,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.353,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 46.7,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "Half-width tile keeps the lane but not the arch.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.547,
+      "effective": {
+       "w": 470,
+       "h": 267.7,
+       "share": 0.394
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.336,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.672,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 45.09,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "A third keeps the figure and a barrel, not the passage.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.823,
+      "effective": {
+       "w": 470,
+       "h": 402.9,
+       "share": 0.592
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.223,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.447,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "intrigue-and-underworld-plotters-table",
+   "sourceId": "intrigue-and-underworld",
+   "parentArtworkId": "intrigue-and-underworld",
+   "label": "Plotter's table",
+   "description": "A table with a parchment map under a red wax seal, a dagger, scattered coins, a silver goblet, bound books and a lit lantern.",
+   "bounds": {
+    "x": 0,
+    "y": 0.468,
+    "width": 0.497,
+    "height": 0.532
+   },
+   "pixels": {
+    "x": 0,
+    "y": 440,
+    "w": 830,
+    "h": 501
+   },
+   "subject": {
+    "x": 0.1,
+    "y": 0.05,
+    "width": 0.8,
+    "height": 0.85
+   },
+   "subjects": {
+    "catalog": {
+     "x": 0.05,
+     "y": 0.05,
+     "width": 0.2,
+     "height": 0.85
+    },
+    "prep": {
+     "x": 0.15,
+     "y": 0.1,
+     "width": 0.55,
+     "height": 0.8
+    },
+    "lists1": {
+     "x": 0.1,
+     "y": 0.25,
+     "width": 0.8,
+     "height": 0.5
+    },
+    "lists2": {
+     "x": 0.1,
+     "y": 0.2,
+     "width": 0.8,
+     "height": 0.6
+    }
+   },
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "high",
+    "contrast": "good",
+    "lighting": "candle",
+    "detail": "rich",
+    "distinct": "dagger + sealed map + coins, unlike V1 desk (no magnifier or scrolls)"
+   },
+   "notes": "",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 4.53,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "A 1.7:1 region in a 1:2.6 strip keeps only the lantern or the goblet; the dagger and map are lost.",
+     "viability": {
+      "status": "visually-unsuitable",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 191.1,
+       "h": 501,
+       "share": 0.23
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.497,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.994,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 31.08,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 501,
+       "h": 501,
+       "share": 0.604
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.096,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.192,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.938,
+      "effective": {
+       "w": 830,
+       "h": 234.9,
+       "share": 0.469
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.383,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.766,
+       "upscaled": false
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 830,
+       "h": 472.8,
+       "share": 0.944
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.19,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.381,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.88,
+      "effective": {
+       "w": 584.5,
+       "h": 501,
+       "share": 0.704
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.18,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.359,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "intrigue-and-underworld-serpent-banner",
+   "sourceId": "intrigue-and-underworld",
+   "parentArtworkId": "intrigue-and-underworld",
+   "label": "Dagger-and-serpent banner",
+   "description": "A tattered maroon banner with a serpent coiled round a dagger.",
+   "bounds": {
+    "x": 0.102,
+    "y": 0.043,
+    "width": 0.12,
+    "height": 0.553
+   },
+   "pixels": {
+    "x": 170,
+    "y": 40,
+    "w": 201,
+    "h": 520
+   },
+   "subject": {
+    "x": 0.1,
+    "y": 0.05,
+    "width": 0.8,
+    "height": 0.9
+   },
+   "subjects": {},
+   "status": "not-independently-meaningful",
+   "visualQa": {
+    "recognizability": "medium",
+    "complexity": "low",
+    "contrast": "medium",
+    "lighting": "dim",
+    "detail": "good",
+    "distinct": "n/a"
+   },
+   "notes": "An emblem, not a place. It says \"a faction\" but no environment is described by a banner, and a faction mark is not evidence of a criminal one.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 198.4,
+       "h": 520,
+       "share": 0.987
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.479,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.958,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.429,
+      "effective": {
+       "w": 201,
+       "h": 201,
+       "share": 0.387
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.239,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.478,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.122,
+      "effective": {
+       "w": 201,
+       "h": 56.9,
+       "share": 0.109
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 1.582,
+       "upscaled": true
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 3.164,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.245,
+      "effective": {
+       "w": 201,
+       "h": 114.5,
+       "share": 0.22
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.786,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 1.572,
+       "upscaled": true
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.368,
+      "effective": {
+       "w": 201,
+       "h": 172.3,
+       "share": 0.331
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.522,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 1.045,
+       "upscaled": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "intrigue-and-underworld-night-skyline",
+   "sourceId": "intrigue-and-underworld",
+   "parentArtworkId": "intrigue-and-underworld",
+   "label": "Lit city across the bridge",
+   "description": "A domed, lamp-lit city on a hill behind a stone viaduct under a night sky.",
+   "bounds": {
+    "x": 0.61,
+    "y": 0,
+    "width": 0.168,
+    "height": 0.18
+   },
+   "pixels": {
+    "x": 1019,
+    "y": 0,
+    "w": 281,
+    "h": 169
+   },
+   "subject": {
+    "x": 0.05,
+    "y": 0.05,
+    "width": 0.9,
+    "height": 0.9
+   },
+   "subjects": {},
+   "status": "insufficient-resolution",
+   "visualQa": {
+    "recognizability": "medium",
+    "complexity": "medium",
+    "contrast": "good",
+    "lighting": "night",
+    "detail": "soft",
+    "distinct": "n/a"
+   },
+   "notes": "About 280x170 px in the master and soft: every frame would enlarge it. The setting is pleasant but belongs to no environment here.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.255,
+      "effective": {
+       "w": 64.5,
+       "h": 169,
+       "share": 0.229
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 1.473,
+       "upscaled": true
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 2.947,
+       "upscaled": true
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.668,
+      "effective": {
+       "w": 169,
+       "h": 169,
+       "share": 0.601
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.284,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.568,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.523,
+      "effective": {
+       "w": 281,
+       "h": 79.5,
+       "share": 0.471
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 1.132,
+       "upscaled": true
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 2.263,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-limited-dpr2",
+      "computed": "suitable-dpr1-limited-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 281,
+       "h": 160.1,
+       "share": 0.947
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.562,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 1.125,
+       "upscaled": true
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.78,
+      "effective": {
+       "w": 197.2,
+       "h": 169,
+       "share": 0.702
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.533,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 1.065,
+       "upscaled": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "sacred-sanctuaries-statue-altar",
+   "sourceId": "sacred-sanctuaries",
+   "parentArtworkId": "sacred-sanctuaries",
+   "label": "Saint statue and candle altar",
+   "description": "A robed stone statue holding a bowl of flame before a golden sun-halo, white sun banners, banks of candles on stepped altars, incense smoke.",
+   "bounds": {
+    "x": 0.138,
+    "y": 0.064,
+    "width": 0.299,
+    "height": 0.755
+   },
+   "pixels": {
+    "x": 230,
+    "y": 60,
+    "w": 500,
+    "h": 710
+   },
+   "subject": {
+    "x": 0.42,
+    "y": 0,
+    "width": 0.4,
+    "height": 0.7
+   },
+   "subjects": {
+    "lists1": {
+     "x": 0.1,
+     "y": 0.45,
+     "width": 0.8,
+     "height": 0.35
+    }
+   },
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "medium",
+    "contrast": "excellent",
+    "lighting": "golden candle glow",
+    "detail": "fine",
+    "distinct": "the only figure in the source"
+   },
+   "notes": "Specific iconography (a sun-halo and a flame bowl). It belongs to a faith with a Sacred Flame or a sun, not to every holy place.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 76.19,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Statue, halo and candles read in the strip.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 270.9,
+       "h": 710,
+       "share": 0.542
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.351,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.701,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 500,
+       "h": 500,
+       "share": 0.704
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.096,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.192,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 65.61,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "A 3.5:1 band over a tall region keeps a slice; the subject is cut away. What survives is the rejected candle-steps crop.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.569,
+      "effective": {
+       "w": 500,
+       "h": 141.5,
+       "share": 0.199
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.636,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.272,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 24.95,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "Cuts the statue from the candles.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.573,
+      "effective": {
+       "w": 500,
+       "h": 284.8,
+       "share": 0.401
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.316,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.632,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 12.16,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.862,
+      "effective": {
+       "w": 500,
+       "h": 428.6,
+       "share": 0.604
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.21,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.42,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "sacred-sanctuaries-arched-vista",
+   "sourceId": "sacred-sanctuaries",
+   "parentArtworkId": "sacred-sanctuaries",
+   "label": "Ivy arches over a mountain waterfall",
+   "description": "Tall Gothic arches and ivy-wrapped columns frame a misty valley with two waterfalls and a distant ruined archway on a crag.",
+   "bounds": {
+    "x": 0.61,
+    "y": 0.096,
+    "width": 0.305,
+    "height": 0.669
+   },
+   "pixels": {
+    "x": 1019,
+    "y": 90,
+    "w": 510,
+    "h": 630
+   },
+   "subject": {
+    "x": 0.5,
+    "y": 0.15,
+    "width": 0.4,
+    "height": 0.6
+   },
+   "subjects": {},
+   "status": "proposed",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "medium",
+    "contrast": "good",
+    "lighting": "daylight and god-rays",
+    "detail": "good",
+    "distinct": "no statue, no candles: architecture and landscape only"
+   },
+   "notes": "Needs a human review. Beautiful and recognisable, but its only candidate (blade-root-sanctum) is contestable: the forest strip it would replace already shows the lore's deep green, and no other environment describes an open-air arcade over a valley. Not counted until a human decides.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 87.83,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Arch, ivy and waterfall in a vertical.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 240.4,
+       "h": 630,
+       "share": 0.471
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.395,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.79,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 50,
+      "y": 23.75,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 510,
+       "h": 510,
+       "share": 0.81
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.094,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.188,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 43.51,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "A 3.5:1 band over a tall region keeps a slice; the subject is cut away.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.382,
+      "effective": {
+       "w": 510,
+       "h": 144.3,
+       "share": 0.229
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.624,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.247,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 40.72,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "Loses the tower and the arch.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.769,
+      "effective": {
+       "w": 510,
+       "h": 290.5,
+       "share": 0.461
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.31,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.62,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 33.67,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 510,
+       "h": 437.1,
+       "share": 0.694
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.206,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.412,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "sacred-sanctuaries-lotus-pool",
+   "sourceId": "sacred-sanctuaries",
+   "parentArtworkId": "sacred-sanctuaries",
+   "label": "Lotus pool in the cloister court",
+   "description": "A stone-rimmed reflecting pool with white lotus blossoms and lily pads on a polished court, flowers at the edge.",
+   "bounds": {
+    "x": 0.539,
+    "y": 0.765,
+    "width": 0.461,
+    "height": 0.235
+   },
+   "pixels": {
+    "x": 900,
+    "y": 719,
+    "w": 770,
+    "h": 221
+   },
+   "subject": {
+    "x": 0.62,
+    "y": 0.05,
+    "width": 0.22,
+    "height": 0.75
+   },
+   "subjects": {},
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "medium",
+    "complexity": "low",
+    "contrast": "medium",
+    "lighting": "soft reflected light",
+    "detail": "good",
+    "distinct": "only water garden"
+   },
+   "notes": "A 3.5:1 strip: it can only be a wide band (My Lists) or a square (Prep), never a Catalog strip.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 75.83,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "A 3.5:1 region in a 1:2.6 strip keeps ~11 % of its width: a lotus fragment on water.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.498,
+      "effective": {
+       "w": 84.3,
+       "h": 221,
+       "share": 0.11
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 1.127,
+       "upscaled": true
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 2.253,
+       "upscaled": true
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 82.26,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 221,
+       "h": 221,
+       "share": 0.287
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.217,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.434,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 770,
+       "h": 217.9,
+       "share": 0.986
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.413,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.826,
+       "upscaled": false
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 96.36,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 388,
+       "h": 221,
+       "share": 0.504
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.407,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.814,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 84.58,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 257.8,
+       "h": 221,
+       "share": 0.335
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.407,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.814,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "sacred-sanctuaries-candle-steps",
+   "sourceId": "sacred-sanctuaries",
+   "parentArtworkId": "sacred-sanctuaries",
+   "label": "Candle banks on the altar steps",
+   "description": "Rows of candles on stone altar plinths above a broad staircase, the statue only just cut off at the top.",
+   "bounds": {
+    "x": 0.197,
+    "y": 0.51,
+    "width": 0.407,
+    "height": 0.308
+   },
+   "pixels": {
+    "x": 329,
+    "y": 479,
+    "w": 680,
+    "h": 290
+   },
+   "subject": {
+    "x": 0.1,
+    "y": 0.1,
+    "width": 0.8,
+    "height": 0.8
+   },
+   "subjects": {},
+   "status": "not-independently-meaningful",
+   "visualQa": {
+    "recognizability": "medium",
+    "complexity": "medium",
+    "contrast": "good",
+    "lighting": "candle",
+    "detail": "good",
+    "distinct": "no: sits inside statue-altar"
+   },
+   "notes": "A near duplicate of the statue crop: the same candles, the same steps, minus the one thing that makes it a place. Rejected under the \"do not multiply crops of one statue\" rule.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.203,
+      "effective": {
+       "w": 110.6,
+       "h": 290,
+       "share": 0.163
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.859,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.717,
+       "upscaled": true
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.533,
+      "effective": {
+       "w": 290,
+       "h": 290,
+       "share": 0.426
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.166,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.331,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.83,
+      "effective": {
+       "w": 680,
+       "h": 192.5,
+       "share": 0.664
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.468,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.935,
+       "upscaled": false
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.936,
+      "effective": {
+       "w": 509.1,
+       "h": 290,
+       "share": 0.749
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.31,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.621,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.622,
+      "effective": {
+       "w": 338.3,
+       "h": 290,
+       "share": 0.498
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.31,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.621,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "dungeon-delves-barred-gate",
+   "sourceId": "dungeon-delves",
+   "parentArtworkId": "dungeon-delves",
+   "label": "Barred gate and torch-lit wall",
+   "description": "A heavy iron gate set in a stone arch over a dim cell with straw on the floor, hanging chains, a torch and a crossed-keys banner.",
+   "bounds": {
+    "x": 0.132,
+    "y": 0.021,
+    "width": 0.371,
+    "height": 0.723
+   },
+   "pixels": {
+    "x": 220,
+    "y": 19,
+    "w": 620,
+    "h": 680
+   },
+   "subject": {
+    "x": 0,
+    "y": 0.05,
+    "width": 0.4,
+    "height": 0.8
+   },
+   "subjects": {},
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "medium",
+    "contrast": "good",
+    "lighting": "torch glow",
+    "detail": "rich",
+    "distinct": "only gate and cell"
+   },
+   "notes": "The cell (straw behind the bars) is what makes this a prison gate rather than just an iron gate.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Bars, chain and torch: a barred cell.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 259.4,
+       "h": 680,
+       "share": 0.418
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.366,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.732,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 50,
+      "y": 0,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 620,
+       "h": 620,
+       "share": 0.912
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.077,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.155,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 43.26,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "A 3.5:1 band over a tall region keeps a slice; the subject is cut away. Bars become a grille texture.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.323,
+      "effective": {
+       "w": 620,
+       "h": 175.5,
+       "share": 0.258
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.513,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 1.026,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 39.6,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "The gate is halved.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.649,
+      "effective": {
+       "w": 620,
+       "h": 353.2,
+       "share": 0.519
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.255,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.51,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 27.12,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.977,
+      "effective": {
+       "w": 620,
+       "h": 531.4,
+       "share": 0.782
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.169,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.339,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "dungeon-delves-stair-bridge",
+   "sourceId": "dungeon-delves",
+   "parentArtworkId": "dungeon-delves",
+   "label": "Stair and arched bridge in the shafts of light",
+   "description": "A worn staircase climbs to a balustraded stone bridge over a vaulted arch, torches on the walls, mossy chains and light shafts from above.",
+   "bounds": {
+    "x": 0.527,
+    "y": 0,
+    "width": 0.419,
+    "height": 0.68
+   },
+   "pixels": {
+    "x": 880,
+    "y": 0,
+    "w": 700,
+    "h": 640
+   },
+   "subject": {
+    "x": 0.12,
+    "y": 0.1,
+    "width": 0.34,
+    "height": 0.85
+   },
+   "subjects": {},
+   "status": "approved",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "medium",
+    "contrast": "good",
+    "lighting": "light shafts and torches",
+    "detail": "good",
+    "distinct": "only architecture-in-depth view"
+   },
+   "notes": "",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 17.75,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "Stairs, torch and the shaft of light.",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 244.2,
+       "h": 640,
+       "share": 0.349
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.389,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 0.778,
+       "upscaled": false
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 640,
+       "h": 640,
+       "share": 0.914
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.075,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.15,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 53.62,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "A 3.5:1 band over a tall region keeps a slice; the subject is cut away.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.364,
+      "effective": {
+       "w": 700,
+       "h": 198.1,
+       "share": 0.31
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.454,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.909,
+       "upscaled": false
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 56.63,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "Bridge and stair separate.",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.733,
+      "effective": {
+       "w": 700,
+       "h": 398.7,
+       "share": 0.623
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.226,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.451,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 90,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 700,
+       "h": 600,
+       "share": 0.938
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.15,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.3,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "dungeon-delves-explorers-kit",
+   "sourceId": "dungeon-delves",
+   "parentArtworkId": "dungeon-delves",
+   "label": "Explorer's kit on a stone ledge",
+   "description": "A lit lantern, an unrolled map, a compass, a pickaxe, coiled rope and a leather satchel on a ledge.",
+   "bounds": {
+    "x": 0,
+    "y": 0.553,
+    "width": 0.515,
+    "height": 0.447
+   },
+   "pixels": {
+    "x": 0,
+    "y": 520,
+    "w": 860,
+    "h": 421
+   },
+   "subject": {
+    "x": 0,
+    "y": 0.05,
+    "width": 0.55,
+    "height": 0.9
+   },
+   "subjects": {
+    "catalog": {
+     "x": 0,
+     "y": 0.05,
+     "width": 0.2,
+     "height": 0.9
+    },
+    "lists1": {
+     "x": 0.1,
+     "y": 0.2,
+     "width": 0.8,
+     "height": 0.55
+    },
+    "lists2": {
+     "x": 0,
+     "y": 0.1,
+     "width": 0.8,
+     "height": 0.8
+    }
+   },
+   "status": "proposed",
+   "visualQa": {
+    "recognizability": "high",
+    "complexity": "medium",
+    "contrast": "good",
+    "lighting": "lantern",
+    "detail": "rich",
+    "distinct": "close cousin of the V1 scholar's desk"
+   },
+   "notes": "Needs a human art review: a still life like V1's rejected dining table, but it names an activity (delving) that the archetype is about. Kept as \"proposed\": its mappings are not counted.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 0.81,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "A 2:1 region in a strip keeps the lantern or the compass, never the kit.",
+     "viability": {
+      "status": "visually-unsuitable",
+      "computed": "suitable-dpr1-limited-dpr2",
+      "survival": 0.934,
+      "effective": {
+       "w": 160.6,
+       "h": 421,
+       "share": 0.187
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.591,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.183,
+       "upscaled": true
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 5.92,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.89,
+      "effective": {
+       "w": 421,
+       "h": 421,
+       "share": 0.49
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.114,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.228,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 44.07,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 860,
+       "h": 243.4,
+       "share": 0.578
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.37,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.74,
+       "upscaled": false
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "pass",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 739.1,
+       "h": 421,
+       "share": 0.859
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.214,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.428,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 0,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "fail",
+     "note": "A third tile keeps the lantern only.",
+     "viability": {
+      "status": "visually-unsuitable",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 491.2,
+       "h": 421,
+       "share": 0.571
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.214,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.428,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "dungeon-delves-flooded-steps",
+   "sourceId": "dungeon-delves",
+   "parentArtworkId": "dungeon-delves",
+   "label": "Flooded stone steps",
+   "description": "Broad rough-cut stone steps going down into dark still water; one candle burning on a lower step.",
+   "bounds": {
+    "x": 0.509,
+    "y": 0.659,
+    "width": 0.425,
+    "height": 0.34
+   },
+   "pixels": {
+    "x": 850,
+    "y": 620,
+    "w": 710,
+    "h": 320
+   },
+   "subject": {
+    "x": 0.2,
+    "y": 0.1,
+    "width": 0.7,
+    "height": 0.7
+   },
+   "subjects": {},
+   "status": "not-independently-meaningful",
+   "visualQa": {
+    "recognizability": "low",
+    "complexity": "low",
+    "contrast": "medium",
+    "lighting": "a single candle",
+    "detail": "soft",
+    "distinct": "n/a"
+   },
+   "notes": "Generic wet stone: with the candle it hints at someone having passed, but nothing here names a place. Pixels are fine; meaning is not.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 56.04,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.246,
+      "effective": {
+       "w": 122.1,
+       "h": 320,
+       "share": 0.172
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.778,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.556,
+       "upscaled": true
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 59.1,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.644,
+      "effective": {
+       "w": 320,
+       "h": 320,
+       "share": 0.451
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.15,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.3,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 36.56,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 0.897,
+      "effective": {
+       "w": 710,
+       "h": 200.9,
+       "share": 0.628
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 0.448,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 0.896,
+       "upscaled": false
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 73.95,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "suitable-dpr1-dpr2",
+      "computed": "suitable-dpr1-dpr2",
+      "survival": 1,
+      "effective": {
+       "w": 561.8,
+       "h": 320,
+       "share": 0.791
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.281,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 0.563,
+       "upscaled": false
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 60.54,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.751,
+      "effective": {
+       "w": 373.3,
+       "h": 320,
+       "share": 0.526
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.281,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 0.562,
+       "upscaled": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "dungeon-delves-hanging-cage",
+   "sourceId": "dungeon-delves",
+   "parentArtworkId": "dungeon-delves",
+   "label": "Hanging gibbet cage",
+   "description": "An iron cage on a chain beside the arch.",
+   "bounds": {
+    "x": 0.862,
+    "y": 0.064,
+    "width": 0.096,
+    "height": 0.34
+   },
+   "pixels": {
+    "x": 1439,
+    "y": 60,
+    "w": 160,
+    "h": 320
+   },
+   "subject": {
+    "x": 0.05,
+    "y": 0.05,
+    "width": 0.9,
+    "height": 0.9
+   },
+   "subjects": {},
+   "status": "insufficient-resolution",
+   "visualQa": {
+    "recognizability": "medium",
+    "complexity": "low",
+    "contrast": "good",
+    "lighting": "dim",
+    "detail": "soft",
+    "distinct": "n/a"
+   },
+   "notes": "About 160x320 px: an object, not a place, and too small for any frame.",
+   "contexts": {
+    "catalog": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.848,
+      "effective": {
+       "w": 122.1,
+       "h": 320,
+       "share": 0.763
+      },
+      "dpr1": {
+       "needW": 95,
+       "needH": 249,
+       "scale": 0.778,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 190,
+       "needH": 498,
+       "scale": 1.556,
+       "upscaled": true
+      }
+     }
+    },
+    "prep": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.556,
+      "effective": {
+       "w": 160,
+       "h": 160,
+       "share": 0.5
+      },
+      "dpr1": {
+       "needW": 48,
+       "needH": 48,
+       "scale": 0.3,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 96,
+       "needH": 96,
+       "scale": 0.6,
+       "upscaled": false
+      }
+     }
+    },
+    "lists1": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.157,
+      "effective": {
+       "w": 160,
+       "h": 45.3,
+       "share": 0.142
+      },
+      "dpr1": {
+       "needW": 318,
+       "needH": 90,
+       "scale": 1.988,
+       "upscaled": true
+      },
+      "dpr2": {
+       "needW": 636,
+       "needH": 180,
+       "scale": 3.975,
+       "upscaled": true
+      }
+     }
+    },
+    "lists2": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.316,
+      "effective": {
+       "w": 160,
+       "h": 91.1,
+       "share": 0.285
+      },
+      "dpr1": {
+       "needW": 158,
+       "needH": 90,
+       "scale": 0.988,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 316,
+       "needH": 180,
+       "scale": 1.975,
+       "upscaled": true
+      }
+     }
+    },
+    "lists3": {
+     "framing": {
+      "x": 50,
+      "y": 50,
+      "zoom": 1
+     },
+     "verdict": "unreviewed",
+     "note": "",
+     "viability": {
+      "status": "requires-different-framing",
+      "computed": "requires-different-framing",
+      "survival": 0.476,
+      "effective": {
+       "w": 160,
+       "h": 137.1,
+       "share": 0.429
+      },
+      "dpr1": {
+       "needW": 105,
+       "needH": 90,
+       "scale": 0.656,
+       "upscaled": false
+      },
+      "dpr2": {
+       "needW": 210,
+       "needH": 180,
+       "scale": 1.313,
+       "upscaled": true
+      }
+     }
+    }
+   }
+  }
+ ],
+ "mappings": [
+  {
+   "regionId": "intrigue-and-underworld-covert-table",
+   "envId": "gang-hideout",
+   "review": "acceptable",
+   "reason": "Lore: a gathering point a gang uses to shift goods, \"often attached to a legitimate business\". Cloaked men at a candle-lit table under a stall awning are exactly such a front; no gambling, goods or guards are shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-covert-table",
+   "envId": "thieves-guild",
+   "review": "needs-review",
+   "reason": "The guildhouse of a settlement's organised crime: a building. This is an open-air table; nothing says guild.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-covert-table",
+   "envId": "den-of-vice-and-violence",
+   "review": "needs-review",
+   "reason": "A social spot \"packed with seedy characters\"; two patrons are not packed and nothing is seedy beyond the dim light (lighting alone is no evidence).",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-covert-table",
+   "envId": "murder-mystery",
+   "review": "needs-review",
+   "reason": "An ally was murdered; there is no body, clue or scene of a crime, only a conversation.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-covert-table",
+   "envId": "the-undermarket",
+   "review": "rejected",
+   "reason": "A secluded market in the sewers; this is an above-ground street awning. A dim stall is not an underground market.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-covert-table",
+   "envId": "jazz-speakeasy",
+   "review": "rejected",
+   "reason": "A secret music club run by criminals; no band, no club, no bar.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-covert-table",
+   "envId": "trading-post",
+   "review": "rejected",
+   "reason": "A bustling post where supplies are sold or bartered; the crop is quiet and shows no goods.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-covert-table",
+   "envId": "bustling-marketplace",
+   "review": "rejected",
+   "reason": "Lore: merchants and patrons across classes; two cloaked drinkers in the dark do not make a bustling market.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-arch-alley",
+   "envId": "street-chase",
+   "review": "acceptable",
+   "reason": "A chase through the winding streets of a settlement: a wet lane, an archway and a hurrying cloaked figure are a fair stage; no pursuit is shown. The Catalog already shows a streets picture.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-arch-alley",
+   "envId": "city-streets",
+   "review": "needs-review",
+   "reason": "Lore: traffic, toxic smog and peddlers. The lane is quiet and clear.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-arch-alley",
+   "envId": "heist",
+   "review": "needs-review",
+   "reason": "A hidden or protected location to infiltrate; a passage at night is the road in, but no target is shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-arch-alley",
+   "envId": "rooftop-chase",
+   "review": "rejected",
+   "reason": "A chase along rooftops; the crop is street level.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-arch-alley",
+   "envId": "occupied-town",
+   "review": "rejected",
+   "reason": "A town under military occupation; no soldiers, no checkpoint.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-arch-alley",
+   "envId": "drakkenheim-outer-city",
+   "review": "rejected",
+   "reason": "A ramshackle slum of crumbling tenements and hovels; this is solid, lit masonry.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-arch-alley",
+   "envId": "pursued",
+   "review": "rejected",
+   "reason": "A universal scene about being chased in any terrain; nothing here is a pursuit.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-plotters-table",
+   "envId": "murder-mystery",
+   "review": "acceptable",
+   "reason": "Building the mystery, uncovering clues: a sealed map, a dagger, coins and a goblet are the evidence on an investigator's table. Reads as a plot rather than a crime scene, so Acceptable.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-plotters-table",
+   "envId": "heist",
+   "review": "acceptable",
+   "reason": "Lore feature \"Prep Work\": a map under a wax seal, a dagger and coins are the planning table of a job.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-plotters-table",
+   "envId": "bank-heist",
+   "review": "needs-review",
+   "reason": "Casing a secure location: the map fits, but nothing says bank or vault.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-plotters-table",
+   "envId": "thieves-guild",
+   "review": "needs-review",
+   "reason": "Coins and a dagger suit \"Trawling for Work\", but a guildhouse is not shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-plotters-table",
+   "envId": "gang-hideout",
+   "review": "needs-review",
+   "reason": "Plausible back-room business, but the covert-table crop is the closer picture.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-plotters-table",
+   "envId": "imperial-court",
+   "review": "rejected",
+   "reason": "A majestic imperial domain; a candle-lit desk is the wrong scale.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-plotters-table",
+   "envId": "corrupt-court",
+   "review": "rejected",
+   "reason": "A warded courtroom with witnesses; nothing judicial.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "intrigue-and-underworld-plotters-table",
+   "envId": "upscale-casino",
+   "review": "rejected",
+   "reason": "Coins and a goblet are not gambling; no tables, cards or dice.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-statue-altar",
+   "envId": "hallowed-temple",
+   "review": "acceptable",
+   "reason": "A well-kept temple of healing and services: a candle-lit altar before a saint. The Catalog already wears this archetype picture, so no gain.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-statue-altar",
+   "envId": "hallowed-cathedral",
+   "review": "acceptable",
+   "reason": "A divine power's stronghold propagating doctrine: statue, halo and banners fit. Already wears the archetype picture.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-statue-altar",
+   "envId": "chapel-of-st-brenna",
+   "review": "acceptable",
+   "reason": "Lore: a chapel of beloved heroes of the Sacred Flame. The statue holds a bowl of fire. The lore is \"moldering\" and \"puzzling doors\", which this clean, lit chapel does not show.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-statue-altar",
+   "envId": "humble-altar",
+   "review": "needs-review",
+   "reason": "Candles, incense and an altar fit, but the lore is an ancient Cathartoid, not a robed human statue.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-statue-altar",
+   "envId": "garden-of-the-tranquil-order",
+   "review": "needs-review",
+   "reason": "A garden shrine; the crop is an interior altar with only a little ivy.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-statue-altar",
+   "envId": "blade-root-sanctum",
+   "review": "rejected",
+   "reason": "A verdant sanctum of flora and ancient stones: a robed, sun-haloed statue is faith-specific iconography that a wild sanctum does not carry.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-statue-altar",
+   "envId": "throne-of-three",
+   "review": "rejected",
+   "reason": "A forest seat of wisdom, not a statue altar.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-statue-altar",
+   "envId": "darkened-temple",
+   "review": "rejected",
+   "reason": "A holy site corrupted by darkness and madness; this is radiant and intact.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-statue-altar",
+   "envId": "moonlight-temple",
+   "review": "rejected",
+   "reason": "A Hierophant turning citizens into Jackalweres: a profane temple.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-statue-altar",
+   "envId": "divine-audience",
+   "review": "rejected",
+   "reason": "An encounter with a divine being in a divine realm, not a physical shrine.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-arched-vista",
+   "envId": "blade-root-sanctum",
+   "review": "needs-review",
+   "reason": "Lore: a verdant sanctum of deep green flora and ancient stones. Ivy-wrapped arches fit the stones, but the crop is a pale, misty mountain valley, and the forest strip it would replace already carries the deep green. Gain is contestable, so it is not counted.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-arched-vista",
+   "envId": "hallowed-temple",
+   "review": "rejected",
+   "reason": "A bustling temple of healing and services; the vista has no altar, clergy or congregation.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-arched-vista",
+   "envId": "throne-of-three",
+   "review": "needs-review",
+   "reason": "An ancient seat of wisdom in the forest: no seat is shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-arched-vista",
+   "envId": "garden-of-the-tranquil-order",
+   "review": "needs-review",
+   "reason": "A tranquil garden shrine: ivy and blossoms fit, but the lotus pool crop is the closer picture.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-arched-vista",
+   "envId": "martyrs-rest",
+   "review": "rejected",
+   "reason": "A burial mound on open grassland; this is built architecture.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-arched-vista",
+   "envId": "drowned-sanctum",
+   "review": "rejected",
+   "reason": "A shrine encased in saltwater; nothing submerged.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-arched-vista",
+   "envId": "sanctuary-of-the-story-tree",
+   "review": "rejected",
+   "reason": "A fey sanctuary around a great tree; built Gothic arches are not a tree sanctuary.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-lotus-pool",
+   "envId": "garden-of-the-tranquil-order",
+   "review": "acceptable",
+   "reason": "Lore: a tranquil garden shrine with a place of reflection. A lotus pool in a cloister court is that; no guardians or secrets are shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-lotus-pool",
+   "envId": "fathomless-baths-surface",
+   "review": "rejected",
+   "reason": "An outdoor swim at an extradimensional rift; a ceremonial pool is not a swimming place.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "sacred-sanctuaries-lotus-pool",
+   "envId": "martyrs-rest",
+   "review": "rejected",
+   "reason": "A grassland burial mound; no mound, no grass.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-barred-gate",
+   "envId": "chthon-verlies",
+   "review": "acceptable",
+   "reason": "Lore: an extensive underground dungeon holding political prisoners. A barred gate over a cell with straw is a prison; the magic-resistant crystals are not shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-barred-gate",
+   "envId": "deadly-dungeon",
+   "review": "acceptable",
+   "reason": "A dim underground maze of chambers: a gate and torches fit. Already wears the archetype picture.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-barred-gate",
+   "envId": "dangerous-dungeon",
+   "review": "acceptable",
+   "reason": "A subterranean fortress with a locked door: fits. Already wears the archetype picture.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-barred-gate",
+   "envId": "scorching-dungeon",
+   "review": "rejected",
+   "reason": "Lava, steam and furnaces; nothing hot here.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-barred-gate",
+   "envId": "collapsing-floor",
+   "review": "rejected",
+   "reason": "An unstable floor above endless air; solid stone here.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-barred-gate",
+   "envId": "prison-city-pyrrhexis",
+   "review": "rejected",
+   "reason": "A city of burning ash and iron bars in the Circles Below; a cold stone gate is not a damned city.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-barred-gate",
+   "envId": "the-garage",
+   "review": "rejected",
+   "reason": "A machine workshop with bolted cells; this is masonry.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-barred-gate",
+   "envId": "the-dungeoneer",
+   "review": "rejected",
+   "reason": "A tavern; the gate is a cell, not a bar.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-barred-gate",
+   "envId": "underroot-tunnels",
+   "review": "rejected",
+   "reason": "Well-kept fortified tunnels with toll-keepers under a forest; this gate guards a cell.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-stair-bridge",
+   "envId": "deadly-dungeon",
+   "review": "acceptable",
+   "reason": "Underground tunnels and chambers; fits. Already wears the archetype picture.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-stair-bridge",
+   "envId": "dangerous-dungeon",
+   "review": "acceptable",
+   "reason": "A subterranean fortress with something at the end; fits. Already wears the archetype picture.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-stair-bridge",
+   "envId": "ruined-castle",
+   "review": "needs-review",
+   "reason": "A castle in disrepair covered in vines: the chains and moss fit, but the crop is clearly underground.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-stair-bridge",
+   "envId": "city-out-of-time",
+   "review": "needs-review",
+   "reason": "An ancient lost city underground: arches and stairs fit, but the environment is about a mind swap across ages.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-stair-bridge",
+   "envId": "the-endless-song",
+   "review": "needs-review",
+   "reason": "A subterranean complex of echoing voices: nothing in the crop speaks of sound.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-stair-bridge",
+   "envId": "abandoned-mine",
+   "review": "rejected",
+   "reason": "Tunnels carved into bedrock by miners; this is dressed masonry with a bridge.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-stair-bridge",
+   "envId": "catacomb-tunnels",
+   "review": "rejected",
+   "reason": "Musty tunnels with bone piles under a city; no tombs.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-stair-bridge",
+   "envId": "para-lichs-archive",
+   "review": "rejected",
+   "reason": "A sealed library; no shelves.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-explorers-kit",
+   "envId": "abandoned-mine",
+   "review": "acceptable",
+   "reason": "A pickaxe, lantern, rope and map are the kit of a mining expedition; the mine itself is not shown.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-explorers-kit",
+   "envId": "haunted-gold-mine",
+   "review": "needs-review",
+   "reason": "A gold mine: a pickaxe fits, nothing says gold or haunted.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-explorers-kit",
+   "envId": "search-the-ruins",
+   "review": "needs-review",
+   "reason": "A search of a cursed city; map and lantern are generic searching tools.",
+   "crossArchetype": true,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-explorers-kit",
+   "envId": "industrial-mine",
+   "review": "rejected",
+   "reason": "A working magical-ore site with security; a lone kit is not an industrial mine.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  },
+  {
+   "regionId": "dungeon-delves-explorers-kit",
+   "envId": "deep-underground-cave",
+   "review": "rejected",
+   "reason": "A damp cave; a tidy ledge of gear is not a cave.",
+   "crossArchetype": false,
+   "improvesExisting": false,
+   "notes": ""
+  }
+ ],
+ "coverage": {
+  "environments": 329,
+  "baseline": {
+   "catalog": {
+    "themed": 97,
+    "notThemed": 232
+   },
+   "prep": {
+    "themed": 0,
+    "notThemed": 329
+   },
+   "lists": {
+    "themed": 122,
+    "notThemed": 207
+   }
+  },
+  "candidate": {
+   "environments": 24,
+   "mappings": 32
+  },
+  "approved": {
+   "environments": 11,
+   "mappings": 13,
+   "ids": [
+    "chapel-of-st-brenna",
+    "chthon-verlies",
+    "dangerous-dungeon",
+    "deadly-dungeon",
+    "gang-hideout",
+    "garden-of-the-tranquil-order",
+    "hallowed-cathedral",
+    "hallowed-temple",
+    "heist",
+    "murder-mystery",
+    "street-chase"
+   ]
+  },
+  "rejected": 33,
+  "needsReview": 18,
+  "unreviewedCounted": 0,
+  "byContext": {
+   "catalog": {
+    "usableEnvironments": 8,
+    "newlyCovered": 3,
+    "improved": 0,
+    "net": 3,
+    "ids": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "dangerous-dungeon",
+     "deadly-dungeon",
+     "gang-hideout",
+     "hallowed-cathedral",
+     "hallowed-temple",
+     "street-chase"
+    ],
+    "newlyCoveredIds": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "gang-hideout"
+    ],
+    "improvedIds": [],
+    "netIds": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "gang-hideout"
+    ],
+    "regions": 5
+   },
+   "prep": {
+    "usableEnvironments": 11,
+    "newlyCovered": 11,
+    "improved": 0,
+    "net": 11,
+    "ids": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "dangerous-dungeon",
+     "deadly-dungeon",
+     "gang-hideout",
+     "garden-of-the-tranquil-order",
+     "hallowed-cathedral",
+     "hallowed-temple",
+     "heist",
+     "murder-mystery",
+     "street-chase"
+    ],
+    "newlyCoveredIds": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "dangerous-dungeon",
+     "deadly-dungeon",
+     "gang-hideout",
+     "garden-of-the-tranquil-order",
+     "hallowed-cathedral",
+     "hallowed-temple",
+     "heist",
+     "murder-mystery",
+     "street-chase"
+    ],
+    "improvedIds": [],
+    "netIds": [
+     "chapel-of-st-brenna",
+     "chthon-verlies",
+     "dangerous-dungeon",
+     "deadly-dungeon",
+     "gang-hideout",
+     "garden-of-the-tranquil-order",
+     "hallowed-cathedral",
+     "hallowed-temple",
+     "heist",
+     "murder-mystery",
+     "street-chase"
+    ],
+    "regions": 7
+   },
+   "lists": {
+    "usableEnvironments": 4,
+    "newlyCovered": 3,
+    "improved": 0,
+    "net": 3,
+    "ids": [
+     "gang-hideout",
+     "garden-of-the-tranquil-order",
+     "heist",
+     "murder-mystery"
+    ],
+    "newlyCoveredIds": [
+     "garden-of-the-tranquil-order",
+     "heist",
+     "murder-mystery"
+    ],
+    "improvedIds": [],
+    "netIds": [
+     "garden-of-the-tranquil-order",
+     "heist",
+     "murder-mystery"
+    ],
+    "regions": 3
+   }
+  },
+  "crossArchetype": {
+   "mappings": 1,
+   "strong": 0,
+   "environments": 1,
+   "ids": [
+    "street-chase"
+   ]
+  },
+  "netAnyContext": 11
+ },
+ "note": "Experimental, unapproved for production. Mapping reviews are one reviewer's judgement; nothing here changes the archetype taxonomy or the artwork registry.",
+ "_envCount": 329
+}

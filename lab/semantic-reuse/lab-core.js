@@ -288,6 +288,60 @@
     return out;
   }
 
+  /* ---------- gains: V2's three separate categories ---------- */
+
+  /**
+   * Counts three different things apart (never one inflated statistic), per production context:
+   *   new          the environment wears no themed picture in that context today (production baseline)
+   *   qualitative  it already wears one, and the mapping says the crop is demonstrably better (`improves`)
+   *   none         suitable, but no material gain
+   * An environment is counted once per context, at its best category (new > qualitative > none), however many
+   * crops or parents reach it. Session Prep also gets the future-strategy reading: `prepFuture` treats every
+   * environment the existing archetype pictures already reach (My Lists' baseline) as themed, so only gains
+   * BEYOND integrating the 28 whole illustrations remain.
+   * A mapping counts only when it is strong/acceptable on an `approved` region that passes the frame(s).
+   * @param {object} p  same input as coverage()
+   */
+  function gains(p) {
+    const regionById = new Map(p.regions.map(r => [r.id, r]));
+    const passes = (r, ctx) => {
+      if (!r || r.status !== 'approved') return false;
+      const layouts = ctx === 'lists' ? LISTS_LAYOUTS : [ctx];
+      return layouts.every(l => {
+        const c = r.contexts && r.contexts[l];
+        if (!c || c.verdict !== 'pass') return false;
+        const px = boundsToPixels(r.bounds, p.sources[r.sourceId]); const v = viability(px, l, contextFraming(r, l, px), subjectFor(r, l));
+        return v.status === 'suitable-dpr1-dpr2' || v.status === 'suitable-dpr1-limited-dpr2';
+      });
+    };
+    const themedAt = (env, key) => THEMED.includes(((p.baseline[env] || {})[key]) || 'biome');
+    const approvedMaps = p.mappings.filter(m => COUNTS_AS_APPROVED.includes(m.review) && (regionById.get(m.regionId) || {}).status === 'approved');
+    const improvesIn = (m, ctx) => !!m.improves && (!m.improvesContexts || m.improvesContexts.includes(ctx));
+    const RANK = { new: 2, qualitative: 1, none: 0 };
+    const out = {};
+    const ctxs = [['catalog', 'catalog', 'catalog'], ['prep', 'prep', 'prep'], ['lists', 'lists', 'lists'], ['prepFuture', 'prep', 'lists']];
+    ctxs.forEach(([key, ctx, baseKey]) => {
+      const best = {}; const regionsByEnv = {};
+      approvedMaps.filter(m => passes(regionById.get(m.regionId), ctx)).forEach(m => {
+        const cat = !themedAt(m.envId, baseKey) ? 'new' : (improvesIn(m, ctx) ? 'qualitative' : 'none');
+        if (best[m.envId] === undefined || RANK[cat] > RANK[best[m.envId]]) best[m.envId] = cat;
+        (regionsByEnv[m.envId] = regionsByEnv[m.envId] || []).push(m.regionId);
+      });
+      const ids = c => Object.keys(best).filter(e => best[e] === c).sort();
+      out[key] = {
+        usableEnvironments: Object.keys(best).length,
+        newIds: ids('new'), qualitativeIds: ids('qualitative'), noGainIds: ids('none'),
+        new: ids('new').length, qualitative: ids('qualitative').length, noGain: ids('none').length,
+        regionsByEnv,
+      };
+    });
+    const parentPairs = new Set(approvedMaps.map(m => m.envId + '|' + regionById.get(m.regionId).sourceId));
+    out.dedupe = { mappings: approvedMaps.length, environments: new Set(approvedMaps.map(m => m.envId)).size, environmentParentPairs: parentPairs.size, regions: new Set(approvedMaps.map(m => m.regionId)).size };
+    out.anyNew = [...new Set(['catalog', 'lists'].flatMap(k => out[k].newIds))].sort();
+    out.anyQualitative = [...new Set(['catalog', 'lists'].flatMap(k => out[k].qualitativeIds))].filter(e => !out.anyNew.includes(e)).sort();
+    return out;
+  }
+
   /* ---------- export ---------- */
 
   function buildExport(p) {
@@ -309,11 +363,11 @@
         bounds: r.bounds, pixels: px, subject: r.subject || null, subjects: r.subjects || {}, status: r.status, visualQa: r.visualQa || {}, notes: r.notes || '', contexts,
       };
     });
-    const mappings = p.mappings.map(m => ({
+    const mappings = p.mappings.map(m => Object.assign({
       regionId: m.regionId, envId: m.envId, review: m.review, reason: m.reason,
       crossArchetype: !!(p.primaryArchetype[m.envId] && p.primaryArchetype[m.envId] !== (p.regions.find(r => r.id === m.regionId) || {}).sourceId),
       improvesExisting: !!m.improves, notes: m.notes || '',
-    }));
+    }, m.improvesContexts ? { improvesContexts: m.improvesContexts } : {}));
     return {
       schema: SCHEMA, version: SCHEMA_VERSION, generated: p.generated || null,
       sources: Object.keys(p.sources).sort().map(id => Object.assign({ id }, p.sources[id])),
@@ -351,6 +405,6 @@
     SCHEMA, SCHEMA_VERSION, CONTEXTS, CONTEXT_IDS, COVERAGE_CONTEXTS, LISTS_LAYOUTS, DPRS, REGION_STATUSES, MAPPING_REVIEWS, COUNTS_AS_APPROVED, VERDICTS, VIABILITY, MIN_REGION, SURVIVAL_MIN, SUBJECT_MIN_PX,
     clamp, round, validateBounds, boundsToPixels, pixelsToBounds, clampBounds, sourceToView, viewToSource, zoomAt,
     normalizeFraming, frameWindow, framingFor, contextFraming, subjectFor, subjectSurvival, viability, effectiveStatus,
-    validateRegion, validateMapping, dedupeByParent, coverage, buildExport, validateExport,
+    validateRegion, validateMapping, dedupeByParent, coverage, gains, buildExport, validateExport,
   };
 });
