@@ -305,8 +305,17 @@ state (no preview, badge or indicator).
 `cardHtml()` calls `catalogArtHtml(env)`, which asks `CatalogArt.resolveCatalogArt(env)` (`js/catalog-art.js`, pure, id-only, no language) what the 95px strip shows: `unique` (the environment's own painting), `override` (the harbour, i.e. the existing settlement biome strip), `thematic` (an approved archetype picture) or `biome` — in which case the original `biomeArtHtml()` runs, unchanged. Both gates are explicit: the environment must be mapped in `ARCHETYPE_FIT` (`js/list-cover-art.js`), and the picture's entry in `CatalogArt.PICTURES` must say it reads in a strip (`use: 'all' | 'strong' | 'none'`; `strong` needs a `strong` fit; no entry = never used). `ENV_KEEP_BIOME` is the per-environment escape hatch (empty today).
 
 - Files: `img/catalog-art/<archetype-name|env-id>-{100,200,250,300}.avif` + `-200.webp`, a 1:3 window of the master (full height, left edge at `x`% of the travel) cut by `scripts/generate-catalog-art.js` from the same masters as `img/list-covers/` (archetypes) and `img/env/<id>.jpg` (paintings). Only pictures in use are cut; the script deletes stale files. The ladder and `ART_SIZES` match the biome strips, so `.card-art` CSS, lazy loading and card geometry are shared.
-- Independent of My Lists crops (`js/list-cover-art.js` `pos`) and of Prep thumbnails (`prepEnvThumbHtml`, `biomeThumbAttrs`), which never read `CatalogArt`.
+- Independent of My Lists crops (`js/list-cover-art.js` `pos`) and of Prep thumbnails (`prepEnvThumbAttrs`, `biomeThumbAttrs`), which never read `CatalogArt`.
 - Tests: `tests/catalog-art.test.js` (resolution gates, no dead assets, 1:3 dimensions and no upscaling, reproducible encode, isolation of other pages). Visual and delivery QA: `node scripts/shoot-catalog-art.js` (baseline = `js/catalog-art.js` stubbed to "always biome", so the comparison is the same code on the same data).
+
+## Session Prep thumbnails (PD-091)
+
+`prepEnvThumbAttrs(env)` in `js/app.js` asks `PrepArt.resolvePrepArt(env)` (`js/prep-art.js`, pure, id-only) for `unique` (own painting), `thematic` (an approved archetype picture) or `biome` (the unchanged `biomeThumbAttrs(artBiome(env))`). Gates: the environment must be mapped in `ARCHETYPE_FIT`, and `PrepArt.PICTURES[id].use` (`all | strong | rejected | deferred`; `strong` needs a `strong` fit; no entry = never) must say the picture reads at 48 px. `ENV_KEEP_BIOME` is the per-environment escape hatch (empty). The picker row (`prepEnvThumbHtml`) and the selected card (`centralEnvCardHtml`) both call it, so they never disagree.
+
+- Files: `img/prep-art/<archetype-name|env-id>-thumb-{48,96,144}.webp`, a square window of the master (full height; `zoom`/`y` only where listed) cut by `scripts/generate-prep-art.js` from the same masters as `img/list-covers/` and `img/env/<id>.jpg`; same ladder, `srcset` and CSS as `img/biomes/*-thumb-*.webp`. Only pictures in use are cut; stale files are deleted.
+- Never reads `ENV_IMAGE_OVERRIDES` / `SEMANTIC_OVERRIDES`; Catalog, My Lists and Journey never read `PrepArt`.
+- A thematic file that fails to load is swapped for the biome tile by a capture-phase `error` listener (`PREP_ART_FAILED`, `data-prep-art`); the central column's own handler skips that one failure (`data-prep-fell`).
+- Tests: `tests/prep-art.test.js`. Visual and delivery QA: `node scripts/shoot-prep-art.js [matrix|app|extras|all]` (baseline = `js/prep-art.js` stubbed to "always biome").
 
 ## Curated semantic artwork overrides (PD-090)
 

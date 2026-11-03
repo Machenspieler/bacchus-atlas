@@ -182,6 +182,10 @@ The Catalog card's vertical strip wears a thematic picture only where both gates
 
 Six environments wear a hand-approved crop of an archetype master in the Catalog and/or My Lists (`SEMANTIC_OVERRIDES` in `js/list-cover-art.js`, `crop:*` pictures, `scripts/generate-semantic-crops.js`). It is a small explicit table, never a framework: no crop editor, region registry, scoring or runtime discovery. A crop beats the archetype fit and the biome but never an environment's own painting or `ENV_IMAGE_OVERRIDES`; My Lists dedupes by parent artwork; Session Prep and Journey don't read it. Decision record: [docs/product-decisions.md](docs/product-decisions.md) PD-090, detail: [docs/architecture.md](docs/architecture.md) "Curated semantic artwork overrides".
 
+### Prep thumbnails
+
+Session Prep's environment thumbnails (picker row and selected tile) wear their own painting, an approved thematic archetype picture, or the biome tile — resolved by `PrepArt.resolvePrepArt()` (`js/prep-art.js`) through one function, `prepEnvThumbAttrs()`. A picture must be mapped in `ARCHETYPE_FIT` AND reviewed at 48×48 (`all` / `strong` / `rejected` / `deferred`; no entry = never). Dedicated square cuts in `img/prep-art/` from the original masters; the Catalog/My Lists override tables are not read here. Decision record: [docs/product-decisions.md](docs/product-decisions.md) PD-091, detail: [docs/architecture.md](docs/architecture.md) "Session Prep thumbnails".
+
 ### Manual ordering
 
 The selected cards on `#/prep` are manually orderable: `prep.environmentIds`

@@ -20,7 +20,7 @@
 
   const FUNCTIONS = [
     'escapeHtml', 'escapeAttr', 't', 'envName', 'envField', 'isTranslated', 'bilingual', 'regionOfEnv', 'regionName',
-    'artBiome', 'biomeArtHtml', 'biomeThumbAttrs', 'prepEnvThumbHtml', 'cardHtml', 'isEnvInAnyList', 'activePrep',
+    'artBiome', 'biomeArtHtml', 'biomeThumbAttrs', 'cardHtml', 'isEnvInAnyList', 'activePrep',
     'envPrepFullText', 'envPrepActionView', 'envPrepButtonClass', 'envPrepButtonHtml', 'prepToggleLabel',
     'prepSelectionCellHtml', 'envPickerRowHtml', 'envHash',
   ];
@@ -64,13 +64,20 @@
     FUNCTIONS.forEach(n => {
       let fn = extractFunction(appSource, n);
       if (n === 'biomeArtHtml') fn = fn.replace('function biomeArtHtml(', 'function prodBiomeArtHtml(');
-      if (n === 'prepEnvThumbHtml') fn = fn.replace('function prepEnvThumbHtml(', 'function prodPrepEnvThumbHtml(');
       parts.push(fn);
     });
     /* The two replaced seams; the lab decides what they return. */
     /* Production's cardHtml now calls catalogArtHtml (PD-089: the Catalog rollout this lab informed). The lab keeps its own
      * seam under that name, with the pre-rollout biome strip as Strategy A, so the experiment's baseline stays the baseline. */
     parts.push('function catalogArtHtml(env) { return hooks.catalogArt ? hooks.catalogArt(env) : prodBiomeArtHtml(env); }');
+    /* Production's prepEnvThumbHtml now resolves through PrepArt (PD-091: the Session Prep rollout this lab informed). The lab
+     * freezes the pre-rollout biome-only tile as Strategy A, so the experiment's baseline stays the baseline. */
+    parts.push(`function prodPrepEnvThumbHtml(env) {
+      const biome = artBiome(env);
+      if (!biome) return '<span class="prep-thumb prep-thumb-fallback" aria-hidden="true">' + ICON_HEX + '</span>';
+      const { src, srcset } = biomeThumbAttrs(biome);
+      return '<img class="prep-thumb" src="' + src + '" srcset="' + srcset + '" alt="" loading="lazy" decoding="async">';
+    }`);
     parts.push('function prepEnvThumbHtml(env) { return hooks.prepThumb ? hooks.prepThumb(env) : prodPrepEnvThumbHtml(env); }');
     parts.push('return { cardHtml, envPickerRowHtml, artBiome, prodBiomeArtHtml, prodPrepEnvThumbHtml, biomeThumbAttrs, envName, t, BIOMES, GENERIC_BIOMES, ART_SIZES, ART_WIDTHS };');
     // eslint-disable-next-line no-new-func

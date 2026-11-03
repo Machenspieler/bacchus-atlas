@@ -3497,15 +3497,44 @@ function biomeThumbAttrs(biome) {
   return { src: `${base}48.webp`, srcset: `${base}96.webp 2x, ${base}144.webp 3x` };
 }
 
-/** A small biome-art thumbnail. No thumbnail exists per-environment, only per-biome,
- * so an environment with no terrain biome (a settlement/universal-only entry) falls back
- * to a plain icon rather than a wrong or blank image. */
-function prepEnvThumbHtml(env) {
+/** The square thumbnail files an environment wears in Session Prep: its own painting or an approved
+ * thematic picture (js/prep-art.js, PD-091) cut square for the 48px tile, else its biome's. One
+ * function feeds the picker row and the selected-environment card, so both always agree. A thematic
+ * file that fails to load is dropped for this page load (bindPrepArtFallback) and the biome returns.
+ * Returns null for an environment with no terrain biome and no picture (the caller draws an icon). */
+const PREP_ART_FAILED = new Set();
+function prepEnvThumbAttrs(env) {
+  const art = PrepArt.resolvePrepArt(env, ART_RUNTIME);
+  if (art.kind !== 'biome' && !PREP_ART_FAILED.has(art.imageId)) {
+    const f = PrepArt.files(PrepArt.PICTURES[art.imageId].stem);
+    return { src: f.src, srcset: f.srcset, imageId: art.imageId };
+  }
   const biome = artBiome(env);
-  if (!biome) return `<span class="prep-thumb prep-thumb-fallback" aria-hidden="true">${ICON_HEX}</span>`;
-  const { src, srcset } = biomeThumbAttrs(biome);
-  return `<img class="prep-thumb" src="${src}" srcset="${srcset}" alt="" loading="lazy" decoding="async">`;
+  return biome ? { ...biomeThumbAttrs(biome), imageId: '' } : null;
 }
+
+/** A small thumbnail. An environment with no terrain biome (a settlement/universal-only entry) and no
+ * picture falls back to a plain icon rather than a wrong or blank image. */
+function prepEnvThumbHtml(env) {
+  const a = prepEnvThumbAttrs(env);
+  if (!a) return `<span class="prep-thumb prep-thumb-fallback" aria-hidden="true">${ICON_HEX}</span>`;
+  return `<img class="prep-thumb" src="${a.src}" srcset="${a.srcset}" alt="" loading="lazy" decoding="async"${a.imageId ? ` data-prep-art="${a.imageId}"` : ''}>`;
+}
+
+/** A thematic thumbnail that cannot load is swapped for the biome thumbnail in place (and remembered,
+ * so later renders skip it). Capture phase: 'error' does not bubble. */
+document.addEventListener('error', ev => {
+  const img = ev.target;
+  if (!(img instanceof HTMLImageElement) || !img.dataset.prepArt) return;
+  const env = allEnvs().find(e => e.id === (img.closest('[data-env-id]') || {}).dataset?.envId);
+  PREP_ART_FAILED.add(img.dataset.prepArt);
+  delete img.dataset.prepArt;
+  const biome = env && artBiome(env);
+  if (!biome) return;
+  img.dataset.prepFell = '1'; // the central column's own error handler skips this one failure
+  const b = biomeThumbAttrs(biome);
+  img.srcset = b.srcset; img.src = b.src;
+}, true);
 
 function envPickerRowHtml(env, prep) {
   const checked = prep.environmentIds.includes(env.id);
@@ -4490,10 +4519,10 @@ const CENTRAL_THUMB_FALLBACK = { env: ICON_HEX, adv: ICON_ADVERSARY_FALLBACK, it
  * button itself stays in the accessibility tree with its own name while the
  * picture inside is hidden from it. A fallback thumbnail is never a button —
  * nothing to open — same rule as the catalog's prepAdvThumbHtml(). */
-function centralThumbHtml(kind, src, action = null, srcset = '') {
+function centralThumbHtml(kind, src, action = null, srcset = '', artId = '') {
   if (!src) return `<span class="prep-sel-thumb is-fallback" data-kind="${kind}" aria-hidden="true">${CENTRAL_THUMB_FALLBACK[kind]}</span>`;
   const set = srcset ? ` srcset="${escapeAttr(srcset)}"` : '';
-  const img = `<img src="${escapeAttr(src)}"${set} alt="" loading="lazy" decoding="async" data-sel-thumb-img>`;
+  const img = `<img src="${escapeAttr(src)}"${set} alt="" loading="lazy" decoding="async" data-sel-thumb-img${artId ? ` data-prep-art="${escapeAttr(artId)}"` : ''}>`;
   if (!action) return `<span class="prep-sel-thumb" data-kind="${kind}" aria-hidden="true">${img}</span>`;
   return `<button type="button" class="prep-sel-thumb prep-sel-thumb-btn" data-kind="${kind}" ${action.attr}="${escapeAttr(action.id)}"
             data-tip="${escapeAttr(action.tip)}" aria-label="${escapeAttr(action.label)}">${img}</button>`;
@@ -4626,11 +4655,10 @@ function centralEmptyHtml(key) {
 
 function centralEnvCardHtml(env) {
   const name = envName(env);
-  const biome = artBiome(env);
-  const art = biome ? biomeThumbAttrs(biome) : { src: '', srcset: '' };
+  const art = prepEnvThumbAttrs(env) || { src: '', srcset: '' };
   return selectedEntityHtml({
     layout: 'card', id: env.id, name,
-    thumb: centralThumbHtml('env', art.src, null, art.srcset),
+    thumb: centralThumbHtml('env', art.src, null, art.srcset, art.imageId),
     meta: `${t('tier_label')} ${EnvTierUtils.tierLabel(env)}`,
     openAttr: 'data-sp-open-env',
     openLabel: t('prep_open_environment_detail').replace('{name}', name),
@@ -5986,6 +6014,7 @@ function bindPrepDelegation(el) {
         if (wrap.tagName === 'BUTTON') wrap.disabled = true;
       }
     } else if (target.matches('[data-sel-thumb-img]')) {
+      if (target.dataset.prepFell) { delete target.dataset.prepFell; return; }
       const wrap = target.closest('.prep-sel-thumb');
       if (wrap) {
         wrap.innerHTML = CENTRAL_THUMB_FALLBACK[wrap.dataset.kind] || ICON_HEX;
