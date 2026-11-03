@@ -388,8 +388,65 @@
     'garden-of-the-tranquil-order': { crop: 'lotus-pool', contexts: ['lists'] },
   };
 
+  /* Panel review of every picture, read only by ListCoverUtils.composeCover (PD-092): does it still read as a
+   * subject in a third-width tile (~106x90), and is it visually busy (dense fine detail, many small competing
+   * features)? Judged on the real cover panels with the framing above; the review of the nine third-width
+   * failures is in docs/research/my-lists-adaptive-cover-composition-v2-integration.md §5. Keyed by the same ids as IMAGES, so a
+   * semantic crop has its own record (it can differ from its parent). A picture with no entry is "not reviewed":
+   * the cover keeps its three panels rather than guess (tests/list-cover-art.test.js requires an entry for every
+   * IMAGES id, so that fallback is only ever for a picture added without its review). */
+  const PANEL_REVIEWS = {
+    'archetype:haunted-and-deathly': { readsAtThird: true, busy: false },
+    'archetype:forgotten-ruins': { readsAtThird: true, busy: false },
+    'archetype:arcane-sanctums': { readsAtThird: true, busy: false },
+    'archetype:feasts-and-revelry': { readsAtThird: false, busy: true },
+    'archetype:storms-and-calamity': { readsAtThird: true, busy: false },
+    'archetype:infernal-and-profane': { readsAtThird: true, busy: false },
+    'archetype:drowned-depths': { readsAtThird: true, busy: false },
+    'archetype:strongholds-and-sieges': { readsAtThird: true, busy: true },
+    'archetype:monster-lairs': { readsAtThird: false, busy: true },
+    'archetype:cursed-and-blighted-lands': { readsAtThird: false, busy: false },
+    'archetype:fey-and-enchanted': { readsAtThird: false, busy: true },
+    'archetype:starfaring': { readsAtThird: true, busy: true },
+    'archetype:sacred-sanctuaries': { readsAtThird: true, busy: false },
+    'archetype:streets-and-towns': { readsAtThird: false, busy: true },
+    'archetype:crypts-and-tombs': { readsAtThird: true, busy: false },
+    'archetype:taverns-and-inns': { readsAtThird: false, busy: true },
+    'archetype:blighted-mires': { readsAtThird: true, busy: false },
+    'archetype:archives-and-libraries': { readsAtThird: false, busy: true },
+    'archetype:planar-rifts': { readsAtThird: true, busy: false },
+    'archetype:arenas-and-duels': { readsAtThird: true, busy: false },
+    'archetype:chase-and-ambush': { readsAtThird: true, busy: false },
+    'archetype:intrigue-and-underworld': { readsAtThird: false, busy: true },
+    'archetype:time-and-dream': { readsAtThird: true, busy: false },
+    'archetype:dungeon-delves': { readsAtThird: false, busy: true },
+    'archetype:perilous-passages': { readsAtThird: true, busy: false },
+    'archetype:seafaring': { readsAtThird: true, busy: false },
+    'archetype:sinister-woods': { readsAtThird: true, busy: false },
+    'archetype:sky-realms': { readsAtThird: true, busy: false },
+    'env:cauldera-valley': { readsAtThird: true, busy: false },
+    'env:field-of-dreams': { readsAtThird: true, busy: false },
+    'env:ouroborean-pass': { readsAtThird: true, busy: false },
+    'crop:market-stalls': { readsAtThird: true, busy: false },
+    'crop:tavern-terrace': { readsAtThird: true, busy: false },
+    'crop:bar-counter': { readsAtThird: true, busy: false },
+    'crop:lotus-pool': { readsAtThird: true, busy: false },
+    'biome:aquatic': { readsAtThird: true, busy: false },
+    'biome:badlands': { readsAtThird: true, busy: false },
+    'biome:drylands': { readsAtThird: true, busy: false },
+    'biome:forest': { readsAtThird: true, busy: false },
+    'biome:frozen': { readsAtThird: true, busy: false },
+    'biome:grassland': { readsAtThird: true, busy: false },
+    'biome:mountain': { readsAtThird: true, busy: false },
+    'biome:rolling': { readsAtThird: true, busy: false },
+    'biome:settlement': { readsAtThird: true, busy: false },
+    'biome:tropical': { readsAtThird: true, busy: false },
+    'biome:underground': { readsAtThird: true, busy: false },
+    'biome:wetland': { readsAtThird: true, busy: false },
+  };
+
   return {
     IMAGES, UNIQUE_ENV_IDS, ARCHETYPES, ARCHETYPE_FIT, BIOME_IMAGES, EXPLICIT_ONLY_BIOMES, ENV_IMAGE_OVERRIDES,
-    SEMANTIC_OVERRIDES, CROP_CATALOG_WINDOWS,
+    SEMANTIC_OVERRIDES, CROP_CATALOG_WINDOWS, PANEL_REVIEWS,
   };
 });

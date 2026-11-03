@@ -27,7 +27,10 @@ const APP = read('js/app.js');
 const BIOMES = ['underground', 'aquatic', 'wetland', 'grassland', 'tropical', 'forest', 'drylands', 'rolling', 'mountain', 'frozen', 'badlands', 'settlement', 'universal'];
 const artBiome = e => { let pool = (e.biomes || []).filter(b => BIOMES.includes(b)); for (const g of ['universal', 'settlement']) { if (pool.length < 2) break; pool = pool.filter(b => b !== g); } return pool[0] || null; };
 const rec = id => ({ id, artBiome: artBiome(ENVS.find(e => e.id === id)) });
-const analyse = ids => Core.analyse(ids.map(rec), Art, Utils);
+/* The lab studies the arrangement production wore BEFORE Adaptive 3-or-2 (PD-092), so its candidates come from the
+ * registry without panel reviews; production itself now thins a crowded triptych (tests/adaptive-cover-composition.test.js). */
+const LabArt = { ...Art, PANEL_REVIEWS: {} };
+const analyse = ids => Core.analyse(ids.map(rec), LabArt, Utils);
 const envLists = {};
 Fx.ALL.forEach(c => c.envIds.forEach(id => { (envLists[id] = envLists[id] || []).push(c.id); }));
 const api = Bridge.load(APP, { ListCoverUtils: Utils, ListCoverArt: Art }, { i18n: I18N, envs: ENVS, lists: Fx.ALL.map(c => ({ id: c.id, name: c.name })), envLists });
@@ -204,7 +207,7 @@ test('15/16/17: production storage, card geometry and other surfaces are untouch
   const css = read('css/styles.css');
   assert.match(css, /\.list-card-cover \{[^}]*height: 90px;/);
   assert.doesNotMatch(read('lab/cover-composition/lab.css'), /list-card-cover\s*\{[^}]*height/);
-  ['js/app.js', 'index.html', 'js/list-cover-art.js', 'js/list-cover-utils.js', 'js/catalog-art.js', 'js/prep-art.js', 'css/styles.css'].forEach(f => assert.doesNotMatch(read(f), /cover-composition|CoverComposition/, f));
+  ['js/app.js', 'index.html', 'js/list-cover-art.js', 'js/list-cover-utils.js', 'js/catalog-art.js', 'js/prep-art.js', 'css/styles.css'].forEach(f => assert.doesNotMatch(read(f), /lab\/cover-composition|CoverComposition/, f));
   fs.readdirSync(path.join(ROOT, 'js')).filter(f => /journey/.test(f)).forEach(f => assert.doesNotMatch(read('js/' + f), /cover-composition/));
   assert.equal(Utils.COVER_MAX, 3);
 });

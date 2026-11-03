@@ -312,8 +312,9 @@ test('20. Production My Lists behaviour is unchanged', () => {
   const kinds = {}; envs.forEach(e => { const k = baseline[e.id].lists; kinds[k] = (kinds[k] || 0) + 1; });
   assert.deepEqual(kinds, { biome: 118, override: 2, archetype: 117, none: 89, unique: 3 });
   const cover = Lists.coverForEnvironments([{ id: 'bustling-marketplace', artBiome: 'settlement' }, { id: 'local-tavern', artBiome: 'settlement' }, { id: 'library-of-the-dusk-tree', artBiome: 'settlement' }, { id: 'city-festival', artBiome: 'settlement' }], Art);
-  assert.equal(cover.layout, 3);
-  assert.deepEqual(cover.tiles.map(t => t.imageId), ['crop:market-stalls', 'archetype:taverns-and-inns', 'archetype:archives-and-libraries']); // PD-090: the crop, once, for both of its environments
+  /* PD-090: the crop, once, for both of its environments; PD-092: the tavern and the library both fail at a third, so the lower-ranked one is dropped */
+  assert.equal(cover.layout, 2);
+  assert.deepEqual(cover.tiles.map(t => t.imageId), ['crop:market-stalls', 'archetype:taverns-and-inns']);
   assert.equal(Lists.COVER_MAX, 3);
   assert.ok(!/SemanticReuse|semantic-reuse/.test(read('js/list-cover-utils.js')));
 });

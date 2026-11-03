@@ -21,6 +21,8 @@
    two environments that share one image are one candidate, whatever their biome or
    archetype ids), each candidate is scored, the best three are kept, and they are shown
    in catalogue order of their first member. See docs/research/adaptive-list-covers-implementation.md §5.
+   Adaptive 3-or-2 (PD-092): when the best three would be a triptych, composeCover keeps all three only if each
+   reads at a third of the width and at most one is busy (PANEL_REVIEWS); otherwise the worst-suited one is dropped (ties: lowest rank).
    ============================================================ */
 (function (root, factory) {
   if (typeof module !== 'undefined' && module.exports) module.exports = factory(require('./list-cover-art.js'));
@@ -81,11 +83,32 @@
     return null;
   }
 
+  /** Adaptive 3-or-2. `ranked` is the candidate list in rank order (best first), at most COVER_MAX long. One or two
+   * are returned as they are; three stay three only when every picture reads at a third and at most one is
+   * busy. Otherwise one is dropped: the picture that fails at a third, else a busy one, and among equals the
+   * lowest-ranked — so the existing ranking decides every tie and the survivors keep their rank order. A picture
+   * with no review keeps the triptych (no guessing). Never adds a candidate or reorders by looks: the caller
+   * orders what comes back. */
+  function composeCover(ranked, reviews) {
+    if (ranked.length < 3) return ranked;
+    const rs = ranked.map(c => reviews && reviews[c.imageId]);
+    if (rs.some(r => !r)) return ranked;
+    const busy = rs.filter(r => r.busy).length;
+    if (rs.every(r => r.readsAtThird) && busy <= 1) return ranked;
+    let drop = 0, worst = -1;
+    rs.forEach((r, i) => {
+      const badness = (r.readsAtThird ? 0 : 2) + (r.busy ? 1 : 0);
+      if (badness >= worst) { worst = badness; drop = i; }
+    });
+    return ranked.filter((c, i) => i !== drop);
+  }
+
   /** Up to COVER_MAX distinct pictures for a list.
    * @param {Array<{imageId:string, kind:string, fit:string|null}|null>} resolutions  one per member, catalogue order
    * @returns {{layout: 0|1|2|3, tiles: Array<{imageId:string, kind:string, count:number}>}}
    *   layout 0 = no picture (the neutral cover). */
-  function selectCoverImages(resolutions) {
+  function selectCoverImages(resolutions, art) {
+    art = art || DefaultArt;
     const members = (resolutions || []).length;
     /* One candidate per source picture: a semantic crop and its parent's whole picture (or a second crop of
      * it) are one family, so a cover never shows two cuts of one illustration. Every other picture is its own
@@ -115,7 +138,7 @@
     /* Ties: the larger share, then the earlier member, then the id — all of them properties
      * of the list's content, none of them of a render, so a cover never reshuffles. */
     scored.sort((a, b) => b.score - a.score || b.count - a.count || a.first - b.first || (a.imageId < b.imageId ? -1 : 1));
-    const tiles = scored.slice(0, COVER_MAX)
+    const tiles = composeCover(scored.slice(0, COVER_MAX), art.PANEL_REVIEWS)
       .sort((a, b) => a.first - b.first)
       .map(c => ({ imageId: c.imageId, kind: c.kind, count: c.count }));
     return { layout: tiles.length, tiles };
@@ -131,12 +154,12 @@
       if (cache) cache.set(e.id, r);
       return r;
     });
-    const cover = selectCoverImages(resolutions);
+    const cover = selectCoverImages(resolutions, art);
     return {
       layout: cover.layout,
       tiles: cover.tiles.map(t => ({ ...t, image: art.IMAGES[t.imageId] })),
     };
   }
 
-  return { COVER_MAX, BASE_SCORE, COVERAGE_WEIGHT, resolveEnvironmentArt, selectCoverImages, coverForEnvironments };
+  return { COVER_MAX, BASE_SCORE, COVERAGE_WEIGHT, resolveEnvironmentArt, selectCoverImages, composeCover, coverForEnvironments };
 });

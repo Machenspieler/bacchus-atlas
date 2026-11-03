@@ -1,0 +1,2356 @@
+{
+  "generated": "2026-11-03",
+  "problems": [],
+  "runs": {
+    "1280-before": {
+      "imageRequests": 18,
+      "bytes": 249175,
+      "duplicates": 0,
+      "failed": 0,
+      "cls": 0.0227,
+      "overflowX": false,
+      "broken": 0,
+      "geometry": {
+        "baldur-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-seafaring-320.avif",
+            "list-covers/archetype-taverns-and-inns-320.avif"
+          ]
+        },
+        "campaign-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-arenas-and-duels-320.avif",
+            "list-covers/archetype-dungeon-delves-320.avif",
+            "list-covers/archetype-archives-and-libraries-320.avif"
+          ]
+        },
+        "darkheart": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-forest-320.avif",
+            "list-covers/archetype-forgotten-ruins-320.avif",
+            "list-covers/archetype-sinister-woods-320.avif"
+          ]
+        },
+        "baldur-upper": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-streets-and-towns-320.avif"
+          ]
+        },
+        "s-empty": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 0,
+          "broken": 0,
+          "srcs": []
+        },
+        "s-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-monster-lairs-320.avif"
+          ]
+        },
+        "s-two": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif"
+          ]
+        },
+        "s-ten-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-forgotten-ruins-320.avif"
+          ]
+        },
+        "s-calm3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/archetype-sky-realms-320.avif",
+            "list-covers/biome-grassland-320.avif"
+          ]
+        },
+        "s-busy3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-archives-and-libraries-320.avif",
+            "list-covers/archetype-taverns-and-inns-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-paint-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif",
+            "env/thumb/cauldera-valley-200.avif"
+          ]
+        },
+        "s-crop-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-drylands-320.avif",
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-crop-family": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-big": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-arenas-and-duels-320.avif",
+            "list-covers/archetype-dungeon-delves-320.avif"
+          ]
+        }
+      }
+    },
+    "1280-after": {
+      "imageRequests": 17,
+      "bytes": 236375,
+      "duplicates": 0,
+      "failed": 0,
+      "cls": 0.0227,
+      "overflowX": false,
+      "broken": 0,
+      "geometry": {
+        "baldur-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-seafaring-320.avif"
+          ]
+        },
+        "campaign-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-arenas-and-duels-320.avif",
+            "list-covers/archetype-dungeon-delves-320.avif"
+          ]
+        },
+        "darkheart": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-forest-320.avif",
+            "list-covers/archetype-forgotten-ruins-320.avif",
+            "list-covers/archetype-sinister-woods-320.avif"
+          ]
+        },
+        "baldur-upper": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-streets-and-towns-320.avif"
+          ]
+        },
+        "s-empty": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 0,
+          "broken": 0,
+          "srcs": []
+        },
+        "s-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-monster-lairs-320.avif"
+          ]
+        },
+        "s-two": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif"
+          ]
+        },
+        "s-ten-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-forgotten-ruins-320.avif"
+          ]
+        },
+        "s-calm3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/archetype-sky-realms-320.avif",
+            "list-covers/biome-grassland-320.avif"
+          ]
+        },
+        "s-busy3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-taverns-and-inns-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-paint-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif",
+            "env/thumb/cauldera-valley-200.avif"
+          ]
+        },
+        "s-crop-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-drylands-320.avif",
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-crop-family": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-big": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-arenas-and-duels-320.avif"
+          ]
+        }
+      }
+    },
+    "1440-before": {
+      "imageRequests": 18,
+      "bytes": 249175,
+      "duplicates": 0,
+      "failed": 0,
+      "cls": 0.0407,
+      "overflowX": false,
+      "broken": 0,
+      "geometry": {
+        "baldur-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-seafaring-320.avif",
+            "list-covers/archetype-taverns-and-inns-320.avif"
+          ]
+        },
+        "campaign-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-arenas-and-duels-320.avif",
+            "list-covers/archetype-dungeon-delves-320.avif",
+            "list-covers/archetype-archives-and-libraries-320.avif"
+          ]
+        },
+        "darkheart": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-forest-320.avif",
+            "list-covers/archetype-forgotten-ruins-320.avif",
+            "list-covers/archetype-sinister-woods-320.avif"
+          ]
+        },
+        "baldur-upper": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-streets-and-towns-320.avif"
+          ]
+        },
+        "s-empty": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 0,
+          "broken": 0,
+          "srcs": []
+        },
+        "s-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-monster-lairs-320.avif"
+          ]
+        },
+        "s-two": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif"
+          ]
+        },
+        "s-ten-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-forgotten-ruins-320.avif"
+          ]
+        },
+        "s-calm3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/archetype-sky-realms-320.avif",
+            "list-covers/biome-grassland-320.avif"
+          ]
+        },
+        "s-busy3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-archives-and-libraries-320.avif",
+            "list-covers/archetype-taverns-and-inns-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-paint-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif",
+            "env/thumb/cauldera-valley-200.avif"
+          ]
+        },
+        "s-crop-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-drylands-320.avif",
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-crop-family": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-big": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-arenas-and-duels-320.avif",
+            "list-covers/archetype-dungeon-delves-320.avif"
+          ]
+        }
+      }
+    },
+    "1440-after": {
+      "imageRequests": 17,
+      "bytes": 236375,
+      "duplicates": 0,
+      "failed": 0,
+      "cls": 0.0407,
+      "overflowX": false,
+      "broken": 0,
+      "geometry": {
+        "baldur-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-seafaring-320.avif"
+          ]
+        },
+        "campaign-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-arenas-and-duels-320.avif",
+            "list-covers/archetype-dungeon-delves-320.avif"
+          ]
+        },
+        "darkheart": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-forest-320.avif",
+            "list-covers/archetype-forgotten-ruins-320.avif",
+            "list-covers/archetype-sinister-woods-320.avif"
+          ]
+        },
+        "baldur-upper": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-streets-and-towns-320.avif"
+          ]
+        },
+        "s-empty": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 0,
+          "broken": 0,
+          "srcs": []
+        },
+        "s-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-monster-lairs-320.avif"
+          ]
+        },
+        "s-two": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif"
+          ]
+        },
+        "s-ten-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-forgotten-ruins-320.avif"
+          ]
+        },
+        "s-calm3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/archetype-sky-realms-320.avif",
+            "list-covers/biome-grassland-320.avif"
+          ]
+        },
+        "s-busy3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-taverns-and-inns-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-paint-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif",
+            "env/thumb/cauldera-valley-200.avif"
+          ]
+        },
+        "s-crop-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-drylands-320.avif",
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-crop-family": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-big": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-arenas-and-duels-320.avif"
+          ]
+        }
+      }
+    },
+    "1920-before": {
+      "imageRequests": 18,
+      "bytes": 249175,
+      "duplicates": 0,
+      "failed": 0,
+      "cls": 0.3763,
+      "overflowX": false,
+      "broken": 0,
+      "geometry": {
+        "baldur-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-seafaring-320.avif",
+            "list-covers/archetype-taverns-and-inns-320.avif"
+          ]
+        },
+        "campaign-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-arenas-and-duels-320.avif",
+            "list-covers/archetype-dungeon-delves-320.avif",
+            "list-covers/archetype-archives-and-libraries-320.avif"
+          ]
+        },
+        "darkheart": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-forest-320.avif",
+            "list-covers/archetype-forgotten-ruins-320.avif",
+            "list-covers/archetype-sinister-woods-320.avif"
+          ]
+        },
+        "baldur-upper": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-streets-and-towns-320.avif"
+          ]
+        },
+        "s-empty": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 0,
+          "broken": 0,
+          "srcs": []
+        },
+        "s-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-monster-lairs-320.avif"
+          ]
+        },
+        "s-two": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif"
+          ]
+        },
+        "s-ten-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-forgotten-ruins-320.avif"
+          ]
+        },
+        "s-calm3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/archetype-sky-realms-320.avif",
+            "list-covers/biome-grassland-320.avif"
+          ]
+        },
+        "s-busy3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-archives-and-libraries-320.avif",
+            "list-covers/archetype-taverns-and-inns-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-paint-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif",
+            "env/thumb/cauldera-valley-200.avif"
+          ]
+        },
+        "s-crop-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-drylands-320.avif",
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-crop-family": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-big": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-arenas-and-duels-320.avif",
+            "list-covers/archetype-dungeon-delves-320.avif"
+          ]
+        }
+      }
+    },
+    "1920-after": {
+      "imageRequests": 17,
+      "bytes": 236375,
+      "duplicates": 0,
+      "failed": 0,
+      "cls": 0.3763,
+      "overflowX": false,
+      "broken": 0,
+      "geometry": {
+        "baldur-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-seafaring-320.avif"
+          ]
+        },
+        "campaign-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-arenas-and-duels-320.avif",
+            "list-covers/archetype-dungeon-delves-320.avif"
+          ]
+        },
+        "darkheart": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-forest-320.avif",
+            "list-covers/archetype-forgotten-ruins-320.avif",
+            "list-covers/archetype-sinister-woods-320.avif"
+          ]
+        },
+        "baldur-upper": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-streets-and-towns-320.avif"
+          ]
+        },
+        "s-empty": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 0,
+          "broken": 0,
+          "srcs": []
+        },
+        "s-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-monster-lairs-320.avif"
+          ]
+        },
+        "s-two": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif"
+          ]
+        },
+        "s-ten-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-forgotten-ruins-320.avif"
+          ]
+        },
+        "s-calm3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/archetype-sky-realms-320.avif",
+            "list-covers/biome-grassland-320.avif"
+          ]
+        },
+        "s-busy3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-taverns-and-inns-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-paint-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif",
+            "env/thumb/cauldera-valley-200.avif"
+          ]
+        },
+        "s-crop-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-drylands-320.avif",
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-crop-family": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-big": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-arenas-and-duels-320.avif"
+          ]
+        }
+      }
+    },
+    "1440-dpr2-before": {
+      "imageRequests": 19,
+      "bytes": 415691,
+      "duplicates": 0,
+      "failed": 0,
+      "cls": 0.0407,
+      "overflowX": false,
+      "broken": 0,
+      "geometry": {
+        "baldur-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-seafaring-320.avif",
+            "list-covers/archetype-taverns-and-inns-320.avif"
+          ]
+        },
+        "campaign-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-arenas-and-duels-320.avif",
+            "list-covers/archetype-dungeon-delves-320.avif",
+            "list-covers/archetype-archives-and-libraries-320.avif"
+          ]
+        },
+        "darkheart": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-forest-320.avif",
+            "list-covers/archetype-forgotten-ruins-320.avif",
+            "list-covers/archetype-sinister-woods-320.avif"
+          ]
+        },
+        "baldur-upper": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-streets-and-towns-640.avif"
+          ]
+        },
+        "s-empty": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 0,
+          "broken": 0,
+          "srcs": []
+        },
+        "s-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-monster-lairs-640.avif"
+          ]
+        },
+        "s-two": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif"
+          ]
+        },
+        "s-ten-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-forgotten-ruins-640.avif"
+          ]
+        },
+        "s-calm3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/archetype-sky-realms-320.avif",
+            "list-covers/biome-grassland-320.avif"
+          ]
+        },
+        "s-busy3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-archives-and-libraries-320.avif",
+            "list-covers/archetype-taverns-and-inns-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-paint-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif",
+            "env/thumb/cauldera-valley-400.avif"
+          ]
+        },
+        "s-crop-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-drylands-320.avif",
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-crop-family": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-big": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-arenas-and-duels-320.avif",
+            "list-covers/archetype-dungeon-delves-320.avif"
+          ]
+        }
+      }
+    },
+    "1440-dpr2-after": {
+      "imageRequests": 18,
+      "bytes": 402891,
+      "duplicates": 0,
+      "failed": 0,
+      "cls": 0.0407,
+      "overflowX": false,
+      "broken": 0,
+      "geometry": {
+        "baldur-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-seafaring-320.avif"
+          ]
+        },
+        "campaign-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-arenas-and-duels-320.avif",
+            "list-covers/archetype-dungeon-delves-320.avif"
+          ]
+        },
+        "darkheart": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-forest-320.avif",
+            "list-covers/archetype-forgotten-ruins-320.avif",
+            "list-covers/archetype-sinister-woods-320.avif"
+          ]
+        },
+        "baldur-upper": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-streets-and-towns-640.avif"
+          ]
+        },
+        "s-empty": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 0,
+          "broken": 0,
+          "srcs": []
+        },
+        "s-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-monster-lairs-640.avif"
+          ]
+        },
+        "s-two": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif"
+          ]
+        },
+        "s-ten-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-forgotten-ruins-640.avif"
+          ]
+        },
+        "s-calm3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/archetype-sky-realms-320.avif",
+            "list-covers/biome-grassland-320.avif"
+          ]
+        },
+        "s-busy3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-taverns-and-inns-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-paint-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif",
+            "env/thumb/cauldera-valley-400.avif"
+          ]
+        },
+        "s-crop-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-drylands-320.avif",
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-crop-family": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-big": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-arenas-and-duels-320.avif"
+          ]
+        }
+      }
+    },
+    "1440-ru-before": {
+      "imageRequests": 18,
+      "bytes": 249175,
+      "duplicates": 0,
+      "failed": 0,
+      "cls": 0.0407,
+      "overflowX": false,
+      "broken": 0,
+      "geometry": {
+        "baldur-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-seafaring-320.avif",
+            "list-covers/archetype-taverns-and-inns-320.avif"
+          ]
+        },
+        "campaign-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-arenas-and-duels-320.avif",
+            "list-covers/archetype-dungeon-delves-320.avif",
+            "list-covers/archetype-archives-and-libraries-320.avif"
+          ]
+        },
+        "darkheart": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-forest-320.avif",
+            "list-covers/archetype-forgotten-ruins-320.avif",
+            "list-covers/archetype-sinister-woods-320.avif"
+          ]
+        },
+        "baldur-upper": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-streets-and-towns-320.avif"
+          ]
+        },
+        "s-empty": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 0,
+          "broken": 0,
+          "srcs": []
+        },
+        "s-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-monster-lairs-320.avif"
+          ]
+        },
+        "s-two": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif"
+          ]
+        },
+        "s-ten-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-forgotten-ruins-320.avif"
+          ]
+        },
+        "s-calm3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/archetype-sky-realms-320.avif",
+            "list-covers/biome-grassland-320.avif"
+          ]
+        },
+        "s-busy3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-archives-and-libraries-320.avif",
+            "list-covers/archetype-taverns-and-inns-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-paint-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif",
+            "env/thumb/cauldera-valley-200.avif"
+          ]
+        },
+        "s-crop-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-drylands-320.avif",
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-crop-family": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-big": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-arenas-and-duels-320.avif",
+            "list-covers/archetype-dungeon-delves-320.avif"
+          ]
+        }
+      }
+    },
+    "1440-ru-after": {
+      "imageRequests": 17,
+      "bytes": 236375,
+      "duplicates": 0,
+      "failed": 0,
+      "cls": 0.0407,
+      "overflowX": false,
+      "broken": 0,
+      "geometry": {
+        "baldur-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-seafaring-320.avif"
+          ]
+        },
+        "campaign-test": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-arenas-and-duels-320.avif",
+            "list-covers/archetype-dungeon-delves-320.avif"
+          ]
+        },
+        "darkheart": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-forest-320.avif",
+            "list-covers/archetype-forgotten-ruins-320.avif",
+            "list-covers/archetype-sinister-woods-320.avif"
+          ]
+        },
+        "baldur-upper": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-streets-and-towns-320.avif"
+          ]
+        },
+        "s-empty": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 0,
+          "broken": 0,
+          "srcs": []
+        },
+        "s-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-monster-lairs-320.avif"
+          ]
+        },
+        "s-two": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif"
+          ]
+        },
+        "s-ten-one": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 1,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-forgotten-ruins-320.avif"
+          ]
+        },
+        "s-calm3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/archetype-sky-realms-320.avif",
+            "list-covers/biome-grassland-320.avif"
+          ]
+        },
+        "s-busy3": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-taverns-and-inns-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-paint-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/archetype-seafaring-320.avif",
+            "env/thumb/cauldera-valley-200.avif"
+          ]
+        },
+        "s-crop-mix": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 3,
+          "broken": 0,
+          "srcs": [
+            "list-covers/biome-drylands-320.avif",
+            "list-covers/biome-frozen-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-crop-family": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-crypts-and-tombs-320.avif",
+            "list-covers/crop-market-stalls-320.avif"
+          ]
+        },
+        "s-big": {
+          "card": [
+            320,
+            231
+          ],
+          "cover": [
+            318,
+            90
+          ],
+          "tiles": 2,
+          "broken": 0,
+          "srcs": [
+            "list-covers/archetype-blighted-mires-320.avif",
+            "list-covers/archetype-arenas-and-duels-320.avif"
+          ]
+        }
+      }
+    }
+  }
+}

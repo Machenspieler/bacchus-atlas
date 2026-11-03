@@ -548,10 +548,14 @@ test('phase 4: the two moves are explicit, every earlier mapping is otherwise un
 });
 
 test('phase 4: collages stay distinct, at most three, deterministic, painting first', () => {
-  const c = cover('teal-heart-inn', 'mountain-pass', 'ocean-voyage', 'deadly-dungeon', 'floating-mountains');
+  /* three calm pictures stay a triptych (PD-092); a crowded set is thinned to two, still distinct and deterministic */
+  const c = cover('ancient-tomb', 'devouring-green', 'shadowfen', 'cloudy-sky');
   assert.equal(c.layout, 3);
   assert.equal(new Set(imageIds(c)).size, 3);
-  assert.deepEqual(imageIds(cover('teal-heart-inn', 'mountain-pass', 'ocean-voyage', 'deadly-dungeon', 'floating-mountains')), imageIds(c));
+  const crowded = cover('teal-heart-inn', 'mountain-pass', 'ocean-voyage', 'deadly-dungeon', 'floating-mountains');
+  assert.equal(crowded.layout, 2);
+  assert.equal(new Set(imageIds(crowded)).size, 2);
+  assert.deepEqual(imageIds(cover('teal-heart-inn', 'mountain-pass', 'ocean-voyage', 'deadly-dungeon', 'floating-mountains')), imageIds(crowded));
   /* the same picture for several members is one tile */
   const crypt = cover('heros-tomb', 'hallow-rest', 'ancient-tomb', 'endless-catacombs');
   assert.deepEqual(imageIds(crypt), ['archetype:crypts-and-tombs']);
@@ -562,11 +566,11 @@ test('phase 4: collages stay distinct, at most three, deterministic, painting fi
   const withPainting = cover('field-of-dreams', 'shadowfen', 'fighting-arena', 'ocean-voyage', 'stop-the-collapse-of-reality', 'unsettling-forest');
   assert.ok(imageIds(withPainting).includes('env:field-of-dreams'));
   assert.equal(withPainting.layout, 3);
-  /* every new picture in one list of fourteen: still three tiles, none repeated */
+  /* every new picture in one list of fourteen: still at most three tiles, none repeated */
   const all = Object.values(PHASE4).map(g => (g.strong[0] || g.acceptable[0]));
   const big = cover(...all);
-  assert.equal(big.layout, 3);
-  assert.equal(new Set(imageIds(big)).size, 3);
+  assert.ok(big.layout === 2 || big.layout === 3, 'at most three tiles (two once PD-092 thins a crowded triptych)');
+  assert.equal(new Set(imageIds(big)).size, big.layout);
   /* rejected members add no tile of the new picture */
   assert.equal(cover('duel', 'quickdraw', 'pursued').layout, 0);
 });

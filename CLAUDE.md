@@ -172,7 +172,7 @@ Adversaries".
 
 ### My Lists covers
 
-Every list card wears a 90px cover of at most three distinct pictures chosen from the list's current members — own painting, then a fitting thematic archetype picture (`ARCHETYPE_FIT`, never the whole taxonomy), then the biome's Journey landscape; `universal` and generic `settlement` get no picture — or a neutral panel when nothing honest applies. Derived on render, never stored; registry `js/list-cover-art.js`, rules `js/list-cover-utils.js`. Decision record: [docs/product-decisions.md](docs/product-decisions.md) PD-085, detail: [docs/architecture.md](docs/architecture.md) "My Lists adaptive covers".
+Every list card wears a 90px cover of at most three distinct pictures chosen from the list's current members — own painting, then a fitting thematic archetype picture (`ARCHETYPE_FIT`, never the whole taxonomy), then the biome's Journey landscape; `universal` and generic `settlement` get no picture — or a neutral panel when nothing honest applies. Derived on render, never stored; registry `js/list-cover-art.js`, rules `js/list-cover-utils.js`. Adaptive 3-or-2 (PD-092): a triptych survives only if all three pictures read at a third and at most one is busy (`PANEL_REVIEWS`, `composeCover`), else two equal panels. Decision record: [docs/product-decisions.md](docs/product-decisions.md) PD-085/PD-092, detail: [docs/architecture.md](docs/architecture.md) "My Lists adaptive covers".
 
 ### Catalog strips
 
