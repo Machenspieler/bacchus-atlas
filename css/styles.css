@@ -309,9 +309,8 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 
 .site-header {
   position: sticky; top: 0; z-index: 30;
-  background: linear-gradient(180deg, rgba(20,17,15,0.98), rgba(20,17,15,0.92));
+  background: var(--ink);
   border-bottom: 1px solid var(--line);
-  backdrop-filter: blur(6px);
 }
 /* One compact header on every route (PD-047), full width with the page's own
  * side gutter. The ribbons hang from its top edge and may extend below it. */
@@ -879,7 +878,7 @@ body[data-route="list"] .catalog-bar-wrap {
 body[data-route="catalog"] .catalog-bar-wrap::before,
 body[data-route="list"] .catalog-bar-wrap::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  --bar-bg: rgba(20,17,15,0.94);
+  --bar-bg: var(--ink);
   background: var(--bar-bg);
   box-shadow: -100vmax 0 0 var(--bar-bg), 100vmax 0 0 var(--bar-bg);
   clip-path: inset(0 -100vmax -1px 0);
