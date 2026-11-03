@@ -308,6 +308,16 @@ state (no preview, badge or indicator).
 - Independent of My Lists crops (`js/list-cover-art.js` `pos`) and of Prep thumbnails (`prepEnvThumbHtml`, `biomeThumbAttrs`), which never read `CatalogArt`.
 - Tests: `tests/catalog-art.test.js` (resolution gates, no dead assets, 1:3 dimensions and no upscaling, reproducible encode, isolation of other pages). Visual and delivery QA: `node scripts/shoot-catalog-art.js` (baseline = `js/catalog-art.js` stubbed to "always biome", so the comparison is the same code on the same data).
 
+## Curated semantic artwork overrides (PD-090)
+
+A hand-approved crop of an archetype master can stand for one environment in one context. The table is `SEMANTIC_OVERRIDES` in `js/list-cover-art.js` (`envId → { crop, contexts: ['catalog'|'lists'] }`), the pictures are `crop:*` entries (`kind: 'crop'`, `parent: 'archetype:<name>'`, framing per layout) plus `CROP_CATALOG_WINDOWS` (the 1:3 Catalog windows); nothing else about artwork is generalized.
+
+- Resolution: the environment's own painting → `ENV_IMAGE_OVERRIDES` → the crop **for this context** → `ARCHETYPE_FIT` → biome → neutral. Both resolvers (`resolveEnvironmentArt`, `resolveCatalogArt`) skip a crop whose picture is missing, so a bad row falls through to the previous artwork. `ARCHETYPE_FIT` is never edited for a crop.
+- My Lists dedupe: `selectCoverImages` groups by parent artwork; a crop and its parent's whole picture (or a second crop of it) are one candidate, shown as the member most environments resolved to (crop on a tie). A crop scores as `archetype:strong`.
+- Files: `img/catalog-art/crop-<name>-{100,200[,250]}.avif` + `-200.webp`, `img/list-covers/crop-<name>-{320,<native or 640>}.avif` + a WebP, cut from the PNG masters by `scripts/generate-semantic-crops.js` (never from a derivative; widths stop at the window's pixels).
+- Runtime: `ART_RUNTIME` in `js/app.js` is a private copy of the registry; `bindCropFallback` (registered before `bindCoverFallback`) withdraws a crop whose file fails and redraws the Catalog card or list cover with what it wore before.
+- Session Prep and Journey never read any of it. Tests: `tests/semantic-overrides.test.js`; evidence: [docs/research/curated-semantic-artwork-overrides.md](research/curated-semantic-artwork-overrides.md).
+
 ## Prep manual ordering (drag-and-drop)
 
 The three stored arrays — `prep.environmentIds`, `prep.adversaryIds`,

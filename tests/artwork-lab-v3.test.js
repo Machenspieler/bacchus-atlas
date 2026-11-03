@@ -40,6 +40,7 @@ test('1. Strategy A is the production resolver: same biome, same files, for ever
 
 test('2. Strategy B picks only what ARCHETYPE_FIT / unique / override authorise', () => {
   for (const env of envs) {
+    if (Art.SEMANTIC_OVERRIDES[env.id]) continue; // PD-090 crops postdate this lab; Session Prep production is asserted unchanged elsewhere
     const b = core.resolveB(env, 'catalog');
     const allowed = Art.UNIQUE_ENV_IDS.includes(env.id) || Art.ENV_IMAGE_OVERRIDES[env.id] || Art.ARCHETYPE_FIT[env.id];
     if (!allowed) { assert.equal(b.source, 'biome', env.id); assert.equal(b.identity, core.resolveA(env, 'catalog').identity); continue; }
@@ -48,7 +49,7 @@ test('2. Strategy B picks only what ARCHETYPE_FIT / unique / override authorise'
   }
   const taxonomyOnly = envs.filter(e => core.taxonomyHint(e).status === 'taxonomy-only-not-authorised');
   assert.ok(taxonomyOnly.length > 100);
-  taxonomyOnly.filter(e => !Art.ENV_IMAGE_OVERRIDES[e.id] && !Art.UNIQUE_ENV_IDS.includes(e.id)).forEach(e => assert.equal(core.resolveB(e, 'prep').source, 'biome', e.id));
+  taxonomyOnly.filter(e => !Art.ENV_IMAGE_OVERRIDES[e.id] && !Art.SEMANTIC_OVERRIDES[e.id] && !Art.UNIQUE_ENV_IDS.includes(e.id)).forEach(e => assert.equal(core.resolveB(e, 'prep').source, 'biome', e.id));
 });
 
 test('3. Strategy C never selects an unauthorised or review-rejected picture', () => {

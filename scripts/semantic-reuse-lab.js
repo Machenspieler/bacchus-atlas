@@ -66,10 +66,13 @@ function productionBaseline(envs, artBiome) {
   const Art = require('../js/list-cover-art.js');
   const Catalog = require('../js/catalog-art.js');
   const Lists = require('../js/list-cover-utils.js');
+  /* The lab's research baseline is production BEFORE PD-090 (the curated overrides it recommended): without them the
+   * lab's recorded results stay reproducible. */
+  const Pre = { ...Art, SEMANTIC_OVERRIDES: {} };
   const base = {};
   for (const e of envs) {
-    const c = Catalog.resolveCatalogArt(e);
-    const l = Lists.resolveEnvironmentArt({ id: e.id, artBiome: artBiome(e) }, Art);
+    const c = Catalog.resolveCatalogArt(e, Pre);
+    const l = Lists.resolveEnvironmentArt({ id: e.id, artBiome: artBiome(e) }, Pre);
     base[e.id] = {
       catalog: c.kind, catalogImage: c.imageId,
       prep: 'biome', /* Session Prep draws the biome thumbnail for every environment (docs/research/catalog-prep-artwork-lab-v3.md §2) */

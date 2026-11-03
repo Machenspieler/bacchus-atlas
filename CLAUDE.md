@@ -178,6 +178,10 @@ Every list card wears a 90px cover of at most three distinct pictures chosen fro
 
 The Catalog card's vertical strip wears a thematic picture only where both gates pass: the environment is mapped in `ARCHETYPE_FIT` AND the picture was reviewed in the real strip (`js/catalog-art.js` `PICTURES[id].use`: `all` / `strong` / `none`; no entry = never). Order: own painting → harbour override → approved thematic picture → the unchanged biome strip. Strips are dedicated 1:3 cuts in `img/catalog-art/` (`scripts/generate-catalog-art.js`); no scoring, no CSS tint/blur, and Prep thumbnails, Journey and My Lists never read it. Decision record: [docs/product-decisions.md](docs/product-decisions.md) PD-089, detail: [docs/architecture.md](docs/architecture.md) "Catalog strips".
 
+### Curated semantic artwork overrides
+
+Six environments wear a hand-approved crop of an archetype master in the Catalog and/or My Lists (`SEMANTIC_OVERRIDES` in `js/list-cover-art.js`, `crop:*` pictures, `scripts/generate-semantic-crops.js`). It is a small explicit table, never a framework: no crop editor, region registry, scoring or runtime discovery. A crop beats the archetype fit and the biome but never an environment's own painting or `ENV_IMAGE_OVERRIDES`; My Lists dedupes by parent artwork; Session Prep and Journey don't read it. Decision record: [docs/product-decisions.md](docs/product-decisions.md) PD-090, detail: [docs/architecture.md](docs/architecture.md) "Curated semantic artwork overrides".
+
 ### Manual ordering
 
 The selected cards on `#/prep` are manually orderable: `prep.environmentIds`

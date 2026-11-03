@@ -38,7 +38,7 @@ test('every picture has files on disk, inside dist/, and a complete framing for 
 test('the image id matches its kind, and the srcset widths are strictly increasing', () => {
   for (const [id, img] of Object.entries(Art.IMAGES)) {
     assert.equal(img.id, id);
-    assert.ok(id.startsWith({ unique: 'env:', archetype: 'archetype:', biome: 'biome:' }[img.kind]), id);
+    assert.ok(id.startsWith({ unique: 'env:', archetype: 'archetype:', biome: 'biome:', crop: 'crop:' }[img.kind]), id);
     const w = img.avif.map(a => a.w);
     assert.deepEqual(w, [...w].sort((a, b) => a - b));
     assert.equal(new Set(w).size, w.length);
@@ -56,9 +56,12 @@ test('every shipped cover file is under 300 KB, and no PNG master ships in img/l
 });
 
 test('every cover derivative on disk is registered, and the generator and registry agree on the stems', () => {
-  const stems = new Set(Object.values(Art.IMAGES).filter(i => i.kind !== 'unique').map(i => i.fallback.replace(/^img\/list-covers\//, '').replace(/-640\.webp$/, '')));
+  const stems = new Set(Object.values(Art.IMAGES).filter(i => i.kind !== 'unique' && i.kind !== 'crop').map(i => i.fallback.replace(/^img\/list-covers\//, '').replace(/-640\.webp$/, '')));
   assert.deepEqual([...stems].sort(), Object.keys(SOURCES).sort());
+  // semantic crops (PD-090) are cut by scripts/generate-semantic-crops.js, not from SOURCES
+  const cropFiles = new Set(Object.values(Art.IMAGES).filter(i => i.kind === 'crop').flatMap(i => [...i.avif.map(a => a.path), i.fallback].map(p => path.basename(p))));
   for (const f of fs.readdirSync(path.join(ROOT, 'img/list-covers'))) {
+    if (f.startsWith('crop-')) { assert.ok(cropFiles.has(f), `${f} has no registry entry`); continue; }
     const stem = f.replace(/-\d+\.(avif|webp)$/, '');
     assert.ok(stems.has(stem), `${f} has no registry entry`);
   }
@@ -206,9 +209,10 @@ test('phase 4: the fourteen last masters are the approved files (pinned by conte
 });
 
 test('phase 4: every registered picture has a master in SOURCES, and every derivative belongs to a registered picture', () => {
-  const stems = new Set(Object.values(Art.IMAGES).filter(i => i.kind !== 'unique').map(i => i.avif[0].path.replace(/^img\/list-covers\//, '').replace(/-320\.avif$/, '')));
+  const stems = new Set(Object.values(Art.IMAGES).filter(i => i.kind !== 'unique' && i.kind !== 'crop').map(i => i.avif[0].path.replace(/^img\/list-covers\//, '').replace(/-320\.avif$/, '')));
   assert.deepEqual([...stems].sort(), Object.keys(SOURCES).sort());
   for (const f of fs.readdirSync(path.join(ROOT, 'img/list-covers'))) {
+    if (f.startsWith('crop-')) continue; // PD-090 crops: checked above and in tests/semantic-overrides.test.js
     assert.ok(stems.has(f.replace(/-(320|640|960)\.(avif|webp)$/, '')), `unregistered derivative ${f}`);
   }
 });

@@ -288,13 +288,14 @@ test('17. The production artwork registry is unchanged by the lab', () => {
   for (const f of ['js/list-cover-art.js', 'js/catalog-art.js', 'js/list-cover-utils.js']) assert.ok(!/SemanticReuse|semantic-reuse|region.*bounds/i.test(read(f)), f);
 });
 
-test('18. Production Catalog behaviour is unchanged', () => {
-  const kinds = {}; envs.forEach(e => { const k = Catalog.resolveCatalogArt(e).kind; kinds[k] = (kinds[k] || 0) + 1; });
+test('18. Production Catalog behaviour: the lab baseline is production before PD-090; the live Catalog adds only the curated crops', () => {
+  const kinds = {}; envs.forEach(e => { const k = baseline[e.id].catalog; kinds[k] = (kinds[k] || 0) + 1; });
   assert.deepEqual(kinds, { biome: 232, override: 2, thematic: 92, unique: 3 });
-  assert.equal(Catalog.resolveCatalogArt({ id: 'bustling-marketplace' }).imageId, 'archetype:streets-and-towns');
-  assert.equal(Catalog.resolveCatalogArt({ id: 'resting-dagger-inn' }).imageId, 'archetype:streets-and-towns');
-  assert.equal(Catalog.resolveCatalogArt({ id: 'city-festival' }).kind, 'biome', 'crops are not wired in: this still draws its biome strip');
-  assert.equal(Catalog.resolveCatalogArt({ id: 'the-dungeoneer' }).kind, 'biome');
+  const live = {}; envs.forEach(e => { const k = Catalog.resolveCatalogArt(e).kind; live[k] = (live[k] || 0) + 1; });
+  assert.deepEqual(live, { biome: 229, override: 2, thematic: 90, unique: 3, crop: 5 });
+  assert.equal(Catalog.resolveCatalogArt({ id: 'bustling-marketplace' }).imageId, 'crop:market-stalls');
+  assert.equal(Catalog.resolveCatalogArt({ id: 'city-festival' }).imageId, 'crop:market-stalls');
+  assert.equal(Catalog.resolveCatalogArt({ id: 'the-dungeoneer' }).imageId, 'crop:bar-counter');
   assert.ok(/catalogArtHtml\(env\)/.test(read('js/app.js')) && !/regions-lab|SemanticReuse/.test(read('js/app.js')));
 });
 
@@ -312,7 +313,7 @@ test('20. Production My Lists behaviour is unchanged', () => {
   assert.deepEqual(kinds, { biome: 118, override: 2, archetype: 117, none: 89, unique: 3 });
   const cover = Lists.coverForEnvironments([{ id: 'bustling-marketplace', artBiome: 'settlement' }, { id: 'local-tavern', artBiome: 'settlement' }, { id: 'library-of-the-dusk-tree', artBiome: 'settlement' }, { id: 'city-festival', artBiome: 'settlement' }], Art);
   assert.equal(cover.layout, 3);
-  assert.deepEqual(cover.tiles.map(t => t.imageId), ['archetype:streets-and-towns', 'archetype:taverns-and-inns', 'archetype:archives-and-libraries']);
+  assert.deepEqual(cover.tiles.map(t => t.imageId), ['crop:market-stalls', 'archetype:taverns-and-inns', 'archetype:archives-and-libraries']); // PD-090: the crop, once, for both of its environments
   assert.equal(Lists.COVER_MAX, 3);
   assert.ok(!/SemanticReuse|semantic-reuse/.test(read('js/list-cover-utils.js')));
 });

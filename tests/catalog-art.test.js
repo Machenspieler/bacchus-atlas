@@ -59,6 +59,7 @@ test('3. a thematic picture is chosen only for an environment mapped to it in AR
 test('4. context suitability is enforced: "strong" pictures need a strong fit, "none" pictures are never drawn', () => {
   for (const e of ENVS) {
     const fit = Art.ARCHETYPE_FIT[e.id]; if (!fit) continue;
+    if (Art.SEMANTIC_OVERRIDES[e.id]) continue; // PD-090: covered by tests/semantic-overrides.test.js
     const r = resolve(e.id); const pic = Catalog.PICTURES[Art.ARCHETYPES[fit[0]].variants[fit[2] || 0]];
     if (!pic || pic.use === 'none') assert.equal(r.kind, 'biome', `${e.id}: a picture that fails the strip is never drawn`);
     else if (pic.use === 'strong') assert.equal(r.kind === 'thematic', fit[1] === 'strong', `${e.id}: strong-only picture`);
@@ -88,7 +89,7 @@ test('6. a rejected or unreviewed picture cannot be selected, whatever the fit s
 test('7. the biome strip stays available: every non-thematic result tells the app to draw it', () => {
   for (const e of ENVS) {
     const r = resolve(e.id);
-    assert.ok(['unique', 'override', 'thematic', 'biome'].includes(r.kind));
+    assert.ok(['unique', 'override', 'crop', 'thematic', 'biome'].includes(r.kind));
     if (r.kind === 'biome') assert.equal(r.imageId, null);
     else assert.ok(r.imageId);
   }
@@ -105,6 +106,7 @@ test('8. a picture the registry does not know falls back safely, an empty argume
 test('9. every approved picture is a registry picture, has a master, cut paths and a note; nothing is cut that cannot be drawn', () => {
   const reachable = new Set(ENVS.map(e => resolve(e.id).imageId).filter(Boolean));
   for (const [id, pic] of Object.entries(Catalog.PICTURES)) {
+    if (id.startsWith('crop:')) continue; // semantic crops: tests/semantic-overrides.test.js
     assert.ok(Art.IMAGES[id], `${id} is a js/list-cover-art.js picture`);
     assert.ok(['all', 'strong', 'none'].includes(pic.use), id);
     assert.ok(pic.note && pic.note.length > 8, `${id} records why`);
@@ -121,14 +123,14 @@ test('9. every approved picture is a registry picture, has a master, cut paths a
   }
   // no stray files: the folder holds exactly the cuts of pictures in use
   const wanted = new Set();
-  for (const pic of Object.values(Catalog.PICTURES)) if (pic.use !== 'none') { const f = Catalog.files(pic.stem); f.avif.forEach(a => wanted.add(path.basename(a.path))); wanted.add(path.basename(f.fallback)); }
+  for (const pic of Object.values(Catalog.PICTURES)) if (pic.use !== 'none') { const f = Catalog.files(pic.stem, pic.widths); f.avif.forEach(a => wanted.add(path.basename(a.path))); wanted.add(path.basename(f.fallback)); }
   assert.deepEqual(fs.readdirSync(path.join(ROOT, 'img/catalog-art')).sort(), [...wanted].sort());
 });
 
 test('10-11. every cut is a 1:3 strip at its declared width, never upscaled from the 1:3 window of the master', async () => {
   const sharp = require('sharp');
   for (const [id, pic] of Object.entries(Catalog.PICTURES)) {
-    if (pic.use === 'none') continue;
+    if (pic.use === 'none' || id.startsWith('crop:')) continue;
     const m = await sharp(path.join(ROOT, Gen.masterOf(id))).metadata();
     const win = Gen.windowFor(m.width, m.height, pic.x);
     for (const w of Catalog.WIDTHS) {
@@ -154,11 +156,11 @@ test('12. crop windows are deterministic, inside the master, and 1:3', () => {
 
 test('13. My Lists resolution is byte-for-byte what it was: registry untouched, resolver independent of the Catalog', () => {
   assert.equal(Object.keys(Art.ARCHETYPE_FIT).length, 117);
-  assert.equal(Object.keys(Art.IMAGES).length, 31 + 12);
+  assert.equal(Object.keys(Art.IMAGES).length, 31 + 12 + 4); // + the four My Lists semantic crops (PD-090)
   assert.doesNotMatch(read('js/list-cover-art.js') + read('js/list-cover-utils.js'), /CatalogArt|catalog-art/);
   const counts = {};
   for (const e of ENVS) { const r = CoverUtils.resolveEnvironmentArt({ id: e.id, artBiome: e.biomes[0] }); const k = r ? r.kind : 'none'; counts[k] = (counts[k] || 0) + 1; }
-  assert.equal(counts.unique, 3); assert.equal(counts.archetype, 117);
+  assert.equal(counts.unique, 3); assert.equal(counts.archetype, 115); assert.equal(counts.crop, 5); // 117 before PD-090: two moved to a crop, three gained one
 });
 
 test('14-15. Session Prep, the central column and Journey draw what they drew: no Catalog code reaches them', () => {
@@ -173,7 +175,7 @@ test('16. card geometry is untouched: the strip is the same .card-art > picture 
   assert.match(functionText(APP_JS, 'cardHtml'), /\$\{catalogArtHtml\(env\)\}\n\s+<div class="card-body">/);
   const strip = functionText(APP_JS, 'stripHtml');
   assert.match(strip, /<div class="card-art">/); assert.match(strip, /sizes="\$\{ART_SIZES\}"/); assert.match(strip, /loading="lazy" decoding="async"/);
-  assert.equal((APP_JS.match(/catalogArtHtml\(/g) || []).length, 2); // its definition and the one call in cardHtml
+  assert.equal((APP_JS.match(/catalogArtHtml\(/g) || []).length, 3); // its definition, the one call in cardHtml, and the crop fallback's redraw
 });
 
 test('17. biomeArtHtml is unchanged and the language does not influence the choice', () => {
@@ -205,7 +207,7 @@ test('coverage on the real catalogue (PD-089 report)', () => {
   const by = {};
   for (const e of ENVS) { const r = resolve(e.id); by[r.kind] = (by[r.kind] || 0) + 1; }
   assert.equal(ENVS.length, 329);
-  assert.deepEqual(by, { biome: by.biome, unique: 3, override: 2, thematic: by.thematic });
-  assert.equal(by.thematic, 92);
-  assert.equal(by.biome, 329 - 92 - 5);
+  assert.deepEqual(by, { biome: by.biome, unique: 3, override: 2, crop: 5, thematic: by.thematic });
+  assert.equal(by.thematic, 90); // 92 before PD-090: bustling-marketplace and resting-dagger-inn now wear a crop
+  assert.equal(by.biome, 329 - 90 - 5 - 5);
 });

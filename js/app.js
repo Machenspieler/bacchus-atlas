@@ -2161,24 +2161,30 @@ function biomeArtHtml(env) {
  * an approved archetype picture), the biome strip otherwise. Every strip is the same
  * 1:3 panel with the same srcset contract as biomeArtHtml, so card geometry never
  * depends on which one is drawn. */
+/* The artwork registry as this page load sees it. SEMANTIC_OVERRIDES is a private copy: a crop whose file fails
+ * to load is dropped here (bindCropFallback) and its cards fall back to the artwork they wore before the
+ * crop existed, never to a broken image. */
+const ART_RUNTIME = { ...ListCoverArt, SEMANTIC_OVERRIDES: { ...ListCoverArt.SEMANTIC_OVERRIDES } };
+
 function catalogArtHtml(env) {
-  const art = CatalogArt.resolveCatalogArt(env);
+  const art = CatalogArt.resolveCatalogArt(env, ART_RUNTIME);
   if (art.kind === 'biome') return biomeArtHtml(env);
   // The harbour override is the settlement biome's own strip, already served.
   if (art.kind === 'override') {
     return stripHtml(ART_WIDTHS.map(w => ({ path: `img/biomes/settlement-${w}.avif`, w })), 'img/biomes/settlement-200.webp');
   }
-  const f = CatalogArt.files(CatalogArt.PICTURES[art.imageId].stem);
-  return stripHtml(f.avif, f.fallback);
+  const pic = CatalogArt.PICTURES[art.imageId];
+  const f = CatalogArt.files(pic.stem, pic.widths);
+  return stripHtml(f.avif, f.fallback, art.kind === 'crop' ? art.imageId : '');
 }
 
-function stripHtml(avifSet, fallback) {
+function stripHtml(avifSet, fallback, cropId) {
   const avif = avifSet.map(a => `${a.path} ${a.w}w`).join(', ');
   return `
       <div class="card-art">
         <picture>
           <source type="image/avif" sizes="${ART_SIZES}" srcset="${avif}">
-          <img src="${fallback}" alt="" loading="lazy" decoding="async">
+          <img src="${fallback}" alt="" loading="lazy" decoding="async"${cropId ? ` data-crop="${cropId}"` : ''}>
         </picture>
       </div>`;
 }
@@ -2657,7 +2663,7 @@ function coverTileHtml(tile, layout) {
   const style = p.x === 50 && p.y === 50 ? '' : ` style="--pos:${p.x}% ${p.y}%"`;
   return `<picture>
             <source type="image/avif" sizes="${COVER_SIZES[layout]}" srcset="${srcset}">
-            <img src="${img.fallback}" alt="" loading="lazy" decoding="async"${style}>
+            <img src="${img.fallback}" alt="" loading="lazy" decoding="async"${style}${tile.kind === 'crop' ? ` data-crop="${tile.imageId}"` : ''}>
           </picture>`;
 }
 
@@ -2670,7 +2676,7 @@ function coverTileHtml(tile, layout) {
 function listCoverHtml(list) {
   const members = envsInList(list.id);
   const cover = ListCoverUtils.coverForEnvironments(
-    members.map(e => ({ id: e.id, artBiome: artBiome(e) })), ListCoverArt, coverResolutionCache);
+    members.map(e => ({ id: e.id, artBiome: artBiome(e) })), ART_RUNTIME, coverResolutionCache);
   /* No click handler of its own: the Open button's stretched ::after covers the
    * whole card, cover included. Out of the tab order and out of the
    * accessibility tree too — that button is the real control, and a screen
@@ -2699,6 +2705,36 @@ function bindCoverFallback(root) {
     }
   }, true);
 }
+
+/* A semantic crop whose derivative cannot be loaded is withdrawn for this page load, and the Catalog cards and
+ * list covers that wore it are redrawn with the artwork they had before (capture phase: image errors do not
+ * bubble). Registered before bindCoverFallback's own handler can remove the tile, so it runs first. */
+function bindCropFallback(root) {
+  root.addEventListener('error', e => {
+    const img = e.target;
+    if (!(img instanceof HTMLImageElement) || !img.dataset.crop) return;
+    const cropId = img.dataset.crop;
+    const name = cropId.replace(/^crop:/, '');
+    Object.keys(ART_RUNTIME.SEMANTIC_OVERRIDES).forEach(k => {
+      if (ART_RUNTIME.SEMANTIC_OVERRIDES[k].crop === name) delete ART_RUNTIME.SEMANTIC_OVERRIDES[k];
+    });
+    coverResolutionCache.clear();
+    document.querySelectorAll(`img[data-crop="${cropId}"]`).forEach(i => {
+      const card = i.closest('.card');
+      const listCard = i.closest('.list-card');
+      if (card) {
+        const env = allEnvs().find(x => x.id === card.dataset.id);
+        const holder = i.closest('.card-art');
+        if (env && holder) holder.outerHTML = catalogArtHtml(env);
+      } else if (listCard) {
+        const list = (state.lists || []).find(l => l.id === listCard.dataset.list);
+        const cover = i.closest('.list-card-cover');
+        if (list && cover) cover.outerHTML = listCoverHtml(list);
+      }
+    });
+  }, true);
+}
+bindCropFallback(document);
 bindCoverFallback(document);
 
 function listCardHtml(list) {

@@ -64,6 +64,13 @@
     'archetype:strongholds-and-sieges': { stem: 'archetype-strongholds-and-sieges', x: 70, use: 'strong', note: 'Castle under assault; the siege reads, strong fit only.' },
     'archetype:taverns-and-inns': { stem: 'archetype-taverns-and-inns', x: 52, use: 'all', note: 'Timber beams, tables and lanterns.' },
     'archetype:time-and-dream': { stem: 'archetype-time-and-dream', x: 56, use: 'none', note: 'A strip holds one of the three seasons: reads as an autumn village, premise lost. Not cut.' },
+    /* Approved semantic crops (PD-090): 1:3 windows of an archetype master, cut by
+     * scripts/generate-semantic-crops.js; `widths` stop at the pixels the window holds. Only reached through
+     * js/list-cover-art.js SEMANTIC_OVERRIDES, never through ARCHETYPE_FIT. */
+    'crop:market-stalls': { stem: 'crop-market-stalls', use: 'all', widths: [100, 200, 250], note: 'Vendor, bread, cheese and garlic under an awning.' },
+    'crop:tavern-terrace': { stem: 'crop-tavern-terrace', use: 'all', widths: [100, 200], note: 'Inn terrace: awning, lanterns, drinkers.' },
+    'crop:bar-counter': { stem: 'crop-bar-counter', use: 'all', widths: [100, 200], note: 'Casks, shelves and a candle on a bar.' },
+    'crop:statue-altar': { stem: 'crop-statue-altar', use: 'all', widths: [100, 200], note: 'Saint statue holding a flame, halo and candles.' },
     'env:cauldera-valley': { stem: 'env-cauldera-valley', x: 50, use: 'all', note: 'Own painting.' },
     'env:field-of-dreams': { stem: 'env-field-of-dreams', x: 50, use: 'all', note: 'Own painting.' },
     'env:ouroborean-pass': { stem: 'env-ouroborean-pass', x: 50, use: 'all', note: 'Own painting.' },
@@ -73,17 +80,17 @@
   const ENV_KEEP_BIOME = {
   };
 
-  /** The file paths of one picture's strip. */
-  function files(stem) {
+  /** The file paths of one picture's strip (`widths` for a crop, which stops at its window's pixels). */
+  function files(stem, widths) {
     return {
-      avif: WIDTHS.map(w => ({ path: `${DIR}${stem}-${w}.avif`, w })),
+      avif: (widths || WIDTHS).map(w => ({ path: `${DIR}${stem}-${w}.avif`, w })),
       fallback: `${DIR}${stem}-200.webp`,
     };
   }
 
   /** What a Catalog card draws for one environment.
    * @param {{id: string}} env
-   * @returns {{kind: 'unique'|'override'|'thematic'|'biome', imageId: string|null, reason: string}}
+   * @returns {{kind: 'unique'|'override'|'crop'|'thematic'|'biome', imageId: string|null, reason: string}}
    *   'biome' means the caller's own biome strip; 'override' is the harbour (the biome:settlement
    *   picture), which is the existing settlement strip, so it carries no file of its own. */
   function resolveCatalogArt(env, art) {
@@ -101,6 +108,12 @@
 
     const forced = art.ENV_IMAGE_OVERRIDES[env.id];
     if (has(forced)) return { kind: 'override', imageId: forced, reason: 'explicit-override' };
+
+    /* An approved semantic crop for this context. A crop whose strip is missing here falls through
+     * to what the card drew before. */
+    const sem = art.SEMANTIC_OVERRIDES && art.SEMANTIC_OVERRIDES[env.id];
+    const cropId = sem && sem.contexts.includes('catalog') ? 'crop:' + sem.crop : null;
+    if (cropId && approved(cropId)) return { kind: 'crop', imageId: cropId, reason: 'semantic-override' };
 
     const fit = art.ARCHETYPE_FIT[env.id];
     if (!fit) return biome('no-fit');

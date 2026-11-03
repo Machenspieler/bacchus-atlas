@@ -10,6 +10,7 @@
    Resolving one environment, first match wins:
      1. its own painting                          (kind 'unique')
      2. an explicit per-environment override      (ENV_IMAGE_OVERRIDES)
+     2b. an approved semantic crop for 'lists' (SEMANTIC_OVERRIDES, PD-090)
      3. the archetype picture it is judged to fit (ARCHETYPE_FIT, strong or acceptable)
      4. its biome picture (never a EXPLICIT_ONLY_BIOMES one, never 'universal')
      5. nothing — it adds no tile; a list left with no tile at all gets the neutral cover.
@@ -33,6 +34,7 @@
 
   /* Where a candidate starts. A unique painting always wins its place; a thematic picture
    * beats a plain biome; within the thematic ones a strong fit beats an acceptable one. */
+  /* kind 'crop' scores as a strong archetype picture: it is only ever dealt by an explicit override. */
   const BASE_SCORE = { unique: 100, 'archetype:strong': 60, 'archetype:acceptable': 50, biome: 40 };
   /* What the share of the list a picture stands for can add on top: at most this much, so a
    * biome that is most of the list (40 + up to 20) can pass a lone acceptable thematic
@@ -40,6 +42,7 @@
   const COVERAGE_WEIGHT = 20;
 
   function classOf(kind, fit) {
+    if (kind === 'crop') return 'archetype:strong';
     if (kind === 'archetype') return fit === 'strong' ? 'archetype:strong' : 'archetype:acceptable';
     return kind;
   }
@@ -58,6 +61,10 @@
 
     const forced = art.ENV_IMAGE_OVERRIDES[env.id];
     if (has(forced)) return { imageId: forced, kind: images[forced].kind, fit: images[forced].kind === 'archetype' ? 'strong' : null };
+
+    const sem = art.SEMANTIC_OVERRIDES && art.SEMANTIC_OVERRIDES[env.id];
+    const cropId = sem && sem.contexts.includes('lists') ? 'crop:' + sem.crop : null;
+    if (has(cropId)) return { imageId: cropId, kind: 'crop', fit: 'strong', parent: images[cropId].parent };
 
     const fit = art.ARCHETYPE_FIT[env.id];
     if (fit) {
@@ -80,14 +87,29 @@
    *   layout 0 = no picture (the neutral cover). */
   function selectCoverImages(resolutions) {
     const members = (resolutions || []).length;
+    /* One candidate per source picture: a semantic crop and its parent's whole picture (or a second crop of
+     * it) are one family, so a cover never shows two cuts of one illustration. Every other picture is its own
+     * family. The family shows the member most environments resolved to (a crop on a tie: it is the more
+     * specific one), then the earlier member, then the id. */
     const byImage = new Map();
     (resolutions || []).forEach((r, index) => {
       if (!r) return;
       const c = byImage.get(r.imageId);
       if (c) { c.count += 1; return; }
-      byImage.set(r.imageId, { imageId: r.imageId, kind: r.kind, fit: r.fit, count: 1, first: index });
+      byImage.set(r.imageId, { imageId: r.imageId, kind: r.kind, fit: r.fit, parent: r.parent || r.imageId, count: 1, first: index });
     });
-    const scored = [...byImage.values()].map(c => ({
+    const families = new Map();
+    [...byImage.values()].forEach(c => {
+      const f = families.get(c.parent);
+      if (!f) { families.set(c.parent, { ...c, count: c.count, rep: c }); return; }
+      const better = c.count !== f.rep.count ? c.count > f.rep.count
+        : (c.kind === 'crop') !== (f.rep.kind === 'crop') ? c.kind === 'crop'
+          : c.first !== f.rep.first ? c.first < f.rep.first : c.imageId < f.rep.imageId;
+      const total = f.count + c.count, first = Math.min(f.first, c.first);
+      const rep = better ? c : f.rep;
+      families.set(c.parent, { imageId: rep.imageId, kind: rep.kind, fit: rep.fit, parent: c.parent, count: total, first, rep });
+    });
+    const scored = [...families.values()].map(c => ({
       ...c, score: BASE_SCORE[classOf(c.kind, c.fit)] + COVERAGE_WEIGHT * (c.count / members),
     }));
     /* Ties: the larger share, then the earlier member, then the id — all of them properties

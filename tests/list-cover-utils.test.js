@@ -83,8 +83,8 @@ test('universal and settlement environments get no picture, so none is invented'
   const universal = idsWhere(e => artBiome(e) === 'universal' && !Art.ARCHETYPE_FIT[e.id]);
   assert.ok(universal.length >= 30);
   for (const id of universal) assert.equal(U.resolveEnvironmentArt(rec(id)), null, id);
-  const settlementOnly = idsWhere(e => artBiome(e) === 'settlement' && !Art.ARCHETYPE_FIT[e.id] && !Art.ENV_IMAGE_OVERRIDES[e.id]);
-  assert.ok(settlementOnly.length >= 50);
+  const settlementOnly = idsWhere(e => artBiome(e) === 'settlement' && !Art.ARCHETYPE_FIT[e.id] && !Art.ENV_IMAGE_OVERRIDES[e.id] && !Art.SEMANTIC_OVERRIDES[e.id]);
+  assert.ok(settlementOnly.length >= 45); // 50 before the PD-090 crops took five settlement environments out of it
   for (const id of settlementOnly) assert.equal(U.resolveEnvironmentArt(rec(id)), null, id);
 });
 
@@ -108,13 +108,15 @@ test('every catalogue environment resolves without throwing, to a registered pic
 });
 
 test('how many environments each source serves (documented in the implementation report)', () => {
-  const tally = { unique: 0, 'archetype:strong': 0, 'archetype:acceptable': 0, biome: 0, none: 0 };
+  const tally = { unique: 0, 'archetype:strong': 0, 'archetype:acceptable': 0, biome: 0, none: 0, crop: 0 };
   for (const e of ENVS) {
     const r = U.resolveEnvironmentArt(rec(e.id));
     tally[!r ? 'none' : r.kind === 'archetype' ? 'archetype:' + r.fit : r.kind] += 1;
   }
   assert.equal(tally.unique, 3);
-  assert.equal(tally['archetype:strong'] + tally['archetype:acceptable'], Object.keys(Art.ARCHETYPE_FIT).length);
+  /* PD-090: two archetype-fit environments now wear a semantic crop (the other crop environments had no fit) */
+  assert.equal(tally.crop, 5);
+  assert.equal(tally['archetype:strong'] + tally['archetype:acceptable'], Object.keys(Art.ARCHETYPE_FIT).length - 2);
   assert.equal(Object.values(tally).reduce((a, b) => a + b, 0), ENVS.length);
 });
 
@@ -368,7 +370,7 @@ test('phase 3: registration, exact grade per approved environment, and the V2 pi
     for (const fit of ['strong', 'acceptable']) {
       for (const id of grades[fit]) {
         assert.deepEqual(Art.ARCHETYPE_FIT[id], [arch, fit], id);
-        const r = U.resolveEnvironmentArt(rec(id));
+        const r = U.resolveEnvironmentArt(rec(id), { ...Art, SEMANTIC_OVERRIDES: {} }); // the whole-picture grade, before PD-090 crops
         assert.deepEqual(r, { imageId: 'archetype:' + arch, kind: 'archetype', fit }, id);
       }
     }
@@ -428,8 +430,12 @@ test('phase 3: collages with the new pictures are distinct, at most three, deter
 
 test('phase 3: a missing picture falls through to the next source instead of a broken image', () => {
   const partial = { ...Art, IMAGES: Object.fromEntries(Object.entries(Art.IMAGES).filter(([id]) => id !== 'archetype:streets-and-towns')) };
-  assert.equal(U.resolveEnvironmentArt(rec('bustling-marketplace'), partial), null);
+  const noCrops = { ...partial, SEMANTIC_OVERRIDES: {} };
+  assert.equal(U.resolveEnvironmentArt(rec('bustling-marketplace'), noCrops), null);
   assert.equal(U.resolveEnvironmentArt(rec('emberwood-village'), partial), null);
+  /* a missing crop falls through to the whole picture, never to a broken image */
+  const noCrop = { ...Art, IMAGES: Object.fromEntries(Object.entries(Art.IMAGES).filter(([id]) => id !== 'crop:market-stalls')) };
+  assert.equal(U.resolveEnvironmentArt(rec('bustling-marketplace'), noCrop).imageId, 'archetype:streets-and-towns');
   assert.equal(U.resolveEnvironmentArt(rec('hallowed-temple'), partial).imageId, 'archetype:sacred-sanctuaries');
 });
 

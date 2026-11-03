@@ -182,8 +182,9 @@ test('V2-15. Production artwork, registries, Catalog, Prep, My Lists and Journey
   assert.equal(Object.keys(Art.IMAGES).filter(k => k.startsWith('archetype:')).length, 28);
   assert.equal(Object.keys(Art.ARCHETYPE_FIT).length, 117);
   const kinds = {}; envs.forEach(e => { const k = Catalog.resolveCatalogArt(e).kind; kinds[k] = (kinds[k] || 0) + 1; });
-  assert.deepEqual(kinds, { biome: 232, override: 2, thematic: 92, unique: 3 });
-  for (const id of ['gang-hideout', 'chapel-of-st-brenna', 'chthon-verlies']) assert.equal(Catalog.resolveCatalogArt({ id }).kind, 'biome', id + ' still draws its biome strip');
+  assert.deepEqual(kinds, { biome: 229, override: 2, thematic: 90, unique: 3, crop: 5 }); // PD-090 added the curated crops
+  for (const id of ['gang-hideout', 'chthon-verlies']) assert.equal(Catalog.resolveCatalogArt({ id }).kind, 'biome', id + ' (rejected in the final review) still draws its biome strip');
+  assert.equal(Catalog.resolveCatalogArt({ id: 'chapel-of-st-brenna' }).imageId, 'crop:statue-altar');
   const lk = {}; envs.forEach(e => { lk[baseline[e.id].lists] = (lk[baseline[e.id].lists] || 0) + 1; });
   assert.deepEqual(lk, { biome: 118, override: 2, archetype: 117, none: 89, unique: 3 });
   Object.values(baseline).forEach(b => assert.equal(b.prep, 'biome'));

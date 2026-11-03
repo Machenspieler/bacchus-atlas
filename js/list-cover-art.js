@@ -64,6 +64,20 @@
     };
   }
 
+  /* A hand-approved semantic crop of an archetype master (docs/research/curated-semantic-artwork-overrides.md,
+   * PD-090): `rect` is the master-pixel window the My Lists derivative is cut from, `pos` the
+   * object-position per layout (from the reviewed lab frames). Cut by scripts/generate-semantic-crops.js
+   * into img/list-covers/crop-<name>-<w>.avif; `widths` stop at the pixels the window really holds. */
+  function crop(name, parent, rect, widths, framing) {
+    const base = 'img/list-covers/crop-' + name;
+    return {
+      id: 'crop:' + name, kind: 'crop', parent: 'archetype:' + parent,
+      avif: widths.map(w => ({ path: `${base}-${w}.avif`, w })),
+      fallback: `${base}-${widths[widths.length - 1]}.webp`,
+      pos: framing, rect,
+    };
+  }
+
   const IMAGES = {};
   [
     unique('cauldera-valley', 50),
@@ -98,6 +112,15 @@
     archetype('seafaring', [50, 50], [50, 50], [75, 50]),
     archetype('sinister-woods', [50, 45], [50, 50], [40, 45]),
     archetype('sky-realms', [50, 35], [50, 50], [45, 40]),
+
+    crop('market-stalls', 'streets-and-towns', { left: 0, top: 169, width: 568, height: 772 }, [320, 568],
+      pos([50, 48.74], [50, 56.89], [50, 70.31])),
+    crop('tavern-terrace', 'streets-and-towns', { left: 1169, top: 282, width: 501, height: 659 }, [320, 501],
+      pos([50, 34.71], [50, 45.59], [50, 42.82])),
+    crop('bar-counter', 'taverns-and-inns', { left: 0, top: 188, width: 702, height: 471 }, [320, 640],
+      pos([50, 41.35], [50, 0], [63.81, 50])),
+    crop('lotus-pool', 'sacred-sanctuaries', { left: 900, top: 719, width: 770, height: 221 }, [320, 640],
+      pos([50, 0], [96.36, 50], [84.58, 50])),
 
     biome('aquatic', [50, 45], [85, 45]),
     biome('badlands', [50, 35], [25, 45]),
@@ -343,7 +366,30 @@
     'raiding-party': 'biome:settlement',
   };
 
+  /* Master-pixel windows of the crops' Catalog strips (1:3, cut by scripts/generate-semantic-crops.js into
+   * the Catalog strips' folder, crop-<name>-<w>.avif|webp) and the source master of each crop. Catalog-only crops
+   * (statue-altar) have no My Lists picture above: tall regions fail the 3.5:1 band. */
+  const CROP_CATALOG_WINDOWS = {
+    'market-stalls': { master: 'streets-and-towns', left: 75, top: 169, width: 257, height: 772, widths: [100, 200, 250] },
+    'tavern-terrace': { master: 'streets-and-towns', left: 1422, top: 282, width: 220, height: 659, widths: [100, 200] },
+    'bar-counter': { master: 'taverns-and-inns', left: 230, top: 150, width: 200, height: 600, widths: [100, 200] },
+    'statue-altar': { master: 'sacred-sanctuaries', left: 430, top: 60, width: 237, height: 710, widths: [100, 200] },
+  };
+
+  /* environment id -> the approved semantic crop it wears, and where. Explicit and per context: a crop never
+   * reclassifies an environment (ARCHETYPE_FIT is untouched). It beats the archetype fit and the biome, never the
+   * environment's own painting and never ENV_IMAGE_OVERRIDES. Rejected and deferred candidates are not here. */
+  const SEMANTIC_OVERRIDES = {
+    'bustling-marketplace': { crop: 'market-stalls', contexts: ['catalog', 'lists'] },
+    'city-festival': { crop: 'market-stalls', contexts: ['catalog', 'lists'] },
+    'resting-dagger-inn': { crop: 'tavern-terrace', contexts: ['catalog', 'lists'] },
+    'the-dungeoneer': { crop: 'bar-counter', contexts: ['catalog', 'lists'] },
+    'chapel-of-st-brenna': { crop: 'statue-altar', contexts: ['catalog'] },
+    'garden-of-the-tranquil-order': { crop: 'lotus-pool', contexts: ['lists'] },
+  };
+
   return {
     IMAGES, UNIQUE_ENV_IDS, ARCHETYPES, ARCHETYPE_FIT, BIOME_IMAGES, EXPLICIT_ONLY_BIOMES, ENV_IMAGE_OVERRIDES,
+    SEMANTIC_OVERRIDES, CROP_CATALOG_WINDOWS,
   };
 });
