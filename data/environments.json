@@ -37137,42 +37137,50 @@
             "en": "Does the shelter provide mitigating circumstances which confer advantage—or even disadvantage—for the PCs? Are other options for shelter available nearby?",
             "ru": "Даёт ли укрытие смягчающие обстоятельства, дающие персонажам преимущество — или даже помеху? Есть ли поблизости другие варианты укрытия?"
           }
-        },
-        {
-          "type": "passive",
-          "name": {
-            "en": "(Traversal) See You on the Other Side",
-            "ru": "(Путешествие) До встречи на той стороне"
-          },
-          "description": {
-            "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
-            "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
-          },
-          "prompt": {
-            "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
-            "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
-          }
-        },
-        {
-          "type": "action",
-          "name": {
-            "en": "(Traversal) Welcome to My Domain!",
-            "ru": "(Путешествие) Добро пожаловать в мои владения!"
-          },
-          "description": {
-            "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
-            "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
-          },
-          "prompt": {
-            "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
-            "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
-          }
         }
       ],
       "biomes": [
         "universal"
       ],
-      "source": "Fractus, the Broken World"
+      "source": "Fractus, the Broken World",
+      "traversal": {
+        "note": {
+          "en": "Use when the PCs must travel through the storm: they are necessarily Exposed, and the Environment type becomes Traversal.",
+          "ru": "Используйте, когда персонажам нужно пройти сквозь бурю: они неизбежно оказываются Без укрытия, а тип окружения становится «Путешествие»."
+        },
+        "features": [
+          {
+            "type": "passive",
+            "name": {
+              "en": "See You on the Other Side",
+              "ru": "До встречи на той стороне"
+            },
+            "description": {
+              "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
+              "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
+            },
+            "prompt": {
+              "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
+              "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
+            }
+          },
+          {
+            "type": "action",
+            "name": {
+              "en": "Welcome to My Domain!",
+              "ru": "Добро пожаловать в мои владения!"
+            },
+            "description": {
+              "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
+              "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
+            },
+            "prompt": {
+              "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
+              "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
+            }
+          }
+        ]
+      }
     },
     {
       "id": "hail",
@@ -37266,42 +37274,50 @@
             "en": "Are materials or tools available to make repairs? Can the PCs bolster the shelter with magic?",
             "ru": "Есть ли материалы или инструменты для ремонта? Могут ли персонажи укрепить убежище магией?"
           }
-        },
-        {
-          "type": "passive",
-          "name": {
-            "en": "(Traversal) See You on the Other Side",
-            "ru": "(Путешествие) До встречи на той стороне"
-          },
-          "description": {
-            "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
-            "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
-          },
-          "prompt": {
-            "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
-            "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
-          }
-        },
-        {
-          "type": "action",
-          "name": {
-            "en": "(Traversal) Welcome to My Domain!",
-            "ru": "(Путешествие) Добро пожаловать в мои владения!"
-          },
-          "description": {
-            "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
-            "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
-          },
-          "prompt": {
-            "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
-            "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
-          }
         }
       ],
       "biomes": [
         "universal"
       ],
-      "source": "Fractus, the Broken World"
+      "source": "Fractus, the Broken World",
+      "traversal": {
+        "note": {
+          "en": "Use when the PCs must travel through the storm: they are necessarily Exposed, and the Environment type becomes Traversal.",
+          "ru": "Используйте, когда персонажам нужно пройти сквозь бурю: они неизбежно оказываются Без укрытия, а тип окружения становится «Путешествие»."
+        },
+        "features": [
+          {
+            "type": "passive",
+            "name": {
+              "en": "See You on the Other Side",
+              "ru": "До встречи на той стороне"
+            },
+            "description": {
+              "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
+              "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
+            },
+            "prompt": {
+              "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
+              "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
+            }
+          },
+          {
+            "type": "action",
+            "name": {
+              "en": "Welcome to My Domain!",
+              "ru": "Добро пожаловать в мои владения!"
+            },
+            "description": {
+              "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
+              "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
+            },
+            "prompt": {
+              "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
+              "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
+            }
+          }
+        ]
+      }
     },
     {
       "id": "blizzard-cold",
@@ -37427,42 +37443,50 @@
             "en": "Do any of the PCs know or discover themselves claustrophobic? What happens inside the shelter which indicates it is in danger of collapse?",
             "ru": "Знает ли кто-то из персонажей или обнаруживает ли у себя клаустрофобию? Что происходит внутри укрытия, указывая на опасность обрушения?"
           }
-        },
-        {
-          "type": "passive",
-          "name": {
-            "en": "(Traversal) See You on the Other Side",
-            "ru": "(Путешествие) До встречи на той стороне"
-          },
-          "description": {
-            "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
-            "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
-          },
-          "prompt": {
-            "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
-            "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
-          }
-        },
-        {
-          "type": "action",
-          "name": {
-            "en": "(Traversal) Welcome to My Domain!",
-            "ru": "(Путешествие) Добро пожаловать в мои владения!"
-          },
-          "description": {
-            "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
-            "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
-          },
-          "prompt": {
-            "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
-            "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
-          }
         }
       ],
       "biomes": [
         "universal"
       ],
-      "source": "Fractus, the Broken World"
+      "source": "Fractus, the Broken World",
+      "traversal": {
+        "note": {
+          "en": "Use when the PCs must travel through the storm: they are necessarily Exposed, and the Environment type becomes Traversal.",
+          "ru": "Используйте, когда персонажам нужно пройти сквозь бурю: они неизбежно оказываются Без укрытия, а тип окружения становится «Путешествие»."
+        },
+        "features": [
+          {
+            "type": "passive",
+            "name": {
+              "en": "See You on the Other Side",
+              "ru": "До встречи на той стороне"
+            },
+            "description": {
+              "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
+              "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
+            },
+            "prompt": {
+              "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
+              "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
+            }
+          },
+          {
+            "type": "action",
+            "name": {
+              "en": "Welcome to My Domain!",
+              "ru": "Добро пожаловать в мои владения!"
+            },
+            "description": {
+              "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
+              "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
+            },
+            "prompt": {
+              "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
+              "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
+            }
+          }
+        ]
+      }
     },
     {
       "id": "lightning",
@@ -37571,42 +37595,50 @@
             "en": "What items or materials in the shelter might be a danger? If the PCs take adequate precautions beforehand, allow their shelter to hold.",
             "ru": "Какие предметы или материалы в укрытии могут представлять опасность? Если персонажи заранее приняли достаточные меры предосторожности, позвольте их укрытию выстоять."
           }
-        },
-        {
-          "type": "passive",
-          "name": {
-            "en": "(Traversal) See You on the Other Side",
-            "ru": "(Путешествие) До встречи на той стороне"
-          },
-          "description": {
-            "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
-            "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
-          },
-          "prompt": {
-            "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
-            "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
-          }
-        },
-        {
-          "type": "action",
-          "name": {
-            "en": "(Traversal) Welcome to My Domain!",
-            "ru": "(Путешествие) Добро пожаловать в мои владения!"
-          },
-          "description": {
-            "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
-            "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
-          },
-          "prompt": {
-            "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
-            "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
-          }
         }
       ],
       "biomes": [
         "universal"
       ],
-      "source": "Fractus, the Broken World"
+      "source": "Fractus, the Broken World",
+      "traversal": {
+        "note": {
+          "en": "Use when the PCs must travel through the storm: they are necessarily Exposed, and the Environment type becomes Traversal.",
+          "ru": "Используйте, когда персонажам нужно пройти сквозь бурю: они неизбежно оказываются Без укрытия, а тип окружения становится «Путешествие»."
+        },
+        "features": [
+          {
+            "type": "passive",
+            "name": {
+              "en": "See You on the Other Side",
+              "ru": "До встречи на той стороне"
+            },
+            "description": {
+              "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
+              "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
+            },
+            "prompt": {
+              "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
+              "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
+            }
+          },
+          {
+            "type": "action",
+            "name": {
+              "en": "Welcome to My Domain!",
+              "ru": "Добро пожаловать в мои владения!"
+            },
+            "description": {
+              "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
+              "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
+            },
+            "prompt": {
+              "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
+              "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
+            }
+          }
+        ]
+      }
     },
     {
       "id": "violent-winds",
@@ -37713,42 +37745,50 @@
             "en": "Can the PCs reinforce the shelter with magic or other materials? Are there features to the shelter which make it better or worse for surviving high winds?",
             "ru": "Могут ли персонажи укрепить укрытие магией или другими материалами? Есть ли у укрытия особенности, делающие его лучше или хуже для пережидания сильного ветра?"
           }
-        },
-        {
-          "type": "passive",
-          "name": {
-            "en": "(Traversal) See You on the Other Side",
-            "ru": "(Путешествие) До встречи на той стороне"
-          },
-          "description": {
-            "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
-            "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
-          },
-          "prompt": {
-            "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
-            "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
-          }
-        },
-        {
-          "type": "action",
-          "name": {
-            "en": "(Traversal) Welcome to My Domain!",
-            "ru": "(Путешествие) Добро пожаловать в мои владения!"
-          },
-          "description": {
-            "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
-            "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
-          },
-          "prompt": {
-            "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
-            "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
-          }
         }
       ],
       "biomes": [
         "universal"
       ],
-      "source": "Fractus, the Broken World"
+      "source": "Fractus, the Broken World",
+      "traversal": {
+        "note": {
+          "en": "Use when the PCs must travel through the storm: they are necessarily Exposed, and the Environment type becomes Traversal.",
+          "ru": "Используйте, когда персонажам нужно пройти сквозь бурю: они неизбежно оказываются Без укрытия, а тип окружения становится «Путешествие»."
+        },
+        "features": [
+          {
+            "type": "passive",
+            "name": {
+              "en": "See You on the Other Side",
+              "ru": "До встречи на той стороне"
+            },
+            "description": {
+              "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
+              "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
+            },
+            "prompt": {
+              "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
+              "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
+            }
+          },
+          {
+            "type": "action",
+            "name": {
+              "en": "Welcome to My Domain!",
+              "ru": "Добро пожаловать в мои владения!"
+            },
+            "description": {
+              "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
+              "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
+            },
+            "prompt": {
+              "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
+              "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
+            }
+          }
+        ]
+      }
     },
     {
       "id": "elemental-chaos",
@@ -37855,42 +37895,50 @@
             "en": "What images or sounds accompany this transition? What other indications can you describe which signal the environment shift?",
             "ru": "Какие образы или звуки сопровождают этот переход? Какие ещё признаки можно описать, чтобы показать смену окружения?"
           }
-        },
-        {
-          "type": "passive",
-          "name": {
-            "en": "(Traversal) See You on the Other Side",
-            "ru": "(Путешествие) До встречи на той стороне"
-          },
-          "description": {
-            "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
-            "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
-          },
-          "prompt": {
-            "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
-            "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
-          }
-        },
-        {
-          "type": "action",
-          "name": {
-            "en": "(Traversal) Welcome to My Domain!",
-            "ru": "(Путешествие) Добро пожаловать в мои владения!"
-          },
-          "description": {
-            "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
-            "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
-          },
-          "prompt": {
-            "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
-            "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
-          }
         }
       ],
       "biomes": [
         "universal"
       ],
-      "source": "Fractus, the Broken World"
+      "source": "Fractus, the Broken World",
+      "traversal": {
+        "note": {
+          "en": "Use when the PCs must travel through the storm: they are necessarily Exposed, and the Environment type becomes Traversal.",
+          "ru": "Используйте, когда персонажам нужно пройти сквозь бурю: они неизбежно оказываются Без укрытия, а тип окружения становится «Путешествие»."
+        },
+        "features": [
+          {
+            "type": "passive",
+            "name": {
+              "en": "See You on the Other Side",
+              "ru": "До встречи на той стороне"
+            },
+            "description": {
+              "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
+              "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
+            },
+            "prompt": {
+              "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
+              "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
+            }
+          },
+          {
+            "type": "action",
+            "name": {
+              "en": "Welcome to My Domain!",
+              "ru": "Добро пожаловать в мои владения!"
+            },
+            "description": {
+              "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
+              "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
+            },
+            "prompt": {
+              "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
+              "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
+            }
+          }
+        ]
+      }
     },
     {
       "id": "life-draining",
@@ -37984,42 +38032,50 @@
             "en": "How do Weakened PCs feel as their strength ebbs? Could bright light or some other magical effect provide some protection?",
             "ru": "Что чувствуют Ослабленные персонажи, когда их силы убывают? Может ли яркий свет или иной магический эффект обеспечить какую-то защиту?"
           }
-        },
-        {
-          "type": "passive",
-          "name": {
-            "en": "(Traversal) See You on the Other Side",
-            "ru": "(Путешествие) До встречи на той стороне"
-          },
-          "description": {
-            "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
-            "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
-          },
-          "prompt": {
-            "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
-            "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
-          }
-        },
-        {
-          "type": "action",
-          "name": {
-            "en": "(Traversal) Welcome to My Domain!",
-            "ru": "(Путешествие) Добро пожаловать в мои владения!"
-          },
-          "description": {
-            "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
-            "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
-          },
-          "prompt": {
-            "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
-            "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
-          }
         }
       ],
       "biomes": [
         "universal"
       ],
-      "source": "Fractus, the Broken World"
+      "source": "Fractus, the Broken World",
+      "traversal": {
+        "note": {
+          "en": "Use when the PCs must travel through the storm: they are necessarily Exposed, and the Environment type becomes Traversal.",
+          "ru": "Используйте, когда персонажам нужно пройти сквозь бурю: они неизбежно оказываются Без укрытия, а тип окружения становится «Путешествие»."
+        },
+        "features": [
+          {
+            "type": "passive",
+            "name": {
+              "en": "See You on the Other Side",
+              "ru": "До встречи на той стороне"
+            },
+            "description": {
+              "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
+              "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
+            },
+            "prompt": {
+              "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
+              "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
+            }
+          },
+          {
+            "type": "action",
+            "name": {
+              "en": "Welcome to My Domain!",
+              "ru": "Добро пожаловать в мои владения!"
+            },
+            "description": {
+              "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
+              "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
+            },
+            "prompt": {
+              "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
+              "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
+            }
+          }
+        ]
+      }
     },
     {
       "id": "plague-poison",
@@ -38111,42 +38167,50 @@
             "en": "How does the sickness manifest? Is it easier or harder to resist this feature if used again?",
             "ru": "Как проявляется болезнь? Проще или сложнее сопротивляться этому свойству при повторном использовании?"
           }
-        },
-        {
-          "type": "passive",
-          "name": {
-            "en": "(Traversal) See You on the Other Side",
-            "ru": "(Путешествие) До встречи на той стороне"
-          },
-          "description": {
-            "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
-            "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
-          },
-          "prompt": {
-            "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
-            "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
-          }
-        },
-        {
-          "type": "action",
-          "name": {
-            "en": "(Traversal) Welcome to My Domain!",
-            "ru": "(Путешествие) Добро пожаловать в мои владения!"
-          },
-          "description": {
-            "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
-            "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
-          },
-          "prompt": {
-            "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
-            "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
-          }
         }
       ],
       "biomes": [
         "universal"
       ],
-      "source": "Fractus, the Broken World"
+      "source": "Fractus, the Broken World",
+      "traversal": {
+        "note": {
+          "en": "Use when the PCs must travel through the storm: they are necessarily Exposed, and the Environment type becomes Traversal.",
+          "ru": "Используйте, когда персонажам нужно пройти сквозь бурю: они неизбежно оказываются Без укрытия, а тип окружения становится «Путешествие»."
+        },
+        "features": [
+          {
+            "type": "passive",
+            "name": {
+              "en": "See You on the Other Side",
+              "ru": "До встречи на той стороне"
+            },
+            "description": {
+              "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
+              "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
+            },
+            "prompt": {
+              "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
+              "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
+            }
+          },
+          {
+            "type": "action",
+            "name": {
+              "en": "Welcome to My Domain!",
+              "ru": "Добро пожаловать в мои владения!"
+            },
+            "description": {
+              "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
+              "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
+            },
+            "prompt": {
+              "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
+              "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
+            }
+          }
+        ]
+      }
     },
     {
       "id": "searing-light",
@@ -38272,42 +38336,50 @@
             "en": "What is it like to be bursting with Hope to the point of pain? Do PCs who enter the scene with full Hope also become Vulnerable?",
             "ru": "Каково это — быть переполненным Надеждой до боли? Становятся ли Уязвимыми и персонажи, входящие в сцену с полной Надеждой?"
           }
-        },
-        {
-          "type": "passive",
-          "name": {
-            "en": "(Traversal) See You on the Other Side",
-            "ru": "(Путешествие) До встречи на той стороне"
-          },
-          "description": {
-            "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
-            "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
-          },
-          "prompt": {
-            "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
-            "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
-          }
-        },
-        {
-          "type": "action",
-          "name": {
-            "en": "(Traversal) Welcome to My Domain!",
-            "ru": "(Путешествие) Добро пожаловать в мои владения!"
-          },
-          "description": {
-            "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
-            "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
-          },
-          "prompt": {
-            "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
-            "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
-          }
         }
       ],
       "biomes": [
         "universal"
       ],
-      "source": "Fractus, the Broken World"
+      "source": "Fractus, the Broken World",
+      "traversal": {
+        "note": {
+          "en": "Use when the PCs must travel through the storm: they are necessarily Exposed, and the Environment type becomes Traversal.",
+          "ru": "Используйте, когда персонажам нужно пройти сквозь бурю: они неизбежно оказываются Без укрытия, а тип окружения становится «Путешествие»."
+        },
+        "features": [
+          {
+            "type": "passive",
+            "name": {
+              "en": "See You on the Other Side",
+              "ru": "До встречи на той стороне"
+            },
+            "description": {
+              "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
+              "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
+            },
+            "prompt": {
+              "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
+              "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
+            }
+          },
+          {
+            "type": "action",
+            "name": {
+              "en": "Welcome to My Domain!",
+              "ru": "Добро пожаловать в мои владения!"
+            },
+            "description": {
+              "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
+              "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
+            },
+            "prompt": {
+              "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
+              "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
+            }
+          }
+        ]
+      }
     },
     {
       "id": "spatial-rifts",
@@ -38395,42 +38467,50 @@
             "en": "How long does this rift remain open? Can it be traversed both ways? What means do the PCs have to reunite? Is something dangerous immediately on the other side?",
             "ru": "Как долго этот разлом остаётся открытым? Можно ли пройти через него в обе стороны? Какие средства есть у персонажей, чтобы воссоединиться? Нет ли сразу за ним чего-то опасного?"
           }
-        },
-        {
-          "type": "passive",
-          "name": {
-            "en": "(Traversal) See You on the Other Side",
-            "ru": "(Путешествие) До встречи на той стороне"
-          },
-          "description": {
-            "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
-            "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
-          },
-          "prompt": {
-            "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
-            "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
-          }
-        },
-        {
-          "type": "action",
-          "name": {
-            "en": "(Traversal) Welcome to My Domain!",
-            "ru": "(Путешествие) Добро пожаловать в мои владения!"
-          },
-          "description": {
-            "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
-            "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
-          },
-          "prompt": {
-            "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
-            "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
-          }
         }
       ],
       "biomes": [
         "universal"
       ],
-      "source": "Fractus, the Broken World"
+      "source": "Fractus, the Broken World",
+      "traversal": {
+        "note": {
+          "en": "Use when the PCs must travel through the storm: they are necessarily Exposed, and the Environment type becomes Traversal.",
+          "ru": "Используйте, когда персонажам нужно пройти сквозь бурю: они неизбежно оказываются Без укрытия, а тип окружения становится «Путешествие»."
+        },
+        "features": [
+          {
+            "type": "passive",
+            "name": {
+              "en": "See You on the Other Side",
+              "ru": "До встречи на той стороне"
+            },
+            "description": {
+              "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
+              "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
+            },
+            "prompt": {
+              "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
+              "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
+            }
+          },
+          {
+            "type": "action",
+            "name": {
+              "en": "Welcome to My Domain!",
+              "ru": "Добро пожаловать в мои владения!"
+            },
+            "description": {
+              "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
+              "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
+            },
+            "prompt": {
+              "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
+              "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
+            }
+          }
+        ]
+      }
     },
     {
       "id": "reality-time-altering",
@@ -38548,42 +38628,50 @@
             "en": "Do the new environment’s effects spill outside the Close range bubble? Can the PCs use these areas to their advantage?",
             "ru": "Выходят ли эффекты нового окружения за пределы пузыря Средней дистанции? Могут ли персонажи использовать эти области себе на пользу?"
           }
-        },
-        {
-          "type": "passive",
-          "name": {
-            "en": "(Traversal) See You on the Other Side",
-            "ru": "(Путешествие) До встречи на той стороне"
-          },
-          "description": {
-            "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
-            "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
-          },
-          "prompt": {
-            "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
-            "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
-          }
-        },
-        {
-          "type": "action",
-          "name": {
-            "en": "(Traversal) Welcome to My Domain!",
-            "ru": "(Путешествие) Добро пожаловать в мои владения!"
-          },
-          "description": {
-            "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
-            "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
-          },
-          "prompt": {
-            "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
-            "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
-          }
         }
       ],
       "biomes": [
         "universal"
       ],
-      "source": "Fractus, the Broken World"
+      "source": "Fractus, the Broken World",
+      "traversal": {
+        "note": {
+          "en": "Use when the PCs must travel through the storm: they are necessarily Exposed, and the Environment type becomes Traversal.",
+          "ru": "Используйте, когда персонажам нужно пройти сквозь бурю: они неизбежно оказываются Без укрытия, а тип окружения становится «Путешествие»."
+        },
+        "features": [
+          {
+            "type": "passive",
+            "name": {
+              "en": "See You on the Other Side",
+              "ru": "До встречи на той стороне"
+            },
+            "description": {
+              "en": "Activate a Progress Countdown (X), where X equals the Tier of the storm, plus the number of PCs and Fear you spent to introduce it. When the countdown triggers, the storm either abates or the PCs successfully navigate through it.",
+              "ru": "Запустите Отсчёт Прогресса (X), где X равен Рангу бури плюс число персонажей и Страх, который вы потратили, чтобы её ввести. Когда отсчёт срабатывает, буря либо утихает, либо персонажи успешно пробираются сквозь неё."
+            },
+            "prompt": {
+              "en": "What methods of travel or locomotion might be effective to move through this type of storm? What actions can the PCs take to protect themselves from the storm’s dangers?",
+              "ru": "Какие способы передвижения могут быть эффективны, чтобы пройти сквозь бурю такого рода? Какие действия могут предпринять персонажи, чтобы защититься от опасностей бури?"
+            }
+          },
+          {
+            "type": "action",
+            "name": {
+              "en": "Welcome to My Domain!",
+              "ru": "Добро пожаловать в мои владения!"
+            },
+            "description": {
+              "en": "Spend a Fear to introduce one or more Tier-appropriate adversaries from the Potential Adversaries list using BP equal to the storm’s Tier plus the number of PCs.",
+              "ru": "Потратьте Страх, чтобы ввести одного или нескольких подходящих по Рангу противников из списка Потенциальных Противников, используя БО, равные Рангу бури плюс число персонажей."
+            },
+            "prompt": {
+              "en": "How do these adversaries appear? What is the disposition and motive of these adversaries?",
+              "ru": "Как появляются эти противники? Каковы их настрой и мотивы?"
+            }
+          }
+        ]
+      }
     },
     {
       "id": "suiting-up",

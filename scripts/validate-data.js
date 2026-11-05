@@ -468,6 +468,21 @@ function validateEnvironments(data, file, diagnostics) {
         env.story_seeds.forEach((seed, si) => validateStorySeed(seed, `${p}.story_seeds[${si}]`, reporter, idLabel));
       }
     }
+
+    if (env.traversal !== undefined) {
+      const tp = `${p}.traversal`;
+      if (!isPlainObject(env.traversal)) {
+        reporter.error(tp, `traversal must be an object, got ${describeType(env.traversal)}.`, idLabel);
+      } else {
+        checkDangerousKeys(env.traversal, tp, reporter);
+        if (env.traversal.note !== undefined) validateBilingualString(env.traversal.note, `${tp}.note`, reporter, { requireEn: true });
+        if (!Array.isArray(env.traversal.features) || env.traversal.features.length === 0) {
+          reporter.error(`${tp}.features`, 'traversal.features must be a non-empty array.', idLabel);
+        } else {
+          env.traversal.features.forEach((f, fi) => validateEnvFeature(f, `${tp}.features[${fi}]`, reporter, idLabel, facts));
+        }
+      }
+    }
   });
 
   for (const occurrences of nameOccurrences.values()) {

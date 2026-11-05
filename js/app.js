@@ -6706,6 +6706,21 @@ function openDetailOverlay(envId, carry = null) {
     </details>
   ` : '';
 
+  /* Optional rules that only apply in one situation (a storm the party must
+   * travel through): ordinary features, collapsed at the very bottom behind one
+   * summary, with a one-line note saying when to reach for them. */
+  const traversalFeatures = (env.traversal && Array.isArray(env.traversal.features)) ? env.traversal.features : [];
+  const traversalNote = env.traversal ? bilingual(env.traversal.note) : '';
+  const traversalHtml = traversalFeatures.length ? `
+    <details class="story-seeds traversal-block">
+      <summary class="story-seeds-summary section-label">${t('traversal_label')} (${traversalFeatures.length})</summary>
+      <div class="story-seeds-body">
+        ${traversalNote ? `<p class="feature-prompt traversal-note">${escapeHtml(traversalNote)}</p>` : ''}
+        ${traversalFeatures.map(featureHtml).join('')}
+      </div>
+    </details>
+  ` : '';
+
   const loreText = bilingual(env.lore);
   const loreHtml = loreText ? `<p class="env-lore">${escapeHtml(loreText)}</p>` : '';
 
@@ -6800,6 +6815,7 @@ function openDetailOverlay(envId, carry = null) {
         ${storySeedsHtml}
         ${rawHtml}
         ${regionHtml}
+        ${traversalHtml}
 
         <div class="detail-footer">
           ${biomesHtml}

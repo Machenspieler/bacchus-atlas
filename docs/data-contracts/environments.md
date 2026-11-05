@@ -59,7 +59,7 @@ authority and correct this document.
 ## Optional fields
 
 `lore`, `biomes`, `source`, `featured_adversaries`, `story_seeds`,
-`rawText`, `tiers`, `difficulty_by_tier`, and an absent/empty `ru` inside any bilingual field are all
+`traversal`, `rawText`, `tiers`, `difficulty_by_tier`, and an absent/empty `ru` inside any bilingual field are all
 legitimately optional — the validator only checks their shape when
 present, and older entries not having them is expected, not a data gap to
 backfill proactively.
@@ -103,6 +103,12 @@ backfill proactively.
   validated even though rendering degrades gracefully).
 - **`story_seeds`** — `[{ title: {en,ru}, body: {en,ru}, prompt: {en,ru} }]`,
   optional GM hooks excluded from search/filtering.
+- **`traversal`** — `{ note: {en,ru}, features: [feature…] }`: situational
+  rules (a storm the party must travel through) kept out of `features`, shown
+  collapsed at the very bottom of the overlay under "Traversal (N)" with the
+  one-line `note` saying when to use them. Features are ordinary feature objects
+  (names carry no "(Traversal)" prefix) and take the tier formula `T`.
+  Used by the 11 Fractus storms (PD-093).
 - **`rawText`** — bilingual fallback prose for an environment not yet
   broken into structured `features`.
 
