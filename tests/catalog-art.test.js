@@ -206,8 +206,8 @@ test('20. the cuts are reproducible: the same master and x encode to the same by
 test('coverage on the real catalogue (PD-089 report)', () => {
   const by = {};
   for (const e of ENVS) { const r = resolve(e.id); by[r.kind] = (by[r.kind] || 0) + 1; }
-  assert.equal(ENVS.length, 331);
+  assert.equal(ENVS.length, 373);
   assert.deepEqual(by, { biome: by.biome, unique: 3, override: 2, crop: 5, thematic: by.thematic });
   assert.equal(by.thematic, 90); // 92 before PD-090: bustling-marketplace and resting-dagger-inn now wear a crop
-  assert.equal(by.biome, 331 - 90 - 5 - 5);
+  assert.equal(by.biome, 373 - 90 - 5 - 5);
 });

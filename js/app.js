@@ -6846,12 +6846,18 @@ function openDetailOverlay(envId, carry = null) {
   // switch.
   function renderRichBlocks() {
     const retier = retierFor(env, viewTier);
+    const multiTier = Array.isArray(env.tiers) && env.tiers.length > 1;
     overlay.querySelectorAll('[data-rich-block]').forEach(node => {
-      const text = decodeURIComponent(node.getAttribute('data-rich-block'));
+      const raw = decodeURIComponent(node.getAttribute('data-rich-block'));
+      // "T" in a multi-tier card's text is the tier it is read at (`Td6+T`,
+      // `(T)`); text that carries the formula scales itself, so it is never
+      // retiered a second time.
+      const formula = multiTier && EnvTierUtils.usesTierFormula(raw);
+      const text = formula ? EnvTierUtils.substituteTier(raw, viewTier) : raw;
       if (node._renderedTier === viewTier) return;
-      if (node._renderedTier !== undefined && !hasDamageRoll(text) && !hasCheckDC(text)) return;
+      if (node._renderedTier !== undefined && !formula && !hasDamageRoll(text) && !hasCheckDC(text)) return;
       node._renderedTier = viewTier;
-      renderFeatureBody(node, text, retier);
+      renderFeatureBody(node, text, formula ? null : retier);
     });
     pruneCountdownOverlays();
   }

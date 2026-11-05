@@ -51,7 +51,32 @@
     return env ? env.difficulty : undefined;
   }
 
+  /* The tier formula (Fractus, the Broken World storms): a multi-tier stat block
+   * writes "T" for "the tier the card is being read at" — `Td6+T`, `(T)`,
+   * `(T+2, T+1)`, `(T)x2`. It is opt-in per environment (only a card with
+   * `tiers`) and is spelt out before dice, countdowns and DCs are looked for, so
+   * the result is an ordinary `2d6+2`. A marker such as "T3/4" (a feature that
+   * only applies at those tiers) is not a formula and is left alone. */
+  var TIER_FORMULA_RE = /(^|[^A-Za-z0-9])T(?:d\d|\b(?![-\w]))|\(T\)/;
+
+  function usesTierFormula(text) {
+    return typeof text === 'string' && TIER_FORMULA_RE.test(text);
+  }
+
+  function substituteTier(text, tier) {
+    if (typeof text !== 'string' || !usesTierFormula(text)) return text;
+    var n = Number(tier);
+    return text
+      .replace(/\(T\)\s*x\s*(\d+)/g, function (_, k) { return String(n * Number(k)); })
+      .replace(/\(T\)/g, String(n))
+      .replace(/(^|[^A-Za-z0-9])T(?=d\d)/g, function (_, pre) { return pre + n; })
+      .replace(/(^|[^A-Za-z0-9])T\s*\+\s*(\d+)\b/g, function (_, pre, k) { return pre + (n + Number(k)); })
+      .replace(/(^|[^A-Za-z0-9])T(?![-\w])/g, function (_, pre) { return pre + n; });
+  }
+
   return {
+    usesTierFormula: usesTierFormula,
+    substituteTier: substituteTier,
     envTiers: envTiers,
     isNativeTier: isNativeTier,
     tierLabel: tierLabel,

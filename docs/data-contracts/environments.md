@@ -80,6 +80,11 @@ backfill proactively.
   "3": 16, "4": 19 }`. Every listed tier is the environment's own (dot in the
   detail card, no rescaling); the validator checks the keys match `tiers` and
   `difficulty` equals the lowest tier's number.
+- **The tier formula `T`** (PD-093) — in the `description` of an environment that has
+  `tiers`, a bare `T` is the tier the card is read at: `Td6+T`, `(T)`, `(T+2, T+1)`,
+  `(T)x2`. It renders as the number (`3d6+3` is a dice button); `T3/4` markers
+  and the letter inside words are left alone; environments without `tiers` never
+  read it.
 - **Tables in a feature** (PD-084) — consecutive `| a | b |` lines inside a
   `description` (header row first, optional `| --- | --- |` rule) render as a
   table; keep EN and RU the same size.

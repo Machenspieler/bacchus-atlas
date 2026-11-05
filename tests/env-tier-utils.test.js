@@ -44,3 +44,17 @@ test('difficultyAt: the per-tier value, else the single difficulty', () => {
   assert.equal(U.difficultyAt(multi, 4), 19);
   assert.equal(U.difficultyAt(single, 3), 15);
 });
+
+test('substituteTier: the tier formula T becomes the tier the card is read at', () => {
+  assert.equal(U.substituteTier('takes Td6+T physical damage', 2), 'takes 2d6+2 physical damage');
+  assert.equal(U.substituteTier('Spend up to (T) Fear', 3), 'Spend up to 3 Fear');
+  assert.equal(U.substituteTier('Challenge Countdown (T+2, T+1)', 1), 'Challenge Countdown (3, 2)');
+  assert.equal(U.substituteTier('(T)x2 BP of adversaries', 4), '8 BP of adversaries');
+  assert.equal(U.substituteTier('Td4+2 direct damage', 4), '4d4+2 direct damage');
+});
+
+test('substituteTier: markers such as T3/4 and ordinary words are left alone', () => {
+  assert.equal(U.usesTierFormula('(Exposed, T3/4) Chained Smite'), false);
+  assert.equal(U.substituteTier('T3/4 only, T-shirt, Tier 2', 2), 'T3/4 only, T-shirt, Tier 2');
+  assert.equal(U.usesTierFormula('Spend a Fear'), false);
+});
