@@ -66,6 +66,9 @@ test('group member aliases such as Guards resolve to the bestiary names', () => 
 test('group prefixes are added once, never doubled', () => {
   assert.deepEqual(names('Cultists (Adept, Cult Fang)'), ['Cult Adept', 'Cult Fang']);
   assert.deepEqual(names('Minor Elementals (Fire, Chaos)'), ['Minor Fire Elemental', 'Minor Chaos Elemental']);
+  assert.deepEqual(names('Water Elementals'), ['Greater Water Elemental']);
+  assert.deepEqual(names('Water Elementals (Minor, Medium, Greater)'),
+    ['Minor Water Elemental', 'Medium Water Elemental', 'Greater Water Elemental']);
 });
 
 test('existing special aliases keep their exact behaviour', () => {

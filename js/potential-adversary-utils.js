@@ -161,6 +161,8 @@
     Elementals: { 'Greater Earth': 'Greater Earth Elemental' },
     'Greater Elementals': { Earth: 'Greater Earth Elemental', Water: 'Greater Water Elemental' },
     'Minor Elementals': { Fire: 'Minor Fire Elemental', Chaos: 'Minor Chaos Elemental' },
+    /* "Water Elementals (Greater, Medium, Minor)": only the Greater one is in the catalogue. */
+    'Water Elementals': { Greater: 'Greater Water Elemental', Medium: 'Medium Water Elemental', Minor: 'Minor Water Elemental' },
     /* "Fallen (Shock Troop, Sorcerer, Warlord)" — bare "Warlord" doesn't
      * prefix cleanly since the bestiary has no plain "Fallen Warlord", only
      * subtitled variants. Confirmed this environment (Fortress) means the
@@ -241,6 +243,10 @@
     Zombies: ZOMBIE_ROSTER,
     Pirate: ['Pirate Captain', 'Pirate Raiders', 'Pirate Tough'],
     Pirates: ['Pirate Captain', 'Pirate Raiders', 'Pirate Tough'],
+    /* The catalogue holds one water elemental, the Greater one; "Water Elementals"
+     * (Fractus storms) means that adversary. */
+    'Water Elemental': ['Greater Water Elemental'],
+    'Water Elementals': ['Greater Water Elemental'],
   };
 
   /** "Beasts (any)" — the GM may pick any beast — expands to the SRD 2.0
