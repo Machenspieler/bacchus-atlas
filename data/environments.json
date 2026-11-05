@@ -36762,6 +36762,469 @@
         "drylands"
       ],
       "source": "Pistolheart"
+    },
+    {
+      "id": "mother-o-gold",
+      "tier": 1,
+      "type": "exploration",
+      "difficulty": 11,
+      "name": {
+        "en": "Mother o’ Gold",
+        "ru": "Мать Золота"
+      },
+      "lore": {
+        "en": "Surrounded by trees, a curious sight, a woman-shaped figure with golden hair appears before the group.",
+        "ru": "Среди деревьев перед группой возникает диковинное зрелище: фигура женщины с золотыми волосами."
+      },
+      "impulses": {
+        "en": [
+          "Deceive those with a wicked heart",
+          "find out why they are here",
+          "lure the party in"
+        ],
+        "ru": [
+          "Обманывать тех, у кого злое сердце",
+          "выяснять, зачем они здесь",
+          "заманивать отряд"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Ahuizotl",
+          "Deeproot Defender",
+          "Mapinguari",
+          "Minor Treant",
+          "Rabble Mawb",
+          "Tangle Bramble Swarm"
+        ],
+        "ru": [
+          "Ауицотль",
+          "Защитник Корней",
+          "Мапингуари",
+          "Молодой Древень",
+          "Сброд Мауба",
+          "Рой Колючих Тёрнов"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Enchanting Presence",
+            "ru": "Чарующее присутствие"
+          },
+          "description": {
+            "en": "Mother o’ Gold’s mystical presence is enchanting. All characters who can see Mother o’ Gold have disadvantage on Presence Rolls.",
+            "ru": "Мистическое присутствие Матери Золота завораживает. Все персонажи, которые её видят, совершают Броски Влияния с помехой."
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Judgment of Character",
+            "ru": "Суд над характером"
+          },
+          "description": {
+            "en": "Spend a Fear to make Mother o’ Gold judge the party’s character. PCs must succeed on a Presence Reaction Roll. On a failure, Mother o’ Gold judges the character of those who failed perfectly.",
+            "ru": "Потратьте Страх, чтобы Мать Золота оценила характер отряда. Персонажи должны преуспеть в Броске Реакции на Влияние. При провале Мать Золота безошибочно судит о характере тех, кто провалил бросок."
+          },
+          "prompt": {
+            "en": "How does she judge each character? How does she act while doing so?",
+            "ru": "Как она судит о каждом персонаже? Как она ведёт себя при этом?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Golden Glow",
+            "ru": "Золотое сияние"
+          },
+          "description": {
+            "en": "Whenever a character fails a Presence Roll related to Mother o’ Gold, they must mark a Stress.",
+            "ru": "Каждый раз, когда персонаж проваливает Бросок Влияния, связанный с Матерью Золота, он должен отметить Стресс."
+          },
+          "prompt": {
+            "en": "How does her glow affect the characters? Why does it only affect them when they are directing themselves toward her?",
+            "ru": "Как её сияние влияет на персонажей? Почему оно действует на них, только когда они обращаются к ней?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "True Heart",
+            "ru": "Чистое сердце"
+          },
+          "description": {
+            "en": "If the characters manage to convince Mother o’ Gold that they are good people, she will lead the party to a place of treasure. Otherwise, she will promise the same, but will lead the party into an ambush.",
+            "ru": "Если персонажам удастся убедить Мать Золота, что они хорошие люди, она отведёт отряд к месту, где хранится сокровище. В противном случае она пообещает то же самое, но заведёт отряд в засаду."
+          },
+          "prompt": {
+            "en": "How did Mother o’ Gold reach this conclusion? Where will she take them?",
+            "ru": "Как Мать Золота пришла к такому выводу? Куда она их отведёт?"
+          }
+        }
+      ],
+      "biomes": [
+        "forest"
+      ],
+      "source": "Eclipse on the Land of Plenty"
+    },
+    {
+      "id": "festa-junina",
+      "tier": 2,
+      "type": "social",
+      "difficulty": 14,
+      "name": {
+        "en": "Festa Junina",
+        "ru": "Феста Жунина"
+      },
+      "lore": {
+        "en": "A cultural festival that mixes games with popular folk beliefs. The favorite festival of the region’s Encantados.",
+        "ru": "Культурный праздник, в котором игры сочетаются с народными верованиями. Любимый праздник энкантадо этого края."
+      },
+      "impulses": {
+        "en": [
+          "Bring the community together",
+          "celebrate the harvests",
+          "create opportunities for the Encantados",
+          "honor the Encantados",
+          "protect against the darkness"
+        ],
+        "ru": [
+          "Объединять общину",
+          "праздновать урожай",
+          "создавать возможности для энкантадо",
+          "чтить энкантадо",
+          "защищаться от тьмы"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Caipora",
+          "Curupira",
+          "Merchant",
+          "Saci-Pererê"
+        ],
+        "ru": [
+          "Каипора",
+          "Курупира",
+          "Торговец",
+          "Саси-Перере"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Delicious Feast",
+            "ru": "Роскошное угощение"
+          },
+          "description": {
+            "en": "The food at the Festa Junina is known for being delicious and for warming the hearts of everyone. Once during the event, each PC can spend a handful of gold to buy traditional Festa Junina foods (Corn Cake, Curau, Pamonha, Pé de Moleque, Pinhão, Popcorn, Quentão). When they eat it, they clear a Stress and gain a Hope.",
+            "ru": "Угощения на Фесте Жунина славятся своим вкусом и согревают сердца всех, кто их пробует. Один раз за событие каждый персонаж может потратить горсть золота, чтобы купить традиционные блюда Фесты Жунина (кукурузный пирог, курау, памонья, пе-ди-молеке, пиньян, попкорн, кентан). Когда персонаж ест, он снимает Стресс и получает Надежду."
+          },
+          "prompt": {
+            "en": "What food does the party eat? Why is that food so close to their hearts?",
+            "ru": "Какую еду ест отряд? Почему эта еда так близка их сердцу?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Village Gossip",
+            "ru": "Деревенские сплетни"
+          },
+          "description": {
+            "en": "A character who chats with village NPCs during the Festa Junina can make a Presence Roll to receive information about local events. The information depends on the result, following the criteria below.\n- **Critical Success:** Learns relevant information about two people or important events in the village. The PC may ask one question about a rumor and get a true (but not necessarily complete) answer.\n- **Success with Hope:** Hears about two recent events, and at least one of them is relevant to the PC.\n- **Success with Fear:** Learns an alarming rumor related to them or to one of the other PCs.\n- **Failure with Hope:** The villagers don’t feel confident gossiping with the character around. They must mark a Stress to learn a relevant rumor.\n- **Failure with Fear:** Besides no one seeming to trust the character, they become the target of gossip and rumors. They must mark a Stress and, together with the GM, decide what gossip is being spread about the player’s character.",
+            "ru": "Персонаж, который болтает с деревенскими NPC во время Фесты Жунина, может совершить Бросок Влияния, чтобы узнать о местных событиях. Какие сведения он получит, зависит от результата согласно критериям ниже.\n- **Критический успех:** Узнаёт важную информацию о двух людях или значимых событиях в деревне. Персонаж может задать один вопрос о слухе и получить правдивый (но не обязательно полный) ответ.\n- **Успех с Надеждой:** Слышит о двух недавних событиях, и хотя бы одно из них касается этого персонажа.\n- **Успех со Страхом:** Узнаёт тревожный слух, связанный с ним самим или с одним из других персонажей.\n- **Неудача с Надеждой:** Жители не решаются сплетничать при этом персонаже. Чтобы узнать нужный слух, он должен отметить Стресс.\n- **Неудача со Страхом:** Мало того что никто, похоже, не доверяет персонажу, так он ещё и становится мишенью сплетен и слухов. Он должен отметить Стресс и вместе с Мастером решить, какие сплетни ходят о персонаже игрока."
+          },
+          "prompt": {
+            "en": "Who is being talked about in the conversation circles at the festival? What information is useful to the characters?",
+            "ru": "О ком судачат в кружках беседующих на празднике? Какие сведения полезны персонажам?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Quadrilha",
+            "ru": "Кадриль"
+          },
+          "description": {
+            "en": "Spend a Fear to start a Quadrilha, one of the main events of the Festa Junina. If a PC wants to take part in the dance, they must make a Presence Roll. On a success, they gain advantage on social interactions during the Festa Junina and join in on the dance. On a failure, they must mark a Stress and describe how the people taking part in the dance don’t let the PC join.",
+            "ru": "Потратьте Страх, чтобы начать кадриль — одно из главных событий Фесты Жунина. Если персонаж хочет принять участие в танце, он должен совершить Бросок Влияния. При успехе он получает преимущество в социальных взаимодействиях во время Фесты Жунина и вступает в танец. При провале он должен отметить Стресс и описать, как танцующие не пускают его в круг."
+          },
+          "prompt": {
+            "en": "Who do you grow closer to after sharing the quadrilha dance?",
+            "ru": "С кем вы сближаетесь после совместного танца кадрили?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Saci’s Mischief",
+            "ru": "Проказа Саси"
+          },
+          "description": {
+            "en": "Saci-Pererê is present at the festival. Spend a Fear to have the Saci-Pererê hide someone’s belongings. The target must make an Instinct Reaction Roll. On a failure, their item vanishes and turns up somewhere else or with another person at the festival. If you prefer, the GM can instead make an item appear with a player. If they succeed on the roll and notice the Saci-Pererê, the player can try to confront him.",
+            "ru": "На празднике присутствует Саси-Перере. Потратьте Страх, чтобы Саси-Перере спрятал чьи-то вещи. Цель должна совершить Бросок Реакции на Инстинкт. При провале предмет исчезает и обнаруживается в другом месте или у другого человека на празднике. Если хотите, Мастер может вместо этого подбросить предмет игроку. Если цель преуспевает в броске и замечает Саси-Перере, игрок может попытаться с ним поквитаться."
+          },
+          "prompt": {
+            "en": "What accusations arise from Saci’s prank? Is someone looking for something important that went missing? What is it?",
+            "ru": "Какие обвинения вызывает проделка Саси? Не ищет ли кто-нибудь что-то важное, что пропало? Что именно?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Bonfire",
+            "ru": "Костёр"
+          },
+          "description": {
+            "en": "The Festa Junina bonfire is a symbol of protection and a tribute to the sun. Keeping it fed and burning, and treating it with respect and reverence, gives the character a Hope and advantage on one roll of the player’s choice against monsters and Creatures of the Night. Additionally, fighting Creatures of the Night within Close range of the bonfire grants advantage on attack rolls.",
+            "ru": "Костёр Фесты Жунина — символ защиты и дань уважения солнцу. Если поддерживать в нём огонь и относиться к нему с почтением и благоговением, персонаж получает Надежду и преимущество на один бросок по выбору игрока против монстров и Созданий Ночи. Кроме того, сражаясь с Созданиями Ночи на Средней дистанции от костра, персонажи получают преимущество на броски атаки."
+          },
+          "prompt": {
+            "en": "What conversations take place around the bonfire? How do the players feel as they approach it? What memories does it bring up?",
+            "ru": "Какие разговоры ведутся у костра? Что чувствуют игроки, приближаясь к нему? Какие воспоминания он пробуждает?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Eclipse on the Land of Plenty"
+    },
+    {
+      "id": "rondolo",
+      "tier": 3,
+      "type": "event",
+      "difficulty": 14,
+      "name": {
+        "en": "Rondolo",
+        "ru": "Рондоло"
+      },
+      "lore": {
+        "en": "A gigantic bird that brings with it a great storm and ill omens.",
+        "ru": "Гигантская птица, несущая с собой великую бурю и дурные знамения."
+      },
+      "impulses": {
+        "en": [
+          "Bring ill omens",
+          "herald storms",
+          "spread panic among settlements"
+        ],
+        "ru": [
+          "Приносить дурные знамения",
+          "предвещать бури",
+          "сеять панику в поселениях"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Elemental Spark",
+          "Minor Chaos Elemental",
+          "Greater Water Elemental",
+          "Storm Titan"
+        ],
+        "ru": [
+          "Стихийная Искра",
+          "Малый Элементаль Хаоса",
+          "Великий Водный Элементаль",
+          "Титан Бури"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Gale",
+            "ru": "Шквал"
+          },
+          "description": {
+            "en": "With Rondolo present, the strong winds of an ordinary storm seem like a gentle breeze. Rondolo brings gales that hinder any movement within them. All PCs must make an Agility Roll to move up to Close range. Whenever they fail a roll to move, they must mark a Stress.",
+            "ru": "Рядом с Рондоло сильные ветры обычной бури кажутся лёгким бризом. Рондоло приносит шквалы, мешающие любому движению. Все персонажи должны совершить Бросок Проворности, чтобы переместиться на расстояние до Средней дистанции. Каждый раз, когда они проваливают бросок на перемещение, они должны отметить Стресс."
+          },
+          "prompt": {
+            "en": "Have the characters ever seen winds this strong? Is there any place to shelter from them?",
+            "ru": "Видели ли персонажи когда-нибудь такие сильные ветры? Есть ли где укрыться от них?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Ill Omen",
+            "ru": "Зловещее знамение"
+          },
+          "description": {
+            "en": "Rondolo is a sign of ill omen, bringing with him the announcement that nothing good lies ahead. Among the Ibyrá, there is doubt whether he is a warning that something bad is coming or whether he is the one who makes bad things happen, but one thing is certain: when he appears, fear takes hold of everyone. While he is active, all rolls have their Fear Die increased to a d20.",
+            "ru": "Рондоло — дурной знак, несущий весть о том, что впереди нет ничего хорошего. Среди ибира нет единого мнения: то ли он предупреждает о грядущей беде, то ли сам вызывает беды, — но одно известно наверняка: когда он появляется, всех охватывает страх. Пока он действует, у всех бросков Кость Страха увеличивается до d20."
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Rondolo’s Appearance",
+            "ru": "Явление Рондоло"
+          },
+          "description": {
+            "en": "Countdown (1d8). When Rondolo arrives, activate the countdown. Most of the time Rondolo is not seen within the storm; the clouds and rain are so dense that it is hard to find him. Whenever someone makes an Action Roll with Hope, tick the countdown down by one. When the countdown reaches zero, the players must choose together between Hope or Fear.\n- **Hope:** They manage to move out of the storm and the event ends.\n- **Fear:** All PCs must mark a Stress. They enter the center of the storm and find a colossal white bird with gray markings amid the storm: Rondolo himself. The players must make a Group Action Roll. Depending on the result, Rondolo shares a vision of that character’s future. The vision should not be literal; build something subjective, made of abstract feelings and situations, involving the character’s aspirations. Create the vision together according to the roll results. After that, the storm ceases.\n- **Critical Success:** Rondolo shares a positive vision of the future for the whole group present. At some point in the campaign, the player can claim this vision and turn any group member’s roll into a critical success.\n- **Success:** Rondolo shares a positive vision of the character’s future. At some point in the campaign, the player can claim this vision and turn a roll made with Hope into a critical success.\n- **Failure:** Rondolo shares a negative vision of the character’s future. At some point in the campaign, the GM can claim this vision and turn a player’s success, as long as it is not a critical success, into a failure with Hope.",
+            "ru": "Отсчёт (1d8). Когда появляется Рондоло, активируйте отсчёт. Большую часть времени Рондоло не виден в буре: тучи и дождь так густы, что найти его трудно. Каждый раз, когда кто-либо совершает бросок действия с Надеждой, уменьшайте отсчёт на единицу. Когда отсчёт достигает нуля, игроки должны сообща выбрать между Надеждой и Страхом.\n- **Надежда:** Им удаётся выбраться из бури, и событие заканчивается.\n- **Страх:** Все персонажи должны отметить Стресс. Они попадают в центр бури и среди неё находят колоссальную белую птицу с серыми отметинами — самого Рондоло. Игроки должны совершить Групповой бросок. В зависимости от результата Рондоло делится видением будущего этого персонажа. Видение не должно быть буквальным: создайте что-то субъективное, составленное из отвлечённых чувств и ситуаций, связанных с устремлениями персонажа. Создайте видение вместе в соответствии с результатами броска. После этого буря стихает.\n- **Критический успех:** Рондоло делится добрым видением будущего для всей присутствующей группы. В какой-то момент кампании игрок может воспользоваться этим видением и превратить бросок любого члена группы в критический успех.\n- **Успех:** Рондоло делится добрым видением будущего персонажа. В какой-то момент кампании игрок может воспользоваться этим видением и превратить бросок с Надеждой в критический успех.\n- **Неудача:** Рондоло делится мрачным видением будущего персонажа. В какой-то момент кампании Мастер может воспользоваться этим видением и превратить успех игрока, если это не критический успех, в неудачу с Надеждой."
+          },
+          "prompt": {
+            "en": "Will the characters cling to the hope of a new day and leave the storm, or will they face the fear and learn something about their future? What does it feel like to have omens about the future? Do they believe they can change these visions?",
+            "ru": "Ухватятся ли персонажи за надежду на новый день и покинут бурю, или встретят страх лицом к лицу и узнают что-то о своём будущем? Каково это — получать предзнаменования о будущем? Верят ли они, что могут изменить эти видения?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Wingbeat",
+            "ru": "Взмах крыла"
+          },
+          "description": {
+            "en": "Spend a Fear to have Rondolo’s wingbeat generate a gigantic storm of lightning and thunder. All PCs must make a Reaction Roll using a trait you choose to avoid being struck by the lightning. Targets who fail take 3d10+5 magic damage.",
+            "ru": "Потратьте Страх, чтобы взмах крыла Рондоло породил гигантскую бурю с молниями и громом. Все персонажи должны совершить Бросок Реакции с чертой по вашему выбору, чтобы избежать удара молнии. Цели, провалившие бросок, получают 3d10+5 магического урона."
+          },
+          "prompt": {
+            "en": "What does it feel like to face a storm of lightning and deafening thunder? Is there hope of getting out alive?",
+            "ru": "Каково это — оказаться лицом к лицу с грозой, молниями и оглушительным громом? Есть ли надежда выбраться живым?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Bad Omen",
+            "ru": "Дурное предзнаменование"
+          },
+          "description": {
+            "en": "When a character makes a roll with Fear, you can spend a Fear to cast a bad omen on them. The player becomes Vulnerable and something bad will happen to them the next day. You can decide what it is, or turn any roll they succeeded with Fear into a failure.",
+            "ru": "Когда персонаж совершает бросок со Страхом, вы можете потратить Страх, чтобы навести на него дурное предзнаменование. Игрок становится Уязвимым, и на следующий день с ним случится что-то плохое. Вы можете решить, что именно, или превратить любой его успешный бросок со Страхом в неудачу."
+          },
+          "prompt": {
+            "en": "What kind of bad luck will befall the characters?",
+            "ru": "Какая неудача постигнет персонажей?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "Eclipse on the Land of Plenty"
+    },
+    {
+      "id": "opartaba",
+      "tier": 3,
+      "type": "exploration",
+      "difficulty": 20,
+      "name": {
+        "en": "Opartabá",
+        "ru": "Опартаба"
+      },
+      "lore": {
+        "en": "The sleeping city of Opartabá, located beneath a forest, has been lost for millennia, with many secrets and dangers waiting to be found.",
+        "ru": "Спящий город Опартаба, скрытый под лесом, утрачен на тысячелетия, и в нём таится множество секретов и опасностей, ожидающих своего часа."
+      },
+      "impulses": {
+        "en": [
+          "Keeping the secret",
+          "keeping the unwanted out",
+          "being rediscovered"
+        ],
+        "ru": [
+          "Хранить тайну",
+          "не пускать незваных",
+          "быть открытым заново"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Ghastly Legion",
+          "Oracle of Doom",
+          "Owl Witch"
+        ],
+        "ru": [
+          "Жуткий Легион",
+          "Оракул Погибели",
+          "Ведьма-Сова"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Lost Knowledge",
+            "ru": "Утраченные знания"
+          },
+          "description": {
+            "en": "The technology and knowledge of Opartabá have been lost for far too long. Knowledge Rolls to understand something in this environment are made with disadvantage.",
+            "ru": "Технологии и знания Опартабы утрачены слишком давно. Броски Знания, чтобы разобраться в чём-либо в этом окружении, совершаются с помехой."
+          },
+          "prompt": {
+            "en": "What secrets are hidden here? What knowledge do the characters lack to understand this place?",
+            "ru": "Какие тайны здесь сокрыты? Каких знаний персонажам не хватает, чтобы понять это место?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Undisturbed",
+            "ru": "Нерушимый покой"
+          },
+          "description": {
+            "en": "Although it has been hidden for a long time, Opartabá is still alive, in a way, and does not like to be disturbed. If the characters do something disrespectful to the city, its culture, or its religion, summon an Oracle of Doom at Far range from the party and immediately put it in the spotlight.",
+            "ru": "Хотя Опартаба долго была сокрыта, она по-своему всё ещё жива и не любит, когда её тревожат. Если персонажи совершают что-либо непочтительное по отношению к городу, его культуре или религии, призовите Оракула Погибели на Дальней дистанции от отряда и немедленно передайте ему фокус."
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Geographic Instability",
+            "ru": "Геологическая нестабильность"
+          },
+          "description": {
+            "en": "Spend a Fear to make the partially loose rocks of the ceiling collapse. The PCs must succeed on a Strength Reaction Roll or take 4d10+6 physical damage and become Restrained until they succeed on a Strength Roll. On a success, they take half damage and avoid the condition.",
+            "ru": "Потратьте Страх, чтобы частично расшатанные камни свода обрушились. Персонажи должны преуспеть в Броске Реакции на Силу, иначе получат 4d10+6 физического урона и станут Обездвиженными, пока не преуспеют в Броске Силы. При успехе они получают половину урона и избегают состояния."
+          },
+          "prompt": {
+            "en": "What caused this instability? How do the characters withstand the collapse?",
+            "ru": "Что вызвало эту нестабильность? Как персонажи переносят обрушение?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Return of the Citizens",
+            "ru": "Возвращение горожан"
+          },
+          "description": {
+            "en": "Spend a Fear to summon 1d4 Ghastly Legions that appear within Close range to the party.",
+            "ru": "Потратьте Страх, чтобы призвать 1d4 Жутких Легионов, которые появляются на Средней дистанции от отряда."
+          },
+          "prompt": {
+            "en": "Who were these people before passing through the veil of life? How do they feel seeing someone alive here after so long?",
+            "ru": "Кем были эти люди, прежде чем перейти за завесу жизни? Что они чувствуют, увидев здесь живого человека спустя столько времени?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Legendary Mystery",
+            "ru": "Легендарная тайна"
+          },
+          "description": {
+            "en": "There is a mystery in Opartabá that was lost along with its civilization. If the players manage to solve this mystery, they are rewarded with 2 legendary treasures of the GM’s choice.",
+            "ru": "В Опартабе есть тайна, утраченная вместе с её цивилизацией. Если игрокам удастся разгадать эту тайну, они получат в награду 2 легендарных сокровища по выбору Мастера."
+          },
+          "prompt": {
+            "en": "What mystery does the city hide? Which legendary treasures can the group find?",
+            "ru": "Какую тайну скрывает город? Какие легендарные сокровища может найти группа?"
+          }
+        }
+      ],
+      "biomes": [
+        "underground"
+      ],
+      "source": "Eclipse on the Land of Plenty"
     }
   ]
 }
