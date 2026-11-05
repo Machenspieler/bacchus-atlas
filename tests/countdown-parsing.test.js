@@ -18,6 +18,17 @@ const findCountdownMatches = new Function([
 
 const startOf = text => { const r = findCountdownMatches(text); return r.length === 1 ? r[0].value : r.map(x => x.value); };
 
+test('a pair "(6, 5)" is one match carrying both sizes, so the card draws two buttons', () => {
+  const [m] = findCountdownMatches('Begin a Challenge Countdown (6, 5). If the PCs finish first, it is fixed.');
+  assert.deepEqual(m.values, [6, 5]);
+  assert.equal(m.value, 6);
+  assert.equal(m.label, 'Countdown (6, 5)'); // the label starts at the keyword, as for a single size
+  assert.deepEqual(findCountdownMatches('Начните Отсчёт Испытания (6, 5).')[0].values, [6, 5]);
+  assert.equal(findCountdownMatches('Countdown (6)')[0].values, null);
+  // a roll word between keyword and parens still disqualifies it
+  assert.deepEqual(findCountdownMatches('Stop the countdown with a Finesse Roll (11, 12).'), []);
+});
+
 test('a countdown written "(Loop XdY)" starts at the highest the dice can show', () => {
   assert.equal(startOf('Countdown (Loop 1d6). Patrol.'), 6);
   assert.equal(startOf('Countdown (Loop 2d6).'), 12);

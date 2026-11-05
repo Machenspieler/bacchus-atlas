@@ -7217,7 +7217,9 @@ function copyItemImage(src, name) {
  * "s" as the prose it belongs to. */
 const DICE_RE = /\b(\d{0,2})d(2|3|4|6|8|10|12|20|100)(?=s?\b)(?:\s*([+-])\s*(\d+)\b(?!\s*d\s*\d))?/gi;
 const COUNTDOWN_KEYWORD_RE = /(Countdown|Отсчёт\w*|Отсчет\w*|Счётчик\w*|Счетчик\w*)/gi;
-const COUNTDOWN_PAREN_RE = /\(\s*(?:(?:Loop|Цикл)\s+)?(?:(\d*)d(\d+)(?:\s*\+\s*(\d+))?|(\d+)(?:\s*[–—-]\s*(?:[A-Za-zА-Яа-я]+\s+)?(?:Loop|Цикл))?)\s*\)/gi;
+/* Group 4 is a list, "(6, 5)": two countdowns started together (a Challenge
+ * Countdown printed with a pair of sizes). Group 5 is the plain "(6)". */
+const COUNTDOWN_PAREN_RE = /\(\s*(?:(?:Loop|Цикл)\s+)?(?:(\d*)d(\d+)(?:\s*\+\s*(\d+))?|(\d+(?:\s*,\s*\d+)+)|(\d+)(?:\s*[–—-]\s*(?:[A-Za-zА-Яа-я]+\s+)?(?:Loop|Цикл))?)\s*\)/gi;
 
 /* A difficulty in parentheses is not a countdown. "…stop the countdown with a
  * successful Finesse Roll (20)" names a check the party makes against the
@@ -7251,13 +7253,14 @@ function findCountdownMatches(text) {
     while ((mm = COUNTDOWN_KEYWORD_RE.exec(segment))) kwMatch = mm;
     if (!kwMatch) continue;
     if (COUNTDOWN_ROLL_WORD_RE.test(segment.slice(kwMatch.index + kwMatch[0].length))) continue;
-    // m[4] is a plain "(6)". Otherwise m[1] is the die count (empty for "(d20)"),
+    // m[5] is a plain "(6)" (m[4], a list, is handled above). Otherwise m[1] is the die count (empty for "(d20)"),
     // m[2] the sides and m[3] an optional flat bonus: "(Loop 1d6+1)" starts at 7.
-    const value = m[4] !== undefined
-      ? parseInt(m[4], 10)
+    const values = m[4] !== undefined ? m[4].split(',').map(v => parseInt(v, 10)) : null;
+    const value = values ? values[0] : m[5] !== undefined
+      ? parseInt(m[5], 10)
       : (m[1] === '' ? 1 : parseInt(m[1], 10)) * parseInt(m[2], 10) + (m[3] ? parseInt(m[3], 10) : 0);
     const labelStart = segmentStart + kwMatch.index;
-    matches.push({ start: labelStart, end: parenEnd, type: 'countdown', value, label: text.slice(labelStart, parenEnd) });
+    matches.push({ start: labelStart, end: parenEnd, type: 'countdown', value, values, label: text.slice(labelStart, parenEnd) });
   }
   return matches;
 }
@@ -7590,6 +7593,17 @@ function renderSpans(container, text, retier) {
     } else if (match.type === 'check-dc') {
       const scaled = retier ? retierValue(match.value, retier.from, retier.to, retier.atlas) : match.value;
       container.appendChild(document.createTextNode(String(scaled)));
+    } else if (match.values) {
+      /* "Challenge Countdown (6, 5)": one button per size, back to back. The first
+       * carries the keyword, the rest just their number, with the full name kept
+       * as the accessible name. */
+      const prefix = match.label.slice(0, match.label.indexOf('('));
+      match.values.forEach((v, i) => {
+        if (i > 0) container.appendChild(document.createTextNode(' '));
+        const btn = makeCountdownButton(v, i === 0 ? `${prefix}(${v})` : `(${v})`);
+        if (i > 0) btn.setAttribute('aria-label', `${prefix}(${v})`);
+        container.appendChild(btn);
+      });
     } else {
       container.appendChild(makeCountdownButton(match.value, match.label));
     }
