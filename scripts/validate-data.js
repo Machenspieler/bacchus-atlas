@@ -400,9 +400,9 @@ function validateEnvironments(data, file, diagnostics) {
       }
     }
 
-    if (env.impulses === undefined) {
-      reporter.error(`${p}.impulses`, `Environment "${idLabel}" is missing impulses.`, idLabel);
-    } else {
+    // Impulses are optional: an environment whose source names none simply has no field,
+    // and the card and overlay print no Impulses row.
+    if (env.impulses !== undefined) {
       validateBilingualStringArray(env.impulses, `${p}.impulses`, reporter, { requireEn: true });
     }
 

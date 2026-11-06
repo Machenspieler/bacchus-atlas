@@ -145,10 +145,9 @@ re-litigate without the project owner's input:
 - A no-adversary environment uses the literal placeholder `["None"]` /
   `["Нет"]` for `potential_adversaries` — never an empty array or an
   invented creature.
-- When a source provides no `impulses` field at all, synthesize 2–4 short
-  gerund-phrase impulses from what the environment's features actually do
-  — this is safe without asking, since it paraphrases content already in
-  the text rather than inventing an external fact.
+- When a source provides no impulses, the environment has no `impulses` field —
+  nothing is synthesized and the card and overlay print no Impulses row
+  (owner decision, 2026-11-06).
 - A source's own bold/emphasis markup around "Spend a Fear" is stripped —
   the site auto-detects and bolds Fear-cost text regardless of source
   markup.

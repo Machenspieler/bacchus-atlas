@@ -52,18 +52,18 @@ authority and correct this document.
 | `tier` | integer (1–4 in current data) | May be `null` for an explicitly tier-agnostic environment (rare — confirm intent before doing this). |
 | `type` | one of `traversal \| social \| event \| exploration` | Enforced by the validator; translated for display via `type_*` keys in `data/i18n.json`. A source that prints another label (The Last Round Table's "Tier 2 Location") is stored as the nearest of the four — a place to explore is `exploration`. |
 | `name` | `{ en, ru }` | Both required. Names need not be unique (PD-075): two environments may share a `ru` (or `en`) name — e.g. «Городской фестиваль» for Town Festival and City Festival — and a shared name is not a defect. Only `id` must be unique. |
-| `impulses` | `{ en: string[], ru: string[] }` | Every environment has a non-empty list; when the source names none, use the literal placeholder `["None"]`/`["Нет"]` rather than an empty array or an invented impulse. |
-| `potential_adversaries` | `{ en: string[], ru: string[] }` | Same non-empty/placeholder rule as `impulses`. Drives search, display, and (when a name matches a `featured_adversaries` entry) the clickable stat-block link. |
+| `potential_adversaries` | `{ en: string[], ru: string[] }` | Every environment has a non-empty list; when the source names none, use the literal placeholder `["None"]`/`["Нет"]` rather than an empty array or an invented creature. Drives search, display, and (when a name matches a `featured_adversaries` entry) the clickable stat-block link. |
 | `features` | array of feature objects | See "Feature object" below. |
 
 ## Optional fields
 
-`lore`, `biomes`, `source`, `featured_adversaries`, `story_seeds`,
+`impulses`, `lore`, `biomes`, `source`, `featured_adversaries`, `story_seeds`,
 `traversal`, `rawText`, `tiers`, `difficulty_by_tier`, and an absent/empty `ru` inside any bilingual field are all
 legitimately optional — the validator only checks their shape when
 present, and older entries not having them is expected, not a data gap to
 backfill proactively.
 
+- **`impulses`** — `{ en: string[], ru: string[] }`. When the source names none, omit the field (owner decision, 2026-11-06): the card and the overlay then print no Impulses row at all, no label and no placeholder. Never write `["None"]` or invent impulses.
 - **`difficulty`** — usually a number. It may also be a bilingual
   `{ en, ru }` object for a non-numeric difficulty (e.g. "same as the
   opposing duelist's") — both `hasDifficulty()`/`envDifficulty()` in

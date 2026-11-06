@@ -244,6 +244,13 @@ test('duplicate environment id fails', () => {
   assert.ok(errorsOf(result).some(d => /Duplicate environment id/.test(d.message)));
 });
 
+test('an environment without impulses is valid', () => {
+  const noImpulses = defaultEnvironment({ id: 'quiet-env' });
+  delete noImpulses.impulses;
+  const dir = buildFixture({ environments: v => v.environments.push(noImpulses) });
+  assert.equal(errorsOf(validateRepositoryData(dir)).length, 0);
+});
+
 /* ---------------- 5b: same content under two names ---------------- */
 
 const twinFeatures = () => [{
