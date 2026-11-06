@@ -152,7 +152,7 @@ const state = {
     validate: SafeStorage.validators.soundboard,
   }),
   storageNoticeDismissed: SafeStorage.readRawFlag(lsStorage, LS_KEYS.storageNoticeDismissed) === '1',
-  filters: { search: '', tiers: new Set(), types: new Set(), sources: new Set(), biomes: new Set(), regionOnly: false },
+  filters: { search: '', tiers: new Set(), types: new Set(), sources: new Set(), biomes: new Set(), regionOnly: false, stormOnly: false },
   // Whether the phone-width filter disclosure is open. Purely presentational,
   // so it lives here rather than in localStorage and survives a re-render only.
   filtersOpen: false,
@@ -205,6 +205,7 @@ function adoptRouteFilters(route) {
     sources: new Set(q.sources),   // names are checked against the catalogue in renderToolbar()
     biomes: new Set(q.biomes.filter(v => BIOMES.includes(v))),
     regionOnly: q.regionOnly,
+    stormOnly: q.stormOnly,
   };
   resetCatalogVisibility();
 }
@@ -1582,7 +1583,7 @@ const SEARCH_DEBOUNCE_MS = 120;
 // button doesn't reflow every time a selection changes.
 function typesTriggerLabel(types) {
   const count = types.filter(type => state.filters.types.has(type)).length
-    + (state.filters.regionOnly ? 1 : 0);
+    + (state.filters.regionOnly ? 1 : 0) + (state.filters.stormOnly ? 1 : 0);
   return count ? `${t('filter_type')} (${count})` : t('filter_type');
 }
 
@@ -1610,7 +1611,9 @@ function renderToolbar() {
    * kept by filtering the reference arrays rather than collecting a Set. */
   const has = { tiers: new Set(), types: new Set(), sources: new Set(), biomes: new Set() };
   const sourceCounts = new Map();
+  let hasStorms = false;
   envs.forEach(e => {
+    if ((e.tags || []).includes('storm')) hasStorms = true;
     EnvTierUtils.envTiers(e).forEach(n => has.tiers.add(n));
     has.types.add(e.type);
     if (e.source) {
@@ -1635,6 +1638,9 @@ function renderToolbar() {
   // membership, not env.type. Regions only make sense on the full catalog, so
   // the pill — and any filter left over from it — is dropped elsewhere.
   const showRegionPill = state.route.name === 'catalog';
+  // The Storms pill (the data's `tags: ["storm"]`) is offered wherever the environments in front of you hold a storm.
+  const showStormPill = hasStorms;
+  if (!showStormPill) state.filters.stormOnly = false;
   if (!showRegionPill) state.filters.regionOnly = false;
 
   const listBar = state.route.name === 'list' ? (() => {
@@ -1648,7 +1654,7 @@ function renderToolbar() {
   // How many filter groups are narrowing the list right now. Only shown next to
   // the phone-width disclosure, where the filters themselves are out of sight.
   const activeGroups = (state.filters.tiers.size ? 1 : 0) + (state.filters.types.size ? 1 : 0)
-    + (state.filters.sources.size ? 1 : 0) + (state.filters.biomes.size ? 1 : 0) + (state.filters.regionOnly ? 1 : 0);
+    + (state.filters.sources.size ? 1 : 0) + (state.filters.biomes.size ? 1 : 0) + (state.filters.regionOnly ? 1 : 0) + (state.filters.stormOnly ? 1 : 0);
 
   el.innerHTML = listBar + `
     <div class="toolbar" data-filters-open="${state.filtersOpen}">
@@ -1674,7 +1680,7 @@ function renderToolbar() {
             ${usedTiers.map(tier => `<button type="button" class="rank-icon ${state.filters.tiers.has(tier) ? 'active' : ''}" data-tier="${tier}" aria-pressed="${state.filters.tiers.has(tier)}" aria-label="${t('tier_label')} ${tier}"><span>${tier}</span></button>`).join('')}
           </div>
         </div>` : ''}
-        ${types.length || showRegionPill ? `
+        ${types.length || showRegionPill || showStormPill ? `
         <div class="field ms-field" id="f-types-field">
           <button type="button" class="ms-trigger field-control" id="f-types-btn"
                   aria-expanded="false" aria-controls="f-types-panel">
@@ -1686,6 +1692,11 @@ function renderToolbar() {
               <input type="checkbox" class="ms-checkbox sr-only" data-type="${type}" ${state.filters.types.has(type) ? 'checked' : ''}>
               <span class="ms-row-label">${t('type_' + type)}</span>
             </label>`).join('')}
+            ${showStormPill ? `
+            <label class="ms-row">
+              <input type="checkbox" class="ms-checkbox sr-only" data-type="storm" ${state.filters.stormOnly ? 'checked' : ''}>
+              <span class="ms-row-label">${t('type_storm')}</span>
+            </label>` : ''}
             ${showRegionPill ? `
             <label class="ms-row">
               <input type="checkbox" class="ms-checkbox sr-only" data-type="region" ${state.filters.regionOnly ? 'checked' : ''}>
@@ -1765,6 +1776,7 @@ function renderToolbar() {
       panel: document.getElementById('f-types-panel'),
       onToggle(cb) {
         if (cb.dataset.type === 'region') state.filters.regionOnly = cb.checked;
+        else if (cb.dataset.type === 'storm') state.filters.stormOnly = cb.checked;
         else setSetValue(state.filters.types, cb.dataset.type, cb.checked);
       },
       updateLabel(trigger) { trigger.querySelector('.ms-trigger-label').textContent = typesTriggerLabel(types); },
@@ -1922,6 +1934,7 @@ function envMatchesFilters(env, preparedQuery) {
   if (f.types.size && !f.types.has(env.type)) return false;
   if (f.sources.size && !f.sources.has(env.source)) return false;
   if (f.regionOnly && !regionOfEnv(env.id)) return false;
+  if (f.stormOnly && !(env.tags || []).includes('storm')) return false;
   if (f.biomes.size) {
     const envBiomeSet = new Set(env.biomes || []);
     let match = false;
@@ -2105,7 +2118,7 @@ function bindGridDelegation(el) {
 }
 
 function clearAllFilters() {
-  state.filters = { search: '', tiers: new Set(), types: new Set(), sources: new Set(), biomes: new Set(), regionOnly: false };
+  state.filters = { search: '', tiers: new Set(), types: new Set(), sources: new Set(), biomes: new Set(), regionOnly: false, stormOnly: false };
   resetCatalogVisibility();
   renderToolbar();
   renderGrid();
@@ -2113,7 +2126,7 @@ function clearAllFilters() {
 
 function hasActiveFilters() {
   const f = state.filters;
-  return f.search || f.tiers.size || f.types.size || f.sources.size || f.biomes.size || f.regionOnly;
+  return f.search || f.tiers.size || f.types.size || f.sources.size || f.biomes.size || f.regionOnly || f.stormOnly;
 }
 
 /* Biomes that only get to supply a card picture when nothing else is on offer.

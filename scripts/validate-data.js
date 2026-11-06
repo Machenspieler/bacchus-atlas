@@ -197,6 +197,8 @@ function validateBilingualStringArray(value, jsonPath, reporter, { requireEn = t
 
 const TERRAIN_BIOMES = ['underground', 'aquatic', 'wetland', 'grassland', 'tropical', 'forest', 'drylands', 'rolling', 'mountain', 'frozen', 'badlands'];
 const ALL_BIOMES = [...TERRAIN_BIOMES, 'settlement', 'universal'];
+// Optional free-form groupings an environment may carry in `tags` (PD-094). Not biomes, not types.
+const ENV_TAGS = ['storm'];
 const ENV_TYPES = ['traversal', 'social', 'event', 'exploration'];
 const FEATURE_TYPES = ['passive', 'action', 'reaction'];
 const ADVERSARY_ROLES = ['bruiser', 'horde', 'leader', 'minion', 'ranged', 'skulk', 'social', 'solo', 'standard', 'support'];
@@ -423,6 +425,20 @@ function validateEnvironments(data, file, diagnostics) {
 
     if (env.source !== undefined && !isNonEmptyString(env.source)) {
       reporter.error(`${p}.source`, 'source must be a non-empty string when present.', idLabel);
+    }
+
+    if (env.tags !== undefined) {
+      if (!Array.isArray(env.tags)) {
+        reporter.error(`${p}.tags`, 'tags must be an array.', idLabel);
+      } else {
+        const seenTags = new Set();
+        env.tags.forEach((tag, ti) => {
+          const tp = `${p}.tags[${ti}]`;
+          if (!ENV_TAGS.includes(tag)) { reporter.error(tp, `Environment "${idLabel}" uses unknown tag ${JSON.stringify(tag)} (known: ${ENV_TAGS.join(', ')}).`, idLabel); return; }
+          if (seenTags.has(tag)) { reporter.error(tp, `Environment "${idLabel}" lists tag "${tag}" more than once.`, idLabel); return; }
+          seenTags.add(tag);
+        });
+      }
     }
 
     if (env.biomes !== undefined) {

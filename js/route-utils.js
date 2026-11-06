@@ -155,10 +155,10 @@
    * never throwing. Unknown keys, out-of-range ranks and undecodable values
    * are dropped one by one — a bad `tier` never costs a good `biome`. Type,
    * biome and source names are NOT validated here (the caller owns those
-   * vocabularies); `type=region` is the Region pill and sets `regionOnly`.
+   * vocabularies); `type=region` is the Region pill and sets `regionOnly`; `type=storm` is the Storms pill and sets `stormOnly`.
    */
   function parseCatalogQuery(query) {
-    const out = { search: '', tiers: [], types: [], sources: [], biomes: [], regionOnly: false };
+    const out = { search: '', tiers: [], types: [], sources: [], biomes: [], regionOnly: false, stormOnly: false };
     if (typeof query !== 'string' || !query || query.length > CATALOG_QUERY_MAX_LENGTH) return out;
     const push = (list, value) => { if (list.length < MAX_VALUES_PER_GROUP && !list.includes(value)) list.push(value); };
     for (const part of query.split('&')) {
@@ -170,7 +170,7 @@
       switch (part.slice(0, eq)) {
         case 'q': out.search = Array.from(value).slice(0, SEARCH_MAX_LENGTH).join(''); break;
         case 'tier': { const n = Number(value); if (Number.isInteger(n) && n >= 1 && n <= 4) push(out.tiers, n); break; }
-        case 'type': if (value === 'region') out.regionOnly = true; else push(out.types, value); break;
+        case 'type': if (value === 'region') out.regionOnly = true; else if (value === 'storm') out.stormOnly = true; else push(out.types, value); break;
         case 'biome': push(out.biomes, value); break;
         case 'src': push(out.sources, value); break;
         default: break;
@@ -196,6 +196,7 @@
     list(f.tiers).sort((a, b) => a - b).forEach(v => parts.push('tier=' + enc(v)));
     list(f.types).sort().forEach(v => parts.push('type=' + enc(v)));
     if (f.regionOnly) parts.push('type=region');
+    if (f.stormOnly) parts.push('type=storm');
     list(f.biomes).sort().forEach(v => parts.push('biome=' + enc(v)));
     list(f.sources).sort().forEach(v => parts.push('src=' + enc(v)));
     return parts.join('&');

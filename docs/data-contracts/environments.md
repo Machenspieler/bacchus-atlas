@@ -96,6 +96,10 @@ backfill proactively.
   object and never translate it.
 - **`biomes`** — array of terrain tags, most to least characteristic. See
   "Biome tagging" below.
+- **`tags`** — optional array of free-form groupings (PD-094). The only
+  value today is `"storm"`, which the catalogue's Type dropdown offers as
+  "Storms". Not a biome and not a type; the validator rejects unknown tags
+  (`ENV_TAGS` in `scripts/validate-data.js`).
 - **`featured_adversaries`** — `[{ id, display: "inline", expanded?: bool }]`,
   referencing a full stat block in `data/adversaries.json` by id. Optional;
   an unknown id is quietly skipped rather than erroring at render time

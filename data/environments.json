@@ -4630,6 +4630,9 @@
       "biomes": [
         "universal"
       ],
+      "tags": [
+        "storm"
+      ],
       "source": "Archibald's Almanac of Adversaries"
     },
     {
@@ -8985,6 +8988,9 @@
       "biomes": [
         "universal"
       ],
+      "tags": [
+        "storm"
+      ],
       "source": "Daggerheart: Hope & Fear"
     },
     {
@@ -12464,6 +12470,9 @@
       "biomes": [
         "universal"
       ],
+      "tags": [
+        "storm"
+      ],
       "source": "Wondrous Environments"
     },
     {
@@ -13217,6 +13226,9 @@
       "biomes": [
         "frozen"
       ],
+      "tags": [
+        "storm"
+      ],
       "source": "Wondrous Environments"
     },
     {
@@ -13606,6 +13618,9 @@
       ],
       "biomes": [
         "wetland"
+      ],
+      "tags": [
+        "storm"
       ],
       "source": "Wondrous Environments"
     },
@@ -32336,6 +32351,9 @@
       "biomes": [
         "universal"
       ],
+      "tags": [
+        "storm"
+      ],
       "source": "Atlas of Adventure"
     },
     {
@@ -33344,6 +33362,9 @@
       ],
       "biomes": [
         "universal"
+      ],
+      "tags": [
+        "storm"
       ],
       "source": "Atlas of Adventure"
     },
@@ -37142,6 +37163,9 @@
       "biomes": [
         "universal"
       ],
+      "tags": [
+        "storm"
+      ],
       "source": "Fractus, the Broken World",
       "traversal": {
         "note": {
@@ -37278,6 +37302,9 @@
       ],
       "biomes": [
         "universal"
+      ],
+      "tags": [
+        "storm"
       ],
       "source": "Fractus, the Broken World",
       "traversal": {
@@ -37448,6 +37475,9 @@
       "biomes": [
         "universal"
       ],
+      "tags": [
+        "storm"
+      ],
       "source": "Fractus, the Broken World",
       "traversal": {
         "note": {
@@ -37600,6 +37630,9 @@
       "biomes": [
         "universal"
       ],
+      "tags": [
+        "storm"
+      ],
       "source": "Fractus, the Broken World",
       "traversal": {
         "note": {
@@ -37749,6 +37782,9 @@
       ],
       "biomes": [
         "universal"
+      ],
+      "tags": [
+        "storm"
       ],
       "source": "Fractus, the Broken World",
       "traversal": {
@@ -37900,6 +37936,9 @@
       "biomes": [
         "universal"
       ],
+      "tags": [
+        "storm"
+      ],
       "source": "Fractus, the Broken World",
       "traversal": {
         "note": {
@@ -38037,6 +38076,9 @@
       "biomes": [
         "universal"
       ],
+      "tags": [
+        "storm"
+      ],
       "source": "Fractus, the Broken World",
       "traversal": {
         "note": {
@@ -38171,6 +38213,9 @@
       ],
       "biomes": [
         "universal"
+      ],
+      "tags": [
+        "storm"
       ],
       "source": "Fractus, the Broken World",
       "traversal": {
@@ -38341,6 +38386,9 @@
       "biomes": [
         "universal"
       ],
+      "tags": [
+        "storm"
+      ],
       "source": "Fractus, the Broken World",
       "traversal": {
         "note": {
@@ -38471,6 +38519,9 @@
       ],
       "biomes": [
         "universal"
+      ],
+      "tags": [
+        "storm"
       ],
       "source": "Fractus, the Broken World",
       "traversal": {
@@ -38632,6 +38683,9 @@
       ],
       "biomes": [
         "universal"
+      ],
+      "tags": [
+        "storm"
       ],
       "source": "Fractus, the Broken World",
       "traversal": {

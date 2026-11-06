@@ -528,6 +528,15 @@ test('buildCatalogQuery is canonical: fixed key order, sorted groups, "" when no
   assert.equal(buildCatalogQuery({ tiers: [2, 1] }), 'tier=1&tier=2');
 });
 
+test('type=storm is the Storms pill: sets stormOnly, written after type=region, round-trips', () => {
+  assert.equal(parseCatalogQuery('type=storm').stormOnly, true);
+  assert.deepEqual(parseCatalogQuery('type=storm').types, []);
+  assert.equal(parseCatalogQuery('tier=1').stormOnly, false);
+  assert.equal(buildCatalogQuery({ stormOnly: true }), 'type=storm');
+  assert.equal(buildCatalogQuery({ regionOnly: true, stormOnly: true, biomes: ['frozen'] }), 'type=region&type=storm&biome=frozen');
+  assert.equal(buildCatalogQuery(parseCatalogQuery('type=storm&tier=2')), 'tier=2&type=storm');
+});
+
 test('parseCatalogQuery round-trips everything buildCatalogQuery writes (commas, ampersands, Cyrillic, emoji)', () => {
   const filters = {
     search: 'лес & «тени» 🙂', tiers: [1, 4], types: ['exploration'], regionOnly: true,
@@ -560,7 +569,7 @@ test('parseCatalogQuery caps the search, each group, and the whole query', () =>
   assert.ok(many.length < 1000);
   assert.equal(parseCatalogQuery(many).biomes.length, 40);
   const huge = parseCatalogQuery('q=hello&' + 'tier=1&'.repeat(300));
-  assert.deepEqual(huge, { search: '', tiers: [], types: [], sources: [], biomes: [], regionOnly: false });
+  assert.deepEqual(huge, { search: '', tiers: [], types: [], sources: [], biomes: [], regionOnly: false, stormOnly: false });
   assert.deepEqual(parseCatalogQuery('q=a+b').search, 'a b');
 });
 

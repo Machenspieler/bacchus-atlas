@@ -1685,3 +1685,11 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Decision (countdown pairs):** a countdown written with two sizes, "Challenge Countdown (6, 5)", renders as two countdown buttons one after the other: the first reads "Countdown (6)" (the label starts at the keyword, as for any countdown), the second "(5)" (full name as its accessible name). Any list of integers is handled the same way (`COUNTDOWN_PAREN_RE` group 4, `findCountdownMatches().values`); "(X)" stays plain text. This also reaches The Metal Throne of Sin's "Countdown (6, 3)".
 - **Where:** `js/env-tier-utils.js` (`usesTierFormula`, `substituteTier`), `renderRichBlocks()` in `js/app.js`, `tests/env-tier-utils.test.js`, [docs/data-contracts/environments.md](data-contracts/environments.md).
 
+
+## PD-094: A "Storms" pill in the Type filter, driven by an optional `tags` field
+
+- **Status:** Active (2026-11-06)
+- **Why:** a GM looking for weather had no way to find it: 16 of the 18 storms sit in the catch-all `universal` biome among 50 unrelated events, and their names do not share a word (Hail, Lightning, Magical Storm, Tornado).
+- **Decision:** an environment may carry `tags: ["storm"]`. The Type dropdown offers **Storms** (`type=storm` in the address, `stormOnly` in the filter state), exactly like the Region pill: a pseudo-type in the same group, shown only where the environments in view hold a storm. It is not a biome (never add a biome id; storms would be dealt to Journey hexes) and not a type (`event` stays, PD-093).
+- **The 18:** Fractus' eleven (torrential-rain, hail, blizzard-cold, lightning, violent-winds, elemental-chaos, life-draining, plague-poison, searing-light, spatial-rifts, reality-time-altering) plus magical-storm, megastorm, unbound-arcanostorm, thunderstorm, tornado, snow-squall, flickerstorm. Not tagged on purpose: stinging-winds, volcanic-eruption, forest-wildfire, raging-fire, rain-ritual.
+- **Where:** `data/environments.json`, `scripts/validate-data.js` (`ENV_TAGS`), `js/route-utils.js`, `js/app.js` (`renderToolbar`, `envMatchesFilters`), `data/i18n.json` (`type_storm`).

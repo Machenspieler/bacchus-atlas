@@ -352,6 +352,19 @@ test('unknown biome fails', () => {
   assert.ok(errorsOf(result).some(d => /unknown biome/.test(d.message)));
 });
 
+/* ---------------- tags (PD-094) ---------------- */
+
+test('a known tag passes; an unknown, duplicated or non-array tag fails', () => {
+  const ok = validateRepositoryData(buildFixture({ environments: v => { v.environments[0].tags = ['storm']; } }));
+  assert.ok(!errorsOf(ok).some(d => /tag/.test(d.path)));
+  const unknown = validateRepositoryData(buildFixture({ environments: v => { v.environments[0].tags = ['weather']; } }));
+  assert.ok(errorsOf(unknown).some(d => /unknown tag/.test(d.message)));
+  const dup = validateRepositoryData(buildFixture({ environments: v => { v.environments[0].tags = ['storm', 'storm']; } }));
+  assert.ok(errorsOf(dup).some(d => /more than once/.test(d.message)));
+  const bad = validateRepositoryData(buildFixture({ environments: v => { v.environments[0].tags = 'storm'; } }));
+  assert.ok(errorsOf(bad).some(d => d.path === '$.environments[0].tags'));
+});
+
 /* ---------------- 10: duplicate biome in one environment ---------------- */
 
 test('duplicate biome in one environment fails', () => {
