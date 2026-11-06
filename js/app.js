@@ -7611,8 +7611,17 @@ function renderSpans(container, text, retier) {
        * carries the keyword, the rest just their number, with the full name kept
        * as the accessible name. */
       const prefix = match.label.slice(0, match.label.indexOf('('));
+      /* A Challenge Countdown pair is the PCs' Progress Countdown against the
+       * threat's Consequence Countdown, so each button names its own role. */
+      const challenge = /^(?:Challenge Countdown|Отсчёт Испытания|Отсчет Испытания)\s*$/i.test(prefix) && match.values.length === 2;
+      const ru = /[А-Яа-яЁё]/.test(prefix);
+      const roleNames = ru ? ['Отсчёт Прогресса ', 'Отсчёт Последствий '] : ['Progress Countdown ', 'Consequence Countdown '];
       match.values.forEach((v, i) => {
         if (i > 0) container.appendChild(document.createTextNode(' '));
+        if (challenge) {
+          container.appendChild(makeCountdownButton(v, `${roleNames[i]}(${v})`));
+          return;
+        }
         const btn = makeCountdownButton(v, i === 0 ? `${prefix}(${v})` : `(${v})`);
         if (i > 0) btn.setAttribute('aria-label', `${prefix}(${v})`);
         container.appendChild(btn);

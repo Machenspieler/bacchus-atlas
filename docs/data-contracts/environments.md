@@ -141,6 +141,12 @@ becomes one countdown button (`findCountdownMatches()` in `js/app.js`,
 `tests/countdown-parsing.test.js`), never a dice button. A flat bonus is read
 only after a die: `(Loop 4+1)` is not a countdown.
 
+A Challenge pair, `Challenge Countdown (6, 5)` / `Отсчёт Испытания (6, 5)`, renders as
+two buttons named for their roles, not for the keyword: **Progress Countdown (6)**
+and **Consequence Countdown (5)** (RU «Отсчёт Прогресса (6)», «Отсчёт Последствий (5)»).
+The data text is unchanged; the naming is done in `renderSpans()`. Other
+multi-value lists keep the keyword on the first button only.
+
 ## Biome tagging
 
 Eleven biomes describe real terrain and always take priority over the two
