@@ -45416,6 +45416,396 @@
         "universal"
       ],
       "source": "Heartbeat #2: Dinosaurs - The Lost Lands Vol.1"
+    },
+    {
+      "id": "orbital-drop",
+      "tier": 2,
+      "type": "traversal",
+      "difficulty": 14,
+      "name": {
+        "en": "Orbital Drop",
+        "ru": "Орбитальный десант"
+      },
+      "lore": {
+        "en": "Orbital-launched decoys and drop-pods with directional thrusters fire the PCs directly into a combat zone.",
+        "ru": "Орбитальные ложные цели и десантные капсулы с управляемыми двигателями выстреливают персонажей прямо в зону боя."
+      },
+      "impulses": {
+        "en": [
+          "Surprise the enemy",
+          "demand courage"
+        ],
+        "ru": [
+          "Застать врага врасплох",
+          "требовать мужества"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Xylar Beetle",
+          "Xylar Armored Drone",
+          "Xylar Swarm Host",
+          "Nexul Recruit Soldier",
+          "Nexul Battle Droid"
+        ],
+        "ru": [
+          "Ксиларский Жук",
+          "Ксиларский Бронированный Дрон",
+          "Ксиларский Хозяин Роя",
+          "Нексульский Рекрут-Солдат",
+          "Нексульский Боевой Дроид"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Nerves",
+            "ru": "Нервы"
+          },
+          "description": {
+            "en": "The first time this environment takes the spotlight, every PC who has not completed their last orbital drop with a success, or has never dropped, marks a Stress.",
+            "ru": "В первый раз, когда это окружение получает Активацию, каждый персонаж, который не завершил свой последний орбитальный десант успехом или ещё ни разу не десантировался, отмечает Стресс."
+          },
+          "prompt": {
+            "en": "Everyone gets the shakes before their first drop. Who is able to shake it off? How many drops have they completed?",
+            "ru": "Перед первым десантом всех трясёт. Кто способен взять себя в руки? Сколько десантов они уже совершили?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Hot Drop",
+            "ru": "Горячий десант"
+          },
+          "description": {
+            "en": "In a hot drop each PC will launch and steer their pod to evade enemy shots and land near the combat zone. Each PC makes a Finesse Reaction Roll:\n- **On a Success:** You evade all attacks and land in the combat zone. You gain a Hope and you may use a d20 for your Hope Die on the next action roll in this scene.\n- **On a Failure:** Your pod veers off course and takes damage in the drop. Mark an HP and land Far from the target spot. You are Restrained until you spend a Hope.",
+            "ru": "При горячем десанте каждый персонаж запускает и направляет свою капсулу, уклоняясь от вражеского огня и приземляясь рядом с зоной боя. Каждый персонаж совершает Бросок Реакции на Искусность:\n- **При успехе:** Вы уклоняетесь от всех атак и приземляетесь в зоне боя. Вы получаете Надежду и можете использовать d20 в качестве Кости Надежды при следующем броске действия в этой сцене.\n- **При провале:** Ваша капсула сходит с курса и получает повреждения при десанте. Отметьте Рану и приземлитесь на Дальней дистанции от намеченной точки. Вы Обездвижены, пока не потратите Надежду."
+          },
+          "prompt": {
+            "en": "Why did they need to perform such a dangerous drop? Who is trying to shoot them down?",
+            "ru": "Почему им понадобился такой опасный десант? Кто пытается их сбить?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Stealth Drop",
+            "ru": "Скрытный десант"
+          },
+          "description": {
+            "en": "In a stealth drop each PC will launch and steer their pod to conceal their approach and deploy away from any combat zones or detection webs. Reduce the difficulty by 4, and then that PC makes a Finesse Reaction Roll:\n- **On a Success:** You evade detection and land away from any adversaries at the landing zone. You gain a Hope.\n- **On a Failure:** Your pod is detected and adversaries are alerted to your drop. Mark a Stress.",
+            "ru": "При скрытном десанте каждый персонаж запускает и направляет свою капсулу так, чтобы скрыть своё приближение и приземлиться вдали от зон боя и сетей обнаружения. Уменьшите Сложность на 4, после чего этот персонаж совершает Бросок Реакции на Искусность:\n- **При успехе:** Вы избегаете обнаружения и приземляетесь вдали от противников в зоне высадки. Вы получаете Надежду.\n- **При провале:** Вашу капсулу обнаруживают, и противники узнают о вашем десанте. Отметьте Стресс."
+          },
+          "prompt": {
+            "en": "How does the party conceal their orbital landing? What is their target? When do they strike?",
+            "ru": "Как отряд скрывает своё орбитальное приземление? Какая у них цель? Когда они нанесут удар?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Planetside",
+            "ru": "На поверхности"
+          },
+          "description": {
+            "en": "If all of the PCs succeeded on their drop, you lose 2 Fear and the first action roll a PC makes has advantage. If all PCs failed their launch, you gain 2 Fear and the spotlight immediately shifts to a planetside adversary.",
+            "ru": "Если все персонажи преуспели в десанте, вы теряете 2 Страха, а первый бросок действия, который совершает персонаж, совершается с Преимуществом. Если все персонажи провалили запуск, вы получаете 2 Страха, а Активация немедленно переходит к противнику на поверхности планеты."
+          },
+          "prompt": {
+            "en": "If the drop succeeds, how do they capitalize on their drop? If the drop goes wrong, who has been separated from the group?",
+            "ru": "Если десант удался, как они используют этот успех? Если десант пошёл не по плану, кто оказался отделён от группы?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "The Void Guard"
+    },
+    {
+      "id": "combat-extraction",
+      "tier": 2,
+      "type": "event",
+      "difficulty": 14,
+      "name": {
+        "en": "Combat Extraction",
+        "ru": "Боевая эвакуация"
+      },
+      "lore": {
+        "en": "A dangerous battle to hold the line waiting for a last-minute escape.",
+        "ru": "Опасный бой за удержание рубежа в ожидании эвакуации в последнюю минуту."
+      },
+      "impulses": {
+        "en": [
+          "Overwhelm",
+          "surround",
+          "cut off the exit",
+          "finish them off"
+        ],
+        "ru": [
+          "Подавлять",
+          "окружать",
+          "отрезать путь к выходу",
+          "добивать"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Xylar Winged Horror",
+          "Xylar Swarm Host",
+          "Nexul Apprentice Psiontech",
+          "Nexul Recruit Soldier"
+        ],
+        "ru": [
+          "Ксиларский Крылатый Ужас",
+          "Ксиларский Хозяин Роя",
+          "Нексульский Подмастерье-Псионик",
+          "Нексульский Рекрут-Солдат"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Bug Hole",
+            "ru": "Жучья нора"
+          },
+          "description": {
+            "en": "Consequence Countdown (Loop 1d4). When this environment takes the spotlight for the first time, start the countdown. When it triggers, summon one Horde and a number of Tier 2 Minions equal to the number of PCs within Close range of a chosen PC.",
+            "ru": "Отсчёт Последствий (Цикл 1d4). Когда это окружение впервые получает Активацию, запустите отсчёт. Когда он срабатывает, призовите одну Орду и число Приспешников 2 ранга, равное количеству персонажей в пределах Средней дистанции от выбранного персонажа."
+          },
+          "prompt": {
+            "en": "Where are they coming from? How can they stop it?",
+            "ru": "Откуда они лезут? Как это остановить?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Call It In",
+            "ru": "Вызвать эвакуацию"
+          },
+          "description": {
+            "en": "Countdown (8). When a PC takes an action to call for an escape, activate the countdown. When it completes, this scene ends with a safe escape. The countdown ticks down whenever a PC takes an action roll.",
+            "ru": "Отсчёт (8). Когда персонаж совершает действие, чтобы вызвать эвакуацию, активируйте отсчёт. Когда он завершается, сцена заканчивается безопасной эвакуацией. Отсчёт уменьшается всякий раз, когда персонаж совершает бросок действия."
+          },
+          "prompt": {
+            "en": "What is the party waiting for so they can escape? Who is coming to rescue them?",
+            "ru": "Чего отряд ждёт, чтобы уйти? Кто идёт им на выручку?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Hold the High Ground",
+            "ru": "Удержать высоту"
+          },
+          "description": {
+            "en": "A PC can make an Instinct Roll to try and spot the high ground or a choke point within Far range. If it is found, once during this scene they can use it to initiate one extra Tag Team attack with another ally from there without spending Hope.",
+            "ru": "Персонаж может совершить Бросок Инстинкта, чтобы попытаться высмотреть господствующую высоту или узкий проход в пределах Дальней дистанции. Если такое место найдено, один раз за эту сцену персонаж может использовать его, чтобы начать одну дополнительную Совместную атаку с другим союзником оттуда, не тратя Надежду."
+          },
+          "prompt": {
+            "en": "What terrain is affording them this advantage? Will it last?",
+            "ru": "Какой рельеф даёт им это преимущество? Продлится ли оно?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "They Keep Coming",
+            "ru": "Они всё прибывают"
+          },
+          "description": {
+            "en": "Spend a Fear to summon a Bruiser. They appear within Far range of a chosen PC and immediately take the spotlight.",
+            "ru": "Потратьте Страх, чтобы призвать Громилу. Он появляется в пределах Дальней дистанции от выбранного персонажа и немедленно получает Активацию."
+          },
+          "prompt": {
+            "en": "Why are they increasing the pressure? Who or what is trying to stop them?",
+            "ru": "Почему они усиливают давление? Кто или что пытается их остановить?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "The Void Guard"
+    },
+    {
+      "id": "massive-power-core",
+      "tier": 2,
+      "type": "event",
+      "difficulty": 14,
+      "name": {
+        "en": "Massive Power Core",
+        "ru": "Массивное энергоядро"
+      },
+      "lore": {
+        "en": "This large room is absolutely humming with power with massive energy conduits lining the walls.",
+        "ru": "Этот огромный зал гудит от энергии, а вдоль стен тянутся массивные энергетические каналы."
+      },
+      "impulses": {
+        "en": [
+          "Support",
+          "enhance",
+          "protect",
+          "restore",
+          "refresh"
+        ],
+        "ru": [
+          "Поддерживать",
+          "усиливать",
+          "защищать",
+          "восстанавливать",
+          "обновлять"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "None"
+        ],
+        "ru": [
+          "Нет"
+        ]
+      },
+      "features": [
+        {
+          "type": "action",
+          "name": {
+            "en": "Activate Shield Grid",
+            "ru": "Активировать щитовую сеть"
+          },
+          "description": {
+            "en": "Spend a Fear to channel the power grid into a powerful shield surrounding adversaries in a Very Close group. Start a Progress Countdown (6) to disable the shield. The shield blocks all projectiles and energy beams that try to penetrate, rendering adversaries within the shield protected.",
+            "ru": "Потратьте Страх, чтобы направить энергосеть в мощный щит, окружающий группу противников в пределах Очень Близкой дистанции. Запустите Отсчёт Прогресса (6), чтобы отключить щит. Щит блокирует все снаряды и энергетические лучи, пытающиеся проникнуть сквозь него, делая противников внутри щита защищёнными."
+          },
+          "prompt": {
+            "en": "How does the shield manifest around the region? Who is protected? What are they doing from within the safety of the shield? Can the PCs move through the shield freely or does it repel them? Can the adversaries interact outside of the shield or are they isolated?",
+            "ru": "Как щит проявляется в этом помещении? Кто защищён? Что они делают в безопасности под щитом? Могут ли персонажи свободно проходить сквозь щит, или он их отталкивает? Могут ли противники действовать за пределами щита, или они изолированы?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Repair Drones",
+            "ru": "Ремонтные дроиды"
+          },
+          "description": {
+            "en": "Spend a Fear and summon either 3 Droid Minions or one Droid Horde, which immediately tend to the systems and restore any damage. One of them may take the spotlight to increase the Shield Grid Progress Countdown by 2.",
+            "ru": "Потратьте Страх и призовите либо 3 Приспешников-Дроидов, либо одну Орду Дроидов, которые немедленно занимаются системами и устраняют любые повреждения. Один из них может получить Активацию, чтобы увеличить Отсчёт Прогресса щитовой сети на 2."
+          },
+          "prompt": {
+            "en": "What do the repair droids look like while fixing the power grid? Are they ignoring the PCs or actively trying to remove them during the repair process?",
+            "ru": "Как выглядят ремонтные дроиды, чиня энергосеть? Игнорируют ли они персонажей или активно пытаются выпроводить их во время ремонта?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Recharge",
+            "ru": "Подзарядка"
+          },
+          "description": {
+            "en": "A PC may attempt to channel some of the power grid for their own purposes. They may make a Knowledge Roll:\n- **On a Critical Success:** Clear 2 Armor Slots and gain a Hope.\n- **On a Success:** Clear an Armor Slot.\n- **On a Failure:** Mark an HP.",
+            "ru": "Персонаж может попытаться направить часть энергии сети на свои нужды. Он может совершить Бросок Знания:\n- **При критическом успехе:** Снимите 2 Ячейки Брони и получите Надежду.\n- **При успехе:** Снимите Ячейку Брони.\n- **При провале:** Отметьте Рану."
+          },
+          "prompt": {
+            "en": "How can this energy grid be used by the party? What is currently being powered that is being disabled?",
+            "ru": "Как отряд может использовать эту энергосеть? Что сейчас питается от неё и будет отключено?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "The Void Guard"
+    },
+    {
+      "id": "deep-space-battlefield",
+      "tier": 3,
+      "type": "traversal",
+      "difficulty": 18,
+      "name": {
+        "en": "Deep Space Battlefield",
+        "ru": "Поле битвы в глубоком космосе"
+      },
+      "lore": {
+        "en": "An active space battle stands between you and reaching your destination. Enemy sensors sweep the area looking for easy prey while stray energy blasts and torpedoes cover truly massive volumes around you.",
+        "ru": "Активное космическое сражение стоит между вами и вашей целью. Вражеские сенсоры прочёсывают пространство в поисках лёгкой добычи, а шальные энергетические разряды и торпеды накрывают поистине огромные объёмы вокруг вас."
+      },
+      "impulses": {
+        "en": [
+          "Block the way",
+          "destroy obvious targets",
+          "lay down cover fire",
+          "detect intruders"
+        ],
+        "ru": [
+          "Преграждать путь",
+          "уничтожать очевидные цели",
+          "вести заградительный огонь",
+          "обнаруживать нарушителей"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "None"
+        ],
+        "ru": [
+          "Нет"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Fly True",
+            "ru": "Точный курс"
+          },
+          "description": {
+            "en": "Progress Countdown (6). Reaching the ship requires the party to navigate an active space battle between ships. When it triggers, you arrive at your destination and breach the hull. Switch to an internal starship environment.",
+            "ru": "Отсчёт Прогресса (6). Чтобы добраться до корабля, отряду нужно пробраться через активное космическое сражение между кораблями. Когда он срабатывает, вы прибываете к цели и пробиваете корпус. Переключитесь на окружение внутри звездолёта."
+          },
+          "prompt": {
+            "en": "Who is laying down cover fire for the PCs boarding party? How does each PC help the ship avoid blasts? Who is piloting the ship? What kind of ship is being used to cross the distance?",
+            "ru": "Кто ведёт заградительный огонь, прикрывая абордажную группу персонажей? Как каждый персонаж помогает кораблю уворачиваться от разрядов? Кто пилотирует корабль? На каком корабле они пересекают это расстояние?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Point Defense System",
+            "ru": "Система точечной обороны"
+          },
+          "description": {
+            "en": "Spend a Fear to start a Consequence Countdown (5) as the ship has been detected by the enemy. Each time it ticks down, the ship takes a stray blast, causing a PC to mark a Stress. When it triggers, the ship is critically damaged and will be destroyed after the next PC’s spotlight.",
+            "ru": "Потратьте Страх, чтобы запустить Отсчёт Последствий (5): корабль обнаружен противником. Каждый раз, когда он уменьшается, корабль получает шальное попадание, и персонаж отмечает Стресс. Когда он срабатывает, корабль критически повреждён и будет уничтожен после следующей Активации персонажа."
+          },
+          "prompt": {
+            "en": "Who is firing on the party? What weapons are being used? Have they been detected? What can the PCs do that can tick the countdown back up, buying them more time? If the ship is destroyed, can the PCs find a way to survive in hard vacuum?",
+            "ru": "Кто ведёт огонь по отряду? Какое оружие используется? Обнаружены ли они? Что могут сделать персонажи, чтобы вернуть отсчёт назад и выиграть время? Если корабль уничтожен, смогут ли персонажи найти способ выжить в жёстком вакууме?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Bogey Detected",
+            "ru": "Обнаружена цель"
+          },
+          "description": {
+            "en": "Spend a Fear and deploy a strike ship to intercept the party. Each time it gains the spotlight, tick down the Point Defense System Consequence Countdown. The strike ship can be destroyed with a successful action roll by a PC.",
+            "ru": "Потратьте Страх и разверните ударный корабль, чтобы перехватить отряд. Каждый раз, когда он получает Активацию, уменьшайте Отсчёт Последствий «Системы точечной обороны». Ударный корабль можно уничтожить успешным броском действия персонажа."
+          },
+          "prompt": {
+            "en": "What weapons, if any, are on the PCs’ starship? How can they defend themselves? What do the PCs know of the enemy’s systems or tactics?",
+            "ru": "Какое оружие, если оно есть, стоит на звездолёте персонажей? Как они могут защищаться? Что персонажам известно о системах или тактике врага?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "The Void Guard"
     }
   ]
 }
