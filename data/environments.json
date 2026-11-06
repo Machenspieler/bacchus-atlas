@@ -42423,6 +42423,584 @@
         "settlement"
       ],
       "source": "Trouble Brewing at The Last Round Table"
+    },
+    {
+      "id": "the-basement",
+      "tier": 1,
+      "type": "exploration",
+      "difficulty": 12,
+      "name": {
+        "en": "The Basement",
+        "ru": "Подвал"
+      },
+      "lore": {
+        "en": "A windowless and doorless room with stone floors and walls. A pile of decaying corpses is heaped in the center of the room.",
+        "ru": "Комната без окон и дверей с каменными полом и стенами. В центре комнаты свалена куча разлагающихся трупов."
+      },
+      "impulses": {
+        "en": [
+          "Mutilate",
+          "spill blood",
+          "horrify"
+        ],
+        "ru": [
+          "Калечить",
+          "проливать кровь",
+          "внушать ужас"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Risen (Witch, Guardian, Dead)",
+          "Zombies"
+        ],
+        "ru": [
+          "Восставшие (Ведьма, Страж, Мертвецы)",
+          "Зомби"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Shadowed",
+            "ru": "Полумрак"
+          },
+          "description": {
+            "en": "The basement is dimly lit by a single arcane bulb hanging from the ceiling. Unless a brighter light source can be created, PCs make Instinct Rolls with Disadvantage.",
+            "ru": "Подвал тускло освещён единственной магической лампой, свисающей с потолка. Пока не удастся создать более яркий источник света, персонажи совершают Броски Инстинкта с Помехой."
+          },
+          "prompt": {
+            "en": "How long before your eyes adjust to this gloomy interior?",
+            "ru": "Сколько времени понадобится вашим глазам, чтобы привыкнуть к этому мрачному интерьеру?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Discovery",
+            "ru": "Обнаружение"
+          },
+          "description": {
+            "en": "A PC investigating the room can make an Instinct Roll. On a success, they discover two points of interest the GM chooses - or three if they critically succeed. On a failure, they discover one and mark a Stress:\n- A large wooden chest, punctured with tiny holes.\n- Five panels in a line on the wall that each reveal scrolling letters of the alphabet.\n- Information on the cause of death of the corpses; they have been pierced over and over by a thin implement.\n- Runic markings on the floor. A successful Knowledge Roll reveals them to be from a teleportation spell.",
+            "ru": "Персонаж, осматривающий комнату, может совершить Бросок Инстинкта. При успехе он обнаруживает две точки интереса на выбор Мастера — или три, если он добивается критического успеха. При провале он обнаруживает одну и отмечает Стресс:\n- Большой деревянный сундук, пронизанный крошечными отверстиями.\n- Пять панелей в ряд на стене, на каждой из которых прокручиваются буквы алфавита.\n- Сведения о причине смерти трупов: их снова и снова пронзали тонким орудием.\n- Рунные знаки на полу. Успешный Бросок Знания показывает, что это следы телепортационного заклинания."
+          },
+          "prompt": {
+            "en": "What do you learn from your discovery? Can it help you escape?",
+            "ru": "Что вы узнаёте из своей находки? Поможет ли она вам сбежать?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Crack The Code",
+            "ru": "Взломать код"
+          },
+          "description": {
+            "en": "After discovering the panels, a PC can make a Knowledge or Instinct Roll to investigate the room for clues. On a success, they discover a letter can be revealed through overcoming a challenge that requires risk or sacrifice (such as the letter D inscribed on the inside of the trapped chest, or on a piece of paper clutched in an undead hand under the corpse pile). On a failure, they suspect letters are hidden around the room and mark a Stress.",
+            "ru": "Обнаружив панели, персонаж может совершить Бросок Знания или Инстинкта, чтобы поискать в комнате улики. При успехе он обнаруживает, что букву можно открыть, преодолев испытание, требующее риска или жертвы (например, буква D, выгравированная внутри сундука-ловушки или написанная на клочке бумаги, зажатом в руке мертвеца под грудой трупов). При провале персонажи подозревают, что буквы спрятаны по всей комнате, и отмечают Стресс."
+          },
+          "prompt": {
+            "en": "What do these letters mean? Who left these clues in the room?",
+            "ru": "Что означают эти буквы? Кто оставил эти подсказки в комнате?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "The Living Dead",
+            "ru": "Живые мертвецы"
+          },
+          "description": {
+            "en": "Spend a Fear to summon a Risen Witch, Risen Guardian, the Risen Dead and two adversaries of your choice from the corpse heap. The Risen Witch immediately takes the spotlight.",
+            "ru": "Потратьте Страх, чтобы призвать из груды трупов Восставшую Ведьму, Восставшего Стража, Восставших Мертвецов и двух противников на ваш выбор. Восставшая Ведьма немедленно получает луч прожектора."
+          },
+          "prompt": {
+            "en": "Who were these adventurers before they died?",
+            "ru": "Кем были эти искатели приключений до своей смерти?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Walls Closing In",
+            "ru": "Сжимающиеся стены"
+          },
+          "description": {
+            "en": "Countdown (Loop 4). Spend 2 Fear to cause thin spikes to suddenly protrude from two opposite walls. The walls begin to slowly move towards each other. Each time the countdown triggers, all PCs take 1d8+6 physical damage and the walls reset to their original position, before beginning to move again. PCs who find creative ways to avoid or mitigate the spikes can make a Reaction Roll using an appropriate trait, taking no damage on a success.",
+            "ru": "Отсчёт (Цикл 4). Потратьте 2 Страха, чтобы из двух противоположных стен внезапно выдвинулись тонкие шипы. Стены начинают медленно сближаться. Каждый раз, когда отсчёт срабатывает, все персонажи получают 1d8+6 физического урона, а стены возвращаются в исходное положение и снова начинают двигаться. Персонажи, нашедшие творческий способ избежать шипов или смягчить их удар, могут совершить Бросок Реакции с подходящей характеристикой и при успехе не получить урона."
+          },
+          "prompt": {
+            "en": "What will you do now the walls are closing in?",
+            "ru": "Что вы будете делать теперь, когда стены сжимаются?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Trap Triggered",
+            "ru": "Сработавшая ловушка"
+          },
+          "description": {
+            "en": "When any PC attempts to open the wooden chest, they must succeed on an Agility Reaction Roll or take 1d6+3 physical damage as a mechanical saw blade slashes out from underneath the lid. The PCs’ missing equipment is inside the chest.",
+            "ru": "Когда любой персонаж пытается открыть деревянный сундук, он должен преуспеть в Броске Реакции на Проворность или получить 1d6+3 физического урона: из-под крышки вылетает механическое пильное лезвие. Пропавшее снаряжение персонажей лежит внутри сундука."
+          },
+          "prompt": {
+            "en": "What other traps might be set for unsuspecting victims?",
+            "ru": "Какие ещё ловушки могут быть расставлены для ничего не подозревающих жертв?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Escape!",
+            "ru": "Побег!"
+          },
+          "description": {
+            "en": "When the panels in the wall show letters in the sequence D-E-M-O-N, a door materializes and swings open, revealing a staircase leading up to the next room.",
+            "ru": "Когда панели на стене показывают буквы в последовательности D-E-M-O-N, возникает дверь и распахивается, открывая лестницу, ведущую наверх, в следующую комнату."
+          }
+        }
+      ],
+      "biomes": [
+        "underground",
+        "settlement"
+      ],
+      "source": "Escape the Veiled Halls"
+    },
+    {
+      "id": "the-dressing-room",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 13,
+      "name": {
+        "en": "The Dressing Room",
+        "ru": "Гардеробная"
+      },
+      "lore": {
+        "en": "A manor-house room of faded luxury, furnished with wardrobes, dressing tables, dusty mirrors and moth-eaten drapes.",
+        "ru": "Комната в усадьбе, хранящая следы увядшей роскоши: шкафы, туалетные столики, пыльные зеркала и траченные молью портьеры."
+      },
+      "impulses": {
+        "en": [
+          "Bewilder",
+          "hypnotize",
+          "ensnare",
+          "disturb"
+        ],
+        "ru": [
+          "Сбивать с толку",
+          "гипнотизировать",
+          "заманивать в ловушку",
+          "тревожить"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Cursed Mannequin",
+          "Demon of Vanity",
+          "ghostly versions of other adversaries"
+        ],
+        "ru": [
+          "Проклятый Манекен",
+          "Демон Тщеславия",
+          "призрачные версии других противников"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "The Veiled Hall Problem",
+            "ru": "Проблема Сокрытого Зала"
+          },
+          "description": {
+            "en": "There are five doors in the dressing room. Opening one reveals nothing but darkness beyond the threshold. If a PC opens a door and enters, they exit out of another random door back into the dressing room.",
+            "ru": "В гардеробной пять дверей. Открыв любую из них, видишь за порогом лишь тьму. Если персонаж открывает дверь и входит, он выходит из другой, случайной двери обратно в гардеробную."
+          },
+          "prompt": {
+            "en": "Will any of these doors provide an escape?",
+            "ru": "Даст ли хоть одна из этих дверей путь к спасению?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Discovery",
+            "ru": "Обнаружение"
+          },
+          "description": {
+            "en": "A PC investigating the room can make an Instinct Roll. On a success, they discover two points of interest the GM chooses - or three if they critically succeed. On a failure, they discover one and mark a Stress:\n- Each of the door knobs is engraved with a different symbol: a moon, sun, cloud, five-point star and lightning.\n- The room is messy; papers litter desks, clothes spill from wardrobes and drawers are ajar.\n- Cuts and scratch marks cover some of the mannequins.\n- Portraits hang around the room of a stern-looking woman with golden hair (Aliessa Kanlor).",
+            "ru": "Персонаж, осматривающий комнату, может совершить Бросок Инстинкта. При успехе он обнаруживает две точки интереса на выбор Мастера — или три, если он добивается критического успеха. При провале он обнаруживает одну и отмечает Стресс:\n- На каждой дверной ручке выгравирован свой символ: луна, солнце, облако, пятиконечная звезда и молния.\n- В комнате беспорядок: на столах разбросаны бумаги, из шкафов вываливается одежда, ящики приоткрыты.\n- На некоторых манекенах видны порезы и царапины.\n- По комнате развешаны портреты суровой женщины с золотыми волосами (Алиесса Канлор)."
+          },
+          "prompt": {
+            "en": "What do you learn from your discovery? Can it help you escape?",
+            "ru": "Что вы узнаёте из своей находки? Поможет ли она вам сбежать?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Solve The Symbols",
+            "ru": "Разгадать символы"
+          },
+          "description": {
+            "en": "A PC can make a Knowledge or Instinct Roll to discover fragments of love letters hidden around the room. Each fragment contains a clue about one of the door symbols and its place in the correct sequence. For example, one letter may read “You were always my first love, my lady of sunlight.” On a success, they discover one clue - or two if they critically succeed. On a failure, they mark a Stress.",
+            "ru": "Персонаж может совершить Бросок Знания или Инстинкта, чтобы найти спрятанные по комнате обрывки любовных писем. Каждый обрывок содержит подсказку об одном из символов на дверях и его месте в правильной последовательности. Например, в одном письме может быть написано: «Ты всегда была моей первой любовью, моя госпожа солнечного света». При успехе персонаж находит одну подсказку — или две, если он добивается критического успеха. При провале он отмечает Стресс."
+          },
+          "prompt": {
+            "en": "What do these letters mean? Who left these clues in the room?",
+            "ru": "Что означают эти письма? Кто оставил эти подсказки в комнате?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Reflections",
+            "ru": "Отражения"
+          },
+          "description": {
+            "en": "Spend a Fear to summon two Demons of Vanity to occupy the many mirrors in the dressing room.",
+            "ru": "Потратьте Страх, чтобы призвать двух Демонов Тщеславия, которые займут многочисленные зеркала гардеробной."
+          },
+          "prompt": {
+            "en": "What looks different about your reflection in the mirror?",
+            "ru": "Что кажется странным в вашем отражении в зеркале?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "I Swear It Moved",
+            "ru": "Клянусь, оно двигалось"
+          },
+          "description": {
+            "en": "Spend a Fear to summon six Cursed Mannequins from the dolls arranged around the room.",
+            "ru": "Потратьте Страх, чтобы призвать шесть Проклятых Манекенов из кукол, расставленных по комнате."
+          },
+          "prompt": {
+            "en": "How can you explain the mannequin’s changed pose?",
+            "ru": "Как вы объясните изменившуюся позу манекена?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Haunted Paintings",
+            "ru": "Призрачные портреты"
+          },
+          "description": {
+            "en": "The portraits around the room of the mysterious woman all begin to laugh maniacally. All PCs must make a Presence Reaction Roll or take 2d6 direct damage.",
+            "ru": "Портреты таинственной женщины по всей комнате разражаются безумным смехом. Все персонажи должны совершить Бросок Реакции на Влияние или получить 2d6 прямого урона."
+          },
+          "prompt": {
+            "en": "Who could this subject of the portraits be? Why does she laugh?",
+            "ru": "Кто может быть эта женщина с портретов? Почему она смеётся?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Who’s The Fairest?",
+            "ru": "Кто на свете всех милее?"
+          },
+          "description": {
+            "en": "Consequence Countdown (4). When a PC examines a portrait, spend a Fear to activate the countdown. The PC becomes temporarily Entranced as they watch themselves gradually appear in the portrait. While Entranced, the PC can’t act and is Vulnerable. When the countdown triggers, the PC takes 2d10+5 magic damage.",
+            "ru": "Отсчёт Последствий (4). Когда персонаж рассматривает портрет, потратьте Страх, чтобы запустить отсчёт. Персонаж временно становится Заворожён: он смотрит, как его собственный образ постепенно проступает на портрете. Пока персонаж Заворожён, он не может действовать и Уязвим. Когда отсчёт срабатывает, персонаж получает 2d10+5 магического урона."
+          },
+          "prompt": {
+            "en": "How do you feel as you see yourself appear in the painting?",
+            "ru": "Что вы чувствуете, видя, как ваш образ проступает на картине?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Escape!",
+            "ru": "Побег!"
+          },
+          "description": {
+            "en": "When a PC enters each of the five doorways in the correct sequence (sun, cloud, lightning, moon, star) one after the other, they are immediately teleported to the next room after entering the fifth door.",
+            "ru": "Когда персонаж входит в каждый из пяти дверных проёмов в правильной последовательности (солнце, облако, молния, луна, звезда) один за другим, он немедленно телепортируется в следующую комнату после входа в пятую дверь."
+          }
+        }
+      ],
+      "biomes": [
+        "settlement",
+        "universal"
+      ],
+      "source": "Escape the Veiled Halls"
+    },
+    {
+      "id": "the-laboratory",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 14,
+      "name": {
+        "en": "The Laboratory",
+        "ru": "Лаборатория"
+      },
+      "lore": {
+        "en": "A room filled with glass tanks and vials, surgical equipment and arcane instruments. A large examination table sits at the center.",
+        "ru": "Комната, заполненная стеклянными резервуарами и пробирками, хирургическими инструментами и магическими приборами. В центре стоит большой смотровой стол."
+      },
+      "impulses": {
+        "en": [
+          "Sicken",
+          "feed paranoia",
+          "create a feeling of the uncanny"
+        ],
+        "ru": [
+          "Вызывать тошноту",
+          "подпитывать паранойю",
+          "создавать ощущение жути"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Saboteur",
+          "Clones",
+          "Failed Experiment"
+        ],
+        "ru": [
+          "Диверсант",
+          "Клоны",
+          "Провальный Эксперимент"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Test Subject",
+            "ru": "Подопытная"
+          },
+          "description": {
+            "en": "A woman lies shackled to the examination table. She introduces herself as Jane (she/her), but she is actually a Saboteur: Jane is Aliessa Kanlor in disguise.",
+            "ru": "Женщина лежит, закованная в кандалы, на смотровом столе. Она представляется Джейн (она/её), но на самом деле это Диверсант: Джейн — это переодетая Алиесса Канлор."
+          },
+          "prompt": {
+            "en": "What happened to this woman? Can she help you escape?",
+            "ru": "Что случилось с этой женщиной? Может ли она помочь вам сбежать?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Discovery",
+            "ru": "Обнаружение"
+          },
+          "description": {
+            "en": "A PC investigating the room can make an Instinct Roll. On a success, they discover two points of interest the GM chooses - or three if they critically succeed. On a failure, they discover one and mark a Stress:\n- There’s a transparent chamber big enough for one person to enter. A panel on the outside has spaces for three vials.\n- The humanoids floating in tanks are breathing.\n- One of the tables has an alchemy set for mixing potions. PCs can mix ingredients according to the recipes they find.\n- There are documents on a research desk that include an operating procedure for the transparent chamber.\n- Charts and books around the laboratory contain theory on the components of teleportation magic.",
+            "ru": "Персонаж, осматривающий комнату, может совершить Бросок Инстинкта. При успехе он обнаруживает две точки интереса на выбор Мастера — или три, если он добивается критического успеха. При провале он обнаруживает одну и отмечает Стресс:\n- Здесь есть прозрачная камера, достаточно большая, чтобы в неё мог войти один человек. На внешней панели есть места для трёх пузырьков.\n- Гуманоиды, плавающие в резервуарах, дышат.\n- На одном из столов стоит алхимический набор для смешивания зелий. Персонажи могут смешивать ингредиенты по найденным рецептам.\n- На рабочем столе лежат документы, включающие инструкцию по эксплуатации прозрачной камеры.\n- Схемы и книги по всей лаборатории содержат теорию о составляющих телепортационной магии."
+          },
+          "prompt": {
+            "en": "What do you learn from your discovery? Can it help you escape?",
+            "ru": "Что вы узнаёте из своей находки? Поможет ли она вам сбежать?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Recipe Riddle",
+            "ru": "Загадка рецепта"
+          },
+          "description": {
+            "en": "A PC can make a Knowledge or Instinct Roll to discover recipes and ingredients around the room. Each recipe is titled with an abstract, metaphysical effect (such as Potion of Consciousness, Tonic of Time). On a success, they discover one recipe or set of ingredients - or two if they critically succeed. On a failure, they find an incomplete set of ingredients and mark a Stress.",
+            "ru": "Персонаж может совершить Бросок Знания или Инстинкта, чтобы найти по комнате рецепты и ингредиенты. Каждый рецепт назван по абстрактному, метафизическому эффекту (например, Зелье Сознания, Тоник Времени). При успехе персонаж находит один рецепт или набор ингредиентов — или два, если он добивается критического успеха. При провале он находит неполный набор ингредиентов и отмечает Стресс."
+          },
+          "prompt": {
+            "en": "What will happen if you brew these concoctions?",
+            "ru": "Что произойдёт, если сварить эти снадобья?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Energy Siphon",
+            "ru": "Выкачивание энергии"
+          },
+          "description": {
+            "en": "Countdown (Loop 3). Spend a Fear to activate the countdown and cause the apparatus above Jane to light up with energy. When it triggers, anyone on the table underneath the apparatus takes 1d10 direct damage.",
+            "ru": "Отсчёт (Цикл 3). Потратьте Страх, чтобы запустить отсчёт: аппарат над Джейн наполняется светящейся энергией. Когда отсчёт срабатывает, любой, кто лежит на столе под аппаратом, получает 1d10 прямого урона."
+          },
+          "prompt": {
+            "en": "What is this machine? What will happen when it activates?",
+            "ru": "Что это за машина? Что произойдёт, когда она включится?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "They’re Alive!",
+            "ru": "Они живые!"
+          },
+          "description": {
+            "en": "Spend a Fear to summon four Defective Clones and two Mage Clones from the glass tanks.",
+            "ru": "Потратьте Страх, чтобы призвать из стеклянных резервуаров четырёх Дефектных Клонов и двух Клонов-Магов."
+          },
+          "prompt": {
+            "en": "What are these terrible monsters? Why are they here?",
+            "ru": "Что это за ужасные чудовища? Зачем они здесь?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Experiment Gone Wrong",
+            "ru": "Эксперимент пошёл не так"
+          },
+          "description": {
+            "en": "When a PC enters the transparent chamber and closes the door, the chamber automatically seals shut. The contents of any vials placed in the control panel are then analyzed by the machine. If the wrong combination of vials has been placed in the panel, noxious fumes fill the chamber and any PC inside takes 2d10+2 physical damage. The chamber unseals afterwards.",
+            "ru": "Когда персонаж входит в прозрачную камеру и закрывает дверь, камера автоматически герметично запечатывается. Затем машина анализирует содержимое всех пузырьков, помещённых в панель управления. Если в панель помещена неверная комбинация пузырьков, камеру наполняют ядовитые испарения, и любой персонаж внутри получает 2d10+2 физического урона. После этого камера открывается."
+          },
+          "prompt": {
+            "en": "What do you think will happen inside the chamber?",
+            "ru": "Как вы думаете, что произойдёт внутри камеры?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Escape!",
+            "ru": "Побег!"
+          },
+          "description": {
+            "en": "When a PC seals themselves in the transparent chamber after the correct combination of vials are placed in the outside panel (Form, Space and Consciousness), they are immediately teleported to the next room. The chamber unseals afterwards.",
+            "ru": "Когда персонаж запечатывает себя в прозрачной камере после того, как на внешнюю панель помещена правильная комбинация пузырьков (Форма, Пространство и Сознание), он немедленно телепортируется в следующую комнату. После этого камера открывается."
+          }
+        }
+      ],
+      "biomes": [
+        "settlement",
+        "universal"
+      ],
+      "source": "Escape the Veiled Halls"
+    },
+    {
+      "id": "the-library",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 15,
+      "name": {
+        "en": "The Library",
+        "ru": "Библиотека"
+      },
+      "lore": {
+        "en": "A labyrinth-like archive of arcane knowledge, with balconies and spiralling staircases leading to shelves upon shelves of tomes.",
+        "ru": "Похожий на лабиринт архив тайных знаний: балконы и винтовые лестницы ведут к бесчисленным полкам с фолиантами."
+      },
+      "impulses": {
+        "en": [
+          "Impart secrets",
+          "ensnare the ignorant"
+        ],
+        "ru": [
+          "Раскрывать тайны",
+          "заманивать в ловушку невежд"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Arch-Mage Aliessa Kanlor"
+        ],
+        "ru": [
+          "Архимаг Алиесса Канлор"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Well of Power",
+            "ru": "Колодец Силы"
+          },
+          "description": {
+            "en": "A basin sits at the center of the library, swirling with arcane energy. The Well of Power has 6 HP and any instance of damage will cause it to mark 1 HP. After marking 3 HP, the Well’s Fear features can no longer be used. If the Well is destroyed, PCs will have no means of escape.",
+            "ru": "В центре библиотеки стоит чаша, в которой клубится магическая энергия. У Колодца Силы 6 Ран, и любой урон заставляет его отметить 1 Рану. После того как отмечены 3 Раны, особенности Колодца, использующие Страх, больше недоступны. Если Колодец будет уничтожен, у персонажей не останется способа сбежать."
+          },
+          "prompt": {
+            "en": "What is this strange object? Will it help you or harm you?",
+            "ru": "Что это за странный предмет? Поможет он вам или навредит?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Discovery",
+            "ru": "Обнаружение"
+          },
+          "description": {
+            "en": "A PC investigating the room can make an Instinct Roll. On a success, they discover two points of interest the GM chooses - or three if they critically succeed. On a failure, they discover one and mark a Stress:\n- Runes cover the base of the Well of Power. A successful Knowledge Roll reveals that with the proper incantations, the Well can be used to achieve magical feats.\n- Desks are covered in papers. Among them are blueprints of the Veiled Halls rooms, with handwritten annotations. There are also notes on the Well of Power, including Kanlor’s theories on fear as a powerful energy source.\n- There are books filled with incantations. If a PC searches through one, a successful Knowledge or Instinct Roll draws their attention to a Homecoming Incantation.\n- Historical texts in the library recount the rise and fall of Kanlor: her magocracy and rebellion against the gods.",
+            "ru": "Персонаж, осматривающий комнату, может совершить Бросок Инстинкта. При успехе он обнаруживает две точки интереса на выбор Мастера — или три, если он добивается критического успеха. При провале он обнаруживает одну и отмечает Стресс:\n- Руны покрывают основание Колодца Силы. Успешный Бросок Знания показывает, что с помощью верных заклинаний Колодец можно использовать для магических подвигов.\n- Столы завалены бумагами. Среди них — чертежи комнат Сокрытых Залов с рукописными пометками. Есть и записи о Колодце Силы, в том числе теории Канлор о страхе как мощном источнике энергии.\n- Здесь есть книги, полные заклинаний. Если персонаж роется в одной из них, успешный Бросок Знания или Инстинкта обращает его внимание на Заклинание Возвращения домой.\n- Исторические тексты в библиотеке повествуют о взлёте и падении Канлор: о её магократии и восстании против богов."
+          },
+          "prompt": {
+            "en": "What do you learn from your discovery? Can it help you escape?",
+            "ru": "Что вы узнаёте из своей находки? Поможет ли она вам сбежать?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Final Showdown",
+            "ru": "Финальная схватка"
+          },
+          "description": {
+            "en": "Spend a Fear to summon Arch-Mage Aliessa Kanlor. She immediately takes the spotlight.",
+            "ru": "Потратьте Страх, чтобы призвать Архимага Алиессу Канлор. Она немедленно получает луч прожектора."
+          },
+          "prompt": {
+            "en": "Who is this golden-haired mage? What does she want with you?",
+            "ru": "Кто эта златовласая волшебница? Чего она от вас хочет?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Forbidden Knowledge",
+            "ru": "Запретные знания"
+          },
+          "description": {
+            "en": "When a PC searches a book in the library, spend a Fear to have them drawn to a page detailing demonic rituals. The PC must succeed on a Knowledge Reaction Roll or take 2d8+6 magic damage as their hands burn with abyssal fire.",
+            "ru": "Когда персонаж роется в книге в библиотеке, потратьте Страх, чтобы его взгляд привлекла страница с описанием демонических ритуалов. Персонаж должен преуспеть в Броске Реакции на Знание или получить 2d8+6 магического урона: его руки охватывает пламя бездны."
+          },
+          "prompt": {
+            "en": "What do you see as you stare at cursed and forgotten rituals?",
+            "ru": "Что вы видите, вглядываясь в проклятые и забытые ритуалы?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Collapse",
+            "ru": "Обрушение"
+          },
+          "description": {
+            "en": "Countdown (Decreasing 4). When Kanlor is defeated or escapes, activate the countdown to cause the Veiled Halls to begin disintegrating. Each time the countdown triggers, PCs must succeed on an Agility Reaction Roll or take 2d12 physical damage from falling debris. When the final countdown triggers, the Veiled Halls collapse and all PCs in the library must make a Risk It All death move. On a success, they are teleported to a random plane of existence.",
+            "ru": "Отсчёт (Убывающий 4). Когда Канлор побеждена или сбегает, запустите отсчёт: Сокрытые Залы начинают рассыпаться. Каждый раз, когда отсчёт срабатывает, персонажи должны преуспеть в Броске Реакции на Проворность или получить 2d12 физического урона от падающих обломков. Когда срабатывает последний отсчёт, Сокрытые Залы обрушиваются, и все персонажи в библиотеке должны совершить предсмертный ход «Рискнуть Всем». При успехе они телепортируются на случайный план существования."
+          },
+          "prompt": {
+            "en": "What will happen if this room collapses?",
+            "ru": "Что произойдёт, если эта комната обрушится?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Escape!",
+            "ru": "Побег!"
+          },
+          "description": {
+            "en": "When a PC interacts with the Well of Power and speaks the words of a Homecoming Incantation, they can teleport to any location they have previously visited. Alternatively, they can make an action roll of an appropriate trait to attempt to teleport to a location that has been described to them. On a failure, the PC must mark a Stress and instead teleports to a place they have been before.",
+            "ru": "Когда персонаж взаимодействует с Колодцем Силы и произносит слова Заклинания Возвращения домой, он может телепортироваться в любое место, где уже бывал. Либо он может совершить бросок действия с подходящей характеристикой, чтобы попытаться телепортироваться в место, которое ему описали. При провале персонаж должен отметить Стресс и вместо этого телепортируется в место, где уже бывал."
+          }
+        }
+      ],
+      "biomes": [
+        "settlement",
+        "universal"
+      ],
+      "source": "Escape the Veiled Halls"
     }
   ]
 }
