@@ -41854,6 +41854,575 @@
         "underground"
       ],
       "source": "Fractus, the Broken World"
+    },
+    {
+      "id": "slippery-steep-spiral-stone-stairs",
+      "tier": 1,
+      "type": "traversal",
+      "difficulty": 10,
+      "name": {
+        "en": "Slippery Steep Spiral Stone Stairs",
+        "ru": "Скользкая крутая каменная винтовая лестница"
+      },
+      "lore": {
+        "en": "These slippery steep spiral stone stairs descend deep into the dank damp darkness. Say that ten times fast.",
+        "ru": "Эта скользкая крутая каменная винтовая лестница уходит глубоко в промозглую сырую тьму. Попробуйте произнести это десять раз подряд."
+      },
+      "impulses": {
+        "en": [
+          "Lure the curious",
+          "echo forgotten footsteps",
+          "test balance and nerve",
+          "calm before the storm",
+          "waiting for the fall"
+        ],
+        "ru": [
+          "Заманивать любопытных",
+          "отдавать эхом забытые шаги",
+          "испытывать равновесие и выдержку",
+          "затишье перед бурей",
+          "ждать падения"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Rats",
+          "Oozes",
+          "Insects",
+          "Drunks"
+        ],
+        "ru": [
+          "Крысы",
+          "Слизи",
+          "Насекомые",
+          "Пьяницы"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "The Descent",
+            "ru": "Спуск"
+          },
+          "description": {
+            "en": "Climbing down these steep slick stairs uses a Progress Countdown (#PCs × 2). It ticks down according to the following criteria when the PCs make an Action Roll to descend:\n- **Critical Success:** Tick down 3\n- **Success with Hope:** Tick down 2\n- **Success with Fear:** Tick down 1\n- **Failure with Hope:** No advancement\n- **Failure with Fear:** Tick up 1\nWhen the countdown ends, the party is at the bottom of the stairs.",
+            "ru": "Спуск по этим крутым скользким ступеням использует Отсчёт Прогресса (#PCs × 2). Он уменьшается по следующим правилам, когда персонажи совершают бросок действия, чтобы спуститься:\n- **Критический успех:** уменьшите на 3\n- **Успех с Надеждой:** уменьшите на 2\n- **Успех со Страхом:** уменьшите на 1\n- **Неудача с Надеждой:** без продвижения\n- **Неудача со Страхом:** увеличьте на 1\nКогда отсчёт завершается, отряд оказывается у подножия лестницы."
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Slick Stones",
+            "ru": "Скользкие камни"
+          },
+          "description": {
+            "en": "The stairs are slick and steep. Any movement requiring Agility Rolls is made with Disadvantage.",
+            "ru": "Лестница скользкая и крутая. Любое перемещение, требующее бросков Проворности, совершается с Помехой."
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Sudden Draft",
+            "ru": "Внезапный сквозняк"
+          },
+          "description": {
+            "en": "Spend a Fear as a strong gust blows through the area surrounding the party, extinguishing any torches or flames, plunging them into darkness.",
+            "ru": "Потратьте Страх: сильный порыв ветра проносится по пространству вокруг отряда, гася все факелы и огни и погружая персонажей во тьму."
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Tumble",
+            "ru": "Кубарем"
+          },
+          "description": {
+            "en": "Spend a Fear to have a PC’s feet slip out underneath them, causing them to start tumbling down the stairs. If they aren’t saved on the next action from the party, they take 1d6+1 physical damage.",
+            "ru": "Потратьте Страх, чтобы у персонажа выскользнули из-под ног ступени и он покатился вниз по лестнице. Если следующим действием отряда его не спасут, он получает 1d6+1 физического урона."
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Narrowing Walls",
+            "ru": "Сужающиеся стены"
+          },
+          "description": {
+            "en": "Spend 2 Fear as the walls narrow, pushing in on the party ominously. Each traveler makes a separate Presence Reaction Roll, marking a Stress if they fail.",
+            "ru": "Потратьте 2 Страха: стены сужаются, зловеще надвигаясь на отряд. Каждый путник совершает отдельный Бросок Реакции на Влияние и при провале отмечает Стресс."
+          }
+        }
+      ],
+      "biomes": [
+        "underground"
+      ],
+      "source": "Trouble Brewing at The Last Round Table"
+    },
+    {
+      "id": "the-living-pub",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 13,
+      "name": {
+        "en": "The Living Pub",
+        "ru": "Живой паб"
+      },
+      "lore": {
+        "en": "The tavern is alive with the echoes of a Magical Blessing. Its moods shift, reacting to fights, rowdy songs, and social tension.",
+        "ru": "Таверна полна отголосков Магического Благословения. Её настроение меняется в ответ на драки, буйные песни и социальное напряжение."
+      },
+      "impulses": {
+        "en": [
+          "Protect what remains",
+          "remember the glory days",
+          "punish disrespect",
+          "remind the living they are guests, not owners"
+        ],
+        "ru": [
+          "Защищать то, что осталось",
+          "вспоминать славные дни",
+          "карать неуважение",
+          "напоминать живым, что они гости, а не хозяева"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Barflies",
+          "Barm Rats",
+          "Sudworts",
+          "Dishiples",
+          "Sitizens",
+          "War Tables"
+        ],
+        "ru": [
+          "Барные Завсегдатаи",
+          "Дрожжевые Крысы",
+          "Пенницы",
+          "Посудоученики",
+          "Стуляне",
+          "Боевые Столы"
+        ]
+      },
+      "features": [
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Mood Swings",
+            "ru": "Перепады настроения"
+          },
+          "description": {
+            "en": "The tavern’s mood shifts in response to events within it. When PCs enter the tavern, start a Dynamic Countdown (12) set to 7. Events or actions may raise or lower the Living Pub Mood, as detailed throughout the adventure. The GM may spend 2 Fear to decrease the countdown by 1.\n- **1-2 Dying:** The Blessing begins to collapse, the walls shudder and shake, wall torches flicker and go out. All animated furniture throughout the pub become Vulnerable until the Mood improves.\n- **3-4 Angry:** Spend a Fear to have random items & debris attack targets in a Close range area. Targets make an Agility Reaction Roll, taking 2d4+2 physical damage if they fail.\n- **5-6 Rowdy:** Spend a Fear to have the tavern floor buckle violently in a Very Close area. Targets make an Agility Reaction Roll, falling down and becoming Vulnerable on a fail.\n- **7-8 Rebellious:** The Pub gets feisty as its irritation grows. Lanterns go out as PCs enter. Chairs automatically pull themselves back as they’re sat on. Small pebbles fall from the roof to tap on the head of the PCs as they move about.\n- **9-10 Watchful:** The air is still, and cold. Timbers creak and tighten underfoot. Torches on the walls are dim, but flare brighter as PCs enter.\n- **11-12 Restful:** The tavern is calm, warm, and comfortable. The lanterns glow strongly. PCs gain 1 Hope and clear 1 Stress each time they take a long rest within the Pub.",
+            "ru": "Настроение таверны меняется в ответ на происходящие в ней события. Когда персонажи входят в таверну, запустите Динамический Отсчёт (12), установленный на 7. События или действия могут повышать или понижать Настроение Живого Паба, как описано на протяжении приключения. Мастер может потратить 2 Страха, чтобы уменьшить отсчёт на 1.\n- **1-2 Умирающее:** Благословение начинает рушиться, стены сотрясаются и дрожат, настенные факелы мигают и гаснут. Вся оживлённая мебель в пабе становится Уязвимой, пока Настроение не улучшится.\n- **3-4 Сердитое:** Потратьте Страх, чтобы случайные предметы и обломки атаковали цели в области в пределах Средней дистанции. Цели совершают Бросок Реакции на Проворность и при провале получают 2d4+2 физического урона.\n- **5-6 Буйное:** Потратьте Страх, чтобы пол таверны яростно вздыбился в области на Близкой дистанции. Цели совершают Бросок Реакции на Проворность и при провале падают и становятся Уязвимыми.\n- **7-8 Мятежное:** Паб становится строптивым по мере роста его раздражения. Фонари гаснут, когда персонажи входят. Стулья сами отодвигаются, когда на них садятся. С крыши падают мелкие камешки и постукивают персонажей по голове, пока те ходят.\n- **9-10 Настороженное:** Воздух неподвижен и холоден. Балки скрипят и напрягаются под ногами. Факелы на стенах тусклы, но вспыхивают ярче, когда входят персонажи.\n- **11-12 Умиротворённое:** Таверна спокойна, тепла и уютна. Фонари горят ярко. Персонажи получают 1 Надежду и снимают 1 Стресс каждый раз, когда делают Продолжительный Отдых в Пабе."
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Tavern Time",
+            "ru": "Время таверны"
+          },
+          "description": {
+            "en": "Each day in the Last Round is equal to one hour in the world above. Creatures slow their aging within the pub, continuing at the same rate as the outside world, potentially extending their lifespan considerably.",
+            "ru": "Каждый день в «Последнем Раунде» равен одному часу в мире наверху. Существа замедляют своё старение внутри паба, продолжая стареть с той же скоростью, что и во внешнем мире, что потенциально значительно продлевает им жизнь."
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Wall Sconces",
+            "ru": "Настенные бра"
+          },
+          "description": {
+            "en": "Rooms are lit by lanterns still burning due to enchantment from the Blessing. Assume all areas to be dimly lit, as long as the Mood Countdown is not Dying.",
+            "ru": "Комнаты освещены фонарями, всё ещё горящими благодаря чарам Благословения. Считайте, что все области тускло освещены, пока Отсчёт Настроения не опустился до «Умирающее»."
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Dripping Water",
+            "ru": "Капающая вода"
+          },
+          "description": {
+            "en": "Water drips constantly from the cavern ceiling above, creating a persistent pitter-patter of sound that dulls other noise almost like rainfall.",
+            "ru": "С потолка пещеры наверху постоянно капает вода, создавая непрерывный перестук капель, который приглушает прочие звуки почти как дождь."
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Threat Option (Drayman)",
+            "ru": "Вариант Угрозы (Драйман)"
+          },
+          "description": {
+            "en": "If Drayman is the chosen Threat, spend a Fear to have 1 Caskbearer per 2 PCs lurch out with a sloshing sound from a nearby area and attack.",
+            "ru": "Если выбранная Угроза — Драйман, потратьте Страх, чтобы по одному Бочконосу на каждых двух персонажей, хлюпая, выкатилось из ближайшей области и напало."
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Threat Option (Doppelcrock)",
+            "ru": "Вариант Угрозы (Доппелкрок)"
+          },
+          "description": {
+            "en": "If Doppelcrock is the chosen Threat, spend a Fear to have 1 Sudwort per 2 PCs seep out of broken plumbing in the walls and attack.",
+            "ru": "Если выбранная Угроза — Доппелкрок, потратьте Страх, чтобы по одной Пеннице на каждых двух персонажей просочилось из сломанных труб в стенах и напало."
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Threat Option (Mugsy)",
+            "ru": "Вариант Угрозы (Магси)"
+          },
+          "description": {
+            "en": "If Mugsy is the chosen Threat, spend a Fear to have 1 Hecklehound per 2 PCs skulk out of the shadows, chuckling menacingly, and attack.",
+            "ru": "Если выбранная Угроза — Магси, потратьте Страх, чтобы по одному Псу-Насмешнику на каждых двух персонажей выскользнуло из теней, зловеще хихикая, и напало."
+          }
+        }
+      ],
+      "biomes": [
+        "underground",
+        "settlement"
+      ],
+      "source": "Trouble Brewing at The Last Round Table"
+    },
+    {
+      "id": "the-darkwater-cavern",
+      "tier": 1,
+      "type": "exploration",
+      "difficulty": 12,
+      "name": {
+        "en": "The Darkwater Cavern",
+        "ru": "Пещера Тёмных Вод"
+      },
+      "lore": {
+        "en": "A vast dark flooded cavern full of jagged stone, slick ledges, and black brackish water. Sound carries strangely here, and footing is uncertain.",
+        "ru": "Огромная тёмная затопленная пещера, полная зазубренных камней, скользких уступов и чёрной солоноватой воды. Звук здесь разносится странно, а опора под ногами ненадёжна."
+      },
+      "impulses": {
+        "en": [
+          "Catch what falls",
+          "hide evidence",
+          "ripple & echo strangely"
+        ],
+        "ru": [
+          "Ловить упавшее",
+          "скрывать улики",
+          "рябить и странно отдаваться эхом"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Tiny Fish",
+          "Creatures from the Id"
+        ],
+        "ru": [
+          "Мелкая рыба",
+          "Порождения Ид"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Slippery Ledges",
+            "ru": "Скользкие уступы"
+          },
+          "description": {
+            "en": "Any creature moving near edges must succeed on an Agility or Instinct Reaction Roll to avoid slipping, becoming Vulnerable if they fail with Hope, and falling into the water if they fail with Fear.",
+            "ru": "Любое существо, движущееся у краёв, должно преуспеть в Броске Реакции на Проворность или Инстинкт, чтобы не поскользнуться; при провале с Надеждой оно становится Уязвимым, а при провале со Страхом падает в воду."
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Loud Echoes",
+            "ru": "Громкое эхо"
+          },
+          "description": {
+            "en": "Loud actions, shouts, or impacts travel far. After significant noise, the GM may introduce movement, attention, or reaction from elsewhere in the cavern.",
+            "ru": "Громкие действия, крики и удары разносятся далеко. После значительного шума Мастер может ввести движение, внимание или реакцию из другой части пещеры."
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Into the Drink",
+            "ru": "В воду"
+          },
+          "description": {
+            "en": "When a creature falls into the cavern water, they become Drenched. While Drenched, they suffer Disadvantage on Agility Rolls until they dry off or warm up.",
+            "ru": "Когда существо падает в воду пещеры, оно становится Промокшим. Пока существо Промокшее, оно совершает броски Проворности с Помехой, пока не обсохнет или не согреется."
+          }
+        }
+      ],
+      "biomes": [
+        "underground",
+        "aquatic"
+      ],
+      "source": "Trouble Brewing at The Last Round Table"
+    },
+    {
+      "id": "the-upper-level",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 13,
+      "name": {
+        "en": "The Upper Level",
+        "ru": "Верхний этаж"
+      },
+      "lore": {
+        "en": "A creaky creepy partially collapsed set of rooms, on the upper floor of an abandoned tavern inhabited by squatters.",
+        "ru": "Скрипучие жуткие полуобрушенные комнаты на верхнем этаже заброшенной таверны, в которой поселились самовольные жильцы."
+      },
+      "impulses": {
+        "en": [
+          "Create tension and suspense",
+          "hold random clues and secrets",
+          "reveal the Strays at inconvenient moments"
+        ],
+        "ru": [
+          "Создавать напряжение и тревожное ожидание",
+          "хранить случайные улики и тайны",
+          "показывать Бродяг в неудобные моменты"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Sootfoot Strays",
+          "Barflies",
+          "Barm Rats",
+          "Sudworts",
+          "Dishiples",
+          "Sitizens",
+          "War Tables"
+        ],
+        "ru": [
+          "Сажелапые Бродяги",
+          "Барные Завсегдатаи",
+          "Дрожжевые Крысы",
+          "Пенницы",
+          "Посудоученики",
+          "Стуляне",
+          "Боевые Столы"
+        ]
+      },
+      "features": [
+        {
+          "type": "action",
+          "name": {
+            "en": "Stray Encounter",
+            "ru": "Встреча с Бродягой"
+          },
+          "description": {
+            "en": "One of the Sootfoot Strays or Crumplehoof appears nearby, watching or tailing the group. They do not engage unless provoked.",
+            "ru": "Один из Сажелапых Бродяг или Крамплхуф появляется поблизости, наблюдая за отрядом или следуя за ним. Они не вступают в бой, пока их не спровоцируют."
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Loose Floorboard",
+            "ru": "Шаткая половица"
+          },
+          "description": {
+            "en": "Spend a Fear to cause a floorboard underneath one PC to break and fall to the level below. The target makes an Agility Reaction Roll, becoming Restrained if they fail. They must succeed on a Strength Action Roll to remove the Restrained condition.",
+            "ru": "Потратьте Страх, чтобы доска пола под одним из персонажей сломалась и рухнула на нижний уровень. Цель совершает Бросок Реакции на Проворность и при провале становится Обездвиженной. Чтобы снять состояние «Обездвижен», она должна преуспеть в броске действия Силы."
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Falling Stones",
+            "ru": "Падающие камни"
+          },
+          "description": {
+            "en": "Spend a Fear to cause a small section of a wall or roof to give way. All creatures in Very Close range to a target location make an Agility Reaction Roll, taking 2d6+2 physical damage if they fail from falling rubble.",
+            "ru": "Потратьте Страх, чтобы небольшой участок стены или крыши обрушился. Все существа на Близкой дистанции от выбранной точки совершают Бросок Реакции на Проворность и при провале получают 2d6+2 физического урона от падающих обломков."
+          }
+        }
+      ],
+      "biomes": [
+        "underground",
+        "settlement"
+      ],
+      "source": "Trouble Brewing at The Last Round Table"
+    },
+    {
+      "id": "last-round-big-bar-brawl",
+      "tier": 2,
+      "type": "event",
+      "difficulty": 13,
+      "name": {
+        "en": "Last Round Big Bar Brawl",
+        "ru": "Большая барная драка «Последнего Раунда»"
+      },
+      "lore": {
+        "en": "A strange battlefield of animated pub furniture fighting a rising threat from below.",
+        "ru": "Странное поле боя, где оживлённая мебель паба сражается с угрозой, поднимающейся снизу."
+      },
+      "impulses": {
+        "en": [
+          "Escalate the conflict",
+          "draw the characters into the fray",
+          "shift control between factions"
+        ],
+        "ru": [
+          "Разжигать конфликт",
+          "втягивать персонажей в схватку",
+          "передавать контроль от одной фракции к другой"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Threat forces from Drayman, Doppelcrock, or Mugsy"
+        ],
+        "ru": [
+          "Силы Угрозы: Драйман, Доппелкрок или Магси"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Foam Party",
+            "ru": "Пенная вечеринка"
+          },
+          "description": {
+            "en": "Beer foam floods the floor of the room. All movement is reduced to Very Close range, requiring an Agility Reaction Roll to move further.",
+            "ru": "Пивная пена заливает пол зала. Всё перемещение ограничено Близкой дистанцией; чтобы пройти дальше, требуется Бросок Реакции на Проворность."
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Menacing Fanfare",
+            "ru": "Зловещая фанфара"
+          },
+          "description": {
+            "en": "When the PCs enter the area the Threat triggers a Thunderous Toccata from the Pipe Organ. All allies make a Presence Reaction Roll, becoming Vulnerable until they gain the spotlight if they fail.",
+            "ru": "Когда персонажи входят в зону, Угроза запускает Громоподобную Токкату на Органе. Все союзники совершают Бросок Реакции на Влияние; при провале они становятся Уязвимыми, пока не получат Активацию."
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Order Up",
+            "ru": "Заказ принят"
+          },
+          "description": {
+            "en": "When a PC rolls with Hope, General Barback or one of his allies can move and take an action for free. The player controls the move and makes rolls using a D20, same as GM Rolls. The spotlight then continues to either players or the GM as it would have, based on the player’s character’s previous action.",
+            "ru": "Когда персонаж совершает бросок с Надеждой, Генерал Барбэк или один из его союзников может бесплатно переместиться и совершить действие. Игрок управляет этим ходом и совершает броски с помощью D20, так же как броски Мастера. Затем Активация переходит к игрокам или Мастеру так, как это произошло бы по результату предыдущего действия персонажа игрока."
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Pulling Out All the Stops",
+            "ru": "Все регистры"
+          },
+          "description": {
+            "en": "If a PC controls the Pipe Organ console, they can use their action and spend a Hope to play a commanding refrain, spotlighting 2 allies to perform a Tag Team move without having to pay the usual cost.",
+            "ru": "Если персонаж управляет консолью Органа, он может потратить своё действие и Надежду, чтобы сыграть властный рефрен, дав Активацию двум союзникам для совершения Командного хода без уплаты обычной цены."
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Summon Dishiple",
+            "ru": "Призвать Посудоученика"
+          },
+          "description": {
+            "en": "PCs may make a Finesse Action Roll to release locked up Dishes under the bar, summoning 1 new Dishiple to join the fight. This action may be used up to 3 times.",
+            "ru": "Персонажи могут совершить бросок действия Искусности, чтобы выпустить запертую под стойкой посуду и призвать одного нового Посудоученика в бой. Это действие можно использовать до 3 раз."
+          }
+        }
+      ],
+      "biomes": [
+        "underground",
+        "settlement"
+      ],
+      "source": "Trouble Brewing at The Last Round Table"
+    },
+    {
+      "id": "hidden-shrine-of-saint-bungus",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 13,
+      "name": {
+        "en": "Hidden Shrine of Saint Bungus",
+        "ru": "Тайная святыня Святого Бунгуса"
+      },
+      "lore": {
+        "en": "A small space dedicated to Saint Bungus, hidden and forgotten, holding a lingering blessing to its faithful but vulnerable to corruption.",
+        "ru": "Небольшое помещение, посвящённое Святому Бунгусу, скрытое и забытое; в нём всё ещё теплится благословение для верных, но оно уязвимо для порчи."
+      },
+      "impulses": {
+        "en": [
+          "Bless the faithful",
+          "receive offerings",
+          "party on",
+          "be excellent to each other"
+        ],
+        "ru": [
+          "Благословлять верных",
+          "принимать подношения",
+          "отрываться",
+          "быть великолепными друг к другу"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "The Threat"
+        ],
+        "ru": [
+          "Угроза"
+        ]
+      },
+      "features": [
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Receive Offering",
+            "ru": "Принять подношение"
+          },
+          "description": {
+            "en": "The first time any creature leaves a sincere offering, they receive a blessing, gaining 1d4 Hope.",
+            "ru": "Когда любое существо впервые оставляет искреннее подношение, оно получает благословение и обретает 1d4 Надежды."
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Hymnal Song",
+            "ru": "Песнь Гимнала"
+          },
+          "description": {
+            "en": "When a Hymnal Page song is performed successfully, using a Presence or Instinct Action Roll, the Living Pub Mood Countdown raises by 1.",
+            "ru": "Когда песня со Страницы Гимнала успешно исполнена с помощью броска действия Влияния или Инстинкта, Отсчёт Настроения Живого Паба повышается на 1."
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Defiled",
+            "ru": "Осквернение"
+          },
+          "description": {
+            "en": "When the Shrine is defiled by an action from the Threat’s forces, the Living Pub Mood Countdown lowers by 1.",
+            "ru": "Когда Святыня оскверняется действием сил Угрозы, Отсчёт Настроения Живого Паба снижается на 1."
+          }
+        }
+      ],
+      "biomes": [
+        "underground",
+        "settlement"
+      ],
+      "source": "Trouble Brewing at The Last Round Table"
     }
   ]
 }
