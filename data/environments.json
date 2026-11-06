@@ -43001,6 +43001,1773 @@
         "universal"
       ],
       "source": "Escape the Veiled Halls"
+    },
+    {
+      "id": "around-the-fire",
+      "tier": 1,
+      "type": "social",
+      "difficulty": 11,
+      "name": {
+        "en": "Around the Fire",
+        "ru": "У костра"
+      },
+      "lore": {
+        "en": "A rare moment of respite where the crackle of the flames and the proximity of allies provide a brief shield against the dangers of the wilds.",
+        "ru": "Редкая минута передышки: треск пламени и близость союзников ненадолго защищают от опасностей глуши."
+      },
+      "impulses": {
+        "en": [
+          "Foster bonding",
+          "encourage recovery",
+          "highlight vulnerability"
+        ],
+        "ru": [
+          "Укреплять связи",
+          "способствовать восстановлению",
+          "выявлять уязвимость"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Snakes",
+          "Giant Spider",
+          "Donkey",
+          "Horse",
+          "Wolves",
+          "Exile",
+          "Rogue",
+          "Footpad",
+          "Thief"
+        ],
+        "ru": [
+          "Змеи",
+          "Гигантский Паук",
+          "Осёл",
+          "Лошадь",
+          "Волки",
+          "Изгой",
+          "Плут",
+          "Уличный Грабитель",
+          "Вор"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "DaggerHearth’s Warmth",
+            "ru": "Тепло ДэггерХарта"
+          },
+          "description": {
+            "en": "Any PC that spends time to share a meaningful story, memory, or moment with the Party gains an additional downtime move to use during their next rest.",
+            "ru": "Любой персонаж, который уделяет время тому, чтобы поделиться с отрядом значимой историей, воспоминанием или мгновением, получает дополнительный Ход Отдыха, который может использовать во время своего следующего отдыха."
+          },
+          "prompt": {
+            "en": "What are you cooking over the flames? Who takes the first watch?",
+            "ru": "Что вы готовите на огне? Кто возьмёт на себя первую вахту?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Shared Burden",
+            "ru": "Общее бремя"
+          },
+          "description": {
+            "en": "If a PC admits a secret or a worry to the Party, that PC and an ally of their choice can each clear a Stress.",
+            "ru": "Если персонаж признаётся отряду в тайне или тревоге, он и союзник по его выбору могут снять по одному Стрессу."
+          },
+          "prompt": {
+            "en": "What have you been keeping to yourself lately? How does your ally react to the confession?",
+            "ru": "Что вы в последнее время держали при себе? Как ваш союзник реагирует на признание?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Foreshadowing",
+            "ru": "Дурное предчувствие"
+          },
+          "description": {
+            "en": "When a PC expresses a true moment of vulnerability regarding upcoming events, you gain a Fear as the onset of dread settles over a PC.",
+            "ru": "Когда персонаж по-настоящему приоткрывается, говоря о грядущих событиях, вы получаете Страх: на персонажа наваливается дурное предчувствие."
+          },
+          "prompt": {
+            "en": "What are you dreading most in the upcoming days? Do you believe that you are up to the challenge?",
+            "ru": "Чего вы больше всего опасаетесь в ближайшие дни? Верите ли вы, что вам это по силам?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "raid",
+      "tier": 1,
+      "type": "event",
+      "difficulty": 11,
+      "name": {
+        "en": "Raid",
+        "ru": "Налёт"
+      },
+      "lore": {
+        "en": "During a long rest, someone attempts to infiltrate the Party at their most vulnerable and steal an asset.",
+        "ru": "Во время продолжительного отдыха кто-то пытается проникнуть к отряду в самый уязвимый момент и похитить ценность."
+      },
+      "impulses": {
+        "en": [
+          "Overwhelm the sleeping",
+          "create chaos",
+          "secure the asset"
+        ],
+        "ru": [
+          "Застать спящих врасплох",
+          "сеять хаос",
+          "завладеть добычей"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Thief",
+          "Rogue",
+          "Footpad"
+        ],
+        "ru": [
+          "Вор",
+          "Плут",
+          "Уличный Грабитель"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Resting Faces",
+            "ru": "Сонные лица"
+          },
+          "description": {
+            "en": "This scene interrupts a long rest. The PCs instead gain the benefits of a short rest. Any PC who was sleeping or relaxing is considered unarmored (Major threshold = Level; Severe = 2x Level) until the end of the scene. In this Environment, any Unarmored PC gains +2 to their Evasion or they can spend a Hope to equip their armor.",
+            "ru": "Эта сцена прерывает продолжительный отдых. Вместо него персонажи получают преимущества короткого отдыха. Любой персонаж, который спал или отдыхал, считается не носящим брони (Серьёзный порог = Уровень; Тяжёлый = 2x Уровень), до конца сцены. В этом окружении любой персонаж без брони получает +2 к Уклонению или может потратить Надежду, чтобы надеть доспехи."
+          },
+          "prompt": {
+            "en": "How exhausted is the Party? Was the lookout diligent in the task or did they get distracted?",
+            "ru": "Насколько измотан отряд? Добросовестно ли дозорный нёс вахту или его что-то отвлекло?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Intrusion",
+            "ru": "Вторжение"
+          },
+          "description": {
+            "en": "Spend a Fear to summon a Thief (or Tier appropriate Adversary) within Close range of a PC. All PCs within Close range of the Thief must make an Instinct Reaction Roll. Any PC that is alert or on watch gains advantage. If any PC fails, you gain 2 Fear and immediately take the spotlight. On a success, the PC is aware of the intruder’s presence.",
+            "ru": "Потратьте Страх, чтобы призвать Вора (или подходящего по Рангу противника) на Средней дистанции от персонажа. Все персонажи на Средней дистанции от Вора должны совершить Бросок Реакции на Инстинкт. Персонаж, который бодрствует или стоит на вахте, получает преимущество. Если хотя бы один персонаж проваливает бросок, вы получаете 2 Страха и немедленно получаете Активацию. При успехе персонаж замечает присутствие незваного гостя."
+          },
+          "prompt": {
+            "en": "What were you dreaming about that prevented you from being alerted? What are they here for?",
+            "ru": "Что вам снилось, из-за чего вы не проснулись вовремя? Зачем они сюда пришли?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "MacGuffin Heist",
+            "ru": "Кража МакГаффина"
+          },
+          "description": {
+            "en": "After triggering “Intrusion”, the Thief can attempt to grab a valuable asset from the Party and bolt for the tree line. Activate a Progress Countdown (4) for the PCs to catch the Thief and a Consequence Countdown (3) for the Thief to vanish into the dark.",
+            "ru": "После срабатывания «Вторжения» Вор может попытаться выхватить у отряда ценную вещь и броситься к опушке. Запустите Отсчёт Прогресса (4) — персонажи должны поймать Вора — и Отсчёт Последствий (3) — Вор должен раствориться во тьме."
+          },
+          "prompt": {
+            "en": "How committed is the Thief to their boss? Do they have a horse waiting or a hidden tunnel?",
+            "ru": "Насколько Вор предан своему боссу? Ждёт ли его лошадь или потайной туннель?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "briar-thicket",
+      "tier": 1,
+      "type": "exploration",
+      "difficulty": 11,
+      "name": {
+        "en": "Briar Thicket",
+        "ru": "Терновая чаща"
+      },
+      "lore": {
+        "en": "Dense roots, vines, and logs scatter the terrain, creating a natural maze of thorns and trees.",
+        "ru": "Густые корни, лианы и поваленные стволы устилают землю, создавая природный лабиринт из шипов и деревьев."
+      },
+      "impulses": {
+        "en": [
+          "Stalk",
+          "trap",
+          "separate"
+        ],
+        "ru": [
+          "Выслеживать",
+          "заманивать в ловушку",
+          "разделять"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Wolves",
+          "Dire Boar",
+          "Elephant",
+          "Ape",
+          "Tiger",
+          "Bandits",
+          "Poachers",
+          "Hunters"
+        ],
+        "ru": [
+          "Волки",
+          "Лютый Кабан",
+          "Слон",
+          "Человекообразная Обезьяна",
+          "Тигр",
+          "Бандиты",
+          "Браконьеры",
+          "Охотники"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Dense Undergrowth",
+            "ru": "Густой подлесок"
+          },
+          "description": {
+            "en": "All movement rolls while under pressure within the Thicket have disadvantage.",
+            "ru": "Все броски на передвижение под давлением в пределах Чащи совершаются с помехой."
+          },
+          "prompt": {
+            "en": "Does anyone have something to clear the terrain? Will it disturb the homes of what lives here?",
+            "ru": "Есть ли у кого-нибудь чем расчистить путь? Не потревожит ли это дома тех, кто здесь живёт?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Snapping Vines",
+            "ru": "Хлёсткие лозы"
+          },
+          "description": {
+            "en": "Whenever a PC makes a roll with Fear, you can spend a Fear for the flora to respond to any intruders. Pick a point within the Thicket. All targets within Very Close range of that point must succeed on an Agility or Strength Reaction Roll or take 1d6+3 physical damage and must mark a Stress.",
+            "ru": "Каждый раз, когда персонаж совершает бросок со Страхом, вы можете потратить Страх, чтобы растения отреагировали на незваных гостей. Выберите точку в пределах Чащи. Каждая цель на Очень Близкой дистанции от этой точки должна преуспеть в Броске Реакции на Проворность или Силу, иначе получает 1d6+3 физического урона и должна отметить Стресс."
+          },
+          "prompt": {
+            "en": "Did the vine move on its own, or is it a trap? Are thorns and vines the direct cause of Stress or is it something else?",
+            "ru": "Лоза шевельнулась сама или это ловушка? Стресс вызывают сами шипы и лозы или что-то другое?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Disorienting Canopy",
+            "ru": "Сбивающий с толку полог"
+          },
+          "description": {
+            "en": "When a PC fails a Knowledge or Instinct roll to navigate through the Thicket, they lose their sense of direction as the trees seem to shift and cut them off from the Party.",
+            "ru": "Когда персонаж проваливает бросок Знания или Инстинкта, чтобы найти путь через Чащу, он теряет чувство направления: деревья словно сдвигаются и отрезают его от отряда."
+          },
+          "prompt": {
+            "en": "What took your eyes off the trail? What looks different about the path now?",
+            "ru": "Что отвлекло ваш взгляд от тропы? Что теперь выглядит иначе?"
+          }
+        }
+      ],
+      "biomes": [
+        "forest"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "drowning-bog",
+      "tier": 1,
+      "type": "traversal",
+      "difficulty": 11,
+      "name": {
+        "en": "Drowning Bog",
+        "ru": "Топь Утопленников"
+      },
+      "lore": {
+        "en": "A choking swamp of mud, decay, and stagnant water where the ground cannot be trusted.",
+        "ru": "Удушливое болото из грязи, гнили и стоячей воды, где нельзя доверять земле под ногами."
+      },
+      "impulses": {
+        "en": [
+          "Drag down",
+          "distress",
+          "conceal threats"
+        ],
+        "ru": [
+          "Затягивать вниз",
+          "изматывать",
+          "скрывать угрозы"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Giant Toad",
+          "Crocodile",
+          "Giant Crocodile",
+          "Snakes"
+        ],
+        "ru": [
+          "Гигантская Жаба",
+          "Крокодил",
+          "Гигантский Крокодил",
+          "Змеи"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "The Slog",
+            "ru": "Трудный путь"
+          },
+          "description": {
+            "en": "Crossing the Bog uses a Progress Countdown (8). It ticks down according to the following criteria when the PCs make an Action roll to traverse the Bog:\n- **Critical Success:** Tick down by 3\n- **Success with Hope:** Tick down by 2\n- **Success with Fear:** Tick down by 1\n- **Failure with Hope:** No Advancement\n- **Failure with Fear:** No Advancement\n\nWhen the countdown triggers, the Party has successfully made it through the Bog.",
+            "ru": "Для пересечения Топи используется Отсчёт Прогресса (8). Он уменьшается по следующим критериям, когда персонажи совершают бросок действия, чтобы пройти через Топь:\n- **Критический успех:** уменьшите на 3\n- **Успех с Надеждой:** уменьшите на 2\n- **Успех со Страхом:** уменьшите на 1\n- **Неудача с Надеждой:** без продвижения\n- **Неудача со Страхом:** без продвижения\n\nКогда отсчёт срабатывает, отряд успешно прошёл через Топь."
+          },
+          "prompt": {
+            "en": "Does the path disappear under the water? What sounds do they hear in the bog?",
+            "ru": "Не исчезает ли тропа под водой? Какие звуки они слышат на болоте?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Noxious Plume",
+            "ru": "Ядовитое облако"
+          },
+          "description": {
+            "en": "Spend a Fear for a bubble of pressurized swamp gas to burst near a PC. They must make an Agility or Knowledge Reaction Roll. On a failure, they take 1d4+2 physical damage as the toxic fumes enter their body.",
+            "ru": "Потратьте Страх, чтобы пузырь сжатого болотного газа лопнул рядом с персонажем. Он должен совершить Бросок Реакции на Проворность или Знание. При провале он получает 1d4+2 физического урона, когда ядовитые испарения попадают в его тело."
+          },
+          "prompt": {
+            "en": "What does the gas smell like? What is causing the release of gas?",
+            "ru": "Чем пахнет газ? Что вызывает его выброс?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Sucked Back",
+            "ru": "Засасывание"
+          },
+          "description": {
+            "en": "When a PC fails a traversal roll, the Bog tries to pull them into the muck. They must succeed on a Finesse or Strength Reaction Roll or become temporarily Restrained as the Bog hinders their movements, forcing the Party to slow down.",
+            "ru": "Когда персонаж проваливает бросок на преодоление пути, Топь пытается утянуть его в жижу. Он должен преуспеть в Броске Реакции на Искусность или Силу, иначе временно становится Обездвиженным: Топь сковывает его движения, и отряду приходится замедлиться."
+          },
+          "prompt": {
+            "en": "How full of mud are your boots or do you even still have them?",
+            "ru": "Насколько ваши сапоги полны грязи — или они вообще ещё при вас?"
+          }
+        }
+      ],
+      "biomes": [
+        "wetland"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "forest-basin",
+      "tier": 2,
+      "type": "traversal",
+      "difficulty": 14,
+      "name": {
+        "en": "Forest Basin",
+        "ru": "Лесная котловина"
+      },
+      "lore": {
+        "en": "A vast forest basin of deep water where any solid path consists of rotting logs, mossy islands, and untrustworthy trees.",
+        "ru": "Обширная лесная котловина с глубокой водой, где единственные опоры — гнилые брёвна, замшелые островки и ненадёжные деревья."
+      },
+      "impulses": {
+        "en": [
+          "Get wet",
+          "separate",
+          "jump scares"
+        ],
+        "ru": [
+          "Намочить",
+          "разделить",
+          "пугать внезапностью"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Anaconda",
+          "Monkeys",
+          "Deadeye",
+          "Pack of Guard Dogs",
+          "Manticore"
+        ],
+        "ru": [
+          "Анаконда",
+          "Обезьяны",
+          "Меткий Стрелок",
+          "Свора Сторожевых Псов",
+          "Мантикора"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Floating Path",
+            "ru": "Плавучий путь"
+          },
+          "description": {
+            "en": "The Basin is not a single path, but a series of unstable platforms separated by deep water. Moving between platforms requires a Finesse, Agility or Strength Roll. On a success, they land safely on the next platform. On a failure, they must mark a Stress and fall into the water, becoming temporarily Vulnerable.",
+            "ru": "Котловина — это не единый путь, а череда неустойчивых платформ, разделённых глубокой водой. Для перехода между платформами требуется бросок Искусности, Проворности или Силы. При успехе персонаж благополучно приземляется на следующей платформе. При провале он должен отметить Стресс и падает в воду, временно становясь Уязвимым."
+          },
+          "prompt": {
+            "en": "Do you trust the mossy log or the slick stone? How deep is the water?",
+            "ru": "Вы доверитесь замшелому бревну или скользкому камню? Насколько глубока вода?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Unsafe Waters",
+            "ru": "Опасные воды"
+          },
+          "description": {
+            "en": "Traveling within the water of the Basin is dangerous. The Party cannot see below the surface of the water and anyone trying to proceed within the waters must mark a Stress before they make an Action roll.",
+            "ru": "Передвижение по воде Котловины опасно. Отряд не видит, что скрыто под поверхностью, и каждый, кто пытается двигаться в воде, должен отметить Стресс перед броском действия."
+          },
+          "prompt": {
+            "en": "What just swam past the Party? What sort of noises are filling the Basin?",
+            "ru": "Что только что проплыло мимо отряда? Какие звуки наполняют Котловину?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Capsize",
+            "ru": "Опрокидывание"
+          },
+          "description": {
+            "en": "Spend a Fear to choose a specific platform occupied by a target. The platform rolls, sinks, or breaks apart. The target must succeed on an Agility Reaction Roll or be dumped into the water.",
+            "ru": "Потратьте Страх, чтобы выбрать платформу, на которой стоит цель. Платформа переворачивается, тонет или разваливается. Цель должна преуспеть в Броске Реакции на Проворность, иначе падает в воду."
+          },
+          "prompt": {
+            "en": "Does the log snap under your weight, or does something knock it from below?",
+            "ru": "Бревно ломается под вашим весом или что-то бьёт по нему снизу?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Lurking Hunger",
+            "ru": "Затаившийся голод"
+          },
+          "description": {
+            "en": "Whenever any target enters the water or makes an Action roll while in the water, you can spend a Fear to deal 2d8+4 physical damage to the target.",
+            "ru": "Каждый раз, когда любая цель входит в воду или совершает бросок действия, находясь в воде, вы можете потратить Страх, чтобы нанести ей 2d8+4 физического урона."
+          },
+          "prompt": {
+            "en": "What caused this damage? Is there abandoned weaponry submerged in the muck or is it a warning from an animal?",
+            "ru": "Что причинило этот урон? Это брошенное оружие, затонувшее в иле, или предупреждение от животного?"
+          }
+        }
+      ],
+      "biomes": [
+        "aquatic",
+        "wetland",
+        "forest"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "dense-jungle",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 14,
+      "name": {
+        "en": "Dense Jungle",
+        "ru": "Густые джунгли"
+      },
+      "lore": {
+        "en": "A dense jungle of foliage and underbrush that is unbearably humid, and teeming with wildlife that wants to eat adventurers.",
+        "ru": "Густые джунгли из листвы и подлеска, невыносимо влажные и кишащие дикими тварями, которые не прочь полакомиться искателями приключений."
+      },
+      "impulses": {
+        "en": [
+          "Disorient",
+          "overheat",
+          "consume"
+        ],
+        "ru": [
+          "Сбивать с толку",
+          "изнурять жарой",
+          "пожирать"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Tigers",
+          "Monkeys",
+          "Manticore",
+          "Ettin",
+          "Felons"
+        ],
+        "ru": [
+          "Тигры",
+          "Обезьяны",
+          "Мантикора",
+          "Эттин",
+          "Преступники"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Green Wall",
+            "ru": "Зелёная стена"
+          },
+          "description": {
+            "en": "The Jungle feels like hell. Any time a PC rolls a failure with Fear, they must mark a Stress. Visibility beyond Close range is limited and ranged attacks automatically fail as they hit trees or vines.",
+            "ru": "Джунгли напоминают ад. Каждый раз, когда персонаж выбрасывает неудачу со Страхом, он должен отметить Стресс. Видимость за пределами Средней дистанции ограничена, а дальние атаки автоматически проваливаются, попадая в деревья или лианы."
+          },
+          "prompt": {
+            "en": "Can you see the sky? How loud are the insects? How much water have you had to drink?",
+            "ru": "Видно ли вам небо? Как громко стрекочут насекомые? Сколько воды вы уже выпили?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Hard to Track",
+            "ru": "Трудно выследить"
+          },
+          "description": {
+            "en": "Whenever a PC fails an Action roll to track or navigate through the Jungle, they lose the path. They can mark a Stress to rediscover the tracks or an opening forward.",
+            "ru": "Каждый раз, когда персонаж проваливает бросок действия, чтобы выследить кого-то или найти путь через Джунгли, он теряет дорогу. Он может отметить Стресс, чтобы снова найти следы или просвет впереди."
+          },
+          "prompt": {
+            "en": "What are they tracking or heading towards? Is the opening in the foliage suspiciously animal shaped?",
+            "ru": "Кого они выслеживают и куда направляются? Не слишком ли просвет в листве похож на звериный силуэт?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "The Mighty Jungle",
+            "ru": "Могучие джунгли"
+          },
+          "description": {
+            "en": "Spend a Fear to have the noises of the Jungle become maddening. All PCs must succeed on a Presence or Knowledge Reaction Roll or mark a Stress.",
+            "ru": "Потратьте Страх, чтобы шумы Джунглей стали сводить с ума. Все персонажи должны преуспеть в Броске Реакции на Влияние или Знание, иначе отметить Стресс."
+          },
+          "prompt": {
+            "en": "What noises can they identify? What stressful memories do the sounds make you recall?",
+            "ru": "Какие звуки они могут опознать? Какие тревожные воспоминания пробуждают эти звуки?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Disturbing the Residents",
+            "ru": "Тревожим жильцов"
+          },
+          "description": {
+            "en": "Consequence Countdown (6). Once per scene, when a PC fails a physical Action roll, spend a Fear to activate the Countdown. They loudly alert something to the Party’s location. When it triggers, summon a Tier appropriate Adversary within Far range that takes the spotlight upon arrival.",
+            "ru": "Отсчёт Последствий (6). Раз за сцену, когда персонаж проваливает физический бросок действия, потратьте Страх, чтобы запустить Отсчёт. Шумом он выдаёт что-то местонахождение отряда. Когда Отсчёт срабатывает, призовите подходящего по Рангу противника на Дальней дистанции, который получает Активацию по прибытии."
+          },
+          "prompt": {
+            "en": "What local has been alerted? Have they found their target or are they now the prey?",
+            "ru": "Какой местный обитатель встревожен? Нашли ли они свою цель или теперь сами стали добычей?"
+          }
+        }
+      ],
+      "biomes": [
+        "tropical"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "trading-tunnel",
+      "tier": 2,
+      "type": "social",
+      "difficulty": 14,
+      "name": {
+        "en": "Trading Tunnel",
+        "ru": "Торговый туннель"
+      },
+      "lore": {
+        "en": "A tunnel of traders that acts as a neutral bazaar away from cities or laws where villains and heroes stand shoulder to shoulder for the best deals.",
+        "ru": "Туннель торговцев, служащий нейтральным базаром вдали от городов и законов, где злодеи и герои стоят плечом к плечу ради лучших сделок."
+      },
+      "impulses": {
+        "en": [
+          "Facilitate illicit trade",
+          "navigate social hierarchy",
+          "punish violence"
+        ],
+        "ru": [
+          "Способствовать незаконной торговле",
+          "ориентироваться в социальной иерархии",
+          "карать насилие"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Bandit Boss",
+          "Shady Shopkeep",
+          "Exile",
+          "Horse",
+          "Donkey",
+          "Outlaw",
+          "Bandit Thug",
+          "Mercenary Captain"
+        ],
+        "ru": [
+          "Главарь Бандитов",
+          "Сомнительный Лавочник",
+          "Изгой",
+          "Лошадь",
+          "Осёл",
+          "Разбойник",
+          "Бандит-Головорез",
+          "Капитан Наёмников"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Honor Among Thieves",
+            "ru": "Честь среди воров"
+          },
+          "description": {
+            "en": "The Tunnel is a makeshift bazaar of loose agreements. Any violence will cause the community to intervene and ban the attacker from personally conducting business transactions within the Tunnel. If someone is Banned, activate a Progress Countdown (4). Tick it down when a PC takes a “Work on a Project” downtime move. This represents getting back into the Tunnel’s good graces.",
+            "ru": "Туннель — это самодельный базар, живущий на зыбких договорённостях. Любое насилие заставит сообщество вмешаться и запретить нападавшему лично вести дела в Туннеле. Если кто-то Изгнан, запустите Отсчёт Прогресса (4). Уменьшайте его, когда персонаж выбирает Ход Отдыха «Работа над Проектом». Это означает возвращение в добрые милости Туннеля."
+          },
+          "prompt": {
+            "en": "Who did the Party piss off? What do they need to do to repair their status?",
+            "ru": "Кого отряд разозлил? Что им нужно сделать, чтобы восстановить своё положение?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "WTS/WTB",
+            "ru": "Продам/куплю"
+          },
+          "description": {
+            "en": "Anyone in the Party looking for a specific piece of equipment must succeed on a Knowledge or Presence Roll to locate a seller in the crowd. On a failure, the item is only available if the Party spends 4 Hope collectively. This cost can be paid at any time in the scene.",
+            "ru": "Каждый в отряде, кто ищет конкретный предмет снаряжения, должен преуспеть в броске Знания или Влияния, чтобы найти продавца в толпе. При провале предмет доступен, только если отряд суммарно потратит 4 Надежды. Эту цену можно заплатить в любой момент сцены."
+          },
+          "prompt": {
+            "en": "What item are you shouting for? Does it start a bidding war?",
+            "ru": "Какой предмет вы выкрикиваете? Начнётся ли из-за него торг?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Shady Bargain",
+            "ru": "Сомнительная сделка"
+          },
+          "description": {
+            "en": "Spend a Fear to have a merchant pull a target aside to offer a deal that’s too good to be true. They must make an Instinct or Presence Reaction Roll. On a failure, they must mark a Stress or take the deal. If they take the deal, roll a d4.\n- **1 (Counterfeit):** Equipment breaks after being truly tested in battle. Consumables are fakes.\n- **2 or 3 (Stolen):** Create a narrative complication for the Party as a result of having a Stolen item.\n- **4:** The seller just needed money quickly.",
+            "ru": "Потратьте Страх, чтобы торговец отвёл цель в сторону и предложил сделку, слишком хорошую, чтобы быть правдой. Цель должна совершить Бросок Реакции на Инстинкт или Влияние. При провале она должна отметить Стресс или принять сделку. Если она принимает сделку, бросьте d4.\n- **1 (Подделка):** снаряжение ломается, когда его по-настоящему испытывают в бою. Расходуемые предметы — фальшивки.\n- **2 или 3 (Краденое):** создайте сюжетное осложнение для отряда из-за того, что у них краденая вещь.\n- **4:** продавцу просто срочно нужны были деньги."
+          },
+          "prompt": {
+            "en": "Who was the item’s previous owner? What secret is accidentally revealed while haggling? What does the seller need money quick for?",
+            "ru": "Кто был прежним владельцем предмета? Какая тайна случайно раскрывается во время торга? Зачем продавцу срочно нужны деньги?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Tunnel Rat",
+            "ru": "Туннельная крыса"
+          },
+          "description": {
+            "en": "When a PC rolls a failure with Fear on any social action, they become Marked by the local grifters. You gain a Fear whenever a Marked PC fails a roll.",
+            "ru": "Когда персонаж выбрасывает неудачу со Страхом при любом социальном действии, местные мошенники Метят его. Вы получаете Страх каждый раз, когда Помеченный персонаж проваливает бросок."
+          },
+          "prompt": {
+            "en": "Did you flash too much gold? Who is watching you from the shadows?",
+            "ru": "Не слишком ли вы размахивали золотом? Кто наблюдает за вами из тени?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Ban Hammer",
+            "ru": "Молот изгнания"
+          },
+          "description": {
+            "en": "When a Banned person tries to buy or sell something, you can spend a Fear to summon a Mercenary Captain who takes the spotlight to enforce the Tunnel’s judgment on the Banned person.",
+            "ru": "Когда Изгнанный пытается что-то купить или продать, вы можете потратить Страх, чтобы призвать Капитана Наёмников, который получает Активацию, чтобы привести в исполнение приговор Туннеля над Изгнанным."
+          },
+          "prompt": {
+            "en": "What is the Tunnel’s trial system? What about the Mercenary Captain indicates their superior power against the Party?",
+            "ru": "Как устроена система суда в Туннеле? Что в Капитане Наёмников говорит о его превосходстве над отрядом?"
+          }
+        }
+      ],
+      "biomes": [
+        "underground",
+        "settlement"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "stampede-fangs-and-felons",
+      "tier": 2,
+      "type": "event",
+      "difficulty": 14,
+      "name": {
+        "en": "Stampede",
+        "ru": "Паника стада"
+      },
+      "lore": {
+        "en": "A thunderous rush of bodies, beastly or humanoid, where the only law is momentum and the only safety is the direction of the crowd.",
+        "ru": "Громоподобный натиск тел, звериных или человеческих, где единственный закон — инерция, а единственное спасение — направление толпы."
+      },
+      "impulses": {
+        "en": [
+          "Force movement",
+          "obscure threats",
+          "punish hesitation"
+        ],
+        "ru": [
+          "Принуждать к движению",
+          "скрывать угрозы",
+          "карать за промедление"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Monkey Ringleader",
+          "Tigers",
+          "Manticore",
+          "Bandit Boss",
+          "Outlaw",
+          "Bandit Thug",
+          "Bandit Brute"
+        ],
+        "ru": [
+          "Вожак Обезьян",
+          "Тигры",
+          "Мантикора",
+          "Главарь Бандитов",
+          "Разбойник",
+          "Бандит-Головорез",
+          "Бандит-Здоровяк"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Grounded Directions",
+            "ru": "Направление по земле"
+          },
+          "description": {
+            "en": "The Stampede constantly moves in a single direction and anything within Very Close range of the ground is considered within the Stampede’s area of effect. Staying above Very Close range of the ground avoids the effects of the Stampede.",
+            "ru": "Стадо постоянно движется в одном направлении, и всё, что находится на Очень Близкой дистанции от земли, считается находящимся в области воздействия Стада. Если держаться выше Очень Близкой дистанции от земли, воздействия Стада можно избежать."
+          },
+          "prompt": {
+            "en": "What does the Stampede consist of? How wide is the Stampede?",
+            "ru": "Из чего состоит Стадо? Насколько оно широко?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Go with the Flow",
+            "ru": "Плыть по течению"
+          },
+          "description": {
+            "en": "Any target starting their turn in the Stampede can mark a Stress to act normally. If they choose not to, they must succeed on an Agility or Strength Reaction Roll or are moved up to Far range in the Stampede’s direction. Anything moving in the direction of the Stampede can move up to Far range instead of Close range before taking an Action.",
+            "ru": "Любая цель, начинающая свой ход в Стаде, может отметить Стресс, чтобы действовать как обычно. Если она решает этого не делать, она должна преуспеть в Броске Реакции на Проворность или Силу, иначе её перемещает на расстояние до Дальней дистанции в направлении движения Стада. Всё, что движется в направлении Стада, может переместиться на расстояние до Дальней дистанции вместо Средней перед совершением действия."
+          },
+          "prompt": {
+            "en": "What is the source of the panic? Does the Stampede roar with anger or scream in terror?",
+            "ru": "Что стало причиной паники? Стадо ревёт от ярости или кричит от ужаса?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Obscured Vision",
+            "ru": "Застилающая пыль"
+          },
+          "description": {
+            "en": "Dust, debris, and a sea of bodies chokes and reduces vision. While in the Stampede, any attacks made against a target beyond Close range have disadvantage.",
+            "ru": "Пыль, обломки и море тел душат и ограничивают обзор. Пока цель находится в Стаде, любые атаки против цели за пределами Средней дистанции совершаются с помехой."
+          },
+          "prompt": {
+            "en": "Can you see your target through the dust? Whose hand are you reaching for in the chaos?",
+            "ru": "Видите ли вы свою цель сквозь пыль? Чью руку вы ищете в этом хаосе?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Trample",
+            "ru": "Топтание"
+          },
+          "description": {
+            "en": "Spend a Fear and choose a point within the Stampede’s area. All targets within Close range of that point must make an Agility Reaction Roll. On a failure, they take 2d8+4 physical damage and become Vulnerable and Restrained until they next act. On a success, they take half damage and are moved up to Close range in the Stampede’s direction.",
+            "ru": "Потратьте Страх и выберите точку в области Стада. Все цели на Средней дистанции от этой точки должны совершить Бросок Реакции на Проворность. При провале они получают 2d8+4 физического урона и становятся Уязвимыми и Обездвиженными до своего следующего действия. При успехе они получают половину урона и перемещаются на расстояние до Средней дистанции в направлении движения Стада."
+          },
+          "prompt": {
+            "en": "What sounds do you hear as the mass moves over you? How much of your gear is trampled into the dirt?",
+            "ru": "Какие звуки вы слышите, когда масса проходит по вам? Сколько вашего снаряжения втоптано в грязь?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Swept Away",
+            "ru": "Сметённые"
+          },
+          "description": {
+            "en": "When a PC rolls a failure with Fear while within the Stampede, they are knocked off balance and pushed back to Close range in the Stampede’s direction and must mark a Stress.",
+            "ru": "Когда персонаж выбрасывает неудачу со Страхом, находясь в Стаде, его сбивает с ног и отбрасывает на Среднюю дистанцию в направлении движения Стада, и он должен отметить Стресс."
+          },
+          "prompt": {
+            "en": "What or who knocks you off your feet? What saves you from going further?",
+            "ru": "Что или кто сбивает вас с ног? Что спасает вас от того, чтобы вас унесло дальше?"
+          }
+        }
+      ],
+      "biomes": [
+        "grassland",
+        "drylands"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "echoing-maw",
+      "tier": 3,
+      "type": "exploration",
+      "difficulty": 17,
+      "name": {
+        "en": "Echoing Maw",
+        "ru": "Гулкая Пасть"
+      },
+      "lore": {
+        "en": "A labyrinth of damp stone, echoing drips, and the smell of rot and old bone.",
+        "ru": "Лабиринт из сырого камня, гулкой капели и запаха гнили и старых костей."
+      },
+      "impulses": {
+        "en": [
+          "Confine",
+          "echo",
+          "hide the predator"
+        ],
+        "ru": [
+          "Теснить",
+          "множить эхо",
+          "скрывать хищника"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Felons",
+          "Greater Dire Bear",
+          "Basilisk"
+        ],
+        "ru": [
+          "Преступники",
+          "Великий Лютый Медведь",
+          "Василиск"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "The Walls Are Closing In",
+            "ru": "Стены смыкаются"
+          },
+          "description": {
+            "en": "When a PC rolls with Fear while within the Maw, they become Vulnerable until they roll with Hope.",
+            "ru": "Когда персонаж выбрасывает результат со Страхом, находясь в Пасти, он становится Уязвимым, пока не выбросит результат с Надеждой."
+          },
+          "prompt": {
+            "en": "Are the tunnels simply too tight? Or are they actively tightening their grasp?",
+            "ru": "Туннели просто слишком тесны? Или они сами сжимают свою хватку?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Unwelcome Guests",
+            "ru": "Незваные гости"
+          },
+          "description": {
+            "en": "This is someone else’s home. A PC can make an Instinct or Knowledge Roll to identify who might be living in this Cave.\n- **Critical Success:** Learn a piece of Great and Good info, and a single Feature from an Adversary in this scene.\n- **Success with Hope:** Great Info: Learn the name and a stat of an Adversary in this scene (HP, Stress, Thresholds, Atk & Range).\n- **Success with Fear:** Good Info: Learn the type of an Adversary in this scene.\n- **Any Failure:** Mark a Stress to learn a piece of Good info or 2 Stress to learn Great info.",
+            "ru": "Это чей-то дом. Персонаж может совершить бросок Инстинкта или Знания, чтобы определить, кто может жить в этой Пещере.\n- **Критический успех:** узнайте один фрагмент Отличной и Хорошей информации и одну особенность противника в этой сцене.\n- **Успех с Надеждой:** Отличная информация: узнайте имя и один показатель противника в этой сцене (Раны, Стресс, Пороги, Атака и Дистанция).\n- **Успех со Страхом:** Хорошая информация: узнайте тип противника в этой сцене.\n- **Любая неудача:** отметьте Стресс, чтобы узнать фрагмент Хорошей информации, или 2 Стресса, чтобы узнать Отличную."
+          },
+          "prompt": {
+            "en": "How might you know this info? Who’s living in the cave now? Are they Fangs or Felons?",
+            "ru": "Откуда вы можете знать это? Кто теперь живёт в пещере? Это Клыки или Преступники?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Stalactite Drop",
+            "ru": "Падение сталактитов"
+          },
+          "description": {
+            "en": "Spend a Fear to choose a point within the cave. The Maw quakes and a massive portion of the cave comes crashing down. All targets within Very Close range of that point must succeed on an Agility Reaction Roll or take 3d8+3 physical damage and become Restrained until they succeed on a Strength Roll.",
+            "ru": "Потратьте Страх, чтобы выбрать точку в пещере. Пасть содрогается, и огромный пласт пещеры обрушивается. Все цели на Очень Близкой дистанции от этой точки должны преуспеть в Броске Реакции на Проворность, иначе получают 3d8+3 физического урона и становятся Обездвиженными, пока не преуспеют в броске Силы."
+          },
+          "prompt": {
+            "en": "Did something knock it loose, or is the cave itself rejecting you?",
+            "ru": "Что-то сбило его или сама пещера отвергает вас?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Whoops",
+            "ru": "Ой"
+          },
+          "description": {
+            "en": "Once per scene, when a PC rolls a failure with Fear, the Party unintentionally creates a loud noise that echoes throughout the cavern. Each PC must lose a Hope and mark a Stress.",
+            "ru": "Раз за сцену, когда персонаж выбрасывает неудачу со Страхом, отряд невольно производит громкий звук, который эхом разносится по пещере. Каждый персонаж должен потерять Надежду и отметить Стресс."
+          },
+          "prompt": {
+            "en": "What caused the disturbance? Does an echo come back? Friend or Foe?",
+            "ru": "Что вызвало шум? Возвращается ли эхо? Друг или враг?"
+          }
+        }
+      ],
+      "biomes": [
+        "underground"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "hissing-plains",
+      "tier": 3,
+      "type": "traversal",
+      "difficulty": 17,
+      "name": {
+        "en": "Hissing Plains",
+        "ru": "Шипящие равнины"
+      },
+      "lore": {
+        "en": "An endless ocean of tall grass, where the wind rustles the leaves and conceals any hidden threats.",
+        "ru": "Бескрайний океан высокой травы, где шелест листьев на ветру скрывает любые затаившиеся угрозы."
+      },
+      "impulses": {
+        "en": [
+          "Conceal movement",
+          "disorient travelers",
+          "hide the predator"
+        ],
+        "ru": [
+          "Скрывать движение",
+          "сбивать путников с толку",
+          "прятать хищника"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Basilisk",
+          "Lions",
+          "Felons"
+        ],
+        "ru": [
+          "Василиск",
+          "Львы",
+          "Преступники"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Sea of Green",
+            "ru": "Зелёное море"
+          },
+          "description": {
+            "en": "Progress Countdown (10). Players must make Instinct or Knowledge rolls to navigate and stay alert through the dangerous grassland.\n- **Critical Success:** Tick down by 3\n- **Success with Hope:** Tick down by 2\n- **Success with Fear:** Tick down by 1\n- **Failure with Hope:** Tick up by 1\n- **Failure with Fear:** Tick up by 2\n\nWhen the countdown triggers, the Party has made it through the Hissing Plains.",
+            "ru": "Отсчёт Прогресса (10). Игроки должны совершать броски Инстинкта или Знания, чтобы ориентироваться и сохранять бдительность на опасной равнине.\n- **Критический успех:** уменьшите на 3\n- **Успех с Надеждой:** уменьшите на 2\n- **Успех со Страхом:** уменьшите на 1\n- **Неудача с Надеждой:** увеличьте на 1\n- **Неудача со Страхом:** увеличьте на 2\n\nКогда отсчёт срабатывает, отряд прошёл через Шипящие равнины."
+          },
+          "prompt": {
+            "en": "What might be lurking in the tall grass? Why won’t anything follow when the countdown ticks to 0?",
+            "ru": "Что может таиться в высокой траве? Почему никто не преследует отряд, когда отсчёт доходит до 0?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Razor Grass",
+            "ru": "Бритвенная трава"
+          },
+          "description": {
+            "en": "When the Countdown reaches 5, the Party must make a Group Instinct or Knowledge Roll (18). On a failure, each PC takes 3d10+8 physical damage as they rush into a patch of serrated grass. On a success, the Party takes no damage and ticks the countdown up an additional 1.",
+            "ru": "Когда Отсчёт достигает 5, отряд должен совершить Групповой бросок Инстинкта или Знания (18). При провале каждый персонаж получает 3d10+8 физического урона, влетев в заросли зазубренной травы. При успехе отряд не получает урона и увеличивает отсчёт ещё на 1."
+          },
+          "prompt": {
+            "en": "How does the razor sharp grass affect your gear? How did you know to avoid the grass?",
+            "ru": "Как бритвенно острая трава действует на ваше снаряжение? Откуда вы знали, что траву нужно обойти?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Hidden Blades",
+            "ru": "Скрытые лезвия"
+          },
+          "description": {
+            "en": "Spend a Fear to have the Party stumble into a patch of Razor Grass. Each PC must succeed on an Agility Reaction Roll or take 3d10 physical damage.",
+            "ru": "Потратьте Страх, чтобы отряд забрёл в заросли Бритвенной травы. Каждый персонаж должен преуспеть в Броске Реакции на Проворность, иначе получает 3d10 физического урона."
+          },
+          "prompt": {
+            "en": "What is the grass defending itself against? Are the blades natural or unnatural?",
+            "ru": "От чего трава защищается? Эти лезвия природные или нет?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Hunted",
+            "ru": "Охота"
+          },
+          "description": {
+            "en": "Spend a Fear to summon a Tier appropriate Adversary who appears at Far range of a target to stalk or scout the Party.",
+            "ru": "Потратьте Страх, чтобы призвать подходящего по Рангу противника, который появляется на Дальней дистанции от цели, чтобы выслеживать отряд или вести разведку."
+          },
+          "prompt": {
+            "en": "Did you see the eyes reflecting the light, or just the grass parting against the wind?",
+            "ru": "Вы увидели глаза, отражающие свет, или лишь траву, раздвигающуюся против ветра?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Surprise!",
+            "ru": "Сюрприз!"
+          },
+          "description": {
+            "en": "If the Progress Countdown ticks back up to 10, the Party has stumbled into a trap. The GM gains 2 Fear and immediately takes the spotlight and the Progress Countdown ends. The scene then shifts to combat as the Adversaries ambush the Party (Prebuild this encounter according to your Party).",
+            "ru": "Если Отсчёт Прогресса снова поднимается до 10, отряд угодил в ловушку. Мастер получает 2 Страха и немедленно получает Активацию, а Отсчёт Прогресса завершается. Затем сцена переходит в бой: противники устраивают засаду на отряд (подготовьте эту стычку заранее с учётом вашего отряда)."
+          },
+          "prompt": {
+            "en": "How did you realize too late that you were being herded?",
+            "ru": "Как вы слишком поздно поняли, что вас гнали, как стадо?"
+          }
+        }
+      ],
+      "biomes": [
+        "grassland"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "caravan",
+      "tier": 3,
+      "type": "social",
+      "difficulty": 17,
+      "name": {
+        "en": "Caravan",
+        "ru": "Караван"
+      },
+      "lore": {
+        "en": "A sprawling line of wagons and armed guards moving through neutral territory. The air is thick with the tension of a deal that could turn deadly at any second.",
+        "ru": "Растянувшаяся вереница повозок и вооружённых охранников на нейтральной территории. В воздухе висит напряжение сделки, которая в любую секунду может обернуться смертельной опасностью."
+      },
+      "impulses": {
+        "en": [
+          "Barter for secrets",
+          "navigate suspicion",
+          "identify the mark"
+        ],
+        "ru": [
+          "Торговаться за секреты",
+          "преодолевать подозрительность",
+          "выбирать жертву"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Bandit Boss",
+          "Shady Shopkeep",
+          "Mercenary Captain",
+          "Right Hand Man",
+          "Horse",
+          "Donkey"
+        ],
+        "ru": [
+          "Главарь Бандитов",
+          "Сомнительный Лавочник",
+          "Капитан Наёмников",
+          "Правая Рука",
+          "Лошадь",
+          "Осёл"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Roadside Etiquette",
+            "ru": "Дорожный этикет"
+          },
+          "description": {
+            "en": "While interacting with the Caravan, the PCs have disadvantage on social rolls unless the Party collectively spends 1d4+X Hope at any time, where X equals the number of PCs in the Party.",
+            "ru": "Пока персонажи взаимодействуют с Караваном, они совершают социальные броски с помехой, если только отряд суммарно не потратит 1d4+X Надежды в любой момент, где X равно числу персонажей в отряде."
+          },
+          "prompt": {
+            "en": "What do you show or do to gain their trust? How do the guards react to the way you carry yourself?",
+            "ru": "Что вы показываете или делаете, чтобы завоевать их доверие? Как охранники реагируют на вашу манеру держаться?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Security Inspection",
+            "ru": "Досмотр"
+          },
+          "description": {
+            "en": "Spend a Fear as the Caravan leader demands to see the Party’s traveling papers or requires a bribe to continue the conversation. A PC must succeed on a Presence Reaction Roll or they must either pay an amount of gold of the GM’s choice or mark 2 Stress to bluff their way through without ticking the “Mood Shifts” countdown.",
+            "ru": "Потратьте Страх: предводитель Каравана требует показать дорожные бумаги отряда или взятку, чтобы продолжить разговор. Персонаж должен преуспеть в Броске Реакции на Влияние, иначе он должен либо заплатить сумму золота по выбору Мастера, либо отметить 2 Стресса, чтобы блефом проскочить, не запуская отсчёт «Смена настроения»."
+          },
+          "prompt": {
+            "en": "How do you explain your presence here? Does the Captain seem satisfied with your answer?",
+            "ru": "Как вы объясняете своё присутствие здесь? Похоже ли, что Капитан удовлетворён вашим ответом?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Whispers in the Wind",
+            "ru": "Шёпот на ветру"
+          },
+          "description": {
+            "en": "When a PC rolls a success with Fear on a social roll, you gain an additional Fear as suspicion ripples through the Caravan. Once per scene, the Party learns of a valuable piece of intel about the Caravan’s cargo, but they also overhear a guard mentioning the Party looks “familiar”.",
+            "ru": "Когда персонаж выбрасывает успех со Страхом при социальном броске, вы получаете дополнительный Страх: по Каравану пробегает волна подозрений. Раз за сцену отряд узнаёт ценные сведения о грузе Каравана, но при этом слышит, как охранник замечает, что отряд выглядит «знакомо»."
+          },
+          "prompt": {
+            "en": "What secret did you just overhear? Who is pointing at you from the lead wagon?",
+            "ru": "Какую тайну вы только что подслушали? Кто указывает на вас с передней повозки?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Mood Shifts",
+            "ru": "Смена настроения"
+          },
+          "description": {
+            "en": "Countdown (6). Activate this countdown if the Party appears overtly threatening or reaches for their weapons. Immediately tick this down to 0 if a PC makes a hostile action. When the countdown triggers, the Caravan guards sound the alarm and they begin to bolt. End this scene and transition to The Chase Environment if the Party wants to pursue.",
+            "ru": "Отсчёт (6). Запустите этот отсчёт, если отряд выглядит откровенно угрожающе или тянется к оружию. Немедленно уменьшите его до 0, если персонаж совершает враждебное действие. Когда отсчёт срабатывает, охранники Каравана поднимают тревогу, и Караван пускается в бегство. Завершите эту сцену и перейдите к окружению «Погоня», если отряд хочет преследовать."
+          },
+          "prompt": {
+            "en": "Is the caravan leader looking at your weapons or your gold? What subtle signal do the guards give each other as they grow restless?",
+            "ru": "Предводитель каравана смотрит на ваше оружие или на ваше золото? Какой тайный знак подают друг другу охранники, всё сильнее нервничая?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "chase",
+      "tier": 3,
+      "type": "event",
+      "difficulty": 17,
+      "name": {
+        "en": "Chase",
+        "ru": "Погоня"
+      },
+      "lore": {
+        "en": "The Chase is on! The Caravan shudders and picks up speed, while the Caravan’s guards lean out trying to impede the chasers.",
+        "ru": "Погоня началась! Караван вздрагивает и набирает скорость, а охранники высовываются наружу, пытаясь помешать преследователям."
+      },
+      "impulses": {
+        "en": [
+          "Force momentum",
+          "separate the group",
+          "punish hesitation"
+        ],
+        "ru": [
+          "Навязывать темп",
+          "разделять отряд",
+          "карать за промедление"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Bandit Boss",
+          "Veteran Highwayman",
+          "Mercenary Captain",
+          "Bandit Deadeye",
+          "Trap Master",
+          "Horse",
+          "Donkey"
+        ],
+        "ru": [
+          "Главарь Бандитов",
+          "Ветеран-Разбойник с Большой Дороги",
+          "Капитан Наёмников",
+          "Бандит-Меткий Стрелок",
+          "Мастер Ловушек",
+          "Лошадь",
+          "Осёл"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "The Gap",
+            "ru": "Разрыв"
+          },
+          "description": {
+            "en": "This scene utilizes a Linked Progress and Consequence Countdown: Chase Countdown (6, 6).\n- **Stop Caravan (Progress):** Ticks down when PCs succeed on Action rolls against the Caravan. When it triggers, the Party has successfully stopped the Caravan.\n- **Outrun (Consequence):** Ticks down when PCs roll a failure or roll with Fear. When it triggers, the Chase ends and the Caravan gets away.",
+            "ru": "В этой сцене используется Связанный Отсчёт Прогресса и Последствий: Отсчёт Погони (6, 6).\n- **Остановить Караван (Прогресс):** уменьшается, когда персонажи преуспевают в бросках действия против Каравана. Когда он срабатывает, отряд успешно остановил Караван.\n- **Оторваться (Последствия):** уменьшается, когда персонажи выбрасывают неудачу или результат со Страхом. Когда он срабатывает, Погоня заканчивается, и Караван уходит."
+          },
+          "prompt": {
+            "en": "What landmarks are you passing as the chase intensifies? How do you feel as the Chase drags on?",
+            "ru": "Какие ориентиры вы минуете, пока погоня набирает силу? Что вы чувствуете, пока Погоня затягивается?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Relentless Pace",
+            "ru": "Безжалостный темп"
+          },
+          "description": {
+            "en": "Any Action roll to stop the Caravan must be made within Close range. A PC must make an Agility Reaction Roll to advance closer to the Caravan. On a failure, a PC stays at their current range of the Caravan or can mark a Stress to push forward.",
+            "ru": "Любой бросок действия, чтобы остановить Караван, должен совершаться на Средней дистанции. Персонаж должен совершить Бросок Реакции на Проворность, чтобы приблизиться к Каравану. При провале персонаж остаётся на своей текущей дистанции от Каравана или может отметить Стресс, чтобы продвинуться вперёд."
+          },
+          "prompt": {
+            "en": "How do you keep your footing as the terrain blurs past? Who is leading the charge, and who is struggling to keep sight of the wagons?",
+            "ru": "Как вы удерживаетесь на ногах, пока местность проносится мимо? Кто ведёт атаку, а кто изо всех сил пытается не потерять повозки из виду?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Suppressive Volley",
+            "ru": "Подавляющий залп"
+          },
+          "description": {
+            "en": "Spend a Fear to have the Caravan unleash a hail of arrows or alchemical fire. All PCs behind the Caravan and within Far range of it must succeed on an Agility or Instinct Reaction Roll. On a failure, they take 2d20 physical damage and must mark a Stress.",
+            "ru": "Потратьте Страх, чтобы Караван обрушил град стрел или алхимический огонь. Все персонажи позади Каравана и на Дальней дистанции от него должны преуспеть в Броске Реакции на Проворность или Инстинкт. При провале они получают 2d20 физического урона и должны отметить Стресс."
+          },
+          "prompt": {
+            "en": "What sort of security is protecting the Caravan? How do you shield yourself without slowing down?",
+            "ru": "Какая охрана защищает Караван? Как вы прикрываетесь, не сбавляя скорости?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Jackknife",
+            "ru": "Складной нож"
+          },
+          "description": {
+            "en": "Whenever a PC rolls a success to stop the Caravan, you can spend a Fear and have the Caravan’s security attack that target. The target must succeed on an Agility or Strength Reaction Roll or they take 3d8+4 physical damage and get pushed back to Far range. On a success, they take half damage.",
+            "ru": "Каждый раз, когда персонаж выбрасывает успех, чтобы остановить Караван, вы можете потратить Страх, и охрана Каравана атакует эту цель. Цель должна преуспеть в Броске Реакции на Проворность или Силу, иначе получает 3d8+4 физического урона и отбрасывается на Дальнюю дистанцию. При успехе она получает половину урона."
+          },
+          "prompt": {
+            "en": "Who’s running security for the Caravan? Are they destroying evidence or using it?",
+            "ru": "Кто возглавляет охрану Каравана? Они уничтожают улики или используют их?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "scorched-dunes",
+      "tier": 4,
+      "type": "traversal",
+      "difficulty": 20,
+      "name": {
+        "en": "Scorched Dunes",
+        "ru": "Опалённые дюны"
+      },
+      "lore": {
+        "en": "An endless sea of shifting sands under a relentless, unforgiving sun.",
+        "ru": "Бескрайнее море зыбучих песков под неумолимым, безжалостным солнцем."
+      },
+      "impulses": {
+        "en": [
+          "Parch",
+          "bury",
+          "blind",
+          "give false hope"
+        ],
+        "ru": [
+          "Иссушать",
+          "погребать",
+          "ослеплять",
+          "давать ложную надежду"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Ancient Hydra",
+          "Ancient Wyvern",
+          "Titan Beetle",
+          "Grand Warlord",
+          "Shadow Council Member"
+        ],
+        "ru": [
+          "Древняя Гидра",
+          "Древняя Виверна",
+          "Жук-Титан",
+          "Великий Полководец",
+          "Член Теневого Совета"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Unrelenting Sun",
+            "ru": "Неумолимое солнце"
+          },
+          "description": {
+            "en": "A PC can only clear half their Stress when using a Downtime Move during a rest in the Dunes.",
+            "ru": "Персонаж может снять только половину своего Стресса, используя Ход Отдыха во время отдыха в Дюнах."
+          },
+          "prompt": {
+            "en": "How dry is your throat? Is the heat making you dizzy?",
+            "ru": "Насколько пересохло ваше горло? Не кружится ли у вас голова от жары?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Shifting Dunes",
+            "ru": "Меняющиеся дюны"
+          },
+          "description": {
+            "en": "The landscape changes constantly. Crossing the Dunes of the desert requires a Progress Countdown (10). It ticks down according to the following criteria when the PCs make an Action roll to cross the Dunes:\n- **Critical Success:** Tick down by 3 and all PCs clear a Stress.\n- **Success with Hope:** Tick down by 2.\n- **Success with Fear:** Tick down by 1, all PCs must mark a Stress.\n- **Failure with Hope:** Tick down by 1, all PCs take 3d6+1 direct physical damage.\n- **Failure with Fear:** No change, the PC who rolled takes 3d6+12 direct physical damage as the heat bakes their brain.",
+            "ru": "Ландшафт постоянно меняется. Для пересечения Дюн пустыни требуется Отсчёт Прогресса (10). Он уменьшается по следующим критериям, когда персонажи совершают бросок действия, чтобы пересечь Дюны:\n- **Критический успех:** уменьшите на 3, и все персонажи снимают Стресс.\n- **Успех с Надеждой:** уменьшите на 2.\n- **Успех со Страхом:** уменьшите на 1, все персонажи должны отметить Стресс.\n- **Неудача с Надеждой:** уменьшите на 1, все персонажи получают 3d6+1 прямого физического урона.\n- **Неудача со Страхом:** без изменений, бросавший персонаж получает 3d6+12 прямого физического урона: жара буквально выпекает ему мозг."
+          },
+          "prompt": {
+            "en": "Where’s the sand getting into your gear? How hot is the ground? What dangers live here and how?",
+            "ru": "Куда забивается песок в вашем снаряжении? Насколько горяча земля? Какие опасности обитают здесь и как они живут?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Sandstorm",
+            "ru": "Песчаная буря"
+          },
+          "description": {
+            "en": "Twice per scene, spend a Fear to summon a blinding storm. All PCs must succeed on a Strength Reaction Roll or they take 4d8+3 physical damage and become temporarily Blinded. A Blinded target has disadvantage on all Action rolls. Whenever a PC rolls with Hope, all Blinded targets clear the condition and the Sandstorm ends.",
+            "ru": "Дважды за сцену потратьте Страх, чтобы вызвать слепящую бурю. Все персонажи должны преуспеть в Броске Реакции на Силу, иначе они получают 4d8+3 физического урона и временно становятся Ослеплёнными. Ослеплённая цель совершает все броски действия с помехой. Каждый раз, когда персонаж выбрасывает результат с Надеждой, все Ослеплённые цели снимают это состояние, и Песчаная буря заканчивается."
+          },
+          "prompt": {
+            "en": "Can you see your hand in front of your face? Does the sand cut skin?",
+            "ru": "Видите ли вы собственную руку перед лицом? Режет ли песок кожу?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Oasis",
+            "ru": "Оазис"
+          },
+          "description": {
+            "en": "When a PC rolls a Critical Success, the Party finds an Oasis with a body of water miraculously in the Dunes. When attempting to rest in the Oasis, the Party can ignore the Unrelenting Sun Passive and gain 2 Hope after the rest.",
+            "ru": "Когда персонаж выбрасывает Критический успех, отряд находит среди Дюн чудом уцелевший Оазис с водоёмом. При попытке отдохнуть в Оазисе отряд может игнорировать пассивную особенность «Неумолимое солнце» и получает 2 Надежды после отдыха."
+          },
+          "prompt": {
+            "en": "How do you use the pool of cool water? Are there any mirages on the horizon? Do any animals share this tranquil space with you?",
+            "ru": "Как вы используете прохладный водоём? Есть ли на горизонте миражи? Делят ли с вами это тихое место какие-нибудь животные?"
+          }
+        }
+      ],
+      "biomes": [
+        "drylands"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "overgrown-ruins",
+      "tier": 4,
+      "type": "exploration",
+      "difficulty": 20,
+      "name": {
+        "en": "Overgrown Ruins",
+        "ru": "Заросшие руины"
+      },
+      "lore": {
+        "en": "A pulsing sanctum of ancient stone and secrets where time defies logic. Its architecture shifts and phases through tears in reality.",
+        "ru": "Пульсирующее святилище из древнего камня и тайн, где время не подчиняется логике. Его архитектура смещается и проступает сквозь разрывы в реальности."
+      },
+      "impulses": {
+        "en": [
+          "Reward curiosity",
+          "test resolve",
+          "distort personal history"
+        ],
+        "ru": [
+          "Вознаграждать любопытство",
+          "испытывать решимость",
+          "искажать личную историю"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Ancient Hydra",
+          "Phase Panther",
+          "Hippos",
+          "Grand Warlord",
+          "Unseen Hand",
+          "Shadow Council Member"
+        ],
+        "ru": [
+          "Древняя Гидра",
+          "Фазовая Пантера",
+          "Бегемоты",
+          "Великий Полководец",
+          "Незримая Рука",
+          "Член Теневого Совета"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Ley Line Resonance",
+            "ru": "Резонанс силовых линий"
+          },
+          "description": {
+            "en": "The Ruins are built directly atop a convergence of magical energy. While within the Ruins, whenever a PC makes a roll with Hope, they gain an additional Hope. Whenever a PC rolls with Fear, you gain an additional Fear.",
+            "ru": "Руины построены прямо над средоточием магической энергии. Пока персонажи находятся в Руинах, каждый раз, когда персонаж совершает бросок с Надеждой, он получает дополнительную Надежду. Каждый раз, когда персонаж выбрасывает результат со Страхом, вы получаете дополнительный Страх."
+          },
+          "prompt": {
+            "en": "What strange magic is taking place while within the Ruins? What happens to the Ruins when a roll with Fear occurs?",
+            "ru": "Какая странная магия действует в Руинах? Что происходит с Руинами, когда выпадает результат со Страхом?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Memory Spore Communion",
+            "ru": "Единение со спорами памяти"
+          },
+          "description": {
+            "en": "A PC can attempt to commune with the spores drifting through the Ruins by making a Knowledge or Presence Roll. They must choose an Experience and add it to their roll. On a success, that Experience’s bonus is doubled until the end of the scene. On a failure, they lose access to that Experience until their next rest. Each PC can attempt this once per scene.",
+            "ru": "Персонаж может попытаться войти в единение со спорами, дрейфующими по Руинам, совершив бросок Знания или Влияния. Он должен выбрать Опыт и добавить его к броску. При успехе бонус этого Опыта удваивается до конца сцены. При провале персонаж теряет доступ к этому Опыту до следующего отдыха. Каждый персонаж может попытаться сделать это раз за сцену."
+          },
+          "prompt": {
+            "en": "What memory surfaces as you breathe in the spores? How does losing this Experience affect your self identity?",
+            "ru": "Какое воспоминание всплывает, когда вы вдыхаете споры? Как потеря этого Опыта влияет на ваше самоощущение?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Reality Tearing Trap",
+            "ru": "Ловушка, рвущая реальность"
+          },
+          "description": {
+            "en": "Spend 2 Fear to have the Party discover a trapped chest of Tier appropriate loot. If any PC attempts to gain access to the chest, all PCs must make a Reaction Roll using a Trait of their choice. On a failure, they take 4d10+10 magic damage and subtract 1d4 from that Trait until their next rest or they roll a Critical Success. They can mark a number of Stress equal to the d4’s value, turning the failure into a success. If half or more of the Party succeed, they gain access to the chest.",
+            "ru": "Потратьте 2 Страха, чтобы отряд обнаружил сундук-ловушку с подходящей по Рангу добычей. Если какой-либо персонаж пытается открыть сундук, все персонажи должны совершить Бросок Реакции на выбранную ими Характеристику. При провале они получают 4d10+10 магического урона и вычитают 1d4 из этой Характеристики до следующего отдыха или пока не выбросят Критический успех. Они могут отметить число Стресса, равное значению d4, превратив провал в успех. Если половина отряда или больше преуспевает, отряд получает доступ к сундуку."
+          },
+          "prompt": {
+            "en": "How does the Trait decrease present itself to your fellow adventurers? How do you successfully ground the chest to your reality?",
+            "ru": "Как уменьшение Характеристики проявляется для ваших товарищей? Как вам удаётся вернуть сундук в вашу реальность?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Reality Anchor Failure",
+            "ru": "Сбой якоря реальности"
+          },
+          "description": {
+            "en": "Spend a Fear to have the ground beneath 2 targets shift in and out of reality. The targets swap places and each lose a Hope.",
+            "ru": "Потратьте Страх, чтобы земля под 2 целями начала смещаться, то исчезая из реальности, то возвращаясь. Цели меняются местами, и каждая теряет Надежду."
+          },
+          "prompt": {
+            "en": "What do the Ruins look like in this alternate reality? What were these Ruins before they became overgrown?",
+            "ru": "Как выглядят Руины в этой альтернативной реальности? Чем были эти Руины, прежде чем заросли?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "encampment",
+      "tier": 4,
+      "type": "social",
+      "difficulty": 20,
+      "name": {
+        "en": "Encampment",
+        "ru": "Лагерь"
+      },
+      "lore": {
+        "en": "A sprawling fortress of scavenged materials home to felons who plot the downfall of powerful enemies.",
+        "ru": "Раскинувшаяся крепость из подобранных материалов — дом преступников, замышляющих падение могущественных врагов."
+      },
+      "impulses": {
+        "en": [
+          "Test loyalty",
+          "identify weaknesses",
+          "navigate lethal politics"
+        ],
+        "ru": [
+          "Проверять верность",
+          "выявлять слабости",
+          "лавировать в смертельной политике"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Grand Warlord",
+          "Dread Captain",
+          "Shadow Council Member",
+          "Unseen Hand",
+          "Captured Fangs"
+        ],
+        "ru": [
+          "Великий Полководец",
+          "Грозный Капитан",
+          "Член Теневого Совета",
+          "Незримая Рука",
+          "Пленённые Клыки"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Try to Blend In",
+            "ru": "Постарайтесь слиться с толпой"
+          },
+          "description": {
+            "en": "While in the Encampment, any Action roll that does not fit the Encampment’s way of life or plans have disadvantage.",
+            "ru": "Пока персонажи находятся в Лагере, любой бросок действия, не вписывающийся в уклад жизни или планы Лагеря, совершается с помехой."
+          },
+          "prompt": {
+            "en": "How does the language of violence color every conversation? What obvious benefits for loyalty are displayed to tempt you?",
+            "ru": "Как язык насилия окрашивает каждый разговор? Какие очевидные выгоды за верность выставлены напоказ, чтобы соблазнить вас?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Council of War",
+            "ru": "Военный совет"
+          },
+          "description": {
+            "en": "Spend a Fear for a high ranking leader to demand the Party’s input on future plans. The Party must make a Group Knowledge or Presence Reaction Roll to gain insight into the Encampment’s operations. Each PC present with the leader can roll with advantage if they roleplay the interaction. On a success, they learn new crucial intel on the plans. On a failure, the Thin Ice Countdown ticks down one per PC who made the Group roll.",
+            "ru": "Потратьте Страх, чтобы высокопоставленный предводитель потребовал мнения отряда о будущих планах. Отряд должен совершить Групповой Бросок Реакции на Знание или Влияние, чтобы разобраться в делах Лагеря. Каждый персонаж, присутствующий при предводителе, может бросать с преимуществом, если отыграет это взаимодействие. При успехе они узнают новые важнейшие сведения о планах. При провале Отсчёт «Тонкий лёд» уменьшается на единицу за каждого персонажа, совершавшего Групповой бросок."
+          },
+          "prompt": {
+            "en": "What map is spread across the table? How do you lie to a leader who has never known defeat?",
+            "ru": "Какая карта разложена на столе? Как лгать предводителю, который не знал поражений?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "The Unseen Eye",
+            "ru": "Незримое око"
+          },
+          "description": {
+            "en": "When a PC rolls a failure with Fear on a social roll, whispers begin to spread around the Encampment. You gain 2 Fear as the Thin Ice countdown ticks down by an additional 2.",
+            "ru": "Когда персонаж выбрасывает неудачу со Страхом при социальном броске, по Лагерю начинают расползаться шепотки. Вы получаете 2 Страха, а отсчёт «Тонкий лёд» дополнительно уменьшается на 2."
+          },
+          "prompt": {
+            "en": "Who is watching you from the high balcony? Why did they just signal the guards?",
+            "ru": "Кто наблюдает за вами с высокого балкона? Почему он только что подал знак стражам?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Thin Ice",
+            "ru": "Тонкий лёд"
+          },
+          "description": {
+            "en": "Consequence Countdown (8). Activate the Countdown when a PC rolls a Failure with Fear while dealing with the Encampment. This countdown represents how long the Encampment tolerates the Party’s presence. It ticks down whenever a PC rolls with Fear or fails a roll. When it triggers, the camp knows of their intruder and sounds the alarm. When the alarm goes off, the scene changes to the Hostile Encampment Environment.",
+            "ru": "Отсчёт Последствий (8). Запустите Отсчёт, когда персонаж выбрасывает Неудачу со Страхом, имея дело с Лагерем. Этот отсчёт показывает, как долго Лагерь терпит присутствие отряда. Он уменьшается каждый раз, когда персонаж выбрасывает результат со Страхом или проваливает бросок. Когда он срабатывает, лагерь узнаёт о нарушителях и поднимает тревогу. Когда звучит тревога, сцена переходит в окружение «Враждебный лагерь»."
+          },
+          "prompt": {
+            "en": "How do the guards look at you as you pass? Is your disguise beginning to fray, or did you say the wrong name to the wrong person?",
+            "ru": "Как смотрят на вас стражи, пока вы проходите мимо? Ваша маскировка начинает трещать по швам или вы назвали не то имя не тому человеку?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "That’s an Option",
+            "ru": "Есть и такой вариант"
+          },
+          "description": {
+            "en": "Whenever anyone from the Party engages in a violent or hostile action against the Encampment, you can spend 2 Fear to sound the alarm, and immediately transition to the Hostile Encampment Environment.",
+            "ru": "Каждый раз, когда кто-либо из отряда совершает насильственное или враждебное действие против Лагеря, вы можете потратить 2 Страха, чтобы поднять тревогу и немедленно перейти к окружению «Враждебный лагерь»."
+          },
+          "prompt": {
+            "en": "What action caused the Encampment’s leadership to drop the ruse? Where are the Players when this happens?",
+            "ru": "Какое действие заставило руководство Лагеря отбросить притворство? Где находятся игроки, когда это происходит?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "hostile-encampment",
+      "tier": 4,
+      "type": "event",
+      "difficulty": 20,
+      "name": {
+        "en": "Hostile Encampment",
+        "ru": "Враждебный лагерь"
+      },
+      "lore": {
+        "en": "The encampment transforms into a meat-grinder of fortifications and boiling oil when the alarm is sounded.",
+        "ru": "Когда звучит тревога, лагерь превращается в мясорубку из укреплений и кипящего масла."
+      },
+      "impulses": {
+        "en": [
+          "Overwhelm interlopers",
+          "display power",
+          "execute challengers"
+        ],
+        "ru": [
+          "Подавлять нарушителей",
+          "демонстрировать силу",
+          "казнить дерзнувших"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Grand Warlord",
+          "Dread Captain",
+          "Blackguard",
+          "Evoker of Wrath",
+          "Captured Fangs"
+        ],
+        "ru": [
+          "Великий Полководец",
+          "Грозный Капитан",
+          "Подлый Рыцарь",
+          "Призыватель Гнева",
+          "Пленённые Клыки"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Kill Zone",
+            "ru": "Зона поражения"
+          },
+          "description": {
+            "en": "The Encampment is designed for defense. Any attack made from beyond Close range has disadvantage. Anyone benefitting from cover also gains +1 to their Difficulty.",
+            "ru": "Лагерь рассчитан на оборону. Любая атака, совершённая с дистанции дальше Средней, совершается с помехой. Тот, кто пользуется укрытием, также получает +1 к своей Сложности."
+          },
+          "prompt": {
+            "en": "Where are the archers positioned? Can you find a single patch of ground that isn’t targeted by the towers?",
+            "ru": "Где расположены лучники? Найдётся ли хоть клочок земли, который не простреливается башнями?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Relentless Vanguard",
+            "ru": "Неумолимый авангард"
+          },
+          "description": {
+            "en": "While in this Environment, you can hold up to 15 Fear.",
+            "ru": "Пока длится это окружение, вы можете удерживать до 15 Страха."
+          },
+          "prompt": {
+            "en": "How many banners are flying over the inner keep? Does it feel like an entire army is turning its attention to you?",
+            "ru": "Сколько знамён развевается над внутренней цитаделью? Кажется ли, что целая армия обращает на вас внимание?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Alert the Vanguard",
+            "ru": "Поднять авангард"
+          },
+          "description": {
+            "en": "Once per scene, Spend 2 Fear to summon a Dread Captain and a Blackguard, or a Grand Warlord, who appear at Close range and are immediately spotlighted.",
+            "ru": "Раз за сцену потратьте 2 Страха, чтобы призвать Грозного Капитана и Подлого Рыцаря или Великого Полководца, которые появляются на Средней дистанции и немедленно получают Активацию."
+          },
+          "prompt": {
+            "en": "Who steps through the smoke of the burning tents? What equipment do they have?",
+            "ru": "Кто выходит сквозь дым горящих палаток? Какое у них снаряжение?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Exploding Ballista",
+            "ru": "Взрывная баллиста"
+          },
+          "description": {
+            "en": "Spend a Fear to choose a point on the battlefield. All targets within Close range of that point must succeed on an Agility Reaction Roll or take 4d10+8 magic damage and become Vulnerable. On a success, they take half damage.",
+            "ru": "Потратьте Страх, чтобы выбрать точку на поле боя. Все цели на Средней дистанции от этой точки должны преуспеть в Броске Реакции на Проворность, иначе получают 4d10+8 магического урона и становятся Уязвимыми. При успехе они получают половину урона."
+          },
+          "prompt": {
+            "en": "Does the arrow destroy any barriers or coverage? Is friendly-fire a concern for the Encampment?",
+            "ru": "Разрушает ли болт какие-нибудь заграждения или укрытия? Беспокоит ли Лагерь огонь по своим?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Boiling Acid",
+            "ru": "Кипящая кислота"
+          },
+          "description": {
+            "en": "When a PC fails on a movement roll, you can spend a Fear to launch a flask of acid at the PC while they are exposed. They must mark 1d4 Armor Slots. If they can’t mark an Armor Slot, you gain a Fear and they must mark an HP per missing Armor Slot.",
+            "ru": "Когда персонаж проваливает бросок на передвижение, вы можете потратить Страх, чтобы метнуть в него флакон с кислотой, пока он беззащитен. Он должен отметить 1d4 Ячеек Брони. Если он не может отметить Ячейку Брони, вы получаете Страх, а он должен отметить Рану за каждую недостающую Ячейку Брони."
+          },
+          "prompt": {
+            "en": "How does the acid destroy your armor? What part of your body is the acid melting at?",
+            "ru": "Как кислота разрушает вашу броню? Какую часть вашего тела разъедает кислота?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Ettin’s Adversaries: Fangs & Felons"
     }
   ]
 }
