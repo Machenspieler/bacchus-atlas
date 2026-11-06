@@ -281,3 +281,17 @@ test('"Jagged Knife Bandits (all)" is the whole gang; a trailing "etc." names no
   assert.deepEqual(names('Jagged Knife Bandits (any)'), JAGGED_KNIFE);
   assert.deepEqual(names('Hooded Lanterns (Bladed Guard, etc.)'), ['Bladed Guard']);
 });
+
+test('core and Hope & Fear references: plurals, curly apostrophes, families inside groups, "None"', () => {
+  assert.deepEqual(names('Reawakened Relics (Constructs, Vault Guardians)'),
+    ['Construct', 'Vault Guardian Gaoler', 'Vault Guardian Sentinel', 'Vault Guardian Turret']);
+  assert.deepEqual(names('Local Fauna (Cryptimoths, Yufos)'), ['Cryptimoth', 'Yufo']);
+  assert.deepEqual(names('Executioners (Temporal Enforcers)'), ['Temporal Enforcer']);
+  assert.deepEqual(names('Whisper Wraiths'), ['Whisper Wraith']);
+  assert.deepEqual(names('Volcanic Dragon').length, 3);
+  assert.deepEqual(names("The Witch’s Victims (Jack-o'-Lanterns, Redcap Biters)"), ['Jack-O’-Lantern', 'Redcap Biters']);
+  assert.deepEqual(names('Sundry Ne’er-Do-Wells (Jagged Knife Bandit, Lackey)'), ['Jagged Knife Bandit', 'Jagged Knife Lackey']);
+  assert.deepEqual(names('Any Undead (Skeleton, Zombie, Spectral Guardian)').slice(-1), ['Spectral Guardian']);
+  assert.equal(names('Any Undead (Skeleton, Zombie, Spectral Guardian)').includes('Skeleton Knight'), true);
+  assert.deepEqual(names('None'), []);
+});

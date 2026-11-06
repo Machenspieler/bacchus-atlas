@@ -91,7 +91,7 @@
   function looksLikeAdversaryName(name) {
     const text = String(name || '').trim();
     if (!text) return false;
-    if (/^(?:any|all|etc.?)$/i.test(text)) return false;
+    if (/^(?:any|all|none|etc.?)$/i.test(text)) return false;
     if (/[“”"]/.test(text)) return false;
     if (/\bsee\b/i.test(text)) return false;
     return true;
@@ -178,7 +178,9 @@
    * Adept") — some environments mix bare roles and full names in the same
    * group, e.g. "Sundry Ne'er-Do-Wells (Jagged Knife Bandit, Lackey)". */
   function fullAdversaryName(groupLabel, memberName) {
-    const alias = ADVERSARY_GROUP_MEMBER_ALIASES[groupLabel]?.[memberName];
+    /* Source text mixes straight and curly apostrophes ("Ne’er-Do-Wells"); the
+     * alias table is keyed with the straight one. */
+    const alias = ADVERSARY_GROUP_MEMBER_ALIASES[String(groupLabel).replace(/[‘’]/g, "'")]?.[memberName];
     if (alias) return alias;
     const prefix = ADVERSARY_GROUP_NAME_PREFIXES[groupLabel];
     if (!prefix) return memberName;
@@ -247,6 +249,15 @@
      * (Fractus storms) means that adversary. */
     'Water Elemental': ['Greater Water Elemental'],
     'Water Elementals': ['Greater Water Elemental'],
+    /* Plural/short references used by the core and Hope & Fear environments;
+     * each names exactly the catalogue adversaries behind it. */
+    Constructs: ['Construct'],
+    'Whisper Wraiths': ['Whisper Wraith'],
+    Cryptimoths: ['Cryptimoth'],
+    Yufos: ['Yufo'],
+    'Temporal Enforcers': ['Temporal Enforcer'],
+    "Jack-o'-Lanterns": ["Jack-O’-Lantern"],
+    'Volcanic Dragon': ['Volcanic Dragon: Ashen Tyrant', 'Volcanic Dragon: Molten Scourge', 'Volcanic Dragon: Obsidian Predator'],
   };
 
   /** "Beasts (any)" — the GM may pick any beast — expands to the SRD 2.0
@@ -283,6 +294,13 @@
    * the one Jagged Knife Bandit. Other families (e.g. "Pirates") keep their
    * existing group-member behaviour. */
   const BANDIT_GROUP_MEMBER_FAMILY_ALIASES = new Set(['Bandits', 'Jagged Knife Bandits', 'Jagged Knives']);
+
+  /** Other family references that stay a family even as a group member:
+   * "Reawakened Relics (Constructs, Vault Guardians)", "Local Fauna
+   * (Cryptimoths, Yufos)" — plus the bare "Skeleton"/"Zombie" inside
+   * "Any Undead (Skeleton, Zombie, …)", which names the whole family. */
+  const GROUP_MEMBER_FAMILY_ALIASES = new Set(['Constructs', 'Vault Guardians', 'Cryptimoths', 'Yufos', 'Whisper Wraiths', 'Temporal Enforcers', "Jack-o'-Lanterns"]);
+  const GROUP_MEMBER_FAMILY_BY_LABEL = { 'Any Undead': new Set(['Skeleton', 'Zombie']) };
 
   /** The text named by an "any X" (or "any X member"/"any X being") phrase —
    * "any Cult member" -> "Cult", "any Jagged Knife" -> "Jagged Knife", "any
@@ -337,7 +355,8 @@
     if (groupLabel == null) {
       const bareFamily = ADVERSARY_FAMILY_MEMBERS[trimmed];
       if (bareFamily) return bareFamily;
-    } else if (BANDIT_GROUP_MEMBER_FAMILY_ALIASES.has(trimmed)) {
+    } else if (BANDIT_GROUP_MEMBER_FAMILY_ALIASES.has(trimmed) || GROUP_MEMBER_FAMILY_ALIASES.has(trimmed)
+      || GROUP_MEMBER_FAMILY_BY_LABEL[groupLabel]?.has(trimmed)) {
       return ADVERSARY_FAMILY_MEMBERS[trimmed];
     } else if (/^(?:any|all)$/i.test(trimmed) && BANDIT_GROUP_MEMBER_FAMILY_ALIASES.has(groupLabel)) {
       // "Jagged Knife Bandits (all)": the qualifier asks for the whole gang. Only the Bandit
