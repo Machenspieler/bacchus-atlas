@@ -44768,6 +44768,662 @@
         "settlement"
       ],
       "source": "Ettin’s Adversaries: Fangs & Felons"
+    },
+    {
+      "id": "saurian-city",
+      "tier": 1,
+      "type": "social",
+      "difficulty": 11,
+      "name": {
+        "en": "Saurian City",
+        "ru": "Город заврианцев"
+      },
+      "lore": {
+        "en": "A massive city of grand pyramids and temples nestled in the jungles of the lost continent. Their life might be more harsh and savage but they deal with many of the same issues as most cities.",
+        "ru": "Огромный город величественных пирамид и храмов, укрытый в джунглях затерянного континента. Жизнь здесь, возможно, суровее и свирепее, но заботы у горожан во многом те же, что и в любом другом городе."
+      },
+      "impulses": {
+        "en": [
+          "Impart knowledge",
+          "set goals",
+          "generate hype for the derby"
+        ],
+        "ru": [
+          "Делиться знаниями",
+          "ставить цели",
+          "разжигать ажиотаж вокруг дерби"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Saurians (Warrior, Stablemaster, Rider)",
+          "Dinosaurs (Raptors, Ankylosaurus, Pachycephalosaurus)",
+          "Felons (Shady Shopkeep, Thief)",
+          "Merchant"
+        ],
+        "ru": [
+          "Заврианцы (Воин, Смотритель конюшен, Наездник)",
+          "Динозавры (Раптоны, Анкилозавр, Пахицефалозавр)",
+          "Преступники (Сомнительный лавочник, Вор)",
+          "Торговец"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Ask the Locals",
+            "ru": "Расспросить местных"
+          },
+          "description": {
+            "en": "A PC can inquire about major events or learn information by making a Knowledge or Presence Roll. What they learn depends on the outcome of their roll, based on the following criteria:\n- **Critical Success:** Learn about two major events, information or rumors. The PC can ask one follow-up question and get a truthful answer.\n- **Success with Hope:** Learn about an event or information and a rumor, at least one of which is relevant to the PC’s background.\n- **Success with Fear:** Learn an alarming rumor about the area.\n- **Any Failure:** The locals respond poorly to their inquiries. The PC can mark a Stress to learn one relevant rumor.",
+            "ru": "Персонаж может расспросить о важных событиях или узнать сведения, сделав Бросок Знания или Влияния. Что именно он узнает, зависит от результата броска:\n- **Критический успех:** узнайте о двух важных событиях, сведениях или слухах. Персонаж может задать один уточняющий вопрос и получить правдивый ответ.\n- **Успех с Надеждой:** узнайте о событии или сведениях и о слухе, причём хотя бы одно из них связано с прошлым персонажа.\n- **Успех со Страхом:** узнайте тревожный слух об этой местности.\n- **Любая неудача:** местные плохо отвечают на расспросы. Персонаж может отметить Стресс, чтобы узнать один подходящий слух."
+          },
+          "prompt": {
+            "en": "What intel are the PCs asking about? Who controls the aspects of the Racesaurs?",
+            "ru": "О какой информации спрашивают персонажи? Кто заправляет всем, что связано с гонозаврами?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Calling All Racesaurs",
+            "ru": "Все гонщики — на старт!"
+          },
+          "description": {
+            "en": "The Derby occurs every weekend. The Race is accepting Racesaurs for the big event to compete for the prize. Any PC can enter the Race as long as they have a mount. Non-Racesaurs can still help influence the Derby’s results.",
+            "ru": "Дерби проходит каждые выходные. Заезд принимает гонозавров для большого события — борьбы за приз. Любой персонаж может участвовать в Гонке, если у него есть скакун. Не-гонозавры тоже могут повлиять на итоги Дерби."
+          },
+          "prompt": {
+            "en": "What dinosaur mounts do the Players want? How are non-participants going to help?",
+            "ru": "Каких скакунов-динозавров хотят игроки? Как будут помогать те, кто не участвует?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Pick a Winner!",
+            "ru": "Угадай победителя!"
+          },
+          "description": {
+            "en": "There’s a stand set up near the Derby run by a shady bookie where PCs can wager up to 3 handfuls of gold on who wins the Race. If they win, they receive their original wager back plus 1d4 handfuls of gold for every handful they bet.",
+            "ru": "Рядом с трассой Дерби стоит палатка сомнительного букмекера, где персонажи могут поставить до 3 горстей золота на победителя Гонки. Если они выигрывают, то получают обратно свою ставку и ещё 1d4 горстей золота за каждую поставленную горсть."
+          },
+          "prompt": {
+            "en": "What chatter do they overhear about the competition? Who does the Party need to look out for?",
+            "ru": "Какие разговоры о соперниках они подслушивают? За кем отряду нужно приглядывать?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Hear All About It!",
+            "ru": "Читайте в свежем выпуске!"
+          },
+          "description": {
+            "en": "Countdown (Loop 1). Activate the countdown when the PCs enter the scene. Every so often, a local newsie shouts the most recent headlines about the area or region. The Countdown ticks down when the Party takes a rest.",
+            "ru": "Отсчёт (Цикл 1). Запустите отсчёт, когда персонажи входят в сцену. Время от времени местный газетчик выкрикивает свежие заголовки о городе или регионе. Отсчёт уменьшается, когда отряд отдыхает."
+          },
+          "prompt": {
+            "en": "What hook will get the Party’s attention? How deep does the story run?",
+            "ru": "Какая зацепка привлечёт внимание отряда? Насколько глубоко уходит эта история?"
+          }
+        }
+      ],
+      "biomes": [
+        "tropical",
+        "settlement"
+      ],
+      "source": "The Heartbeat Issue 2: The Lost Lands Vol. 1"
+    },
+    {
+      "id": "the-dinosaur-derby",
+      "tier": 1,
+      "type": "event",
+      "difficulty": 11,
+      "name": {
+        "en": "The Dinosaur Derby",
+        "ru": "Дерби динозавров"
+      },
+      "lore": {
+        "en": "A dangerously exciting racing event where riders (The Racesaurs) use dinosaurs as mounts competing for a prize pool.",
+        "ru": "Опасно захватывающие гонки, в которых наездники (гонозавры) соревнуются на ездовых динозаврах за призовой фонд."
+      },
+      "impulses": {
+        "en": [
+          "Jostle for position",
+          "inspire teamwork",
+          "bring excitement"
+        ],
+        "ru": [
+          "Толкаться за позицию",
+          "вдохновлять на командную работу",
+          "добавлять азарта"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Saurians (Warrior, Stablemaster, Rider)",
+          "Dinosaurs (Raptors, Ankylosaurus, Pachycephalosaurus, Other Racing Mounts)"
+        ],
+        "ru": [
+          "Заврианцы (Воин, Смотритель конюшен, Наездник)",
+          "Динозавры (Раптоны, Анкилозавр, Пахицефалозавр, Другие скакуны для гонок)"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "On Your Mark",
+            "ru": "На старт"
+          },
+          "description": {
+            "en": "This race utilizes two Dynamic Countdowns (Progress vs Consequence) to determine the Party’s outcome. When PCs make Action Rolls to ride, assist, or win the race, use their roll to advance the countdown.\n- **Breakaway (Progress 12):** When this triggers, the Party has successfully broken free of the pack and can continue the race with the Final Stretch Environment. Otherwise, the Party wins the Race! The Party gains 2 Hope and clears 2 Stress.\n- **Overrun (Consequence 12):** When this triggers, the Party accepts their defeat by their opponents. Each PC still gains a Hope and clears a Stress from the fun of the race, but you gain 2 Fear.\n\nIf the Party completes the Breakaway countdown, the Party has left no doubt they will win the Race. If the Party wants, they can cross the finish line together as the crowd cheers them on OR they can choose to transition to the “Final Stretch” Environment to determine ultimate bragging rights to figure out who will come in 1st place!",
+            "ru": "В этой гонке два Динамических Отсчёта (Прогресса и Последствий) определяют исход для отряда. Когда персонажи делают броски действия, чтобы скакать, помогать или выиграть гонку, используйте результат броска, чтобы продвинуть отсчёт.\n- **Отрыв (Прогресс 12):** когда он срабатывает, отряд успешно оторвался от основной группы и может продолжить гонку в окружении «Финишная прямая». Иначе отряд выигрывает Гонку! Отряд получает 2 Надежды и снимает 2 Стресса.\n- **Обгон (Последствия 12):** когда он срабатывает, отряд признаёт поражение. Каждый персонаж всё равно получает Надежду и снимает Стресс от азарта гонки, но вы получаете 2 Страха.\n\nЕсли отряд завершает отсчёт «Отрыв», ни у кого не остаётся сомнений, что он выиграет Гонку. Если отряд хочет, он может пересечь финишную черту вместе под ободряющие крики толпы ИЛИ перейти к окружению «Финишная прямая», чтобы решить, кто получит главное право хвастаться, и выяснить, кто придёт первым!"
+          },
+          "prompt": {
+            "en": "What mounts do the other racers use? Is there one that intimidates the Party?",
+            "ru": "На каких скакунах едут другие гонщики? Есть ли среди них тот, кто пугает отряд?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "A Racesaur Wrecks",
+            "ru": "Гонозавр разбивается"
+          },
+          "description": {
+            "en": "Spend a Fear to have a Racesaur completely wipe out on the track. The Party must succeed on a Group Instinct Roll to keep the Party on pace. On a failure, each PC must mark a Stress, and the “Breakaway” countdown ticks up by 1.",
+            "ru": "Потратьте Страх, чтобы один из гонозавров полностью разбился на трассе. Отряд должен преуспеть в Групповом броске Инстинкта, чтобы не отстать. При провале каждый персонаж должен отметить Стресс, а отсчёт «Отрыв» увеличивается на 1."
+          },
+          "prompt": {
+            "en": "How do you navigate the wipe out? Or fail to?",
+            "ru": "Как вы справляетесь с аварией? Или не справляетесь?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Don’t Get Caught",
+            "ru": "Не попадись"
+          },
+          "description": {
+            "en": "Countdown (Loop 1d4+1). Activate this Countdown when the race begins. When it triggers, an opponent turns to dirty tricks and tactics. The Party must make a Group Knowledge, Instinct, or Presence Roll (12). On a success, the “Overrun” Countdown ticks up by 1 as the PCs ensure a judge notices and the racer is disqualified. On a failure, the PCs must mark a Stress and the “Breakaway” Countdown ticks up by 1 as the judge turns a blind eye and the PCs are set back.",
+            "ru": "Отсчёт (Цикл 1d4+1). Запустите этот Отсчёт, когда гонка начинается. Когда он срабатывает, соперник прибегает к грязным приёмам и уловкам. Отряд должен сделать Групповой бросок Знания, Инстинкта или Влияния (12). При успехе отсчёт «Обгон» увеличивается на 1: персонажи добиваются, чтобы судья заметил нарушение и гонщика дисквалифицировали. При провале персонажи должны отметить Стресс, а отсчёт «Отрыв» увеличивается на 1: судья закрывает глаза, и персонажей отбрасывает назад."
+          },
+          "prompt": {
+            "en": "Do the judges have ulterior motives?",
+            "ru": "Нет ли у судей скрытых мотивов?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Biting at the Heels",
+            "ru": "Наступают на пятки"
+          },
+          "description": {
+            "en": "When a PC rolls a failure with Fear, they find themselves boxed in and battered around. They must mark a Stress and become Dizzy. While Dizzy, they have disadvantage on their next Action Roll then clear the condition.",
+            "ru": "Когда персонаж выбрасывает неудачу со Страхом, его зажимают и крепко достаётся от соперников. Он должен отметить Стресс и становится Дезориентирован(а). Пока он Дезориентирован(а), у него помеха на следующий бросок действия, после чего состояние снимается."
+          },
+          "prompt": {
+            "en": "What caused the hazard on the track?",
+            "ru": "Что стало причиной опасности на трассе?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "The Heartbeat Issue 2: The Lost Lands Vol. 1"
+    },
+    {
+      "id": "the-final-stretch",
+      "tier": 1,
+      "type": "event",
+      "difficulty": 11,
+      "name": {
+        "en": "The Final Stretch",
+        "ru": "Финишная прямая"
+      },
+      "lore": {
+        "en": "The rival pack is eating dirt behind you. The finish line is in sight. The crowd is roaring. The Party has secured a victory, but now the question is: who gets the ultimate glory of 1st place?",
+        "ru": "Стая соперников глотает пыль позади вас. Финишная черта уже видна. Толпа ревёт. Отряд обеспечил себе победу, но теперь вопрос в другом: кому достанется высшая слава первого места?"
+      },
+      "impulses": {
+        "en": [
+          "Enjoy the show",
+          "give control to the PCs",
+          "be their crowd and cheer them on"
+        ],
+        "ru": [
+          "Наслаждаться шоу",
+          "передавать управление персонажам",
+          "быть их публикой и подбадривать их"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Other Party members",
+          "Racing obstacles"
+        ],
+        "ru": [
+          "Другие члены отряда",
+          "Препятствия на трассе"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Seize the Spotlight",
+            "ru": "Завладеть вниманием"
+          },
+          "description": {
+            "en": "Have each PC make a Fate Roll. The highest roll gets the spotlight to start.",
+            "ru": "Пусть каждый персонаж сделает Бросок Судьбы. Тот, у кого результат выше всех, первым получает фокус."
+          },
+          "prompt": {
+            "en": "What minor edge do you have heading into this stretch?",
+            "ru": "Какое небольшое преимущество у вас на входе в этот отрезок?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Going for Gold",
+            "ru": "Борьба за золото"
+          },
+          "description": {
+            "en": "The pack is beaten, but the Party wants to finish the race. Each PC activates an individual Progress Countdown (6). Each PC will make Action Rolls to try and win the race. Their progress advances according to the following chart:\n- **Critical Success:** Tick down by 3. Keep the spotlight on the same PC.\n- **Success with Hope:** Tick down by 2. Pass the spotlight to the PC on your left.\n- **Success with Fear:** Tick down by 1. Pass the spotlight to the PC on your left.\n- **Failure with Hope:** No advancement. Pass the spotlight to the PC on your left.\n- **Failure with Fear:** No advancement. Pass the spotlight to the PC on your left.\n\nThe first PC to complete their countdown crosses the finish line first.",
+            "ru": "Стая позади, но отряд хочет довести гонку до конца. Каждый персонаж запускает личный Отсчёт Прогресса (6). Каждый персонаж делает броски действия, пытаясь выиграть гонку. Его продвижение определяется так:\n- **Критический успех:** уменьшите отсчёт на 3. Фокус остаётся на том же персонаже.\n- **Успех с Надеждой:** уменьшите отсчёт на 2. Передайте фокус персонажу слева от вас.\n- **Успех со Страхом:** уменьшите отсчёт на 1. Передайте фокус персонажу слева от вас.\n- **Неудача с Надеждой:** продвижения нет. Передайте фокус персонажу слева от вас.\n- **Неудача со Страхом:** продвижения нет. Передайте фокус персонажу слева от вас.\n\nПервый персонаж, завершивший свой отсчёт, первым пересекает финишную черту."
+          },
+          "prompt": {
+            "en": "What does the finish line look like? How does your character goad or playfully taunt their friends as they pull ahead?",
+            "ru": "Как выглядит финишная черта? Как ваш персонаж поддразнивает друзей, вырываясь вперёд?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Treacherous Track",
+            "ru": "Коварная трасса"
+          },
+          "description": {
+            "en": "Countdown (Loop 3). Activate this countdown when the PCs begin the final stretch. When it triggers, introduce a complication to affect the PCs. All racing PCs must succeed on a Reaction Roll of their choice. On a failure, their Progress Countdown ticks up by 1 as they are set back by the stumble.",
+            "ru": "Отсчёт (Цикл 3). Запустите этот отсчёт, когда персонажи начинают финишную прямую. Когда он срабатывает, добавьте осложнение для персонажей. Все гонящиеся персонажи должны преуспеть в Броске Реакции по своему выбору. При провале их Отсчёт Прогресса увеличивается на 1: они теряют время из-за спотыкания."
+          },
+          "prompt": {
+            "en": "What hazard suddenly appears? How does the crowd react to the sudden danger?",
+            "ru": "Какая опасность внезапно возникает? Как толпа реагирует на неожиданную угрозу?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "The Heartbeat Issue 2: The Lost Lands Vol. 1"
+    },
+    {
+      "id": "battle-of-apex-predators",
+      "tier": 2,
+      "type": "event",
+      "difficulty": 14,
+      "name": {
+        "en": "Battle of Apex Predators",
+        "ru": "Битва верховных хищников"
+      },
+      "lore": {
+        "en": "Two monsters of gigantic proportions fight for the throne. Every impact sends a wave of destruction around them as the Party seeks to complete their goal, all while trying to save others and themselves.",
+        "ru": "Два чудовища гигантских размеров сражаются за трон. Каждый удар рассылает вокруг волну разрушения, пока отряд пытается достичь своей цели, спасая при этом и других, и самих себя."
+      },
+      "impulses": {
+        "en": [
+          "Destroy structures",
+          "cause loss of lives",
+          "create moments of heroic opportunity"
+        ],
+        "ru": [
+          "Разрушать постройки",
+          "уносить жизни",
+          "создавать моменты для героических поступков"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Dinosaurs (Raptors, Compies, Dilophosaurs, Pterodactyls)",
+          "Godzilla",
+          "King Kong",
+          "Kaijus",
+          "Krakens",
+          "Giant Robots",
+          "Dragons",
+          "Giants",
+          "Colossals",
+          "You get it…"
+        ],
+        "ru": [
+          "Динозавры (Раптоны, Компи, Дилофозавры, Птеродактили)",
+          "Годзилла",
+          "Кинг-Конг",
+          "Кайдзю",
+          "Кракены",
+          "Гигантские роботы",
+          "Драконы",
+          "Великаны",
+          "Колоссы",
+          "Вы поняли…"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Getaway",
+            "ru": "Бегство"
+          },
+          "description": {
+            "en": "Getting away from the Battle requires a Progress Countdown (12). It ticks down according to the following criteria when the PCs make an Action Roll to help others escape or get safe.\n- **Critical Success:** Tick down 3\n- **Success with Hope:** Tick down 2\n- **Success with Fear:** Tick down 1\n- **Failure with Hope:** No advancement\n- **Failure with Fear:** Tick up 1 and all PCs lose a Hope.\n\nWhen the countdown triggers, the Party has safely survived the Battle.",
+            "ru": "Чтобы уйти от Битвы, нужен Отсчёт Прогресса (12). Он уменьшается по следующим правилам, когда персонажи делают бросок действия, чтобы помочь другим спастись или оказаться в безопасности.\n- **Критический успех:** уменьшите на 3\n- **Успех с Надеждой:** уменьшите на 2\n- **Успех со Страхом:** уменьшите на 1\n- **Неудача с Надеждой:** продвижения нет\n- **Неудача со Страхом:** увеличьте на 1, и все персонажи теряют Надежду.\n\nКогда отсчёт срабатывает, отряд благополучно переживает Битву."
+          },
+          "prompt": {
+            "en": "What massive monsters are fighting? What brought the Apex’s attention?",
+            "ru": "Какие огромные чудовища сражаются? Что привлекло внимание верховного хищника?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Tyrannosaurus Wrecks",
+            "ru": "Тираннозавр крушит"
+          },
+          "description": {
+            "en": "Spend a Fear to create havoc (falling debris, shaking ground, innocent bystanders) and force the Party to make a Group Action Roll. On a failure, each PC takes 1d20+4 physical or magic damage and marks a Stress. On a success, each PC gains a Hope.",
+            "ru": "Потратьте Страх, чтобы устроить хаос (падающие обломки, трясущаяся земля, невинные прохожие) и заставить отряд сделать Групповой бросок. При провале каждый персонаж получает 1d20+4 физического или магического урона и отмечает Стресс. При успехе каждый персонаж получает Надежду."
+          },
+          "prompt": {
+            "en": "Which trait do we paint the scene with? Who takes the lead?",
+            "ru": "Какой чертой мы рисуем эту сцену? Кто берёт на себя лидерство?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Who’s Apex Now?",
+            "ru": "Кто теперь верховный хищник?"
+          },
+          "description": {
+            "en": "Spend X Fear to introduce a new predator to the Battle. Tick up the “Getaway” Countdown by 1 for each Fear spent.",
+            "ru": "Потратьте X Страха, чтобы ввести в Битву нового хищника. Увеличьте отсчёт «Бегство» на 1 за каждый потраченный Страх."
+          },
+          "prompt": {
+            "en": "What new foe shows up? What brought them to the Party?",
+            "ru": "Какой новый враг появляется? Что привело его к отряду?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "The Big Show",
+            "ru": "Большое шоу"
+          },
+          "description": {
+            "en": "Countdown (Loop 1d4). When a PC enters the spotlight for the first time in this scene, activate the Countdown. When it triggers, multiple points on the field become hazardous. Each PC must make a Reaction Roll of their choice. On a failure, they must mark 2 Stress. On a success, they mark just one Stress.",
+            "ru": "Отсчёт (Цикл 1d4). Когда персонаж впервые получает фокус в этой сцене, запустите Отсчёт. Когда он срабатывает, в нескольких местах поля становится опасно. Каждый персонаж должен сделать Бросок Реакции по своему выбору. При провале он должен отметить 2 Стресса. При успехе он отмечает всего один Стресс."
+          },
+          "prompt": {
+            "en": "What caused this massive wave of damage? What does a taunt from one of these predators look like?",
+            "ru": "Что вызвало эту огромную волну разрушения? Как выглядит насмешка одного из этих хищников?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "The Heartbeat Issue 2: The Lost Lands Vol. 1"
+    },
+    {
+      "id": "volcanic-eruption-lost-lands",
+      "tier": 3,
+      "type": "event",
+      "difficulty": 17,
+      "name": {
+        "en": "Volcanic Eruption",
+        "ru": "Извержение вулкана"
+      },
+      "lore": {
+        "en": "Molten rock and lava spew from the earth creating a massive area of destruction.",
+        "ru": "Расплавленная порода и лава извергаются из-под земли, создавая огромную зону разрушения."
+      },
+      "impulses": {
+        "en": [
+          "Create urgency with motivations",
+          "amp up tension",
+          "expel everything from the area"
+        ],
+        "ru": [
+          "Создавать срочность через мотивацию",
+          "нагнетать напряжение",
+          "вытеснять всё живое из этой области"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Any (Dinosaurs, Hobbits, Volcanic Dragons)"
+        ],
+        "ru": [
+          "Любые (Динозавры, Хоббиты, Вулканические драконы)"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Catastrophic Eruption",
+            "ru": "Катастрофическое извержение"
+          },
+          "description": {
+            "en": "Consequence Countdown (12). The eruption has begun. Lava and smoke fill the sky. The lava begins flowing from the earth and spreading. Activate this countdown at the start of the scene. It ticks down whenever a PC makes an Action Roll according to the following chart:\n- **Failure with Fear:** Tick down 3, all PCs lose a Hope.\n- **Failure with Hope:** Tick down 2, all PCs mark a Stress.\n- **Success with Fear:** Tick down 1, the PC loses a Hope.\n- **Success with Hope:** No advancement, all PCs clear a Stress.\n- **Critical Success:** Ticks UP by 1, all PCs gain a Hope and clear a Stress.\n\nWhen the countdown triggers, a massive wave of lava completely consumes the area. Any PC still on the ground must mark 4 HP and the scene ends as the survivors are violently flushed out of the scene.",
+            "ru": "Отсчёт Последствий (12). Извержение началось. Лава и дым заполняют небо. Лава начинает течь из-под земли и растекаться. Запустите этот отсчёт в начале сцены. Он уменьшается, когда персонаж делает бросок действия, по следующей таблице:\n- **Неудача со Страхом:** уменьшите на 3, все персонажи теряют Надежду.\n- **Неудача с Надеждой:** уменьшите на 2, все персонажи отмечают Стресс.\n- **Успех со Страхом:** уменьшите на 1, персонаж теряет Надежду.\n- **Успех с Надеждой:** продвижения нет, все персонажи снимают Стресс.\n- **Критический успех:** отсчёт УВЕЛИЧИВАЕТСЯ на 1, все персонажи получают Надежду и снимают Стресс.\n\nКогда отсчёт срабатывает, огромная волна лавы полностью поглощает местность. Любой персонаж, всё ещё стоящий на земле, должен отметить 4 Раны, а сцена заканчивается: выживших яростно выбрасывает прочь."
+          },
+          "prompt": {
+            "en": "What other victims are in the wake or path? What would it take to save them?",
+            "ru": "Кто ещё оказался на пути лавы или рядом с ним? Что нужно, чтобы спасти их?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Goodness Gracious",
+            "ru": "Боже правый"
+          },
+          "description": {
+            "en": "Spend a Fear to spew a blast of lava at any point on the battlefield. Anyone within Close range of that point must make an Agility or Finesse Reaction Roll. On a failure, they must mark 2 HP and become Vulnerable until they next act. On a success, they must mark an HP.",
+            "ru": "Потратьте Страх, чтобы выплеснуть струю лавы в любую точку поля боя. Каждый на Средней дистанции от этой точки должен сделать Бросок Реакции Проворности или Искусности. При провале он должен отметить 2 Раны и становится Уязвим(а), пока не действует в следующий раз. При успехе он должен отметить 1 Рану."
+          },
+          "prompt": {
+            "en": "Will you negotiate with a PC for use of an Armor Slot? What’s the trade-off?",
+            "ru": "Поторгуетесь ли вы с персонажем за использование Ячейки Брони? Какова цена?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Toxic Emissions",
+            "ru": "Токсичные выбросы"
+          },
+          "description": {
+            "en": "Countdown (Loop 1d4). When the PCs enter the Volcanic Eruption, activate the countdown. When it triggers, all PCs must make a Strength or Instinct Reaction Roll. Targets who fail take 3d4+8 direct physical damage and must mark a Stress. Targets who succeed take half damage. Protective masks or clothes give advantage on the Reaction Roll.",
+            "ru": "Отсчёт (Цикл 1d4). Когда персонажи попадают в Извержение вулкана, запустите отсчёт. Когда он срабатывает, все персонажи должны сделать Бросок Реакции Силы или Инстинкта. Цели, провалившие бросок, получают 3d4+8 прямого физического урона и должны отметить Стресс. Цели, преуспевшие в броске, получают половину урона. Защитные маски или одежда дают преимущество на Бросок Реакции."
+          },
+          "prompt": {
+            "en": "What ominous figure do you see silhouetted in the smoke? What’s hidden in the clouds?",
+            "ru": "Какая зловещая фигура вырисовывается силуэтом в дыму? Что скрывается в облаках?"
+          }
+        }
+      ],
+      "biomes": [
+        "badlands"
+      ],
+      "source": "The Heartbeat Issue 2: The Lost Lands Vol. 1"
+    },
+    {
+      "id": "pangeas-sundering",
+      "tier": 1,
+      "tiers": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "type": "event",
+      "difficulty": {
+        "en": "See the table in the Tectonic Escalation feature",
+        "ru": "см. таблицу в особенности «Тектоническая эскалация»"
+      },
+      "name": {
+        "en": "Pangea’s Sundering",
+        "ru": "Раскол Пангеи"
+      },
+      "lore": {
+        "en": "A fractured continent poised upon grinding tectonic shelves, destined to be violently remade by the campaign’s end.",
+        "ru": "Расколотый континент на скрежещущих тектонических плитах, которому суждено быть жестоко переделанным к концу кампании."
+      },
+      "impulses": {
+        "en": [
+          "None"
+        ],
+        "ru": [
+          "Нет"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Any"
+        ],
+        "ru": [
+          "Любые"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Tectonic Escalation",
+            "ru": "Тектоническая эскалация"
+          },
+          "description": {
+            "en": "This environment is a persistent, global threat that grows as the campaign progresses. Each new Tier of play that the Party reaches unlocks a new feature. The Difficulty and Damage values of this environment automatically adjust to match the Party’s current Tier:\n- **Tier 1:** Difficulty 10-12; Damage: 1d10+1\n- **Tier 2:** Difficulty 13-15; Damage: 2d6+8\n- **Tier 3:** Difficulty 16-18; Damage: 3d8+6\n- **Tier 4:** Difficulty 19-21; Damage: 4d10+5",
+            "ru": "Это окружение — постоянная глобальная угроза, которая растёт по мере продвижения кампании. Каждый новый Ранг игры, которого достигает отряд, открывает новую особенность. Сложность и урон этого окружения автоматически подстраиваются под текущий Ранг отряда:\n- **Ранг 1:** Сложность 10-12; урон: 1d10+1\n- **Ранг 2:** Сложность 13-15; урон: 2d6+8\n- **Ранг 3:** Сложность 16-18; урон: 3d8+6\n- **Ранг 4:** Сложность 19-21; урон: 4d10+5"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Applying Damage",
+            "ru": "Нанесение урона"
+          },
+          "description": {
+            "en": "Damage can be applied to any of the features below, otherwise they can be a Soft Move that foreshadows the apocalypse. If you choose to deal damage with a Hard Move, decide if it is physical or magic damage according to the narrative.",
+            "ru": "Урон можно наносить любой из особенностей ниже; в остальных случаях они могут быть Мягким Ходом, предвещающим апокалипсис. Если вы решаете нанести урон Жёстким Ходом, определите по ходу повествования, физический он или магический."
+          },
+          "prompt": {
+            "en": "What changes in the continent’s life hint that the world is becoming unstable?",
+            "ru": "Какие перемены в жизни континента намекают, что мир становится нестабильным?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Escalating Threat",
+            "ru": "Нарастающая угроза"
+          },
+          "description": {
+            "en": "Increase the amount of Fear the GM can hold by 1 when the Party enters a new Tier for a maximum of 15 at Tier 4. Additionally, when the Doomsday Clock Countdown is active, once per session, you can spend a Fear to tick it down by 1.",
+            "ru": "Увеличивайте количество Страха, которое может накопить Мастер, на 1, когда отряд достигает нового Ранга, вплоть до максимума в 15 на Ранге 4. Кроме того, пока активен отсчёт «Часы Судного дня», раз за сессию вы можете потратить Страх, чтобы уменьшить его на 1."
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Startled Stampede (Tier 1)",
+            "ru": "Переполох в стаде (Ранг 1)"
+          },
+          "description": {
+            "en": "Spend a Fear to have the wildlife trample through a point of your choice.",
+            "ru": "Потратьте Страх, чтобы дикие животные пронеслись через выбранную вами точку."
+          },
+          "prompt": {
+            "en": "What animals enter and exit the scene? Do they alert nearby predators?",
+            "ru": "Какие животные появляются в сцене и покидают её? Не предупреждают ли они хищников поблизости?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Shake ’n Quake (Tier 2)",
+            "ru": "Трясёт и колышет (Ранг 2)"
+          },
+          "description": {
+            "en": "Spend a Fear to cause a small earthquake or harmless tremors in the area. All targets within Close range of that point must succeed on an Agility Reaction Roll or mark a Stress.",
+            "ru": "Потратьте Страх, чтобы вызвать небольшое землетрясение или безвредные толчки в округе. Все цели на Средней дистанции от этой точки должны преуспеть в Броске Реакции Проворности или отметить Стресс."
+          },
+          "prompt": {
+            "en": "What damage is caused by the quakes? What landmarks might be left disheveled?",
+            "ru": "Какой ущерб причиняют толчки? Какие ориентиры могут остаться в беспорядке?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Volcanic Creations (Tier 3)",
+            "ru": "Вулканические творения (Ранг 3)"
+          },
+          "description": {
+            "en": "Spend a Fear for the landscape to shift in dramatic fashion as a mountain or great divide is spontaneously created from colliding tectonic plates as geysers and volcanic slag erupt.",
+            "ru": "Потратьте Страх, чтобы ландшафт резко изменился: из столкнувшихся тектонических плит внезапно возникает гора или огромный разлом, а гейзеры и вулканический шлак извергаются наружу."
+          },
+          "prompt": {
+            "en": "How does this newly formed mountain affect the surrounding geography? What nearby population settlements are now cut off?",
+            "ru": "Как эта новая гора влияет на окружающую географию? Какие близлежащие поселения теперь отрезаны?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "The Sky Is Falling (Tier 4)",
+            "ru": "Небо падает (Ранг 4)"
+          },
+          "description": {
+            "en": "Spend a Fear for the cosmos to come crashing to earth at a point of your choice. All targets within Far range of that point must make a Reaction Roll of their choice or mark 1d4 Armor Slots. If they can’t mark an Armor Slot, they must mark an HP.",
+            "ru": "Потратьте Страх, чтобы космос обрушился на землю в выбранной вами точке. Все цели на Дальней дистанции от этой точки должны сделать Бросок Реакции по своему выбору или отметить 1d4 Ячеек Брони. Если они не могут отметить Ячейку Брони, они должны отметить 1 Рану."
+          },
+          "prompt": {
+            "en": "What form does this debris take? Whose attention does it bring to the site? Does it hold secrets?",
+            "ru": "Какую форму принимают обломки? Чьё внимание они привлекают к этому месту? Хранят ли они тайны?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Doomsday Clock",
+            "ru": "Часы Судного дня"
+          },
+          "description": {
+            "en": "Spend a Fear to activate a Long-Term Countdown (10) as the landscape starts showing major signs of instability. When it triggers, the continent is violently ripped asunder, forever shattering its geography. Any Tier-locked feature becomes unlocked regardless of the Tier (the Damage and Difficulty remain Tier appropriate). The GM gains a Fear per PC, and each PC must take a Scar (permanently cross out one of their Hope Slots). For the remainder of the Campaign, every environment becomes Sundered. While Sundered, the environment’s Difficulty increases by +2, and any time an environment’s feature deals damage, roll an additional damage die.",
+            "ru": "Потратьте Страх, чтобы запустить Долгосрочный отсчёт (10), когда ландшафт начинает показывать серьёзные признаки нестабильности. Когда он срабатывает, континент яростно раздирается надвое, навсегда разрушая свою географию. Любая особенность, привязанная к Рангу, открывается независимо от Ранга (урон и Сложность остаются соответствующими Рангу). Мастер получает по Страху за каждого персонажа, а каждый персонаж должен получить Шрам (навсегда вычеркнуть одну из своих ячеек Надежды). До конца Кампании каждое окружение становится Расколотым. Пока окружение Расколото, его Сложность повышается на +2, а каждый раз, когда особенность окружения наносит урон, бросайте дополнительную кость урона."
+          },
+          "prompt": {
+            "en": "What other disasters spread through the continent? What secrets are there to survive? Where will the landmasses settle?",
+            "ru": "Какие ещё бедствия охватывают континент? Какие тайны предстоит пережить? Где осядут материки?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "The Heartbeat Issue 2: The Lost Lands Vol. 1"
     }
   ]
 }
