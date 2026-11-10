@@ -64,7 +64,7 @@ test('the docked route summary and the details sheet are one surface in two stat
   assert.ok(view.includes("ui.root.setAttribute('data-route-panel', ui.route.hidden ? '' : 'open')"));
   assert.ok(phone.includes('[data-route-panel="open"] .j2-route-bubbles { display: none; }'));
   assert.ok(phone.includes('[data-route-panel="open"] .j2-stage:has(.j2-route-bub) { --j2-dock-space: 0px; }'));
-  assert.ok(view.includes('if (!sideCollapsed && playerMode) closeMenus();'), 'the legend and a rail menu never stack');
+  assert.ok(view.includes('if (!sideCollapsed) closeMenus();'), 'the panel / legend and a rail menu never stack');
 });
 
 test('the summary has no foreign full blue frame: the route colour is a left key and a finger tap leaves no ring', () => {

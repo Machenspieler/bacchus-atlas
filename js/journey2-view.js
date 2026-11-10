@@ -1365,7 +1365,7 @@
     function toggleSide() {
       const before = sideInset();
       sideCollapsed = !sideCollapsed;
-      if (!sideCollapsed && playerMode) closeMenus();   // the legend and a rail menu never stack, whichever path opened the legend
+      if (!sideCollapsed) closeMenus();   // the panel (GM) / legend (player) and a rail menu never stack, whichever path opened it
       if (!sideCollapsed && playerMode && isPhoneWidth()) {   // opening the phone legend ends an unfinished pick; a drawn route stays (its summary docks below the sheet) but its details step aside
         const rs = routePlanner.state;
         if (rs && rs.status === 'result') { if (routeDetails) { routeDetails = false; renderRoute(); } } else exitRoute({ quiet: true });
@@ -5513,7 +5513,7 @@
       const menu = ui.root.querySelector('[data-j2-menu="' + name + '"]');
       if (openMenu && openMenu.menu === menu) { closeMenus(); return; }
       closeMenus();
-      if (playerMode && !sideCollapsed) { sideCollapsed = true; applySideState(false); }   // the legend and a rail menu never stack (the menu opens over the panel)
+      if (!sideCollapsed) { sideCollapsed = true; applySideState(false); }   // the panel (GM) / legend (player) and a rail menu never stack: the panel folds away first
       if (playerMode && routeDetails && isPhoneWidth()) { routeDetails = false; renderRoute(); }   // nor do route details and a rail menu: they share one anchor
       menu.hidden = false;
       btn.setAttribute('aria-expanded', 'true');
