@@ -1703,9 +1703,9 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Where:** `js/list-cover-art.js`, `js/catalog-art.js`, `js/prep-art.js`, `scripts/generate-list-covers.js`, `img/list-covers/`, `img/catalog-art/`, `img/prep-art/`.
 
 
-## PD-096: The stat block's overlay is opaque ground when there is no painting
+## PD-096: The open card's ground is a compositor layer of its own
 
 - **Status:** Active (2026-11-11)
-- **Why:** at `--ink-overlay` (0.80) a fifth of the catalogue behind an open card showed through, and while the card scrolled the cards behind flickered into view (Thunderstorm, Chrome; not reproducible on demand).
-- **Decision:** `.modal-overlay[data-overlay-kind="detail"]` is solid `--ink` unless an environment painting is behind it (that case keeps `--ink-overlay-art` over the opaque `.env-backdrop`). Popups and item cards opened on top keep the translucent 0.80 dim, so the card beneath them stays visible.
-- **Where:** `css/styles.css` (`.modal-overlay`).
+- **Why:** while a stat block scrolled, the catalogue behind it sometimes flickered through the card itself (Thunderstorm, Chrome; never caught on a screenshot). The card lives in the overlay's scrolling layer; on a fast scroll Chrome can show that layer before its tiles are rastered, and for that frame the card is missing and only the translucent `--ink-overlay` (0.80) stands between the reader and the catalogue.
+- **Decision:** `.modal::after` repaints the card's `--ink-card` as a plain rectangle (no radius, stopping short of the rounded corners) on its own layer (`will-change: transform`). One solid fill on its own layer is drawn without raster, so the card's ground is always present even when its text is a frame late. The overlay keeps its translucent dim; making it opaque (tried first, same day) removed the flicker but also the dimmed catalogue the card is meant to sit over, and was reverted.
+- **Where:** `css/styles.css` (`.modal`, `.modal::after`).

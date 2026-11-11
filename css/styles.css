@@ -1333,6 +1333,19 @@ body:has(.modal-overlay) .site-header { background: var(--ink); -webkit-backdrop
   background: var(--ink-card); border: 1px solid var(--line); border-radius: var(--r-lg);
   max-width: 720px; width: 100%; margin: auto; box-shadow: var(--e-4);
   animation: modal-in var(--t-base) var(--ease-enter);
+  position: relative; isolation: isolate;
+}
+/* The card's surface again, on a compositor layer of its own (PD-096). The card
+ * scrolls inside the overlay's scrolling layer, and on a fast scroll Chrome can
+ * show that layer before its tiles are rastered: the card is then missing for a
+ * frame and the catalogue shows through the translucent overlay where it should
+ * be. A plain rectangle of one colour on its own layer is drawn without raster,
+ * so the card's ground is always there even when its text is a frame late. No
+ * radius, or it stops being a plain rectangle: it stops short of the rounded
+ * corners, which the card's own background still paints. */
+.modal::after {
+  content: ""; position: absolute; inset: var(--r-lg) 0; z-index: -1;
+  background: var(--ink-card); pointer-events: none; will-change: transform;
 }
 /* With a painting behind it the card's own backdrop is no longer blanking
  * anything out, and at 0.80 it would leave the picture a rumour. Only the stat
@@ -1342,12 +1355,6 @@ body:has(.modal-overlay) .site-header { background: var(--ink); -webkit-backdrop
 body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
   background: var(--ink-overlay-art);
 }
-/* No painting behind the card: the catalogue under it is not worth seeing, and at
- * 0.80 the other fifth is its cards, which flicker through as the compositor
- * re-rasters them while the card scrolls (reported on Thunderstorm). The stat
- * block is the first layer, so it takes opaque ground; a popup or item card on
- * top of it keeps the translucent dim, which is what shows the card beneath. */
-body:not(.has-env-backdrop) .modal-overlay[data-overlay-kind="detail"] { background: var(--ink); }
 .modal:focus { outline: none; }
 .modal-sm { max-width: 400px; }
 @keyframes modal-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
