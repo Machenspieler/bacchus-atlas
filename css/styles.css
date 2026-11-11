@@ -1342,6 +1342,12 @@ body:has(.modal-overlay) .site-header { background: var(--ink); -webkit-backdrop
 body.has-env-backdrop .modal-overlay[data-overlay-kind="detail"] {
   background: var(--ink-overlay-art);
 }
+/* No painting behind the card: the catalogue under it is not worth seeing, and at
+ * 0.80 the other fifth is its cards, which flicker through as the compositor
+ * re-rasters them while the card scrolls (reported on Thunderstorm). The stat
+ * block is the first layer, so it takes opaque ground; a popup or item card on
+ * top of it keeps the translucent dim, which is what shows the card beneath. */
+body:not(.has-env-backdrop) .modal-overlay[data-overlay-kind="detail"] { background: var(--ink); }
 .modal:focus { outline: none; }
 .modal-sm { max-width: 400px; }
 @keyframes modal-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }

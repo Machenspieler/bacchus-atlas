@@ -1701,3 +1701,11 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Status:** Proposed (local review 2026-11-11, not committed; needs the owner's approval)
 - **Decision:** eight generated 16:9 masters (`img/cover-archetypes-source/storm-*.png`: downpour, lightning, hail, blizzard, miasma, lifedrain, radiance, arcane) are extra variants of `storms-and-calamity`, mapped one environment at a time (thunderstorm, torrential-rain, lightning, hail, blizzard-cold, snow-squall, plague-poison, life-draining, searing-light, magical-storm, unbound-arcanostorm, elemental-chaos). The original tornado picture and its environments are unchanged; violent-winds, flickerstorm, spatial-rifts, reality-time-altering and Rondolo stay unmapped. Every picture passed the Catalog, Prep and My Lists reviews of the real components; hail (Catalog, Prep) and downpour (Prep) are `strong`-fit only. Evidence: [docs/research/storm-art-review/REPORT.md](research/storm-art-review/REPORT.md).
 - **Where:** `js/list-cover-art.js`, `js/catalog-art.js`, `js/prep-art.js`, `scripts/generate-list-covers.js`, `img/list-covers/`, `img/catalog-art/`, `img/prep-art/`.
+
+
+## PD-096: The stat block's overlay is opaque ground when there is no painting
+
+- **Status:** Active (2026-11-11)
+- **Why:** at `--ink-overlay` (0.80) a fifth of the catalogue behind an open card showed through, and while the card scrolled the cards behind flickered into view (Thunderstorm, Chrome; not reproducible on demand).
+- **Decision:** `.modal-overlay[data-overlay-kind="detail"]` is solid `--ink` unless an environment painting is behind it (that case keeps `--ink-overlay-art` over the opaque `.env-backdrop`). Popups and item cards opened on top keep the translucent 0.80 dim, so the card beneath them stays visible.
+- **Where:** `css/styles.css` (`.modal-overlay`).
