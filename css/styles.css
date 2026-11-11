@@ -1325,6 +1325,13 @@ body[data-route="list"] #grid-wrap { padding-top: var(--s-1); }
  * dimmed and still), and a live backdrop blur beneath a scrolling layer is the
  * costliest thing to re-composite. Its own fill is already near-opaque. */
 body:has(.modal-overlay) .site-header { background: var(--ink); -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* The filter bar's glass is the same live blur one layer lower, and it was left
+ * on: on a Retina Chrome, scrolling or opening a section of an open card then
+ * dropped whole frames (PD-096) — every layer over the catalogue blank for a
+ * frame, the catalogue alone at full brightness. Solid while a card is open. */
+body:has(.modal-overlay) .catalog-bar-wrap::before {
+  background: var(--ink); -webkit-backdrop-filter: none; backdrop-filter: none;
+}
 /* The card grows to its content and scrolls inside the overlay; its header is sticky (see .modal-header).
  * `margin:auto`
  * centres a card shorter than the viewport and collapses to the top padding
