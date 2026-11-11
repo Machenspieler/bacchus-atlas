@@ -93,7 +93,7 @@ test('resolution is deterministic and safe on bad input', () => {
 
 test('every reviewed picture is a registry picture with a master, a note and a valid frame; none is dead', () => {
   const reachable = new Set(ENVS.map(e => resolve(e.id).imageId).filter(Boolean));
-  assert.equal(Object.keys(Prep.PICTURES).filter(k => k.startsWith('archetype:')).length, 28, 'all 28 archetypes are judged');
+  assert.equal(Object.keys(Prep.PICTURES).filter(k => k.startsWith('archetype:')).length, 28 + 8, 'all 28 archetypes and the eight storm pictures are judged');
   for (const [id, pic] of Object.entries(Prep.PICTURES)) {
     assert.ok(Art.IMAGES[id], `${id} is a js/list-cover-art.js picture`);
     assert.ok(['all', 'strong', 'rejected', 'deferred'].includes(pic.use), id);
@@ -153,10 +153,10 @@ test('adversary and item thumbnails, and every other page, are untouched', () =>
   assert.doesNotMatch(functionText(APP_JS, 'catalogArtHtml'), /PrepArt/);
   for (const f of ['js/catalog-art.js', 'js/list-cover-art.js', 'js/list-cover-utils.js']) assert.doesNotMatch(read(f), /PrepArt|prep-art/, f);
   assert.doesNotMatch(read('js/journey2-view.js'), /PrepArt|prep-art/);
-  // Catalog output pinned: 308 biome, 2 harbour override, 90 thematic, 3 painting, 5 crop
+  // Catalog output pinned: 299 biome, 2 harbour override, 99 thematic (90 + the nine storms), 3 painting, 5 crop
   const tally = {};
   for (const e of ENVS) { const k = Catalog.resolveCatalogArt(e).kind; tally[k] = (tally[k] || 0) + 1; }
-  assert.deepEqual(tally, { biome: 308, override: 2, thematic: 90, unique: 3, crop: 5 });
+  assert.deepEqual(tally, { biome: 299, override: 2, thematic: 99, unique: 3, crop: 5 });
 });
 
 test('index.html loads prep-art.js before app.js; the generated output is reproducible', async () => {

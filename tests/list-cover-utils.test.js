@@ -261,7 +261,7 @@ test('every tile carries its registry image, so rendering needs no lookup', () =
 /* ---- Phase 2: seven more archetype pictures, conservatively mapped ---- */
 
 const PHASE2 = {
-  'storms-and-calamity': { strong: ['tornado', 'megastorm'], acceptable: ['thunderstorm', 'magical-storm', 'unbound-arcanostorm', 'green-doom-skies'] },
+  'storms-and-calamity': { strong: ['tornado', 'megastorm'], acceptable: ['green-doom-skies'] }, // thunderstorm, magical-storm, unbound-arcanostorm now wear their own storm pictures
   'infernal-and-profane': { strong: ['circles-below-dis', 'fallen-citadel', 'prison-city-pyrrhexis'], acceptable: ['infernal-railyard', 'the-metal-throne-of-sin'] },
   'drowned-depths': { strong: ['sunken-citadel', 'deep-one-city'], acceptable: ['drowned-sanctum'] },
   'strongholds-and-sieges': { strong: ['castle-siege'], acceptable: ['defense-of-the-river-fort'] },
@@ -271,7 +271,7 @@ const PHASE2 = {
 };
 /* Same archetype in the taxonomy, wrong picture: each falls to its biome picture or nothing. */
 const REJECTED = {
-  'storms-and-calamity': ['volcanic-eruption', 'forest-wildfire', 'snow-squall', 'raging-fire', 'rain-ritual', 'stampede', 'flickerstorm', 'cloudy-sky', 'the-proving-pyre'],
+  'storms-and-calamity': ['volcanic-eruption', 'forest-wildfire', 'raging-fire', 'rain-ritual', 'stampede', 'flickerstorm', 'cloudy-sky', 'the-proving-pyre'],
   'infernal-and-profane': ['cult-ritual', 'darkened-temple', 'unhallowed-ground', 'moonlight-temple', 'divine-usurpation', 'demonic-abyss', 'the-profane-ascendancy'],
   'drowned-depths': ['shipwreck', 'realm-of-the-dead', 'undersea-trench', 'umbral-basin', 'fathomless-baths-deeps', 'fathomless-baths-surface'],
   'strongholds-and-sieges': ['fortress', 'bandit-hideout', 'bandit-attack', 'capital-ship-assault', 'occupied-town', 'pitched-battle', 'hold-the-line', 'sovereignty-outpost'],
@@ -280,9 +280,11 @@ const REJECTED = {
   'fey-and-enchanted': ['court-of-hounds', 'faestone-wode', 'dark-forest-revel', 'witchs-hut', 'hags-hut', 'gloaming-forest', 'wishmaker-glade'],
 };
 
-test('phase 2: seven new archetype pictures are registered with files, one variant each', () => {
+test('phase 2: seven new archetype pictures are registered with files, one variant each (storms: the original plus eight weather pictures)', () => {
   for (const arch of Object.keys(PHASE2)) {
-    assert.deepEqual(Art.ARCHETYPES[arch].variants, ['archetype:' + arch], arch);
+    const v = Art.ARCHETYPES[arch].variants;
+    assert.equal(v[0], 'archetype:' + arch, arch);
+    assert.equal(v.length, arch === 'storms-and-calamity' ? 9 : 1, arch);
     assert.equal(Art.IMAGES['archetype:' + arch].kind, 'archetype');
   }
 });
@@ -296,7 +298,7 @@ test('phase 2: the audited environments resolve to their picture with the audite
     }
   }
   const mapped = Object.keys(Art.ARCHETYPE_FIT).filter(id => Object.values(PHASE2).some(g => [...g.strong, ...g.acceptable].includes(id)));
-  assert.equal(mapped.length, 21);
+  assert.equal(mapped.length, 18); // 21 before the storm pictures took thunderstorm, magical-storm, unbound-arcanostorm
 });
 
 test('phase 2: rejected environments never get the new picture and still fall back honestly', () => {
@@ -314,7 +316,7 @@ test('phase 2: rejected environments never get the new picture and still fall ba
   }
   assert.equal(U.resolveEnvironmentArt(rec('forest-wildfire')).imageId, 'biome:forest');
   assert.equal(U.resolveEnvironmentArt(rec('volcanic-eruption')).imageId, 'biome:badlands');
-  assert.equal(U.resolveEnvironmentArt(rec('snow-squall')).imageId, 'biome:frozen');
+  assert.equal(U.resolveEnvironmentArt(rec('snow-squall')).imageId, 'archetype:storm-blizzard'); // was the frozen biome before the storm pictures
   assert.equal(U.resolveEnvironmentArt(rec('raging-fire')), null);
   assert.equal(U.resolveEnvironmentArt(rec('acid-burrows')).imageId, 'biome:underground');
 });
@@ -442,7 +444,7 @@ test('phase 3: a missing picture falls through to the next source instead of a b
 test('phase 2: a same-archetype list does not paint every member with the tornado', () => {
   const c = cover('tornado', 'forest-wildfire', 'volcanic-eruption');
   assert.deepEqual(imageIds(c), ['archetype:storms-and-calamity', 'biome:forest', 'biome:badlands']);
-  const two = cover('thunderstorm', 'tornado', 'megastorm');
+  const two = cover('green-doom-skies', 'tornado', 'megastorm');
   assert.deepEqual(imageIds(two), ['archetype:storms-and-calamity']);
   assert.equal(two.tiles[0].count, 3);
 });
@@ -506,7 +508,8 @@ test('phase 4: registration, exact grade per approved environment, and the pictu
   const inFit = Object.entries(Art.ARCHETYPE_FIT).filter(([, f]) => PHASE4[f[0]]).map(([id]) => id);
   assert.deepEqual(inFit.sort(), mapped.sort(), 'nothing is mapped to a Phase 4 picture without being reviewed here');
   assert.equal(new Set(mapped).size, mapped.length, 'an environment has one picture');
-  assert.equal(Object.keys(Art.ARCHETYPE_FIT).length, 66 - 2 + mapped.length, 'two moved (local-tavern, gnarled-glen), the rest are new');
+  assert.equal(Object.keys(Art.ARCHETYPE_FIT).length, 66 - 2 + mapped.length + 9, // + nine storms mapped to their own pictures
+     'two moved (local-tavern, gnarled-glen), the rest are new');
 });
 
 test('phase 4: poor matches never get the picture they were judged against and fall back to biome art or none', () => {

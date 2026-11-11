@@ -132,7 +132,7 @@ test('index.html loads the registry and the rules before js/app.js, and app.js h
 });
 
 test('phase 2: the rejected misleading matches stay out of ARCHETYPE_FIT, and the new masters are the approved files', () => {
-  for (const id of ['volcanic-eruption', 'forest-wildfire', 'snow-squall', 'raging-fire', 'demonic-abyss', 'cult-ritual', 'shipwreck',
+  for (const id of ['volcanic-eruption', 'forest-wildfire', 'raging-fire', 'demonic-abyss', 'cult-ritual', 'shipwreck',
     'realm-of-the-dead', 'fortress', 'bandit-hideout', 'acid-burrows', 'thrumming-hives', 'devouring-green', 'heart-of-the-mire',
     'court-of-hounds', 'dark-forest-revel', 'cauldera-valley', 'field-of-dreams']) {
     assert.equal(mappedBeforePhase4(id), undefined, id);
@@ -158,7 +158,7 @@ test('phase 3: the three masters are the approved V2 files (pinned by content, 1
     assert.ok(Art.IMAGES['archetype:' + stem], stem);
     assert.equal(isExcluded(master), true);
   }
-  assert.equal(Object.keys(SOURCES).filter(k => k.startsWith('archetype-')).length, 28);
+  assert.equal(Object.keys(SOURCES).filter(k => k.startsWith('archetype-') && !k.startsWith('archetype-storm-')).length, 28);
   for (const f of fs.readdirSync(path.join(ROOT, 'img/cover-archetypes-source'))) {
     assert.ok(!/(^|[-_])v1([-_.]|$)/i.test(f), `a V1 master is present: ${f}`);
     assert.equal(isExcluded('img/cover-archetypes-source/' + f), true, f);

@@ -67,6 +67,14 @@ const SOURCES = {
   'archetype-seafaring': 'img/cover-archetypes-source/seafaring.png',
   'archetype-sinister-woods': 'img/cover-archetypes-source/sinister-woods.png',
   'archetype-sky-realms': 'img/cover-archetypes-source/sky-realms.png',
+  'archetype-storm-downpour': 'img/cover-archetypes-source/storm-downpour.png',
+  'archetype-storm-lightning': 'img/cover-archetypes-source/storm-lightning.png',
+  'archetype-storm-hail': 'img/cover-archetypes-source/storm-hail.png',
+  'archetype-storm-blizzard': 'img/cover-archetypes-source/storm-blizzard.png',
+  'archetype-storm-miasma': 'img/cover-archetypes-source/storm-miasma.png',
+  'archetype-storm-lifedrain': 'img/cover-archetypes-source/storm-lifedrain.png',
+  'archetype-storm-radiance': 'img/cover-archetypes-source/storm-radiance.png',
+  'archetype-storm-arcane': 'img/cover-archetypes-source/storm-arcane.png',
 };
 
 async function main() {

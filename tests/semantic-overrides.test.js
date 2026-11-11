@@ -108,7 +108,7 @@ test('6. priority: a unique painting and an explicit override always beat a crop
   /* and a crop beats the archetype fit it was reviewed against, which stays untouched */
   assert.deepEqual(Art.ARCHETYPE_FIT['bustling-marketplace'], ['streets-and-towns', 'strong']);
   assert.deepEqual(Art.ARCHETYPE_FIT['resting-dagger-inn'], ['streets-and-towns', 'strong']);
-  assert.equal(Object.keys(Art.ARCHETYPE_FIT).length, 117);
+  assert.equal(Object.keys(Art.ARCHETYPE_FIT).length, 126);
   assert.deepEqual(Art.ENV_IMAGE_OVERRIDES, { 'port-city': 'biome:settlement', 'raiding-party': 'biome:settlement' });
   assert.deepEqual(Art.UNIQUE_ENV_IDS, ['cauldera-valley', 'field-of-dreams', 'ouroborean-pass']);
 });

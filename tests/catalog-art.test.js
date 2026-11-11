@@ -155,12 +155,12 @@ test('12. crop windows are deterministic, inside the master, and 1:3', () => {
 });
 
 test('13. My Lists resolution is byte-for-byte what it was: registry untouched, resolver independent of the Catalog', () => {
-  assert.equal(Object.keys(Art.ARCHETYPE_FIT).length, 117);
-  assert.equal(Object.keys(Art.IMAGES).length, 31 + 12 + 4); // + the four My Lists semantic crops (PD-090)
+  assert.equal(Object.keys(Art.ARCHETYPE_FIT).length, 126); // 117 + the nine storms with their own picture
+  assert.equal(Object.keys(Art.IMAGES).length, 31 + 8 + 12 + 4); // + the eight storm pictures // + the four My Lists semantic crops (PD-090)
   assert.doesNotMatch(read('js/list-cover-art.js') + read('js/list-cover-utils.js'), /CatalogArt|catalog-art/);
   const counts = {};
   for (const e of ENVS) { const r = CoverUtils.resolveEnvironmentArt({ id: e.id, artBiome: e.biomes[0] }); const k = r ? r.kind : 'none'; counts[k] = (counts[k] || 0) + 1; }
-  assert.equal(counts.unique, 3); assert.equal(counts.archetype, 115); assert.equal(counts.crop, 5); // 117 before PD-090: two moved to a crop, three gained one
+  assert.equal(counts.unique, 3); assert.equal(counts.archetype, 124); assert.equal(counts.crop, 5); // 117 before PD-090: two moved to a crop, three gained one
 });
 
 test('14-15. Session Prep, the central column and Journey draw what they drew: no Catalog code reaches them', () => {
@@ -208,6 +208,6 @@ test('coverage on the real catalogue (PD-089 report)', () => {
   for (const e of ENVS) { const r = resolve(e.id); by[r.kind] = (by[r.kind] || 0) + 1; }
   assert.equal(ENVS.length, 408);
   assert.deepEqual(by, { biome: by.biome, unique: 3, override: 2, crop: 5, thematic: by.thematic });
-  assert.equal(by.thematic, 90); // 92 before PD-090: bustling-marketplace and resting-dagger-inn now wear a crop
-  assert.equal(by.biome, 408 - 90 - 5 - 5);
+  assert.equal(by.thematic, 99); // 90 + the nine storms that gained a picture of their own
+  assert.equal(by.biome, 408 - 99 - 5 - 5);
 });

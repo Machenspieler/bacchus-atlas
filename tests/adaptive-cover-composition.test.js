@@ -42,7 +42,7 @@ test('the reviewed set is the lab verdict: nine fail at a third, ten are busy, c
     'archetype:archives-and-libraries', 'archetype:cursed-and-blighted-lands', 'archetype:dungeon-delves',
     'archetype:feasts-and-revelry', 'archetype:fey-and-enchanted', 'archetype:intrigue-and-underworld',
     'archetype:monster-lairs', 'archetype:streets-and-towns', 'archetype:taverns-and-inns']);
-  assert.equal(Object.values(R).filter(r => r.busy).length, 10);
+  assert.equal(Object.values(R).filter(r => r.busy).length, 11); // + storm-hail (the storm pictures, docs/research/storm-art-review)
   /* a calm crop of a busy parent is judged on its own picture */
   assert.equal(R['archetype:streets-and-towns'].busy, true);
   assert.equal(R['crop:market-stalls'].busy, false);
