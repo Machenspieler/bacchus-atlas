@@ -15,6 +15,7 @@ const LS_KEYS = {
   battlePointsPcs: 'dhcodex_battle_points_pcs',
   soundboard: 'dhcodex_soundboard',
   prepItemView: 'dhcodex_prep_item_view',
+  darkheart: 'dhcodex_darkheart',
 };
 
 const BIOMES = ['underground', 'aquatic', 'wetland', 'grassland', 'tropical', 'forest', 'drylands', 'rolling', 'mountain', 'frozen', 'badlands', 'settlement', 'universal'];
@@ -152,6 +153,14 @@ const state = {
     validate: SafeStorage.validators.soundboard,
   }),
   storageNoticeDismissed: SafeStorage.readRawFlag(lsStorage, LS_KEYS.storageNoticeDismissed) === '1',
+  /* The Darkheart expedition (PD-099): party, Fear, Forest Difficulty, the roll being
+   * made and the undo stack. The scene manifest is fetched only on the first visit to
+   * #/darkheart and cached here as a promise (darkheartData()). */
+  darkheart: SafeStorage.loadStoredJson(lsStorage, LS_KEYS.darkheart, {
+    fallback: () => DarkheartExpedition.defaults(),
+    validate: SafeStorage.validators.darkheart,
+  }),
+  darkheartLoad: null,
   filters: { search: '', tiers: new Set(), types: new Set(), sources: new Set(), biomes: new Set(), regionOnly: false, stormOnly: false },
   // Whether the phone-width filter disclosure is open. Purely presentational,
   // so it lives here rather than in localStorage and survives a re-render only.
@@ -765,6 +774,7 @@ const ICON_MORE = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circ
 const ICON_CHECK_PLAIN = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5.5 12.5 4.3 4.3 8.7-9.3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_TRASH = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 6.5h15M9.8 6.5V4.9a1 1 0 0 1 1-1h2.4a1 1 0 0 1 1 1v1.6M6.8 6.5l.8 12.3a1 1 0 0 0 1 .9h6.8a1 1 0 0 0 1-.9l.8-12.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.4 10.2v6M13.6 10.2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
 const ICON_COMPASS =`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="m15 9-2.1 4.9L8 16l2.1-4.9L15 9z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+const ICON_FOREST = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.8 7 9.4h3L6 15h4.2L8 18.6h8L13.8 15H18l-4-5.6h3L12 2.8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 18.6v2.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`;
 const ICON_HEX = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.6 20.1 7v10L12 21.4 3.9 17V7L12 2.6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
 const ICON_CHECKLIST = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="1.6" stroke="currentColor" stroke-width="1.6"/><path d="M9 4V3.3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1V4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="m7.8 9.6 1.1 1.1 1.7-1.9M7.8 14.3l1.1 1.1 1.7-1.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 9.4h4.2M13 14.1h4.2M8 17.9h9.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
 const ICON_ADVERSARY_FALLBACK = `<img src="img/adv_fallback.png" alt="" loading="lazy" decoding="async" draggable="false">`;
@@ -1368,6 +1378,7 @@ function render() {
   // The Journey map editor owns listeners, observers and a large raster;
   // this is the one place it is released when any other route renders.
   if (state.route.name !== 'journey' && state.route.name !== 'playermap') Journey2View.unmount();
+  if (state.route.name !== 'darkheart') DarkheartView.unmount();
   renderHeader();
   // renderPrepPage() owns creating/destroying the item strip and the
   // top-chrome controller for its own re-renders; this is the one place
@@ -1393,6 +1404,8 @@ function render() {
     renderPlayerMapPage();
   } else if (state.route.name === 'prep') {
     renderPrepPage();
+  } else if (state.route.name === 'darkheart') {
+    renderDarkheartPage();
   } else {
     renderToolbar();
     renderGrid();
@@ -1476,6 +1489,7 @@ function routeTitle() {
   if (state.route.name === 'journey') return `${t('journey_title')} — ${t('app_title')}`;
   if (state.route.name === 'playermap') return `${t('journey_player_title')} — ${t('app_title')}`;
   if (state.route.name === 'prep') return `${t('prep_title')} — ${t('app_title')}`;
+  if (state.route.name === 'darkheart') return `${t('dh_title')} — ${t('app_title')}`;
   if (state.route.name === 'list') {
     const list = state.lists.find(l => l.id === state.route.id);
     if (list) return `${list.name} — ${t('app_title')}`;
@@ -1483,13 +1497,14 @@ function routeTitle() {
   return `${t('lists_title')} — ${t('app_title')}`;
 }
 
-/* The four page tabs are bookmark ribbons (PD-047). Their colours are the --rb-*
+/* The five page tabs are bookmark ribbons (PD-047, PD-099). Their colours are the --rb-*
  * tokens in css/styles.css (identity of a page, never a state); this is markup only. */
 const RIBBONS = [
   { id: 'catalog', icon: () => ICON_GRID, label: 'nav_catalog', hash: '' },
   { id: 'lists', icon: () => ICON_BOOKMARK, label: 'nav_lists', hash: '#/lists' },
   { id: 'prep', icon: () => ICON_CHECKLIST, label: 'nav_prep', hash: '#/prep' },
   { id: 'journey', icon: () => ICON_COMPASS, label: 'nav_journey', hash: '#/journey' },
+  { id: 'darkheart', icon: () => ICON_FOREST, label: 'nav_darkheart', hash: '#/darkheart' },
 ];
 
 // Fabric ribbons are the default skin (css/styles.css "Fabric ribbon skin"); ?ribbonSkin=css selects the original CSS ribbons.
@@ -1518,6 +1533,7 @@ function renderHeader() {
   const current = state.route.name === 'lists' || state.route.name === 'list' ? 'lists'
     : state.route.name === 'journey' ? 'journey'
     : state.route.name === 'prep' ? 'prep'
+    : state.route.name === 'darkheart' ? 'darkheart'
     : 'catalog';
   // The shared player map (PD-052) is a read-only page for people who only have a link: the brand and the language switch stay, the site's own
   // navigation and the soundboard do not.
@@ -3116,6 +3132,64 @@ function renderJourneyPage() {
   Journey2View.mount(document.getElementById('grid-wrap'), {
     t, lang: state.lang, generator: journey2Generator, toast: showToast, storage: lsStorage, motionStorage: lsStorage,
     environmentsForBiome: journey2EnvironmentsForBiome,
+  });
+}
+
+/* ---------------- Darkheart Forest (#/darkheart, PD-099) ---------------- */
+
+/** The Darkheart scene data, fetched once on the first visit (never at startup): the compatibility
+ * manifest and the adversary affinity file through the versioned-data URLs, then the SAME analysis
+ * the build runs (DarkheartScenes.analyzeManifest), so a stale, suspended or invalid mapping is
+ * withheld here exactly as it is in CI. Cached as a promise; a failure is cleared so Retry works. */
+function darkheartData() {
+  if (state.darkheartLoad) return state.darkheartLoad;
+  state.darkheartLoad = Promise.all([
+    getJSON(versionedDataUrl('data/darkheart-scenes.json')),
+    getJSON(versionedDataUrl('data/darkheart-affinity.json')),
+  ]).then(([manifest, affinity]) => {
+    const analysis = DarkheartScenes.analyzeManifest(manifest, { environments: allEnvs(), affinityThemes: Object.keys(affinity.themes || {}) });
+    const selectable = analysis.scenes.filter(x => x.selectable).map(x => x.scene);
+    const adversaries = state.prepCatalog.adversaries || [];
+    return {
+      selectable,
+      withheld: analysis.scenes.length - selectable.length,
+      ctx: DarkheartEncounter.createContext(adversaries, allEnvs(), affinity),
+    };
+  }).catch(err => { state.darkheartLoad = null; throw err; });
+  return state.darkheartLoad;
+}
+
+/** The Darkheart page's way to show an environment's own text (PD-100): the very same renderer the card uses
+ * (dice buttons, countdowns, bold Fear costs), with damage read at `tier` through retierFor()/retierDamage() and every
+ * check DC replaced by the current Forest Difficulty. Nothing is written back to the environment, and a card's own
+ * tier-formula text ("Td6+T") is spelt out first, exactly as renderRichBlocks() does. */
+function renderEnvTextForDarkheart(container, env, raw, tier, fd) {
+  const multiTier = Array.isArray(env.tiers) && env.tiers.length > 1;
+  const formula = multiTier && EnvTierUtils.usesTierFormula(raw);
+  const text = formula ? EnvTierUtils.substituteTier(raw, tier) : raw;
+  const base = (!formula && retierFor(env, tier)) || { from: tier, to: tier, atlas: false };
+  renderFeatureBody(container, text, Object.assign({}, base, { fd }));
+}
+
+function renderDarkheartPage() {
+  document.getElementById('toolbar').innerHTML = '';
+  document.getElementById('result-count').innerHTML = '';
+  DarkheartView.mount(document.getElementById('grid-wrap'), {
+    t,
+    lang: () => state.lang,
+    get: () => state.darkheart,
+    set: next => { state.darkheart = next; persist(LS_KEYS.darkheart, next); },
+    toast: showToast,
+    environments: () => allEnvs(),
+    renderEnvText: renderEnvTextForDarkheart,
+    rollDie,
+    envHref: id => envHash(id, { name: 'darkheart' }),
+    adversaries: () => (state.prepCatalog.adversaries || []),
+    // The Prep convention: one entry per distinct adversary, q:1. Quantities stay on the page until
+    // FreshCutGrass's handling of counts and Minion groups is verified (PD-099).
+    fcgUrl: (name, names) => FreshCutGrassUtils.buildFreshCutGrassEncounterUrl(name, names),
+    loadData: darkheartData,
+    retryData: () => { state.darkheartLoad = null; return Promise.resolve(); },
   });
 }
 
@@ -7558,7 +7632,7 @@ function findConditionMatches(text) {
  * a roll inside bold text still gets its button. */
 const BOLD_RE = /\*\*([\s\S]+?)\*\*/g;
 
-/** `retier` is `{ from, to, atlas }` (see retierFor) while the card is being read
+/** `retier` is `{ from, to, atlas, fd? }` (see retierFor; `fd` is the Darkheart Forest Difficulty that replaces every check DC) while the card is being read
  * at another tier, or null at the environment's own tier. Only damage rolls and check DCs follow
  * it; countdowns and every other roll in the text are left exactly as written. */
 function renderRichText(container, text, retier) {
@@ -7604,7 +7678,8 @@ function renderSpans(container, text, retier) {
     } else if (match.type === 'item') {
       container.appendChild(makeItemButton(match.id, match.label));
     } else if (match.type === 'check-dc') {
-      const scaled = retier ? retierValue(match.value, retier.from, retier.to, retier.atlas) : match.value;
+      // The Darkheart page substitutes the current Forest Difficulty for every printed check DC (PD-100).
+      const scaled = retier && retier.fd != null ? retier.fd : retier ? retierValue(match.value, retier.from, retier.to, retier.atlas) : match.value;
       container.appendChild(document.createTextNode(String(scaled)));
     } else if (match.values) {
       /* "Challenge Countdown (6, 5)": one button per size, back to back. The first

@@ -69,13 +69,22 @@ Import or correct the Environment Stat Block described by `$ARGUMENTS` in
 12. **Run** `node scripts/validate-data.js` and `node --test tests/*.test.js`,
     and check `PotentialAdversaryUtils.envAdversaryNames()` resolves every
     potential adversary to a full bestiary name.
+12a. **Check the Darkheart review queue** (read-only):
+    `node scripts/darkheart-review-report.js --env <id>`. A new environment
+    reports "UNLISTED — pending review" and needs nothing else. A corrected
+    one must report "current" or list which scenes in
+    `data/darkheart-scenes.json` went stale (a changed English word, number
+    or feature type, a renamed/added/removed feature); `validate-data` will
+    fail on those. Don't re-pin them yourself: list them in the report so the
+    owner re-reads the source and re-pins or suspends them
+    ([docs/data-contracts/darkheart-scenes.md](../../../docs/data-contracts/darkheart-scenes.md)).
 13. **Verify in the browser** with the claude-in-chrome tools: open
     `#/env/<id>`, check EN and RU, the features, expanded story seeds, the
     biome/source footer, the FreshCutGrass links and the console. If the
     `daggerheart-codex` preview server doesn't come up (its `npx serve`
     has failed to listen), serve the repo with a tiny Node static server
     on `127.0.0.1` instead, and stop it afterwards.
-14. **Report**: files changed; the environment `id`; validation results;
+14. **Report**: files changed; the environment `id`; validation results; the Darkheart review-queue result;
     the chosen biome and why; every author error fixed; which optional
     fields are intentionally absent and why; any source ambiguity left
     unresolved (an odd phrasing, an uncertain translation choice) rather

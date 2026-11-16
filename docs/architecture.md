@@ -793,6 +793,39 @@ rule, catalogue matching, real-data smoke) and
 `tests/prep-recommendations.test.js` (index, provenance aggregation, group
 ordering, bulk add).
 
+## Darkheart compatibility manifest (PD-097)
+
+`data/darkheart-scenes.json` is a sidecar over `data/environments.json`; the
+schema, validation rules and maintenance process are in
+[docs/data-contracts/darkheart-scenes.md](data-contracts/darkheart-scenes.md).
+`js/darkheart-scenes.js` is pure and does no I/O: one
+`analyzeManifest(manifest, { environments, resolveArt?, biomeAssetExists? })`
+pass is shared by `scripts/validate-data.js` (diagnostics), the maintenance
+report `scripts/darkheart-review-report.js` and `getSelectableScenes()`, the
+only sanctioned read path for the future generator. Nothing loads the file
+yet: `index.html` and `js/app.js` do not reference it (a test pins that), so it
+adds nothing to the initial payload; it is copied to `dist/data/` as ordinary
+data and, being under `data/`, is part of the data content hash. The hash is a
+small pure-JS function (no `crypto`), so the module can be wrapped for the
+browser later without re-pinning anything. Artwork decisions are checked
+against the live tables (`CatalogArt.resolveCatalogArt`, `img/biomes/`).
+
+### Darkheart Forest page (PD-098, PD-099)
+
+`#/darkheart` is the fifth route and bookmark. `js/app.js` owns three small things: `state.darkheart`
+(loaded through `SafeStorage.validators.darkheart`, written by `persist(LS_KEYS.darkheart, …)`),
+`darkheartData()` (the lazy, cached fetch of `data/darkheart-scenes.json` and
+`data/darkheart-affinity.json`, followed by the same `DarkheartScenes.analyzeManifest` the build runs,
+so only selectable scenes reach the page and a stale mapping is withheld), and `renderDarkheartPage()`
+(mounts `DarkheartView` into `#grid-wrap`; `render()` unmounts it on any other route). Everything else is
+pure and unit-tested: `DarkheartExpedition` (state, roll preview, `confirmArrival`, FD, Fear, rest,
+undo), `DarkheartComposer` (eligibility, no-repeat dealing, the encounter boundary),
+`DarkheartEncounter` (adversaries and Battle Points on top of `BattlePoints`,
+`PotentialAdversaryUtils` and `FreshCutGrassUtils`), `DarkheartNpc`. The view re-renders by region
+(status, party, roll, scene, NPC, encounter, history), so typing a die never rebuilds its own field.
+An environment card opens over the page as on every route (`#/darkheart/env/<id>`), the page staying
+mounted underneath. Contract: [docs/data-contracts/scene-composer.md](data-contracts/scene-composer.md).
+
 ## Main catalog progressive loading
 
 The main catalog (`state.route.name === 'catalog'` only — never the

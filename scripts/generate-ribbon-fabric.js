@@ -76,6 +76,15 @@ const FABRICS = {
     NOTCH_SRC: 133, HEM_SRC: 34, HEM_TOP_SRC: 1556,
     purgeRadius: 6,
   },
+  // Ember master (PD-099, the Darkheart ribbon): the gold master's own cloth, folds and stitching, turned toward the
+  // printed Darkheart book's ember orange by a hue/saturation/brightness shift applied before anything else. Same
+  // measurements as the gold master, so the cut, the notch and the hem are identical. No new photograph.
+  darkheart: {
+    src: 'G-Banner-long.png',
+    BOX: { left: 109, top: 90, width: 618, height: 1697 },
+    NOTCH_SRC: 127, HEM_SRC: 36, HEM_TOP_SRC: 1500,
+    tint: { hue: -32, saturation: 1.25, brightness: 0.78 },
+  },
 };
 const WEBP = { lossless: true, effort: 6 };
 const smooth = (t) => { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2 * t); };
@@ -131,7 +140,9 @@ const save = (raw, w, h, file) => sharp(raw, { raw: { width: w, height: h, chann
 async function build(id, cfg) {
   const { BOX, NOTCH_SRC, HEM_SRC, HEM_TOP_SRC } = cfg;
   const SRC = path.join(ROOT, 'img/ribbon-fabric-source', cfg.src);
-  const { data: crop } = await sharp(SRC).extract(BOX).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  let source = sharp(SRC).extract(BOX);
+  if (cfg.tint) source = source.modulate(cfg.tint);
+  const { data: crop } = await source.ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const { width: W, height: H } = BOX;
 
   // Defringe. The cut-out's soft edge (and a faint halo outside it) carries red/yellow/green matte colour, not the

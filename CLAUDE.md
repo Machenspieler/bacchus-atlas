@@ -182,6 +182,18 @@ The Catalog card's vertical strip wears a thematic picture only where both gates
 
 Six environments wear a hand-approved crop of an archetype master in the Catalog and/or My Lists (`SEMANTIC_OVERRIDES` in `js/list-cover-art.js`, `crop:*` pictures, `scripts/generate-semantic-crops.js`). It is a small explicit table, never a framework: no crop editor, region registry, scoring or runtime discovery. A crop beats the archetype fit and the biome but never an environment's own painting or `ENV_IMAGE_OVERRIDES`; My Lists dedupes by parent artwork; Session Prep and Journey don't read it. Decision record: [docs/product-decisions.md](docs/product-decisions.md) PD-090, detail: [docs/architecture.md](docs/architecture.md) "Curated semantic artwork overrides".
 
+### Darkheart compatibility manifest
+
+`data/darkheart-scenes.json` is a curated sidecar that says which environments (or which features of them) may serve one of the twelve Darkheart Forest traversal outcomes. It never changes `environments.json`: environments are referenced by id, features by English name + type + a content fingerprint (no feature ids), source rules are never rewritten (a change is only a reviewed `adaptation`), and a scene whose source changed is withheld and fails `validate-data` until a person re-pins or suspends it. Every new or edited environment goes through the review queue (`node scripts/darkheart-review-report.js --env <id>`). Since PD-099 the Darkheart page reads it, lazily: `index.html` never references it, and the only fetch is `darkheartData()` in `js/app.js`, run on the first visit to `#/darkheart` (never at startup), through the same `analyzeManifest` the build runs. Compatibility is flexible, not exact (PD-098): ADAPTED is a first-class match kind, optional bilingual `guidance` tells the Master what they may adjust, no numeric "deadly"/"neutral" is required, and every strict check stays. Decision records: [docs/product-decisions.md](docs/product-decisions.md) PD-097/PD-098, contract: [docs/data-contracts/darkheart-scenes.md](docs/data-contracts/darkheart-scenes.md).
+
+### Darkheart Forest page (`#/darkheart`, the fifth bookmark)
+
+The first playable Darkheart loop (PD-099): party Tier and heroes, GM Fear, Forest Difficulty (15, +1 per new hex, never below 15, 30 = trapped), the Wayfinder roll (Hope d12, Fear d12, modifier), the twelve outcomes, a Scene Composer (scene, NPC, encounter) and undo. The view `js/darkheart-view.js` is DOM only; every rule is a pure module: `js/darkheart-expedition.js` (roll, FD, Fear, undo, rest — the roll is a pure preview and `confirmArrival` is the one commit, consuming the dice so it can never apply twice), `js/darkheart-composer.js` (which scene may be dealt, the one encounter boundary), `js/darkheart-encounter.js`, `js/darkheart-npc.js`. State is one key, `dhcodex_darkheart`, through `SafeStorage.validators.darkheart`. Compatibility is enforced at the composition boundary: a scene is only dealt for an outcome its manifest entry maps, and `encounterFor()` refuses any other. **No tier filters a scene** (PD-100): environment tier/difficulty and Party Tier never restrict eligibility; the page reads the environment's text at the Party Tier (GM override optional) through the card's own `retierFor`/`retierDamage` and shows the current Forest Difficulty in place of every check DC (`renderEnvTextForDarkheart`), never editing the catalogue; adversaries and Battle Points follow the Party Tier. Rests follow PD-101: Whisper in the Dark is the rest's extra move and the only source of an FD reduction, the SRD's Fear from rests and three-short-rest limit are switchable house rules, GM Fear carries across expeditions, and Return to Bastion / new expedition / new campaign are three distinct, undoable resets. The Darkheart rule text (`OUTCOME_RULES`) is shown apart from the environment's own text, which the page reads by reference and never copies. Decision record: PD-099, contract: [docs/data-contracts/scene-composer.md](docs/data-contracts/scene-composer.md).
+
+### Darkheart encounter engine
+
+`js/darkheart-encounter.js` is the pure, advisory encounter assembler (the Scene Composer's four components: Outcome, Environment, NPC, Encounter). Every cost, budget and modifier comes from `BattlePoints.calculate()`, environment adversaries from the one Potential Adversaries parser, hand-off through the one FreshCutGrass encoder — never restate a cost, never invent or rescale a stat block, never read or write campaign state (GM Fear, Forest Difficulty, countdowns, expedition). Who is a candidate is decided by the scene (`encounter.themes` in the manifest) and the small explicit `data/darkheart-affinity.json`, never by name matching; an adversary whose source material a fragment leaves out is not assumed to fit. FreshCutGrass ignores a quantity (`q`) in a shared link (verified), so exports carry one entry per adversary, exactly like Prep. Decision record: PD-098/PD-099, contract: [docs/data-contracts/scene-composer.md](docs/data-contracts/scene-composer.md).
+
 ### Prep thumbnails
 
 Session Prep's environment thumbnails (picker row and selected tile) wear their own painting, an approved thematic archetype picture, or the biome tile — resolved by `PrepArt.resolvePrepArt()` (`js/prep-art.js`) through one function, `prepEnvThumbAttrs()`. A picture must be mapped in `ARCHETYPE_FIT` AND reviewed at 48×48 (`all` / `strong` / `rejected` / `deferred`; no entry = never). Dedicated square cuts in `img/prep-art/` from the original masters; the Catalog/My Lists override tables are not read here. Decision record: [docs/product-decisions.md](docs/product-decisions.md) PD-091, detail: [docs/architecture.md](docs/architecture.md) "Session Prep thumbnails".
@@ -278,7 +290,8 @@ Decisions:
 
 ```bash
 node --test tests/*.test.js               # unit tests for every pure module + validator
-node scripts/validate-data.js             # semantic validation of data/
+node scripts/validate-data.js             # semantic validation of data/ (incl. the Darkheart manifest)
+node scripts/darkheart-review-report.js   # Darkheart review queue: pending/stale environments and scenes (read-only)
 node scripts/build.js                     # copy runtime files into dist/
 node scripts/version-assets.js            # stamp content-hash versions into dist/index.html
 node scripts/check-asset-versioning.js    # verify the versions above are correct
@@ -297,7 +310,7 @@ versioning wiring itself.
 | --- | --- |
 | A UI-facing change | [design.md](design.md), [.claude/rules/ui.md](.claude/rules/ui.md), [docs/manual-qa.md](docs/manual-qa.md), or run `/implement-ui-change` |
 | Environment/adversary/region/item data | [.claude/rules/data.md](.claude/rules/data.md), [docs/data-contracts/environments.md](docs/data-contracts/environments.md) |
-| Importing/correcting an environment | run `/add-environment` |
+| Importing/correcting an environment | run `/add-environment` (then check the Darkheart review queue, [docs/data-contracts/darkheart-scenes.md](docs/data-contracts/darkheart-scenes.md)) |
 | Proofreading environments (EN + RU) | run `/audit-environments` — obvious defects are fixed, not just listed |
 | Storage, routing, or Lists/Prep persistence | [.claude/rules/browser-state.md](.claude/rules/browser-state.md) |
 | Build, versioning, or deployment | [.claude/rules/build-and-deploy.md](.claude/rules/build-and-deploy.md) |

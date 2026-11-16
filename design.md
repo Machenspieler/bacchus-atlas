@@ -505,7 +505,7 @@ below a divider. On phones it becomes two rows (selector + New/actions, then
 notes) with 52px controls. The bar is a popover over the workspace (closed by default).
 
 ## Header and bookmark ribbons (PD-047)
-One compact header, `--hdr-h` (45px) tall, on every route — brand (28px logo + title) on the left, the session pill in the middle on Prep only, four bookmark ribbons and the utilities (sound, RU/EN) on the right. The ribbons hang from the header's top edge; the label is pinned to the ribbon's bottom, so it slides down as the ribbon lengthens.
+One compact header, `--hdr-h` (45px) tall, on every route — brand (28px logo + title) on the left, the session pill in the middle on Prep only, five bookmark ribbons and the utilities (sound, RU/EN) on the right. The ribbons hang from the header's top edge; the label is pinned to the ribbon's bottom, so it slides down as the ribbon lengthens.
 
 | State | Tail below the header |
 | --- | --- |
@@ -514,7 +514,7 @@ One compact header, `--hdr-h` (45px) tall, on every route — brand (28px logo +
 | Current page | `--rb-t2` (28px) |
 | Current page, hovered | `--rb-t3` (42px) |
 
-Colours are tokens: `--rb-catalog` gold `#c9952f`, `--rb-lists` purple `#6c3698` (Core Set), `--rb-prep` green `#2e8062`, `--rb-journey` red `#b70c28` (Hope & Fear), sampled from product photos of the real ribbons. They identify a page and never a state, an intentional exception to "gold is affirmative" and "red is Fear": don't reuse them elsewhere. The current page is marked by length, brightness and `aria-current="page"`, never by colour alone. On a phone (<=640px) the title comes off, the ribbons narrow to 40px with icons only and shorter tails. Motion (length spring, drop-and-swing on activation, hover sway) is off under `prefers-reduced-motion`. On the catalogue and on a list the filter row is sticky under the header and 10% smaller (`zoom: 0.9`); the footer is pinned to the bottom of short pages and holds the "Daggerheart™ Compatible" line (Prep and Journey have no footer, by decision).
+Colours are tokens: `--rb-catalog` gold `#c9952f`, `--rb-lists` purple `#6c3698` (Core Set), `--rb-prep` green `#2e8062`, `--rb-journey` red `#b70c28` (Hope & Fear), sampled from product photos of the real ribbons, and `--rb-darkheart` ember orange `#b8501f` (PD-099, the Darkheart book's own accent; its cloth is the gold master recoloured by `scripts/generate-ribbon-fabric.js`). They identify a page and never a state, an intentional exception to "gold is affirmative" and "red is Fear": don't reuse them elsewhere. The current page is marked by length, brightness and `aria-current="page"`, never by colour alone. With five ribbons the brand title steps aside at <=1040px (it needs ~940px). On a phone (<=640px) the title comes off, the ribbons narrow to 40px with icons only and shorter tails. Motion (length spring, drop-and-swing on activation, hover sway) is off under `prefers-reduced-motion`. On the catalogue and on a list the filter row is sticky under the header and 10% smaller (`zoom: 0.9`); the footer is pinned to the bottom of short pages and holds the "Daggerheart™ Compatible" line (Prep and Journey have no footer, by decision).
 
 **Photographic fabric skin (PD-054).** The default ribbon look is photographic: layered `img/ui/ribbon-fabric/*.webp` cloth layers (generated offline from a photo master by `scripts/generate-ribbon-fabric.js`); `?ribbonSkin=css` selects the original plain-CSS ribbons. The skin changes only the ribbon's material, not its tokens, lengths, motion or `aria-current` rule.
 

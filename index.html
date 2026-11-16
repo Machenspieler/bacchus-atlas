@@ -46,12 +46,15 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Forum&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@500;700&family=Architects+Daughter&display=swap">
 <link rel="stylesheet" href="css/styles.css" data-cache-version="ui">
 <link rel="stylesheet" href="css/journey2.css" data-cache-version="ui">
+<link rel="stylesheet" href="css/darkheart.css" data-cache-version="ui">
 <!-- Picks which static loading skeleton shows before js/app.js runs: the
      route is only known from the hash, so this runs synchronously, pre-paint.
      It only sets a data attribute; routing itself stays in js/route-utils.js. -->
 <script>if(/^#\/journey2?(?:[\/?]|$)/.test(location.hash))document.documentElement.dataset.bootRoute='journey2';</script>
 <!-- My Lists has no catalogue toolbar or card grid, so on #/lists the shell shows neither skeleton (css/styles.css): the page then appears whole instead of replacing a taller, wrapped skeleton — see docs/research/my-lists-cls-investigation.md. -->
 <script>if(/^#\/lists(?:\/env\/|$)/.test(location.hash))document.documentElement.dataset.bootRoute='lists';</script>
+<!-- The Darkheart page (#/darkheart) has no catalogue toolbar or card grid either, so it boots on the same bare shell as My Lists. -->
+<script>if(/^#\/darkheart(?:\/env\/|$)/.test(location.hash))document.documentElement.dataset.bootRoute='lists';</script>
 <!-- The shared player map (#/map/<link>, PD-052) is the same full-bleed map screen, so it boots on the same map skeleton, never the catalogue's cards. -->
 <script>if(/^#\/map\//.test(location.hash))document.documentElement.dataset.bootRoute='journey2';</script>
 </head>
@@ -165,6 +168,12 @@
   <script src="js/journey2-ruin-fx.js" data-cache-version="ui"></script>
   <script src="js/journey2-shadowblight-fx.js" data-cache-version="ui"></script>
   <script src="js/journey2-view.js" data-cache-version="ui"></script>
+  <script src="js/darkheart-scenes.js" data-cache-version="ui"></script>
+  <script src="js/darkheart-expedition.js" data-cache-version="ui"></script>
+  <script src="js/darkheart-encounter.js" data-cache-version="ui"></script>
+  <script src="js/darkheart-composer.js" data-cache-version="ui"></script>
+  <script src="js/darkheart-npc.js" data-cache-version="ui"></script>
+  <script src="js/darkheart-view.js" data-cache-version="ui"></script>
   <script src="js/ribbon-flow.js" data-cache-version="ui"></script>
   <script src="js/app.js" data-cache-version="ui"></script>
 </body>
