@@ -153,10 +153,10 @@ test('adversary and item thumbnails, and every other page, are untouched', () =>
   assert.doesNotMatch(functionText(APP_JS, 'catalogArtHtml'), /PrepArt/);
   for (const f of ['js/catalog-art.js', 'js/list-cover-art.js', 'js/list-cover-utils.js']) assert.doesNotMatch(read(f), /PrepArt|prep-art/, f);
   assert.doesNotMatch(read('js/journey2-view.js'), /PrepArt|prep-art/);
-  // Catalog output pinned: 299 biome, 2 harbour override, 99 thematic (90 + the nine storms), 3 painting, 5 crop
+  // Catalog output pinned: 300 biome, 2 harbour override, 99 thematic (90 + the nine storms), 3 painting, 5 crop
   const tally = {};
   for (const e of ENVS) { const k = Catalog.resolveCatalogArt(e).kind; tally[k] = (tally[k] || 0) + 1; }
-  assert.deepEqual(tally, { biome: 299, override: 2, thematic: 99, unique: 3, crop: 5 });
+  assert.deepEqual(tally, { biome: 300, override: 2, thematic: 99, unique: 3, crop: 5 });
 });
 
 test('index.html loads prep-art.js before app.js; the generated output is reproducible', async () => {
