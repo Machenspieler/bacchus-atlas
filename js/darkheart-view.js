@@ -34,7 +34,7 @@ const DarkheartView = (function () {
   const bi = v => (v && (v[deps.lang()] || v.en)) || '';
   const S = () => deps.get();
 
-  function freshUi() { return { confirm: null, menuOpen: false, penalty: 'fd', gainFear: true, badDie: {}, restWhisper: true, restFear: true, manualFear: '', manualFd: '', npcOpen: false, encOpen: false, partyOpen: false, sceneSig: '' }; }
+  function freshUi() { return { confirm: null, menuOpen: false, penalty: 'fd', gainFear: true, badDie: {}, restWhisper: true, restFear: true, manualFear: '', manualFd: '', npcOpen: false, encOpen: false, partyOpen: false, restOpen: false, sceneSig: '' }; }
   const fill = (key, vars) => Object.keys(vars).reduce((txt, k) => txt.split('{' + k + '}').join(String(vars[k])), t(key));
 
   /* ---------------- icons (inline, currentColor) ---------------- */
@@ -47,6 +47,7 @@ const DarkheartView = (function () {
     lock: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5.5" y="10.5" width="13" height="9.5" rx="1.6" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
     unlock: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5.5" y="10.5" width="13" height="9.5" rx="1.6" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 6.6-1.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
     arrive: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.6 20.1 7v10L12 21.4 3.9 17V7L12 2.6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m8.6 12.2 2.4 2.4 4.4-4.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    down: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v13M6 13l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     external: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   };
 
@@ -162,7 +163,7 @@ const DarkheartView = (function () {
         <div class="dh-stat-row">
           <button type="button" class="dh-step-btn" data-dh-act="fd-" aria-label="${esc(t('dh_fd_down'))}"${s.fd <= X.FD_START ? ' disabled' : ''}>${I.minus}</button>
           <output class="dh-stat-num" aria-labelledby="dh-fd-label">${s.fd}</output>
-          <button type="button" class="dh-step-btn" data-dh-act="fd+" aria-label="${esc(t('dh_fd_up'))}">${I.plus}</button>
+          <button type="button" class="dh-step-btn" data-dh-act="fd+" aria-label="${esc(t('dh_fd_up'))}"${s.fd >= X.FD_TRAPPED ? ' disabled' : ''}>${I.plus}</button>
         </div>
         <span class="dh-stat-note">${esc(fdNote)}</span>
       </div>
@@ -247,6 +248,8 @@ const DarkheartView = (function () {
     const s = S();
     const title = document.getElementById('dh-roll-title');
     if (title) title.textContent = s.phase === 'retreat' ? t('dh_retreat_title') : s.phase === 'bastion' ? t('dh_bastion_next') : t('dh_wayfinder');
+    const rollEl = region('roll');
+    if (rollEl) rollEl.classList.toggle('is-arrived', s.phase === 'arrived' && !!s.arrival);   // lets a one-column layout drop the spent dice inputs
     if (s.phase === 'bastion') { setRegion('roll', bastionHtml(s)); return; }
     if (s.phase === 'retreat') {
       const d = s.retreat.danger;
@@ -272,7 +275,12 @@ const DarkheartView = (function () {
     const el = region('preview');
     if (!el) return;
     const s = S();
-    if (s.phase === 'arrived' && s.arrival) { el.innerHTML = arrivedHtml(s); return; }
+    if (s.phase === 'arrived' && s.arrival) {
+      el.innerHTML = arrivedHtml(s);
+      const d = el.querySelector('#dh-rest-disc');
+      if (d) d.addEventListener('toggle', () => { ui.restOpen = d.open; });
+      return;
+    }
     if (s.phase === 'bastion') { el.innerHTML = ''; return; }
     const retreat = s.phase === 'retreat';
     const cancel = retreat ? `<button type="button" class="btn btn-ghost btn-sm dh-cancel-retreat" data-dh-act="retreat-cancel">${esc(t('dh_retreat_cancel'))}</button>` : '';
@@ -345,9 +353,12 @@ const DarkheartView = (function () {
     const lastLine = last ? `<p class="dh-rest-last" role="status">${esc(fill('dh_rest_result_' + last.kind, {
       fd: last.fdBy, fear: last.fearBy, d4: last.fearRoll == null ? '–' : last.fearRoll, d2: last.fdRoll == null ? '–' : last.fdRoll, heroes: s.heroes,
     }))}${last.whisper ? '' : ' ' + esc(t('dh_rest_no_whisper'))}${last.fearCapped ? ' ' + esc(t('dh_rest_capped')) : ''}</p>` : '';
+    // The whole Rest section is one closed-by-default disclosure: reading the confirmed scene never means scrolling past rest settings.
+    // Its open state is view state (ui.restOpen), so a rest, a re-render or a resize never resets it, and it never touches the campaign.
     return `
-      <div class="dh-rest" role="group" aria-label="${esc(t('dh_rest'))}">
-        <span class="dh-field-label">${esc(t('dh_rest'))}</span>
+      <details class="dh-rest" id="dh-rest-disc"${ui.restOpen ? ' open' : ''}>
+        <summary><span class="dh-rest-name">${esc(t('dh_rest'))}</span><span class="dh-rest-sub">${esc(t(canRest ? 'dh_rest_sub' : 'dh_rest_none'))}</span></summary>
+        <div class="dh-rest-body">
         <p class="dh-hint">${esc(t('dh_rest_' + policy))}</p>
         ${canRest ? `
         <div class="dh-rest-opts">
@@ -369,7 +380,8 @@ const DarkheartView = (function () {
           <p class="dh-hint dh-hint--tight">${esc(t('dh_rest_manual_hint'))}</p>
         </details>` : ''}
         ${lastLine}
-      </div>`;
+        </div>
+      </details>`;
   }
 
   function arrivedHtml(s) {
@@ -387,7 +399,10 @@ const DarkheartView = (function () {
         <p class="dh-result-kind"><span class="dh-chip dh-chip--${rule.category}">${esc(t('dh_cat_' + rule.category))}</span> <strong>${esc(bi(rule.title))}</strong></p>
         <ul class="dh-conseq">${lines.map(l => `<li>${l}</li>`).join('')}</ul>
       </div>
-      <button type="button" class="btn btn-primary dh-confirm-btn" data-dh-act="next">${I.dice}<span>${esc(t('dh_next_traversal'))}</span></button>
+      <div class="dh-arrived-actions">
+        <button type="button" class="btn btn-ghost dh-scene-link" data-dh-act="to-scene">${I.down}<span>${esc(t('dh_view_scene'))}</span></button>
+        <button type="button" class="btn btn-primary dh-confirm-btn" data-dh-act="next">${I.dice}<span>${esc(t('dh_next_traversal'))}</span></button>
+      </div>
       ${restHtml(s)}`;
   }
 
@@ -476,10 +491,20 @@ const DarkheartView = (function () {
     const p = art.pos;
     const style = p.x === 50 && p.y === 50 ? '' : ` style="--pos:${p.x}% ${p.y}%"`;
     // Fixed-height frame: the picture can arrive late without moving anything. Low priority: the roll is never waiting on it.
-    return `<div class="dh-scene-art" aria-hidden="true"><picture>
+    // Artwork roles: a painting/crop/thematic picture names the LOCATION; the forest landscape (setting/biome) is only Darkheart's general
+    // atmosphere while dedicated outcome illustrations are unavailable, so it is quieter and says so. Outcome art (the travel event) is a
+    // separate future role and would arrive through deps.sceneArt, not through this frame.
+    const generic = art.kind === 'setting' || art.kind === 'biome';
+    return `<div class="dh-scene-art${generic ? ' is-generic' : ''}" aria-hidden="true">${generic ? `<span class="dh-art-tag">${esc(t('dh_art_atmosphere'))}</span>` : ''}<picture>
         <source type="image/avif" sizes="(max-width: 640px) 100vw, 960px" srcset="${srcset}">
         <img src="${art.fallback}" alt="" decoding="async" fetchpriority="low"${style}>
       </picture></div>`;
+  }
+
+  /** The note beside a source feature that names its own adversaries while this dashboard builds the encounter itself (`encounter.sourceRoster`). */
+  function rosterNoteHtml(scene) {
+    return scene.encounter && scene.encounter.sourceRoster
+      ? `<p class="dh-roster-note"><span class="dh-chip dh-chip--countdown">${esc(t('dh_roster_chip'))}</span><span>${esc(t('dh_roster_note'))}</span></p>` : '';
   }
 
   function renderScene() {
@@ -537,7 +562,7 @@ const DarkheartView = (function () {
     const leftOut = !parts.whole && parts.leftOut.length ? `<p class="dh-hint"><strong>${esc(t('dh_left_out'))}:</strong> ${esc(parts.leftOut.join(', '))}</p>` : '';
     const art = sceneArtHtml(env, parts.whole);
     setRegion('scene', `
-      <header class="dh-scene-head${art ? ' has-art' : ''}">
+      <header class="dh-scene-head${art ? ' has-art' : ''}${art.indexOf('is-generic') >= 0 ? ' has-generic-art' : ''}">
         ${art}
         <div class="dh-scene-headtext">
           <p class="dh-kicker"><span class="dh-chip dh-chip--${rule.category}">${esc(t('dh_cat_' + rule.category))}</span></p>
@@ -554,9 +579,11 @@ const DarkheartView = (function () {
       <p class="dh-scene-summary">${esc(bi(entry.framing.summary))}</p>
       ${cur.cycled ? `<p class="dh-hint">${esc(t('dh_pool_cycled'))}</p>` : ''}
       ${ruleBlock(outcome)}
+      ${DarkheartNpc.roleForOutcome(outcome) ? '<section id="dh-npc" class="dh-npc-card" aria-label="' + esc(t('dh_npc_title')) + '" hidden></section>' : ''}
       <section class="dh-features${features.length > 1 ? ' is-multi' : ''}" aria-labelledby="dh-feat-h">
         <h4 id="dh-feat-h" class="dh-block-label">${esc(t('dh_features_label'))}</h4>
         <p class="dh-fd-note"><span class="dh-chip dh-chip--countdown">${esc(t('dh_fd_short'))} ${sf.fd}</span><span>${esc(fdLine)}</span></p>
+        ${rosterNoteHtml(scene)}
         ${lore}
         <div class="dh-feature-list">${featureList}</div>
       </section>
@@ -571,6 +598,7 @@ const DarkheartView = (function () {
     const d = el.querySelector('.dh-src');
     if (d) { d.open = !!ui.srcOpen; d.addEventListener('toggle', () => { ui.srcOpen = d.open; }); }
     fillPendingText();
+    renderNpc();      // the NPC card lives inside the scene card, right after the rule, so it is rebuilt with it
   }
 
   /* ---------- NPC ---------- */
@@ -610,8 +638,10 @@ const DarkheartView = (function () {
     const s = S();
     const outcome = s.scene.outcome && stageOutcome() === s.scene.outcome ? s.scene.outcome : null;
     const role = DarkheartNpc.roleForOutcome(outcome);
-    if (!role) { setRegion('npc', ''); region('npc') && (region('npc').hidden = true); return; }
-    region('npc').hidden = false;
+    const slot = region('npc');
+    if (!slot) return;
+    if (!role) { slot.innerHTML = ''; slot.hidden = true; return; }
+    slot.hidden = false;
     const npc = s.scene.npc.value;
     const heading = `<h3 class="dh-panel-title">${esc(t('dh_npc_title'))} <span class="dh-chip">${esc(t('dh_npc_role_' + role))}</span></h3>`;
     if (!npc) {
@@ -661,7 +691,7 @@ const DarkheartView = (function () {
     });
     if (r.status === 'blocked') { el.innerHTML = `${heading}<p class="dh-hint" role="alert">${esc(t('dh_enc_blocked'))}</p>`; return; }
     const posture = r.combat;
-    const postureNote = `<p class="dh-hint dh-hint--tight">${esc(t('dh_enc_posture_' + posture))}</p>`;
+    const postureNote = `<p class="dh-hint dh-hint--tight">${esc(t('dh_enc_posture_' + posture))}</p>${cur.scene.encounter && cur.scene.encounter.sourceRoster ? `<p class="dh-hint dh-hint--tight dh-hint--source">${esc(t('dh_enc_source_hint'))}</p>` : ''}`;
     el.classList.remove('dh-card--slim');
     if (posture === 'none' && !r.adversaries.length) {
       el.classList.add('dh-card--slim');
@@ -836,6 +866,7 @@ const DarkheartView = (function () {
         deps.set(X.setScene(s, Object.assign({}, s.scene, { encounter: Object.assign({}, s.scene.encounter, { locked: next }) })).state);
         return renderEncounter();
       }
+      case 'to-scene': return goToScene();
       case 'retry': return deps.retryData().then(load);
       default: return false;
     }
@@ -852,6 +883,18 @@ const DarkheartView = (function () {
     const scene = Object.assign({}, s.scene, { seed: (s.scene.seed || 0) + 1, dealt, sceneId: null });
     deps.set(X.setScene(s, scene).state);
     renderAll();
+  }
+
+  /** Moves the reader to the scene card: a view-only jump (no state, no regeneration). Smooth only when the user has not asked for reduced
+   * motion; css `scroll-margin-top` keeps the sticky header off the destination; focus moves there without a second scroll. */
+  function goToScene() {
+    const el = region('scene');
+    if (!el) return false;
+    const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+    el.setAttribute('tabindex', '-1');
+    el.focus({ preventScroll: true });
+    return true;
   }
 
   function focusRegion(id) { const el = region(id); if (el) { el.setAttribute('tabindex', '-1'); el.focus({ preventScroll: true }); } }
@@ -945,7 +988,6 @@ const DarkheartView = (function () {
           <main class="dh-main">
             <section id="dh-scene" class="dh-card dh-scene" aria-live="polite" aria-label="${esc(t('dh_scene_label'))}"></section>
             <div class="dh-tools">
-              <section id="dh-npc" class="dh-card dh-npc-card" hidden></section>
               <section id="dh-encounter" class="dh-card dh-enc-card" hidden></section>
             </div>
             <div id="dh-history"></div>

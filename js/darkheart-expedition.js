@@ -256,7 +256,7 @@
     var fearRule = !state.settings || state.settings.fearOnRoll !== false;
     var gainedFear = preview.gainsFear && c.gainFear !== false && fearRule;
     if (gainedFear) fear += 1;
-    next.fd = clamp(fd, FD_START, 999);
+    next.fd = clamp(fd, FD_START, FD_TRAPPED);
     next.fear = clamp(fear, 0, FEAR_MAX);
     next.hexes = state.hexes + 1;
     next.trapped = next.fd >= FD_TRAPPED;
@@ -326,7 +326,7 @@
   /** The GM's own correction of the Forest Difficulty: committed, never below 15; reaching 30 traps the party. */
   function adjustFd(state, delta) {
     if (!isInt(delta) || delta === 0) return result(state, false, 'no-change');
-    var fd = clamp(state.fd + delta, FD_START, 999);
+    var fd = clamp(state.fd + delta, FD_START, FD_TRAPPED);
     if (fd === state.fd) return result(state, false, 'no-change');
     var next = withUndo(state);
     next.fd = fd;
@@ -366,7 +366,7 @@
     if (whisper && kind === 'long' && !(isInt(o.fdRoll) && o.fdRoll >= 1 && o.fdRoll <= 2)) return result(state, false, 'need-fd-roll');
     var fdBy = !whisper ? 0 : (kind === 'short' ? 1 : o.fdRoll + 1);
     var next = withUndo(state);
-    var fdAfter = clamp(state.fd - fdBy, FD_START, 999);
+    var fdAfter = clamp(state.fd - fdBy, FD_START, FD_TRAPPED);
     var fearBy = fearOn ? o.fearRoll + (kind === 'long' ? state.heroes : 0) : 0;
     var fearAfter = clamp(state.fear + fearBy, 0, FEAR_MAX);
     next.fd = fdAfter;

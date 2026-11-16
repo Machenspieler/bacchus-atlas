@@ -812,3 +812,17 @@ test('the polish keys exist in both languages with identical placeholders', () =
   const ph = s => (String(s).match(/\{\w+\}/g) || []).sort().join();
   keys.forEach(k => { assert.ok(i18n.en[k] && i18n.ru[k], k); assert.equal(ph(i18n.en[k]), ph(i18n.ru[k]), k); });
 });
+
+test('Forest Difficulty never exceeds 30: the game ends there (arrival, manual +, rest, persisted value)', () => {
+  const at = fd => Object.assign(X.defaults(), { fd });
+  const base = X.setDice(at(29), { hope: 3, fear: 7, modifier: 0 }).state;
+  const arrived = X.confirmArrival(base, {}).state;
+  assert.equal(arrived.fd, 30); assert.equal(arrived.trapped, true);
+  const pen = X.setDice(at(29), { hope: 8, fear: 2, modifier: 0 }).state;           // landmark-fail-hope: +1 FD
+  assert.ok(X.confirmArrival(pen, { penalty: 'fd' }).state.fd <= 30);
+  const two = X.setDice(at(29), { hope: 2, fear: 8, modifier: 0 }).state;           // dark omen: +2 FD on top of +1
+  assert.equal(X.confirmArrival(two, { penalty: 'fd' }).state.fd, 30);
+  assert.equal(X.adjustFd(at(30), 1).ok, false);
+  const forced = Object.assign(X.defaults(), { fd: 29 });
+  assert.equal(X.confirmArrival(X.setDice(forced, { hope: 2, fear: 8, modifier: 0 }).state, { penalty: 'fd' }).state.fd, 30);
+});

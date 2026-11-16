@@ -1539,7 +1539,7 @@ function renderHeader() {
   // navigation and the soundboard do not.
   const playerPage = state.route.name === 'playermap';
   el.innerHTML = `
-    <a class="skip-link" href="#grid-wrap">${t('skip_to_content')}</a>
+    <a class="skip-link" href="#grid-wrap">${t(current === 'catalog' && !playerPage ? 'skip_to_content' : 'skip_to_main')}</a>
     <div class="header-inner">
       <div class="brand">
         <img class="brand-mark" src="img/brand-logo.png?v=2" alt="" aria-hidden="true">

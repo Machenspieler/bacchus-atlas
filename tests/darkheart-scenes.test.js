@@ -739,3 +739,31 @@ test('flexibility did not loosen the structural safeguards', () => {
   stale.find(e => e.id === 'gloaming-forest').features[0].description.en += ' A new rule appears.';
   assert.ok(analyze(realManifest, stale, realCtx).scenes.some(s => !s.selectable));
 });
+
+/* ---------------- UX polish: campfire framing and the source-roster flag ---------------- */
+
+test('encounter.sourceRoster is accepted only as true and is flagged on the scenes whose source feature names its own roster', () => {
+  const base = analyze(realManifest, realEnvs, realCtx);
+  assert.deepEqual(codes(base, 'error'), []);
+  const flagged = realManifest.scenes.filter(s => s.encounter && s.encounter.sourceRoster).map(s => s.id);
+  assert.ok(flagged.includes('haunted-mountain-pass-chill-mists'), 'Out of the Mist must say its source names its own adversaries');
+  const bad = clone(realManifest);
+  bad.scenes.find(s => s.id === 'haunted-mountain-pass-chill-mists').encounter.sourceRoster = false;
+  assert.ok(codes(analyze(bad, realEnvs, realCtx), 'error').includes('invalid-encounter'));
+});
+
+test('the Roots Tavern scene keeps the Traveler’s campfire in its framing and guidance (both languages)', () => {
+  const scene = realManifest.scenes.find(s => s.id === 'the-village-of-hush-clovers-tavern');
+  const o = scene.outcomes.find(x => x.outcome === 'landmark-success-hope');
+  const all = JSON.stringify([o.framing, o.guidance]);
+  assert.match(all, /campfire/i);
+  assert.match(all, /Костёр Путника/);
+  assert.match(o.framing.summary.en, /rest here without fear/i);
+});
+
+test('the dashboard strings for the scene link, Rest summary and source roster exist in both languages', () => {
+  const i18n = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/i18n.json'), 'utf8'));
+  for (const k of ['dh_view_scene', 'dh_rest_sub', 'dh_art_atmosphere', 'dh_roster_chip', 'dh_roster_note', 'dh_enc_source_hint']) {
+    assert.ok(i18n.en[k] && i18n.ru[k] && /[А-Яа-я]/.test(i18n.ru[k]), k);
+  }
+});

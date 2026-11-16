@@ -413,7 +413,8 @@ function analyzeManifest(data, ctx) {
     if (scene.encounter !== undefined) {
       if (!isPlainObject(scene.encounter)) err(`${p}.encounter`, 'encounter must be an object { themes }.', 'invalid-encounter');
       else {
-        checkKeys(scene.encounter, ['themes'], `${p}.encounter`, (s, pp, m, c) => err(pp, m, c));
+        checkKeys(scene.encounter, ['themes', 'sourceRoster'], `${p}.encounter`, (s, pp, m, c) => err(pp, m, c));
+        if (scene.encounter.sourceRoster !== undefined && scene.encounter.sourceRoster !== true) err(`${p}.encounter.sourceRoster`, 'sourceRoster must be true when present (the shown source feature names its own adversaries).', 'invalid-encounter');
         const themes = scene.encounter.themes;
         const known = ctx && Array.isArray(ctx.affinityThemes) ? ctx.affinityThemes : null;
         if (!Array.isArray(themes) || themes.length === 0) err(`${p}.encounter.themes`, 'encounter.themes must list at least one adversary theme.', 'invalid-encounter');

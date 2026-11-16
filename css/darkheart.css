@@ -22,7 +22,7 @@
 /* One compact strip: the two counters the Master adjusts all session (Forest Difficulty, GM Fear) get the weight; the expedition
  * tally and the rarely-changed party sit in a quiet column ("Tier 3 · 4 Heroes", editable on demand); the routine actions are one row. */
 .dh-status {
-  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.1fr); gap: var(--s-3); align-items: stretch;
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.9fr); gap: var(--s-3); align-items: stretch;
   padding: var(--s-3); background: var(--ink-card); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--e-1);
 }
 .dh-stat { display: grid; gap: var(--s-1); align-content: start; padding: var(--s-2) var(--s-3); border: 1px solid var(--line-faint); border-radius: var(--r-sm); background: var(--ink-raised); min-width: 0; }
@@ -47,6 +47,15 @@
 .dh-party[hidden] { display: none; }
 .dh-party .dh-field + .dh-field { margin-top: 0; }
 .dh-status-actions { display: flex; justify-content: flex-start; gap: var(--s-2); flex-wrap: wrap; }
+.dh-status-actions .btn { white-space: nowrap; }
+/* Narrower than a wide desktop (Russian labels are long): the two counters keep their own row and the tally, party and the three
+ * actions share a second row, so a long label can never stretch the Forest Difficulty and Fear cards. */
+@media (min-width: 641px) and (max-width: 1180px) {
+  .dh-status { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dh-trail { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-4); }
+  .dh-trail-top { flex: 1 1 280px; }
+  .dh-status-actions { flex: 0 1 auto; }
+}
 .dh-menu-btn[aria-expanded="true"] { border-color: var(--hope-border); color: var(--hope-soft); background: var(--hope-selected-bg); }
 .dh-confirm { display: grid; gap: var(--s-2); padding: var(--s-2); border: 1px solid var(--fear); border-radius: var(--r-sm); background: var(--fear-tint); font-size: var(--fs-sm); }
 .dh-trapped { grid-column: 1 / -1; margin: 0; padding: var(--s-3); border: 1px solid var(--fear); border-radius: var(--r-sm); background: var(--fear-tint); color: var(--parchment); }
@@ -129,8 +138,17 @@
 .dh-choice input, .dh-check input { accent-color: var(--hope); width: 20px; height: 20px; flex: none; }
 .dh-confirm-btn { width: 100%; margin-top: var(--s-3); height: 52px; font-weight: 600; font-size: var(--fs-md); }
 .dh-confirm-btn svg { width: var(--icon-md); height: var(--icon-md); }
-.dh-rest { margin-top: var(--s-4); padding-top: var(--s-3); border-top: 1px solid var(--line-faint); display: grid; gap: var(--s-2); }
-.dh-rest .dh-block-label { margin: 0; }
+.dh-arrived-actions { display: grid; gap: var(--s-2); margin-top: var(--s-3); }
+.dh-arrived-actions .dh-confirm-btn { margin-top: 0; }
+.dh-scene-link { width: 100%; min-height: 44px; justify-content: center; }
+@media (min-width: 901px) { .dh-scene-link { display: none; } }     /* the scene is already beside the roll */
+/* Rest: one closed-by-default disclosure, so the confirmed scene is never pushed down by rest settings */
+.dh-rest { margin-top: var(--s-3); padding-top: var(--s-1); border-top: 1px solid var(--line-faint); }
+.dh-rest > summary { cursor: pointer; min-height: 44px; flex-wrap: wrap; column-gap: var(--s-3); color: var(--parchment); }
+.dh-rest > summary:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
+.dh-rest-name { font-family: var(--font-display); font-size: var(--fs-md); }
+.dh-rest-sub { color: var(--parchment-dim); font-size: var(--fs-sm); }
+.dh-rest-body { display: grid; gap: var(--s-2); padding-top: var(--s-2); }
 .dh-rest .dh-hint { margin: 0; }
 .dh-rest-opts { display: grid; gap: var(--s-1); }
 .dh-rest-btns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
@@ -160,6 +178,11 @@
 .dh-scene-art { position: absolute; inset: 0; }
 .dh-scene-art picture, .dh-scene-art img { display: block; width: 100%; height: 100%; }
 .dh-scene-art img { object-fit: cover; object-position: var(--pos, 50% 50%); }
+.dh-scene { scroll-margin-top: calc(var(--hdr-h) + var(--s-3)); }
+/* Generic atmosphere (the forest landscape, when no painting of THIS place or travel-event illustration exists): quieter, shorter, labelled */
+.dh-scene-head.has-generic-art { min-height: 112px; }
+.dh-scene-art.is-generic img { opacity: 0.5; }
+.dh-art-tag { position: absolute; top: var(--s-2); right: var(--s-3); z-index: 1; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--parchment-dim); }
 .dh-scene-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, var(--ink-card) 0%, color-mix(in srgb, var(--ink-card) 72%, transparent) 38%, transparent 100%); }
 .dh-scene-headtext { position: relative; display: grid; gap: var(--s-2); min-width: 0; }
 .dh-scene-head.has-art .dh-kicker .dh-chip { background: var(--ink-card); }
@@ -180,12 +203,18 @@
 /* the environment's untouched features: flow in columns where there is room, one column where there is not */
 .dh-features { min-width: 0; }
 .dh-fd-note { margin: 0 0 var(--s-3); display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; font-size: var(--fs-sm); color: var(--parchment-dim); }
+.dh-roster-note { margin: 0 0 var(--s-3); display: flex; align-items: flex-start; gap: var(--s-2); flex-wrap: wrap; font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); }
+.dh-roster-note .dh-chip { flex: none; }
+.dh-roster-note > span:last-child { flex: 1 1 24ch; min-width: 0; }
+.dh-hint--source { color: var(--parchment-dim); }
 .dh-lore { margin: 0 0 var(--s-3); font-style: italic; color: var(--parchment-dim); font-size: var(--fs-card-copy); }
 .dh-feature-list { display: grid; gap: var(--s-3); }
 .dh-feature { break-inside: avoid; padding: var(--s-3); border: 1px solid var(--line-faint); border-left: 3px solid var(--teal); border-radius: var(--r-sm); background: var(--ink-raised); min-width: 0; }
 @media (min-width: 720px) { .dh-features.is-multi .dh-feature-list { display: block; column-width: 22rem; column-gap: var(--s-4); } .dh-features.is-multi .dh-feature { margin-bottom: var(--s-3); } }
 .dh-feature-head { margin: 0 0 var(--s-1); display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; font-family: var(--font-display); font-size: var(--fs-md); }
-.dh-feature-text { margin: 0; font-size: var(--fs-card-copy); line-height: var(--lh-sm); color: var(--parchment); overflow-wrap: anywhere; }
+.dh-feature-head strong { font-weight: 400; }    /* the display face has no bold: a bold request is a smeared synthetic one */
+.dh-feature-text strong { font-weight: 600; }  /* rule-critical terms keep emphasis; ordinary prose stays at the body weight */
+.dh-feature-text { font-synthesis: none; margin: 0; font-size: var(--fs-card-copy); line-height: var(--lh-sm); color: var(--parchment); overflow-wrap: anywhere; }
 .dh-feature-text p { margin: 0 0 var(--s-2); }
 .dh-feature-text p:last-child { margin-bottom: 0; }
 .dh-ftype { display: inline-flex; align-items: center; height: 20px; padding: 0 var(--s-2); border: 1px solid var(--type-chip-border); border-radius: var(--r-xs); font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: var(--tracking-badge); text-transform: uppercase; color: var(--parchment-dim); }
@@ -226,6 +255,11 @@
 .dh-danger p { max-width: 60ch; }
 
 /* ---------- 4. NPC ---------- */
+/* The NPC card sits inside the scene card, right after the Darkheart rule and before the (often long) source features. */
+.dh-scene .dh-npc-card { padding: var(--s-3); border: 1px solid var(--line-faint); border-radius: var(--r-sm); background: var(--ink-raised); min-width: 0; }
+.dh-scene .dh-npc-card .dh-panel-title { margin-bottom: var(--s-2); font-size: var(--fs-base); }
+.dh-scene .dh-quote { background: color-mix(in srgb, var(--parchment) 9%, var(--ink-card)); }
+@media (min-width: 720px) { .dh-scene .dh-npc-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); } }
 .dh-npc { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: var(--s-3); align-items: center; margin-bottom: var(--s-3); }
 .dh-avatar { width: 72px; height: 72px; }
 .dh-avatar-svg { width: 100%; height: 100%; display: block; }
@@ -321,15 +355,22 @@
 .dh-chip-btn:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
 
 /* disclosure summaries: one chevron for every <details> on the page (display:flex on a summary removes the native marker) */
-.dh-src > summary, .dh-manual > summary, .dh-opt > summary, .dh-why > summary, .dh-hist > summary { list-style: none; display: flex; align-items: center; gap: var(--s-2); }
+.dh-src > summary, .dh-manual > summary, .dh-rest > summary, .dh-opt > summary, .dh-why > summary, .dh-hist > summary { list-style: none; display: flex; align-items: center; gap: var(--s-2); }
 .dh-opt > summary { flex-wrap: wrap; align-items: baseline; column-gap: var(--s-3); }
-.dh-src > summary::-webkit-details-marker, .dh-manual > summary::-webkit-details-marker, .dh-opt > summary::-webkit-details-marker, .dh-why > summary::-webkit-details-marker, .dh-hist > summary::-webkit-details-marker { display: none; }
-.dh-src > summary::before, .dh-manual > summary::before, .dh-opt > summary::before, .dh-why > summary::before, .dh-hist > summary::before { content: ""; flex: none; width: 0; height: 0; border-style: solid; border-width: 5px 0 5px 7px; border-color: transparent transparent transparent currentColor; opacity: 0.8; align-self: center; }
+.dh-src > summary::-webkit-details-marker, .dh-rest > summary::-webkit-details-marker, .dh-manual > summary::-webkit-details-marker, .dh-opt > summary::-webkit-details-marker, .dh-why > summary::-webkit-details-marker, .dh-hist > summary::-webkit-details-marker { display: none; }
+.dh-src > summary::before, .dh-rest > summary::before, .dh-manual > summary::before, .dh-opt > summary::before, .dh-why > summary::before, .dh-hist > summary::before { content: ""; flex: none; width: 0; height: 0; border-style: solid; border-width: 5px 0 5px 7px; border-color: transparent transparent transparent currentColor; opacity: 0.8; align-self: center; }
 details[open] > summary::before { transform: rotate(90deg); }
 
 /* ---------- narrow screens ---------- */
 @media (max-width: 900px) {
   .dh-menu-panel { grid-template-columns: minmax(0, 1fr); }
+  /* One column: once the arrival is confirmed the spent dice inputs add nothing (the result below shows them); the summary stays compact
+   * so the scene is within a screen of the confirmed result. The inputs stay in the DOM, disabled, so nothing about the state changes. */
+  #dh-roll.is-arrived > .dh-dice { display: none; }
+  #dh-roll.is-arrived .dh-result { margin-top: 0; gap: var(--s-1); }
+  .dh-result.is-arrived .dh-state-note { display: none; }
+  .dh-result.is-arrived .dh-result-math { font-size: var(--fs-md); gap: var(--s-2); }
+  .dh-result.is-arrived .dh-conseq { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); margin-top: 0; }
 }
 @media (max-width: 640px) {
   /* A phone is its own layout, not a shrunk desktop: the two counters side by side, expedition tally and party on one line,
@@ -352,6 +393,8 @@ details[open] > summary::before { transform: rotate(90deg); }
   .dh-status-actions .btn { white-space: normal; line-height: 1.15; min-height: 44px; padding-inline: var(--s-2); justify-content: center; text-align: center; }
   .dh-card { --dh-pad: var(--s-3); }
   .dh-scene-head.has-art { min-height: 150px; }
+  .dh-scene-head.has-generic-art { min-height: 96px; }
+  .dh-state-note { display: none; }
   .dh-scene-title { font-size: var(--fs-xl); }
   .dh-scene-summary { font-size: var(--fs-base); }
   .dh-rule-title { font-size: var(--fs-md); }

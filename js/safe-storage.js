@@ -481,7 +481,7 @@
   }
   function dhState(raw, withUndo) {
     var r = raw;
-    var fd = dhInt(r.fd, 15, 999, 15);
+    var fd = dhInt(r.fd, 15, 30, 15);
     var arrival = dhArrival(r.arrival);
     var dice = isPlainObject(r.dice) ? r.dice : {};
     var rawSettings = isPlainObject(r.settings) ? r.settings : {};

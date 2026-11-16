@@ -163,7 +163,7 @@ An environment that is in no entry is **unlisted**, which means not yet reviewed
 | `dependencyNotes[]` | `{ from, to, note }`: acknowledges a shown feature that names a left-out sibling without depending on it. |
 | `envFp` | Whole-environment pin (full, or adapted without `features`). |
 | `adversaries` | `source` (show the environment's `potential_adversaries`, whole-environment scenes only) or `none`. |
-| `encounter` | Optional `{ themes: [...] }` (PD-099): which adversary themes of `data/darkheart-affinity.json` belong to this selection. Without it the scene suggests no enemies (a whole environment shown with `adversaries: "source"` still offers its own list). |
+| `encounter` | Optional `{ themes: [...], sourceRoster?: true }` (PD-099; `sourceRoster` PD-103: the shown source feature names its own adversaries, so the page states that the dashboard's generated roster is the one to run): which adversary themes of `data/darkheart-affinity.json` belong to this selection. Without it the scene suggests no enemies (a whole environment shown with `adversaries: "source"` still offers its own list). |
 | `art` | The explicit artwork decision; see below. |
 | `outcomes[]` | One entry per Darkheart outcome this selection serves (framing, optional `guidance`, `adaptation` when ADAPTED); see below. |
 | `note` | Free EN reviewer note. |

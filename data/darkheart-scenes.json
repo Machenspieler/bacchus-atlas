@@ -825,7 +825,8 @@
       "encounter": {
         "themes": [
           "sylvan"
-        ]
+        ],
+        "sourceRoster": true
       },
       "art": {
         "mode": "fallback",
@@ -2249,18 +2250,25 @@
           "outcome": "landmark-success-hope",
           "framing": {
             "title": {
-              "en": "A Tavern in the Roots",
-              "ru": "Трактир в корнях"
+              "en": "Traveler’s Campfire at the Roots Tavern",
+              "ru": "Костёр Путника в трактире у корней"
             },
             "summary": {
-              "en": "An old tree grows through the middle of a tavern full of quiet evening talk. The party can rest, hear rumors and sleep.",
-              "ru": "Старое дерево растёт сквозь трактир, полный тихих вечерних разговоров. Отряд может отдохнуть, послушать слухи и выспаться."
+              "en": "The Traveler’s magic campfire burns in the hearth of a tavern built into the roots of an old tree, and the whole room keeps to its warm light. The party can rest here without fear, hear rumors and sleep.",
+              "ru": "Волшебный костёр Путника горит в очаге трактира, встроенного в корни старого дерева, и весь зал держится его тёплого света. Отряд может спокойно отдохнуть, послушать слухи и выспаться."
+            }
+          },
+          "guidance": {
+            "adjust": ["location", "scale"],
+            "text": {
+              "en": "The Traveler’s campfire is what makes this place safe; the tavern is only its setting. Move the fire to a clearing if the roadhouse does not fit, and keep the rule: rest here without fear.",
+              "ru": "Безопасным это место делает костёр Путника; трактир — лишь его обстановка. Если трактир не подходит, переместите костёр на поляну, но сохраните правило: здесь можно спокойно отдохнуть."
             }
           },
           "adaptation": {
             "summary": {
-              "en": "The source is a six-story tavern at the heart of a village; here it is a smaller roadhouse in the roots of an ancient tree.",
-              "ru": "Источник — шестиэтажный трактир в центре деревни; здесь это придорожная таверна поменьше в корнях древнего дерева."
+              "en": "The source is a six-story tavern at the heart of a village; here it is a smaller roadhouse in the roots of an ancient tree. The Traveler’s campfire is the Darkheart outcome’s own, not the source’s: it burns in the tavern’s hearth and carries the rule’s safe rest.",
+              "ru": "Источник — шестиэтажный трактир в центре деревни; здесь это придорожная таверна поменьше в корнях древнего дерева. Костёр Путника принадлежит исходу Darkheart, а не источнику: он горит в очаге трактира и несёт правило спокойного отдыха."
             },
             "changes": [
               {
@@ -2541,7 +2549,8 @@
       "encounter": {
         "themes": [
           "undead"
-        ]
+        ],
+        "sourceRoster": true
       },
       "art": {
         "mode": "none",
@@ -2601,7 +2610,8 @@
         "themes": [
           "sylvan",
           "beasts"
-        ]
+        ],
+        "sourceRoster": true
       },
       "art": {
         "mode": "none",
@@ -2795,7 +2805,8 @@
         "themes": [
           "undead",
           "sylvan"
-        ]
+        ],
+        "sourceRoster": true
       },
       "art": {
         "mode": "none",
