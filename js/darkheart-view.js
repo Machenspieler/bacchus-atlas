@@ -674,6 +674,21 @@ const DarkheartView = (function () {
 
   function advName(a) { return bi(a.name); }
 
+  /** The roster as a set of adversaries and quantities, ignoring order: two seeds that deal the same set are the same encounter. */
+  const rosterSig = r => r.adversaries.map(a => a.id + ':' + a.quantity).sort().join('|');
+  const ENC_SEED_PROBES = 12;
+  /** The nearest later seed that deals a genuinely different roster (what "New encounter" will show), or null when the pool has no alternative. */
+  function nextDistinctEncSeed(s, outcome, scene, current) {
+    const base = s.scene.encounter.seed;
+    const args = seed => ({ scene, outcome, tier: s.tier, heroes: s.heroes, difficulty: s.difficulty, seed, locked: s.scene.encounter.locked, gmTheme: s.scene.encounter.gmTheme, ctx: data.ctx });
+    const now = rosterSig(current);
+    for (let k = 1; k <= ENC_SEED_PROBES; k++) {
+      const r = DarkheartComposer.encounterFor(args(base + k));
+      if (r.status !== 'blocked' && rosterSig(r) !== now) return base + k;
+    }
+    return null;
+  }
+
   function renderEncounter() {
     const el = region('encounter');
     const s = S();
@@ -704,6 +719,7 @@ const DarkheartView = (function () {
     const over = bp.spent > bp.available;
     const fillPct = bp.available > 0 ? Math.max(0, Math.min(100, Math.round(bp.spent / bp.available * 100))) : 0;
     const lockedIds = new Set(s.scene.encounter.locked.map(l => l.id));
+    const canRegen = nextDistinctEncSeed(s, outcome, cur.scene, r) != null;
     const rows = r.adversaries.map(a => `
       <li class="dh-adv${a.locked ? ' is-locked' : ''}">
         <span class="dh-adv-qty dh-mono">${a.quantity}×</span>
@@ -747,7 +763,7 @@ const DarkheartView = (function () {
       ${warnings ? `<ul class="dh-warnings">${warnings}</ul>` : ''}
       ${whyLines ? `<details class="dh-why"><summary>${esc(t('dh_enc_why'))}</summary><ul>${whyLines}</ul></details>` : ''}
       <div class="dh-actions">
-        <button type="button" class="btn btn-ghost btn-sm" data-dh-act="enc-regen">${I.refresh}<span>${esc(t('dh_enc_regen'))}</span></button>
+        <button type="button" class="btn btn-ghost btn-sm" data-dh-act="enc-regen"${canRegen ? '' : ` disabled title="${esc(t('dh_enc_regen_none'))}"`}>${I.refresh}<span>${esc(t('dh_enc_regen'))}</span></button>
         ${url ? `<a class="btn btn-ghost btn-sm" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${I.external}<span>${esc(t('dh_fcg'))}</span></a>` : ''}
       </div>
       ${url && supported.some(e => e.quantity > 1) ? `<p class="dh-hint">${esc(t('dh_fcg_qty_note'))}</p>` : ''}`;
@@ -856,7 +872,14 @@ const DarkheartView = (function () {
         return renderNpc();
       }
       case 'enc-regen': {
-        deps.set(X.setScene(s, Object.assign({}, s.scene, { encounter: Object.assign({}, s.scene.encounter, { seed: s.scene.encounter.seed + 1 }) })).state);
+        // Only a seed that really changes the roster: never a reshuffle of the same adversaries, never a no-op press.
+        const outcome = s.scene.outcome && stageOutcome() === s.scene.outcome ? s.scene.outcome : null;
+        const cur = outcome ? currentScene(outcome) : null;
+        if (!cur || !cur.scene) return false;
+        const now = DarkheartComposer.encounterFor({ scene: cur.scene, outcome, tier: s.tier, heroes: s.heroes, difficulty: s.difficulty, seed: s.scene.encounter.seed, locked: s.scene.encounter.locked, gmTheme: s.scene.encounter.gmTheme, ctx: data.ctx });
+        const seed = nextDistinctEncSeed(s, outcome, cur.scene, now);
+        if (seed == null) return false;
+        deps.set(X.setScene(s, Object.assign({}, s.scene, { encounter: Object.assign({}, s.scene.encounter, { seed }) })).state);
         return renderEncounter();
       }
       case 'adv-lock': {
