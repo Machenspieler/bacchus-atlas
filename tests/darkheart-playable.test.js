@@ -791,3 +791,24 @@ test('NPC situation hints name real scenes and real situations, and a blaze neve
     assert.ok(Npc.SCENE_SITUATION[scene.id] || !/fire|blaze|loop|dream|roots/i.test(o.framing.summary.en), scene.id);
   }
 });
+
+/* ---------- premium polish pass: FD shown for a previewed hex, view keys, scene art rule ---------- */
+
+test('the FD the previewed hex will use is the roll\'s FD + 1 (never the Landmark penalty), and equals the confirmed FD', () => {
+  let s = X.defaults();
+  s = X.setDice(s, { hope: 12, fear: 10, modifier: 0 }).state;
+  const pending = X.confirmArrival(s, { penalty: 'fear', gainFear: false }).state.fd;       // what the view shows before confirmation
+  assert.equal(pending, s.fd + 1);
+  const confirmed = X.confirmArrival(s, { penalty: 'fd', gainFear: true }).state;
+  assert.equal(confirmed.fd, pending);                                                       // no penalty on a Campfire: same value after arrival
+  assert.equal(X.previewRoll(s.dice, s.fd).difficulty, s.fd);                                // the roll itself stays against the pre-entry FD
+});
+
+test('the polish keys exist in both languages with identical placeholders', () => {
+  const i18n = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'i18n.json'), 'utf8'));
+  const keys = ['dh_party_summary', 'dh_party_summary_one', 'dh_party_edit', 'dh_hexes_short', 'dh_fd_resets_note', 'dh_menu_resets', 'dh_state_preview', 'dh_state_preview_note',
+    'dh_state_confirmed', 'dh_state_confirmed_note', 'dh_rest_more', 'dh_bastion_next', 'dh_bastion_kicker', 'dh_bastion_recap', 'dh_bastion_expedition', 'dh_bp_unit',
+    'dh_features_label', 'dh_fd_on_arrival', 'dh_fd_checks_now', 'dh_fd_may_rise', 'dh_src_adapt', 'dh_src_from', 'dh_src_untouched'];
+  const ph = s => (String(s).match(/\{\w+\}/g) || []).sort().join();
+  keys.forEach(k => { assert.ok(i18n.en[k] && i18n.ru[k], k); assert.equal(ph(i18n.en[k]), ph(i18n.ru[k]), k); });
+});
