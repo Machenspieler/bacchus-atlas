@@ -45806,6 +45806,134 @@
         "universal"
       ],
       "source": "The Void Guard"
+    },
+    {
+      "id": "cursed-woods-trail",
+      "tier": 1,
+      "type": "traversal",
+      "difficulty": 11,
+      "name": {
+        "en": "Cursed Woods Trail",
+        "ru": "Тропа Проклятого леса"
+      },
+      "lore": {
+        "en": "A tight, overgrown path through dark woods.",
+        "ru": "Узкая заросшая тропа в тёмном лесу."
+      },
+      "impulses": {
+        "en": [
+          "Keep outsiders within forever"
+        ],
+        "ru": [
+          "Удерживать чужаков в лесу навечно"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Zombies (Brawny Zombie, Rotted Zombie, Shambling Zombie, Zombie Pack, Patchwork Zombie Hulk)",
+          "Tangle Bramble"
+        ],
+        "ru": [
+          "Зомби (Зомби Силач, Гнилой Зомби, Бредущий Зомби, Орда Зомби, Лоскутный Зомби-Громила)",
+          "Колючий Тёрн"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "A Twisting Path",
+            "ru": "Извилистая тропа"
+          },
+          "description": {
+            "en": "Upon entering the cursed woods, the party gains a d8 Lost Die, starting with the 1 value facing up. When any PC rolls with Fear, increase the value by 1. If the value reaches 8, all progress toward escaping the forest is reset. Roll the Lost Die and take its new value.",
+            "ru": "Войдя в проклятый лес, отряд получает Кость Блуждания d8, которая сначала лежит значением 1 вверх. Когда любой персонаж выбрасывает результат со Страхом, увеличьте значение на 1. Если значение достигает 8, весь прогресс в попытке выбраться из леса сбрасывается. Бросьте Кость Блуждания и примите новое значение."
+          },
+          "prompt": {
+            "en": "What supernatural force is misdirecting the PCs? Can clever tricks or spells defeat it?",
+            "ru": "Какая сверхъестественная сила сбивает персонажей с пути? Можно ли победить её хитростью или заклинаниями?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Cursed Dreams",
+            "ru": "Проклятые сны"
+          },
+          "description": {
+            "en": "After a short or long rest, each PC must succeed on an Instinct Reaction Roll. On a failure, they mark 1 Stress, lingering nightmares clouding the task at hand. For each PC that fails, increase the Lost Die by 1.",
+            "ru": "После короткого или продолжительного отдыха каждый персонаж должен преуспеть в Броске Реакции на Инстинкт. При провале он отмечает 1 Стресс — навязчивые кошмары застилают стоящую перед ним задачу. За каждого персонажа, который провалил бросок, увеличьте Кость Блуждания на 1."
+          },
+          "prompt": {
+            "en": "What do they see?",
+            "ru": "Что они видят?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Winding Path",
+            "ru": "Петляющая тропа"
+          },
+          "description": {
+            "en": "The party must complete a Progress Countdown (4) to find their way through the forest. Each time a PC rolls with Hope to find their way, they discover one of the following:\n- useful loot on a skeleton\n- stump marked with a protective rune\n- firm axe driven into a tree",
+            "ru": "Чтобы найти дорогу через лес, отряд должен завершить Отсчёт Прогресса (4). Каждый раз, когда персонаж выбрасывает результат с Надеждой, пытаясь найти дорогу, он обнаруживает что-то одно из следующего:\n- полезная добыча на скелете\n- пень, отмеченный защитной руной\n- топор, крепко вогнанный в дерево"
+          },
+          "prompt": {
+            "en": "Are these items just lying around, or is a benevolent force guiding the PCs to items they’ve placed for them?",
+            "ru": "Эти вещи просто валяются здесь или некая доброжелательная сила ведёт персонажей к вещам, которые она для них оставила?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Death Itself",
+            "ru": "Сама Смерть"
+          },
+          "description": {
+            "en": "Spend a Fear to send a Patchwork Zombie Hulk crashing through the trees and onto the path. It seeks to feed on the living.",
+            "ru": "Потратьте Страх, чтобы Лоскутный Зомби-Громила с треском вывалился из-за деревьев на тропу. Он стремится питаться живыми."
+          },
+          "prompt": {
+            "en": "Where did this monstrosity escape from? Who knows it’s here? Are they after it?",
+            "ru": "Откуда сбежало это чудовище? Кто знает, что оно здесь? Охотятся ли они за ним?"
+          }
+        }
+      ],
+      "story_seeds": [
+        {
+          "title": {
+            "en": "Creekwood Post",
+            "ru": "Почта Криквуда"
+          },
+          "body": {
+            "en": "The least enviable courier jobs are to Creekwood, the lone hamlet along the cursed woods trail. A very scared postman can give the PCs key information about their main quest—in exchange for running his last delivery.",
+            "ru": "Самая незавидная работа курьера — доставка в Криквуд, одинокую деревушку на тропе через проклятый лес. Насмерть перепуганный почтальон может дать персонажам ключевые сведения об их главном задании — в обмен на то, что они доставят вместо него последнюю посылку."
+          },
+          "prompt": {
+            "en": "Why won’t he let the info go for anything less?",
+            "ru": "Почему он не расстанется со сведениями за меньшую цену?"
+          }
+        },
+        {
+          "title": {
+            "en": "Heart of Mystery",
+            "ru": "Сердце тайны"
+          },
+          "body": {
+            "en": "An eccentric contact of the PC’s is fascinated by the mystery of what haunts the Cursed Woods. He asks the party to make a series of detours along the trail and record their findings. About three trips should be more than enough.",
+            "ru": "Эксцентричный знакомый персонажа очарован тайной того, что обитает в Проклятом лесу. Он просит отряд сделать несколько заходов в стороны от тропы и записать свои находки. Около трёх вылазок должно хватить с лихвой."
+          },
+          "prompt": {
+            "en": "Why won’t the eccentric go themselves? What do they know they’re not telling?",
+            "ru": "Почему эксцентрик не пойдёт сам? Что ему известно такого, о чём он умалчивает?"
+          }
+        }
+      ],
+      "biomes": [
+        "forest"
+      ],
+      "source": "Resting Dagger"
     }
   ]
 }

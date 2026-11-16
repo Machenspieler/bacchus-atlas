@@ -206,8 +206,8 @@ test('20. the cuts are reproducible: the same master and x encode to the same by
 test('coverage on the real catalogue (PD-089 report)', () => {
   const by = {};
   for (const e of ENVS) { const r = resolve(e.id); by[r.kind] = (by[r.kind] || 0) + 1; }
-  assert.equal(ENVS.length, 408);
+  assert.equal(ENVS.length, 409);
   assert.deepEqual(by, { biome: by.biome, unique: 3, override: 2, crop: 5, thematic: by.thematic });
   assert.equal(by.thematic, 99); // 90 + the nine storms that gained a picture of their own
-  assert.equal(by.biome, 408 - 99 - 5 - 5);
+  assert.equal(by.biome, 409 - 99 - 5 - 5);
 });
