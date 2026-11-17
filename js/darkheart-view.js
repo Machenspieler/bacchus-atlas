@@ -578,13 +578,13 @@ const DarkheartView = (function () {
           <p class="dh-kicker"><span class="dh-chip dh-chip--${rule.category}">${esc(t('dh_cat_' + rule.category))}</span></p>
           <h3 class="dh-scene-title">${esc(bi(entry.framing.title))}</h3>
         </div>
-      </header>
-      <div class="dh-scene-meta">
-        <p class="dh-scene-sub"><span class="dh-chip">${esc(matchLabel)}</span><span class="dh-scene-env">${esc(bi(env.name))}</span>${env.source ? `<span class="dh-source">${esc(env.source)}</span>` : ''}</p>
         <div class="dh-scene-actions">
           <button type="button" class="btn btn-ghost btn-sm" data-dh-act="scene-regen"${pool > 1 ? '' : ' disabled'} title="${esc(t(pool > 1 ? 'dh_regen_scene_tip' : 'dh_regen_scene_one'))}">${I.refresh}<span>${esc(t('dh_regen_scene'))}</span></button>
           <a class="btn btn-ghost btn-sm" href="${esc(deps.envHref(env.id))}">${esc(t('dh_open_env'))}</a>
         </div>
+      </header>
+      <div class="dh-scene-meta">
+        <p class="dh-scene-sub"><span class="dh-chip">${esc(matchLabel)}</span><span class="dh-scene-env">${esc(bi(env.name))}</span>${env.source ? `<span class="dh-source">${esc(env.source)}</span>` : ''}</p>
       </div>
       <p class="dh-scene-summary">${esc(bi(entry.framing.summary))}</p>
       ${cur.cycled ? `<p class="dh-hint">${esc(t('dh_pool_cycled'))}</p>` : ''}

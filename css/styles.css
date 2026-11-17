@@ -152,6 +152,8 @@
   --h-xs: 24px;   /* badges, chips                 */
   --h-sm: 32px;   /* pills, lang switch, small btn */
   --h-md: 40px;   /* inputs, selects, buttons      */
+  --h-tap: 44px;  /* touch target: phone buttons    */
+  --h-lg: 48px;   /* primary call-to-action        */
   --h-label: 16px;
   --icon-sm: 14px; --icon-md: 16px;
 

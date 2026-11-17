@@ -205,6 +205,7 @@ elsewhere in the app.
 ## Spacing, radii, elevation, motion
 
 - **Spacing** is a 4px base scale, `--s-1` (4px) through `--s-10` (80px).
+  Control heights are `--h-xs/-sm/-md` (24/32/40) plus `--h-tap` (44, touch target) and `--h-lg` (48, primary call-to-action); body text is never capped with `--measure` inside a card — it runs the card's full width.
   Reach for the nearest step before writing a raw pixel margin/padding/gap; a
   raw value that equals a step is always the token. Dense expert-tool regions
   may keep documented local micro-values where the scale is too coarse. The
