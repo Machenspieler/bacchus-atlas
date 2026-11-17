@@ -3171,21 +3171,6 @@ function renderEnvTextForDarkheart(container, env, raw, tier, fd) {
   renderFeatureBody(container, text, Object.assign({}, base, { fd }));
 }
 
-/** The picture for a Darkheart scene card's header, or null (the card is then a deliberate text-only header). It reuses the
- * existing My Lists artwork registry and its approval rules (ListCoverUtils.resolveEnvironmentArt: own painting, hand-approved
- * crop, fitting thematic picture, biome landscape) and adds nothing of its own. A WHOLE environment may wear what resolves for
- * it. A FRAGMENT may not: it can leave out the very feature a painting shows (the lighthouse, the arena), so it wears only the
- * Darkheart setting's own picture, the forest landscape, which cannot contradict any fragment of a forest scene. Never
- * generated, never fetched from a service; static files already in img/list-covers/. */
-function darkheartSceneArt(env, whole) {
-  const resolved = whole
-    ? ListCoverUtils.resolveEnvironmentArt({ id: env.id, artBiome: artBiome(env) }, ART_RUNTIME)
-    : { imageId: 'biome:forest', kind: 'setting' };
-  const img = resolved && ART_RUNTIME.IMAGES[resolved.imageId];
-  if (!img) return null;
-  return { id: img.id, kind: resolved.kind, avif: img.avif, fallback: img.fallback, pos: img.pos[1] };
-}
-
 function renderDarkheartPage() {
   document.getElementById('toolbar').innerHTML = '';
   document.getElementById('result-count').innerHTML = '';
@@ -3197,7 +3182,6 @@ function renderDarkheartPage() {
     toast: showToast,
     environments: () => allEnvs(),
     renderEnvText: renderEnvTextForDarkheart,
-    sceneArt: darkheartSceneArt,
     rollDie,
     envHref: id => envHash(id, { name: 'darkheart' }),
     adversaries: () => (state.prepCatalog.adversaries || []),

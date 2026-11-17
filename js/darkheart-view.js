@@ -34,7 +34,7 @@ const DarkheartView = (function () {
   const bi = v => (v && (v[deps.lang()] || v.en)) || '';
   const S = () => deps.get();
 
-  function freshUi() { return { confirm: null, menuOpen: false, penalty: 'fd', gainFear: true, badDie: {}, restWhisper: true, restFear: true, manualFear: '', manualFd: '', npcOpen: false, encOpen: false, partyOpen: false, restOpen: false, sceneSig: '' }; }
+  function freshUi() { return { confirm: null, menuOpen: false, penalty: 'fd', gainFear: true, badDie: {}, restWhisper: true, restFear: true, manualFear: '', manualFd: '', npcOpen: false, encOpen: false, partyOpen: false, helpOpen: false, restOpen: false, sceneSig: '' }; }
   const fill = (key, vars) => Object.keys(vars).reduce((txt, k) => txt.split('{' + k + '}').join(String(vars[k])), t(key));
 
   /* ---------------- icons (inline, currentColor) ---------------- */
@@ -117,6 +117,7 @@ const DarkheartView = (function () {
 
   function renderAll() {
     syncComposition();
+    syncHeroOutcome();
     renderStatus(); renderRoll(); renderScene(); renderNpc(); renderEncounter(); renderHistory();
   }
 
@@ -157,38 +158,37 @@ const DarkheartView = (function () {
     const inBastion = s.phase === 'bastion';
     const canRetreat = s.hexes > 0 && (s.phase === 'roll' || s.phase === 'arrived') && !trapped;
     const fdNote = inBastion ? t('dh_fd_resets_note') : t('dh_fd_note');
+    const counter = (kind, labelKey, value, down, up, lo, hi, cls) => `
+        <div class="dh-counter dh-counter--${kind}${cls || ''}" role="group" aria-labelledby="dh-${kind}-label">
+          <span class="dh-counter-label" id="dh-${kind}-label">${esc(t(labelKey))}</span>
+          <div class="dh-counter-row">
+            <button type="button" class="dh-step-btn" data-dh-act="${kind}-" aria-label="${esc(t(down))}"${value <= lo ? ' disabled' : ''}>${I.minus}</button>
+            <output class="dh-counter-num" aria-labelledby="dh-${kind}-label">${value}</output>
+            <button type="button" class="dh-step-btn" data-dh-act="${kind}+" aria-label="${esc(t(up))}"${value >= hi ? ' disabled' : ''}>${I.plus}</button>
+          </div>
+        </div>`;
     setRegion('status', `
-      <div class="dh-stat dh-stat--fd${fdDanger ? ' is-danger' : ''}${trapped ? ' is-trapped' : ''}">
-        <span class="dh-stat-label" id="dh-fd-label">${esc(t('dh_forest_difficulty'))}</span>
-        <div class="dh-stat-row">
-          <button type="button" class="dh-step-btn" data-dh-act="fd-" aria-label="${esc(t('dh_fd_down'))}"${s.fd <= X.FD_START ? ' disabled' : ''}>${I.minus}</button>
-          <output class="dh-stat-num" aria-labelledby="dh-fd-label">${s.fd}</output>
-          <button type="button" class="dh-step-btn" data-dh-act="fd+" aria-label="${esc(t('dh_fd_up'))}"${s.fd >= X.FD_TRAPPED ? ' disabled' : ''}>${I.plus}</button>
-        </div>
-        <span class="dh-stat-note">${esc(fdNote)}</span>
+      <div class="dh-toolbar-group dh-counters">
+        ${counter('fd', 'dh_forest_difficulty', s.fd, 'dh_fd_down', 'dh_fd_up', X.FD_START, X.FD_TRAPPED, (fdDanger ? ' is-danger' : '') + (trapped ? ' is-trapped' : ''))}
+        ${counter('fear', 'dh_gm_fear', s.fear, 'dh_fear_down', 'dh_fear_up', 0, X.FEAR_MAX, '')}
+        <button type="button" class="dh-help-btn" data-dh-act="help-toggle" aria-expanded="${ui.helpOpen}" aria-controls="dh-help" aria-label="${esc(t('dh_help_label'))}">?</button>
       </div>
-      <div class="dh-stat dh-stat--fear">
-        <span class="dh-stat-label" id="dh-fear-label">${esc(t('dh_gm_fear'))}</span>
-        <div class="dh-stat-row">
-          <button type="button" class="dh-step-btn" data-dh-act="fear-" aria-label="${esc(t('dh_fear_down'))}"${s.fear <= 0 ? ' disabled' : ''}>${I.minus}</button>
-          <output class="dh-stat-num" aria-labelledby="dh-fear-label">${s.fear}</output>
-          <button type="button" class="dh-step-btn" data-dh-act="fear+" aria-label="${esc(t('dh_fear_up'))}"${s.fear >= X.FEAR_MAX ? ' disabled' : ''}>${I.plus}</button>
-        </div>
-        <span class="dh-stat-note">${esc(t('dh_fear_note'))}</span>
-      </div>
-      <div class="dh-trail">
-       <div class="dh-trail-top">
+      <div class="dh-toolbar-group dh-trail">
         <p class="dh-trail-line"><span class="dh-trail-exp">${esc(t('dh_expedition'))} ${s.expedition}</span>
-          <span class="dh-trail-hexes" title="${esc(t('dh_hexes_note'))}">${esc(t('dh_hexes_short'))}: <output class="dh-mono" aria-label="${esc(t('dh_hexes'))}">${s.hexes}</output></span></p>
+          <span class="dh-trail-hexes">${esc(t('dh_hexes_short'))}: <output class="dh-mono" aria-label="${esc(t('dh_hexes'))}">${s.hexes}</output></span></p>
         <button type="button" class="dh-party-btn" data-dh-act="party-toggle" aria-expanded="${ui.partyOpen}" aria-controls="dh-party"
                 aria-label="${esc(t('dh_party_label'))}: ${esc(partySummary(s))}. ${esc(t('dh_party_edit'))}"><span>${esc(partySummary(s))}</span><span class="dh-party-edit" aria-hidden="true">${esc(t('dh_party_edit'))}</span></button>
-       </div>
-       <div class="dh-status-actions">
+      </div>
+      <div class="dh-toolbar-group dh-status-actions">
         <button type="button" class="btn btn-ghost btn-sm" data-dh-act="undo"${s.undo.length ? '' : ' disabled'}>${I.undo}<span>${esc(t('dh_undo'))}</span></button>
         <button type="button" class="btn btn-ghost btn-sm" data-dh-act="retreat-open"${canRetreat ? '' : ' disabled'} title="${esc(t(canRetreat ? 'dh_retreat_tip' : 'dh_retreat_unavailable'))}">${esc(t('dh_return_bastion'))}</button>
         <button type="button" class="btn btn-ghost btn-sm dh-menu-btn" data-dh-act="menu-toggle" aria-expanded="${ui.menuOpen}" aria-controls="dh-menu-panel">${esc(t('dh_expedition_menu'))}</button>
-       </div>
       </div>
+      ${ui.helpOpen ? `<div id="dh-help" class="dh-help">
+        <p><strong>${esc(t('dh_forest_difficulty'))}.</strong> ${esc(fdNote)}</p>
+        <p><strong>${esc(t('dh_gm_fear'))}.</strong> ${esc(t('dh_fear_note'))}</p>
+        <p><strong>${esc(t('dh_hexes'))}.</strong> ${esc(t('dh_hexes_note'))}</p>
+      </div>` : ''}
       <div id="dh-party" class="dh-party"${ui.partyOpen ? '' : ' hidden'} role="group" aria-label="${esc(t('dh_party_label'))}"></div>
       ${ui.menuOpen ? `<div id="dh-menu-panel" class="dh-menu-panel">
         <div class="dh-menu-col">
@@ -221,9 +221,28 @@ const DarkheartView = (function () {
       </div>`;
   }
 
+  /** The roll's one status line. A critical success is ONE badge (the old Success + Critical pair said the same thing twice);
+   * every other roll keeps its Success/Failure badge and its Hope/Fear badge. Display only: p.success / p.rolledWith are the model's. */
   function rollBadge(p) {
-    const withWhat = p.rolledWith === 'critical' ? t('dh_critical') : (p.rolledWith === 'hope' ? t('dh_with_hope') : t('dh_with_fear'));
+    if (p.rolledWith === 'critical') return `<span class="dh-badge dh-badge--critical"><span aria-hidden="true">✓</span> ${esc(t('dh_critical'))}</span>`;
+    const withWhat = p.rolledWith === 'hope' ? t('dh_with_hope') : t('dh_with_fear');
     return `<span class="dh-badge ${p.success ? 'is-success' : 'is-fail'}"><span aria-hidden="true">${p.success ? '✓' : '✕'}</span> ${esc(p.success ? t('dh_success') : t('dh_failure'))}</span><span class="dh-badge dh-badge--${p.rolledWith}">${esc(withWhat)}</span>`;
+  }
+
+  /** "7 + 7 = 14  vs FD 16": the roll, and the Forest Difficulty that roll was actually made against. */
+  function mathHtml(r) {
+    const fdName = esc(t('dh_forest_difficulty'));
+    return `<p class="dh-result-math"><span class="dh-mono">${r.hope} + ${r.fear}${modText(r.modifier)} = <strong>${r.total}</strong></span>
+      <span class="dh-vs">${esc(t('dh_vs'))} <abbr title="${fdName}"><span aria-hidden="true">${esc(t('dh_fd_short'))}</span><span class="sr-only">${fdName}</span></abbr> ${r.difficulty}</span></p>`;
+  }
+  /** Status badges and the event on one wrapping line: "[Failure] [with Fear]  Creature · Hostile adversary". */
+  function outcomeLineHtml(r, rule) {
+    return `<p class="dh-result-line"><span class="dh-result-badges">${rollBadge(r)}</span>
+      <span class="dh-event"><span class="dh-event-cat">${esc(t('dh_cat_' + rule.category))}</span> · <strong>${esc(bi(rule.title))}</strong></span></p>`;
+  }
+  /** FD and Fear changes together: "Proposed  New hex: FD 16 → 17 · GM Fear 0 → 1". `state` says proposed vs applied. */
+  function changesHtml(state, items) {
+    return `<p class="dh-changes-line"><span class="dh-changes-state is-${state}">${esc(t('dh_changes_' + state))}</span>${items.map(i => `<span>${i}</span>`).join('')}</p>`;
   }
 
   function dieFields(s, disabled) {
@@ -302,43 +321,44 @@ const DarkheartView = (function () {
     const rule = X.OUTCOME_RULES[p.outcome];
     const head = `${errHtml}
       <div class="dh-result is-preview">
-        <p class="dh-state"><span class="dh-state-chip is-preview">${esc(t('dh_state_preview'))}</span><span class="dh-state-note">${esc(t('dh_state_preview_note'))}</span></p>
-        <p class="dh-result-math"><span class="dh-mono">${p.hope} + ${p.fear}${modText(p.modifier)} = <strong>${p.total}</strong></span>
-          <span class="dh-vs">${esc(t('dh_vs_fd'))} ${p.difficulty}</span></p>
-        <p class="dh-result-badges">${rollBadge(p)}</p>`;
+        <p class="dh-state"><span class="dh-state-chip is-preview">${esc(t('dh_state_preview'))}</span><span class="dh-state-note">${esc(t(retreat ? 'dh_state_preview_retreat_note' : 'dh_state_preview_note'))}</span></p>
+        ${mathHtml(p)}`;
     // A successful Group Roll to retreat: the party gets away.
     if (retreat && p.success) {
       const gain = p.gainsFear && s.settings.fearOnRoll;
       const sim = X.completeRetreat(s, { gainFear: ui.gainFear });
-      el.innerHTML = `${head}<p class="dh-result-kind"><strong>${esc(t('dh_retreat_escaped'))}</strong></p></div>
-        ${gain ? `<ul class="dh-conseq"><li><label class="dh-check"><input type="checkbox" data-dh-gainfear${ui.gainFear ? ' checked' : ''}> ${esc(t('dh_gain_fear'))}</label></li>${sim.ok && sim.state.fear !== s.fear ? `<li>${esc(t('dh_gm_fear'))} ${s.fear} → <strong>${sim.state.fear}</strong></li>` : ''}</ul>` : ''}
+      el.innerHTML = `${head}<p class="dh-result-line"><span class="dh-result-badges">${rollBadge(p)}</span><strong>${esc(t('dh_retreat_escaped'))}</strong></p></div>
+        ${gain ? `<div class="dh-changes"><label class="dh-check"><input type="checkbox" data-dh-gainfear${ui.gainFear ? ' checked' : ''}> ${esc(t('dh_gain_fear'))}</label>${sim.ok && sim.state.fear !== s.fear ? changesHtml('proposed', [`${esc(t('dh_gm_fear'))} ${s.fear} → <strong>${sim.state.fear}</strong>`]) : ''}</div>` : ''}
         <button type="button" class="btn btn-primary dh-confirm-btn" data-dh-act="retreat-escape">${I.arrive}<span>${esc(t('dh_return_bastion'))}</span></button>${cancel}`;
       return;
     }
     const choices = { penalty: ui.penalty, gainFear: ui.gainFear };
     const sim = retreat ? X.confirmRetreatFailure(s, choices) : X.confirmArrival(s, choices);
     const after = sim.ok ? sim.state : s;
-    const consequences = [`<li>${esc(t(retreat ? 'dh_retreat_adjacent' : 'dh_new_hex'))}: ${esc(t('dh_forest_difficulty'))} ${s.fd} → <strong>${after.fd}</strong></li>`];
+    const choicesHtml = [];
     if (rule.penalty > 0) {
       const who = p.outcome === 'landmark-fail-fear' ? 'dh_penalty_players_choose' : 'dh_penalty_gm_decides';
-      consequences.push(`<li><fieldset class="dh-choice"><legend>${esc(t('dh_penalty_choose'))}</legend>
-        <label><input type="radio" name="dh-penalty" value="fd"${ui.penalty === 'fd' ? ' checked' : ''}> +${rule.penalty} ${esc(t('dh_forest_difficulty'))}</label>
+      choicesHtml.push(`<fieldset class="dh-choice"><legend>${esc(t('dh_penalty_choose'))}</legend>
+        <div class="dh-choice-opts">
+        <label><input type="radio" name="dh-penalty" value="fd"${ui.penalty === 'fd' ? ' checked' : ''}> +${rule.penalty} <abbr title="${esc(t('dh_forest_difficulty'))}"><span aria-hidden="true">${esc(t('dh_fd_short'))}</span><span class="sr-only">${esc(t('dh_forest_difficulty'))}</span></abbr></label>
         <label><input type="radio" name="dh-penalty" value="fear"${ui.penalty === 'fear' ? ' checked' : ''}> +${rule.penalty} ${esc(t('dh_gm_fear'))}</label>
-        <span class="dh-hint-inline">${esc(t(who))}</span>
-      </fieldset></li>`);
+        </div>
+        ${p.outcome === 'landmark-fail-fear' ? '' : `<span class="dh-hint-inline">${esc(t(who))}</span>`}
+      </fieldset>`);
     }
     if (p.gainsFear && s.settings.fearOnRoll) {
-      consequences.push(`<li><label class="dh-check"><input type="checkbox" data-dh-gainfear${ui.gainFear ? ' checked' : ''}> ${esc(t('dh_gain_fear'))}</label></li>`);
+      choicesHtml.push(`<label class="dh-check"><input type="checkbox" data-dh-gainfear${ui.gainFear ? ' checked' : ''}> ${esc(t('dh_gain_fear'))}</label>`);
     }
-    if (after.fear !== s.fear) consequences.push(`<li>${esc(t('dh_gm_fear'))} ${s.fear} → <strong>${after.fear}</strong></li>`);
+    const items = [`${esc(t(retreat ? 'dh_retreat_adjacent' : 'dh_new_hex'))}: ${esc(t('dh_fd_short'))} ${s.fd} → <strong>${after.fd}</strong>`];
+    if (after.fear !== s.fear) items.push(`${esc(t('dh_gm_fear'))} ${s.fear} → <strong>${after.fear}</strong>`);
     const fdLine = after.trapped ? `<p class="dh-trapped" role="alert"><strong>${esc(t('dh_trapped_title'))}</strong> ${esc(t('dh_trapped_will'))}</p>` : '';
     el.innerHTML = `${head}
-        <p class="dh-result-kind"><span class="dh-chip dh-chip--${rule.category}">${esc(t('dh_cat_' + rule.category))}</span> <strong>${esc(bi(rule.title))}</strong></p>
+        ${outcomeLineHtml(p, rule)}
       </div>
-      <ul class="dh-conseq">${consequences.join('')}</ul>
+      <div class="dh-changes">${choicesHtml.join('')}${changesHtml('proposed', items)}</div>
       ${fdLine}
       <button type="button" class="btn btn-primary dh-confirm-btn" data-dh-act="${retreat ? 'retreat-fail' : 'confirm'}"${s.trapped ? ' disabled' : ''}>${I.arrive}<span>${esc(t(retreat ? 'dh_retreat_enter_adjacent' : 'dh_confirm_arrival'))}</span></button>
-      <p class="dh-hint">${esc(t(retreat ? 'dh_retreat_failed_hint' : 'dh_preview_hint'))}</p>${cancel}`;
+      ${retreat ? `<p class="dh-hint">${esc(t('dh_retreat_failed_hint'))}</p>` : ''}${cancel}`;
   }
 
   function restHtml(s) {
@@ -387,21 +407,20 @@ const DarkheartView = (function () {
   function arrivedHtml(s) {
     const a = s.arrival;
     const rule = X.OUTCOME_RULES[a.outcome];
-    const lines = [`${esc(t('dh_forest_difficulty'))} ${a.fdBefore} → <strong>${a.fdAfter}</strong>`];
-    if (a.fearAfter !== a.fearBefore) lines.push(`${esc(t('dh_gm_fear'))} ${a.fearBefore} → <strong>${a.fearAfter}</strong>`);
-    if (a.penaltyChoice) lines.push(esc(t(a.penaltyChoice === 'fd' ? 'dh_penalty_took_fd' : 'dh_penalty_took_fear')));
+    const items = [`${esc(t('dh_fd_short'))} ${a.fdBefore} → <strong>${a.fdAfter}</strong>`];
+    if (a.fearAfter !== a.fearBefore) items.push(`${esc(t('dh_gm_fear'))} ${a.fearBefore} → <strong>${a.fearAfter}</strong>`);
+    if (a.penaltyChoice) items.push(esc(t(a.penaltyChoice === 'fd' ? 'dh_penalty_took_fd' : 'dh_penalty_took_fear')));
+    const r = { hope: a.hope, fear: a.fear, modifier: a.modifier, total: a.total, difficulty: a.difficulty, success: a.total >= a.difficulty || a.hope === a.fear, rolledWith: a.rolledWith };
     return `
       <div class="dh-result is-arrived">
-        <p class="dh-state"><span class="dh-state-chip is-confirmed">${I.arrive}${esc(t('dh_state_confirmed'))}</span><span class="dh-state-note">${esc(t('dh_state_confirmed_note'))}</span></p>
-        <p class="dh-arrived-title"><strong>${esc(t('dh_arrived_at'))} ${a.n}</strong>${a.viaRetreat ? ` <span class="dh-chip dh-chip--warn">${esc(t('dh_via_retreat'))}</span>` : ''}</p>
-        <p class="dh-result-math"><span class="dh-mono">${a.hope} + ${a.fear}${modText(a.modifier)} = <strong>${a.total}</strong></span> <span class="dh-vs">${esc(t('dh_vs_fd'))} ${a.difficulty}</span></p>
-        <p class="dh-result-badges">${rollBadge({ success: a.total >= a.difficulty || a.hope === a.fear, rolledWith: a.rolledWith })}</p>
-        <p class="dh-result-kind"><span class="dh-chip dh-chip--${rule.category}">${esc(t('dh_cat_' + rule.category))}</span> <strong>${esc(bi(rule.title))}</strong></p>
-        <ul class="dh-conseq">${lines.map(l => `<li>${l}</li>`).join('')}</ul>
+        <p class="dh-state"><span class="dh-state-chip is-confirmed">${I.arrive}${esc(t('dh_state_confirmed'))}</span><strong class="dh-arrived-title">${esc(t('dh_arrived_at'))} ${a.n}</strong>${a.viaRetreat ? `<span class="dh-chip dh-chip--warn">${esc(t('dh_via_retreat'))}</span>` : ''}</p>
+        ${mathHtml(r)}
+        ${outcomeLineHtml(r, rule)}
+        ${changesHtml('applied', items)}
       </div>
       <div class="dh-arrived-actions">
-        <button type="button" class="btn btn-ghost dh-scene-link" data-dh-act="to-scene">${I.down}<span>${esc(t('dh_view_scene'))}</span></button>
         <button type="button" class="btn btn-primary dh-confirm-btn" data-dh-act="next">${I.dice}<span>${esc(t('dh_next_traversal'))}</span></button>
+        <button type="button" class="btn btn-ghost dh-scene-link" data-dh-act="to-scene">${I.down}<span>${esc(t('dh_view_scene'))}</span></button>
       </div>
       ${restHtml(s)}`;
   }
@@ -484,21 +503,13 @@ const DarkheartView = (function () {
     return { fd: sim.ok ? sim.state.fd : s.fd, pending: true };
   }
 
-  function sceneArtHtml(env, whole) {
-    const art = deps.sceneArt && deps.sceneArt(env, whole);
-    if (!art) return '';
-    const srcset = art.avif.map(a => `${a.path} ${a.w}w`).join(', ');
-    const p = art.pos;
-    const style = p.x === 50 && p.y === 50 ? '' : ` style="--pos:${p.x}% ${p.y}%"`;
-    // Fixed-height frame: the picture can arrive late without moving anything. Low priority: the roll is never waiting on it.
-    // Artwork roles: a painting/crop/thematic picture names the LOCATION; the forest landscape (setting/biome) is only Darkheart's general
-    // atmosphere while dedicated outcome illustrations are unavailable, so it is quieter and says so. Outcome art (the travel event) is a
-    // separate future role and would arrive through deps.sceneArt, not through this frame.
-    const generic = art.kind === 'setting' || art.kind === 'biome';
-    return `<div class="dh-scene-art${generic ? ' is-generic' : ''}" aria-hidden="true">${generic ? `<span class="dh-art-tag">${esc(t('dh_art_atmosphere'))}</span>` : ''}<picture>
-        <source type="image/avif" sizes="(max-width: 640px) 100vw, 960px" srcset="${srcset}">
-        <img src="${art.fallback}" alt="" decoding="async" fetchpriority="low"${style}>
-      </picture></div>`;
+  /** The hero's artwork identity is the TRAVEL OUTCOME (the OUTCOME_RULES id, the one classification), never the environment, so
+   * "New scene" cannot change it. The twelve future illustrations key off `data-outcome` on the hero; no valid outcome, no attribute. */
+  function syncHeroOutcome() {
+    const hero = region('hero');
+    if (!hero) return;
+    const outcome = stageOutcome();
+    if (outcome) hero.dataset.outcome = outcome; else delete hero.dataset.outcome;
   }
 
   /** The note beside a source feature that names its own adversaries while this dashboard builds the encounter itself (`encounter.sourceRoster`). */
@@ -508,6 +519,7 @@ const DarkheartView = (function () {
   }
 
   function renderScene() {
+    syncHeroOutcome();
     const outcome = stageOutcome();
     const s = S();
     const el = region('scene');
@@ -560,10 +572,8 @@ const DarkheartView = (function () {
         <p class="dh-adjust">${entry.guidance.adjust.map(a => `<span class="dh-chip">${esc(t('dh_adjust_' + a))}</span>`).join(' ')}</p>
       </section>` : '';
     const leftOut = !parts.whole && parts.leftOut.length ? `<p class="dh-hint"><strong>${esc(t('dh_left_out'))}:</strong> ${esc(parts.leftOut.join(', '))}</p>` : '';
-    const art = sceneArtHtml(env, parts.whole);
     setRegion('scene', `
-      <header class="dh-scene-head${art ? ' has-art' : ''}${art.indexOf('is-generic') >= 0 ? ' has-generic-art' : ''}">
-        ${art}
+      <header class="dh-scene-head">
         <div class="dh-scene-headtext">
           <p class="dh-kicker"><span class="dh-chip dh-chip--${rule.category}">${esc(t('dh_cat_' + rule.category))}</span></p>
           <h3 class="dh-scene-title">${esc(bi(entry.framing.title))}</h3>
@@ -817,6 +827,7 @@ const DarkheartView = (function () {
       case 'fear-': return apply(X.adjustFear(s, -1));
       case 'fear+': return apply(X.adjustFear(s, 1));
       case 'undo': ui = Object.assign(freshUi(), { histOpen: ui.histOpen, partyOpen: ui.partyOpen }); return apply(X.undo(s));
+      case 'help-toggle': ui.helpOpen = !ui.helpOpen; return renderStatus();
       case 'party-toggle': ui.partyOpen = !ui.partyOpen; return renderStatus();
       case 'menu-toggle': ui.menuOpen = !ui.menuOpen; if (!ui.menuOpen) ui.confirm = null; ui.sceneSig = ''; renderStatus(); return renderScene();
       case 'expedition-ask': ui.confirm = 'expedition'; ui.menuOpen = true; return renderStatus();
@@ -996,9 +1007,9 @@ const DarkheartView = (function () {
     mountToken += 1;
     host.innerHTML = `
       <div class="dh-page">
-        <header class="dh-head">
+        <header id="dh-hero" class="dh-hero">
+          <div class="dh-hero-art" aria-hidden="true"><span class="dh-hero-label">${esc(t('dh_art_placeholder'))}</span></div>
           <h2 class="dh-title">${esc(t('dh_title'))}</h2>
-          <p class="dh-lede">${esc(t('dh_lede'))}</p>
         </header>
         <section id="dh-status" class="dh-status" aria-label="${esc(t('dh_status_label'))}"></section>
         <div class="dh-layout">

@@ -12,53 +12,72 @@
    transition, so the page stays cheap to paint during play.
    ============================================================ */
 
-.dh-page { grid-column: 1 / -1; display: grid; gap: var(--s-3); padding-top: var(--s-3); padding-bottom: var(--s-8); min-width: 0; }
-.dh-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-1) var(--s-6); flex-wrap: wrap; }
-.dh-title { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-xl); line-height: var(--lh-xl); letter-spacing: var(--tracking-display); color: var(--parchment); margin: 0; }
-.dh-lede { margin: 0; color: var(--parchment-dim); font-size: var(--fs-sm); max-width: 64ch; }
+.dh-page { grid-column: 1 / -1; display: grid; gap: var(--s-3); padding-top: 0; padding-bottom: var(--s-8); min-width: 0; }
 .dh-mono { font-family: var(--font-mono); }
 
-/* ---------- 1. expedition status ---------- */
-/* One compact strip: the two counters the Master adjusts all session (Forest Difficulty, GM Fear) get the weight; the expedition
- * tally and the rarely-changed party sit in a quiet column ("Tier 3 · 4 Heroes", editable on demand); the routine actions are one row. */
+/* The catalogue's (empty) filter-bar wrapper would leave a 28px gap between the navigation and the hero; Darkheart has no filter bar (as on Journey). */
+body[data-route="darkheart"] .catalog-bar-wrap { display: none; }
+
+/* ---------- 0. hero: the travel-outcome illustration slot, directly under the global navigation ---------- */
+/* The slot is full-bleed (the art layer is as wide as the viewport, centred on the shell, so it never needs the shell's width) and a
+ * fixed height, so a future picture of any aspect ratio changes nothing. The shared header sits above it (sticky, z-index 30): the
+ * ribbons simply hang over its top edge, untouched. The title keeps the shell's left edge. Its artwork identity is the travel outcome
+ * (data-outcome, set by the view), never the environment. */
+.dh-hero { position: relative; display: flex; align-items: flex-end; box-sizing: border-box; height: 220px; padding-bottom: var(--s-4); }
+.dh-hero-art { position: absolute; top: 0; bottom: 0; left: 50%; width: 100vw; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; overflow: hidden; background: linear-gradient(160deg, var(--ink-raised) 0%, var(--ink) 100%); border-bottom: 1px solid var(--line-faint); }
+/* A localized scrim behind the title only (future artwork keeps its full brightness elsewhere) */
+.dh-hero-art::before { content: ""; position: absolute; left: 0; bottom: 0; width: min(100%, 64rem); height: 100%; background: radial-gradient(120% 150% at 0% 100%, color-mix(in srgb, var(--ink) 80%, transparent) 0%, transparent 70%); pointer-events: none; }
+.dh-hero-label { position: relative; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--parchment-dim); text-align: center; padding-inline: var(--s-4); }
+.dh-title { position: relative; z-index: 1; margin: 0; min-width: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-2xl); line-height: var(--lh-2xl); letter-spacing: var(--tracking-display); color: var(--parchment); overflow-wrap: anywhere; }
+
+/* ---------- 1. expedition toolbar ---------- */
+/* One compact strip below the hero: the two counters the Master adjusts all session, the expedition tally with the party, and the
+ * routine actions. Groups are separated by a hairline, not boxed; explanatory copy is behind the "?" button (a real toggle). */
 .dh-status {
-  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.9fr); gap: var(--s-3); align-items: stretch;
-  padding: var(--s-3); background: var(--ink-card); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--e-1);
+  position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-5); box-sizing: border-box; min-height: 64px;
+  padding: var(--s-2) var(--s-4); background: var(--ink-card); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--e-1);
 }
-.dh-stat { display: grid; gap: var(--s-1); align-content: start; padding: var(--s-2) var(--s-3); border: 1px solid var(--line-faint); border-radius: var(--r-sm); background: var(--ink-raised); min-width: 0; }
-.dh-stat-label { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--parchment-dim); }
-.dh-stat-row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); }
-.dh-stat-num { font-family: var(--font-mono); font-weight: 700; font-size: var(--fs-2xl); line-height: 1; color: var(--parchment); min-width: 2ch; text-align: center; font-variant-numeric: tabular-nums; }
-.dh-stat--fd .dh-stat-num { color: var(--hope-soft); }
-.dh-stat--fd.is-danger { border-color: var(--fear); }
-.dh-stat--fd.is-danger .dh-stat-num, .dh-stat--fd.is-trapped .dh-stat-num { color: var(--fear-soft); }
-.dh-stat--fear .dh-stat-num { color: var(--fear-soft); }
-.dh-stat-note { font-size: var(--fs-xs); color: var(--muted); line-height: var(--lh-xs); }
-.dh-trail { display: grid; gap: var(--s-2); align-content: space-between; min-width: 0; }
-.dh-trail-top { display: grid; gap: var(--s-2); }
-.dh-trail-line { margin: 0; display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); flex-wrap: wrap; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--parchment-dim); }
-.dh-trail-hexes output { font-size: var(--fs-md); font-weight: 700; color: var(--parchment); }
-.dh-party-btn { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); width: 100%; min-height: var(--h-md); padding: var(--s-1) var(--s-3); box-sizing: border-box; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--ink-raised); color: var(--parchment); font-family: var(--font-body); font-size: var(--fs-base); text-align: left; cursor: pointer; transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out); }
+.dh-toolbar-group { display: flex; align-items: center; gap: var(--s-4); min-width: 0; }
+.dh-counters { gap: var(--s-5); }
+.dh-trail, .dh-status-actions { padding-left: var(--s-5); border-left: 1px solid var(--line-faint); }
+.dh-status-actions { margin-left: auto; gap: var(--s-2); flex-wrap: wrap; }
+.dh-status-actions .btn { white-space: nowrap; }
+.dh-counter { display: grid; gap: 2px; justify-items: start; min-width: 0; }
+.dh-counter-label { font-family: var(--font-mono); font-size: var(--fs-xs); line-height: 1.2; letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--parchment-dim); }
+.dh-counter-row { display: flex; align-items: center; gap: var(--s-1); }
+.dh-counter .dh-step-btn { width: 34px; height: 34px; }
+.dh-counter-num { font-family: var(--font-mono); font-weight: 700; font-size: var(--fs-xl); line-height: 1; color: var(--parchment); min-width: 2.2ch; text-align: center; font-variant-numeric: tabular-nums; }
+.dh-counter--fd .dh-counter-num { color: var(--hope-soft); }
+.dh-counter--fd.is-danger .dh-counter-num, .dh-counter--fd.is-trapped .dh-counter-num { color: var(--fear-soft); }
+.dh-counter--fear .dh-counter-num { color: var(--fear-soft); }
+.dh-help-btn { flex: none; align-self: center; display: inline-grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 1px solid var(--line); border-radius: var(--r-pill); background: transparent; color: var(--parchment-dim); font-family: var(--font-mono); font-size: var(--fs-sm); cursor: pointer; }
+.dh-help-btn:hover { border-color: var(--line-strong); color: var(--parchment); }
+.dh-help-btn[aria-expanded="true"] { border-color: var(--hope-border); background: var(--hope-selected-bg); color: var(--hope-soft); }
+.dh-help-btn:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
+.dh-help { flex: 1 1 100%; display: grid; gap: var(--s-1); padding-top: var(--s-2); border-top: 1px solid var(--line-faint); font-size: var(--fs-sm); line-height: var(--lh-sm); color: var(--parchment-dim); }
+.dh-help p { margin: 0; max-width: var(--measure); }
+.dh-help strong { font-weight: 400; color: var(--parchment); }
+.dh-trail-line { margin: 0; display: grid; gap: 2px; font-family: var(--font-mono); font-size: var(--fs-xs); line-height: 1.25; letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--parchment-dim); white-space: nowrap; }
+.dh-trail-hexes output { font-size: var(--fs-sm); font-weight: 700; color: var(--parchment); }
+.dh-party-btn { display: inline-flex; align-items: center; gap: var(--s-2); min-height: 34px; padding: 0 var(--s-3); box-sizing: border-box; border: 1px solid var(--line); border-radius: var(--r-sm); background: transparent; color: var(--parchment); font-family: var(--font-body); font-size: var(--fs-sm); text-align: left; cursor: pointer; transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out); }
+.dh-party-btn::after { content: ""; flex: none; width: 0; height: 0; border-style: solid; border-width: 5px 4px 0 4px; border-color: currentColor transparent transparent transparent; opacity: 0.7; }
 .dh-party-btn:hover { border-color: var(--line-strong); background: var(--ink-hover); }
 .dh-party-btn[aria-expanded="true"] { border-color: var(--hope-border); background: var(--hope-selected-bg); }
 .dh-party-btn:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
-.dh-party-edit { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--muted); }
-.dh-party { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-7); padding: var(--s-3); border: 1px solid var(--line-faint); border-radius: var(--r-sm); background: var(--ink-raised); }
+.dh-party-edit { display: none; }
+.dh-party { flex: 1 1 100%; display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-7); padding: var(--s-3); border: 1px solid var(--line-faint); border-radius: var(--r-sm); background: var(--ink-raised); }
 .dh-party[hidden] { display: none; }
 .dh-party .dh-field + .dh-field { margin-top: 0; }
-.dh-status-actions { display: flex; justify-content: flex-start; gap: var(--s-2); flex-wrap: wrap; }
-.dh-status-actions .btn { white-space: nowrap; }
-/* Narrower than a wide desktop (Russian labels are long): the two counters keep their own row and the tally, party and the three
- * actions share a second row, so a long label can never stretch the Forest Difficulty and Fear cards. */
+/* Intermediate widths (Russian labels are long): counters and the expedition/party group share the first row, the actions take a
+ * second row of their own; no hairlines where a group starts a row. */
 @media (min-width: 641px) and (max-width: 1180px) {
-  .dh-status { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .dh-trail { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-4); }
-  .dh-trail-top { flex: 1 1 280px; }
-  .dh-status-actions { flex: 0 1 auto; }
+  .dh-hero { height: 200px; }
+  .dh-trail { border-left: 0; padding-left: 0; }
+  .dh-status-actions { flex: 1 1 100%; margin-left: 0; padding: var(--s-2) 0 0; border-left: 0; border-top: 1px solid var(--line-faint); }
 }
 .dh-menu-btn[aria-expanded="true"] { border-color: var(--hope-border); color: var(--hope-soft); background: var(--hope-selected-bg); }
 .dh-confirm { display: grid; gap: var(--s-2); padding: var(--s-2); border: 1px solid var(--fear); border-radius: var(--r-sm); background: var(--fear-tint); font-size: var(--fs-sm); }
-.dh-trapped { grid-column: 1 / -1; margin: 0; padding: var(--s-3); border: 1px solid var(--fear); border-radius: var(--r-sm); background: var(--fear-tint); color: var(--parchment); }
+.dh-trapped { flex: 1 1 100%; margin: 0; padding: var(--s-3); border: 1px solid var(--fear); border-radius: var(--r-sm); background: var(--fear-tint); color: var(--parchment); }
 
 .dh-step-btn {
   display: inline-grid; place-items: center; width: var(--h-md); height: var(--h-md); padding: 0; flex: none;
@@ -105,7 +124,12 @@
 
 /* ---------- 2. roll: the primary workspace ---------- */
 .dh-roll { border-color: var(--line-strong); }
-.dh-roll .dh-panel-title { font-size: var(--fs-lg); }
+.dh-roll .dh-panel-title { font-size: var(--fs-lg); margin-bottom: var(--s-2); }
+/* Mouse-driven laptop screens: slightly tighter rows so even a roll with two GM choices keeps Confirm in view (phones keep 44-48px targets) */
+@media (min-width: 901px) and (pointer: fine) {
+  .dh-roll .dh-choice label, .dh-roll .dh-check { min-height: 28px; }
+  .dh-roll .dh-confirm-btn { height: 44px; }
+}
 .dh-dice { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
 .dh-die { display: grid; grid-template-rows: 1fr auto; gap: var(--s-1); }
 .dh-input { width: 100%; height: 44px; padding: 0 var(--s-3); box-sizing: border-box; background: var(--ink-raised); color: var(--parchment); border: 1px solid var(--line); border-radius: var(--r-sm); font-family: var(--font-mono); font-size: var(--fs-lg); text-align: center; }
@@ -114,29 +138,41 @@
 .dh-input:disabled { opacity: var(--opacity-disabled); cursor: not-allowed; }
 .dh-errors { margin: var(--s-3) 0 0; padding-left: var(--s-5); color: var(--fear-soft); font-size: var(--fs-sm); }
 /* preview and confirmed arrival look different in shape, not just colour: dashed + "Preview" against solid gold + "Confirmed" */
-.dh-result { display: grid; gap: var(--s-2); margin-top: var(--s-3); padding: var(--s-3); border: 1px dashed var(--line-strong); border-radius: var(--r-sm); background: var(--ink-raised); }
+.dh-result { display: grid; gap: var(--s-2); margin-top: var(--s-2); padding: var(--s-2) var(--s-3); border: 1px dashed var(--line-strong); border-radius: var(--r-sm); background: var(--ink-raised); }
 .dh-result.is-arrived { border: 1px solid var(--hope-border); background: var(--hope-wash); }
 .dh-result p { margin: 0; }
-.dh-state { display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; }
+.dh-state { display: flex; align-items: center; gap: var(--s-1) var(--s-2); flex-wrap: wrap; }
 .dh-state-chip { display: inline-flex; align-items: center; gap: var(--s-1); height: 22px; padding: 0 var(--s-2); border-radius: var(--r-xs); font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: var(--tracking-badge); text-transform: uppercase; }
 .dh-state-chip svg { width: 14px; height: 14px; }
 .dh-state-chip.is-preview { border: 1px dashed var(--line-strong); color: var(--parchment-dim); }
 .dh-state-chip.is-confirmed { border: 1px solid var(--hope-border); background: var(--hope-selected-bg); color: var(--hope-soft); }
-.dh-state-note { font-size: var(--fs-xs); color: var(--muted); }
-.dh-result-math { display: flex; align-items: baseline; gap: var(--s-3); flex-wrap: wrap; font-size: var(--fs-lg); }
+.dh-state-note { font-size: var(--fs-xs); color: var(--muted); line-height: var(--lh-xs); flex: 1 1 12ch; min-width: 0; }
+.dh-result-math { display: flex; align-items: baseline; gap: var(--s-1) var(--s-3); flex-wrap: wrap; font-size: var(--fs-lg); }
 .dh-result-math strong { color: var(--hope-soft); }
 .dh-vs { color: var(--parchment-dim); font-size: var(--fs-sm); }
-.dh-result-badges { display: flex; gap: var(--s-2); flex-wrap: wrap; }
+.dh-vs abbr { text-decoration: none; }
+.dh-result-line { display: flex; align-items: center; gap: var(--s-1) var(--s-3); flex-wrap: wrap; }
+.dh-result-badges { display: inline-flex; gap: var(--s-2); flex-wrap: wrap; }
+.dh-event { font-size: var(--fs-base); color: var(--parchment); min-width: 0; overflow-wrap: anywhere; }
+.dh-event-cat { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--parchment-dim); }
+.dh-event strong { font-weight: 600; }
 .dh-result-kind { display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; }
-.dh-arrived-title { display: flex; align-items: center; gap: var(--s-2); color: var(--hope-soft); }
-.dh-conseq { list-style: none; margin: var(--s-3) 0 0; padding: 0; display: grid; gap: var(--s-2); font-size: var(--fs-sm); color: var(--parchment-dim); }
-.dh-result .dh-conseq { margin-top: var(--s-1); }
-.dh-conseq strong { color: var(--parchment); font-family: var(--font-mono); }
-.dh-choice { border: 1px solid var(--line-faint); border-radius: var(--r-sm); margin: 0; padding: var(--s-2) var(--s-3); display: grid; gap: var(--s-2); }
-.dh-choice legend { padding: 0 var(--s-1); color: var(--parchment); }
+.dh-arrived-title { font-weight: 400; font-family: var(--font-display); font-size: var(--fs-md); color: var(--hope-soft); }
+/* FD and Fear changes together, with the GM's choices (kept interactive) just above the summary line */
+.dh-changes { display: grid; gap: 0; margin-top: var(--s-1); font-size: var(--fs-sm); color: var(--parchment-dim); }
+.dh-result .dh-changes { margin-top: 0; }
+.dh-changes-line { margin: 0; display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--s-1) var(--s-3); }
+.dh-changes-state { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--muted); }
+.dh-changes-state.is-applied { color: var(--hope-soft); }
+.dh-changes strong, .dh-result .dh-changes strong { color: var(--parchment); font-family: var(--font-mono); }
+.dh-choice { border: 0; margin: 0; padding: 0; display: grid; gap: 0; min-width: 0; }
+.dh-choice legend { padding: 0; margin-bottom: var(--s-1); color: var(--parchment); float: left; width: 100%; }
+.dh-choice legend + * { clear: both; }
+.dh-choice abbr { text-decoration: none; }
+.dh-choice-opts { display: flex; flex-wrap: wrap; gap: 0 var(--s-4); }
 .dh-choice label, .dh-check { display: flex; align-items: center; gap: var(--s-2); cursor: pointer; min-height: 32px; }
 .dh-choice input, .dh-check input { accent-color: var(--hope); width: 20px; height: 20px; flex: none; }
-.dh-confirm-btn { width: 100%; margin-top: var(--s-3); height: 52px; font-weight: 600; font-size: var(--fs-md); }
+.dh-confirm-btn { width: 100%; margin-top: var(--s-2); height: 48px; font-weight: 600; font-size: var(--fs-md); }
 .dh-confirm-btn svg { width: var(--icon-md); height: var(--icon-md); }
 .dh-arrived-actions { display: grid; gap: var(--s-2); margin-top: var(--s-3); }
 .dh-arrived-actions .dh-confirm-btn { margin-top: 0; }
@@ -171,22 +207,10 @@
 
 /* ---------- 3. scene: the narrative centrepiece ---------- */
 .dh-scene { display: grid; gap: var(--s-4); }
-/* Header: a fixed-height frame (no layout shift) holding the approved picture, fading into the card's own ground, with the title
- * set on it; or, with no honest picture, a quiet text-only banner of the same ground. */
-.dh-scene-head { position: relative; display: flex; align-items: flex-end; margin: calc(-1 * var(--dh-pad)) calc(-1 * var(--dh-pad)) 0; padding: var(--s-5) var(--dh-pad) var(--s-3); border-radius: var(--r-md) var(--r-md) 0 0; overflow: hidden; background: linear-gradient(135deg, var(--hope-wash), transparent 70%); border-bottom: 1px solid var(--line-faint); }
-.dh-scene-head.has-art { min-height: 188px; border-bottom: 0; background: var(--ink-raised); }
-.dh-scene-art { position: absolute; inset: 0; }
-.dh-scene-art picture, .dh-scene-art img { display: block; width: 100%; height: 100%; }
-.dh-scene-art img { object-fit: cover; object-position: var(--pos, 50% 50%); }
 .dh-scene { scroll-margin-top: calc(var(--hdr-h) + var(--s-3)); }
-/* Generic atmosphere (the forest landscape, when no painting of THIS place or travel-event illustration exists): quieter, shorter, labelled */
-.dh-scene-head.has-generic-art { min-height: 112px; }
-.dh-scene-art.is-generic img { opacity: 0.5; }
-.dh-art-tag { position: absolute; top: var(--s-2); right: var(--s-3); z-index: 1; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--parchment-dim); }
-.dh-scene-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, var(--ink-card) 0%, color-mix(in srgb, var(--ink-card) 72%, transparent) 38%, transparent 100%); }
+.dh-scene-head { display: flex; min-width: 0; }
 .dh-scene-headtext { position: relative; display: grid; gap: var(--s-2); min-width: 0; }
-.dh-scene-head.has-art .dh-kicker .dh-chip { background: var(--ink-card); }
-.dh-scene-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-2xl); line-height: var(--lh-2xl); letter-spacing: var(--tracking-display); color: var(--parchment); text-shadow: 0 1px 3px var(--ink); overflow-wrap: anywhere; }
+.dh-scene-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-2xl); line-height: var(--lh-2xl); letter-spacing: var(--tracking-display); color: var(--parchment); overflow-wrap: anywhere; }
 .dh-scene-meta { display: flex; justify-content: space-between; align-items: center; gap: var(--s-2) var(--s-4); flex-wrap: wrap; margin-top: calc(-1 * var(--s-1)); }
 .dh-scene-sub { margin: 0; display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; color: var(--parchment); font-size: var(--fs-sm); min-width: 0; }
 .dh-scene-env { font-family: var(--font-display); font-size: var(--fs-md); }
@@ -331,7 +355,7 @@
 
 /* ---------- rests, retreat, expedition menu, house rules (PD-101) ---------- */
 /* The menu opens in the flow of the strip, under the buttons, pushing the page down: it never covers the roll or the scene. */
-.dh-menu-panel { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); padding: var(--s-3) var(--s-4); border: 1px solid var(--line-strong); border-radius: var(--r-sm); background: var(--ink-raised); }
+.dh-menu-panel { flex: 1 1 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); padding: var(--s-3) var(--s-4); border: 1px solid var(--line-strong); border-radius: var(--r-sm); background: var(--ink-raised); }
 .dh-menu-col { display: grid; gap: var(--s-2); align-content: start; min-width: 0; justify-items: start; }
 .dh-menu-col .dh-hint { margin: 0 0 var(--s-2); }
 .dh-confirm-btns { display: flex; gap: var(--s-2); flex-wrap: wrap; }
@@ -368,33 +392,30 @@ details[open] > summary::before { transform: rotate(90deg); }
    * so the scene is within a screen of the confirmed result. The inputs stay in the DOM, disabled, so nothing about the state changes. */
   #dh-roll.is-arrived > .dh-dice { display: none; }
   #dh-roll.is-arrived .dh-result { margin-top: 0; gap: var(--s-1); }
-  .dh-result.is-arrived .dh-state-note { display: none; }
   .dh-result.is-arrived .dh-result-math { font-size: var(--fs-md); gap: var(--s-2); }
-  .dh-result.is-arrived .dh-conseq { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); margin-top: 0; }
 }
 @media (max-width: 640px) {
   /* A phone is its own layout, not a shrunk desktop: the two counters side by side, expedition tally and party on one line,
    * three equal action buttons, notes dropped (the numbers are self-explanatory and the roll is one screen away). */
-  .dh-title { font-size: var(--fs-lg); }
-  .dh-lede { display: none; }
-  .dh-status { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); padding: var(--s-2); }
-  .dh-stat { padding: var(--s-2); }
-  .dh-stat-note { display: none; }
-  .dh-stat-label { white-space: normal; overflow-wrap: anywhere; line-height: 1.25; }
-  .dh-stat-num { font-size: var(--fs-xl); }
-  .dh-trail { display: contents; }
-  .dh-trail-top { grid-column: 1 / -1; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--s-3); }
-  .dh-status-actions { grid-column: 1 / -1; }
-  .dh-trail-line { flex-direction: column; align-items: flex-start; gap: 0; }
-  .dh-party-btn { padding-inline: var(--s-2); font-size: var(--fs-sm); }
-  .dh-party-edit { display: none; }
-  .dh-party { gap: var(--s-3); }
+  .dh-hero { height: 160px; padding-bottom: var(--s-3); }
+  .dh-hero-art { align-items: flex-start; }
+  .dh-hero-label { margin-top: 56px; }
+  .dh-title { font-size: var(--fs-xl); line-height: var(--lh-xl); }
+  .dh-status { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-2); padding: var(--s-2) var(--s-3); }
+  .dh-toolbar-group, .dh-trail, .dh-status-actions { padding: 0; border: 0; margin: 0; }
+  .dh-counters { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: var(--s-2); align-items: end; }
+  .dh-counter .dh-step-btn { width: 44px; height: 44px; }
+  .dh-counter-row { gap: var(--s-1); }
+  .dh-counter-num { min-width: 2ch; }
+  .dh-help-btn { width: 44px; height: 44px; align-self: end; }
+  .dh-trail { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-2) var(--s-3); padding-top: var(--s-2); border-top: 1px solid var(--line-faint); }
+  .dh-trail { flex-wrap: nowrap; align-items: center; }
+  .dh-party-btn { flex: 1 1 auto; justify-content: space-between; max-width: 220px; }
+  .dh-party-btn { min-height: 44px; }
   .dh-status-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); }
   .dh-status-actions .btn { white-space: normal; line-height: 1.15; min-height: 44px; padding-inline: var(--s-2); justify-content: center; text-align: center; }
+  .dh-party { gap: var(--s-3); }
   .dh-card { --dh-pad: var(--s-3); }
-  .dh-scene-head.has-art { min-height: 150px; }
-  .dh-scene-head.has-generic-art { min-height: 96px; }
-  .dh-state-note { display: none; }
   .dh-scene-title { font-size: var(--fs-xl); }
   .dh-scene-summary { font-size: var(--fs-base); }
   .dh-rule-title { font-size: var(--fs-md); }

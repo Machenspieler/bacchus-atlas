@@ -763,7 +763,7 @@ test('the Roots Tavern scene keeps the Traveler’s campfire in its framing and 
 
 test('the dashboard strings for the scene link, Rest summary and source roster exist in both languages', () => {
   const i18n = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/i18n.json'), 'utf8'));
-  for (const k of ['dh_view_scene', 'dh_rest_sub', 'dh_art_atmosphere', 'dh_roster_chip', 'dh_roster_note', 'dh_enc_source_hint']) {
+  for (const k of ['dh_view_scene', 'dh_rest_sub', 'dh_art_placeholder', 'dh_roster_chip', 'dh_roster_note', 'dh_enc_source_hint']) {
     assert.ok(i18n.en[k] && i18n.ru[k] && /[А-Яа-я]/.test(i18n.ru[k]), k);
   }
 });
