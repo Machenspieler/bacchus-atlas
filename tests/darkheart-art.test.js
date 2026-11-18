@@ -28,7 +28,7 @@ test('portraits: only firbolg and aetheris; no other ancestry (nor Mixed Ancestr
   assert.deepEqual(Object.keys(Art.ANCESTRIES).sort(), ['aetheris', 'firbolg']);
   assert.match(Art.portraitArt('firbolg').src, /ancestry-firbolg-64\.webp$/);
   assert.match(Art.portraitArt('aetheris').src, /ancestry-aetheris-64\.webp$/);
-  for (const a of Npc.ANCESTRIES) if (a.id !== 'firbolg') assert.equal(Art.portraitArt(a.id), null, a.id);
+  for (const a of Npc.ANCESTRIES) if (!(a.id in Art.ANCESTRIES)) assert.equal(Art.portraitArt(a.id), null, a.id);
   for (const k of ['mixed-ancestry', 'Firbolg', 'toString', '__proto__', 'constructor', '', null, undefined, 7, {}]) {
     assert.equal(Art.portraitArt(k), null, String(k));
     assert.equal(Art.outcomeArt(k), null, String(k));
@@ -54,4 +54,14 @@ test('the view reads the table only, keeps alt empty, reserves dimensions and ne
   assert.ok(read('index.html').indexOf('js/darkheart-art.js') > read('index.html').indexOf('js/darkheart-npc.js'));
   assert.ok(read('index.html').indexOf('js/darkheart-art.js') < read('index.html').indexOf('js/darkheart-view.js'), 'table loads before the view');
   assert.match(read('scripts/build.js'), /darkheart-art-source/);
+});
+
+test('both portrait ancestries are real NPC ancestries, and generation can deal each', () => {
+  const ids = Npc.ANCESTRIES.map(a => a.id);
+  for (const k of Object.keys(Art.ANCESTRIES)) assert.ok(ids.includes(k), k);
+  const seen = new Set();
+  for (let seed = 0; seed < 400; seed++) seen.add(Npc.generateNpc({ outcome: 'creature-success-hope', sceneId: 's', seed }).ancestry.id);
+  assert.ok(seen.has('aetheris') && seen.has('firbolg'));
+  const a = Npc.ANCESTRIES.find(x => x.id === 'aetheris');
+  assert.deepEqual([a.name.en, a.name.ru], ['Aetheris', 'Аэтерис']);
 });
