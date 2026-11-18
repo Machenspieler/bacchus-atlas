@@ -13,7 +13,7 @@
    ============================================================ */
 
 /* Page-scoped dimensions of this page's own layout (art slot, columns, portraits); spacing, type and control heights are the shared tokens. */
-.dh-page { --dh-hero-h: 220px; --dh-side-min: 300px; --dh-side-max: 340px; --dh-avatar: 72px; --dh-avatar-sm: 60px; --dh-tile-min: 150px; --dh-bp-max: 260px; --dh-party-max: 220px; }
+.dh-page { --dh-hero-h: 260px; --dh-side-min: 300px; --dh-side-max: 340px; --dh-avatar: 72px; --dh-avatar-sm: 60px; --dh-portrait: 64px; --dh-tile-min: 150px; --dh-bp-max: 260px; --dh-party-max: 220px; }
 .dh-page { grid-column: 1 / -1; display: grid; gap: var(--s-3); padding-top: 0; padding-bottom: var(--s-8); min-width: 0; }
 .dh-mono { font-family: var(--font-mono); }
 
@@ -29,6 +29,7 @@ body[data-route="darkheart"] .catalog-bar-wrap { display: none; }
 .dh-hero-art { position: absolute; top: 0; bottom: 0; left: 50%; width: 100vw; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; overflow: hidden; background: linear-gradient(160deg, var(--ink-raised) 0%, var(--ink) 100%); border-bottom: 1px solid var(--line-faint); }
 /* A localized scrim behind the title only (future artwork keeps its full brightness elsewhere) */
 .dh-hero-art::before { content: ""; position: absolute; left: 0; bottom: 0; width: min(100%, 64rem); height: 100%; background: radial-gradient(120% 150% at 0% 100%, color-mix(in srgb, var(--ink) 80%, transparent) 0%, transparent 70%); pointer-events: none; }
+.dh-hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .dh-hero-label { position: relative; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--parchment-dim); text-align: center; padding-inline: var(--s-4); }
 .dh-title { position: relative; z-index: 1; margin: 0; min-width: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-2xl); line-height: var(--lh-2xl); letter-spacing: var(--tracking-display); color: var(--parchment); overflow-wrap: anywhere; }
 
@@ -303,6 +304,8 @@ body[data-route="darkheart"] .catalog-bar-wrap { display: none; }
 @media (min-width: 720px) { .dh-scene .dh-npc-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); } }
 .dh-npc { display: grid; grid-template-columns: var(--dh-avatar) minmax(0, 1fr); gap: var(--s-3); align-items: center; margin-bottom: var(--s-3); }
 .dh-avatar { width: var(--dh-avatar); height: var(--dh-avatar); }
+.dh-avatar.has-portrait { width: var(--dh-portrait); height: var(--dh-portrait); margin-inline: calc((var(--dh-avatar) - var(--dh-portrait)) / 2); }
+.dh-avatar-img { width: 100%; height: 100%; display: block; object-fit: cover; border-radius: 50%; border: 1px solid var(--line-faint); box-sizing: border-box; }
 .dh-avatar-svg { width: 100%; height: 100%; display: block; }
 .dh-av-bg { fill: var(--av-ground, var(--ink-raised)); }
 .dh-av-body { fill: var(--av-shade); stroke: var(--line-strong); stroke-width: 0.8; }
@@ -438,6 +441,7 @@ details[open] > summary::before { transform: rotate(90deg); }
   .dh-rule-title { font-size: var(--fs-md); }
   .dh-npc { grid-template-columns: var(--dh-avatar-sm) minmax(0, 1fr); }
   .dh-avatar { width: var(--dh-avatar-sm); height: var(--dh-avatar-sm); }
+  .dh-avatar.has-portrait { --dh-portrait: 56px; margin-inline: calc((var(--dh-avatar-sm) - var(--dh-portrait)) / 2); }
   .dh-adv { grid-template-columns: auto minmax(0, 1fr) auto; row-gap: var(--s-1); }
   .dh-adv-cost { grid-column: 2; grid-row: 2; text-align: left; }
   .dh-adv .dh-icon-toggle { grid-column: 3; grid-row: 1 / span 2; }

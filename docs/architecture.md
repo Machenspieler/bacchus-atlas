@@ -810,6 +810,12 @@ small pure-JS function (no `crypto`), so the module can be wrapped for the
 browser later without re-pinning anything. Artwork decisions are checked
 against the live tables (`CatalogArt.resolveCatalogArt`, `img/biomes/`).
 
+### Darkheart artwork (PD-105)
+
+`js/darkheart-art.js` is the single table (outcome → banner, ancestry → portrait); `DarkheartView.syncHeroOutcome()` swaps the hero's
+`<picture>` only when the staged outcome's picture changes, and `portraitHtml()` wears the portrait in the NPC card. Derivatives are cut by
+`scripts/generate-darkheart-art.js` from `img/darkheart-art-source/`; `tests/darkheart-art.test.js` pins the mapping and the files.
+
 ### Darkheart Forest page (PD-098, PD-099)
 
 `#/darkheart` is the fifth route and bookmark. `js/app.js` owns three small things: `state.darkheart`

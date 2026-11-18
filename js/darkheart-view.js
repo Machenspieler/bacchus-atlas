@@ -514,6 +514,21 @@ const DarkheartView = (function () {
     if (!hero) return;
     const outcome = stageOutcome();
     if (outcome) hero.dataset.outcome = outcome; else delete hero.dataset.outcome;
+    // The banner is derived from the same staged outcome (preview, arrival, Undo and reload all go through stageOutcome()); it is
+    // only rebuilt when the picture itself changes, so typing a die never reloads or flashes it. No entry: the placeholder label.
+    const art = DarkheartArt.outcomeArt(outcome);
+    const slot = hero.querySelector('.dh-hero-art');
+    const id = art ? art.id : '';
+    if (!slot || slot.dataset.art === id) return;
+    slot.dataset.art = id;
+    slot.classList.toggle('has-art', !!art);
+    slot.innerHTML = art ? heroPictureHtml(art) : heroPlaceholderHtml();
+  }
+  const heroPlaceholderHtml = () => `<span class="dh-hero-label">${esc(t('dh_art_placeholder'))}</span>`;
+  /** Decorative (the rule text beside it says everything): empty alt, real dimensions reserved, the crop's focal point per picture. */
+  function heroPictureHtml(art) {
+    return `<picture><source type="image/avif" srcset="${esc(art.avifSrcset)}" sizes="100vw">`
+      + `<img class="dh-hero-img" src="${esc(art.src)}" alt="" width="${art.width}" height="${art.height}" decoding="async" style="object-position:${esc(art.position)}"></picture>`;
   }
 
   /** The note beside a source feature that names its own adversaries while this dashboard builds the encounter itself (`encounter.sourceRoster`). */
@@ -710,6 +725,13 @@ const DarkheartView = (function () {
     </svg>`;
   }
 
+  /** The ancestry's representative portrait (not this individual's likeness), chosen by the ancestry id alone; null keeps the SVG
+   * silhouette. Decorative: the ancestry name sits beside it as text. */
+  function portraitHtml(npc) {
+    const art = DarkheartArt.portraitArt(npc.ancestry && npc.ancestry.id);
+    return art ? `<img class="dh-avatar-img" src="${esc(art.src)}" srcset="${esc(art.srcset)}" alt="" width="${art.size}" height="${art.size}" decoding="async">` : '';
+  }
+
   function renderNpc() {
     const s = S();
     const outcome = s.scene.outcome && stageOutcome() === s.scene.outcome ? s.scene.outcome : null;
@@ -730,7 +752,7 @@ const DarkheartView = (function () {
     setRegion('npc', `
       ${heading}
       <div class="dh-npc">
-        <div class="dh-avatar">${avatarSvg(npc)}</div>
+        ${(portrait => portrait ? `<div class="dh-avatar has-portrait">${portrait}</div>` : `<div class="dh-avatar">${avatarSvg(npc)}</div>`)(portraitHtml(npc))}
         <div class="dh-npc-id">
           <p class="dh-npc-name">${esc(bi(npc.name))}</p>
           <p class="dh-npc-anc"><span class="dh-chip">${esc(bi(npc.ancestry))}</span></p>
@@ -1076,7 +1098,7 @@ const DarkheartView = (function () {
     host.innerHTML = `
       <div class="dh-page">
         <header id="dh-hero" class="dh-hero">
-          <div class="dh-hero-art" aria-hidden="true"><span class="dh-hero-label">${esc(t('dh_art_placeholder'))}</span></div>
+          <div class="dh-hero-art" aria-hidden="true">${heroPlaceholderHtml()}</div>
           <h2 class="dh-title">${esc(t('dh_title'))}</h2>
         </header>
         <section id="dh-status" class="dh-status" aria-label="${esc(t('dh_status_label'))}"></section>
