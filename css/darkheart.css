@@ -13,7 +13,7 @@
    ============================================================ */
 
 /* Page-scoped dimensions of this page's own layout (art slot, columns, portraits); spacing, type and control heights are the shared tokens. */
-.dh-page { --dh-hero-h: 260px; --dh-side-min: 300px; --dh-side-max: 340px; --dh-avatar: 72px; --dh-avatar-sm: 60px; --dh-portrait: 64px; --dh-tile-min: 150px; --dh-bp-max: 260px; --dh-party-max: 220px; }
+.dh-page { --dh-hero-h: 180px; --dh-side-min: 300px; --dh-side-max: 340px; --dh-avatar: 72px; --dh-avatar-sm: 60px; --dh-portrait: 64px; --dh-tile-min: 150px; --dh-bp-max: 260px; --dh-party-max: 220px; }
 .dh-page { grid-column: 1 / -1; display: grid; gap: var(--s-3); padding-top: 0; padding-bottom: var(--s-8); min-width: 0; }
 .dh-mono { font-family: var(--font-mono); }
 

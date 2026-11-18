@@ -31,7 +31,7 @@
 
   /* outcome id (js/darkheart-expedition.js OUTCOME_RULES) -> picture. `position`: where the cover crop sits. */
   const OUTCOMES = {
-    'landmark-success-hope': { master: 'outcome-landmark-success-hope.png', width: 1672, height: 941, position: '50% 50%', use: 'pilot' },
+    'landmark-success-hope': { master: 'outcome-landmark-success-hope.png', width: 1672, height: 941, position: '50% 58%', use: 'pilot' },
     'hazard-fail-fear':      { master: 'outcome-hazard-fail-fear.png',      width: 1671, height: 941, position: '50% 62%', use: 'pilot' },
   };
 
