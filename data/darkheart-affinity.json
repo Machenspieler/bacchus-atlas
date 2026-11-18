@@ -1,5 +1,5 @@
 {
-  "_note": "Darkheart adversary affinity (PD-099): a small, explicit, reviewable classification of the catalogue adversaries the Darkheart pilot can use, into a handful of themes. A scene's `encounter.themes` (data/darkheart-scenes.json) says which themes belong to it; an adversary no theme lists is never recommended on its own. Not a taxonomy of the whole bestiary and never read for anything else. `related` themes are allowed only as role fillers. scripts/validate-data.js checks every id against data/prep.json.",
+  "_note": "Darkheart adversary affinity (PD-099): a small, explicit, reviewable classification of the catalogue adversaries the Darkheart pilot can use, into a handful of themes (PD-104 added `folk`: humanoid and socially interactive groups, the preferred neutral encounter). A scene's `encounter.themes` (data/darkheart-scenes.json) says which themes belong to it; an adversary no theme lists is never recommended on its own. Not a taxonomy of the whole bestiary and never read for anything else. `related` themes are allowed only as role fillers. scripts/validate-data.js checks every id against data/prep.json.",
   "schema": 1,
   "themes": {
     "wolves": {
@@ -66,6 +66,13 @@
       "related": [
         "vermin"
       ]
+    },
+    "folk": {
+      "name": {
+        "en": "Travellers, patrols and local folk",
+        "ru": "Путники, дозоры и местные жители"
+      },
+      "related": []
     }
   },
   "adversaries": {
@@ -78,6 +85,9 @@
     "arch-necromancer": [
       "undead"
     ],
+    "archer-guard": [
+      "folk"
+    ],
     "atototl": [
       "beasts"
     ],
@@ -86,6 +96,9 @@
     ],
     "bear": [
       "beasts"
+    ],
+    "bladed-guard": [
+      "folk"
     ],
     "brawny-zombie": [
       "undead"
@@ -96,11 +109,20 @@
     "cave-ogre": [
       "underground"
     ],
+    "centaur-warden": [
+      "folk"
+    ],
     "chaos-skull": [
       "demonic"
     ],
     "common-ruffian": [
       "outlaws"
+    ],
+    "conscript": [
+      "folk"
+    ],
+    "courtier": [
+      "folk"
     ],
     "crimson-lepus": [
       "beasts"
@@ -151,6 +173,9 @@
     "elephant": [
       "beasts"
     ],
+    "elite-soldier": [
+      "folk"
+    ],
     "elk": [
       "beasts"
     ],
@@ -171,6 +196,9 @@
     ],
     "ghastly-legion": [
       "undead"
+    ],
+    "giant-beastmaster": [
+      "folk"
     ],
     "giant-eagle": [
       "beasts"
@@ -195,6 +223,9 @@
     ],
     "harrier": [
       "outlaws"
+    ],
+    "head-guard": [
+      "folk"
     ],
     "head-vampire": [
       "undead"
@@ -223,8 +254,17 @@
     "jagged-knife-sniper": [
       "outlaws"
     ],
+    "knight-of-the-realm": [
+      "folk"
+    ],
     "masked-thief": [
       "outlaws"
+    ],
+    "merchant": [
+      "folk"
+    ],
+    "merchant-baron": [
+      "folk"
     ],
     "minor-chaos-elemental": [
       "demonic"
@@ -234,6 +274,9 @@
     ],
     "minor-treant": [
       "sylvan"
+    ],
+    "mortal-hunter": [
+      "folk"
     ],
     "night-children": [
       "undead"
@@ -246,6 +289,9 @@
     ],
     "perfected-zombie": [
       "undead"
+    ],
+    "petty-noble": [
+      "folk"
     ],
     "phantom": [
       "undead"
@@ -261,6 +307,9 @@
     ],
     "rust-eater": [
       "underground"
+    ],
+    "secret-keeper": [
+      "folk"
     ],
     "sellsword": [
       "outlaws"
@@ -289,8 +338,14 @@
     "spectral-guardian": [
       "undead"
     ],
+    "spellblade": [
+      "folk"
+    ],
     "sprite": [
       "sylvan"
+    ],
+    "spy": [
+      "folk"
     ],
     "stag-knight": [
       "beasts",
@@ -331,6 +386,9 @@
     ],
     "viper": [
       "beasts"
+    ],
+    "weaponmaster": [
+      "folk"
     ],
     "whisper-wraith": [
       "undead"

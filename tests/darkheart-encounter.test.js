@@ -262,7 +262,7 @@ test('combat posture follows the Darkheart outcome', () => {
   assert.ok(posture('creature-fail-fear').adversaries.length >= 1);
   const neutral = posture('creature-fail-hope');
   assert.equal(neutral.combat, 'prepared');
-  assert.ok(neutral.adversaries.length === 1, 'one set of stats ready, combat not forced');
+  assert.ok(neutral.adversaries.length >= 1 && neutral.adversaries.length <= 2, 'one or two sets of stats ready, combat not forced');
   assert.ok(neutral.reasoning.some(x => x.code === 'combat-prepared'));
   for (const o of ['creature-success-fear', 'hazard-fail-fear', 'hazard-fail-hope', 'resource-success-fear']) {
     assert.equal(posture(o).combat, 'optional', o);
@@ -381,7 +381,7 @@ test('the affinity layer is small, explicit, and every theme and id in it is rea
     assert.ok(Object.values(affinity.adversaries).some(list => list.includes(theme)), `theme ${theme} classifies nothing`);
     for (const r of affinity.themes[theme].related) assert.ok(affinity.themes[r], `${theme} -> ${r}`);
   }
-  assert.ok(Object.keys(affinity.themes).length <= 10 && Object.keys(affinity.adversaries).length <= 100, 'not a taxonomy of the bestiary');
+  assert.ok(Object.keys(affinity.themes).length <= 10 && Object.keys(affinity.adversaries).length <= 130, 'not a taxonomy of the bestiary');   // PD-104: 100 -> 130 for the humanoid `folk` theme (neutral meetings)
 });
 
 /* ---------------- PD-099: scene/outcome consistency at the composition boundary ---------------- */

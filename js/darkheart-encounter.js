@@ -56,7 +56,7 @@
    * `maxLines` caps distinct adversaries. */
   var OUTCOME_POLICY = {
     'creature-fail-fear':    { combat: 'recommended', thematicOnly: false, maxLines: 4 },
-    'creature-fail-hope':    { combat: 'prepared',    thematicOnly: true,  maxLines: 1 },
+    'creature-fail-hope':    { combat: 'prepared',    thematicOnly: true,  maxLines: 2 },
     'creature-success-fear': { combat: 'optional',    thematicOnly: true,  maxLines: 3 },
     'creature-success-hope': { combat: 'none' },
     'landmark-fail-fear':    { combat: 'none' },
@@ -89,7 +89,7 @@
    * follows docs/translation-glossary.md. */
   var TEXT = {
     'combat-none': function () { return { en: 'This outcome does not call for combat; no adversaries were generated.', ru: 'Этот исход не предполагает боя; противники не подбирались.' }; },
-    'combat-prepared': function () { return { en: 'Neutral encounter: the stat block is ready if things turn, but combat is never forced.', ru: 'Нейтральная встреча: характеристики наготове на случай, если всё обернётся плохо, но бой не навязывается.' }; },
+    'combat-prepared': function () { return { en: 'Neutral encounter: the stat blocks are ready if things turn, but combat is never forced.', ru: 'Нейтральная встреча: характеристики наготове на случай, если всё обернётся плохо, но бой не навязывается.' }; },
     'combat-optional': function () { return { en: 'The danger can be purely environmental; these adversaries are an option if the Master wants a fight.', ru: 'Опасность может быть чисто окружающей; эти противники — вариант, если Мастер хочет бой.' }; },
     'combat-recommended': function () { return { en: 'Hostile encounter: a combat composition is recommended.', ru: 'Враждебная встреча: рекомендуется боевой состав.' }; },
     'budget': function (p) { return { en: 'Battle Points budget ' + p.available + ' (base ' + p.base + ', adjustments ' + signed(p.available - p.base) + '); composition spends ' + p.spent + '. Guidance only, not a guarantee of difficulty.', ru: 'Бюджет очков боя ' + p.available + ' (база ' + p.base + ', поправки ' + signed(p.available - p.base) + '); состав тратит ' + p.spent + '. Это ориентир, а не гарантия сложности.' }; },

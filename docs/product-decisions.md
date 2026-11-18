@@ -1818,3 +1818,17 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
 - **Wayfinder result (compact):** one status row (Preview + one short "not saved yet, confirming applies it once" note, or Confirmed + "Arrived at hex N"), the roll beside "vs FD n" (abbreviation expanded for assistive tech; the difficulty is the one that roll used), one wrapping line of status badges plus "Category · Event" (a critical success is ONE badge), the GM's choices kept as real controls, one "Proposed" / "Applied" line for the FD and Fear changes, then the primary button. The preview explanation is not repeated under the button. Display only: detection, outcome and Fear rules are untouched.
 - **Typography / status strip:** synthetic bold removed from display-face feature names; emphasis inside prose is weight 600. The status strip keeps counters on one row; below 1181px the tally, party and actions take a second row so long Russian labels cannot stretch the FD and Fear cards.
 - **Forest Difficulty is capped at 30** everywhere it is written (arrival including a Landmark penalty, the manual +, rests, and a persisted value, which loads clamped to 30): 30 is the end of the game (trapped), so the + button is disabled there and no hex can push the FD past it.
+
+## PD-104: Darkheart environments are chosen for their character, and the event is composed from environment, participants and optional GM guidance
+
+**Decision (owner, 2026-11-18).** Which environment serves a traversal outcome is decided by the *suitability of the place*, not by whether its source text already contains a resource, enemy, NPC, campfire or matching countdown. The reviewed pilot scenes (56 scenes, 34 environments, 3–10 environments per outcome) had become a permanent gate; they stay as authored framing/adaptation records but no longer limit the pool.
+
+1. Four responsibilities stay separate: Environment, Outcome (existing rules), Participants (generated NPC, thematic adversaries from the existing catalogue) and GM Guidance.
+2. Suitability is explicit data (`data/darkheart-suitability.json`: character tags, exclusions, reasoned overrides) plus one small rule per outcome (`js/darkheart-suitability.js`). No keyword scan of text, no blanket assignment; countdown values never decide eligibility.
+3. A neutral encounter is prepared, never mandatory combat; a guarded resource is a guard (creatures or a hazard, one is enough) not a started fight; a hopeful find has no mandatory guardian or trap.
+4. Source features that name creatures other than the generated roster are shown as an adapted line; the original stays under Source and adaptation. Catalogue records are never changed.
+5. GM Guidance is authored templates + metadata (no runtime AI), short, optional, localized; resource guidance never rolls loot and never claims to know the party's quest.
+6. Neutral encounters hold up to two adversary lines and prefer a new humanoid `folk` affinity theme where the place has people (a preference, not a restriction).
+
+Contract: [data-contracts/darkheart-suitability.md](data-contracts/darkheart-suitability.md). Coverage: `node scripts/darkheart-coverage-report.js`.
+

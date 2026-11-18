@@ -41,6 +41,12 @@ only on the first visit to the page.
 - **Quantities in the Encounter Builder:** FreshCutGrass ignores `q` in a shared link, so
   the page exports one entry per adversary. `builder.entries[].quantity` stays in the result.
 
+## PD-104 addendum
+
+Scenes may also be *derived* from the suitability layer ([darkheart-suitability.md](darkheart-suitability.md)): an outcome entry
+may carry its own `encounter: { themes, adversaries }`, which `encounterFor` prefers over the scene's. `creature-fail-hope` may hold
+two adversary lines and prefers the `folk` theme where the place has people. `generateNpc` accepts `situations` (what the place supports).
+
 ## Principles
 
 - **Four components, each regenerable on its own.** Regenerating one never

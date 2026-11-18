@@ -3146,12 +3146,20 @@ function darkheartData() {
   state.darkheartLoad = Promise.all([
     getJSON(versionedDataUrl('data/darkheart-scenes.json')),
     getJSON(versionedDataUrl('data/darkheart-affinity.json')),
-  ]).then(([manifest, affinity]) => {
+    getJSON(versionedDataUrl('data/darkheart-suitability.json')),
+  ]).then(([manifest, affinity, suitability]) => {
     const analysis = DarkheartScenes.analyzeManifest(manifest, { environments: allEnvs(), affinityThemes: Object.keys(affinity.themes || {}) });
     const selectable = analysis.scenes.filter(x => x.selectable).map(x => x.scene);
     const adversaries = state.prepCatalog.adversaries || [];
+    // PD-104: an environment serves an outcome by its place's character, not by what its text mentions. The reviewed scenes
+    // above keep their authored framing; the suitability layer adds a whole-environment scene for every OTHER outcome a
+    // profiled environment suits, so no outcome is limited to the pilot list.
+    const covered = new Map();
+    selectable.forEach(sc => { const set = covered.get(sc.envId) || new Set(); sc.outcomes.forEach(o => set.add(o.outcome)); covered.set(sc.envId, set); });
+    const derived = DarkheartSuitability.buildScenes(suitability, { environments: allEnvs(), affinityThemes: Object.keys(affinity.themes || {}), covered });
     return {
-      selectable,
+      selectable: selectable.concat(derived),
+      profiles: suitability.profiles || {},
       withheld: analysis.scenes.length - selectable.length,
       ctx: DarkheartEncounter.createContext(adversaries, allEnvs(), affinity),
     };

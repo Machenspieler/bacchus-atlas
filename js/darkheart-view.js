@@ -105,7 +105,11 @@ const DarkheartView = (function () {
     const s = S();
     if (s.scene.npc.locked && s.scene.npc.value) return;
     const seed = (s.scene.npc.seed || 0) + (bump ? 1 : 0);
-    const value = DarkheartNpc.generateNpc({ outcome: s.scene.outcome, sceneId: s.scene.sceneId, seed });
+    // The NPC's predicament belongs to the PLACE (PD-104): the situations its character supports, picked by the NPC's own seed.
+    const scene = DarkheartComposer.findScene(data.selectable, s.scene.sceneId);
+    const role = DarkheartNpc.roleForOutcome(s.scene.outcome);
+    const situations = scene && data.profiles ? DarkheartSuitability.npcSituations(data.profiles[scene.envId], role) : [];
+    const value = DarkheartNpc.generateNpc({ outcome: s.scene.outcome, sceneId: s.scene.sceneId, seed, situations });
     if (!value) return;
     deps.set(X.setScene(s, Object.assign({}, s.scene, { npc: { seed, locked: false, value } })).state);
   }
@@ -518,6 +522,65 @@ const DarkheartView = (function () {
       ? `<p class="dh-roster-note"><span class="dh-chip dh-chip--countdown">${esc(t('dh_roster_chip'))}</span><span>${esc(t('dh_roster_note'))}</span></p>` : '';
   }
 
+  /** Ids of the adversaries the encounter below currently lists, for a derived scene whose outcome brings participants: a source
+   * feature that names a DIFFERENT creature is adapted (never shown as an instruction that contradicts the roster). */
+  function rosterIds(scene, outcome) {
+    if (!scene.derived || DarkheartSuitability.PARTICIPANT_OUTCOMES.indexOf(outcome) === -1 || !deps.adversaries().length) return [];
+    const s = S();
+    const r = DarkheartComposer.encounterFor({ scene, outcome, tier: s.tier, heroes: s.heroes, difficulty: s.difficulty, seed: s.scene.encounter.seed, locked: s.scene.encounter.locked, gmTheme: s.scene.encounter.gmTheme, ctx: data.ctx });
+    return r.status === 'blocked' ? [] : r.adversaries.map(a => a.id);
+  }
+
+  /** A source feature the scene does not apply as written: one adapted line in its place; the original wording sits under Source and adaptation. */
+  function adaptedFeatureHtml(a) {
+    return `<div class="dh-feature dh-feature--adapted">
+      <p class="dh-feature-head"><span class="dh-ftype dh-ftype--${esc(a.feature.type)}">${esc(t('feature_' + a.feature.type))}</span> <strong>${esc(bi(a.feature.name))}</strong> <span class="dh-chip dh-chip--adapted">${esc(t('dh_adapted_chip'))}</span></p>
+      <p class="dh-feature-text">${esc(t('dh_adapted_actors'))} <span class="dh-hint-inline">${esc(t('dh_adapted_names'))} ${esc(a.actors.map(id => { const adv = deps.adversaries().find(x => x.id === id); return adv ? bi(adv.name) : id; }).join(', '))}.</span></p>
+    </div>`;
+  }
+  function adaptedSourceHtml(adapted) {
+    if (!adapted.length) return '';
+    return `<div class="dh-src-adapted"><h5 class="dh-block-label">${esc(t('dh_src_adapted_h'))}</h5>
+      ${adapted.map(a => `<blockquote class="dh-src-quote"><p class="dh-feature-head"><strong>${esc(bi(a.feature.name))}</strong></p><p><span class="dh-field-label">${esc(t('dh_src_orig'))}</span> ${esc(bi(a.feature.description))}</p></blockquote>`).join('')}
+    </div>`;
+  }
+
+  /** The scene's GM Guidance (PD-104): short, optional, outcome-specific suggestions from DarkheartGuidance, with any authored
+   * advice for this scene's outcome (`entry.guidance`) kept in the same block. */
+  function shownFeatures(scene, env, outcome) {
+    if (scene.derived) {
+      const p = DarkheartSuitability.featurePlan(env, outcome, deps.adversaries(), rosterIds(scene, outcome));
+      return p.active.length ? p.active : (env.features || []);
+    }
+    const parts = DarkheartComposer.sceneParts(scene, env);
+    return parts.whole ? (env.features || []) : parts.features;
+  }
+  function guidanceHtml(scene, env, outcome, entry) {
+    const profile = (data.profiles || {})[scene.envId];
+    const role = DarkheartNpc.roleForOutcome(outcome);
+    const npc = role && role !== 'neutral-creature' ? S().scene.npc.value : null;
+    const g = DarkheartGuidance.guidanceFor({ outcome, env, profile, npc, features: shownFeatures(scene, env, outcome) });
+    const authored = entry.guidance ? `
+        <p class="dh-gm-authored">${esc(bi(entry.guidance.text))}</p>
+        <p class="dh-adjust">${entry.guidance.adjust.map(a => `<span class="dh-chip">${esc(t('dh_adjust_' + a))}</span>`).join(' ')}</p>` : '';
+    if (!g && !authored) return '';
+    const items = g ? g.items.map(i => `<li><span class="dh-gm-label">${esc(bi(i.label))}</span><span class="dh-gm-text">${esc(bi(i.text))}</span></li>`).join('') : '';
+    return `<section class="dh-guidance dh-gm" aria-labelledby="dh-guid-h">
+        <h4 id="dh-guid-h" class="dh-block-label">${esc(t('dh_guidance_label'))} <span class="dh-chip">${esc(t('dh_gm_optional'))}</span></h4>
+        ${g ? `<p class="dh-hint dh-hint--tight">${esc(bi(g.intro))}</p>` : ''}
+        ${items ? `<ul class="dh-gm-list">${items}</ul>` : ''}${authored}
+      </section>`;
+  }
+  function renderGuidance() {
+    const slot = host && host.querySelector('#dh-gm');
+    const outcome = stageOutcome();
+    if (!slot || !outcome || data.status !== 'ready') return;
+    const cur = currentScene(outcome);
+    const env = cur.scene && deps.environments().find(e => e.id === cur.scene.envId);
+    const entry = cur.scene && DarkheartComposer.sceneEntry(cur.scene, outcome);
+    if (env && entry) slot.innerHTML = guidanceHtml(cur.scene, env, outcome, entry);
+  }
+
   function renderScene() {
     syncHeroOutcome();
     const outcome = stageOutcome();
@@ -525,7 +588,9 @@ const DarkheartView = (function () {
     const el = region('scene');
     if (!el) return;
     const sf = outcome ? sceneFd(s) : null;
-    const sig = [outcome, s.phase, data.status, deps.lang(), s.tier, s.envTier, s.scene.sceneId, s.scene.seed, sf && sf.fd, s.expedition, s.phase === 'bastion' ? [s.fd, s.fear, s.hexes, ui.confirm, ui.menuOpen].join() : ''].join('|');
+    const scenePeek = outcome && data.status === 'ready' ? currentScene(outcome).scene : null;
+    const roster = scenePeek ? rosterIds(scenePeek, outcome) : [];
+    const sig = [outcome, s.phase, data.status, deps.lang(), s.tier, s.envTier, s.scene.sceneId, s.scene.seed, sf && sf.fd, s.expedition, roster.join(','), s.phase === 'bastion' ? [s.fd, s.fear, s.hexes, ui.confirm, ui.menuOpen].join() : ''].join('|');
     // Typing a die re-renders the scene region; an unchanged scene is left alone, so its picture and text never flash or reflow.
     if (sig === ui.sceneSig && el.firstChild) return;
     ui.sceneSig = sig;
@@ -554,8 +619,13 @@ const DarkheartView = (function () {
     const pool = DarkheartComposer.eligibleScenes(data.selectable, outcome).length;
     const matchLabel = t('dh_match_' + scene.match);
     pendingText = [];
-    const features = parts.whole ? (env.features || []) : parts.features;
-    const featureList = features.map(f => featureHtml(f, env)).join('');
+    // A derived scene shows the whole environment, with any feature that would contradict the participants adapted (PD-104).
+    const plan = scene.derived ? DarkheartSuitability.featurePlan(env, outcome, deps.adversaries(), roster) : null;
+    const features = plan ? plan.active : parts.whole ? (env.features || []) : parts.features;
+    const featureList = features.map(f => featureHtml(f, env)).join('') + (plan ? plan.adapted.map(adaptedFeatureHtml).join('') : '');
+    const profile = (data.profiles || {})[scene.envId];
+    const suitRule = DarkheartSuitability.OUTCOME_RULES[outcome];
+    const fitTags = scene.derived && profile && suitRule ? (profile.tags || []).filter(tg => suitRule.any === '*' || suitRule.any.indexOf(tg) !== -1) : [];
     const lore = parts.whole && env.lore ? `<p class="dh-lore">${esc(bi(env.lore))}</p>` : '';
     const fdLine = fill(sf.pending ? 'dh_fd_on_arrival' : 'dh_fd_checks_now', { fd: sf.fd })
       + (sf.pending && rule.penalty > 0 ? ' ' + fill('dh_fd_may_rise', { n: rule.penalty }) : '');
@@ -565,12 +635,7 @@ const DarkheartView = (function () {
         <p>${esc(bi(entry.adaptation.summary))}</p>
         <ul class="dh-changes">${entry.adaptation.changes.map(c => `<li><span class="dh-change-src">${esc(t('dh_source_says'))}: “${esc(c.source)}”</span><span class="dh-change-new">${esc(t('dh_use_instead'))}: ${esc(bi(c.adapted))}</span></li>`).join('')}</ul>
       </section>` : '';
-    const guidance = entry.guidance ? `
-      <section class="dh-guidance" aria-labelledby="dh-guid-h">
-        <h4 id="dh-guid-h" class="dh-block-label">${esc(t('dh_guidance_label'))}</h4>
-        <p>${esc(bi(entry.guidance.text))}</p>
-        <p class="dh-adjust">${entry.guidance.adjust.map(a => `<span class="dh-chip">${esc(t('dh_adjust_' + a))}</span>`).join(' ')}</p>
-      </section>` : '';
+    const guidance = '<div id="dh-gm">' + guidanceHtml(scene, env, outcome, entry) + '</div>';
     const leftOut = !parts.whole && parts.leftOut.length ? `<p class="dh-hint"><strong>${esc(t('dh_left_out'))}:</strong> ${esc(parts.leftOut.join(', '))}</p>` : '';
     setRegion('scene', `
       <header class="dh-scene-head">
@@ -585,6 +650,7 @@ const DarkheartView = (function () {
       </header>
       <div class="dh-scene-meta">
         <p class="dh-scene-sub"><span class="dh-chip">${esc(matchLabel)}</span><span class="dh-scene-env">${esc(bi(env.name))}</span>${env.source ? `<span class="dh-source">${esc(env.source)}</span>` : ''}</p>
+        ${fitTags.length ? `<p class="dh-fit"><span class="dh-field-label">${esc(t('dh_suit_because'))}</span> ${fitTags.map(tg => `<span class="dh-chip dh-chip--fit">${esc(bi(DarkheartSuitability.TAG_LABELS[tg]))}</span>`).join(' ')}</p>` : ''}
       </div>
       <p class="dh-scene-summary">${esc(bi(entry.framing.summary))}</p>
       ${cur.cycled ? `<p class="dh-hint">${esc(t('dh_pool_cycled'))}</p>` : ''}
@@ -601,7 +667,7 @@ const DarkheartView = (function () {
       <details class="dh-src"><summary>${esc(t('dh_src_adapt'))}</summary>
         <div class="dh-src-body">
           <p class="dh-hint dh-hint--tight">${esc(t('dh_src_from'))} <strong>${esc(bi(env.name))}</strong>${env.source ? ` · ${esc(env.source)}` : ''}. ${esc(t('dh_src_untouched'))}</p>
-          ${leftOut}${adaptation}
+          ${leftOut}${plan ? adaptedSourceHtml(plan.adapted) : ''}${adaptation}
           ${envTierControl(s)}
         </div>
       </details>`);
@@ -660,6 +726,7 @@ const DarkheartView = (function () {
       return;
     }
     const locked = s.scene.npc.locked;
+    renderGuidance();      // the NPC's situation decides where the guidance puts them
     setRegion('npc', `
       ${heading}
       <div class="dh-npc">
@@ -749,7 +816,8 @@ const DarkheartView = (function () {
     const whyLines = r.adversaries.map(a => `<li><strong>${esc(advName(a))}:</strong> ${esc(bi(a.reason))}</li>`)
       .concat(r.reasoning.filter(x => x.code === 'budget' || x.code === 'minion-group').map(x => `<li>${esc(bi(x.text))}</li>`))
       .concat(quiet.map(w => `<li>${esc(bi(w.text))}</li>`)).join('');
-    const sceneThemes = (cur.scene.encounter && cur.scene.encounter.themes) || [];
+    const entryWiring = DarkheartComposer.sceneEntry(cur.scene, outcome).encounter;
+    const sceneThemes = entryWiring ? entryWiring.themes : (cur.scene.encounter && cur.scene.encounter.themes) || [];
     const affinityThemes = (data.ctx.affinity && data.ctx.affinity.themes) || {};
     const chosen = s.scene.encounter.gmTheme;
     // A scene with no adversary theme offers an explicit, optional choice instead of picking enemies itself.
@@ -891,14 +959,14 @@ const DarkheartView = (function () {
         const seed = nextDistinctEncSeed(s, outcome, cur.scene, now);
         if (seed == null) return false;
         deps.set(X.setScene(s, Object.assign({}, s.scene, { encounter: Object.assign({}, s.scene.encounter, { seed }) })).state);
-        return renderEncounter();
+        renderEncounter(); return renderScene();
       }
       case 'adv-lock': {
         const list = s.scene.encounter.locked;
         const has = list.some(l => l.id === value);
         const next = has ? list.filter(l => l.id !== value) : list.concat([{ id: value, quantity: Number(el.dataset.dhQty) || 1 }]).slice(0, 8);
         deps.set(X.setScene(s, Object.assign({}, s.scene, { encounter: Object.assign({}, s.scene.encounter, { locked: next }) })).state);
-        return renderEncounter();
+        renderEncounter(); return renderScene();
       }
       case 'to-scene': return goToScene();
       case 'retry': return deps.retryData().then(load);

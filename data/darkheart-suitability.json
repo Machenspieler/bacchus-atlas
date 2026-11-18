@@ -1,0 +1,381 @@
+{
+ "_comment": "Darkheart environment suitability (PD-104). Which environments may serve a traversal outcome is decided by explicit character tags and the outcome rules in js/darkheart-suitability.js, never by what the source text happens to mention. Contract: docs/data-contracts/darkheart-suitability.md.",
+ "schema": 1,
+ "profiles": {
+  "devouring-green": {
+   "tags": ["wild", "dark", "deadly", "hard"]
+  },
+  "devouring-green-ritual": {
+   "tags": ["dark", "deadly", "uncanny", "crisis"]
+  },
+  "court-of-cats": {
+   "tags": ["fey", "folk", "serene"]
+  },
+  "court-of-hounds": {
+   "tags": ["fey", "folk", "dark"]
+  },
+  "fey-lands": {
+   "tags": ["fey", "uncanny", "ruin", "folk"]
+  },
+  "haunted-mountain-pass": {
+   "tags": ["haunted", "dark", "hard", "ruin"]
+  },
+  "green-doom-tangle": {
+   "tags": ["dark", "hard", "deadly", "uncanny"]
+  },
+  "witchs-hut": {
+   "tags": ["lair", "folk", "uncanny", "dark"],
+   "themes": ["demonic", "sylvan"]
+  },
+  "throne-of-three": {
+   "tags": ["serene", "fey", "refuge"]
+  },
+  "rewritten-grove": {
+   "tags": ["uncanny", "dark", "tragic", "hard"]
+  },
+  "cauldera-valley": {
+   "tags": ["wild", "uncanny", "hard"]
+  },
+  "abandoned-grove": {
+   "tags": ["ruin", "tragic", "wild", "hard"]
+  },
+  "burning-heart-of-the-woods": {
+   "tags": ["dark", "uncanny", "fire", "deadly"]
+  },
+  "gloaming-forest": {
+   "tags": ["dark", "ruin", "tragic", "uncanny", "hard"]
+  },
+  "forest-wildfire": {
+   "tags": ["fire", "deadly", "crisis", "hard"]
+  },
+  "rain-ritual": {
+   "tags": ["fire", "crisis", "folk", "uncanny"]
+  },
+  "wishmaker-glade": {
+   "tags": ["serene", "fey", "folk", "refuge"]
+  },
+  "unsettling-forest": {
+   "tags": ["dark", "haunted", "lair", "hard"]
+  },
+  "hags-hut": {
+   "tags": ["lair", "folk", "uncanny", "dark"],
+   "themes": ["demonic", "sylvan"]
+  },
+  "almara-forest": {
+   "tags": ["wild", "uncanny", "hard", "dark"]
+  },
+  "death-butterfly-grove": {
+   "tags": ["dark", "wild", "hard", "uncanny"]
+  },
+  "spooky-forest": {
+   "tags": ["dark", "wild", "hard"]
+  },
+  "endless-forest": {
+   "tags": ["wild", "hard", "uncanny"]
+  },
+  "root-rush-rescue": {
+   "tags": ["hard", "crisis", "wild"]
+  },
+  "bandit-hideout": {
+   "tags": ["outlaw", "lair", "folk", "hard"]
+  },
+  "underroot-tunnels": {
+   "tags": ["folk", "hard"]
+  },
+  "the-village-of-hush": {
+   "tags": ["folk", "refuge", "serene"]
+  },
+  "gnarled-glen": {
+   "tags": ["dark", "haunted", "tragic", "wild"]
+  },
+  "blade-root-sanctum": {
+   "tags": ["lair", "outlaw", "ruin"]
+  },
+  "faestone-wode": {
+   "tags": ["fey", "uncanny", "wild"]
+  },
+  "obsidian-forest": {
+   "tags": ["hard", "deadly", "uncanny", "wild"]
+  },
+  "dark-forest-faerie-portal": {
+   "tags": ["fey", "uncanny", "folk"]
+  },
+  "sanctuary-of-the-story-tree": {
+   "tags": ["fey", "serene", "refuge", "folk"]
+  },
+  "dark-forest-revel": {
+   "tags": ["fey", "folk", "uncanny"]
+  },
+  "mother-o-gold": {
+   "tags": ["fey", "serene", "uncanny", "folk"]
+  },
+  "hunter-or-hunted": {
+   "tags": ["wild", "lair", "hard"]
+  },
+  "briar-thicket": {
+   "tags": ["hard", "wild"]
+  },
+  "forest-basin": {
+   "tags": ["bog", "hard", "deadly", "wild", "water"]
+  },
+  "shadowfen": {
+   "tags": ["bog", "haunted", "dark", "tragic", "hard"]
+  },
+  "blood-marsh": {
+   "tags": ["bog", "dark", "deadly", "haunted"]
+  },
+  "corrupted-swamp": {
+   "tags": ["bog", "dark", "hard", "wild"]
+  },
+  "swamp-ruins": {
+   "tags": ["bog", "ruin", "tragic", "uncanny"]
+  },
+  "dread-mire": {
+   "tags": ["bog", "dark", "deadly", "wild"]
+  },
+  "heart-of-the-mire": {
+   "tags": ["bog", "dark", "deadly", "uncanny", "ruin"]
+  },
+  "sentient-ink-marsh": {
+   "tags": ["bog", "uncanny", "hard"]
+  },
+  "mistfield-of-possibility": {
+   "tags": ["bog", "uncanny", "ruin", "serene"]
+  },
+  "chronon-pools": {
+   "tags": ["bog", "uncanny", "hard", "wild"]
+  },
+  "beelzebufo-bog": {
+   "tags": ["bog", "dark", "wild", "uncanny"]
+  },
+  "wispy-wasteland": {
+   "tags": ["uncanny", "dark", "wild", "bog"]
+  },
+  "deserted-moor": {
+   "tags": ["wild", "haunted", "uncanny", "hard"]
+  },
+  "mystic-ring": {
+   "tags": ["ruin", "serene", "uncanny"]
+  },
+  "martyrs-rest": {
+   "tags": ["serene", "refuge", "tragic"]
+  },
+  "field-of-dreams": {
+   "tags": ["serene", "tragic", "uncanny", "refuge"]
+  },
+  "friendly-campfire": {
+   "tags": ["folk", "refuge", "serene"]
+  },
+  "around-the-fire": {
+   "tags": ["refuge", "serene", "folk"]
+  },
+  "dreamlands": {
+   "tags": ["uncanny", "serene", "folk"]
+  },
+  "time-loop": {
+   "tags": ["uncanny", "tragic", "folk"]
+  },
+  "midnight-monstrosity": {
+   "tags": ["folk", "tragic", "dark"]
+  },
+  "cult-ritual": {
+   "tags": ["dark", "lair", "uncanny", "crisis"]
+  },
+  "magical-storm": {
+   "tags": ["uncanny", "hard", "deadly"]
+  },
+  "shadow-well": {
+   "tags": ["dark", "uncanny", "deadly"]
+  },
+  "flickerstorm": {
+   "tags": ["uncanny", "hard", "deadly"]
+  },
+  "overgrown-ruins": {
+   "tags": ["ruin", "uncanny", "hard"]
+  },
+  "ruined-castle": {
+   "tags": ["ruin", "tragic", "lair", "wild"]
+  },
+  "cursed-graveyard": {
+   "tags": ["haunted", "dark", "tragic", "ruin"]
+  },
+  "darkened-temple": {
+   "tags": ["dark", "haunted", "ruin", "tragic"]
+  },
+  "humble-altar": {
+   "tags": ["serene", "refuge", "ruin"]
+  },
+  "chapel-of-st-brenna": {
+   "tags": ["ruin", "tragic", "folk"]
+  },
+  "gang-hideout": {
+   "tags": ["outlaw", "lair", "folk"]
+  },
+  "outpost-town": {
+   "tags": ["folk", "refuge"]
+  },
+  "emberwood-village": {
+   "tags": ["folk", "refuge"]
+  },
+  "raging-river": {
+   "tags": ["hard", "deadly", "wild", "water"]
+  },
+  "mirror-lake-crossing": {
+   "tags": ["hard", "wild", "water"]
+  },
+  "orphanmaker-river": {
+   "tags": ["hard", "deadly", "water"]
+  },
+  "webbed-terrain": {
+   "tags": ["wild", "lair", "hard", "dark"]
+  },
+  "heros-tomb": {
+   "tags": ["ruin", "haunted", "tragic"]
+  },
+  "hallow-rest": {
+   "tags": ["ruin", "haunted", "tragic"]
+  },
+  "tormented-ancient-crypt": {
+   "tags": ["ruin", "haunted", "dark", "tragic", "uncanny"]
+  },
+  "deep-underground-cave": {
+   "tags": ["wild", "hard", "lair", "dark"]
+  },
+  "hidden-shrine-of-saint-bungus": {
+   "tags": ["ruin", "serene", "tragic"]
+  },
+  "haunted-gold-mine": {
+   "tags": ["ruin", "haunted", "tragic", "hard"]
+  },
+  "aetherstone-grove": {
+   "tags": ["wild", "hard", "uncanny"]
+  }
+ },
+ "exclusions": [
+  {
+   "envId": "bastion",
+   "category": "home-base",
+   "reason": "Bastion is the expedition’s home (a separate Darkheart state, not a traversal scene)."
+  },
+  {
+   "envId": "war-of-the-woods",
+   "category": "war-scale",
+   "reason": "A large-scale war between factions; it cannot host an unrelated traversal event (reviewed and rejected in PD-097)."
+  },
+  {
+   "envId": "siege-of-the-story-tree",
+   "category": "war-scale",
+   "reason": "An active siege with a fixed antagonist and objective; it defines the whole scene."
+  },
+  {
+   "envId": "ambushed",
+   "category": "not-a-place",
+   "reason": "An encounter framework with no location of its own."
+  },
+  {
+   "envId": "ambushers",
+   "category": "not-a-place",
+   "reason": "An encounter framework with no location of its own."
+  },
+  {
+   "envId": "megastorm",
+   "category": "urban",
+   "reason": "A city-scale storm catastrophe (streets, panic) that does not translate to a forest hex."
+  },
+  {
+   "envId": "valley-of-death",
+   "category": "planar",
+   "reason": "Another plane of existence, not a place the party can walk into from the forest."
+  },
+  {
+   "envId": "forced-penance",
+   "category": "planar",
+   "reason": "A planar judgment realm."
+  },
+  {
+   "envId": "extraplanar-breach",
+   "category": "planar",
+   "reason": "A portal-and-invasion scenario that defines the whole scene."
+  },
+  {
+   "envId": "haunted-city",
+   "category": "urban",
+   "reason": "City scale: streets and districts, not a forest location."
+  },
+  {
+   "envId": "abandoned-building",
+   "category": "urban",
+   "reason": "A multistory building in a settlement."
+  },
+  {
+   "envId": "possessed-abode",
+   "category": "interior",
+   "reason": "A dwelling interior."
+  },
+  {
+   "envId": "alchemists-abandoned-workshop",
+   "category": "interior",
+   "reason": "A laboratory interior."
+  },
+  {
+   "envId": "search-the-ruins",
+   "category": "urban",
+   "reason": "Searching a ruined city (Drakkenheim), city scale."
+  },
+  {
+   "envId": "lizardfolk-village",
+   "category": "terrain",
+   "reason": "A tropical swamp-jungle village; the tropical terrain does not read as Darkheart Forest."
+  },
+  {
+   "envId": "ancient-tomb",
+   "category": "terrain",
+   "reason": "Sand-filled desert tomb; its terrain is desert, not forest."
+  },
+  {
+   "envId": "endless-catacombs",
+   "category": "terrain",
+   "reason": "Catacombs under a named city, not a forest location."
+  },
+  {
+   "envId": "ruined-mage-tower",
+   "category": "terrain",
+   "reason": "Badlands arcane ruin; the Darkheart outcomes already have forest ruins that serve the same purpose."
+  },
+  {
+   "envId": "frosted-timber",
+   "category": "terrain",
+   "reason": "A single tree in a frozen snowfield; arctic terrain."
+  },
+  {
+   "envId": "mountain-pass",
+   "category": "terrain",
+   "reason": "Mountain terrain (avalanche, raptors); haunted-mountain-pass covers the forest pass."
+  },
+  {
+   "envId": "perilous-cliff",
+   "category": "terrain",
+   "reason": "Coastal cliff above frigid water."
+  }
+ ],
+ "overrides": [
+  {
+   "envId": "court-of-hounds",
+   "outcome": "creature-fail-fear",
+   "mode": "add",
+   "reason": "The Wild Hunt makes this a place of fey pursuit; a hostile, hunting opposition is the environment’s own character even though no single tag says so."
+  },
+  {
+   "envId": "gloaming-forest",
+   "outcome": "creature-fail-fear",
+   "mode": "add",
+   "reason": "An overgrown village full of dreaming spirits and lures; hostile things are at home here although it is tagged by atmosphere rather than by beasts."
+  },
+  {
+   "envId": "cult-ritual",
+   "outcome": "hazard-fail-hope",
+   "mode": "remove",
+   "reason": "The danger of a cult’s ritual ground is the cultists, not an obstacle in the terrain; a surmountable-obstacle scene would misread it."
+  }
+ ]
+}

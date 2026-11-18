@@ -7,7 +7,8 @@
 
    It makes exactly five things and no biography: a name, an ancestry, one
    memorable look, one line of dialogue that belongs to the situation, and one
-   immediate need. Every text is { en, ru }.
+   immediate need. Every text is { en, ru }. Given `situations` (what the place supports,
+   DarkheartSuitability.npcSituations) the need is connected to the location; without them it is dealt as before.
 
    An NPC is new narrative material, never a stat block: `adversaryId` stays
    null here (it is only set when a Master locks a catalogue adversary to be
@@ -98,6 +99,23 @@
       beast: {
         lines: [B('It’s circling. It knows I can’t run on this leg!', 'Оно кружит. Оно знает, что на этой ноге мне не убежать!'), B('Whatever you do, keep it looking at you, not at me!', 'Что бы вы ни делали — пусть смотрит на вас, а не на меня!')],
         need: B('To have the beast driven off or drawn away from them.', 'Чтобы зверя прогнали или отвлекли от них.'),
+      },
+      /* Situations a place's own character asks for (PD-104). They are offered only where the place suggests
+       * them (`situations` in generateNpc), never in the unhinted default pool, so an NPC dealt without a place is unchanged. */
+      snare: {
+        hinted: true,
+        lines: [B('Careful, the ground here is rigged. Cut the cord, don’t step on it!', 'Осторожно, земля здесь с подвохом. Режьте верёвку, не наступайте!'), B('Whoever set this will be back soon. Hurry!', 'Тот, кто это поставил, скоро вернётся. Скорее!')],
+        need: B('To be freed from a snare before whoever set it returns.', 'Чтобы их освободили из ловушки, пока не вернулся тот, кто её поставил.'),
+      },
+      lost: {
+        hinted: true,
+        lines: [B('I have passed that same tree four times. Which way is out?', 'Я в четвёртый раз прохожу мимо этого дерева. Где выход?'), B('The light is going. Please, just walk me to a road.', 'Свет гаснет. Прошу, просто выведите меня на дорогу.')],
+        need: B('To be led back to a path before dark falls.', 'Чтобы их вывели обратно на тропу до наступления темноты.'),
+      },
+      spirit: {
+        hinted: true,
+        lines: [B('I can’t leave. Something here will not let go of me.', 'Я не могу уйти. Что-то здесь не отпускает меня.'), B('It gets stronger when the light fades. Break it, or take me away from here.', 'Оно крепнет, когда меркнет свет. Разорвите это или заберите меня отсюда.')],
+        need: B('To be released from something that holds them in place.', 'Чтобы их освободили от того, что держит их на месте.'),
       },
     },
     'side-quest': {
@@ -203,9 +221,12 @@
     if (!role || !SITUATIONS[role]) return null;
     var rng = rngFrom(Number.isInteger(inp.seed) ? inp.seed : 0);
     var situations = SITUATIONS[role];
-    var keys = Object.keys(situations);
+    // The default pool is the original situations; the place-driven ones (`hinted: true`) join it only when a place suggests them.
+    var keys = Object.keys(situations).filter(function (k) { return !situations[k].hinted; });
     var hinted = inp.situation || SCENE_SITUATION[inp.sceneId];
-    var situation = hinted && situations[hinted] ? hinted : pick(keys, rng);
+    // `situations` (PD-104): the situations the PLACE supports, in preference order; the seed picks among them.
+    var offered = Array.isArray(inp.situations) ? inp.situations.filter(function (k) { return situations[k]; }) : [];
+    var situation = hinted && situations[hinted] ? hinted : pick(offered.length ? offered : keys, rng);
     var s = situations[situation];
     var first = pick(NAMES, rng), last = pick(SURNAMES, rng);
     var ancestry = pick(ANCESTRIES, rng);

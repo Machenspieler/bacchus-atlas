@@ -19,6 +19,7 @@
 const fs = require('fs');
 const path = require('path');
 const DarkheartScenes = require('./lib/darkheart-scenes.js');
+const DarkheartSuitability = require('./lib/darkheart-suitability.js');
 const ListCoverArt = require('../js/list-cover-art.js');
 const CatalogArt = require('../js/catalog-art.js');
 
@@ -1442,6 +1443,15 @@ function validateDarkheartScenes(data, file, diagnostics, rootPath, environments
   return analysis.coverage;
 }
 
+/* ---------------- data/darkheart-suitability.json ---------------- */
+
+/** Maps the suitability analysis (js/darkheart-suitability.js) onto diagnostics (PD-104). */
+function validateDarkheartSuitability(data, file, diagnostics, environments, affinityThemes) {
+  const analysis = DarkheartSuitability.analyze(data, { environments, affinityThemes });
+  for (const p of analysis.problems) diagnostics.push({ severity: p.severity, file, path: p.path, message: p.message, id: p.id });
+  return analysis.coverage;
+}
+
 /* ---------------- data/darkheart-affinity.json ---------------- */
 
 /** The small adversary-theme classification the Darkheart encounter engine reads
@@ -1505,6 +1515,7 @@ const FILES = {
  * production checkout has it. */
 const DARKHEART_FILE = 'data/darkheart-scenes.json';
 const DARKHEART_AFFINITY_FILE = 'data/darkheart-affinity.json';
+const DARKHEART_SUITABILITY_FILE = 'data/darkheart-suitability.json';
 
 function validateRepositoryData(rootPath) {
   const diagnostics = [];
@@ -1534,6 +1545,7 @@ function validateRepositoryData(rootPath) {
 
   // Darkheart compatibility manifest (optional file; references environment ids, features and artwork)
   let darkheartCoverage = null;
+  let darkheartSuitability = null;
   if (fs.existsSync(path.join(rootPath, DARKHEART_FILE))) {
     const darkheart = readJsonFile(path.join(rootPath, DARKHEART_FILE), DARKHEART_FILE, diagnostics);
     const envList = loaded.environments && Array.isArray(loaded.environments.environments) ? loaded.environments.environments : [];
@@ -1543,6 +1555,10 @@ function validateRepositoryData(rootPath) {
       if (affinity !== null) affinityThemes = validateDarkheartAffinity(affinity, DARKHEART_AFFINITY_FILE, diagnostics, prepFacts.adversaryIds);
     }
     if (darkheart !== null) darkheartCoverage = validateDarkheartScenes(darkheart, DARKHEART_FILE, diagnostics, rootPath, envList, affinityThemes);
+    if (fs.existsSync(path.join(rootPath, DARKHEART_SUITABILITY_FILE))) {
+      const suitability = readJsonFile(path.join(rootPath, DARKHEART_SUITABILITY_FILE), DARKHEART_SUITABILITY_FILE, diagnostics);
+      if (suitability !== null) darkheartSuitability = validateDarkheartSuitability(suitability, DARKHEART_SUITABILITY_FILE, diagnostics, envList, affinityThemes);
+    }
   }
 
   // cross-file: featured adversary references
@@ -1586,7 +1602,7 @@ function validateRepositoryData(rootPath) {
   sortDiagnostics(diagnostics);
   const errorCount = diagnostics.filter(d => d.severity === 'error').length;
   const warningCount = diagnostics.filter(d => d.severity === 'warning').length;
-  return { diagnostics, errorCount, warningCount, darkheartCoverage };
+  return { diagnostics, errorCount, warningCount, darkheartCoverage, darkheartSuitability };
 }
 
 /* ---------------- CLI ---------------- */
@@ -1606,6 +1622,10 @@ function main() {
   if (dh) {
     console.log(`Darkheart manifest: ${dh.selectable} of ${dh.scenes} scenes selectable (${Object.entries(dh.byMatch).map(([k, v]) => `${v} ${k}`).join(', ') || 'none'}), ${Object.keys(dh.byOutcome).length} of 12 outcomes covered; environments reviewed ${dh.reviewed}, reviewed-none ${dh.reviewedNone}, pending ${dh.pending}, not yet listed ${dh.unlisted} of ${dh.environments}.`);
   }
+  const su = result.darkheartSuitability;
+  if (su) {
+    console.log(`Darkheart suitability: ${su.profiles} profiled environments, ${su.exclusions} excluded, ${su.overrides} overrides; environments per outcome: ${Object.entries(su.byOutcome).map(([k, v]) => `${k} ${v}`).join(', ')}.`);
+  }
   console.log(`Data validation complete: ${result.errorCount} errors, ${result.warningCount} warnings.`);
   process.exitCode = result.errorCount > 0 ? 1 : 0;
 }
@@ -1623,6 +1643,7 @@ module.exports = {
   validateI18n,
   validateDarkheartScenes,
   validateDarkheartAffinity,
+  validateDarkheartSuitability,
   readJsonFile,
   normalizeItemKey,
   normalizeDisplayName,

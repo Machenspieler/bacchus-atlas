@@ -86,7 +86,8 @@
    */
   function encounterFor(args) {
     var scene = args.scene;
-    if (!scene || !sceneEntry(scene, args.outcome)) {
+    var entry = sceneEntry(scene, args.outcome);
+    if (!scene || !entry) {
       return { status: 'blocked', code: 'scene-outcome-mismatch', adversaries: [], warnings: [], reasoning: [] };
     }
     return Encounter.assembleEncounter({
@@ -94,11 +95,13 @@
       environmentId: scene.envId,
       featureNames: (scene.features || []).map(function (f) { return f.name; }),
       // A scene's own themes decide who fits. Only a scene that names none may take the Master's explicit theme (PD-101);
-      // nothing is ever chosen for the Master.
+      // nothing is ever chosen for the Master. A suitability-derived scene (PD-104) wires each outcome on its own
+      // (`entry.encounter`), because one environment can serve several outcomes with different participants.
       scene: (function () {
-        var themes = (scene.encounter && scene.encounter.themes) || [];
+        var wiring = entry.encounter || { adversaries: scene.adversaries, themes: (scene.encounter && scene.encounter.themes) || [] };
+        var themes = wiring.themes || [];
         var gm = !themes.length && args.gmTheme ? [args.gmTheme] : null;
-        return { adversaries: scene.adversaries, themes: gm || themes, gmTheme: !!gm };
+        return { adversaries: wiring.adversaries || scene.adversaries, themes: gm || themes, gmTheme: !!gm };
       })(),
       locked: args.locked || [], seed: args.seed,
     }, args.ctx);
