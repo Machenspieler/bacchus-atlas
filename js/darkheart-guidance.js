@@ -47,6 +47,9 @@
         V(['fire'], 'Let smoke and flame take the choice away: some squares are worth holding, some are not.', 'Пусть дым и пламя отнимут выбор: одни клетки стоит удерживать, другие нет.'),
         V([], 'Give the ground one edge for the defenders and one the party can find at {feat}.', 'Дайте местности одно преимущество для защитников и одно — для отряда, у «{feat}».'),
       ] },
+      { id: 'stakes', label: B('How deadly: dual countdown', 'Насколько смертельно: двойной Отсчёт'), v: [
+        V([], 'Two countdowns: a Progress Countdown (6) for the party (break through, drive them off, escape) and a Consequence Countdown (3) for the threat (a hero falls, the party must flee). The shorter one makes it deadly.', 'Два Отсчёта: Отсчёт Прогресса (6) для отряда (прорваться, отогнать, уйти) и Отсчёт Последствий (3) для угрозы (герой падает, отряд вынужден бежать). Смертельной встречу делает более короткий.'),
+      ] },
       { id: 'end', label: B('How it ends', 'Чем кончится'), v: [
         V([], 'Decide beforehand what makes them break off: a fallen leader, fire, or the party reaching {feat}.', 'Заранее решите, что заставит их отступить: павший предводитель, огонь или выход отряда к «{feat}».'),
       ] },
@@ -65,6 +68,9 @@
         V(['fey'], 'Courtesies and bargains: every favour has a price, named out loud and kept.', 'Приличия и сделки: у каждой услуги своя цена, названная вслух и соблюдённая.'),
         V(['folk', 'outlaw'], 'Questions, news and a price for the road. They want something small: passage, a name, a favour.', 'Вопросы, новости и цена за дорогу. Они хотят малого: прохода, имени, услуги.'),
         V([], 'Let them speak first. They want something small and will weigh what the party offers.', 'Пусть заговорят первыми. Они хотят малого и взвесят то, что предложит отряд.'),
+      ] },
+      { id: 'stakes', label: B('How neutral: even countdowns', 'Насколько нейтрально: равные Отсчёты'), v: [
+        V([], 'Two even countdowns: a Progress Countdown (6) for the party (a deal, safe passage) and a Consequence Countdown (6) for their patience (a fight, a toll, a grudge). Even keeps it a meeting; shorten one if the party gives cause.', 'Два равных Отсчёта: Отсчёт Прогресса (6) для отряда (сделка, свободный проход) и Отсчёт Последствий (6) для их терпения (бой, плата, обида). Равные Отсчёты оставляют это встречей; сократите один, если отряд даст повод.'),
       ] },
       { id: 'turn', label: B('If it turns', 'Если всё обернётся плохо'), v: [
         V([], 'This is a meeting, not a fight. The adversaries below stay on hand only if someone gives them cause.', 'Это встреча, а не бой. Противники ниже остаются наготове, только если кто-то даст повод.'),

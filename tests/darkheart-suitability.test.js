@@ -355,6 +355,22 @@ test('resource guidance covers placement, the player’s own loot tables, boons 
   assert.ok(!hope.items.some(i => /guard|trap/i.test(i.label.en)), 'no mandatory guardian or trap on the hopeful find');
 });
 
+test('deadly and neutral are the Master’s call: GM Guidance suggests dual countdowns, never a rule (PD-106)', () => {
+  const stakes = (outcome, id) => Guidance.guidanceFor({ outcome, env: env(id), profile: suitability.profiles[id] }).items.find(i => i.id === 'stakes');
+  const deadly = stakes('creature-fail-fear', 'bandit-hideout');
+  assert.match(deadly.label.en, /How deadly/);
+  assert.match(deadly.text.en, /Progress Countdown \(6\).*Consequence Countdown \(3\).*makes it deadly/);
+  assert.match(deadly.text.ru, /Отсчёт Прогресса \(6\).*Отсчёт Последствий \(3\)/);
+  const neutral = stakes('creature-fail-hope', 'bandit-hideout');
+  assert.match(neutral.label.en, /How neutral/);
+  assert.match(neutral.text.en, /Progress Countdown \(6\).*Consequence Countdown \(6\)/);
+  assert.match(neutral.text.ru, /Отсчёт Прогресса \(6\).*Отсчёт Последствий \(6\)/);
+  // the book's own hazard countdowns are not restated or overridden here
+  for (const outcome of ['hazard-fail-fear', 'hazard-fail-hope']) {
+    assert.ok(!Guidance.BANK[outcome].some(s => s.id === 'stakes'), outcome);
+  }
+});
+
 test('the omen, tragedy and warning outcomes offer optional suggestions the Master may ignore', () => {
   const pick = (outcome, id) => Guidance.guidanceFor({ outcome, env: env(id), profile: suitability.profiles[id] });
   assert.match(pick('landmark-fail-fear', 'cursed-graveyard').items[0].label.en, /pick one, or none/);

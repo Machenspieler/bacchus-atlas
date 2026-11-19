@@ -1729,7 +1729,7 @@ A visitor arriving on `#/journey` (or a player on `#/map/<link>`) used to see an
   10. Source rules are never rewritten, stripped or substituted automatically; a change exists only as a reviewed adaptation shown beside the source.
   11. No runtime AI: all mappings are curated build-time data.
 - **Behaviour chosen on top of those:** a scene whose source changed meaningfully (a changed English word, number or feature type; case, punctuation, quotes and Russian-only edits do not count) is withheld from play and fails `validate-data` until a person re-reads it and re-pins or suspends it. Environment-level drift is only a warning. An environment is reviewed individually: `reviewed`, `reviewed-none` (with a reason) or `pending`; an environment not in the ledger is simply unreviewed, not an error. `potential_adversaries` is a GM suggestion list, never part of a scene unless the scene says `adversaries: "source"` (whole-environment scenes only).
-- **Not decided here (open questions, see the pilot report):** a measurable meaning of the outcomes' "deadly" and "neutral" (candidates that turn on them are deferred, not approved); the generator's display of the separated Darkheart text; whether Darkheart hexes other than forest exist and are wanted.
+- **Not decided here (open questions):** a measurable meaning of the outcomes' "deadly" and "neutral" (since settled by PD-106: the environment is chosen for its theme, and the Master sets how deadly it is, with suggested dual countdowns in GM Guidance); the generator's display of the separated Darkheart text; whether Darkheart hexes other than forest exist and are wanted.
 - **Where:** `data/darkheart-scenes.json`, `js/darkheart-scenes.js`, `scripts/validate-data.js`, `scripts/darkheart-review-report.js`, `tests/darkheart-scenes.test.js`, [docs/data-contracts/darkheart-scenes.md](data-contracts/darkheart-scenes.md).
 
 ## PD-098: Darkheart is a flexible improvisation assistant; encounters are assembled by a pure, advisory engine
@@ -1839,6 +1839,19 @@ Contract: [data-contracts/darkheart-suitability.md](data-contracts/darkheart-sui
 
 1. One table, `js/darkheart-art.js`: outcome id → 16:9 banner (`position` = the cover crop's focal point per picture), ancestry id → square portrait (`crop` window in master pixels). No entry means no picture and no request; the established placeholder label / SVG silhouette stays. Never an unrelated fallback image.
 2. The banner lives in the existing hero art slot (`.dh-hero-art`, already keyed by `data-outcome`), not a new section; it follows `stageOutcome()` so preview, Confirm Arrival, Undo, reload and Return to Bastion are correct by construction. The hero is 180px (was 220, briefly 260) with a per-picture focal point so a very wide crop still holds the campfire; empty alt (the rule text beside it says everything).
-3. Portraits are chosen by `npc.ancestry.id` alone — never a name, a look or Mixed Ancestry — shown as a 64px (56px narrow) circle beside the readable ancestry chip. A portrait represents the ancestry, not the individual. NPC generation is untouched: `aetheris` is mapped but the generator has no such ancestry yet, so that portrait cannot appear until generation is deliberately extended.
+3. Portraits are chosen by `npc.ancestry.id` alone — never a name, a look or Mixed Ancestry — shown as a 64px (56px narrow) circle beside the readable ancestry chip. A portrait represents the ancestry, not the individual. The portrait never changes generation; Aetheris was added to the generator's ancestries deliberately (2026-11-18, `js/darkheart-npc.js` `ANCESTRIES`), so its portrait now appears whenever an Aetheris NPC is rolled.
 4. Masters live in `img/darkheart-art-source/` (excluded from `dist/`); `scripts/generate-darkheart-art.js` cuts AVIF banners (640/1024/1672 + a 1024 WebP) and WebP portraits (64/128/192). Only the staged outcome's picture is requested.
 5. The four pictures are pilot candidates (`use: 'pilot'`), not approved production masters; the remaining ten banners and other ancestries are one table entry each.
+6. The image prompts for the remaining ten banners and eleven portraits, with the hand-back steps, live beside the masters in `img/darkheart-art-source/PROMPTS.md` (excluded from `dist/` with the folder).
+
+## PD-106: "Deadly" and "neutral" are the Master's call; GM Guidance suggests dual countdowns
+
+**Decision (owner, 2026-11-19).** Settles the open question in PD-097. The outcomes' "deadly" and "neutral" are not measured by the app and never filter an environment.
+
+1. The app's job is the theme: pick the environment that fits the situation best (PD-104 suitability). How deadly or how neutral the meeting plays is decided by the Master at the table.
+2. GM Guidance offers one way to do it, as a `stakes` line on the two creature fails (`js/darkheart-guidance.js`):
+   - Hostile and deadly adversary (`creature-fail-fear`): a Progress Countdown (6) for the party against a Consequence Countdown (3) for the threat; the shorter threat countdown is what makes it deadly.
+   - Neutral but formidable adversary (`creature-fail-hope`): two even countdowns, Progress (6) and Consequence (6); shorten one if the party gives cause.
+3. It is a suggestion like every Guidance line: never stored, never tracked, never an eligibility rule. The hazard outcomes keep the book's own countdowns (deadly hazard 6, obstacle 3) and get no `stakes` line.
+
+Where: `js/darkheart-guidance.js`, `tests/darkheart-suitability.test.js`, [data-contracts/darkheart-suitability.md](data-contracts/darkheart-suitability.md).

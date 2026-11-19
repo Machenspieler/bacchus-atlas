@@ -64,6 +64,9 @@ Source countdowns, written treasure, named enemies, NPCs and campfires are never
   bilingual, visibly optional. Resources: a presentation (chest, pack, hollow-tree cache, buried stash…), the Master's own loot
   tables or a boon, a quest clue instead (tied to the party's current quest, which the page does not track); guarded resources
   offer creature guards **or** a hazard, one is enough. No loot is rolled, no countdown tracked.
+  The two creature fails carry a `stakes` line (PD-106): the hostile, deadly adversary suggests a Progress Countdown (6)
+  against a Consequence Countdown (3), the neutral one two even countdowns (6 / 6) — a suggestion, never eligibility or a rule;
+  the hazards keep the book's own countdowns.
 
 ## Counting convention (coverage report)
 
