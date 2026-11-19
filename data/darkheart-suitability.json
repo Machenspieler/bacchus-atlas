@@ -70,6 +70,9 @@
   "spooky-forest": {
    "tags": ["dark", "wild", "hard"]
   },
+  "cursed-woods-trail": {
+   "tags": ["dark", "haunted", "hard", "uncanny"]
+  },
   "endless-forest": {
    "tags": ["wild", "hard", "uncanny"]
   },
