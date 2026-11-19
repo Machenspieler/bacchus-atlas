@@ -9,8 +9,9 @@
    outcome, the generated NPC's own ancestry id) and never feeds anything back. A key with no entry
    gets no picture and no request — the established text-only / SVG-avatar fallback stays.
 
-   Pilot status: the four pictures are candidates, not approved masters (use: 'pilot'). The remaining
-   ten outcomes and the other ancestries are added here, one entry each, with no UI change.
+   Status: all twelve outcome banners are approved (use: 'approved', each focal point checked in the
+   real 180 px hero under the nav ribbons, desktop and phone). The two portraits are still pilot
+   candidates (use: 'pilot'); the other ancestries are added here, one entry each, with no UI change.
 
    Files (cut by scripts/generate-darkheart-art.js from img/darkheart-art-source/, never served):
      img/darkheart-art/outcome-<id>-{640,1024,1672}.avif  + outcome-<id>-1024.webp  (16:9, the master's whole frame)
@@ -31,8 +32,18 @@
 
   /* outcome id (js/darkheart-expedition.js OUTCOME_RULES) -> picture. `position`: where the cover crop sits. */
   const OUTCOMES = {
-    'landmark-success-hope': { master: 'outcome-landmark-success-hope.png', width: 1672, height: 941, position: '50% 58%', use: 'pilot' },
-    'hazard-fail-fear':      { master: 'outcome-hazard-fail-fear.png',      width: 1671, height: 941, position: '50% 62%', use: 'pilot' },
+    'creature-fail-fear':    { master: 'outcome-creature-fail-fear.png',    width: 1672, height: 941, position: '50% 38%', use: 'approved' },   // the glowing eyes in the fog
+    'creature-fail-hope':    { master: 'outcome-creature-fail-hope.png',    width: 1672, height: 941, position: '50% 25%', use: 'approved' },   // the great stag by the standing stone
+    'creature-success-fear': { master: 'outcome-creature-success-fear.png', width: 1671, height: 941, position: '50% 40%', use: 'approved' },   // the traveller in the roots, the lantern
+    'creature-success-hope': { master: 'outcome-creature-success-hope.png', width: 1672, height: 941, position: '50% 15%', use: 'approved' },   // the NPC's face and the lit window
+    'landmark-fail-fear':    { master: 'outcome-landmark-fail-fear.png',    width: 1672, height: 941, position: '50% 58%', use: 'approved' },   // the dead tree's foot and the bone ring
+    'landmark-fail-hope':    { master: 'outcome-landmark-fail-hope.png',    width: 1672, height: 941, position: '50% 62%', use: 'approved' },   // the wooden toy and the wreath
+    'landmark-success-fear': { master: 'outcome-landmark-success-fear.png', width: 1672, height: 941, position: '50% 50%', use: 'approved' },   // the cold fire, the log, the distant smoke
+    'landmark-success-hope': { master: 'outcome-landmark-success-hope.png', width: 1672, height: 941, position: '50% 58%', use: 'approved' },
+    'hazard-fail-fear':      { master: 'outcome-hazard-fail-fear.png',      width: 1671, height: 941, position: '50% 62%', use: 'approved' },
+    'hazard-fail-hope':      { master: 'outcome-hazard-fail-hope.png',      width: 1672, height: 941, position: '50% 50%', use: 'approved' },   // the fallen trunks across the stream
+    'resource-success-fear': { master: 'outcome-resource-success-fear.png', width: 1672, height: 941, position: '50% 52%', use: 'approved' },   // the sleeping beast and the chest
+    'resource-success-hope': { master: 'outcome-resource-success-hope.png', width: 1672, height: 941, position: '50% 50%', use: 'approved' },   // the pack, chest and scroll on the stump
   };
 
   /* ancestry id (js/darkheart-npc.js ANCESTRIES) -> portrait. `crop`: the square window of the master, in its pixels. */

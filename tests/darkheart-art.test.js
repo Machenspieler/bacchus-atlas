@@ -1,5 +1,5 @@
 /* Bacchus's Atlas — tests/darkheart-art.test.js
-   Darkheart pilot artwork (js/darkheart-art.js): the exact key -> picture mapping, graceful misses, that every promised file
+   Darkheart artwork (js/darkheart-art.js): the exact key -> picture mapping, graceful misses, that every promised file
    exists at its promised size, and that the view only reads the table. Run with:  node --test tests/darkheart-art.test.js */
 'use strict';
 const test = require('node:test');
@@ -14,14 +14,15 @@ const Npc = require('../js/darkheart-npc.js');
 const ROOT = path.join(__dirname, '..');
 const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
 
-test('exactly the two pilot outcomes have a banner, and each key is a real outcome', () => {
-  assert.deepEqual(Object.keys(Art.OUTCOMES).sort(), ['hazard-fail-fear', 'landmark-success-hope']);
-  for (const k of Object.keys(Art.OUTCOMES)) assert.ok(X.OUTCOME_KEYS.includes(k), k);
-  assert.match(Art.outcomeArt('landmark-success-hope').src, /outcome-landmark-success-hope-1024\.webp$/);
-  assert.match(Art.outcomeArt('hazard-fail-fear').src, /outcome-hazard-fail-fear-1024\.webp$/);
-  const others = X.OUTCOME_KEYS.filter(k => !(k in Art.OUTCOMES));
-  assert.equal(others.length, 10);
-  for (const k of others) assert.equal(Art.outcomeArt(k), null, k);
+test('every one of the twelve outcomes has its own banner, keyed by a real outcome, with a focal point', () => {
+  assert.deepEqual(Object.keys(Art.OUTCOMES).sort(), X.OUTCOME_KEYS.slice().sort());
+  for (const k of X.OUTCOME_KEYS) {
+    const a = Art.outcomeArt(k);
+    assert.match(a.src, new RegExp(`outcome-${k}-1024\\.webp$`), k);
+    assert.match(a.position, /^\d{1,3}% \d{1,3}%$/, k);
+  }
+  assert.equal(new Set(Object.values(Art.OUTCOMES).map(o => o.master)).size, 12, 'no master serves two outcomes');
+  for (const junk of [undefined, null, '', 'creature', 'Creature-Fail-Fear', '__proto__', 'toString']) assert.equal(Art.outcomeArt(junk), null, String(junk));
 });
 
 test('portraits: only firbolg and aetheris; no other ancestry (nor Mixed Ancestry, names or junk) gets one', () => {
