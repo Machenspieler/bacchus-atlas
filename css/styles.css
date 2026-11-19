@@ -152,6 +152,8 @@
   --h-xs: 24px;   /* badges, chips                 */
   --h-sm: 32px;   /* pills, lang switch, small btn */
   --h-md: 40px;   /* inputs, selects, buttons      */
+  --h-tap: 44px;  /* touch target: phone buttons    */
+  --h-lg: 48px;   /* primary call-to-action        */
   --h-label: 16px;
   --icon-sm: 14px; --icon-md: 16px;
 
@@ -171,6 +173,7 @@
   --rb-lists: #6c3698;
   --rb-prep: #2e8062;
   --rb-journey: #b70c28;
+  --rb-darkheart: #b8501f;   /* ember orange: the printed Darkheart book's own accent (PD-099) */
 
   /* One ring colour and width; only the placement varies:
      external  --focus-offset        standalone controls with room around them
@@ -237,7 +240,8 @@ body {
 body[data-route="catalog"]::before,
 body[data-route="lists"]::before,
 body[data-route="list"]::before,
-body[data-route="prep"]::before {
+body[data-route="prep"]::before,
+body[data-route="darkheart"]::before {
   --catalog-art-opacity: 0.26;
   --catalog-art-size: min(1024px, 82vw, 100vh);
   --catalog-art-brightness: 0.75;
@@ -263,7 +267,8 @@ body[data-route="prep"]::before {
   body[data-route="catalog"]::before,
   body[data-route="lists"]::before,
   body[data-route="list"]::before,
-  body[data-route="prep"]::before {
+  body[data-route="prep"]::before,
+  body[data-route="darkheart"]::before {
     --catalog-art-opacity: 0.14;
     --catalog-art-size: min(140vw, 640px);
     --catalog-art-brightness: 0.6;
@@ -274,7 +279,8 @@ body[data-route="prep"]::before {
   body[data-route="catalog"]::before,
   body[data-route="lists"]::before,
   body[data-route="list"]::before,
-  body[data-route="prep"]::before { display: none; }
+  body[data-route="prep"]::before,
+  body[data-route="darkheart"]::before { display: none; }
 }
 
 a { color: var(--hope-soft); text-decoration: none; }
@@ -393,6 +399,7 @@ html { overflow-x: clip; }   /* the filter bar's glass runs edge to edge (100vw)
 .ribbon[data-ribbon="lists"]   { --rb: var(--rb-lists);   --rb-ink: var(--parchment); --rb-ts: 0 1px 1px rgba(0,0,0,0.6); }
 .ribbon[data-ribbon="prep"]    { --rb: var(--rb-prep);    --rb-ink: var(--parchment); --rb-ts: 0 1px 1px rgba(0,0,0,0.6); }
 .ribbon[data-ribbon="journey"] { --rb: var(--rb-journey); --rb-ink: var(--parchment); --rb-ts: 0 1px 1px rgba(0,0,0,0.6); }
+.ribbon[data-ribbon="darkheart"] { --rb: var(--rb-darkheart); --rb-ink: var(--parchment); --rb-ts: 0 1px 1px rgba(0,0,0,0.6); }
 .ribbon.on { --rb-dim: 0; height: calc(var(--hdr-h) + var(--rb-t2)); }
 @media (hover: hover) {
   .ribbon:hover { --rb-dim: 0.05; height: calc(var(--hdr-h) + var(--rb-t1)); animation: ribbon-sway 0.5s ease-out; }
@@ -468,6 +475,13 @@ html { overflow-x: clip; }   /* the filter bar's glass runs edge to edge (100vw)
     #7d0a20;
 }
 :root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="journey"] .ribbon-cut { display: none; }
+:root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="darkheart"] .ribbon-fab {
+  background:
+    url("../img/ui/ribbon-fabric/darkheart-hem.webp") 0 100% / 100% auto no-repeat,
+    url("../img/ui/ribbon-fabric/darkheart-body.webp") 0 0 / 100% auto no-repeat,
+    #7a2f10;
+}
+:root[data-ribbon-skin="fabric"] .ribbon[data-ribbon="darkheart"] .ribbon-cut { display: none; }
 /* A ribbon that has just become current drops in and swings once. */
 .ribbon.drop { animation: ribbon-drop 0.7s ease-out; }
 @keyframes ribbon-drop {
@@ -2110,9 +2124,9 @@ html[data-boot-route="lists"] #grid-wrap > .sk-card { display: none; }
   .shell { max-width: 2548px; }
 }
 
-/* The title needs ~830px beside the four ribbons and the utilities; narrower, it was squeezed into a sliver and the
- * first ribbon cut its last letters, so the brand mark stands alone. */
-@media (max-width: 900px) {
+/* The title needs ~830px beside four ribbons and the utilities, ~940px with the fifth (PD-099); narrower, it was
+ * squeezed into a sliver and the first ribbon cut its last letters, so the brand mark stands alone. */
+@media (max-width: 1040px) {
   .brand-title-text { display: none; }
 }
 

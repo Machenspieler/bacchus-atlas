@@ -1,0 +1,3634 @@
+{
+  "_comment": "Darkheart Forest compatibility manifest (PD-097). A sidecar over data/environments.json: it never changes catalogue content, it only records which environments, or which features of them, a Darkheart traversal outcome may deal as a scene, with its own bilingual framing. Every scene is hand-reviewed; a scene whose source changed is withheld until it is re-reviewed. Contract: docs/data-contracts/darkheart-scenes.md. Re-pin a review with: node scripts/darkheart-review-report.js --pins <envId>.",
+  "schema": 1,
+  "fingerprintVersion": 1,
+  "reviews": [
+    {
+      "envId": "friendly-campfire",
+      "status": "reviewed",
+      "compatibility": "naturally-compatible",
+      "rationale": "A campfire can burn in any hex and the two features shown name no terrain. The environment's lore mentions plains and settlements, but a partial scene does not show lore.",
+      "envFp": "1ab3d0b56be900",
+      "reviewedOn": "2026-11-16",
+      "note": "Its potential adversaries (Black Hats, Merchant, Spy) are hostile and never shown. Left out for the safe-rest outcome: Ghost Story, Whelp… (Slaps Knee), Sorry, Friend (see the scene's excluded list)."
+    },
+    {
+      "envId": "around-the-fire",
+      "status": "reviewed",
+      "compatibility": "naturally-compatible",
+      "rationale": "Tagged universal; the respite text names no terrain and the 'wilds' it shelters from are generic.",
+      "envFp": "15b237d7b1fe6d",
+      "reviewedOn": "2026-11-16",
+      "note": "FULL, with its potential adversaries hidden (adversaries: none): they are the creatures that threaten a camp, not part of the respite. Foreshadowing gives the GM a Fear when a PC voices a dread; that is the environment's own price of intimacy, not a threat, so it stays."
+    },
+    {
+      "envId": "briar-thicket",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "1dc4036f20293d",
+      "reviewedOn": "2026-11-16",
+      "note": "Snapping Vines is now used for hazard-fail-fear (briar-thicket-snapping-vines): under PD-098 'deadly' needs no numeric definition, and the scene's guidance tells the Master how to raise the damage."
+    },
+    {
+      "envId": "underroot-tunnels",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "14b6f180b88944",
+      "reviewedOn": "2026-11-16",
+      "note": "Rejected for Darkheart: Hidden Entrance and A Series of Passageways (their own Progress Countdowns 3 and 4/6 compete with the outcome's countdown, and both need a tunnel network), Toll-Keepers (named Jagged Knife bandits from another setting, paid by a Fear spend)."
+    },
+    {
+      "envId": "hunter-or-hunted",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "0ea6cf83d91977",
+      "reviewedOn": "2026-11-16"
+    },
+    {
+      "envId": "abandoned-grove",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "13d596bf07f452",
+      "reviewedOn": "2026-11-16",
+      "note": "Deferred: You Are Not Welcome Here for creature-fail-hope (the source says the guardians 'confront' the party, and whether that reads as neutral rather than hostile is an owner call; making it neutral would need an adaptation). Barbed Vines and Defiler for the fail-Fear outcomes (modest damage, a Minor Chaos Elemental is not a 'deadly' adversary)."
+    },
+    {
+      "envId": "gnarled-glen",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "1c296f6582fc69",
+      "reviewedOn": "2026-11-16",
+      "note": "Rejected: Defilers Feed the Roots for a neutral adversary (the Deeproot Defenders come to bleed the intruder, which is not neutral). Deferred: Cursed Flow for hazard-fail-fear (1d8+3 magic damage and Stress, modest for 'deadly')."
+    },
+    {
+      "envId": "cauldera-valley",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "159e7a42a322f4",
+      "reviewedOn": "2026-11-16",
+      "note": "Rejected for the pilot: Losing Track of Time (a witch and hound packs, but its whole content is the condition 'when a player fails a roll, spend a Fear'; showing it under an outcome that already decided the encounter would need a reviewed trigger adaptation). Deferred: Roots of Lethargy (hazard; deadly criterion), Fog of Time (an age change, no Darkheart outcome fits)."
+    },
+    {
+      "envId": "gloaming-forest",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "15ef8b5bd6f79b",
+      "reviewedOn": "2026-11-16",
+      "note": "Not used: Dreaming Spirits (a threshold-reducing scent hazard) and Gloamtrap Pit (a Fear-spend trap); neither is an obstacle or a meeting."
+    },
+    {
+      "envId": "root-rush-rescue",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "0e049662932a1e",
+      "reviewedOn": "2026-11-16",
+      "note": "The environment has no lore field and names its NPC, Luna, from The Sablewood Messengers. Shown as printed: the race works for any NPC and the name is a harmless detail. Its own countdowns (Distance 3, Time 3) are kept; the outcome states no countdown for an NPC in peril, so nothing competes."
+    },
+    {
+      "envId": "war-of-the-woods",
+      "status": "reviewed-none",
+      "compatibility": "native-forest",
+      "reason": "A two-faction mass battle tracked with token pools (The Tides of War). Every other feature reads or changes that pool, so no fragment stands alone, and a battle of dozens does not match any single Darkheart encounter.",
+      "envFp": "15d01d1027bd4d",
+      "reviewedOn": "2026-11-16"
+    },
+    {
+      "envId": "faestone-wode",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "0ebfbdbcf6c329",
+      "reviewedOn": "2026-11-16",
+      "note": "Used for resource-success-fear: the lore is guarded by its own Defenders. Left out: Fae Trickery (a Loop 4 countdown that competes with the Darkheart outcome's own countdown)."
+    },
+    {
+      "envId": "mother-o-gold",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "15d1448708f244",
+      "reviewedOn": "2026-11-16",
+      "note": "Used whole for creature-fail-hope: a formidable being that judges the party instead of hunting it. Her listed adversaries are not shown with the scene; its encounter theme (sylvan) only offers the ambush she may lead the party into."
+    },
+    {
+      "envId": "unsettling-forest",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "015ec19db4ae58",
+      "reviewedOn": "2026-11-16",
+      "note": "Used for landmark-success-fear through Disturbing Totems only, with the hag reference adapted away. Left out: Navigate the Woods (a Progress Countdown 6 that competes with the traversal), Spirits of the Damned (a Fear-spend summons) and Cage of Brambles (a damaging trap)."
+    },
+    {
+      "envId": "almara-forest",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "19e206aabfb534",
+      "reviewedOn": "2026-11-16",
+      "note": "Used for an obstacle through Dense Forest, with its own countdown replaced by the Darkheart one. Left out: Burst of Cold, Torment of the Woods (a Stress on any low roll)."
+    },
+    {
+      "envId": "obsidian-forest",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "0b8cda12af8b70",
+      "reviewedOn": "2026-11-16",
+      "note": "Tagged forest. Lava Burst and Jagged Pillars serve the deadly hazard; Obscured Paths the obstacle. Left out: Arcane Volatility (spellcasting), Living Stone (a Fear-spend summons)."
+    },
+    {
+      "envId": "burning-heart-of-the-woods",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "1dd970f7eb9442",
+      "reviewedOn": "2026-11-16",
+      "note": "Three separate fragments: The Indigo Flame (what consumed the place), Choking Ash (a countdown hazard), and the Flame guarded by Charcoal Constructs. Left out: Chaos Magic Locus, Grasping Vines."
+    },
+    {
+      "envId": "court-of-cats",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "04684a902b0ae9",
+      "reviewedOn": "2026-11-16",
+      "note": "Whole environment as a neutral but formidable court; Feast of the Fey alone as a side quest. The Fear-spend features (Marked, Silence) are the court's own menace and stay inside the whole-environment scene."
+    },
+    {
+      "envId": "court-of-hounds",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "117d48132173e5",
+      "reviewedOn": "2026-11-16",
+      "note": "The Wild Hunt as a hostile pursuit; The Sky Opens as an obstacle. Left out: A Test of Fitness (formal duels)."
+    },
+    {
+      "envId": "fey-lands",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "084673648ebe88",
+      "reviewedOn": "2026-11-16",
+      "note": "Ley Line (adapted to remove its ambush) as a safe place; Ruins of a Lost Court for a prisoner in peril and a guarded find; Festival as a boon. Left out: Fey Knows Fey (ancestry advantage)."
+    },
+    {
+      "envId": "haunted-mountain-pass",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "15923862b8a65e",
+      "reviewedOn": "2026-11-16",
+      "note": "Tagged mountain and forest. Four separate fragments: Flames of Blue (omen), Ruined Building (foreshadowed danger), Chill Mists (hostile spirits), Step by Step (an obstacle, its Progress Countdown 8 replaced)."
+    },
+    {
+      "envId": "green-doom-tangle",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "0d7f673bde0776",
+      "reviewedOn": "2026-11-16",
+      "note": "Slime Eruption as a deadly hazard; Trackless Vegetation as an obstacle with its countdown replaced. Left out: Stressed Out."
+    },
+    {
+      "envId": "rewritten-grove",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "057caa556d713f",
+      "reviewedOn": "2026-11-16",
+      "note": "Three fragments: Twisted Grove (plants to find), Fractal Fissure (a deadly hazard), Meteoric Distortion (an obstacle)."
+    },
+    {
+      "envId": "spooky-forest",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "1ac0c1a2fca12c",
+      "reviewedOn": "2026-11-16",
+      "note": "Hopelessly Lost as an obstacle with the Lost Countdown replaced by the Darkheart one. Left out: Unpleasant Wildlife (a Fear-spend)."
+    },
+    {
+      "envId": "bandit-hideout",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "028111bb08f9a9",
+      "reviewedOn": "2026-11-16",
+      "note": "Whole environment as a hostile hideout; its listed Jagged Knife adversaries are the point."
+    },
+    {
+      "envId": "forest-wildfire",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "19033d7148eb87",
+      "reviewedOn": "2026-11-16",
+      "note": "Fragments of the blaze as a hazard and as the danger an NPC is caught in (a generated NPC is added by the page). Left out: Hunting the Firestarter and Bring the Rain (their own countdown and environment change)."
+    },
+    {
+      "envId": "wishmaker-glade",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "172a42b67fa917",
+      "reviewedOn": "2026-11-16",
+      "note": "Wish-Holder Tree and Aura of Possibility as a hopeful place. Left out: the wish-spirit features (Fear-spend summons)."
+    },
+    {
+      "envId": "throne-of-three",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "039ad08e2311a5",
+      "reviewedOn": "2026-11-16",
+      "note": "Whole environment as a neutral, formidable goddess whose welcome can be overstayed."
+    },
+    {
+      "envId": "the-village-of-hush",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "004554d469a9f0",
+      "reviewedOn": "2026-11-16",
+      "note": "Tagged settlement and forest. Preparations as a side quest, Clover's Tavern as a place to rest (scale adapted). Left out: Guest Privileges, Leave it to the Trees."
+    },
+    {
+      "envId": "death-butterfly-grove",
+      "status": "reviewed",
+      "compatibility": "native-forest",
+      "envFp": "14d976d11f60d6",
+      "reviewedOn": "2026-11-16",
+      "note": "Eerie Silence as a dark omen. Left out: Swarm Tactics (an attack), Sandalwood Logs."
+    },
+    {
+      "envId": "dreamlands",
+      "status": "reviewed",
+      "compatibility": "naturally-compatible",
+      "rationale": "A dream can come to any hex, and the shown fragments name no terrain: they speak of dreams, an acquaintance and a haven.",
+      "envFp": "0c2ecee0440627",
+      "reviewedOn": "2026-11-16",
+      "note": "Fragments only: Nightmare Attack (hostile), It's you, isn't it? (a side quest), City of Ulthar (adapted to a woodland hamlet). Left out: Dream Travel (a countdown that competes with the traversal)."
+    },
+    {
+      "envId": "time-loop",
+      "status": "reviewed",
+      "compatibility": "naturally-compatible",
+      "rationale": "A time loop names no terrain; Trapped NPCs speaks only of people caught in it.",
+      "envFp": "006f65ebf07679",
+      "reviewedOn": "2026-11-16",
+      "note": "Only Trapped NPCs, as a side quest. Left out: the rest of the loop (it needs the whole environment)."
+    },
+    {
+      "envId": "deserted-moor",
+      "status": "reviewed",
+      "compatibility": "conditionally-adaptable",
+      "rationale": "A moor is open, rolling land; with its moor wording changed to woods, the shown fragments (a procession of spirits, a stream of herbs) read in a forest.",
+      "envFp": "02ed29934b1ea3",
+      "reviewedOn": "2026-11-16",
+      "note": "Both fragments are adapted from moor to woodland. Left out: Haunted Howls (a Fear-spend attack), Fog Rolls In."
+    },
+    {
+      "envId": "tormented-ancient-crypt",
+      "status": "reviewed",
+      "compatibility": "conditionally-adaptable",
+      "rationale": "A crypt is underground; the shown fragments speak of memory and a well, so a barrow in a forest hill carries them with only the place named differently.",
+      "envFp": "0196db590b91d0",
+      "reviewedOn": "2026-11-16",
+      "note": "Remember the Fallen and The Well of Remembrance, adapted from a crypt to a barrow. Left out: Relive Your Failings, Torment Unleashed (a summons), Entering the Well (a Death-Move-sized choice)."
+    },
+    {
+      "envId": "overgrown-ruins",
+      "status": "reviewed",
+      "compatibility": "conditionally-adaptable",
+      "rationale": "Ruins are a settlement biome; a trapped chest in a ruin or a hollow tree is the same idea.",
+      "envFp": "184d1ddda5b400",
+      "reviewedOn": "2026-11-16",
+      "note": "Only Reality Tearing Trap, adapted to a forest hollow. Left out: the ley-line features and Reality Anchor Failure."
+    }
+  ],
+  "scenes": [
+    {
+      "id": "friendly-campfire-travelers-fire",
+      "envId": "friendly-campfire",
+      "match": "partial",
+      "status": "approved",
+      "terrain": ["any"],
+      "features": [
+        { "name": "Stranger at the Fire", "type": "passive", "fp": "0eb504d4195e53" },
+        { "name": "Stranger’s Stew", "type": "passive", "fp": "177d4f710a1af1" }
+      ],
+      "excluded": [
+        { "name": "Ghost Story", "type": "action", "reason": "Spends a Fear to frighten the party: a hostile beat the safe-rest outcome rules out." },
+        { "name": "Whelp… (Slaps Knee)", "type": "action", "reason": "Forces the party to use their downtime moves or leave camp, which pressures the rest instead of keeping it safe." },
+        { "name": "Sorry, Friend", "type": "reaction", "reason": "Spends 2 Fear so the stranger robs the party; contradicts a safe rest." }
+      ],
+      "standaloneNote": "The stranger, the fire and the stew are all introduced inside the two shown features; neither mentions Ghost Story, the stranger turning in, or the theft.",
+      "adversaries": "none",
+      "art": {
+        "mode": "fallback",
+        "source": "biome",
+        "ref": "forest",
+        "reason": "The environment has no painting or approved thematic picture; the forest biome strip puts the fire in the Darkheart wood."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-success-hope",
+          "framing": {
+            "title": { "en": "The Traveler’s Campfire", "ru": "Костёр путника" },
+            "summary": {
+              "en": "A stranger’s fire burns steady where little else in the wood is safe. Share a story and some food, and the whole party can rest.",
+              "ru": "Костёр незнакомца горит ровно там, где в лесу почти нигде не безопасно. Поделитесь историей и едой — и весь отряд сможет отдохнуть."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "around-the-fire-respite",
+      "envId": "around-the-fire",
+      "match": "full",
+      "status": "approved",
+      "terrain": ["any"],
+      "envFp": "15b237d7b1fe6d",
+      "adversaries": "none",
+      "art": {
+        "mode": "fallback",
+        "source": "biome",
+        "ref": "forest",
+        "reason": "No painting or approved thematic picture exists for the environment; the forest biome strip sets the respite in the Darkheart wood."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-success-hope",
+          "framing": {
+            "title": { "en": "Rest Around the Fire", "ru": "Привал у костра" },
+            "summary": {
+              "en": "A rare pause: the flames hold the dark back long enough for the party to trade stories, share their worries and recover.",
+              "ru": "Редкая передышка: пламя на время отгоняет тьму, и отряд может делиться историями и тревогами и восстанавливать силы."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "hunter-or-hunted-wolf-ground",
+      "envId": "hunter-or-hunted",
+      "match": "full",
+      "status": "approved",
+      "terrain": ["forest"],
+      "envFp": "0ea6cf83d91977",
+      "adversaries": "source",
+      "encounter": { "themes": ["wolves"] },
+      "art": {
+        "mode": "fallback",
+        "source": "biome",
+        "ref": "forest",
+        "reason": "No painting or approved thematic picture exists for the environment; the forest biome strip fits a sparse wood."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-fail-fear",
+          "framing": {
+            "title": { "en": "The Wolves’ Hunting Ground", "ru": "Охотничьи угодья волков" },
+            "summary": {
+              "en": "A hush falls over a sparse wood. Something is already watching the party from between the trees, and its den is close.",
+              "ru": "В редком лесу воцаряется тишина. Из-за деревьев за отрядом уже кто-то наблюдает, а его логово совсем рядом."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "root-rush-rescue-race",
+      "envId": "root-rush-rescue",
+      "match": "full",
+      "status": "approved",
+      "terrain": ["forest"],
+      "envFp": "0e049662932a1e",
+      "adversaries": "none",
+      "art": {
+        "mode": "fallback",
+        "source": "biome",
+        "ref": "forest",
+        "reason": "No painting or approved thematic picture exists for the environment; the forest biome strip fits a race through the wood."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-success-fear",
+          "framing": {
+            "title": { "en": "A Race to the Rescue", "ru": "Спасение наперегонки со временем" },
+            "summary": {
+              "en": "Someone is hurt and running out of time deep in the wood. The party can still reach them, but the forest fights every step.",
+              "ru": "Кто-то ранен и теряет время в глубине леса. Отряд ещё может успеть, но лес мешает на каждом шагу."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "gloaming-forest-wanderer",
+      "envId": "gloaming-forest",
+      "match": "partial",
+      "status": "approved",
+      "terrain": ["forest"],
+      "features": [
+        { "name": "Roaming Wanderer", "type": "action", "fp": "0e2a5e2343de83" }
+      ],
+      "excluded": [
+        { "name": "Green and Overgrown", "type": "passive", "reason": "A navigation hindrance; used by its own hazard scene." },
+        { "name": "Dreaming Spirits", "type": "action", "reason": "A scent hazard that lowers thresholds; not part of meeting an NPC." },
+        { "name": "Gloamtrap Pit", "type": "action", "reason": "Spends a Fear on a trap; not part of meeting an NPC." }
+      ],
+      "standaloneNote": "Roaming Wanderer is self-contained: it introduces an NPC from its own list of four, states what they want, and the Hope reward; it refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "fallback",
+        "source": "biome",
+        "ref": "forest",
+        "reason": "The catalogue's approved thematic picture for this environment is a sinister wood, which misleads for a friendly meeting; the plain forest biome strip does not."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-success-hope",
+          "framing": {
+            "title": { "en": "A Wanderer in the Gloaming", "ru": "Странник в сумерках" },
+            "summary": {
+              "en": "Someone who knows something about this wood steps out of the undergrowth. They will share it if the party can help with what they need.",
+              "ru": "Из подлеска появляется тот, кому есть что рассказать об этом лесе. Он поделится, если отряд поможет с тем, что ему нужно."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "gloaming-forest-shifting-paths",
+      "envId": "gloaming-forest",
+      "match": "partial",
+      "status": "approved",
+      "terrain": ["forest"],
+      "features": [
+        { "name": "Green and Overgrown", "type": "passive", "fp": "1d940473f66391" }
+      ],
+      "excluded": [
+        { "name": "Dreaming Spirits", "type": "action", "reason": "A scent hazard that lowers thresholds; a different hazard." },
+        { "name": "Gloamtrap Pit", "type": "action", "reason": "Spends a Fear on a trap; a different hazard." },
+        { "name": "Roaming Wanderer", "type": "action", "reason": "An NPC meeting, used by its own scene." }
+      ],
+      "standaloneNote": "Green and Overgrown stands alone: shifting paths and disadvantage on Instinct Rolls to navigate; it refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "fallback",
+        "source": "archetype",
+        "ref": "archetype:sinister-woods",
+        "reason": "The catalogue already approves this sinister-wood picture for the environment, and a wood that rearranges its own paths is menacing."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-hope",
+          "framing": {
+            "title": { "en": "Paths That Rearrange", "ru": "Тропы, что меняются сами" },
+            "summary": {
+              "en": "The trail splits and shuffles behind the party. Finding the way through takes more than a good sense of direction.",
+              "ru": "Тропа расходится и перетасовывается за спиной отряда. Чтобы найти путь, одного чувства направления мало."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "briar-thicket-tangled-way",
+      "envId": "briar-thicket",
+      "match": "partial",
+      "status": "approved",
+      "terrain": ["forest"],
+      "features": [
+        { "name": "Dense Undergrowth", "type": "passive", "fp": "03b3011cd0fe6c" },
+        { "name": "Disorienting Canopy", "type": "reaction", "fp": "0a91631d50dbeb" }
+      ],
+      "excluded": [
+        { "name": "Snapping Vines", "type": "reaction", "reason": "Spends a Fear to deal damage; an attack rather than an obstacle (deferred for the deadly-hazard outcome)." }
+      ],
+      "standaloneNote": "Both shown features speak only of 'the Thicket': movement under pressure at disadvantage, and losing the party on a failed navigation roll. Neither refers to Snapping Vines.",
+      "adversaries": "none",
+      "art": {
+        "mode": "fallback",
+        "source": "biome",
+        "ref": "forest",
+        "reason": "No painting or approved thematic picture exists for the environment; the forest biome strip fits a thicket."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-hope",
+          "framing": {
+            "title": { "en": "The Briar Thicket", "ru": "Терновая чаща" },
+            "summary": {
+              "en": "Roots, vines and fallen logs knot the way into a maze. Moving fast here is how a party gets separated.",
+              "ru": "Корни, лозы и поваленные стволы сплетаются в лабиринт. Здесь спешка — верный способ потерять друг друга."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "abandoned-grove-fallen-grove",
+      "envId": "abandoned-grove",
+      "match": "partial",
+      "status": "approved",
+      "terrain": ["forest"],
+      "features": [
+        { "name": "Overgrown Battlefield", "type": "passive", "fp": "1e77003d2a10aa" }
+      ],
+      "excluded": [
+        { "name": "Barbed Vines", "type": "action", "reason": "A damaging, restraining hazard; not part of a quiet site." },
+        { "name": "You Are Not Welcome Here", "type": "action", "reason": "Guardians confront the party; a creature encounter (deferred, see the review note)." },
+        { "name": "Defiler", "type": "action", "reason": "Spends a Fear to summon a Minor Chaos Elemental; hostile, not part of a landmark." }
+      ],
+      "standaloneNote": "Overgrown Battlefield is a self-contained investigation of the old fight (three findings and a roll); it refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "fallback",
+        "source": "archetype",
+        "ref": "archetype:forgotten-ruins",
+        "reason": "The catalogue already approves this forgotten-ruins picture for the grove, and a ruined, battle-scarred grove reads as a tragic site."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-fail-hope",
+          "framing": {
+            "title": { "en": "The Fallen Grove", "ru": "Павшая роща" },
+            "summary": {
+              "en": "Broken weapons, gouged earth and the mossy corpse of a treant mark where a battle in an old grove ended. No one ever set it right.",
+              "ru": "Сломанное оружие, изрытая земля и поросший мхом труп энта отмечают место, где закончилась битва в старой роще. Никто так и не исправил случившегося."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "gnarled-glen-lingering-souls",
+      "envId": "gnarled-glen",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": ["forest"],
+      "features": [
+        { "name": "Secrets of the Dead", "type": "passive", "fp": "11d8fc0627a81c" }
+      ],
+      "excluded": [
+        { "name": "Cursed Flow", "type": "action", "reason": "A damaging magical hazard; deferred for the deadly-hazard outcome." },
+        { "name": "Defilers Feed the Roots", "type": "reaction", "reason": "Deeproot Defenders attack an intruder; a hostile encounter." }
+      ],
+      "standaloneNote": "Secrets of the Dead is self-contained: an Instinct Roll to learn parts of a hidden truth, with its three guiding questions inline; it refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "fallback",
+        "source": "archetype",
+        "ref": "archetype:sinister-woods",
+        "reason": "The catalogue approves this sinister-wood picture as a strong fit for the glen, and it carries both the omen and the buried truth."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-fail-fear",
+          "framing": {
+            "title": { "en": "The Glen That Remembers", "ru": "Глушь, которая помнит" },
+            "summary": {
+              "en": "Souls linger under the dark canopy, and the wood seems to remember what was done here. A shadowed truth waits just out of reach.",
+              "ru": "Под тёмным пологом леса задерживаются души, и кажется, что лес помнит, что здесь было сделано. Сумрачная правда ждёт совсем рядом, но недосягаема."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The Darkheart roll that brought the party here has already failed, so Secrets of the Dead is read at its own failure result instead of asking for a second Instinct Roll.",
+              "ru": "Бросок Darkheart, приведший отряд сюда, уже провален, поэтому «Secrets of the Dead» читается по собственному результату провала вместо второго броска Инстинкта."
+            },
+            "changes": [
+              {
+                "kind": "mechanic",
+                "target": "Secrets of the Dead",
+                "source": "On a failure, a PC can mark a Stress to learn one and gain Advantage on the next action roll to investigate this environment.",
+                "adapted": {
+                  "en": "The traversal roll is the failed roll: a PC can mark a Stress to learn one part of the truth and gain Advantage on the next action roll to investigate the glen.",
+                  "ru": "Бросок перехода и есть проваленный бросок: персонаж может отметить Стресс, чтобы узнать одну часть правды и получить Преимущество на следующий бросок действия для изучения лощины."
+                },
+                "why": "Applies the source's own failure branch, word for word, to a failure that already happened. No cost, number or result is new, and the GM still decides which of the three parts is learned."
+              }
+            ]
+          }
+        },
+        {
+          "outcome": "resource-success-hope",
+          "framing": {
+            "title": { "en": "Truth in the Roots", "ru": "Правда в корнях" },
+            "summary": {
+              "en": "The glen gives up its secret: what happened here, what hides it, and what it will cost to bring it into the light.",
+              "ru": "Лес выдаёт свою тайну: что здесь случилось, что её скрывает и чего будет стоить вынести её на свет."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The Darkheart roll that brought the party here has already succeeded with Hope, so Secrets of the Dead is read at its own Hope result instead of asking for a second Instinct Roll.",
+              "ru": "Бросок Darkheart, приведший отряд сюда, уже удался с Надеждой, поэтому «Secrets of the Dead» читается по собственному результату успеха с Надеждой вместо второго броска Инстинкта."
+            },
+            "changes": [
+              {
+                "kind": "mechanic",
+                "target": "Secrets of the Dead",
+                "source": "On a success with Hope, learn all three parts of the truth.",
+                "adapted": {
+                  "en": "The traversal roll is the successful roll: the party learns all three parts of the truth.",
+                  "ru": "Бросок перехода и есть удавшийся бросок: отряд узнаёт все три части правды."
+                },
+                "why": "Replaces the roll with the result the source gives for exactly this outcome (success with Hope: all three parts); nothing is added or lost."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "cauldera-valley-valleys-bounty",
+      "envId": "cauldera-valley",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": ["forest"],
+      "features": [
+        { "name": "Valley Flora", "type": "passive", "fp": "18a05d17a73df4" }
+      ],
+      "excluded": [
+        { "name": "Fog of Time", "type": "action", "reason": "Spends a Fear to age or rejuvenate a PC; a separate effect, no Darkheart outcome fits." },
+        { "name": "Roots of Lethargy", "type": "action", "reason": "A damaging, restraining hazard; not part of a resource find." },
+        { "name": "Losing Track of Time", "type": "reaction", "reason": "A Fear-spend summons of a witch and hound packs; a hostile encounter." }
+      ],
+      "standaloneNote": "Valley Flora lists its three plants inline and refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "original",
+        "reason": "The environment's own painting shows lilies, ivy and iridescent leaves in the foreground, so it represents a harvest of the valley's plants."
+      },
+      "outcomes": [
+        {
+          "outcome": "resource-success-hope",
+          "framing": {
+            "title": { "en": "The Valley’s Bounty", "ru": "Дары долины" },
+            "summary": {
+              "en": "Strange blooms crowd the valley floor, each thriving where little else could. Anyone who knows plants can fill a pack.",
+              "ru": "Диковинные цветы теснятся на дне долины, и каждый процветает там, где мало что выживет. Тот, кто знает растения, наполнит ранец."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The Darkheart roll that brought the party here has already succeeded with Hope, so Valley Flora is read at its own Hope result instead of asking for a Knowledge or Instinct Roll.",
+              "ru": "Бросок Darkheart, приведший отряд сюда, уже удался с Надеждой, поэтому «Valley Flora» читается по собственному результату успеха с Надеждой вместо броска Знания или Инстинкта."
+            },
+            "changes": [
+              {
+                "kind": "mechanic",
+                "target": "Valley Flora",
+                "source": "On a success with Hope, they find all three of the below plants.",
+                "adapted": {
+                  "en": "The traversal roll is the successful roll: the party finds all three plants (Blossomveil Ivy, Nursewood, Witherroot).",
+                  "ru": "Бросок перехода и есть удавшийся бросок: отряд находит все три растения (Blossomveil Ivy, Nursewood, Witherroot)."
+                },
+                "why": "Replaces the roll with the result the source gives for exactly this outcome (success with Hope: all three plants); nothing is added or lost."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "underroot-tunnels-root-blockage",
+      "envId": "underroot-tunnels",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": ["forest"],
+      "features": [
+        { "name": "Root Blockage", "type": "action", "fp": "0cf95d5d2d68e5" }
+      ],
+      "excluded": [
+        { "name": "Hidden Entrance", "type": "passive", "reason": "Needs a tunnel entrance and carries its own Progress Countdown (3) that would compete with the outcome's countdown." },
+        { "name": "A Series of Passageways, All Alike", "type": "passive", "reason": "Carries its own Progress Countdown (4 or 6) and needs a tunnel network." },
+        { "name": "Toll-Keepers", "type": "action", "reason": "Spends a Fear to summon named Jagged Knife bandits from another setting, asking a toll." }
+      ],
+      "standaloneNote": "Root Blockage is self-contained: the path is blocked, and the party can dig (Finesse), cut (Strength) or turn back (Instinct); it refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "fallback",
+        "source": "biome",
+        "ref": "forest",
+        "reason": "No painting or approved thematic picture exists for the environment, and its underground tunnels would mislead; the forest biome strip shows the tree on the path."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-hope",
+          "framing": {
+            "title": { "en": "A Tree Across the Path", "ru": "Дерево поперёк тропы" },
+            "summary": {
+              "en": "A great tree has shifted and closed the way. The party can dig around it, cut through it, or look for another road.",
+              "ru": "Огромное дерево сдвинулось и перегородило путь. Отряд может подкопать, прорубиться или поискать другую дорогу."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "Only the printed place name is glossed: the source says a Sablewood tree, the scene reads it as a tree of the forest the party is crossing. Every roll and option stays as printed.",
+              "ru": "Поясняется только напечатанное название места: в источнике сказано «дерево Sablewood», в сцене это читается как дерево леса, по которому идёт отряд. Все броски и варианты остаются как напечатаны."
+            },
+            "changes": [
+              {
+                "kind": "setting-reference",
+                "target": "Root Blockage",
+                "source": "a great Sablewood tree",
+                "adapted": {
+                  "en": "A great tree of the forest the party is crossing; read “Sablewood” as that forest.",
+                  "ru": "Огромное дерево леса, по которому идёт отряд; «Sablewood» читайте как этот лес."
+                },
+                "why": "Glosses a proper noun from another setting; the three ways past (Finesse, Strength, Instinct) and every roll are unchanged, and the source text is shown unaltered with the gloss beside it."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "briar-thicket-snapping-vines",
+      "envId": "briar-thicket",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Dense Undergrowth",
+          "type": "passive",
+          "fp": "03b3011cd0fe6c"
+        },
+        {
+          "name": "Snapping Vines",
+          "type": "reaction",
+          "fp": "008125738ab16c"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Disorienting Canopy",
+          "type": "reaction",
+          "reason": "A navigation setback that already serves the obstacle scene (briar-thicket-tangled-way); a second hazard would muddy this one."
+        }
+      ],
+      "standaloneNote": "Both shown features speak only of 'the Thicket': a movement penalty under pressure and flora that strikes intruders. Neither refers to Disorienting Canopy.",
+      "adversaries": "none",
+      "art": {
+        "mode": "fallback",
+        "source": "biome",
+        "ref": "forest",
+        "reason": "No painting or approved thematic picture exists for the environment; the forest biome strip fits a thicket."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-fear",
+          "framing": {
+            "title": {
+              "en": "The Thicket Strikes Back",
+              "ru": "Чаща бьёт в ответ"
+            },
+            "summary": {
+              "en": "The briars are not a maze this time but a trap: the way forward is the only way out, and the vines are waiting for someone to move.",
+              "ru": "На этот раз терновник — не лабиринт, а ловушка: путь вперёд — единственный выход, и лозы ждут, пока кто-нибудь шевельнётся."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "difficulty",
+              "countdown"
+            ],
+            "text": {
+              "en": "The Darkheart countdown (6) is the clock; Snapping Vines is how it bites. Raise the vines' damage to severe if the Master wants the hazard to feel deadly.",
+              "ru": "Отсчёт Darkheart (6) — это часы; «Snapping Vines» — то, как они кусают. Если нужна по-настоящему смертельная опасность, поднимите урон лоз до тяжёлого."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "faestone-wode-guarded-lore",
+      "envId": "faestone-wode",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Faestone Lore",
+          "type": "passive",
+          "fp": "0ca4701abfe23a"
+        },
+        {
+          "name": "Defenders of the Stones",
+          "type": "action",
+          "fp": "0addd7ef899f7c"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Fae Trickery",
+          "type": "reaction",
+          "reason": "A Loop 4 countdown that competes with the Darkheart outcome's own countdown (1d6)."
+        }
+      ],
+      "standaloneNote": "Faestone Lore names only 'Defenders of the Stones', which is shown with it; Defenders of the Stones refers to no other feature.",
+      "adversaries": "none",
+      "encounter": {
+        "themes": [
+          "sylvan"
+        ],
+        "sourceRoster": true
+      },
+      "art": {
+        "mode": "fallback",
+        "source": "biome",
+        "ref": "forest",
+        "reason": "No painting or approved thematic picture exists for the environment; the forest biome strip fits a lit wilderness."
+      },
+      "outcomes": [
+        {
+          "outcome": "resource-success-fear",
+          "framing": {
+            "title": {
+              "en": "Lore Under Guard",
+              "ru": "Знание под охраной"
+            },
+            "summary": {
+              "en": "Glowing runes cover a ring of stones, and everything they know about the wood is yours for the reading, if the wood allows it.",
+              "ru": "Светящиеся руны покрывают кольцо камней, и всё, что они знают о лесе, можно прочесть — если лес позволит."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "scale",
+              "difficulty"
+            ],
+            "text": {
+              "en": "The guardians are the Master's dial: send fewer Tangle Brambles against a small or hurt party, or let the Darkheart countdown alone stand for the guard.",
+              "ru": "Стражи — рычаг Мастера: против малого или раненого отряда выпускайте меньше Тангл Брамблов или пусть стражей заменит один лишь отсчёт Darkheart."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "mother-o-gold-golden-judge",
+      "envId": "mother-o-gold",
+      "match": "full",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "envFp": "15d1448708f244",
+      "adversaries": "none",
+      "encounter": {
+        "themes": [
+          "sylvan"
+        ]
+      },
+      "art": {
+        "mode": "fallback",
+        "source": "biome",
+        "ref": "forest",
+        "reason": "No painting or approved thematic picture exists for the environment; the forest biome strip fits a figure seen between the trees."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-fail-hope",
+          "framing": {
+            "title": {
+              "en": "Mother o’ Gold",
+              "ru": "Золотая Матушка"
+            },
+            "summary": {
+              "en": "A golden-haired figure steps from between the trees, neither threat nor friend, and the way she looks at the party is a question.",
+              "ru": "Золотоволосая фигура выходит из-за деревьев — не угроза и не друг, и её взгляд на отряд — это вопрос."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "hostility",
+              "npc"
+            ],
+            "text": {
+              "en": "She is formidable but not hostile: let the party talk. If they fail her judgment, her ambush can come from the wood itself, or turn her into a foe.",
+              "ru": "Она грозна, но не враждебна: дайте отряду поговорить. Если он не пройдёт её суд, засада может выйти из самого леса — или она сама станет врагом."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "unsettling-forest-warning-totem",
+      "envId": "unsettling-forest",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Disturbing Totems",
+          "type": "action",
+          "fp": "0ef5d412efe7b7"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Navigate the Woods",
+          "type": "passive",
+          "reason": "A Progress Countdown 6 to cross the forest, competing with the traversal itself."
+        },
+        {
+          "name": "Spirits of the Damned",
+          "type": "action",
+          "reason": "A Fear-spend summons of a Tier 2 adversary; a hostile encounter, not a landmark."
+        },
+        {
+          "name": "Cage of Brambles",
+          "type": "reaction",
+          "reason": "A damaging trap sprung by a failed roll; a hazard, not a landmark."
+        }
+      ],
+      "standaloneNote": "Disturbing Totems names only 'the Forest' and the hag; it refers to no sibling feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "fallback",
+        "source": "archetype",
+        "ref": "archetype:sinister-woods",
+        "reason": "The catalogue approves the sinister-woods picture for this environment; a twisted effigy in a shadowed wood is exactly its subject."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-success-fear",
+          "framing": {
+            "title": {
+              "en": "A Totem in the Dark",
+              "ru": "Тотем во мраке"
+            },
+            "summary": {
+              "en": "Something has been arranged here on purpose: an effigy built of the wood's own litter, facing the way the party has yet to go.",
+              "ru": "Здесь что-то выложено нарочно: чучело из лесного сора, обращённое туда, куда отряду ещё идти."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "location",
+              "scale"
+            ],
+            "text": {
+              "en": "Let the totem foreshadow whatever you have in mind for the next hex. The Presence roll is optional: use it if the party studies the totem too long.",
+              "ru": "Пусть тотем предвещает то, что вы приготовили для следующего гекса. Бросок Присутствия необязателен: используйте его, если отряд слишком долго разглядывает тотем."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The source ties the totem to a specific hag; here it is the work of whatever haunts this stretch of the forest, so it can foreshadow any danger.",
+              "ru": "В источнике тотем принадлежит конкретной ведьме; здесь это дело того, что обитает в этой части леса, поэтому он может предвещать любую опасность."
+            },
+            "changes": [
+              {
+                "kind": "setting-reference",
+                "target": "Disturbing Totems",
+                "source": "twisted effigy of the hag’s predilections",
+                "adapted": {
+                  "en": "a twisted effigy of whatever haunts this stretch of the forest",
+                  "ru": "искажённое чучело того, что обитает в этой части леса"
+                },
+                "why": "Only the owner of the effigy changes; the totem, the Presence Reaction Roll and the Stress it costs are exactly the source's."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "obsidian-forest-lava-burst",
+      "envId": "obsidian-forest",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Lava Burst",
+          "type": "action",
+          "fp": "176e25575ecfa2"
+        },
+        {
+          "name": "Jagged Pillars",
+          "type": "reaction",
+          "fp": "0603b5853829da"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Arcane Volatility",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Obscured Paths",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Living Stone",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Both shown features speak only of the forest's stone: a lava channel and pillars that cut anyone traversing.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-fear",
+          "framing": {
+            "title": {
+              "en": "The Glass Forest Erupts",
+              "ru": "Стеклянный лес извергается"
+            },
+            "summary": {
+              "en": "Black glass pillars lean over the path and a hidden channel of lava waits under it. One wrong step and the forest bursts.",
+              "ru": "Чёрные стеклянные колонны нависают над тропой, а под ней ждёт скрытое русло лавы. Один неверный шаг — и лес взрывается."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "countdown",
+              "difficulty"
+            ],
+            "text": {
+              "en": "The Darkheart countdown (6) is the clock; the burst and the pillars are how it bites.",
+              "ru": "Отсчёт Darkheart (6) — это часы; извержение и колонны — то, как они кусают."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "obsidian-forest-obscured-paths",
+      "envId": "obsidian-forest",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Obscured Paths",
+          "type": "passive",
+          "fp": "1efdb0bd3dfd2f"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Arcane Volatility",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Lava Burst",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Living Stone",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Jagged Pillars",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Obscured Paths is one sentence about light and navigation and refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-hope",
+          "framing": {
+            "title": {
+              "en": "Paths That Swallow the Light",
+              "ru": "Тропы, глотающие свет"
+            },
+            "summary": {
+              "en": "Under the canopy the black stone drinks the light, and every landmark the party trusts is a guess.",
+              "ru": "Под кронами чёрный камень пьёт свет, и каждая примета — лишь догадка."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "burning-heart-choking-ash",
+      "envId": "burning-heart-of-the-woods",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Choking Ash",
+          "type": "reaction",
+          "fp": "0ea50ef40f38b6"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Chaos Magic Locus",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "The Indigo Flame",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Grasping Vines",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Charcoal Constructs",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Choking Ash is a self-contained countdown and damage reaction.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-fear",
+          "framing": {
+            "title": {
+              "en": "Ash in the Lungs",
+              "ru": "Пепел в лёгких"
+            },
+            "summary": {
+              "en": "Indigo ash hangs thick and the air itself is running out. Whoever lingers will be choking.",
+              "ru": "Густой индиго-пепел висит в воздухе, и сам воздух на исходе. Кто задержится — задохнётся."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "countdown",
+              "difficulty"
+            ],
+            "text": {
+              "en": "The source loops its countdown; here the Darkheart countdown (6) replaces it. Protective cloth still helps.",
+              "ru": "В источнике отсчёт зацикливается; здесь его заменяет отсчёт Darkheart (6). Защитная ткань по-прежнему помогает."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "green-doom-tangle-slime-eruption",
+      "envId": "green-doom-tangle",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Slime Eruption",
+          "type": "action",
+          "fp": "16061b0be33c51"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Trackless Vegetation",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Stressed Out",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Slime Eruption names only a point and a Close range.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-fear",
+          "framing": {
+            "title": {
+              "en": "The Wood Spits Slime",
+              "ru": "Лес плюётся слизью"
+            },
+            "summary": {
+              "en": "Somewhere ahead the undergrowth heaves, and a gout of acid green slime is already on its way.",
+              "ru": "Где-то впереди подлесок вздымается, и сгусток кислотной зелёной слизи уже летит."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "rewritten-grove-fractal-fissure",
+      "envId": "rewritten-grove",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Fractal Fissure",
+          "type": "action",
+          "fp": "1e380be0cc3245"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Twisted Grove",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Meteoric Distortion",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Fractal Fissure explains its own condition and countdown.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-fear",
+          "framing": {
+            "title": {
+              "en": "A Crack That Calls",
+              "ru": "Трещина, что зовёт"
+            },
+            "summary": {
+              "en": "A glowing crack spirals along the crater wall and something in every mind wants to climb inside.",
+              "ru": "Светящаяся трещина вьётся по стене кратера, и в каждом разуме что-то хочет забраться внутрь."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "countdown",
+              "difficulty"
+            ],
+            "text": {
+              "en": "The fissure keeps its own countdown (1); the Darkheart countdown (6) is the deadline for the party to get everyone out of its pull.",
+              "ru": "У трещины свой отсчёт (1); отсчёт Darkheart (6) — срок, за который отряд должен вытащить всех из её притяжения."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "forest-wildfire-blaze",
+      "envId": "forest-wildfire",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Intense Heat",
+          "type": "passive",
+          "fp": "0dfddca477b1ac"
+        },
+        {
+          "name": "Panicked Denizens",
+          "type": "action",
+          "fp": "1ae0b4f0d3631c"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Shifting Winds",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Hunting the Firestarter",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Bring the Rain (Environment Change)",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Intense Heat and Panicked Denizens speak only of the blaze and the creatures fleeing it.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-fear",
+          "framing": {
+            "title": {
+              "en": "The Wood Is Burning",
+              "ru": "Лес горит"
+            },
+            "summary": {
+              "en": "A wall of fire moves through the trees and everything alive is running from it, straight through the party.",
+              "ru": "Стена огня идёт по деревьям, а всё живое бежит от неё прямо сквозь отряд."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "rewritten-grove-meteoric-distortion",
+      "envId": "rewritten-grove",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Meteoric Distortion",
+          "type": "reaction",
+          "fp": "1f85db0d695c49"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Twisted Grove",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Fractal Fissure",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Meteoric Distortion describes only how movement fails near the fragments.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-hope",
+          "framing": {
+            "title": {
+              "en": "Where Steps Go Astray",
+              "ru": "Где шаги сбиваются"
+            },
+            "summary": {
+              "en": "Splinters of a fallen star litter the grove and a step forward is a coin toss.",
+              "ru": "Осколки упавшей звезды усеивают рощу, и шаг вперёд — бросок монеты."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "court-of-hounds-sky-opens",
+      "envId": "court-of-hounds",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "The Sky Opens",
+          "type": "action",
+          "fp": "04858a2b4164bf"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Fey Knows Fey",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "The Wild Hunt",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "A Test of Fitness",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "The Sky Opens is a storm and the shelter that is found in it; it names no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-hope",
+          "framing": {
+            "title": {
+              "en": "The Sky Opens",
+              "ru": "Небо разверзается"
+            },
+            "summary": {
+              "en": "Thunder, wind and a rain like a waterfall. The party can see no further than a stone's throw until it finds shelter.",
+              "ru": "Гром, ветер и ливень как водопад. Дальше броска камня ничего не видно, пока отряд не найдёт укрытие."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "spooky-forest-hopelessly-lost",
+      "envId": "spooky-forest",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Hopelessly Lost",
+          "type": "passive",
+          "fp": "11c3de14b7b9e3"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Unpleasant Wildlife",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Hopelessly Lost refers only to its own countdown.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-hope",
+          "framing": {
+            "title": {
+              "en": "Hopelessly Lost",
+              "ru": "Безнадёжно заблудились"
+            },
+            "summary": {
+              "en": "Every tree looks like the last one. The path forward exists, but the party has to find it before the wood decides otherwise.",
+              "ru": "Каждое дерево похоже на предыдущее. Путь вперёд есть, но отряду нужно найти его раньше, чем лес решит иначе."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The source counts the way out with its own Lost Countdown (6) and ends with the party leaving the woods; here the Darkheart countdown (3) is the obstacle and the way out leads on to the next hex.",
+              "ru": "Источник отсчитывает выход своим «Отсчётом блуждания» (6) и заканчивается выходом из леса; здесь препятствие — отсчёт Darkheart (3), а выход ведёт в следующий гекс."
+            },
+            "changes": [
+              {
+                "kind": "countdown",
+                "target": "Hopelessly Lost",
+                "source": "Start a Lost Countdown (6)",
+                "adapted": {
+                  "en": "Run the Darkheart countdown (3) instead",
+                  "ru": "Запустите вместо него отсчёт Darkheart (3)"
+                },
+                "why": "Only the length changes; it still ticks down on a successful navigation roll and its stress for spending Hope still applies."
+              },
+              {
+                "kind": "mechanic",
+                "target": "Hopelessly Lost",
+                "source": "the PCs escape the woods",
+                "adapted": {
+                  "en": "the PCs find the way on to the next hex",
+                  "ru": "отряд находит путь в следующий гекс"
+                },
+                "why": "The countdown ending still means the party gets through; it is the hex, not the whole forest, that it leads out of."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "almara-forest-dense-woods",
+      "envId": "almara-forest",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Dense Forest",
+          "type": "passive",
+          "fp": "09a9040e377371"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Burst of Cold",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Torment of the Woods",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Dense Forest refers only to its own countdown and a summoned Stag Knight.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-hope",
+          "framing": {
+            "title": {
+              "en": "Dense Woods",
+              "ru": "Густой лес"
+            },
+            "summary": {
+              "en": "The trees close in overhead and every direction feels the same. Getting through will take patience and a steady navigator.",
+              "ru": "Деревья смыкаются над головой, и все стороны кажутся одинаковыми. Чтобы пройти, нужны терпение и твёрдый следопыт."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The source sets a Progress Countdown (6) for crossing a particular creature's back; here the Darkheart countdown (3) is the obstacle and the woods are simply woods.",
+              "ru": "Источник задаёт Отсчёт Прогресса (6) для пересечения спины конкретного существа; здесь препятствие — отсчёт Darkheart (3), а лес — просто лес."
+            },
+            "changes": [
+              {
+                "kind": "countdown",
+                "target": "Dense Forest",
+                "source": "complete a Progress Countdown (6)",
+                "adapted": {
+                  "en": "run down the Darkheart countdown (3)",
+                  "ru": "отсчитайте отсчёт Darkheart (3)"
+                },
+                "why": "Only the length changes; the party still has to complete it to pass, and a failure with Fear still brings the Stag Knight."
+              },
+              {
+                "kind": "setting-reference",
+                "target": "Dense Forest",
+                "source": "Navigating the Torso to find the Temple",
+                "adapted": {
+                  "en": "Navigating the woods",
+                  "ru": "Пробираясь через лес"
+                },
+                "why": "Only the named place changes; the navigation obstacle is the same."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "haunted-mountain-pass-step-by-step",
+      "envId": "haunted-mountain-pass",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Step by Step",
+          "type": "passive",
+          "fp": "0a5d83abfc9105"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Flames of Blue",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Ruined Building",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Chill Mists",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Step by Step refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-hope",
+          "framing": {
+            "title": {
+              "en": "Step by Step",
+              "ru": "Шаг за шагом"
+            },
+            "summary": {
+              "en": "Cliffs, a roaring river, mist and trees that block the sun: the way through is slow and every step needs a steady hand.",
+              "ru": "Скалы, ревущая река, туман и деревья, заслоняющие солнце: путь медленный, и каждый шаг требует твёрдой руки."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The source runs a Progress Countdown (8), a long trek; the Darkheart obstacle runs a Countdown 3, so only its length changes.",
+              "ru": "Источник ведёт Отсчёт Прогресса (8) — долгий поход; препятствие Darkheart ведёт Отсчёт 3, поэтому меняется только его длина."
+            },
+            "changes": [
+              {
+                "kind": "countdown",
+                "target": "Step by Step",
+                "source": "activate a Dynamic Progress Countdown (8)",
+                "adapted": {
+                  "en": "activate a Dynamic Progress Countdown (3)",
+                  "ru": "запустите Динамический Отсчёт Прогресса (3)"
+                },
+                "why": "A mountain countdown of 8 becomes a Darkheart obstacle of 3; its rule (reaction rolls to help the navigator, a Stress when it ends) is unchanged."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "green-doom-tangle-trackless-vegetation",
+      "envId": "green-doom-tangle",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Trackless Vegetation",
+          "type": "passive",
+          "fp": "1375ee413172be"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Slime Eruption",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Stressed Out",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Trackless Vegetation refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "hazard-fail-hope",
+          "framing": {
+            "title": {
+              "en": "Trackless Vegetation",
+              "ru": "Бездорожье из зарослей"
+            },
+            "summary": {
+              "en": "The woods shift and drip and look the same in every direction. The way on is there for whoever keeps a clear head.",
+              "ru": "Лес меняется, сочится и выглядит одинаково со всех сторон. Путь дальше есть для того, у кого ясная голова."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The source runs a Progress Countdown (6) for a whole segment of a walking forest; here the Darkheart obstacle runs a Countdown 3.",
+              "ru": "Источник ведёт Отсчёт Прогресса (6) для целого участка ходячего леса; здесь препятствие Darkheart ведёт Отсчёт 3."
+            },
+            "changes": [
+              {
+                "kind": "countdown",
+                "target": "Trackless Vegetation",
+                "source": "activate a Dynamic Progress Countdown (6)",
+                "adapted": {
+                  "en": "activate a Dynamic Progress Countdown (3)",
+                  "ru": "запустите Динамический Отсчёт Прогресса (3)"
+                },
+                "why": "Only the length changes; the Hope gained at the end is unchanged."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "haunted-mountain-pass-flames-of-blue",
+      "envId": "haunted-mountain-pass",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Flames of Blue",
+          "type": "action",
+          "fp": "084053a1d0fc46"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Step by Step",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Ruined Building",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Chill Mists",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Flames of Blue is an omen and one Fear-spend reaction roll.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-fail-fear",
+          "framing": {
+            "title": {
+              "en": "Flames of Blue",
+              "ru": "Синее пламя"
+            },
+            "summary": {
+              "en": "Cool blue fire stands in tall pillars between the trees. It lights nothing and burns nothing, and no one wants to stay in its light.",
+              "ru": "Холодное синее пламя стоит высокими столбами между деревьями. Оно ничего не освещает и ничего не жжёт, и никто не хочет оставаться в его свете."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "death-butterfly-grove-eerie-silence",
+      "envId": "death-butterfly-grove",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Eerie Silence",
+          "type": "passive",
+          "fp": "16cd9ea1e105f4"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Swarm Tactics",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Sandalwood Logs",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        }
+      ],
+      "standaloneNote": "Eerie Silence describes only the silence and stealth.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-fail-fear",
+          "framing": {
+            "title": {
+              "en": "The Silent Grove",
+              "ru": "Безмолвная роща"
+            },
+            "summary": {
+              "en": "Not a footstep, not a wing, not a leaf: the whole grove keeps a silence that no one dares to break.",
+              "ru": "Ни шага, ни крыла, ни шороха листа: вся роща хранит тишину, которую никто не смеет нарушить."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "haunted-mountain-pass-ruined-building",
+      "envId": "haunted-mountain-pass",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Ruined Building",
+          "type": "action",
+          "fp": "148584e71b6649"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Step by Step",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Flames of Blue",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Chill Mists",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Ruined Building describes only the ruin and its dangers.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-success-fear",
+          "framing": {
+            "title": {
+              "en": "A Ruin Beside the Road",
+              "ru": "Руины у дороги"
+            },
+            "summary": {
+              "en": "A ruin stands beside the path. There may be a clue or a secret inside, and something that knows it is waiting in the dark.",
+              "ru": "У дороги стоят руины. Внутри может быть подсказка или тайна, а в темноте что-то ждёт."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "burning-heart-indigo-flame",
+      "envId": "burning-heart-of-the-woods",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "The Indigo Flame",
+          "type": "passive",
+          "fp": "0378a0995f4f0b"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Chaos Magic Locus",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Grasping Vines",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Charcoal Constructs",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Choking Ash",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "The Indigo Flame refers only to the tree and a list of details inside itself.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-fail-hope",
+          "framing": {
+            "title": {
+              "en": "What Burned Here",
+              "ru": "Что здесь сгорело"
+            },
+            "summary": {
+              "en": "A moss-covered tree burns with a sickly blue fire that never goes out. Whatever it consumed is still being mourned.",
+              "ru": "Поросшее мхом дерево горит болезненно-синим огнём, который никогда не гаснет. То, что оно поглотило, всё ещё оплакивается."
+            }
+          }
+        },
+        {
+          "outcome": "resource-success-hope",
+          "framing": {
+            "title": {
+              "en": "Reading the Indigo Flame",
+              "ru": "Читая индиговое пламя"
+            },
+            "summary": {
+              "en": "Those who study the flame can learn what magic consumed this place, and what it means for the road ahead.",
+              "ru": "Тот, кто изучит пламя, поймёт, какая магия поглотила это место и что это значит для дороги вперёд."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "fey-lands-ley-line",
+      "envId": "fey-lands",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Ley Line",
+          "type": "action",
+          "fp": "1def6f9a3e3a05"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Fey Knows Fey",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Festival",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Ruins of a Lost Court",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Ley Line refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-success-hope",
+          "framing": {
+            "title": {
+              "en": "A Ley Line Road",
+              "ru": "Дорога по линии силы"
+            },
+            "summary": {
+              "en": "Power hums under the road. Spellcasters feel it at once, and travelers have left a quiet place to sit by it.",
+              "ru": "Под дорогой гудит сила. Заклинатели чувствуют её сразу, а путники оставили рядом тихое место для отдыха."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "hostility"
+            ],
+            "text": {
+              "en": "Nothing lies in wait here: this is the Traveler's safe fire, with the ley line as its warmth.",
+              "ru": "Здесь никто не поджидает: это безопасный костёр Путника, а линия силы — его тепло."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The source lets the Master spend Fear to spring a fey ambush on the line; as a Traveler's campfire the line is safe, so the ambush is removed.",
+              "ru": "Источник позволяет Мастеру потратить Страх и устроить на линии засаду фей; как костёр Путника линия безопасна, поэтому засада убрана."
+            },
+            "changes": [
+              {
+                "kind": "hostility",
+                "target": "Ley Line",
+                "source": "Spend a Fear to create an adversarial fey themed group. Spend a second Fear to have them lying in wait for an ambush.",
+                "adapted": {
+                  "en": "No one lies in wait: the ley line is a safe place to rest.",
+                  "ru": "Никто не поджидает: линия силы — безопасное место для отдыха."
+                },
+                "why": "Only the optional ambush is removed; the advantage on Spellcasting rolls and the friendly travelers are the source's own."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "wishmaker-glade-wish-tree",
+      "envId": "wishmaker-glade",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Wish-Holder Tree",
+          "type": "passive",
+          "fp": "035f539cddcb36"
+        },
+        {
+          "name": "Aura of Possibility",
+          "type": "passive",
+          "fp": "03f83ac28505b0"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Thin Veil",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Trampling Tourists",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Tangled Desires",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Drawn to Hope",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Tug of War",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Wish-Holder Tree and Aura of Possibility refer only to the tree and the glade.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-success-hope",
+          "framing": {
+            "title": {
+              "en": "The Wish-Holder Tree",
+              "ru": "Дерево желаний"
+            },
+            "summary": {
+              "en": "A purple-leaved tree hung with wish-tokens stands in a quiet glade. Anyone who is down to their last hope feels it return here.",
+              "ru": "В тихой поляне стоит дерево с пурпурной листвой, увешанное жетонами желаний. Тот, у кого осталась последняя надежда, чувствует, как она возвращается."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "dreamlands-city-of-ulthar",
+      "envId": "dreamlands",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": [
+        "any"
+      ],
+      "features": [
+        {
+          "name": "City of Ulthar",
+          "type": "action",
+          "fp": "1599dfa306293f"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Dream Travel",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "It’s you, isn’t it?",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Nightmare Attack",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "City of Ulthar refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-success-hope",
+          "framing": {
+            "title": {
+              "en": "The Hamlet of Cats",
+              "ru": "Деревушка кошек"
+            },
+            "summary": {
+              "en": "The path ends at a small hamlet of people and cats where no one will raise a hand to a traveler. A roof and a fire are offered.",
+              "ru": "Тропа приводит к маленькой деревушке людей и кошек, где никто не поднимет руку на путника. Предлагают крышу и огонь."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "scale",
+              "location"
+            ],
+            "text": {
+              "en": "A city is too big for a hex of woods: play a hamlet. The cats and the safe rest are the point.",
+              "ru": "Город слишком велик для лесного гекса: играйте деревушку. Главное — кошки и безопасный отдых."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The source is a feudal city; as a Traveler's fire the same welcome is given by a woodland hamlet.",
+              "ru": "Источник — феодальный город; как костёр Путника тот же приём оказывает лесная деревушка."
+            },
+            "changes": [
+              {
+                "kind": "scale",
+                "target": "City of Ulthar",
+                "source": "ends up in a feudal city of people and cats",
+                "adapted": {
+                  "en": "ends up in a woodland hamlet of people and cats",
+                  "ru": "оказывается в лесной деревушке людей и кошек"
+                },
+                "why": "Only the size changes; the cats, the law about them and the guarded shops stay."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "the-village-of-hush-clovers-tavern",
+      "envId": "the-village-of-hush",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Clover’s Tavern",
+          "type": "passive",
+          "fp": "16910b204d151e"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Guest Privileges",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Preparations",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Leave it to the Trees",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Clover's Tavern refers only to the village around it, which a hamlet or a roadhouse stands in for.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-success-hope",
+          "framing": {
+            "title": {
+              "en": "Traveler’s Campfire at the Roots Tavern",
+              "ru": "Костёр Путника в трактире у корней"
+            },
+            "summary": {
+              "en": "The Traveler’s magic campfire burns in the hearth of a tavern built into the roots of an old tree, and the whole room keeps to its warm light. The party can rest here without fear, hear rumors and sleep.",
+              "ru": "Волшебный костёр Путника горит в очаге трактира, встроенного в корни старого дерева, и весь зал держится его тёплого света. Отряд может спокойно отдохнуть, послушать слухи и выспаться."
+            }
+          },
+          "guidance": {
+            "adjust": ["location", "scale"],
+            "text": {
+              "en": "The Traveler’s campfire is what makes this place safe; the tavern is only its setting. Move the fire to a clearing if the roadhouse does not fit, and keep the rule: rest here without fear.",
+              "ru": "Безопасным это место делает костёр Путника; трактир — лишь его обстановка. Если трактир не подходит, переместите костёр на поляну, но сохраните правило: здесь можно спокойно отдохнуть."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The source is a six-story tavern at the heart of a village; here it is a smaller roadhouse in the roots of an ancient tree. The Traveler’s campfire is the Darkheart outcome’s own, not the source’s: it burns in the tavern’s hearth and carries the rule’s safe rest.",
+              "ru": "Источник — шестиэтажный трактир в центре деревни; здесь это придорожная таверна поменьше в корнях древнего дерева. Костёр Путника принадлежит исходу Darkheart, а не источнику: он горит в очаге трактира и несёт правило спокойного отдыха."
+            },
+            "changes": [
+              {
+                "kind": "scale",
+                "target": "Clover’s Tavern",
+                "source": "a massive six-story tavern built around the trunk of an ancient tree",
+                "adapted": {
+                  "en": "a modest roadhouse built around the trunk of an ancient tree",
+                  "ru": "скромный придорожный трактир, выстроенный вокруг ствола древнего дерева"
+                },
+                "why": "Only the size changes; the tree, the gathering place and the trinkets in the shoes are the source's."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "tormented-ancient-crypt-remember-the-fallen",
+      "envId": "tormented-ancient-crypt",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Remember the Fallen",
+          "type": "passive",
+          "fp": "0233cb17e73ad6"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Relive Your Failings",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Torment Unleashed",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "The Well of Remembrance",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Entering the Well",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Remember the Fallen refers only to the place and its memories.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-fail-hope",
+          "framing": {
+            "title": {
+              "en": "The Barrow of Faces",
+              "ru": "Курган лиц"
+            },
+            "summary": {
+              "en": "The faces of the lost come unbidden to everyone who enters. Whoever lingers here carries them away with them.",
+              "ru": "Лица потерянных приходят сами к каждому, кто входит. Кто задержится здесь, унесёт их с собой."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The source places this in a buried crypt; here it is a barrow in a forest hill.",
+              "ru": "В источнике это погребённый склеп; здесь это курган в лесном холме."
+            },
+            "changes": [
+              {
+                "kind": "terrain",
+                "target": "Remember the Fallen",
+                "source": "until they take a rest away from the crypt",
+                "adapted": {
+                  "en": "until they take a rest away from the barrow",
+                  "ru": "пока не отдохнут вдали от кургана"
+                },
+                "why": "Only the place changes; the memories, the lowered Hope die and the Stress on rolls with Fear are the source's."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "tormented-ancient-crypt-well-of-remembrance",
+      "envId": "tormented-ancient-crypt",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "The Well of Remembrance",
+          "type": "reaction",
+          "fp": "18aeb20aed1aff"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Remember the Fallen",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Relive Your Failings",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Torment Unleashed",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Entering the Well",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "The Well of Remembrance refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-fail-fear",
+          "framing": {
+            "title": {
+              "en": "The Well of Remembrance",
+              "ru": "Колодец воспоминаний"
+            },
+            "summary": {
+              "en": "A stone well in the hill asks every traveler one question, and the answer is remembered by the place.",
+              "ru": "Каменный колодец в холме задаёт каждому путнику один вопрос, и ответ помнит само место."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The source puts the well behind a door in a crypt; here it sits under a stone lid in a forest hollow.",
+              "ru": "В источнике колодец за дверью в склепе; здесь он под каменной крышкой в лесной низине."
+            },
+            "changes": [
+              {
+                "kind": "terrain",
+                "target": "The Well of Remembrance",
+                "source": "When the door to the well room is opened",
+                "adapted": {
+                  "en": "When the stone lid of the well is lifted",
+                  "ru": "Когда поднимают каменную крышку колодца"
+                },
+                "why": "Only the place changes; the question, the choices and their costs are the source's."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "deserted-moor-ghostly-procession",
+      "envId": "deserted-moor",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Ghostly Procession",
+          "type": "action",
+          "fp": "068c9180a3ac6c"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Healing Herbs",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Haunted Howls",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Fog Rolls In",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Ghostly Procession refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-fail-hope",
+          "framing": {
+            "title": {
+              "en": "The Procession in the Mist",
+              "ru": "Процессия в тумане"
+            },
+            "summary": {
+              "en": "Spectral forms drift through the trees at a distance. They grieve and ignore the party unless it comes close.",
+              "ru": "Призрачные фигуры плывут среди деревьев вдали. Они скорбят и не замечают отряд, пока тот не подойдёт."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The source sets this on an open moor; here the procession crosses a forest glade.",
+              "ru": "В источнике это открытая пустошь; здесь процессия пересекает лесную поляну."
+            },
+            "changes": [
+              {
+                "kind": "terrain",
+                "target": "Ghostly Procession",
+                "source": "Spectral forms float across the moor a far distance away",
+                "adapted": {
+                  "en": "Spectral forms float across the wood a far distance away",
+                  "ru": "Призрачные фигуры плывут по лесу вдали"
+                },
+                "why": "Only the terrain changes; the respectful or disrespectful reply and its Hope or curse are the source's."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "haunted-mountain-pass-chill-mists",
+      "envId": "haunted-mountain-pass",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Chill Mists",
+          "type": "action",
+          "fp": "14de71a64853dc"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Step by Step",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Flames of Blue",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Ruined Building",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Chill Mists describes the fog and the spectral attackers; it names no other feature.",
+      "adversaries": "none",
+      "encounter": {
+        "themes": [
+          "undead"
+        ],
+        "sourceRoster": true
+      },
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-fail-fear",
+          "framing": {
+            "title": {
+              "en": "Out of the Mist",
+              "ru": "Из тумана"
+            },
+            "summary": {
+              "en": "Mist swallows the path, and the whispering that comes out of it has a hostile purpose.",
+              "ru": "Туман поглощает тропу, и шёпот, что выходит из него, враждебен."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "court-of-hounds-wild-hunt",
+      "envId": "court-of-hounds",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "The Wild Hunt",
+          "type": "passive",
+          "fp": "1ebafb0ed74779"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Fey Knows Fey",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "A Test of Fitness",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "The Sky Opens",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "The Wild Hunt names its own pursuers and challenges, not another feature.",
+      "adversaries": "none",
+      "encounter": {
+        "themes": [
+          "sylvan",
+          "beasts"
+        ],
+        "sourceRoster": true
+      },
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-fail-fear",
+          "framing": {
+            "title": {
+              "en": "The Wild Hunt",
+              "ru": "Дикая охота"
+            },
+            "summary": {
+              "en": "A horn sounds across the trees. Something fey and fast has decided that the party is the quarry.",
+              "ru": "Рог звучит над деревьями. Что-то феерическое и быстрое решило, что добыча — это отряд."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "difficulty",
+              "countdown"
+            ],
+            "text": {
+              "en": "Play the hunted version: a merry chase, then a stand. The source's own countdown is yours to skip; the Darkheart rule already makes it deadly.",
+              "ru": "Играйте версию «добыча»: весёлая погоня, затем бой. Собственный отсчёт источника можно пропустить: правило Darkheart и так делает встречу смертельной."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "bandit-hideout-camp",
+      "envId": "bandit-hideout",
+      "match": "full",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "envFp": "028111bb08f9a9",
+      "adversaries": "source",
+      "encounter": {
+        "themes": [
+          "outlaws"
+        ]
+      },
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-fail-fear",
+          "framing": {
+            "title": {
+              "en": "A Well-Defended Hideout",
+              "ru": "Хорошо охраняемое логово"
+            },
+            "summary": {
+              "en": "A shabby camp in the brambles, thorn fences, watchmen, and the sense that everyone in it is already awake.",
+              "ru": "Неряшливый лагерь в зарослях: терновые ограды, дозорные и ощущение, что все в нём давно не спят."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "court-of-cats-queens-court",
+      "envId": "court-of-cats",
+      "match": "full",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "envFp": "04684a902b0ae9",
+      "adversaries": "none",
+      "encounter": {
+        "themes": [
+          "sylvan"
+        ]
+      },
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-fail-hope",
+          "framing": {
+            "title": {
+              "en": "The Court of Cats",
+              "ru": "Двор Кошек"
+            },
+            "summary": {
+              "en": "A fey court of towers and bridges, ruled by a Queen who is neither friend nor enemy and who is far too strong to be brushed aside.",
+              "ru": "Феерический двор из башен и мостов, которым правит Королева — ни друг, ни враг, слишком сильная, чтобы от неё отмахнуться."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "hostility",
+              "difficulty"
+            ],
+            "text": {
+              "en": "The court is courteous and dangerous. Let the party talk: force only follows a slight to the Queen.",
+              "ru": "Двор вежлив и опасен. Дайте отряду поговорить: сила применяется лишь за оскорбление Королевы."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "throne-of-three-goddess",
+      "envId": "throne-of-three",
+      "match": "full",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "envFp": "039ad08e2311a5",
+      "adversaries": "none",
+      "encounter": {
+        "themes": [
+          "sylvan"
+        ]
+      },
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-fail-hope",
+          "framing": {
+            "title": {
+              "en": "The Throne of Three",
+              "ru": "Трон Троих"
+            },
+            "summary": {
+              "en": "A seat in a clearing where a goddess in three ages will listen, for a price, and expects courtesy.",
+              "ru": "Трон на поляне, где богиня трёх возрастов выслушает — за цену — и ждёт вежливости."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "hostility"
+            ],
+            "text": {
+              "en": "She is formidable, not hostile: the danger is overstaying her welcome.",
+              "ru": "Она грозна, но не враждебна: опасность — злоупотребить её гостеприимством."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "fey-lands-lost-court",
+      "envId": "fey-lands",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Ruins of a Lost Court",
+          "type": "action",
+          "fp": "0deb26c4a4f4b0"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Fey Knows Fey",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Festival",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Ley Line",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Ruins of a Lost Court is complete in itself.",
+      "adversaries": "none",
+      "encounter": {
+        "themes": [
+          "undead",
+          "sylvan"
+        ],
+        "sourceRoster": true
+      },
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-success-fear",
+          "framing": {
+            "title": {
+              "en": "The Prisoner of the Lost Court",
+              "ru": "Пленник Потерянного двора"
+            },
+            "summary": {
+              "en": "In the ruins of a fey castle an oak treant is being turned into a thrall, and it will not last long.",
+              "ru": "В руинах феерического замка дуб-энт превращается в раба, и надолго его не хватит."
+            }
+          }
+        },
+        {
+          "outcome": "resource-success-fear",
+          "framing": {
+            "title": {
+              "en": "Treasure Under Guard",
+              "ru": "Сокровище под охраной"
+            },
+            "summary": {
+              "en": "Fey treasure lies in a ruin that vampires and moon knights have made their own.",
+              "ru": "Феерические сокровища лежат в руинах, которые присвоили вампиры и лунные рыцари."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "burning-heart-guarded-flame",
+      "envId": "burning-heart-of-the-woods",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "The Indigo Flame",
+          "type": "passive",
+          "fp": "0378a0995f4f0b"
+        },
+        {
+          "name": "Charcoal Constructs",
+          "type": "action",
+          "fp": "16f53367f5b2ec"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Chaos Magic Locus",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Grasping Vines",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Choking Ash",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Charcoal Constructs describe the guards; The Indigo Flame the thing they guard.",
+      "adversaries": "none",
+      "encounter": {
+        "themes": [
+          "beasts"
+        ]
+      },
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "resource-success-fear",
+          "framing": {
+            "title": {
+              "en": "The Flame and Its Guard",
+              "ru": "Пламя и его стража"
+            },
+            "summary": {
+              "en": "What the flame can teach is worth having, and warped beasts wreathed in indigo fire already stand between it and the party.",
+              "ru": "То, чему может научить пламя, стоит знать, и искажённые звери в индиговом огне уже встали между ним и отрядом."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "dreamlands-nightmare-attack",
+      "envId": "dreamlands",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "any"
+      ],
+      "features": [
+        {
+          "name": "Nightmare Attack",
+          "type": "action",
+          "fp": "0f4d8968393602"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Dream Travel",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "It’s you, isn’t it?",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "City of Ulthar",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Nightmare Attack names only its own adversaries.",
+      "adversaries": "none",
+      "encounter": {
+        "themes": [
+          "undead"
+        ]
+      },
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-fail-fear",
+          "framing": {
+            "title": {
+              "en": "Nightmare Attack",
+              "ru": "Нападение кошмара"
+            },
+            "summary": {
+              "en": "The forest darkens into something older. A force of nightmares comes for the party.",
+              "ru": "Лес темнеет и становится чем-то древним. На отряд идёт сила кошмаров."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "forest-wildfire-peril",
+      "envId": "forest-wildfire",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Intense Heat",
+          "type": "passive",
+          "fp": "0dfddca477b1ac"
+        },
+        {
+          "name": "Shifting Winds",
+          "type": "action",
+          "fp": "0e414f2a34ee14"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Panicked Denizens",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Hunting the Firestarter",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Bring the Rain (Environment Change)",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Intense Heat and Shifting Winds describe only the fire.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-success-fear",
+          "framing": {
+            "title": {
+              "en": "Caught in the Blaze",
+              "ru": "В огне"
+            },
+            "summary": {
+              "en": "The fire is closing on someone who cannot get out alone. The party has moments to decide.",
+              "ru": "Огонь смыкается вокруг того, кто не может выбраться сам. У отряда считаные мгновения."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "npc",
+              "scale"
+            ],
+            "text": {
+              "en": "Place the NPC the page generates inside the blaze: the fire is the danger, not an enemy. Combat is not expected.",
+              "ru": "Поместите в огонь NPC, которого создаст страница: опасность — пожар, а не враг. Боя не ожидается."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "court-of-cats-feast",
+      "envId": "court-of-cats",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Feast of the Fey",
+          "type": "action",
+          "fp": "1fc67b0bb7ff54"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Fey Knows Fey",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Come Dancing",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Glimmer Gale",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Marked",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Silence",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Feast of the Fey is a complete scene that names only the Queen.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-success-hope",
+          "framing": {
+            "title": {
+              "en": "The Queen's Task",
+              "ru": "Задание Королевы"
+            },
+            "summary": {
+              "en": "A banquet is laid and the party is honoured. The one who set it has a task in mind, if anyone is willing.",
+              "ru": "Накрыт пир, отряд — почётные гости. У того, кто его устроил, есть поручение, если найдутся желающие."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "the-village-of-hush-preparations",
+      "envId": "the-village-of-hush",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Preparations",
+          "type": "action",
+          "fp": "01640ef30337a6"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Guest Privileges",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Clover’s Tavern",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Leave it to the Trees",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Preparations is a single request and refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-success-hope",
+          "framing": {
+            "title": {
+              "en": "Preparations for a Visit",
+              "ru": "Приготовления к визиту"
+            },
+            "summary": {
+              "en": "A villager asks for the party's help with a task before important guests arrive.",
+              "ru": "Селянин просит отряд помочь с делом до прибытия важных гостей."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "npc"
+            ],
+            "text": {
+              "en": "The page can generate who asks and what they need; the task is yours to set.",
+              "ru": "Страница может создать просящего и его нужду; само поручение придумываете вы."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The source names the village's ruling council; here the guests are simply the village's leaders.",
+              "ru": "Источник называет правящий совет деревни; здесь гости — просто предводители деревни."
+            },
+            "changes": [
+              {
+                "kind": "setting-reference",
+                "target": "Preparations",
+                "source": "the town’s leaders, the Faceless Six",
+                "adapted": {
+                  "en": "the village’s leaders",
+                  "ru": "предводителей деревни"
+                },
+                "why": "Only the name of the council is dropped; the task and the NPC asking are the source's."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "time-loop-trapped-npcs",
+      "envId": "time-loop",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "any"
+      ],
+      "features": [
+        {
+          "name": "Trapped NPCs",
+          "type": "passive",
+          "fp": "0f7cb3ce0b0980"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Entering the Loop",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Clues",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Exiting the Loop",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Time Wraith",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Reset Day",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Trapped NPCs mentions only the loop itself.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-success-hope",
+          "framing": {
+            "title": {
+              "en": "Caught in the Same Day",
+              "ru": "В одном и том же дне"
+            },
+            "summary": {
+              "en": "Someone here has lived this day so many times that they know every step, and they will share it if the party helps them out of it.",
+              "ru": "Кто-то прожил этот день столько раз, что знает каждый шаг, и поделится им, если отряд поможет ему выбраться."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "npc"
+            ],
+            "text": {
+              "en": "Make the person the page generates one of the trapped; their task is to be freed.",
+              "ru": "Сделайте человека, которого создаст страница, одним из заточённых; его задача — освободиться."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "dreamlands-familiar-face",
+      "envId": "dreamlands",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "any"
+      ],
+      "features": [
+        {
+          "name": "It’s you, isn’t it?",
+          "type": "action",
+          "fp": "0e5b5fa1cacdd7"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Dream Travel",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "City of Ulthar",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Nightmare Attack",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "It's you, isn't it? mentions only the acquaintance.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "creature-success-hope",
+          "framing": {
+            "title": {
+              "en": "A Familiar Face",
+              "ru": "Знакомое лицо"
+            },
+            "summary": {
+              "en": "Someone the party seems to know stands at the edge of the path and wants something done before they will go.",
+              "ru": "На краю тропы стоит тот, кого отряд будто бы знает, и он хочет, чтобы что-то было сделано, прежде чем он уйдёт."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "rewritten-grove-twisted-grove",
+      "envId": "rewritten-grove",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Twisted Grove",
+          "type": "passive",
+          "fp": "0059d837d95bf2"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Fractal Fissure",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Meteoric Distortion",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Twisted Grove lists its plants inline.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "resource-success-hope",
+          "framing": {
+            "title": {
+              "en": "The Twisted Grove",
+              "ru": "Искажённая роща"
+            },
+            "summary": {
+              "en": "Everything here has been warped, and among it are three plants worth knowing.",
+              "ru": "Здесь всё искажено, и среди этого есть три растения, которые стоит знать."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "fey-lands-festival",
+      "envId": "fey-lands",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Festival",
+          "type": "action",
+          "fp": "0e333d99e66866"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Fey Knows Fey",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Ley Line",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Ruins of a Lost Court",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Festival refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "resource-success-hope",
+          "framing": {
+            "title": {
+              "en": "A Festival in the Trees",
+              "ru": "Праздник среди деревьев"
+            },
+            "summary": {
+              "en": "Poetry, feasting and wild celebration. Whoever joins in leaves lighter than they came.",
+              "ru": "Поэзия, пиры и бурное веселье. Кто присоединится, уйдёт легче, чем пришёл."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "hostility"
+            ],
+            "text": {
+              "en": "Treat the Fear-spend (being unable to leave) as optional: this is a boon, not a trap.",
+              "ru": "Считайте трату Страха (невозможность уйти) необязательной: это дар, а не ловушка."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "deserted-moor-healing-herbs",
+      "envId": "deserted-moor",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Healing Herbs",
+          "type": "passive",
+          "fp": "02b12832295d98"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Haunted Howls",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Fog Rolls In",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Ghostly Procession",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Healing Herbs refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "resource-success-hope",
+          "framing": {
+            "title": {
+              "en": "Healing Herbs by the Stream",
+              "ru": "Целебные травы у ручья"
+            },
+            "summary": {
+              "en": "A small stream where herbs have been harvested lately. A little remains, enough for a dose.",
+              "ru": "Небольшой ручей, где недавно собирали травы. Немного осталось — на одну дозу."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The source places the stream on a moor; here it runs through the woods.",
+              "ru": "В источнике ручей на пустоши; здесь он течёт через лес."
+            },
+            "changes": [
+              {
+                "kind": "terrain",
+                "target": "Healing Herbs",
+                "source": "a small stream where plants were obviously harvested",
+                "adapted": {
+                  "en": "a small stream in the woods where plants were obviously harvested",
+                  "ru": "небольшой ручей в лесу, где явно собирали растения"
+                },
+                "why": "Only the terrain changes; the herbs, the doses and the rival group are the source's."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "overgrown-ruins-trapped-chest",
+      "envId": "overgrown-ruins",
+      "match": "adapted",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Reality Tearing Trap",
+          "type": "action",
+          "fp": "00aa8e183cd31c"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Ley Line Resonance",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Memory Spore Communion",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "Reality Anchor Failure",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Reality Tearing Trap refers to no other feature.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "resource-success-fear",
+          "framing": {
+            "title": {
+              "en": "A Trapped Chest in the Hollow",
+              "ru": "Сундук-ловушка в дупле"
+            },
+            "summary": {
+              "en": "Loot lies in a hollow, and the chest is wired to the world itself. Opening it is a risk everyone shares.",
+              "ru": "В дупле лежит добыча, и сундук связан с самим миром. Открыть его — риск, который делят все."
+            }
+          },
+          "adaptation": {
+            "summary": {
+              "en": "The source sets this in ruins; here the chest is in a forest hollow or a root cellar.",
+              "ru": "В источнике это руины; здесь сундук лежит в лесном дупле или корневом погребе."
+            },
+            "changes": [
+              {
+                "kind": "terrain",
+                "target": "Reality Tearing Trap",
+                "source": "a trapped chest of Tier appropriate loot",
+                "adapted": {
+                  "en": "a trapped chest of Tier appropriate loot, hidden in a hollow",
+                  "ru": "сундук-ловушку с добычей подходящего Ранга, спрятанный в дупле"
+                },
+                "why": "Only the place changes; the trap, the roll and the loot are the source's."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "bandit-hideout-in-sight",
+      "envId": "bandit-hideout",
+      "match": "partial",
+      "status": "approved",
+      "terrain": [
+        "forest"
+      ],
+      "features": [
+        {
+          "name": "Thorn Fence",
+          "type": "passive",
+          "fp": "03564211610336"
+        },
+        {
+          "name": "Patrols",
+          "type": "passive",
+          "fp": "1c8bdb81856d2b"
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Fight Your Way Through",
+          "type": "passive",
+          "reason": "A passive rule that belongs to a different situation than this fragment."
+        },
+        {
+          "name": "On The Hunt",
+          "type": "action",
+          "reason": "A Fear-spend action for a different situation; left out rather than shown half-way."
+        },
+        {
+          "name": "Alarm",
+          "type": "reaction",
+          "reason": "A reaction for a different situation; left out rather than shown half-way."
+        }
+      ],
+      "standaloneNote": "Thorn Fence and Patrols describe only the fence and the watch.",
+      "adversaries": "none",
+      "art": {
+        "mode": "none",
+        "reason": "The Darkheart page shows no artwork yet; a picture is decided per scene when it does."
+      },
+      "outcomes": [
+        {
+          "outcome": "landmark-success-fear",
+          "framing": {
+            "title": {
+              "en": "A Hideout in Sight",
+              "ru": "Логово на виду"
+            },
+            "summary": {
+              "en": "Through the brambles the party sees a fenced camp with a watch posted. Nothing has noticed them yet, which is exactly what makes it a warning.",
+              "ru": "Сквозь заросли отряд видит огороженный лагерь с выставленной стражей. Пока никто его не заметил — и именно поэтому это предупреждение."
+            }
+          },
+          "guidance": {
+            "adjust": [
+              "scale",
+              "location"
+            ],
+            "text": {
+              "en": "Play it as a landmark seen from a distance: rest nearby is allowed, but only 1 downtime move. The fence and the watch are what lies ahead if the party goes closer.",
+              "ru": "Играйте как ориентир, замеченный издали: рядом можно отдохнуть, но только с 1 Ходом Отдыха. Ограда и дозор — то, что ждёт впереди, если подойти ближе."
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

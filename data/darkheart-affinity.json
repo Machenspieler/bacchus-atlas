@@ -1,0 +1,409 @@
+{
+  "_note": "Darkheart adversary affinity (PD-099): a small, explicit, reviewable classification of the catalogue adversaries the Darkheart pilot can use, into a handful of themes (PD-104 added `folk`: humanoid and socially interactive groups, the preferred neutral encounter). A scene's `encounter.themes` (data/darkheart-scenes.json) says which themes belong to it; an adversary no theme lists is never recommended on its own. Not a taxonomy of the whole bestiary and never read for anything else. `related` themes are allowed only as role fillers. scripts/validate-data.js checks every id against data/prep.json.",
+  "schema": 1,
+  "themes": {
+    "wolves": {
+      "name": {
+        "en": "Wolf pack",
+        "ru": "Волчья стая"
+      },
+      "related": []
+    },
+    "beasts": {
+      "name": {
+        "en": "Forest beasts",
+        "ru": "Лесные звери"
+      },
+      "related": [
+        "wolves",
+        "vermin"
+      ]
+    },
+    "vermin": {
+      "name": {
+        "en": "Vermin and swarms",
+        "ru": "Паразиты и рои"
+      },
+      "related": [
+        "beasts"
+      ]
+    },
+    "undead": {
+      "name": {
+        "en": "Restless dead",
+        "ru": "Неупокоенные"
+      },
+      "related": []
+    },
+    "sylvan": {
+      "name": {
+        "en": "Sylvan guardians",
+        "ru": "Лесные стражи"
+      },
+      "related": [
+        "beasts"
+      ]
+    },
+    "outlaws": {
+      "name": {
+        "en": "Outlaws",
+        "ru": "Разбойники"
+      },
+      "related": []
+    },
+    "demonic": {
+      "name": {
+        "en": "Demonic and chaos",
+        "ru": "Демоны и хаос"
+      },
+      "related": []
+    },
+    "underground": {
+      "name": {
+        "en": "Burrowers and oozes",
+        "ru": "Землерои и слизи"
+      },
+      "related": [
+        "vermin"
+      ]
+    },
+    "folk": {
+      "name": {
+        "en": "Travellers, patrols and local folk",
+        "ru": "Путники, дозоры и местные жители"
+      },
+      "related": []
+    }
+  },
+  "adversaries": {
+    "acid-burrower": [
+      "underground"
+    ],
+    "ahuizotl": [
+      "beasts"
+    ],
+    "arch-necromancer": [
+      "undead"
+    ],
+    "archer-guard": [
+      "folk"
+    ],
+    "atototl": [
+      "beasts"
+    ],
+    "banshee": [
+      "undead"
+    ],
+    "bear": [
+      "beasts"
+    ],
+    "bladed-guard": [
+      "folk"
+    ],
+    "brawny-zombie": [
+      "undead"
+    ],
+    "bugboar": [
+      "beasts"
+    ],
+    "cave-ogre": [
+      "underground"
+    ],
+    "centaur-warden": [
+      "folk"
+    ],
+    "chaos-skull": [
+      "demonic"
+    ],
+    "common-ruffian": [
+      "outlaws"
+    ],
+    "conscript": [
+      "folk"
+    ],
+    "courtier": [
+      "folk"
+    ],
+    "crimson-lepus": [
+      "beasts"
+    ],
+    "darkweave-crawler": [
+      "vermin"
+    ],
+    "darkweave-queen": [
+      "vermin"
+    ],
+    "darkweave-spinner": [
+      "vermin"
+    ],
+    "darkweave-swarmlings": [
+      "vermin"
+    ],
+    "deeproot-defender": [
+      "sylvan"
+    ],
+    "demon-of-hubris": [
+      "demonic"
+    ],
+    "demon-of-wrath": [
+      "demonic"
+    ],
+    "demonic-hound-pack": [
+      "demonic"
+    ],
+    "dire-bat": [
+      "beasts"
+    ],
+    "dire-pangolati": [
+      "beasts"
+    ],
+    "dire-wolf": [
+      "wolves",
+      "beasts"
+    ],
+    "doppelhound": [
+      "demonic"
+    ],
+    "dryad": [
+      "sylvan"
+    ],
+    "dullahan": [
+      "undead"
+    ],
+    "elephant": [
+      "beasts"
+    ],
+    "elite-soldier": [
+      "folk"
+    ],
+    "elk": [
+      "beasts"
+    ],
+    "entombed-skin-beetles": [
+      "vermin"
+    ],
+    "falcon": [
+      "beasts"
+    ],
+    "fowlbear": [
+      "beasts"
+    ],
+    "fungispunj-sporeling": [
+      "sylvan"
+    ],
+    "fungispunj-sporophore": [
+      "sylvan"
+    ],
+    "ghastly-legion": [
+      "undead"
+    ],
+    "giant-beastmaster": [
+      "folk"
+    ],
+    "giant-eagle": [
+      "beasts"
+    ],
+    "giant-mosquitoes": [
+      "vermin"
+    ],
+    "giant-rat": [
+      "vermin"
+    ],
+    "giant-scorpion": [
+      "vermin"
+    ],
+    "glass-snake": [
+      "beasts"
+    ],
+    "green-ooze": [
+      "underground"
+    ],
+    "harpy": [
+      "beasts"
+    ],
+    "harrier": [
+      "outlaws"
+    ],
+    "head-guard": [
+      "folk"
+    ],
+    "head-vampire": [
+      "undead"
+    ],
+    "jack-o-lantern": [
+      "sylvan"
+    ],
+    "jagged-knife-bandit": [
+      "outlaws"
+    ],
+    "jagged-knife-hexer": [
+      "outlaws"
+    ],
+    "jagged-knife-kneebreaker": [
+      "outlaws"
+    ],
+    "jagged-knife-lackey": [
+      "outlaws"
+    ],
+    "jagged-knife-lieutenant": [
+      "outlaws"
+    ],
+    "jagged-knife-shadow": [
+      "outlaws"
+    ],
+    "jagged-knife-sniper": [
+      "outlaws"
+    ],
+    "knight-of-the-realm": [
+      "folk"
+    ],
+    "masked-thief": [
+      "outlaws"
+    ],
+    "merchant": [
+      "folk"
+    ],
+    "merchant-baron": [
+      "folk"
+    ],
+    "minor-chaos-elemental": [
+      "demonic"
+    ],
+    "minor-demon": [
+      "demonic"
+    ],
+    "minor-treant": [
+      "sylvan"
+    ],
+    "mortal-hunter": [
+      "folk"
+    ],
+    "night-children": [
+      "undead"
+    ],
+    "oak-treant": [
+      "sylvan"
+    ],
+    "panther": [
+      "beasts"
+    ],
+    "perfected-zombie": [
+      "undead"
+    ],
+    "petty-noble": [
+      "folk"
+    ],
+    "phantom": [
+      "undead"
+    ],
+    "poltergeist": [
+      "undead"
+    ],
+    "red-ooze": [
+      "underground"
+    ],
+    "rotted-zombie": [
+      "undead"
+    ],
+    "rust-eater": [
+      "underground"
+    ],
+    "secret-keeper": [
+      "folk"
+    ],
+    "sellsword": [
+      "outlaws"
+    ],
+    "shambling-zombie": [
+      "undead"
+    ],
+    "skeleton-archer": [
+      "undead"
+    ],
+    "skeleton-dredge": [
+      "undead"
+    ],
+    "skeleton-knight": [
+      "undead"
+    ],
+    "skeleton-warrior": [
+      "undead"
+    ],
+    "spectral-archer": [
+      "undead"
+    ],
+    "spectral-captain": [
+      "undead"
+    ],
+    "spectral-guardian": [
+      "undead"
+    ],
+    "spellblade": [
+      "folk"
+    ],
+    "sprite": [
+      "sylvan"
+    ],
+    "spy": [
+      "folk"
+    ],
+    "stag-knight": [
+      "beasts",
+      "sylvan"
+    ],
+    "stonewraith": [
+      "underground"
+    ],
+    "swarm-of-rats": [
+      "vermin"
+    ],
+    "sylvan-soldier": [
+      "sylvan"
+    ],
+    "tangle-bramble": [
+      "sylvan"
+    ],
+    "tangle-bramble-swarm": [
+      "sylvan"
+    ],
+    "tiny-green-ooze": [
+      "underground"
+    ],
+    "tiny-red-ooze": [
+      "underground"
+    ],
+    "treant-sapling": [
+      "sylvan"
+    ],
+    "vampire": [
+      "undead"
+    ],
+    "vampire-bat-swarm": [
+      "undead"
+    ],
+    "vampire-lord": [
+      "undead"
+    ],
+    "viper": [
+      "beasts"
+    ],
+    "weaponmaster": [
+      "folk"
+    ],
+    "whisper-wraith": [
+      "undead"
+    ],
+    "will-o-the-wisps": [
+      "sylvan"
+    ],
+    "young-dryad": [
+      "sylvan"
+    ],
+    "zombie-legion": [
+      "undead"
+    ],
+    "zombie-pack": [
+      "undead"
+    ]
+  }
+}

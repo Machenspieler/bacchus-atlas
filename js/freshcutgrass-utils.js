@@ -45,14 +45,17 @@
   /** Builds a FreshCutGrass encounter URL at runtime from an encounter name
    * and a flat list of adversary names. Every adversary is exported at
    * quantity 1 (`q: 1`) — Prep and the environment detail page both
-   * treat adversary selection as binary, never a count. */
-  function buildFreshCutGrassEncounterUrl(encounterName, adversaryNames) {
+   * treat adversary selection as binary, never a count. The optional third
+   * argument (an array parallel to adversaryNames) is for callers that do have
+   * counts — the Darkheart encounter engine; omitted, every `q` is 1 exactly
+   * as before. */
+  function buildFreshCutGrassEncounterUrl(encounterName, adversaryNames, quantities) {
     const payload = {
       n: encounterName,
-      d: adversaryNames.map(name => ({
+      d: adversaryNames.map((name, i) => ({
         n: name,
         a: '',
-        q: 1,
+        q: Array.isArray(quantities) && Number.isInteger(quantities[i]) && quantities[i] > 0 ? quantities[i] : 1,
         u: 0,
         i: [{ n: null }],
       })),

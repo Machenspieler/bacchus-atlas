@@ -415,6 +415,118 @@
 
   /* Journey "Static effects" device preference (dhcodex_motion): a bare JSON string,
    * 'static' or 'animated'. Anything else is unusable (no stored choice: follow the system). */
+  /* ---- Darkheart expedition (dhcodex_darkheart, PD-099) ----
+   * Mirrors the shape js/darkheart-expedition.js writes. Out-of-range numbers are
+   * clamped, unknown fields dropped, an unreadable part falls back on its own;
+   * only a value that is not an object at all is refused. The undo stack is
+   * sanitized entry by entry (each without a stack of its own). */
+  var DH_OUTCOMES = ['creature-fail-fear', 'creature-fail-hope', 'creature-success-fear', 'creature-success-hope',
+    'landmark-fail-fear', 'landmark-fail-hope', 'landmark-success-fear', 'landmark-success-hope',
+    'hazard-fail-fear', 'hazard-fail-hope', 'resource-success-fear', 'resource-success-hope'];
+  function dhInt(v, lo, hi, fallback) {
+    if (typeof v !== 'number' || !isFinite(v) || Math.floor(v) !== v) return fallback;
+    return Math.min(hi, Math.max(lo, v));
+  }
+  function dhDie(v) { return typeof v === 'number' && isFinite(v) && Math.floor(v) === v && v >= 1 && v <= 12 ? v : null; }
+  function dhScene(raw) {
+    var r = isPlainObject(raw) ? raw : {};
+    var dealt = {};
+    if (isPlainObject(r.dealt)) {
+      DH_OUTCOMES.forEach(function (k) {
+        if (Array.isArray(r.dealt[k])) dealt[k] = r.dealt[k].filter(function (x) { return typeof x === 'string' && x.length <= 80; }).slice(-60);
+      });
+    }
+    var npc = isPlainObject(r.npc) ? r.npc : {};
+    var enc = isPlainObject(r.encounter) ? r.encounter : {};
+    var value = isPlainObject(npc.value) && isPlainObject(npc.value.name) && typeof npc.value.name.en === 'string'
+      && isPlainObject(npc.value.line) && isPlainObject(npc.value.need) && isPlainObject(npc.value.look) && isPlainObject(npc.value.ancestry) && isPlainObject(npc.value.avatar)
+      ? npc.value : null;
+    return {
+      outcome: DH_OUTCOMES.indexOf(r.outcome) !== -1 ? r.outcome : null,
+      seed: dhInt(r.seed, 0, 1000000, 0),
+      sceneId: typeof r.sceneId === 'string' && r.sceneId.length <= 80 ? r.sceneId : null,
+      dealt: dealt,
+      npc: { seed: dhInt(npc.seed, 0, 1000000, 0), locked: npc.locked === true, value: value },
+      encounter: {
+        seed: dhInt(enc.seed, 0, 1000000, 0),
+        gmTheme: typeof enc.gmTheme === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(enc.gmTheme) && enc.gmTheme.length <= 40 ? enc.gmTheme : null,
+        locked: (Array.isArray(enc.locked) ? enc.locked : []).filter(function (l) { return isPlainObject(l) && typeof l.id === 'string' && l.id.length <= 80; })
+          .map(function (l) { return { id: l.id, quantity: dhInt(l.quantity, 1, 20, 1) }; }).slice(0, 8),
+      },
+    };
+  }
+  function dhArrival(raw) {
+    if (!isPlainObject(raw) || DH_OUTCOMES.indexOf(raw.outcome) === -1) return null;
+    var out = { outcome: raw.outcome, rolledWith: ['hope', 'fear', 'critical'].indexOf(raw.rolledWith) !== -1 ? raw.rolledWith : 'hope',
+      penaltyChoice: raw.penaltyChoice === 'fd' || raw.penaltyChoice === 'fear' ? raw.penaltyChoice : null, gainedFear: raw.gainedFear === true, viaRetreat: raw.viaRetreat === true };
+    var fields = { n: [0, 100000], hope: [1, 12], fear: [1, 12], modifier: [-20, 20], total: [-100, 100], difficulty: [0, 999], fdBefore: [0, 999], fdAfter: [0, 999], fearBefore: [0, 12], fearAfter: [0, 12] };
+    for (var k in fields) {
+      var v = dhInt(raw[k], fields[k][0], fields[k][1], null);
+      if (v === null) return null;
+      out[k] = v;
+    }
+    return out;
+  }
+  function dhRest(raw) {
+    if (!isPlainObject(raw) || (raw.kind !== 'short' && raw.kind !== 'long')) return null;
+    return { kind: raw.kind, whisper: raw.whisper === true, fdBy: dhInt(raw.fdBy, 0, 999, 0), fearBy: dhInt(raw.fearBy, 0, 12, 0),
+      fdRoll: dhInt(raw.fdRoll, 1, 2, null), fearRoll: dhInt(raw.fearRoll, 1, 4, null), fearCapped: raw.fearCapped === true };
+  }
+  function dhLog(raw) {
+    return (Array.isArray(raw) ? raw : []).filter(function (e) { return isPlainObject(e) && (DH_OUTCOMES.indexOf(e.outcome) !== -1 || e.kind === 'bastion'); })
+      .map(function (e) {
+        var kind = e.kind === 'bastion' || e.kind === 'retreat-failed' ? e.kind : 'arrival';
+        return { n: dhInt(e.n, 0, 100000, 0), outcome: kind === 'bastion' ? null : e.outcome, kind: kind, fd: dhInt(e.fd, 0, 999, 15) };
+      }).slice(-40);
+  }
+  function dhState(raw, withUndo) {
+    var r = raw;
+    var fd = dhInt(r.fd, 15, 30, 15);
+    var arrival = dhArrival(r.arrival);
+    var dice = isPlainObject(r.dice) ? r.dice : {};
+    var rawSettings = isPlainObject(r.settings) ? r.settings : {};
+    var retreat = isPlainObject(r.retreat) && (r.retreat.from === 'roll' || r.retreat.from === 'arrived')
+      ? { from: r.retreat.from, danger: r.retreat.danger === true ? true : r.retreat.danger === false ? false : null } : null;
+    var phase = r.phase === 'arrived' && arrival ? 'arrived' : r.phase === 'retreat' && retreat ? 'retreat' : r.phase === 'bastion' ? 'bastion' : 'roll';
+    var keepArrival = !!arrival && (phase === 'arrived' || (phase === 'retreat' && retreat.from === 'arrived'));
+    var state = {
+      schema: 1,
+      tier: dhInt(r.tier, 1, 4, 1),
+      heroes: dhInt(r.heroes, 1, 8, 4),
+      fear: dhInt(r.fear, 0, 12, 0),
+      fd: fd,
+      hexes: dhInt(r.hexes, 0, 100000, 0),
+      trapped: fd >= 30,
+      phase: phase,
+      dice: { hope: dhDie(dice.hope), fear: dhDie(dice.fear), modifier: dhInt(dice.modifier, -20, 20, 0) },
+      difficulty: ['easier', 'standard', 'harder'].indexOf(r.difficulty) !== -1 ? r.difficulty : 'standard',
+      envTier: dhInt(r.envTier, 1, 4, null),
+      expedition: dhInt(r.expedition, 1, 100000, 1),
+      shortRests: dhInt(r.shortRests, 0, 50, 0),
+      lastRest: keepArrival ? dhRest(r.lastRest) : null,
+      retreat: phase === 'retreat' ? retreat : null,
+      settings: { fearOnRoll: rawSettings.fearOnRoll !== false, fearOnRest: rawSettings.fearOnRest !== false, shortRestLimit: rawSettings.shortRestLimit !== false },
+      arrival: keepArrival ? arrival : null,
+      scene: dhScene(r.scene),
+      log: dhLog(r.log),
+    };
+    if (withUndo) {
+      state.undo = (Array.isArray(r.undo) ? r.undo : []).filter(isPlainObject).map(function (e) { return dhState(e, false); }).slice(-20);
+    }
+    return state;
+  }
+  /** Key-order-independent JSON, so reordered keys are not mistaken for a repair. */
+  function dhCanon(v) {
+    if (Array.isArray(v)) return '[' + v.map(dhCanon).join(',') + ']';
+    if (isPlainObject(v)) return '{' + Object.keys(v).sort().map(function (k) { return JSON.stringify(k) + ':' + dhCanon(v[k]); }).join(',') + '}';
+    return JSON.stringify(v);
+  }
+  function sanitizeDarkheart(parsed) {
+    if (!isPlainObject(parsed)) return { ok: false };
+    var value = dhState(parsed, true);
+    return { ok: true, value: value, changed: dhCanon(value) !== dhCanon(parsed) };
+  }
+
   function sanitizeMotionPref(parsed) {
     if (parsed !== 'static' && parsed !== 'animated') return { ok: false };
     return { ok: true, value: parsed, changed: false };
@@ -706,6 +818,7 @@
       soundboard: sanitizeSoundboard,
       prepItemView: sanitizePrepItemView,
       motionPref: sanitizeMotionPref,
+      darkheart: sanitizeDarkheart,
     },
   };
 });

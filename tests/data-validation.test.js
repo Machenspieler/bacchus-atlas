@@ -1067,3 +1067,29 @@ test('literal i18n key scan ignores dynamic prefix concatenation', () => {
   assert.ok(!keys.includes('type_'));
   assert.ok(!keys.includes('region'));
 });
+
+/* ---------------- Darkheart compatibility manifest (PD-097) ---------------- */
+
+test('a fixture repository without data/darkheart-scenes.json is still valid (the file is optional)', () => {
+  const result = validateRepositoryData(buildFixture());
+  assert.equal(errorsOf(result).length, 0, messages(errorsOf(result)));
+  assert.equal(result.darkheartCoverage, null);
+});
+
+test('a malformed data/darkheart-scenes.json fails the repository validation', () => {
+  const dir = buildFixture();
+  fs.writeFileSync(path.join(dir, 'data/darkheart-scenes.json'), '{ not json');
+  const result = validateRepositoryData(dir);
+  assert.ok(errorsOf(result).some(d => d.file === 'data/darkheart-scenes.json' && /invalid json/i.test(d.message)));
+});
+
+test('a manifest pointing at an unknown environment fails; an empty valid one passes', () => {
+  const dir = buildFixture();
+  writeJSON(dir, 'data/darkheart-scenes.json', { schema: 1, fingerprintVersion: 1, scenes: [], reviews: [{ envId: 'no-such-env', status: 'pending' }] });
+  const bad = validateRepositoryData(dir);
+  assert.ok(errorsOf(bad).some(d => d.file === 'data/darkheart-scenes.json' && /unknown environment/i.test(d.message)));
+  writeJSON(dir, 'data/darkheart-scenes.json', { schema: 1, fingerprintVersion: 1, scenes: [], reviews: [{ envId: 'test-env', status: 'pending' }] });
+  const ok = validateRepositoryData(dir);
+  assert.equal(errorsOf(ok).filter(d => d.file === 'data/darkheart-scenes.json').length, 0);
+  assert.equal(ok.darkheartCoverage.pending, 1);
+});

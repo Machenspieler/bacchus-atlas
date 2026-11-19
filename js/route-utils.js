@@ -59,7 +59,7 @@
    * Lists overview while a valid environment suffix on it is preserved.
    *
    * Returns { route, malformed, canonicalHash }:
-   *   route: { name: 'catalog'|'lists'|'list'|'journey'|'prep'|'playermap', id?, env }
+   *   route: { name: 'catalog'|'lists'|'list'|'journey'|'prep'|'darkheart'|'playermap', id?, env }
    *     (playermap: id = the link text, '' when it is missing or malformed; env is always null)
    *   malformed: whether any segment failed to decode
    *   canonicalHash: the safe hash the address should be repaired to, or
@@ -105,6 +105,8 @@
       // repaired in place (replaceState), so Back never loops.
       route = { name: 'journey', env: env };
       legacy = true;
+    } else if (working === '#/darkheart') {
+      route = { name: 'darkheart', env: env };
     } else if (working === '#/prep') {
       route = { name: 'prep', env: env };
     } else if (working === LEGACY_PREP_HASH) {
@@ -130,6 +132,7 @@
     if (route.name === 'lists') return '#/lists';
     if (route.name === 'journey') return '#/journey';
     if (route.name === 'prep') return '#/prep';
+    if (route.name === 'darkheart') return '#/darkheart';
     if (route.name === 'playermap') return '#/map/' + encodeURIComponent(route.id || '');
     return route.query ? '#/?' + route.query : '';
   }

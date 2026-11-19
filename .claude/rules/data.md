@@ -1,6 +1,7 @@
 ---
 paths:
   - "data/**/*.json"
+  - "scripts/lib/darkheart-scenes.js"
   - "scripts/validate-data.js"
   - "tests/data-validation.test.js"
 ---
@@ -145,5 +146,14 @@ for the environment schema in full before editing `data/environments.json`.
   tweaking text to slip past the check. Entries with no features never
   collide; same-name pairs stay a warning (Time Loop / Masquerade Ball
   Atlas editions differ on purpose).
+- **Edited or new environments meet the Darkheart manifest.** After adding or
+  correcting an environment run `node scripts/darkheart-review-report.js --env <id>`:
+  a new id is "unlisted" (pending review; nothing to fix), an edited one lists
+  any scene in `data/darkheart-scenes.json` that went stale. A changed English
+  word, number or feature type in a pinned feature fails `validate-data` until
+  a person re-reads it and re-pins or suspends the scene; punctuation, quotes,
+  case and Russian-only fixes never do. Never edit the manifest's pins
+  automatically and never rename a feature without checking it (PD-097,
+  [docs/data-contracts/darkheart-scenes.md](../../docs/data-contracts/darkheart-scenes.md)).
 - **Run `node scripts/validate-data.js`** after any change under `data/`;
   it's the same check CI runs before every deploy.

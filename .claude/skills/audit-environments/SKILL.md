@@ -63,7 +63,10 @@ before reviewing. Short version:
    Gaoler") alone.
 6. **Item check:** `node scripts/check-item-references.js`.
 7. **Verify:** `node scripts/validate-data.js` (the two "Normalized name"
-   warnings are known) and `node --test tests/*.test.js`.
+   warnings are known) and `node --test tests/*.test.js`. An audit fix that
+   changes a pinned English feature (a word, number or type) fails the
+   Darkheart check: run `node scripts/darkheart-review-report.js` and list the
+   stale scenes for the owner instead of re-pinning them (PD-097).
 8. **Commit and push** per CLAUDE.md's git workflow, naming structural
    fixes in the message.
 9. **Report**: counts, every structural / judgement fix with the choice

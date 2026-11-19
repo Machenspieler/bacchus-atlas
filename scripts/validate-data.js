@@ -18,6 +18,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const DarkheartScenes = require('./lib/darkheart-scenes.js');
+const DarkheartSuitability = require('./lib/darkheart-suitability.js');
+const ListCoverArt = require('../js/list-cover-art.js');
+const CatalogArt = require('../js/catalog-art.js');
 
 /* ---------------- generic helpers ---------------- */
 
@@ -1422,6 +1426,70 @@ function validateBiomeAssets(rootPath, usedBiomes, diagnostics) {
   }
 }
 
+/* ---------------- data/darkheart-scenes.json ---------------- */
+
+/** Maps the manifest analysis (scripts/lib/darkheart-scenes.js) onto
+ * diagnostics. Returns the coverage facts for the CLI summary. */
+function validateDarkheartScenes(data, file, diagnostics, rootPath, environments, affinityThemes) {
+  const analysis = DarkheartScenes.analyzeManifest(data, {
+    environments,
+    affinityThemes,
+    resolveArt: env => CatalogArt.resolveCatalogArt(env, ListCoverArt),
+    biomeAssetExists: biome => fs.existsSync(path.join(rootPath, 'img', 'biomes', `${biome}-200.webp`)),
+  });
+  for (const p of analysis.problems) {
+    diagnostics.push({ severity: p.severity, file, path: p.path, message: p.message, id: p.id });
+  }
+  return analysis.coverage;
+}
+
+/* ---------------- data/darkheart-suitability.json ---------------- */
+
+/** Maps the suitability analysis (js/darkheart-suitability.js) onto diagnostics (PD-104). */
+function validateDarkheartSuitability(data, file, diagnostics, environments, affinityThemes) {
+  const analysis = DarkheartSuitability.analyze(data, { environments, affinityThemes });
+  for (const p of analysis.problems) diagnostics.push({ severity: p.severity, file, path: p.path, message: p.message, id: p.id });
+  return analysis.coverage;
+}
+
+/* ---------------- data/darkheart-affinity.json ---------------- */
+
+/** The small adversary-theme classification the Darkheart encounter engine reads
+ * (PD-099). Every adversary id must exist in the Prep catalogue and every theme
+ * must be declared; unknown keys are errors. Returns the declared theme ids. */
+function validateDarkheartAffinity(data, file, diagnostics, adversaryIds) {
+  const err = (p, message, id) => diagnostics.push({ severity: 'error', file, path: p, message, id: id == null ? null : String(id) });
+  if (!data || typeof data !== 'object' || Array.isArray(data)) { err('$', 'Affinity file must be an object.'); return []; }
+  for (const k of Object.keys(data)) if (!['_note', 'schema', 'themes', 'adversaries'].includes(k)) err(`$.${k}`, `Unknown key "${k}".`);
+  if (data.schema !== 1) err('$.schema', 'schema must be 1.');
+  const themes = data.themes && typeof data.themes === 'object' && !Array.isArray(data.themes) ? data.themes : null;
+  if (!themes || !Object.keys(themes).length) { err('$.themes', 'themes must declare at least one theme.'); return []; }
+  const ids = Object.keys(themes);
+  for (const [id, t] of Object.entries(themes)) {
+    const p = `$.themes.${id}`;
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) err(p, `Theme id "${id}" must be a lowercase slug.`, id);
+    if (!t || typeof t !== 'object' || !t.name || typeof t.name.en !== 'string' || !t.name.en.trim() || typeof t.name.ru !== 'string' || !/[Ѐ-ӿ]/.test(t.name.ru)) err(`${p}.name`, 'Theme needs a bilingual name { en, ru } (RU in Cyrillic).', id);
+    if (!t || !Array.isArray(t.related)) err(`${p}.related`, 'related must be an array (possibly empty).', id);
+    else t.related.forEach((r, i) => { if (!ids.includes(r) || r === id) err(`${p}.related[${i}]`, `related theme "${r}" is unknown or the theme itself.`, id); });
+  }
+  const advs = data.adversaries && typeof data.adversaries === 'object' && !Array.isArray(data.adversaries) ? data.adversaries : null;
+  if (!advs) { err('$.adversaries', 'adversaries must map adversary ids to theme lists.'); return ids; }
+  for (const [advId, list] of Object.entries(advs)) {
+    const p = `$.adversaries.${advId}`;
+    if (adversaryIds && adversaryIds.size && !adversaryIds.has(advId)) err(p, `Unknown adversary id "${advId}" (not in data/prep.json).`, advId);
+    if (!Array.isArray(list) || !list.length) err(p, 'Each adversary needs a non-empty theme list.', advId);
+    else {
+      const seen = new Set();
+      list.forEach((th, i) => {
+        if (!ids.includes(th)) err(`${p}[${i}]`, `Unknown theme "${th}".`, advId);
+        else if (seen.has(th)) err(`${p}[${i}]`, `Theme "${th}" is listed twice.`, advId);
+        seen.add(th);
+      });
+    }
+  }
+  return ids;
+}
+
 /* ---------------- orchestration ---------------- */
 
 function sortDiagnostics(diagnostics) {
@@ -1442,6 +1510,12 @@ const FILES = {
   journey: 'data/journey.json',
   i18n: 'data/i18n.json',
 };
+/* Optional file: the Darkheart compatibility manifest (PD-097). Validated when
+ * present (a fixture repository without it is fine), and a test pins that the
+ * production checkout has it. */
+const DARKHEART_FILE = 'data/darkheart-scenes.json';
+const DARKHEART_AFFINITY_FILE = 'data/darkheart-affinity.json';
+const DARKHEART_SUITABILITY_FILE = 'data/darkheart-suitability.json';
 
 function validateRepositoryData(rootPath) {
   const diagnostics = [];
@@ -1468,6 +1542,24 @@ function validateRepositoryData(rootPath) {
   const journeyFacts = loaded.journey !== null
     ? validateJourney(loaded.journey, FILES.journey, diagnostics)
     : { usedBiomes: new Set() };
+
+  // Darkheart compatibility manifest (optional file; references environment ids, features and artwork)
+  let darkheartCoverage = null;
+  let darkheartSuitability = null;
+  if (fs.existsSync(path.join(rootPath, DARKHEART_FILE))) {
+    const darkheart = readJsonFile(path.join(rootPath, DARKHEART_FILE), DARKHEART_FILE, diagnostics);
+    const envList = loaded.environments && Array.isArray(loaded.environments.environments) ? loaded.environments.environments : [];
+    let affinityThemes;
+    if (fs.existsSync(path.join(rootPath, DARKHEART_AFFINITY_FILE))) {
+      const affinity = readJsonFile(path.join(rootPath, DARKHEART_AFFINITY_FILE), DARKHEART_AFFINITY_FILE, diagnostics);
+      if (affinity !== null) affinityThemes = validateDarkheartAffinity(affinity, DARKHEART_AFFINITY_FILE, diagnostics, prepFacts.adversaryIds);
+    }
+    if (darkheart !== null) darkheartCoverage = validateDarkheartScenes(darkheart, DARKHEART_FILE, diagnostics, rootPath, envList, affinityThemes);
+    if (fs.existsSync(path.join(rootPath, DARKHEART_SUITABILITY_FILE))) {
+      const suitability = readJsonFile(path.join(rootPath, DARKHEART_SUITABILITY_FILE), DARKHEART_SUITABILITY_FILE, diagnostics);
+      if (suitability !== null) darkheartSuitability = validateDarkheartSuitability(suitability, DARKHEART_SUITABILITY_FILE, diagnostics, envList, affinityThemes);
+    }
+  }
 
   // cross-file: featured adversary references
   envFacts.featuredAdversaryRefs.forEach(ref => {
@@ -1510,7 +1602,7 @@ function validateRepositoryData(rootPath) {
   sortDiagnostics(diagnostics);
   const errorCount = diagnostics.filter(d => d.severity === 'error').length;
   const warningCount = diagnostics.filter(d => d.severity === 'warning').length;
-  return { diagnostics, errorCount, warningCount };
+  return { diagnostics, errorCount, warningCount, darkheartCoverage, darkheartSuitability };
 }
 
 /* ---------------- CLI ---------------- */
@@ -1525,6 +1617,14 @@ function main() {
   if (result.diagnostics.length) {
     console.log(formatDiagnostics(result.diagnostics));
     console.log('');
+  }
+  const dh = result.darkheartCoverage;
+  if (dh) {
+    console.log(`Darkheart manifest: ${dh.selectable} of ${dh.scenes} scenes selectable (${Object.entries(dh.byMatch).map(([k, v]) => `${v} ${k}`).join(', ') || 'none'}), ${Object.keys(dh.byOutcome).length} of 12 outcomes covered; environments reviewed ${dh.reviewed}, reviewed-none ${dh.reviewedNone}, pending ${dh.pending}, not yet listed ${dh.unlisted} of ${dh.environments}.`);
+  }
+  const su = result.darkheartSuitability;
+  if (su) {
+    console.log(`Darkheart suitability: ${su.profiles} profiled environments, ${su.exclusions} excluded, ${su.overrides} overrides; environments per outcome: ${Object.entries(su.byOutcome).map(([k, v]) => `${k} ${v}`).join(', ')}.`);
   }
   console.log(`Data validation complete: ${result.errorCount} errors, ${result.warningCount} warnings.`);
   process.exitCode = result.errorCount > 0 ? 1 : 0;
@@ -1541,6 +1641,9 @@ module.exports = {
   validatePrep,
   validateJourney,
   validateI18n,
+  validateDarkheartScenes,
+  validateDarkheartAffinity,
+  validateDarkheartSuitability,
   readJsonFile,
   normalizeItemKey,
   normalizeDisplayName,
