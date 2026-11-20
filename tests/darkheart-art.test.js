@@ -25,8 +25,9 @@ test('every one of the twelve outcomes has its own banner, keyed by a real outco
   for (const junk of [undefined, null, '', 'creature', 'Creature-Fail-Fear', '__proto__', 'toString']) assert.equal(Art.outcomeArt(junk), null, String(junk));
 });
 
-test('portraits: only firbolg and aetheris; no other ancestry (nor Mixed Ancestry, names or junk) gets one', () => {
-  assert.deepEqual(Object.keys(Art.ANCESTRIES).sort(), ['aetheris', 'firbolg']);
+test('portraits: exactly the eighteen painted ancestries; no other (nor Mixed Ancestry, names or junk) gets one', () => {
+  assert.deepEqual(Object.keys(Art.ANCESTRIES).sort(), ['aetheris', 'dwarf', 'earthkin', 'elf', 'emberkin', 'faerie', 'faun', 'firbolg', 'fungril', 'galapa', 'gnome', 'goblin', 'halfling', 'human', 'katari', 'orc', 'skykin', 'tidekin']);
+  assert.equal(new Set(Object.values(Art.ANCESTRIES).map(a => a.master)).size, 18, 'no master serves two ancestries');
   assert.match(Art.portraitArt('firbolg').src, /ancestry-firbolg-64\.webp$/);
   assert.match(Art.portraitArt('aetheris').src, /ancestry-aetheris-64\.webp$/);
   for (const a of Npc.ANCESTRIES) if (!(a.id in Art.ANCESTRIES)) assert.equal(Art.portraitArt(a.id), null, a.id);
@@ -57,12 +58,12 @@ test('the view reads the table only, keeps alt empty, reserves dimensions and ne
   assert.match(read('scripts/build.js'), /darkheart-art-source/);
 });
 
-test('both portrait ancestries are real NPC ancestries, and generation can deal each', () => {
+test('every portrait ancestry is a real NPC ancestries, and generation can deal each', () => {
   const ids = Npc.ANCESTRIES.map(a => a.id);
   for (const k of Object.keys(Art.ANCESTRIES)) assert.ok(ids.includes(k), k);
   const seen = new Set();
-  for (let seed = 0; seed < 400; seed++) seen.add(Npc.generateNpc({ outcome: 'creature-success-hope', sceneId: 's', seed }).ancestry.id);
-  assert.ok(seen.has('aetheris') && seen.has('firbolg'));
+  for (let seed = 0; seed < 1500; seed++) seen.add(Npc.generateNpc({ outcome: 'creature-success-hope', sceneId: 's', seed }).ancestry.id);
+  for (const k of Object.keys(Art.ANCESTRIES)) assert.ok(seen.has(k), k);
   const a = Npc.ANCESTRIES.find(x => x.id === 'aetheris');
   assert.deepEqual([a.name.en, a.name.ru], ['Aetheris', 'Аэтерис']);
 });

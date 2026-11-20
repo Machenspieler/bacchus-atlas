@@ -57,6 +57,11 @@
     { id: 'fungril', shape: 'cap', name: B('Fungril', 'Фунгрил') },
     { id: 'galapa', shape: 'shell', name: B('Galapa', 'Галапа') },
     { id: 'aetheris', shape: 'wings', name: B('Aetheris', 'Аэтерис') },
+    { id: 'gnome', shape: 'pointed', name: B('Gnome', 'Гном') },
+    { id: 'earthkin', shape: 'beard', name: B('Earthkin', 'Эрткин') },
+    { id: 'emberkin', shape: 'round', name: B('Emberkin', 'Эмберкин') },
+    { id: 'skykin', shape: 'pointed', name: B('Skykin', 'Скайкин') },
+    { id: 'tidekin', shape: 'pointed', name: B('Tidekin', 'Тайдкин') },
   ];
 
   var LOOKS = [

@@ -814,7 +814,7 @@ against the live tables (`CatalogArt.resolveCatalogArt`, `img/biomes/`).
 
 `js/darkheart-art.js` is the single table (outcome → banner, ancestry → portrait); `DarkheartView.syncHeroOutcome()` swaps the hero's
 `<picture>` only when the staged outcome's picture changes, and `portraitHtml()` wears the portrait in the NPC card. Derivatives are cut by
-`scripts/generate-darkheart-art.js` from `img/darkheart-art-source/`; `tests/darkheart-art.test.js` pins the mapping and the files.
+`scripts/generate-darkheart-art.js` from `img/darkheart-art-source/`; `tests/darkheart-art.test.js` pins the mapping and the files. Eighteen ancestries wear a portrait, each with its own `crop` window; the NPC generator deals all eighteen.
 
 ### Darkheart Forest page (PD-098, PD-099)
 

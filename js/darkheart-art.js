@@ -10,8 +10,9 @@
    gets no picture and no request — the established text-only / SVG-avatar fallback stays.
 
    Status: all twelve outcome banners are approved (use: 'approved', each focal point checked in the
-   real 180 px hero under the nav ribbons, desktop and phone). The two portraits are still pilot
-   candidates (use: 'pilot'); the other ancestries are added here, one entry each, with no UI change.
+   real 180 px hero under the nav ribbons, desktop and phone). Sixteen portraits are approved (each
+   crop checked in the real 64 px circle: horns, cap, ears and flame kept, faces about the same size);
+   firbolg and aetheris remain pilots; any other ancestry is one more entry here, with no UI change.
 
    Files (cut by scripts/generate-darkheart-art.js from img/darkheart-art-source/, never served):
      img/darkheart-art/outcome-<id>-{640,1024,1672}.avif  + outcome-<id>-1024.webp  (16:9, the master's whole frame)
@@ -50,6 +51,22 @@
   const ANCESTRIES = {
     firbolg:  { master: 'ancestry-firbolg.png',  width: 1254, height: 1254, crop: { left: 250, top: 60, size: 800 }, use: 'pilot' },
     aetheris: { master: 'ancestry-aetheris.png', width: 1254, height: 1254, crop: { left: 270, top: 40, size: 780 }, use: 'pilot' },
+    earthkin:{ master: 'ancestry-earthkin.png', width: 1254, height: 1254, crop: { left: 135, top: 0, size: 900 }, use: 'approved' },
+    emberkin:{ master: 'ancestry-emberkin.png', width: 1254, height: 1254, crop: { left: 270, top: 60, size: 740 }, use: 'approved' },
+    gnome:   { master: 'ancestry-gnome.png', width: 1254, height: 1254, crop: { left: 190, top: 0, size: 880 }, use: 'approved' },
+    skykin:  { master: 'ancestry-skykin.png', width: 1254, height: 1254, crop: { left: 270, top: 150, size: 700 }, use: 'approved' },
+    tidekin: { master: 'ancestry-tidekin.png', width: 1254, height: 1254, crop: { left: 130, top: 0, size: 1000 }, use: 'approved' },
+    dwarf:   { master: 'ancestry-dwarf.png', width: 1254, height: 1254, crop: { left: 30, top: 120, size: 900 }, use: 'approved' },
+    elf:     { master: 'ancestry-elf.png', width: 1254, height: 1254, crop: { left: 90, top: 90, size: 960 }, use: 'approved' },
+    faerie:  { master: 'ancestry-faerie.png', width: 1254, height: 1254, crop: { left: 210, top: 90, size: 960 }, use: 'approved' },
+    faun:    { master: 'ancestry-faun.png', width: 1254, height: 1254, crop: { left: 25, top: 0, size: 1150 }, use: 'approved' },
+    fungril: { master: 'ancestry-fungril.png', width: 1254, height: 1254, crop: { left: 10, top: 10, size: 1180 }, use: 'approved' },
+    galapa:  { master: 'ancestry-galapa.png', width: 1254, height: 1254, crop: { left: 125, top: 0, size: 950 }, use: 'approved' },
+    goblin:  { master: 'ancestry-goblin.png', width: 1254, height: 1254, crop: { left: 160, top: 0, size: 1050 }, use: 'approved' },
+    halfling:{ master: 'ancestry-halfling.png', width: 1254, height: 1254, crop: { left: 180, top: 20, size: 860 }, use: 'approved' },
+    human:   { master: 'ancestry-human.png', width: 1254, height: 1254, crop: { left: 155, top: 60, size: 860 }, use: 'approved' },
+    katari:  { master: 'ancestry-katari.png', width: 1254, height: 1254, crop: { left: 100, top: 0, size: 1000 }, use: 'approved' },
+    orc:     { master: 'ancestry-orc.png', width: 1254, height: 1254, crop: { left: 135, top: 70, size: 900 }, use: 'approved' },
   };
 
   const has = (table, key) => typeof key === 'string' && Object.prototype.hasOwnProperty.call(table, key);
