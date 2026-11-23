@@ -69,6 +69,16 @@ Import or correct the Environment Stat Block described by `$ARGUMENTS` in
 12. **Run** `node scripts/validate-data.js` and `node --test tests/*.test.js`,
     and check `PotentialAdversaryUtils.envAdversaryNames()` resolves every
     potential adversary to a full bestiary name.
+12b. **Bump the catalogue-size pins in the tests** when a NEW environment is
+    added (not for a correction). Two tests hard-code the totals and the
+    deploy fails at "Run tests" otherwise: `tests/catalog-art.test.js`
+    ("coverage on the real catalogue": `ENVS.length` and
+    `by.biome = N - 99 - 5 - 5`) and `tests/prep-art.test.js` ("Catalog output
+    pinned": `biome: N - 99 - 5 - 5`). A new environment with no thematic
+    picture / painting / crop takes the biome strip, so each new one adds 1 to
+    both `ENVS.length` and the biome count (410 / 301 after Basilisk
+    Graveyard). Update the comments' numbers too. After pushing, confirm the
+    "Deploy to GitHub Pages" run is green — a red run means nothing deployed.
 12a. **Check the Darkheart review queue** (read-only):
     `node scripts/darkheart-review-report.js --env <id>`. A new environment
     reports "UNLISTED — pending review" and needs nothing else. A corrected
