@@ -45934,6 +45934,119 @@
         "forest"
       ],
       "source": "Resting Dagger"
+    },
+    {
+      "id": "basilisk-graveyard",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 14,
+      "name": {
+        "en": "Basilisk Graveyard",
+        "ru": "Кладбище василисков"
+      },
+      "lore": {
+        "en": "Giant yellowed bones in a verdant green jungle.",
+        "ru": "Гигантские пожелтевшие кости в пышных зелёных джунглях."
+      },
+      "impulses": {
+        "en": [
+          "Hold the secrets of the dead"
+        ],
+        "ru": [
+          "Хранить тайны мёртвых"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Basilisk",
+          "Berserkers (Berserker Alpha, Berserker Initiate)"
+        ],
+        "ru": [
+          "Василиск",
+          "Берсерки (Берсерк-Вожак, Берсерк-Послушник)"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Secrets of the Bones",
+            "ru": "Тайны костей"
+          },
+          "description": {
+            "en": "Many basilisks have died here. A PC can make an Instinct or Knowledge Roll to investigate the graveyard. On a success with Hope, they learn 3 pieces of information; success with Fear, 2. On failure, they can mark a Stress to learn 1 and gain Advantage on the next Action Roll to investigate. PCs with applicable backgrounds or Experiences can ask one follow-up question the GM must answer truthfully (but not necessarily fully).\n- Signs of crude alchemy intended to extract marrow litter the bones.\n- Bodies of berserker warriors lie picked apart in the jungle.\n- An offering of venom glands has been left in an overgrown bowl.",
+            "ru": "Здесь погибло множество василисков. Персонаж может совершить Бросок Инстинкта или Знания, чтобы осмотреть кладбище. При успехе с Надеждой он узнаёт 3 сведения; при успехе со Страхом — 2. При неудаче он может отметить Стресс, чтобы узнать 1 сведение и получить преимущество на следующий бросок действия при осмотре. Персонажи с подходящей предысторией или Опытом могут задать один уточняющий вопрос, на который Мастер обязан ответить правдиво (но не обязательно полностью).\n- Следы грубой алхимии, призванной извлекать костный мозг, усеивают кости.\n- Тела воинов-берсерков лежат растерзанными в джунглях.\n- Подношение из ядовитых желёз оставлено в заросшей чаше."
+          },
+          "prompt": {
+            "en": "Did the basilisks choose this place to die?",
+            "ru": "Выбрали ли василиски это место, чтобы умереть?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Spirits Gone By",
+            "ru": "Ушедшие духи"
+          },
+          "description": {
+            "en": "Alchemists, wizards, wisewomen, and shamans linger here just beyond the veil of death. If the PCs can convince them to talk with an Action Roll or offering, they will teach them how to use local plants for a tincture that provides an extra d4 to any Instinct Reaction Roll made against a Basilisk’s “Petrify” until their next short rest.",
+            "ru": "Алхимики, волшебники, знахарки и шаманы задерживаются здесь, у самой завесы смерти. Если персонажам удастся убедить их заговорить с помощью броска действия или подношения, духи научат их использовать местные растения для настойки, которая даёт дополнительную d4 к любому Броску Реакции на Инстинкт против «Окаменения» Василиска до их следующего короткого отдыха."
+          },
+          "prompt": {
+            "en": "Why do those who studied basilisks choose to linger near their grave after death?",
+            "ru": "Почему те, кто изучал василисков, остаются после смерти рядом с их могилой?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Trial of the Boneyard",
+            "ru": "Испытание костяного кладбища"
+          },
+          "description": {
+            "en": "Spend a Fear to have 1 Berserker Alpha leading 2 Berserker Initiates and 4 Basilisks emerge. They seek to test their mettle against the PCs, spilling their blood and earning the right to harvest marrow for their concoctions.",
+            "ru": "Потратьте Страх, чтобы появился 1 Берсерк-Вожак, ведущий 2 Берсерков-Послушников и 4 Василисков. Они хотят испытать свою доблесть в схватке с персонажами, пролив их кровь и заслужив право собирать костный мозг для своих зелий."
+          },
+          "prompt": {
+            "en": "Are the berserkers interested in an honorable duel? How tightly do they cooperate with the basilisks?",
+            "ru": "Интересует ли берсерков честный поединок? Насколько тесно они сотрудничают с василисками?"
+          }
+        }
+      ],
+      "story_seeds": [
+        {
+          "title": {
+            "en": "Challenge of the Berserker",
+            "ru": "Вызов берсерка"
+          },
+          "body": {
+            "en": "A Berserker Alpha has menaced the local populace, claiming he rightfully rules the area and may extract taxes on all its byways. He explicitly cites his control of the basilisk graveyard as the basis for his authority. The locals pool a small reward and ask that he be dethroned.",
+            "ru": "Берсерк-Вожак запугивает местных жителей, утверждая, что по праву владеет этими землями и вправе взимать налог на всех здешних дорогах. Основанием своей власти он прямо называет контроль над кладбищем василисков. Местные скинулись на небольшую награду и просят свергнуть его."
+          },
+          "prompt": {
+            "en": "What aren’t they telling the PCs?",
+            "ru": "Чего они не говорят персонажам?"
+          }
+        },
+        {
+          "title": {
+            "en": "The Stone Prince",
+            "ru": "Каменный принц"
+          },
+          "body": {
+            "en": "A terrible poison made of basilisk eyes has petrified a prince. His mother sends the PCs to discover a way to undo this, and the trail leads to the Basilisk Graveyard.",
+            "ru": "Страшный яд, изготовленный из глаз василисков, обратил принца в камень. Его мать посылает персонажей найти способ это исправить, и след приводит к Кладбищу василисков."
+          },
+          "prompt": {
+            "en": "Who at court knows they’re coming? Does the prince’s poisoner send assassins?",
+            "ru": "Кто при дворе знает, что они идут? Не пошлёт ли отравитель принца убийц?"
+          }
+        }
+      ],
+      "biomes": [
+        "tropical"
+      ],
+      "source": "Resting Dagger"
     }
   ]
 }
