@@ -46047,6 +46047,133 @@
         "tropical"
       ],
       "source": "Resting Dagger"
+    },
+    {
+      "id": "hightower-fountain",
+      "tier": 2,
+      "type": "social",
+      "difficulty": 14,
+      "name": {
+        "en": "Hightower Fountain",
+        "ru": "Фонтан Высокой башни"
+      },
+      "lore": {
+        "en": "A pristine fountain between pristine boulevards, beneath the grand clock tower.",
+        "ru": "Безупречный фонтан между безупречными бульварами, под величественной часовой башней."
+      },
+      "impulses": {
+        "en": [
+          "Learn others’ secrets",
+          "guard your own"
+        ],
+        "ru": [
+          "Узнавать чужие секреты",
+          "хранить свои"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Masked Thief",
+          "Master Assassin",
+          "Cult Adept",
+          "Elite Soldier",
+          "Spy",
+          "Courtesan",
+          "Merchant Baron",
+          "Royal Advisor"
+        ],
+        "ru": [
+          "Вор в Маске",
+          "Убийца Мастер",
+          "Адепт Культа",
+          "Элитный Солдат",
+          "Шпион",
+          "Куртизанка",
+          "Торговый Барон",
+          "Королевский Советник"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "No Riff-Raff",
+            "ru": "Никакой черни"
+          },
+          "description": {
+            "en": "Not just anybody can linger near the fountain. Anyone who does not appear to be socially notable, wealthy, or prestigious is ushered away by 1d6 Elite Soldiers when pointed out.",
+            "ru": "Возле фонтана нельзя задерживаться кому попало. Любого, кто не производит впечатления человека, заметного в обществе, богатого или влиятельного, выпроваживают 1d6 Элитных Солдат, стоит на него указать."
+          },
+          "prompt": {
+            "en": "Do the PCs wear disguises or take on false identities to fit in? Are they famous as-is?",
+            "ru": "Носят ли персонажи маскировку или принимают ложные личности, чтобы вписаться? Знамениты ли они и без того?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Largess Moves Mountains",
+            "ru": "Щедрость двигает горы"
+          },
+          "description": {
+            "en": "PCs can spend a bag full of gold to gain Advantage on a Presence Roll to influence others here by ensuring a promise of discreetly moved assets.",
+            "ru": "Персонажи могут потратить мешок золота, чтобы получить преимущество на Бросок Влияния, когда они пытаются повлиять здесь на других, гарантируя обещание скрытного перемещения средств."
+          },
+          "prompt": {
+            "en": "What is the nature of their bribe? What if the recipient feels it beneath their morals?",
+            "ru": "Какова природа их взятки? Что, если получатель сочтёт её ниже своей морали?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Take the Shot",
+            "ru": "Решающий выстрел"
+          },
+          "description": {
+            "en": "Spend a Fear to have a Master Assassin reveal themselves. They’re after the Royal Advisor, but an ironic case of mistaken identity puts them onto the party’s trail. Various crowd members pulled from Potential Adversaries join in on the plot, each with their own idea of what’s going on.",
+            "ru": "Потратьте Страх, чтобы Убийца Мастер раскрыл себя. Он охотится за Королевским Советником, но иронический случай ошибочного опознания пускает его по следу отряда. Различные люди из толпы, взятые из списка Потенциальных Противников, вступают в заговор, и у каждого своё представление о происходящем."
+          },
+          "prompt": {
+            "en": "Can the party defuse the assassination attempt with the truth? Will the advisor reward them for taking down the attack?",
+            "ru": "Сможет ли отряд предотвратить покушение, рассказав правду? Наградит ли их советник за то, что они остановили нападение?"
+          }
+        }
+      ],
+      "story_seeds": [
+        {
+          "title": {
+            "en": "Matter of a Little Investment",
+            "ru": "Дело о небольшой инвестиции"
+          },
+          "body": {
+            "en": "A character from a PC’s background is stuck: they need one last little investment to get their transportation business going. But more than just gold, it requires a degree of political backing. They ask the PC to see if they and their friends can convince a notable backer to pitch in some shares.",
+            "ru": "Персонаж из предыстории одного из персонажей застрял: ему нужна ещё одна небольшая инвестиция, чтобы запустить свой транспортный бизнес. Но нужно не только золото — требуется определённая политическая поддержка. Он просит персонажа выяснить, смогут ли они с друзьями убедить влиятельного покровителя вложить несколько долей."
+          },
+          "prompt": {
+            "en": "How trustworthy is this character, and how big is the investment? Is this legit or a scam? What potential rivals would try to pre-empt its launch?",
+            "ru": "Насколько этому человеку можно доверять и насколько велика инвестиция? Это честное предложение или обман? Какие потенциальные соперники попытались бы сорвать запуск?"
+          }
+        },
+        {
+          "title": {
+            "en": "Old Nemesis",
+            "ru": "Старый враг"
+          },
+          "body": {
+            "en": "A former foe of the party has asked to meet publicly. They have information that will greatly enhance their understanding of the present plotline, but they won’t meet them alone. It has to be below the clock tower, today, or they’re gone forever. The PCs get the feeling this old enemy’s being chased.",
+            "ru": "Бывший противник отряда попросил о публичной встрече. У него есть сведения, которые значительно улучшат понимание нынешней сюжетной линии, но наедине он встречаться не станет. Встреча должна состояться под часовой башней, сегодня, иначе он исчезнет навсегда. Персонажам кажется, что за старым врагом гонятся."
+          },
+          "prompt": {
+            "en": "What piece of information do they have that can change up the plot? Why are they offering it now? How’d they leave things with the PCs last time? Will assassins strike?",
+            "ru": "Какие сведения у него есть, способные изменить ход сюжета? Почему он предлагает их именно сейчас? Чем закончилась их прошлая встреча с персонажами? Не нанесут ли удар убийцы?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Resting Dagger"
     }
   ]
 }
