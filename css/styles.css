@@ -435,8 +435,13 @@ html { overflow-x: clip; }   /* the filter bar's glass runs edge to edge (100vw)
   pointer-events: none;
 }
 .ribbon-label svg { width: var(--icon-sm); height: var(--icon-sm); flex: none; }
-/* Two-word labels: a centred two-line block; .ribbon-label's align-items: center keeps the icon at its vertical middle. */
-.ribbon-lines { display: flex; flex-direction: column; align-items: center; text-align: center; line-height: 1.15; }
+/* Two-word labels: a two-line block whose MIDDLE sits where a one-line label's middle does. It takes one line of layout
+ * height and overflows it equally up and down (justify-content: center), so the bottom-anchored label keeps its axis and
+ * .ribbon-label's align-items: center keeps the icon on that same axis. */
+.ribbon-lines {
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  height: 1em; text-align: center; line-height: 1;   /* 1, not more: the lower line must clear the swallowtail's stitching */
+}
 /* ---- Fabric ribbon skin (the default; js/app.js sets data-ribbon-skin="fabric" on <html> unless ?ribbonSkin=css) ----
  * All four ribbons. It swaps the PAINT of .ribbon-fab and nothing else: the button's height transition,
  * sway/drop keyframes, transform origin, drop-shadow, clip-path swallow-tail, label and dim overlay are all the
