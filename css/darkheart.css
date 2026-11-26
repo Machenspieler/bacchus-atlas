@@ -214,7 +214,7 @@ body[data-route="darkheart"] .catalog-bar-wrap { display: none; }
 .dh-scene-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-2) var(--s-4); flex-wrap: wrap; min-width: 0; }
 .dh-scene-headtext { flex: 1 1 0; }
 .dh-scene-headtext { position: relative; display: grid; gap: var(--s-2); min-width: 0; }
-.dh-scene-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-2xl); line-height: var(--lh-2xl); letter-spacing: var(--tracking-display); color: var(--parchment); overflow-wrap: anywhere; }
+.dh-scene-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-xl); line-height: var(--lh-xl); letter-spacing: var(--tracking-display); color: var(--parchment); overflow-wrap: anywhere; }
 .dh-scene-meta { margin-top: calc(-1 * var(--s-1)); }
 .dh-scene-sub { margin: 0; display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; color: var(--parchment); font-size: var(--fs-sm); min-width: 0; }
 .dh-scene-env { font-family: var(--font-display); font-size: var(--fs-md); }
@@ -288,7 +288,6 @@ body[data-route="darkheart"] .catalog-bar-wrap { display: none; }
 
 /* ---------- Bastion: an intentional pause ---------- */
 .dh-bastion { display: grid; gap: var(--s-4); }
-.dh-bastion .dh-scene-title { font-size: var(--fs-xl); }
 .dh-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(var(--dh-tile-min), 1fr)); gap: var(--s-3); }
 .dh-tile { display: grid; gap: var(--s-1); align-content: start; padding: var(--s-3); border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--ink-raised); min-width: 0; }
 .dh-tile-num { font-size: var(--fs-xl); font-weight: 700; line-height: var(--lh-2xl); color: var(--hope-soft); }
@@ -435,7 +434,6 @@ details[open] > summary::before { transform: rotate(90deg); }
   .dh-status-actions .btn { white-space: normal; line-height: var(--lh-xl); min-height: var(--h-tap); padding-inline: var(--s-2); justify-content: center; text-align: center; }
   .dh-party { gap: var(--s-3); }
   .dh-card { --dh-pad: var(--s-3); }
-  .dh-scene-title { font-size: var(--fs-xl); }
   .dh-scene-summary { font-size: var(--fs-base); }
   .dh-rule-title { font-size: var(--fs-md); }
   .dh-npc { grid-template-columns: var(--dh-avatar-sm) minmax(0, 1fr); }
