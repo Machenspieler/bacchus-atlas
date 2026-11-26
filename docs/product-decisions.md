@@ -1911,3 +1911,13 @@ Where: `js/darkheart-view.js` (`renderStatus`, `mount`), `css/darkheart.css`, `c
 4. State: `quests: { heart, rescue, rescueStart, found }` in `dhcodex_darkheart` (`js/darkheart-expedition.js` `adjustQuest` / `setRescueStart`, sanitized in `js/safe-storage.js`). A save from before it migrates silently (the Dagger derived from the hexes already travelled, a new search rolled) and never raises the storage warning.
 
 Where: `js/darkheart-expedition.js`, `js/darkheart-view.js`, `js/safe-storage.js`, `css/darkheart.css`, `data/i18n.json`, `tests/darkheart-playable.test.js`.
+
+## PD-112: Darkheart idle hero picture, aligned hero counters, picture dice in the Wayfinder roll
+
+**Decision (owner, 2026-11-26).**
+
+1. Before any outcome is staged (new campaign, new traversal) the hero wears one picture drawn at random from the twelve outcome banners instead of the "Event illustration" placeholder. It is kept (typing a die never swaps it) until an outcome is staged; the next idle stretch draws again. Scenery only: `data-outcome` stays unset. View-only (`idleArtId` in `js/darkheart-view.js`), never stored.
+2. The hero counters' captions are centred over their stepper row; the "?" and the page title sit on the digits' row.
+3. The Wayfinder roll's three dice wear a picture instead of a caption (kept as sr-only text): Hope = amber d12, Fear = deep-indigo glittering d12 (the official dice set's colours; `img/ui/d12-hope.png`, `d12-fear.png`, recoloured from `d12-roll.png`), Modifier = the existing d6 (`img/journey2/dice/d6-3d.png`).
+
+Where: `js/darkheart-view.js`, `css/darkheart.css`, `img/ui/`, `tests/darkheart-art.test.js`.

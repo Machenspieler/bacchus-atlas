@@ -49,7 +49,7 @@ test('every promised file exists, banners at the promised widths, portraits squa
 
 test('the view reads the table only, keeps alt empty, reserves dimensions and never hard-codes image paths', () => {
   const view = read('js/darkheart-view.js');
-  assert.match(view, /DarkheartArt\.outcomeArt\(outcome\)/);
+  assert.match(view, /DarkheartArt\.outcomeArt\(outcome( \|\| idleArtId)?\)/);
   assert.match(view, /DarkheartArt\.portraitArt\(npc\.ancestry && npc\.ancestry\.id\)/);
   assert.doesNotMatch(view, /img\/darkheart-art/);
   assert.match(view, /alt="" width="\$\{art\.width\}" height="\$\{art\.height\}"/);

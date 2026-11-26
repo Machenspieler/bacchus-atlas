@@ -286,10 +286,14 @@ const DarkheartView = (function () {
     return `<p class="dh-changes-line"><span class="dh-changes-state is-${state}">${esc(t('dh_changes_' + state))}</span>${items.map(i => `<span>${i}</span>`).join('')}</p>`;
   }
 
+  /* The three dice wear their picture instead of a caption (the caption stays for screen readers): Hope = the gold d12, Fear = the
+   * crimson d12 (the game's own die colours), Modifier = the d6 the rules usually use. Decorative: the input is named by the sr-only text. */
+  const DIE_ICON = { hope: 'img/ui/d12-hope.png', fear: 'img/ui/d12-fear.png', modifier: 'img/journey2/dice/d6-3d.png' };
   function dieFields(s, disabled) {
+    const face = (k, label) => `<span class="dh-die-face dh-die-face--${k}"><img src="${DIE_ICON[k]}" alt="" width="40" height="40" draggable="false"><span class="sr-only">${esc(label)}</span></span>`;
     const dieField = (k, label) => `
-      <label class="dh-die" for="dh-die-${k}">
-        <span class="dh-field-label">${esc(label)}</span>
+      <label class="dh-die dh-die--${k}" for="dh-die-${k}">
+        ${face(k, label)}
         <input type="number" id="dh-die-${k}" class="dh-input" inputmode="numeric" min="1" max="12" step="1" data-dh-die="${k}"
                value="${s.dice[k] == null ? '' : s.dice[k]}"${disabled} aria-describedby="dh-roll-errors">
       </label>`;
@@ -297,7 +301,7 @@ const DarkheartView = (function () {
         ${dieField('hope', t('dh_hope_die'))}
         ${dieField('fear', t('dh_fear_die'))}
         <label class="dh-die dh-die--mod" for="dh-die-mod">
-          <span class="dh-field-label">${esc(t('dh_modifier'))}</span>
+          ${face('modifier', t('dh_modifier'))}
           <input type="number" id="dh-die-mod" class="dh-input" inputmode="numeric" min="${X.MOD_MIN}" max="${X.MOD_MAX}" step="1" data-dh-die="modifier"
                  value="${s.dice.modifier}"${disabled} aria-describedby="dh-roll-errors">
         </label>
@@ -556,7 +560,11 @@ const DarkheartView = (function () {
     if (outcome) hero.dataset.outcome = outcome; else delete hero.dataset.outcome;
     // The banner is derived from the same staged outcome (preview, arrival, Undo and reload all go through stageOutcome()); it is
     // only rebuilt when the picture itself changes, so typing a die never reloads or flashes it. No entry: the placeholder label.
-    const art = DarkheartArt.outcomeArt(outcome);
+    // No outcome yet (a new campaign, a new traversal): one picture drawn at random from the pool, kept until an outcome is staged
+    // so typing a die never swaps it; the next idle stretch draws again. It is scenery only — `data-outcome` stays unset.
+    if (outcome) idleArtId = null;
+    else if (!idleArtId) { const ids = Object.keys(DarkheartArt.OUTCOMES); idleArtId = ids[Math.floor(Math.random() * ids.length)]; }
+    const art = DarkheartArt.outcomeArt(outcome || idleArtId);
     const slot = hero.querySelector('.dh-hero-art');
     const id = art ? art.id : '';
     if (!slot || slot.dataset.art === id) return;
@@ -564,6 +572,7 @@ const DarkheartView = (function () {
     slot.classList.toggle('has-art', !!art);
     slot.innerHTML = art ? heroPictureHtml(art) : heroPlaceholderHtml();
   }
+  let idleArtId = null;
   const heroPlaceholderHtml = () => `<span class="dh-hero-label">${esc(t('dh_art_placeholder'))}</span>`;
   /** Decorative (the rule text beside it says everything): empty alt, real dimensions reserved, the crop's focal point per picture. */
   function heroPictureHtml(art) {
@@ -1166,6 +1175,7 @@ const DarkheartView = (function () {
     host = el;
     deps = dependencies;
     ui = freshUi();
+    idleArtId = null;
     mountToken += 1;
     host.innerHTML = `
       <div class="dh-page">
