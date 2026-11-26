@@ -154,6 +154,7 @@ body[data-route="darkheart"] .catalog-bar-wrap { display: none; }
 .dh-card[hidden] { display: none; }
 .dh-card--slim { padding-block: var(--s-3); }
 .dh-panel-title { display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; margin: 0 0 var(--s-3); font-family: var(--font-display); font-weight: 400; font-size: var(--fs-md); line-height: var(--lh-md); letter-spacing: var(--tracking-display); color: var(--parchment); }
+.dh-title-die { display: block; flex: none; width: var(--s-7); height: var(--s-7); object-fit: contain; }
 .dh-panel-title svg { width: var(--icon-md); height: var(--icon-md); color: var(--hope-soft); flex: none; }
 .dh-field { display: grid; gap: var(--s-2); }
 .dh-field + .dh-field { margin-top: var(--s-3); }
@@ -185,6 +186,8 @@ body[data-route="darkheart"] .catalog-bar-wrap { display: none; }
 .dh-die-face img { display: block; width: var(--s-8); height: var(--s-8); object-fit: contain; }
 .dh-die-face--modifier img { width: calc(var(--s-8) + var(--s-2)); height: calc(var(--s-8) + var(--s-2)); margin: calc(var(--s-1) * -1); }   /* the d6 picture has more padding than the d12s: same visual size */
 .dh-input { width: 100%; height: var(--h-tap); padding: 0 var(--s-3); box-sizing: border-box; background: var(--ink-raised); color: var(--parchment); border: 1px solid var(--line); border-radius: var(--r-sm); font-family: var(--font-mono); font-size: var(--fs-lg); text-align: center; }
+.dh-input { -moz-appearance: textfield; appearance: textfield; }   /* no spin buttons: they reserved room on the right and pushed the digits off-centre */
+.dh-input::-webkit-inner-spin-button, .dh-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .dh-input:hover:not(:disabled) { border-color: var(--line-strong); }
 .dh-input:focus { border-color: var(--hope); }
 .dh-input:disabled { opacity: var(--opacity-disabled); cursor: not-allowed; }
@@ -332,7 +335,8 @@ body[data-route="darkheart"] .catalog-bar-wrap { display: none; }
 .dh-empty, .dh-nomatch { display: grid; gap: var(--s-2); justify-items: start; padding: var(--s-4); border: 1px dashed var(--line); border-radius: var(--r-sm); color: var(--parchment-dim); }
 .dh-empty { justify-items: center; text-align: center; padding: var(--s-8) var(--s-4); }
 .dh-empty p { margin: 0; }
-.dh-empty-mark svg { width: var(--s-8); height: var(--s-8); color: var(--line-strong); }
+.dh-empty-mark { display: flex; align-items: center; justify-content: center; gap: var(--s-3); }
+.dh-empty-mark img { display: block; width: var(--s-9); height: var(--s-9); object-fit: contain; opacity: 0.85; }
 .dh-nomatch p { margin: 0; }
 .dh-nomatch { border-color: var(--line-strong); }
 

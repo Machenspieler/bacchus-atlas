@@ -662,7 +662,7 @@ const DarkheartView = (function () {
     if (!outcome) {
       if (s.phase === 'bastion') { setRegion('scene', bastionSceneHtml(s)); return; }
       const msg = s.phase === 'retreat' ? 'dh_scene_retreat' : 'dh_scene_waiting';
-      setRegion('scene', `<div class="dh-empty"><div class="dh-empty-mark" aria-hidden="true">${I.dice}</div><p>${esc(t(msg))}</p></div>`);
+      setRegion('scene', `<div class="dh-empty"><div class="dh-empty-mark" aria-hidden="true"><img src="${DIE_ICON.hope}" alt="" width="48" height="48" draggable="false"><img src="${DIE_ICON.fear}" alt="" width="48" height="48" draggable="false"><img src="${DIE_ICON.modifier}" alt="" width="48" height="48" draggable="false"></div><p>${esc(t(msg))}</p></div>`);
       return;
     }
     if (data.status === 'loading') { setRegion('scene', `${ruleBlock(outcome)}<p class="dh-hint" role="status">${esc(t('dh_scenes_loading'))}</p>`); return; }
@@ -1192,7 +1192,7 @@ const DarkheartView = (function () {
         <div class="dh-layout">
           <aside class="dh-side">
             <section class="dh-card dh-roll" aria-labelledby="dh-roll-h">
-              <h3 id="dh-roll-h" class="dh-panel-title">${I.dice}<span id="dh-roll-title">${esc(t('dh_wayfinder'))}</span></h3>
+              <h3 id="dh-roll-h" class="dh-panel-title"><img class="dh-title-die" src="${DIE_ICON.hope}" alt="" width="28" height="28" draggable="false"><span id="dh-roll-title">${esc(t('dh_wayfinder'))}</span></h3>
               <div id="dh-roll"></div>
             </section>
             <section id="dh-campaign" class="dh-card dh-campaign" aria-label="${esc(t('dh_campaign_label'))}"></section>

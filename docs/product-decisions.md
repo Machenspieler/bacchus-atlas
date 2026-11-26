@@ -1926,4 +1926,6 @@ Where: `js/darkheart-expedition.js`, `js/darkheart-view.js`, `js/safe-storage.js
 
 5. Trapped (FD 30): the roll panel says the party is trapped (`dh_roll_trapped`) instead of asking for dice that are disabled, and "Next traversal" is disabled; a rest that lowers no Forest Difficulty reads "unchanged", never "−0".
 
+6. The wireframe die is gone from the roll panel's title (the gold d12 instead) and from the empty scene state (the three dice, Hope / Fear / Modifier); the Fear d12 has no glitter (the sparkles read as stray blue dots at 40px); the die inputs hide their spin buttons so the digits are centred. The wireframe stays on the Next-traversal and Start-expedition buttons, where a coloured picture would fight the gold fill.
+
 Where: `js/darkheart-view.js`, `css/darkheart.css`, `data/i18n.json`, `img/ui/`, `tests/darkheart-art.test.js`.
