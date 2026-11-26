@@ -1093,3 +1093,17 @@ test('a manifest pointing at an unknown environment fails; an empty valid one pa
   assert.equal(errorsOf(ok).filter(d => d.file === 'data/darkheart-scenes.json').length, 0);
   assert.equal(ok.darkheartCoverage.pending, 1);
 });
+
+test('PD-108: the Darkheart neutral top-up needs at least six adversaries of every tier', () => {
+  const { validateDarkheartAffinity } = require('../scripts/validate-data.js');
+  const tiers = new Map();
+  const advs = {};
+  for (const tier of [1, 2, 3, 4]) for (let i = 0; i < 6; i++) { const id = `n${tier}-${i}`; tiers.set(id, tier); advs[id] = ['neutral']; }
+  const themes = { neutral: { name: { en: 'Neutral forest adversaries', ru: 'Нейтральные противники леса' }, related: [] } };
+  const run = adversaries => { const d = []; validateDarkheartAffinity({ schema: 1, themes, adversaries }, 'aff.json', d, new Set(tiers.keys()), tiers); return d.filter(x => x.severity === 'error'); };
+  assert.deepEqual(run(advs), []);
+  const short = Object.assign({}, advs); delete short['n4-0'];
+  const errs = run(short);
+  assert.equal(errs.length, 1);
+  assert.match(errs[0].message, /5 Tier 4 adversaries; at least 6/);
+});

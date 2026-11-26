@@ -118,9 +118,8 @@ test('different tiers and party sizes: budget is 3×PCs+2, never exceeded, alway
         assert.equal(r.battlePoints.spent, recompute(r).spent);
         for (const a of r.adversaries) {
           assert.ok(byId(a.id), 'id exists in the catalogue');
-          assert.ok(a.tier <= tier, 'never above the party tier');
-          assert.ok(a.tier >= tier - 1, 'never more than one tier below');
-          assert.equal(a.crossTier, a.tier < tier ? 'lower' : null);
+          assert.equal(a.tier, tier, 'only the party tier (PD-108)');
+          assert.equal(a.crossTier, null);
         }
         assert.ok(new Set(r.adversaries.map(a => a.id)).size === r.adversaries.length, 'no duplicate lines');
       }
@@ -169,14 +168,26 @@ test('environment-listed adversaries come first and are labelled as such', () =>
   assert.ok(r.reasoning.some(x => x.code === 'budget'));
 });
 
-test('a cross-tier pick is only ever one tier down, flagged, and carries the lower-tier adjustment', () => {
+test('PD-108: a lower-tier environment read at a higher party tier never recommends its own lower-tier list', () => {
   const r = run({ tier: 2, environmentId: 'gnarled-glen', seed: 'x' });
-  const lower = r.adversaries.filter(a => a.crossTier === 'lower');
-  assert.ok(lower.length > 0, 'a tier-1 environment dealt at tier 2 uses its own tier-1 list');
-  assert.ok(lower.every(a => a.tier === 1));
-  assert.ok(r.warnings.some(w => w.code === 'cross-tier-used'));
-  assert.equal(r.battlePoints.modifiers.find(m => m.id === 'lower-tier').applied, true);
-  assert.ok(r.reasoning.some(x => x.code === 'cross-tier'));
+  assert.ok(r.adversaries.every(a => a.tier === 2 && a.crossTier === null), r.adversaries.map(a => a.id + ':' + a.tier).join());
+  assert.ok(r.warnings.some(w => w.code === 'too-low-tier-excluded'), 'the excluded tier-1 list is reported');
+  assert.equal(r.battlePoints.modifiers.find(m => m.id === 'lower-tier').applied, false);
+  assert.equal(r.warnings.some(w => w.code === 'cross-tier-used'), false);
+});
+
+test('PD-108: a scene that wants adversaries offers at least six of the party tier, topped up from the neutral theme', () => {
+  const neutralAt = tier => Object.keys(affinity.adversaries).filter(id => affinity.adversaries[id].includes('neutral') && byId(id).tier === tier);
+  for (const tier of [1, 2, 3, 4]) assert.ok(neutralAt(tier).length >= 6, `tier ${tier} neutral pool`);
+  for (const tier of [1, 2, 3, 4]) {
+    const seen = new Set();
+    for (let k = 0; k < 30; k++) {
+      const r = run({ tier, environmentId: 'hunter-or-hunted', seed: 'n' + k });
+      assert.ok(r.adversaries.length > 0, `tier ${tier} has a roster`);
+      for (const a of r.adversaries) { assert.equal(a.tier, tier); seen.add(a.id); if (a.source === 'neutral') assert.match(a.reason.en, /neutral forest adversary/); }
+    }
+    assert.ok(seen.size >= 3, `tier ${tier}: New encounter has real alternatives (${[...seen]})`);
+  }
 });
 
 test('higher-tier adversaries are excluded and the exclusion is reported', () => {
@@ -381,7 +392,7 @@ test('the affinity layer is small, explicit, and every theme and id in it is rea
     assert.ok(Object.values(affinity.adversaries).some(list => list.includes(theme)), `theme ${theme} classifies nothing`);
     for (const r of affinity.themes[theme].related) assert.ok(affinity.themes[r], `${theme} -> ${r}`);
   }
-  assert.ok(Object.keys(affinity.themes).length <= 10 && Object.keys(affinity.adversaries).length <= 130, 'not a taxonomy of the bestiary');   // PD-104: 100 -> 130 for the humanoid `folk` theme (neutral meetings)
+  assert.ok(Object.keys(affinity.themes).length <= 10 && Object.keys(affinity.adversaries).length <= 150, 'not a taxonomy of the bestiary');   // PD-104: 100 -> 130 for the humanoid `folk` theme (neutral meetings); PD-108: 150 for the same-tier `neutral` top-up
 });
 
 /* ---------------- PD-099: scene/outcome consistency at the composition boundary ---------------- */
@@ -422,16 +433,18 @@ test('the landmark and resource outcomes of Gnarled Glen produce no hostile enco
 
 /* ---------------- PD-099: narrative coherence ---------------- */
 
-test('a wolf hunt is wolves: no bears, snakes or boars to spend the budget', () => {
+test('a wolf hunt is led by wolves; anything else is a flagged same-tier neutral (PD-108 top-up)', () => {
   for (const heroes of [3, 4, 5, 6]) for (const seed of ['a', 'b', 'c']) {
     const r = forScene('hunter-or-hunted-wolf-ground', { heroes, seed });
     assert.ok(r.adversaries.length > 0);
-    assert.ok(r.adversaries.every(a => a.id === 'dire-wolf'), `${heroes}/${seed}: ${r.adversaries.map(a => a.id)}`);
+    assert.ok(r.adversaries.some(a => a.id === 'dire-wolf'), `${heroes}/${seed}: the wolves are always there`);
+    assert.ok(r.adversaries.every(a => a.id === 'dire-wolf' || (a.source === 'neutral' && a.tier === 1)), `${heroes}/${seed}: ${r.adversaries.map(a => a.id)}`);
     assert.ok(r.battlePoints.spent <= r.battlePoints.available);
   }
   const big = forScene('hunter-or-hunted-wolf-ground', { heroes: 6 });
-  assert.equal(big.status, 'partial', 'wolves alone cannot honestly spend a six-hero budget');
-  assert.ok(big.warnings.some(w => w.code === 'insufficient-thematic-candidates'));
+  // PD-108: wolves alone could not spend a six-hero budget; the same-tier neutral top-up now can, and says so.
+  assert.ok(big.reasoning.some(x => x.code === 'neutral-top-up'));
+  assert.ok(big.battlePoints.spent <= big.battlePoints.available);
 });
 
 test('adversaries whose source material the fragment leaves out are not assumed to fit', () => {

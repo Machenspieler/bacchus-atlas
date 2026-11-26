@@ -26,7 +26,7 @@ only on the first visit to the page.
   the affinity file files under the scene's themes; (3) role fillers from the themes'
   declared `related` themes, only where combat is not optional. A scene with no theme
   suggests nobody (`no-encounter-theme`). The old name-matching theme table is gone.
-- **`data/darkheart-affinity.json`**: `{ themes: { id: { name{en,ru}, related[] } }, adversaries: { adversaryId: [theme] } }`,
+- **`data/darkheart-affinity.json`**: `{ themes: { id: { name{en,ru}, related[] } }, adversaries: { adversaryId: [theme] } }` (the `neutral` theme is the PD-108 top-up, at least six per tier, checked by `validate-data`),
   validated by `scripts/validate-data.js` (ids exist in `data/prep.json`, themes declared,
   `related` exists). Eight themes today: wolves, beasts, vermin, undead, sylvan, outlaws,
   demonic, underground.
@@ -186,7 +186,7 @@ const result = DarkheartEncounter.assembleEncounter({
 | --- | --- |
 | `status` | `complete`, `partial` (budget could not be filled with fitting adversaries, or locked ones exceed it), `empty` (combat expected, nothing fits), `none` (the outcome has no combat and nothing is locked), `invalid` (bad input; see `errors`). |
 | `combat` | The outcome's posture: `recommended`, `prepared`, `optional` or `none`. |
-| `adversaries[]` | `{ id, name{en,ru}, tier, role, quantity, source, locked, crossTier, unitCost, lineCost, reason{en,ru} }`, plus `minionGroups`/`groupSize` for Minions. `source` is `locked`, `environment`, `narrative` or `role-filler`. `crossTier` is `null` or `lower` (`higher` only for a locked one). |
+| `adversaries[]` | `{ id, name{en,ru}, tier, role, quantity, source, locked, crossTier, unitCost, lineCost, reason{en,ru} }`, plus `minionGroups`/`groupSize` for Minions. `source` is `locked`, `environment`, `narrative`, `role-filler` or `neutral` (PD-108). `crossTier` is `null` for every recommended line; `lower`/`higher` only for a locked one. |
 | `battlePoints` | `{ partySize, style, baseBudget, modifiers[], available, spent, remaining, overBudget, costLines }`. `modifiers` always lists `difficulty`, `lower-tier`, `multiple-solos`, `no-heavy-type` and `boosted-damage` with `{ id, value, applied }`; `boosted-damage` is never applied (the engine never boosts damage). |
 | `reasoning[]`, `warnings[]` | `{ code, text{en,ru}, severity?, id? }`. Warning codes: `no-environment-adversaries`, `higher-tier-excluded`, `too-low-tier-excluded`, `cross-tier-used`, `insufficient-thematic-candidates`, `variety-limits`, `nothing-fits`, `no-candidates`, `over-budget`, `locked-missing`, `locked-duplicate`, `locked-higher-tier`, `locked-no-combat`, `unknown-fragment-feature`, `party-size-clamped`. |
 | `builder` | `{ entries: [{ id, name, quantity }], unsupported: [id] }`, the "Open in Encounter Builder" payload (below). |
@@ -225,10 +225,18 @@ on a fractional Minion cost. Treat the total as guidance, not a guarantee.
    the scene has none, its terrain's), used only to complement roles. Never used
    for `optional` or `prepared` outcomes, and never unrelated enemies.
 
-**Tiers:** same tier is preferred. One tier below is allowed (priorities 1 and 2),
-flagged `crossTier: 'lower'` and covered by the Battle Guide's lower-tier
-adjustment. Above the party's tier, or more than one tier below, is excluded
-and reported; a *locked* adversary is always kept (warned when above-tier).
+4. **Neutral top-up (PD-108)** — when a scene that wants adversaries (it has a
+   theme, or a source list it shows) offers fewer than **six** candidates of the
+   party's tier, the pool is topped up from the affinity file's curated `neutral`
+   theme of the same tier, in a seed-shuffled order, so "New encounter" has real
+   alternatives. Lowest weight, `source: 'neutral'`, reason "added so you have a
+   choice", and a `neutral-top-up` reasoning line. A scene that deliberately
+   shows none stays empty. `neutral` is never a Master's theme.
+
+**Tiers (PD-108):** only the party's own tier is recommended — an adversary used
+outside the tier it was written for plays badly. Above or below is excluded and
+reported (`higher-tier-excluded`, `too-low-tier-excluded`); a *locked* adversary
+is always kept (flagged `crossTier`, with the lower-tier adjustment when below).
 No stat block is ever created or rescaled.
 
 **Shape:** at most four distinct adversaries (five for a recommended fight with

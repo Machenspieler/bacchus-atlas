@@ -855,7 +855,9 @@ const DarkheartView = (function () {
     const supported = r.builder.entries;
     const names = supported.map(e => e.name);
     const url = names.length ? deps.fcgUrl(bi(cur.scene.outcomes.find(o => o.outcome === outcome).framing.title), names) : null;
-    const whyLines = r.adversaries.map(a => `<li><strong>${esc(advName(a))}:</strong> ${esc(bi(a.reason))}</li>`)
+    // The engine's reason already opens with the adversary's name; the bold name is the view's, so it is not said twice.
+    const reasonOf = a => { const text = bi(a.reason), lead = advName(a) + ': '; return text.startsWith(lead) ? text.slice(lead.length) : text; };
+    const whyLines = r.adversaries.map(a => `<li><strong>${esc(advName(a))}:</strong> ${esc(reasonOf(a))}</li>`)
       .concat(r.reasoning.filter(x => x.code === 'budget' || x.code === 'minion-group').map(x => `<li>${esc(bi(x.text))}</li>`))
       .concat(quiet.map(w => `<li>${esc(bi(w.text))}</li>`)).join('');
     const entryWiring = DarkheartComposer.sceneEntry(cur.scene, outcome).encounter;
@@ -867,7 +869,7 @@ const DarkheartView = (function () {
       <div class="dh-theme" role="group" aria-label="${esc(t('dh_gm_theme'))}">
         <span class="dh-field-label">${esc(t('dh_gm_theme'))}</span>
         <p class="dh-hint dh-hint--tight">${esc(t(chosen ? 'dh_gm_theme_chosen' : 'dh_gm_theme_hint'))}</p>
-        <div class="dh-theme-chips">${Object.keys(affinityThemes).map(id => `<button type="button" class="dh-chip-btn${chosen === id ? ' is-on' : ''}" aria-pressed="${chosen === id}" data-dh-act="gm-theme" data-dh-value="${chosen === id ? '' : esc(id)}">${esc(bi(affinityThemes[id].name))}</button>`).join('')}</div>
+        <div class="dh-theme-chips">${Object.keys(affinityThemes).filter(id => id !== 'neutral').map(id => `<button type="button" class="dh-chip-btn${chosen === id ? ' is-on' : ''}" aria-pressed="${chosen === id}" data-dh-act="gm-theme" data-dh-value="${chosen === id ? '' : esc(id)}">${esc(bi(affinityThemes[id].name))}</button>`).join('')}</div>
       </div>` : '';
     const body = `
       <div class="dh-enc-bar">

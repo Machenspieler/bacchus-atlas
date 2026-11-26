@@ -955,7 +955,7 @@ const PLACEHOLDER_TEXT_RE = /\b(TODO|TBD|UNKNOWN|TRANSLATE)\b/i;
 
 function validatePrep(data, file, diagnostics, rootPath, validItemIds) {
   const reporter = createReporter(file, diagnostics);
-  const facts = { adversaryIds: new Set() };
+  const facts = { adversaryIds: new Set(), adversaryTiers: new Map() };
   if (!isPlainObject(data)) { reporter.error('$', `Top-level value must be an object, got ${describeType(data)}.`); return facts; }
   checkDangerousKeys(data, '$', reporter);
 
@@ -987,6 +987,7 @@ function validatePrep(data, file, diagnostics, rootPath, validItemIds) {
         idLabel = id;
       } else {
         facts.adversaryIds.add(id);
+        facts.adversaryTiers.set(id, adv.tier);
         idLabel = id;
       }
 
@@ -1457,7 +1458,7 @@ function validateDarkheartSuitability(data, file, diagnostics, environments, aff
 /** The small adversary-theme classification the Darkheart encounter engine reads
  * (PD-099). Every adversary id must exist in the Prep catalogue and every theme
  * must be declared; unknown keys are errors. Returns the declared theme ids. */
-function validateDarkheartAffinity(data, file, diagnostics, adversaryIds) {
+function validateDarkheartAffinity(data, file, diagnostics, adversaryIds, adversaryTiers) {
   const err = (p, message, id) => diagnostics.push({ severity: 'error', file, path: p, message, id: id == null ? null : String(id) });
   if (!data || typeof data !== 'object' || Array.isArray(data)) { err('$', 'Affinity file must be an object.'); return []; }
   for (const k of Object.keys(data)) if (!['_note', 'schema', 'themes', 'adversaries'].includes(k)) err(`$.${k}`, `Unknown key "${k}".`);
@@ -1487,8 +1488,16 @@ function validateDarkheartAffinity(data, file, diagnostics, adversaryIds) {
       });
     }
   }
+  /* PD-108: the neutral top-up must always be able to give the Master six same-tier candidates. */
+  if (themes.neutral && adversaryTiers && adversaryTiers.size) {
+    for (const tier of [1, 2, 3, 4]) {
+      const n = Object.entries(advs).filter(([advId, list]) => Array.isArray(list) && list.includes('neutral') && adversaryTiers.get(advId) === tier).length;
+      if (n < DARKHEART_MIN_POOL) err('$.adversaries', `The neutral theme has ${n} Tier ${tier} adversaries; at least ${DARKHEART_MIN_POOL} are needed (PD-108).`, `tier-${tier}`);
+    }
+  }
   return ids;
 }
+const DARKHEART_MIN_POOL = 6;   // js/darkheart-encounter.js MIN_POOL
 
 /* ---------------- orchestration ---------------- */
 
@@ -1538,7 +1547,7 @@ function validateRepositoryData(rootPath) {
     : { itemIds: new Set(), usedKinds: new Set(), usedSrcs: new Set() };
   const prepFacts = loaded.prep !== null
     ? validatePrep(loaded.prep, FILES.prep, diagnostics, rootPath, itemFacts.itemIds)
-    : { adversaryIds: new Set() };
+    : { adversaryIds: new Set(), adversaryTiers: new Map() };
   const journeyFacts = loaded.journey !== null
     ? validateJourney(loaded.journey, FILES.journey, diagnostics)
     : { usedBiomes: new Set() };
@@ -1552,7 +1561,7 @@ function validateRepositoryData(rootPath) {
     let affinityThemes;
     if (fs.existsSync(path.join(rootPath, DARKHEART_AFFINITY_FILE))) {
       const affinity = readJsonFile(path.join(rootPath, DARKHEART_AFFINITY_FILE), DARKHEART_AFFINITY_FILE, diagnostics);
-      if (affinity !== null) affinityThemes = validateDarkheartAffinity(affinity, DARKHEART_AFFINITY_FILE, diagnostics, prepFacts.adversaryIds);
+      if (affinity !== null) affinityThemes = validateDarkheartAffinity(affinity, DARKHEART_AFFINITY_FILE, diagnostics, prepFacts.adversaryIds, prepFacts.adversaryTiers);
     }
     if (darkheart !== null) darkheartCoverage = validateDarkheartScenes(darkheart, DARKHEART_FILE, diagnostics, rootPath, envList, affinityThemes);
     if (fs.existsSync(path.join(rootPath, DARKHEART_SUITABILITY_FILE))) {

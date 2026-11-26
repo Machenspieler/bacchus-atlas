@@ -80,7 +80,13 @@
   var MAX_MINION_GROUPS = 2;
   var BUDGET_SLACK = 1; // a composition within this much of the budget counts as filled
 
-  var SOURCE_WEIGHT = { locked: 100, environment: 10, narrative: 5, 'role-filler': 2 };
+  var SOURCE_WEIGHT = { locked: 100, environment: 10, narrative: 5, 'role-filler': 2, neutral: 1 };
+
+  /* The Master's choice (PD-108): a scene that wants adversaries offers at least this many distinct candidates of the
+   * party's own tier; when its themes and source list give fewer, the pool is topped up from the affinity table's
+   * curated `neutral` theme of the same tier (adversaries at home in any part of the forest). */
+  var MIN_POOL = 6;
+  var NEUTRAL_THEME = 'neutral';
 
   /* ---------------- bilingual text ---------------- */
 
@@ -102,7 +108,9 @@
     'minion-group': function (p) { return { en: p.name + ': taken as ' + p.groups + ' full Minion group(s) of ' + p.size + ' (a group equal to the party size costs 1).', ru: p.nameRu + ': ' + p.groups + ' полная группа приспешников по ' + p.size + ' (группа, равная размеру отряда, стоит 1).' }; },
     'no-environment-adversaries': function () { return { en: 'This environment lists no Potential Adversaries that resolve to the catalogue.', ru: 'В этом окружении нет возможных противников, которые нашлись бы в каталоге.' }; },
     'higher-tier-excluded': function (p) { return { en: 'Left out because they are above the party’s tier: ' + p.names + '.', ru: 'Не включены, так как их ранг выше ранга отряда: ' + p.names + '.' }; },
-    'too-low-tier-excluded': function (p) { return { en: 'Left out because they are more than one tier below the party: ' + p.names + '.', ru: 'Не включены, так как их ранг ниже ранга отряда больше чем на единицу: ' + p.names + '.' }; },
+    'too-low-tier-excluded': function (p) { return { en: 'Left out because they are below the party’s tier: ' + p.names + '.', ru: 'Не включены, так как их ранг ниже ранга отряда: ' + p.names + '.' }; },
+    'pick-neutral': function (p) { return { en: p.name + ': a neutral forest adversary of the party’s tier, added so you have a choice.', ru: p.nameRu + ': нейтральный противник леса того же ранга, что и отряд, добавлен для выбора.' }; },
+    'neutral-top-up': function (p) { return { en: 'Only ' + p.found + ' fitting adversaries of this tier; ' + p.added + ' neutral forest adversaries of the same tier were added to the choice.', ru: 'Подходящих противников этого ранга только ' + p.found + '; для выбора добавлено ещё ' + p.added + ' нейтральных противников леса того же ранга.' }; },
     'insufficient-thematic-candidates': function (p) { return { en: 'Not enough fitting adversaries to use the whole budget (' + p.remaining + ' Battle Points left); a partial recommendation is returned instead of unrelated filler.', ru: 'Подходящих противников не хватает, чтобы потратить весь бюджет (осталось ' + p.remaining + ' очков боя); вместо посторонних «затычек» возвращён неполный состав.' }; },
     'variety-limits': function (p) { return { en: p.remaining + ' Battle Points are left unspent: the variety limits (few distinct adversaries, no large repeated groups) were reached before the budget. Add more only if you want a bigger fight.', ru: 'Неизведёнными остались ' + p.remaining + ' очков боя: достигнуты ограничения разнообразия (немного разных противников, без больших одинаковых групп). Добавляйте ещё, только если хотите более крупный бой.' }; },
     'no-encounter-theme': function () { return { en: 'This scene names no adversary theme, so none is suggested; the danger is the scene itself.', ru: 'У этой сцены нет темы противников, поэтому никто не предложен: опасность — сама сцена.' }; },
@@ -210,11 +218,10 @@
     return found;
   }
 
-  /** Tier rules: same tier is preferred; one tier below is supported by the
-   * Battle Guide's own lower-tier adjustment; above the party is excluded. */
+  /** Tier rule (PD-108, owner: an adversary used outside the tier it was written for plays badly): only the party's own
+   * tier is ever recommended. Above or below is excluded; only the Master's lock can bring one in (then flagged). */
   function tierRelation(advTier, partyTier) {
     if (advTier === partyTier) return 'same';
-    if (advTier === partyTier - 1) return 'lower';
     if (advTier > partyTier) return 'higher';
     return 'too-low';
   }
@@ -287,7 +294,6 @@
       var rel = tierRelation(adv.tier, tier);
       if (rel === 'higher') { higher.push(nameOf(adv, 'en')); return; }
       if (rel === 'too-low') { tooLow.push(nameOf(adv, 'en')); return; }
-      if (source === 'role-filler' && rel !== 'same') return; // fillers are same tier only
       pool.set(id, { adv: adv, source: source, themes: themes || [], rel: rel });
     }
 
@@ -323,6 +329,20 @@
         Object.keys(c.affinity.adversaries).forEach(function (id) {
           if (matches(id, related)) consider(id, 'role-filler', themeListOf(id).filter(function (t) { return related.indexOf(t) !== -1; }));
         });
+      }
+      // 4. The Master's choice (PD-108): a scene that wants adversaries never offers fewer than MIN_POOL of the party's tier.
+      //    The curated neutral theme of the same tier tops it up, in a seeded order, so "New encounter" can show others.
+      var wantsAdversaries = themes.length > 0 || firstPick.length > 0;   // a scene that deliberately shows none ("the danger is the scene itself") stays empty
+      if (wantsAdversaries && pool.size < MIN_POOL) {
+        var found = pool.size;
+        var neutral = Object.keys(c.affinity.adversaries).filter(function (id) {
+          var a = c.adversaryById.get(id);
+          return a && a.tier === tier && !pool.has(id) && !seenLocked.has(id) && themeListOf(id).indexOf(NEUTRAL_THEME) !== -1;
+        }).sort();
+        var order = makeRng(String(inp.seed) + '|neutral');
+        for (var i = neutral.length - 1; i > 0; i--) { var j = Math.floor(order() * (i + 1)); var tmp = neutral[i]; neutral[i] = neutral[j]; neutral[j] = tmp; }
+        neutral.slice(0, MIN_POOL - found).forEach(function (id) { consider(id, 'neutral', [NEUTRAL_THEME]); });
+        if (pool.size > found) reasoning.push(note('neutral-top-up', { found: found, added: pool.size - found }));
       }
       if (!pool.size && !themes.length && !firstPick.length) warnings.push(note('no-encounter-theme', {}, { severity: 'info' }));
       if (higher.length) warnings.push(note('higher-tier-excluded', { names: higher.slice(0, 6).join(', ') }, { severity: 'info' }));
@@ -366,7 +386,7 @@
           if (lines.some(function (l) { return l.id === cand.adv.id; })) return;
           var isMinion = cand.adv.type === 'minion';
           var next = lines.concat([{ id: cand.adv.id, qty: isMinion ? 0 : 1, minionGroups: isMinion ? 1 : 0, source: cand.source, themes: cand.themes, rel: cand.rel }]);
-          options.push({ lines: next, weight: SOURCE_WEIGHT[cand.source] + (roles.has(cand.adv.type) ? -3 : 2) + (cand.rel === 'lower' ? -1.5 : 0) });
+          options.push({ lines: next, weight: SOURCE_WEIGHT[cand.source] + (roles.has(cand.adv.type) ? -3 : 2) });
         });
         lines.forEach(function (l, idx) {
           if (l.locked) return;
@@ -429,7 +449,7 @@
       };
       if (adv.type === 'minion') { line.minionGroups = l.minionGroups; line.groupSize = pcs; }
       var p = { name: line.name.en, nameRu: line.name.ru, role: adv.type, themes: (l.themes || []).join(', ') };
-      line.reason = say(l.source === 'locked' ? 'pick-locked' : l.source === 'environment' ? 'pick-environment' : l.source === 'narrative' ? (gmTheme ? 'pick-gm-theme' : 'pick-narrative') : 'pick-filler', p);
+      line.reason = say(l.source === 'locked' ? 'pick-locked' : l.source === 'environment' ? 'pick-environment' : l.source === 'narrative' ? (gmTheme ? 'pick-gm-theme' : 'pick-narrative') : l.source === 'neutral' ? 'pick-neutral' : 'pick-filler', p);
       return line;
     });
     adversaries.forEach(function (a) {

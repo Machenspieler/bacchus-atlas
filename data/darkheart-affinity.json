@@ -1,5 +1,5 @@
 {
-  "_note": "Darkheart adversary affinity (PD-099): a small, explicit, reviewable classification of the catalogue adversaries the Darkheart pilot can use, into a handful of themes (PD-104 added `folk`: humanoid and socially interactive groups, the preferred neutral encounter). A scene's `encounter.themes` (data/darkheart-scenes.json) says which themes belong to it; an adversary no theme lists is never recommended on its own. Not a taxonomy of the whole bestiary and never read for anything else. `related` themes are allowed only as role fillers. scripts/validate-data.js checks every id against data/prep.json.",
+  "_note": "Darkheart adversary affinity (PD-099): a small, explicit, reviewable classification of the catalogue adversaries the Darkheart pilot can use, into a handful of themes (PD-104 added `folk`: humanoid and socially interactive groups, the preferred neutral encounter). A scene's `encounter.themes` (data/darkheart-scenes.json) says which themes belong to it; an adversary no theme lists is never recommended on its own. Not a taxonomy of the whole bestiary and never read for anything else. `related` themes are allowed only as role fillers. scripts/validate-data.js checks every id against data/prep.json. PD-108: `neutral` is not a scene theme but the curated top-up — adversaries at home in any part of the forest, at least six per tier — that the engine adds, at the party's own tier only, when a scene's own candidates are fewer than six; it is never offered as a Master's theme.",
   "schema": 1,
   "themes": {
     "wolves": {
@@ -73,6 +73,13 @@
         "ru": "Путники, дозоры и местные жители"
       },
       "related": []
+    },
+    "neutral": {
+      "name": {
+        "en": "Neutral forest adversaries",
+        "ru": "Нейтральные противники леса"
+      },
+      "related": []
     }
   },
   "adversaries": {
@@ -94,8 +101,12 @@
     "banshee": [
       "undead"
     ],
+    "basilisk": [
+      "neutral"
+    ],
     "bear": [
-      "beasts"
+      "beasts",
+      "neutral"
     ],
     "bladed-guard": [
       "folk"
@@ -115,6 +126,12 @@
     "chaos-skull": [
       "demonic"
     ],
+    "chicken-foot-hut": [
+      "neutral"
+    ],
+    "chimera": [
+      "neutral"
+    ],
     "common-ruffian": [
       "outlaws"
     ],
@@ -126,6 +143,9 @@
     ],
     "crimson-lepus": [
       "beasts"
+    ],
+    "cryptimoth": [
+      "neutral"
     ],
     "darkweave-crawler": [
       "vermin"
@@ -155,14 +175,19 @@
       "beasts"
     ],
     "dire-pangolati": [
-      "beasts"
+      "beasts",
+      "neutral"
     ],
     "dire-wolf": [
       "wolves",
-      "beasts"
+      "beasts",
+      "neutral"
     ],
     "doppelhound": [
       "demonic"
+    ],
+    "drake": [
+      "neutral"
     ],
     "dryad": [
       "sylvan"
@@ -186,7 +211,8 @@
       "beasts"
     ],
     "fowlbear": [
-      "beasts"
+      "beasts",
+      "neutral"
     ],
     "fungispunj-sporeling": [
       "sylvan"
@@ -201,10 +227,12 @@
       "folk"
     ],
     "giant-eagle": [
-      "beasts"
+      "beasts",
+      "neutral"
     ],
     "giant-mosquitoes": [
-      "vermin"
+      "vermin",
+      "neutral"
     ],
     "giant-rat": [
       "vermin"
@@ -213,13 +241,33 @@
       "vermin"
     ],
     "glass-snake": [
-      "beasts"
+      "beasts",
+      "neutral"
+    ],
+    "greater-earth-elemental": [
+      "neutral"
     ],
     "green-ooze": [
       "underground"
     ],
+    "griffin": [
+      "neutral"
+    ],
+    "harbinger-of-death": [
+      "neutral"
+    ],
+    "harbinger-of-famine": [
+      "neutral"
+    ],
+    "harbinger-of-pestilence": [
+      "neutral"
+    ],
+    "harbinger-of-war": [
+      "neutral"
+    ],
     "harpy": [
-      "beasts"
+      "beasts",
+      "neutral"
     ],
     "harrier": [
       "outlaws"
@@ -230,8 +278,12 @@
     "head-vampire": [
       "undead"
     ],
+    "huge-green-ooze": [
+      "neutral"
+    ],
     "jack-o-lantern": [
-      "sylvan"
+      "sylvan",
+      "neutral"
     ],
     "jagged-knife-bandit": [
       "outlaws"
@@ -257,6 +309,12 @@
     "knight-of-the-realm": [
       "folk"
     ],
+    "lamplight-beguiler": [
+      "neutral"
+    ],
+    "manticore": [
+      "neutral"
+    ],
     "masked-thief": [
       "outlaws"
     ],
@@ -278,14 +336,21 @@
     "mortal-hunter": [
       "folk"
     ],
+    "mountain-troll": [
+      "neutral"
+    ],
     "night-children": [
       "undead"
     ],
     "oak-treant": [
       "sylvan"
     ],
+    "owl-witch": [
+      "neutral"
+    ],
     "panther": [
-      "beasts"
+      "beasts",
+      "neutral"
     ],
     "perfected-zombie": [
       "undead"
@@ -299,20 +364,32 @@
     "poltergeist": [
       "undead"
     ],
+    "ravenous-mockery": [
+      "neutral"
+    ],
     "red-ooze": [
       "underground"
     ],
     "rotted-zombie": [
       "undead"
     ],
+    "ruby-dragon": [
+      "neutral"
+    ],
     "rust-eater": [
       "underground"
+    ],
+    "scarecrow": [
+      "neutral"
     ],
     "secret-keeper": [
       "folk"
     ],
     "sellsword": [
       "outlaws"
+    ],
+    "severed-shadow": [
+      "neutral"
     ],
     "shambling-zombie": [
       "undead"
@@ -375,6 +452,9 @@
     "treant-sapling": [
       "sylvan"
     ],
+    "unicorn": [
+      "neutral"
+    ],
     "vampire": [
       "undead"
     ],
@@ -394,7 +474,14 @@
       "undead"
     ],
     "will-o-the-wisps": [
-      "sylvan"
+      "sylvan",
+      "neutral"
+    ],
+    "wyrmlings": [
+      "neutral"
+    ],
+    "wyvern": [
+      "neutral"
     ],
     "young-dryad": [
       "sylvan"

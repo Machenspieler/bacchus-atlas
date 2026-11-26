@@ -752,13 +752,14 @@ test('a scene with no theme offers the Master an explicit theme; nothing is chos
   assert.deepEqual(Composer.encounterFor(base).adversaries, [], 'no theme, no suggestions');
   const chosen = Composer.encounterFor(Object.assign({ gmTheme: 'undead' }, base));
   assert.ok(chosen.adversaries.length > 0);
-  assert.ok(chosen.adversaries.every(a => (affinity.adversaries[a.id] || []).includes('undead')), 'only the chosen theme');
-  assert.ok(chosen.adversaries.every(a => /chose/.test(a.reason.en)), 'the reason says the Master chose it');
+  const ownTheme = a => (affinity.adversaries[a.id] || []).includes('undead');
+  assert.ok(chosen.adversaries.some(ownTheme), 'the chosen theme leads');
+  assert.ok(chosen.adversaries.every(a => ownTheme(a) ? /chose/.test(a.reason.en) : a.source === 'neutral'), 'the chosen theme, plus flagged same-tier neutrals (PD-108)');
   assert.equal(chosen.combat, 'optional', 'it never turns a hazard into a forced fight');
   // a scene that names a theme keeps it
   const wolves = scenes.find(s => s.id === 'hunter-or-hunted-wolf-ground');
   const r = Composer.encounterFor({ scene: wolves, outcome: 'creature-fail-fear', tier: 1, heroes: 4, difficulty: 'standard', seed: 'q', gmTheme: 'undead', ctx: encCtx });
-  assert.ok(r.adversaries.every(a => a.id === 'dire-wolf'));
+  assert.ok(r.adversaries.some(a => a.id === 'dire-wolf') && r.adversaries.every(a => a.id === 'dire-wolf' || a.source === 'neutral'));
   // noncombat outcomes stay noncombat, theme or not
   const camp = scenes.find(s => s.id === 'fey-lands-ley-line');
   const none = Composer.encounterFor({ scene: camp, outcome: 'landmark-success-hope', tier: 3, heroes: 4, difficulty: 'standard', seed: 'q', gmTheme: 'undead', ctx: encCtx });
