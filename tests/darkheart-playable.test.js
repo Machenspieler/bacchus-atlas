@@ -890,3 +890,62 @@ test('QA-009: a damaged save adopted from another tab is repaired with the same 
   assert.equal(r.changed, true, 'a clamp is a recovery, never silent');
   assert.deepEqual([r.value.fd, r.value.tier, r.value.heroes, r.value.trapped], [30, 4, 8, true]);
 });
+
+/* ---------------- PD-111: the Quest Board (the book, page 2) ---------------- */
+
+test('PD-111: Dagger in the Heart counts down 20 -> 0 by hex-to-hex travel; the first hex does not count', () => {
+  const arrive = (st, h, f) => X.nextTraversal(X.confirmArrival(X.setDice(st, { hope: h, fear: f, modifier: 20 }).state, {}).state).state;
+  let s = X.defaults();
+  assert.equal(s.quests.heart, 20);
+  s = arrive(s, 3, 7);
+  assert.equal(s.hexes, 1); assert.equal(s.quests.heart, 20, 'entering the forest is not travel between hexes');
+  s = arrive(s, 3, 8);
+  assert.equal(s.quests.heart, 19);
+  for (let i = 0; i < 30; i++) s = X.adjustFd(arrive(s, 3, 8), -5).state;
+  assert.equal(s.quests.heart, 0, 'never below 0');
+  assert.equal(X.adjustQuest(s, 'heart', -1).ok, false);
+});
+
+test('PD-111: a clue moves a countdown by the Master; Search and Rescue starts on 1d6 and finds 1d4 Wallwatchers at 0', () => {
+  let s = X.defaults();
+  assert.equal(s.quests.rescue, null);
+  assert.equal(X.adjustQuest(s, 'rescue', -1, { found: 2 }).reason, 'not-rolled');
+  s = X.setRescueStart(s, 2).state;
+  assert.deepEqual([s.quests.rescue, s.quests.rescueStart, s.undo.length], [2, 2, 0], 'the 1d6 is not a campaign action');
+  assert.equal(X.setRescueStart(s, 5).ok, false, 'rolled once per search');
+  s = X.adjustQuest(s, 'rescue', -1).state;
+  assert.equal(s.quests.rescue, 1);
+  assert.equal(X.adjustQuest(s, 'rescue', -1).reason, 'need-found-roll');
+  s = X.adjustQuest(s, 'rescue', -1, { found: 3 }).state;
+  assert.deepEqual([s.quests.rescue, s.quests.found], [0, 3]);
+  assert.equal(X.undo(s).state.quests.rescue, 1, 'a clue is undoable');
+  assert.equal(X.adjustQuest(s, 'rescue', 1).state.quests.found, null);
+  const h = X.adjustQuest(X.defaults(), 'heart', -1).state;
+  assert.equal(h.quests.heart, 19); assert.equal(h.undo.length, 1);
+  assert.equal(X.adjustQuest(X.defaults(), 'heart', 1).ok, false, 'never above 20');
+});
+
+test('PD-111: returning to Bastion loses both quests; a new expedition and a new campaign start them fresh', () => {
+  let s = X.setRescueStart(X.defaults(), 4).state;
+  s = X.nextTraversal(X.confirmArrival(X.setDice(s, { hope: 3, fear: 7, modifier: 20 }).state, {}).state).state;
+  s = X.nextTraversal(X.confirmArrival(X.setDice(s, { hope: 3, fear: 8, modifier: 20 }).state, {}).state).state;
+  s = X.adjustQuest(s, 'rescue', -1).state;
+  assert.deepEqual([s.quests.heart, s.quests.rescue], [19, 3]);
+  const home = X.completeRetreat(X.setRetreatDanger(X.beginRetreat(s).state, false).state).state;
+  assert.equal(home.phase, 'bastion');
+  assert.deepEqual(home.quests, X.defaultQuests());
+  assert.deepEqual(X.startExpedition(s).state.quests, X.defaultQuests());
+  assert.deepEqual(X.newCampaign(s).state.quests, X.defaultQuests());
+});
+
+test('PD-111: a save from before the Quest Board migrates silently; a bad quest value is repaired', () => {
+  const S = require('../js/safe-storage.js');
+  const old = Object.assign(X.defaults(), { hexes: 5, phase: 'roll' }); delete old.quests;
+  const r = S.validators.darkheart(JSON.parse(JSON.stringify(old)));
+  assert.equal(r.changed, false, 'not a repair: no "damaged data" warning');
+  assert.equal(r.migrated, true);
+  assert.deepEqual(r.value.quests, { heart: 16, rescue: null, rescueStart: null, found: null }, 'four hex-to-hex moves already made');
+  const bad = S.validators.darkheart(Object.assign(X.defaults(), { quests: { heart: 99, rescue: 9, rescueStart: 9, found: 9 } }));
+  assert.equal(bad.changed, true);
+  assert.deepEqual(bad.value.quests, { heart: 20, rescue: 6, rescueStart: 6, found: null });
+});

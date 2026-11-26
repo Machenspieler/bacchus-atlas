@@ -1898,3 +1898,16 @@ Measured over all 23,148 scene × tier × party × seed compositions: no recomme
 5. Found while checking it: from 641px to 800px five labelled ribbons, the mark and the utilities (~776px) did not fit and pushed the language switch past the right edge; the ribbons there now keep only their icons, as on a phone (design.md "Responsive breakpoints").
 
 Where: `js/darkheart-view.js` (`renderStatus`, `mount`), `css/darkheart.css`, `css/styles.css`, `data/i18n.json` (`dh_campaign_label`).
+
+## PD-111: The Quest Board's two countdowns are tracked on the Darkheart page
+
+**Decision (owner, 2026-11-26; rules from the book, "Darkheart Hexcrawl" v1.1, page 2 "The Quest Board" and page 4 "Resources are key").**
+
+1. Two more counters sit on the hero beside Forest Difficulty and GM Fear (teal: countdowns; gold once finished):
+   - **Dagger in the Heart** (label "Dark Heart" / «Тёмное Сердце», countdown 20): −1 each time the party travels from one hex to the next — any arrival after the expedition's first hex, a failed retreat into an adjacent hex included (the first hex is entering the forest, not travel between hexes). A clue may take it down by 1 (the Master's −). At 0: "the party has located the Dark Heart".
+   - **Search and Rescue** (label "Wallwatchers" / «Стражи стены», countdown **1d6**, as the book says — not a fixed 6): rolled automatically when the search begins (not a campaign action), corrected with − / +. Only the Master's − moves it: each clue the party takes instead of a resource. At 0 the page rolls 1d4: "the party finds N Wallwatchers in dire straits".
+2. Back at Bastion (by declaration or a successful retreat) incomplete quests are lost: the Dagger resets to 20 and a new 1d6 search is rolled; a new expedition and a new campaign start both fresh. The Master's moves are undoable like the other counters; a hex's −1 is undone with its arrival.
+3. No separate clue hint is added: the Resource outcome's GM Guidance ("a quest clue instead of a reward") already says when a clue is found.
+4. State: `quests: { heart, rescue, rescueStart, found }` in `dhcodex_darkheart` (`js/darkheart-expedition.js` `adjustQuest` / `setRescueStart`, sanitized in `js/safe-storage.js`). A save from before it migrates silently (the Dagger derived from the hexes already travelled, a new search rolled) and never raises the storage warning.
+
+Where: `js/darkheart-expedition.js`, `js/darkheart-view.js`, `js/safe-storage.js`, `css/darkheart.css`, `data/i18n.json`, `tests/darkheart-playable.test.js`.

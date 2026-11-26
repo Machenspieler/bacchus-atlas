@@ -479,6 +479,27 @@
         return { n: dhInt(e.n, 0, 100000, 0), outcome: kind === 'bastion' ? null : e.outcome, kind: kind, fd: dhInt(e.fd, 0, 999, 15) };
       }).slice(-40);
   }
+  /* PD-111: the Quest Board. A save from before it has no `quests`: that is a migration (derived from the hexes already
+   * travelled, a new 1d6 search to be rolled), never a repair. */
+  function dhQuestsFor(raw) {
+    var hexes = dhInt(raw.hexes, 0, 100000, 0);
+    return { heart: raw.phase === 'bastion' ? 20 : Math.max(0, 20 - Math.max(0, hexes - 1)), rescue: null, rescueStart: null, found: null };
+  }
+  function dhQuests(q, raw) {
+    if (!isPlainObject(q)) return dhQuestsFor(raw);
+    var rescue = dhInt(q.rescue, 0, 6, null);
+    return {
+      heart: dhInt(q.heart, 0, 20, 20),
+      rescue: rescue,
+      rescueStart: rescue == null ? null : dhInt(q.rescueStart, 1, 6, Math.max(1, rescue)),
+      found: rescue === 0 ? dhInt(q.found, 1, 4, null) : null,
+    };
+  }
+  function dhWithQuests(raw) {
+    if (!isPlainObject(raw) || isPlainObject(raw.quests)) return raw;
+    var out = Object.assign({}, raw, { quests: dhQuestsFor(raw) });
+    return out;
+  }
   function dhState(raw, withUndo) {
     var r = raw;
     var fd = dhInt(r.fd, 15, 30, 15);
@@ -509,6 +530,7 @@
       arrival: keepArrival ? arrival : null,
       scene: dhScene(r.scene),
       log: dhLog(r.log),
+      quests: dhQuests(r.quests, r),
     };
     if (withUndo) {
       state.undo = (Array.isArray(r.undo) ? r.undo : []).filter(isPlainObject).map(function (e) { return dhState(e, false); }).slice(-20);
@@ -523,8 +545,13 @@
   }
   function sanitizeDarkheart(parsed) {
     if (!isPlainObject(parsed)) return { ok: false };
-    var value = dhState(parsed, true);
-    return { ok: true, value: value, changed: dhCanon(value) !== dhCanon(parsed) };
+    // A missing `quests` (a save from before PD-111, also inside its undo entries) is filled in first and counts as a migration.
+    var base = dhWithQuests(parsed);
+    if (Array.isArray(base.undo) && base.undo.some(function (e) { return isPlainObject(e) && !isPlainObject(e.quests); })) {
+      base = Object.assign({}, base, { undo: base.undo.map(dhWithQuests) });
+    }
+    var value = dhState(base, true);
+    return { ok: true, value: value, changed: dhCanon(value) !== dhCanon(base), migrated: base !== parsed };
   }
 
   function sanitizeMotionPref(parsed) {

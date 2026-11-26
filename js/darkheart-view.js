@@ -139,7 +139,17 @@ const DarkheartView = (function () {
   function region(id) { return host && host.querySelector('#dh-' + id); }
   function setRegion(id, html) { const el = region(id); if (el) el.innerHTML = html; }
 
+  /** PD-111: the Quest Board's Search and Rescue countdown is 1d6; an expedition without one gets it rolled now (not undoable,
+   * like a scene deal; the Master corrects it with the counter's - and +). */
+  function ensureQuests() {
+    const s = S();
+    if (s.quests && s.quests.rescue != null) return;
+    const res = X.setRescueStart(s, deps.rollDie(6));
+    if (res.ok) deps.set(res.state);
+  }
+
   function renderAll() {
+    ensureQuests();
     syncComposition();
     syncHeroOutcome();
     renderStatus(); renderRoll(); renderScene(); renderNpc(); renderEncounter(); renderHistory();
@@ -182,13 +192,14 @@ const DarkheartView = (function () {
     const inBastion = s.phase === 'bastion';
     const canRetreat = s.hexes > 0 && (s.phase === 'roll' || s.phase === 'arrived') && !trapped;
     const fdNote = inBastion ? t('dh_fd_resets_note') : t('dh_fd_note');
+    const q = s.quests || X.defaultQuests();
     const counter = (kind, labelKey, value, down, up, lo, hi, cls) => `
         <div class="dh-counter dh-counter--${kind}${cls || ''}" role="group" aria-labelledby="dh-${kind}-label">
           <span class="dh-counter-label" id="dh-${kind}-label">${esc(t(labelKey))}</span>
           <div class="dh-counter-row">
-            <button type="button" class="dh-step-btn" data-dh-act="${kind}-" aria-label="${esc(t(down))}"${value <= lo ? ' disabled' : ''}>${I.minus}</button>
+            <button type="button" class="dh-step-btn" data-dh-act="${kind}-" aria-label="${esc(t(down))}"${typeof value !== 'number' || value <= lo ? ' disabled' : ''}>${I.minus}</button>
             <output class="dh-counter-num" aria-labelledby="dh-${kind}-label">${value}</output>
-            <button type="button" class="dh-step-btn" data-dh-act="${kind}+" aria-label="${esc(t(up))}"${value >= hi ? ' disabled' : ''}>${I.plus}</button>
+            <button type="button" class="dh-step-btn" data-dh-act="${kind}+" aria-label="${esc(t(up))}"${typeof value !== 'number' || value >= hi ? ' disabled' : ''}>${I.plus}</button>
           </div>
         </div>`;
     // PD-110: the two counters the Master adjusts all session (and their "?") ride on the hero beside the page title;
@@ -197,12 +208,16 @@ const DarkheartView = (function () {
     setRegion('counters', `
         ${counter('fd', 'dh_forest_difficulty', s.fd, 'dh_fd_down', 'dh_fd_up', X.FD_START, X.FD_TRAPPED, (fdDanger ? ' is-danger' : '') + (trapped ? ' is-trapped' : ''))}
         ${counter('fear', 'dh_gm_fear', s.fear, 'dh_fear_down', 'dh_fear_up', 0, X.FEAR_MAX, '')}
+        ${counter('heart', 'dh_quest_heart', q.heart, 'dh_quest_heart_down', 'dh_quest_heart_up', 0, X.HEART_START, ' dh-counter--quest' + (q.heart === 0 ? ' is-done' : ''))}
+        ${counter('rescue', 'dh_quest_rescue', q.rescue == null ? '–' : q.rescue, 'dh_quest_rescue_down', 'dh_quest_rescue_up', 0, X.RESCUE_MAX, ' dh-counter--quest' + (q.rescue === 0 ? ' is-done' : ''))}
         <button type="button" class="dh-help-btn" data-dh-act="help-toggle" aria-expanded="${ui.helpOpen}" aria-controls="dh-help" aria-label="${esc(t('dh_help_label'))}">?</button>`);
     const notes = `${ui.helpOpen ? `<div id="dh-help" class="dh-help">
         <p><strong>${esc(t('dh_forest_difficulty'))}.</strong> ${esc(fdNote)}</p>
         <p><strong>${esc(t('dh_gm_fear'))}.</strong> ${esc(t('dh_fear_note'))}</p>
         <p><strong>${esc(t('dh_hexes'))}.</strong> ${esc(t('dh_hexes_note'))}</p>
-      </div>` : ''}${trapped ? `<p class="dh-trapped" role="alert"><strong>${esc(t('dh_trapped_title'))}</strong> ${esc(t('dh_trapped_text'))}</p>` : ''}`;
+        <p><strong>${esc(t('dh_quest_heart_full'))}.</strong> ${esc(t('dh_quest_heart_note'))}</p>
+        <p><strong>${esc(t('dh_quest_rescue_full'))}.</strong> ${esc(fill('dh_quest_rescue_note', { n: q.rescueStart == null ? '–' : q.rescueStart }))}</p>
+      </div>` : ''}${q.heart === 0 ? `<p class="dh-quest-done" role="status"><strong>${esc(t('dh_quest_heart_full'))}.</strong> ${esc(t('dh_quest_heart_done'))}</p>` : ''}${q.rescue === 0 ? `<p class="dh-quest-done" role="status"><strong>${esc(t('dh_quest_rescue_full'))}.</strong> ${esc(fill('dh_quest_rescue_done', { n: q.found == null ? '1d4' : q.found }))}</p>` : ''}${trapped ? `<p class="dh-trapped" role="alert"><strong>${esc(t('dh_trapped_title'))}</strong> ${esc(t('dh_trapped_text'))}</p>` : ''}`;
     setRegion('status', notes);
     const statusEl = region('status');
     if (statusEl) statusEl.hidden = !notes;
@@ -948,6 +963,11 @@ const DarkheartView = (function () {
       case 'fd+': return apply(X.adjustFd(s, 1));
       case 'fear-': return apply(X.adjustFear(s, -1));
       case 'fear+': return apply(X.adjustFear(s, 1));
+      // PD-111: the Master moves a quest countdown (a clue, or a correction); reaching 0 on the search rolls the 1d4 Wallwatchers found.
+      case 'heart-': return apply(X.adjustQuest(s, 'heart', -1));
+      case 'heart+': return apply(X.adjustQuest(s, 'heart', 1));
+      case 'rescue-': return apply(X.adjustQuest(s, 'rescue', -1, { found: deps.rollDie(4) }));
+      case 'rescue+': return apply(X.adjustQuest(s, 'rescue', 1));
       case 'undo': ui = Object.assign(freshUi(), { histOpen: ui.histOpen, partyOpen: ui.partyOpen }); return apply(X.undo(s));
       case 'help-toggle': ui.helpOpen = !ui.helpOpen; return renderStatus();
       case 'party-toggle': ui.partyOpen = !ui.partyOpen; renderStatus(); if (ui.partyOpen) revealInRail('#dh-party'); return;

@@ -111,6 +111,7 @@
       lastRest: null,                // what the last rest on this hex did, for the panel
       retreat: null,                 // { from: 'roll'|'arrived', danger: null|true|false } while phase is 'retreat'
       settings: defaultSettings(),   // the GM's explicit, reversible house-rule switches (PD-101)
+      quests: defaultQuests(),       // the Quest Board's two countdowns (PD-111)
       arrival: null,
       scene: emptyScene(),
       log: [],
@@ -123,6 +124,17 @@
    * fearOnRest = a rest gives the GM Fear (1d4 short, 1d4 + heroes long); shortRestLimit = after 3 Short Rests
    * in a row the next rest must be long. */
   function defaultSettings() { return { fearOnRoll: true, fearOnRest: true, shortRestLimit: true }; }
+
+  /* ---------------- the Quest Board (PD-111; the book, "The Quest Board", page 2) ----------------
+   * Two quests are always open while the party is in the forest:
+   *   DAGGER IN THE HEART (countdown 20): -1 each time the party travels from one hex to the next (the first hex of an
+   *     expedition is entering the forest, not travel between hexes); a clue may take it down by 1 too. At 0 the Dark Heart is found.
+   *   SEARCH AND RESCUE (countdown 1d6): -1 each time the party takes a CLUE instead of a resource (the Master's call, so only the
+   *     Master's - moves it). At 0 they find 1d4 Wallwatchers in dire straits (`found`).
+   * Returning to Bastion loses both: the Dagger resets to 20 and a new 1d6 search is rolled. The model has no randomness, so
+   * `rescue: null` means "not rolled yet" and the view rolls it (setRescueStart); the 1d4 is passed in by the caller. */
+  var HEART_START = 20, RESCUE_MAX = 6;
+  function defaultQuests() { return { heart: HEART_START, rescue: null, rescueStart: null, found: null }; }
 
   function emptyScene() {
     return {
@@ -260,6 +272,10 @@
     next.fear = clamp(fear, 0, FEAR_MAX);
     next.hexes = state.hexes + 1;
     next.trapped = next.fd >= FD_TRAPPED;
+    // PD-111: travel from one hex to the next brings the Dark Heart closer; the expedition's first hex does not.
+    var quests = Object.assign(defaultQuests(), clone(state.quests || {}));
+    if (state.hexes >= 1) quests.heart = Math.max(0, quests.heart - 1);
+    next.quests = quests;
     next.phase = 'arrived';
     next.retreat = null;
     next.lastRest = null;
@@ -320,6 +336,44 @@
     if (fear === state.fear) return result(state, false, 'no-change');
     var next = withUndo(state);
     next.fear = fear;
+    return result(next, true);
+  }
+
+  /** PD-111: the Master moves a quest countdown (a clue found, or a correction). Committed and undoable, like the counters.
+   *   which: 'heart' (0-20) | 'rescue' (0-6, once rolled). Reaching 0 on 'rescue' needs opts.found, the 1d4 Wallwatchers found;
+   *   moving it back up clears that. */
+  function adjustQuest(state, which, delta, opts) {
+    if ((which !== 'heart' && which !== 'rescue') || !isInt(delta) || delta === 0) return result(state, false, 'no-change');
+    var q = Object.assign(defaultQuests(), clone(state.quests || {}));
+    if (which === 'heart') {
+      var heart = clamp(q.heart + delta, 0, HEART_START);
+      if (heart === q.heart) return result(state, false, 'no-change');
+      q.heart = heart;
+    } else {
+      if (q.rescue == null) return result(state, false, 'not-rolled');
+      var rescue = clamp(q.rescue + delta, 0, RESCUE_MAX);
+      if (rescue === q.rescue) return result(state, false, 'no-change');
+      if (rescue === 0) {
+        var f = opts && opts.found;
+        if (!(isInt(f) && f >= 1 && f <= 4)) return result(state, false, 'need-found-roll');
+        q.found = f;
+      } else q.found = null;
+      q.rescue = rescue;
+    }
+    var next = withUndo(state);
+    next.quests = q;
+    return result(next, true);
+  }
+
+  /** PD-111: the expedition's Search and Rescue countdown, rolled on 1d6 by the caller. Like a scene deal it is not a campaign action
+   * (nothing to undo: the countdown simply exists from now on); refused once rolled. */
+  function setRescueStart(state, roll) {
+    var q = Object.assign(defaultQuests(), clone(state.quests || {}));
+    if (q.rescue != null) return result(state, false, 'already-rolled');
+    if (!(isInt(roll) && roll >= 1 && roll <= RESCUE_MAX)) return result(state, false, 'bad-roll');
+    var next = clone(state);
+    q.rescue = roll; q.rescueStart = roll; q.found = null;
+    next.quests = q;
     return result(next, true);
   }
 
@@ -443,6 +497,7 @@
     next.retreat = null;
     next.arrival = null;
     next.lastRest = null;
+    next.quests = defaultQuests();   // PD-111: back at Bastion incomplete quests are lost and the Dark Heart's countdown resets to 20
     next.dice = { hope: null, fear: null, modifier: state.dice.modifier || 0 };
     next.log = (state.log || []).concat([{ n: state.hexes, outcome: null, kind: 'bastion', fd: state.fd }]).slice(-LOG_LIMIT);
     return result(next, true);
@@ -505,13 +560,13 @@
   return {
     SCHEMA: SCHEMA, FD_START: FD_START, FD_TRAPPED: FD_TRAPPED, FEAR_MAX: FEAR_MAX,
     DIE_MAX: DIE_MAX, MOD_MIN: MOD_MIN, MOD_MAX: MOD_MAX, HEROES_MIN: HEROES_MIN, HEROES_MAX: HEROES_MAX,
-    UNDO_LIMIT: UNDO_LIMIT, DIFFICULTIES: DIFFICULTIES,
+    UNDO_LIMIT: UNDO_LIMIT, DIFFICULTIES: DIFFICULTIES, HEART_START: HEART_START, RESCUE_MAX: RESCUE_MAX,
     OUTCOME_RULES: OUTCOME_RULES, OUTCOME_KEYS: OUTCOME_KEYS,
-    defaults: defaults, defaultSettings: defaultSettings, emptyScene: emptyScene,
+    defaults: defaults, defaultSettings: defaultSettings, emptyScene: emptyScene, defaultQuests: defaultQuests,
     previewRoll: previewRoll,
     setDice: setDice, setParty: setParty, setEnvTier: setEnvTier, envReadTier: envReadTier, setSettings: setSettings,
     confirmArrival: confirmArrival, nextTraversal: nextTraversal,
-    adjustFear: adjustFear, adjustFd: adjustFd, rest: rest,
+    adjustFear: adjustFear, adjustFd: adjustFd, adjustQuest: adjustQuest, setRescueStart: setRescueStart, rest: rest,
     beginRetreat: beginRetreat, setRetreatDanger: setRetreatDanger, cancelRetreat: cancelRetreat,
     completeRetreat: completeRetreat, confirmRetreatFailure: confirmRetreatFailure,
     startExpedition: startExpedition, newCampaign: newCampaign,
