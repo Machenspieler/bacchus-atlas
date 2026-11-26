@@ -486,6 +486,9 @@
     var stack = state.undo || [];
     if (!stack.length) return result(state, false, 'nothing-to-undo');
     var restored = clone(stack[stack.length - 1]);
+    // QA-003: party, encounter difficulty, the environment-tier override and the house-rule switches are settings, not campaign events
+    // (setParty/setEnvTier/setSettings), so undoing a campaign action never reverts them.
+    ['tier', 'heroes', 'difficulty', 'envTier', 'settings'].forEach(function (k) { restored[k] = clone(state[k]); });
     restored.undo = stack.slice(0, -1);
     return result(restored, true);
   }

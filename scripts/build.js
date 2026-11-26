@@ -22,7 +22,7 @@ const OUT = path.join(ROOT, 'dist');
 
 /* Directories excluded entirely: dev tooling, CI/editor config, and the
  * crawler-discovery files removed from production (see README.md). */
-const EXCLUDE_DIRS = new Set(['.git', '.github', '.claude', 'scripts', 'dist', 'node_modules']);
+const EXCLUDE_DIRS = new Set(['.git', '.github', '.claude', 'scripts', 'dist', 'node_modules', 'qa-audit']);
 const EXCLUDE_FILES = new Set(['llms.txt', 'sitemap.xml', 'robots.txt']);
 
 /* Development-only Journey 2 material (source/reference PDFs, the handoff ZIP, mockups, review and

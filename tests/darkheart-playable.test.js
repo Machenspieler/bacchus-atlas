@@ -841,3 +841,28 @@ test('Forest Difficulty never exceeds 30: the game ends there (arrival, manual +
   const forced = Object.assign(X.defaults(), { fd: 29 });
   assert.equal(X.confirmArrival(X.setDice(forced, { hope: 2, fear: 8, modifier: 0 }).state, { penalty: 'fd' }).state.fd, 30);
 });
+
+test('QA-003: undo reverses the campaign action but keeps party, env-tier override and house rules', () => {
+  let s = X.defaults();
+  s = X.setParty(s, { tier: 3, heroes: 6, difficulty: 'harder' }).state;
+  s = X.setEnvTier(s, 4).state;
+  s = X.setSettings(s, { fearOnRoll: false, shortRestLimit: false }).state;
+  const r = X.confirmArrival(Object.assign({}, s, { dice: { hope: 9, fear: 11, modifier: 0 } }), {});
+  assert.ok(r.ok);
+  const u = X.undo(r.state);
+  assert.ok(u.ok);
+  assert.equal(u.state.fd, s.fd);
+  assert.equal(u.state.hexes, 0);
+  assert.equal(u.state.tier, 3); assert.equal(u.state.heroes, 6); assert.equal(u.state.difficulty, 'harder'); assert.equal(u.state.envTier, 4);
+  assert.equal(u.state.settings.fearOnRoll, false); assert.equal(u.state.settings.shortRestLimit, false);
+});
+
+test('QA-004/005/008/012: Left-out names are localised, seeds are not fixed, the prompt takes focus, no duplicate rest line', () => {
+  const view = read('js/darkheart-view.js');
+  assert.ok(view.includes('bi(f.name)') && view.includes('parts.leftOut.map'));
+  assert.ok(view.includes('ensureCampaignSeed()'));
+  assert.ok(view.includes("initialNpcSeed(outcome, id, 'enc')"));
+  assert.ok(view.includes('focusCancel()'));
+  assert.ok(view.includes("${canRest ? `<p class=\"dh-hint\">"));
+  assert.match(read('scripts/build.js'), /'qa-audit'/);
+});

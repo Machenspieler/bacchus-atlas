@@ -76,10 +76,20 @@ const DarkheartView = (function () {
     return { scene: dealt.scene, noMatch: dealt.noMatch, cycled: dealt.cycled, poolSize: dealt.poolSize };
   }
 
+  /** QA-005: a fresh campaign starts with scene.seed 0, which dealt the same first scene for every outcome in every campaign.
+   * The first time a scene is needed the campaign gets its own seed (stored, so reloads and undo keep the same deals). */
+  function ensureCampaignSeed() {
+    const s = S();
+    if (s.scene.seed) return;
+    const seed = 1 + Math.floor(Math.random() * 90000);
+    deps.set(X.setScene(s, Object.assign({}, s.scene, { seed })).state);
+  }
+
   /** Stores the composition for the staged outcome the first time it is shown (a scene change, never a campaign change). */
   function syncComposition() {
     const outcome = stageOutcome();
     if (!outcome || data.status !== 'ready') return;
+    ensureCampaignSeed();
     const s = S();
     const cur = currentScene(outcome);
     const id = cur.scene ? cur.scene.id : null;
@@ -88,7 +98,7 @@ const DarkheartView = (function () {
     const scene = Object.assign(X.emptyScene(), {
       outcome, seed: s.scene.seed, sceneId: id, dealt: s.scene.dealt,
       npc: keep ? s.scene.npc : { seed: initialNpcSeed(outcome, id), locked: false, value: null },
-      encounter: keep ? s.scene.encounter : { seed: 0, locked: [], gmTheme: null },
+      encounter: keep ? s.scene.encounter : { seed: initialNpcSeed(outcome, id, 'enc'), locked: [], gmTheme: null },   // QA-005: not a fixed 0 either
     });
     deps.set(X.setScene(s, scene).state);
     ensureNpc();
@@ -97,9 +107,9 @@ const DarkheartView = (function () {
   /** QA-001: the first NPC of a scene must not be one fixed person per outcome. The seed is derived from the scene's own id,
    * the outcome and the campaign's scene counter, so a new scene is a new person while a reload still shows the same one
    * (the value is stored; "New NPC" then bumps this seed by one). */
-  function initialNpcSeed(outcome, sceneId) {
+  function initialNpcSeed(outcome, sceneId, tag) {
     let h = 2166136261;
-    const text = String(sceneId || '') + '|' + outcome + '|' + (S().scene.seed || 0);
+    const text = (tag || '') + '|' + String(sceneId || '') + '|' + outcome + '|' + (S().scene.seed || 0);
     for (let i = 0; i < text.length; i += 1) { h ^= text.charCodeAt(i); h = Math.imul(h, 16777619); }
     return (h >>> 0) % 990000;   // the stored seed is capped at 1,000,000 (SafeStorage); headroom for "New NPC" bumps
   }
@@ -393,7 +403,7 @@ const DarkheartView = (function () {
       <details class="dh-rest" id="dh-rest-disc"${ui.restOpen ? ' open' : ''}>
         <summary><span class="dh-rest-name">${esc(t('dh_rest'))}</span><span class="dh-rest-sub">${esc(t(canRest ? 'dh_rest_sub' : 'dh_rest_none'))}</span></summary>
         <div class="dh-rest-body">
-        <p class="dh-hint">${esc(t('dh_rest_' + policy))}</p>
+        ${canRest ? `<p class="dh-hint">${esc(t('dh_rest_' + policy))}</p>` : ''}
         ${canRest ? `
         <div class="dh-rest-opts">
           <label class="dh-check"><input type="checkbox" id="dh-rest-whisper"${whisperOff ? ' disabled' : (ui.restWhisper ? ' checked' : '')}> <span>${esc(t('dh_rest_whisper'))}</span></label>
@@ -661,7 +671,7 @@ const DarkheartView = (function () {
         <ul class="dh-changes">${entry.adaptation.changes.map(c => `<li><span class="dh-change-src">${esc(t('dh_source_says'))}: “${esc(c.source)}”</span><span class="dh-change-new">${esc(t('dh_use_instead'))}: ${esc(bi(c.adapted))}</span></li>`).join('')}</ul>
       </section>` : '';
     const guidance = '<div id="dh-gm">' + guidanceHtml(scene, env, outcome, entry) + '</div>';
-    const leftOut = !parts.whole && parts.leftOut.length ? `<p class="dh-hint"><strong>${esc(t('dh_left_out'))}:</strong> ${esc(parts.leftOut.join(', '))}</p>` : '';
+    const leftOut = !parts.whole && parts.leftOut.length ? `<p class="dh-hint"><strong>${esc(t('dh_left_out'))}:</strong> ${esc(parts.leftOut.map(n => { const f = (env.features || []).find(x => x.name && x.name.en === n); return f ? bi(f.name) : n; }).join(', '))}</p>` : '';
     setRegion('scene', `
       <header class="dh-scene-head">
         <div class="dh-scene-headtext">
@@ -914,6 +924,8 @@ const DarkheartView = (function () {
     if (key) deps.toast(t(key), 'info');
   }
 
+  function focusCancel() { const b = host && host.querySelector('[data-dh-act="confirm-no"]'); if (b) b.focus(); }
+
   function act(name, value, el) {
     const s = S();
     switch (name) {
@@ -930,9 +942,10 @@ const DarkheartView = (function () {
       case 'help-toggle': ui.helpOpen = !ui.helpOpen; return renderStatus();
       case 'party-toggle': ui.partyOpen = !ui.partyOpen; return renderStatus();
       case 'menu-toggle': ui.menuOpen = !ui.menuOpen; if (!ui.menuOpen) ui.confirm = null; ui.sceneSig = ''; renderStatus(); return renderScene();
-      case 'expedition-ask': ui.confirm = 'expedition'; ui.menuOpen = true; return renderStatus();
-      case 'campaign-ask': ui.confirm = 'campaign'; ui.sceneSig = ''; renderStatus(); return renderScene();
-      case 'confirm-no': ui.confirm = null; ui.sceneSig = ''; renderStatus(); return renderScene();
+      // QA-008: the prompt takes focus on the safer action (Cancel), and Cancel hands it back to the control that asked.
+      case 'expedition-ask': ui.confirm = 'expedition'; ui.menuOpen = true; renderStatus(); focusCancel(); return;
+      case 'campaign-ask': ui.confirm = 'campaign'; ui.sceneSig = ''; renderStatus(); renderScene(); focusCancel(); return;
+      case 'confirm-no': ui.confirm = null; ui.sceneSig = ''; renderStatus(); renderScene(); { const b = host.querySelector('[data-dh-act="expedition-ask"], [data-dh-act="campaign-ask"], .dh-menu-btn'); if (b) b.focus(); } return;
       case 'expedition-yes': ui = Object.assign(freshUi(), { histOpen: ui.histOpen, partyOpen: ui.partyOpen }); return apply(X.startExpedition(s));
       case 'campaign-yes': ui = Object.assign(freshUi(), { histOpen: ui.histOpen, partyOpen: ui.partyOpen }); return apply(X.newCampaign(s));
       case 'retreat-open': ui.menuOpen = false; return apply(X.beginRetreat(s));
