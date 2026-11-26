@@ -1928,4 +1928,6 @@ Where: `js/darkheart-expedition.js`, `js/darkheart-view.js`, `js/safe-storage.js
 
 6. The wireframe die is gone from the roll panel's title (the gold d12 instead) and from the empty scene state (the three dice, Hope / Fear / Modifier); the Fear d12 has no glitter (the sparkles read as stray blue dots at 40px); the die inputs hide their spin buttons so the digits are centred. The wireframe stays on the Next-traversal and Start-expedition buttons, where a coloured picture would fight the gold fill.
 
+7. The scene header's title column has a 22rem flex basis (it was 0), so on a mid-width window the "Another scene / Open environment" buttons drop under the title instead of squeezing it into a sliver.
+
 Where: `js/darkheart-view.js`, `css/darkheart.css`, `data/i18n.json`, `img/ui/`, `tests/darkheart-art.test.js`.

@@ -265,14 +265,14 @@ body[data-route="darkheart"] .catalog-bar-wrap { display: none; }
 .dh-scene { display: grid; gap: var(--s-4); }
 .dh-scene { scroll-margin-top: calc(var(--hdr-h) + var(--s-3)); }
 .dh-scene-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-2) var(--s-4); flex-wrap: wrap; min-width: 0; }
-.dh-scene-headtext { flex: 1 1 0; }
+.dh-scene-headtext { flex: 1 1 22rem; }   /* basis 0 never let the buttons wrap: the title was squeezed to a sliver beside them; now they drop under it below ~22rem */
 .dh-scene-headtext { position: relative; display: grid; gap: var(--s-2); min-width: 0; }
 .dh-scene-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--fs-xl); line-height: var(--lh-xl); letter-spacing: var(--tracking-display); color: var(--parchment); overflow-wrap: anywhere; }
 .dh-scene-meta { margin-top: calc(-1 * var(--s-1)); }
 .dh-scene-sub { margin: 0; display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; color: var(--parchment); font-size: var(--fs-sm); min-width: 0; }
 .dh-scene-env { font-family: var(--font-display); font-size: var(--fs-md); }
 .dh-source { color: var(--muted); }
-.dh-scene-actions { display: flex; flex: none; gap: var(--s-2); flex-wrap: wrap; justify-content: flex-end; }
+.dh-scene-actions { display: flex; flex: none; margin-left: auto; gap: var(--s-2); flex-wrap: wrap; justify-content: flex-end; }
 .dh-scene-summary { margin: 0; font-size: var(--fs-md); line-height: var(--lh-base); font-style: italic; color: var(--parchment); }
 .dh-block-label { margin: 0 0 var(--s-2); font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; font-weight: 400; color: var(--muted); }
 
