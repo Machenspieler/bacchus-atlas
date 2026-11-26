@@ -1930,4 +1930,6 @@ Where: `js/darkheart-expedition.js`, `js/darkheart-view.js`, `js/safe-storage.js
 
 7. The scene header's title column has a 22rem flex basis (it was 0), so on a mid-width window the "Another scene / Open environment" buttons drop under the title instead of squeezing it into a sliver.
 
+8. Each Wayfinder die is ONE tile, not a picture floating over an empty box: the die picture sits inside the field on the left, the number (display font) beside it; the tile owns the edge and focus ring (Hope gold, Fear violet, Modifier neutral), the input inside is bare. The gold d12 is gone from the roll panel's title again — it only repeated the Hope die right under it. Supersedes the title-die half of item 6.
+
 Where: `js/darkheart-view.js`, `css/darkheart.css`, `data/i18n.json`, `img/ui/`, `tests/darkheart-art.test.js`.

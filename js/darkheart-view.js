@@ -291,7 +291,7 @@ const DarkheartView = (function () {
    * crimson d12 (the game's own die colours), Modifier = the d6 the rules usually use. Decorative: the input is named by the sr-only text. */
   const DIE_ICON = { hope: 'img/ui/d12-hope.png', fear: 'img/ui/d12-fear.png', modifier: 'img/journey2/dice/d6-3d.png' };
   function dieFields(s, disabled) {
-    const face = (k, label) => `<span class="dh-die-face dh-die-face--${k}"><img src="${DIE_ICON[k]}" alt="" width="40" height="40" draggable="false"><span class="sr-only">${esc(label)}</span></span>`;
+    const face = (k, label) => `<span class="dh-die-face dh-die-face--${k}"><img src="${DIE_ICON[k]}" alt="" width="32" height="32" draggable="false"><span class="sr-only">${esc(label)}</span></span>`;
     const dieField = (k, label) => `
       <label class="dh-die dh-die--${k}" for="dh-die-${k}">
         ${face(k, label)}
@@ -1192,7 +1192,7 @@ const DarkheartView = (function () {
         <div class="dh-layout">
           <aside class="dh-side">
             <section class="dh-card dh-roll" aria-labelledby="dh-roll-h">
-              <h3 id="dh-roll-h" class="dh-panel-title"><img class="dh-title-die" src="${DIE_ICON.hope}" alt="" width="28" height="28" draggable="false"><span id="dh-roll-title">${esc(t('dh_wayfinder'))}</span></h3>
+              <h3 id="dh-roll-h" class="dh-panel-title"><span id="dh-roll-title">${esc(t('dh_wayfinder'))}</span></h3>
               <div id="dh-roll"></div>
             </section>
             <section id="dh-campaign" class="dh-card dh-campaign" aria-label="${esc(t('dh_campaign_label'))}"></section>
