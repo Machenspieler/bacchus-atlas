@@ -1519,11 +1519,14 @@ let ribbonDropPending = false;
 function ribbonHtml(r, current) {
   const on = r.id === current;
   const label = t(r.label);
+  // A two-word label ("Тёмное Сердце") is too wide for one line of a 104px ribbon: one word per line, centred, the icon beside the pair.
+  const words = label.split(' ');
+  const text = words.length > 1 ? `<span class="ribbon-lines">${words.map(w => `<span>${w}</span>`).join('')}</span>` : `<span>${label}</span>`;
   return `<button type="button" class="ribbon${on ? ' on' : ''}" id="btn-${r.id}" data-ribbon="${r.id}"
             aria-label="${label}" ${on ? 'aria-current="page"' : ''}>
           <span class="ribbon-fab" aria-hidden="true"></span>
           <svg class="ribbon-cut" viewBox="0 0 104 11" preserveAspectRatio="none" aria-hidden="true"><polyline class="ribbon-cut-lit" points="0,10.5 52,0.8 104,10.5"/><polyline class="ribbon-cut-shade" points="0,11.5 52,2.6 104,11.5"/></svg>
-          <span class="ribbon-label">${r.icon()}<span>${label}</span></span>
+          <span class="ribbon-label">${r.icon()}${text}</span>
         </button>`;
 }
 

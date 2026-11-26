@@ -435,6 +435,8 @@ html { overflow-x: clip; }   /* the filter bar's glass runs edge to edge (100vw)
   pointer-events: none;
 }
 .ribbon-label svg { width: var(--icon-sm); height: var(--icon-sm); flex: none; }
+/* Two-word labels: a centred two-line block; .ribbon-label's align-items: center keeps the icon at its vertical middle. */
+.ribbon-lines { display: flex; flex-direction: column; align-items: center; text-align: center; line-height: 1.15; }
 /* ---- Fabric ribbon skin (the default; js/app.js sets data-ribbon-skin="fabric" on <html> unless ?ribbonSkin=css) ----
  * All four ribbons. It swaps the PAINT of .ribbon-fab and nothing else: the button's height transition,
  * sway/drop keyframes, transform origin, drop-shadow, clip-path swallow-tail, label and dim overlay are all the
