@@ -42,6 +42,18 @@
     return btoa(binary);
   }
 
+  /* FreshCutGrass decodes the payload as Latin-1, so a non-ASCII title (a
+   * Cyrillic session name) shows up there as mojibake. The title that leaves
+   * the site is therefore always plain printable ASCII: a title that already
+   * is passes through untouched; anything else is replaced by `fallback`
+   * (callers pass the English default, e.g. "Prep"). Only the exported title
+   * is affected — the saved Prep name stays as the user typed it. */
+  function exportTitle(name, fallback) {
+    const s = String(name == null ? '' : name).replace(/\s+/g, ' ').trim();
+    if (s && /^[\x20-\x7e]+$/.test(s)) return s;
+    return fallback || 'Encounter';
+  }
+
   /** Builds a FreshCutGrass encounter URL at runtime from an encounter name
    * and a flat list of adversary names. Every adversary is exported at
    * quantity 1 (`q: 1`) — Prep and the environment detail page both
@@ -51,7 +63,7 @@
    * as before. */
   function buildFreshCutGrassEncounterUrl(encounterName, adversaryNames, quantities) {
     const payload = {
-      n: encounterName,
+      n: exportTitle(encounterName),
       d: adversaryNames.map((name, i) => ({
         n: name,
         a: '',
@@ -125,6 +137,7 @@
   return {
     utf8ToBase64: utf8ToBase64,
     buildFreshCutGrassEncounterUrl: buildFreshCutGrassEncounterUrl,
+    exportTitle: exportTitle,
     buildSupportedAdversaryIndex: buildSupportedAdversaryIndex,
     isFreshCutGrassSupported: isFreshCutGrassSupported,
     getFreshCutGrassSupportedAdversaries: getFreshCutGrassSupportedAdversaries,

@@ -4860,8 +4860,10 @@ function centralAdvListHtml(prep) {
  * "FreshCutGrass export" section of CLAUDE.md. Always a non-empty plain
  * string, so the payload's own `n` field is never blank. */
 function freshCutGrassEncounterTitle(prep) {
-  const trimmed = (prep.title || '').trim();
-  return trimmed || t('prep_freshcutgrass_default_title');
+  // Always the English default, whatever the UI language: FreshCutGrass can't
+  // display Cyrillic, and a title that isn't plain ASCII falls back to it.
+  const english = (state.i18n.en && state.i18n.en.prep_freshcutgrass_default_title) || 'Prep';
+  return FreshCutGrassUtils.exportTitle(prep.title, english);
 }
 
 /** The export is adversaries only (see PD-002/the FreshCutGrass section):

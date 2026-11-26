@@ -45,12 +45,20 @@ test('every adversary entry is exported at quantity 1', () => {
   assert.ok(payload.d.every(entry => entry.q === 1));
 });
 
-test('a Cyrillic encounter title encodes and decodes without throwing', () => {
-  assert.doesNotThrow(() => {
-    const url = FreshCutGrassUtils.buildFreshCutGrassEncounterUrl('Ночь в Каньоне', ['Bugboar']);
-    const payload = decodeEncounterUrl(url);
-    assert.equal(payload.n, 'Ночь в Каньоне');
-  });
+test('a Cyrillic encounter title never reaches FreshCutGrass (encoder safety net)', () => {
+  const url = FreshCutGrassUtils.buildFreshCutGrassEncounterUrl('Ночь в Каньоне', ['Bugboar']);
+  assert.equal(decodeEncounterUrl(url).n, 'Encounter');
+});
+
+test('exportTitle keeps plain ASCII titles and falls back otherwise', () => {
+  const t = FreshCutGrassUtils.exportTitle;
+  assert.equal(t('Night  at the Canyon ', 'Prep'), 'Night at the Canyon');
+  assert.equal(t('Темное сердце леса ч.3', 'Prep'), 'Prep');
+  assert.equal(t('Canyon ночь', 'Prep'), 'Prep');
+  assert.equal(t('Café', 'Prep'), 'Prep');
+  assert.equal(t('', 'Prep'), 'Prep');
+  assert.equal(t(undefined, 'Prep'), 'Prep');
+  assert.equal(t('Темное'), 'Encounter');
 });
 
 test('an empty adversary list still produces a decodable payload with an empty roster', () => {
