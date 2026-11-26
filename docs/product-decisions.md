@@ -1922,4 +1922,6 @@ Where: `js/darkheart-expedition.js`, `js/darkheart-view.js`, `js/safe-storage.js
 
 4. Follow-up polish: a dark scrim band on the hero's lower 60% keeps the counter captions legible over any banner; on a phone the four counters are a 2x2 grid and the "?" (its own `#dh-helpbtn` slot) sits at the title's right edge; the roll preview's note no longer squeezes beside its chip; the environment's feature cards are rows of equal-height cards (no ragged column gap).
 
-Where: `js/darkheart-view.js`, `css/darkheart.css`, `img/ui/`, `tests/darkheart-art.test.js`.
+5. Trapped (FD 30): the roll panel says the party is trapped (`dh_roll_trapped`) instead of asking for dice that are disabled, and "Next traversal" is disabled; a rest that lowers no Forest Difficulty reads "unchanged", never "−0".
+
+Where: `js/darkheart-view.js`, `css/darkheart.css`, `data/i18n.json`, `img/ui/`, `tests/darkheart-art.test.js`.

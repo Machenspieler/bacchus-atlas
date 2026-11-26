@@ -361,7 +361,7 @@ const DarkheartView = (function () {
     if (p.status === 'invalid') p.errors.forEach(e => errs.push(t('dh_err_' + e.replace('-range', '_range'))));
     const errHtml = errs.length ? `<ul class="dh-errors" id="dh-roll-errors" role="alert">${[...new Set(errs)].map(e => `<li>${esc(e)}</li>`).join('')}</ul>` : '<span id="dh-roll-errors"></span>';
     if (p.status !== 'ok') {
-      el.innerHTML = `${errHtml}<p class="dh-hint">${esc(t(errs.length ? 'dh_roll_fix' : (retreat ? 'dh_retreat_roll_prompt' : 'dh_roll_prompt')))}</p>${cancel}`;
+      el.innerHTML = `${errHtml}<p class="dh-hint">${esc(t(errs.length ? 'dh_roll_fix' : (retreat ? 'dh_retreat_roll_prompt' : s.trapped ? 'dh_roll_trapped' : 'dh_roll_prompt')))}</p>${cancel}`;
       return;
     }
     const rule = X.OUTCOME_RULES[p.outcome];
@@ -416,7 +416,7 @@ const DarkheartView = (function () {
     const whisperOff = policy === 'no-fd-reduction';
     const fearOn = s.settings.fearOnRest;
     const last = s.lastRest;
-    const lastLine = last ? `<p class="dh-rest-last" role="status">${esc(fill('dh_rest_result_' + last.kind, {
+    const lastLine = last ? `<p class="dh-rest-last" role="status">${esc(fill('dh_rest_result_' + last.kind + (last.fdBy ? '' : '_nofd'), {
       fd: last.fdBy, fear: last.fearBy, d4: last.fearRoll == null ? '–' : last.fearRoll, d2: last.fdRoll == null ? '–' : last.fdRoll, heroes: s.heroes,
     }))}${last.whisper ? '' : ' ' + esc(t('dh_rest_no_whisper'))}${last.fearCapped ? ' ' + esc(t('dh_rest_capped')) : ''}</p>` : '';
     // The whole Rest section is one closed-by-default disclosure: reading the confirmed scene never means scrolling past rest settings.
@@ -465,7 +465,7 @@ const DarkheartView = (function () {
         ${changesHtml('applied', items)}
       </div>
       <div class="dh-arrived-actions">
-        <button type="button" class="btn btn-primary dh-confirm-btn" data-dh-act="next">${I.dice}<span>${esc(t('dh_next_traversal'))}</span></button>
+        <button type="button" class="btn btn-primary dh-confirm-btn" data-dh-act="next"${s.trapped ? ' disabled' : ''}>${I.dice}<span>${esc(t('dh_next_traversal'))}</span></button>
         <button type="button" class="btn btn-ghost dh-scene-link" data-dh-act="to-scene">${I.down}<span>${esc(t('dh_view_scene'))}</span></button>
       </div>
       ${restHtml(s)}`;
