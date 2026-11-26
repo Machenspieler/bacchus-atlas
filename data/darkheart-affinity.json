@@ -373,9 +373,6 @@
     "rotted-zombie": [
       "undead"
     ],
-    "ruby-dragon": [
-      "neutral"
-    ],
     "rust-eater": [
       "underground"
     ],
@@ -475,9 +472,6 @@
     ],
     "will-o-the-wisps": [
       "sylvan",
-      "neutral"
-    ],
-    "wyrmlings": [
       "neutral"
     ],
     "wyvern": [
