@@ -191,29 +191,32 @@ const DarkheartView = (function () {
             <button type="button" class="dh-step-btn" data-dh-act="${kind}+" aria-label="${esc(t(up))}"${value >= hi ? ' disabled' : ''}>${I.plus}</button>
           </div>
         </div>`;
-    setRegion('status', `
-      <div class="dh-toolbar-group dh-counters">
+    // PD-110: the two counters the Master adjusts all session (and their "?") ride on the hero beside the page title;
+    // the expedition tally, the party and the rarer actions are a card under the Wayfinder roll; under the hero only the
+    // notes that must not be missed (the help text when asked for, the trapped alarm).
+    setRegion('counters', `
         ${counter('fd', 'dh_forest_difficulty', s.fd, 'dh_fd_down', 'dh_fd_up', X.FD_START, X.FD_TRAPPED, (fdDanger ? ' is-danger' : '') + (trapped ? ' is-trapped' : ''))}
         ${counter('fear', 'dh_gm_fear', s.fear, 'dh_fear_down', 'dh_fear_up', 0, X.FEAR_MAX, '')}
-        <button type="button" class="dh-help-btn" data-dh-act="help-toggle" aria-expanded="${ui.helpOpen}" aria-controls="dh-help" aria-label="${esc(t('dh_help_label'))}">?</button>
-      </div>
-      <div class="dh-toolbar-group dh-trail">
-        <p class="dh-trail-line"><span class="dh-trail-exp">${esc(t('dh_expedition'))} ${s.expedition}</span>
-          <span class="dh-trail-hexes">${esc(t('dh_hexes_short'))}: <output class="dh-mono" aria-label="${esc(t('dh_hexes'))}">${s.hexes}</output></span></p>
-        <button type="button" class="dh-party-btn" data-dh-act="party-toggle" aria-expanded="${ui.partyOpen}" aria-controls="dh-party"
-                aria-label="${esc(t('dh_party_label'))}: ${esc(partySummary(s))}. ${esc(t('dh_party_edit'))}"><span>${esc(partySummary(s))}</span><span class="dh-party-edit" aria-hidden="true">${esc(t('dh_party_edit'))}</span></button>
-      </div>
-      <div class="dh-toolbar-group dh-status-actions">
-        <button type="button" class="btn btn-ghost btn-sm" data-dh-act="undo"${s.undo.length ? '' : ' disabled'}>${I.undo}<span>${esc(t('dh_undo'))}</span></button>
-        <button type="button" class="btn btn-ghost btn-sm" data-dh-act="retreat-open"${canRetreat ? '' : ' disabled'} title="${esc(t(canRetreat ? 'dh_retreat_tip' : 'dh_retreat_unavailable'))}">${esc(t('dh_return_bastion'))}</button>
-        <button type="button" class="btn btn-ghost btn-sm dh-menu-btn" data-dh-act="menu-toggle" aria-expanded="${ui.menuOpen}" aria-controls="dh-menu-panel">${esc(t('dh_expedition_menu'))}</button>
-      </div>
-      ${ui.helpOpen ? `<div id="dh-help" class="dh-help">
+        <button type="button" class="dh-help-btn" data-dh-act="help-toggle" aria-expanded="${ui.helpOpen}" aria-controls="dh-help" aria-label="${esc(t('dh_help_label'))}">?</button>`);
+    const notes = `${ui.helpOpen ? `<div id="dh-help" class="dh-help">
         <p><strong>${esc(t('dh_forest_difficulty'))}.</strong> ${esc(fdNote)}</p>
         <p><strong>${esc(t('dh_gm_fear'))}.</strong> ${esc(t('dh_fear_note'))}</p>
         <p><strong>${esc(t('dh_hexes'))}.</strong> ${esc(t('dh_hexes_note'))}</p>
-      </div>` : ''}
+      </div>` : ''}${trapped ? `<p class="dh-trapped" role="alert"><strong>${esc(t('dh_trapped_title'))}</strong> ${esc(t('dh_trapped_text'))}</p>` : ''}`;
+    setRegion('status', notes);
+    const statusEl = region('status');
+    if (statusEl) statusEl.hidden = !notes;
+    setRegion('campaign', `
+      <p class="dh-trail-line"><span class="dh-trail-exp">${esc(t('dh_expedition'))} ${s.expedition}</span>
+        <span class="dh-trail-hexes">${esc(t('dh_hexes_short'))}: <output class="dh-mono" aria-label="${esc(t('dh_hexes'))}">${s.hexes}</output></span></p>
+      <button type="button" class="dh-party-btn" data-dh-act="party-toggle" aria-expanded="${ui.partyOpen}" aria-controls="dh-party"
+              aria-label="${esc(t('dh_party_label'))}: ${esc(partySummary(s))}. ${esc(t('dh_party_edit'))}"><span>${esc(partySummary(s))}</span><span class="dh-party-edit" aria-hidden="true">${esc(t('dh_party_edit'))}</span></button>
       <div id="dh-party" class="dh-party"${ui.partyOpen ? '' : ' hidden'} role="group" aria-label="${esc(t('dh_party_label'))}"></div>
+      <div class="dh-campaign-actions">
+        <button type="button" class="btn btn-ghost btn-sm" data-dh-act="undo"${s.undo.length ? '' : ' disabled'}>${I.undo}<span>${esc(t('dh_undo'))}</span></button>
+        <button type="button" class="btn btn-ghost btn-sm dh-menu-btn" data-dh-act="menu-toggle" aria-expanded="${ui.menuOpen}" aria-controls="dh-menu-panel">${esc(t('dh_expedition_menu'))}</button>
+        <button type="button" class="btn btn-ghost btn-sm dh-bastion-btn" data-dh-act="retreat-open"${canRetreat ? '' : ' disabled'} title="${esc(t(canRetreat ? 'dh_retreat_tip' : 'dh_retreat_unavailable'))}">${esc(t('dh_return_bastion'))}</button>
+      </div>
       ${ui.menuOpen ? `<div id="dh-menu-panel" class="dh-menu-panel">
         <div class="dh-menu-col">
           <h4 class="dh-block-label">${esc(t('dh_menu_resets'))}</h4>
@@ -224,8 +227,7 @@ const DarkheartView = (function () {
           ${confirmBlock()}
         </div>
         <div class="dh-menu-col">${settingsHtml(s)}</div>
-      </div>` : ''}
-      ${trapped ? `<p class="dh-trapped" role="alert"><strong>${esc(t('dh_trapped_title'))}</strong> ${esc(t('dh_trapped_text'))}</p>` : ''}`);
+      </div>` : ''}`);
     renderParty();
   }
 
@@ -929,6 +931,9 @@ const DarkheartView = (function () {
     if (key) deps.toast(t(key), 'info');
   }
 
+  /** PD-110: the left rail may scroll on its own when the Expedition card's panels open; bring the opened panel into view. */
+  function revealInRail(sel) { const el = host && host.querySelector(sel); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest' }); }
+
   function focusCancel() { const b = host && host.querySelector('[data-dh-act="confirm-no"]'); if (b) b.focus(); }
 
   function act(name, value, el) {
@@ -945,8 +950,8 @@ const DarkheartView = (function () {
       case 'fear+': return apply(X.adjustFear(s, 1));
       case 'undo': ui = Object.assign(freshUi(), { histOpen: ui.histOpen, partyOpen: ui.partyOpen }); return apply(X.undo(s));
       case 'help-toggle': ui.helpOpen = !ui.helpOpen; return renderStatus();
-      case 'party-toggle': ui.partyOpen = !ui.partyOpen; return renderStatus();
-      case 'menu-toggle': ui.menuOpen = !ui.menuOpen; if (!ui.menuOpen) ui.confirm = null; ui.sceneSig = ''; renderStatus(); return renderScene();
+      case 'party-toggle': ui.partyOpen = !ui.partyOpen; renderStatus(); if (ui.partyOpen) revealInRail('#dh-party'); return;
+      case 'menu-toggle': ui.menuOpen = !ui.menuOpen; if (!ui.menuOpen) ui.confirm = null; ui.sceneSig = ''; renderStatus(); renderScene(); if (ui.menuOpen) revealInRail('#dh-menu-panel'); return;
       // QA-008: the prompt takes focus on the safer action (Cancel), and Cancel hands it back to the control that asked.
       case 'expedition-ask': ui.confirm = 'expedition'; ui.menuOpen = true; renderStatus(); focusCancel(); return;
       case 'campaign-ask': ui.confirm = 'campaign'; ui.sceneSig = ''; renderStatus(); renderScene(); focusCancel(); return;
@@ -1146,15 +1151,19 @@ const DarkheartView = (function () {
       <div class="dh-page">
         <header id="dh-hero" class="dh-hero">
           <div class="dh-hero-art" aria-hidden="true">${heroPlaceholderHtml()}</div>
-          <h2 class="dh-title">${esc(t('dh_title'))}</h2>
+          <div class="dh-hero-bar">
+            <h2 class="dh-title">${esc(t('dh_title'))}</h2>
+            <div id="dh-counters" class="dh-hero-counters" role="group" aria-label="${esc(t('dh_status_label'))}"></div>
+          </div>
         </header>
-        <section id="dh-status" class="dh-status" aria-label="${esc(t('dh_status_label'))}"></section>
+        <div id="dh-status" class="dh-notes" hidden></div>
         <div class="dh-layout">
           <aside class="dh-side">
             <section class="dh-card dh-roll" aria-labelledby="dh-roll-h">
               <h3 id="dh-roll-h" class="dh-panel-title">${I.dice}<span id="dh-roll-title">${esc(t('dh_wayfinder'))}</span></h3>
               <div id="dh-roll"></div>
             </section>
+            <section id="dh-campaign" class="dh-card dh-campaign" aria-label="${esc(t('dh_campaign_label'))}"></section>
           </aside>
           <main class="dh-main">
             <section id="dh-scene" class="dh-card dh-scene" aria-live="polite" aria-label="${esc(t('dh_scene_label'))}"></section>

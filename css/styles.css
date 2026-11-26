@@ -2140,6 +2140,19 @@ html[data-boot-route="lists"] #grid-wrap > .sk-card { display: none; }
   .brand { flex: none; gap: 0; }   /* gap 0: the hidden title's empty box would still take a gap beside the mark */
 }
 
+/* Five labelled ribbons (544px), the mark and the utilities need ~776px; from 641px to 800px the language switch was pushed past
+ * the right edge. The ribbons keep only their icons there, as on a phone (the accessible name stays on each button). */
+@media (max-width: 800px) {
+  :root { --rb-w: 40px; --rb-gap: 3px; --rb-t0: 6px; --rb-t1: 12px; --rb-t2: 14px; --rb-t3: 20px; }
+  .catalog-bar .toolbar { margin-top: var(--s-4); }
+  .ribbon-label > span { display: none; }
+  :root[data-ribbon-skin="fabric"] .ribbon[data-ribbon] .ribbon-fab {
+    background-size: 100% auto, 104px auto, auto;
+    background-position: 0 100%, 50% 0, 0 0;
+  }
+  .ribbon-label svg { width: var(--icon-md); height: var(--icon-md); }
+}
+
 @media (max-width: 640px) {
   body { font-size: 15px; }
   .shell { padding: 0 var(--s-4) var(--s-9); }
