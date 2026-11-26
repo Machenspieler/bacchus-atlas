@@ -712,7 +712,9 @@ test('the page renders environment text through the shared card renderer with th
   assert.match(app, /retier && retier\.fd != null \? retier\.fd/);
   assert.match(app, /retierFor\(env, tier\)/, 'damage scaling is retierFor / retierDamage, not a second algorithm');
   assert.match(app, /EnvTierUtils\.substituteTier\(raw, tier\)/);
-  assert.match(view, /deps\.renderEnvText\(node, p\.env, p\.text, tier, s\.fd\)/);
+  // QA-011: the DCs are the staged hex's FD (sceneFd), the number the scene's FD chip shows, not the roll's
+  assert.match(view, /const fd = sceneFd\(s\)\.fd;/);
+  assert.match(view, /deps\.renderEnvText\(node, p\.env, p\.text, tier, fd\)/);
   for (const bad of ['TIER_TABLE', 'retierDamage', 'diceAvg']) assert.equal(view.includes(bad), false, `the view duplicates ${bad}`);
   assert.equal(/environments\.json/.test(view), false);
 });
@@ -870,4 +872,21 @@ test('QA-004/005/008/012: Left-out names are localised, seeds are not fixed, the
   assert.ok(view.includes('focusCancel()'));
   assert.ok(view.includes("${canRest ? `<p class=\"dh-hint\">"));
   assert.match(read('scripts/build.js'), /'qa-audit'/);
+});
+
+test('QA-011: a previewed hex reads its DCs at FD + 1, the value its checks will use once entered', () => {
+  const s = X.setDice(X.defaults(), { hope: 3, fear: 7, modifier: 0 }).state;   // FD 15, a valid preview
+  const sim = X.confirmArrival(s, { penalty: 'fear', gainFear: false });
+  assert.equal(sim.state.fd, 16);
+  assert.equal(s.fd, 15, 'the preview itself changes nothing');
+});
+
+test('QA-009: a damaged save adopted from another tab is repaired with the same storage warning as at startup', () => {
+  const app = read('js/app.js'), view = read('js/darkheart-view.js');
+  assert.match(app, /SafeStorage\.getRecoverySummary\(\)\.count > before\) \{[\s\S]{0,240}reportStorageRecovery\(\);\s*return 'recovered';/);
+  assert.match(view, /adopted !== 'recovered'/);
+  const S = require('../js/safe-storage.js');
+  const r = S.validators.darkheart(Object.assign(X.defaults(), { fd: 999, tier: 9, heroes: 99 }));
+  assert.equal(r.changed, true, 'a clamp is a recovery, never silent');
+  assert.deepEqual([r.value.fd, r.value.tier, r.value.heroes, r.value.trapped], [30, 4, 8, true]);
 });

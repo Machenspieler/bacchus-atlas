@@ -1871,6 +1871,8 @@ Where: `js/darkheart-guidance.js`, `tests/darkheart-suitability.test.js`, [data-
 5. The "Left out of this scene" hint lists each feature in the reader's language (QA-004); the RU bookmark reads "Тёмное Сердце" (QA-010); the "You cannot rest here" line is shown once (QA-012); the New campaign / New expedition prompt focuses Cancel and Cancel returns focus to the menu (QA-008); `qa-audit/` is excluded from the build (BUILD-001).
 6. Not changed, because each needs an owner decision: QA-006 (Tier IV scenes with no adversary — since settled by PD-108), QA-007 (Rest at FD 30), QA-011 (FD shown in the roll preview), QA-009 (silent clamp of a tampered save), QA-013 (375 px ribbon/logo overlap).
 
+7. **Amended 2026-11-26 (last QA items).** QA-011: in a previewed roll the environment text reads its check DCs at the staged hex's FD (`sceneFd()`, FD + 1), the same number as the scene's FD chip, not the FD the roll was made against. QA-009: a clamped save already raised the storage warning at startup (with a backup); the cross-tab adoption of item 2 now does the same (`refresh` returns `'recovered'`, `reportStorageRecovery()`), instead of only "updated in another tab". QA-013: on a phone the brand box no longer shrinks under its mark (`.brand { flex: none; gap: 0 }` from 1040px down), the five ribbons narrow to 36px at `<=400` and 32px at `<=340`, and the mark steps aside at `<=374` (the h1 stays) — see design.md "Responsive breakpoints".
+
 ## PD-108: Darkheart recommends only the party's tier, and always offers the Master a choice of six
 
 **Decision (owner, 2026-11-26, settling QA-006).** "Adversaries used outside the tier they were written for play badly."

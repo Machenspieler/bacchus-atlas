@@ -3195,7 +3195,14 @@ function renderDarkheartPage() {
       const raw = SafeStorage.readRawFlag(lsStorage, LS_KEYS.darkheart);
       if (raw === darkheartRaw) return false;
       darkheartRaw = raw;
+      const before = SafeStorage.getRecoverySummary().count;
       state.darkheart = SafeStorage.loadStoredJson(lsStorage, LS_KEYS.darkheart, { fallback: () => DarkheartExpedition.defaults(), validate: SafeStorage.validators.darkheart });
+      // QA-009: a damaged save from the other tab is repaired (and backed up) like one at startup, and says so the same way.
+      if (SafeStorage.getRecoverySummary().count > before) {
+        darkheartRaw = SafeStorage.readRawFlag(lsStorage, LS_KEYS.darkheart);   // the repaired text is now this tab's own
+        reportStorageRecovery();
+        return 'recovered';
+      }
       return true;
     },
     toast: showToast,

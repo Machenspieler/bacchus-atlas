@@ -535,6 +535,7 @@ are not breakpoints and are not listed.
 | --- | --- | --- |
 | `<=640` / `>=641` | global (also JS `ENV_ART_ROOM`, `sizes` hints) | phone composition: compact header, sheet-style detail card (slim sticky bar, name scrolls — PD-080), dimmed watermark, stacked toasts, full-width filter rows |
 | `<=400`, `<=480` | component | nav labels drop to icons; detail footer and Prep "New" compaction |
+| `<=400`, `<=374`, `<=340` | header | five ribbons fit beside the brand mark: ribbons 36px, tighter gaps (`<=400`); the brand mark steps aside below a 375px phone, its h1 stays (`<=374`); 32px ribbons on a 320px phone (`<=340`) (QA-013) |
 | `<=760` / `>=761` | Prep | Prep bar and picker toolbars wrap, 44px touch rows |
 | `<=900` / `>=901` | Catalog, Prep, Journey | Catalog filters collapse behind the disclosure / sit inline in the three-column bar; Prep goes single column; Journey's floating panels become map-wide |
 | `641–1091` | Catalog | grid capped at two 420px cards (a third 340px column needs a 1092px viewport) |

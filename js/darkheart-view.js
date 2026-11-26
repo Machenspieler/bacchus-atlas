@@ -494,9 +494,12 @@ const DarkheartView = (function () {
   function fillPendingText() {
     const s = S();
     const tier = X.envReadTier(s);
+    // QA-011: the DCs in the text are the FD of the staged hex — for a previewed roll the value it will have once entered (+1),
+    // the same number the scene's FD chip shows — never the FD the Wayfinder roll itself was made against.
+    const fd = sceneFd(s).fd;
     pendingText.forEach((p, i) => {
       const node = host && host.querySelector(`[data-dh-text="${i}"]`);
-      if (node) deps.renderEnvText(node, p.env, p.text, tier, s.fd);
+      if (node) deps.renderEnvText(node, p.env, p.text, tier, fd);
     });
     pendingText = [];
   }
@@ -1054,9 +1057,10 @@ const DarkheartView = (function () {
    * stale screen; true means the page changed under the user, so the press is dropped and the fresh state is shown. */
   function adoptStored(announceIt) {
     if (!deps || typeof deps.refresh !== 'function') return false;
-    if (!deps.refresh()) return false;
+    const adopted = deps.refresh();
+    if (!adopted) return false;
     renderAll();
-    if (announceIt) deps.toast(t('dh_synced_other_tab'), 'info');
+    if (announceIt && adopted !== 'recovered') deps.toast(t('dh_synced_other_tab'), 'info');   // 'recovered': the storage warning was already shown
     return true;
   }
 

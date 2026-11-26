@@ -2128,6 +2128,9 @@ html[data-boot-route="lists"] #grid-wrap > .sk-card { display: none; }
  * squeezed into a sliver and the first ribbon cut its last letters, so the brand mark stands alone. */
 @media (max-width: 1040px) {
   .brand-title-text { display: none; }
+  /* QA-013: with the title gone the brand is only its mark. min-width: 0 (there for the title's ellipsis) let the flex row
+   * shrink the box below the 28px-high mark's width, and on a phone the first ribbon was drawn over the logo. */
+  .brand { flex: none; gap: 0; }   /* gap 0: the hidden title's empty box would still take a gap beside the mark */
 }
 
 @media (max-width: 640px) {
@@ -2137,7 +2140,7 @@ html[data-boot-route="lists"] #grid-wrap > .sk-card { display: none; }
   /* The header stays on one row: the title comes off and the ribbons keep only
    * their icons (the accessible name stays on each button). */
   .header-inner { gap: var(--s-3); padding-inline: max(var(--s-4), env(safe-area-inset-left)) max(var(--s-4), env(safe-area-inset-right)); }
-  .brand { gap: var(--s-2); min-width: 0; }
+  .brand { min-width: 0; }   /* no gap: the title is hidden from 1040px down (QA-013) */
   #brand-home::after { inset: -6px -6px; }
   .header-actions { gap: var(--s-2); }
   :root { --rb-w: 40px; --rb-gap: 3px; --rb-t0: 6px; --rb-t1: 12px; --rb-t2: 14px; --rb-t3: 20px; }
@@ -4084,3 +4087,20 @@ body.is-prep-dragging, body.is-prep-dragging * { cursor: grabbing !important; us
 @media (any-pointer: coarse) and (not (any-pointer: fine)) { .prep-drag-ghost { display: none; } }
 /* Hover tooltips would trail the pointer across every card it crosses. */
 body.is-prep-dragging .tooltip { display: none !important; }
+
+/* QA-013: five ribbons (PD-099), the brand mark and the utilities need ~400px; below that the header overflowed (the language
+ * switch was cut off) or the first ribbon was drawn over the logo. Tighten the ribbons and gaps first, which keeps the logo down
+ * to a 375px phone; on narrower screens the mark steps aside (the Catalogue ribbon is home, as on Prep), and the h1 stays in
+ * the accessibility tree. */
+@media (max-width: 400px) {
+  :root { --rb-w: 36px; --rb-gap: 2px; }
+  .header-inner { gap: var(--s-2); }
+}
+@media (max-width: 374px) {
+  .brand-mark { display: none; }
+}
+@media (max-width: 340px) {
+  /* a 320px phone: even without the mark the five ribbons and the utilities were 10px too wide */
+  :root { --rb-w: 32px; }
+  .header-actions { gap: var(--s-1); }
+}
