@@ -354,6 +354,8 @@
   function rest(state, opts) {
     var o = opts || {};
     if (state.phase !== 'arrived' || !state.arrival) return result(state, false, 'not-arrived');
+    // QA-007: FD 30 is the end of the game (PD-099). No rest, so no Whisper in the Dark can lift it; only Undo or the GM's counter correction.
+    if (state.trapped) return result(state, false, 'trapped');
     var kind = o.kind;
     if (kind !== 'short' && kind !== 'long') return result(state, false, 'bad-kind');
     var policy = OUTCOME_RULES[state.arrival.outcome].rest;

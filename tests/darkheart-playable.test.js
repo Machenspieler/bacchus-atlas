@@ -839,6 +839,10 @@ test('Forest Difficulty never exceeds 30: the game ends there (arrival, manual +
   const two = X.setDice(at(29), { hope: 2, fear: 8, modifier: 0 }).state;           // dark omen: +2 FD on top of +1
   assert.equal(X.confirmArrival(two, { penalty: 'fd' }).state.fd, 30);
   assert.equal(X.adjustFd(at(30), 1).ok, false);
+  // QA-007: once trapped, no rest of either kind (so no Whisper in the Dark) can lift it; Undo and the GM's correction still can
+  for (const kind of ['short', 'long']) assert.equal(X.rest(arrived, { kind, whisper: true, gainFear: false, fdRoll: 2 }).reason, 'trapped');
+  assert.equal(X.undo(arrived).state.trapped, false);
+  assert.equal(X.adjustFd(arrived, -1).state.trapped, false);
   const forced = Object.assign(X.defaults(), { fd: 29 });
   assert.equal(X.confirmArrival(X.setDice(forced, { hope: 2, fear: 8, modifier: 0 }).state, { penalty: 'fd' }).state.fd, 30);
 });

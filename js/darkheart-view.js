@@ -390,7 +390,7 @@ const DarkheartView = (function () {
     const rule = X.OUTCOME_RULES[a.outcome];
     const policy = rule.rest;
     const limited = s.settings.shortRestLimit && s.shortRests >= 3;
-    const canRest = policy !== 'none';
+    const canRest = policy !== 'none' && !s.trapped;   // QA-007: no rest while trapped at FD 30
     const whisperOff = policy === 'no-fd-reduction';
     const fearOn = s.settings.fearOnRest;
     const last = s.lastRest;
@@ -401,7 +401,7 @@ const DarkheartView = (function () {
     // Its open state is view state (ui.restOpen), so a rest, a re-render or a resize never resets it, and it never touches the campaign.
     return `
       <details class="dh-rest" id="dh-rest-disc"${ui.restOpen ? ' open' : ''}>
-        <summary><span class="dh-rest-name">${esc(t('dh_rest'))}</span><span class="dh-rest-sub">${esc(t(canRest ? 'dh_rest_sub' : 'dh_rest_none'))}</span></summary>
+        <summary><span class="dh-rest-name">${esc(t('dh_rest'))}</span><span class="dh-rest-sub">${esc(t(canRest ? 'dh_rest_sub' : s.trapped ? 'dh_rest_trapped' : 'dh_rest_none'))}</span></summary>
         <div class="dh-rest-body">
         ${canRest ? `<p class="dh-hint">${esc(t('dh_rest_' + policy))}</p>` : ''}
         ${canRest ? `
