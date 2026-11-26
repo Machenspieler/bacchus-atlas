@@ -442,6 +442,9 @@ html { overflow-x: clip; }   /* the filter bar's glass runs edge to edge (100vw)
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   height: 1em; text-align: center; line-height: 1;   /* 1, not more: the lower line must clear the swallowtail's stitching */
 }
+/* Owner, 2026-11-26: centred on the one-line axis the lower line sat too close to the swallowtail; the whole two-line label
+ * (icon included, so it stays at the block's middle) rides 4px higher. */
+.ribbon-label:has(.ribbon-lines) { bottom: 23px; }
 /* ---- Fabric ribbon skin (the default; js/app.js sets data-ribbon-skin="fabric" on <html> unless ?ribbonSkin=css) ----
  * All four ribbons. It swaps the PAINT of .ribbon-fab and nothing else: the button's height transition,
  * sway/drop keyframes, transform origin, drop-shadow, clip-path swallow-tail, label and dim overlay are all the

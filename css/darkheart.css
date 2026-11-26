@@ -47,6 +47,9 @@ body[data-route="darkheart"] .catalog-bar-wrap { display: none; }
              1px 1px 0 var(--ink), -1px -1px 0 var(--ink), 1px -1px 0 var(--ink), -1px 1px 0 var(--ink);
   --dh-halo-filter: drop-shadow(1px 0 0 var(--ink)) drop-shadow(-1px 0 0 var(--ink)) drop-shadow(0 1px 0 var(--ink)) drop-shadow(0 -1px 0 var(--ink));
   display: flex; align-items: flex-end; gap: var(--s-4); box-sizing: border-box; min-width: 0;
+  /* One contour for everything in the block (owner: the "?" had a stronger one — its own filter on top of its text shadow):
+   * the filter on the container draws it round every glyph, sign and ring alike; the text shadow under it thickens text equally. */
+  filter: var(--dh-halo-filter);
 }
 .dh-hero-counters .dh-counter { gap: 0; }
 .dh-hero-counters .dh-counter-label { font-size: var(--fs-xs); color: var(--parchment); text-shadow: var(--dh-halo); }
@@ -54,9 +57,10 @@ body[data-route="darkheart"] .catalog-bar-wrap { display: none; }
 .dh-hero-counters .dh-counter-row { gap: 0; }
 /* The steppers lose their box: a bare outlined sign, a faint ring only on hover; the hit area stays a 24px square. */
 .dh-hero-counters .dh-step-btn { width: var(--s-6); height: var(--s-6); background: transparent; border-color: transparent; color: var(--parchment); }
-.dh-hero-counters .dh-step-btn svg { filter: var(--dh-halo-filter); }
+
+.dh-hero-counters .dh-step-btn svg { filter: var(--dh-halo-filter); }   /* the icon's equivalent of the text shadow: same weight as the digits */
 .dh-hero-counters .dh-step-btn:hover:not(:disabled) { background: transparent; border-color: var(--parchment-dim); color: var(--hope-soft); }
-.dh-hero-counters .dh-help-btn { width: var(--s-6); height: var(--s-6); font-size: var(--fs-xs); border-color: var(--parchment-dim); color: var(--parchment); text-shadow: var(--dh-halo); filter: var(--dh-halo-filter); margin-bottom: 0; }
+.dh-hero-counters .dh-help-btn { width: var(--s-6); height: var(--s-6); font-size: var(--fs-xs); border-color: var(--parchment-dim); color: var(--parchment); text-shadow: var(--dh-halo); margin-bottom: 0; }
 .dh-hero-counters .dh-help-btn[aria-expanded="true"] { background: transparent; border-color: var(--hope-soft); color: var(--hope-soft); }
 .dh-toolbar-group { display: flex; align-items: center; gap: var(--s-4); min-width: 0; }
 .dh-counter { display: grid; gap: var(--s-1); justify-items: start; min-width: 0; }
