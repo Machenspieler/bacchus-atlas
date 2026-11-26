@@ -33,6 +33,7 @@ function normalizeLang(v) { return v === 'en' ? 'en' : 'ru'; }
  * CLAUDE.md. `lsStorage` is resolved once: null when localStorage cannot be
  * used at all, in which case every read below quietly returns its fallback. */
 const lsStorage = SafeStorage.getStorage();
+let darkheartRaw = SafeStorage.readRawFlag(lsStorage, LS_KEYS.darkheart);   // the stored text of dhcodex_darkheart this tab last wrote or read (QA-002)
 
 /* The language is written through persist(), so what comes back out is JSON —
  * `"en"`, quote marks and all, which never equals `en`. Parsing it here keeps
@@ -3186,7 +3187,17 @@ function renderDarkheartPage() {
     t,
     lang: () => state.lang,
     get: () => state.darkheart,
-    set: next => { state.darkheart = next; persist(LS_KEYS.darkheart, next); },
+    set: next => { state.darkheart = next; persist(LS_KEYS.darkheart, next); darkheartRaw = SafeStorage.readRawFlag(lsStorage, LS_KEYS.darkheart); },
+    // QA-002: another tab may have saved the expedition. Compared by the raw stored text (what this tab last wrote or read), never by a
+    // re-serialised object, so this tab's own writes never look foreign. true = a different save was found and adopted.
+    storageKey: LS_KEYS.darkheart,
+    refresh: () => {
+      const raw = SafeStorage.readRawFlag(lsStorage, LS_KEYS.darkheart);
+      if (raw === darkheartRaw) return false;
+      darkheartRaw = raw;
+      state.darkheart = SafeStorage.loadStoredJson(lsStorage, LS_KEYS.darkheart, { fallback: () => DarkheartExpedition.defaults(), validate: SafeStorage.validators.darkheart });
+      return true;
+    },
     toast: showToast,
     environments: () => allEnvs(),
     renderEnvText: renderEnvTextForDarkheart,

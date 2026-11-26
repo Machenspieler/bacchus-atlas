@@ -495,7 +495,22 @@ test('every string the Darkheart page asks for exists in English and Russian', (
 test('the page owns no storage call and never shows catalogue text of its own: it reads references', () => {
   const view = read('js/darkheart-view.js');
   for (const bad of ['localStorage', 'sessionStorage', 'JSON.parse', 'fetch(']) assert.equal(view.includes(bad), false, bad);
-  assert.ok(read('js/app.js').includes("set: next => { state.darkheart = next; persist(LS_KEYS.darkheart, next); }"));
+  assert.ok(read('js/app.js').includes("set: next => { state.darkheart = next; persist(LS_KEYS.darkheart, next);"));
+});
+
+test('QA-001: the first NPC of a scene is seeded from the scene, not a fixed 0 (and stays under the stored cap)', () => {
+  const view = read('js/darkheart-view.js');
+  assert.ok(view.includes('initialNpcSeed(outcome, id)'));
+  assert.equal(view.includes('npc: keep ? s.scene.npc : { seed: 0,'), false);
+  assert.ok(view.includes('% 990000'));
+});
+
+test('QA-002: the page adopts another tab\'s save by raw stored text before any press, input or setting change', () => {
+  const view = read('js/darkheart-view.js'), app = read('js/app.js');
+  for (const ev of ["'storage'", "'focus'", "'visibilitychange'"]) assert.ok(view.includes(ev), ev);
+  assert.equal((view.match(/if \(adoptStored\(true\)\) return;/g) || []).length, 3);   // click, input, change
+  assert.ok(app.includes('raw === darkheartRaw'));
+  assert.ok(app.includes('storageKey: LS_KEYS.darkheart'));
 });
 
 test('Darkheart rule text is complete and bilingual for all twelve outcomes', () => {

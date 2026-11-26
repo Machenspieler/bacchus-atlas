@@ -26,7 +26,7 @@ const DarkheartView = (function () {
   let deps = null;
   let data = { status: 'loading' };      // { status: 'loading'|'ready'|'error', selectable, withheld, ctx }
   let ui = null;                          // transient view state (never persisted)
-  let onClick = null, onInput = null, onChange = null, onKey = null;
+  let onClick = null, onInput = null, onChange = null, onKey = null, onStorage = null, onFocus = null;
   let mountToken = 0;
 
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -87,11 +87,21 @@ const DarkheartView = (function () {
     const keep = s.scene.outcome === outcome;     // same outcome, scene replaced (tier change): keep NPC and locks
     const scene = Object.assign(X.emptyScene(), {
       outcome, seed: s.scene.seed, sceneId: id, dealt: s.scene.dealt,
-      npc: keep ? s.scene.npc : { seed: 0, locked: false, value: null },
+      npc: keep ? s.scene.npc : { seed: initialNpcSeed(outcome, id), locked: false, value: null },
       encounter: keep ? s.scene.encounter : { seed: 0, locked: [], gmTheme: null },
     });
     deps.set(X.setScene(s, scene).state);
     ensureNpc();
+  }
+
+  /** QA-001: the first NPC of a scene must not be one fixed person per outcome. The seed is derived from the scene's own id,
+   * the outcome and the campaign's scene counter, so a new scene is a new person while a reload still shows the same one
+   * (the value is stored; "New NPC" then bumps this seed by one). */
+  function initialNpcSeed(outcome, sceneId) {
+    let h = 2166136261;
+    const text = String(sceneId || '') + '|' + outcome + '|' + (S().scene.seed || 0);
+    for (let i = 0; i < text.length; i += 1) { h ^= text.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return (h >>> 0) % 990000;   // the stored seed is capped at 1,000,000 (SafeStorage); headroom for "New NPC" bumps
   }
 
   function ensureNpc() {
@@ -1025,11 +1035,27 @@ const DarkheartView = (function () {
 
   /* ---------------- events ---------------- */
 
+  /** QA-002: another tab may have saved the expedition since this one last read it. Adopt the stored state before acting on a
+   * stale screen; true means the page changed under the user, so the press is dropped and the fresh state is shown. */
+  function adoptStored(announceIt) {
+    if (!deps || typeof deps.refresh !== 'function') return false;
+    if (!deps.refresh()) return false;
+    renderAll();
+    if (announceIt) deps.toast(t('dh_synced_other_tab'), 'info');
+    return true;
+  }
+
   function bindEvents() {
+    onStorage = e => { if (e.key === null || e.key === deps.storageKey) adoptStored(true); };
+    onFocus = () => { if (document.visibilityState !== 'hidden') adoptStored(true); };
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onFocus);
     onClick = e => {
       const btn = e.target.closest('[data-dh-act]');
       if (!btn || !host.contains(btn) || btn.disabled) return;
       e.preventDefault();
+      if (adoptStored(true)) return;
       act(btn.dataset.dhAct, btn.dataset.dhValue, btn);
       // A control that was rebuilt under the pointer keeps keyboard focus (steppers, tier, toggles), unless the action moved focus on purpose.
       if (!document.contains(btn) && host && (document.activeElement === document.body || !host.contains(document.activeElement))) {
@@ -1043,6 +1069,7 @@ const DarkheartView = (function () {
       if (ui.menuOpen) { ui.menuOpen = false; ui.confirm = null; ui.sceneSig = ''; renderStatus(); renderScene(); const b = host.querySelector('.dh-menu-btn'); if (b) b.focus(); }
     };
     onInput = e => {
+      if (adoptStored(true)) return;
       const el = e.target;
       if (el.matches('[data-dh-die]')) {
         const k = el.dataset.dhDie;
@@ -1061,6 +1088,7 @@ const DarkheartView = (function () {
       else if (el.id === 'dh-rest-mfd') ui.manualFd = el.value;
     };
     onChange = e => {
+      if (adoptStored(true)) return;
       if (e.target.matches('input[name="dh-penalty"]')) { ui.penalty = e.target.value; renderPreview(); }
       else if (e.target.matches('[data-dh-setting]')) { const res = X.setSettings(S(), { [e.target.dataset.dhSetting]: e.target.checked }); deps.set(res.state); renderAll(); }
       else if (e.target.id === 'dh-rest-whisper') ui.restWhisper = e.target.checked;
@@ -1130,6 +1158,9 @@ const DarkheartView = (function () {
     host.removeEventListener('keydown', onKey);
     host.removeEventListener('input', onInput);
     host.removeEventListener('change', onChange);
+    window.removeEventListener('storage', onStorage);
+    window.removeEventListener('focus', onFocus);
+    document.removeEventListener('visibilitychange', onFocus);
     host = null; deps = null;
   }
 

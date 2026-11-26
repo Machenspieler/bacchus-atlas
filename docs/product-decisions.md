@@ -1856,3 +1856,10 @@ Contract: [data-contracts/darkheart-suitability.md](data-contracts/darkheart-sui
 3. It is a suggestion like every Guidance line: never stored, never tracked, never an eligibility rule. The hazard outcomes keep the book's own countdowns (deadly hazard 6, obstacle 3) and get no `stakes` line.
 
 Where: `js/darkheart-guidance.js`, `tests/darkheart-suitability.test.js`, [data-contracts/darkheart-suitability.md](data-contracts/darkheart-suitability.md).
+
+## PD-107: Darkheart's first NPC is varied, and a second tab never overwrites the expedition
+
+**Decision (2026-11-26, from QA-001 / QA-002 of the `qa-audit/` report).**
+
+1. A scene's first generated NPC no longer starts at seed 0 (one fixed person per outcome). `initialNpcSeed()` in `js/darkheart-view.js` derives it from the scene id, the outcome and the campaign's scene counter (below the stored cap of 1,000,000, leaving room for "New NPC" bumps). It is still stored, so a reload shows the same person.
+2. `#/darkheart` adopts another tab's save instead of overwriting it. The page listens for `storage` (the `dhcodex_darkheart` key), `focus` and `visibilitychange`, and checks before every click, dice input and house-rule change. The check compares the raw stored text with what this tab last wrote or read (`darkheartRaw` in `js/app.js`), never a re-serialised object. When it differs, the stored state is loaded, the page re-renders, a toast says so (`dh_synced_other_tab`), and the stale press is dropped. This is last-write-wins avoided by re-reading, not locking; no merge, no banner like Journey's PD-053 conflict dialog.
