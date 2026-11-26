@@ -1240,7 +1240,7 @@
     "dh_rest_result_short_nofd": "Short rest: Forest Difficulty unchanged, GM Fear +{fear} (1d4 = {d4}).",
     "dh_rest_result_long_nofd": "Long rest: Forest Difficulty unchanged, GM Fear +{fear} (1d4 = {d4} + {heroes} heroes).",
     "dh_rest_no_whisper": "Whisper in the Dark not taken.",
-    "dh_rest_capped": "GM Fear capped at 12.",
+    "dh_rest_capped": "GM Fear tops out at 12, so only what fits was added.",
     "dh_gm_theme": "Adversary theme (optional)",
     "dh_gm_theme_hint": "This scene names no adversary theme, so none is suggested. Pick one if you want a fight.",
     "dh_gm_theme_chosen": "Suggestions follow the theme you chose. Tap it again to clear."
@@ -2486,7 +2486,7 @@
     "dh_rest_result_short_nofd": "Короткий отдых: Сложность леса без изменений, Страх Мастера +{fear} (1d4 = {d4}).",
     "dh_rest_result_long_nofd": "Долгий отдых: Сложность леса без изменений, Страх Мастера +{fear} (1d4 = {d4} + {heroes} героев).",
     "dh_rest_no_whisper": "«Шёпот во тьме» не взят.",
-    "dh_rest_capped": "Страх Мастера ограничен 12.",
+    "dh_rest_capped": "Страх Мастера не бывает больше 12, поэтому добавлено только то, что поместилось.",
     "dh_gm_theme": "Тема противников (по желанию)",
     "dh_gm_theme_hint": "У сцены нет темы противников, поэтому никто не предложен. Выберите тему, если нужен бой.",
     "dh_gm_theme_chosen": "Предложения следуют выбранной теме. Нажмите ещё раз, чтобы снять."
