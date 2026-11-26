@@ -197,7 +197,7 @@
         V(['water'], 'A stream too wide to hop, cold and awkward to cross.', 'Ручей слишком широк, чтобы перепрыгнуть, холодный и неудобный для переправы.'),
         V(['fire'], 'A smouldering patch and drifting ash across the way.', 'Тлеющий участок и летящий пепел поперёк пути.'),
         V(['uncanny'], 'A patch where the way shifts and fogs; the party loses time, not safety.', 'Участок, где путь меняется и тонет в тумане: отряд теряет время, но не безопасность.'),
-        V(['wild'], 'A thorn thicket or a warren that riddles the path near {feat}.', 'Колючий кустарник или нора, изрывшая тропу у «{feat}».'),
+        V(['wild'], 'A thorn thicket or a warren that riddles the path near {feat}.', 'Колючий кустарник или сеть нор, изрывших тропу у «{feat}».'),
         V([], 'Something in the place’s own terrain blocks the way at {feat}: an inconvenience, not a threat.', 'Что-то в рельефе самого места перегораживает путь у «{feat}»: неудобство, а не угроза.'),
       ] },
       { id: 'around', label: B('Possible ways around', 'Пути в обход'), v: [

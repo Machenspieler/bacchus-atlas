@@ -210,7 +210,8 @@ const DarkheartView = (function () {
         ${counter('fear', 'dh_gm_fear', s.fear, 'dh_fear_down', 'dh_fear_up', 0, X.FEAR_MAX, '')}
         ${counter('heart', 'dh_quest_heart', q.heart, 'dh_quest_heart_down', 'dh_quest_heart_up', 0, X.HEART_START, ' dh-counter--quest' + (q.heart === 0 ? ' is-done' : ''))}
         ${counter('rescue', 'dh_quest_rescue', q.rescue == null ? '–' : q.rescue, 'dh_quest_rescue_down', 'dh_quest_rescue_up', 0, X.RESCUE_MAX, ' dh-counter--quest' + (q.rescue === 0 ? ' is-done' : ''))}
-        <button type="button" class="dh-help-btn" data-dh-act="help-toggle" aria-expanded="${ui.helpOpen}" aria-controls="dh-help" aria-label="${esc(t('dh_help_label'))}">?</button>`);
+`);
+    setRegion('helpbtn', `<button type="button" class="dh-help-btn" data-dh-act="help-toggle" aria-expanded="${ui.helpOpen}" aria-controls="dh-help" aria-label="${esc(t('dh_help_label'))}">?</button>`);
     const notes = `${ui.helpOpen ? `<div id="dh-help" class="dh-help">
         <p><strong>${esc(t('dh_forest_difficulty'))}.</strong> ${esc(fdNote)}</p>
         <p><strong>${esc(t('dh_gm_fear'))}.</strong> ${esc(t('dh_fear_note'))}</p>
@@ -1184,6 +1185,7 @@ const DarkheartView = (function () {
           <div class="dh-hero-bar">
             <h2 class="dh-title">${esc(t('dh_title'))}</h2>
             <div id="dh-counters" class="dh-hero-counters" role="group" aria-label="${esc(t('dh_status_label'))}"></div>
+            <div id="dh-helpbtn" class="dh-help-slot"></div>
           </div>
         </header>
         <div id="dh-status" class="dh-notes" hidden></div>
