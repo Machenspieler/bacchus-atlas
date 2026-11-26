@@ -26,7 +26,7 @@ const DarkheartView = (function () {
   let deps = null;
   let data = { status: 'loading' };      // { status: 'loading'|'ready'|'error', selectable, withheld, ctx }
   let ui = null;                          // transient view state (never persisted)
-  let onClick = null, onInput = null, onChange = null, onKey = null, onStorage = null, onFocus = null;
+  let onClick = null, onInput = null, onChange = null, onKey = null, onStorage = null, onFocus = null, railObserver = null;
   let mountToken = 0;
 
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -1175,6 +1175,13 @@ const DarkheartView = (function () {
         </div>
       </div>`;
     bindEvents();
+    // PD-110: the sticky rail's height feeds its `top` (css/darkheart.css), so a rail taller than the window sticks by its bottom
+    // instead of needing a scrollbar of its own.
+    const rail = host.querySelector('.dh-side');
+    if (rail && typeof ResizeObserver === 'function') {
+      railObserver = new ResizeObserver(entries => { for (const e of entries) rail.style.setProperty('--dh-rail-h', Math.ceil(e.borderBoxSize && e.borderBoxSize[0] ? e.borderBoxSize[0].blockSize : e.contentRect.height) + 'px'); });
+      railObserver.observe(rail);
+    }
     renderAll();
     load();
   }
@@ -1186,6 +1193,7 @@ const DarkheartView = (function () {
     host.removeEventListener('keydown', onKey);
     host.removeEventListener('input', onInput);
     host.removeEventListener('change', onChange);
+    if (railObserver) { railObserver.disconnect(); railObserver = null; }
     window.removeEventListener('storage', onStorage);
     window.removeEventListener('focus', onFocus);
     document.removeEventListener('visibilitychange', onFocus);

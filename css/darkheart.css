@@ -38,12 +38,26 @@ body[data-route="darkheart"] .catalog-bar-wrap { display: none; }
 /* ---------- 1. the session counters on the hero (PD-110) ---------- */
 /* The two counters the Master adjusts all session, and their "?", sit on the hero beside the page title, on one solid plate (no
  * glass: a translucent fill without blur reads as ghosted text, and the art behind changes per outcome). Wraps under the title
- * when the row is too narrow; the hero then grows (min-height). */
+ * when the row is too narrow; the hero then grows (min-height).
+ * Owner, 2026-11-26: no plate at all — the counters sit straight on the picture, each letter, digit and sign drawn with a 1px dark
+ * contour (--dh-halo for text, --dh-halo-filter for the icons and the "?" ring) so they read over bright and dark art alike. */
 .dh-hero-bar { position: relative; z-index: 1; display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--s-3) var(--s-6); width: 100%; min-width: 0; }
 .dh-hero-counters {
-  display: flex; align-items: center; gap: var(--s-5); box-sizing: border-box; min-width: 0;
-  padding: var(--s-2) var(--s-4); background: var(--ink-card); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--e-2);
+  --dh-halo: 1px 0 0 var(--ink), -1px 0 0 var(--ink), 0 1px 0 var(--ink), 0 -1px 0 var(--ink),
+             1px 1px 0 var(--ink), -1px -1px 0 var(--ink), 1px -1px 0 var(--ink), -1px 1px 0 var(--ink);
+  --dh-halo-filter: drop-shadow(1px 0 0 var(--ink)) drop-shadow(-1px 0 0 var(--ink)) drop-shadow(0 1px 0 var(--ink)) drop-shadow(0 -1px 0 var(--ink));
+  display: flex; align-items: flex-end; gap: var(--s-4); box-sizing: border-box; min-width: 0;
 }
+.dh-hero-counters .dh-counter { gap: 0; }
+.dh-hero-counters .dh-counter-label { font-size: var(--fs-xs); color: var(--parchment); text-shadow: var(--dh-halo); }
+.dh-hero-counters .dh-counter-num { font-size: var(--fs-lg); min-width: 2ch; text-shadow: var(--dh-halo); }
+.dh-hero-counters .dh-counter-row { gap: 0; }
+/* The steppers lose their box: a bare outlined sign, a faint ring only on hover; the hit area stays a 24px square. */
+.dh-hero-counters .dh-step-btn { width: var(--s-6); height: var(--s-6); background: transparent; border-color: transparent; color: var(--parchment); }
+.dh-hero-counters .dh-step-btn svg { filter: var(--dh-halo-filter); }
+.dh-hero-counters .dh-step-btn:hover:not(:disabled) { background: transparent; border-color: var(--parchment-dim); color: var(--hope-soft); }
+.dh-hero-counters .dh-help-btn { width: var(--s-6); height: var(--s-6); font-size: var(--fs-xs); border-color: var(--parchment-dim); color: var(--parchment); text-shadow: var(--dh-halo); filter: var(--dh-halo-filter); margin-bottom: 0; }
+.dh-hero-counters .dh-help-btn[aria-expanded="true"] { background: transparent; border-color: var(--hope-soft); color: var(--hope-soft); }
 .dh-toolbar-group { display: flex; align-items: center; gap: var(--s-4); min-width: 0; }
 .dh-counter { display: grid; gap: var(--s-1); justify-items: start; min-width: 0; }
 .dh-counter-label { font-family: var(--font-mono); font-size: var(--fs-xs); line-height: var(--lh-lg); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--parchment-dim); }
@@ -105,12 +119,12 @@ body[data-route="darkheart"] .catalog-bar-wrap { display: none; }
 .dh-tools { display: grid; gap: var(--s-4); grid-template-columns: minmax(0, 1fr); align-items: start; }
 @media (min-width: 901px) {
   .dh-layout { grid-template-columns: minmax(var(--dh-side-min), var(--dh-side-max)) minmax(0, 1fr); }
-  /* PD-110: with the Expedition card under the roll the rail can outgrow the window (an open menu, a rest panel); it then scrolls on
-   * its own instead of hiding its bottom. The 4px inset keeps the cards' shadows and focus rings inside the scroll box. */
+  /* PD-110: the rail sticks under the header while it fits the window. Taller than the window (the Expedition card, an open menu, a
+   * rest panel) it scrolls with the page until its BOTTOM meets the window's bottom and sticks there, so every part is reachable and
+   * the rail never shows a scrollbar of its own. --dh-rail-h is the rail's height, kept current by the view (ResizeObserver). */
   .dh-side {
-    position: sticky; top: calc(var(--hdr-h) + var(--s-3));
-    max-height: calc(100dvh - var(--hdr-h) - var(--s-6)); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
-    padding: var(--s-1); margin: calc(-1 * var(--s-1));
+    position: sticky;
+    top: min(calc(var(--hdr-h) + var(--s-3)), calc(100dvh - var(--dh-rail-h, 0px) - var(--s-3)));
   }
 }
 @media (min-width: 1200px) { .dh-tools { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } .dh-tools > [hidden] { display: none; } }
@@ -435,11 +449,12 @@ details[open] > summary::before { transform: rotate(90deg); }
   .dh-hero-art { align-items: flex-start; }
   .dh-hero-label { margin-top: var(--s-9); }
   .dh-hero-bar { gap: var(--s-2); }
-  .dh-hero-counters { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: var(--s-2); align-items: end; padding: var(--s-2) var(--s-3); }
-  .dh-counter .dh-step-btn { width: var(--h-tap); height: var(--h-tap); }
+  .dh-hero-counters { gap: var(--s-4); }
+  .dh-hero-counters .dh-step-btn { width: var(--h-tap); height: var(--h-tap); }   /* a 44px touch target; the box is invisible, so only the sign shows */
+  .dh-hero-counters .dh-help-btn { width: var(--h-sm); height: var(--h-sm); margin: calc((var(--h-tap) - var(--h-sm)) / 2) 0; }
   .dh-counter-row { gap: var(--s-1); }
   .dh-counter-num { min-width: 2ch; }
-  .dh-help-btn { width: var(--h-tap); height: var(--h-tap); align-self: end; }
+
   .dh-party-btn, .dh-campaign-actions .btn { min-height: var(--h-tap); }
   .dh-campaign-actions .btn { white-space: normal; line-height: var(--lh-xl); padding-inline: var(--s-2); text-align: center; }
   .dh-menu-panel { grid-template-columns: minmax(0, 1fr); }
