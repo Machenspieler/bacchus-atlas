@@ -46174,6 +46174,606 @@
         "settlement"
       ],
       "source": "Resting Dagger"
+    },
+    {
+      "id": "one-horse-town",
+      "tier": 1,
+      "type": "social",
+      "difficulty": 10,
+      "name": {
+        "en": "One-Horse Town",
+        "ru": "Захолустный Городок"
+      },
+      "lore": {
+        "en": "A town with not a lot going on. At least at first glance.",
+        "ru": "Городок, где почти ничего не происходит. По крайней мере, на первый взгляд."
+      },
+      "impulses": {
+        "en": [
+          "Give them a place to put their boots up",
+          "let them shop",
+          "whisper rumors in their ears"
+        ],
+        "ru": [
+          "Дать им место, где можно расслабиться",
+          "позволить им закупиться",
+          "нашёптывать им слухи"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Black Hats",
+          "Corrupt Sheriff",
+          "Crooked Deputy",
+          "Deputized Townies"
+        ],
+        "ru": [
+          "Чёрные Шляпы",
+          "Продажный Шериф",
+          "Нечестный Помощник Шерифа",
+          "Помощники Шерифа из Горожан"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Main Street",
+            "ru": "Главная Улица"
+          },
+          "description": {
+            "en": "This entire town fits on a single lane, with general goods and services readily available. PCs can easily find a place to safely rest, buy basic provisions, supplies, wagons, and mining gear. But anything specialized is best found elsewhere.",
+            "ru": "Весь городок умещается на одной улице, где без труда можно найти товары и услуги первой необходимости. Персонажи легко найдут место, чтобы безопасно отдохнуть, купить простые продукты, припасы, повозки и снаряжение для добычи руды. Но всё специализированное лучше искать в другом месте."
+          },
+          "prompt": {
+            "en": "What isn’t available that should be in a town like this? What’s the one thing this place does really well?",
+            "ru": "Чего здесь нет, хотя должно быть в таком городке? Что это место делает по-настоящему хорошо?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Bounty Board",
+            "ru": "Доска Розыска"
+          },
+          "description": {
+            "en": "This town has a bounty board with at least 1d4 Investigations (2) posted for local outlaws. Completing an investigation and bringing a bounty in alive nets the PCs five handfuls of gold; a dead bounty nets them three handfuls.",
+            "ru": "На доске розыска этого городка вывешено не менее 1d4 Расследований (2) о местных преступниках. Завершив расследование и доставив преступника живым, персонажи получают пять горстей золота; за мёртвого — три горсти."
+          },
+          "prompt": {
+            "en": "What happens if the PCs see themselves on the board? What’s the strangest crime an outlaw has a bounty on them for?",
+            "ru": "Что произойдёт, если персонажи увидят себя на доске? За какое самое странное преступление назначена награда за голову преступника?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Whispers & Gossip",
+            "ru": "Шёпот и Сплетни"
+          },
+          "description": {
+            "en": "Spend a Fear to make the PCs overhear a rumor about nefarious strangers plaguing the town. Start an Investigation (3) with 1 Rumor. Until the PCs complete this investigation, they have disadvantage on Presence Rolls when dealing with the townsfolk. When the PCs complete the investigation, they discover what is plaguing the town and where it’s located. If they remove this problem, the PCs can roll twice on the consumable table as the townsfolk give them something valuable from their stashes.",
+            "ru": "Потратьте Страх, чтобы персонажи подслушали слух о подозрительных чужаках, досаждающих городку. Начните Расследование (3) с 1 Слухом. Пока персонажи не завершат это расследование, они совершают Броски Влияния с помехой при общении с горожанами. Когда персонажи завершают расследование, они узнают, что беспокоит городок и где это находится. Если они устранят эту проблему, персонажи могут дважды бросить по таблице Расходников: горожане отдают им что-то ценное из своих запасов."
+          },
+          "prompt": {
+            "en": "What dark secrets lurk under the veneer of genial smiles, waves, and hat tips? What sob story could tug at the heartstrings of the PCs to rope them into helping?",
+            "ru": "Какие мрачные тайны скрываются под маской радушных улыбок, приветственных взмахов и кивков шляпой? Какая слезливая история может растрогать персонажей и втянуть их в помощь?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Get the Deputy",
+            "ru": "Позвать Помощника"
+          },
+          "description": {
+            "en": "If the PCs are caught breaking the law, spend a Fear to summon a Crooked Deputy and immediately spotlight them.",
+            "ru": "Если персонажей поймали на нарушении закона, потратьте Страх, чтобы вызвать Нечестного Помощника Шерифа и немедленно активируйте его."
+          },
+          "prompt": {
+            "en": "What’s the PCs’ relationship with the law? What is this deputy’s relationship with the law?",
+            "ru": "Какие у персонажей отношения с законом? Какие отношения с законом у этого помощника?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "burnin-settlement",
+      "tier": 2,
+      "type": "event",
+      "difficulty": 16,
+      "name": {
+        "en": "Burnin’ Settlement",
+        "ru": "Горящее Поселение"
+      },
+      "lore": {
+        "en": "A frontier settlement has been put to flame and folks are still trapped inside the buildings. Save as many as you can!",
+        "ru": "Пограничное поселение охвачено пламенем, а люди всё ещё заперты в домах. Спасите как можно больше!"
+      },
+      "impulses": {
+        "en": [
+          "Burn it all to the ground",
+          "endanger hero and townie alike",
+          "force the heroes to live up to their title"
+        ],
+        "ru": [
+          "Спалить всё дотла",
+          "подвергать опасности и героев, и горожан",
+          "заставить героев оправдать свой титул"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Assassins",
+          "Berserkers",
+          "Black Hats",
+          "Corrupt Sheriff",
+          "Elemental Sparks"
+        ],
+        "ru": [
+          "Убийцы",
+          "Берсерки",
+          "Чёрные Шляпы",
+          "Продажный Шериф",
+          "Стихийные Искры"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "It’s All Aflame!",
+            "ru": "Всё в Огне!"
+          },
+          "description": {
+            "en": "Activate a Burnin’ Countdown (Loop 4) that ticks down every time a PC rolls with Fear. Place a number of Townie tokens on this stat block equal to twice the number of PCs, representing the number of townsfolk trapped in burning buildings. When it triggers, remove a token as a building collapses and kills the person trapped inside.",
+            "ru": "Активируйте Отсчёт Пожара (Цикл 4), который уменьшается каждый раз, когда персонаж совершает бросок со Страхом. Положите на этот блок характеристик жетоны Горожан в количестве, равном удвоенному числу персонажей, — это горожане, запертые в горящих зданиях. Когда Отсчёт срабатывает, уберите жетон: здание рушится и убивает запертого в нём человека."
+          },
+          "prompt": {
+            "en": "Who put this settlement to flame? If it was an accident, whose mistake caused it?",
+            "ru": "Кто поджёг это поселение? Если это случайность, чья ошибка к ней привела?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Can’t Save ’Em All",
+            "ru": "Всех Не Спасёшь"
+          },
+          "description": {
+            "en": "To save the townsfolk, PCs can make action rolls, describing how they brave the flames. When all tokens are removed from this stat block, end the Burnin’ Countdown. The number of tokens in front of the PCs represents the number of people saved.\n- **Success:** Take a Townie token in front of the PCs.\n- **Failure with Fear:** The PC marks a HP. Remove a token from this stat block.\n- **Failure with Hope:** The PC marks a Stress. Remove a token from this stat block.",
+            "ru": "Чтобы спасти горожан, персонажи могут совершать броски действия, описывая, как они пробиваются сквозь пламя. Когда все жетоны убраны с этого блока характеристик, завершите Отсчёт Пожара. Количество жетонов перед персонажами показывает, сколько людей спасено.\n- **Успех:** возьмите жетон Горожанина перед персонажами.\n- **Неудача со Страхом:** персонаж отмечает Рану. Уберите жетон с этого блока характеристик.\n- **Неудача с Надеждой:** персонаж отмечает Стресс. Уберите жетон с этого блока характеристик."
+          },
+          "prompt": {
+            "en": "Who is important to the PCs here? How can you amp up the stakes and danger without burning everyone the PCs care about?",
+            "ru": "Кто здесь важен для персонажей? Как повысить ставки и опасность, не сжигая всех, кто дорог персонажам?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Firestarters",
+            "ru": "Поджигатели"
+          },
+          "description": {
+            "en": "Spend a Fear to summon a number of Tier 2 minions equal to the number of PCs. Until all the minions are defeated, whenever the GM takes the spotlight, tick down the Burnin’ Countdown by 1 as they fan the flames.",
+            "ru": "Потратьте Страх, чтобы вызвать приспешников 2-го ранга в количестве, равном числу персонажей. Пока все приспешники не побеждены, всякий раз, когда Мастер получает Активацию, уменьшайте Отсчёт Пожара на 1: они раздувают пламя."
+          },
+          "prompt": {
+            "en": "Who are the dastards putting this town to the torch?",
+            "ru": "Кто эти мерзавцы, предающие городок огню?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Backdraft",
+            "ru": "Обратная Тяга"
+          },
+          "description": {
+            "en": "When a PC succeeds with Fear on an action roll, spend 2 Fear to introduce a complication, forcing them to make a Reaction Roll with a different trait. On a failure, they take 2d10+5 direct damage. If they take Severe damage, the PC does not collect a Townie token.",
+            "ru": "Когда персонаж преуспевает со Страхом в броске действия, потратьте 2 Страха, чтобы создать осложнение: персонаж должен совершить Бросок Реакции с другой характеристикой. При провале он получает 2d10+5 прямого урона. Если он получает Тяжёлый урон, персонаж не берёт жетон Горожанина."
+          },
+          "prompt": {
+            "en": "How can the way out be more difficult to navigate than the way in? What dangers that the PCs are not expecting can strand them in the fires?",
+            "ru": "Как сделать выход более трудным, чем вход? Какие неожиданные опасности могут оставить персонажей в огне?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "ghost-town",
+      "tier": 2,
+      "type": "exploration",
+      "difficulty": 14,
+      "name": {
+        "en": "Ghost Town",
+        "ru": "Город-Призрак"
+      },
+      "lore": {
+        "en": "A settlement, completely devoid of people. In their absence, what’s left behind tells a story of how the town fell.",
+        "ru": "Поселение, совершенно лишённое людей. Всё, что осталось после них, рассказывает, как пал город."
+      },
+      "impulses": {
+        "en": [
+          "Haunt the heroes",
+          "reveal buried secrets",
+          "stress them out"
+        ],
+        "ru": [
+          "Преследовать героев",
+          "раскрывать погребённые тайны",
+          "нагнетать Стресс"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Any Undead",
+          "Banshee",
+          "Boneyard Bandits",
+          "Chupacabra",
+          "Gallows Treant",
+          "War Dead"
+        ],
+        "ru": [
+          "Любая Нежить",
+          "Банши",
+          "Бандиты с Кладбища",
+          "Чупакабра",
+          "Висельный Трэнт",
+          "Павшие на Войне"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Ghosts of the Past",
+            "ru": "Призраки Прошлого"
+          },
+          "description": {
+            "en": "Ectoplasmic residue remains, clinging to everything like translucent, glowing slime. Place 5 tokens on this stat block. A PC who touches the ectoplasm must make a Knowledge Reaction Roll. On a success, remove a token to reveal ghostly apparitions reliving a moment locked in time. On a failure, gain a Fear and remove a token. Choose one from the list below, or make up your own:\n- A moment of grief between parents.\n- A moment of terror as hostiles descend on the town.\n- A moment of truth as a secret is revealed.\n- A moment of love as a couple says goodbye.\n- A moment of avarice as someone steals.\n- A moment of sacrifice as a life is given willingly.",
+            "ru": "Эктоплазменный осадок остаётся повсюду, облепляя всё полупрозрачной светящейся слизью. Положите 5 жетонов на этот блок характеристик. Персонаж, коснувшийся эктоплазмы, должен совершить Бросок Реакции на Знание. При успехе уберите жетон: появляются призрачные видения, заново проживающие момент, застывший во времени. При неудаче получите Страх и уберите жетон. Выберите один вариант из списка ниже или придумайте свой:\n- Миг скорби между родителями.\n- Миг ужаса, когда на город обрушиваются враги.\n- Миг истины, когда раскрывается тайна.\n- Миг любви, когда пара прощается.\n- Миг алчности, когда кто-то крадёт.\n- Миг жертвы, когда жизнь отдаётся добровольно."
+          },
+          "prompt": {
+            "en": "What connections might the PCs have to this place? What moments can be viewed to add layers and context to the PCs’ current quest?",
+            "ru": "Какие связи могут быть у персонажей с этим местом? Какие моменты можно показать, чтобы добавить глубины и контекста текущему заданию персонажей?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Yep, It’s Haunted",
+            "ru": "Да, Здесь Водятся Призраки"
+          },
+          "description": {
+            "en": "When the PCs enter this environment for the first time, raise the Fear cap by the number of PCs, and immediately gain that number of Fear. Once they’ve departed the environment, the Fear cap returns to normal on the PCs’ next rest.",
+            "ru": "Когда персонажи впервые входят в это окружение, повысьте Предел Страха на число персонажей и немедленно получите столько же Страха. Когда они покидают окружение, Предел Страха возвращается к норме после следующего отдыха персонажей."
+          },
+          "prompt": {
+            "en": "How did everyone die? Are there survivors in the town? Elsewhere?",
+            "ru": "Как погибли все жители? Есть ли выжившие в городе? В другом месте?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Disturbing Sight",
+            "ru": "Жуткое Зрелище"
+          },
+          "description": {
+            "en": "Spend 2 Fear to force each PC to make an Instinct Reaction Roll. On a failure, a PC loses a Hope. If they can’t lose a Hope, they mark 2 Stress instead.",
+            "ru": "Потратьте 2 Страха, чтобы каждый персонаж совершил Бросок Реакции на Инстинкт. При провале персонаж теряет Надежду. Если он не может потерять Надежду, он отмечает 2 Стресса."
+          },
+          "prompt": {
+            "en": "What sight could shake the heroes to their bones and make their veins itch with fear? What act of depravity created this horrific scene?",
+            "ru": "Какое зрелище может потрясти героев до мозга костей и заставить кровь стынуть в жилах? Какое злодеяние породило эту ужасную сцену?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Best Left Buried",
+            "ru": "Лучше Не Тревожить"
+          },
+          "description": {
+            "en": "Once per scene, if a PC fails a Knowledge Reaction Roll, spend a Fear to summon a number of War Dead equal to the number of tokens on this stat block and immediately spotlight them.",
+            "ru": "Один раз за сцену, если персонаж проваливает Бросок Реакции на Знание, потратьте Страх, чтобы вызвать Павших на Войне в количестве, равном числу жетонов на этом блоке характеристик, и немедленно активируйте их."
+          },
+          "prompt": {
+            "en": "What can these spectral haunts tell the PCs about the fate of this place? What secrets do the dead guard?",
+            "ru": "Что эти призрачные тени могут рассказать персонажам о судьбе этого места? Какие тайны хранят мертвецы?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "no-face-saloon",
+      "tier": 2,
+      "type": "social",
+      "difficulty": 14,
+      "name": {
+        "en": "No Face Saloon",
+        "ru": "Салун «Без Лица»"
+      },
+      "lore": {
+        "en": "A saloon rife with criminals, murderers, and worse. Everyone is required to give up their guns and don a mask upon entry.",
+        "ru": "Салун, кишащий преступниками, убийцами и кем похуже. При входе все обязаны сдать оружие и надеть маску."
+      },
+      "impulses": {
+        "en": [
+          "Disarm the heroes",
+          "keep the heroes on their toes",
+          "hide secrets under masks"
+        ],
+        "ru": [
+          "Обезоружить героев",
+          "держать героев в напряжении",
+          "прятать тайны под масками"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Black Hats",
+          "Outlaws (Bandits, Pirates, Skeletons)",
+          "Emperor of Dirt"
+        ],
+        "ru": [
+          "Чёрные Шляпы",
+          "Разбойники (Бандиты, Пираты, Скелеты)",
+          "Император Грязи"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Disarmed at the Door",
+            "ru": "Оружие на Входе"
+          },
+          "description": {
+            "en": "All creatures entering the No Face Saloon must give up any weapons they are carrying. A PC can make a Finesse Roll to conceal a weapon. On a success, they can hide a single one-handed weapon on themselves or another PC.",
+            "ru": "Все существа, входящие в салун «Без Лица», обязаны сдать любое оружие, которое несут. Персонаж может совершить Бросок Искусности, чтобы спрятать оружие. При успехе он может спрятать одно одноручное оружие на себе или на другом персонаже."
+          },
+          "prompt": {
+            "en": "What does the bouncer look like? What state does the saloon appear to be in from the outside?",
+            "ru": "Как выглядит вышибала? В каком состоянии салун выглядит снаружи?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Masked Entry",
+            "ru": "Вход в Масках"
+          },
+          "description": {
+            "en": "Any who enter must wear a mask that conceals their face. Any who remove their mask or the mask of another person are forcibly ejected, their weapons forfeited. These terms are made clear to all who enter. Any roll to investigate a Rumor in this environment takes a −2 penalty.",
+            "ru": "Каждый входящий должен надеть маску, скрывающую лицо. Всякого, кто снимет свою маску или маску другого, силой выдворяют, а его оружие конфискуют. Эти условия ясно объявляются всем входящим. Любой бросок для расследования Слуха в этом окружении получает штраф −2."
+          },
+          "prompt": {
+            "en": "What and who stands out among the clientele? How does the interior look different from the exterior?",
+            "ru": "Кто и что выделяется среди посетителей? Чем интерьер отличается от внешнего вида?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "It’s a Trap!",
+            "ru": "Это Ловушка!"
+          },
+          "description": {
+            "en": "Spend 2 Fear to have a Black Hat Rail Driver and a number of Outlaws (Deputized Townies) equal to triple the number of PCs appear around them. The PCs cannot escape until at least half the minions are defeated.",
+            "ru": "Потратьте 2 Страха, чтобы вокруг персонажей появились Машинист из Чёрных Шляп и Разбойники (Помощники Шерифа из Горожан) в количестве, втрое большем числа персонажей. Персонажи не могут уйти, пока не побеждена хотя бы половина приспешников."
+          },
+          "prompt": {
+            "en": "Who owns this saloon and why do they recognize the PCs? What is something the PCs recognize among the decor?",
+            "ru": "Кто владелец этого салуна и почему он узнаёт персонажей? Что из убранства узнают персонажи?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Top Shelf Information",
+            "ru": "Информация с Верхней Полки"
+          },
+          "description": {
+            "en": "If the PCs use the Bartender’s Rumor Mill feature, it costs an additional handful of gold per Rumor, but also reduces the Difficulty of the investigation by 1.",
+            "ru": "Если персонажи используют особенность Бармена «Мельница Слухов», она стоит на одну дополнительную горсть золота за Слух, но также снижает Сложность расследования на 1."
+          },
+          "prompt": {
+            "en": "Who is the bartender keeping an eye on? What does the bartender have hidden under the bar?",
+            "ru": "За кем бармен приглядывает? Что бармен прячет под стойкой?"
+          }
+        }
+      ],
+      "biomes": [
+        "settlement"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "boreworm-migration",
+      "tier": 2,
+      "type": "event",
+      "difficulty": 16,
+      "name": {
+        "en": "Boreworm Migration",
+        "ru": "Миграция Буровых Червей"
+      },
+      "lore": {
+        "en": "The earth churns for miles around as thousands of boreworms follow the mother of tunnels to more bountiful ore deposits.",
+        "ru": "Земля вздымается на мили вокруг: тысячи буровых червей следуют за матерью туннелей к более богатым залежам руды."
+      },
+      "impulses": {
+        "en": [
+          "Keep them on the mother’s back",
+          "limit their options for egress",
+          "overwhelm them with worms"
+        ],
+        "ru": [
+          "Удержать их на спине матери",
+          "ограничить им пути отхода",
+          "завалить их червями"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Boreworms"
+        ],
+        "ru": [
+          "Буровые Черви"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Mobile Migration Zone",
+            "ru": "Подвижная Зона Миграции"
+          },
+          "description": {
+            "en": "PCs on the ground who move within Very Far range of Puralu mark a HP every time the GM takes the spotlight.",
+            "ru": "Персонажи на земле, оказавшиеся в пределах Очень Дальней дистанции от Пуралу, отмечают Рану каждый раз, когда Мастер получает Активацию."
+          },
+          "prompt": {
+            "en": "What happens to creatures or structures caught in the path of the migration?",
+            "ru": "Что происходит с существами и постройками на пути миграции?"
+          }
+        },
+        {
+          "type": "passive",
+          "name": {
+            "en": "Flight Risk",
+            "ru": "Опасность Полёта"
+          },
+          "description": {
+            "en": "PCs on Puralu who attempt flight as part of an action must mark a Stress or move back a segment before they can take their action. If there is no segment to move back to, the PC is removed from the scene. PCs without flying who leap off Puralu mark 4 HP and are removed from the scene, as they are battered by worms and quickly left behind.",
+            "ru": "Персонажи на Пуралу, пытающиеся взлететь в рамках действия, должны отметить Стресс или отступить на один сегмент, прежде чем совершить своё действие. Если отступать некуда, персонаж удаляется со сцены. Персонажи без полёта, спрыгнувшие с Пуралу, отмечают 4 Раны и удаляются со сцены: черви избивают их, и они быстро остаются позади."
+          },
+          "prompt": {
+            "en": "How can you illustrate the foolhardiness of leaping or flying off Puralu?",
+            "ru": "Как показать безрассудство прыжка или полёта прочь с Пуралу?"
+          }
+        },
+        {
+          "type": "reaction",
+          "name": {
+            "en": "Wake of Creation",
+            "ru": "След Созидания"
+          },
+          "description": {
+            "en": "When Puralu is defeated, the migration ends and this environment disappears. In its place is rich, tilled soil that can be used to grow almost anything.",
+            "ru": "Когда Пуралу побеждена, миграция заканчивается, и это окружение исчезает. На его месте остаётся богатая вспаханная почва, на которой можно вырастить почти что угодно."
+          },
+          "prompt": {
+            "en": "How will the surrounding settlements react to this new, farmable land? What conflicts arise over control of it?",
+            "ru": "Как окрестные поселения отреагируют на эту новую пахотную землю? Какие конфликты возникнут из-за контроля над ней?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "Pistolheart"
+    },
+    {
+      "id": "paracausal-zone",
+      "tier": 4,
+      "type": "traversal",
+      "difficulty": 20,
+      "name": {
+        "en": "Paracausal Zone",
+        "ru": "Парапричинная Зона"
+      },
+      "lore": {
+        "en": "Warped and thinning realities bleed into one another to reveal that all worlds are experiencing the same ending.",
+        "ru": "Искажённые и истончающиеся реальности просачиваются друг в друга, показывая, что все миры переживают один и тот же конец."
+      },
+      "impulses": {
+        "en": [
+          "Challenge the party’s familiarity",
+          "reveal the path not taken",
+          "summon the void"
+        ],
+        "ru": [
+          "Поколебать привычное для отряда",
+          "показать нехоженый путь",
+          "призвать пустоту"
+        ]
+      },
+      "potential_adversaries": {
+        "en": [
+          "Severed Shadows",
+          "Cephiliths"
+        ],
+        "ru": [
+          "Отсечённые Тени",
+          "Цефилиты"
+        ]
+      },
+      "features": [
+        {
+          "type": "passive",
+          "name": {
+            "en": "Thinning Reality",
+            "ru": "Истончающаяся Реальность"
+          },
+          "description": {
+            "en": "Adversaries can move anywhere on Maletrella as part of their action.",
+            "ru": "Противники могут перемещаться в любую точку Малетреллы в рамках своего действия."
+          },
+          "prompt": {
+            "en": "What does the clash of realities look like in the ruinous ascent to the crown?",
+            "ru": "Как выглядит столкновение реальностей на разрушенном подъёме к короне?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Paths Not Taken",
+            "ru": "Нехоженые Пути"
+          },
+          "description": {
+            "en": "Spend 3 Fear to throw all PCs into another reality where they took a path not taken in this world. All players must give their character sheet and domain cards to the player to their left as they become another version of themselves fighting the same fight in another reality. PCs retain their ancestry and community cards. If this causes a PC to switch to the sheet of a dead PC, they spend all remaining Hope on the new sheet and clear an equal amount of HP (minimum 1). If Maletrella is defeated, the PCs return to their original reality.",
+            "ru": "Потратьте 3 Страха, чтобы бросить всех персонажей в другую реальность, где они выбрали путь, не пройденный в этом мире. Все игроки передают свой лист персонажа и карты домена игроку слева: они становятся другой версией себя, сражающейся в том же бою в другой реальности. Персонажи сохраняют карты Родословной и Сообщества. Если из-за этого персонаж оказывается за листом погибшего персонажа, он тратит всю оставшуюся Надежду на новом листе и снимает столько же Ран (минимум 1). Если Малетрелла побеждена, персонажи возвращаются в свою исходную реальность."
+          },
+          "prompt": {
+            "en": "How different are the heroes in appearance and demeanor from other realities? What truths about the heroes present can be learned by the other paths they’ve trodden elsewhere?",
+            "ru": "Насколько герои из других реальностей отличаются внешностью и повадками? Какие истины о нынешних героях можно узнать из других путей, которыми они прошли в иных мирах?"
+          }
+        },
+        {
+          "type": "action",
+          "name": {
+            "en": "Children of the Void",
+            "ru": "Дети Пустоты"
+          },
+          "description": {
+            "en": "Spend a Fear to summon 10 Severed Shadows on the Trunk or the Crown. After this ability is used, begin a Void Countdown (6) that ticks down every time the GM takes the spotlight. Until the countdown triggers, this ability can’t be used again.",
+            "ru": "Потратьте Страх, чтобы вызвать 10 Отсечённых Теней на Стволе или в Короне. После использования этой способности начните Отсчёт Пустоты (6), который уменьшается каждый раз, когда Мастер получает Активацию. Пока Отсчёт не сработает, эту способность нельзя использовать снова."
+          },
+          "prompt": {
+            "en": "What form do the minions of Maletrella take?",
+            "ru": "Какую форму принимают приспешники Малетреллы?"
+          }
+        }
+      ],
+      "biomes": [
+        "universal"
+      ],
+      "source": "Pistolheart"
     }
   ]
 }
